@@ -1,0 +1,16 @@
+{
+  "version": "1.8.2",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "outDir": "lib",
+    "rootDir": "src",
+    "jsx": "react"
+  },
+  "exclude": [
+    "lib",
+    "node_modules",
+    "typings/main.d.ts",
+    "typings/main"
+  ]
+}
