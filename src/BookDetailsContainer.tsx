@@ -36,14 +36,14 @@ export default class BookDetailsContainer extends React.Component<any, any> {
         { suppressLink &&
           <Tab eventKey={2} title="Suppress">
             <div style={tabContentStyle}>
-              <SuppressForm book={this.props.book} csrfToken={csrfToken} link={suppressLink} />
+              <SuppressForm book={this.props.book} csrfToken={csrfToken} link={suppressLink.href} />
             </div>
           </Tab>
         }
         { unsuppressLink &&
           <Tab eventKey={2} title="Unsuppress">
             <div style={tabContentStyle}>
-              <UnsuppressForm book={this.props.book} csrfToken={csrfToken} link={unsuppressLink} />
+              <UnsuppressForm book={this.props.book} csrfToken={csrfToken} link={unsuppressLink.href} />
             </div>
           </Tab>
         }

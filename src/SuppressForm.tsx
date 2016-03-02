@@ -15,11 +15,11 @@ export default class SuppressForm extends React.Component<any, any> {
   }
 
   suppress(event) {
-    let href = this.props.link.href;
+    let link = this.props.link;
     let csrfToken = this.props.csrfToken;
     let formData = new FormData();
     formData.append("csrf_token", csrfToken);
-    fetch(href, {
+    fetch(link, {
       credentials: 'same-origin',
       method: "POST",
       body: formData
