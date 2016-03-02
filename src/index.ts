@@ -1,67 +1,74 @@
 import OPDSBrowser = require("opds-browser");
-import BookDetailsContainer from "./BookDetailsContainer";
+import createBookDetailsContainer from "./BookDetailsContainer";
 
-let div = document.createElement("div");
-div.id = "opds-browser";
-document.getElementsByTagName('body')[0].appendChild(div);
+class CirculationWeb {
 
-function getParam(name) {
-  let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-  return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-};
+  constructor(csrfToken: string) {
+    let div = document.createElement("div");
+    div.id = "opds-browser";
+    document.getElementsByTagName('body')[0].appendChild(div);
 
-function serializeParams(params) {
-  if (Object.keys(params).length === 0) {
-    return "";
-  }
+    function getParam(name) {
+      let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+      return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    };
 
-  return "?" + Object.keys(params).reduce((keys, key) => {
-    if (params[key]) {
-      keys.push(key + "=" + encodeURIComponent(params[key]));
+    function serializeParams(params) {
+      if (Object.keys(params).length === 0) {
+        return "";
+      }
+
+      return "?" + Object.keys(params).reduce((keys, key) => {
+        if (params[key]) {
+          keys.push(key + "=" + encodeURIComponent(params[key]));
+        }
+        return keys;
+      }, []).join("&");
+    };
+
+    function historyArgs(collectionUrl, bookUrl) {
+      let params = {
+        collection: collectionUrl,
+        book: bookUrl
+      };
+
+      return [params, "", serializeParams(params)];
     }
-    return keys;
-  }, []).join("&");
-};
 
-function historyArgs(collectionUrl, bookUrl) {
-  let params = {
-    collection: collectionUrl,
-    book: bookUrl
-  };
+    window.onpopstate = (event) => {
+      let collection = null,
+          book = null;
 
-  return [params, "", serializeParams(params)];
-}
+      if (event.state) {
+        collection = event.state.collection || null;
+        book = event.state.book || null;
+      }
 
-window.onpopstate = (event) => {
-  let collection = null,
-      book = null;
+      // call loadCollectionAndBook with skipOnNavigate = true
+      // so that state isn't pushed every time it's popped
+      browser.loadCollectionAndBook(collection, book, true);
+    };
 
-  if (event.state) {
-    collection = event.state.collection || null;
-    book = event.state.book || null;
+    function pushHistory(collectionUrl, bookUrl) {
+      window.history.pushState.apply(window.history, historyArgs(collectionUrl, bookUrl));
+    };
+
+    let startCollection = getParam("collection") || window.location.origin;
+    let startBook = getParam("book");
+    let browser = new OPDSBrowser({
+      startCollection: startCollection,
+      startBook: startBook,
+      onNavigate: pushHistory,
+      pathFor: function (collectionUrl, bookUrl) {
+        return serializeParams({collection: collectionUrl, book: bookUrl});
+      },
+      BookDetailsContainer: createBookDetailsContainer(csrfToken)
+    }, "opds-browser");
+
+    if (startCollection || startBook) {
+      window.history.replaceState.apply(window.history, historyArgs(startCollection, startBook));
+    }
   }
-
-  // call loadCollectionAndBook with skipOnNavigate = true
-  // so that state isn't pushed every time it's popped
-  browser.loadCollectionAndBook(collection, book, true);
-};
-
-function pushHistory(collectionUrl, bookUrl) {
-  window.history.pushState.apply(window.history, historyArgs(collectionUrl, bookUrl));
-};
-
-let startCollection = getParam("collection") || window.location.origin;
-let startBook = getParam("book");
-let browser = new OPDSBrowser({
-  startCollection: startCollection,
-  startBook: startBook,
-  onNavigate: pushHistory,
-  pathFor: function (collectionUrl, bookUrl) {
-    return serializeParams({collection: collectionUrl, book: bookUrl});
-  },
-  BookDetailsContainer: BookDetailsContainer
-}, "opds-browser");
-
-if (startCollection || startBook) {
-  window.history.replaceState.apply(window.history, historyArgs(startCollection, startBook));
 }
+
+export = CirculationWeb;

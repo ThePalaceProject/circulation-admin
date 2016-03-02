@@ -4,50 +4,53 @@ require("bootstrap/dist/css/bootstrap.css");
 import SuppressForm from "./SuppressForm";
 import UnsuppressForm from "./UnsuppressForm";
 
-export default class BookDetailsContainer extends React.Component<any, any> {
+export default function (csrfToken: string) {
 
-  render(): JSX.Element {
-    let tabContentStyle = {
-      position: "absolute",
-      top: "100px",
-      bottom: "0",
-      left: "25px",
-      right: "25px"
-    };
+  class BookDetailsContainer extends React.Component<any, any> {
 
-    let suppressLink = this.props.book.rawEntry.links.find(link => {
-      return link.rel === "http://librarysimplified.org/terms/rel/suppress";
-    });
+    render(): JSX.Element {
+      let tabContentStyle = {
+        position: "absolute",
+        top: "100px",
+        bottom: "0",
+        left: "25px",
+        right: "25px"
+      };
 
-    let unsuppressLink = this.props.book.rawEntry.links.find(link => {
-      return link.rel === "http://librarysimplified.org/terms/rel/unsuppress";
-    });
+      let suppressLink = this.props.book.rawEntry.links.find(link => {
+        return link.rel === "http://librarysimplified.org/terms/rel/suppress";
+      });
 
-    let csrfToken = (document.getElementById("csrf-token") as any).value;
+      let unsuppressLink = this.props.book.rawEntry.links.find(link => {
+        return link.rel === "http://librarysimplified.org/terms/rel/unsuppress";
+      });
 
-    return (
-      <Tabs defaultActiveKey={1}>
-        <Tab eventKey={1} title="Book Details">
-          <div style={tabContentStyle}>
-            {this.props.children}
-          </div>
-        </Tab>
-
-        { suppressLink &&
-          <Tab eventKey={2} title="Suppress">
+      return (
+        <Tabs defaultActiveKey={1}>
+          <Tab eventKey={1} title="Book Details">
             <div style={tabContentStyle}>
-              <SuppressForm book={this.props.book} csrfToken={csrfToken} link={suppressLink.href} />
+              {this.props.children}
             </div>
           </Tab>
-        }
-        { unsuppressLink &&
-          <Tab eventKey={2} title="Unsuppress">
-            <div style={tabContentStyle}>
-              <UnsuppressForm book={this.props.book} csrfToken={csrfToken} link={unsuppressLink.href} />
-            </div>
-          </Tab>
-        }
-      </Tabs>
-    );
+
+          { suppressLink &&
+            <Tab eventKey={2} title="Suppress">
+              <div style={tabContentStyle}>
+                <SuppressForm book={this.props.book} csrfToken={csrfToken} link={suppressLink.href} />
+              </div>
+            </Tab>
+          }
+          { unsuppressLink &&
+            <Tab eventKey={2} title="Unsuppress">
+              <div style={tabContentStyle}>
+                <UnsuppressForm book={this.props.book} csrfToken={csrfToken} link={unsuppressLink.href} />
+              </div>
+            </Tab>
+          }
+        </Tabs>
+      );
+    }
   }
+
+  return BookDetailsContainer;
 }
