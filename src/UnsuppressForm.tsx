@@ -20,7 +20,7 @@ export default class UnsuppressForm extends React.Component<any, any> {
     let formData = new FormData();
     formData.append("csrf_token", csrfToken);
     fetch(link, {
-      credentials: 'same-origin',
+      credentials: "same-origin",
       method: "POST",
       body: formData
     }).then((response) => {

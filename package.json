@@ -10,6 +10,8 @@
   "author": "NYPL",
   "license": "Apache-2.0",
   "scripts": {
+    "prepublish": "typings install",
+    "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc",
     "dev": "rm -rf lib && NODE_ENV=development webpack --watch --progress --display-modules --config webpack.prod.config",
     "prod": "rm -rf lib && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
@@ -27,6 +29,7 @@
     "json-loader": "^0.5.4",
     "style-loader": "^0.13.0",
     "ts-loader": "^0.8.0",
+    "tslint": "^3.3.0",
     "typescript": "^1.8.2",
     "typings": "^0.6.6",
     "url-loader": "^0.5.7",

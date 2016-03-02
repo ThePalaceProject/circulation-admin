@@ -6,11 +6,11 @@ class CirculationWeb {
   constructor(csrfToken: string) {
     let div = document.createElement("div");
     div.id = "opds-browser";
-    document.getElementsByTagName('body')[0].appendChild(div);
+    document.getElementsByTagName("body")[0].appendChild(div);
 
     function getParam(name) {
-      let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-      return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+      let match = RegExp("[?&]" + name + "=([^&]*)").exec(window.location.search);
+      return match && decodeURIComponent(match[1].replace(/\+/g, " "));
     };
 
     function serializeParams(params) {
