@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Tabs, Tab } from "react-bootstrap";
-require("bootstrap/dist/css/bootstrap.css");
 import SuppressForm from "./SuppressForm";
 import UnsuppressForm from "./UnsuppressForm";
 

@@ -1,5 +1,6 @@
 import OPDSBrowser = require("opds-browser");
 import createBookDetailsContainer from "./BookDetailsContainer";
+require("bootstrap/dist/css/bootstrap.css");
 
 class CirculationWeb {
 
