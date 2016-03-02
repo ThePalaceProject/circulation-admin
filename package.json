@@ -11,7 +11,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "prepublish": "typings install",
-    "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc",
+    "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc && jest",
     "dev": "rm -rf lib && NODE_ENV=development webpack --watch --progress --display-modules --config webpack.prod.config",
     "prod": "rm -rf lib && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
@@ -26,7 +26,10 @@
   "devDependencies": {
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
+    "jest": "^0.1.40",
+    "jest-cli": "^0.8.2",
     "json-loader": "^0.5.4",
+    "react-addons-test-utils": "^0.14.6",
     "style-loader": "^0.13.0",
     "ts-loader": "^0.8.0",
     "tslint": "^3.3.0",
@@ -34,5 +37,23 @@
     "typings": "^0.6.6",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.12"
+  },
+  "jest": {
+    "rootDir": "./lib",
+    "testRunner": "../node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js",
+    "testFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "unmockedModulePathPatterns": [
+      "../node_modules/*"
+    ],
+    "globals": {
+      "fetch": true
+    }
   }
 }
