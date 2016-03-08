@@ -3,12 +3,13 @@ var webpack = require("webpack");
 var config = {
   entry: {
     app: [
-      "./src/index.tsx"
+      'webpack/hot/dev-server',
+      "./src/index.ts"
     ]
   },
   output: {
-    path: "./lib",
-    filename: "index.js",
+    filename: "circulation-web.js",
+    publicPath: 'http://localhost:8090/dist',
     library: "CirculationWeb",
     libraryTarget: "umd"
   },
@@ -24,15 +25,7 @@ var config = {
       },
       {
         test: /\.json$/,
-        loader: 'json-loader'
-      },
-      { 
-        test: /\.css$/,
-        loader: 'style!css'
-      },
-      {
-        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-        loader: 'url-loader?limit=100000'
+        loaders: ['json-loader']
       }
     ],
   },
