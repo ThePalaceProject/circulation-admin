@@ -1,7 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Router, Route, browserHistory, hashHistory } from "react-router";
+import { Router, Route, hashHistory } from "react-router";
 import Root from "./Root";
+const OPDSBrowser = require("opds-browser");
+import Editor from "./Editor";
 
 require("bootstrap/dist/css/bootstrap.css");
 
@@ -53,8 +55,8 @@ class CirculationWeb {
 
       // call loadCollectionAndBook with skipOnNavigate = true
       // so that state isn't pushed every time it's popped
-      web.setApp(app);
-      web.setCollectionAndBook(collection, book);
+      // web.setApp(app);
+      // web.setCollectionAndBook(collection, book);
     };
 
     function pushHistory(app, collectionUrl, bookUrl) {
@@ -75,50 +77,51 @@ class CirculationWeb {
     //   BookDetailsContainer: createBookDetailsContainer(csrfToken)
     // }, "opds-browser");
 
-    let web;
-    ReactDOM.render(
-      <Root
-        ref={c => web = c}
-        collection={startCollection}
-        book={startBook}
-        app={startApp}
-        onNavigate={pushHistory} />,
-      document.getElementById("opds-browser")
-    );
-
-    if (startApp || startCollection || startBook) {
-      window.history.replaceState.apply(window.history, historyArgs(startApp, startCollection, startBook));
-    }
-
-    // let pathFor = function(collectionUrl, bookUrl) {
-    //   if (collectionUrl) {
-    //     return "#/browser/collection/" + encodeURIComponent(collectionUrl);
-    //   } else if (bookUrl) {
-    //     return "#/browser/book/" + encodeURIComponent(bookUrl);
-    //   } else {
-    //     return "#/browser";
-    //   }
-    // }
-    //
-    // let BrowserWrapper = React.createClass({
-    //   render: function () {
-    //     return (
-    //         <Browser
-    //           pathFor={pathFor}
-    //           onNavigate={(collectionUrl, bookUrl) => console.log(collectionUrl, bookUrl)}
-    //           collectionUrl={this.props.params.collectionUrl}
-    //           bookUrl={this.props.params.bookUrl} />
-    //     );
-    //   }
-    // });
-    //
-    // let app = ReactDOM.render(
-    //   <Router history={hashHistory}>
-    //     <Route path="browser/collection/:collectionUrl" component={BrowserWrapper} />
-    //     <Route path="editor" component={Editor} />
-    //   </Router>,
+    // let web;
+    // console.log(startApp, startBook, startCollection);
+    // ReactDOM.render(
+    //   <Root
+    //     ref={c => web = c}
+    //     collection={startCollection}
+    //     book={startBook}
+    //     app={startApp}
+    //     onNavigate={pushHistory} />,
     //   document.getElementById("opds-browser")
     // );
+    //
+    // if (startApp || startCollection || startBook) {
+    //   window.history.replaceState.apply(window.history, historyArgs(startApp, startCollection, startBook));
+    // }
+
+    let pathFor = function(collectionUrl, bookUrl) {
+      if (collectionUrl) {
+        return "#/browser/collection/" + encodeURIComponent(collectionUrl);
+      } else if (bookUrl) {
+        return "#/browser/book/" + encodeURIComponent(bookUrl);
+      } else {
+        return "#/browser";
+      }
+    }
+
+    let BrowserWrapper = React.createClass({
+      render: function () {
+        return (
+          <OPDSBrowser
+            pathFor={pathFor}
+            onNavigate={(collectionUrl, bookUrl) => console.log(collectionUrl, bookUrl)}
+            collection={this.props.params.collectionUrl}
+            book={this.props.params.bookUrl} />
+        );
+      }
+    });
+
+    let app = ReactDOM.render(
+      <Router history={hashHistory}>
+        <Route path="browser/collection/:collectionUrl" component={BrowserWrapper} />
+        <Route path="editor" component={Editor} />
+      </Router>,
+      document.getElementById("opds-browser")
+    );
   }
 }
 
