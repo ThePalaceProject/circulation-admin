@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Router, Route, hashHistory } from "react-router";
-import Root from "./Root";
+import Root from "./components/Root";
 const OPDSBrowser = require("opds-browser");
-import Editor from "./Editor";
+import Editor from "./components/Editor";
 
 require("bootstrap/dist/css/bootstrap.css");
 
@@ -65,7 +65,7 @@ class CirculationWeb {
 
     let startCollection = getParam("collection");
     let startBook = getParam("book");
-    let startApp = getParam("app");
+    let startApp = getParam("app") || "browser";
 
     let web;
     ReactDOM.render(

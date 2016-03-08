@@ -8,7 +8,10 @@
     "react-addons-test-utils": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-test-utils.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "react-bootstrap": "github:NYPL-Simplified/DefinitelyTyped/react-bootstrap/react-bootstrap.d.ts#98b3edc27b70b5676065693b0fac2e618a085b78",
     "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
+    "react-redux": "github:DefinitelyTyped/DefinitelyTyped/react-redux/react-redux.d.ts#4169370da25a366a4e44090db92916bc0106b443",
     "react-router": "github:DefinitelyTyped/DefinitelyTyped/react-router/react-router.d.ts#94949214efbdaabe319483adc65ef4b930a4a08e",
+    "redux": "github:DefinitelyTyped/DefinitelyTyped/redux/redux.d.ts#a820bbdead70913f0c750802b367ed54cb99b442",
+    "redux-thunk": "github:DefinitelyTyped/DefinitelyTyped/redux-thunk/redux-thunk.d.ts#75249b97104d00c1ca2451ac29369009a5f2b101",
     "whatwg-fetch": "github:DefinitelyTyped/DefinitelyTyped/whatwg-fetch/whatwg-fetch.d.ts#91d963959f52ba696d74627d92bbb32350549993"
   }
 }

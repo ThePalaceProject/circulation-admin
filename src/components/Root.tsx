@@ -1,15 +1,23 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSBrowser = require("opds-browser");
+import { createStore, applyMiddleware } from "redux";
+let thunk: any = require("redux-thunk");
 import Editor from "./Editor";
+import editorReducers from "../editor-reducers";
 
 export default class Root extends React.Component<any, any> {
   browser: any;
   editor: any;
+  editorStore: Redux.Store;
 
   constructor(props) {
     super(props);
     this.state = props;
+    this.editorStore = createStore(
+      editorReducers,
+      applyMiddleware(thunk)
+    );
   }
 
   render(): JSX.Element {
@@ -30,14 +38,15 @@ export default class Root extends React.Component<any, any> {
 
         { this.state.app === "editor" &&
           <Editor
-            ref={c => this.editor = c} />
+            ref={c => this.editor = c}
+            store={this.editorStore}
+            book={this.state.book} />
         }
       </div>
     );
   }
 
   setCollectionAndBook(collection: string, book: string): void {
-    console.log(collection, book);
     this.setState({ collection, book });
   }
 
