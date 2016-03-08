@@ -1,10 +1,11 @@
 var webpack = require("webpack");
+var path = require("path");
 
 var config = {
   entry: {
     app: [
       'webpack/hot/dev-server',
-      "./src/index.ts"
+      "./src/index.tsx"
     ]
   },
   output: {
@@ -26,11 +27,20 @@ var config = {
       {
         test: /\.json$/,
         loaders: ['json-loader']
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css'
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        loader: 'url-loader?limit=100000'
       }
     ],
   },
   resolve: {
-    extensions: ["", ".js", ".ts", ".tsx"]
+    extensions: ["", ".js", ".ts", ".tsx"],
+    root: path.resolve(__dirname, "node_modules")
   }
 };
 

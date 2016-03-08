@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var path = require("path");
 
 var config = {
   entry: {
@@ -26,7 +27,7 @@ var config = {
         test: /\.json$/,
         loader: 'json-loader'
       },
-      { 
+      {
         test: /\.css$/,
         loader: 'style!css'
       },
@@ -37,7 +38,8 @@ var config = {
     ],
   },
   resolve: {
-    extensions: ["", ".js", ".ts", ".tsx"]
+    extensions: ["", ".js", ".ts", ".tsx"],
+    root: path.resolve(__dirname, "node_modules")
   }
 };
 
