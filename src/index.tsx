@@ -9,7 +9,7 @@ require("bootstrap/dist/css/bootstrap.css");
 
 class CirculationWeb {
 
-  constructor(csrfToken: string) {
+  constructor(config) {
     let div = document.createElement("div");
     div.id = "opds-browser";
     document.getElementsByTagName("body")[0].appendChild(div);
@@ -63,7 +63,7 @@ class CirculationWeb {
       window.history.pushState.apply(window.history, historyArgs(app, collectionUrl, bookUrl));
     };
 
-    let startCollection = getParam("collection");
+    let startCollection = getParam("collection") || config.homeUrl;
     let startBook = getParam("book");
     let startApp = getParam("app") || "browser";
 
@@ -71,7 +71,7 @@ class CirculationWeb {
     ReactDOM.render(
       <Root
         ref={c => web = c}
-        csrfToken={csrfToken}
+        csrfToken={config.csrfToken}
         collection={startCollection}
         book={startBook}
         app={startApp}
