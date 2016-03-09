@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Router, Route, hashHistory } from "react-router";
 import Root from "./components/Root";
 const OPDSBrowser = require("opds-browser");
 import Editor from "./components/Editor";
@@ -82,36 +81,6 @@ class CirculationWeb {
     if (startApp || startCollection || startBook) {
       window.history.replaceState.apply(window.history, historyArgs(startApp, startCollection, startBook));
     }
-
-    // let pathFor = function(collectionUrl, bookUrl) {
-    //   if (collectionUrl) {
-    //     return "#/browser/collection/" + encodeURIComponent(collectionUrl);
-    //   } else if (bookUrl) {
-    //     return "#/browser/book/" + encodeURIComponent(bookUrl);
-    //   } else {
-    //     return "#/browser";
-    //   }
-    // }
-    //
-    // let BrowserWrapper = React.createClass({
-    //   render: function () {
-    //     return (
-    //       <OPDSBrowser
-    //         pathFor={pathFor}
-    //         onNavigate={(collectionUrl, bookUrl) => console.log(collectionUrl, bookUrl)}
-    //         collection={this.props.params.collectionUrl}
-    //         book={this.props.params.bookUrl} />
-    //     );
-    //   }
-    // });
-    //
-    // let app = ReactDOM.render(
-    //   <Router history={hashHistory}>
-    //     <Route path="browser/collection/:collectionUrl" component={BrowserWrapper} />
-    //     <Route path="editor" component={Editor} />
-    //   </Router>,
-    //   document.getElementById("opds-browser")
-    // );
   }
 }
 
