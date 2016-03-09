@@ -6,7 +6,7 @@ let thunk: any = require("redux-thunk");
 import Editor from "./Editor";
 import editorReducers from "../editor-reducers";
 
-export default class Root extends React.Component<any, any> {
+export default class Root extends React.Component<RootProps, any> {
   browser: any;
   editor: any;
   editorStore: Redux.Store;

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { ButtonInput, FormControls } from "react-bootstrap";
+import { ButtonInput } from "react-bootstrap";
 
-export default class UnsuppressForm extends React.Component<any, any> {
+export default class UnsuppressForm extends React.Component<SuppressFormProps, any> {
   render(): JSX.Element {
     return (
       <form>
