@@ -71,6 +71,7 @@ class CirculationWeb {
     ReactDOM.render(
       <Root
         ref={c => web = c}
+        csrfToken={csrfToken}
         collection={startCollection}
         book={startBook}
         app={startApp}

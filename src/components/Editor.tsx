@@ -2,6 +2,9 @@ import * as React from "react";
 import { connect } from "react-redux";
 import DataFetcher from "opds-browser/lib/DataFetcher";
 import ActionCreator from "../actions";
+import editorAdapter from "../editorAdapter";
+import SuppressForm from "./SuppressForm";
+import UnsuppressForm from "./UnsuppressForm";
 
 class Editor extends React.Component<any, any> {
   render(): JSX.Element {
@@ -11,7 +14,15 @@ class Editor extends React.Component<any, any> {
       <div>
         <h1>Editor</h1>
         { this.props.bookData &&
-          <h2>Editing {this.props.bookData.title}</h2>
+          (<div>
+            <h2>Editing {this.props.bookData.title}</h2>
+            { this.props.bookData.suppressLink &&
+              <SuppressForm link={this.props.bookData.suppressLink.href} csrfToken={this.props.csrfToken} />
+            }
+            { this.props.bookData.unsuppressLink &&
+              <UnsuppressForm link={this.props.bookData.unsuppressLink.href} csrfToken={this.props.csrfToken} />
+            }
+          </div>)
         }
       </div>
     );
@@ -19,7 +30,8 @@ class Editor extends React.Component<any, any> {
 
   componentWillMount() {
     if (this.props.book) {
-      this.props.setBook(this.props.book);
+      let bookUrl = this.props.book.replace("works", "admin/works") + "/details";
+      this.props.setBook(bookUrl);
     }
   }
 }
@@ -40,10 +52,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mergeRootProps(stateProps, createDispatchProps, componentProps) {
-  let adapter = (data: any): any => {
-    return data;
-  };
-  let fetcher = new DataFetcher(null, adapter);
+  let fetcher = new DataFetcher(null, editorAdapter);
   let dispatchProps = createDispatchProps.createDispatchProps(fetcher);
   let setBook = (book: string) => {
     return new Promise((resolve, reject) => {

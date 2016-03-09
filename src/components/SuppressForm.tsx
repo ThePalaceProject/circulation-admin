@@ -5,10 +5,6 @@ export default class SuppressForm extends React.Component<any, any> {
   render(): JSX.Element {
     return (
       <form>
-        <h3>Suppress <b>{this.props.book.title}</b></h3>
-        <FormControls.Static>
-          Temporarily hide this book from the collection.
-        </FormControls.Static>
         <ButtonInput value="Suppress" onClick={this.suppress.bind(this)} />
       </form>
     );

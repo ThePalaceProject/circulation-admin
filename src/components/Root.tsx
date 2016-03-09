@@ -40,6 +40,7 @@ export default class Root extends React.Component<any, any> {
           <Editor
             ref={c => this.editor = c}
             store={this.editorStore}
+            csrfToken={this.props.csrfToken}
             book={this.state.book} />
         }
       </div>
