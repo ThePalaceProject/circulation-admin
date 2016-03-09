@@ -38,19 +38,14 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+  let fetcher = new DataFetcher(null, editorAdapter);
+  let actions = new ActionCreator(fetcher);
   return {
-    createDispatchProps: (fetcher) => {
-      let actions = new ActionCreator(fetcher);
-      return {
-        fetchBook: (url: string) => dispatch(actions.fetchBook(url))
-      };
-    }
-  }
+    fetchBook: (url: string) => dispatch(actions.fetchBook(url))
+  };
 }
 
-function mergeRootProps(stateProps, createDispatchProps, componentProps) {
-  let fetcher = new DataFetcher(null, editorAdapter);
-  let dispatchProps = createDispatchProps.createDispatchProps(fetcher);
+function mergeRootProps(stateProps, dispatchProps, componentProps) {
   let setBook = (book: string) => {
     return new Promise((resolve, reject) => {
       dispatchProps.fetchBook(book).then(data => resolve(data));
