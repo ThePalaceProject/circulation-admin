@@ -5,10 +5,10 @@ import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
 
-class Editor extends React.Component<EditorProps, any> {
+export class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
     let refresh = () => this.props.setBook(this.props.bookUrl);
-    console.log(this.props.bookUrl);
+
     return (
       <div>
         <h1>Editor</h1>
@@ -43,10 +43,10 @@ class Editor extends React.Component<EditorProps, any> {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
     bookUrl: state.book.url,
-    bookData: state.book.data
+    bookData: state.book.data || ownProps.bookData
   };
 }
 

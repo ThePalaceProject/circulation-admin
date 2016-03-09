@@ -5,8 +5,8 @@ interface LinkData {
 
 interface BookData {
   title: string;
-  hideLink: LinkData;
-  restoreLink: LinkData;
+  hideLink?: LinkData;
+  restoreLink?: LinkData;
 }
 
 interface RootProps extends __React.Props<any> {
@@ -22,7 +22,7 @@ interface EditorProps extends __React.Props<any> {
   bookUrl?: string;
   bookData?: BookData;
   csrfToken: string;
-  store: Redux.Store;
+  store?: Redux.Store;
   setBook?: (url: string) => void;
 }
 
