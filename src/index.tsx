@@ -47,9 +47,9 @@ class CirculationWeb {
           app = null;
 
       if (event.state) {
-        collection = event.state.collection || null;
-        book = event.state.book || null;
-        app = event.state.app || "browser";
+        collection = event.state.collection;
+        book = event.state.book;
+        app = event.state.app;
       }
 
       // call loadCollectionAndBook with skipOnNavigate = true

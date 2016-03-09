@@ -19,6 +19,7 @@ interface RootProps {
 
 interface EditorProps {
   book: string;
+  bookUrl?: string;
   bookData?: BookData;
   csrfToken: string;
   store: Redux.Store;
@@ -29,4 +30,5 @@ interface ButtonFormProps {
   link: string;
   label: string;
   csrfToken: string;
+  refresh: () => void;
 }

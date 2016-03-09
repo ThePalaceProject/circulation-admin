@@ -7,6 +7,8 @@ import ButtonForm from "./ButtonForm";
 
 class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
+    let refresh = () => this.props.setBook(this.props.bookUrl);
+    console.log(this.props.bookUrl);
     return (
       <div>
         <h1>Editor</h1>
@@ -14,10 +16,18 @@ class Editor extends React.Component<EditorProps, any> {
           (<div>
             <h2>Editing {this.props.bookData.title}</h2>
             { this.props.bookData.hideLink &&
-              <ButtonForm label={"Hide"} link={this.props.bookData.hideLink.href} csrfToken={this.props.csrfToken} />
+              <ButtonForm
+                label={"Hide"}
+                link={this.props.bookData.hideLink.href}
+                csrfToken={this.props.csrfToken}
+                refresh={refresh} />
             }
             { this.props.bookData.restoreLink &&
-              <ButtonForm label={"Restore"} link={this.props.bookData.restoreLink.href} csrfToken={this.props.csrfToken} />
+              <ButtonForm
+                label={"Restore"}
+                link={this.props.bookData.restoreLink.href}
+                csrfToken={this.props.csrfToken}
+                refresh={refresh} />
             }
           </div>)
         }
@@ -34,7 +44,10 @@ class Editor extends React.Component<EditorProps, any> {
 }
 
 function mapStateToProps(state) {
-  return { bookData: state.book.data };
+  return {
+    bookUrl: state.book.url,
+    bookData: state.book.data
+  };
 }
 
 function mapDispatchToProps(dispatch) {

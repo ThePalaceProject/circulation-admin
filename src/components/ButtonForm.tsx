@@ -24,7 +24,7 @@ export default class ButtonForm extends React.Component<ButtonFormProps, any> {
       if (response.status !== 200) {
         alert(label + " failed");
       } else {
-        window.location.reload();
+        this.props.refresh();
       }
     });
   }
