@@ -29,11 +29,11 @@ export default class Root extends React.Component<RootProps, any> {
     return (
       <div>
         { this.state.app === "browser" &&
-            <OPDSBrowser
-              ref={c => this.browser = c}
-              collection={this.state.collection}
-              book={this.state.book}
-              onNavigate={browserOnNavigate} />
+          <OPDSBrowser
+            ref={c => this.browser = c}
+            collection={this.state.collection}
+            book={this.state.book}
+            onNavigate={browserOnNavigate} />
         }
 
         { this.state.app === "editor" &&
