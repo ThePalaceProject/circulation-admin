@@ -6,10 +6,8 @@ import editorAdapter from "../editorAdapter";
 import SuppressForm from "./SuppressForm";
 import UnsuppressForm from "./UnsuppressForm";
 
-class Editor extends React.Component<any, any> {
+class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
-    console.log(this.props.bookData);
-
     return (
       <div>
         <h1>Editor</h1>

@@ -15,7 +15,7 @@ export default class ActionCreator {
   fetchBook(url: string) {
     return (function(dispatch) {
       return new Promise((resolve, reject) => {
-        this.fetcher.fetchOPDSData(url).then((data: any) => {
+        this.fetcher.fetchOPDSData(url).then((data: BookData) => {
           dispatch(this.fetchBookSuccess());
           dispatch(this.loadBook(data, url));
           resolve(data);
@@ -39,7 +39,7 @@ export default class ActionCreator {
     return { type: this.FETCH_BOOK_FAILURE, message };
   }
 
-  loadBook(data: any, url: string) {
+  loadBook(data: BookData, url: string) {
     return { type: this.LOAD_BOOK, data, url };
   }
 
