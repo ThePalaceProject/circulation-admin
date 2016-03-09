@@ -12,16 +12,11 @@ describe("SuppressForm", () => {
 
   beforeEach(() => {
     suppressForm = TestUtils.renderIntoDocument(
-      <SuppressForm book={{title: "title"}} link={"link"} csrfToken={"token"} />
+      <SuppressForm link={"link"} csrfToken={"token"} />
     );
     fetchMock = jest.genMockFunction();
     fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {}));
     fetch = fetchMock;
-  });
-
-  it("shows title", () => {
-    let form = TestUtils.findRenderedDOMComponentWithTag(suppressForm, "form");
-    expect(form.textContent).toContain("title");
   });
 
   it("hits suppress link", () => {
