@@ -9,7 +9,7 @@ interface BookData {
   restoreLink: LinkData;
 }
 
-interface RootProps {
+interface RootProps extends __React.Props<any> {
   csrfToken: string;
   collection: string;
   book: string;
@@ -17,7 +17,7 @@ interface RootProps {
   onNavigate: (app: string, collection: string, book: string) => void;
 }
 
-interface EditorProps {
+interface EditorProps extends __React.Props<any> {
   book: string;
   bookUrl?: string;
   bookData?: BookData;
@@ -30,5 +30,5 @@ interface ButtonFormProps {
   link: string;
   label: string;
   csrfToken: string;
-  refresh: () => void;
+  refresh: any;
 }

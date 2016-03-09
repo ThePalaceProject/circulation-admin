@@ -9,13 +9,17 @@ import ButtonForm from "../ButtonForm";
 describe("ButtonForm", () => {
   let buttonForm;
   let fetchMock;
+  let refreshMock;
 
   beforeEach(() => {
+    refreshMock = jest.genMockFunction();
     buttonForm = TestUtils.renderIntoDocument(
-      <ButtonForm label={"label"} link={"link"} csrfToken={"token"} />
+      <ButtonForm label={"label"} link={"link"} csrfToken={"token"} refresh={refreshMock} />
     );
     fetchMock = jest.genMockFunction();
-    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {}));
+    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+      resolve({ status: 200 });
+    }));
     fetch = fetchMock;
   });
 
@@ -24,11 +28,17 @@ describe("ButtonForm", () => {
     expect(button.getAttribute("value")).toEqual("label");
   });
 
-  it("hits suppress link", () => {
+  it("hits provided link", () => {
     let button = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "input");
     TestUtils.Simulate.click(button);
     expect(fetchMock.mock.calls.length).toBe(1);
     expect(fetchMock.mock.calls[0][0]).toBe("link");
     expect(fetchMock.mock.calls[0][1].method).toBe("POST");
   });
+
+  it("refreshes", () => {
+    let button = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "input");
+    TestUtils.Simulate.click(button);
+    expect(refreshMock.mock.calls.length).toBe(1);
+  })
 });
