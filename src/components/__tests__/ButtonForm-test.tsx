@@ -1,26 +1,31 @@
-jest.dontMock("../SuppressForm");
+jest.dontMock("../ButtonForm");
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
 
-import SuppressForm from "../SuppressForm";
+import ButtonForm from "../ButtonForm";
 
-describe("SuppressForm", () => {
-  let suppressForm;
+describe("ButtonForm", () => {
+  let buttonForm;
   let fetchMock;
 
   beforeEach(() => {
-    suppressForm = TestUtils.renderIntoDocument(
-      <SuppressForm link={"link"} csrfToken={"token"} />
+    buttonForm = TestUtils.renderIntoDocument(
+      <ButtonForm label={"label"} link={"link"} csrfToken={"token"} />
     );
     fetchMock = jest.genMockFunction();
     fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {}));
     fetch = fetchMock;
   });
 
+  it("shows label", () => {
+    let button = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "input");
+    expect(button.getAttribute("value")).toEqual("label");
+  });
+
   it("hits suppress link", () => {
-    let button = TestUtils.findRenderedDOMComponentWithTag(suppressForm, "input");
+    let button = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "input");
     TestUtils.Simulate.click(button);
     expect(fetchMock.mock.calls.length).toBe(1);
     expect(fetchMock.mock.calls[0][0]).toBe("link");

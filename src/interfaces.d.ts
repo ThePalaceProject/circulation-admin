@@ -25,7 +25,8 @@ interface EditorProps {
   setBook?: (url: string) => void;
 }
 
-interface SuppressFormProps {
+interface ButtonFormProps {
   link: string;
+  label: string;
   csrfToken: string;
 }

@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import DataFetcher from "opds-browser/lib/DataFetcher";
 import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
-import SuppressForm from "./SuppressForm";
-import UnsuppressForm from "./UnsuppressForm";
+import ButtonForm from "./ButtonForm";
 
 class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
@@ -15,10 +14,10 @@ class Editor extends React.Component<EditorProps, any> {
           (<div>
             <h2>Editing {this.props.bookData.title}</h2>
             { this.props.bookData.suppressLink &&
-              <SuppressForm link={this.props.bookData.suppressLink.href} csrfToken={this.props.csrfToken} />
+              <ButtonForm label={"Suppress"} link={this.props.bookData.suppressLink.href} csrfToken={this.props.csrfToken} />
             }
             { this.props.bookData.unsuppressLink &&
-              <UnsuppressForm link={this.props.bookData.unsuppressLink.href} csrfToken={this.props.csrfToken} />
+              <ButtonForm label={"Unsuppress"} link={this.props.bookData.unsuppressLink.href} csrfToken={this.props.csrfToken} />
             }
           </div>)
         }
