@@ -23,9 +23,9 @@ export default class Root extends React.Component<RootProps, any> {
   render(): JSX.Element {
     let that = this;
     let browserOnNavigate = function(collectionUrl, bookUrl) {
+      that.setState({ collection: collectionUrl, book: bookUrl });
       return that.state.onNavigate("browser", collectionUrl, bookUrl);
     };
-
     return (
       <div>
         { this.state.app === "browser" &&
