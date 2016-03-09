@@ -1,16 +1,16 @@
 export default function adapter(data: any): any {
-  let suppressLink = data.links.find(link => {
-    return link.rel === "http://librarysimplified.org/terms/rel/suppress";
+  let hideLink = data.links.find(link => {
+    return link.rel === "http://librarysimplified.org/terms/rel/hide";
   });
 
-  let unsuppressLink = data.links.find(link => {
-    return link.rel === "http://librarysimplified.org/terms/rel/unsuppress";
+  let restoreLink = data.links.find(link => {
+    return link.rel === "http://librarysimplified.org/terms/rel/restore";
   });
 
 
   return {
     title: data.title,
-    suppressLink: suppressLink,
-    unsuppressLink: unsuppressLink
+    hideLink: hideLink,
+    restoreLink: restoreLink
   };
 }

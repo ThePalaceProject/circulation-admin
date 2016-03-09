@@ -5,8 +5,8 @@ interface LinkData {
 
 interface BookData {
   title: string;
-  suppressLink: LinkData;
-  unsuppressLink: LinkData;
+  hideLink: LinkData;
+  restoreLink: LinkData;
 }
 
 interface RootProps {

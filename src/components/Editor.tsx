@@ -13,11 +13,11 @@ class Editor extends React.Component<EditorProps, any> {
         { this.props.bookData &&
           (<div>
             <h2>Editing {this.props.bookData.title}</h2>
-            { this.props.bookData.suppressLink &&
-              <ButtonForm label={"Suppress"} link={this.props.bookData.suppressLink.href} csrfToken={this.props.csrfToken} />
+            { this.props.bookData.hideLink &&
+              <ButtonForm label={"Hide"} link={this.props.bookData.hideLink.href} csrfToken={this.props.csrfToken} />
             }
-            { this.props.bookData.unsuppressLink &&
-              <ButtonForm label={"Unsuppress"} link={this.props.bookData.unsuppressLink.href} csrfToken={this.props.csrfToken} />
+            { this.props.bookData.restoreLink &&
+              <ButtonForm label={"Restore"} link={this.props.bookData.restoreLink.href} csrfToken={this.props.csrfToken} />
             }
           </div>)
         }
@@ -27,7 +27,7 @@ class Editor extends React.Component<EditorProps, any> {
 
   componentWillMount() {
     if (this.props.book) {
-      let bookUrl = this.props.book.replace("works", "admin/works") + "/details";
+      let bookUrl = this.props.book.replace("works", "admin/works");
       this.props.setBook(bookUrl);
     }
   }
