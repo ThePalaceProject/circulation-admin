@@ -8,8 +8,8 @@ var config = {
     ]
   },
   output: {
-    path: "./lib",
-    filename: "index.js",
+    path: "./dist",
+    filename: "circulation-web.js",
     library: "CirculationWeb",
     libraryTarget: "umd"
   },
