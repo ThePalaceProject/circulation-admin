@@ -9,12 +9,18 @@ interface BookData {
   restoreLink?: LinkData;
 }
 
+interface BookLink {
+  text: string;
+  url: (book: BookData) => string;
+}
+
 interface RootProps extends __React.Props<any> {
   csrfToken: string;
   collection: string;
   book: string;
-  app: string;
-  onNavigate: (app: string, collection: string, book: string) => void;
+  tab?: string;
+  onNavigate: (collection: string, book: string, tab?: string) => void;
+  bookLinks?: BookLink[];
 }
 
 interface EditorProps extends __React.Props<any> {
@@ -31,4 +37,11 @@ interface ButtonFormProps {
   label: string;
   csrfToken: string;
   refresh: any;
+}
+
+interface BookDetailsContainerProps {
+  editorStore: Redux.Store;
+  csrfToken: string;
+  onNavigate?: (collectionUrl: string, bookUrl: string, tab?: string) => void;
+  tab?: string;
 }
