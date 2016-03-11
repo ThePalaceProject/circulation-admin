@@ -1,19 +1,19 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Web Front-end for Library Simplified Circulation Manager",
   "repository": {
     "type": "git",
     "url": "https://github.com/NYPL-Simplified/circulation-web.git"
   },
-  "main": "lib/index.js",
+  "main": "dist/circulation-web.js",
   "author": "NYPL",
   "license": "Apache-2.0",
   "scripts": {
-    "prepublish": "typings install",
+    "prepublish": "typings install && npm run prod",
     "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc && jest",
-    "dev": "rm -rf lib && NODE_ENV=development webpack --watch --progress --display-modules --config webpack.prod.config",
-    "prod": "rm -rf lib && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
+    "dev": "rm -rf dist && NODE_ENV=development webpack --watch --progress --display-modules --config webpack.prod.config",
+    "prod": "rm -rf dist && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
   "dependencies": {
     "bootstrap": "^3.3.6",
