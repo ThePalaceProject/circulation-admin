@@ -1,11 +1,10 @@
 import * as React from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
-require("bootstrap/dist/css/bootstrap.css");
 
-export default function createBookDetailsContainer(containerProps: BookDetailsContainerProps) {
+export default function createBookDetailsContainer(containerProps: BookDetailsContainerFactoryProps) {
 
-  class BookDetailsContainer extends React.Component<any, any> {
+  class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {
     constructor(props) {
       super(props);
       this.state = { tab: containerProps.tab || "details" };
@@ -21,7 +20,7 @@ export default function createBookDetailsContainer(containerProps: BookDetailsCo
       };
 
       return (
-        <div style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
+        <div className="bookDetailsContainer" style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
           <Tabs activeKey={this.state.tab} animation={false} onSelect={this.handleSelect.bind(this)}>
             <Tab eventKey={"details"} title="Details">
               <div style={{ paddingTop: "2em" }}>
@@ -42,10 +41,12 @@ export default function createBookDetailsContainer(containerProps: BookDetailsCo
     }
 
     handleSelect(tab) {
-      this.setState({ tab });
+      if (this.state.tab !== tab) {
+        this.setState({ tab });
 
-      if (containerProps.onNavigate) {
-        containerProps.onNavigate(this.props.collection, this.props.book.url, tab);
+        if (containerProps.onNavigate) {
+          containerProps.onNavigate(this.props.collection, this.props.book.url, tab);
+        }
       }
     }
 

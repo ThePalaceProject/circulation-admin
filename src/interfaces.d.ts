@@ -39,7 +39,14 @@ interface ButtonFormProps {
   refresh: any;
 }
 
-interface BookDetailsContainerProps {
+interface BookDetailsContainerProps extends __React.Props<any> {
+  book: {
+    url: string;
+  };
+  collection: string;
+}
+
+interface BookDetailsContainerFactoryProps {
   editorStore: Redux.Store;
   csrfToken: string;
   onNavigate?: (collectionUrl: string, bookUrl: string, tab?: string) => void;
