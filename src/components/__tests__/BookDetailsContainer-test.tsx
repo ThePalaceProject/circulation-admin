@@ -1,24 +1,23 @@
 jest.dontMock("../BookDetailsContainer");
 jest.dontMock("../Editor");
-jest.dontMock("../../editor-reducers");
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
-import { createStore, applyMiddleware } from "redux";
-let thunk: any = require("redux-thunk");
-import editorReducers from "../../editor-reducers";
+import { createStore } from "redux";
 
 import createBookDetailsContainer from "../BookDetailsContainer";
 import Editor from "../Editor";
 
-
 describe("createBookDetailsContainer", () => {
   it("creates a BookDetailsContainer", () => {
-    let store = createStore(
-      editorReducers,
-      applyMiddleware(thunk)
-    );
+    let initialState = {
+      url: null,
+      data: null,
+      isFetching: false,
+      error: null
+    };
+    let store = createStore((state = { book: initialState }, action) => state);
     let BookDetailsContainer = createBookDetailsContainer({
       editorStore: store,
       csrfToken: "token",
@@ -37,13 +36,17 @@ describe("BookDetailsContainer", () => {
   let BookDetailsContainer;
   let onNavigate;
   let container;
+  let initialState;
   let store;
 
   beforeEach(() => {
-    store = createStore(
-      editorReducers,
-      applyMiddleware(thunk)
-    );
+    initialState = {
+      url: null,
+      data: null,
+      isFetching: false,
+      error: null
+    };
+    store = createStore((state = { book: initialState }, action) => state);
     onNavigate = jest.genMockFunction();
     BookDetailsContainer = createBookDetailsContainer({
       editorStore: store,
