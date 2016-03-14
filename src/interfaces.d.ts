@@ -46,7 +46,7 @@ interface BookDetailsContainerProps extends __React.Props<any> {
   collection: string;
 }
 
-interface BookDetailsContainerFactoryProps {
+interface BookDetailsContainerConfig {
   editorStore: Redux.Store;
   csrfToken: string;
   onNavigate?: (collectionUrl: string, bookUrl: string, tab?: string) => void;

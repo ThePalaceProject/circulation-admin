@@ -34,15 +34,13 @@ export default class Root extends React.Component<RootProps, any> {
 
   render(): JSX.Element {
     return (
-      <div>
-        <OPDSBrowser
-          ref={c => this.browser = c}
-          collection={this.state.collection}
-          book={this.state.book}
-          onNavigate={this.browserOnNavigate}
-          bookLinks={this.state.bookLinks}
-          BookDetailsContainer={this.bookDetailsContainer} />
-      </div>
+      <OPDSBrowser
+        ref={c => this.browser = c}
+        collection={this.state.collection}
+        book={this.state.book}
+        onNavigate={this.browserOnNavigate}
+        bookLinks={this.state.bookLinks}
+        BookDetailsContainer={this.bookDetailsContainer} />
     );
   }
 

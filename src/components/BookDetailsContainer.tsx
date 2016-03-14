@@ -2,12 +2,12 @@ import * as React from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
 
-export default function createBookDetailsContainer(containerProps: BookDetailsContainerFactoryProps) {
+export default function createBookDetailsContainer(config: BookDetailsContainerConfig) {
 
   class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {
     constructor(props) {
       super(props);
-      this.state = { tab: containerProps.tab || "details" };
+      this.state = { tab: config.tab || "details" };
     }
 
     render(): JSX.Element {
@@ -30,8 +30,8 @@ export default function createBookDetailsContainer(containerProps: BookDetailsCo
             <Tab eventKey={"edit"} title="Edit">
               <div style={{ paddingTop: "2em" }}>
                 <Editor
-                  store={containerProps.editorStore}
-                  csrfToken={containerProps.csrfToken}
+                  store={config.editorStore}
+                  csrfToken={config.csrfToken}
                   book={this.props.book.url} />
               </div>
             </Tab>
@@ -44,8 +44,8 @@ export default function createBookDetailsContainer(containerProps: BookDetailsCo
       if (this.state.tab !== tab) {
         this.setState({ tab });
 
-        if (containerProps.onNavigate) {
-          containerProps.onNavigate(this.props.collection, this.props.book.url, tab);
+        if (config.onNavigate) {
+          config.onNavigate(this.props.collection, this.props.book.url, tab);
         }
       }
     }
