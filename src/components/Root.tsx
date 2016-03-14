@@ -49,6 +49,9 @@ export default class Root extends React.Component<RootProps, any> {
   }
 
   setTab(tab: string): void {
-    this.browser.getBookDetailsContainer().setTab(tab);
+    let container = this.browser.getBookDetailsContainer();
+    if (container) {
+      container.setTab(tab);
+    }
   }
 }

@@ -50,7 +50,7 @@ class CirculationWeb {
       if (event.state) {
         collection = event.state.collection;
         book = event.state.book;
-        tab = event.state.tab;
+        tab = event.state.tab || "details";
       }
 
       // call loadCollectionAndBook with skipOnNavigate = true
@@ -65,7 +65,7 @@ class CirculationWeb {
 
     let startCollection = getParam("collection") || config.homeUrl;
     let startBook = getParam("book");
-    let startTab = getParam("tab") || "details";
+    let startTab = getParam("tab");
 
     ReactDOM.render(
       <Root
