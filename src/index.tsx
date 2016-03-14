@@ -9,6 +9,7 @@ require("bootstrap/dist/css/bootstrap.css");
 class CirculationWeb {
 
   constructor(config) {
+    let web;
     let div = document.createElement("div");
     div.id = "opds-browser";
     document.getElementsByTagName("body")[0].appendChild(div);
@@ -31,11 +32,11 @@ class CirculationWeb {
       }, []).join("&");
     };
 
-    function historyArgs(app, collectionUrl, bookUrl) {
+    function historyArgs(collectionUrl, bookUrl, tab) {
       let params = {
         collection: collectionUrl,
         book: bookUrl,
-        app: app
+        tab: tab
       };
 
       return [params, "", serializeParams(params)];
@@ -44,42 +45,41 @@ class CirculationWeb {
     window.onpopstate = (event) => {
       let collection = null,
           book = null,
-          app = null;
+          tab = null;
 
       if (event.state) {
         collection = event.state.collection;
         book = event.state.book;
-        app = event.state.app;
+        tab = event.state.tab || "details";
       }
 
       // call loadCollectionAndBook with skipOnNavigate = true
       // so that state isn't pushed every time it's popped
-      web.setApp(app);
+      web.setTab(tab);
       web.setCollectionAndBook(collection, book);
     };
 
-    function pushHistory(app, collectionUrl, bookUrl) {
-      window.history.pushState.apply(window.history, historyArgs(app, collectionUrl, bookUrl));
+    function pushHistory(collectionUrl, bookUrl, tab) {
+      window.history.pushState.apply(window.history, historyArgs(collectionUrl, bookUrl, tab));
     };
 
     let startCollection = getParam("collection") || config.homeUrl;
     let startBook = getParam("book");
-    let startApp = getParam("app") || "browser";
+    let startTab = getParam("tab");
 
-    let web;
     ReactDOM.render(
       <Root
         ref={c => web = c}
         csrfToken={config.csrfToken}
         collection={startCollection}
         book={startBook}
-        app={startApp}
+        tab={startTab}
         onNavigate={pushHistory} />,
       document.getElementById("opds-browser")
     );
 
-    if (startApp || startCollection || startBook) {
-      window.history.replaceState.apply(window.history, historyArgs(startApp, startCollection, startBook));
+    if (startCollection || startBook || startTab) {
+      window.history.replaceState.apply(window.history, historyArgs(startCollection, startBook, startTab));
     }
   }
 }

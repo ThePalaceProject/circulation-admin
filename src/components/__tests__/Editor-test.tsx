@@ -7,7 +7,6 @@ import * as TestUtils from "react-addons-test-utils";
 import ConnectedEditor, { Editor } from "../Editor";
 import ButtonForm from "../ButtonForm";
 
-
 describe("Editor", () => {
   it("loads admin book url", () => {
     let permalink = "works/1234";
