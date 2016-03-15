@@ -7,6 +7,7 @@ interface BookData {
   title: string;
   hideLink?: LinkData;
   restoreLink?: LinkData;
+  refreshLink?: LinkData;
 }
 
 interface BookLink {

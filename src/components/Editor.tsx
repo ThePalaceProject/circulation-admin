@@ -29,6 +29,13 @@ export class Editor extends React.Component<EditorProps, any> {
                 csrfToken={this.props.csrfToken}
                 refresh={refresh} />
             }
+            { this.props.bookData.refreshLink &&
+              <ButtonForm
+                label={"Refresh"}
+                link={this.props.bookData.refreshLink.href}
+                csrfToken={this.props.csrfToken}
+                refresh={refresh} />
+            }
           </div>)
         }
       </div>

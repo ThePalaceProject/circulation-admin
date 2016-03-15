@@ -57,4 +57,18 @@ describe("Editor", () => {
     expect(buttonForm.props.link).toEqual("href");
     expect(buttonForm.props.label).toEqual("Restore");
   });
+
+  it("shows button form for refresh link", () => {
+    let setBook = jest.genMockFunction();
+    let refreshLink = {
+      href: "href", rel: "http://librarysimplified/terms/rel/refresh"
+    };
+    let editor = TestUtils.renderIntoDocument(
+      <Editor bookData={{ title: "title", refreshLink: refreshLink }} book="url" csrfToken={"token"} setBook={setBook} />
+    );
+
+    let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
+    expect(buttonForm.props.link).toEqual("href");
+    expect(buttonForm.props.label).toEqual("Refresh");
+  });
 });
