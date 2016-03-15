@@ -7,6 +7,7 @@ interface BookData {
   title: string;
   hideLink?: LinkData;
   restoreLink?: LinkData;
+  editLink?: LinkData;
 }
 
 interface BookLink {
@@ -30,11 +31,22 @@ interface EditorProps extends __React.Props<any> {
   csrfToken: string;
   store?: Redux.Store;
   setBook?: (url: string) => void;
+  refreshBook?: () => Promise<any>;
 }
 
 interface ButtonFormProps {
   link: string;
   label: string;
+  csrfToken: string;
+  refresh: any;
+}
+
+interface EditableInputProps extends __React.Props<any> {
+  label: string;
+  value: string;
+}
+
+interface EditFormProps extends BookData {
   csrfToken: string;
   refresh: any;
 }
@@ -51,4 +63,5 @@ interface BookDetailsContainerConfig {
   csrfToken: string;
   onNavigate?: (collectionUrl: string, bookUrl: string, tab?: string) => void;
   tab?: string;
+  refreshBook?: () => Promise<any>;
 }

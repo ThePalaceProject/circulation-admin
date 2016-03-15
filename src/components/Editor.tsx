@@ -4,10 +4,14 @@ import DataFetcher from "opds-browser/lib/DataFetcher";
 import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
+import EditForm from "./EditForm";
 
 export class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
-    let refresh = () => this.props.setBook(this.props.bookUrl);
+    let refresh = () => {
+      this.props.setBook(this.props.bookUrl);
+      this.props.refreshBook();
+    };
 
     return (
       <div>
@@ -26,6 +30,12 @@ export class Editor extends React.Component<EditorProps, any> {
               <ButtonForm
                 label={"Restore"}
                 link={this.props.bookData.restoreLink.href}
+                csrfToken={this.props.csrfToken}
+                refresh={refresh} />
+            }
+            { this.props.bookData.editLink &&
+              <EditForm
+                {...this.props.bookData}
                 csrfToken={this.props.csrfToken}
                 refresh={refresh} />
             }
