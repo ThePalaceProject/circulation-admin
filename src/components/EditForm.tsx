@@ -33,7 +33,7 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
 export default class EditForm extends React.Component<EditFormProps, any> {
   render(): JSX.Element {
     return (
-      <form>
+      <form onSubmit={this.save.bind(this)}>
         <EditableInput ref="title" label="Title" value={this.props.title} />
          <div style={{ float: "left" }}>
           <ButtonInput value="Save" onClick={this.save.bind(this)}/>
@@ -43,6 +43,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
   }
 
   save(event) {
+    event.preventDefault();
     let formData = new FormData();
     formData.append("csrf_token", this.props.csrfToken);
     formData.append("title", (this.refs as any).title.refs.input.getValue());

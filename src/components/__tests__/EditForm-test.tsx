@@ -93,6 +93,20 @@ describe("EditForm", () => {
     expect(fetchMock.mock.calls[0][1].method).toBe("POST");
   });
 
+  it("saves on form submit", () => {
+    let refresh = jest.genMockFunction();
+    let editForm = TestUtils.renderIntoDocument(
+      <EditForm {...bookData} csrfToken={""} refresh={refresh} />
+    );
+
+    let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
+    TestUtils.Simulate.submit(form);
+
+    expect(fetchMock.mock.calls.length).toBe(1);
+    expect(fetchMock.mock.calls[0][0]).toBe("href");
+    expect(fetchMock.mock.calls[0][1].method).toBe("POST");
+  });
+
   it("refreshes book after editing", (done) => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm {...bookData} refresh={done} csrfToken={""} />
