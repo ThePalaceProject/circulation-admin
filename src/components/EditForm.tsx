@@ -36,7 +36,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
       <form onSubmit={this.save.bind(this)}>
         <EditableInput ref="title" label="Title" value={this.props.title} />
          <div style={{ float: "left" }}>
-          <ButtonInput value="Save" onClick={this.save.bind(this)}/>
+          <ButtonInput type="submit" value="Save"/>
         </div>
       </form>
     );

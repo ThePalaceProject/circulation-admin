@@ -78,22 +78,7 @@ describe("EditForm", () => {
     expect(input.props.value).toBe("title");
   });
 
-  it("posts to edit link", () => {
-    let refresh = jest.genMockFunction();
-    let editForm = TestUtils.renderIntoDocument(
-      <EditForm {...bookData} csrfToken={""} refresh={refresh} />
-    );
-
-    let save = TestUtils.findRenderedComponentWithType(editForm, ButtonInput);
-    let saveInput = TestUtils.findRenderedDOMComponentWithTag(save, "input");
-    TestUtils.Simulate.click(saveInput);
-
-    expect(fetchMock.mock.calls.length).toBe(1);
-    expect(fetchMock.mock.calls[0][0]).toBe("href");
-    expect(fetchMock.mock.calls[0][1].method).toBe("POST");
-  });
-
-  it("saves on form submit", () => {
+  it("posts to edit link on submit", () => {
     let refresh = jest.genMockFunction();
     let editForm = TestUtils.renderIntoDocument(
       <EditForm {...bookData} csrfToken={""} refresh={refresh} />
@@ -111,8 +96,7 @@ describe("EditForm", () => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm {...bookData} refresh={done} csrfToken={""} />
     );
-    let save = TestUtils.findRenderedComponentWithType(editForm, ButtonInput);
-    let saveInput = TestUtils.findRenderedDOMComponentWithTag(save, "input");
-    TestUtils.Simulate.click(saveInput);
+    let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
+    TestUtils.Simulate.submit(form);
   });
 });
