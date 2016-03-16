@@ -56,7 +56,8 @@ export default class EditForm extends React.Component<EditFormProps, any> {
          <div style={{ float: "left" }}>
           <ButtonInput
             disabled={this.props.disabled}
-            type="submit" value="Save"
+            type="submit"
+            value="Save"
             />
         </div>
       </form>

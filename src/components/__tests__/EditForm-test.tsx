@@ -13,10 +13,10 @@ describe("EditableInput", () => {
   beforeEach(() => {
     editableInput = TestUtils.renderIntoDocument(
       <EditableInput
-        label={"label"}
-        name={"name"}
+        label="label"
+        name="name"
         disabled={false}
-        value={"initial value"}
+        value="initial value"
         />
     );
   });
@@ -36,19 +36,19 @@ describe("EditableInput", () => {
     let elem = document.createElement("div");
     let editableInput = ReactDOM.render(
       <EditableInput
-        label={"label"}
-        name={"name"}
+        label="label"
+        name="name"
         disabled={false}
-        value={"initial value"}
+        value="initial value"
         />,
       elem
     );
     ReactDOM.render(
       <EditableInput
-        label={"label"}
-        name={"name"}
+        label="label"
+        name="name"
         disabled={false}
-        value={"new value"}
+        value="new value"
         />,
       elem
     );
@@ -67,10 +67,10 @@ describe("EditableInput", () => {
   it("disables", () => {
     editableInput = TestUtils.renderIntoDocument(
       <EditableInput
-        label={"label"}
-        name={"name"}
+        label="label"
+        name="name"
         disabled={true}
-        value={"initial value"}
+        value="initial value"
         />
     );
     let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
@@ -100,7 +100,7 @@ describe("EditForm", () => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm
         {...bookData}
-        csrfToken={""}
+        csrfToken=""
         disabled={false}
         refresh={jest.genMockFunction()}
         dispatchEdit={jest.genMockFunction()}
@@ -115,7 +115,7 @@ describe("EditForm", () => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm
         {...bookData}
-        csrfToken={""}
+        csrfToken=""
         disabled={false}
         refresh={jest.genMockFunction()}
         dispatchEdit={jest.genMockFunction()}
@@ -134,7 +134,7 @@ describe("EditForm", () => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm
         {...bookData}
-        csrfToken={""}
+        csrfToken=""
         disabled={false}
         refresh={done}
         dispatchEdit={jest.genMockFunction()}
@@ -149,7 +149,7 @@ describe("EditForm", () => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm
         {...bookData}
-        csrfToken={""}
+        csrfToken=""
         disabled={true}
         refresh={jest.genMockFunction()}
         dispatchEdit={jest.genMockFunction()}

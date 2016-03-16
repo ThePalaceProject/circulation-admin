@@ -31,7 +31,7 @@ export class Editor extends React.Component<EditorProps, any> {
             { this.props.bookData.hideLink &&
               <ButtonForm
                 disabled={this.props.isFetching}
-                label={"Hide"}
+                label="Hide"
                 link={this.props.bookData.hideLink.href}
                 csrfToken={this.props.csrfToken}
                 dispatchEdit={this.props.dispatchEdit}
@@ -40,7 +40,7 @@ export class Editor extends React.Component<EditorProps, any> {
             { this.props.bookData.restoreLink &&
               <ButtonForm
                 disabled={this.props.isFetching}
-                label={"Restore"}
+                label="Restore"
                 link={this.props.bookData.restoreLink.href}
                 csrfToken={this.props.csrfToken}
                 dispatchEdit={this.props.dispatchEdit}
@@ -49,7 +49,7 @@ export class Editor extends React.Component<EditorProps, any> {
             { this.props.bookData.refreshLink &&
               <ButtonForm
                 disabled={this.props.isFetching}
-                label={"Refresh Metadata"}
+                label="Refresh Metadata"
                 link={this.props.bookData.refreshLink.href}
                 csrfToken={this.props.csrfToken}
                 dispatchEdit={this.props.dispatchEdit}
