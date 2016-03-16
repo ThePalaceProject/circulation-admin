@@ -69,6 +69,6 @@ describe("Editor", () => {
 
     let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
     expect(buttonForm.props.link).toEqual("href");
-    expect(buttonForm.props.label).toEqual("Refresh");
+    expect(buttonForm.props.label).toEqual("Refresh Metadata");
   });
 });
