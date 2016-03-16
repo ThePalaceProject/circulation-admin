@@ -18,6 +18,7 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "opds-browser": "^0.0.6",
+    "qs": "^6.1.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
     "react-dom": "^0.14.7",

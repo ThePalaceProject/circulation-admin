@@ -3,6 +3,7 @@ import * as ReactDOM from "react-dom";
 import Root from "./components/Root";
 const OPDSBrowser = require("opds-browser");
 import Editor from "./components/Editor";
+import * as qs from "qs";
 
 require("bootstrap/dist/css/bootstrap.css");
 
@@ -24,12 +25,7 @@ class CirculationWeb {
         return "";
       }
 
-      return "?" + Object.keys(params).reduce((keys, key) => {
-        if (params[key]) {
-          keys.push(key + "=" + encodeURIComponent(params[key]));
-        }
-        return keys;
-      }, []).join("&");
+      return "?" + qs.stringify(params, { skipNulls: true });
     };
 
     function historyArgs(collectionUrl, bookUrl, tab) {
@@ -74,7 +70,7 @@ class CirculationWeb {
         collection={startCollection}
         book={startBook}
         tab={startTab}
-        onNavigate={pushHistory} />,
+        onNavigate={pushHistory}/>,
       document.getElementById("opds-browser")
     );
 

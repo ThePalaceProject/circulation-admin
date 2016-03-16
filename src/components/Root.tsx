@@ -6,6 +6,8 @@ let thunk: any = require("redux-thunk");
 import Editor from "./Editor";
 import editorReducers from "../editor-reducers";
 import createBookDetailsContainer from "./BookDetailsContainer";
+import Header from "./Header";
+import * as qs from "qs";
 
 export default class Root extends React.Component<RootProps, any> {
   browser: any;
@@ -33,14 +35,24 @@ export default class Root extends React.Component<RootProps, any> {
   }
 
   render(): JSX.Element {
+    let pathFor = (collection, book) => {
+      if (collection || book) {
+        return "?" + qs.stringify({ collection, book }, { skipNulls:  true });
+      } else {
+        return null;
+      }
+    };
+
     return (
       <OPDSBrowser
         ref={c => this.browser = c}
         collection={this.state.collection}
         book={this.state.book}
+        pathFor={pathFor}
         onNavigate={this.browserOnNavigate}
         bookLinks={this.state.bookLinks}
-        BookDetailsContainer={this.bookDetailsContainer} />
+        BookDetailsContainer={this.bookDetailsContainer}
+        Header={Header}/>
     );
   }
 
