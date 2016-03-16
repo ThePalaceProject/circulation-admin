@@ -12,7 +12,12 @@ describe("EditableInput", () => {
 
   beforeEach(() => {
     editableInput = TestUtils.renderIntoDocument(
-      <EditableInput label={"label"} value={"initial value"} />
+      <EditableInput
+        label={"label"}
+        name={"name"}
+        disabled={false}
+        value={"initial value"}
+        />
     );
   });
 
@@ -30,11 +35,21 @@ describe("EditableInput", () => {
   it("updates state and value when props change", () => {
     let elem = document.createElement("div");
     let editableInput = ReactDOM.render(
-      <EditableInput label={"label"} value={"initial value"} />,
+      <EditableInput
+        label={"label"}
+        name={"name"}
+        disabled={false}
+        value={"initial value"}
+        />,
       elem
     );
     ReactDOM.render(
-      <EditableInput label={"label"} value={"new value"} />,
+      <EditableInput
+        label={"label"}
+        name={"name"}
+        disabled={false}
+        value={"new value"}
+        />,
       elem
     );
     expect(editableInput.state["value"]).toEqual("new value");
@@ -47,6 +62,19 @@ describe("EditableInput", () => {
     input["value"] = "new value";
     TestUtils.Simulate.change(input);
     expect(editableInput.state["value"]).toEqual("new value");
+  });
+
+  it("disables", () => {
+    editableInput = TestUtils.renderIntoDocument(
+      <EditableInput
+        label={"label"}
+        name={"name"}
+        disabled={true}
+        value={"initial value"}
+        />
+    );
+    let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
+    expect(input.hasAttribute("disabled")).toBeTruthy();        
   });
 });
 
@@ -69,9 +97,14 @@ describe("EditForm", () => {
   });
 
   it("shows editable input with title", () => {
-    let refresh = jest.genMockFunction();
     let editForm = TestUtils.renderIntoDocument(
-      <EditForm {...bookData} csrfToken={""} refresh={refresh} />
+      <EditForm
+        {...bookData}
+        csrfToken={""}
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        dispatchEdit={jest.genMockFunction()}
+        />
     );
     let input = TestUtils.findRenderedComponentWithType(editForm, EditableInput);
     expect(input.props.label).toBe("Title");
@@ -79,9 +112,14 @@ describe("EditForm", () => {
   });
 
   it("posts to edit link on submit", () => {
-    let refresh = jest.genMockFunction();
     let editForm = TestUtils.renderIntoDocument(
-      <EditForm {...bookData} csrfToken={""} refresh={refresh} />
+      <EditForm
+        {...bookData}
+        csrfToken={""}
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        dispatchEdit={jest.genMockFunction()}
+        />
     );
 
     let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
@@ -94,9 +132,32 @@ describe("EditForm", () => {
 
   it("refreshes book after editing", (done) => {
     let editForm = TestUtils.renderIntoDocument(
-      <EditForm {...bookData} refresh={done} csrfToken={""} />
+      <EditForm
+        {...bookData}
+        csrfToken={""}
+        disabled={false}
+        refresh={done}
+        dispatchEdit={jest.genMockFunction()}
+        />
     );
+
     let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
     TestUtils.Simulate.submit(form);
+  });
+
+  it("disables all inputs", () => {
+    let editForm = TestUtils.renderIntoDocument(
+      <EditForm
+        {...bookData}
+        csrfToken={""}
+        disabled={true}
+        refresh={jest.genMockFunction()}
+        dispatchEdit={jest.genMockFunction()}
+        />
+    );
+    let inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
+    inputs.forEach((input) => {
+      expect(input.props.disabled).toBeTruthy();
+    });
   });
 });

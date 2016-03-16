@@ -4,18 +4,27 @@ import { ButtonInput } from "react-bootstrap";
 export default class ButtonForm extends React.Component<ButtonFormProps, any> {
   render(): JSX.Element {
     return (
-      <form>
-        <ButtonInput value={this.props.label} onClick={this.click.bind(this)} />
+      <form ref="form" onSubmit={this.submit.bind(this)}>
+        <input
+          type="hidden"
+          name="csrf_token"
+          value={this.props.csrfToken}
+          />
+        <ButtonInput
+          type="submit"
+          disabled={this.props.disabled}
+          value={this.props.label}
+          />
       </form>
     );
   }
 
-  click(event) {
+  submit(event) {
+    event.preventDefault();
+    this.props.dispatchEdit();
     let link = this.props.link;
     let label = this.props.label;
-    let csrfToken = this.props.csrfToken;
-    let formData = new FormData();
-    formData.append("csrf_token", csrfToken);
+    let formData = new FormData(this.refs["form"] as any);
     fetch(link, {
       credentials: "same-origin",
       method: "POST",

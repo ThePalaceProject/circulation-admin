@@ -11,7 +11,15 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
 
   render() {
     return (
-      <Input type="text" label={this.props.label} ref="input" value={this.state.value} onChange={this.handleChange.bind(this)}/>
+      <Input
+        type="text"
+        disabled={this.props.disabled}
+        name={this.props.name}
+        label={this.props.label}
+        ref="input"
+        value={this.state.value}
+        onChange={this.handleChange.bind(this)}
+        />
     );
   }
 
@@ -33,10 +41,23 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
 export default class EditForm extends React.Component<EditFormProps, any> {
   render(): JSX.Element {
     return (
-      <form onSubmit={this.save.bind(this)}>
-        <EditableInput ref="title" label="Title" value={this.props.title} />
+      <form ref="form" onSubmit={this.save.bind(this)}>
+        <input
+          type="hidden"
+          name="csrf_token"
+          value={this.props.csrfToken}
+          />
+        <EditableInput
+          disabled={this.props.disabled}
+          name="title"
+          label="Title"
+          value={this.props.title}
+          />
          <div style={{ float: "left" }}>
-          <ButtonInput type="submit" value="Save"/>
+          <ButtonInput
+            disabled={this.props.disabled}
+            type="submit" value="Save"
+            />
         </div>
       </form>
     );
@@ -44,9 +65,8 @@ export default class EditForm extends React.Component<EditFormProps, any> {
 
   save(event) {
     event.preventDefault();
-    let formData = new FormData();
-    formData.append("csrf_token", this.props.csrfToken);
-    formData.append("title", (this.refs as any).title.refs.input.getValue());
+    this.props.dispatchEdit();
+    let formData = new FormData(this.refs["form"] as any);
     fetch(this.props.editLink.href, {
       credentials: "same-origin",
       method: "POST",

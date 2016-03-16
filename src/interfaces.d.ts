@@ -33,23 +33,31 @@ interface EditorProps extends __React.Props<any> {
   store?: Redux.Store;
   setBook?: (url: string) => void;
   refreshBook?: () => Promise<any>;
+  dispatchEdit?: () => void;
+  isFetching?: boolean;
 }
 
 interface ButtonFormProps {
   link: string;
   label: string;
   csrfToken: string;
-  refresh: any;
+  disabled: boolean;
+  refresh: () => any;
+  dispatchEdit: () => void;
 }
 
 interface EditableInputProps extends __React.Props<any> {
   label: string;
   value: string;
+  name: string;
+  disabled: boolean;
 }
 
 interface EditFormProps extends BookData {
   csrfToken: string;
-  refresh: any;
+  disabled: boolean;
+  refresh: () => any;
+  dispatchEdit: () => void;
 }
 
 interface BookDetailsContainerProps extends __React.Props<any> {

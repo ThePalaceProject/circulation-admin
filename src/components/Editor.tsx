@@ -15,35 +15,52 @@ export class Editor extends React.Component<EditorProps, any> {
 
     return (
       <div>
-        <h1>Editor</h1>
         { this.props.bookData &&
           (<div>
-            <h2>Editing {this.props.bookData.title}</h2>
+            <h2>
+              {this.props.bookData.title}
+            </h2>
+            <div style={{ height: "35px" }}>
+              { this.props.isFetching &&
+                <h4>
+                  Saving changes
+                  <i className="fa fa-spinner fa-spin" style={{ marginLeft: "10px" }}></i>
+                </h4>
+              }
+            </div>
             { this.props.bookData.hideLink &&
               <ButtonForm
+                disabled={this.props.isFetching}
                 label={"Hide"}
                 link={this.props.bookData.hideLink.href}
                 csrfToken={this.props.csrfToken}
+                dispatchEdit={this.props.dispatchEdit}
                 refresh={refresh} />
             }
             { this.props.bookData.restoreLink &&
               <ButtonForm
+                disabled={this.props.isFetching}
                 label={"Restore"}
                 link={this.props.bookData.restoreLink.href}
                 csrfToken={this.props.csrfToken}
+                dispatchEdit={this.props.dispatchEdit}
                 refresh={refresh} />
             }
             { this.props.bookData.refreshLink &&
               <ButtonForm
+                disabled={this.props.isFetching}
                 label={"Refresh Metadata"}
                 link={this.props.bookData.refreshLink.href}
                 csrfToken={this.props.csrfToken}
+                dispatchEdit={this.props.dispatchEdit}
                 refresh={refresh} />
             }
             { this.props.bookData.editLink &&
               <EditForm
                 {...this.props.bookData}
+                disabled={this.props.isFetching}
                 csrfToken={this.props.csrfToken}
+                dispatchEdit={this.props.dispatchEdit}
                 refresh={refresh} />
             }
           </div>)
@@ -63,7 +80,8 @@ export class Editor extends React.Component<EditorProps, any> {
 function mapStateToProps(state, ownProps) {
   return {
     bookUrl: state.book.url,
-    bookData: state.book.data || ownProps.bookData
+    bookData: state.book.data || ownProps.bookData,
+    isFetching: state.book.isFetching
   };
 }
 
@@ -71,6 +89,7 @@ function mapDispatchToProps(dispatch) {
   let fetcher = new DataFetcher(null, editorAdapter);
   let actions = new ActionCreator(fetcher);
   return {
+    dispatchEdit: () => dispatch(actions.editRequest()),
     fetchBook: (url: string) => dispatch(actions.fetchBook(url))
   };
 }
