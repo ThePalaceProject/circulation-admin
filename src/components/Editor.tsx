@@ -23,7 +23,7 @@ export class Editor extends React.Component<EditorProps, any> {
             <div style={{ height: "35px" }}>
               { this.props.isFetching &&
                 <h4>
-                  Saving changes
+                  Updating
                   <i className="fa fa-spinner fa-spin" style={{ marginLeft: "10px" }}></i>
                 </h4>
               }
