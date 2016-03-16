@@ -33,6 +33,13 @@ export class Editor extends React.Component<EditorProps, any> {
                 csrfToken={this.props.csrfToken}
                 refresh={refresh} />
             }
+            { this.props.bookData.refreshLink &&
+              <ButtonForm
+                label={"Refresh Metadata"}
+                link={this.props.bookData.refreshLink.href}
+                csrfToken={this.props.csrfToken}
+                refresh={refresh} />
+            }
             { this.props.bookData.editLink &&
               <EditForm
                 {...this.props.bookData}

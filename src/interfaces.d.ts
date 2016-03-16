@@ -7,6 +7,7 @@ interface BookData {
   title: string;
   hideLink?: LinkData;
   restoreLink?: LinkData;
+  refreshLink?: LinkData;
   editLink?: LinkData;
 }
 
@@ -65,3 +66,4 @@ interface BookDetailsContainerConfig {
   tab?: string;
   refreshBook?: () => Promise<any>;
 }
+
