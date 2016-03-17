@@ -3,6 +3,7 @@ import DataFetcher from "opds-browser/lib/DataFetcher";
 export default class ActionCreator {
   private fetcher: DataFetcher;
 
+  EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   FETCH_BOOK_REQUEST = "FETCH_BOOK_REQUEST";
   FETCH_BOOK_SUCCESS = "FETCH_BOOK_SUCCESS";
   FETCH_BOOK_FAILURE = "FETCH_BOOK_FAILURE";
@@ -25,6 +26,10 @@ export default class ActionCreator {
         });
       });
     }).bind(this);
+  }
+
+  editRequest() {
+    return { type: this.EDIT_BOOK_REQUEST };
   }
 
   fetchBookRequest(url: string) {

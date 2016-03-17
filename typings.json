@@ -4,7 +4,7 @@
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "react-addons-test-utils": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-test-utils.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
-    "react-bootstrap": "github:DefinitelyTyped/DefinitelyTyped/react-bootstrap/react-bootstrap.d.ts#daadce7d43a8977042685c972ce05188e36adde8",
+    "react-bootstrap": "github:NYPL-Simplified/DefinitelyTyped/react-bootstrap/react-bootstrap.d.ts#7d462d047559bc2587224e1ecdc3a043aa3e2626",
     "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "react-redux": "github:DefinitelyTyped/DefinitelyTyped/react-redux/react-redux.d.ts#4169370da25a366a4e44090db92916bc0106b443",
     "redux": "github:DefinitelyTyped/DefinitelyTyped/redux/redux.d.ts#a820bbdead70913f0c750802b367ed54cb99b442",

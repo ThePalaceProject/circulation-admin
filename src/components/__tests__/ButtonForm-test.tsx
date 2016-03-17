@@ -3,6 +3,7 @@ jest.dontMock("../ButtonForm");
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
+import { ButtonInput } from "react-bootstrap";
 
 import ButtonForm from "../ButtonForm";
 
@@ -12,7 +13,14 @@ describe("ButtonForm", () => {
 
   beforeEach(() => {
     buttonForm = TestUtils.renderIntoDocument(
-      <ButtonForm label={"label"} link={"link"} csrfToken={"token"} refresh={jest.genMockFunction()} />
+      <ButtonForm
+        label="label"
+        link="link"
+        csrfToken="token"
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        dispatchEdit={jest.genMockFunction()}
+        />
     );
     fetchMock = jest.genMockFunction();
     fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
@@ -22,28 +30,49 @@ describe("ButtonForm", () => {
   });
 
   it("shows label", () => {
-    let button = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "input");
+    let buttonComponent = TestUtils.findRenderedComponentWithType(buttonForm, ButtonInput);
+    let button = TestUtils.findRenderedDOMComponentWithTag(buttonComponent, "input");
     expect(button.getAttribute("value")).toEqual("label");
   });
 
   it("hits provided link", () => {
-    let button = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "input");
-    TestUtils.Simulate.click(button);
+    let form = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "form");
+    TestUtils.Simulate.submit(form);
     expect(fetchMock.mock.calls.length).toBe(1);
     expect(fetchMock.mock.calls[0][0]).toBe("link");
     expect(fetchMock.mock.calls[0][1].method).toBe("POST");
   });
 
   it("refreshes", (done) => {
-    let refresh = () => {
-      done();
-    }
-
     buttonForm = TestUtils.renderIntoDocument(
-      <ButtonForm label={"label"} link={"link"} csrfToken={"token"} refresh={refresh} />
+      <ButtonForm
+        label="label"
+        link="link"
+        csrfToken="token" 
+        disabled={false}
+        refresh={done}
+        dispatchEdit={jest.genMockFunction()}
+        />
     );
 
-    let button = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "input");
-    TestUtils.Simulate.click(button);
+    let form = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "form");
+    TestUtils.Simulate.submit(form);
+  });
+
+  it("disables", () => {
+    buttonForm = TestUtils.renderIntoDocument(
+      <ButtonForm
+        label="label"
+        link="link"
+        csrfToken="token" 
+        disabled={true}
+        refresh={jest.genMockFunction()}
+        dispatchEdit={jest.genMockFunction()}
+        />
+    );
+
+    let buttonComponent = TestUtils.findRenderedComponentWithType(buttonForm, ButtonInput);
+    let button = TestUtils.findRenderedDOMComponentWithTag(buttonComponent, "input");
+    expect(button.hasAttribute("disabled")).toBeTruthy();
   });
 });

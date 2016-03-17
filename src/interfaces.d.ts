@@ -8,6 +8,7 @@ interface BookData {
   hideLink?: LinkData;
   restoreLink?: LinkData;
   refreshLink?: LinkData;
+  editLink?: LinkData;
 }
 
 interface BookLink {
@@ -31,13 +32,32 @@ interface EditorProps extends __React.Props<any> {
   csrfToken: string;
   store?: Redux.Store;
   setBook?: (url: string) => void;
+  refreshBook?: () => Promise<any>;
+  dispatchEdit?: () => void;
+  isFetching?: boolean;
 }
 
 interface ButtonFormProps {
   link: string;
   label: string;
   csrfToken: string;
-  refresh: any;
+  disabled: boolean;
+  refresh: () => any;
+  dispatchEdit: () => void;
+}
+
+interface EditableInputProps extends __React.Props<any> {
+  label: string;
+  value: string;
+  name: string;
+  disabled: boolean;
+}
+
+interface EditFormProps extends BookData {
+  csrfToken: string;
+  disabled: boolean;
+  refresh: () => any;
+  dispatchEdit: () => void;
 }
 
 interface BookDetailsContainerProps extends __React.Props<any> {
@@ -52,4 +72,6 @@ interface BookDetailsContainerConfig {
   csrfToken: string;
   onNavigate?: (collectionUrl: string, bookUrl: string, tab?: string) => void;
   tab?: string;
+  refreshBook?: () => Promise<any>;
 }
+

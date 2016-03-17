@@ -13,10 +13,15 @@ export default function adapter(data: OPDSEntry): BookData {
     return link.rel === "http://librarysimplified.org/terms/rel/refresh";
   });
 
+  let editLink = data.links.find(link => {
+    return link.rel === "edit";
+  });
+
   return {
     title: data.title,
     hideLink: hideLink,
     restoreLink: restoreLink,
-    refreshLink: refreshLink
+    refreshLink: refreshLink,
+    editLink: editLink
   };
 }

@@ -5,6 +5,7 @@ const OPDSBrowser = require("opds-browser");
 import Editor from "./components/Editor";
 
 require("bootstrap/dist/css/bootstrap.css");
+require("font-awesome/css/font-awesome.min.css");
 
 class CirculationWeb {
 
