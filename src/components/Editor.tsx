@@ -11,7 +11,6 @@ export class Editor extends React.Component<EditorProps, any> {
 
     return (
       <div>
-        <h1>Editor</h1>
         { this.props.bookData &&
           (<div>
             <h2>Editing {this.props.bookData.title}</h2>

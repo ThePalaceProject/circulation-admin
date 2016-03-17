@@ -52,7 +52,7 @@ export default class Root extends React.Component<RootProps, any> {
         onNavigate={this.browserOnNavigate}
         bookLinks={this.state.bookLinks}
         BookDetailsContainer={this.bookDetailsContainer}
-        Header={Header}/>
+        header={Header}/>
     );
   }
 
