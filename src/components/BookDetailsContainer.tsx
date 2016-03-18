@@ -32,7 +32,8 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
                 <Editor
                   store={config.editorStore}
                   csrfToken={config.csrfToken}
-                  book={this.props.book.url} />
+                  book={this.props.book.url}
+                  refreshBook={config.refreshBook} />
               </div>
             </Tab>
           </Tabs>

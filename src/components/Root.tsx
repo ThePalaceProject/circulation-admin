@@ -30,7 +30,8 @@ export default class Root extends React.Component<RootProps, any> {
       ),
       csrfToken: this.props.csrfToken,
       onNavigate: this.props.onNavigate,
-      tab: this.props.tab
+      tab: this.props.tab,
+      refreshBook: this.refreshBook.bind(this)
     });
   }
 
@@ -58,6 +59,10 @@ export default class Root extends React.Component<RootProps, any> {
 
   setCollectionAndBook(collection: string, book: string): void {
     this.setState({ collection, book });
+  }
+
+  refreshBook(): Promise<any> {
+    return this.browser.refreshBook();
   }
 
   setTab(tab: string): void {

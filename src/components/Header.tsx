@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-const logo = require("../images/nypl-logo-transparent.png");
+import * as fs from "fs";
+import logo from "../images/nypl-logo-transparent";
 
 export default class Header extends React.Component<any, any> {
   render(): JSX.Element {

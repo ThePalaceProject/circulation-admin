@@ -6,6 +6,7 @@ import Editor from "./components/Editor";
 import * as qs from "qs";
 
 require("bootstrap/dist/css/bootstrap.css");
+require("font-awesome/css/font-awesome.min.css");
 
 class CirculationWeb {
 
