@@ -2,6 +2,7 @@
   "ambientDependencies": {
     "core-js": "github:DefinitelyTyped/DefinitelyTyped/core-js/core-js.d.ts#c777572e8532c4d358306fe4c0e17a533f940b04",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
+    "qs": "github:DefinitelyTyped/DefinitelyTyped/qs/qs.d.ts#7de6c3dd94feaeb21f20054b9f30d5dabc5efabd",
     "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "react-addons-test-utils": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-test-utils.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "react-bootstrap": "github:NYPL-Simplified/DefinitelyTyped/react-bootstrap/react-bootstrap.d.ts#7d462d047559bc2587224e1ecdc3a043aa3e2626",
