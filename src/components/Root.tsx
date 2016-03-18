@@ -44,6 +44,12 @@ export default class Root extends React.Component<RootProps, any> {
       }
     };
 
+    let title = document.title || "Circulation Manager";
+    let pageTitleTemplate = (collectionTitle, bookTitle) => {
+      let details = bookTitle || collectionTitle;
+      return title + (details ? " - " + details : "");
+    };
+
     return (
       <OPDSBrowser
         ref={c => this.browser = c}
@@ -53,7 +59,9 @@ export default class Root extends React.Component<RootProps, any> {
         onNavigate={this.browserOnNavigate}
         bookLinks={this.state.bookLinks}
         BookDetailsContainer={this.bookDetailsContainer}
-        header={Header}/>
+        header={Header}
+        pageTitleTemplate={pageTitleTemplate}
+        />
     );
   }
 
