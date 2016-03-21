@@ -59,6 +59,35 @@ describe("ButtonForm", () => {
     TestUtils.Simulate.submit(form);
   });
 
+  it("dispatches error after failure", (done) => {
+    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+      resolve({
+        status: 500,
+        url: "",
+        text: () => {
+          return new Promise<any>((resolve, reject) => {
+            resolve("response");
+          });
+        }
+      });
+    }));
+
+    buttonForm = TestUtils.renderIntoDocument(
+      <ButtonForm
+        label="label"
+        link="link"
+        csrfToken="token"
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        dispatchEdit={jest.genMockFunction()}
+        dispatchEditFailure={done}
+        />
+    );
+
+    let form = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "form");
+    TestUtils.Simulate.submit(form);
+  });
+
   it("disables", () => {
     buttonForm = TestUtils.renderIntoDocument(
       <ButtonForm

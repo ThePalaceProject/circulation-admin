@@ -5,6 +5,7 @@ import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
 import EditForm from "./EditForm";
+import ErrorMessage from "./ErrorMessage";
 
 export class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
@@ -15,7 +16,7 @@ export class Editor extends React.Component<EditorProps, any> {
 
     return (
       <div>
-        { this.props.bookData &&
+        { this.props.bookData && !this.props.fetchError &&
           (<div>
             <h2>
               {this.props.bookData.title}
@@ -28,6 +29,9 @@ export class Editor extends React.Component<EditorProps, any> {
                 </h4>
               }
             </div>
+            { this.props.editError &&
+              <ErrorMessage error={this.props.editError} />
+            }
             { this.props.bookData.hideLink &&
               <ButtonForm
                 disabled={this.props.isFetching}
@@ -35,6 +39,7 @@ export class Editor extends React.Component<EditorProps, any> {
                 link={this.props.bookData.hideLink.href}
                 csrfToken={this.props.csrfToken}
                 dispatchEdit={this.props.dispatchEdit}
+                dispatchEditFailure={this.props.dispatchEditFailure}
                 refresh={refresh} />
             }
             { this.props.bookData.restoreLink &&
@@ -44,6 +49,7 @@ export class Editor extends React.Component<EditorProps, any> {
                 link={this.props.bookData.restoreLink.href}
                 csrfToken={this.props.csrfToken}
                 dispatchEdit={this.props.dispatchEdit}
+                dispatchEditFailure={this.props.dispatchEditFailure}
                 refresh={refresh} />
             }
             { this.props.bookData.refreshLink &&
@@ -53,6 +59,7 @@ export class Editor extends React.Component<EditorProps, any> {
                 link={this.props.bookData.refreshLink.href}
                 csrfToken={this.props.csrfToken}
                 dispatchEdit={this.props.dispatchEdit}
+                dispatchEditFailure={this.props.dispatchEditFailure}
                 refresh={refresh} />
             }
             { this.props.bookData.editLink &&
@@ -61,9 +68,13 @@ export class Editor extends React.Component<EditorProps, any> {
                 disabled={this.props.isFetching}
                 csrfToken={this.props.csrfToken}
                 dispatchEdit={this.props.dispatchEdit}
+                dispatchEditFailure={this.props.dispatchEditFailure}
                 refresh={refresh} />
             }
           </div>)
+        }
+        { this.props.fetchError &&
+          <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
         }
       </div>
     );
@@ -81,7 +92,9 @@ function mapStateToProps(state, ownProps) {
   return {
     bookUrl: state.book.url,
     bookData: state.book.data || ownProps.bookData,
-    isFetching: state.book.isFetching
+    isFetching: state.book.isFetching,
+    fetchError: state.book.fetchError,
+    editError: state.book.editError
   };
 }
 
@@ -90,6 +103,7 @@ function mapDispatchToProps(dispatch) {
   let actions = new ActionCreator(fetcher);
   return {
     dispatchEdit: () => dispatch(actions.editRequest()),
+    dispatchEditFailure: (error) => dispatch(actions.editFailure(error)),
     fetchBook: (url: string) => dispatch(actions.fetchBook(url))
   };
 }
