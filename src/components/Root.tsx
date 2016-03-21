@@ -4,7 +4,7 @@ const OPDSBrowser = require("opds-browser");
 import { createStore, applyMiddleware } from "redux";
 let thunk: any = require("redux-thunk");
 import Editor from "./Editor";
-import editorReducers from "../editor-reducers";
+import reducers from "../reducers/index";
 import createBookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
 import * as qs from "qs";
@@ -25,12 +25,12 @@ export default class Root extends React.Component<RootProps, any> {
     };
     this.bookDetailsContainer = createBookDetailsContainer({
       editorStore: createStore(
-        editorReducers,
+        reducers,
         applyMiddleware(thunk)
       ),
       csrfToken: this.props.csrfToken,
       onNavigate: this.props.onNavigate,
-      tab: this.props.tab,
+      tab: this.props.tab || "details",
       refreshBook: this.refreshBook.bind(this)
     });
   }

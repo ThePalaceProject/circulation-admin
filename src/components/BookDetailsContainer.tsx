@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
+import Complaints from "./Complaints";
 
 export default function createBookDetailsContainer(config: BookDetailsContainerConfig) {
 
@@ -19,6 +20,9 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
         right: "25px"
       };
 
+      let showComplaintCount = typeof this.state.complaintCount !== "undefined";
+      let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.state.complaintCount + ")" : "");
+
       return (
         <div className="bookDetailsContainer" style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
           <Tabs activeKey={this.state.tab} animation={false} onSelect={this.handleSelect.bind(this)}>
@@ -28,15 +32,18 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
               </div>
             </Tab>
             <Tab eventKey={"edit"} title="Edit">
-              <div style={{ paddingTop: "1em" }}>
-                <Editor
-                  store={config.editorStore}
-                  csrfToken={config.csrfToken}
-                  book={this.props.book.url}
-                  refreshBook={config.refreshBook} />
-              </div>
+              <Editor
+                store={config.editorStore}
+                csrfToken={config.csrfToken}
+                book={this.props.book.url}
+                refreshBook={config.refreshBook} />
             </Tab>
-            <Tab eventKey={"complaints"} title="Complaints">
+            <Tab eventKey={"complaints"} title={complaintsTitle}>
+              <Complaints
+                store={config.editorStore}
+                book={this.props.book}
+                handleComplaintsUpdate={this.handleComplaintsUpdate.bind(this)}
+                />
             </Tab>
           </Tabs>
         </div>
@@ -55,6 +62,12 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
 
     setTab(tab) {
       this.setState({ tab });
+    }
+
+    handleComplaintsUpdate(complaints) {
+      let complaintCount = Object.keys(complaints).length;
+      console.log(complaintCount);
+      this.setState({ complaintCount });
     }
   }
 

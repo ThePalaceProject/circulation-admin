@@ -91,3 +91,16 @@ interface BookDetailsContainerConfig {
   refreshBook?: () => Promise<any>;
 }
 
+interface ComplaintsProps extends __React.Props<any> {
+  book: {
+    url: string;
+  };
+  handleComplaintsUpdate: (complaints: any) => void;
+  bookUrl?: string;
+  bookData?: BookData;
+  complaints?: any;
+  fetchError?: ErrorData;
+  store?: Redux.Store;
+  fetchComplaints?: (url: string) => Promise<any>;
+  isFetching?: boolean;
+}

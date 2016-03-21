@@ -1,0 +1,34 @@
+const initialState = {
+  url: null,
+  data: null,
+  isFetching: false,
+  fetchError: null
+};
+
+export default (state = initialState, action) => {
+  switch (action.type) {
+    case "FETCH_COMPLAINTS_REQUEST":
+      return Object.assign({}, state, {
+        url: action.url,
+        isFetching: true,
+        fetchError: null
+      });
+
+    case "FETCH_COMPLAINTS_FAILURE":
+      return Object.assign({}, state, {
+        fetchError: action.error,
+        isFetching: false
+      });
+
+    case "LOAD_COMPLAINTS":
+      return Object.assign({}, state, {
+        url: action.url,
+        data: action.data,
+        isFetching: false,
+        fetchError: null
+      });
+
+    default:
+      return state;
+  }
+};
