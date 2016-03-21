@@ -39,7 +39,7 @@ interface EditorProps extends __React.Props<any> {
   editError?: ErrorData;
   csrfToken: string;
   store?: Redux.Store;
-  setBook?: (url: string) => void;
+  fetchBook?: (url: string) => void;
   refreshBook?: () => Promise<any>;
   dispatchEdit?: () => void;
   dispatchEditFailure?: (error) => void;

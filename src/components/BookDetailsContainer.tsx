@@ -66,7 +66,6 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
 
     handleComplaintsUpdate(complaints) {
       let complaintCount = Object.keys(complaints).length;
-      console.log(complaintCount);
       this.setState({ complaintCount });
     }
   }

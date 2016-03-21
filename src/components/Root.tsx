@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSBrowser = require("opds-browser");
 import { createStore, applyMiddleware } from "redux";
-let thunk: any = require("redux-thunk");
+import * as thunk from "redux-thunk";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
 import createBookDetailsContainer from "./BookDetailsContainer";

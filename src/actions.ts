@@ -20,7 +20,7 @@ export default class ActionCreator {
   }
 
   fetchBook(url: string) {
-    return (function(dispatch) {
+    return (dispatch => {
       return new Promise((resolve, reject) => {
         dispatch(this.fetchBookRequest(url));
         this.fetcher.fetchOPDSData(url).then((data: BookData) => {
@@ -60,22 +60,25 @@ export default class ActionCreator {
   }
 
   fetchComplaints(url: string) {
-    return (function(dispatch) {
+    return (dispatch => {
       return new Promise((resolve, reject) => {
         dispatch(this.fetchComplaintsRequest(url));
         this.fetcher.fetch(url, { credentials: "same-origin" }).then(response => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             response.json().then(data => {
               dispatch(this.fetchComplaintsSuccess());
               dispatch(this.loadComplaints(data.complaints));
               resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchComplaintsFailure(err));
+              reject(err);
             });
           } else {
             let err = {
               status: response.status,
               response: response,
               url: url
-            }
+            };
             dispatch(this.fetchComplaintsFailure(err));
             reject(err);
           }
