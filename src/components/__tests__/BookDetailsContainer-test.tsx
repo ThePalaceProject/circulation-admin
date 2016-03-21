@@ -1,5 +1,4 @@
-jest.dontMock("../BookDetailsContainer");
-jest.dontMock("../Editor");
+jest.autoMockOff();
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -15,7 +14,8 @@ describe("createBookDetailsContainer", () => {
       url: null,
       data: null,
       isFetching: false,
-      error: null
+      fetchError: null,
+      editError: null
     };
     let store = createStore((state = { book: initialState }, action) => state);
     let BookDetailsContainer = createBookDetailsContainer({
@@ -44,7 +44,8 @@ describe("BookDetailsContainer", () => {
       url: null,
       data: null,
       isFetching: false,
-      error: null
+      fetchError: null,
+      editError: null
     };
     store = createStore((state = { book: initialState }, action) => state);
     onNavigate = jest.genMockFunction();

@@ -74,7 +74,13 @@ export default class EditForm extends React.Component<EditFormProps, any> {
       body: formData
     }).then((response) => {
       if (response.status !== 200) {
-        alert("edit failed");
+        response.text().then((responseText) => {
+          this.props.dispatchEditFailure({
+            status: response.status,
+            url: response.url,
+            response: responseText
+          });
+        });
       } else {
         this.props.refresh();
       }
