@@ -28,13 +28,15 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
               </div>
             </Tab>
             <Tab eventKey={"edit"} title="Edit">
-              <div style={{ paddingTop: "2em" }}>
+              <div style={{ paddingTop: "1em" }}>
                 <Editor
                   store={config.editorStore}
                   csrfToken={config.csrfToken}
                   book={this.props.book.url}
                   refreshBook={config.refreshBook} />
               </div>
+            </Tab>
+            <Tab eventKey={"complaints"} title="Complaints">
             </Tab>
           </Tabs>
         </div>
