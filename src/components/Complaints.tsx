@@ -37,15 +37,15 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             </thead>
             <tbody>
               { Object.keys(this.props.complaints).map(type =>
-                <tr key={type}>
-                  <td>{this.readableComplaintType(type)}</td>
-                  <td>{this.props.complaints[type]}</td>
+                <tr key={type} className="complaint">
+                  <td className="complaintType">{this.readableComplaintType(type)}</td>
+                  <td className="complaintCount">{this.props.complaints[type]}</td>
                 </tr>
               ) }
             </tbody>
           </table>
         }
-        { this.props.book && this.props.fetchError &&
+        { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
         }
       </div>
@@ -75,7 +75,6 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
 
 function mapStateToProps(state, ownProps) {
   return {
-    bookUrl: ownProps.book.url,
     bookData: state.book.data,
     complaints: state.complaints.data,
     isFetching: state.complaints.isFetching,

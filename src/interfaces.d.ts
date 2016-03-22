@@ -101,7 +101,6 @@ interface ComplaintsData {
 interface ComplaintsProps extends __React.Props<any> {
   book: string;
   handleComplaintsUpdate: (complaints: any) => void;
-  bookUrl?: string;
   bookData?: BookData;
   complaints?: any;
   fetchError?: ErrorData;
