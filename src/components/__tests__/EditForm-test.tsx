@@ -145,6 +145,34 @@ describe("EditForm", () => {
     TestUtils.Simulate.submit(form);
   });
 
+  it("dispatches error after edit failure", (done) => {
+    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+      resolve({
+        status: 500,
+        url: "",
+        text: () => {
+          return new Promise<any>((resolve, reject) => {
+            resolve("response");
+          });
+        }
+      });
+    }));
+
+    let editForm = TestUtils.renderIntoDocument(
+      <EditForm
+        {...bookData}
+        csrfToken=""
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        dispatchEdit={jest.genMockFunction()}
+        dispatchEditFailure={done}
+        />
+    );
+
+    let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
+    TestUtils.Simulate.submit(form);
+  });
+
   it("disables all inputs", () => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm

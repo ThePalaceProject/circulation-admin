@@ -25,15 +25,24 @@ interface RootProps extends __React.Props<any> {
   bookLinks?: BookLink[];
 }
 
+interface ErrorData {
+  status: number;
+  url: string;
+  response: string;
+}
+
 interface EditorProps extends __React.Props<any> {
   book: string;
   bookUrl?: string;
   bookData?: BookData;
+  fetchError?: ErrorData;
+  editError?: ErrorData;
   csrfToken: string;
   store?: Redux.Store;
   setBook?: (url: string) => void;
   refreshBook?: () => Promise<any>;
   dispatchEdit?: () => void;
+  dispatchEditFailure?: (error) => void;
   isFetching?: boolean;
 }
 
@@ -44,6 +53,7 @@ interface ButtonFormProps {
   disabled: boolean;
   refresh: () => any;
   dispatchEdit: () => void;
+  dispatchEditFailure?: (error) => void;
 }
 
 interface EditableInputProps extends __React.Props<any> {
@@ -58,6 +68,12 @@ interface EditFormProps extends BookData {
   disabled: boolean;
   refresh: () => any;
   dispatchEdit: () => void;
+  dispatchEditFailure?: (error) => void;
+}
+
+interface ErrorMessageProps {
+  error: ErrorData;
+  tryAgain?: () => any;
 }
 
 interface BookDetailsContainerProps extends __React.Props<any> {
