@@ -22,10 +22,8 @@ export default (state = initialState, action) => {
 
     case "LOAD_COMPLAINTS":
       return Object.assign({}, state, {
-        url: action.url,
         data: action.data,
-        isFetching: false,
-        fetchError: null
+        isFetching: false
       });
 
     default:
