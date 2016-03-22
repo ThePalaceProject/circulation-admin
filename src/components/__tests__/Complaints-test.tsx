@@ -84,17 +84,22 @@ describe("Complaints", () => {
   });
 
   it("shows fetch error", () => {
+    let fetchComplaints = jest.genMockFunction();
     let fetchError = { status: 401, response: "test", url: "test url" };
     let complaints = TestUtils.renderIntoDocument<Complaints>(
       <Complaints
         book="book url"
         fetchError={fetchError}
-        fetchComplaints={jest.genMockFunction()}
+        fetchComplaints={fetchComplaints}
         handleComplaintsUpdate={jest.genMockFunction()}
         />
     );
 
     let error = TestUtils.findRenderedComponentWithType(complaints, ErrorMessage);
     expect(error.props.error).toEqual(fetchError);
+
+    error.props.tryAgain();
+    expect(fetchComplaints.mock.calls.length).toBe(2);
+    expect(fetchComplaints.mock.calls[1][0]).toBe(complaints.complaintsUrl());
   });
 });
