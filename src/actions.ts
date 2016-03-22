@@ -1,7 +1,5 @@
-import DataFetcher from "opds-browser/lib/DataFetcher";
-
 export default class ActionCreator {
-  private fetcher: DataFetcher;
+  private fetcher: Fetcher;
 
   EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   EDIT_BOOK_FAILURE = "EDIT_BOOK_FAILURE";
@@ -15,7 +13,7 @@ export default class ActionCreator {
   FETCH_COMPLAINTS_FAILURE = "FETCH_COMPLAINTS_FAILURE";
   LOAD_COMPLAINTS = "LOAD_COMPLAINTS";
 
-  constructor(fetcher: DataFetcher) {
+  constructor(fetcher: Fetcher) {
     this.fetcher = fetcher;
   }
 
@@ -65,7 +63,7 @@ export default class ActionCreator {
         dispatch(this.fetchComplaintsRequest(url));
         this.fetcher.fetch(url, { credentials: "same-origin" }).then(response => {
           if (response.status === 200) {
-            response.json().then(data => {
+            response.json().then((data: ComplaintsData) => {
               dispatch(this.fetchComplaintsSuccess());
               dispatch(this.loadComplaints(data.complaints));
               resolve(data);
@@ -99,7 +97,7 @@ export default class ActionCreator {
   }
 
   fetchComplaintsFailure(error?: any) {
-    return { type: this.FETCH_BOOK_FAILURE, error };
+    return { type: this.FETCH_COMPLAINTS_FAILURE, error };
   }
 
   loadComplaints(data) {

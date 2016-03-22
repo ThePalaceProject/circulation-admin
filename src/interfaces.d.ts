@@ -91,6 +91,13 @@ interface BookDetailsContainerConfig {
   refreshBook?: () => Promise<any>;
 }
 
+interface ComplaintsData {
+  book: {
+    id: string;
+  };
+  complaints: { [key: string]: number };
+}
+
 interface ComplaintsProps extends __React.Props<any> {
   book: string;
   handleComplaintsUpdate: (complaints: any) => void;
@@ -101,4 +108,9 @@ interface ComplaintsProps extends __React.Props<any> {
   store?: Redux.Store;
   fetchComplaints?: (url: string) => Promise<any>;
   isFetching?: boolean;
+}
+
+interface Fetcher {
+  fetch: (url: string, options?: any) => Promise<any>;
+  fetchOPDSData: (url: string) => Promise<any>;
 }
