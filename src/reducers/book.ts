@@ -26,8 +26,7 @@ export default (state = initialState, action) => {
       return Object.assign({}, state, {
         url: action.url,
         data: action.data,
-        isFetching: false,
-        fetchError: null
+        isFetching: false
       });
 
     case "FETCH_BOOK_FAILURE":
