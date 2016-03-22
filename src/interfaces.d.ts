@@ -92,9 +92,7 @@ interface BookDetailsContainerConfig {
 }
 
 interface ComplaintsProps extends __React.Props<any> {
-  book: {
-    url: string;
-  };
+  book: string;
   handleComplaintsUpdate: (complaints: any) => void;
   bookUrl?: string;
   bookData?: BookData;

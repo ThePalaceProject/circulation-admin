@@ -70,17 +70,23 @@ describe("BookDetailsContainer", () => {
     expect(details).toBeTruthy;
   });
 
-  it("shows details and edit tabs", () => {
+  it("shows details and edit and complaints tabs", () => {
     let links = TestUtils.scryRenderedDOMComponentsWithTag(container, "a");
     let linkTexts = links.map(link => link.textContent);
     expect(linkTexts).toContain("Details");
     expect(linkTexts).toContain("Edit");
+    expect(linkTexts).toContain("Complaints");
   });
 
   it("shows Editor", () => {
     let editor = TestUtils.findRenderedComponentWithType(container, Editor);
     expect(editor.props.csrfToken).toBe("token");
     expect(editor.props.book).toBe("book url");
+  });
+
+  it("shows Complaints", () => {
+    let complaints = TestUtils.findRenderedComponentWithType(container, Complaints);
+    expect(complaints.props.book).toBe("book url");
   });
 
   it("calls onNavigate when tab is clicked", () => {
@@ -90,5 +96,14 @@ describe("BookDetailsContainer", () => {
     expect(onNavigate.mock.calls[0][0]).toBe("collection url");
     expect(onNavigate.mock.calls[0][1]).toBe("book url");
     expect(onNavigate.mock.calls[0][2]).toBe("edit");
+  });
+
+  it("updates complaints count", () => {
+    container.handleComplaintsUpdate({
+      "test-type": 5
+    });
+    let links = TestUtils.scryRenderedDOMComponentsWithTag(container, "a");
+    let linkTexts = links.map(link => link.textContent);
+    expect(linkTexts).toContain("Complaints (5)");
   });
 });

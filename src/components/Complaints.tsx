@@ -65,7 +65,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
   }
 
   complaintsUrl() {
-    return this.props.book.url.replace("works", "admin/works") + "/complaints";
+    return this.props.book.replace("works", "admin/works") + "/complaints";
   }
 
   readableComplaintType(type) {

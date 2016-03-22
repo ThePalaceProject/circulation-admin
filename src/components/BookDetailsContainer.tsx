@@ -41,7 +41,7 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
             <Tab eventKey={"complaints"} title={complaintsTitle}>
               <Complaints
                 store={config.editorStore}
-                book={this.props.book}
+                book={this.props.book.url}
                 handleComplaintsUpdate={this.handleComplaintsUpdate.bind(this)}
                 />
             </Tab>
@@ -65,7 +65,9 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
     }
 
     handleComplaintsUpdate(complaints) {
-      let complaintCount = Object.keys(complaints).length;
+      let complaintCount = Object.keys(complaints).reduce((result, type) => {
+        return result + complaints[type];
+      }, 0);
       this.setState({ complaintCount });
     }
   }
