@@ -64,9 +64,21 @@ describe("BookDetailsContainer", () => {
     );
   });
 
-  it("shows a tab container", () => {
+  it("shows a tab container with initial tab", () => {
     let tabContainer = TestUtils.findRenderedComponentWithType(container, TabContainer);
     expect(tabContainer).toBeTruthy;
+    expect(tabContainer.props.tab).toBe("tab");
+  });
+
+  it("gives an initial tab to TabContainer only once", () => {
+    // mount container a second time
+    container = TestUtils.renderIntoDocument(
+      <BookDetailsContainer book={{ url: "book url" }} collection="collection url">
+        <div className="bookDetails">Moby Dick</div>
+      </BookDetailsContainer>
+    );
+    let tabContainer = TestUtils.findRenderedComponentWithType(container, TabContainer);
+    expect(tabContainer.props.tab).toBe(null);
   });
 
   it("sets a tab", () => {
