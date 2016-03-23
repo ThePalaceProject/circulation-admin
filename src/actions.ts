@@ -1,5 +1,7 @@
+import DataFetcher from "opds-browser/lib/DataFetcher";
+
 export default class ActionCreator {
-  private fetcher: Fetcher;
+  private fetcher: DataFetcher;
 
   EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   EDIT_BOOK_FAILURE = "EDIT_BOOK_FAILURE";
@@ -13,7 +15,7 @@ export default class ActionCreator {
   FETCH_COMPLAINTS_FAILURE = "FETCH_COMPLAINTS_FAILURE";
   LOAD_COMPLAINTS = "LOAD_COMPLAINTS";
 
-  constructor(fetcher: Fetcher) {
+  constructor(fetcher: DataFetcher) {
     this.fetcher = fetcher;
   }
 

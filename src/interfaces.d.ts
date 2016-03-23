@@ -108,8 +108,3 @@ interface ComplaintsProps extends __React.Props<any> {
   fetchComplaints?: (url: string) => Promise<any>;
   isFetching?: boolean;
 }
-
-interface Fetcher {
-  fetch: (url: string, options?: any) => Promise<any>;
-  fetchOPDSData: (url: string) => Promise<any>;
-}

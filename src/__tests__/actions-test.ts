@@ -27,7 +27,7 @@ class MockDataFetcher {
   }
 };
 
-const fetcher = new MockDataFetcher();
+const fetcher = new MockDataFetcher() as any;
 const actions = new ActionCreator(fetcher);
 
 describe("actions", () => {
