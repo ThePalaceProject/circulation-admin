@@ -10,17 +10,33 @@ describe("complaints reducer", () => {
     fetchError: null
   };
 
+  let errorState = {
+    url: "test url",
+    data: null,
+    isFetching: false,
+    fetchError: { status: 401, response: "test error", url: "test url" }
+  };
+
   it("returns initial state for unrecognized action", () => {
     expect(complaints(undefined, {})).toEqual(initState);
   });
 
   it("handles FETCH_COMPLAINTS_REQUEST", () => {
     let action = { type: "FETCH_COMPLAINTS_REQUEST", url: "test url" };
+
+    // start with empty state
     let newState = Object.assign({}, initState, {
       url: "test url",
       isFetching: true
     });
     expect(complaints(initState, action)).toEqual(newState);
+
+    // start with error state
+    newState = Object.assign({}, errorState, {
+      isFetching: true,
+      fetchError: null
+    });
+    expect(complaints(errorState, action)).toEqual(newState);
   });
 
   it("handles FETCH_COMPLAINTS_FAILURE", () => {
