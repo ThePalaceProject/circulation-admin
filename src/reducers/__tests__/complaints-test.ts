@@ -10,13 +10,6 @@ describe("complaints reducer", () => {
     fetchError: null
   };
 
-  let requestedState = {
-    url: "test url",
-    data: null,
-    isFetching: true,
-    fetchError: null
-  };
-
   it("returns initial state for unrecognized action", () => {
     expect(complaints(undefined, {})).toEqual(initState);
   });
