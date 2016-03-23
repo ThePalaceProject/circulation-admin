@@ -1,15 +1,25 @@
 import * as React from "react";
-import { Tabs, Tab } from "react-bootstrap";
-import Editor from "./Editor";
-import Complaints from "./Complaints";
+import TabContainer from "./TabContainer";
 
 export default function createBookDetailsContainer(config: BookDetailsContainerConfig) {
 
-  class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {
-    constructor(props) {
-      super(props);
-      this.state = { tab: config.tab || "details" };
+  // startTab() will return config.tab only once, when
+  // BookDetailsContainer is first mounted.
+  // subsequent calls should return null, so that navigation away from
+  // a book and then back to a book should display the default tab instead
+  // of the tab provided by the initial page load.
+  let startTabCount = 0;
+  let startTab = function() {
+    if (startTabCount === 0) {
+      startTabCount += 1;
+      return config.tab || null;
+    } else {
+      return null;
     }
+  }
+
+  class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {
+    tabContainer: any;
 
     render(): JSX.Element {
       let tabContentStyle = {
@@ -20,55 +30,25 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
         right: "25px"
       };
 
-      let showComplaintCount = typeof this.state.complaintCount !== "undefined";
-      let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.state.complaintCount + ")" : "");
-
       return (
         <div className="bookDetailsContainer" style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
-          <Tabs activeKey={this.state.tab} animation={false} onSelect={this.handleSelect.bind(this)}>
-            <Tab eventKey={"details"} title="Details">
-              <div style={{ paddingTop: "2em" }}>
-                { this.props.children }
-              </div>
-            </Tab>
-            <Tab eventKey={"edit"} title="Edit">
-              <Editor
-                store={config.editorStore}
-                csrfToken={config.csrfToken}
-                book={this.props.book.url}
-                refreshBook={config.refreshBook} />
-            </Tab>
-            <Tab eventKey={"complaints"} title={complaintsTitle}>
-              <Complaints
-                store={config.editorStore}
-                book={this.props.book.url}
-                handleComplaintsUpdate={this.handleComplaintsUpdate.bind(this)}
-                />
-            </Tab>
-          </Tabs>
+          <TabContainer
+            ref={c => this.tabContainer = c}
+            book={this.props.book.url}
+            collection={this.props.collection}
+            tab={startTab()}
+            store={config.editorStore}
+            csrfToken={config.csrfToken}
+            refreshBook={config.refreshBook}
+            onNavigate={config.onNavigate}>
+            { this.props.children }
+          </TabContainer>
         </div>
       );
     }
 
-    handleSelect(tab) {
-      if (this.state.tab !== tab) {
-        this.setState({ tab });
-
-        if (config.onNavigate) {
-          config.onNavigate(this.props.collection, this.props.book.url, tab);
-        }
-      }
-    }
-
     setTab(tab) {
-      this.setState({ tab });
-    }
-
-    handleComplaintsUpdate(complaints) {
-      let complaintCount = Object.keys(complaints).reduce((result, type) => {
-        return result + complaints[type];
-      }, 0);
-      this.setState({ complaintCount });
+      this.tabContainer.getWrappedInstance().setTab(tab);
     }
   }
 

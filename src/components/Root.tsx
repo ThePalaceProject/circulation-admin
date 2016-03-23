@@ -18,6 +18,7 @@ export default class Root extends React.Component<RootProps, any> {
   constructor(props) {
     super(props);
     let that = this;
+
     this.state = props;
     this.browserOnNavigate = function(collectionUrl, bookUrl) {
       that.setState({ collection: collectionUrl, book: bookUrl });
@@ -30,8 +31,8 @@ export default class Root extends React.Component<RootProps, any> {
       ),
       csrfToken: this.props.csrfToken,
       onNavigate: this.props.onNavigate,
-      tab: this.props.tab || "details",
-      refreshBook: this.refreshBook.bind(this)
+      refreshBook: this.refreshBook.bind(this),
+      tab: this.props.tab
     });
   }
 
@@ -63,6 +64,10 @@ export default class Root extends React.Component<RootProps, any> {
         pageTitleTemplate={pageTitleTemplate}
         />
     );
+  }
+
+  componentDidMount() {
+    console.log("circulation root mounted");
   }
 
   setCollectionAndBook(collection: string, book: string): void {

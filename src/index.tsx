@@ -75,6 +75,8 @@ class CirculationWeb {
       document.getElementById("opds-browser")
     );
 
+    console.log("app");
+
     if (startCollection || startBook || startTab) {
       window.history.replaceState.apply(window.history, historyArgs(startCollection, startBook, startTab));
     }

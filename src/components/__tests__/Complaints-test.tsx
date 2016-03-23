@@ -13,7 +13,6 @@ describe("Complaints", () => {
       <Complaints
         book="http://example.com/works/fakeid"
         fetchComplaints={fetchComplaints}
-        handleComplaintsUpdate={jest.genMockFunction()}
         />
     );
 
@@ -23,20 +22,22 @@ describe("Complaints", () => {
 
   describe("rendering", () => {
     let fetchComplaints;
-    let handleComplaintsUpdate;
     let complaintsData;
     let complaints;
 
     beforeEach(() => {
       fetchComplaints = jest.genMockFunction();
-      complaintsData = { "test-type": 5, "other-type": 3, "last-type": 1 };
+      complaintsData = {
+        "http://librarysimplified.org/terms/problem/test-type": 5,
+        "http://librarysimplified.org/terms/problem/other-type": 3,
+        "http://librarysimplified.org/terms/problem/last-type": 1
+      };
       complaints = TestUtils.renderIntoDocument<Complaints>(
         <Complaints
           book="book url"
           bookData={{ title: "test title" }}
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}
-          handleComplaintsUpdate={jest.genMockFunction()}
           />
       );
     });
@@ -52,34 +53,10 @@ describe("Complaints", () => {
       expect(types).toEqual(Object.keys(complaintsData).map(type => complaints.readableComplaintType(type)));
       expect(counts).toEqual(Object.keys(complaintsData).map(key => complaintsData[key]));
     });
-  });
 
-  describe("updating", () => {
-    it("handles complaints update", () => {
-      let element = document.createElement("div");
-      let handleComplaintsUpdate = jest.genMockFunction();
-      let complaintsData = { "test-type": 5, "other-type": 3, "last-type": 1 };
-      let newComplaintsData = { "some-type": 2 };
-      ReactDOM.render(
-        <Complaints
-          book="book url"
-          complaints={complaintsData}
-          fetchComplaints={jest.genMockFunction()}
-          handleComplaintsUpdate={handleComplaintsUpdate}
-          />,
-        element
-      );
-      ReactDOM.render(
-        <Complaints
-          book="book url"
-          complaints={newComplaintsData}
-          handleComplaintsUpdate={handleComplaintsUpdate}
-          />,
-        element
-      );
-
-      expect(handleComplaintsUpdate.mock.calls.length).toBe(1);
-      expect(handleComplaintsUpdate.mock.calls[0][0]).toEqual(newComplaintsData);
+    it("shows simplified complaint types", () => {
+      let types = TestUtils.scryRenderedDOMComponentsWithClass(complaints, "complaintType").map(type => type.textContent);
+      expect(types).toEqual(["test type", "other type", "last type"]);
     });
   });
 
@@ -91,7 +68,6 @@ describe("Complaints", () => {
         book="book url"
         fetchError={fetchError}
         fetchComplaints={fetchComplaints}
-        handleComplaintsUpdate={jest.genMockFunction()}
         />
     );
 

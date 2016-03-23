@@ -91,6 +91,17 @@ interface BookDetailsContainerConfig {
   refreshBook?: () => Promise<any>;
 }
 
+interface TabContainerProps extends __React.Props<any> {
+  book: string;
+  collection: string;
+  store: Redux.Store;
+  csrfToken: string;
+  tab: string;
+  onNavigate: (collectionUrl: string, bookUrl: string, tab?: string) => void;
+  refreshBook: () => Promise<any>;
+  complaintsCount?: number;
+}
+
 interface ComplaintsData {
   book: {
     id: string;
@@ -100,7 +111,6 @@ interface ComplaintsData {
 
 interface ComplaintsProps extends __React.Props<any> {
   book: string;
-  handleComplaintsUpdate: (complaints: ComplaintsData) => void;
   bookData?: BookData;
   complaints?: any;
   fetchError?: ErrorData;

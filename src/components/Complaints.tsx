@@ -58,18 +58,17 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.complaints && nextProps.complaints !== this.props.complaints) {
-      this.props.handleComplaintsUpdate(nextProps.complaints);
-    }
-  }
-
   complaintsUrl() {
     return this.props.book.replace("works", "admin/works") + "/complaints";
   }
 
   readableComplaintType(type) {
-    return type.split("/").pop().replace("-", " ")
+    let match = type.match(/\/terms\/problem\/(.+)$/);
+    if (match) {
+      return match[1].replace("-", " ");
+    } else {
+      return type;
+    }
   }
 }
 
