@@ -66,10 +66,6 @@ export default class Root extends React.Component<RootProps, any> {
     );
   }
 
-  componentDidMount() {
-    console.log("circulation root mounted");
-  }
-
   setCollectionAndBook(collection: string, book: string): void {
     this.setState({ collection, book });
   }
