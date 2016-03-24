@@ -2,15 +2,21 @@ signIn = require("./lib/signIn");
 
 module.exports = {
   "navigate to lane" : function (browser) {
+    var laneSelector = "li:first-child .lane h2 a";
+    var homeTitle;
+
     signIn(browser)
-      .waitForElementVisible("li:first-child .lane h2 a", 1000)
-      .getAttribute("li:first-child .lane h2 a", "href", function(result) {
+      .waitForElementVisible(laneSelector, 1000)
+      .getAttribute(laneSelector, "href", function(result) {
         var laneUrl = result.value;
-        this
-          .click("li:first-child .lane h2 a")
-          .url(function(result) {
-            browser.assert.equal(result.value, laneUrl);
-          });
+        this.getText(laneSelector, function(result) {
+          var laneTitle = result.value;
+          this
+            .click(laneSelector)
+            .waitForElementNotPresent("h1.loading", 2000)
+            .assert.urlEquals(laneUrl)
+            .assert.titleContains(laneTitle);
+        });
       })
       .end();
   }
