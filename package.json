@@ -12,7 +12,7 @@
   "scripts": {
     "prepublish": "typings install && npm run prod",
     "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc && jest",
-    "test-browser": "nightwatch",
+    "test-browser": "nightwatch -e firefox,chrome",
     "dev": "rm -rf dist && NODE_ENV=development webpack --watch --progress --display-modules --config webpack.prod.config",
     "prod": "rm -rf dist && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
@@ -39,6 +39,7 @@
     "json-loader": "^0.5.4",
     "nightwatch": "^0.8.18",
     "opds-feed-parser": "0.0.9",
+    "phantomjs-prebuilt": "^2.1.6",
     "react-addons-test-utils": "^0.14.7",
     "selenium-standalone": "^5.1.0",
     "style-loader": "^0.13.0",

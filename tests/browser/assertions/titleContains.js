@@ -3,7 +3,7 @@
  *
  * ```
  *    this.demoTest = function (client) {
- *      browser.assert.title("Snorkeling");
+ *      browser.assert.titleContains("Snorkeling");
  *    };
  * ```
  *
