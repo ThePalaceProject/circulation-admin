@@ -2,6 +2,7 @@
   "src_folders" : ["tests/browser/"],
   "output_folder" : "tests/browser/reports",
   "custom_assertions_path" : "./tests/browser/assertions",
+  "custom_commands_path" : "./tests/browser/commands",
   "globals_path" : "",
 
   "selenium" : {
@@ -27,10 +28,15 @@
         "path" : "tests/browser/reports"
       },
       "exclude": [
-        "assertions/*.js",
         "lib/*.js",
+        "assertions/*.js",
+        "commands/*.js",
         "signIn.js"
-      ]
+      ],
+      "end_session_on_fail": false,
+      "globals": {
+        "homeUrl": "http://localhost:6500/admin/"
+      }
     },
     "firefox" : {
       "desiredCapabilities": {

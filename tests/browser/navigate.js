@@ -1,10 +1,19 @@
-signIn = require("./lib/signIn");
+var globalBrowser;
 
 module.exports = {
-  "navigate to lane" : function(browser) {
+  before: function(browser, done) {
+    globalBrowser = browser
+      .signIn()
+      .perform(function() {
+        done();
+      });
+  },
+
+  "navigate to lane": function(browser) {
     var laneSelector = "li:first-child .lane h2 a";
 
-    signIn(browser)
+    globalBrowser
+      .goHome()
       .waitForElementVisible(laneSelector, 1000)
       .getAttribute(laneSelector, "href", function(result) {
         var laneUrl = result.value;
@@ -16,13 +25,14 @@ module.exports = {
             .assert.urlEquals(laneUrl)
             .assert.titleContains(laneTitle);
         });
-      })
-      .end();
+      });
   },
+
   "navigate to book in lane": function(browser) {
     var bookSelector = "ul.laneBooks li:first-child a.laneBookLink";
 
-    signIn(browser)
+    globalBrowser
+      .goHome()
       .waitForElementVisible(bookSelector, 1000)
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
@@ -35,7 +45,10 @@ module.exports = {
             .assert.titleContains(bookTitle);
           this.expect.element("h1.bookDetailsTitle").text.to.equal(bookTitle);
         });
-      })
-      .end();
+      });
+  },
+
+  after: function(browser) {
+    globalBrowser.end();
   }
 };
