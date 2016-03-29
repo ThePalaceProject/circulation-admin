@@ -39,7 +39,7 @@ interface EditorProps extends __React.Props<any> {
   editError?: ErrorData;
   csrfToken: string;
   store?: Redux.Store;
-  setBook?: (url: string) => void;
+  fetchBook?: (url: string) => void;
   refreshBook?: () => Promise<any>;
   dispatchEdit?: () => void;
   dispatchEditFailure?: (error) => void;
@@ -91,3 +91,30 @@ interface BookDetailsContainerConfig {
   refreshBook?: () => Promise<any>;
 }
 
+interface TabContainerProps extends __React.Props<any> {
+  book: string;
+  collection: string;
+  store: Redux.Store;
+  csrfToken: string;
+  tab: string;
+  onNavigate: (collectionUrl: string, bookUrl: string, tab?: string) => void;
+  refreshBook: () => Promise<any>;
+  complaintsCount?: number;
+}
+
+interface ComplaintsData {
+  book: {
+    id: string;
+  };
+  complaints: { [key: string]: number };
+}
+
+interface ComplaintsProps extends __React.Props<any> {
+  book: string;
+  bookData?: BookData;
+  complaints?: any;
+  fetchError?: ErrorData;
+  store?: Redux.Store;
+  fetchComplaints?: (url: string) => Promise<any>;
+  isFetching?: boolean;
+}

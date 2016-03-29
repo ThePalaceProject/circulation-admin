@@ -10,12 +10,17 @@ export default class ActionCreator {
   FETCH_BOOK_FAILURE = "FETCH_BOOK_FAILURE";
   LOAD_BOOK = "LOAD_BOOK";
 
+  FETCH_COMPLAINTS_REQUEST = "FETCH_COMPLAINTS_REQUEST";
+  FETCH_COMPLAINTS_SUCCESS = "FETCH_COMPLAINTS_SUCCESS";
+  FETCH_COMPLAINTS_FAILURE = "FETCH_COMPLAINTS_FAILURE";
+  LOAD_COMPLAINTS = "LOAD_COMPLAINTS";
+
   constructor(fetcher: DataFetcher) {
     this.fetcher = fetcher;
   }
 
   fetchBook(url: string) {
-    return (function(dispatch) {
+    return (dispatch => {
       return new Promise((resolve, reject) => {
         dispatch(this.fetchBookRequest(url));
         this.fetcher.fetchOPDSData(url).then((data: BookData) => {
@@ -54,4 +59,50 @@ export default class ActionCreator {
     return { type: this.LOAD_BOOK, data, url };
   }
 
+  fetchComplaints(url: string) {
+    return (dispatch => {
+      return new Promise((resolve, reject) => {
+        dispatch(this.fetchComplaintsRequest(url));
+        this.fetcher.fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: ComplaintsData) => {
+              dispatch(this.fetchComplaintsSuccess());
+              dispatch(this.loadComplaints(data.complaints));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchComplaintsFailure(err));
+              reject(err);
+            });
+          } else {
+            let err = {
+              status: response.status,
+              response: response,
+              url: url
+            };
+            dispatch(this.fetchComplaintsFailure(err));
+            reject(err);
+          }
+        }).catch(err => {
+          dispatch(this.fetchComplaintsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchComplaintsRequest(url: string) {
+    return { type: this.FETCH_COMPLAINTS_REQUEST, url };
+  }
+
+  fetchComplaintsSuccess() {
+    return { type: this.FETCH_COMPLAINTS_SUCCESS };
+  }
+
+  fetchComplaintsFailure(error?: any) {
+    return { type: this.FETCH_COMPLAINTS_FAILURE, error };
+  }
+
+  loadComplaints(data) {
+    return { type: this.LOAD_COMPLAINTS, data };
+  }
 }

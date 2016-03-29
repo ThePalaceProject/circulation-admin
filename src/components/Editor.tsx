@@ -10,7 +10,7 @@ import ErrorMessage from "./ErrorMessage";
 export class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
     let refresh = () => {
-      this.props.setBook(this.props.bookUrl);
+      this.props.fetchBook(this.props.bookUrl);
       this.props.refreshBook();
     };
 
@@ -83,7 +83,7 @@ export class Editor extends React.Component<EditorProps, any> {
   componentWillMount() {
     if (this.props.book) {
       let bookUrl = this.props.book.replace("works", "admin/works");
-      this.props.setBook(bookUrl);
+      this.props.fetchBook(bookUrl);
     }
   }
 }
@@ -108,22 +108,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-function mergeRootProps(stateProps, dispatchProps, componentProps) {
-  let setBook = (book: string) => {
-    return new Promise((resolve, reject) => {
-      dispatchProps.fetchBook(book).then(data => resolve(data));
-    });
-  };
-
-  return Object.assign({}, componentProps, stateProps, dispatchProps, {
-    setBook: setBook
-  });
-}
-
 const ConnectedEditor = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeRootProps
+  mapDispatchToProps
 )(Editor);
 
 export default ConnectedEditor;

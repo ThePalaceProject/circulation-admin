@@ -1,5 +1,3 @@
-import { combineReducers } from "redux";
-
 const initialState = {
   url: null,
   data: null,
@@ -8,7 +6,7 @@ const initialState = {
   editError: null
 };
 
-const book = (state = initialState, action) => {
+export default (state = initialState, action) => {
 
   switch (action.type) {
     case "FETCH_BOOK_REQUEST":
@@ -28,8 +26,7 @@ const book = (state = initialState, action) => {
       return Object.assign({}, state, {
         url: action.url,
         data: action.data,
-        isFetching: false,
-        fetchError: null
+        isFetching: false
       });
 
     case "FETCH_BOOK_FAILURE":
@@ -48,9 +45,3 @@ const book = (state = initialState, action) => {
       return state;
   }
 };
-
-const reducers = combineReducers({
-  book
-});
-
-export default reducers;

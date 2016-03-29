@@ -12,20 +12,20 @@ import ErrorMessage from "../ErrorMessage";
 describe("Editor", () => {
   it("loads admin book url", () => {
     let permalink = "works/1234";
-    let setBook = jest.genMockFunction();
+    let fetchBook = jest.genMockFunction();
 
     let editor = TestUtils.renderIntoDocument(
-      <Editor book={permalink} setBook={setBook} csrfToken={"token"} />
+      <Editor book={permalink} fetchBook={fetchBook} csrfToken={"token"} />
     );
 
-    expect(setBook.mock.calls.length).toBe(1);
-    expect(setBook.mock.calls[0][0]).toBe("admin/works/1234");
+    expect(fetchBook.mock.calls.length).toBe(1);
+    expect(fetchBook.mock.calls[0][0]).toBe("admin/works/1234");
   });
 
   it("shows title", () => {
-    let setBook = jest.genMockFunction();
+    let fetchBook = jest.genMockFunction();
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title" }} book={"url"} csrfToken={"token"} setBook={setBook} />
+      <Editor bookData={{ title: "title" }} book={"url"} csrfToken={"token"} fetchBook={fetchBook} />
     );
 
     let header = TestUtils.findRenderedDOMComponentWithTag(editor, "h2");
@@ -33,12 +33,12 @@ describe("Editor", () => {
   });
 
   it("shows button form for hide link", () => {
-    let setBook = jest.genMockFunction();
+    let fetchBook = jest.genMockFunction();
     let hideLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/hide"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", hideLink: hideLink }} book={"url"} csrfToken={"token"} setBook={setBook} />
+      <Editor bookData={{ title: "title", hideLink: hideLink }} book={"url"} csrfToken={"token"} fetchBook={fetchBook} />
     );
 
     let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
@@ -47,12 +47,12 @@ describe("Editor", () => {
   });
 
   it("shows button form for restore link", () => {
-    let setBook = jest.genMockFunction();
+    let fetchBook = jest.genMockFunction();
     let restoreLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/restore"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", restoreLink: restoreLink }} book={"url"} csrfToken={"token"} setBook={setBook} />
+      <Editor bookData={{ title: "title", restoreLink: restoreLink }} book={"url"} csrfToken={"token"} fetchBook={fetchBook} />
     );
 
     let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
@@ -61,12 +61,12 @@ describe("Editor", () => {
   });
 
   it("shows button form for refresh link", () => {
-    let setBook = jest.genMockFunction();
+    let fetchBook = jest.genMockFunction();
     let refreshLink = {
       href: "href", rel: "http://librarysimplified/terms/rel/refresh"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", refreshLink: refreshLink }} book="url" csrfToken={"token"} setBook={setBook} />
+      <Editor bookData={{ title: "title", refreshLink: refreshLink }} book="url" csrfToken={"token"} fetchBook={fetchBook} />
     );
 
     let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
@@ -75,14 +75,14 @@ describe("Editor", () => {
   });
 
   it("shows fetch error message", () => {
-    let setBook = jest.genMockFunction();
+    let fetchBook = jest.genMockFunction();
     let fetchError = {
       status: 500,
       response: "response",
       url: ""
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title" }} book="url" csrfToken={"token"} fetchError={fetchError} setBook={setBook} />
+      <Editor bookData={{ title: "title" }} book="url" csrfToken={"token"} fetchError={fetchError} fetchBook={fetchBook} />
     );
 
     let editFormComponents = TestUtils.scryRenderedComponentsWithType(editor, EditForm);
@@ -92,7 +92,7 @@ describe("Editor", () => {
   });
 
   it("shows edit error message with form", () => {
-    let setBook = jest.genMockFunction();
+    let fetchBook = jest.genMockFunction();
     let editError = {
       status: 500,
       response: "response",
@@ -102,7 +102,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", editLink: editLink }} book="url" csrfToken={"token"} editError={editError} setBook={setBook} />
+      <Editor bookData={{ title: "title", editLink: editLink }} book="url" csrfToken={"token"} editError={editError} fetchBook={fetchBook} />
     );
 
     let editFormComponents = TestUtils.scryRenderedComponentsWithType(editor, EditForm);
