@@ -90,11 +90,11 @@ export class Editor extends React.Component<EditorProps, any> {
 
 function mapStateToProps(state, ownProps) {
   return {
-    bookUrl: state.book.url,
-    bookData: state.book.data || ownProps.bookData,
-    isFetching: state.book.isFetching,
-    fetchError: state.book.fetchError,
-    editError: state.book.editError
+    bookUrl: state.editor.book.url,
+    bookData: state.editor.book.data || ownProps.bookData,
+    isFetching: state.editor.book.isFetching,
+    fetchError: state.editor.book.fetchError,
+    editError: state.editor.book.editError
   };
 }
 
@@ -104,7 +104,7 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatchEdit: () => dispatch(actions.editRequest()),
     dispatchEditFailure: (error) => dispatch(actions.editFailure(error)),
-    fetchBook: (url: string) => dispatch(actions.fetchBook(url))
+    fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url))
   };
 }
 
