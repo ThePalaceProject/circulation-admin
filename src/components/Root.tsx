@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSBrowser = require("opds-browser");
-import store from "../store";
+import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
 import createBookDetailsContainer from "./BookDetailsContainer";
@@ -11,26 +11,26 @@ import * as qs from "qs";
 export default class Root extends React.Component<RootProps, any> {
   browser: any;
   bookDetailsContainer: any;
-  browserOnNavigate: (collectionUrl: string, bookUrl: string, isTopLevel: boolean) => void;
-  bookContainerOnNavigate: (collectionUrl: string, bookUrl: string, tab: string) => void;
+  browserNavigate: (collectionUrl: string, bookUrl: string, isTopLevel: boolean) => void;
+  bookContainerNavigate: (collectionUrl: string, bookUrl: string, tab: string) => void;
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
 
   constructor(props) {
     super(props);
     let that = this;
 
-    this.browserOnNavigate = (collectionUrl: string, bookUrl: string, isTopLevel: boolean) => {
-      that.props.onNavigate(collectionUrl, bookUrl, that.props.tab, isTopLevel);
+    this.browserNavigate = (collectionUrl: string, bookUrl: string, isTopLevel: boolean) => {
+      that.props.navigate(collectionUrl, bookUrl, that.props.tab, isTopLevel);
     }
 
-    this.bookContainerOnNavigate = (collectionUrl: string, bookUrl: string, tab: string) => {
-      that.props.onNavigate(collectionUrl, bookUrl, tab, false);
+    this.bookContainerNavigate = (collectionUrl: string, bookUrl: string, tab: string) => {
+      that.props.navigate(collectionUrl, bookUrl, tab, false);
     }
 
     this.bookDetailsContainer = createBookDetailsContainer({
-      editorStore: store,
+      editorStore: buildStore(),
       csrfToken: this.props.csrfToken,
-      onNavigate: this.bookContainerOnNavigate,
+      navigate: this.bookContainerNavigate,
       refreshBook: this.refreshBook.bind(this),
       tab: this.props.tab
     });
@@ -58,7 +58,7 @@ export default class Root extends React.Component<RootProps, any> {
         bookUrl={this.props.book}
         isTopLevel={this.props.isTopLevel}
         pathFor={pathFor}
-        onNavigate={this.browserOnNavigate}
+        navigate={this.browserNavigate}
         BookDetailsContainer={this.bookDetailsContainer}
         header={Header}
         pageTitleTemplate={this.pageTitleTemplate}

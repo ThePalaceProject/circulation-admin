@@ -42,8 +42,8 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     if (this.state.tab !== tab) {
       this.setState({ tab });
 
-      if (this.props.onNavigate) {
-        this.props.onNavigate(this.props.collection, this.props.book, tab);
+      if (this.props.navigate) {
+        this.props.navigate(this.props.collection, this.props.book, tab);
       }
     }
   }

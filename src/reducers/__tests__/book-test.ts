@@ -23,8 +23,8 @@ describe("book reducer", () => {
     expect(book(undefined, {})).toEqual(initState);
   });
 
-  it("handles FETCH_BOOK_REQUEST", () => {
-    let action = { type: "FETCH_BOOK_REQUEST", url: "test url" };
+  it("handles FETCH_BOOK_ADMIN_REQUEST", () => {
+    let action = { type: "FETCH_BOOK_ADMIN_REQUEST", url: "test url" };
     let newState = Object.assign({}, initState, {
       url: "test url",
       isFetching: true
@@ -40,8 +40,8 @@ describe("book reducer", () => {
     expect(book(fetchedState, action)).toEqual(newState);
   });
 
-  it("handles FETCH_BOOK_FAILURE", () => {
-    let action = { type: "FETCH_BOOK_FAILURE", error: "test error" };
+  it("handles FETCH_BOOK_ADMIN_FAILURE", () => {
+    let action = { type: "FETCH_BOOK_ADMIN_FAILURE", error: "test error" };
     let oldState = {
       url: "test url",
       data: null,
@@ -72,8 +72,8 @@ describe("book reducer", () => {
     expect(book(oldState, action)).toEqual(newState)
   });
 
-  it("handles LOAD_BOOK", () => {
-    let action = { type: "LOAD_BOOK", data: "test data", url: "test url" };
+  it("handles LOAD_BOOK_ADMIN", () => {
+    let action = { type: "LOAD_BOOK_ADMIN", data: "test data", url: "test url" };
     let oldState = {
       url: "test url",
       data: null,

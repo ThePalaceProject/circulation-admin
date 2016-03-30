@@ -3,9 +3,8 @@ jest.autoMockOff();
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
-import { createStore, applyMiddleware } from "redux";
-import * as thunk from "redux-thunk";
 
+import buildStore from "../../store";
 import createBookDetailsContainer from "../BookDetailsContainer";
 import TabContainer from "../TabContainer";
 
@@ -27,11 +26,11 @@ let initialState = {
 
 describe("createBookDetailsContainer", () => {
   it("creates a BookDetailsContainer", () => {
-    let store = createStore((state = initialState, action) => state, applyMiddleware(thunk));
+    let store = buildStore();
     let BookDetailsContainer = createBookDetailsContainer({
       editorStore: store,
       csrfToken: "token",
-      onNavigate: jest.genMockFunction(),
+      navigate: jest.genMockFunction(),
       tab: "tab"
     });
     let container = TestUtils.renderIntoDocument(
@@ -44,17 +43,17 @@ describe("createBookDetailsContainer", () => {
 
 describe("BookDetailsContainer", () => {
   let BookDetailsContainer;
-  let onNavigate;
+  let navigate;
   let container;
   let store;
 
   beforeEach(() => {
-    store = createStore((state = initialState, action) => state, applyMiddleware(thunk));
-    onNavigate = jest.genMockFunction();
+    store = buildStore();
+    navigate = jest.genMockFunction();
     BookDetailsContainer = createBookDetailsContainer({
       editorStore: store,
       csrfToken: "token",
-      onNavigate: onNavigate,
+      navigate: navigate,
       tab: "tab"
     });
     container = TestUtils.renderIntoDocument(

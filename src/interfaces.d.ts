@@ -22,7 +22,7 @@ interface RootProps extends __React.Props<any> {
   book: string;
   tab: string;
   isTopLevel: boolean;
-  onNavigate: (collection: string, book: string, tab: string, isTopLevel: boolean) => void;
+  navigate: (collection: string, book: string, tab: string, isTopLevel: boolean) => void;
   bookLinks?: BookLink[];
 }
 
@@ -87,7 +87,7 @@ interface BookDetailsContainerProps extends __React.Props<any> {
 interface BookDetailsContainerConfig {
   editorStore: Redux.Store;
   csrfToken: string;
-  onNavigate?: (collectionUrl: string, bookUrl: string, tab: string) => void;
+  navigate?: (collectionUrl: string, bookUrl: string, tab: string) => void;
   tab?: string;
   refreshBook?: () => Promise<any>;
 }
@@ -98,7 +98,7 @@ interface TabContainerProps extends __React.Props<any> {
   store: Redux.Store;
   csrfToken: string;
   tab: string;
-  onNavigate: (collectionUrl: string, bookUrl: string, tab?: string) => void;
+  navigate: (collectionUrl: string, bookUrl: string, tab?: string) => void;
   refreshBook: () => Promise<any>;
   complaintsCount?: number;
 }
