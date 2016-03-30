@@ -11,7 +11,6 @@ require("font-awesome/css/font-awesome.min.css");
 class CirculationWeb {
 
   constructor(config) {
-    let web;
     let div = document.createElement("div");
     div.id = "opds-browser";
     document.getElementsByTagName("body")[0].appendChild(div);
@@ -65,7 +64,6 @@ class CirculationWeb {
     function render(collectionUrl: string, bookUrl: string, tab: string, isTopLevel: boolean) {
       ReactDOM.render(
         <Root
-          ref={c => web = c}
           csrfToken={config.csrfToken}
           collection={collectionUrl}
           book={bookUrl}

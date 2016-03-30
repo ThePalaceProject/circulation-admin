@@ -87,7 +87,7 @@ interface BookDetailsContainerProps extends __React.Props<any> {
 interface BookDetailsContainerConfig {
   editorStore: Redux.Store;
   csrfToken: string;
-  navigate?: (collectionUrl: string, bookUrl: string, tab: string) => void;
+  navigate?: (collectionUrl: string, bookUrl: string, tab: string, isTopLevel?: boolean) => void;
   tab?: string;
   refreshBook?: () => Promise<any>;
 }
