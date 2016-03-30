@@ -9,7 +9,7 @@ const initialState = {
 export default (state = initialState, action) => {
 
   switch (action.type) {
-    case "FETCH_BOOK_REQUEST":
+    case "FETCH_BOOK_ADMIN_REQUEST":
       return Object.assign({}, state, {
         url: action.url,
         isFetching: true,
@@ -22,14 +22,14 @@ export default (state = initialState, action) => {
         editError: null
       });
 
-    case "LOAD_BOOK":
+    case "LOAD_BOOK_ADMIN":
       return Object.assign({}, state, {
         url: action.url,
         data: action.data,
         isFetching: false
       });
 
-    case "FETCH_BOOK_FAILURE":
+    case "FETCH_BOOK_ADMIN_FAILURE":
       return Object.assign({}, state, {
         fetchError: action.error,
         isFetching: false

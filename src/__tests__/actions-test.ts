@@ -42,11 +42,11 @@ describe("actions", () => {
       fetcher.testData = bookData;
       fetcher.resolve = true;
 
-      actions.fetchBook(bookUrl)(dispatch).then(data => {
+      actions.fetchBookAdmin(bookUrl)(dispatch).then(data => {
         expect(dispatch.mock.calls.length).toBe(3);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_BOOK_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_BOOK_SUCCESS);
-        expect(dispatch.mock.calls[2][0].type).toBe(actions.LOAD_BOOK);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_BOOK_ADMIN_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_BOOK_ADMIN_SUCCESS);
+        expect(dispatch.mock.calls[2][0].type).toBe(actions.LOAD_BOOK_ADMIN);
         expect(data).toBe(bookData);
         done();
       }).catch(err => done.fail(err));
@@ -56,10 +56,10 @@ describe("actions", () => {
       let dispatch = jest.genMockFunction();
       fetcher.resolve = false;
 
-      actions.fetchBook(bookUrl)(dispatch).catch(err => {
+      actions.fetchBookAdmin(bookUrl)(dispatch).catch(err => {
         expect(dispatch.mock.calls.length).toBe(2);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_BOOK_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_BOOK_FAILURE);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_BOOK_ADMIN_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_BOOK_ADMIN_FAILURE);
         expect(err).toBe("test error");
         done();
       });

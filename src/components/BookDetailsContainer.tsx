@@ -40,7 +40,7 @@ export default function createBookDetailsContainer(config: BookDetailsContainerC
             store={config.editorStore}
             csrfToken={config.csrfToken}
             refreshBook={config.refreshBook}
-            onNavigate={config.onNavigate}>
+            navigate={config.navigate}>
             { this.props.children }
           </TabContainer>
         </div>

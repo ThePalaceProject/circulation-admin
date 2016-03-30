@@ -42,8 +42,8 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     if (this.state.tab !== tab) {
       this.setState({ tab });
 
-      if (this.props.onNavigate) {
-        this.props.onNavigate(this.props.collection, this.props.book, tab);
+      if (this.props.navigate) {
+        this.props.navigate(this.props.collection, this.props.book, tab);
       }
     }
   }
@@ -56,9 +56,9 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
 function mapStateToProps(state, ownProps) {
   let complaintsCount;
 
-  if (state.complaints.data) {
-    complaintsCount = Object.keys(state.complaints.data).reduce((result, type) => {
-      return result + state.complaints.data[type];
+  if (state.editor.complaints.data) {
+    complaintsCount = Object.keys(state.editor.complaints.data).reduce((result, type) => {
+      return result + state.editor.complaints.data[type];
     }, 0);
   } else {
     complaintsCount = undefined;

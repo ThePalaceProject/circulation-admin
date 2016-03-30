@@ -3,9 +3,8 @@ jest.autoMockOff();
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
-import { createStore, applyMiddleware } from "redux";
-import * as thunk from "redux-thunk";
 
+import buildStore from "../../store";
 import { TabContainer } from "../TabContainer";
 import Editor from "../Editor";
 import Complaints from "../Complaints";
@@ -28,18 +27,18 @@ let initialState = {
 
 describe("TabContainer", () => {
   let container;
-  let onNavigate;
+  let navigate;
   let store;
 
   beforeEach(() => {
-    onNavigate = jest.genMockFunction();
-    store = createStore((state = initialState, action) => state, applyMiddleware(thunk));
+    navigate = jest.genMockFunction();
+    store = buildStore();
     container = TestUtils.renderIntoDocument(
       <TabContainer
         book="book url"
         collection="collection url"
         tab={null}
-        onNavigate={onNavigate}
+        navigate={navigate}
         csrfToken="token"
         refreshBook={jest.genMockFunction()}
         store={store}
@@ -73,13 +72,13 @@ describe("TabContainer", () => {
     expect(complaints.props.book).toBe("book url");
   });
 
-  it("calls onNavigate when tab is clicked", () => {
+  it("calls navigate when tab is clicked", () => {
     let tabs = TestUtils.scryRenderedDOMComponentsWithTag(container, "a");
     TestUtils.Simulate.click(tabs[1]);
-    expect(onNavigate.mock.calls.length).toBe(1);
-    expect(onNavigate.mock.calls[0][0]).toBe("collection url");
-    expect(onNavigate.mock.calls[0][1]).toBe("book url");
-    expect(onNavigate.mock.calls[0][2]).toBe("edit");
+    expect(navigate.mock.calls.length).toBe(1);
+    expect(navigate.mock.calls[0][0]).toBe("collection url");
+    expect(navigate.mock.calls[0][1]).toBe("book url");
+    expect(navigate.mock.calls[0][2]).toBe("edit");
   });
 
   it("shows complaints count", () => {
