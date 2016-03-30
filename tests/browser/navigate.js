@@ -1,5 +1,5 @@
-var globalBrowser;
 var breadcrumbSelector = "ol.breadcrumb";
+var loadingSelector = "h1.loading";
 
 module.exports = {
   before: function(browser, done) {
@@ -26,12 +26,12 @@ module.exports = {
             var laneTitle = result.value;
             this
               .click(laneSelector)
-              .waitForElementNotPresent("h1.loading", 5000)
+              .waitForElementNotPresent(loadingSelector, 5000)
               .verify.noError()
               .verify.urlEquals(laneUrl)
               .verify.titleContains(laneTitle)
               .back()
-              .waitForElementNotPresent("h1.loading", 5000)
+              .waitForElementNotPresent(loadingSelector, 5000)
               .verify.urlEquals(catalogUrl)
               .verify.elementNotPresent(breadcrumbSelector);
           });
@@ -39,8 +39,9 @@ module.exports = {
       });
   },
 
-  "navigate to book in lane": function(browser) {
+  "navigate to book in lane and back": function(browser) {
     var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
+    var bookTitleSelector = "h1.bookDetailsTitle";
 
     browser
       .goHome()
@@ -55,15 +56,15 @@ module.exports = {
             var bookTitle = result.value;
             this
               .click(bookSelector)
-              .waitForElementPresent("h1.bookDetailsTitle", 5000)
+              .waitForElementPresent(bookTitleSelector, 5000)
               .verify.noError()
               .verify.urlEquals(bookUrl)
               .verify.titleContains(bookTitle)
-              .verify.containsText("h1.bookDetailsTitle", bookTitle)
+              .verify.containsText(bookTitleSelector, bookTitle)
               .back()
-              .waitForElementNotPresent("h1.loading", 5000)
+              .waitForElementNotPresent(loadingSelector, 5000)
               .verify.urlEquals(catalogUrl)
-              .verify.elementNotPresent("h1.bookDetailsTitle")
+              .verify.elementNotPresent(bookTitleSelector)
               .verify.elementNotPresent(breadcrumbSelector);
           });
         });
