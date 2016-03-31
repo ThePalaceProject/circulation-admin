@@ -56,7 +56,7 @@ class CirculationWeb {
       window.history.pushState.apply(window.history, historyArgs(collectionUrl, bookUrl, tab));
     };
 
-    function navigate(collectionUrl: string, bookUrl: string, tab: string, isTopLevel: boolean) {
+    function navigate(collectionUrl: string, bookUrl: string, isTopLevel: boolean = false, tab?: string) {
       pushHistory(collectionUrl, bookUrl, tab);
       render(collectionUrl, bookUrl, tab, isTopLevel);
     }
@@ -69,7 +69,8 @@ class CirculationWeb {
           book={bookUrl}
           tab={tab}
           isTopLevel={isTopLevel}
-          navigate={navigate}/>,
+          navigate={navigate}
+          />,
         document.getElementById("opds-browser")
       );
     }
