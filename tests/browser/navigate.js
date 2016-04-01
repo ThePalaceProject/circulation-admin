@@ -68,7 +68,42 @@ module.exports = {
               .verify.elementNotPresent(breadcrumbSelector);
           });
         });
+      });
+  },
 
+  "navigate to book, click edit tab, refresh page, go back": function(browser) {
+    var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
+    var bookTitleSelector = "h1.bookDetailsTitle";
+    var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
+    var titleInputSelector = "input[name='title']";
+
+    browser
+      .goHome()
+      .waitForElementVisible(bookSelector, 5000)
+      .waitForElementNotPresent(breadcrumbSelector, 5000)
+      .verify.noError()
+      .getAttribute(bookSelector, "href", function(result) {
+        var bookUrl = result.value;
+        this.getText(bookSelector, function(result) {
+          var bookTitle = result.value;
+          this
+            .click(bookSelector)
+            .waitForElementPresent(bookTitleSelector, 5000)
+            .verify.noError()
+            .verify.urlEquals(bookUrl)
+            .verify.containsText(bookTitleSelector, bookTitle)
+            .click(editTabSelector)
+            .waitForElementPresent(titleInputSelector, 5000)
+            .verify.urlContains("tab=edit")
+            .verify.value(titleInputSelector, bookTitle)
+            .refresh()
+            .waitForElementPresent(titleInputSelector, 5000)
+            .verify.urlContains("tab=edit")
+            .verify.titleContains(bookTitle)
+            .back()
+            .waitForElementPresent(bookTitleSelector, 5000)
+            .verify.urlEquals(bookUrl);
+        });
       });
   },
 
