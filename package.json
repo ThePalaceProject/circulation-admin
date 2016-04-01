@@ -40,7 +40,7 @@
     "nightwatch": "^0.8.18",
     "opds-feed-parser": "0.0.9",
     "react-addons-test-utils": "^0.14.7",
-    "selenium-standalone": "^5.1.0",
+    "selenium-standalone": "5.1.0",
     "style-loader": "^0.13.0",
     "ts-loader": "^0.8.0",
     "tslint": "^3.3.0",
