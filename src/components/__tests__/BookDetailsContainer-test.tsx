@@ -5,7 +5,7 @@ import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
 
 import buildStore from "../../store";
-import createBookDetailsContainer from "../BookDetailsContainer";
+import BookDetailsContainer from "../BookDetailsContainer";
 import TabContainer from "../TabContainer";
 
 let initialState = {
@@ -24,42 +24,48 @@ let initialState = {
   }
 };
 
-describe("createBookDetailsContainer", () => {
-  it("creates a BookDetailsContainer", () => {
-    let store = buildStore();
-    let BookDetailsContainer = createBookDetailsContainer({
-      editorStore: store,
-      csrfToken: "token",
-      navigate: jest.genMockFunction(),
-      tab: "tab"
-    });
-    let container = TestUtils.renderIntoDocument(
-      <BookDetailsContainer book={{ url: "book url" }} collection="collection url" />
-    );
-    let div = TestUtils.findRenderedDOMComponentWithClass(container, "bookDetailsContainer");
-    expect(div).toBeTruthy;
-  });
-});
-
 describe("BookDetailsContainer", () => {
-  let BookDetailsContainer;
   let navigate;
   let container;
   let store;
+  let context;
 
   beforeEach(() => {
     store = buildStore();
     navigate = jest.genMockFunction();
-    BookDetailsContainer = createBookDetailsContainer({
-      editorStore: store,
-      csrfToken: "token",
-      navigate: navigate,
-      tab: "tab"
-    });
+
+    class FakeContext extends React.Component<any, any> {
+      static childContextTypes = {
+        editorStore: React.PropTypes.object,
+        csrfToken: React.PropTypes.string,
+        navigate: React.PropTypes.func,
+        tab: React.PropTypes.string,
+        refreshBook: React.PropTypes.func
+      };
+
+      getChildContext() {
+        return {
+          editorStore: store,
+          csrfToken: "token",
+          navigate: navigate,
+          tab: "tab",
+          refreshBook: () => {}
+        };
+      }
+
+      render(): JSX.Element {
+        return (
+          <div>{ this.props.children }</div>
+        );
+      }
+    }
+
     container = TestUtils.renderIntoDocument(
-      <BookDetailsContainer book={{ url: "book url" }} collection="collection url">
-        <div className="bookDetails">Moby Dick</div>
-      </BookDetailsContainer>
+      <FakeContext>
+        <BookDetailsContainer book={{ url: "book url" }} collection="collection url">
+          <div className="bookDetails">Moby Dick</div>
+        </BookDetailsContainer>
+      </FakeContext>
     );
   });
 
@@ -67,26 +73,5 @@ describe("BookDetailsContainer", () => {
     let tabContainer = TestUtils.findRenderedComponentWithType(container, TabContainer);
     expect(tabContainer).toBeTruthy;
     expect(tabContainer.props.tab).toBe("tab");
-  });
-
-  it("gives an initial tab to TabContainer only once", () => {
-    // mount container a second time
-    container = TestUtils.renderIntoDocument(
-      <BookDetailsContainer book={{ url: "book url" }} collection="collection url">
-        <div className="bookDetails">Moby Dick</div>
-      </BookDetailsContainer>
-    );
-    let tabContainer = TestUtils.findRenderedComponentWithType(container, TabContainer);
-    expect(tabContainer.props.tab).toBe(null);
-  });
-
-  it("sets a tab", () => {
-    container.setTab("edit");
-    let items = TestUtils.scryRenderedDOMComponentsWithTag(container, "li");
-    let activeItem = items.find(item => {
-      let className = item.getAttribute("class");
-      return className && className.indexOf("active") !== -1;
-    });
-    expect(activeItem.textContent).toBe("Edit");
   });
 });

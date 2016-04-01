@@ -22,7 +22,7 @@ interface RootProps extends __React.Props<any> {
   book: string;
   tab: string;
   isTopLevel: boolean;
-  navigate: (collection: string, book: string, tab: string, isTopLevel: boolean) => void;
+  navigate: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
   bookLinks?: BookLink[];
 }
 
@@ -41,7 +41,7 @@ interface EditorProps extends __React.Props<any> {
   csrfToken: string;
   store?: Redux.Store;
   fetchBook?: (url: string) => void;
-  refreshBook?: () => Promise<any>;
+  refreshBook?: () => void;
   dispatchEdit?: () => void;
   dispatchEditFailure?: (error) => void;
   isFetching?: boolean;
@@ -98,8 +98,8 @@ interface TabContainerProps extends __React.Props<any> {
   store: Redux.Store;
   csrfToken: string;
   tab: string;
-  navigate: (collectionUrl: string, bookUrl: string, tab?: string) => void;
-  refreshBook: () => Promise<any>;
+  navigate: (collectionUrl: string, bookUrl: string, isToplevel: boolean, tab?: string) => void;
+  refreshBook: () => void;
   complaintsCount?: number;
 }
 
@@ -118,4 +118,12 @@ interface ComplaintsProps extends __React.Props<any> {
   store?: Redux.Store;
   fetchComplaints?: (url: string) => Promise<any>;
   isFetching?: boolean;
+}
+
+interface EditorContext {
+  csrfToken?: string;
+  navigate?: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
+  tab?: string;
+  refreshBook?: () => void;
+  editorStore?: Redux.Store;
 }
