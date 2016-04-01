@@ -11,7 +11,6 @@ require("font-awesome/css/font-awesome.min.css");
 class CirculationWeb {
 
   constructor(config) {
-    let web;
     let div = document.createElement("div");
     div.id = "opds-browser";
     document.getElementsByTagName("body")[0].appendChild(div);
@@ -29,7 +28,7 @@ class CirculationWeb {
       return "?" + qs.stringify(params, { skipNulls: true });
     };
 
-    function historyArgs(collectionUrl, bookUrl, tab) {
+    function historyArgs(collectionUrl: string, bookUrl: string, tab: string) {
       let params = {
         collection: collectionUrl,
         book: bookUrl,
@@ -50,30 +49,37 @@ class CirculationWeb {
         tab = event.state.tab || "details";
       }
 
-      // call loadCollectionAndBook with skipOnNavigate = true
-      // so that state isn't pushed every time it's popped
-      web.setTab(tab);
-      web.setCollectionAndBook(collection, book);
+      render(collection, book, tab, false);
     };
 
-    function pushHistory(collectionUrl, bookUrl, tab) {
+    function pushHistory(collectionUrl: string, bookUrl: string, tab: string) {
       window.history.pushState.apply(window.history, historyArgs(collectionUrl, bookUrl, tab));
     };
+
+    function navigate(collectionUrl: string, bookUrl: string, isTopLevel: boolean = false, tab?: string) {
+      pushHistory(collectionUrl, bookUrl, tab);
+      render(collectionUrl, bookUrl, tab, isTopLevel);
+    }
+
+    function render(collectionUrl: string, bookUrl: string, tab: string, isTopLevel: boolean) {
+      ReactDOM.render(
+        <Root
+          csrfToken={config.csrfToken}
+          collection={collectionUrl}
+          book={bookUrl}
+          tab={tab}
+          isTopLevel={isTopLevel}
+          navigate={navigate}
+          />,
+        document.getElementById("opds-browser")
+      );
+    }
 
     let startCollection = getParam("collection") || config.homeUrl;
     let startBook = getParam("book");
     let startTab = getParam("tab");
 
-    ReactDOM.render(
-      <Root
-        ref={c => web = c}
-        csrfToken={config.csrfToken}
-        collection={startCollection}
-        book={startBook}
-        tab={startTab}
-        onNavigate={pushHistory}/>,
-      document.getElementById("opds-browser")
-    );
+    render(startCollection, startBook, startTab, false);
 
     if (startCollection || startBook || startTab) {
       window.history.replaceState.apply(window.history, historyArgs(startCollection, startBook, startTab));

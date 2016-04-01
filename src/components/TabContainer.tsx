@@ -6,17 +6,12 @@ import Editor from "./Editor";
 import Complaints from "./Complaints";
 
 export class TabContainer extends React.Component<TabContainerProps, any> {
-  constructor(props) {
-    super(props);
-    this.state = { tab: this.props.tab || "details" };
-  }
-
   render(): JSX.Element {
     let showComplaintCount = (typeof this.props.complaintsCount !== "undefined");
     let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.props.complaintsCount + ")" : "");
 
     return (
-      <Tabs activeKey={this.state.tab} animation={false} onSelect={this.handleSelect.bind(this)}>
+      <Tabs activeKey={this.props.tab || "details"} animation={false} onSelect={this.handleSelect.bind(this)}>
         <Tab eventKey={"details"} title="Details">
           <div style={{ paddingTop: "2em" }}>
             { this.props.children }
@@ -39,26 +34,18 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
   }
 
   handleSelect(tab) {
-    if (this.state.tab !== tab) {
-      this.setState({ tab });
-
-      if (this.props.onNavigate) {
-        this.props.onNavigate(this.props.collection, this.props.book, tab);
-      }
+    if (this.props.navigate) {
+      this.props.navigate(this.props.collection, this.props.book, false, tab);
     }
-  }
-
-  setTab(tab) {
-    this.setState({ tab });
   }
 }
 
 function mapStateToProps(state, ownProps) {
   let complaintsCount;
 
-  if (state.complaints.data) {
-    complaintsCount = Object.keys(state.complaints.data).reduce((result, type) => {
-      return result + state.complaints.data[type];
+  if (state.editor.complaints.data) {
+    complaintsCount = Object.keys(state.editor.complaints.data).reduce((result, type) => {
+      return result + state.editor.complaints.data[type];
     }, 0);
   } else {
     complaintsCount = undefined;

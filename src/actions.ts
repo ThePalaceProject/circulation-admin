@@ -5,10 +5,10 @@ export default class ActionCreator {
 
   EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   EDIT_BOOK_FAILURE = "EDIT_BOOK_FAILURE";
-  FETCH_BOOK_REQUEST = "FETCH_BOOK_REQUEST";
-  FETCH_BOOK_SUCCESS = "FETCH_BOOK_SUCCESS";
-  FETCH_BOOK_FAILURE = "FETCH_BOOK_FAILURE";
-  LOAD_BOOK = "LOAD_BOOK";
+  FETCH_BOOK_ADMIN_REQUEST = "FETCH_BOOK_ADMIN_REQUEST";
+  FETCH_BOOK_ADMIN_SUCCESS = "FETCH_BOOK_ADMIN_SUCCESS";
+  FETCH_BOOK_ADMIN_FAILURE = "FETCH_BOOK_ADMIN_FAILURE";
+  LOAD_BOOK_ADMIN = "LOAD_BOOK_ADMIN";
 
   FETCH_COMPLAINTS_REQUEST = "FETCH_COMPLAINTS_REQUEST";
   FETCH_COMPLAINTS_SUCCESS = "FETCH_COMPLAINTS_SUCCESS";
@@ -19,16 +19,16 @@ export default class ActionCreator {
     this.fetcher = fetcher;
   }
 
-  fetchBook(url: string) {
+  fetchBookAdmin(url: string) {
     return (dispatch => {
       return new Promise((resolve, reject) => {
-        dispatch(this.fetchBookRequest(url));
+        dispatch(this.fetchBookAdminRequest(url));
         this.fetcher.fetchOPDSData(url).then((data: BookData) => {
-          dispatch(this.fetchBookSuccess());
-          dispatch(this.loadBook(data, url));
+          dispatch(this.fetchBookAdminSuccess());
+          dispatch(this.loadBookAdmin(data, url));
           resolve(data);
         }).catch(err => {
-          dispatch(this.fetchBookFailure(err));
+          dispatch(this.fetchBookAdminFailure(err));
           reject(err);
         });
       });
@@ -43,20 +43,20 @@ export default class ActionCreator {
     return { type: this.EDIT_BOOK_FAILURE, error };
   }
 
-  fetchBookRequest(url: string) {
-    return { type: this.FETCH_BOOK_REQUEST, url };
+  fetchBookAdminRequest(url: string) {
+    return { type: this.FETCH_BOOK_ADMIN_REQUEST, url };
   }
 
-  fetchBookSuccess() {
-    return { type: this.FETCH_BOOK_SUCCESS };
+  fetchBookAdminSuccess() {
+    return { type: this.FETCH_BOOK_ADMIN_SUCCESS };
   }
 
-  fetchBookFailure(error?: any) {
-    return { type: this.FETCH_BOOK_FAILURE, error };
+  fetchBookAdminFailure(error?: any) {
+    return { type: this.FETCH_BOOK_ADMIN_FAILURE, error };
   }
 
-  loadBook(data: BookData, url: string) {
-    return { type: this.LOAD_BOOK, data, url };
+  loadBookAdmin(data: BookData, url: string) {
+    return { type: this.LOAD_BOOK_ADMIN, data, url };
   }
 
   fetchComplaints(url: string) {

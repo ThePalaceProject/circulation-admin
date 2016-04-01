@@ -74,10 +74,10 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
 
 function mapStateToProps(state, ownProps) {
   return {
-    bookData: state.book.data,
-    complaints: state.complaints.data,
-    isFetching: state.complaints.isFetching,
-    fetchError: state.complaints.fetchError
+    bookData: state.editor.book.data,
+    complaints: state.editor.complaints.data,
+    isFetching: state.editor.complaints.isFetching,
+    fetchError: state.editor.complaints.fetchError
   };
 }
 
