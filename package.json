@@ -12,7 +12,7 @@
   "scripts": {
     "prepublish": "typings install && npm run prod",
     "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc && jest",
-    "test-browser": "nightwatch -e firefox,chrome",
+    "test-browser": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox,chrome",
     "dev": "rm -rf dist && NODE_ENV=development webpack --watch --progress --display-modules --config webpack.prod.config",
     "prod": "rm -rf dist && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
