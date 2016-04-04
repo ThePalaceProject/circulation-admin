@@ -15,8 +15,12 @@ export default class ActionCreator {
   FETCH_COMPLAINTS_FAILURE = "FETCH_COMPLAINTS_FAILURE";
   LOAD_COMPLAINTS = "LOAD_COMPLAINTS";
 
-  constructor(fetcher: DataFetcher) {
-    this.fetcher = fetcher;
+  POST_COMPLAINT_REQUEST = "POST_COMPLAINT_REQUEST";
+  POST_COMPLAINT_SUCCESS = "POST_COMPLAINT_SUCCESS";
+  POST_COMPLAINT_FAILURE = "POST_COMPLAINT_FAILURE";
+
+  constructor(fetcher?: DataFetcher) {
+    this.fetcher = fetcher || new DataFetcher();
   }
 
   fetchBookAdmin(url: string) {
@@ -35,14 +39,6 @@ export default class ActionCreator {
     }).bind(this);
   }
 
-  editRequest() {
-    return { type: this.EDIT_BOOK_REQUEST };
-  }
-
-  editFailure(error?: any) {
-    return { type: this.EDIT_BOOK_FAILURE, error };
-  }
-
   fetchBookAdminRequest(url: string) {
     return { type: this.FETCH_BOOK_ADMIN_REQUEST, url };
   }
@@ -57,6 +53,37 @@ export default class ActionCreator {
 
   loadBookAdmin(data: BookData, url: string) {
     return { type: this.LOAD_BOOK_ADMIN, data, url };
+  }
+
+  editBook(url: string, data: FormData) {
+    return (dispatch => {
+      return new Promise((resolve, reject) => {
+        dispatch(this.editBookRequest());
+        fetch(url, {
+          method: "POST",
+          body: data,
+          credentials: "same-origin"
+        }).then(response => {
+          dispatch(this.editBookSuccess());
+          resolve(response);
+        }).catch(err => {
+          dispatch(this.editBookFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  editBookRequest() {
+    return { type: this.EDIT_BOOK_REQUEST };
+  }
+
+  editBookSuccess() {
+    return { type: this.EDIT_BOOK_REQUEST };
+  }
+
+  editBookFailure(error?: any) {
+    return { type: this.EDIT_BOOK_FAILURE, error };
   }
 
   fetchComplaints(url: string) {
@@ -104,5 +131,50 @@ export default class ActionCreator {
 
   loadComplaints(data) {
     return { type: this.LOAD_COMPLAINTS, data };
+  }
+
+  postComplaint(url: string, data: PostComplaintData) {
+    return (dispatch => {
+      return new Promise((resolve, reject) => {
+        dispatch(this.postComplaintRequest());
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data),
+          credentials: "same-origin"
+        }).then(response => {
+          if (response.status === 201) {
+            dispatch(this.postComplaintSuccess());
+            resolve(response);
+          } else {
+            let err = {
+              status: response.status,
+              response: response,
+              url: url
+            };
+            dispatch(this.postComplaintFailure(err));
+            reject(err);
+          }
+        }).catch(err => {
+          dispatch(this.postComplaintFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  postComplaintRequest() {
+    return { type: this.POST_COMPLAINT_REQUEST };
+  }
+
+  postComplaintSuccess() {
+    return { type: this.POST_COMPLAINT_SUCCESS };
+  }
+
+  postComplaintFailure(error?: any) {
+    return { type: this.POST_COMPLAINT_FAILURE, error };
   }
 }

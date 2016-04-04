@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import DataFetcher from "opds-browser/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
+import ComplaintForm from "./ComplaintForm";
 
 export class Complaints extends React.Component<ComplaintsProps, any> {
   render(): JSX.Element {
@@ -12,10 +13,10 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
 
     return (
       <div>
-        { this.props.bookData &&
+        { this.props.book &&
           <div>
             <h2>
-              {this.props.bookData.title}
+              {this.props.book.title}
             </h2>
             <div style={{ height: "35px" }}>
               { this.props.isFetching &&
@@ -27,7 +28,9 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             </div>
           </div>
         }
-        { this.props.complaints &&
+
+        <h3>Complaints</h3>
+        { this.props.complaints && Object.keys(this.props.complaints).length > 0 ?
           <table className="table">
             <thead>
               <tr>
@@ -43,8 +46,21 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                 </tr>
               ) }
             </tbody>
-          </table>
+          </table> :
+          <div><strong>None found.</strong></div>
         }
+
+        <br />
+
+        { this.props.book &&
+          <ComplaintForm
+            disabled={this.props.isFetching}
+            complaintUrl={this.props.book.issuesLink.href}
+            postComplaint={this.props.postComplaint}
+            csrfToken={this.props.csrfToken}
+            refreshComplaints={refresh} />
+        }
+
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
         }
@@ -53,13 +69,13 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
   }
 
   componentWillMount() {
-    if (this.props.book) {
+    if (this.props.bookUrl) {
       this.props.fetchComplaints(this.complaintsUrl());
     }
   }
 
   complaintsUrl() {
-    return this.props.book.replace("works", "admin/works") + "/complaints";
+    return this.props.bookUrl.replace("works", "admin/works") + "/complaints";
   }
 
   readableComplaintType(type) {

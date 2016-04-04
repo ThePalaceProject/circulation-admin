@@ -11,16 +11,11 @@ import * as qs from "qs";
 export default class Root extends React.Component<RootProps, any> {
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
   pathFor: (collectionUrl: string, bookUrl: string, tab: string) => string;
-  refreshBook: () => void;
   editorStore: Redux.Store;
 
   constructor(props) {
     super(props);
     let that = this;
-
-    this.refreshBook = () => {
-      that.props.navigate(that.props.collection, that.props.book, false, that.props.tab);
-    };
 
     this.editorStore = buildStore();
 
@@ -43,16 +38,14 @@ export default class Root extends React.Component<RootProps, any> {
     csrfToken: React.PropTypes.string.isRequired,
     tab: React.PropTypes.string,
     navigate: React.PropTypes.func.isRequired,
-    refreshBook: React.PropTypes.func.isRequired,
     editorStore: React.PropTypes.object.isRequired
   };
 
-  getChildContext(): EditorContext {
+  getChildContext(): AppContext {
     return {
       csrfToken: this.props.csrfToken,
       tab: this.props.tab,
       navigate: this.props.navigate,
-      refreshBook: this.refreshBook,
       editorStore: this.editorStore
     };
   }
@@ -60,8 +53,8 @@ export default class Root extends React.Component<RootProps, any> {
   render(): JSX.Element {
     return (
       <OPDSBrowser
-        collectionUrl={this.props.collection}
-        bookUrl={this.props.book}
+        collectionUrl={this.props.collectionUrl}
+        bookUrl={this.props.bookUrl}
         isTopLevel={this.props.isTopLevel}
         pathFor={this.pathFor}
         navigate={this.props.navigate}

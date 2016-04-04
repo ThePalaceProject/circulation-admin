@@ -66,24 +66,11 @@ export default class EditForm extends React.Component<EditFormProps, any> {
 
   save(event) {
     event.preventDefault();
-    this.props.dispatchEdit();
-    let formData = new FormData(this.refs["form"] as any);
-    fetch(this.props.editLink.href, {
-      credentials: "same-origin",
-      method: "POST",
-      body: formData
-    }).then((response) => {
-      if (response.status !== 200) {
-        response.text().then((responseText) => {
-          this.props.dispatchEditFailure({
-            status: response.status,
-            url: response.url,
-            response: responseText
-          });
-        });
-      } else {
-        this.props.refresh();
-      }
+
+    let data = new FormData(this.refs["form"] as any);
+
+    this.props.editBook(this.props.editLink.href, data).then(response => {
+      this.props.refresh();
     });
   }
 };

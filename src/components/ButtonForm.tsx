@@ -21,26 +21,11 @@ export default class ButtonForm extends React.Component<ButtonFormProps, any> {
 
   submit(event) {
     event.preventDefault();
-    this.props.dispatchEdit();
-    let link = this.props.link;
-    let label = this.props.label;
-    let formData = new FormData(this.refs["form"] as any);
-    fetch(link, {
-      credentials: "same-origin",
-      method: "POST",
-      body: formData
-    }).then((response) => {
-      if (response.status !== 200) {
-        response.text().then((responseText) => {
-          this.props.dispatchEditFailure({
-            status: response.status,
-            url: response.url,
-            response: responseText
-          });
-        });
-      } else {
-        this.props.refresh();
-      }
+
+    let data = new FormData(this.refs["form"] as any);
+
+    this.props.submit(this.props.link, data).then(response => {
+      this.props.refresh();
     });
   }
 }

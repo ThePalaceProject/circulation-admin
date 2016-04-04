@@ -17,11 +17,16 @@ export default function adapter(data: OPDSEntry): BookData {
     return link.rel === "edit";
   });
 
+  let issuesLink = data.links.find(link => {
+    return link.rel === "issues";
+  });
+
   return {
     title: data.title,
     hideLink: hideLink,
     restoreLink: restoreLink,
     refreshLink: refreshLink,
-    editLink: editLink
+    editLink: editLink,
+    issuesLink: issuesLink
   };
 }

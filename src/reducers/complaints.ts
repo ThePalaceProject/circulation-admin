@@ -2,11 +2,13 @@ const initialState = {
   url: null,
   data: null,
   isFetching: false,
-  fetchError: null
+  fetchError: null,
+  postError: null
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case "POST_COMPLAINT_REQUEST":
     case "FETCH_COMPLAINTS_REQUEST":
       return Object.assign({}, state, {
         url: action.url,
@@ -17,6 +19,12 @@ export default (state = initialState, action) => {
     case "FETCH_COMPLAINTS_FAILURE":
       return Object.assign({}, state, {
         fetchError: action.error,
+        isFetching: false
+      });
+
+    case "POST_COMPLAINT_FAILURE":
+      return Object.assign({}, state, {
+        postError: action.error,
         isFetching: false
       });
 
