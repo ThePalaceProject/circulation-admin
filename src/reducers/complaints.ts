@@ -1,4 +1,12 @@
-const initialState = {
+interface ComplaintsState {
+  url: string;
+  data: ComplaintsData;
+  isFetching: boolean;
+  fetchError: AsyncError;
+  postError: AsyncError;
+}
+
+const initialState: ComplaintsState = {
   url: null,
   data: null,
   isFetching: false,
@@ -6,7 +14,7 @@ const initialState = {
   postError: null
 };
 
-export default (state = initialState, action) => {
+export default (state: ComplaintsState = initialState, action) => {
   switch (action.type) {
     case "POST_COMPLAINT_REQUEST":
     case "FETCH_COMPLAINTS_REQUEST":

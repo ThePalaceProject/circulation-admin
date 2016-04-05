@@ -74,12 +74,11 @@ describe("EditableInput", () => {
         />
     );
     let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
-    expect(input.hasAttribute("disabled")).toBeTruthy();        
+    expect(input.hasAttribute("disabled")).toBeTruthy();
   });
 });
 
 describe("EditForm", () => {
-  let fetchMock;
   let bookData = {
     title: "title",
     editLink: {
@@ -88,14 +87,6 @@ describe("EditForm", () => {
     }
   };
 
-  beforeEach(() => {
-    fetchMock = jest.genMockFunction();
-    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
-      resolve({ status: 200 });
-    }));
-    fetch = fetchMock;
-  });
-
   it("shows editable input with title", () => {
     let editForm = TestUtils.renderIntoDocument(
       <EditForm
@@ -103,7 +94,7 @@ describe("EditForm", () => {
         csrfToken=""
         disabled={false}
         refresh={jest.genMockFunction()}
-        dispatchEdit={jest.genMockFunction()}
+        editBook={jest.genMockFunction()}
         />
     );
     let input = TestUtils.findRenderedComponentWithType(editForm, EditableInput);
@@ -111,61 +102,42 @@ describe("EditForm", () => {
     expect(input.props.value).toBe("title");
   });
 
-  it("posts to edit link on submit", () => {
+  it("calls editBook on submit", () => {
+    let editBook = jest.genMockFunction();
+    editBook.mockReturnValue(new Promise((resolve, reject) => {
+      resolve();
+    }));
     let editForm = TestUtils.renderIntoDocument(
       <EditForm
         {...bookData}
-        csrfToken=""
+        csrfToken="token"
         disabled={false}
         refresh={jest.genMockFunction()}
-        dispatchEdit={jest.genMockFunction()}
+        editBook={editBook}
         />
     );
 
     let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
     TestUtils.Simulate.submit(form);
 
-    expect(fetchMock.mock.calls.length).toBe(1);
-    expect(fetchMock.mock.calls[0][0]).toBe("href");
-    expect(fetchMock.mock.calls[0][1].method).toBe("POST");
+    expect(editBook.mock.calls.length).toBe(1);
+    expect(editBook.mock.calls[0][0]).toBe("href");
+    expect(editBook.mock.calls[0][1].get("csrf_token").value).toBe("token");
+    expect(editBook.mock.calls[0][1].get("title").value).toBe(bookData.title);
   });
 
   it("refreshes book after editing", (done) => {
+    let editBook = jest.genMockFunction();
+    editBook.mockReturnValue(new Promise((resolve, reject) => {
+      resolve();
+    }));
     let editForm = TestUtils.renderIntoDocument(
       <EditForm
         {...bookData}
         csrfToken=""
         disabled={false}
         refresh={done}
-        dispatchEdit={jest.genMockFunction()}
-        />
-    );
-
-    let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
-    TestUtils.Simulate.submit(form);
-  });
-
-  it("dispatches error after edit failure", (done) => {
-    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
-      resolve({
-        status: 500,
-        url: "",
-        text: () => {
-          return new Promise<any>((resolve, reject) => {
-            resolve("response");
-          });
-        }
-      });
-    }));
-
-    let editForm = TestUtils.renderIntoDocument(
-      <EditForm
-        {...bookData}
-        csrfToken=""
-        disabled={false}
-        refresh={jest.genMockFunction()}
-        dispatchEdit={jest.genMockFunction()}
-        dispatchEditFailure={done}
+        editBook={editBook}
         />
     );
 
@@ -180,7 +152,7 @@ describe("EditForm", () => {
         csrfToken=""
         disabled={true}
         refresh={jest.genMockFunction()}
-        dispatchEdit={jest.genMockFunction()}
+        editBook={jest.genMockFunction()}
         />
     );
     let inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);

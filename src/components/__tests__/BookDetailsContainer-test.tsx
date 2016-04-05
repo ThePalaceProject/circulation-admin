@@ -39,8 +39,7 @@ describe("BookDetailsContainer", () => {
         editorStore: React.PropTypes.object,
         csrfToken: React.PropTypes.string,
         navigate: React.PropTypes.func,
-        tab: React.PropTypes.string,
-        refreshBook: React.PropTypes.func
+        tab: React.PropTypes.string
       };
 
       getChildContext() {
@@ -48,8 +47,7 @@ describe("BookDetailsContainer", () => {
           editorStore: store,
           csrfToken: "token",
           navigate: navigate,
-          tab: "tab",
-          refreshBook: () => {}
+          tab: "tab"
         };
       }
 
@@ -62,7 +60,7 @@ describe("BookDetailsContainer", () => {
 
     container = TestUtils.renderIntoDocument(
       <FakeContext>
-        <BookDetailsContainer book={{ url: "book url" }} collection="collection url">
+        <BookDetailsContainer bookUrl="book url" collectionUrl="collection url" refreshBrowser={jest.genMockFunction()}>
           <div className="bookDetails">Moby Dick</div>
         </BookDetailsContainer>
       </FakeContext>

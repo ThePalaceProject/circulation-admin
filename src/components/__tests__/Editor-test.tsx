@@ -15,7 +15,7 @@ describe("Editor", () => {
     let fetchBook = jest.genMockFunction();
 
     let editor = TestUtils.renderIntoDocument(
-      <Editor book={permalink} fetchBook={fetchBook} csrfToken={"token"} />
+      <Editor bookUrl={permalink} fetchBook={fetchBook} csrfToken={"token"} />
     );
 
     expect(fetchBook.mock.calls.length).toBe(1);
@@ -25,7 +25,7 @@ describe("Editor", () => {
   it("shows title", () => {
     let fetchBook = jest.genMockFunction();
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title" }} book={"url"} csrfToken={"token"} fetchBook={fetchBook} />
+      <Editor bookData={{ title: "title" }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
     );
 
     let header = TestUtils.findRenderedDOMComponentWithTag(editor, "h2");
@@ -38,7 +38,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified.org/terms/rel/hide"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", hideLink: hideLink }} book={"url"} csrfToken={"token"} fetchBook={fetchBook} />
+      <Editor bookData={{ title: "title", hideLink: hideLink }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
     );
 
     let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
@@ -52,7 +52,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified.org/terms/rel/restore"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", restoreLink: restoreLink }} book={"url"} csrfToken={"token"} fetchBook={fetchBook} />
+      <Editor bookData={{ title: "title", restoreLink: restoreLink }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
     );
 
     let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
@@ -66,7 +66,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified/terms/rel/refresh"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", refreshLink: refreshLink }} book="url" csrfToken={"token"} fetchBook={fetchBook} />
+      <Editor bookData={{ title: "title", refreshLink: refreshLink }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
     );
 
     let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
@@ -82,7 +82,7 @@ describe("Editor", () => {
       url: ""
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title" }} book="url" csrfToken={"token"} fetchError={fetchError} fetchBook={fetchBook} />
+      <Editor bookData={{ title: "title" }} bookUrl="url" csrfToken="token" fetchError={fetchError} fetchBook={fetchBook} />
     );
 
     let editFormComponents = TestUtils.scryRenderedComponentsWithType(editor, EditForm);
@@ -102,7 +102,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
     };
     let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", editLink: editLink }} book="url" csrfToken={"token"} editError={editError} fetchBook={fetchBook} />
+      <Editor bookData={{ title: "title", editLink: editLink }} bookUrl="url" csrfToken="token" editError={editError} fetchBook={fetchBook} />
     );
 
     let editFormComponents = TestUtils.scryRenderedComponentsWithType(editor, EditForm);

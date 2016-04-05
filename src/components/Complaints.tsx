@@ -52,7 +52,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
 
         <br />
 
-        { this.props.book &&
+        { this.props.book && this.props.book.issuesLink &&
           <ComplaintForm
             disabled={this.props.isFetching}
             complaintUrl={this.props.book.issuesLink.href}
