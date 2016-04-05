@@ -5,6 +5,9 @@ interface LinkData {
 
 interface BookData {
   title: string;
+  published?: string;
+  publisher?: string;
+  summary?: string;
   hideLink?: LinkData;
   restoreLink?: LinkData;
   refreshLink?: LinkData;
@@ -57,7 +60,8 @@ interface ButtonFormProps {
   handleError?: (error) => void;
 }
 
-interface EditableInputProps extends __React.Props<any> {
+interface EditableInputProps extends __React.HTMLProps<any> {
+  type: string;
   label: string;
   value: string;
   name: string;

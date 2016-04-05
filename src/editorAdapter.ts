@@ -23,6 +23,9 @@ export default function adapter(data: OPDSEntry): BookData {
 
   return {
     title: data.title,
+    summary: data.summary.content,
+    publisher: data.publisher,
+    published: data.published,
     hideLink: hideLink,
     restoreLink: restoreLink,
     refreshLink: refreshLink,
