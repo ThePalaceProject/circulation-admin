@@ -110,7 +110,6 @@ interface ComplaintsProps extends __React.Props<any> {
   store?: Redux.Store;
   fetchComplaints?: (url: string) => Promise<any>;
   isFetching?: boolean;
-  csrfToken: string;
   postComplaint: (url: string, data: PostComplaintData) => Promise<any>;
 }
 
@@ -125,7 +124,7 @@ interface PostComplaintData {
   type: string;
 }
 
-interface AppContext {
+interface BookDetailsContainerContext {
   csrfToken?: string;
   navigate?: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
   tab?: string;

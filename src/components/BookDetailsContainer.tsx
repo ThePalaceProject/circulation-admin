@@ -2,7 +2,7 @@ import * as React from "react";
 import TabContainer from "./TabContainer";
 
 export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {
-  context: AppContext;
+  context: BookDetailsContainerContext;
 
   static contextTypes = {
     csrfToken: React.PropTypes.string.isRequired,

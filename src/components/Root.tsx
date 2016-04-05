@@ -41,7 +41,7 @@ export default class Root extends React.Component<RootProps, any> {
     editorStore: React.PropTypes.object.isRequired
   };
 
-  getChildContext(): AppContext {
+  getChildContext(): BookDetailsContainerContext {
     return {
       csrfToken: this.props.csrfToken,
       tab: this.props.tab,

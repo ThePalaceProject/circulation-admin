@@ -11,7 +11,6 @@ describe("Complaints", () => {
     let fetchComplaints = jest.genMockFunction();
     let complaints = TestUtils.renderIntoDocument<Complaints>(
       <Complaints
-        csrfToken="token"
         book={{ title: "test book" }}
         bookUrl="http://example.com/works/fakeid"
         fetchComplaints={fetchComplaints}
@@ -37,7 +36,6 @@ describe("Complaints", () => {
       };
       complaints = TestUtils.renderIntoDocument<Complaints>(
         <Complaints
-          csrfToken="token"
           bookUrl="book url"
           book={{ title: "test title" }}
           complaints={complaintsData}
@@ -70,7 +68,6 @@ describe("Complaints", () => {
     let fetchError = { status: 401, response: "test", url: "test url" };
     let complaints = TestUtils.renderIntoDocument<Complaints>(
       <Complaints
-        csrfToken="token"
         bookUrl="book url"
         book={{ title: "test book" }}
         fetchError={fetchError}

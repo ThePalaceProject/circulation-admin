@@ -31,7 +31,6 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             store={this.props.store}
             bookUrl={this.props.bookUrl}
             book={this.props.bookData}
-            csrfToken={this.props.csrfToken}
             postComplaint={this.props.postComplaint}
             />
         </Tab>
