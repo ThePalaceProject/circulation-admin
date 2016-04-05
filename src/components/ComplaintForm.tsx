@@ -27,7 +27,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       <div className="complaintForm">
         <h3>Add Complaint</h3>
         { this.state.errors.map((error, i) =>
-          <div key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
+          <div className="complaintFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
         ) }
         <form onSubmit={this.post.bind(this)} className="form-inline">
           <Input ref="type" type="select" name="type" placeholder="">
@@ -61,8 +61,12 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       this.props.refreshComplaints();
       this.resetForm();
     }).catch(err => {
-      this.setState({ errors: ["Couldn't post complaint."] });
+      this.showPostError();
     });
+  }
+
+  showPostError() {
+    this.setState({ errors: ["Couldn't post complaint."] });
   }
 
   resetForm() {
