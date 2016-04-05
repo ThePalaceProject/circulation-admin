@@ -66,6 +66,51 @@ describe("actions", () => {
     });
   });
 
+  describe("editBook", () => {
+    let editBookUrl = "http://example.com/editBook";
+
+    it("dispatches request and success", (done) => {
+      let dispatch = jest.genMockFunction();
+      let formData = new FormData();
+      formData.append("csrf_token", "token");
+      formData.append("title", "title");
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      actions.editBook(editBookUrl, formData)(dispatch).then(response => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_BOOK_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_BOOK_SUCCESS);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(fetchMock.mock.calls[0][0]).toBe(editBookUrl);
+        expect(fetchMock.mock.calls[0][1].method).toBe("POST");
+        expect(fetchMock.mock.calls[0][1].body).toBe(formData);
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches failure", (done) => {
+      let dispatch = jest.genMockFunction();
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        reject("test error");
+      }));
+      fetch = fetchMock;
+
+      actions.editBook(editBookUrl, new FormData())(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_BOOK_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_BOOK_FAILURE);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(err).toBe("test error");
+        done();
+      }).catch(err => done.fail(err));
+    });
+  });
+
   describe("fetchComplaints", () => {
     let complaintsUrl = "http://example.com/complaints";
 

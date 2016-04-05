@@ -4,6 +4,7 @@ export default class ActionCreator {
   private fetcher: DataFetcher;
 
   EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
+  EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
   EDIT_BOOK_FAILURE = "EDIT_BOOK_FAILURE";
   FETCH_BOOK_ADMIN_REQUEST = "FETCH_BOOK_ADMIN_REQUEST";
   FETCH_BOOK_ADMIN_SUCCESS = "FETCH_BOOK_ADMIN_SUCCESS";
@@ -79,7 +80,7 @@ export default class ActionCreator {
   }
 
   editBookSuccess() {
-    return { type: this.EDIT_BOOK_REQUEST };
+    return { type: this.EDIT_BOOK_SUCCESS };
   }
 
   editBookFailure(error?: any) {
