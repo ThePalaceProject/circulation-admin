@@ -2,8 +2,8 @@ interface ComplaintsState {
   url: string;
   data: ComplaintsData;
   isFetching: boolean;
-  fetchError: AsyncError;
-  postError: AsyncError;
+  fetchError: any;
+  postError: any;
 }
 
 const initialState: ComplaintsState = {

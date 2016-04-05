@@ -132,9 +132,3 @@ interface AppContext {
   refreshBook?: () => void;
   editorStore?: Redux.Store;
 }
-
-interface AsyncError {
-  status: number;
-  response: Response|string;
-  url: string;
-}

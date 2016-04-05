@@ -102,7 +102,7 @@ export default class ActionCreator {
               reject(err);
             });
           } else {
-            let err: AsyncError = {
+            let err = {
               status: response.status,
               response: response,
               url: url
@@ -151,7 +151,7 @@ export default class ActionCreator {
             dispatch(this.postComplaintSuccess());
             resolve(response);
           } else {
-            let err: AsyncError = {
+            let err = {
               status: response.status,
               response: response,
               url: url
