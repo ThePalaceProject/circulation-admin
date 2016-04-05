@@ -31,7 +31,7 @@ const fetcher = new MockDataFetcher() as any;
 const actions = new ActionCreator(fetcher);
 
 describe("actions", () => {
-  describe("fetchBook", () => {
+  describe("fetchBookAdmin", () => {
     let bookUrl = "http://example.com/book";
 
     it("dispatches request, load, and success", (done) => {

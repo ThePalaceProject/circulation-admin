@@ -57,7 +57,6 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             disabled={this.props.isFetching}
             complaintUrl={this.props.book.issuesLink.href}
             postComplaint={this.props.postComplaint}
-            csrfToken={this.props.csrfToken}
             refreshComplaints={refresh} />
         }
 

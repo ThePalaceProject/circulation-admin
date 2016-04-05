@@ -117,7 +117,6 @@ interface ComplaintsProps extends __React.Props<any> {
 interface ComplaintFormProps extends __React.Props<any> {
   disabled?: boolean;
   complaintUrl: string;
-  csrfToken: string;
   postComplaint: (url: string, data: PostComplaintData) => Promise<any>;
   refreshComplaints: () => void;
 }
