@@ -72,13 +72,23 @@ export default class ActionCreator {
             dispatch(this.editBookSuccess());
             resolve(response);
           } else {
-            err = {
-              status: response.status,
-              response: "Failed to save changes",
-              url: url
-            };
-            dispatch(this.editBookFailure(err));
-            reject(err);
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.editBookFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to save changes",
+                url: url
+              };
+              dispatch(this.editBookFailure(err));
+              reject(err);
+            });
           }
         }).catch(err => {
           err = {
@@ -106,10 +116,12 @@ export default class ActionCreator {
   }
 
   fetchComplaints(url: string) {
+    let err: RequestError;
+
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.fetchComplaintsRequest(url));
-        this.fetcher.fetch(url, { credentials: "same-origin" }).then(response => {
+        fetch(url, { credentials: "same-origin" }).then(response => {
           if (response.status === 200) {
             response.json().then((data: ComplaintsData) => {
               dispatch(this.fetchComplaintsSuccess());
@@ -120,15 +132,30 @@ export default class ActionCreator {
               reject(err);
             });
           } else {
-            let err: RequestError = {
-              status: response.status,
-              response: "Failed to retrieve complaints",
-              url: url
-            };
-            dispatch(this.fetchComplaintsFailure(err));
-            reject(err);
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchComplaintsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve complaints",
+                url: url
+              };
+              dispatch(this.fetchComplaintsFailure(err));
+              reject(err);
+            });
           }
         }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
           dispatch(this.fetchComplaintsFailure(err));
           reject(err);
         });
@@ -153,6 +180,8 @@ export default class ActionCreator {
   }
 
   postComplaint(url: string, data: PostComplaintData) {
+    let err: RequestError;
+
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.postComplaintRequest());
@@ -169,15 +198,30 @@ export default class ActionCreator {
             dispatch(this.postComplaintSuccess());
             resolve(response);
           } else {
-            let err = {
-              status: response.status,
-              response: "Failed to post complaint",
-              url: url
-            };
-            dispatch(this.postComplaintFailure(err));
-            reject(err);
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.postComplaintFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to post complaint",
+                url: url
+              };
+              dispatch(this.postComplaintFailure(err));
+              reject(err);
+            });
           }
         }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
           dispatch(this.postComplaintFailure(err));
           reject(err);
         });
