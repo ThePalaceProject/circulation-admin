@@ -9,6 +9,7 @@ interface BookData {
   restoreLink?: LinkData;
   refreshLink?: LinkData;
   editLink?: LinkData;
+  issuesLink?: LinkData;
 }
 
 interface BookLink {
@@ -18,32 +19,25 @@ interface BookLink {
 
 interface RootProps extends __React.Props<any> {
   csrfToken: string;
-  collection: string;
-  book: string;
+  collectionUrl: string;
+  bookUrl: string;
   tab: string;
   isTopLevel: boolean;
   navigate: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
   bookLinks?: BookLink[];
 }
 
-interface ErrorData {
-  status: number;
-  url: string;
-  response: string;
-}
-
 interface EditorProps extends __React.Props<any> {
-  book: string;
   bookUrl?: string;
   bookData?: BookData;
+  bookAdminUrl?: string;
   fetchError?: ErrorData;
   editError?: ErrorData;
   csrfToken: string;
   store?: Redux.Store;
   fetchBook?: (url: string) => void;
   refreshBook?: () => void;
-  dispatchEdit?: () => void;
-  dispatchEditFailure?: (error) => void;
+  editBook?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
 }
 
@@ -53,8 +47,8 @@ interface ButtonFormProps {
   csrfToken: string;
   disabled: boolean;
   refresh: () => any;
-  dispatchEdit: () => void;
-  dispatchEditFailure?: (error) => void;
+  submit: (url: string, data: FormData) => Promise<any>;
+  handleError?: (error) => void;
 }
 
 interface EditableInputProps extends __React.Props<any> {
@@ -68,8 +62,7 @@ interface EditFormProps extends BookData {
   csrfToken: string;
   disabled: boolean;
   refresh: () => any;
-  dispatchEdit: () => void;
-  dispatchEditFailure?: (error) => void;
+  editBook: (url: string, data: FormData) => Promise<any>;
 }
 
 interface ErrorMessageProps {
@@ -78,29 +71,22 @@ interface ErrorMessageProps {
 }
 
 interface BookDetailsContainerProps extends __React.Props<any> {
-  book: {
-    url: string;
-  };
-  collection: string;
-}
-
-interface BookDetailsContainerConfig {
-  editorStore: Redux.Store;
-  csrfToken: string;
-  navigate?: (collectionUrl: string, bookUrl: string, tab: string, isTopLevel?: boolean) => void;
-  tab?: string;
-  refreshBook?: () => Promise<any>;
+  bookUrl: string;
+  collectionUrl: string;
+  refreshBrowser: () => void;
 }
 
 interface TabContainerProps extends __React.Props<any> {
-  book: string;
-  collection: string;
+  bookUrl: string;
+  bookData?: BookData;
+  collectionUrl: string;
   store: Redux.Store;
   csrfToken: string;
   tab: string;
   navigate: (collectionUrl: string, bookUrl: string, isToplevel: boolean, tab?: string) => void;
-  refreshBook: () => void;
+  refreshBrowser: () => void;
   complaintsCount?: number;
+  postComplaint?: (url: string, data: PostComplaintData) => Promise<any>;
 }
 
 interface ComplaintsData {
@@ -111,19 +97,41 @@ interface ComplaintsData {
 }
 
 interface ComplaintsProps extends __React.Props<any> {
-  book: string;
-  bookData?: BookData;
+  bookUrl: string;
+  book: BookData;
   complaints?: any;
   fetchError?: ErrorData;
   store?: Redux.Store;
   fetchComplaints?: (url: string) => Promise<any>;
   isFetching?: boolean;
+  postComplaint: (url: string, data: PostComplaintData) => Promise<any>;
 }
 
-interface EditorContext {
+interface ComplaintFormProps extends __React.Props<any> {
+  disabled?: boolean;
+  complaintUrl: string;
+  postComplaint: (url: string, data: PostComplaintData) => Promise<any>;
+  refreshComplaints: () => void;
+}
+
+interface PostComplaintData {
+  type: string;
+}
+
+interface BookDetailsContainerContext {
   csrfToken?: string;
   navigate?: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
   tab?: string;
   refreshBook?: () => void;
   editorStore?: Redux.Store;
+}
+
+// this should be same as RequestError from opd-browser/lib/DataFetcher,
+// but for now we're not importing that interface because then all the
+// other interfaces in this file would have to be explicitly imported
+// and exported throughout the project
+interface ErrorData {
+  status: number;
+  response: string;
+  url: string;
 }

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
 import Complaints from "./Complaints";
+import ActionCreator from "../actions";
 
 export class TabContainer extends React.Component<TabContainerProps, any> {
   render(): JSX.Element {
@@ -21,13 +22,17 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
           <Editor
             store={this.props.store}
             csrfToken={this.props.csrfToken}
-            book={this.props.book}
-            refreshBook={this.props.refreshBook} />
+            bookUrl={this.props.bookUrl}
+            refreshBook={this.props.refreshBrowser}
+            />
         </Tab>
         <Tab eventKey={"complaints"} title={complaintsTitle}>
           <Complaints
             store={this.props.store}
-            book={this.props.book} />
+            bookUrl={this.props.bookUrl}
+            book={this.props.bookData}
+            postComplaint={this.props.postComplaint}
+            />
         </Tab>
       </Tabs>
     );
@@ -35,7 +40,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
 
   handleSelect(tab) {
     if (this.props.navigate) {
-      this.props.navigate(this.props.collection, this.props.book, false, tab);
+      this.props.navigate(this.props.collectionUrl, this.props.bookUrl, false, tab);
     }
   }
 }
@@ -52,14 +57,23 @@ function mapStateToProps(state, ownProps) {
   }
 
   return {
-    complaintsCount: complaintsCount
+    complaintsCount: complaintsCount,
+    bookData: state.editor.book.data
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  let actions = new ActionCreator();
+
+  return {
+    postComplaint: (url: string, data: PostComplaintData) => dispatch(actions.postComplaint(url, data))
   };
 }
 
 let connectOptions = { withRef: true, pure: true };
 const ConnectedTabContainer = connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
   null,
   connectOptions
 )(TabContainer);

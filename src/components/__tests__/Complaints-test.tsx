@@ -11,8 +11,10 @@ describe("Complaints", () => {
     let fetchComplaints = jest.genMockFunction();
     let complaints = TestUtils.renderIntoDocument<Complaints>(
       <Complaints
-        book="http://example.com/works/fakeid"
+        book={{ title: "test book" }}
+        bookUrl="http://example.com/works/fakeid"
         fetchComplaints={fetchComplaints}
+        postComplaint={jest.genMockFunction()}
         />
     );
 
@@ -34,10 +36,11 @@ describe("Complaints", () => {
       };
       complaints = TestUtils.renderIntoDocument<Complaints>(
         <Complaints
-          book="book url"
-          bookData={{ title: "test title" }}
+          bookUrl="book url"
+          book={{ title: "test title" }}
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}
+          postComplaint={jest.genMockFunction()}
           />
       );
     });
@@ -65,9 +68,11 @@ describe("Complaints", () => {
     let fetchError = { status: 401, response: "test", url: "test url" };
     let complaints = TestUtils.renderIntoDocument<Complaints>(
       <Complaints
-        book="book url"
+        bookUrl="book url"
+        book={{ title: "test book" }}
         fetchError={fetchError}
         fetchComplaints={fetchComplaints}
+        postComplaint={jest.genMockFunction}
         />
     );
 

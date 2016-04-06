@@ -65,8 +65,8 @@ class CirculationWeb {
       ReactDOM.render(
         <Root
           csrfToken={config.csrfToken}
-          collection={collectionUrl}
-          book={bookUrl}
+          collectionUrl={collectionUrl}
+          bookUrl={bookUrl}
           tab={tab}
           isTopLevel={isTopLevel}
           navigate={navigate}

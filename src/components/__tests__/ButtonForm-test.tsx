@@ -9,9 +9,10 @@ import ButtonForm from "../ButtonForm";
 
 describe("ButtonForm", () => {
   let buttonForm;
-  let fetchMock;
+  let refresh;
+  let submit;
 
-  beforeEach(() => {
+  it("shows label", () => {
     buttonForm = TestUtils.renderIntoDocument(
       <ButtonForm
         label="label"
@@ -19,59 +20,19 @@ describe("ButtonForm", () => {
         csrfToken="token"
         disabled={false}
         refresh={jest.genMockFunction()}
-        dispatchEdit={jest.genMockFunction()}
+        submit={jest.genMockFunction()}
         />
     );
-    fetchMock = jest.genMockFunction();
-    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
-      resolve({ status: 200 });
-    }));
-    fetch = fetchMock;
-  });
-
-  it("shows label", () => {
     let buttonComponent = TestUtils.findRenderedComponentWithType(buttonForm, ButtonInput);
     let button = TestUtils.findRenderedDOMComponentWithTag(buttonComponent, "input");
     expect(button.getAttribute("value")).toEqual("label");
   });
 
-  it("hits provided link", () => {
-    let form = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "form");
-    TestUtils.Simulate.submit(form);
-    expect(fetchMock.mock.calls.length).toBe(1);
-    expect(fetchMock.mock.calls[0][0]).toBe("link");
-    expect(fetchMock.mock.calls[0][1].method).toBe("POST");
-  });
-
-  it("refreshes", (done) => {
-    buttonForm = TestUtils.renderIntoDocument(
-      <ButtonForm
-        label="label"
-        link="link"
-        csrfToken="token" 
-        disabled={false}
-        refresh={done}
-        dispatchEdit={jest.genMockFunction()}
-        />
-    );
-
-    let form = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "form");
-    TestUtils.Simulate.submit(form);
-  });
-
-  it("dispatches error after failure", (done) => {
-    fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
-      resolve({
-        status: 500,
-        url: "",
-        text: () => {
-          return new Promise<any>((resolve, reject) => {
-            resolve("response");
-          });
-        }
-      });
+  it("calls provided submit function", () => {
+    submit = jest.genMockFunction();
+    submit.mockReturnValue(new Promise((resolve, reject) => {
+      resolve();
     }));
-
     buttonForm = TestUtils.renderIntoDocument(
       <ButtonForm
         label="label"
@@ -79,8 +40,29 @@ describe("ButtonForm", () => {
         csrfToken="token"
         disabled={false}
         refresh={jest.genMockFunction()}
-        dispatchEdit={jest.genMockFunction()}
-        dispatchEditFailure={done}
+        submit={submit}
+        />
+    );
+    let form = TestUtils.findRenderedDOMComponentWithTag(buttonForm, "form");
+    TestUtils.Simulate.submit(form);
+    expect(submit.mock.calls.length).toBe(1);
+    expect(submit.mock.calls[0][0]).toBe("link");
+    expect(submit.mock.calls[0][1].get("csrf_token").value).toBe("token");
+  });
+
+  it("refreshes", (done) => {
+    submit = jest.genMockFunction();
+    submit.mockReturnValue(new Promise((resolve, reject) => {
+      resolve();
+    }));
+    buttonForm = TestUtils.renderIntoDocument(
+      <ButtonForm
+        label="label"
+        link="link"
+        csrfToken="token"
+        disabled={false}
+        refresh={done}
+        submit={submit}
         />
     );
 
@@ -93,10 +75,10 @@ describe("ButtonForm", () => {
       <ButtonForm
         label="label"
         link="link"
-        csrfToken="token" 
+        csrfToken="token"
         disabled={true}
         refresh={jest.genMockFunction()}
-        dispatchEdit={jest.genMockFunction()}
+        submit={jest.genMockFunction()}
         />
     );
 

@@ -35,12 +35,12 @@ describe("TabContainer", () => {
     store = buildStore();
     container = TestUtils.renderIntoDocument(
       <TabContainer
-        book="book url"
-        collection="collection url"
+        bookUrl="book url"
+        collectionUrl="collection url"
         tab={null}
         navigate={navigate}
         csrfToken="token"
-        refreshBook={jest.genMockFunction()}
+        refreshBrowser={jest.genMockFunction()}
         store={store}
         >
         <div className="bookDetails">Moby Dick</div>
@@ -64,12 +64,12 @@ describe("TabContainer", () => {
   it("shows Editor", () => {
     let editor = TestUtils.findRenderedComponentWithType(container, Editor);
     expect(editor.props.csrfToken).toBe("token");
-    expect(editor.props.book).toBe("book url");
+    expect(editor.props.bookUrl).toBe("book url");
   });
 
   it("shows Complaints", () => {
     let complaints = TestUtils.findRenderedComponentWithType(container, Complaints);
-    expect(complaints.props.book).toBe("book url");
+    expect(complaints.props.bookUrl).toBe("book url");
   });
 
   it("calls navigate when tab is clicked", () => {
