@@ -29,6 +29,10 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
           </div>
         }
 
+        { this.props.fetchError &&
+          <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
+        }
+
         <h3>Complaints</h3>
         { this.props.complaints && Object.keys(this.props.complaints).length > 0 ?
           <table className="table">
@@ -58,10 +62,6 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             complaintUrl={this.props.book.issuesLink.href}
             postComplaint={this.props.postComplaint}
             refreshComplaints={refresh} />
-        }
-
-        { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
         }
       </div>
     );

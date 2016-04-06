@@ -19,7 +19,7 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
-    "opds-browser": "^0.0.9",
+    "opds-browser": "^0.0.10",
     "qs": "^6.1.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
