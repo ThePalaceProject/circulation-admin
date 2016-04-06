@@ -27,12 +27,6 @@ interface RootProps extends __React.Props<any> {
   bookLinks?: BookLink[];
 }
 
-interface ErrorData {
-  status: number;
-  url: string;
-  response: string;
-}
-
 interface EditorProps extends __React.Props<any> {
   bookUrl?: string;
   bookData?: BookData;
@@ -130,4 +124,14 @@ interface BookDetailsContainerContext {
   tab?: string;
   refreshBook?: () => void;
   editorStore?: Redux.Store;
+}
+
+// this should be same as RequestError from opd-browser/lib/DataFetcher,
+// but for now we're not importing that interface because then all the
+// other interfaces in this file would have to be explicitly imported
+// and exported throughout the project
+interface ErrorData {
+  status: number;
+  response: string;
+  url: string;
 }

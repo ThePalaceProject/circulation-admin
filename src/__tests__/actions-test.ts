@@ -11,7 +11,11 @@ class MockDataFetcher {
       if (this.resolve) {
         resolve(this.testData);
       } else {
-        reject("test error");
+        reject({
+          status: null,
+          response: "test error",
+          url: url
+        });
       }
     });
   }
@@ -21,7 +25,9 @@ class MockDataFetcher {
       if (this.resolve) {
         resolve(this.testData);
       } else {
-        reject("test error");
+        reject({
+          message: "test error"
+        });
       }
     });
   }
@@ -60,7 +66,11 @@ describe("actions", () => {
         expect(dispatch.mock.calls.length).toBe(2);
         expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_BOOK_ADMIN_REQUEST);
         expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_BOOK_ADMIN_FAILURE);
-        expect(err).toBe("test error");
+        expect(err).toEqual({
+          status: null,
+          response: "test error",
+          url: bookUrl
+        });
         done();
       });
     });
@@ -96,7 +106,7 @@ describe("actions", () => {
       let dispatch = jest.genMockFunction();
       let fetchMock = jest.genMockFunction();
       fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
-        reject("test error");
+        reject({ message: "test error" });
       }));
       fetch = fetchMock;
 
@@ -105,7 +115,11 @@ describe("actions", () => {
         expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_BOOK_REQUEST);
         expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_BOOK_FAILURE);
         expect(fetchMock.mock.calls.length).toBe(1);
-        expect(err).toBe("test error");
+        expect(err).toEqual({
+          status: null,
+          response: "test error",
+          url: editBookUrl
+        });
         done();
       }).catch(err => done.fail(err));
     });
@@ -154,7 +168,7 @@ describe("actions", () => {
         expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_COMPLAINTS_FAILURE);
         expect(err).toEqual({
           status: testData.status,
-          response: testData,
+          response: "Failed to retrieve complaints",
           url: complaintsUrl
         });
         done();
@@ -169,7 +183,7 @@ describe("actions", () => {
         expect(dispatch.mock.calls.length).toBe(2);
         expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_COMPLAINTS_REQUEST);
         expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_COMPLAINTS_FAILURE);
-        expect(err).toBe("test error");
+        expect(err).toEqual({ message: "test error" });
         done();
       });
     });
@@ -216,7 +230,7 @@ describe("actions", () => {
         expect(fetchMock.mock.calls.length).toBe(1);
         expect(err).toEqual({
           status: 500,
-          response: { status: 500 },
+          response: "Failed to post complaint",
           url: postComplaintUrl
         });
         done();

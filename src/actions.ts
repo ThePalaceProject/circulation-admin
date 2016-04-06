@@ -1,4 +1,5 @@
 import DataFetcher from "opds-browser/lib/DataFetcher";
+import { RequestError, RequestRejector } from "opds-browser/lib/DataFetcher";
 
 export default class ActionCreator {
   private fetcher: DataFetcher;
@@ -26,13 +27,13 @@ export default class ActionCreator {
 
   fetchBookAdmin(url: string) {
     return (dispatch => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.fetchBookAdminRequest(url));
         this.fetcher.fetchOPDSData(url).then((data: BookData) => {
           dispatch(this.fetchBookAdminSuccess());
           dispatch(this.loadBookAdmin(data, url));
           resolve(data);
-        }).catch(err => {
+        }).catch((err: RequestError) => {
           dispatch(this.fetchBookAdminFailure(err));
           reject(err);
         });
@@ -48,7 +49,7 @@ export default class ActionCreator {
     return { type: this.FETCH_BOOK_ADMIN_SUCCESS };
   }
 
-  fetchBookAdminFailure(error?: any) {
+  fetchBookAdminFailure(error?: RequestError) {
     return { type: this.FETCH_BOOK_ADMIN_FAILURE, error };
   }
 
@@ -57,17 +58,34 @@ export default class ActionCreator {
   }
 
   editBook(url: string, data: FormData) {
+    let err: RequestError;
+
     return (dispatch => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.editBookRequest());
         fetch(url, {
           method: "POST",
           body: data,
           credentials: "same-origin"
         }).then(response => {
-          dispatch(this.editBookSuccess());
-          resolve(response);
+          if (response.status === 200) {
+            dispatch(this.editBookSuccess());
+            resolve(response);
+          } else {
+            err = {
+              status: response.status,
+              response: "Failed to save changes",
+              url: url
+            };
+            dispatch(this.editBookFailure(err));
+            reject(err);
+          }
         }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
           dispatch(this.editBookFailure(err));
           reject(err);
         });
@@ -83,13 +101,13 @@ export default class ActionCreator {
     return { type: this.EDIT_BOOK_SUCCESS };
   }
 
-  editBookFailure(error?: any) {
+  editBookFailure(error?: RequestError) {
     return { type: this.EDIT_BOOK_FAILURE, error };
   }
 
   fetchComplaints(url: string) {
     return (dispatch => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.fetchComplaintsRequest(url));
         this.fetcher.fetch(url, { credentials: "same-origin" }).then(response => {
           if (response.status === 200) {
@@ -102,9 +120,9 @@ export default class ActionCreator {
               reject(err);
             });
           } else {
-            let err = {
+            let err: RequestError = {
               status: response.status,
-              response: response,
+              response: "Failed to retrieve complaints",
               url: url
             };
             dispatch(this.fetchComplaintsFailure(err));
@@ -126,7 +144,7 @@ export default class ActionCreator {
     return { type: this.FETCH_COMPLAINTS_SUCCESS };
   }
 
-  fetchComplaintsFailure(error?: any) {
+  fetchComplaintsFailure(error?: RequestError) {
     return { type: this.FETCH_COMPLAINTS_FAILURE, error };
   }
 
@@ -136,7 +154,7 @@ export default class ActionCreator {
 
   postComplaint(url: string, data: PostComplaintData) {
     return (dispatch => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.postComplaintRequest());
         fetch(url, {
           method: "POST",
@@ -153,7 +171,7 @@ export default class ActionCreator {
           } else {
             let err = {
               status: response.status,
-              response: response,
+              response: "Failed to post complaint",
               url: url
             };
             dispatch(this.postComplaintFailure(err));
@@ -175,7 +193,7 @@ export default class ActionCreator {
     return { type: this.POST_COMPLAINT_SUCCESS };
   }
 
-  postComplaintFailure(error?: any) {
+  postComplaintFailure(error?: RequestError) {
     return { type: this.POST_COMPLAINT_FAILURE, error };
   }
 }

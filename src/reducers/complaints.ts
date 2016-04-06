@@ -1,9 +1,11 @@
+import { RequestError } from "opds-browser/lib/DataFetcher";
+
 interface ComplaintsState {
   url: string;
   data: ComplaintsData;
   isFetching: boolean;
-  fetchError: any;
-  postError: any;
+  fetchError: RequestError;
+  postError: RequestError;
 }
 
 const initialState: ComplaintsState = {

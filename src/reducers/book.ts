@@ -1,4 +1,14 @@
-const initialState = {
+import { RequestError } from "opds-browser/lib/DataFetcher";
+
+interface BookState {
+  url: string;
+  data: BookData;
+  isFetching: boolean;
+  fetchError: RequestError;
+  editError: RequestError;
+}
+
+const initialState: BookState = {
   url: null,
   data: null,
   isFetching: false,
@@ -6,7 +16,7 @@ const initialState = {
   editError: null
 };
 
-export default (state = initialState, action) => {
+export default (state: BookState = initialState, action) => {
 
   switch (action.type) {
     case "FETCH_BOOK_ADMIN_REQUEST":
