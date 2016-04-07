@@ -13,6 +13,7 @@ describe("EditableInput", () => {
   beforeEach(() => {
     editableInput = TestUtils.renderIntoDocument(
       <EditableInput
+        type="text"
         label="label"
         name="name"
         disabled={false}
@@ -36,6 +37,7 @@ describe("EditableInput", () => {
     let elem = document.createElement("div");
     let editableInput = ReactDOM.render(
       <EditableInput
+        type="text"
         label="label"
         name="name"
         disabled={false}
@@ -45,6 +47,7 @@ describe("EditableInput", () => {
     );
     ReactDOM.render(
       <EditableInput
+        type="text"
         label="label"
         name="name"
         disabled={false}
@@ -67,6 +70,7 @@ describe("EditableInput", () => {
   it("disables", () => {
     editableInput = TestUtils.renderIntoDocument(
       <EditableInput
+        type="text"
         label="label"
         name="name"
         disabled={true}
@@ -81,25 +85,46 @@ describe("EditableInput", () => {
 describe("EditForm", () => {
   let bookData = {
     title: "title",
+    publisher: "publisher",
+    summary: "summary",
     editLink: {
       href: "href",
       rel: "edit"
     }
   };
 
-  it("shows editable input with title", () => {
-    let editForm = TestUtils.renderIntoDocument(
-      <EditForm
-        {...bookData}
-        csrfToken=""
-        disabled={false}
-        refresh={jest.genMockFunction()}
-        editBook={jest.genMockFunction()}
-        />
-    );
-    let input = TestUtils.findRenderedComponentWithType(editForm, EditableInput);
-    expect(input.props.label).toBe("Title");
-    expect(input.props.value).toBe("title");
+  describe("rendering", () => {
+    let editForm;
+
+    beforeEach(() => {
+      editForm = TestUtils.renderIntoDocument(
+        <EditForm
+          {...bookData}
+          csrfToken=""
+          disabled={false}
+          refresh={jest.genMockFunction()}
+          editBook={jest.genMockFunction()}
+          />
+      );
+    });
+
+    it("shows editable input with title", () => {
+      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[0];
+      expect(input.props.label).toBe("Title");
+      expect(input.props.value).toBe("title");
+    });
+
+    it("shows editable input with publisher", () => {
+      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[1];
+      expect(input.props.label).toBe("Publisher");
+      expect(input.props.value).toBe("publisher");
+    });
+
+    it("shows editable input with summary", () => {
+      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[2];
+      expect(input.props.label).toBe("Summary");
+      expect(input.props.value).toBe("summary");
+    });
   });
 
   it("calls editBook on submit", () => {
@@ -124,6 +149,8 @@ describe("EditForm", () => {
     expect(editBook.mock.calls[0][0]).toBe("href");
     expect(editBook.mock.calls[0][1].get("csrf_token").value).toBe("token");
     expect(editBook.mock.calls[0][1].get("title").value).toBe(bookData.title);
+    expect(editBook.mock.calls[0][1].get("publisher").value).toBe(bookData.publisher);
+    expect(editBook.mock.calls[0][1].get("summary").value).toBe(bookData.summary);
   });
 
   it("refreshes book after editing", (done) => {

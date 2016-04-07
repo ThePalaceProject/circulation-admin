@@ -12,13 +12,14 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
   render() {
     return (
       <Input
-        type="text"
+        type={this.props.type}
         disabled={this.props.disabled}
         name={this.props.name}
         label={this.props.label}
         ref="input"
         value={this.state.value}
         onChange={this.handleChange.bind(this)}
+        style={this.props.style}
         />
     );
   }
@@ -48,12 +49,28 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           value={this.props.csrfToken}
           />
         <EditableInput
+          type="text"
           disabled={this.props.disabled}
           name="title"
           label="Title"
           value={this.props.title}
           />
-         <div style={{ float: "left" }}>
+        <EditableInput
+          type="text"
+          disabled={this.props.disabled}
+          name="publisher"
+          label="Publisher"
+          value={this.props.publisher}
+          />
+        <EditableInput
+          style={{ height: "300px" }}
+          type="textarea"
+          disabled={this.props.disabled}
+          name="summary"
+          label="Summary"
+          value={this.props.summary}
+          />
+        <div style={{ float: "left" }}>
           <ButtonInput
             disabled={this.props.disabled}
             type="submit"
