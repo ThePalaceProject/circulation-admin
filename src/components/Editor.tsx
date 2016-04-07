@@ -82,6 +82,13 @@ export class Editor extends React.Component<EditorProps, any> {
       this.props.fetchBook(bookAdminUrl);
     }
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.bookUrl && nextProps.bookUrl !== this.props.bookUrl) {
+      let bookAdminUrl = nextProps.bookUrl.replace("works", "admin/works");
+      this.props.fetchBook(bookAdminUrl);
+    }
+  }
 }
 
 function mapStateToProps(state, ownProps) {

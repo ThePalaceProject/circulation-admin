@@ -10,7 +10,7 @@ import EditForm from "../EditForm";
 import ErrorMessage from "../ErrorMessage";
 
 describe("Editor", () => {
-  it("loads admin book url", () => {
+  it("loads admin book url on mount", () => {
     let permalink = "works/1234";
     let fetchBook = jest.genMockFunction();
 
@@ -20,6 +20,26 @@ describe("Editor", () => {
 
     expect(fetchBook.mock.calls.length).toBe(1);
     expect(fetchBook.mock.calls[0][0]).toBe("admin/works/1234");
+  });
+
+  it("loads admin book url when given a new book url", () => {
+    let permalink = "works/1234";
+    let newPermalink = "works/5555";
+    let fetchBook = jest.genMockFunction();
+    let element = document.createElement("div");
+
+    ReactDOM.render(
+      <Editor bookUrl={permalink} fetchBook={fetchBook} csrfToken={"token"} />,
+      element
+    );
+
+    ReactDOM.render(
+      <Editor bookUrl={newPermalink} fetchBook={fetchBook} csrfToken={"token"} />,
+      element
+    );
+
+    expect(fetchBook.mock.calls.length).toBe(2);
+    expect(fetchBook.mock.calls[1][0]).toBe("admin/works/5555");
   });
 
   it("shows title", () => {
