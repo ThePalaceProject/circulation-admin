@@ -58,13 +58,6 @@ export default class EditForm extends React.Component<EditFormProps, any> {
         <EditableInput
           type="text"
           disabled={this.props.disabled}
-          name="published"
-          label="Publish Date"
-          value={this.props.published}
-          />
-        <EditableInput
-          type="text"
-          disabled={this.props.disabled}
           name="publisher"
           label="Publisher"
           value={this.props.publisher}
