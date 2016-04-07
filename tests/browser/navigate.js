@@ -107,6 +107,51 @@ module.exports = {
       });
   },
 
+  "navigate to book, press left and right keys": function(browser) {
+    var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
+    var nextBookSelector = "li:first-child .lane ul.laneBooks li:nth-child(2) a.laneBookLink";
+    var prevBookSelector = "li:last-child .lane ul.laneBooks li:last-child a.laneBookLink";
+    var bookTitleSelector = "h1.bookDetailsTitle";
+
+    browser
+      .goHome()
+      .waitForElementVisible(bookSelector, 5000)
+      .waitForElementNotPresent(breadcrumbSelector, 5000)
+      .verify.noError()
+      .getAttribute(bookSelector, "href", function(result) {
+        var bookUrl = result.value;
+        this.getText(bookSelector, function(result) {
+          var bookTitle = result.value;
+          this.getAttribute(nextBookSelector, "href", function(result) {
+            var nextBookUrl = result.value;
+            this.getText(nextBookSelector, function(result) {
+              var nextBookTitle = result.value;
+              this.getAttribute(prevBookSelector, "href", function(result) {
+                var prevBookUrl = result.value;
+                this.getText(prevBookSelector, function(result) {
+                  var prevBookTitle = result.value;
+                  this
+                    .click(bookSelector)
+                    .verify.noError()
+                    .verify.urlEquals(bookUrl)
+                    .verify.containsText(bookTitleSelector, bookTitle)
+                    .keys(browser.Keys.RIGHT_ARROW)
+                    .verify.urlEquals(nextBookUrl)
+                    .verify.containsText(bookTitleSelector, nextBookTitle)
+                    .keys(browser.Keys.LEFT_ARROW)
+                    .verify.urlEquals(bookUrl)
+                    .verify.containsText(bookTitleSelector, bookTitle)
+                    .keys(browser.Keys.LEFT_ARROW)
+                    .verify.urlEquals(prevBookUrl)
+                    .verify.containsText(bookTitleSelector, prevBookTitle);
+                });
+              });
+            });
+          });
+        });
+      });
+  },
+
   after: function(browser) {
     browser.end();
   }
