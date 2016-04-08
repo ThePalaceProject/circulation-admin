@@ -112,6 +112,8 @@ module.exports = {
     var nextBookSelector = "li:first-child .lane ul.laneBooks li:nth-child(2) a.laneBookLink";
     var prevBookSelector = "li:last-child .lane ul.laneBooks li:last-child a.laneBookLink";
     var bookTitleSelector = "h1.bookDetailsTitle";
+    var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
+    var titleInputSelector = "input[name='title']";
 
     browser
       .goHome()
@@ -138,12 +140,20 @@ module.exports = {
                     .keys(browser.Keys.RIGHT_ARROW)
                     .verify.urlEquals(nextBookUrl)
                     .verify.containsText(bookTitleSelector, nextBookTitle)
+                    .click(editTabSelector)
+                    .waitForElementPresent(titleInputSelector, 5000)
+                    .waitForElementNotPresent(".fa-spinner", 5000)
+                    .verify.value(titleInputSelector, nextBookTitle)
                     .keys(browser.Keys.LEFT_ARROW)
                     .verify.urlEquals(bookUrl)
                     .verify.containsText(bookTitleSelector, bookTitle)
                     .keys(browser.Keys.LEFT_ARROW)
                     .verify.urlEquals(prevBookUrl)
-                    .verify.containsText(bookTitleSelector, prevBookTitle);
+                    .verify.containsText(bookTitleSelector, prevBookTitle)
+                    .click(editTabSelector)
+                    .waitForElementPresent(titleInputSelector, 5000)
+                    .waitForElementNotPresent(".fa-spinner", 5000)
+                    .verify.value(titleInputSelector, prevBookTitle)
                 });
               });
             });
