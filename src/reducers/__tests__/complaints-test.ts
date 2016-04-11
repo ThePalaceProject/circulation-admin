@@ -8,7 +8,8 @@ describe("complaints reducer", () => {
     data: null,
     isFetching: false,
     fetchError: null,
-    postError: null
+    postError: null,
+    resolveError: null
   };
 
   let errorState = {
@@ -16,7 +17,8 @@ describe("complaints reducer", () => {
     data: null,
     isFetching: false,
     fetchError: { status: 401, response: "test error", url: "test url" },
-    postError: null
+    postError: null,
+    resolveError: null
   };
 
   it("returns initial state for unrecognized action", () => {
@@ -48,7 +50,8 @@ describe("complaints reducer", () => {
       data: null,
       isFetching: true,
       fetchError: null,
-      postError: null
+      postError: null,
+      resolveError: null
     };
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
@@ -64,7 +67,8 @@ describe("complaints reducer", () => {
       data: null,
       isFetching: true,
       fetchError: null,
-      postError: null
+      postError: null,
+      resolveError: null
     };
     let newState = Object.assign({}, oldState, {
       data: "test data",
