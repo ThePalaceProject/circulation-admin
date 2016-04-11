@@ -6,6 +6,7 @@ import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
 
 import Header from "../Header";
+import HeaderCollectionLink from "opds-browser/lib/components/HeaderCollectionLink";
 
 class TestSearch extends React.Component<any, any> {
   render(): JSX.Element {
@@ -22,7 +23,7 @@ describe("Header", () => {
   beforeEach(() => {
     renderCollectionLink = jest.genMockFunction();
     header = TestUtils.renderIntoDocument(
-      <Header renderCollectionLink={renderCollectionLink}>
+      <Header CollectionLink={renderCollectionLink}>
         <TestSearch />
       </Header>
     );
