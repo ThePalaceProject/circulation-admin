@@ -2,9 +2,14 @@ import * as React from "react";
 import { ButtonInput } from "react-bootstrap";
 
 export default class ButtonForm extends React.Component<ButtonFormProps, any> {
+  constructor(props) {
+    super(props);
+    this.submit = this.submit.bind(this);
+  }
+
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.submit.bind(this)}>
+      <form className={this.props.className} ref="form" onSubmit={this.submit}>
         <input
           type="hidden"
           name="csrf_token"

@@ -43,7 +43,7 @@ interface EditorProps extends __React.Props<any> {
   isFetching?: boolean;
 }
 
-interface ButtonFormProps {
+interface ButtonFormProps extends __React.HTMLProps<any> {
   link: string;
   label: string;
   csrfToken: string;

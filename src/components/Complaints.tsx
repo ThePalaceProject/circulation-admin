@@ -7,21 +7,13 @@ import ComplaintForm from "./ComplaintForm";
 import ButtonForm from "./ButtonForm";
 
 export class Complaints extends React.Component<ComplaintsProps, any> {
+  constructor(props) {
+    super(props);
+    this.resolve = this.resolve.bind(this);
+    this.refresh = this.refresh.bind(this);
+  }
+
   render(): JSX.Element {
-    let refresh = () => {
-      this.props.fetchComplaints(this.complaintsUrl());
-    };
-
-    let resolve = (url: string, data: FormData) => {
-      if (window.confirm("Are you sure you want to resolve this complaint?")) {
-        return this.props.resolveComplaints(url, data);
-      } else {
-        return new Promise((resolve, reject) => {
-          reject();
-        })
-      }
-    }
-
     return (
       <div>
         { this.props.book &&
@@ -41,7 +33,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
         }
 
         { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
+          <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
 
         <h3>Complaints</h3>
@@ -61,14 +53,15 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                   <td className="complaintCount">{this.props.complaints[type]}</td>
                   <td>
                     <ButtonForm
+                      className="resolveComplaintsForm"
                       bsSize={"small"}
                       csrfToken={this.props.csrfToken}
                       data={{ type }}
                       disabled={this.props.isFetching}
                       label="Resolve"
                       link={this.resolveComplaintsUrl()}
-                      submit={resolve}
-                      refresh={refresh}
+                      submit={this.resolve}
+                      refresh={this.refresh}
                       />
                   </td>
                 </tr>
@@ -85,7 +78,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             disabled={this.props.isFetching}
             complaintUrl={this.props.book.issuesLink.href}
             postComplaint={this.props.postComplaint}
-            refreshComplaints={refresh} />
+            refreshComplaints={this.refresh} />
         }
       </div>
     );
@@ -111,6 +104,20 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
       return match[1].replace("-", " ");
     } else {
       return type;
+    }
+  }
+
+  refresh() {
+    this.props.fetchComplaints(this.complaintsUrl());
+  };
+
+  resolve(url: string, data: FormData) {
+    if (window.confirm("Are you sure you want to resolve all complaints of this type?")) {
+      return this.props.resolveComplaints(url, data);
+    } else {
+      return new Promise((resolve, reject) => {
+        reject();
+      })
     }
   }
 }
