@@ -132,6 +132,14 @@ interface BookDetailsContainerContext {
   editorStore?: Redux.Store;
 }
 
+interface HeaderContext {
+  navigate?: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
+  pathFor?: (collection: string, book: string) => string;
+}
+
+interface RootContext extends BookDetailsContainerContext, HeaderContext {
+}
+
 // this should be same as RequestError from opd-browser/lib/DataFetcher,
 // but for now we're not importing that interface because then all the
 // other interfaces in this file would have to be explicitly imported

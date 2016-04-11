@@ -10,7 +10,7 @@ import * as qs from "qs";
 
 export default class Root extends React.Component<RootProps, any> {
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
-  pathFor: (collectionUrl: string, bookUrl: string, tab: string) => string;
+  pathFor: (collectionUrl: string, bookUrl: string) => string;
   editorStore: Redux.Store;
 
   constructor(props) {
@@ -38,15 +38,17 @@ export default class Root extends React.Component<RootProps, any> {
     csrfToken: React.PropTypes.string.isRequired,
     tab: React.PropTypes.string,
     navigate: React.PropTypes.func.isRequired,
-    editorStore: React.PropTypes.object.isRequired
+    editorStore: React.PropTypes.object.isRequired,
+    pathFor: React.PropTypes.func.isRequired
   };
 
-  getChildContext(): BookDetailsContainerContext {
+  getChildContext(): RootContext {
     return {
       csrfToken: this.props.csrfToken,
       tab: this.props.tab,
       navigate: this.props.navigate,
-      editorStore: this.editorStore
+      editorStore: this.editorStore,
+      pathFor: this.pathFor
     };
   }
 
