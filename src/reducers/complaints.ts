@@ -20,7 +20,7 @@ const initialState: ComplaintsState = {
 
 export default (state: ComplaintsState = initialState, action) => {
   switch (action.type) {
-    case "RESOLVE_COMPLAINT_REQUEST":
+    case "RESOLVE_COMPLAINTS_REQUEST":
     case "POST_COMPLAINT_REQUEST":
     case "FETCH_COMPLAINTS_REQUEST":
       return Object.assign({}, state, {

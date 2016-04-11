@@ -76,4 +76,74 @@ describe("complaints reducer", () => {
     });
     expect(complaints(oldState, action)).toEqual(newState);
   });
+
+  it("handles POST_COMPLAINT_REQUEST", () => {
+    let action = { type: "POST_COMPLAINT_REQUEST", url: "test url" };
+
+    // start with empty state
+    let newState = Object.assign({}, initState, {
+      url: "test url",
+      isFetching: true
+    });
+    expect(complaints(initState, action)).toEqual(newState);
+
+    // start with error state
+    newState = Object.assign({}, errorState, {
+      isFetching: true,
+      fetchError: null
+    });
+    expect(complaints(errorState, action)).toEqual(newState);
+  });
+
+  it("handles POST_COMPLAINT_FAILURE", () => {
+    let action = { type: "POST_COMPLAINT_FAILURE", error: "test error" };
+    let oldState = {
+      url: "test url",
+      data: null,
+      isFetching: true,
+      fetchError: null,
+      postError: null,
+      resolveError: null
+    };
+    let newState = Object.assign({}, oldState, {
+      postError: "test error",
+      isFetching: false
+    });
+    expect(complaints(oldState, action)).toEqual(newState)
+  });
+
+  it("handles RESOLVE_COMPLAINTS_REQUEST", () => {
+    let action = { type: "RESOLVE_COMPLAINTS_REQUEST", url: "test url" };
+
+    // start with empty state
+    let newState = Object.assign({}, initState, {
+      url: "test url",
+      isFetching: true
+    });
+    expect(complaints(initState, action)).toEqual(newState);
+
+    // start with error state
+    newState = Object.assign({}, errorState, {
+      isFetching: true,
+      fetchError: null
+    });
+    expect(complaints(errorState, action)).toEqual(newState);
+  });
+
+  it("handles RESOLVE_COMPLAINTS_FAILURE", () => {
+    let action = { type: "RESOLVE_COMPLAINTS_FAILURE", error: "test error" };
+    let oldState = {
+      url: "test url",
+      data: null,
+      isFetching: true,
+      fetchError: null,
+      postError: null,
+      resolveError: null
+    };
+    let newState = Object.assign({}, oldState, {
+      resolveError: "test error",
+      isFetching: false
+    });
+    expect(complaints(oldState, action)).toEqual(newState)
+  });
 });
