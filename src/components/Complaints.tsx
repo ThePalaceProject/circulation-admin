@@ -109,6 +109,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
 
   refresh() {
     this.props.fetchComplaints(this.complaintsUrl());
+    this.props.refreshBrowser();
   };
 
   resolve(url: string, data: FormData) {

@@ -111,6 +111,7 @@ interface ComplaintsProps extends __React.Props<any> {
   postComplaint?: (url: string, data: PostComplaintData) => Promise<any>;
   resolveComplaints?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
+  refreshBrowser: () => void;
 }
 
 interface ComplaintFormProps extends __React.Props<any> {

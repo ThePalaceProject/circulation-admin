@@ -18,6 +18,7 @@ describe("Complaints", () => {
         bookUrl="http://example.com/works/fakeid"
         fetchComplaints={fetchComplaints}
         postComplaint={jest.genMockFunction()}
+        refreshBrowser={jest.genMockFunction()}
         />
     );
 
@@ -46,6 +47,7 @@ describe("Complaints", () => {
         bookUrl="http://example.com/works/fakeid"
         complaints={complaintsData}
         fetchComplaints={jest.genMockFunction()}
+        refreshBrowser={jest.genMockFunction()}
         resolveComplaints={resolveComplaints}
         />
     );
@@ -78,6 +80,7 @@ describe("Complaints", () => {
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}
           postComplaint={jest.genMockFunction()}
+          refreshBrowser={jest.genMockFunction()}
           />
       );
     });
@@ -120,6 +123,7 @@ describe("Complaints", () => {
         fetchError={fetchError}
         fetchComplaints={fetchComplaints}
         postComplaint={jest.genMockFunction}
+        refreshBrowser={jest.genMockFunction()}
         />
     );
 
