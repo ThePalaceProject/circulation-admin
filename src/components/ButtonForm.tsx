@@ -37,6 +37,6 @@ export default class ButtonForm extends React.Component<ButtonFormProps, any> {
 
     this.props.submit(this.props.link, data).then(response => {
       this.props.refresh();
-    }).catch(err => {});
+    });
   }
 }
