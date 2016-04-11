@@ -51,6 +51,8 @@ interface ButtonFormProps {
   refresh: () => any;
   submit: (url: string, data: FormData) => Promise<any>;
   handleError?: (error) => void;
+  data?: any;
+  bsSize?: string;
 }
 
 interface EditableInputProps extends __React.HTMLProps<any> {
@@ -89,7 +91,6 @@ interface TabContainerProps extends __React.Props<any> {
   navigate: (collectionUrl: string, bookUrl: string, isToplevel: boolean, tab?: string) => void;
   refreshBrowser: () => void;
   complaintsCount?: number;
-  postComplaint?: (url: string, data: PostComplaintData) => Promise<any>;
 }
 
 interface ComplaintsData {
@@ -105,9 +106,11 @@ interface ComplaintsProps extends __React.Props<any> {
   complaints?: any;
   fetchError?: ErrorData;
   store?: Redux.Store;
+  csrfToken: string;
   fetchComplaints?: (url: string) => Promise<any>;
+  postComplaint?: (url: string, data: PostComplaintData) => Promise<any>;
+  resolveComplaints?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
-  postComplaint: (url: string, data: PostComplaintData) => Promise<any>;
 }
 
 interface ComplaintFormProps extends __React.Props<any> {

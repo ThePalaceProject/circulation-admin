@@ -4,12 +4,23 @@ import DataFetcher from "opds-browser/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
+import ButtonForm from "./ButtonForm";
 
 export class Complaints extends React.Component<ComplaintsProps, any> {
   render(): JSX.Element {
     let refresh = () => {
       this.props.fetchComplaints(this.complaintsUrl());
     };
+
+    let resolve = (url: string, data: FormData) => {
+      if (window.confirm("Are you sure you want to resolve this complaint?")) {
+        return this.props.resolveComplaints(url, data);
+      } else {
+        return new Promise((resolve, reject) => {
+          reject();
+        })
+      }
+    }
 
     return (
       <div>
@@ -40,6 +51,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
               <tr>
                 <th>Type</th>
                 <th>Count</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -47,6 +59,18 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                 <tr key={type} className="complaint">
                   <td className="complaintType">{this.readableComplaintType(type)}</td>
                   <td className="complaintCount">{this.props.complaints[type]}</td>
+                  <td>
+                    <ButtonForm
+                      bsSize={"small"}
+                      csrfToken={this.props.csrfToken}
+                      data={{ type }}
+                      disabled={this.props.isFetching}
+                      label="Resolve"
+                      link={this.resolveComplaintsUrl()}
+                      submit={resolve}
+                      refresh={refresh}
+                      />
+                  </td>
                 </tr>
               ) }
             </tbody>
@@ -77,6 +101,10 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
     return this.props.bookUrl.replace("works", "admin/works") + "/complaints";
   }
 
+  resolveComplaintsUrl() {
+    return this.props.bookUrl.replace("works", "admin/works") + "/resolve_complaints";
+  }
+
   readableComplaintType(type) {
     let match = type.match(/\/terms\/problem\/(.+)$/);
     if (match) {
@@ -100,7 +128,9 @@ function mapDispatchToProps(dispatch) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher);
   return {
-    fetchComplaints: (url: string) => dispatch(actions.fetchComplaints(url))
+    fetchComplaints: (url: string) => dispatch(actions.fetchComplaints(url)),
+    postComplaint: (url: string, data: PostComplaintData) => dispatch(actions.postComplaint(url, data)),
+    resolveComplaints: (url: string, data: FormData) => dispatch(actions.resolveComplaints(url, data))
   };
 }
 

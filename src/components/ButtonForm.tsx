@@ -10,7 +10,18 @@ export default class ButtonForm extends React.Component<ButtonFormProps, any> {
           name="csrf_token"
           value={this.props.csrfToken}
           />
+        { this.props.data &&
+          Object.keys(this.props.data).map(key =>
+            <input
+              key={key}
+              type="hidden"
+              name={key}
+              value={this.props.data[key]}
+              />
+          )
+        }
         <ButtonInput
+          bsSize={this.props.bsSize}
           type="submit"
           disabled={this.props.disabled}
           value={this.props.label}
@@ -26,6 +37,6 @@ export default class ButtonForm extends React.Component<ButtonFormProps, any> {
 
     this.props.submit(this.props.link, data).then(response => {
       this.props.refresh();
-    });
+    }).catch(err => {});
   }
 }

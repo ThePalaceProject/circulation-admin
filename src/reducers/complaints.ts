@@ -6,6 +6,7 @@ interface ComplaintsState {
   isFetching: boolean;
   fetchError: RequestError;
   postError: RequestError;
+  resolveError: RequestError;
 }
 
 const initialState: ComplaintsState = {
@@ -13,11 +14,13 @@ const initialState: ComplaintsState = {
   data: null,
   isFetching: false,
   fetchError: null,
-  postError: null
+  postError: null,
+  resolveError: null
 };
 
 export default (state: ComplaintsState = initialState, action) => {
   switch (action.type) {
+    case "RESOLVE_COMPLAINT_REQUEST":
     case "POST_COMPLAINT_REQUEST":
     case "FETCH_COMPLAINTS_REQUEST":
       return Object.assign({}, state, {
@@ -35,6 +38,12 @@ export default (state: ComplaintsState = initialState, action) => {
     case "POST_COMPLAINT_FAILURE":
       return Object.assign({}, state, {
         postError: action.error,
+        isFetching: false
+      });
+
+    case "RESOLVE_COMPLAINTS_FAILURE":
+      return Object.assign({}, state, {
+        resolveError: action.error,
         isFetching: false
       });
 
