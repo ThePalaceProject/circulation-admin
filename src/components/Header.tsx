@@ -4,7 +4,23 @@ import * as fs from "fs";
 import logo from "../images/nypl-logo-transparent";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 
-export default class Header extends React.Component<any, any> {
+export interface CollectionLinkProps extends React.Props<any> {
+  text?: string;
+  url: string;
+  navigate: Navigate;
+  pathFor: PathFor;
+}
+
+export interface HeaderContext {
+  navigate: Navigate;
+  pathFor: PathFor;
+}
+
+export interface HeaderProps extends React.Props<Header> {
+  CollectionLink: new() =>  React.Component<CollectionLinkProps, any>;
+}
+
+export default class Header extends React.Component<HeaderProps, any> {
   context: HeaderContext;
 
   static contextTypes = {

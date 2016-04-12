@@ -1,6 +1,11 @@
 import * as React from "react";
 import { Alert } from "react-bootstrap";
 
+export interface ErrorMessageProps {
+  error: ErrorData;
+  tryAgain?: () => any;
+}
+
 export default class ErrorMessage extends React.Component<ErrorMessageProps, any> {
   render(): JSX.Element {
     let status = this.props.error.status;

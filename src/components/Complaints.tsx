@@ -6,6 +6,19 @@ import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
 import ButtonForm from "./ButtonForm";
 
+export interface ComplaintsProps {
+  bookUrl: string;
+  book: BookData;
+  complaints?: any;
+  fetchError?: ErrorData;
+  store?: Redux.Store;
+  csrfToken: string;
+  fetchComplaints?: (url: string) => Promise<any>;
+  postComplaint?: PostComplaint;
+  resolveComplaints?: (url: string, data: FormData) => Promise<any>;
+  isFetching?: boolean;
+}
+
 export class Complaints extends React.Component<ComplaintsProps, any> {
   constructor(props) {
     super(props);
@@ -135,9 +148,9 @@ function mapDispatchToProps(dispatch) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher);
   return {
-    fetchComplaints: (url: string) => dispatch(actions.fetchComplaints(url)),
-    postComplaint: (url: string, data: PostComplaintData) => dispatch(actions.postComplaint(url, data)),
-    resolveComplaints: (url: string, data: FormData) => dispatch(actions.resolveComplaints(url, data))
+    fetchComplaints: (url) => dispatch(actions.fetchComplaints(url)),
+    postComplaint: (url, data) => dispatch(actions.postComplaint(url, data)),
+    resolveComplaints: (url, data) => dispatch(actions.resolveComplaints(url, data))
   };
 }
 

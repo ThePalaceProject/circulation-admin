@@ -1,5 +1,19 @@
 import * as React from "react";
 import TabContainer from "./TabContainer";
+import { BookDetailsContainerProps } from "opds-browser/lib/components/Root";
+
+export interface BookDetailsContainerProps extends React.Props<BookDetailsContainer> {
+  bookUrl: string;
+  collectionUrl: string;
+  refreshBrowser: () => Promise<any>;
+}
+
+export interface BookDetailsContainerContext {
+  csrfToken: string;
+  navigate: Navigate;
+  tab: string;
+  editorStore: Redux.Store;
+}
 
 export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {
   context: BookDetailsContainerContext;

@@ -1,3 +1,11 @@
+interface Navigate {
+  (collection: string, book: string, isTopLevel: boolean, tab?: string): void;
+}
+
+interface PathFor {
+  (collectionUrl: string, bookUrl: string): string;
+}
+
 interface LinkData {
   href: string;
   rel: string;
@@ -19,80 +27,6 @@ interface BookLink {
   url: (book: BookData) => string;
 }
 
-interface RootProps extends __React.Props<any> {
-  csrfToken: string;
-  collectionUrl: string;
-  bookUrl: string;
-  tab: string;
-  isTopLevel: boolean;
-  navigate: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
-  bookLinks?: BookLink[];
-}
-
-interface EditorProps extends __React.Props<any> {
-  bookUrl?: string;
-  bookData?: BookData;
-  bookAdminUrl?: string;
-  fetchError?: ErrorData;
-  editError?: ErrorData;
-  csrfToken: string;
-  store?: Redux.Store;
-  fetchBook?: (url: string) => void;
-  refreshBook?: () => void;
-  editBook?: (url: string, data: FormData) => Promise<any>;
-  isFetching?: boolean;
-}
-
-interface ButtonFormProps extends __React.HTMLProps<any> {
-  link: string;
-  label: string;
-  csrfToken: string;
-  disabled: boolean;
-  refresh: () => any;
-  submit: (url: string, data: FormData) => Promise<any>;
-  handleError?: (error) => void;
-  data?: any;
-  bsSize?: string;
-}
-
-interface EditableInputProps extends __React.HTMLProps<any> {
-  label: string;
-  value: string;
-  name: string;
-  disabled: boolean;
-  type: string;
-}
-
-interface EditFormProps extends BookData {
-  csrfToken: string;
-  disabled: boolean;
-  refresh: () => any;
-  editBook: (url: string, data: FormData) => Promise<any>;
-}
-
-interface ErrorMessageProps {
-  error: ErrorData;
-  tryAgain?: () => any;
-}
-
-interface BookDetailsContainerProps extends __React.Props<any> {
-  bookUrl: string;
-  collectionUrl: string;
-  refreshBrowser: () => void;
-}
-
-interface TabContainerProps extends __React.Props<any> {
-  bookUrl: string;
-  bookData?: BookData;
-  collectionUrl: string;
-  store: Redux.Store;
-  csrfToken: string;
-  tab: string;
-  navigate: (collectionUrl: string, bookUrl: string, isToplevel: boolean, tab?: string) => void;
-  refreshBrowser: () => void;
-  complaintsCount?: number;
-}
-
 interface ComplaintsData {
   book: {
     id: string;
@@ -100,44 +34,8 @@ interface ComplaintsData {
   complaints: { [key: string]: number };
 }
 
-interface ComplaintsProps extends __React.Props<any> {
-  bookUrl: string;
-  book: BookData;
-  complaints?: any;
-  fetchError?: ErrorData;
-  store?: Redux.Store;
-  csrfToken: string;
-  fetchComplaints?: (url: string) => Promise<any>;
-  postComplaint?: (url: string, data: PostComplaintData) => Promise<any>;
-  resolveComplaints?: (url: string, data: FormData) => Promise<any>;
-  isFetching?: boolean;
-}
-
-interface ComplaintFormProps extends __React.Props<any> {
-  disabled?: boolean;
-  complaintUrl: string;
-  postComplaint: (url: string, data: PostComplaintData) => Promise<any>;
-  refreshComplaints: () => void;
-}
-
-interface PostComplaintData {
-  type: string;
-}
-
-interface BookDetailsContainerContext {
-  csrfToken?: string;
-  navigate?: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
-  tab?: string;
-  refreshBook?: () => void;
-  editorStore?: Redux.Store;
-}
-
-interface HeaderContext {
-  navigate?: (collection: string, book: string, isTopLevel: boolean, tab?: string) => void;
-  pathFor?: (collection: string, book: string) => string;
-}
-
-interface RootContext extends BookDetailsContainerContext, HeaderContext {
+interface PostComplaint {
+  (url: string, data: { type: string }): Promise<any>;
 }
 
 // this should be same as RequestError from opd-browser/lib/DataFetcher,

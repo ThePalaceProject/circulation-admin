@@ -4,9 +4,22 @@ const OPDSBrowser = require("opds-browser");
 import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
-import BookDetailsContainer from "./BookDetailsContainer";
-import Header from "./Header";
+import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
+import Header, { HeaderContext } from "./Header";
 import * as qs from "qs";
+
+export interface RootProps extends React.Props<Root> {
+  csrfToken: string;
+  collectionUrl: string;
+  bookUrl: string;
+  tab: string;
+  isTopLevel: boolean;
+  navigate: Navigate;
+  bookLinks?: BookLink[];
+}
+
+export interface RootContext extends BookDetailsContainerContext, HeaderContext {
+}
 
 export default class Root extends React.Component<RootProps, any> {
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;

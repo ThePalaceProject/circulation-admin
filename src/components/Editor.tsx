@@ -7,6 +7,20 @@ import ButtonForm from "./ButtonForm";
 import EditForm from "./EditForm";
 import ErrorMessage from "./ErrorMessage";
 
+export interface EditorProps extends React.Props<Editor> {
+  bookUrl?: string;
+  bookData?: BookData;
+  bookAdminUrl?: string;
+  fetchError?: ErrorData;
+  editError?: ErrorData;
+  csrfToken: string;
+  store?: Redux.Store;
+  fetchBook?: (url: string) => void;
+  refreshBook?: () => void;
+  editBook?: (url: string, data: FormData) => Promise<any>;
+  isFetching?: boolean;
+}
+
 export class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
     let refresh = () => {

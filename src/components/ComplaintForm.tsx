@@ -1,6 +1,13 @@
 import * as React from "react";
 import { Input, ButtonInput } from "react-bootstrap";
 
+export interface ComplaintFormProps {
+  disabled?: boolean;
+  complaintUrl: string;
+  postComplaint: PostComplaint;
+  refreshComplaints: () => void;
+}
+
 export default class ComplaintForm extends React.Component<ComplaintFormProps, any> {
   constructor(props) {
     super(props);

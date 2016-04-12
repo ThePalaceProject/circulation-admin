@@ -6,6 +6,18 @@ import Editor from "./Editor";
 import Complaints from "./Complaints";
 import ActionCreator from "../actions";
 
+export interface TabContainerProps extends React.Props<TabContainerProps> {
+  bookUrl: string;
+  bookData?: BookData;
+  collectionUrl: string;
+  store: Redux.Store;
+  csrfToken: string;
+  tab: string;
+  navigate: Navigate;
+  refreshBrowser: () => void;
+  complaintsCount?: number;
+}
+
 export class TabContainer extends React.Component<TabContainerProps, any> {
   render(): JSX.Element {
     let showComplaintCount = (typeof this.props.complaintsCount !== "undefined");

@@ -1,6 +1,18 @@
 import * as React from "react";
 import { ButtonInput } from "react-bootstrap";
 
+export interface ButtonFormProps extends React.HTMLProps<ButtonForm> {
+  link: string;
+  label: string;
+  csrfToken: string;
+  disabled: boolean;
+  refresh: () => any;
+  submit: (url: string, data: FormData) => Promise<any>;
+  handleError?: (error) => void;
+  data?: any;
+  bsSize?: string;
+}
+
 export default class ButtonForm extends React.Component<ButtonFormProps, any> {
   constructor(props) {
     super(props);
