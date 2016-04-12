@@ -1,5 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { Navigate } from "../interfaces";
+import { PathFor } from "opds-browser/lib/interfaces";
+import CollectionLink from "opds-browser/lib/components/CollectionLink";
 import * as fs from "fs";
 import logo from "../images/nypl-logo-transparent";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
@@ -7,8 +10,8 @@ import { Navbar, Nav, NavItem } from "react-bootstrap";
 export interface CollectionLinkProps extends React.Props<any> {
   text?: string;
   url: string;
-  navigate: Navigate;
-  pathFor: PathFor;
+  navigate?: Navigate;
+  pathFor?: PathFor;
 }
 
 export interface HeaderContext {
@@ -17,7 +20,7 @@ export interface HeaderContext {
 }
 
 export interface HeaderProps extends React.Props<Header> {
-  CollectionLink: new() =>  React.Component<CollectionLinkProps, any>;
+  CollectionLink: typeof CollectionLink;
 }
 
 export default class Header extends React.Component<HeaderProps, any> {

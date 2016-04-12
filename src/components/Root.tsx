@@ -1,11 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSBrowser = require("opds-browser");
+import { Navigate } from "opds-browser/lib/interfaces";
 import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
 import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
 import Header, { HeaderContext } from "./Header";
+import { BookLink } from "../interfaces";
 import * as qs from "qs";
 
 export interface RootProps extends React.Props<Root> {

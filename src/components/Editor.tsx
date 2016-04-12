@@ -6,13 +6,15 @@ import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
 import EditForm from "./EditForm";
 import ErrorMessage from "./ErrorMessage";
+import { BookData } from "../interfaces";
+import { FetchErrorData } from "opds-browser/lib/interfaces";
 
 export interface EditorProps extends React.Props<Editor> {
   bookUrl?: string;
   bookData?: BookData;
   bookAdminUrl?: string;
-  fetchError?: ErrorData;
-  editError?: ErrorData;
+  fetchError?: FetchErrorData;
+  editError?: FetchErrorData;
   csrfToken: string;
   store?: Redux.Store;
   fetchBook?: (url: string) => void;

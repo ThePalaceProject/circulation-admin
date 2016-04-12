@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Input, ButtonInput } from "react-bootstrap";
+import { PostComplaint } from "../interfaces";
 
 export interface ComplaintFormProps {
   disabled?: boolean;

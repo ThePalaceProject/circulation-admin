@@ -1,3 +1,4 @@
+import { BookData } from "./interfaces";
 import { OPDSEntry } from "opds-feed-parser";
 
 export default function adapter(data: OPDSEntry): BookData {

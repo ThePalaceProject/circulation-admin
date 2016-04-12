@@ -5,12 +5,14 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
 import ButtonForm from "./ButtonForm";
+import { BookData, PostComplaint } from "../interfaces";
+import { FetchErrorData } from "opds-browser/lib/interfaces";
 
 export interface ComplaintsProps {
   bookUrl: string;
   book: BookData;
   complaints?: any;
-  fetchError?: ErrorData;
+  fetchError?: FetchErrorData;
   store?: Redux.Store;
   csrfToken: string;
   fetchComplaints?: (url: string) => Promise<any>;

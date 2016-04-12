@@ -1,6 +1,7 @@
 import * as React from "react";
 import TabContainer from "./TabContainer";
 import { BookDetailsContainerProps } from "opds-browser/lib/components/Root";
+import { Navigate } from "../interfaces";
 
 export interface BookDetailsContainerProps extends React.Props<BookDetailsContainer> {
   bookUrl: string;

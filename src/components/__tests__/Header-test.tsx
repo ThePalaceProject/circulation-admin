@@ -18,14 +18,37 @@ class TestSearch extends React.Component<any, any> {
 
 describe("Header", () => {
   let header;
-  let renderCollectionLink;
+  let navigate;
 
   beforeEach(() => {
-    renderCollectionLink = jest.genMockFunction();
+    navigate = jest.genMockFunction();
+
+    class FakeContext extends React.Component<any, any> {
+      static childContextTypes = {
+        navigate: React.PropTypes.func.isRequired,
+        pathFor: React.PropTypes.func.isRequired
+      };
+
+      getChildContext() {
+        return {
+          navigate: navigate,
+          pathFor: jest.genMockFunction()
+        };
+      }
+
+      render(): JSX.Element {
+        return (
+          <div>{ this.props.children }</div>
+        );
+      }
+    }
+
     header = TestUtils.renderIntoDocument(
-      <Header CollectionLink={renderCollectionLink}>
-        <TestSearch />
-      </Header>
+      <FakeContext>
+        <Header CollectionLink={HeaderCollectionLink}>
+          <TestSearch />
+        </Header>
+      </FakeContext>
     );
   });
 
@@ -44,9 +67,12 @@ describe("Header", () => {
     expect(search).toBeTruthy();
   })
 
-  it("renders a link to complaints", () => {
-    expect(renderCollectionLink.mock.calls.length).toBe(1);
-    expect(renderCollectionLink.mock.calls[0][0]).toBe("Complaints");
-    expect(renderCollectionLink.mock.calls[0][1]).toBe("/admin/complaints");
+  it("shows a top-level complaints link", () => {
+    let link = TestUtils.findRenderedComponentWithType(header, HeaderCollectionLink);
+    let element = ReactDOM.findDOMNode(link);
+    TestUtils.Simulate.click(element);
+    expect(navigate.mock.calls.length).toBe(1);
+    expect(navigate.mock.calls[0][0]).toBe("/admin/complaints");
+    expect(navigate.mock.calls[0][1]).toBe(null);
   });
 });

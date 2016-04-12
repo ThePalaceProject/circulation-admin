@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Alert } from "react-bootstrap";
+import { FetchErrorData } from "opds-browser/lib/interfaces";
 
 export interface ErrorMessageProps {
-  error: ErrorData;
+  error: FetchErrorData;
   tryAgain?: () => any;
 }
 

@@ -1,3 +1,4 @@
+import { ComplaintsData } from "../interfaces";
 import { RequestError } from "opds-browser/lib/DataFetcher";
 
 interface ComplaintsState {

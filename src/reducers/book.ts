@@ -1,3 +1,4 @@
+import { BookData } from "../interfaces";
 import { RequestError } from "opds-browser/lib/DataFetcher";
 
 interface BookState {

@@ -5,6 +5,7 @@ import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
 import Complaints from "./Complaints";
 import ActionCreator from "../actions";
+import { BookData, Navigate } from "../interfaces";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
   bookUrl: string;
