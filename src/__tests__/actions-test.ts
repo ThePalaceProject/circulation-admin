@@ -280,4 +280,82 @@ describe("actions", () => {
       }).catch(err => done.fail(err));
     });
   });
+
+  describe("resolveComplaints", () => {
+    let resolveComplaintsUrl = "http://example.com/resolveComplaints"
+    let dispatch;
+    let formData = new FormData();
+    formData.append("csrf_token", "token");
+    formData.append("type", "test type");
+
+    beforeEach(() => {
+      dispatch = jest.genMockFunction();
+    });
+
+    it("dispatches request and success", (done) => {
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch).then(response => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.RESOLVE_COMPLAINTS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.RESOLVE_COMPLAINTS_SUCCESS);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(fetchMock.mock.calls[0][0]).toBe(resolveComplaintsUrl);
+        expect(fetchMock.mock.calls[0][1].method).toBe("POST");
+        expect(fetchMock.mock.calls[0][1].body).toBe(formData);
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches failure on server failure", (done) => {
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 500,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.RESOLVE_COMPLAINTS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.RESOLVE_COMPLAINTS_FAILURE);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(err).toEqual({
+          status: 500,
+          response: "test error detail",
+          url: resolveComplaintsUrl
+        });
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches failure on network failure", (done) => {
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        reject({ message : "test error" });
+      }));
+      fetch = fetchMock;
+
+      actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.RESOLVE_COMPLAINTS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.RESOLVE_COMPLAINTS_FAILURE);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(err).toEqual({
+          status: null,
+          response: "test error",
+          url: resolveComplaintsUrl
+        });
+        done();
+      }).catch(err => done.fail(err));
+    });
+  });
 });

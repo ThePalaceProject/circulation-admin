@@ -4,13 +4,16 @@ import DataFetcher from "opds-browser/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
+import ButtonForm from "./ButtonForm";
 
 export class Complaints extends React.Component<ComplaintsProps, any> {
-  render(): JSX.Element {
-    let refresh = () => {
-      this.props.fetchComplaints(this.complaintsUrl());
-    };
+  constructor(props) {
+    super(props);
+    this.resolve = this.resolve.bind(this);
+    this.refresh = this.refresh.bind(this);
+  }
 
+  render(): JSX.Element {
     return (
       <div>
         { this.props.book &&
@@ -30,7 +33,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
         }
 
         { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
+          <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
 
         <h3>Complaints</h3>
@@ -40,6 +43,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
               <tr>
                 <th>Type</th>
                 <th>Count</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -47,6 +51,19 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                 <tr key={type} className="complaint">
                   <td className="complaintType">{this.readableComplaintType(type)}</td>
                   <td className="complaintCount">{this.props.complaints[type]}</td>
+                  <td>
+                    <ButtonForm
+                      className="resolveComplaintsForm"
+                      bsSize={"small"}
+                      csrfToken={this.props.csrfToken}
+                      data={{ type }}
+                      disabled={this.props.isFetching}
+                      label="Resolve"
+                      link={this.resolveComplaintsUrl()}
+                      submit={this.resolve}
+                      refresh={this.refresh}
+                      />
+                  </td>
                 </tr>
               ) }
             </tbody>
@@ -61,7 +78,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             disabled={this.props.isFetching}
             complaintUrl={this.props.book.issuesLink.href}
             postComplaint={this.props.postComplaint}
-            refreshComplaints={refresh} />
+            refreshComplaints={this.refresh} />
         }
       </div>
     );
@@ -77,12 +94,31 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
     return this.props.bookUrl.replace("works", "admin/works") + "/complaints";
   }
 
+  resolveComplaintsUrl() {
+    return this.props.bookUrl.replace("works", "admin/works") + "/resolve_complaints";
+  }
+
   readableComplaintType(type) {
     let match = type.match(/\/terms\/problem\/(.+)$/);
     if (match) {
       return match[1].replace("-", " ");
     } else {
       return type;
+    }
+  }
+
+  refresh() {
+    this.props.fetchComplaints(this.complaintsUrl());
+    this.props.refreshBrowser();
+  };
+
+  resolve(url: string, data: FormData) {
+    if (window.confirm("Are you sure you want to resolve all complaints of this type?")) {
+      return this.props.resolveComplaints(url, data);
+    } else {
+      return new Promise((resolve, reject) => {
+        reject();
+      })
     }
   }
 }
@@ -100,7 +136,9 @@ function mapDispatchToProps(dispatch) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher);
   return {
-    fetchComplaints: (url: string) => dispatch(actions.fetchComplaints(url))
+    fetchComplaints: (url: string) => dispatch(actions.fetchComplaints(url)),
+    postComplaint: (url: string, data: PostComplaintData) => dispatch(actions.postComplaint(url, data)),
+    resolveComplaints: (url: string, data: FormData) => dispatch(actions.resolveComplaints(url, data))
   };
 }
 

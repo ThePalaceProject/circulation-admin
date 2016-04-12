@@ -25,7 +25,26 @@ describe("ButtonForm", () => {
     );
     let buttonComponent = TestUtils.findRenderedComponentWithType(buttonForm, ButtonInput);
     let button = TestUtils.findRenderedDOMComponentWithTag(buttonComponent, "input");
-    expect(button.getAttribute("value")).toEqual("label");
+    expect(button.getAttribute("value")).toBe("label");
+  });
+
+  it("renders hidden csrf_token and data fields", () => {
+    buttonForm = TestUtils.renderIntoDocument(
+      <ButtonForm
+        label="label"
+        link="link"
+        csrfToken="token"
+        data={{ test: "test" }}
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        submit={jest.genMockFunction()}
+        />
+    );
+    let inputs = TestUtils.scryRenderedDOMComponentsWithTag(buttonForm, "input");
+    expect(inputs[0].getAttribute("name")).toBe("csrf_token");
+    expect(inputs[0].getAttribute("value")).toBe("token");
+    expect(inputs[1].getAttribute("name")).toBe("test");
+    expect(inputs[1].getAttribute("value")).toBe("test");
   });
 
   it("calls provided submit function", () => {
@@ -38,6 +57,7 @@ describe("ButtonForm", () => {
         label="label"
         link="link"
         csrfToken="token"
+        data={{ test: "test" }}
         disabled={false}
         refresh={jest.genMockFunction()}
         submit={submit}
@@ -48,6 +68,7 @@ describe("ButtonForm", () => {
     expect(submit.mock.calls.length).toBe(1);
     expect(submit.mock.calls[0][0]).toBe("link");
     expect(submit.mock.calls[0][1].get("csrf_token").value).toBe("token");
+    expect(submit.mock.calls[0][1].get("test").value).toBe("test");
   });
 
   it("refreshes", (done) => {

@@ -21,6 +21,11 @@ export default class ActionCreator {
   POST_COMPLAINT_SUCCESS = "POST_COMPLAINT_SUCCESS";
   POST_COMPLAINT_FAILURE = "POST_COMPLAINT_FAILURE";
 
+  RESOLVE_COMPLAINTS_REQUEST = "RESOLVE_COMPLAINTS_REQUEST";
+  RESOLVE_COMPLAINTS_SUCCESS = "RESOLVE_COMPLAINTS_SUCCESS";
+  RESOLVE_COMPLAINTS_FAILURE = "RESOLVE_COMPLAINTS_FAILURE";
+
+
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
   }
@@ -239,5 +244,63 @@ export default class ActionCreator {
 
   postComplaintFailure(error?: RequestError) {
     return { type: this.POST_COMPLAINT_FAILURE, error };
+  }
+
+  resolveComplaints(url: string, data: FormData) {
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.resolveComplaintsRequest());
+        fetch(url, {
+          method: "POST",
+          body: data,
+          credentials: "same-origin"
+        }).then(response => {
+          if (response.status === 200) {
+            dispatch(this.resolveComplaintsSuccess());
+            resolve(response);
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.resolveComplaintsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to resolve complaints",
+                url: url
+              };
+              dispatch(this.resolveComplaintsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.resolveComplaintsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  resolveComplaintsRequest() {
+    return { type: this.RESOLVE_COMPLAINTS_REQUEST };
+  }
+
+  resolveComplaintsSuccess() {
+    return { type: this.RESOLVE_COMPLAINTS_SUCCESS };
+  }
+
+  resolveComplaintsFailure(error?: RequestError) {
+    return { type: this.RESOLVE_COMPLAINTS_FAILURE, error };
   }
 }

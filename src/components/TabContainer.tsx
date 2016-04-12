@@ -29,9 +29,10 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
         <Tab eventKey={"complaints"} title={complaintsTitle}>
           <Complaints
             store={this.props.store}
+            csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}
             book={this.props.bookData}
-            postComplaint={this.props.postComplaint}
+            refreshBrowser={this.props.refreshBrowser}
             />
         </Tab>
       </Tabs>
@@ -62,18 +63,10 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  let actions = new ActionCreator();
-
-  return {
-    postComplaint: (url: string, data: PostComplaintData) => dispatch(actions.postComplaint(url, data))
-  };
-}
-
 let connectOptions = { withRef: true, pure: true };
 const ConnectedTabContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
   null,
   connectOptions
 )(TabContainer);
