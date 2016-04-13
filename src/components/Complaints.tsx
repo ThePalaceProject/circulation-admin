@@ -19,6 +19,7 @@ export interface ComplaintsProps {
   postComplaint?: PostComplaint;
   resolveComplaints?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
+  refreshBrowser: () => Promise<any>;
 }
 
 export class Complaints extends React.Component<ComplaintsProps, any> {

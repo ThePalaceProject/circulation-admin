@@ -18,7 +18,7 @@ export interface EditorProps extends React.Props<Editor> {
   csrfToken: string;
   store?: Redux.Store;
   fetchBook?: (url: string) => void;
-  refreshBook?: () => void;
+  refreshBrowser?: () => Promise<any>;
   editBook?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
 }
@@ -27,7 +27,7 @@ export class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
     let refresh = () => {
       this.props.fetchBook(this.props.bookAdminUrl);
-      this.props.refreshBook();
+      this.props.refreshBrowser();
     };
 
     return (

@@ -15,7 +15,7 @@ export interface TabContainerProps extends React.Props<TabContainerProps> {
   csrfToken: string;
   tab: string;
   navigate: Navigate;
-  refreshBrowser: () => void;
+  refreshBrowser: () => Promise<any>;
   complaintsCount?: number;
 }
 
@@ -36,7 +36,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             store={this.props.store}
             csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}
-            refreshBook={this.props.refreshBrowser}
+            refreshBrowser={this.props.refreshBrowser}
             />
         </Tab>
         <Tab eventKey={"complaints"} title={complaintsTitle}>
