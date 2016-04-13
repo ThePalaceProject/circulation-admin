@@ -5,6 +5,22 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
 import ButtonForm from "./ButtonForm";
+import { BookData, PostComplaint } from "../interfaces";
+import { FetchErrorData } from "opds-browser/lib/interfaces";
+
+export interface ComplaintsProps {
+  bookUrl: string;
+  book: BookData;
+  complaints?: any;
+  fetchError?: FetchErrorData;
+  store?: Redux.Store;
+  csrfToken: string;
+  fetchComplaints?: (url: string) => Promise<any>;
+  postComplaint?: PostComplaint;
+  resolveComplaints?: (url: string, data: FormData) => Promise<any>;
+  isFetching?: boolean;
+  refreshBrowser: () => Promise<any>;
+}
 
 export class Complaints extends React.Component<ComplaintsProps, any> {
   constructor(props) {
@@ -136,9 +152,9 @@ function mapDispatchToProps(dispatch) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher);
   return {
-    fetchComplaints: (url: string) => dispatch(actions.fetchComplaints(url)),
-    postComplaint: (url: string, data: PostComplaintData) => dispatch(actions.postComplaint(url, data)),
-    resolveComplaints: (url: string, data: FormData) => dispatch(actions.resolveComplaints(url, data))
+    fetchComplaints: (url) => dispatch(actions.fetchComplaints(url)),
+    postComplaint: (url, data) => dispatch(actions.postComplaint(url, data)),
+    resolveComplaints: (url, data) => dispatch(actions.resolveComplaints(url, data))
   };
 }
 

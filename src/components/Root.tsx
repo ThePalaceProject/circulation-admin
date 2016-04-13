@@ -1,16 +1,31 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSBrowser = require("opds-browser");
+import { Navigate } from "opds-browser/lib/interfaces";
 import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
-import BookDetailsContainer from "./BookDetailsContainer";
-import Header from "./Header";
+import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
+import Header, { HeaderContext } from "./Header";
+import { BookLink } from "../interfaces";
 import * as qs from "qs";
+
+export interface RootProps extends React.Props<Root> {
+  csrfToken: string;
+  collectionUrl: string;
+  bookUrl: string;
+  tab: string;
+  isTopLevel: boolean;
+  navigate: Navigate;
+  bookLinks?: BookLink[];
+}
+
+export interface RootContext extends BookDetailsContainerContext, HeaderContext {
+}
 
 export default class Root extends React.Component<RootProps, any> {
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
-  pathFor: (collectionUrl: string, bookUrl: string, tab: string) => string;
+  pathFor: (collectionUrl: string, bookUrl: string) => string;
   editorStore: Redux.Store;
 
   constructor(props) {
@@ -38,15 +53,17 @@ export default class Root extends React.Component<RootProps, any> {
     csrfToken: React.PropTypes.string.isRequired,
     tab: React.PropTypes.string,
     navigate: React.PropTypes.func.isRequired,
-    editorStore: React.PropTypes.object.isRequired
+    editorStore: React.PropTypes.object.isRequired,
+    pathFor: React.PropTypes.func.isRequired
   };
 
-  getChildContext(): BookDetailsContainerContext {
+  getChildContext(): RootContext {
     return {
       csrfToken: this.props.csrfToken,
       tab: this.props.tab,
       navigate: this.props.navigate,
-      editorStore: this.editorStore
+      editorStore: this.editorStore,
+      pathFor: this.pathFor
     };
   }
 

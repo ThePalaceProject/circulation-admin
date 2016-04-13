@@ -6,12 +6,28 @@ import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
 import EditForm from "./EditForm";
 import ErrorMessage from "./ErrorMessage";
+import { BookData } from "../interfaces";
+import { FetchErrorData } from "opds-browser/lib/interfaces";
+
+export interface EditorProps extends React.Props<Editor> {
+  bookUrl?: string;
+  bookData?: BookData;
+  bookAdminUrl?: string;
+  fetchError?: FetchErrorData;
+  editError?: FetchErrorData;
+  csrfToken: string;
+  store?: Redux.Store;
+  fetchBook?: (url: string) => void;
+  refreshBrowser?: () => Promise<any>;
+  editBook?: (url: string, data: FormData) => Promise<any>;
+  isFetching?: boolean;
+}
 
 export class Editor extends React.Component<EditorProps, any> {
   render(): JSX.Element {
     let refresh = () => {
       this.props.fetchBook(this.props.bookAdminUrl);
-      this.props.refreshBook();
+      this.props.refreshBrowser();
     };
 
     return (

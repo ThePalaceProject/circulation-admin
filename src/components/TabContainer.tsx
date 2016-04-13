@@ -5,6 +5,19 @@ import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
 import Complaints from "./Complaints";
 import ActionCreator from "../actions";
+import { BookData, Navigate } from "../interfaces";
+
+export interface TabContainerProps extends React.Props<TabContainerProps> {
+  bookUrl: string;
+  bookData?: BookData;
+  collectionUrl: string;
+  store: Redux.Store;
+  csrfToken: string;
+  tab: string;
+  navigate: Navigate;
+  refreshBrowser: () => Promise<any>;
+  complaintsCount?: number;
+}
 
 export class TabContainer extends React.Component<TabContainerProps, any> {
   render(): JSX.Element {
@@ -23,7 +36,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             store={this.props.store}
             csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}
-            refreshBook={this.props.refreshBrowser}
+            refreshBrowser={this.props.refreshBrowser}
             />
         </Tab>
         <Tab eventKey={"complaints"} title={complaintsTitle}>

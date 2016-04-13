@@ -153,6 +153,7 @@ module.exports = {
                     .click(editTabSelector)
                     .waitForElementPresent(titleInputSelector, 5000)
                     .waitForElementNotPresent(".fa-spinner", 5000)
+                    .pause(50)
                     .verify.value(titleInputSelector, prevBookTitle)
                 });
               });

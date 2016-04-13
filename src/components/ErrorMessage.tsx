@@ -1,5 +1,11 @@
 import * as React from "react";
 import { Alert } from "react-bootstrap";
+import { FetchErrorData } from "opds-browser/lib/interfaces";
+
+export interface ErrorMessageProps {
+  error: FetchErrorData;
+  tryAgain?: () => any;
+}
 
 export default class ErrorMessage extends React.Component<ErrorMessageProps, any> {
   render(): JSX.Element {

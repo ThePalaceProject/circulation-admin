@@ -1,3 +1,4 @@
+import { BookData, ComplaintsData } from "./interfaces";
 import DataFetcher from "opds-browser/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-browser/lib/DataFetcher";
 
@@ -184,7 +185,7 @@ export default class ActionCreator {
     return { type: this.LOAD_COMPLAINTS, data };
   }
 
-  postComplaint(url: string, data: PostComplaintData) {
+  postComplaint(url: string, data: { type: string }) {
     let err: RequestError;
 
     return (dispatch => {

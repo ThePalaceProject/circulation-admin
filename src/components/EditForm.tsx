@@ -1,5 +1,14 @@
 import * as React from "react";
 import { Input, ButtonInput } from "react-bootstrap";
+import { BookData } from "../interfaces";
+
+export interface EditableInputProps extends React.HTMLProps<EditableInput> {
+  label: string;
+  value: string;
+  name: string;
+  disabled: boolean;
+  type: string;
+}
 
 export class EditableInput extends React.Component<EditableInputProps, any> {
   constructor(props) {
@@ -37,6 +46,13 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
       value: (this.refs as any).input.getValue()
     });
   }
+}
+
+export interface EditFormProps extends BookData {
+  csrfToken: string;
+  disabled: boolean;
+  refresh: () => any;
+  editBook: (url: string, data: FormData) => Promise<any>;
 }
 
 export default class EditForm extends React.Component<EditFormProps, any> {
