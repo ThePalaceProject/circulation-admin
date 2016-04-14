@@ -67,12 +67,20 @@ describe("Header", () => {
     expect(search).toBeTruthy();
   })
 
-  it("shows a top-level complaints link", () => {
-    let link = TestUtils.findRenderedComponentWithType(header, HeaderCollectionLink);
-    let element = ReactDOM.findDOMNode(link);
-    TestUtils.Simulate.click(element);
+  it("shows top-level links", () => {
+    let links = TestUtils.scryRenderedComponentsWithType(header, HeaderCollectionLink);
+    expect(links.length).toBe(2);
+    let elements = links.map((link) => {
+      return ReactDOM.findDOMNode(link);
+    });
+    TestUtils.Simulate.click(elements[0]);
     expect(navigate.mock.calls.length).toBe(1);
     expect(navigate.mock.calls[0][0]).toBe("/admin/complaints");
     expect(navigate.mock.calls[0][1]).toBe(null);
+
+    TestUtils.Simulate.click(elements[1]);
+    expect(navigate.mock.calls.length).toBe(2);
+    expect(navigate.mock.calls[1][0]).toBe("/admin/suppressed");
+    expect(navigate.mock.calls[1][1]).toBe(null);
   });
 });

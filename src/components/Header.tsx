@@ -70,6 +70,14 @@ export default class Header extends React.Component<HeaderProps, any> {
                 pathFor={this.context.pathFor}
                 />
             </li>
+            <li>
+              <CollectionLink
+                text={"Hidden books"}
+                url={"/admin/suppressed"}
+                navigate={this.context.navigate}
+                pathFor={this.context.pathFor}
+                />
+            </li>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
