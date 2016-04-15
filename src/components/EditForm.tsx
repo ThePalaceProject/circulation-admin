@@ -29,7 +29,9 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
         value={this.state.value}
         onChange={this.handleChange.bind(this)}
         style={this.props.style}
-        />
+        >
+        {this.props.children}
+      </Input>
     );
   }
 
@@ -72,12 +74,17 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           value={this.props.title}
           />
         <EditableInput
-          type="text"
+          type="select"
           disabled={this.props.disabled}
-          name="publisher"
-          label="Publisher"
-          value={this.props.publisher}
-          />
+          name="audience"
+          label="Audience"
+          value={this.props.audience}
+          >
+            <option value="Children">Children</option>
+            <option value="Young Adult">Young Adult</option>
+            <option value="Adult">Adult</option>
+            <option value="Adults Only">Adults Only</option>
+        </EditableInput>
         <EditableInput
           style={{ height: "300px" }}
           type="textarea"

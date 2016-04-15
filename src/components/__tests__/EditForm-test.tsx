@@ -18,7 +18,7 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         value="initial value"
-        />
+      />
     );
   });
 
@@ -31,6 +31,22 @@ describe("EditableInput", () => {
     expect(editableInput.state.value).toEqual("initial value");
     let input = TestUtils.findRenderedComponentWithType(editableInput, Input);
     expect(input.props.value).toEqual("initial value");
+  });
+
+  it("shows children from props", () => {
+    editableInput = TestUtils.renderIntoDocument(
+      <EditableInput
+        type="select"
+        label="label"
+        name="name"
+        disabled={false}
+        value="initial value"
+      >
+        <option>option</option>
+      </EditableInput>
+    );
+    let option = TestUtils.findRenderedDOMComponentWithTag(editableInput, "option")
+    expect(option.textContent).toEqual("option");
   });
 
   it("updates state and value when props change", () => {
@@ -85,7 +101,7 @@ describe("EditableInput", () => {
 describe("EditForm", () => {
   let bookData = {
     title: "title",
-    publisher: "publisher",
+    audience: "Young Adult",
     summary: "summary",
     editLink: {
       href: "href",
@@ -114,10 +130,11 @@ describe("EditForm", () => {
       expect(input.props.value).toBe("title");
     });
 
-    it("shows editable input with publisher", () => {
+    it("shows editable select with audience", () => {
       let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[1];
-      expect(input.props.label).toBe("Publisher");
-      expect(input.props.value).toBe("publisher");
+      expect(input.props.type).toBe("select")
+      expect(input.props.label).toBe("Audience");
+      expect(input.props.value).toBe("Young Adult");
     });
 
     it("shows editable input with summary", () => {
@@ -149,7 +166,7 @@ describe("EditForm", () => {
     expect(editBook.mock.calls[0][0]).toBe("href");
     expect(editBook.mock.calls[0][1].get("csrf_token").value).toBe("token");
     expect(editBook.mock.calls[0][1].get("title").value).toBe(bookData.title);
-    expect(editBook.mock.calls[0][1].get("publisher").value).toBe(bookData.publisher);
+    expect(editBook.mock.calls[0][1].get("audience").value).toBe(bookData.audience);
     expect(editBook.mock.calls[0][1].get("summary").value).toBe(bookData.summary);
   });
 

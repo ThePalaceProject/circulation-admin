@@ -22,10 +22,14 @@ export default function adapter(data: OPDSEntry): BookData {
     return link.rel === "issues";
   });
 
+  let audience = data.categories.find(category => {
+    return category.scheme === "http://schema.org/audience";
+  });
+
   return {
     title: data.title,
     summary: data.summary.content,
-    publisher: data.publisher,
+    audience: audience.term,
     hideLink: hideLink,
     restoreLink: restoreLink,
     refreshLink: refreshLink,
