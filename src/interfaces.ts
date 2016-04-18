@@ -9,7 +9,7 @@ export interface LinkData {
 
 export interface BookData {
   title: string;
-  publisher?: string;
+  audience?: string;
   summary?: string;
   hideLink?: LinkData;
   restoreLink?: LinkData;
