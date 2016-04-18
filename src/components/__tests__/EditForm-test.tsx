@@ -18,7 +18,7 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         value="initial value"
-      />
+        />
     );
   });
 
@@ -41,7 +41,7 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         value="initial value"
-      >
+        >
         <option>option</option>
       </EditableInput>
     );
