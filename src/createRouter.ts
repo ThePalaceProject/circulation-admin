@@ -1,4 +1,5 @@
-import { Router, Location, Navigate } from "opds-browser/lib/interfaces";
+import { Navigate } from "./interfaces";
+import { Router, Location } from "opds-browser/lib/interfaces";
 
 function getParam(location, name) {
   let match = RegExp("[?&]" + name + "=([^&]*)").exec(location);

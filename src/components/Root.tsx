@@ -1,12 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSBrowser = require("opds-browser");
-import { Navigate, NavigateContext } from "opds-browser/lib/interfaces";
+import { Navigate } from "../interfaces";
+import { NavigateContext } from "opds-browser/lib/interfaces";
 import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
 import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
-import Header, { HeaderContext } from "./Header";
+import Header from "./Header";
 import { BookLink } from "../interfaces";
 import * as qs from "qs";
 import createRouter from "../createRouter";
@@ -17,11 +18,11 @@ export interface RootProps extends React.Props<Root> {
   bookUrl: string;
   tab: string;
   isTopLevel: boolean;
-  navigate: Navigate;
   bookLinks?: BookLink[];
+  navigate: Navigate;
 }
 
-export interface RootContext extends BookDetailsContainerContext, HeaderContext, NavigateContext {
+export interface RootContext extends BookDetailsContainerContext, NavigateContext {
 }
 
 export default class Root extends React.Component<RootProps, any> {
@@ -63,8 +64,8 @@ export default class Root extends React.Component<RootProps, any> {
     return {
       csrfToken: this.props.csrfToken,
       tab: this.props.tab,
-      navigate: this.props.navigate,
       editorStore: this.editorStore,
+      navigate: this.props.navigate,
       pathFor: this.pathFor,
       router: createRouter(this.props.navigate)
     };
