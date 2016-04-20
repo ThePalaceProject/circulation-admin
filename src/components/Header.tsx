@@ -53,6 +53,13 @@ export default class Header extends React.Component<HeaderProps, any> {
                 Complaints
               </BrowserLink>
             </li>
+            <li>
+              <BrowserLink
+                collectionUrl={"/admin/suppressed"}
+                bookUrl={null}>
+                Hidden Books
+              </BrowserLink>
+            </li>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
