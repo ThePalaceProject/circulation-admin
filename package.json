@@ -19,7 +19,7 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
-    "opds-browser": "^0.0.13",
+    "opds-browser": "^0.0.14",
     "qs": "^6.1.0",
     "react": "^0.14.7",
     "react-bootstrap": "^0.28.3",
@@ -44,8 +44,8 @@
     "style-loader": "^0.13.0",
     "ts-loader": "^0.8.0",
     "tslint": "^3.3.0",
-    "typescript": "^1.8.2",
-    "typings": "^0.7.9",
+    "typescript": "^1.8.10",
+    "typings": "^0.7.12",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.12"
   },
