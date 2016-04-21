@@ -77,10 +77,8 @@ export default class Root extends React.Component<RootProps, any> {
         collectionUrl={this.props.collectionUrl}
         bookUrl={this.props.bookUrl}
         isTopLevel={this.props.isTopLevel}
-        pathFor={this.pathFor}
-        navigate={this.props.navigate}
         BookDetailsContainer={BookDetailsContainer}
-        header={Header}
+        Header={Header}
         pageTitleTemplate={this.pageTitleTemplate}
         />
     );
