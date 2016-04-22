@@ -96,12 +96,32 @@ describe("EditableInput", () => {
     let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
     expect(input.hasAttribute("disabled")).toBeTruthy();
   });
+
+  it("calls provided onChange", () => {
+    let onChange = jest.genMockFunction();
+    editableInput = TestUtils.renderIntoDocument(
+      <EditableInput
+        type="text"
+        label="label"
+        name="name"
+        disabled={true}
+        value="initial value"
+        onChange={onChange}
+        />
+    );
+
+    let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
+    input["value"] = "new value";
+    TestUtils.Simulate.change(input);
+    expect(onChange.mock.calls.length).toEqual(1);
+  });
 });
 
 describe("EditForm", () => {
   let bookData = {
     title: "title",
     audience: "Young Adult",
+    targetAgeRange: ["12", "16"],
     summary: "summary",
     editLink: {
       href: "href",
@@ -137,11 +157,46 @@ describe("EditForm", () => {
       expect(input.props.value).toBe("Young Adult");
     });
 
-    it("shows editable input with summary", () => {
+    it("shows editable inputs with min and max target age", () => {
       let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[2];
+      expect(input.props.label).toBe("");
+      expect(input.props.value).toBe("12");
+
+      input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[3];
+      expect(input.props.label).toBe("");
+      expect(input.props.value).toBe("16");
+    });
+
+    it("shows editable input with summary", () => {
+      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[4];
       expect(input.props.label).toBe("Summary");
       expect(input.props.value).toBe("summary");
     });
+  });
+
+  it("shows and hides target age inputs when audience changes", () => {
+    let editForm = TestUtils.renderIntoDocument(
+      <EditForm
+        {...bookData}
+        csrfToken="token"
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        editBook={jest.genMockFunction()}
+        />
+    );
+    let inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
+    expect(inputs.length).toEqual(5);
+
+    let select = TestUtils.findRenderedDOMComponentWithTag(editForm, "select");
+    (select as any).value = "Adult";
+    TestUtils.Simulate.change(select);
+    inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
+    expect(inputs.length).toEqual(3);
+
+    (select as any).value = "Children";
+    TestUtils.Simulate.change(select);
+    inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
+    expect(inputs.length).toEqual(5);
   });
 
   it("calls editBook on submit", () => {

@@ -10,6 +10,7 @@ export interface LinkData {
 export interface BookData {
   title: string;
   audience?: string;
+  targetAgeRange?: string[];
   summary?: string;
   hideLink?: LinkData;
   restoreLink?: LinkData;

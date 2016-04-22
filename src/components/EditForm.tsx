@@ -8,6 +8,7 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   name: string;
   disabled: boolean;
   type: string;
+  onChange?: () => any;
 }
 
 export class EditableInput extends React.Component<EditableInputProps, any> {
@@ -44,9 +45,11 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
   }
 
   handleChange() {
-    this.setState({
-      value: (this.refs as any).input.getValue()
-    });
+    if (!this.props.onChange || this.props.onChange() !== false) {
+      this.setState({
+        value: (this.refs as any).input.getValue()
+      });
+    }
   }
 }
 
@@ -58,6 +61,13 @@ export interface EditFormProps extends BookData {
 }
 
 export default class EditForm extends React.Component<EditFormProps, any> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      audience: this.props.audience,
+    }    
+  }
+
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)}>
@@ -78,13 +88,39 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           disabled={this.props.disabled}
           name="audience"
           label="Audience"
+          ref="audience"
           value={this.props.audience}
-          >
-            <option value="Children">Children</option>
-            <option value="Young Adult">Young Adult</option>
-            <option value="Adult">Adult</option>
-            <option value="Adults Only">Adults Only</option>
+          onChange={this.handleAudienceChange.bind(this)}
+        >
+          <option value="Children">Children</option>
+          <option value="Young Adult">Young Adult</option>
+          <option value="Adult">Adult</option>
+          <option value="Adults Only">Adults Only</option>
         </EditableInput>
+        { (this.state.audience === "Children" || this.state.audience === "Young Adult") &&
+           <div className="form-group">
+             <label>Target Age Range</label>
+             <div>
+             <EditableInput
+               type="text"
+               label=""
+               disabled={this.props.disabled}
+               name="target_age_min"
+               value={this.props.targetAgeRange[0]}
+               style={{width: "50px", float: "left"}}
+               />
+             <span style={{float: "left", lineHeight: "34px"}}>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
+             <EditableInput
+               type="text"
+               label=""
+               disabled={this.props.disabled}
+               name="target_age_max"
+               value={this.props.targetAgeRange[1]}
+               style={{width: "50px"}}
+               />
+             </div>
+           </div>
+        }
         <EditableInput
           style={{ height: "300px" }}
           type="textarea"
@@ -103,6 +139,22 @@ export default class EditForm extends React.Component<EditFormProps, any> {
       </form>
     );
   }
+
+  componentWillReceiveProps(props) {
+    if (props.audience && props.audience !== this.props.audience) {
+      this.setState({
+        audience: props.audience
+      });
+    }
+  }
+
+  handleAudienceChange() {
+    let audience = (this.refs as any).audience;
+    let value = (audience.refs as any).input.getValue();
+    this.setState({
+      audience: value
+    });
+  }  
 
   save(event) {
     event.preventDefault();

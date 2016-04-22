@@ -26,10 +26,19 @@ export default function adapter(data: OPDSEntry): BookData {
     return category.scheme === "http://schema.org/audience";
   });
 
+  let targetAgeCategory = data.categories.find(category => {
+    return category.scheme === "http://schema.org/typicalAgeRange";
+  });
+  let targetAgeRange = [];
+  if (targetAgeCategory && /\d\d?-?\d?\d?/.test(targetAgeCategory.term)) {
+    targetAgeRange = targetAgeCategory.term.split("-");
+  }
+
   return {
     title: data.title,
     summary: data.summary.content,
     audience: audience.term,
+    targetAgeRange: targetAgeRange,
     hideLink: hideLink,
     restoreLink: restoreLink,
     refreshLink: refreshLink,
