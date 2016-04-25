@@ -196,12 +196,12 @@ module.exports = {
                   .click(complaintsSelector)
                   .waitForElementNotPresent(loadingSelector, 5000)
                   .assert.noError()
-                  .assert.containsText(nthBreadcrumbSelector(1), "Catalog")
+                  .assert.containsText(nthBreadcrumbSelector(1), "All Books")
                   .assert.containsText(nthBreadcrumbSelector(2), complaintsTitle)
                   .click(hiddenSelector)
                   .waitForElementNotPresent(loadingSelector, 5000)
                   .assert.noError()
-                  .assert.containsText(nthBreadcrumbSelector(1), "Catalog")
+                  .assert.containsText(nthBreadcrumbSelector(1), "All Books")
                   .assert.containsText(nthBreadcrumbSelector(2), hiddenTitle);
               });
             });
