@@ -9,6 +9,7 @@ export interface LinkData {
 
 export interface BookData {
   title: string;
+  fiction?: boolean;
   audience?: string;
   targetAgeRange?: string[];
   summary?: string;

@@ -34,11 +34,20 @@ export default function adapter(data: OPDSEntry): BookData {
     targetAgeRange = targetAgeCategory.term.split("-");
   }
 
+  let fictionCategory = data.categories.find(category => {
+    return category.scheme === "http://librarysimplified.org/terms/fiction/";
+  });
+  let fiction;
+  if (fictionCategory) {
+    fiction = (fictionCategory.label === "Fiction");
+  }
+
   return {
     title: data.title,
     summary: data.summary.content,
     audience: audience.term,
     targetAgeRange: targetAgeRange,
+    fiction: fiction,
     hideLink: hideLink,
     restoreLink: restoreLink,
     refreshLink: refreshLink,

@@ -49,7 +49,21 @@ describe("EditableInput", () => {
     expect(option.textContent).toEqual("option");
   });
 
-  it("updates state and value when props change", () => {
+  it("shows checked from props", () => {
+    editableInput = TestUtils.renderIntoDocument(
+      <EditableInput
+        type="select"
+        label="label"
+        name="name"
+        disabled={false}
+        checked={true}
+        />
+    );
+    let input = TestUtils.findRenderedComponentWithType(editableInput, Input)
+    expect(input.props.checked).toEqual(true);
+  });
+
+  it("updates state, value, and checked when props change", () => {
     let elem = document.createElement("div");
     let editableInput = ReactDOM.render(
       <EditableInput
@@ -58,6 +72,7 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         value="initial value"
+        checked={true}
         />,
       elem
     );
@@ -68,19 +83,29 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         value="new value"
+        checked={false}
         />,
       elem
     );
     expect(editableInput.state["value"]).toEqual("new value");
+    expect(editableInput.state["checked"]).toEqual(false);
     let input = TestUtils.findRenderedComponentWithType(editableInput, Input);
     expect(input.props.value).toEqual("new value");
+    expect(input.props.checked).toEqual(false);
   });
 
-  it("updates state when input changes", () => {
+  it("updates value in state when input changes", () => {
     let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
     input["value"] = "new value";
     TestUtils.Simulate.change(input);
     expect(editableInput.state["value"]).toEqual("new value");
+  });
+
+  it("updates checked in state when input changes", () => {
+    let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
+    input["checked"] = true;
+    TestUtils.Simulate.change(input);
+    expect(editableInput.state["checked"]).toEqual(true);
   });
 
   it("disables", () => {
@@ -120,6 +145,7 @@ describe("EditableInput", () => {
 describe("EditForm", () => {
   let bookData = {
     title: "title",
+    fiction: true,
     audience: "Young Adult",
     targetAgeRange: ["12", "16"],
     summary: "summary",
@@ -167,8 +193,23 @@ describe("EditForm", () => {
       expect(input.props.value).toBe("16");
     });
 
+    it("shows editable radio buttons with fiction status", () => {
+      let fictionInput = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[4];
+      let nonfictionInput = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[5];
+
+      expect(fictionInput.props.type).toBe("radio");
+      expect(fictionInput.props.label).toBe("Fiction");
+      expect(fictionInput.props.checked).toBe(true);
+      expect(fictionInput.props.value).toBe("fiction");
+
+      expect(nonfictionInput.props.type).toBe("radio");
+      expect(nonfictionInput.props.label).toBe("Nonfiction");
+      expect(nonfictionInput.props.checked).toBe(false);
+      expect(nonfictionInput.props.value).toBe("nonfiction");
+    });
+
     it("shows editable input with summary", () => {
-      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[4];
+      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[6];
       expect(input.props.label).toBe("Summary");
       expect(input.props.value).toBe("summary");
     });
@@ -185,18 +226,55 @@ describe("EditForm", () => {
         />
     );
     let inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(5);
+    expect(inputs.length).toEqual(7);
 
     let select = TestUtils.findRenderedDOMComponentWithTag(editForm, "select");
     (select as any).value = "Adult";
     TestUtils.Simulate.change(select);
     inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(3);
+    expect(inputs.length).toEqual(5);
 
     (select as any).value = "Children";
     TestUtils.Simulate.change(select);
     inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(5);
+    expect(inputs.length).toEqual(7);
+  });
+
+  it("changes both fiction status radio buttons", () => {
+    let editForm = TestUtils.renderIntoDocument(
+      <EditForm
+        {...bookData}
+        csrfToken="token"
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        editBook={jest.genMockFunction()}
+        />
+    );
+
+    let components = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
+    expect(components.length).toEqual(7);
+    let fictionComponent = components[4];
+    let nonfictionComponent = components[5];
+
+    let inputs = TestUtils.scryRenderedDOMComponentsWithTag(editForm, "input")
+    expect(inputs.length).toEqual(7);
+    let fictionInput = inputs[4];
+    let nonfictionInput = inputs[5];
+
+    expect(fictionComponent.props.checked).toBeTruthy();
+    expect(nonfictionComponent.props.checked).toBeFalsy();
+
+    (nonfictionInput as any).checked = true;
+    TestUtils.Simulate.change(nonfictionInput);
+
+    expect(fictionComponent.props.checked).toBeFalsy();
+    expect(nonfictionComponent.props.checked).toBeTruthy();
+
+    (fictionInput as any).checked = true;
+    TestUtils.Simulate.change(fictionInput);
+
+    expect(fictionComponent.props.checked).toBeTruthy();
+    expect(nonfictionComponent.props.checked).toBeFalsy();
   });
 
   it("calls editBook on submit", () => {
@@ -221,6 +299,7 @@ describe("EditForm", () => {
     expect(editBook.mock.calls[0][0]).toBe("href");
     expect(editBook.mock.calls[0][1].get("csrf_token").value).toBe("token");
     expect(editBook.mock.calls[0][1].get("title").value).toBe(bookData.title);
+    expect(editBook.mock.calls[0][1].get("fiction").value).toBe("fiction");
     expect(editBook.mock.calls[0][1].get("audience").value).toBe(bookData.audience);
     expect(editBook.mock.calls[0][1].get("summary").value).toBe(bookData.summary);
   });
