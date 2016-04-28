@@ -3,6 +3,7 @@ jest.dontMock("../EditForm");
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
+import { mount } from "enzyme";
 
 import EditForm, { EditableInput } from "../EditForm";
 import { Input, ButtonInput } from "react-bootstrap";
@@ -96,12 +97,32 @@ describe("EditableInput", () => {
     let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
     expect(input.hasAttribute("disabled")).toBeTruthy();
   });
+
+  it("calls provided onChange", () => {
+    let onChange = jest.genMockFunction();
+    editableInput = TestUtils.renderIntoDocument(
+      <EditableInput
+        type="text"
+        label="label"
+        name="name"
+        disabled={true}
+        value="initial value"
+        onChange={onChange}
+        />
+    );
+
+    let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
+    input["value"] = "new value";
+    TestUtils.Simulate.change(input);
+    expect(onChange.mock.calls.length).toEqual(1);
+  });
 });
 
 describe("EditForm", () => {
   let bookData = {
     title: "title",
     audience: "Young Adult",
+    targetAgeRange: ["12", "16"],
     summary: "summary",
     editLink: {
       href: "href",
@@ -137,11 +158,54 @@ describe("EditForm", () => {
       expect(input.props.value).toBe("Young Adult");
     });
 
-    it("shows editable input with summary", () => {
+    it("shows editable inputs with min and max target age", () => {
       let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[2];
+      expect(input.props.label).toBe("");
+      expect(input.props.value).toBe("12");
+
+      input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[3];
+      expect(input.props.label).toBe("");
+      expect(input.props.value).toBe("16");
+    });
+
+    it("shows editable input with summary", () => {
+      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[4];
       expect(input.props.label).toBe("Summary");
       expect(input.props.value).toBe("summary");
     });
+  });
+
+  it("shows and hides target age inputs when audience changes", () => {
+    let wrapper = mount(
+      <EditForm
+        {...bookData}
+        csrfToken="token"
+        disabled={false}
+        refresh={jest.genMockFunction()}
+        editBook={jest.genMockFunction()}
+        />
+    );
+
+    let minAgeInput = wrapper.find("input[name='target_age_min']");
+    let maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(1);
+    expect(maxAgeInput.length).toBe(1);
+
+    let select = wrapper.find("select") as any;
+    let selectElement = select.get(0);
+    selectElement.value = "Adult";
+    select.simulate("change");
+    minAgeInput = wrapper.find("input[name='target_age_min']");
+    maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(0);
+    expect(maxAgeInput.length).toBe(0);
+
+    selectElement.value = "Children";
+    select.simulate("change");
+    minAgeInput = wrapper.find("input[name='target_age_min']");
+    maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(1);
+    expect(maxAgeInput.length).toBe(1);
   });
 
   it("calls editBook on submit", () => {
