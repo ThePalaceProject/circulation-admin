@@ -1,12 +1,12 @@
 jest.dontMock("../Header");
-// jest.setMock("../../images/nypl-logo-transparent.png", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6fwYAAtMBznRijrsAAAAASUVORK5CYII=");
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
 
 import Header from "../Header";
-import HeaderCollectionLink from "opds-browser/lib/components/HeaderCollectionLink";
+import HeaderBrowserLink from "opds-browser/lib/components/HeaderBrowserLink";
+import { mockRouterContext } from "opds-browser/lib/components/__tests__/routing";
 
 class TestSearch extends React.Component<any, any> {
   render(): JSX.Element {
@@ -18,22 +18,20 @@ class TestSearch extends React.Component<any, any> {
 
 describe("Header", () => {
   let header;
-  let navigate;
+  let push, context;
 
   beforeEach(() => {
-    navigate = jest.genMockFunction();
+    push = jest.genMockFunction();
+    context = mockRouterContext(push);
 
     class FakeContext extends React.Component<any, any> {
       static childContextTypes = {
-        navigate: React.PropTypes.func.isRequired,
+        router: React.PropTypes.object.isRequired,
         pathFor: React.PropTypes.func.isRequired
       };
 
       getChildContext() {
-        return {
-          navigate: navigate,
-          pathFor: jest.genMockFunction()
-        };
+        return context;
       }
 
       render(): JSX.Element {
@@ -45,7 +43,7 @@ describe("Header", () => {
 
     header = TestUtils.renderIntoDocument(
       <FakeContext>
-        <Header CollectionLink={HeaderCollectionLink}>
+        <Header BrowserLink={HeaderBrowserLink}>
           <TestSearch />
         </Header>
       </FakeContext>
@@ -68,19 +66,19 @@ describe("Header", () => {
   })
 
   it("shows top-level links", () => {
-    let links = TestUtils.scryRenderedComponentsWithType(header, HeaderCollectionLink);
-    expect(links.length).toBe(2);
-    let elements = links.map((link) => {
-      return ReactDOM.findDOMNode(link);
-    });
-    TestUtils.Simulate.click(elements[0]);
-    expect(navigate.mock.calls.length).toBe(1);
-    expect(navigate.mock.calls[0][0]).toBe("/admin/complaints");
-    expect(navigate.mock.calls[0][1]).toBe(null);
+    let links = TestUtils.scryRenderedComponentsWithType(header, HeaderBrowserLink);
+    let elements = links.map(link => ReactDOM.findDOMNode(link));
 
-    TestUtils.Simulate.click(elements[1]);
-    expect(navigate.mock.calls.length).toBe(2);
-    expect(navigate.mock.calls[1][0]).toBe("/admin/suppressed");
-    expect(navigate.mock.calls[1][1]).toBe(null);
+    expect(links.length).toBe(2);
+
+    TestUtils.Simulate.click(elements[0], { button: 0 });
+    expect(push.mock.calls.length).toBe(1);
+    expect(push.mock.calls[0][0].pathname).toBe(context.pathFor("/admin/complaints", null));
+    expect(push.mock.calls[0][0].state.isTopLevel).toBe(true);
+
+    TestUtils.Simulate.click(elements[1], { button: 0 });
+    expect(push.mock.calls.length).toBe(2);
+    expect(push.mock.calls[1][0].pathname).toBe(context.pathFor("/admin/suppressed", null));
+    expect(push.mock.calls[1][0].state.isTopLevel).toBe(true);
   });
 });

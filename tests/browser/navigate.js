@@ -1,5 +1,8 @@
 var breadcrumbSelector = "ol.breadcrumb";
 var loadingSelector = "h1.loading";
+var nthBreadcrumbSelector = function(n) {
+  return `ol.breadcrumb li:nth-child(${n})`
+};
 
 module.exports = {
   before: function(browser, done) {
@@ -156,6 +159,50 @@ module.exports = {
                     .pause(50)
                     .verify.value(titleInputSelector, prevBookTitle)
                 });
+              });
+            });
+          });
+        });
+      });
+  },
+
+  "navigate to top-level pages": function(browser) {
+    var laneSelector = "li:first-child .lane h2 a";
+    var complaintsSelector = "ul.nav li:first-child a";
+    var hiddenSelector = "ul.nav li:last-child a";
+
+    browser
+      .goHome()
+      .waitForElementVisible(laneSelector, 5000)
+      .waitForElementNotPresent(breadcrumbSelector, 5000)
+      .verify.noError()
+      .getAttribute(complaintsSelector, "href", function(result) {
+        var complaintsUrl = result.value;
+        this.getText(complaintsSelector, function(result) {
+          var complaintsTitle = result.value;
+          this.getAttribute(hiddenSelector, "href", function(result) {
+            var hiddenUrl = result.value
+            this.getText(hiddenSelector, function(result) {
+              var hiddenTitle = result.value;
+              this.getText(laneSelector, function(result) {
+                var laneTitle = result.value;
+                this
+                  .click(laneSelector)
+                  .waitForElementNotPresent(loadingSelector, 5000)
+                  .waitForElementPresent(breadcrumbSelector, 5000)
+                  .assert.noError()
+                  .verify.containsText(nthBreadcrumbSelector(1), "All Books")
+                  .verify.containsText(nthBreadcrumbSelector(2), laneTitle)
+                  .click(complaintsSelector)
+                  .waitForElementNotPresent(loadingSelector, 5000)
+                  .assert.noError()
+                  .assert.containsText(nthBreadcrumbSelector(1), "All Books")
+                  .assert.containsText(nthBreadcrumbSelector(2), complaintsTitle)
+                  .click(hiddenSelector)
+                  .waitForElementNotPresent(loadingSelector, 5000)
+                  .assert.noError()
+                  .assert.containsText(nthBreadcrumbSelector(1), "All Books")
+                  .assert.containsText(nthBreadcrumbSelector(2), hiddenTitle);
               });
             });
           });
