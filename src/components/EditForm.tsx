@@ -75,7 +75,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
     this.state = {
       audience: this.props.audience,
       fiction: this.props.fiction
-    }    
+    }
   }
 
   render(): JSX.Element {
