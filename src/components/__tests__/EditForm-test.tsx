@@ -3,6 +3,7 @@ jest.dontMock("../EditForm");
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
+import { mount } from "enzyme";
 
 import EditForm, { EditableInput } from "../EditForm";
 import { Input, ButtonInput } from "react-bootstrap";
@@ -216,7 +217,7 @@ describe("EditForm", () => {
   });
 
   it("shows and hides target age inputs when audience changes", () => {
-    let editForm = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <EditForm
         {...bookData}
         csrfToken="token"
@@ -225,23 +226,31 @@ describe("EditForm", () => {
         editBook={jest.genMockFunction()}
         />
     );
-    let inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(7);
 
-    let select = TestUtils.findRenderedDOMComponentWithTag(editForm, "select");
-    (select as any).value = "Adult";
-    TestUtils.Simulate.change(select);
-    inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(5);
+    let minAgeInput = wrapper.find("input[name='target_age_min']");
+    let maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(1);
+    expect(maxAgeInput.length).toBe(1);
 
-    (select as any).value = "Children";
-    TestUtils.Simulate.change(select);
-    inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(7);
+    let select = wrapper.find("select") as any;
+    let selectElement = select.get(0);
+    selectElement.value = "Adult";
+    select.simulate("change");
+    minAgeInput = wrapper.find("input[name='target_age_min']");
+    maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(0);
+    expect(maxAgeInput.length).toBe(0);
+
+    selectElement.value = "Children";
+    select.simulate("change");
+    minAgeInput = wrapper.find("input[name='target_age_min']");
+    maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(1);
+    expect(maxAgeInput.length).toBe(1);
   });
 
   it("changes both fiction status radio buttons", () => {
-    let editForm = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <EditForm
         {...bookData}
         csrfToken="token"
@@ -251,30 +260,28 @@ describe("EditForm", () => {
         />
     );
 
-    let components = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(components.length).toEqual(7);
-    let fictionComponent = components[4];
-    let nonfictionComponent = components[5];
+    let fictionInput = wrapper.find("input[value='fiction']");
+    let nonfictionInput = wrapper.find("input[value='nonfiction']");
+    expect(fictionInput.length).toEqual(1);
+    expect(nonfictionInput.length).toEqual(1);
 
-    let inputs = TestUtils.scryRenderedDOMComponentsWithTag(editForm, "input")
-    expect(inputs.length).toEqual(7);
-    let fictionInput = inputs[4];
-    let nonfictionInput = inputs[5];
+    let fictionElement = fictionInput.get(0);
+    let nonfictionElement = nonfictionInput.get(0);
 
-    expect(fictionComponent.props.checked).toBeTruthy();
-    expect(nonfictionComponent.props.checked).toBeFalsy();
+    expect((fictionElement as any).checked).toBeTruthy();
+    expect((nonfictionElement as any).checked).toBeFalsy();
 
-    (nonfictionInput as any).checked = true;
-    TestUtils.Simulate.change(nonfictionInput);
+    (nonfictionElement as any).checked = true;
+    nonfictionInput.simulate("change");
 
-    expect(fictionComponent.props.checked).toBeFalsy();
-    expect(nonfictionComponent.props.checked).toBeTruthy();
+    expect((fictionElement as any).checked).toBeFalsy();
+    expect((nonfictionElement as any).checked).toBeTruthy();
 
-    (fictionInput as any).checked = true;
-    TestUtils.Simulate.change(fictionInput);
+    (fictionElement as any).checked = true;
+    fictionInput.simulate("change");
 
-    expect(fictionComponent.props.checked).toBeTruthy();
-    expect(nonfictionComponent.props.checked).toBeFalsy();
+    expect((fictionElement as any).checked).toBeTruthy();
+    expect((nonfictionElement as any).checked).toBeFalsy();
   });
 
   it("calls editBook on submit", () => {

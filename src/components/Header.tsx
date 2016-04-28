@@ -45,7 +45,7 @@ export default class Header extends React.Component<HeaderProps, any> {
             </Nav>
           }
 
-          <Nav pullRight>
+          <Nav>
             <li>
               <BrowserLink
                 collectionUrl={"/admin/complaints"}

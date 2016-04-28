@@ -12,7 +12,9 @@
   "scripts": {
     "prepublish": "typings install && npm run prod",
     "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc && jest",
-    "test-browser": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox,chrome",
+    "test-browser": "npm run test-chrome && npm run test-firefox",
+    "test-chrome": "node_modules/.bin/selenium-standalone install && nightwatch -e chrome",
+    "test-firefox": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox",
     "dev": "rm -rf dist && NODE_ENV=development webpack --watch --progress --display-modules --config webpack.prod.config",
     "prod": "rm -rf dist && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
+    "enzyme": "^2.2.0",
     "file-loader": "^0.8.5",
     "jest": "^0.1.40",
     "jest-cli": "^0.8.2",
@@ -58,7 +61,8 @@
     ],
     "moduleFileExtensions": [
       "js",
-      "jsx"
+      "jsx",
+      "json"
     ],
     "unmockedModulePathPatterns": [
       "../node_modules/*"

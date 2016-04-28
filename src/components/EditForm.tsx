@@ -108,28 +108,28 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           <option value="Adults Only">Adults Only</option>
         </EditableInput>
         { (this.state.audience === "Children" || this.state.audience === "Young Adult") &&
-           <div className="form-group">
-             <label>Target Age Range</label>
-             <div>
-             <EditableInput
-               type="text"
-               label=""
-               disabled={this.props.disabled}
-               name="target_age_min"
-               value={this.props.targetAgeRange[0]}
-               style={{width: "50px", float: "left"}}
-               />
-             <span style={{float: "left", lineHeight: "34px"}}>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
-             <EditableInput
-               type="text"
-               label=""
-               disabled={this.props.disabled}
-               name="target_age_max"
-               value={this.props.targetAgeRange[1]}
-               style={{width: "50px"}}
-               />
-             </div>
-           </div>
+          <div className="form-group">
+            <label>Target Age Range</label>
+            <div className="form-inline">
+              <EditableInput
+                type="text"
+                label=""
+                disabled={this.props.disabled}
+                name="target_age_min"
+                value={this.props.targetAgeRange[0]}
+                style={{width: "50px"}}
+                />
+              <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
+              <EditableInput
+                type="text"
+                label=""
+                disabled={this.props.disabled}
+                name="target_age_max"
+                value={this.props.targetAgeRange[1]}
+                style={{width: "50px"}}
+                />
+            </div>
+          </div>
         }
         <div className="form-group">
           <label>Fiction Classification</label>
@@ -162,13 +162,11 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           label="Summary"
           value={this.props.summary}
           />
-        <div style={{ float: "left" }}>
-          <ButtonInput
-            disabled={this.props.disabled}
-            type="submit"
-            value="Save"
-            />
-        </div>
+        <ButtonInput
+          disabled={this.props.disabled}
+          type="submit"
+          value="Save"
+          />
       </form>
     );
   }
