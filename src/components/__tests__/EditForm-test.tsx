@@ -1,18 +1,16 @@
 jest.dontMock("../EditForm");
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
-import { mount } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import EditForm, { EditableInput } from "../EditForm";
 import { Input, ButtonInput } from "react-bootstrap";
 
 describe("EditableInput", () => {
-  let editableInput;
+  let wrapper;
 
   beforeEach(() => {
-    editableInput = TestUtils.renderIntoDocument(
+    wrapper = shallow(
       <EditableInput
         type="text"
         label="label"
@@ -24,18 +22,18 @@ describe("EditableInput", () => {
   });
 
   it("shows label from props", () => {
-    let input = TestUtils.findRenderedComponentWithType(editableInput, Input);
-    expect(input.props.label).toEqual("label");
+    let input = wrapper.find(Input);
+    expect(input.props().label).toEqual("label");
   });
 
   it("shows initial value from props", () => {
-    expect(editableInput.state.value).toEqual("initial value");
-    let input = TestUtils.findRenderedComponentWithType(editableInput, Input);
-    expect(input.props.value).toEqual("initial value");
+    expect(wrapper.state().value).toEqual("initial value");
+    let input = wrapper.find(Input);
+    expect(input.props().value).toEqual("initial value");
   });
 
   it("shows children from props", () => {
-    editableInput = TestUtils.renderIntoDocument(
+    wrapper = shallow(
       <EditableInput
         type="select"
         label="label"
@@ -46,46 +44,45 @@ describe("EditableInput", () => {
         <option>option</option>
       </EditableInput>
     );
-    let option = TestUtils.findRenderedDOMComponentWithTag(editableInput, "option")
-    expect(option.textContent).toEqual("option");
+    let option = wrapper.find("option")
+    expect(option.text()).toEqual("option");
   });
 
   it("updates state and value when props change", () => {
-    let elem = document.createElement("div");
-    let editableInput = ReactDOM.render(
+    let wrapper = shallow(
       <EditableInput
         type="text"
         label="label"
         name="name"
         disabled={false}
         value="initial value"
-        />,
-      elem
+        />
     );
-    ReactDOM.render(
+    wrapper.setProps({ value: "new value" });
+    expect(wrapper.state().value).toBe("new value");
+    let input = wrapper.find(Input);
+    expect(input.props().value).toEqual("new value");
+  });
+
+  it("updates state when input changes", () => {
+    let wrapper = mount(
       <EditableInput
         type="text"
         label="label"
         name="name"
         disabled={false}
-        value="new value"
-        />,
-      elem
+        value="initial value"
+        />
     );
-    expect(editableInput.state["value"]).toEqual("new value");
-    let input = TestUtils.findRenderedComponentWithType(editableInput, Input);
-    expect(input.props.value).toEqual("new value");
-  });
-
-  it("updates state when input changes", () => {
-    let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
-    input["value"] = "new value";
-    TestUtils.Simulate.change(input);
-    expect(editableInput.state["value"]).toEqual("new value");
+    let input = wrapper.find("input");
+    let inputElement = input.get(0) as any;
+    inputElement.value = "new value";
+    input.simulate("change");
+    expect(wrapper.state().value).toBe("new value");
   });
 
   it("disables", () => {
-    editableInput = TestUtils.renderIntoDocument(
+    wrapper = mount(
       <EditableInput
         type="text"
         label="label"
@@ -94,13 +91,13 @@ describe("EditableInput", () => {
         value="initial value"
         />
     );
-    let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
-    expect(input.hasAttribute("disabled")).toBeTruthy();
+    let input = wrapper.find("input");
+    expect(input.props().disabled).toBeTruthy();
   });
 
   it("calls provided onChange", () => {
     let onChange = jest.genMockFunction();
-    editableInput = TestUtils.renderIntoDocument(
+    wrapper = mount(
       <EditableInput
         type="text"
         label="label"
@@ -111,10 +108,11 @@ describe("EditableInput", () => {
         />
     );
 
-    let input = TestUtils.findRenderedDOMComponentWithTag(editableInput, "input");
-    input["value"] = "new value";
-    TestUtils.Simulate.change(input);
-    expect(onChange.mock.calls.length).toEqual(1);
+    let input = wrapper.find("input");
+    let inputElement = input.get(0) as any;
+    inputElement.value = "new value";
+    input.simulate("change");
+    expect(onChange.mock.calls.length).toBe(1);
   });
 });
 
@@ -131,10 +129,14 @@ describe("EditForm", () => {
   };
 
   describe("rendering", () => {
-    let editForm;
+    let wrapper;
+    let editableInputByName = (name) => {
+      let inputs = wrapper.find(EditableInput);
+      return inputs.filterWhere(input => input.props().name === name);
+    };
 
     beforeEach(() => {
-      editForm = TestUtils.renderIntoDocument(
+      wrapper = shallow(
         <EditForm
           {...bookData}
           csrfToken=""
@@ -146,32 +148,32 @@ describe("EditForm", () => {
     });
 
     it("shows editable input with title", () => {
-      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[0];
-      expect(input.props.label).toBe("Title");
-      expect(input.props.value).toBe("title");
+      let input = editableInputByName("title");
+      expect(input.props().label).toBe("Title");
+      expect(input.props().value).toBe("title");
     });
 
     it("shows editable select with audience", () => {
-      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[1];
-      expect(input.props.type).toBe("select")
-      expect(input.props.label).toBe("Audience");
-      expect(input.props.value).toBe("Young Adult");
+      let input = editableInputByName("audience");
+      expect(input.props().type).toBe("select")
+      expect(input.props().label).toBe("Audience");
+      expect(input.props().value).toBe("Young Adult");
     });
 
     it("shows editable inputs with min and max target age", () => {
-      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[2];
-      expect(input.props.label).toBe("");
-      expect(input.props.value).toBe("12");
+      let input = editableInputByName("target_age_min");
+      expect(input.props().label).toBe("");
+      expect(input.props().value).toBe("12");
 
-      input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[3];
-      expect(input.props.label).toBe("");
-      expect(input.props.value).toBe("16");
+      input = editableInputByName("target_age_max");
+      expect(input.props().label).toBe("");
+      expect(input.props().value).toBe("16");
     });
 
     it("shows editable input with summary", () => {
-      let input = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput)[4];
-      expect(input.props.label).toBe("Summary");
-      expect(input.props.value).toBe("summary");
+      let input = editableInputByName("summary");
+      expect(input.props().label).toBe("Summary");
+      expect(input.props().value).toBe("summary");
     });
   });
 
@@ -213,7 +215,7 @@ describe("EditForm", () => {
     editBook.mockReturnValue(new Promise((resolve, reject) => {
       resolve();
     }));
-    let editForm = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <EditForm
         {...bookData}
         csrfToken="token"
@@ -223,8 +225,8 @@ describe("EditForm", () => {
         />
     );
 
-    let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
-    TestUtils.Simulate.submit(form);
+    let form = wrapper.find("form");
+    form.simulate("submit");
 
     expect(editBook.mock.calls.length).toBe(1);
     expect(editBook.mock.calls[0][0]).toBe("href");
@@ -239,7 +241,7 @@ describe("EditForm", () => {
     editBook.mockReturnValue(new Promise((resolve, reject) => {
       resolve();
     }));
-    let editForm = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <EditForm
         {...bookData}
         csrfToken=""
@@ -249,12 +251,12 @@ describe("EditForm", () => {
         />
     );
 
-    let form = TestUtils.findRenderedDOMComponentWithTag(editForm, "form");
-    TestUtils.Simulate.submit(form);
+    let form = wrapper.find("form");
+    form.simulate("submit");
   });
 
   it("disables all inputs", () => {
-    let editForm = TestUtils.renderIntoDocument(
+    let wrapper = shallow(
       <EditForm
         {...bookData}
         csrfToken=""
@@ -263,9 +265,9 @@ describe("EditForm", () => {
         editBook={jest.genMockFunction()}
         />
     );
-    let inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
+    let inputs = wrapper.find(EditableInput);
     inputs.forEach((input) => {
-      expect(input.props.disabled).toBeTruthy();
+      expect(input.props().disabled).toBeTruthy();
     });
   });
 });
