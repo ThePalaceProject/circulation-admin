@@ -3,6 +3,7 @@ jest.dontMock("../EditForm");
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
+import { mount } from "enzyme";
 
 import EditForm, { EditableInput } from "../EditForm";
 import { Input, ButtonInput } from "react-bootstrap";
@@ -175,7 +176,7 @@ describe("EditForm", () => {
   });
 
   it("shows and hides target age inputs when audience changes", () => {
-    let editForm = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <EditForm
         {...bookData}
         csrfToken="token"
@@ -184,19 +185,27 @@ describe("EditForm", () => {
         editBook={jest.genMockFunction()}
         />
     );
-    let inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(5);
 
-    let select = TestUtils.findRenderedDOMComponentWithTag(editForm, "select");
-    (select as any).value = "Adult";
-    TestUtils.Simulate.change(select);
-    inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(3);
+    let minAgeInput = wrapper.find("input[name='target_age_min']");
+    let maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(1);
+    expect(maxAgeInput.length).toBe(1);
 
-    (select as any).value = "Children";
-    TestUtils.Simulate.change(select);
-    inputs = TestUtils.scryRenderedComponentsWithType(editForm, EditableInput);
-    expect(inputs.length).toEqual(5);
+    let select = wrapper.find("select") as any;
+    let selectElement = select.get(0);
+    selectElement.value = "Adult";
+    select.simulate("change");
+    minAgeInput = wrapper.find("input[name='target_age_min']");
+    maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(0);
+    expect(maxAgeInput.length).toBe(0);
+
+    selectElement.value = "Children";
+    select.simulate("change");
+    minAgeInput = wrapper.find("input[name='target_age_min']");
+    maxAgeInput = wrapper.find("input[name='target_age_max']");
+    expect(minAgeInput.length).toBe(1);
+    expect(maxAgeInput.length).toBe(1);
   });
 
   it("calls editBook on submit", () => {
