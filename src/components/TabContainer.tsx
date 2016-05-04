@@ -3,8 +3,8 @@ import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
+import Genres from "./Genres";
 import Complaints from "./Complaints";
-import ActionCreator from "../actions";
 import { BookData, Navigate } from "../interfaces";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
@@ -36,6 +36,15 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             store={this.props.store}
             csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}
+            refreshBrowser={this.props.refreshBrowser}
+            />
+        </Tab>
+        <Tab eventKey={"genres"} title="Genres">
+          <Genres
+            store={this.props.store}
+            csrfToken={this.props.csrfToken}
+            bookUrl={this.props.bookUrl}
+            book={this.props.bookData}
             refreshBrowser={this.props.refreshBrowser}
             />
         </Tab>

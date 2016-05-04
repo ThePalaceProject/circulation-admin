@@ -7,6 +7,10 @@ export interface LinkData {
   rel: string;
 }
 
+export interface CategoryData {
+  label: string;
+}
+
 export interface BookData {
   title: string;
   fiction?: boolean;
@@ -18,6 +22,7 @@ export interface BookData {
   refreshLink?: LinkData;
   editLink?: LinkData;
   issuesLink?: LinkData;
+  categories?: string[];
 }
 
 export interface BookLink {
@@ -34,4 +39,26 @@ export interface ComplaintsData {
 
 export interface PostComplaint {
   (url: string, data: { type: string }): Promise<any>;
+}
+
+export interface GenreTree {
+  Fiction: {
+    [index: string]: GenreData;
+  };
+  Nonfiction: {
+    [index: string]: GenreData;
+  };
+}
+
+export interface GenreData {
+  name: string;
+  parents: string[];
+  subgenres: string[];
+}
+
+export interface SubjectData {
+  type: string;
+  name: string;
+  source: string;
+  weight: string;
 }

@@ -24,12 +24,13 @@ export interface EditorProps extends React.Props<Editor> {
 }
 
 export class Editor extends React.Component<EditorProps, any> {
-  render(): JSX.Element {
-    let refresh = () => {
-      this.props.fetchBook(this.props.bookAdminUrl);
-      this.props.refreshBrowser();
-    };
+  constructor(props) {
+    super(props);
+    this.editBook = this.editBook.bind(this);
+    this.refresh = this.refresh.bind(this);
+  }
 
+  render(): JSX.Element {
     return (
       <div>
         { this.props.bookData && !this.props.fetchError &&
@@ -45,48 +46,49 @@ export class Editor extends React.Component<EditorProps, any> {
                 </h4>
               }
             </div>
+
             { this.props.editError &&
               <ErrorMessage error={this.props.editError} />
             }
-            { this.props.bookData.hideLink &&
-              <ButtonForm
-                disabled={this.props.isFetching}
-                label="Hide"
-                link={this.props.bookData.hideLink.href}
-                csrfToken={this.props.csrfToken}
-                submit={this.props.editBook}
-                refresh={refresh} />
+
+            { (this.props.bookData.hideLink || this.props.bookData.restoreLink || this.props.bookData.refreshLink) &&
+              <div className="form-group form-inline">
+                { this.props.bookData.hideLink &&
+                  <ButtonForm
+                    disabled={this.props.isFetching}
+                    label="Hide"
+                    submit={() => this.editBook(this.props.bookData.hideLink.href)}
+                    />
+                }
+                { this.props.bookData.restoreLink &&
+                  <ButtonForm
+                    disabled={this.props.isFetching}
+                    label="Restore"
+                    submit={() => this.editBook(this.props.bookData.restoreLink.href)}
+                    />
+                }
+                { this.props.bookData.refreshLink &&
+                  <ButtonForm
+                    disabled={this.props.isFetching}
+                    label="Refresh Metadata"
+                    submit={() => this.editBook(this.props.bookData.refreshLink.href)}
+                    />
+                }
+              </div>
             }
-            { this.props.bookData.restoreLink &&
-              <ButtonForm
-                disabled={this.props.isFetching}
-                label="Restore"
-                link={this.props.bookData.restoreLink.href}
-                csrfToken={this.props.csrfToken}
-                submit={this.props.editBook}
-                refresh={refresh} />
-            }
-            { this.props.bookData.refreshLink &&
-              <ButtonForm
-                disabled={this.props.isFetching}
-                label="Refresh Metadata"
-                link={this.props.bookData.refreshLink.href}
-                csrfToken={this.props.csrfToken}
-                submit={this.props.editBook}
-                refresh={refresh} />
-            }
+
             { this.props.bookData.editLink &&
               <EditForm
                 {...this.props.bookData}
                 csrfToken={this.props.csrfToken}
                 disabled={this.props.isFetching}
                 editBook={this.props.editBook}
-                refresh={refresh} />
+                refresh={this.refresh} />
             }
           </div>)
         }
         { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} tryAgain={refresh} />
+          <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
       </div>
     );
@@ -104,6 +106,17 @@ export class Editor extends React.Component<EditorProps, any> {
       let bookAdminUrl = nextProps.bookUrl.replace("works", "admin/works");
       this.props.fetchBook(bookAdminUrl);
     }
+  }
+
+  refresh() {
+    this.props.fetchBook(this.props.bookAdminUrl);
+    this.props.refreshBrowser();
+  };
+
+  editBook(url) {
+    let data = new FormData();
+    data.append("csrf_token", this.props.csrfToken);
+    return this.props.editBook(url, data).then(this.refresh);
   }
 }
 

@@ -133,26 +133,29 @@ export default class EditForm extends React.Component<EditFormProps, any> {
         }
         <div className="form-group">
           <label>Fiction Classification</label>
-          <EditableInput
-            type="radio"
-            disabled={this.props.disabled}
-            name="fiction"
-            label="Fiction"
-            value="fiction"
-            ref="fiction"
-            checked={this.state.fiction}
-            onChange={this.handleFictionChange.bind(this)}
-            />
-          <EditableInput
-            type="radio"
-            disabled={this.props.disabled}
-            name="fiction"
-            label="Nonfiction"
-            value="nonfiction"
-            ref="nonfiction"
-            checked={!this.state.fiction}
-            onChange={this.handleNonfictionChange.bind(this)}
-            />
+          <div className="form-inline">
+            <EditableInput
+              type="radio"
+              disabled={this.props.disabled}
+              name="fiction"
+              label=" Fiction"
+              value="fiction"
+              ref="fiction"
+              checked={this.state.fiction}
+              onChange={this.handleFictionChange.bind(this)}
+              />
+            &nbsp; &nbsp; &nbsp;
+            <EditableInput
+              type="radio"
+              disabled={this.props.disabled}
+              name="fiction"
+              label=" Nonfiction"
+              value="nonfiction"
+              ref="nonfiction"
+              checked={!this.state.fiction}
+              onChange={this.handleNonfictionChange.bind(this)}
+              />
+          </div>
         </div>
         <EditableInput
           style={{ height: "300px" }}

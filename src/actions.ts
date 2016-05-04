@@ -1,4 +1,4 @@
-import { BookData, ComplaintsData } from "./interfaces";
+import { BookData, ComplaintsData, GenreTree } from "./interfaces";
 import DataFetcher from "opds-browser/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-browser/lib/DataFetcher";
 
@@ -26,6 +26,19 @@ export default class ActionCreator {
   RESOLVE_COMPLAINTS_SUCCESS = "RESOLVE_COMPLAINTS_SUCCESS";
   RESOLVE_COMPLAINTS_FAILURE = "RESOLVE_COMPLAINTS_FAILURE";
 
+  FETCH_GENRES_REQUEST = "FETCH_GENRES_REQUEST";
+  FETCH_GENRES_SUCCESS = "FETCH_GENRES_SUCCESS";
+  FETCH_GENRES_FAILURE = "FETCH_GENRES_FAILURE";
+  LOAD_GENRES = "LOAD_GENRES";
+
+  FETCH_SUBJECTS_REQUEST = "FETCH_SUBJECTS_REQUEST";
+  FETCH_SUBJECTS_SUCCESS = "FETCH_SUBJECTS_SUCCESS";
+  FETCH_SUBJECTS_FAILURE = "FETCH_SUBJECTS_FAILURE";
+  LOAD_SUBJECTS = "LOAD_SUBJECTS";
+
+  UPDATE_GENRES_REQUEST = "UPDATE_GENRES_REQUEST";
+  UPDATE_GENRES_SUCCESS = "UPDATE_GENRES_SUCCESS";
+  UPDATE_GENRES_FAILURE = "UPDATE_GENRES_FAILURE";
 
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
@@ -303,5 +316,192 @@ export default class ActionCreator {
 
   resolveComplaintsFailure(error?: RequestError) {
     return { type: this.RESOLVE_COMPLAINTS_FAILURE, error };
+  }
+
+  fetchGenres() {
+    let err: RequestError;
+    let url = "/admin/genres";
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchGenresRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: GenreTree) => {
+              dispatch(this.fetchGenresSuccess());
+              dispatch(this.loadGenres(data));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchGenresFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchGenresFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve genres",
+                url: url
+              };
+              dispatch(this.fetchGenresFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchGenresFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchGenresRequest(url: string) {
+    return { type: this.FETCH_GENRES_REQUEST, url };
+  }
+
+  fetchGenresSuccess() {
+    return { type: this.FETCH_GENRES_SUCCESS };
+  }
+
+  fetchGenresFailure(error?: RequestError) {
+    return { type: this.FETCH_GENRES_FAILURE, error };
+  }
+
+  loadGenres(data) {
+    return { type: this.LOAD_GENRES, data };
+  }
+
+  updateGenres(url: string, data: FormData) {
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.updateGenresRequest());
+        fetch(url, {
+          method: "POST",
+          body: data,
+          credentials: "same-origin"
+        }).then(response => {
+          if (response.status === 200) {
+            dispatch(this.updateGenresSuccess());
+            resolve(response);
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.updateGenresFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to update genres",
+                url: url
+              };
+              dispatch(this.updateGenresFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.updateGenresFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  updateGenresRequest() {
+    return { type: this.UPDATE_GENRES_REQUEST };
+  }
+
+  updateGenresSuccess() {
+    return { type: this.UPDATE_GENRES_SUCCESS };
+  }
+
+  updateGenresFailure(error?: RequestError) {
+    return { type: this.UPDATE_GENRES_FAILURE, error };
+  }
+
+  fetchSubjects(url: string) {
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchSubjectsRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: GenreTree) => {
+              dispatch(this.fetchSubjectsSuccess());
+              dispatch(this.loadSubjects(data));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchSubjectsFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchSubjectsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve subjects",
+                url: url
+              };
+              dispatch(this.fetchSubjectsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchSubjectsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchSubjectsRequest(url: string) {
+    return { type: this.FETCH_SUBJECTS_REQUEST, url };
+  }
+
+  fetchSubjectsSuccess() {
+    return { type: this.FETCH_SUBJECTS_SUCCESS };
+  }
+
+  fetchSubjectsFailure(error?: RequestError) {
+    return { type: this.FETCH_SUBJECTS_FAILURE, error };
+  }
+
+  loadSubjects(data) {
+    return { type: this.LOAD_SUBJECTS, data };
   }
 }

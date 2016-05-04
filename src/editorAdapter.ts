@@ -42,12 +42,15 @@ export default function adapter(data: OPDSEntry): BookData {
     fiction = (fictionCategory.label === "Fiction");
   }
 
+  let categories = data.categories.map(category => category.label);
+
   return {
     title: data.title,
     summary: data.summary.content,
     audience: audience.term,
     targetAgeRange: targetAgeRange,
     fiction: fiction,
+    categories: categories,
     hideLink: hideLink,
     restoreLink: restoreLink,
     refreshLink: refreshLink,
