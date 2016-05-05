@@ -56,7 +56,7 @@ export interface GenreData {
   subgenres: string[];
 }
 
-export interface SubjectData {
+export interface ClassificationData {
   type: string;
   name: string;
   source: string;

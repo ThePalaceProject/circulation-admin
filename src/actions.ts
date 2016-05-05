@@ -31,10 +31,10 @@ export default class ActionCreator {
   FETCH_GENRES_FAILURE = "FETCH_GENRES_FAILURE";
   LOAD_GENRES = "LOAD_GENRES";
 
-  FETCH_SUBJECTS_REQUEST = "FETCH_SUBJECTS_REQUEST";
-  FETCH_SUBJECTS_SUCCESS = "FETCH_SUBJECTS_SUCCESS";
-  FETCH_SUBJECTS_FAILURE = "FETCH_SUBJECTS_FAILURE";
-  LOAD_SUBJECTS = "LOAD_SUBJECTS";
+  FETCH_CLASSIFICATIONS_REQUEST = "FETCH_CLASSIFICATIONS_REQUEST";
+  FETCH_CLASSIFICATIONS_SUCCESS = "FETCH_CLASSIFICATIONS_SUCCESS";
+  FETCH_CLASSIFICATIONS_FAILURE = "FETCH_CLASSIFICATIONS_FAILURE";
+  LOAD_CLASSIFICATIONS = "LOAD_CLASSIFICATIONS";
 
   UPDATE_GENRES_REQUEST = "UPDATE_GENRES_REQUEST";
   UPDATE_GENRES_SUCCESS = "UPDATE_GENRES_SUCCESS";
@@ -441,20 +441,20 @@ export default class ActionCreator {
     return { type: this.UPDATE_GENRES_FAILURE, error };
   }
 
-  fetchSubjects(url: string) {
+  fetchClassifications(url: string) {
     let err: RequestError;
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
-        dispatch(this.fetchSubjectsRequest(url));
+        dispatch(this.fetchClassificationsRequest(url));
         fetch(url, { credentials: "same-origin" }).then(response => {
           if (response.status === 200) {
             response.json().then((data: GenreTree) => {
-              dispatch(this.fetchSubjectsSuccess());
-              dispatch(this.loadSubjects(data));
+              dispatch(this.fetchClassificationsSuccess());
+              dispatch(this.loadClassifications(data));
               resolve(data);
             }).catch(err => {
-              dispatch(this.fetchSubjectsFailure(err));
+              dispatch(this.fetchClassificationsFailure(err));
               reject(err);
             });
           } else {
@@ -464,15 +464,15 @@ export default class ActionCreator {
                 response: data.detail,
                 url: url
               };
-              dispatch(this.fetchSubjectsFailure(err));
+              dispatch(this.fetchClassificationsFailure(err));
               reject(err);
             }).catch(parseError => {
               err = {
                 status: response.status,
-                response: "Failed to retrieve subjects",
+                response: "Failed to retrieve classifications",
                 url: url
               };
-              dispatch(this.fetchSubjectsFailure(err));
+              dispatch(this.fetchClassificationsFailure(err));
               reject(err);
             });
           }
@@ -482,26 +482,26 @@ export default class ActionCreator {
             response: err.message,
             url: url
           };
-          dispatch(this.fetchSubjectsFailure(err));
+          dispatch(this.fetchClassificationsFailure(err));
           reject(err);
         });
       });
     }).bind(this);
   }
 
-  fetchSubjectsRequest(url: string) {
-    return { type: this.FETCH_SUBJECTS_REQUEST, url };
+  fetchClassificationsRequest(url: string) {
+    return { type: this.FETCH_CLASSIFICATIONS_REQUEST, url };
   }
 
-  fetchSubjectsSuccess() {
-    return { type: this.FETCH_SUBJECTS_SUCCESS };
+  fetchClassificationsSuccess() {
+    return { type: this.FETCH_CLASSIFICATIONS_SUCCESS };
   }
 
-  fetchSubjectsFailure(error?: RequestError) {
-    return { type: this.FETCH_SUBJECTS_FAILURE, error };
+  fetchClassificationsFailure(error?: RequestError) {
+    return { type: this.FETCH_CLASSIFICATIONS_FAILURE, error };
   }
 
-  loadSubjects(data) {
-    return { type: this.LOAD_SUBJECTS, data };
+  loadClassifications(data) {
+    return { type: this.LOAD_CLASSIFICATIONS, data };
   }
 }

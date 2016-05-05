@@ -6,8 +6,8 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ButtonForm from "./ButtonForm";
 import GenreForm from "./GenreForm";
-import Subjects  from "./Subjects";
-import { BookData, GenreTree, SubjectData } from "../interfaces";
+import Classifications  from "./Classifications";
+import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-browser/lib/interfaces";
 
 export interface GenresProps {
@@ -17,10 +17,10 @@ export interface GenresProps {
   store?: Redux.Store;
   csrfToken: string;
   genres?: GenreTree;
-  subjects?: SubjectData[];
+  classifications?: ClassificationData[];
   fetchBook?: (url: string) => Promise<any>;
   fetchGenres?: () => Promise<any>;
-  fetchSubjects?: (url: string) => Promise<any>;
+  fetchClassifications?: (url: string) => Promise<any>;
   updateGenres?: (url: string, data: FormData) => Promise<any>;
   fetchError?: FetchErrorData;
   refreshBrowser: () => Promise<any>;
@@ -92,8 +92,8 @@ export class Genres extends React.Component<GenresProps, any> {
             />
         }
 
-        { this.props.subjects && this.props.subjects.length > 0 ?
-          <Subjects subjects={this.props.subjects} /> :
+        { this.props.classifications && this.props.classifications.length > 0 ?
+          <Classifications classifications={this.props.classifications} /> :
           <div><strong>None found.</strong></div>
         }
       </div>
@@ -103,7 +103,7 @@ export class Genres extends React.Component<GenresProps, any> {
   componentWillMount() {
     if (this.props.bookUrl) {
       this.props.fetchGenres();
-      this.props.fetchSubjects(this.subjectsUrl());
+      this.props.fetchClassifications(this.classificationsUrl());
     }
   }
 
@@ -143,8 +143,8 @@ export class Genres extends React.Component<GenresProps, any> {
     return genre.parents.concat([genre.name]).join(" > ");
   }
 
-  subjectsUrl() {
-    return this.props.bookUrl.replace("works", "admin/works") + "/subjects";
+  classificationsUrl() {
+    return this.props.bookUrl.replace("works", "admin/works") + "/classifications";
   }
 
   updateGenresUrl() {
@@ -160,7 +160,7 @@ export class Genres extends React.Component<GenresProps, any> {
 
   refresh() {
     this.props.fetchBook(this.props.bookAdminUrl);
-    this.props.fetchSubjects(this.subjectsUrl());
+    this.props.fetchClassifications(this.classificationsUrl());
     this.props.refreshBrowser();
   }
 
@@ -176,7 +176,7 @@ function mapStateToProps(state, ownProps) {
   return {
     bookAdminUrl: state.editor.book.url,
     genres: state.editor.genres.genres,
-    subjects: state.editor.genres.subjects,
+    classifications: state.editor.genres.classifications,
     isFetching: state.editor.genres.isFetching || state.editor.book.isFetching,
     fetchError: state.editor.genres.fetchError
   };
@@ -188,7 +188,7 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
     fetchGenres: () => dispatch(actions.fetchGenres()),
-    fetchSubjects: (url: string) => dispatch(actions.fetchSubjects(url)),
+    fetchClassifications: (url: string) => dispatch(actions.fetchClassifications(url)),
     updateGenres: (url: string, data: FormData) => dispatch(actions.updateGenres(url, data))
   };
 }
