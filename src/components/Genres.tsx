@@ -19,7 +19,7 @@ export interface GenresProps {
   genres?: GenreTree;
   classifications?: ClassificationData[];
   fetchBook?: (url: string) => Promise<any>;
-  fetchGenres?: () => Promise<any>;
+  fetchGenres?: (url: string) => Promise<any>;
   fetchClassifications?: (url: string) => Promise<any>;
   updateGenres?: (url: string, data: FormData) => Promise<any>;
   fetchError?: FetchErrorData;
@@ -101,7 +101,7 @@ export class Genres extends React.Component<GenresProps, any> {
 
   componentWillMount() {
     if (this.props.bookUrl) {
-      this.props.fetchGenres();
+      this.props.fetchGenres("/admin/genres");
       this.props.fetchClassifications(this.classificationsUrl());
     }
   }
@@ -186,7 +186,7 @@ function mapDispatchToProps(dispatch) {
   let actions = new ActionCreator(fetcher);
   return {
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
-    fetchGenres: () => dispatch(actions.fetchGenres()),
+    fetchGenres: (url: string) => dispatch(actions.fetchGenres(url)),
     fetchClassifications: (url: string) => dispatch(actions.fetchClassifications(url)),
     updateGenres: (url: string, data: FormData) => dispatch(actions.updateGenres(url, data))
   };

@@ -318,9 +318,8 @@ export default class ActionCreator {
     return { type: this.RESOLVE_COMPLAINTS_FAILURE, error };
   }
 
-  fetchGenres() {
+  fetchGenres(url: string) {
     let err: RequestError;
-    let url = "/admin/genres";
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
