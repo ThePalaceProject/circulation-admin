@@ -2,136 +2,160 @@ jest.dontMock("../Complaints");
 jest.dontMock("../ButtonForm");
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
-import ConnectedComplaints, { Complaints } from "../Complaints";
+import { shallow, mount } from "enzyme";
+import ConnectedComplaints, { Complaints, ComplaintsProps } from "../Complaints";
 import ErrorMessage from "../ErrorMessage";
 import ButtonForm from "../ButtonForm";
+import ComplaintForm from "../ComplaintForm";
 
 describe("Complaints", () => {
-  it("fetches complaints", () => {
-    let fetchComplaints = jest.genMockFunction();
-    let complaints = TestUtils.renderIntoDocument<Complaints>(
-      <Complaints
-        csrfToken="token"
-        book={{ title: "test book" }}
-        bookUrl="http://example.com/works/fakeid"
-        fetchComplaints={fetchComplaints}
-        postComplaint={jest.genMockFunction()}
-        refreshBrowser={jest.genMockFunction()}
-        />
-    );
-
-    expect(fetchComplaints.mock.calls.length).toBe(1);
-    expect(fetchComplaints.mock.calls[0][0]).toBe(complaints.complaintsUrl());
-  });
-
-  it("resolves complaints", () => {
-    spyOn(window, 'confirm').and.returnValue(true);
-    let resolveComplaints = jest.genMockFunction();
-    resolveComplaints.mockReturnValue(new Promise<any>((resolve, reject) => {
-      resolve({
-        status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(complaintsData);
-        })
-      });
-    }));
-    let complaintsData = {
-      "http://librarysimplified.org/terms/problem/test-type": 2
-    };
-    let complaints = TestUtils.renderIntoDocument<Complaints>(
-      <Complaints
-        csrfToken="token"
-        book={{ title: "test book" }}
-        bookUrl="http://example.com/works/fakeid"
-        complaints={complaintsData}
-        fetchComplaints={jest.genMockFunction()}
-        refreshBrowser={jest.genMockFunction()}
-        resolveComplaints={resolveComplaints}
-        />
-    );
-
-    let buttonForm = TestUtils.findRenderedDOMComponentWithClass(complaints, "resolveComplaintsForm");
-    let form = ReactDOM.findDOMNode(buttonForm);
-    TestUtils.Simulate.submit(form);
-
-    expect(resolveComplaints.mock.calls.length).toBe(1);
-    expect(resolveComplaints.mock.calls[0][0]).toBe(complaints.resolveComplaintsUrl());
-  });
-
   describe("rendering", () => {
     let fetchComplaints;
+    let postComplaint;
     let complaintsData;
-    let complaints;
+    let wrapper;
+    let bookData = {
+      title: "test title",
+      issuesLink: {
+        href: "issues url",
+        rel: "issues"
+      }
+    }
 
     beforeEach(() => {
+
       fetchComplaints = jest.genMockFunction();
+      postComplaint = jest.genMockFunction();
       complaintsData = {
         "http://librarysimplified.org/terms/problem/test-type": 5,
         "http://librarysimplified.org/terms/problem/other-type": 3,
         "http://librarysimplified.org/terms/problem/last-type": 1
       };
-      complaints = TestUtils.renderIntoDocument<Complaints>(
+      wrapper = shallow(
         <Complaints
           csrfToken="token"
           bookUrl="book url"
-          book={{ title: "test title" }}
+          book={bookData}
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}
-          postComplaint={jest.genMockFunction()}
+          postComplaint={postComplaint}
           refreshBrowser={jest.genMockFunction()}
           />
       );
     });
 
     it("shows book title", () => {
-      let title = TestUtils.findRenderedDOMComponentWithTag(complaints, "h2");
-      expect(title.textContent).toBe("test title");
+      let title = wrapper.find("h2");
+      expect(title.text()).toBe("test title");
     });
 
     it("shows complaints", () => {
-      let types = TestUtils.scryRenderedDOMComponentsWithClass(complaints, "complaintType").map(type => type.textContent);
-      let counts = TestUtils.scryRenderedDOMComponentsWithClass(complaints, "complaintCount").map(count => parseInt(count.textContent));
-      expect(types).toEqual(Object.keys(complaintsData).map(type => complaints.readableComplaintType(type)));
-      expect(counts).toEqual(Object.keys(complaintsData).map(key => complaintsData[key]));
+      let instance =  wrapper.instance() as any;
+      let complaintsKeys = Object.keys(complaintsData)
+      let types = wrapper.find(".complaintType").map(type => type.text());
+      let counts = wrapper.find(".complaintCount").map(count => parseInt(count.text()));
+      expect(types).toEqual(complaintsKeys.map(type => instance.readableComplaintType(type)));
+      expect(counts).toEqual(complaintsKeys.map(key => complaintsData[key]));
     });
 
     it("shows simplified complaint types", () => {
-      let types = TestUtils.scryRenderedDOMComponentsWithClass(complaints, "complaintType").map(type => type.textContent);
+      let types = wrapper.find(".complaintType").map(type => type.text());
       expect(types).toEqual(["test type", "other type", "last type"]);
     });
 
     it("shows resolve button for each complaint type", () => {
-      let buttons = TestUtils.scryRenderedComponentsWithType(complaints, ButtonForm);
-      let types = buttons.map(button => button.props.data.type);
-      let resolveUrl = complaints.resolveComplaintsUrl();
-      let links = buttons.map(button => button.props.link);
-      expect(types).toEqual(Object.keys(complaintsData));
-      expect(links).toEqual([resolveUrl, resolveUrl, resolveUrl]);
+      let buttons = wrapper.find(ButtonForm);
+      expect(buttons.length).toBe(Object.keys(complaintsData).length);
+    });
+
+    it("shows complaint form", () => {
+      let form = wrapper.find(ComplaintForm);
+      expect(form.props().disabled).toBeFalsy();
+      expect(form.props().complaintUrl).toBe(bookData.issuesLink.href);
+      expect(form.props().postComplaint).toBe(postComplaint);
+    });
+
+    it("shows fetch error", () => {
+      let fetchComplaints = jest.genMockFunction();
+      let fetchError = { status: 401, response: "test", url: "test url" };
+      let wrapper = shallow(
+        <Complaints
+          csrfToken="token"
+          bookUrl="book url"
+          book={{ title: "test book" }}
+          fetchError={fetchError}
+          fetchComplaints={fetchComplaints}
+          postComplaint={jest.genMockFunction}
+          refreshBrowser={jest.genMockFunction()}
+          />
+      );
+      let complaintsUrl = (wrapper.instance() as any).complaintsUrl()
+
+      let error = wrapper.find(ErrorMessage);
+      expect(error.props().error).toEqual(fetchError);
+
+      error.props().tryAgain();
+      expect(fetchComplaints.mock.calls.length).toBe(2);
+      expect(fetchComplaints.mock.calls[1][0]).toBe(complaintsUrl);
     });
   });
 
-  it("shows fetch error", () => {
-    let fetchComplaints = jest.genMockFunction();
-    let fetchError = { status: 401, response: "test", url: "test url" };
-    let complaints = TestUtils.renderIntoDocument<Complaints>(
-      <Complaints
-        csrfToken="token"
-        bookUrl="book url"
-        book={{ title: "test book" }}
-        fetchError={fetchError}
-        fetchComplaints={fetchComplaints}
-        postComplaint={jest.genMockFunction}
-        refreshBrowser={jest.genMockFunction()}
-        />
-    );
+  describe("behavior", () => {
+    let wrapper;
+    let instance;
+    let fetchComplaints, resolveComplaints, refreshBrowser;
+    let complaintsData = {
+      "http://librarysimplified.org/terms/problem/test-type": 2
+    };
 
-    let error = TestUtils.findRenderedComponentWithType(complaints, ErrorMessage);
-    expect(error.props.error).toEqual(fetchError);
+    beforeEach(() => {
+      spyOn(window, 'confirm').and.returnValue(true);
+      refreshBrowser = jest.genMockFunction();
+      fetchComplaints = jest.genMockFunction();
+      resolveComplaints = jest.genMockFunction();
+      resolveComplaints.mockReturnValue(new Promise((resolve, reject) => {
+        resolve();
+      }));
+      wrapper = mount(
+        <Complaints
+          csrfToken="token"
+          book={{ title: "test book" }}
+          bookUrl="http://example.com/works/fakeid"
+          complaints={complaintsData}
+          fetchComplaints={fetchComplaints}
+          refreshBrowser={refreshBrowser}
+          resolveComplaints={resolveComplaints}
+          />
+      );
+      instance = (wrapper.instance() as any);
+    });
 
-    error.props.tryAgain();
-    expect(fetchComplaints.mock.calls.length).toBe(2);
-    expect(fetchComplaints.mock.calls[1][0]).toBe(complaints.complaintsUrl());
+    it("fetches complaints on mount", () => {
+      let complaintsUrl = instance.complaintsUrl();
+      expect(fetchComplaints.mock.calls.length).toBe(1);
+      expect(fetchComplaints.mock.calls[0][0]).toBe(complaintsUrl);
+    });
+
+    it("should call resolve()", () => {
+      instance.resolve = jest.genMockFunction();
+
+      let resolveUrl = (wrapper.instance() as any).resolveComplaintsUrl();
+      let input = wrapper.find(ButtonForm);
+      input.simulate("click");
+
+      expect(instance.resolve.mock.calls.length).toBe(1);
+      expect(instance.resolve.mock.calls[0][0]).toBe(Object.keys(complaintsData)[0]);
+    });
+
+    it("should fetch and refresh browser when resolve() is called", (done) => {
+      let resolveUrl = instance.resolveComplaintsUrl();
+      instance.resolve().then(() => {
+        expect(resolveComplaints.mock.calls.length).toBe(1);
+        expect(resolveComplaints.mock.calls[0][0]).toBe(resolveUrl);
+        expect(fetchComplaints.mock.calls.length).toBe(2); // it also fetched on mount
+        expect(refreshBrowser.mock.calls.length).toBe(1);
+        done();
+      });
+    });
   });
 });

@@ -73,12 +73,10 @@ describe("Header", () => {
 
     TestUtils.Simulate.click(elements[0], { button: 0 });
     expect(push.mock.calls.length).toBe(1);
-    expect(push.mock.calls[0][0].pathname).toBe(context.pathFor("/admin/complaints", null));
-    expect(push.mock.calls[0][0].state.isTopLevel).toBe(true);
+    expect(push.mock.calls[0][0]).toBe(context.pathFor("/admin/complaints", null));
 
     TestUtils.Simulate.click(elements[1], { button: 0 });
     expect(push.mock.calls.length).toBe(2);
-    expect(push.mock.calls[1][0].pathname).toBe(context.pathFor("/admin/suppressed", null));
-    expect(push.mock.calls[1][0].state.isTopLevel).toBe(true);
+    expect(push.mock.calls[1][0]).toBe(context.pathFor("/admin/suppressed", null));
   });
 });

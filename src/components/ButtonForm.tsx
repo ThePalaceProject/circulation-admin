@@ -17,8 +17,8 @@ export default class ButtonForm extends React.Component<ButtonFormProps, any> {
         style={{ marginRight: "10px" }}
         type="submit"
         value={this.props.label}
-        {...disabledProps}
         onClick={this.props.submit}
+        {...disabledProps}
         />
     );
   }

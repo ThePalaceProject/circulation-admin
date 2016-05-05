@@ -232,12 +232,12 @@ describe("EditForm", () => {
       let nonfictionInput = editableInputByValue("nonfiction");
 
       expect(fictionInput.props().type).toBe("radio");
-      expect(fictionInput.props().label).toBe("Fiction");
+      expect(fictionInput.props().label).toBe(" Fiction");
       expect(fictionInput.props().checked).toBe(true);
       expect(fictionInput.props().value).toBe("fiction");
 
       expect(nonfictionInput.props().type).toBe("radio");
-      expect(nonfictionInput.props().label).toBe("Nonfiction");
+      expect(nonfictionInput.props().label).toBe(" Nonfiction");
       expect(nonfictionInput.props().checked).toBe(false);
       expect(nonfictionInput.props().value).toBe("nonfiction");
     });

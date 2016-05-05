@@ -27,6 +27,9 @@ export class Editor extends React.Component<EditorProps, any> {
   constructor(props) {
     super(props);
     this.editBook = this.editBook.bind(this);
+    this.hide = this.hide.bind(this);
+    this.restore = this.restore.bind(this);
+    this.refreshMetadata = this.refreshMetadata.bind(this);
     this.refresh = this.refresh.bind(this);
   }
 
@@ -57,21 +60,21 @@ export class Editor extends React.Component<EditorProps, any> {
                   <ButtonForm
                     disabled={this.props.isFetching}
                     label="Hide"
-                    submit={() => this.editBook(this.props.bookData.hideLink.href)}
+                    submit={this.hide}
                     />
                 }
                 { this.props.bookData.restoreLink &&
                   <ButtonForm
                     disabled={this.props.isFetching}
                     label="Restore"
-                    submit={() => this.editBook(this.props.bookData.restoreLink.href)}
+                    submit={this.restore}
                     />
                 }
                 { this.props.bookData.refreshLink &&
                   <ButtonForm
                     disabled={this.props.isFetching}
                     label="Refresh Metadata"
-                    submit={() => this.editBook(this.props.bookData.refreshLink.href)}
+                    submit={this.refreshMetadata}
                     />
                 }
               </div>
@@ -106,6 +109,18 @@ export class Editor extends React.Component<EditorProps, any> {
       let bookAdminUrl = nextProps.bookUrl.replace("works", "admin/works");
       this.props.fetchBook(bookAdminUrl);
     }
+  }
+
+  hide() {
+    return this.editBook(this.props.bookData.hideLink.href);
+  }
+
+  restore() {
+    return this.editBook(this.props.bookData.restoreLink.href);
+  }
+
+  refreshMetadata() {
+    return this.editBook(this.props.bookData.refreshLink.href);
   }
 
   refresh() {
