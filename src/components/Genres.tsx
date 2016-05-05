@@ -92,9 +92,8 @@ export class Genres extends React.Component<GenresProps, any> {
             />
         }
 
-        { this.props.classifications && this.props.classifications.length > 0 ?
-          <Classifications classifications={this.props.classifications} /> :
-          <div><strong>None found.</strong></div>
+        { this.props.classifications && this.props.classifications.length > 0 &&
+          <Classifications classifications={this.props.classifications} />
         }
       </div>
     );

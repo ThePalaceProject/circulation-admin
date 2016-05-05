@@ -1,30 +1,30 @@
-import { GenreTree, SubjectData } from "../interfaces";
+import { GenreTree, ClassificationData } from "../interfaces";
 import { RequestError } from "opds-browser/lib/DataFetcher";
 
 interface GenresState {
   genres: GenreTree;
-  subjects: SubjectData[];
+  classifications: ClassificationData[];
   isFetching: boolean;
   fetchError: RequestError;
 }
 
 const initialState: GenresState = {
   genres: null,
-  subjects: null,
+  classifications: null,
   isFetching: false,
   fetchError: null,
 };
 
-export default (state: GenresState = initialState, action) => {
+export default (state: GenresState = initialState, action): GenresState => {
   switch (action.type) {
     case "LOAD_GENRES":
       return Object.assign({}, state, {
         genres: action.data
       });
 
-    case "LOAD_SUBJECTS":
+    case "LOAD_CLASSIFICATIONS":
     return Object.assign({}, state, {
-      subjects: action.data.subjects
+      classifications: action.data.classifications
     });
 
     default:
