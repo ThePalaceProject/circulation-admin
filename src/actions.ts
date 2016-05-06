@@ -1,4 +1,4 @@
-import { BookData, ComplaintsData, GenreTree } from "./interfaces";
+import { BookData, ComplaintsData, GenreTree, ClassificationData } from "./interfaces";
 import DataFetcher from "opds-browser/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-browser/lib/DataFetcher";
 
@@ -448,9 +448,9 @@ export default class ActionCreator {
         dispatch(this.fetchClassificationsRequest(url));
         fetch(url, { credentials: "same-origin" }).then(response => {
           if (response.status === 200) {
-            response.json().then((data: GenreTree) => {
+            response.json().then((data: { classifications: ClassificationData[] }) => {
               dispatch(this.fetchClassificationsSuccess());
-              dispatch(this.loadClassifications(data));
+              dispatch(this.loadClassifications(data.classifications));
               resolve(data);
             }).catch(err => {
               dispatch(this.fetchClassificationsFailure(err));
@@ -500,7 +500,7 @@ export default class ActionCreator {
     return { type: this.FETCH_CLASSIFICATIONS_FAILURE, error };
   }
 
-  loadClassifications(data) {
-    return { type: this.LOAD_CLASSIFICATIONS, data };
+  loadClassifications(classifications) {
+    return { type: this.LOAD_CLASSIFICATIONS, classifications };
   }
 }
