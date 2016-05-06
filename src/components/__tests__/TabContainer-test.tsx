@@ -7,6 +7,7 @@ import * as TestUtils from "react-addons-test-utils";
 import buildStore from "../../store";
 import { TabContainer } from "../TabContainer";
 import Editor from "../Editor";
+import Genres from "../Genres";
 import Complaints from "../Complaints";
 
 let initialState = {
@@ -65,6 +66,11 @@ describe("TabContainer", () => {
     let editor = TestUtils.findRenderedComponentWithType(container, Editor);
     expect(editor.props.csrfToken).toBe("token");
     expect(editor.props.bookUrl).toBe("book url");
+  });
+
+  it("shows genres", () => {
+    let genres = TestUtils.findRenderedComponentWithType(container, Genres);
+    expect(genres.props.bookUrl).toBe("book url");
   });
 
   it("shows Complaints", () => {
