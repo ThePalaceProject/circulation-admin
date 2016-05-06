@@ -34,7 +34,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
           <div className="genreFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
         ) }
 
-        <form onSubmit={this.addGenre} className="form-inline">
+        <div className="form-inline">
           <select name="genres" size={this.topLevelGenres().length} className="form-control" style={{ width: "200px" }}>
             { this.topLevelGenres().map(genre =>
               <option
@@ -69,11 +69,12 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
             <button
               className="btn btn-default"
               type="submit"
-              style={{ verticalAlign: "top", marginLeft: "10px" }}>
+              style={{ verticalAlign: "top", marginLeft: "10px" }}
+              onClick={this.addGenre}>
               Submit
             </button>
           }
-        </form>
+        </div>
       </div>
     );
   }
@@ -95,8 +96,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
     this.setState({ subgenre: event.target.value });
   }
 
-  addGenre(event) {
-    event.preventDefault();
+  addGenre() {
     let newGenre = this.state.subgenre ? this.state.subgenre : this.state.genre;
     let genres = this.props.bookGenres.concat([newGenre]);
     return this.props.updateGenres(genres).then(response => {
@@ -108,7 +108,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
   }
 
   showGenreError() {
-    this.setState({ errors: ["Couldn't update genre."] });
+    this.setState({ errors: ["Couldn't add genre."] });
   }
 
   resetForm() {

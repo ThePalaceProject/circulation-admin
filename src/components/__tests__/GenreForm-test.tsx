@@ -133,11 +133,9 @@ describe("GenreForm", () => {
 
     it("submits genres", () => {
       wrapper.setState({ genre: "Science Fiction", subgenre: "Space Opera" });
-      let form = wrapper.find("form");
-      let preventDefault = jest.genMockFunction();
-      form.simulate("submit", { preventDefault });
+      let button = wrapper.find("button");
+      button.simulate("click");
 
-      expect(preventDefault.mock.calls.length).toBe(1);
       expect(updateGenres.mock.calls.length).toBe(1);
       expect(updateGenres.mock.calls[0][0]).toEqual(bookGenres.concat(["Space Opera"]));
     });
@@ -145,9 +143,23 @@ describe("GenreForm", () => {
     it("refreshes after submitting genres", (done) => {
       let instance = wrapper.instance() as any;
       instance.resetForm = jest.genMockFunction();
-      instance.addGenre({ preventDefault: jest.genMockFunction() }).then(() => {
+      instance.addGenre().then(() => {
         expect(refresh.mock.calls.length).toBe(1);
         expect(instance.resetForm.mock.calls.length).toBe(1);
+        done();
+      });
+    });
+
+    it("shows errors if submit fails", (done) => {
+      updateGenres.mockReturnValue(new Promise((resolve, reject) => reject()));
+      let instance = (wrapper.instance() as any);
+      spyOn(instance, 'showGenreError').and.callThrough();
+      instance.addGenre().then(() => {
+        expect(instance.showGenreError).toHaveBeenCalled();
+        wrapper.update();
+        let error = wrapper.find(".genreFormError");
+        expect(error.length).toBe(1);
+        expect(error.text()).toBe("Couldn't add genre.");
         done();
       });
     });
