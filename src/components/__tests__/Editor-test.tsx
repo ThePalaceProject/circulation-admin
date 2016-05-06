@@ -3,7 +3,7 @@ jest.autoMockOff();
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import ConnectedEditor, { Editor } from "../Editor";
+import { Editor } from "../Editor";
 import ButtonForm from "../ButtonForm";
 import EditForm from "../EditForm";
 import ErrorMessage from "../ErrorMessage";
@@ -76,7 +76,7 @@ describe("Editor", () => {
 
     let form = wrapper.find(ButtonForm);
     expect(form.props().label).toBe("Hide");
-    expect(form.props().submit).toBe(hide);
+    expect(form.props().onClick).toBe(hide);
   });
 
   it("shows button form for restore link", () => {
@@ -96,7 +96,7 @@ describe("Editor", () => {
 
     let form = wrapper.find(ButtonForm);
     expect(form.props().label).toBe("Restore");
-    expect(form.props().submit).toBe(restore);
+    expect(form.props().onClick).toBe(restore);
   });
 
   it("shows button form for refresh link", () => {
@@ -116,7 +116,7 @@ describe("Editor", () => {
 
     let form = wrapper.find(ButtonForm);
     expect(form.props().label).toBe("Refresh Metadata");
-    expect(form.props().submit).toBe(refresh);
+    expect(form.props().onClick).toBe(refresh);
   });
 
   it("shows fetch error message", () => {

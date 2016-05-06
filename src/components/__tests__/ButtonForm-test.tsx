@@ -8,16 +8,16 @@ import ButtonForm from "../ButtonForm";
 describe("ButtonForm", () => {
   let wrapper;
   let input;
-  let submit;
+  let onClick;
 
   beforeEach(() => {
-    submit = jest.genMockFunction();
+    onClick = jest.genMockFunction();
     wrapper = shallow(
       <ButtonForm
         className="btn-sm"
         label="label"
         disabled={false}
-        submit={submit}
+        onClick={onClick}
         />
     );
     input = wrapper.find("input");
@@ -41,9 +41,9 @@ describe("ButtonForm", () => {
   });
 
   describe("behavior", () => {
-    it("calls provided submit function", () => {
+    it("calls provided onClick function", () => {
       input.simulate("click");
-      expect(submit.mock.calls.length).toBe(1);
+      expect(onClick.mock.calls.length).toBe(1);
     });
   });
 });

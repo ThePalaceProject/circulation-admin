@@ -3,7 +3,7 @@ jest.dontMock("../ButtonForm");
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import ConnectedComplaints, { Complaints, ComplaintsProps } from "../Complaints";
+import { Complaints, ComplaintsProps } from "../Complaints";
 import ErrorMessage from "../ErrorMessage";
 import ButtonForm from "../ButtonForm";
 import ComplaintForm from "../ComplaintForm";
@@ -109,7 +109,7 @@ describe("Complaints", () => {
     };
 
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      spyOn(window, "confirm").and.returnValue(true);
       refreshBrowser = jest.genMockFunction();
       fetchComplaints = jest.genMockFunction();
       resolveComplaints = jest.genMockFunction();

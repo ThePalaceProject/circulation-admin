@@ -60,21 +60,21 @@ export class Editor extends React.Component<EditorProps, any> {
                   <ButtonForm
                     disabled={this.props.isFetching}
                     label="Hide"
-                    submit={this.hide}
+                    onClick={this.hide}
                     />
                 }
                 { this.props.bookData.restoreLink &&
                   <ButtonForm
                     disabled={this.props.isFetching}
                     label="Restore"
-                    submit={this.restore}
+                    onClick={this.restore}
                     />
                 }
                 { this.props.bookData.refreshLink &&
                   <ButtonForm
                     disabled={this.props.isFetching}
                     label="Refresh Metadata"
-                    submit={this.refreshMetadata}
+                    onClick={this.refreshMetadata}
                     />
                 }
               </div>

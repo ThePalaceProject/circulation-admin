@@ -72,7 +72,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                       className="btn-sm"
                       type="submit"
                       label="Resolve"
-                      submit={() => this.resolve(type)}
+                      onClick={() => this.resolve(type)}
                       />
 
                   </td>

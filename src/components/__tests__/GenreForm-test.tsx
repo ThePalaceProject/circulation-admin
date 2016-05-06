@@ -153,7 +153,8 @@ describe("GenreForm", () => {
     it("shows errors if submit fails", (done) => {
       updateGenres.mockReturnValue(new Promise((resolve, reject) => reject()));
       let instance = (wrapper.instance() as any);
-      spyOn(instance, 'showGenreError').and.callThrough();
+      // using spyOn to monitor but preserve original function:
+      spyOn(instance, "showGenreError").and.callThrough();
       instance.addGenre().then(() => {
         expect(instance.showGenreError).toHaveBeenCalled();
         wrapper.update();

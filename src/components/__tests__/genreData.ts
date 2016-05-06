@@ -1,4 +1,6 @@
-let genres = {
+import { GenreTree } from "../../interfaces";
+
+let genres: GenreTree = {
   Fiction: {
     Adventure: {
       name: "Adventure",

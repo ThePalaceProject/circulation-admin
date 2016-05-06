@@ -11,20 +11,25 @@ import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-browser/lib/interfaces";
 
 export interface GenresProps {
+  // from parent
+  store: Redux.Store;
   bookUrl: string;
-  bookAdminUrl?: string;
   book: BookData;
-  store?: Redux.Store;
   csrfToken: string;
+  refreshBrowser: () => Promise<any>;
+
+  // from store
+  bookAdminUrl?: string;
   genres?: GenreTree;
   classifications?: ClassificationData[];
+  fetchError?: FetchErrorData;
+  isFetching?: boolean;
+
+  // from actions
   fetchBook?: (url: string) => Promise<any>;
   fetchGenres?: (url: string) => Promise<any>;
   fetchClassifications?: (url: string) => Promise<any>;
   updateGenres?: (url: string, data: FormData) => Promise<any>;
-  fetchError?: FetchErrorData;
-  refreshBrowser: () => Promise<any>;
-  isFetching?: boolean;
 }
 
 export class Genres extends React.Component<GenresProps, any> {
@@ -73,7 +78,7 @@ export class Genres extends React.Component<GenresProps, any> {
                       className="btn-sm"
                       type="submit"
                       label="Remove"
-                      submit={() => this.remove(category)}
+                      onClick={() => this.remove(category)}
                       />
                   </td>
                 </tr>
@@ -111,14 +116,9 @@ export class Genres extends React.Component<GenresProps, any> {
       return [];
     }
 
-    let top = this.props.book.fiction ? "Fiction" : "Nonfiction";
-
-    if (!this.props.genres[top]) {
-      return [];
-    }
-
     return this.props.book.categories.filter(category => {
-      return !!this.props.genres[top][category];
+      return !!this.props.genres["Fiction"][category] ||
+        !!this.props.genres["Nonfiction"][category];
     });
   }
 
@@ -166,7 +166,7 @@ export class Genres extends React.Component<GenresProps, any> {
   remove(genreToRemove: string) {
     if (window.confirm("Are you sure you want to remove the " + genreToRemove + " genre?")) {
       let genres = this.bookGenres().filter(genre => genre !== genreToRemove);
-      this.updateGenres(genres).then(this.refresh);
+      return this.updateGenres(genres).then(this.refresh);
     }
   }
 }
@@ -192,7 +192,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedGenres = connect(
+const ConnectedGenres = connect<GenresProps>(
   mapStateToProps,
   mapDispatchToProps
 )(Genres);
