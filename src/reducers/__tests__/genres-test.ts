@@ -69,6 +69,35 @@ describe("genres reducer", () => {
     expect(reducer(initState, action)).toEqual(newState);
   });
 
+  it("handles UPDATE_GENRES_REQUEST", () => {
+    let action = { type: "UPDATE_GENRES_REQUEST", url: "test url" };
+
+    // start with empty state
+    let newState = Object.assign({}, initState, {
+      isFetching: true
+    });
+    expect(reducer(initState, action)).toEqual(newState);
+
+    // start with error state
+    newState = Object.assign({}, errorState, {
+      isFetching: true,
+      fetchError: null
+    });
+    expect(reducer(errorState, action)).toEqual(newState);
+  });
+
+  it("handles UPDATE_GENRES_FAILURE", () => {
+    let action = { type: "UPDATE_GENRES_FAILURE", error: "test error" };
+    let oldState = Object.assign({}, initState, {
+      isFetching: true
+    });
+    let newState = Object.assign({}, oldState, {
+      fetchError: "test error",
+      isFetching: false
+    });
+    expect(reducer(oldState, action)).toEqual(newState)
+  });
+
   it("handles FETCH_CLASSIFICATIONS_REQUEST", () => {
     let action = { type: "FETCH_CLASSIFICATIONS_REQUEST", url: "test url" };
 
