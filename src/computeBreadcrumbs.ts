@@ -1,7 +1,8 @@
-import { BreadcrumbsProps, DataForBreadcrumbsProps } from "opds-browser/lib/components/Breadcrumbs";
+import { LinkData } from "opds-browser/lib/interfaces";
+import { DataForBreadcrumbs } from "opds-browser/lib/components/Breadcrumbs";
 
-export default (data: DataForBreadcrumbsProps): BreadcrumbsProps => {
-  let { history, hierarchy, collection, book } = data;
+export default (data: DataForBreadcrumbs): LinkData[] => {
+  let { history, hierarchy, collection } = data;
   let links = [];
 
   if (collection &&
@@ -26,10 +27,5 @@ export default (data: DataForBreadcrumbsProps): BreadcrumbsProps => {
     });
   }
 
-  console.log(links);
-
-  return {
-    links: links,
-    linkToCurrent: !!book
-  };
+  return links;
 };
