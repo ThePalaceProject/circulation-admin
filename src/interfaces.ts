@@ -1,5 +1,5 @@
 export interface Navigate {
-  (collectionUrl: string, bookUrl: string, isTopLevel?: boolean, tab?: string): void;
+  (collectionUrl: string, bookUrl: string, tab?: string): void;
 }
 
 export interface LinkData {

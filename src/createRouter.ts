@@ -9,20 +9,18 @@ function getParam(location, name) {
 export default (navigate: Navigate) => {
   return {
     push: (location: string|Location) => {
-      let locationStr: string, isTopLevel: boolean;
+      let locationStr: string;
 
       if (typeof location === "string") {
          locationStr = location;
-         isTopLevel = false;
       } else {
         locationStr = location.pathname;
-        isTopLevel = location.state && location.state.isTopLevel;
       }
 
       let collection = getParam(locationStr, "collection");
       let book = getParam(locationStr, "book");
 
-      navigate(collection, book, isTopLevel);
+      navigate(collection, book);
     },
 
     createHref: (location: string|Location) => {

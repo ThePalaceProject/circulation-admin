@@ -13,8 +13,7 @@ describe("createRouter", () => {
 
     it("handles location object", () => {
       router.push({
-        pathname: "/path?collection=testcollection&book=testbook",
-        state: { isTopLevel: true }
+        pathname: "/path?collection=testcollection&book=testbook"
       });
 
       expect(navigate.mock.calls.length).toBe(1);

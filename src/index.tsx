@@ -49,26 +49,25 @@ class CirculationWeb {
         tab = event.state.tab || "details";
       }
 
-      render(collection, book, tab, false);
+      render(collection, book, tab);
     };
 
     function pushHistory(collectionUrl: string, bookUrl: string, tab: string) {
       window.history.pushState.apply(window.history, historyArgs(collectionUrl, bookUrl, tab));
     };
 
-    function navigate(collectionUrl: string, bookUrl: string, isTopLevel: boolean = false, tab?: string) {
+    function navigate(collectionUrl: string, bookUrl: string, tab?: string) {
       pushHistory(collectionUrl, bookUrl, tab);
-      render(collectionUrl, bookUrl, tab, isTopLevel);
+      render(collectionUrl, bookUrl, tab);
     }
 
-    function render(collectionUrl: string, bookUrl: string, tab: string, isTopLevel: boolean) {
+    function render(collectionUrl: string, bookUrl: string, tab: string) {
       ReactDOM.render(
         <Root
           csrfToken={config.csrfToken}
           collectionUrl={collectionUrl}
           bookUrl={bookUrl}
           tab={tab}
-          isTopLevel={isTopLevel}
           navigate={navigate}
           />,
         document.getElementById("opds-browser")
@@ -79,7 +78,7 @@ class CirculationWeb {
     let startBook = getParam("book");
     let startTab = getParam("tab");
 
-    render(startCollection, startBook, startTab, false);
+    render(startCollection, startBook, startTab);
 
     if (startCollection || startBook || startTab) {
       window.history.replaceState.apply(window.history, historyArgs(startCollection, startBook, startTab));

@@ -63,7 +63,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
 
   handleSelect(tab) {
     if (this.props.navigate) {
-      this.props.navigate(this.props.collectionUrl, this.props.bookUrl, false, tab);
+      this.props.navigate(this.props.collectionUrl, this.props.bookUrl, tab);
     }
   }
 }
