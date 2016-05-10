@@ -31,4 +31,4 @@ export default (navigate: Navigate) => {
       return false;
     }
   };
-}
+};

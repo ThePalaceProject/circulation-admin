@@ -84,8 +84,7 @@ describe("TabContainer", () => {
     expect(navigate.mock.calls.length).toBe(1);
     expect(navigate.mock.calls[0][0]).toBe("collection url");
     expect(navigate.mock.calls[0][1]).toBe("book url");
-    expect(navigate.mock.calls[0][2]).toBe(false);
-    expect(navigate.mock.calls[0][3]).toBe("edit");
+    expect(navigate.mock.calls[0][2]).toBe("edit");
   });
 
   it("shows complaints count", () => {

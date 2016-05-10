@@ -46,7 +46,7 @@
     "selenium-standalone": "5.1.0",
     "style-loader": "^0.13.0",
     "ts-loader": "^0.8.0",
-    "tslint": "^3.3.0",
+    "tslint": "^3.10.0",
     "typescript": "^1.8.10",
     "typings": "^0.7.12",
     "url-loader": "^0.5.7",
