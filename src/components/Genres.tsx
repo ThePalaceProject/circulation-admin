@@ -5,7 +5,7 @@ import DataFetcher from "opds-browser/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ButtonForm from "./ButtonForm";
-import GenreForm from "./GenreForm";
+import ClassificationsForm from "./ClassificationsForm";
 import Classifications  from "./Classifications";
 import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-browser/lib/interfaces";
@@ -35,6 +35,11 @@ export interface GenresProps {
 export class Genres extends React.Component<GenresProps, any> {
   constructor(props) {
     super(props);
+    this.state = {
+      genres: [],
+      audience: props.book ? props.book.audience : null,
+      fiction: props.book ? props.book.fiction : null
+    };
     this.updateGenres = this.updateGenres.bind(this);
     this.remove = this.remove.bind(this);
     this.refresh = this.refresh.bind(this);
@@ -42,7 +47,6 @@ export class Genres extends React.Component<GenresProps, any> {
 
   render(): JSX.Element {
     let bookGenres = this.bookGenres();
-    let genreOptions = this.genreOptions();
 
     return (
       <div>
@@ -66,34 +70,12 @@ export class Genres extends React.Component<GenresProps, any> {
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
 
-        <h3>Genres</h3>
-        { bookGenres && bookGenres.length > 0 ?
-          <table className="table bookGenres">
-            <tbody>
-              { bookGenres.map(category =>
-                <tr key={category} className="bookGenre">
-                  <td>{this.fullGenre(category)}</td>
-                  <td style={{ textAlign: "right" }}>
-                    <ButtonForm
-                      className="btn-sm"
-                      type="submit"
-                      label="Remove"
-                      onClick={() => this.remove(category)}
-                      />
-                  </td>
-                </tr>
-              ) }
-            </tbody>
-          </table> :
-          <div><strong>None found.</strong></div>
-        }
-
-        { this.props.book && genreOptions && genreOptions.length > 0 &&
-          <GenreForm
-            genres={genreOptions}
+        { this.props.book && this.props.genres && bookGenres &&
+          <ClassificationsForm
+            book={this.props.book}
+            genres={this.props.genres}
             bookGenres={bookGenres}
-            updateGenres={this.updateGenres}
-            refresh={this.refresh}
+            disabled={this.props.isFetching}
             />
         }
 
@@ -122,26 +104,6 @@ export class Genres extends React.Component<GenresProps, any> {
     });
   }
 
-  genreOptions() {
-    if (!this.props.book || !this.props.genres) {
-      return [];
-    }
-
-    let top = this.props.book.fiction ? "Fiction" : "Nonfiction";
-
-    if (!this.props.genres[top]) {
-      return [];
-    }
-
-    return Object.keys(this.props.genres[top]).map(key => this.props.genres[top][key]);
-  }
-
-  fullGenre(category) {
-    let top = this.props.book.fiction ? "Fiction" : "Nonfiction";
-    let genre = this.props.genres[top][category];
-    return genre.parents.concat([genre.name]).join(" > ");
-  }
-
   classificationsUrl() {
     return this.props.bookUrl.replace("works", "admin/works") + "/classifications";
   }
@@ -168,6 +130,16 @@ export class Genres extends React.Component<GenresProps, any> {
       let genres = this.bookGenres().filter(genre => genre !== genreToRemove);
       return this.updateGenres(genres).then(this.refresh);
     }
+  }
+
+  save() {
+    // let data = {};
+    // this.props.saveClassifications(data).then(response => {
+    //   this.props.refresh();
+    //   this.resetForm();
+    // }).catch(err => {
+    //   this.showGenreError();
+    // });
   }
 }
 

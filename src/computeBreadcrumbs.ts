@@ -1,8 +1,7 @@
-import { LinkData } from "opds-browser/lib/interfaces";
-import { DataForBreadcrumbs } from "opds-browser/lib/components/Breadcrumbs";
+import { CollectionData, LinkData } from "opds-browser/lib/interfaces";
+import { hierarchyComputeBreadcrumbs } from "opds-browser/lib/components/Breadcrumbs";
 
-export default (data: DataForBreadcrumbs): LinkData[] => {
-  let { history, hierarchy, collection } = data;
+export default (collection: CollectionData, history: LinkData[]): LinkData[] => {
   let links = [];
 
   if (collection &&
@@ -18,15 +17,12 @@ export default (data: DataForBreadcrumbs): LinkData[] => {
         text: link["$"].title.value
       };
     });
-  } else {
-    links = hierarchy.slice(0);
-  }
-
-  if (collection) {
     links.push({
       url: collection.url,
       text: collection.title
     });
+  } else {
+    links = hierarchyComputeBreadcrumbs(collection, history);
   }
 
   return links;

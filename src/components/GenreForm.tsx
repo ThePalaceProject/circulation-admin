@@ -2,10 +2,9 @@ import * as React from "react";
 import { GenreData } from "../interfaces";
 
 export interface GenreFormProps {
-  genres: GenreData[];
+  genreOptions: GenreData[];
   bookGenres: string[];
-  updateGenres: (genres: string[]) => Promise<any>;
-  refresh: () => void;
+  addGenre: (genre: string) => void;
 }
 
 export default class GenreForm extends React.Component<GenreFormProps, any> {
@@ -24,12 +23,11 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
   render(): JSX.Element {
     let subgenres =
       this.state.genre ?
-      this.props.genres.find(genre => genre.name === this.state.genre).subgenres.sort() :
+      this.props.genreOptions.find(genre => genre.name === this.state.genre).subgenres.sort() :
       null;
 
     return (
       <div className="genreForm">
-        <h3>Add Genre</h3>
         { this.state.errors.map((error, i) =>
           <div className="genreFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
         ) }
@@ -71,7 +69,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
               type="submit"
               style={{ verticalAlign: "top", marginLeft: "10px" }}
               onClick={this.addGenre}>
-              Submit
+              Add Genre
             </button>
           }
         </div>
@@ -80,7 +78,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
   }
 
   topLevelGenres() {
-    return this.props.genres
+    return this.props.genreOptions
       .filter(genre => genre.parents.length === 0);
   }
 
@@ -96,22 +94,17 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
     this.setState({ subgenre: event.target.value });
   }
 
-  addGenre() {
-    let newGenre = this.state.subgenre ? this.state.subgenre : this.state.genre;
-    let genres = this.props.bookGenres.concat([newGenre]);
-    return this.props.updateGenres(genres).then(response => {
-      this.props.refresh();
-      this.resetForm();
-    }).catch(err => {
-      this.showGenreError();
-    });
-  }
-
   showGenreError() {
     this.setState({ errors: ["Couldn't add genre."] });
   }
 
   resetForm() {
     this.setState({ genre: null, subgenre: null });
+  }
+
+  addGenre() {
+    let newGenre = this.state.subgenre || this.state.genre;
+    this.props.addGenre(newGenre);
+    this.resetForm();
   }
 }
