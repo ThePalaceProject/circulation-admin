@@ -37,7 +37,7 @@ describe("GenreForm", () => {
     it("shows multiple select with top-level genres", () => {
       let handleGenreSelect = (wrapper.instance() as any).handleGenreSelect;
       let topLevelGenres = genreOptions.filter(genre => genre.parents.length === 0);
-      let options = wrapper.find("select[name='genres']").find("option");
+      let options = wrapper.find("select[name='genre']").find("option");
 
       expect(options.length).toBe(topLevelGenres.length);
       options.forEach((option, i) => {
@@ -54,12 +54,12 @@ describe("GenreForm", () => {
 
     it("shows multiple select with subgenres", () => {
       wrapper.setState({ genre: "Adventure" });
-      let options = wrapper.find("select[name='subgenres']").find("option");
+      let options = wrapper.find("select[name='subgenre']").find("option");
 
       expect(options.length).toBe(0);
 
       wrapper.setState({ genre: "Fantasy" });
-      options = wrapper.find("select[name='subgenres']").find("option");
+      options = wrapper.find("select[name='subgenre']").find("option");
       let handleSubgenreSelect = (wrapper.instance() as any).handleSubgenreSelect;
       let subgenres = genreData["Fiction"]["Fantasy"].subgenres;
 
@@ -89,21 +89,21 @@ describe("GenreForm", () => {
       expect(wrapper.state("genre")).toBe(null);
       expect(wrapper.state("subgenre")).toBe(null);
 
-      let genre = wrapper.find("select[name='genres']").find("option").first();
+      let genre = wrapper.find("select[name='genre']").find("option").first();
       genre.simulate("click", { target: { value: genre.props().value }});
       expect(wrapper.state("genre")).toBe(genre.props().value);
 
-      let options = wrapper.find("select[name='subgenres']").find("option");
+      let options = wrapper.find("select[name='subgenre']").find("option");
       expect(options.length).toBe(0);
 
       genre = wrapper
-        .find("select[name='genres']")
+        .find("select[name='genre']")
         .find("option")
         .findWhere(option => option.props().value == "Fantasy");
       genre.simulate("click", { target: { value: genre.props().value }});
       expect(wrapper.state("genre")).toBe(genre.props().value);
 
-      options = wrapper.find("select[name='subgenres']").find("option");
+      options = wrapper.find("select[name='subgenre']").find("option");
       let handleSubgenreSelect = (wrapper.instance() as any).handleSubgenreSelect;
       let subgenres = genreData["Fiction"]["Fantasy"].subgenres;
 

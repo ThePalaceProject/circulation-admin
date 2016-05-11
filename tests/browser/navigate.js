@@ -68,11 +68,15 @@ module.exports = {
       });
   },
 
-  "navigate to book, click edit tab, refresh page, go back": function(browser) {
+  "navigate to book, click through tabs, refresh page, go back": function(browser) {
     var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
     var bookTitleSelector = "h1.bookDetailsTitle";
     var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
     var titleInputSelector = "input[name='title']";
+    var genresTabSelector = "ul.nav-tabs li:nth-child(3) a";
+    var genreInputSelector = "select[name='genre']";
+    var complaintsTabSelector = "ul.nav-tabs li:nth-child(4) a";
+    var complaintInputSelector = "select[name='type']";
 
     browser
       .goHome()
@@ -90,10 +94,18 @@ module.exports = {
             .waitForElementPresent(titleInputSelector, 5000)
             .verify.urlContains("tab=edit")
             .verify.value(titleInputSelector, bookTitle)
+            .click(genresTabSelector)
+            .waitForElementPresent(genreInputSelector, 5000)
+            .verify.urlContains("tab=genres")
+            .click(complaintsTabSelector)
+            .waitForElementPresent(complaintInputSelector, 5000)
+            .verify.urlContains("tab=complaints")
             .refresh()
-            .waitForElementPresent(titleInputSelector, 5000)
-            .verify.urlContains("tab=edit")
+            .waitForElementPresent(complaintInputSelector, 5000)
+            .verify.urlContains("tab=complaints")
             .verify.titleContains(bookTitle)
+            .back()
+            .back()
             .back()
             .waitForElementPresent(bookTitleSelector, 5000)
             .verify.urlEquals(bookUrl);

@@ -35,7 +35,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
         ) }
 
         <div className="form-inline">
-          <select name="genres" size={this.topLevelGenres().length} className="form-control" style={{ width: "200px" }}>
+          <select name="genre" size={this.topLevelGenres().length} className="form-control" style={{ width: "200px" }}>
             { this.topLevelGenres().map(genre =>
               <option
                 key={genre.name}
@@ -49,7 +49,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
 
           { subgenres && subgenres.length > 0 &&
             <select
-              name="subgenres"
+              name="subgenre"
               size={subgenres.length}
               className="form-control"
               style={{ width: "200px", verticalAlign: "top", marginLeft: "10px" }}>
