@@ -18,14 +18,18 @@ describe("genres reducer", () => {
   let initState: GenresState = {
     genres: null,
     classifications: null,
-    isFetching: false,
+    isFetchingGenres: false,
+    isUpdatingGenres: false,
+    isFetchingClassifications: false,
     fetchError: null
   };
 
   let errorState: GenresState = {
     genres: null,
     classifications: null,
-    isFetching: false,
+    isFetchingGenres: false,
+    isUpdatingGenres: false,
+    isFetchingClassifications: false,
     fetchError: { status: 401, response: "test error", url: "test url" },
   };
 
@@ -38,13 +42,13 @@ describe("genres reducer", () => {
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetching: true
+      isFetchingGenres: true
     });
     expect(reducer(initState, action)).toEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
-      isFetching: true,
+      isFetchingGenres: true,
       fetchError: null
     });
     expect(reducer(errorState, action)).toEqual(newState);
@@ -55,7 +59,7 @@ describe("genres reducer", () => {
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isFetching: false
+      isFetchingGenres: false
     });
     expect(reducer(oldState, action)).toEqual(newState)
   });
@@ -64,7 +68,7 @@ describe("genres reducer", () => {
     let action = { type: "LOAD_GENRES", data: genreData };
     let newState = Object.assign({}, initState, {
       genres: genreData,
-      isFetching: false
+      isFetchingGenres: false
     });
     expect(reducer(initState, action)).toEqual(newState);
   });
@@ -74,13 +78,13 @@ describe("genres reducer", () => {
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetching: true
+      isUpdatingGenres: true
     });
     expect(reducer(initState, action)).toEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
-      isFetching: true,
+      isUpdatingGenres: true,
       fetchError: null
     });
     expect(reducer(errorState, action)).toEqual(newState);
@@ -89,11 +93,11 @@ describe("genres reducer", () => {
   it("handles UPDATE_GENRES_FAILURE", () => {
     let action = { type: "UPDATE_GENRES_FAILURE", error: "test error" };
     let oldState = Object.assign({}, initState, {
-      isFetching: true
+      isUpdatingGenres: true
     });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isFetching: false
+      isUpdatingGenres: false
     });
     expect(reducer(oldState, action)).toEqual(newState)
   });
@@ -103,13 +107,13 @@ describe("genres reducer", () => {
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetching: true
+      isFetchingClassifications: true
     });
     expect(reducer(initState, action)).toEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
-      isFetching: true,
+      isFetchingClassifications: true,
       fetchError: null
     });
     expect(reducer(errorState, action)).toEqual(newState);
@@ -120,7 +124,7 @@ describe("genres reducer", () => {
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isFetching: false
+      isFetchingClassifications: false
     });
     expect(reducer(oldState, action)).toEqual(newState)
   });
@@ -129,7 +133,7 @@ describe("genres reducer", () => {
     let action = { type: "LOAD_CLASSIFICATIONS", classifications: classificationsData };
     let newState = Object.assign({}, initState, {
       classifications: classificationsData,
-      isFetching: false
+      isFetchingClassifications: false
     });
     expect(reducer(initState, action)).toEqual(newState);
   });

@@ -18,9 +18,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(laneSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .url(function(result) {
         var catalogUrl = result.value;
         this.getAttribute(laneSelector, "href", function(result) {
@@ -36,7 +33,7 @@ module.exports = {
               .back()
               .waitForElementNotPresent(loadingSelector, 5000)
               .verify.urlEquals(catalogUrl)
-              .verify.elementNotPresent(breadcrumbSelector);
+              .verify.elementNotPresent(nthBreadcrumbSelector(2));
           });
         });
       });
@@ -48,9 +45,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(bookSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .url(function(result) {
         var catalogUrl = result.value;
         this.getAttribute(bookSelector, "href", function(result) {
@@ -68,7 +62,7 @@ module.exports = {
               .waitForElementNotPresent(loadingSelector, 5000)
               .verify.urlEquals(catalogUrl)
               .verify.elementNotPresent(bookTitleSelector)
-              .verify.elementNotPresent(breadcrumbSelector);
+              .verify.elementNotPresent(nthBreadcrumbSelector(2));
           });
         });
       });
@@ -82,9 +76,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(bookSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
         this.getText(bookSelector, function(result) {
@@ -120,9 +111,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(bookSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
         this.getText(bookSelector, function(result) {
@@ -173,9 +161,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(laneSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .getAttribute(complaintsSelector, "href", function(result) {
         var complaintsUrl = result.value;
         this.getText(complaintsSelector, function(result) {
@@ -189,7 +174,7 @@ module.exports = {
                 this
                   .click(laneSelector)
                   .waitForElementNotPresent(loadingSelector, 5000)
-                  .waitForElementPresent(breadcrumbSelector, 5000)
+                  .waitForElementPresent(nthBreadcrumbSelector(2), 5000)
                   .assert.noError()
                   .verify.containsText(nthBreadcrumbSelector(1), "All Books")
                   .verify.containsText(nthBreadcrumbSelector(2), laneTitle)

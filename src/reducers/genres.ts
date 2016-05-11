@@ -4,43 +4,69 @@ import { RequestError } from "opds-browser/lib/DataFetcher";
 export interface GenresState {
   genres: GenreTree;
   classifications: ClassificationData[];
-  isFetching: boolean;
+  isFetchingGenres: boolean;
+  isUpdatingGenres: boolean;
+  isFetchingClassifications: boolean;
   fetchError: RequestError;
 }
 
 const initialState: GenresState = {
   genres: null,
   classifications: null,
-  isFetching: false,
+  isFetchingGenres: false,
+  isUpdatingGenres: false,
+  isFetchingClassifications: false,
   fetchError: null
 };
 
 export default (state: GenresState = initialState, action): GenresState => {
   switch (action.type) {
     case "FETCH_GENRES_REQUEST":
-    case "UPDATE_GENRES_REQUEST":
-    case "FETCH_CLASSIFICATIONS_REQUEST":
       return Object.assign({}, state, {
-        isFetching: true,
+        isFetchingGenres: true,
         fetchError: null
       });
 
-    case "FETCH_CLASSIFICATIONS_FAILURE":
-    case "UPDATE_GENRES_FAILURE":
     case "FETCH_GENRES_FAILURE":
       return Object.assign({}, state, {
         fetchError: action.error,
-        isFetching: false
+        isFetchingGenres: false
       });
 
     case "LOAD_GENRES":
       return Object.assign({}, state, {
-        genres: action.data
+        genres: action.data,
+        isFetchingGenres: false,
+      });
+
+    case "UPDATE_GENRES_REQUEST":
+      return Object.assign({}, state, {
+        isUpdatingGenres: true,
+        fetchError: null
+      });
+
+    case "UPDATE_GENRES_FAILURE":
+      return Object.assign({}, state, {
+        fetchError: action.error,
+        isUpdatingGenres: false
+      });
+
+    case "FETCH_CLASSIFICATIONS_REQUEST":
+      return Object.assign({}, state, {
+        isFetchingClassifications: true,
+        fetchError: null
+      });
+
+    case "FETCH_CLASSIFICATIONS_FAILURE":
+      return Object.assign({}, state, {
+        fetchError: action.error,
+        isFetchingClassifications: false
       });
 
     case "LOAD_CLASSIFICATIONS":
       return Object.assign({}, state, {
-        classifications: action.classifications
+        classifications: action.classifications,
+        isFetchingClassifications: false
       });
 
     default:

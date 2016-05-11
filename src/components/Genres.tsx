@@ -176,7 +176,10 @@ function mapStateToProps(state, ownProps) {
     bookAdminUrl: state.editor.book.url,
     genres: state.editor.genres.genres,
     classifications: state.editor.genres.classifications,
-    isFetching: state.editor.genres.isFetching || state.editor.book.isFetching,
+    isFetching: state.editor.genres.isFetchingGenres ||
+                state.editor.genres.isUpdatingGenres ||
+                state.editor.genres.isFetchingClassifications ||
+                state.editor.book.isFetching,
     fetchError: state.editor.genres.fetchError
   };
 }

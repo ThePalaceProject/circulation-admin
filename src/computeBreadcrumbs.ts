@@ -18,6 +18,8 @@ export default (data: DataForBreadcrumbs): LinkData[] => {
         text: link["$"].title.value
       };
     });
+  } else {
+    links = hierarchy.slice(0);
   }
 
   if (collection) {
