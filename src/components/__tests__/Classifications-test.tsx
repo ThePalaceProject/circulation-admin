@@ -6,8 +6,10 @@ import { shallow } from "enzyme";
 import { Classifications } from "../Classifications";
 import ErrorMessage from "../ErrorMessage";
 import ClassificationsForm from "../ClassificationsForm"
+import ClassificationsTable from "../ClassificationsTable"
 import buildStore from "../../store";
 import genreData from "./genreData";
+import classificationsData from "./classificationsData";
 
 describe("Classifications", () => {
   let wrapper;
@@ -34,7 +36,9 @@ describe("Classifications", () => {
         csrfToken="token"
         bookUrl="book url"
         book={bookData}
+        bookAdminUrl="book admin url"
         genres={genreData}
+        classifications={classificationsData}
         refreshBrowser={refreshBrowser}
         fetchGenres={fetchGenres}
         fetchClassifications={fetchClassifications}
@@ -70,21 +74,42 @@ describe("Classifications", () => {
       expect(error.props().error).toBe(errorData);
     });
 
-    it("shows classification form", () => {
+    it("shows classifications form", () => {
       let form = wrapper.find(ClassificationsForm);
       expect(form.props().book).toBe(bookData);
       expect(form.props().genres).toBe(genreData);
       expect(form.props().csrfToken).toBe("token");
       expect(form.props().editClassifications).toBe(instance.editClassifications);
     });
+
+    it("shows classifications table", () => {
+      let table = wrapper.find(ClassificationsTable);
+      expect(table.props().classifications).toBe(classificationsData);
+    });
   });
 
   describe("behavior", () => {
-    it("fetches genres on mount", () => {
+    it("fetches genres and classifications on mount", () => {
       expect(fetchGenres.mock.calls.length).toBe(1);
       expect(fetchGenres.mock.calls[0][0]).toBe("/admin/genres");
       expect(fetchClassifications.mock.calls.length).toBe(1);
       expect(fetchClassifications.mock.calls[0][0]).toBe(instance.classificationsUrl());
+    });
+
+    it("refreshes book, classifications, and browser after editing classifications", (done) => {
+      let formData = new FormData();
+      editClassifications.mockReturnValue(new Promise((resolve, reject) => resolve()));
+      instance.editClassifications(formData).then(response => {
+        expect(editClassifications.mock.calls.length).toBe(1);
+        expect(editClassifications.mock.calls[0][0]).toBe(instance.editClassificationsUrl());
+        expect(editClassifications.mock.calls[0][1]).toBe(formData);
+        expect(fetchBook.mock.calls.length).toBe(1);
+        expect(fetchBook.mock.calls[0][0]).toBe("book admin url");
+        expect(fetchClassifications.mock.calls.length).toBe(2); // already called on mount
+        expect(fetchClassifications.mock.calls[1][0]).toBe(instance.classificationsUrl());
+        expect(refreshBrowser.mock.calls.length).toBe(1);
+        done();
+      });
     });
   });
 });

@@ -64,5 +64,5 @@ export interface ClassificationData {
   type: string;
   name: string;
   source: string;
-  weight: string;
+  weight: number;
 }

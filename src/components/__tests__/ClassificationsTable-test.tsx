@@ -4,20 +4,15 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import ClassificationsTable from "../ClassificationsTable";
+import classificationsData from "./classificationsData";
 
 describe("ClassificationsTable", () => {
   describe("rendering", () => {
     let wrapper;
-    let classifications = [
-      { name: "Science Fiction", source: "staff", type: "http://librarysimplified.org/terms/genres/Simplified/", weight: "2" },
-      { name: "Romance", source: "staff", type: "http://librarysimplified.org/terms/genres/Simplified/", weight: "2" },
-      { name: "sci-fi", source: "other", type: "other", weight: "1" },
-      { name: "romance", source: "other", type: "other", weight: "1" }
-    ];
 
     beforeEach(() => {
       wrapper = shallow(
-        <ClassificationsTable classifications={classifications} />
+        <ClassificationsTable classifications={classificationsData} />
       );
     });
 
@@ -38,7 +33,7 @@ describe("ClassificationsTable", () => {
       rows.forEach((row, i) => {
         let cells = row.find("td");
         let cellTexts = cells.map(cell => cell.text());
-        let c = classifications[i];
+        let c = classificationsData[i];
         expect(cellTexts).toEqual([readableType(c.type), c.name, c.source, c.weight]);
       });
     });
