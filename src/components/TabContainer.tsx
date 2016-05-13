@@ -39,7 +39,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             refreshBrowser={this.props.refreshBrowser}
             />
         </Tab>
-        <Tab eventKey={"genres"} title="Classifications">
+        <Tab eventKey={"classifications"} title="Classifications">
           <Classifications
             store={this.props.store}
             csrfToken={this.props.csrfToken}
