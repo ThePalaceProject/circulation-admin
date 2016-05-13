@@ -109,7 +109,7 @@ export class Classifications extends React.Component<ClassificationsProps, any> 
 function mapStateToProps(state, ownProps) {
   return {
     bookAdminUrl: state.editor.book.url,
-    genres: state.editor.classifications.genres,
+    genreTree: state.editor.classifications.genreTree,
     classifications: state.editor.classifications.classifications,
     isFetching: state.editor.classifications.isFetchingGenreTree ||
                 state.editor.classifications.isEditingClassifications ||
