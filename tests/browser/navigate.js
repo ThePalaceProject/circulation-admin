@@ -73,7 +73,7 @@ module.exports = {
     var bookTitleSelector = "h1.bookDetailsTitle";
     var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
     var titleInputSelector = "input[name='title']";
-    var genresTabSelector = "ul.nav-tabs li:nth-child(3) a";
+    var classificationsTabSelector = "ul.nav-tabs li:nth-child(3) a";
     var genreInputSelector = "select[name='genre']";
     var complaintsTabSelector = "ul.nav-tabs li:nth-child(4) a";
     var complaintInputSelector = "select[name='type']";
@@ -94,9 +94,9 @@ module.exports = {
             .waitForElementPresent(titleInputSelector, 5000)
             .verify.urlContains("tab=edit")
             .verify.value(titleInputSelector, bookTitle)
-            .click(genresTabSelector)
+            .click(classificationsTabSelector)
             .waitForElementPresent(genreInputSelector, 5000)
-            .verify.urlContains("tab=genres")
+            .verify.urlContains("tab=classifications")
             .click(complaintsTabSelector)
             .waitForElementPresent(complaintInputSelector, 5000)
             .verify.urlContains("tab=complaints")

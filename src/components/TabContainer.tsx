@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
-import Genres from "./Genres";
+import Classifications from "./Classifications";
 import Complaints from "./Complaints";
 import { BookData, Navigate } from "../interfaces";
 
@@ -39,8 +39,8 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             refreshBrowser={this.props.refreshBrowser}
             />
         </Tab>
-        <Tab eventKey={"genres"} title="Genres">
-          <Genres
+        <Tab eventKey={"genres"} title="Classifications">
+          <Classifications
             store={this.props.store}
             csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}

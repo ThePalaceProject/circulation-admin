@@ -36,9 +36,9 @@ export default class ActionCreator {
   FETCH_CLASSIFICATIONS_FAILURE = "FETCH_CLASSIFICATIONS_FAILURE";
   LOAD_CLASSIFICATIONS = "LOAD_CLASSIFICATIONS";
 
-  UPDATE_GENRES_REQUEST = "UPDATE_GENRES_REQUEST";
-  UPDATE_GENRES_SUCCESS = "UPDATE_GENRES_SUCCESS";
-  UPDATE_GENRES_FAILURE = "UPDATE_GENRES_FAILURE";
+  EDIT_CLASSIFICATIONS_REQUEST = "EDIT_CLASSIFICATIONS_REQUEST";
+  EDIT_CLASSIFICATIONS_SUCCESS = "EDIT_CLASSIFICATIONS_SUCCESS";
+  EDIT_CLASSIFICATIONS_FAILURE = "EDIT_CLASSIFICATIONS_FAILURE";
 
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
@@ -382,19 +382,19 @@ export default class ActionCreator {
     return { type: this.LOAD_GENRES, data };
   }
 
-  updateGenres(url: string, data: FormData) {
+  editClassifications(url: string, data: FormData) {
     let err: RequestError;
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
-        dispatch(this.updateGenresRequest());
+        dispatch(this.editClassificationsRequest());
         fetch(url, {
           method: "POST",
           body: data,
           credentials: "same-origin"
         }).then(response => {
           if (response.status === 200) {
-            dispatch(this.updateGenresSuccess());
+            dispatch(this.editClassificationsSuccess());
             resolve(response);
           } else {
             response.json().then(data => {
@@ -403,15 +403,15 @@ export default class ActionCreator {
                 response: data.detail,
                 url: url
               };
-              dispatch(this.updateGenresFailure(err));
+              dispatch(this.editClassificationsFailure(err));
               reject(err);
             }).catch(parseError => {
               err = {
                 status: response.status,
-                response: "Failed to update genres",
+                response: "Failed to edit classifications",
                 url: url
               };
-              dispatch(this.updateGenresFailure(err));
+              dispatch(this.editClassificationsFailure(err));
               reject(err);
             });
           }
@@ -421,23 +421,23 @@ export default class ActionCreator {
             response: err.message,
             url: url
           };
-          dispatch(this.updateGenresFailure(err));
+          dispatch(this.editClassificationsFailure(err));
           reject(err);
         });
       });
     }).bind(this);
   }
 
-  updateGenresRequest() {
-    return { type: this.UPDATE_GENRES_REQUEST };
+  editClassificationsRequest() {
+    return { type: this.EDIT_CLASSIFICATIONS_REQUEST };
   }
 
-  updateGenresSuccess() {
-    return { type: this.UPDATE_GENRES_SUCCESS };
+  editClassificationsSuccess() {
+    return { type: this.EDIT_CLASSIFICATIONS_SUCCESS };
   }
 
-  updateGenresFailure(error?: RequestError) {
-    return { type: this.UPDATE_GENRES_FAILURE, error };
+  editClassificationsFailure(error?: RequestError) {
+    return { type: this.EDIT_CLASSIFICATIONS_FAILURE, error };
   }
 
   fetchClassifications(url: string) {

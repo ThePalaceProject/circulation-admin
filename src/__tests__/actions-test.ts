@@ -439,8 +439,8 @@ describe("actions", () => {
     });
   });
 
-  describe("updateGenres", () => {
-    let updateGenresUrl = "http://example.com/updateGenres"
+  describe("editClassifications", () => {
+    let editClassificationsUrl = "http://example.com/editClassifications"
     let dispatch;
     let formData = new FormData();
     let newGenres = ["Drama", "Epic Fantasy", "Women Detectives"];
@@ -458,12 +458,12 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      actions.updateGenres(updateGenresUrl, formData)(dispatch).then(response => {
+      actions.editClassifications(editClassificationsUrl, formData)(dispatch).then(response => {
         expect(dispatch.mock.calls.length).toBe(2);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.UPDATE_GENRES_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.UPDATE_GENRES_SUCCESS);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_CLASSIFICATIONS_SUCCESS);
         expect(fetchMock.mock.calls.length).toBe(1);
-        expect(fetchMock.mock.calls[0][0]).toBe(updateGenresUrl);
+        expect(fetchMock.mock.calls[0][0]).toBe(editClassificationsUrl);
         expect(fetchMock.mock.calls[0][1].method).toBe("POST");
         expect(fetchMock.mock.calls[0][1].body).toBe(formData);
         done();
@@ -482,15 +482,15 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      actions.updateGenres(updateGenresUrl, formData)(dispatch).catch(err => {
+      actions.editClassifications(editClassificationsUrl, formData)(dispatch).catch(err => {
         expect(dispatch.mock.calls.length).toBe(2);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.UPDATE_GENRES_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.UPDATE_GENRES_FAILURE);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_CLASSIFICATIONS_FAILURE);
         expect(fetchMock.mock.calls.length).toBe(1);
         expect(err).toEqual({
           status: 500,
           response: "test error detail",
-          url: updateGenresUrl
+          url: editClassificationsUrl
         });
         done();
       }).catch(err => done.fail(err));
@@ -503,15 +503,15 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      actions.updateGenres(updateGenresUrl, formData)(dispatch).catch(err => {
+      actions.editClassifications(editClassificationsUrl, formData)(dispatch).catch(err => {
         expect(dispatch.mock.calls.length).toBe(2);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.UPDATE_GENRES_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.UPDATE_GENRES_FAILURE);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_CLASSIFICATIONS_FAILURE);
         expect(fetchMock.mock.calls.length).toBe(1);
         expect(err).toEqual({
           status: null,
           response: "test error",
-          url: updateGenresUrl
+          url: editClassificationsUrl
         });
         done();
       }).catch(err => done.fail(err));

@@ -6,9 +6,10 @@ import { BookData, GenreTree } from "../interfaces";
 
 export interface ClassificationsFormProps {
   book: BookData;
-  bookGenres: string[];
   genres: GenreTree;
-  disabled: boolean;
+  csrfToken: string;
+  editClassifications: (data: FormData) => Promise<any>;
+  disabled?: boolean;
 }
 
 export default class ClassificationsForm extends React.Component<ClassificationsFormProps, any> {
@@ -17,12 +18,13 @@ export default class ClassificationsForm extends React.Component<Classifications
     this.state = {
       audience: props.book ? props.book.audience : null,
       fiction: props.book ? props.book.fiction : null,
-      genres: [],
-      showGenreInput: false
+      genres: []
     };
+    this.handleAudienceChange = this.handleAudienceChange.bind(this);
+    this.handleFictionChange = this.handleFictionChange.bind(this);
     this.addGenre = this.addGenre.bind(this);
     this.removeGenre = this.removeGenre.bind(this);
-    this.toggleGenreInput = this.toggleGenreInput.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   render(): JSX.Element {
@@ -33,22 +35,24 @@ export default class ClassificationsForm extends React.Component<Classifications
         <EditableInput
           type="select"
           disabled={this.props.disabled}
+          style={{ width: 200 }}
           name="audience"
           label="Audience"
           ref="audience"
           value={this.props.book.audience}
-          onChange={this.handleAudienceChange.bind(this)}>
+          onChange={this.handleAudienceChange}>
           <option value="Children">Children</option>
           <option value="Young Adult">Young Adult</option>
           <option value="Adult">Adult</option>
           <option value="Adults Only">Adults Only</option>
         </EditableInput>
 
-        { (this.state.audience === "Children" || this.state.audience === "Young Adult") &&
+        { this.shouldShowTargetAge() &&
           <div className="form-group">
             <label>Target Age Range</label>
             <div className="form-inline">
               <EditableInput
+                ref="targetAgeMin"
                 type="text"
                 label=""
                 disabled={this.props.disabled}
@@ -58,6 +62,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                 />
               <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
               <EditableInput
+                ref="targetAgeMax"
                 type="text"
                 label=""
                 disabled={this.props.disabled}
@@ -80,7 +85,7 @@ export default class ClassificationsForm extends React.Component<Classifications
               value="fiction"
               ref="fiction"
               checked={this.state.fiction}
-              onChange={this.handleFictionChange.bind(this)}
+              onChange={this.handleFictionChange}
               />
             &nbsp; &nbsp; &nbsp;
             <EditableInput
@@ -91,57 +96,78 @@ export default class ClassificationsForm extends React.Component<Classifications
               value="nonfiction"
               ref="nonfiction"
               checked={!this.state.fiction}
-              onChange={this.handleNonfictionChange.bind(this)}
+              onChange={this.handleFictionChange}
               />
           </div>
         </div>
 
         <div className="form-group">
           <label>Genres</label>
-          &nbsp;&nbsp;
-          <a
-            onClick={this.toggleGenreInput}
-            style={{ cursor: "pointer" }}>
-            add
-          </a>
-
-          { this.state.genres.map(category =>
-            <div key={category}>
-              {this.fullGenre(category)}
-              &nbsp;
+          { this.state.genres.sort().map(category =>
+            <div key={category} className="bookGenre">
+              <div className="bookGenreName" style={{ display: "inline-block", marginRight: 10 }}>
+                {this.fullGenre(category)}
+              </div>
               <i
-                className="fa fa-times"
+                className="fa fa-times removeBookGenre"
                 style={{ color: "#aaa" }}
                 aria-hidden="true"
-                onClick={() => this.removeGenre(category)}
+                onClick={() => !this.props.disabled && this.removeGenre(category)}
                 ></i>
             </div>
           ) }
         </div>
 
-        { this.state.showGenreInput &&
-          <div>
-            <label>Add Genre</label>
-            <GenreForm
-              genreOptions={genreOptions}
-              bookGenres={this.state.genres}
-              addGenre={this.addGenre}
-              />
-          </div>
-        }
+        <div>
+          <label>Add Genre</label>
+          <GenreForm
+            disabled={this.props.disabled}
+            genreOptions={genreOptions}
+            bookGenres={this.state.genres}
+            addGenre={this.addGenre}
+            />
+        </div>
+
+        <br />
+
+        <button
+          className="btn btn-default"
+          onClick={this.submit}>Save</button>
       </div>
     );
   }
 
-  componentWillReceiveProps(props) {
-    if (props.book) {
-      this.setState({ audience: props.book.audience });
-      this.setState({ fiction: props.book.fiction });
-
-      if (props.bookGenres) {
-        this.setState({ genres: props.bookGenres });
-      }
+  componentWillMount() {
+    if (this.props.book) {
+      this.setState({ audience: this.props.book.audience });
+      this.setState({ fiction: this.props.book.fiction });
+      this.setState({ genres: this.bookGenres() });
     }
+  }
+
+  bookGenres() {
+    if (!this.props.book || !this.props.book.categories || !this.props.genres) {
+      return [];
+    }
+
+    return this.props.book.categories.filter(category => {
+      return !!this.props.genres["Fiction"][category] ||
+        !!this.props.genres["Nonfiction"][category];
+    });
+  }
+
+  shouldShowTargetAge() {
+    return this.state.audience === "Children" || this.state.audience === "Young Adult";
+  }
+
+  filterGenres(genres: string[], fiction: boolean = true) {
+    let top = fiction ? "Fiction" : "Nonfiction";
+
+    if (!this.props.genres[top]) {
+      return [];
+    }
+
+    return genres.filter(genre => this.props.genres[top][genre]);
   }
 
   genreOptions() {
@@ -159,38 +185,62 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   fullGenre(category) {
-    let top = this.props.book.fiction ? "Fiction" : "Nonfiction";
+    let top = this.state.fiction ? "Fiction" : "Nonfiction";
     let genre = this.props.genres[top][category];
     return genre.parents.concat([genre.name]).join(" > ");
+  }
+
+  validateAudience(audience, genres) {
+    // fails if genres include Erotica but audience isn't Adults Only
+    if (genres.indexOf("Erotica") !== -1 && audience !== "Adults Only") {
+      alert("Erotica genre requires Adults Only audience");
+      return false;
+    } else {
+      return true;
+    }
   }
 
   handleAudienceChange() {
     let audience = (this.refs as any).audience;
     let value = (audience.refs as any).input.getValue();
-    this.setState({ audience: value });
+
+    if (this.validateAudience(value, this.state.genres)) {
+      this.setState({ audience: value });
+    } else {
+      return false;
+    };
   }
 
   handleFictionChange() {
     let fiction = (this.refs as any).fiction;
     let value = (fiction.refs as any).input.getChecked();
-    this.setState({ fiction: value });
-  }
+    let clearedType = fiction ? "Nonfiction" : "Fiction";
 
-  handleNonfictionChange() {
-    let nonfiction = (this.refs as any).nonfiction;
-    let value = (nonfiction.refs as any).input.getChecked();
-    this.setState({ fiction: !value });
+    if (this.state.genres.length === 0 || confirm(`Are you sure? This will clear any ${clearedType} genres you have chosen!`)) {
+      this.setState({ fiction: value, genres: this.filterGenres(this.state.genres, value) });
+    }
   }
 
   addGenre(genre) {
-    this.setState({ genres: this.state.genres.concat([genre]), showGenreInput: false });
+    if (this.validateAudience(this.state.audience, [genre])) {
+      this.setState({ genres: this.state.genres.concat([genre]) });
+    };
   }
 
   removeGenre(genreToRemove) {
     this.setState({ genres: this.state.genres.filter(genre => genre !== genreToRemove) });
   }
 
-  toggleGenreInput() {
-    this.setState({ showGenreInput: !this.state.showGenreInput });
+  submit() {
+    let data = new FormData();
+    data.append("csrf_token", this.props.csrfToken);
+    data.append("audience", this.state.audience);
+    if (this.shouldShowTargetAge()) {
+      data.append("target_age_min", (this.refs as any).targetAgeMin.getValue());
+      data.append("target_age_max", (this.refs as any).targetAgeMax.getValue());
+    }
+    data.append("fiction", this.state.fiction ? "fiction" : "nonfiction");
+    this.state.genres.forEach(genre => data.append("genres", genre));
+    return this.props.editClassifications(data);
   }
 }

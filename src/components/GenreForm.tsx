@@ -5,13 +5,13 @@ export interface GenreFormProps {
   genreOptions: GenreData[];
   bookGenres: string[];
   addGenre: (genre: string) => void;
+  disabled?: boolean;
 }
 
 export default class GenreForm extends React.Component<GenreFormProps, any> {
   constructor(props) {
     super(props);
     this.state = {
-      errors: [],
       genre: null,
       subgenre: null
     };
@@ -26,14 +26,16 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
       this.props.genreOptions.find(genre => genre.name === this.state.genre).subgenres.sort() :
       null;
 
+    let disabledProps = this.props.disabled ? { disabled: true } : {};
+
     return (
       <div className="genreForm">
-        { this.state.errors.map((error, i) =>
-          <div className="genreFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
-        ) }
-
         <div className="form-inline">
-          <select name="genre" size={this.topLevelGenres().length} className="form-control" style={{ width: "200px" }}>
+          <select
+            name="genre"
+            size={this.topLevelGenres().length}
+            className="form-control" style={{ width: "200px" }}
+            {...disabledProps}>
             { this.topLevelGenres().map(genre =>
               <option
                 key={genre.name}
@@ -50,7 +52,8 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
               name="subgenre"
               size={subgenres.length}
               className="form-control"
-              style={{ width: "200px", verticalAlign: "top", marginLeft: "10px" }}>
+              style={{ width: "200px", verticalAlign: "top", marginLeft: "10px" }}
+              {...disabledProps}>
               { subgenres.map(genre =>
                 <option
                   key={genre}
@@ -69,7 +72,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
               type="submit"
               style={{ verticalAlign: "top", marginLeft: "10px" }}
               onClick={this.addGenre}>
-              Add Genre
+              Add
             </button>
           }
         </div>
@@ -92,10 +95,6 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
 
   handleSubgenreSelect(event) {
     this.setState({ subgenre: event.target.value });
-  }
-
-  showGenreError() {
-    this.setState({ errors: ["Couldn't add genre."] });
   }
 
   resetForm() {

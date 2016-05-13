@@ -19,6 +19,7 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
       value: props.value,
       checked: props.checked
     };
+    this.handleChange = this.handleChange.bind(this);
   }
 
   render() {
@@ -30,7 +31,7 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
         label={this.props.label}
         ref="input"
         value={this.state.value}
-        onChange={this.handleChange.bind(this)}
+        onChange={this.handleChange}
         style={this.props.style}
         checked={this.state.checked}
         >
@@ -55,10 +56,18 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
   handleChange() {
     if (!this.props.onChange || this.props.onChange() !== false) {
       this.setState({
-        value: (this.refs as any).input.getValue(),
-        checked: (this.refs as any).input.getChecked()
+        value: this.getValue(),
+        checked: this.getChecked()
       });
     }
+  }
+
+  getValue() {
+    return (this.refs as any).input.getValue();
+  }
+
+  getChecked() {
+    return (this.refs as any).input.getChecked();
   }
 }
 

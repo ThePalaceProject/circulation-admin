@@ -1,8 +1,8 @@
-jest.dontMock("../genres");
+jest.dontMock("../classifications");
 
-import reducer, { GenresState } from "../genres";
+import reducer, { ClassificationsState } from "../classifications";
 
-describe("genres reducer", () => {
+describe("classifications reducer", () => {
   let genreData = {
     Fiction: {},
     Nonfiction: {}
@@ -15,20 +15,20 @@ describe("genres reducer", () => {
     weight: "weight"
   } ];
 
-  let initState: GenresState = {
+  let initState: ClassificationsState = {
     genres: null,
     classifications: null,
     isFetchingGenres: false,
-    isUpdatingGenres: false,
+    isEditingClassifications: false,
     isFetchingClassifications: false,
     fetchError: null
   };
 
-  let errorState: GenresState = {
+  let errorState: ClassificationsState = {
     genres: null,
     classifications: null,
     isFetchingGenres: false,
-    isUpdatingGenres: false,
+    isEditingClassifications: false,
     isFetchingClassifications: false,
     fetchError: { status: 401, response: "test error", url: "test url" },
   };
@@ -73,31 +73,31 @@ describe("genres reducer", () => {
     expect(reducer(initState, action)).toEqual(newState);
   });
 
-  it("handles UPDATE_GENRES_REQUEST", () => {
-    let action = { type: "UPDATE_GENRES_REQUEST", url: "test url" };
+  it("handles EDIT_CLASSIFICATIONS_REQUEST", () => {
+    let action = { type: "EDIT_CLASSIFICATIONS_REQUEST", url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isUpdatingGenres: true
+      isEditingClassifications: true
     });
     expect(reducer(initState, action)).toEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
-      isUpdatingGenres: true,
+      isEditingClassifications: true,
       fetchError: null
     });
     expect(reducer(errorState, action)).toEqual(newState);
   });
 
-  it("handles UPDATE_GENRES_FAILURE", () => {
-    let action = { type: "UPDATE_GENRES_FAILURE", error: "test error" };
+  it("handles EDIT_CLASSIFICATIONS_FAILURE", () => {
+    let action = { type: "EDIT_CLASSIFICATIONS_FAILURE", error: "test error" };
     let oldState = Object.assign({}, initState, {
-      isUpdatingGenres: true
+      isEditingClassifications: true
     });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isUpdatingGenres: false
+      isEditingClassifications: false
     });
     expect(reducer(oldState, action)).toEqual(newState)
   });

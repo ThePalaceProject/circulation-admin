@@ -1,25 +1,25 @@
 import { GenreTree, ClassificationData } from "../interfaces";
 import { RequestError } from "opds-browser/lib/DataFetcher";
 
-export interface GenresState {
+export interface ClassificationsState {
   genres: GenreTree;
   classifications: ClassificationData[];
   isFetchingGenres: boolean;
-  isUpdatingGenres: boolean;
+  isEditingClassifications: boolean;
   isFetchingClassifications: boolean;
   fetchError: RequestError;
 }
 
-const initialState: GenresState = {
+const initialState: ClassificationsState = {
   genres: null,
   classifications: null,
   isFetchingGenres: false,
-  isUpdatingGenres: false,
+  isEditingClassifications: false,
   isFetchingClassifications: false,
   fetchError: null
 };
 
-export default (state: GenresState = initialState, action): GenresState => {
+export default (state: ClassificationsState = initialState, action): ClassificationsState => {
   switch (action.type) {
     case "FETCH_GENRES_REQUEST":
       return Object.assign({}, state, {
@@ -39,16 +39,22 @@ export default (state: GenresState = initialState, action): GenresState => {
         isFetchingGenres: false,
       });
 
-    case "UPDATE_GENRES_REQUEST":
+    case "EDIT_CLASSIFICATIONS_REQUEST":
       return Object.assign({}, state, {
-        isUpdatingGenres: true,
+        isEditingClassifications: true,
         fetchError: null
       });
 
-    case "UPDATE_GENRES_FAILURE":
+    case "EDIT_CLASSIFICATIONS_SUCCESS":
+      return Object.assign({}, state, {
+        isEditingClassifications: false,
+        fetchError: null
+      });
+
+    case "EDIT_CLASSIFICATIONS_FAILURE":
       return Object.assign({}, state, {
         fetchError: action.error,
-        isUpdatingGenres: false
+        isEditingClassifications: false
       });
 
     case "FETCH_CLASSIFICATIONS_REQUEST":

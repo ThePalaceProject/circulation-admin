@@ -41,6 +41,10 @@ export interface PostComplaint {
   (url: string, data: { type: string }): Promise<any>;
 }
 
+export type Audience = "Children" | "Young Adult" | "Adult" | "Adults Only";
+
+export type Fiction = "Fiction" | "Nonfiction";
+
 export interface GenreTree {
   Fiction: {
     [index: string]: GenreData;
