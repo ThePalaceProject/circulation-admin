@@ -6,7 +6,7 @@ import { BookData, GenreTree } from "../interfaces";
 
 export interface ClassificationsFormProps {
   book: BookData;
-  genres: GenreTree;
+  genreTree: GenreTree;
   csrfToken: string;
   editClassifications: (data: FormData) => Promise<any>;
   disabled?: boolean;
@@ -146,13 +146,13 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   bookGenres() {
-    if (!this.props.book || !this.props.book.categories || !this.props.genres) {
+    if (!this.props.book || !this.props.book.categories || !this.props.genreTree) {
       return [];
     }
 
     return this.props.book.categories.filter(category => {
-      return !!this.props.genres["Fiction"][category] ||
-        !!this.props.genres["Nonfiction"][category];
+      return !!this.props.genreTree["Fiction"][category] ||
+        !!this.props.genreTree["Nonfiction"][category];
     });
   }
 
@@ -163,30 +163,30 @@ export default class ClassificationsForm extends React.Component<Classifications
   filterGenres(genres: string[], fiction: boolean = true) {
     let top = fiction ? "Fiction" : "Nonfiction";
 
-    if (!this.props.genres[top]) {
+    if (!this.props.genreTree[top]) {
       return [];
     }
 
-    return genres.filter(genre => this.props.genres[top][genre]);
+    return genres.filter(genre => this.props.genreTree[top][genre]);
   }
 
   genreOptions() {
-    if (!this.props.book || !this.props.genres) {
+    if (!this.props.book || !this.props.genreTree) {
       return [];
     }
 
     let top = this.state.fiction ? "Fiction" : "Nonfiction";
 
-    if (!this.props.genres[top]) {
+    if (!this.props.genreTree[top]) {
       return [];
     }
 
-    return Object.keys(this.props.genres[top]).map(key => this.props.genres[top][key]);
+    return Object.keys(this.props.genreTree[top]).map(key => this.props.genreTree[top][key]);
   }
 
   fullGenre(category) {
     let top = this.state.fiction ? "Fiction" : "Nonfiction";
-    let genre = this.props.genres[top][category];
+    let genre = this.props.genreTree[top][category];
     return genre.parents.concat([genre.name]).join(" > ");
   }
 

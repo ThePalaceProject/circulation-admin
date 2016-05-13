@@ -26,10 +26,10 @@ export default class ActionCreator {
   RESOLVE_COMPLAINTS_SUCCESS = "RESOLVE_COMPLAINTS_SUCCESS";
   RESOLVE_COMPLAINTS_FAILURE = "RESOLVE_COMPLAINTS_FAILURE";
 
-  FETCH_GENRES_REQUEST = "FETCH_GENRES_REQUEST";
-  FETCH_GENRES_SUCCESS = "FETCH_GENRES_SUCCESS";
-  FETCH_GENRES_FAILURE = "FETCH_GENRES_FAILURE";
-  LOAD_GENRES = "LOAD_GENRES";
+  FETCH_GENRE_TREE_REQUEST = "FETCH_GENRE_TREE_REQUEST";
+  FETCH_GENRE_TREE_SUCCESS = "FETCH_GENRE_TREE_SUCCESS";
+  FETCH_GENRE_TREE_FAILURE = "FETCH_GENRE_TREE_FAILURE";
+  LOAD_GENRE_TREE = "LOAD_GENRE_TREE";
 
   FETCH_CLASSIFICATIONS_REQUEST = "FETCH_CLASSIFICATIONS_REQUEST";
   FETCH_CLASSIFICATIONS_SUCCESS = "FETCH_CLASSIFICATIONS_SUCCESS";
@@ -318,20 +318,20 @@ export default class ActionCreator {
     return { type: this.RESOLVE_COMPLAINTS_FAILURE, error };
   }
 
-  fetchGenres(url: string) {
+  fetchGenreTree(url: string) {
     let err: RequestError;
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
-        dispatch(this.fetchGenresRequest(url));
+        dispatch(this.fetchGenreTreeRequest(url));
         fetch(url, { credentials: "same-origin" }).then(response => {
           if (response.status === 200) {
             response.json().then((data: GenreTree) => {
-              dispatch(this.fetchGenresSuccess());
-              dispatch(this.loadGenres(data));
+              dispatch(this.fetchGenreTreeSuccess());
+              dispatch(this.loadGenreTree(data));
               resolve(data);
             }).catch(err => {
-              dispatch(this.fetchGenresFailure(err));
+              dispatch(this.fetchGenreTreeFailure(err));
               reject(err);
             });
           } else {
@@ -341,7 +341,7 @@ export default class ActionCreator {
                 response: data.detail,
                 url: url
               };
-              dispatch(this.fetchGenresFailure(err));
+              dispatch(this.fetchGenreTreeFailure(err));
               reject(err);
             }).catch(parseError => {
               err = {
@@ -349,7 +349,7 @@ export default class ActionCreator {
                 response: "Failed to retrieve genres",
                 url: url
               };
-              dispatch(this.fetchGenresFailure(err));
+              dispatch(this.fetchGenreTreeFailure(err));
               reject(err);
             });
           }
@@ -359,27 +359,27 @@ export default class ActionCreator {
             response: err.message,
             url: url
           };
-          dispatch(this.fetchGenresFailure(err));
+          dispatch(this.fetchGenreTreeFailure(err));
           reject(err);
         });
       });
     }).bind(this);
   }
 
-  fetchGenresRequest(url: string) {
-    return { type: this.FETCH_GENRES_REQUEST, url };
+  fetchGenreTreeRequest(url: string) {
+    return { type: this.FETCH_GENRE_TREE_REQUEST, url };
   }
 
-  fetchGenresSuccess() {
-    return { type: this.FETCH_GENRES_SUCCESS };
+  fetchGenreTreeSuccess() {
+    return { type: this.FETCH_GENRE_TREE_SUCCESS };
   }
 
-  fetchGenresFailure(error?: RequestError) {
-    return { type: this.FETCH_GENRES_FAILURE, error };
+  fetchGenreTreeFailure(error?: RequestError) {
+    return { type: this.FETCH_GENRE_TREE_FAILURE, error };
   }
 
-  loadGenres(data) {
-    return { type: this.LOAD_GENRES, data };
+  loadGenreTree(data) {
+    return { type: this.LOAD_GENRE_TREE, data };
   }
 
   editClassifications(url: string, data: FormData) {

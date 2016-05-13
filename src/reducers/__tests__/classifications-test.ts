@@ -16,18 +16,18 @@ describe("classifications reducer", () => {
   } ];
 
   let initState: ClassificationsState = {
-    genres: null,
+    genreTree: null,
     classifications: null,
-    isFetchingGenres: false,
+    isFetchingGenreTree: false,
     isEditingClassifications: false,
     isFetchingClassifications: false,
     fetchError: null
   };
 
   let errorState: ClassificationsState = {
-    genres: null,
+    genreTree: null,
     classifications: null,
-    isFetchingGenres: false,
+    isFetchingGenreTree: false,
     isEditingClassifications: false,
     isFetchingClassifications: false,
     fetchError: { status: 401, response: "test error", url: "test url" },
@@ -37,38 +37,38 @@ describe("classifications reducer", () => {
     expect(reducer(undefined, {})).toEqual(initState);
   });
 
-  it("handles FETCH_GENRES_REQUEST", () => {
-    let action = { type: "FETCH_GENRES_REQUEST", url: "test url" };
+  it("handles FETCH_GENRE_TREE_REQUEST", () => {
+    let action = { type: "FETCH_GENRE_TREE_REQUEST", url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetchingGenres: true
+      isFetchingGenreTree: true
     });
     expect(reducer(initState, action)).toEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
-      isFetchingGenres: true,
+      isFetchingGenreTree: true,
       fetchError: null
     });
     expect(reducer(errorState, action)).toEqual(newState);
   });
 
-  it("handles FETCH_GENRES_FAILURE", () => {
-    let action = { type: "FETCH_GENRES_FAILURE", error: "test error" };
+  it("handles FETCH_GENRE_TREE_FAILURE", () => {
+    let action = { type: "FETCH_GENRE_TREE_FAILURE", error: "test error" };
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isFetchingGenres: false
+      isFetchingGenreTree: false
     });
     expect(reducer(oldState, action)).toEqual(newState)
   });
 
-  it("handles LOAD_GENRES", () => {
-    let action = { type: "LOAD_GENRES", data: genreData };
+  it("handles LOAD_GENRE_TREE", () => {
+    let action = { type: "LOAD_GENRE_TREE", data: genreData };
     let newState = Object.assign({}, initState, {
-      genres: genreData,
-      isFetchingGenres: false
+      genreTree: genreData,
+      isFetchingGenreTree: false
     });
     expect(reducer(initState, action)).toEqual(newState);
   });

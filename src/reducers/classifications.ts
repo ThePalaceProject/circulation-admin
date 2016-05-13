@@ -2,18 +2,18 @@ import { GenreTree, ClassificationData } from "../interfaces";
 import { RequestError } from "opds-browser/lib/DataFetcher";
 
 export interface ClassificationsState {
-  genres: GenreTree;
+  genreTree: GenreTree;
   classifications: ClassificationData[];
-  isFetchingGenres: boolean;
+  isFetchingGenreTree: boolean;
   isEditingClassifications: boolean;
   isFetchingClassifications: boolean;
   fetchError: RequestError;
 }
 
 const initialState: ClassificationsState = {
-  genres: null,
+  genreTree: null,
   classifications: null,
-  isFetchingGenres: false,
+  isFetchingGenreTree: false,
   isEditingClassifications: false,
   isFetchingClassifications: false,
   fetchError: null
@@ -21,22 +21,22 @@ const initialState: ClassificationsState = {
 
 export default (state: ClassificationsState = initialState, action): ClassificationsState => {
   switch (action.type) {
-    case "FETCH_GENRES_REQUEST":
+    case "FETCH_GENRE_TREE_REQUEST":
       return Object.assign({}, state, {
-        isFetchingGenres: true,
+        isFetchingGenreTree: true,
         fetchError: null
       });
 
-    case "FETCH_GENRES_FAILURE":
+    case "FETCH_GENRE_TREE_FAILURE":
       return Object.assign({}, state, {
         fetchError: action.error,
-        isFetchingGenres: false
+        isFetchingGenreTree: false
       });
 
-    case "LOAD_GENRES":
+    case "LOAD_GENRE_TREE":
       return Object.assign({}, state, {
-        genres: action.data,
-        isFetchingGenres: false,
+        genreTree: action.data,
+        isFetchingGenreTree: false,
       });
 
     case "EDIT_CLASSIFICATIONS_REQUEST":

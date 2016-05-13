@@ -359,15 +359,12 @@ describe("actions", () => {
     });
   });
 
-  describe("fetchGenres", () => {
+  describe("fetchGenreTree", () => {
     let genresUrl = "http://example.com/genres";
 
     it("dispatches request, load, and success", (done) => {
       let dispatch = jest.genMockFunction();
-      let genresData = {
-        book: { id: "test id" },
-        genres: { "test-type": 1 }
-      };
+      let genresData = "test data";
       let fetchMock = jest.genMockFunction();
       fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
         resolve({
@@ -379,11 +376,11 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      actions.fetchGenres(genresUrl)(dispatch).then(data => {
+      actions.fetchGenreTree(genresUrl)(dispatch).then(data => {
         expect(dispatch.mock.calls.length).toBe(3);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRES_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRES_SUCCESS);
-        expect(dispatch.mock.calls[2][0].type).toBe(actions.LOAD_GENRES);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRE_TREE_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRE_TREE_SUCCESS);
+        expect(dispatch.mock.calls[2][0].type).toBe(actions.LOAD_GENRE_TREE);
         expect(data).toBe(genresData);
         done();
       }).catch(err => done.fail(err));
@@ -402,10 +399,10 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      actions.fetchGenres(genresUrl)(dispatch).catch(err => {
+      actions.fetchGenreTree(genresUrl)(dispatch).catch(err => {
         expect(dispatch.mock.calls.length).toBe(2);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRES_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRES_FAILURE);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRE_TREE_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRE_TREE_FAILURE);
         expect(err).toEqual({
           status: 500,
           response: "test error detail",
@@ -425,10 +422,10 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      actions.fetchGenres(genresUrl)(dispatch).catch(err => {
+      actions.fetchGenreTree(genresUrl)(dispatch).catch(err => {
         expect(dispatch.mock.calls.length).toBe(2);
-        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRES_REQUEST);
-        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRES_FAILURE);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRE_TREE_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRE_TREE_FAILURE);
         expect(err).toEqual({
           status: null,
           response: "network error",
@@ -443,9 +440,9 @@ describe("actions", () => {
     let editClassificationsUrl = "http://example.com/editClassifications"
     let dispatch;
     let formData = new FormData();
-    let newGenres = ["Drama", "Epic Fantasy", "Women Detectives"];
+    let newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
     formData.append("csrf_token", "token");
-    newGenres.forEach(genre => formData.append("genres", genre));
+    newGenreTree.forEach(genre => formData.append("genres", genre));
 
     beforeEach(() => {
       dispatch = jest.genMockFunction();

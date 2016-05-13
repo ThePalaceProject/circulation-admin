@@ -16,7 +16,7 @@ describe("Classifications", () => {
   let instance;
   let bookData;
   let store;
-  let refreshBrowser, fetchGenres, fetchClassifications, fetchBook, editClassifications;
+  let refreshBrowser, fetchGenreTree, fetchClassifications, fetchBook, editClassifications;
 
   beforeEach(() => {
     bookData = {
@@ -26,7 +26,7 @@ describe("Classifications", () => {
     };
     store = buildStore();
     refreshBrowser = jest.genMockFunction();
-    fetchGenres = jest.genMockFunction();
+    fetchGenreTree = jest.genMockFunction();
     fetchClassifications = jest.genMockFunction();
     fetchBook = jest.genMockFunction();
     editClassifications = jest.genMockFunction();
@@ -37,10 +37,10 @@ describe("Classifications", () => {
         bookUrl="book url"
         book={bookData}
         bookAdminUrl="book admin url"
-        genres={genreData}
+        genreTree={genreData}
         classifications={classificationsData}
         refreshBrowser={refreshBrowser}
-        fetchGenres={fetchGenres}
+        fetchGenreTree={fetchGenreTree}
         fetchClassifications={fetchClassifications}
         fetchBook={fetchBook}
         editClassifications={editClassifications}
@@ -77,7 +77,7 @@ describe("Classifications", () => {
     it("shows classifications form", () => {
       let form = wrapper.find(ClassificationsForm);
       expect(form.props().book).toBe(bookData);
-      expect(form.props().genres).toBe(genreData);
+      expect(form.props().genreTree).toBe(genreData);
       expect(form.props().csrfToken).toBe("token");
       expect(form.props().editClassifications).toBe(instance.editClassifications);
     });
@@ -89,9 +89,9 @@ describe("Classifications", () => {
   });
 
   describe("behavior", () => {
-    it("fetches genres and classifications on mount", () => {
-      expect(fetchGenres.mock.calls.length).toBe(1);
-      expect(fetchGenres.mock.calls[0][0]).toBe("/admin/genres");
+    it("fetches genre tree and classifications on mount", () => {
+      expect(fetchGenreTree.mock.calls.length).toBe(1);
+      expect(fetchGenreTree.mock.calls[0][0]).toBe("/admin/genres");
       expect(fetchClassifications.mock.calls.length).toBe(1);
       expect(fetchClassifications.mock.calls[0][0]).toBe(instance.classificationsUrl());
     });

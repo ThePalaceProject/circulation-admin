@@ -19,14 +19,14 @@ export interface ClassificationsProps {
 
   // from store
   bookAdminUrl?: string;
-  genres?: GenreTree;
+  genreTree?: GenreTree;
   classifications?: ClassificationData[];
   fetchError?: FetchErrorData;
   isFetching?: boolean;
 
   // from actions
   fetchBook?: (url: string) => Promise<any>;
-  fetchGenres?: (url: string) => Promise<any>;
+  fetchGenreTree?: (url: string) => Promise<any>;
   fetchClassifications?: (url: string) => Promise<any>;
   editClassifications?: (url: string, data: FormData) => Promise<any>;
 }
@@ -61,10 +61,10 @@ export class Classifications extends React.Component<ClassificationsProps, any> 
           <ErrorMessage error={this.props.fetchError} />
         }
 
-        { this.props.book && this.props.genres &&
+        { this.props.book && this.props.genreTree &&
           <ClassificationsForm
             book={this.props.book}
-            genres={this.props.genres}
+            genreTree={this.props.genreTree}
             disabled={this.props.isFetching}
             csrfToken={this.props.csrfToken}
             editClassifications={this.editClassifications}
@@ -80,7 +80,7 @@ export class Classifications extends React.Component<ClassificationsProps, any> 
 
   componentWillMount() {
     if (this.props.bookUrl) {
-      this.props.fetchGenres("/admin/genres");
+      this.props.fetchGenreTree("/admin/genres");
       this.props.fetchClassifications(this.classificationsUrl());
     }
   }
@@ -111,7 +111,7 @@ function mapStateToProps(state, ownProps) {
     bookAdminUrl: state.editor.book.url,
     genres: state.editor.classifications.genres,
     classifications: state.editor.classifications.classifications,
-    isFetching: state.editor.classifications.isFetchingGenres ||
+    isFetching: state.editor.classifications.isFetchingGenreTree ||
                 state.editor.classifications.isEditingClassifications ||
                 state.editor.classifications.isFetchingClassifications ||
                 state.editor.book.isFetching,
@@ -124,7 +124,7 @@ function mapDispatchToProps(dispatch) {
   let actions = new ActionCreator(fetcher);
   return {
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
-    fetchGenres: (url: string) => dispatch(actions.fetchGenres(url)),
+    fetchGenreTree: (url: string) => dispatch(actions.fetchGenreTree(url)),
     fetchClassifications: (url: string) => dispatch(actions.fetchClassifications(url)),
     editClassifications: (url: string, data: FormData) => dispatch(actions.editClassifications(url, data))
   };

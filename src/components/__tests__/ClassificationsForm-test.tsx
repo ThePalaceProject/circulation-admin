@@ -37,7 +37,7 @@ describe("ClassificationsForm", () => {
       wrapper = shallow(
         <ClassificationsForm
           book={bookData}
-          genres={genreData}
+          genreTree={genreData}
           csrfToken="token"
           editClassifications={editClassifications}
           />
@@ -117,7 +117,7 @@ describe("ClassificationsForm", () => {
       wrapper = mount(
         <ClassificationsForm
           book={bookData}
-          genres={genreData}
+          genreTree={genreData}
           csrfToken="token"
           editClassifications={editClassifications}
           />

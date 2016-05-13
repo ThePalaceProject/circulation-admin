@@ -54,11 +54,12 @@ describe("TabContainer", () => {
     expect(details).toBeTruthy;
   });
 
-  it("shows details and edit and complaints tabs", () => {
+  it("shows details, edit, classifications, and complaints tabs", () => {
     let links = TestUtils.scryRenderedDOMComponentsWithTag(container, "a");
     let linkTexts = links.map(link => link.textContent);
     expect(linkTexts).toContain("Details");
     expect(linkTexts).toContain("Edit");
+    expect(linkTexts).toContain("Classifications");
     expect(linkTexts).toContain("Complaints");
   });
 
