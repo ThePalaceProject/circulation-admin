@@ -72,6 +72,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                       className="btn-sm"
                       type="submit"
                       label="Resolve"
+                      disabled={this.props.isFetching}
                       onClick={() => this.resolve(type)}
                       />
 

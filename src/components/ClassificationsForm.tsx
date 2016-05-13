@@ -114,6 +114,10 @@ export default class ClassificationsForm extends React.Component<Classifications
                 aria-hidden="true"
                 onClick={() => !this.props.disabled && this.removeGenre(category)}
                 ></i>
+              <a
+                className="sr-only"
+                onClick={() => !this.props.disabled && this.removeGenre(category)}
+                >remove</a>
             </div>
           ) }
         </div>

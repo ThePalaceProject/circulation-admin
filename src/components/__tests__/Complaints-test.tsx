@@ -66,6 +66,10 @@ describe("Complaints", () => {
     it("shows resolve button for each complaint type", () => {
       let buttons = wrapper.find(ButtonForm);
       expect(buttons.length).toBe(Object.keys(complaintsData).length);
+      buttons.forEach(button => {
+        expect(button.props().disabled).toBeFalsy();
+        expect(button.props().label).toBe("Resolve");
+      });
     });
 
     it("shows complaint form", () => {

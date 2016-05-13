@@ -81,12 +81,16 @@ describe("ClassificationsForm", () => {
       let genres = wrapper.find(".bookGenre");
       expect(genres.length).toBe(bookData.categories.length);
 
-      genres.forEach((row, i) => {
-        let cells = genres.find(".bookGenreName");
+      genres.forEach((genre, i) => {
+        let cells = genre.find(".bookGenreName");
         expect(cells.first().text()).toBe(instance.fullGenre(bookData.categories[i]));
 
-        let button = genres.find(".removeBookGenre");
+        let button = genre.find(".removeBookGenre");
         expect(button.length).toBe(1);
+
+        // plus accessible remove buttons
+        let link = genre.find("a.sr-only");
+        expect(link.length).toBe(1);
       });
     });
 
@@ -194,8 +198,16 @@ describe("ClassificationsForm", () => {
       expect(newGenres).toContain(instance.fullGenre("Folklore"));
     });
 
-    it("calls removes genre when remove button is clicked", () => {
+    it("removes genre when remove button is clicked", () => {
       let button = wrapper.find(".fa-times");
+      button.simulate("click");
+
+      let newGenres = wrapper.find(".bookGenreName");
+      expect(newGenres.length).toEqual(0);
+    });
+
+    it("calls removes genre when accessible remove button is clicked", () => {
+      let button = wrapper.find("a.sr-only");
       button.simulate("click");
 
       let newGenres = wrapper.find(".bookGenreName");
