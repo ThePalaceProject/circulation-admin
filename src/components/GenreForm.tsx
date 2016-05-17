@@ -21,10 +21,13 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
   }
 
   render(): JSX.Element {
-    let subgenres =
-      this.state.genre ?
-      this.props.genreOptions.find(genre => genre.name === this.state.genre).subgenres.sort() :
-      null;
+    let subgenres = null;
+    if (this.state.genre) {
+      let genre = this.props.genreOptions.find(genre => genre.name === this.state.genre);
+      if (genre) {
+        subgenres = genre.subgenres.sort();
+      }
+    }
 
     let disabledProps = this.props.disabled ? { disabled: true } : {};
 

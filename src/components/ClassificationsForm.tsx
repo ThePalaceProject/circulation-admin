@@ -189,9 +189,14 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   fullGenre(category) {
-    let top = this.state.fiction ? "Fiction" : "Nonfiction";
-    let genre = this.props.genreTree[top][category];
-    return genre.parents.concat([genre.name]).join(" > ");
+    ["Fiction", "Nonfiction"].forEach(top => {
+      let genre = this.props.genreTree[top][category];
+      if (genre) {
+        return genre.parents.concat([genre.name]).join(" > ");
+      }
+    });
+
+    return category;
   }
 
   validateAudience(audience, genres) {
