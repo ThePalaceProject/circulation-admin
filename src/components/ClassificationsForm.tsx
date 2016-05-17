@@ -218,7 +218,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   handleFictionChange() {
     let fiction = (this.refs as any).fiction;
     let value = (fiction.refs as any).input.getChecked();
-    let clearedType = fiction ? "Nonfiction" : "Fiction";
+    let clearedType = value ? "Nonfiction" : "Fiction";
 
     if (this.state.genres.length === 0 || confirm(`Are you sure? This will clear any ${clearedType} genres you have chosen!`)) {
       this.setState({ fiction: value, genres: this.filterGenres(this.state.genres, value) });

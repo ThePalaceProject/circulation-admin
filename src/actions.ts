@@ -5,6 +5,8 @@ import { RequestError, RequestRejector } from "opds-browser/lib/DataFetcher";
 export default class ActionCreator {
   private fetcher: DataFetcher;
 
+  CLEAR_BOOK = "CLEAR_BOOK";
+
   EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
   EDIT_BOOK_FAILURE = "EDIT_BOOK_FAILURE";
@@ -42,6 +44,10 @@ export default class ActionCreator {
 
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
+  }
+
+  clearBook() {
+    return { type: this.CLEAR_BOOK };
   }
 
   fetchBookAdmin(url: string) {

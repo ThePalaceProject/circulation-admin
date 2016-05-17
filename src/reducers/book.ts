@@ -18,13 +18,16 @@ const initialState: BookState = {
 };
 
 export default (state: BookState = initialState, action) => {
-
   switch (action.type) {
+    case "CLEAR_BOOK":
+      return initialState;
+
     case "FETCH_BOOK_ADMIN_REQUEST":
       return Object.assign({}, state, {
         url: action.url,
         isFetching: true,
-        fetchError: null
+        fetchError: null,
+        editError: null
       });
 
     case "EDIT_BOOK_REQUEST":

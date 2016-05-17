@@ -1,8 +1,7 @@
 jest.autoMockOff();
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
+import { mount } from "enzyme";
 
 import buildStore from "../../store";
 import { TabContainer } from "../TabContainer";
@@ -27,14 +26,14 @@ let initialState = {
 };
 
 describe("TabContainer", () => {
-  let container;
+  let wrapper
   let navigate;
   let store;
 
   beforeEach(() => {
     navigate = jest.genMockFunction();
     store = buildStore();
-    container = TestUtils.renderIntoDocument(
+    wrapper = mount(
       <TabContainer
         bookUrl="book url"
         collectionUrl="collection url"
@@ -50,13 +49,13 @@ describe("TabContainer", () => {
   });
 
   it("shows book details", () => {
-    let details = TestUtils.findRenderedDOMComponentWithClass(container, "bookDetails");
+    let details = wrapper.find(".bookDetails");
     expect(details).toBeTruthy;
   });
 
   it("shows details, edit, classifications, and complaints tabs", () => {
-    let links = TestUtils.scryRenderedDOMComponentsWithTag(container, "a");
-    let linkTexts = links.map(link => link.textContent);
+    let links = wrapper.find("a[role='tab']");
+    let linkTexts = links.map(link => link.text());
     expect(linkTexts).toContain("Details");
     expect(linkTexts).toContain("Edit");
     expect(linkTexts).toContain("Classifications");
@@ -64,24 +63,24 @@ describe("TabContainer", () => {
   });
 
   it("shows Editor", () => {
-    let editor = TestUtils.findRenderedComponentWithType(container, Editor);
-    expect(editor.props.csrfToken).toBe("token");
-    expect(editor.props.bookUrl).toBe("book url");
+    let editor = wrapper.find(Editor);
+    expect(editor.props().csrfToken).toBe("token");
+    expect(editor.props().bookUrl).toBe("book url");
   });
 
   it("shows classifications", () => {
-    let classifications = TestUtils.findRenderedComponentWithType(container, Classifications);
-    expect(classifications.props.bookUrl).toBe("book url");
+    let classifications = wrapper.find(Classifications);
+    expect(classifications.props().bookUrl).toBe("book url");
   });
 
   it("shows Complaints", () => {
-    let complaints = TestUtils.findRenderedComponentWithType(container, Complaints);
-    expect(complaints.props.bookUrl).toBe("book url");
+    let complaints = wrapper.find(Complaints);
+    expect(complaints.props().bookUrl).toBe("book url");
   });
 
   it("calls navigate when tab is clicked", () => {
-    let tabs = TestUtils.scryRenderedDOMComponentsWithTag(container, "a");
-    TestUtils.Simulate.click(tabs[1]);
+    let tabs = wrapper.find("a[role='tab']");
+    tabs.at(1).simulate("click");
     expect(navigate.mock.calls.length).toBe(1);
     expect(navigate.mock.calls[0][0]).toBe("collection url");
     expect(navigate.mock.calls[0][1]).toBe("book url");
@@ -89,14 +88,17 @@ describe("TabContainer", () => {
   });
 
   it("shows complaints count", () => {
-    container = TestUtils.renderIntoDocument(
-      <TabContainer {...container.props} store={store} complaintsCount={5}>
-        <div className="bookDetails">Moby Dick</div>
-      </TabContainer>
-    );
+    wrapper.setProps({ complaintsCount: 5 });
 
-    let links = TestUtils.scryRenderedDOMComponentsWithTag(container, "a");
-    let linkTexts = links.map(link => link.textContent);
+    let links = wrapper.find("a[role='tab']");
+    let linkTexts = links.map(link => link.text());
     expect(linkTexts).toContain("Complaints (5)");
+  });
+
+  it("clears book on unount", () => {
+    let clearBook = jest.genMockFunction();
+    wrapper.setProps({ clearBook });
+    wrapper.unmount();
+    expect(clearBook.mock.calls.length).toBe(1);
   });
 });

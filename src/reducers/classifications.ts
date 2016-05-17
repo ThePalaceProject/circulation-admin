@@ -59,6 +59,7 @@ export default (state: ClassificationsState = initialState, action): Classificat
 
     case "FETCH_CLASSIFICATIONS_REQUEST":
       return Object.assign({}, state, {
+        classifications: null,
         isFetchingClassifications: true,
         fetchError: null
       });

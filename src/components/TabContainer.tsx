@@ -1,5 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import editorAdapter from "../editorAdapter";
+import DataFetcher from "opds-browser/lib/DataFetcher";
+import ActionCreator from "../actions";
 import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
@@ -17,6 +20,7 @@ export interface TabContainerProps extends React.Props<TabContainerProps> {
   navigate: Navigate;
   refreshBrowser: () => Promise<any>;
   complaintsCount?: number;
+  clearBook?: () => void;
 }
 
 export class TabContainer extends React.Component<TabContainerProps, any> {
@@ -61,6 +65,10 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     );
   }
 
+  componentWillUnmount() {
+    this.props.clearBook();
+  }
+
   handleSelect(tab) {
     if (this.props.navigate) {
       this.props.navigate(this.props.collectionUrl, this.props.bookUrl, tab);
@@ -85,10 +93,18 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  let fetcher = new DataFetcher(null, editorAdapter);
+  let actions = new ActionCreator(fetcher);
+  return {
+    clearBook: () => dispatch(actions.clearBook())
+  };
+}
+
 let connectOptions = { withRef: true, pure: true };
 const ConnectedTabContainer = connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
   null,
   connectOptions
 )(TabContainer);
