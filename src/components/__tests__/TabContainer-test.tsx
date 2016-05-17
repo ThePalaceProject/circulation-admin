@@ -50,7 +50,7 @@ describe("TabContainer", () => {
 
   it("shows book details", () => {
     let details = wrapper.find(".bookDetails");
-    expect(details).toBeTruthy;
+    expect(details).toBeTruthy();
   });
 
   it("shows details, edit, classifications, and complaints tabs", () => {

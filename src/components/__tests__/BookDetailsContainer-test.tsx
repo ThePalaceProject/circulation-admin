@@ -69,7 +69,7 @@ describe("BookDetailsContainer", () => {
 
   it("shows a tab container with initial tab", () => {
     let tabContainer = TestUtils.findRenderedComponentWithType(container, TabContainer);
-    expect(tabContainer).toBeTruthy;
+    expect(tabContainer).toBeTruthy();
     expect(tabContainer.props.tab).toBe("tab");
   });
 });
