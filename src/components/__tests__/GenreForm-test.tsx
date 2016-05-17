@@ -51,6 +51,7 @@ describe("GenreForm", () => {
       expect(wrapper.state("genre")).toBe(null);
       expect(wrapper.state("subgenre")).toBe(null);
 
+      // click on genre without subgenres
       let genre = wrapper.find("select[name='genre']").find("option").first();
       genre.simulate("click", { target: { value: genre.props().value }});
       expect(wrapper.state("genre")).toBe(genre.props().value);
@@ -58,6 +59,7 @@ describe("GenreForm", () => {
       let options = wrapper.find("select[name='subgenre']").find("option");
       expect(options.length).toBe(0);
 
+      // click on genre with subgenres
       genre = wrapper
         .find("select[name='genre']")
         .find("option")
@@ -79,9 +81,16 @@ describe("GenreForm", () => {
         expect(option.props().onClick).toBe(handleSubgenreSelect);
       });
 
+      // click on subgenre
       let subgenre = options.first();
       subgenre.simulate("click", { target: { value: subgenre.props().value }});
       expect(wrapper.state("subgenre")).toBe(subgenre.props().value);
+
+      // genreOptions changes due to change in fiction status
+      let newGenreOptions = Object.keys(genreData["Nonfiction"]).map(name => genreData["Nonfiction"][name]);
+      wrapper.setProps({ genreOptions: newGenreOptions });
+      options = wrapper.find("select[name='subgenre']").find("option");
+      expect(options.length).toBe(0);
     });
 
     it("shows add button only if genre is selected", () => {

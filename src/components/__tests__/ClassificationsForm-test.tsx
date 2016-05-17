@@ -94,12 +94,32 @@ describe("ClassificationsForm", () => {
       });
     });
 
+    it("shows the book's full genres and remove buttons even if inconsistent with fiction status", () => {
+      let inconsistentBookData = Object.assign({}, bookData, { fiction: false });
+      wrapper.setProps({ book: inconsistentBookData });
+
+      let genres = wrapper.find(".bookGenre");
+      expect(genres.length).toBe(bookData.categories.length);
+
+      genres.forEach((genre, i) => {
+        let cells = genre.find(".bookGenreName");
+        expect(cells.first().text()).toBe(instance.fullGenre(bookData.categories[i]));
+
+        let button = genre.find(".removeBookGenre");
+        expect(button.length).toBe(1);
+
+        // plus accessible remove buttons
+        let link = genre.find("a.sr-only");
+        expect(link.length).toBe(1);
+      });
+    });
+
     it("shows genre form", () => {
       let form = wrapper.find(GenreForm);
       expect(form.length).toBe(1);
       expect(form.props().disabled).toBeFalsy();
       expect(form.props().genreOptions).toEqual(instance.genreOptions());
-      expect(form.props().bookGenres).toEqual(instance.bookGenres());
+      expect(form.props().bookGenres).toEqual(instance.bookGenres(bookData));
     });
 
     it("shows submit button", () => {
@@ -228,6 +248,19 @@ describe("ClassificationsForm", () => {
 
       expect(editClassifications.mock.calls.length).toBe(1);
       expect(editClassifications.mock.calls[0][0]).toEqual(formData);
+    });
+
+    it("updates state upon receiving new props", () => {
+      let newBookData = Object.assign({}, bookData, {
+        audience: "Adult",
+        fiction: false,
+        categories: ["Urban Fantasy"]
+      });
+      wrapper.setProps({ book: newBookData });
+
+      expect(wrapper.state("audience")).toBe("Adult");
+      expect(wrapper.state("fiction")).toBe(false);
+      expect(wrapper.state("genres")).toEqual(["Urban Fantasy"]);
     });
   });
 })
