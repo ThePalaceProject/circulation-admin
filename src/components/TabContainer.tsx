@@ -69,6 +69,12 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     this.props.clearBook();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.bookUrl !== this.props.bookUrl) {
+      this.props.clearBook();
+    }
+  }
+
   handleSelect(tab) {
     if (this.props.navigate) {
       this.props.navigate(this.props.collectionUrl, this.props.bookUrl, tab);

@@ -95,7 +95,14 @@ describe("TabContainer", () => {
     expect(linkTexts).toContain("Complaints (5)");
   });
 
-  it("clears book on unount", () => {
+  it("clears book data when receiving new book url", () => {
+    let clearBook = jest.genMockFunction();
+    wrapper.setProps({ clearBook });
+    wrapper.setProps({ bookUrl: "new book url" });
+    expect(clearBook.mock.calls.length).toBe(1);
+  });
+
+  it("clears book data on unount", () => {
     let clearBook = jest.genMockFunction();
     wrapper.setProps({ clearBook });
     wrapper.unmount();

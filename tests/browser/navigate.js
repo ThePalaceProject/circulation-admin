@@ -7,6 +7,7 @@ var nthBreadcrumbSelector = function(n) {
 module.exports = {
   before: function(browser, done) {
     browser
+      .resizeWindow(1200, 900)
       .signIn()
       .perform(function() {
         done();
@@ -204,6 +205,57 @@ module.exports = {
             });
           });
         });
+      });
+  },
+
+  "navigate to two different book classifications tabs": function(browser) {
+    var laneSelector = "li:first-child .lane h2 a";
+    var firstBookSelector = "li:nth-child(2) .lane ul.laneBooks li:first-child a.laneBookLink";
+    var secondBookSelector = "li:nth-child(3) .lane ul.laneBooks li:nth-child(2) a.laneBookLink";
+    var bookTitleSelector = "h1.bookDetailsTitle";
+    var classificationsTabSelector = "ul.nav-tabs li:nth-child(3) a";
+    var genreSelector = ".bookGenre:nth-child(2) .bookGenreName"; // 2nd child because first is a label
+
+    browser
+      .goHome()
+      .click(laneSelector)
+      .waitForElementNotPresent(loadingSelector, 5000)
+      .waitForElementPresent(nthBreadcrumbSelector(2), 5000)
+      // scroll 200px above element so that it's not blocked by the header
+      .moveToElement(firstBookSelector, 0, -200)
+      .click(firstBookSelector)
+      .waitForElementNotPresent(loadingSelector, 5000)
+      .waitForElementPresent(bookTitleSelector, 5000)
+      .getText(bookTitleSelector, function(result) {
+        var firstTitle = result.value;
+        this
+          .click(classificationsTabSelector)
+          .waitForElementNotPresent(loadingSelector, 5000)
+          .waitForElementPresent(genreSelector, 5000)
+          .getText(genreSelector, function(result) {
+            var firstGenre = result.value;
+            this
+              .click(nthBreadcrumbSelector(2))
+              .waitForElementNotPresent(loadingSelector, 5000)
+              .waitForElementPresent(secondBookSelector, 5000)
+              // scroll 200px above element so that it's not blocked by the header
+              .moveToElement(secondBookSelector, 0, -200)
+              .click(secondBookSelector)
+              .waitForElementNotPresent(loadingSelector, 5000)
+              .waitForElementPresent(bookTitleSelector, 50000)
+              .getText(bookTitleSelector, function(result) {
+                var secondTitle = result.value;
+                this.assert.notEqual(firstTitle, secondTitle);
+                this
+                  .click(classificationsTabSelector)
+                  .waitForElementNotPresent(loadingSelector, 5000)
+                  .waitForElementPresent(genreSelector, 5000)
+                  .getText(genreSelector, function(result) {
+                    var secondGenre = result.value;
+                    this.assert.notEqual(firstGenre, secondGenre);
+                  });
+              });
+          });
       });
   },
 
