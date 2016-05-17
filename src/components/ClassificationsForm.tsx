@@ -145,16 +145,24 @@ export default class ClassificationsForm extends React.Component<Classifications
     if (this.props.book) {
       this.setState({ audience: this.props.book.audience });
       this.setState({ fiction: this.props.book.fiction });
-      this.setState({ genres: this.bookGenres() });
+      this.setState({ genres: this.bookGenres(this.props.book) });
     }
   }
 
-  bookGenres() {
-    if (!this.props.book || !this.props.book.categories || !this.props.genreTree) {
+  componentWillReceiveProps(newProps) {
+    if (newProps.book) {
+      this.setState({ audience: newProps.book.audience });
+      this.setState({ fiction: newProps.book.fiction });
+      this.setState({ genres: this.bookGenres(newProps.book) });
+    }
+  }
+
+  bookGenres(book: BookData) {
+    if (!book || !book.categories || !this.props.genreTree) {
       return [];
     }
 
-    return this.props.book.categories.filter(category => {
+    return book.categories.filter(category => {
       return !!this.props.genreTree["Fiction"][category] ||
         !!this.props.genreTree["Nonfiction"][category];
     });
