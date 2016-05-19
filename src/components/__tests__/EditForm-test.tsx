@@ -210,111 +210,11 @@ describe("EditForm", () => {
       expect(input.props().value).toBe("title");
     });
 
-    it("shows editable select with audience", () => {
-      let input = editableInputByName("audience");
-      expect(input.props().type).toBe("select")
-      expect(input.props().label).toBe("Audience");
-      expect(input.props().value).toBe("Young Adult");
-    });
-
-    it("shows editable inputs with min and max target age", () => {
-      let input = editableInputByName("target_age_min");
-      expect(input.props().label).toBe("");
-      expect(input.props().value).toBe("12");
-
-      input = editableInputByName("target_age_max");
-      expect(input.props().label).toBe("");
-      expect(input.props().value).toBe("16");
-    });
-
-    it("shows editable radio buttons with fiction status", () => {
-      let fictionInput = editableInputByValue("fiction");
-      let nonfictionInput = editableInputByValue("nonfiction");
-
-      expect(fictionInput.props().type).toBe("radio");
-      expect(fictionInput.props().label).toBe("Fiction");
-      expect(fictionInput.props().checked).toBe(true);
-      expect(fictionInput.props().value).toBe("fiction");
-
-      expect(nonfictionInput.props().type).toBe("radio");
-      expect(nonfictionInput.props().label).toBe("Nonfiction");
-      expect(nonfictionInput.props().checked).toBe(false);
-      expect(nonfictionInput.props().value).toBe("nonfiction");
-    });
-
     it("shows editable input with summary", () => {
       let input = editableInputByName("summary");
       expect(input.props().label).toBe("Summary");
       expect(input.props().value).toBe("summary");
     });
-  });
-
-  it("shows and hides target age inputs when audience changes", () => {
-    let wrapper = mount(
-      <EditForm
-        {...bookData}
-        csrfToken="token"
-        disabled={false}
-        refresh={jest.genMockFunction()}
-        editBook={jest.genMockFunction()}
-        />
-    );
-
-    let minAgeInput = wrapper.find("input[name='target_age_min']");
-    let maxAgeInput = wrapper.find("input[name='target_age_max']");
-    expect(minAgeInput.length).toBe(1);
-    expect(maxAgeInput.length).toBe(1);
-
-    let select = wrapper.find("select") as any;
-    let selectElement = select.get(0);
-    selectElement.value = "Adult";
-    select.simulate("change");
-    minAgeInput = wrapper.find("input[name='target_age_min']");
-    maxAgeInput = wrapper.find("input[name='target_age_max']");
-    expect(minAgeInput.length).toBe(0);
-    expect(maxAgeInput.length).toBe(0);
-
-    selectElement.value = "Children";
-    select.simulate("change");
-    minAgeInput = wrapper.find("input[name='target_age_min']");
-    maxAgeInput = wrapper.find("input[name='target_age_max']");
-    expect(minAgeInput.length).toBe(1);
-    expect(maxAgeInput.length).toBe(1);
-  });
-
-  it("changes both fiction status radio buttons", () => {
-    let wrapper = mount(
-      <EditForm
-        {...bookData}
-        csrfToken="token"
-        disabled={false}
-        refresh={jest.genMockFunction()}
-        editBook={jest.genMockFunction()}
-        />
-    );
-
-    let fictionInput = wrapper.find("input[value='fiction']");
-    let nonfictionInput = wrapper.find("input[value='nonfiction']");
-    expect(fictionInput.length).toEqual(1);
-    expect(nonfictionInput.length).toEqual(1);
-
-    let fictionElement = fictionInput.get(0);
-    let nonfictionElement = nonfictionInput.get(0);
-
-    expect((fictionElement as any).checked).toBeTruthy();
-    expect((nonfictionElement as any).checked).toBeFalsy();
-
-    (nonfictionElement as any).checked = true;
-    nonfictionInput.simulate("change");
-
-    expect((fictionElement as any).checked).toBeFalsy();
-    expect((nonfictionElement as any).checked).toBeTruthy();
-
-    (fictionElement as any).checked = true;
-    fictionInput.simulate("change");
-
-    expect((fictionElement as any).checked).toBeTruthy();
-    expect((nonfictionElement as any).checked).toBeFalsy();
   });
 
   it("calls editBook on submit", () => {
@@ -339,8 +239,6 @@ describe("EditForm", () => {
     expect(editBook.mock.calls[0][0]).toBe("href");
     expect(editBook.mock.calls[0][1].get("csrf_token").value).toBe("token");
     expect(editBook.mock.calls[0][1].get("title").value).toBe(bookData.title);
-    expect(editBook.mock.calls[0][1].get("fiction").value).toBe("fiction");
-    expect(editBook.mock.calls[0][1].get("audience").value).toBe(bookData.audience);
     expect(editBook.mock.calls[0][1].get("summary").value).toBe(bookData.summary);
   });
 

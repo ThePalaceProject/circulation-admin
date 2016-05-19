@@ -3,6 +3,7 @@ import * as ReactDOM from "react-dom";
 const OPDSBrowser = require("opds-browser");
 import { Navigate } from "../interfaces";
 import { NavigateContext } from "opds-browser/lib/interfaces";
+import { ComputeBreadcrumbs } from "opds-browser/lib/components/Breadcrumbs";
 import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
@@ -11,13 +12,13 @@ import Header from "./Header";
 import { BookLink } from "../interfaces";
 import * as qs from "qs";
 import createRouter from "../createRouter";
+import computeBreadcrumbs from "../computeBreadcrumbs";
 
 export interface RootProps extends React.Props<Root> {
   csrfToken: string;
   collectionUrl: string;
   bookUrl: string;
   tab: string;
-  isTopLevel: boolean;
   bookLinks?: BookLink[];
   navigate: Navigate;
 }
@@ -76,10 +77,10 @@ export default class Root extends React.Component<RootProps, any> {
       <OPDSBrowser
         collectionUrl={this.props.collectionUrl}
         bookUrl={this.props.bookUrl}
-        isTopLevel={this.props.isTopLevel}
         BookDetailsContainer={BookDetailsContainer}
         Header={Header}
         pageTitleTemplate={this.pageTitleTemplate}
+        computeBreadcrumbs={computeBreadcrumbs}
         />
     );
   }

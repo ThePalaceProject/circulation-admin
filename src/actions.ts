@@ -1,9 +1,11 @@
-import { BookData, ComplaintsData } from "./interfaces";
+import { BookData, ComplaintsData, GenreTree, ClassificationData } from "./interfaces";
 import DataFetcher from "opds-browser/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-browser/lib/DataFetcher";
 
 export default class ActionCreator {
   private fetcher: DataFetcher;
+
+  CLEAR_BOOK = "CLEAR_BOOK";
 
   EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -26,9 +28,26 @@ export default class ActionCreator {
   RESOLVE_COMPLAINTS_SUCCESS = "RESOLVE_COMPLAINTS_SUCCESS";
   RESOLVE_COMPLAINTS_FAILURE = "RESOLVE_COMPLAINTS_FAILURE";
 
+  FETCH_GENRE_TREE_REQUEST = "FETCH_GENRE_TREE_REQUEST";
+  FETCH_GENRE_TREE_SUCCESS = "FETCH_GENRE_TREE_SUCCESS";
+  FETCH_GENRE_TREE_FAILURE = "FETCH_GENRE_TREE_FAILURE";
+  LOAD_GENRE_TREE = "LOAD_GENRE_TREE";
+
+  FETCH_CLASSIFICATIONS_REQUEST = "FETCH_CLASSIFICATIONS_REQUEST";
+  FETCH_CLASSIFICATIONS_SUCCESS = "FETCH_CLASSIFICATIONS_SUCCESS";
+  FETCH_CLASSIFICATIONS_FAILURE = "FETCH_CLASSIFICATIONS_FAILURE";
+  LOAD_CLASSIFICATIONS = "LOAD_CLASSIFICATIONS";
+
+  EDIT_CLASSIFICATIONS_REQUEST = "EDIT_CLASSIFICATIONS_REQUEST";
+  EDIT_CLASSIFICATIONS_SUCCESS = "EDIT_CLASSIFICATIONS_SUCCESS";
+  EDIT_CLASSIFICATIONS_FAILURE = "EDIT_CLASSIFICATIONS_FAILURE";
 
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
+  }
+
+  clearBook() {
+    return { type: this.CLEAR_BOOK };
   }
 
   fetchBookAdmin(url: string) {
@@ -303,5 +322,191 @@ export default class ActionCreator {
 
   resolveComplaintsFailure(error?: RequestError) {
     return { type: this.RESOLVE_COMPLAINTS_FAILURE, error };
+  }
+
+  fetchGenreTree(url: string) {
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchGenreTreeRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: GenreTree) => {
+              dispatch(this.fetchGenreTreeSuccess());
+              dispatch(this.loadGenreTree(data));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchGenreTreeFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchGenreTreeFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve genres",
+                url: url
+              };
+              dispatch(this.fetchGenreTreeFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchGenreTreeFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchGenreTreeRequest(url: string) {
+    return { type: this.FETCH_GENRE_TREE_REQUEST, url };
+  }
+
+  fetchGenreTreeSuccess() {
+    return { type: this.FETCH_GENRE_TREE_SUCCESS };
+  }
+
+  fetchGenreTreeFailure(error?: RequestError) {
+    return { type: this.FETCH_GENRE_TREE_FAILURE, error };
+  }
+
+  loadGenreTree(data) {
+    return { type: this.LOAD_GENRE_TREE, data };
+  }
+
+  editClassifications(url: string, data: FormData) {
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.editClassificationsRequest());
+        fetch(url, {
+          method: "POST",
+          body: data,
+          credentials: "same-origin"
+        }).then(response => {
+          if (response.status === 200) {
+            dispatch(this.editClassificationsSuccess());
+            resolve(response);
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.editClassificationsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to edit classifications",
+                url: url
+              };
+              dispatch(this.editClassificationsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.editClassificationsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  editClassificationsRequest() {
+    return { type: this.EDIT_CLASSIFICATIONS_REQUEST };
+  }
+
+  editClassificationsSuccess() {
+    return { type: this.EDIT_CLASSIFICATIONS_SUCCESS };
+  }
+
+  editClassificationsFailure(error?: RequestError) {
+    return { type: this.EDIT_CLASSIFICATIONS_FAILURE, error };
+  }
+
+  fetchClassifications(url: string) {
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchClassificationsRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: { classifications: ClassificationData[] }) => {
+              dispatch(this.fetchClassificationsSuccess());
+              dispatch(this.loadClassifications(data.classifications));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchClassificationsFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchClassificationsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve classifications",
+                url: url
+              };
+              dispatch(this.fetchClassificationsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchClassificationsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchClassificationsRequest(url: string) {
+    return { type: this.FETCH_CLASSIFICATIONS_REQUEST, url };
+  }
+
+  fetchClassificationsSuccess() {
+    return { type: this.FETCH_CLASSIFICATIONS_SUCCESS };
+  }
+
+  fetchClassificationsFailure(error?: RequestError) {
+    return { type: this.FETCH_CLASSIFICATIONS_FAILURE, error };
+  }
+
+  loadClassifications(classifications) {
+    return { type: this.LOAD_CLASSIFICATIONS, classifications };
   }
 }

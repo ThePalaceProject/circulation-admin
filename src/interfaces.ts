@@ -1,10 +1,14 @@
 export interface Navigate {
-  (collectionUrl: string, bookUrl: string, isTopLevel?: boolean, tab?: string): void;
+  (collectionUrl: string, bookUrl: string, tab?: string): void;
 }
 
 export interface LinkData {
   href: string;
   rel: string;
+}
+
+export interface CategoryData {
+  label: string;
 }
 
 export interface BookData {
@@ -18,6 +22,7 @@ export interface BookData {
   refreshLink?: LinkData;
   editLink?: LinkData;
   issuesLink?: LinkData;
+  categories?: string[];
 }
 
 export interface BookLink {
@@ -34,4 +39,30 @@ export interface ComplaintsData {
 
 export interface PostComplaint {
   (url: string, data: { type: string }): Promise<any>;
+}
+
+export type Audience = "Children" | "Young Adult" | "Adult" | "Adults Only";
+
+export type Fiction = "Fiction" | "Nonfiction";
+
+export interface GenreTree {
+  Fiction: {
+    [index: string]: GenreData;
+  };
+  Nonfiction: {
+    [index: string]: GenreData;
+  };
+}
+
+export interface GenreData {
+  name: string;
+  parents: string[];
+  subgenres: string[];
+}
+
+export interface ClassificationData {
+  type: string;
+  name: string;
+  source: string;
+  weight: number;
 }

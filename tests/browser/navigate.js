@@ -7,6 +7,7 @@ var nthBreadcrumbSelector = function(n) {
 module.exports = {
   before: function(browser, done) {
     browser
+      .resizeWindow(1200, 900)
       .signIn()
       .perform(function() {
         done();
@@ -18,9 +19,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(laneSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .url(function(result) {
         var catalogUrl = result.value;
         this.getAttribute(laneSelector, "href", function(result) {
@@ -36,7 +34,7 @@ module.exports = {
               .back()
               .waitForElementNotPresent(loadingSelector, 5000)
               .verify.urlEquals(catalogUrl)
-              .verify.elementNotPresent(breadcrumbSelector);
+              .verify.elementNotPresent(nthBreadcrumbSelector(2));
           });
         });
       });
@@ -48,9 +46,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(bookSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .url(function(result) {
         var catalogUrl = result.value;
         this.getAttribute(bookSelector, "href", function(result) {
@@ -68,23 +63,24 @@ module.exports = {
               .waitForElementNotPresent(loadingSelector, 5000)
               .verify.urlEquals(catalogUrl)
               .verify.elementNotPresent(bookTitleSelector)
-              .verify.elementNotPresent(breadcrumbSelector);
+              .verify.elementNotPresent(nthBreadcrumbSelector(2));
           });
         });
       });
   },
 
-  "navigate to book, click edit tab, refresh page, go back": function(browser) {
+  "navigate to book, click through tabs, refresh page, go back": function(browser) {
     var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
     var bookTitleSelector = "h1.bookDetailsTitle";
     var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
     var titleInputSelector = "input[name='title']";
+    var classificationsTabSelector = "ul.nav-tabs li:nth-child(3) a";
+    var genreInputSelector = "select[name='genre']";
+    var complaintsTabSelector = "ul.nav-tabs li:nth-child(4) a";
+    var complaintInputSelector = "select[name='type']";
 
     browser
       .goHome()
-      .waitForElementVisible(bookSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
         this.getText(bookSelector, function(result) {
@@ -99,10 +95,18 @@ module.exports = {
             .waitForElementPresent(titleInputSelector, 5000)
             .verify.urlContains("tab=edit")
             .verify.value(titleInputSelector, bookTitle)
+            .click(classificationsTabSelector)
+            .waitForElementPresent(genreInputSelector, 5000)
+            .verify.urlContains("tab=classifications")
+            .click(complaintsTabSelector)
+            .waitForElementPresent(complaintInputSelector, 5000)
+            .verify.urlContains("tab=complaints")
             .refresh()
-            .waitForElementPresent(titleInputSelector, 5000)
-            .verify.urlContains("tab=edit")
+            .waitForElementPresent(complaintInputSelector, 5000)
+            .verify.urlContains("tab=complaints")
             .verify.titleContains(bookTitle)
+            .back()
+            .back()
             .back()
             .waitForElementPresent(bookTitleSelector, 5000)
             .verify.urlEquals(bookUrl);
@@ -120,9 +124,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(bookSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
         this.getText(bookSelector, function(result) {
@@ -173,9 +174,6 @@ module.exports = {
 
     browser
       .goHome()
-      .waitForElementVisible(laneSelector, 5000)
-      .waitForElementNotPresent(breadcrumbSelector, 5000)
-      .verify.noError()
       .getAttribute(complaintsSelector, "href", function(result) {
         var complaintsUrl = result.value;
         this.getText(complaintsSelector, function(result) {
@@ -189,7 +187,7 @@ module.exports = {
                 this
                   .click(laneSelector)
                   .waitForElementNotPresent(loadingSelector, 5000)
-                  .waitForElementPresent(breadcrumbSelector, 5000)
+                  .waitForElementPresent(nthBreadcrumbSelector(2), 5000)
                   .assert.noError()
                   .verify.containsText(nthBreadcrumbSelector(1), "All Books")
                   .verify.containsText(nthBreadcrumbSelector(2), laneTitle)
@@ -207,6 +205,57 @@ module.exports = {
             });
           });
         });
+      });
+  },
+
+  "navigate to two different book classifications tabs": function(browser) {
+    var laneSelector = "li:first-child .lane h2 a";
+    var firstBookSelector = "li:nth-child(2) .lane ul.laneBooks li:first-child a.laneBookLink";
+    var secondBookSelector = "li:nth-child(3) .lane ul.laneBooks li:nth-child(2) a.laneBookLink";
+    var bookTitleSelector = "h1.bookDetailsTitle";
+    var classificationsTabSelector = "ul.nav-tabs li:nth-child(3) a";
+    var genreSelector = ".bookGenre:nth-child(2) .bookGenreName"; // 2nd child because first is a label
+
+    browser
+      .goHome()
+      .click(laneSelector)
+      .waitForElementNotPresent(loadingSelector, 5000)
+      .waitForElementPresent(nthBreadcrumbSelector(2), 5000)
+      // scroll 200px above element so that it's not blocked by the header
+      .moveToElement(firstBookSelector, 0, -200)
+      .click(firstBookSelector)
+      .waitForElementNotPresent(loadingSelector, 5000)
+      .waitForElementPresent(bookTitleSelector, 5000)
+      .getText(bookTitleSelector, function(result) {
+        var firstTitle = result.value;
+        this
+          .click(classificationsTabSelector)
+          .waitForElementNotPresent(loadingSelector, 5000)
+          .waitForElementPresent(genreSelector, 5000)
+          .getText(genreSelector, function(result) {
+            var firstGenre = result.value;
+            this
+              .click(nthBreadcrumbSelector(2))
+              .waitForElementNotPresent(loadingSelector, 5000)
+              .waitForElementPresent(secondBookSelector, 5000)
+              // scroll 200px above element so that it's not blocked by the header
+              .moveToElement(secondBookSelector, 0, -200)
+              .click(secondBookSelector)
+              .waitForElementNotPresent(loadingSelector, 5000)
+              .waitForElementPresent(bookTitleSelector, 50000)
+              .getText(bookTitleSelector, function(result) {
+                var secondTitle = result.value;
+                this.assert.notEqual(firstTitle, secondTitle);
+                this
+                  .click(classificationsTabSelector)
+                  .waitForElementNotPresent(loadingSelector, 5000)
+                  .waitForElementPresent(genreSelector, 5000)
+                  .getText(genreSelector, function(result) {
+                    var secondGenre = result.value;
+                    this.assert.notEqual(firstGenre, secondGenre);
+                  });
+              });
+          });
       });
   },
 

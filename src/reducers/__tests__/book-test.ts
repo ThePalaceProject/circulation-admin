@@ -25,11 +25,18 @@ describe("book reducer", () => {
     expect(book(undefined, {})).toEqual(initState);
   });
 
+  it("handles CLEAR_BOOK", () => {
+    let action = { type: "CLEAR_BOOK" };
+    expect(book(fetchedState, action)).toEqual(initState);
+  });
+
   it("handles FETCH_BOOK_ADMIN_REQUEST", () => {
     let action = { type: "FETCH_BOOK_ADMIN_REQUEST", url: "test url" };
+    let oldState = Object.assign({}, initState, { editError: "error" });
     let newState = Object.assign({}, initState, {
       url: "test url",
-      isFetching: true
+      isFetching: true,
+      editError: null
     });
     expect(book(initState, action)).toEqual(newState);
   });

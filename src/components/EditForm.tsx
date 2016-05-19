@@ -19,6 +19,7 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
       value: props.value,
       checked: props.checked
     };
+    this.handleChange = this.handleChange.bind(this);
   }
 
   render() {
@@ -30,7 +31,7 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
         label={this.props.label}
         ref="input"
         value={this.state.value}
-        onChange={this.handleChange.bind(this)}
+        onChange={this.handleChange}
         style={this.props.style}
         checked={this.state.checked}
         >
@@ -55,10 +56,18 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
   handleChange() {
     if (!this.props.onChange || this.props.onChange() !== false) {
       this.setState({
-        value: (this.refs as any).input.getValue(),
-        checked: (this.refs as any).input.getChecked()
+        value: this.getValue(),
+        checked: this.getChecked()
       });
     }
+  }
+
+  getValue() {
+    return (this.refs as any).input.getValue();
+  }
+
+  getChecked() {
+    return (this.refs as any).input.getChecked();
   }
 }
 
@@ -70,14 +79,6 @@ export interface EditFormProps extends BookData {
 }
 
 export default class EditForm extends React.Component<EditFormProps, any> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      audience: this.props.audience,
-      fiction: this.props.fiction
-    }
-  }
-
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)}>
@@ -94,67 +95,6 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           value={this.props.title}
           />
         <EditableInput
-          type="select"
-          disabled={this.props.disabled}
-          name="audience"
-          label="Audience"
-          ref="audience"
-          value={this.props.audience}
-          onChange={this.handleAudienceChange.bind(this)}
-        >
-          <option value="Children">Children</option>
-          <option value="Young Adult">Young Adult</option>
-          <option value="Adult">Adult</option>
-          <option value="Adults Only">Adults Only</option>
-        </EditableInput>
-        { (this.state.audience === "Children" || this.state.audience === "Young Adult") &&
-          <div className="form-group">
-            <label>Target Age Range</label>
-            <div className="form-inline">
-              <EditableInput
-                type="text"
-                label=""
-                disabled={this.props.disabled}
-                name="target_age_min"
-                value={this.props.targetAgeRange[0]}
-                style={{width: "50px"}}
-                />
-              <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
-              <EditableInput
-                type="text"
-                label=""
-                disabled={this.props.disabled}
-                name="target_age_max"
-                value={this.props.targetAgeRange[1]}
-                style={{width: "50px"}}
-                />
-            </div>
-          </div>
-        }
-        <div className="form-group">
-          <label>Fiction Classification</label>
-          <EditableInput
-            type="radio"
-            disabled={this.props.disabled}
-            name="fiction"
-            label="Fiction"
-            value="fiction"
-            ref="fiction"
-            checked={this.state.fiction}
-            onChange={this.handleFictionChange.bind(this)}
-            />
-          <EditableInput
-            type="radio"
-            disabled={this.props.disabled}
-            name="fiction"
-            label="Nonfiction"
-            value="nonfiction"
-            ref="nonfiction"
-            checked={!this.state.fiction}
-            onChange={this.handleNonfictionChange.bind(this)}
-            />
-        </div>
-        <EditableInput
           style={{ height: "300px" }}
           type="textarea"
           disabled={this.props.disabled}
@@ -169,43 +109,6 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           />
       </form>
     );
-  }
-
-  componentWillReceiveProps(props) {
-    if (props.audience && props.audience !== this.props.audience) {
-      this.setState({
-        audience: props.audience
-      });
-    }
-    if (props.fiction !== this.props.fiction) {
-      this.setState({
-        fiction: props.fiction
-      });
-    }
-  }
-
-  handleAudienceChange() {
-    let audience = (this.refs as any).audience;
-    let value = (audience.refs as any).input.getValue();
-    this.setState({
-      audience: value
-    });
-  }
-
-  handleFictionChange() {
-    let fiction = (this.refs as any).fiction;
-    let value = (fiction.refs as any).input.getChecked();
-    this.setState({
-      fiction: value
-    });
-  }
-
-  handleNonfictionChange() {
-    let nonfiction = (this.refs as any).nonfiction;
-    let value = (nonfiction.refs as any).input.getChecked();
-    this.setState({
-      fiction: !value
-    });
   }
 
   save(event) {

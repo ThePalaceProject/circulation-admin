@@ -358,4 +358,240 @@ describe("actions", () => {
       }).catch(err => done.fail(err));
     });
   });
+
+  describe("fetchGenreTree", () => {
+    let genresUrl = "http://example.com/genres";
+
+    it("dispatches request, load, and success", (done) => {
+      let dispatch = jest.genMockFunction();
+      let genresData = "test data";
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 200,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve(genresData);
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchGenreTree(genresUrl)(dispatch).then(data => {
+        expect(dispatch.mock.calls.length).toBe(3);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRE_TREE_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRE_TREE_SUCCESS);
+        expect(dispatch.mock.calls[2][0].type).toBe(actions.LOAD_GENRE_TREE);
+        expect(data).toBe(genresData);
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches server failure", (done) => {
+      let dispatch = jest.genMockFunction();
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 500,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchGenreTree(genresUrl)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRE_TREE_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRE_TREE_FAILURE);
+        expect(err).toEqual({
+          status: 500,
+          response: "test error detail",
+          url: genresUrl
+        });
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches network failure", (done) => {
+      let dispatch = jest.genMockFunction();
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        reject({
+          message: "network error"
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchGenreTree(genresUrl)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_GENRE_TREE_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_GENRE_TREE_FAILURE);
+        expect(err).toEqual({
+          status: null,
+          response: "network error",
+          url: genresUrl
+        });
+        done();
+      });
+    });
+  });
+
+  describe("editClassifications", () => {
+    let editClassificationsUrl = "http://example.com/editClassifications"
+    let dispatch;
+    let formData = new FormData();
+    let newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
+    formData.append("csrf_token", "token");
+    newGenreTree.forEach(genre => formData.append("genres", genre));
+
+    beforeEach(() => {
+      dispatch = jest.genMockFunction();
+    });
+
+    it("dispatches request and success", (done) => {
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((update, reject) => {
+        update({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      actions.editClassifications(editClassificationsUrl, formData)(dispatch).then(response => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_CLASSIFICATIONS_SUCCESS);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(fetchMock.mock.calls[0][0]).toBe(editClassificationsUrl);
+        expect(fetchMock.mock.calls[0][1].method).toBe("POST");
+        expect(fetchMock.mock.calls[0][1].body).toBe(formData);
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches failure on server failure", (done) => {
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((update, reject) => {
+        update({
+          status: 500,
+          json: () => new Promise<any>((update, reject) => {
+            update({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.editClassifications(editClassificationsUrl, formData)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_CLASSIFICATIONS_FAILURE);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(err).toEqual({
+          status: 500,
+          response: "test error detail",
+          url: editClassificationsUrl
+        });
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches failure on network failure", (done) => {
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((update, reject) => {
+        reject({ message : "test error" });
+      }));
+      fetch = fetchMock;
+
+      actions.editClassifications(editClassificationsUrl, formData)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.EDIT_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.EDIT_CLASSIFICATIONS_FAILURE);
+        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(err).toEqual({
+          status: null,
+          response: "test error",
+          url: editClassificationsUrl
+        });
+        done();
+      }).catch(err => done.fail(err));
+    });
+  });
+
+  describe("fetchClassifications", () => {
+    let classificationsUrl = "http://example.com/classifications";
+
+    it("dispatches request, load, and success", (done) => {
+      let dispatch = jest.genMockFunction();
+      let classificationsData = {
+        book: { id: "test id" },
+        classifications: { "test-type": 1 }
+      };
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 200,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve(classificationsData);
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchClassifications(classificationsUrl)(dispatch).then(data => {
+        expect(dispatch.mock.calls.length).toBe(3);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_CLASSIFICATIONS_SUCCESS);
+        expect(dispatch.mock.calls[2][0].type).toBe(actions.LOAD_CLASSIFICATIONS);
+        expect(data).toBe(classificationsData);
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches server failure", (done) => {
+      let dispatch = jest.genMockFunction();
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 500,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchClassifications(classificationsUrl)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_CLASSIFICATIONS_FAILURE);
+        expect(err).toEqual({
+          status: 500,
+          response: "test error detail",
+          url: classificationsUrl
+        });
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches network failure", (done) => {
+      let dispatch = jest.genMockFunction();
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        reject({
+          message: "network error"
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchClassifications(classificationsUrl)(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_CLASSIFICATIONS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_CLASSIFICATIONS_FAILURE);
+        expect(err).toEqual({
+          status: null,
+          response: "network error",
+          url: classificationsUrl
+        });
+        done();
+      });
+    });
+  });
 });

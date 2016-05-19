@@ -1,10 +1,9 @@
 jest.autoMockOff();
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
+import { shallow } from "enzyme";
 
-import ConnectedEditor, { Editor } from "../Editor";
+import { Editor } from "../Editor";
 import ButtonForm from "../ButtonForm";
 import EditForm from "../EditForm";
 import ErrorMessage from "../ErrorMessage";
@@ -14,8 +13,12 @@ describe("Editor", () => {
     let permalink = "works/1234";
     let fetchBook = jest.genMockFunction();
 
-    let editor = TestUtils.renderIntoDocument(
-      <Editor bookUrl={permalink} fetchBook={fetchBook} csrfToken={"token"} />
+    let wrapper = shallow(
+      <Editor
+        bookUrl={permalink}
+        fetchBook={fetchBook}
+        csrfToken={"token"}
+        />
     );
 
     expect(fetchBook.mock.calls.length).toBe(1);
@@ -27,16 +30,15 @@ describe("Editor", () => {
     let newPermalink = "works/5555";
     let fetchBook = jest.genMockFunction();
     let element = document.createElement("div");
-
-    ReactDOM.render(
-      <Editor bookUrl={permalink} fetchBook={fetchBook} csrfToken={"token"} />,
-      element
+    let wrapper = shallow(
+      <Editor
+        bookUrl={permalink}
+        fetchBook={fetchBook}
+        csrfToken={"token"}
+        />
     );
-
-    ReactDOM.render(
-      <Editor bookUrl={newPermalink} fetchBook={fetchBook} csrfToken={"token"} />,
-      element
-    );
+    wrapper.setProps({ bookUrl: newPermalink });
+    wrapper.update();
 
     expect(fetchBook.mock.calls.length).toBe(2);
     expect(fetchBook.mock.calls[1][0]).toBe("admin/works/5555");
@@ -44,12 +46,17 @@ describe("Editor", () => {
 
   it("shows title", () => {
     let fetchBook = jest.genMockFunction();
-    let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title" }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
+    let wrapper = shallow(
+      <Editor
+        bookData={{ title: "title" }}
+        bookUrl="url"
+        csrfToken="token"
+        fetchBook={fetchBook}
+        />
     );
 
-    let header = TestUtils.findRenderedDOMComponentWithTag(editor, "h2");
-    expect(header.textContent).toContain("title");
+    let header = wrapper.find("h2");
+    expect(header.text()).toContain("title");
   });
 
   it("shows button form for hide link", () => {
@@ -57,13 +64,19 @@ describe("Editor", () => {
     let hideLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/hide"
     };
-    let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", hideLink: hideLink }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
+    let wrapper = shallow(
+      <Editor
+        bookData={{ title: "title", hideLink: hideLink }}
+        bookUrl="url"
+        csrfToken="token"
+        fetchBook={fetchBook}
+        />
     );
+    let hide = (wrapper.instance() as any).hide;
 
-    let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
-    expect(buttonForm.props.link).toEqual("href");
-    expect(buttonForm.props.label).toEqual("Hide");
+    let form = wrapper.find(ButtonForm);
+    expect(form.props().label).toBe("Hide");
+    expect(form.props().onClick).toBe(hide);
   });
 
   it("shows button form for restore link", () => {
@@ -71,13 +84,19 @@ describe("Editor", () => {
     let restoreLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/restore"
     };
-    let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", restoreLink: restoreLink }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
+    let wrapper = shallow(
+      <Editor
+        bookData={{ title: "title", restoreLink: restoreLink }}
+        bookUrl="url"
+        csrfToken="token"
+        fetchBook={fetchBook}
+        />
     );
+    let restore = (wrapper.instance() as any).restore;
 
-    let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
-    expect(buttonForm.props.link).toEqual("href");
-    expect(buttonForm.props.label).toEqual("Restore");
+    let form = wrapper.find(ButtonForm);
+    expect(form.props().label).toBe("Restore");
+    expect(form.props().onClick).toBe(restore);
   });
 
   it("shows button form for refresh link", () => {
@@ -85,13 +104,19 @@ describe("Editor", () => {
     let refreshLink = {
       href: "href", rel: "http://librarysimplified/terms/rel/refresh"
     };
-    let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", refreshLink: refreshLink }} bookUrl="url" csrfToken="token" fetchBook={fetchBook} />
+    let wrapper = shallow(
+      <Editor
+        bookData={{ title: "title", refreshLink: refreshLink }}
+        bookUrl="url"
+        csrfToken="token"
+        fetchBook={fetchBook}
+        />
     );
+    let refresh = (wrapper.instance() as any).refreshMetadata;
 
-    let buttonForm = TestUtils.findRenderedComponentWithType(editor, ButtonForm);
-    expect(buttonForm.props.link).toEqual("href");
-    expect(buttonForm.props.label).toEqual("Refresh Metadata");
+    let form = wrapper.find(ButtonForm);
+    expect(form.props().label).toBe("Refresh Metadata");
+    expect(form.props().onClick).toBe(refresh);
   });
 
   it("shows fetch error message", () => {
@@ -101,14 +126,19 @@ describe("Editor", () => {
       response: "response",
       url: ""
     };
-    let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title" }} bookUrl="url" csrfToken="token" fetchError={fetchError} fetchBook={fetchBook} />
+    let wrapper = shallow(
+      <Editor
+        bookData={{ title: "title" }}
+        bookUrl="url" csrfToken="token"
+        fetchError={fetchError}
+        fetchBook={fetchBook}
+        />
     );
 
-    let editFormComponents = TestUtils.scryRenderedComponentsWithType(editor, EditForm);
-    expect(editFormComponents.length).toEqual(0);
-    let errorMessageComponent = TestUtils.findRenderedComponentWithType(editor, ErrorMessage);
-    expect(errorMessageComponent.props.error.status).toEqual(500);
+    let editForm = wrapper.find(EditForm);
+    expect(editForm.length).toEqual(0);
+    let error = wrapper.find(ErrorMessage);
+    expect(error.props().error).toBe(fetchError);
   });
 
   it("shows edit error message with form", () => {
@@ -121,13 +151,19 @@ describe("Editor", () => {
     let editLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
     };
-    let editor = TestUtils.renderIntoDocument(
-      <Editor bookData={{ title: "title", editLink: editLink }} bookUrl="url" csrfToken="token" editError={editError} fetchBook={fetchBook} />
+    let wrapper = shallow(
+      <Editor
+        bookData={{ title: "title", editLink: editLink }}
+        bookUrl="url"
+        csrfToken="token"
+        editError={editError}
+        fetchBook={fetchBook}
+        />
     );
 
-    let editFormComponents = TestUtils.scryRenderedComponentsWithType(editor, EditForm);
-    expect(editFormComponents.length).toEqual(1);
-    let errorMessageComponent = TestUtils.findRenderedComponentWithType(editor, ErrorMessage);
-    expect(errorMessageComponent.props.error.status).toEqual(500);
+    let editForm = wrapper.find(EditForm);
+    expect(editForm.length).toEqual(1);
+    let error = wrapper.find(ErrorMessage);
+    expect(error.props().error).toBe(editError);
   });
 });

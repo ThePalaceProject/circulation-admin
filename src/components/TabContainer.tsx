@@ -1,10 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import editorAdapter from "../editorAdapter";
+import DataFetcher from "opds-browser/lib/DataFetcher";
+import ActionCreator from "../actions";
 import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
+import Classifications from "./Classifications";
 import Complaints from "./Complaints";
-import ActionCreator from "../actions";
 import { BookData, Navigate } from "../interfaces";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
@@ -17,6 +20,7 @@ export interface TabContainerProps extends React.Props<TabContainerProps> {
   navigate: Navigate;
   refreshBrowser: () => Promise<any>;
   complaintsCount?: number;
+  clearBook?: () => void;
 }
 
 export class TabContainer extends React.Component<TabContainerProps, any> {
@@ -39,6 +43,15 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             refreshBrowser={this.props.refreshBrowser}
             />
         </Tab>
+        <Tab eventKey={"classifications"} title="Classifications">
+          <Classifications
+            store={this.props.store}
+            csrfToken={this.props.csrfToken}
+            bookUrl={this.props.bookUrl}
+            book={this.props.bookData}
+            refreshBrowser={this.props.refreshBrowser}
+            />
+        </Tab>
         <Tab eventKey={"complaints"} title={complaintsTitle}>
           <Complaints
             store={this.props.store}
@@ -52,9 +65,19 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     );
   }
 
+  componentWillUnmount() {
+    this.props.clearBook();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.bookUrl !== this.props.bookUrl) {
+      this.props.clearBook();
+    }
+  }
+
   handleSelect(tab) {
     if (this.props.navigate) {
-      this.props.navigate(this.props.collectionUrl, this.props.bookUrl, false, tab);
+      this.props.navigate(this.props.collectionUrl, this.props.bookUrl, tab);
     }
   }
 }
@@ -76,10 +99,18 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  let fetcher = new DataFetcher(null, editorAdapter);
+  let actions = new ActionCreator(fetcher);
+  return {
+    clearBook: () => dispatch(actions.clearBook())
+  };
+}
+
 let connectOptions = { withRef: true, pure: true };
 const ConnectedTabContainer = connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
   null,
   connectOptions
 )(TabContainer);

@@ -1,6 +1,6 @@
 exports.command = function() {
   return this
-    .goHome()
+    .url(this.globals.homeUrl)
     .waitForElementVisible("input#Email", 1000)
     .setValue("input#Email", this.globals.username)
     .click("input#next")

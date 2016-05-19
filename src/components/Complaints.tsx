@@ -67,18 +67,15 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                 <tr key={type} className="complaint">
                   <td className="complaintType">{this.readableComplaintType(type)}</td>
                   <td className="complaintCount">{this.props.complaints[type]}</td>
-                  <td>
+                  <td style={{ textAlign: "right" }}>
                     <ButtonForm
-                      className="resolveComplaintsForm"
-                      bsSize={"small"}
-                      csrfToken={this.props.csrfToken}
-                      data={{ type }}
-                      disabled={this.props.isFetching}
+                      className="btn-sm"
+                      type="submit"
                       label="Resolve"
-                      link={this.resolveComplaintsUrl()}
-                      submit={this.resolve}
-                      refresh={this.refresh}
+                      disabled={this.props.isFetching}
+                      onClick={() => this.resolve(type)}
                       />
+
                   </td>
                 </tr>
               ) }
@@ -128,20 +125,19 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
     this.props.refreshBrowser();
   };
 
-  resolve(url: string, data: FormData) {
+  resolve(type: string) {
     if (window.confirm("Are you sure you want to resolve all complaints of this type?")) {
-      return this.props.resolveComplaints(url, data);
-    } else {
-      return new Promise((resolve, reject) => {
-        reject();
-      })
+      let url = this.resolveComplaintsUrl();
+      let data = new FormData();
+      data.append("csrf_token", this.props.csrfToken);
+      data.append("type", type);
+      return this.props.resolveComplaints(url, data).then(this.refresh);
     }
   }
 }
 
 function mapStateToProps(state, ownProps) {
   return {
-    bookData: state.editor.book.data,
     complaints: state.editor.complaints.data,
     isFetching: state.editor.complaints.isFetching,
     fetchError: state.editor.complaints.fetchError

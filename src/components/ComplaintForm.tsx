@@ -13,6 +13,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
   constructor(props) {
     super(props);
     this.state = { errors: [] };
+    this.post = this.post.bind(this);
   }
 
   render(): JSX.Element {
@@ -37,7 +38,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
         { this.state.errors.map((error, i) =>
           <div className="complaintFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
         ) }
-        <form onSubmit={this.post.bind(this)} className="form-inline">
+        <form onSubmit={this.post} className="form-inline">
           <Input ref="type" type="select" name="type" placeholder="">
             <option value="">select type</option>
             { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
