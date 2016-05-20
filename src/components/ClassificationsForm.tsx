@@ -150,11 +150,17 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.book) {
+    if (this.bookChanged(newProps.book)) {
       this.setState({ audience: newProps.book.audience });
       this.setState({ fiction: newProps.book.fiction });
       this.setState({ genres: this.bookGenres(newProps.book) });
     }
+  }
+
+  bookChanged(newBook: BookData): boolean {
+    return newBook.audience !== this.props.book.audience ||
+           newBook.fiction !== this.props.book.fiction ||
+           newBook.categories.sort() !== this.props.book.categories.sort()
   }
 
   bookGenres(book: BookData) {
