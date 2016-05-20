@@ -250,17 +250,27 @@ describe("ClassificationsForm", () => {
       expect(editClassifications.mock.calls[0][0]).toEqual(formData);
     });
 
-    it("updates state upon receiving new props", () => {
+    it("updates state upon receiving new state-related props", () => {
       let newBookData = Object.assign({}, bookData, {
         audience: "Adult",
         fiction: false,
-        categories: ["Urban Fantasy"]
+        categories: ["Cooking"]
       });
       wrapper.setProps({ book: newBookData });
 
       expect(wrapper.state("audience")).toBe("Adult");
       expect(wrapper.state("fiction")).toBe(false);
-      expect(wrapper.state("genres")).toEqual(["Urban Fantasy"]);
+      expect(wrapper.state("genres")).toEqual(["Cooking"]);
+    });
+
+    it("doesn't update state upoen receiving new state-unrelated props", () => {
+      // state updated with new form inputs
+      wrapper.setState({ fiction: false, genres: ["Cooking"] });
+      // form submitted, disabling form
+      wrapper.setProps({ disabled: true });
+      // state should not change back to earlier book props
+      expect(wrapper.state("fiction")).toBe(false);
+      expect(wrapper.state("genres")).toEqual(["Cooking"]);
     });
   });
 })
