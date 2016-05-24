@@ -222,13 +222,13 @@ describe("EditForm", () => {
 
     it("shows editable input with series", () => {
       let input = editableInputByName("series");
-      expect(input.props().label).toBe(null);
+      expect(input.props().label).toBeFalsy();
       expect(input.props().value).toBe("series");
     });
 
     it("shows editable input with series position", () => {
       let input = editableInputByName("series_position");
-      expect(input.props().label).toBe(null);
+      expect(input.props().label).toBeFalsy();
       expect(input.props().value).toBe("3");
     });
 

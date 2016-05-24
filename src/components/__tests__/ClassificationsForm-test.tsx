@@ -54,11 +54,11 @@ describe("ClassificationsForm", () => {
 
     it("shows editable inputs with min and max target age", () => {
       let input = editableInputByName("target_age_min");
-      expect(input.props().label).toBe("");
+      expect(input.props().label).toBeFalsy();
       expect(input.props().value).toBe("12");
 
       input = editableInputByName("target_age_max");
-      expect(input.props().label).toBe("");
+      expect(input.props().label).toBeFalsy();
       expect(input.props().value).toBe("16");
     });
 
