@@ -13,6 +13,7 @@ export interface CategoryData {
 
 export interface BookData {
   title: string;
+  subtitle?: string;
   fiction?: boolean;
   audience?: string;
   targetAgeRange?: string[];
@@ -23,6 +24,8 @@ export interface BookData {
   editLink?: LinkData;
   issuesLink?: LinkData;
   categories?: string[];
+  series?: string;
+  seriesPosition?: string;
 }
 
 export interface BookLink {

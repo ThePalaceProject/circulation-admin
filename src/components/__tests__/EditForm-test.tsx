@@ -5,6 +5,7 @@ import { shallow, mount } from "enzyme";
 
 import EditForm, { EditableInput } from "../EditForm";
 import { Input, ButtonInput } from "react-bootstrap";
+import { BookData } from "../../interfaces";
 
 describe("EditableInput", () => {
   it("shows label from props", () => {
@@ -170,12 +171,15 @@ describe("EditableInput", () => {
 });
 
 describe("EditForm", () => {
-  let bookData = {
+  let bookData: BookData = {
     title: "title",
+    subtitle: "subtitle",
     fiction: true,
     audience: "Young Adult",
     targetAgeRange: ["12", "16"],
     summary: "summary",
+    series: "series",
+    seriesPosition: "3",
     editLink: {
       href: "href",
       rel: "edit"
@@ -210,6 +214,24 @@ describe("EditForm", () => {
       expect(input.props().value).toBe("title");
     });
 
+    it("shows editable input with subtitle", () => {
+      let input = editableInputByName("subtitle");
+      expect(input.props().label).toBe("Subtitle");
+      expect(input.props().value).toBe("subtitle");
+    });
+
+    it("shows editable input with series", () => {
+      let input = editableInputByName("series");
+      expect(input.props().label).toBe(null);
+      expect(input.props().value).toBe("series");
+    });
+
+    it("shows editable input with series position", () => {
+      let input = editableInputByName("series_position");
+      expect(input.props().label).toBe(null);
+      expect(input.props().value).toBe("3");
+    });
+
     it("shows editable input with summary", () => {
       let input = editableInputByName("summary");
       expect(input.props().label).toBe("Summary");
@@ -239,6 +261,9 @@ describe("EditForm", () => {
     expect(editBook.mock.calls[0][0]).toBe("href");
     expect(editBook.mock.calls[0][1].get("csrf_token").value).toBe("token");
     expect(editBook.mock.calls[0][1].get("title").value).toBe(bookData.title);
+    expect(editBook.mock.calls[0][1].get("subtitle").value).toBe(bookData.subtitle);
+    expect(editBook.mock.calls[0][1].get("series").value).toBe(bookData.series);
+    expect(editBook.mock.calls[0][1].get("series_position").value).toBe(bookData.seriesPosition);
     expect(editBook.mock.calls[0][1].get("summary").value).toBe(bookData.summary);
   });
 
