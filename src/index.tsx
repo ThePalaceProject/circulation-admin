@@ -2,8 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Router, Route, browserHistory } from "react-router";
 import Root from "./components/Root";
-const OPDSBrowser = require("opds-browser");
-import Editor from "./components/Editor";
+import Dashboard from "./components/Dashboard";
 import * as qs from "qs";
 
 require("bootstrap/dist/css/bootstrap.css");
@@ -13,77 +12,54 @@ class CirculationWeb {
 
   constructor(config) {
     let div = document.createElement("div");
-    div.id = "opds-browser";
+    div.id = "opds-catalog";
     document.getElementsByTagName("body")[0].appendChild(div);
 
-    function getParam(name) {
-      let match = RegExp("[?&]" + name + "=([^&]*)").exec(window.location.search);
-      return match && decodeURIComponent(match[1].replace(/\+/g, " "));
-    };
-
-    function serializeParams(params) {
-      if (Object.keys(params).length === 0) {
-        return "";
+    let editorPath = "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
+    let EditorHandler = React.createClass({
+      render: function() {
+        let { collectionUrl, bookUrl, tab } = this.props.params;
+        let mergedProps = Object.assign(config, {
+          collectionUrl: collectionUrl ? decodeURIComponent(collectionUrl) : (config.homeUrl || null),
+          bookUrl: bookUrl ? decodeURIComponent(bookUrl) : null,
+          tab: tab || null
+        });
+        return <Root {...mergedProps} />;
       }
+    });
 
-      return "?" + qs.stringify(params, { skipNulls: true });
+    let pathFor = (collectionUrl: string, bookUrl: string) => {
+      var path = "/admin/web";
+      path += collectionUrl ? `/collection/${encodeURIComponent(collectionUrl)}` : "";
+      path += bookUrl ? `/book/${encodeURIComponent(bookUrl)}` : "";
+      return path;
     };
 
-    function historyArgs(collectionUrl: string, bookUrl: string, tab: string) {
-      let params = {
-        collection: collectionUrl,
-        book: bookUrl,
-        tab: tab
-      };
-
-      return [params, "", serializeParams(params)];
-    }
-
-    window.onpopstate = (event) => {
-      let collection = null,
-          book = null,
-          tab = null;
-
-      if (event.state) {
-        collection = event.state.collection;
-        book = event.state.book;
-        tab = event.state.tab || "details";
+    let DashboardHandler = React.createClass({
+      childContextTypes: {
+        pathFor: React.PropTypes.func.isRequired
+      },
+      getChildContext: function() {
+        return {
+          pathFor: pathFor
+        };
+      },
+      render: function() {
+        return <Dashboard />;
       }
+    });
 
-      render(collection, book, tab);
-    };
-
-    function pushHistory(collectionUrl: string, bookUrl: string, tab: string) {
-      window.history.pushState.apply(window.history, historyArgs(collectionUrl, bookUrl, tab));
-    };
-
-    function navigate(collectionUrl: string, bookUrl: string, tab?: string) {
-      pushHistory(collectionUrl, bookUrl, tab);
-      render(collectionUrl, bookUrl, tab);
-    }
-
-    function render(collectionUrl: string, bookUrl: string, tab: string) {
+    function render() {
       ReactDOM.render(
-        <Root
-          csrfToken={config.csrfToken}
-          collectionUrl={collectionUrl}
-          bookUrl={bookUrl}
-          tab={tab}
-          navigate={navigate}
-          />,
-        document.getElementById("opds-browser")
+        <Router history={browserHistory}>
+          <Route path={editorPath} component={EditorHandler} />
+          <Route path="/admin/web/dashboard" component={DashboardHandler} />
+        </Router>,
+        document.getElementById("opds-catalog")
       );
     }
 
-    let startCollection = getParam("collection") || config.homeUrl;
-    let startBook = getParam("book");
-    let startTab = getParam("tab");
-
-    render(startCollection, startBook, startTab);
-
-    if (startCollection || startBook || startTab) {
-      window.history.replaceState.apply(window.history, historyArgs(startCollection, startBook, startTab));
-    }
+    render();
   }
 }
 

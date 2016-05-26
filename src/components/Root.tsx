@@ -19,10 +19,9 @@ export interface RootProps extends React.Props<Root> {
   collectionUrl: string;
   bookUrl: string;
   tab: string;
-  bookLinks?: BookLink[];
 }
 
-export interface RootContext extends BookDetailsContainerContext {
+export interface RootContext extends BookDetailsContainerContext, NavigateContext {
 }
 
 export default class Root extends React.Component<RootProps, any> {
@@ -43,9 +42,9 @@ export default class Root extends React.Component<RootProps, any> {
     };
 
     this.pathFor = (collectionUrl: string, bookUrl: string) => {
-      var path = "/";
-      path += collectionUrl ? `collection/${encodeURIComponent(collectionUrl)}/` : "";
-      path += bookUrl ? `book/${encodeURIComponent(bookUrl)}/` : "";
+      var path = "/admin/web";
+      path += collectionUrl ? `/collection/${encodeURIComponent(collectionUrl)}` : "";
+      path += bookUrl ? `/book/${encodeURIComponent(bookUrl)}` : "";
       return path;
     };
   }
@@ -54,13 +53,15 @@ export default class Root extends React.Component<RootProps, any> {
     csrfToken: React.PropTypes.string.isRequired,
     tab: React.PropTypes.string,
     editorStore: React.PropTypes.object.isRequired,
+    pathFor: React.PropTypes.func.isRequired
   };
 
   getChildContext(): RootContext {
     return {
       csrfToken: this.props.csrfToken,
       tab: this.props.tab,
-      editorStore: this.editorStore
+      editorStore: this.editorStore,
+      pathFor: this.pathFor
     };
   }
 

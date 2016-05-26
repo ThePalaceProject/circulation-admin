@@ -69,3 +69,17 @@ export interface ClassificationData {
   source: string;
   weight: number;
 }
+
+export interface CirculationEventData {
+  book: {
+    title: string;
+    data_source: string;
+    identifier: string;
+    identifier_type: string;
+  };
+  circulationEvent: {
+    type: string;
+    start: string;
+    end: string;
+  }
+}

@@ -42,6 +42,11 @@ export default class ActionCreator {
   EDIT_CLASSIFICATIONS_SUCCESS = "EDIT_CLASSIFICATIONS_SUCCESS";
   EDIT_CLASSIFICATIONS_FAILURE = "EDIT_CLASSIFICATIONS_FAILURE";
 
+  FETCH_CIRCULATION_EVENTS_REQUEST = "FETCH_CIRCULATION_EVENTS_REQUEST";
+  FETCH_CIRCULATION_EVENTS_SUCCESS = "FETCH_CIRCULATION_EVENTS_SUCCESS";
+  FETCH_CIRCULATION_EVENTS_FAILURE = "FETCH_CIRCULATION_EVENTS_FAILURE";
+  LOAD_CIRCULATION_EVENTS = "LOAD_CIRCULATION_EVENTS";
+
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
   }
@@ -508,5 +513,37 @@ export default class ActionCreator {
 
   loadClassifications(classifications) {
     return { type: this.LOAD_CLASSIFICATIONS, classifications };
+  }
+
+  fetchCirculationEvents(url: string) {
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchCirculationEventsRequest(url));
+        this.fetcher.fetchOPDSData(url).then((data: BookData) => {
+          dispatch(this.fetchCirculationEventsSuccess());
+          dispatch(this.loadCirculationEvents(data, url));
+          resolve(data);
+        }).catch((err: RequestError) => {
+          dispatch(this.fetchCirculationEventsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchCirculationEventsRequest(url: string) {
+    return { type: this.FETCH_CIRCULATION_EVENTS_REQUEST, url };
+  }
+
+  fetchCirculationEventsSuccess() {
+    return { type: this.FETCH_CIRCULATION_EVENTS_SUCCESS };
+  }
+
+  fetchCirculationEventsFailure(error?: RequestError) {
+    return { type: this.FETCH_CIRCULATION_EVENTS_FAILURE, error };
+  }
+
+  loadCirculationEvents(data: BookData, url: string) {
+    return { type: this.LOAD_CIRCULATION_EVENTS, data, url };
   }
 }
