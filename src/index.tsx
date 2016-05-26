@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { Router, Route, browserHistory } from "react-router";
 import Root from "./components/Root";
+const OPDSBrowser = require("opds-browser");
 import Editor from "./components/Editor";
 import * as qs from "qs";
 
@@ -11,7 +13,7 @@ class CirculationWeb {
 
   constructor(config) {
     let div = document.createElement("div");
-    div.id = "opds-catalog";
+    div.id = "opds-browser";
     document.getElementsByTagName("body")[0].appendChild(div);
 
     function getParam(name) {
@@ -69,7 +71,7 @@ class CirculationWeb {
           tab={tab}
           navigate={navigate}
           />,
-        document.getElementById("opds-catalog")
+        document.getElementById("opds-browser")
       );
     }
 

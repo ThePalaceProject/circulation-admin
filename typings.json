@@ -9,6 +9,8 @@
     "react-bootstrap": "github:NYPL-Simplified/DefinitelyTyped/react-bootstrap/react-bootstrap.d.ts#7d462d047559bc2587224e1ecdc3a043aa3e2626",
     "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "react-redux": "github:DefinitelyTyped/DefinitelyTyped/react-redux/react-redux.d.ts#4169370da25a366a4e44090db92916bc0106b443",
+    "react-router": "registry:dt/react-router#2.0.0+20160501155536",
+    "react-router/history": "registry:dt/react-router/history#2.0.0+20160316155526",
     "redux": "registry:dt/redux#3.3.1+20160326112656",
     "redux-thunk": "github:DefinitelyTyped/DefinitelyTyped/redux-thunk/redux-thunk.d.ts#75249b97104d00c1ca2451ac29369009a5f2b101",
     "whatwg-fetch": "github:DefinitelyTyped/DefinitelyTyped/whatwg-fetch/whatwg-fetch.d.ts#91d963959f52ba696d74627d92bbb32350549993"

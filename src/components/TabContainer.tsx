@@ -17,7 +17,6 @@ export interface TabContainerProps extends React.Props<TabContainerProps> {
   store: Redux.Store;
   csrfToken: string;
   tab: string;
-  navigate: Navigate;
   refreshCatalog: () => Promise<any>;
   complaintsCount?: number;
   clearBook?: () => void;
@@ -76,9 +75,9 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
   }
 
   handleSelect(tab) {
-    if (this.props.navigate) {
-      this.props.navigate(this.props.collectionUrl, this.props.bookUrl, tab);
-    }
+    // if (this.props.navigate) {
+    //   this.props.navigate(this.props.collectionUrl, this.props.bookUrl, tab);
+    // }
   }
 }
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { Router, Route, browserHistory } from "react-router";
 const OPDSCatalog = require("opds-web-client");
-import { Navigate } from "../interfaces";
 import { NavigateContext } from "opds-web-client/lib/interfaces";
 import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
 import buildStore from "../store";
@@ -20,10 +20,9 @@ export interface RootProps extends React.Props<Root> {
   bookUrl: string;
   tab: string;
   bookLinks?: BookLink[];
-  navigate: Navigate;
 }
 
-export interface RootContext extends BookDetailsContainerContext, NavigateContext {
+export interface RootContext extends BookDetailsContainerContext {
 }
 
 export default class Root extends React.Component<RootProps, any> {
@@ -43,32 +42,25 @@ export default class Root extends React.Component<RootProps, any> {
       return title + (details ? " - " + details : "");
     };
 
-    this.pathFor = (collection, book) => {
-      if (collection || book) {
-        return "?" + qs.stringify({ collection, book }, { skipNulls:  true });
-      } else {
-        return null;
-      }
+    this.pathFor = (collectionUrl: string, bookUrl: string) => {
+      var path = "/";
+      path += collectionUrl ? `collection/${encodeURIComponent(collectionUrl)}/` : "";
+      path += bookUrl ? `book/${encodeURIComponent(bookUrl)}/` : "";
+      return path;
     };
   }
 
   static childContextTypes = {
     csrfToken: React.PropTypes.string.isRequired,
     tab: React.PropTypes.string,
-    navigate: React.PropTypes.func.isRequired,
     editorStore: React.PropTypes.object.isRequired,
-    pathFor: React.PropTypes.func.isRequired,
-    router: React.PropTypes.object.isRequired
   };
 
   getChildContext(): RootContext {
     return {
       csrfToken: this.props.csrfToken,
       tab: this.props.tab,
-      editorStore: this.editorStore,
-      navigate: this.props.navigate,
-      pathFor: this.pathFor,
-      router: createRouter(this.props.navigate)
+      editorStore: this.editorStore
     };
   }
 
