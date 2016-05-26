@@ -1,13 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import editorAdapter from "../editorAdapter";
-import DataFetcher from "opds-browser/lib/DataFetcher";
+import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable  from "./ClassificationsTable";
 import { BookData, Audience, Fiction, GenreTree, ClassificationData } from "../interfaces";
-import { FetchErrorData } from "opds-browser/lib/interfaces";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ClassificationsProps {
   // from parent
@@ -15,7 +15,7 @@ export interface ClassificationsProps {
   bookUrl: string;
   book: BookData;
   csrfToken: string;
-  refreshBrowser: () => Promise<any>;
+  refreshCatalog: () => Promise<any>;
 
   // from store
   bookAdminUrl?: string;
@@ -96,7 +96,7 @@ export class Classifications extends React.Component<ClassificationsProps, any> 
   refresh() {
     this.props.fetchBook(this.props.bookAdminUrl);
     this.props.fetchClassifications(this.classificationsUrl());
-    this.props.refreshBrowser();
+    this.props.refreshCatalog();
   }
 
   editClassifications(data: FormData) {

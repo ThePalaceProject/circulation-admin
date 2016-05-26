@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-const OPDSBrowser = require("opds-browser");
+const OPDSCatalog = require("opds-web-client");
 import { Navigate } from "../interfaces";
-import { NavigateContext } from "opds-browser/lib/interfaces";
-import { ComputeBreadcrumbs } from "opds-browser/lib/components/Breadcrumbs";
+import { NavigateContext } from "opds-web-client/lib/interfaces";
+import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
 import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
@@ -74,7 +74,7 @@ export default class Root extends React.Component<RootProps, any> {
 
   render(): JSX.Element {
     return (
-      <OPDSBrowser
+      <OPDSCatalog
         collectionUrl={this.props.collectionUrl}
         bookUrl={this.props.bookUrl}
         BookDetailsContainer={BookDetailsContainer}

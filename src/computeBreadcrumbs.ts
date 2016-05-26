@@ -1,5 +1,5 @@
-import { CollectionData, LinkData } from "opds-browser/lib/interfaces";
-import { hierarchyComputeBreadcrumbs } from "opds-browser/lib/components/Breadcrumbs";
+import { CollectionData, LinkData } from "opds-web-client/lib/interfaces";
+import { hierarchyComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
 
 export default (collection: CollectionData, history: LinkData[]): LinkData[] => {
   let links = [];

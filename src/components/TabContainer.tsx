@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import editorAdapter from "../editorAdapter";
-import DataFetcher from "opds-browser/lib/DataFetcher";
+import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import { connect } from "react-redux";
 import { Tabs, Tab } from "react-bootstrap";
@@ -18,7 +18,7 @@ export interface TabContainerProps extends React.Props<TabContainerProps> {
   csrfToken: string;
   tab: string;
   navigate: Navigate;
-  refreshBrowser: () => Promise<any>;
+  refreshCatalog: () => Promise<any>;
   complaintsCount?: number;
   clearBook?: () => void;
 }
@@ -40,7 +40,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             store={this.props.store}
             csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}
-            refreshBrowser={this.props.refreshBrowser}
+            refreshCatalog={this.props.refreshCatalog}
             />
         </Tab>
         <Tab eventKey={"classifications"} title="Classifications">
@@ -49,7 +49,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}
             book={this.props.bookData}
-            refreshBrowser={this.props.refreshBrowser}
+            refreshCatalog={this.props.refreshCatalog}
             />
         </Tab>
         <Tab eventKey={"complaints"} title={complaintsTitle}>
@@ -58,7 +58,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
             csrfToken={this.props.csrfToken}
             bookUrl={this.props.bookUrl}
             book={this.props.bookData}
-            refreshBrowser={this.props.refreshBrowser}
+            refreshCatalog={this.props.refreshCatalog}
             />
         </Tab>
       </Tabs>

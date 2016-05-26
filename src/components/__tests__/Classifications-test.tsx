@@ -16,7 +16,7 @@ describe("Classifications", () => {
   let instance;
   let bookData;
   let store;
-  let refreshBrowser, fetchGenreTree, fetchClassifications, fetchBook, editClassifications;
+  let refreshCatalog, fetchGenreTree, fetchClassifications, fetchBook, editClassifications;
 
   beforeEach(() => {
     bookData = {
@@ -25,7 +25,7 @@ describe("Classifications", () => {
       categories: ["Space Opera"]
     };
     store = buildStore();
-    refreshBrowser = jest.genMockFunction();
+    refreshCatalog = jest.genMockFunction();
     fetchGenreTree = jest.genMockFunction();
     fetchClassifications = jest.genMockFunction();
     fetchBook = jest.genMockFunction();
@@ -39,7 +39,7 @@ describe("Classifications", () => {
         bookAdminUrl="book admin url"
         genreTree={genreData}
         classifications={classificationsData}
-        refreshBrowser={refreshBrowser}
+        refreshCatalog={refreshCatalog}
         fetchGenreTree={fetchGenreTree}
         fetchClassifications={fetchClassifications}
         fetchBook={fetchBook}
@@ -96,7 +96,7 @@ describe("Classifications", () => {
       expect(fetchClassifications.mock.calls[0][0]).toBe(instance.classificationsUrl());
     });
 
-    it("refreshes book, classifications, and browser after editing classifications", (done) => {
+    it("refreshes book, classifications, and Catalog after editing classifications", (done) => {
       let formData = new FormData();
       editClassifications.mockReturnValue(new Promise((resolve, reject) => resolve()));
       instance.editClassifications(formData).then(response => {
@@ -107,7 +107,7 @@ describe("Classifications", () => {
         expect(fetchBook.mock.calls[0][0]).toBe("book admin url");
         expect(fetchClassifications.mock.calls.length).toBe(2); // already called on mount
         expect(fetchClassifications.mock.calls[1][0]).toBe(instance.classificationsUrl());
-        expect(refreshBrowser.mock.calls.length).toBe(1);
+        expect(refreshCatalog.mock.calls.length).toBe(1);
         done();
       });
     });

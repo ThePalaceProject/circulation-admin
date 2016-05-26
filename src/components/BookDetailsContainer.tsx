@@ -1,6 +1,6 @@
 import * as React from "react";
 import TabContainer from "./TabContainer";
-import { BookDetailsContainerProps } from "opds-browser/lib/components/Root";
+import { BookDetailsContainerProps } from "opds-web-client/lib/components/Root";
 import { Navigate } from "../interfaces";
 
 export interface BookDetailsContainerContext {
@@ -26,7 +26,7 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
         <TabContainer
           bookUrl={this.props.bookUrl}
           collectionUrl={this.props.collectionUrl}
-          refreshBrowser={this.props.refreshBrowser}
+          refreshCatalog={this.props.refreshCatalog}
           tab={this.context.tab}
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}

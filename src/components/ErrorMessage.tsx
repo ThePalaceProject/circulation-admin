@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Alert } from "react-bootstrap";
-import { FetchErrorData } from "opds-browser/lib/interfaces";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ErrorMessageProps {
   error: FetchErrorData;

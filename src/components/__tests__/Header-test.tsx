@@ -5,8 +5,8 @@ import * as ReactDOM from "react-dom";
 import * as TestUtils from "react-addons-test-utils";
 
 import Header from "../Header";
-import BrowserLink from "opds-browser/lib/components/BrowserLink";
-import { mockRouterContext } from "opds-browser/lib/components/__tests__/routing";
+import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import { mockRouterContext } from "opds-web-client/lib/components/__tests__/routing";
 
 class TestSearch extends React.Component<any, any> {
   render(): JSX.Element {
@@ -43,7 +43,7 @@ describe("Header", () => {
 
     header = TestUtils.renderIntoDocument(
       <FakeContext>
-        <Header BrowserLink={BrowserLink}>
+        <Header CatalogLink={CatalogLink}>
           <TestSearch />
         </Header>
       </FakeContext>
@@ -66,7 +66,7 @@ describe("Header", () => {
   })
 
   it("shows top-level links", () => {
-    let links = TestUtils.scryRenderedComponentsWithType(header, BrowserLink);
+    let links = TestUtils.scryRenderedComponentsWithType(header, CatalogLink);
     let elements = links.map(link => ReactDOM.findDOMNode(link));
 
     expect(links.length).toBe(2);
