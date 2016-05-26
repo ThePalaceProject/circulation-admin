@@ -60,7 +60,7 @@ describe("BookDetailsContainer", () => {
 
     container = TestUtils.renderIntoDocument(
       <FakeContext>
-        <BookDetailsContainer bookUrl="book url" collectionUrl="collection url" refreshBrowser={jest.genMockFunction()}>
+        <BookDetailsContainer bookUrl="book url" collectionUrl="collection url" refreshCatalog={jest.genMockFunction()}>
           <div className="bookDetails">Moby Dick</div>
         </BookDetailsContainer>
       </FakeContext>

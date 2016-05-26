@@ -39,7 +39,7 @@ describe("Complaints", () => {
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}
           postComplaint={postComplaint}
-          refreshBrowser={jest.genMockFunction()}
+          refreshCatalog={jest.genMockFunction()}
           />
       );
     });
@@ -90,7 +90,7 @@ describe("Complaints", () => {
           fetchError={fetchError}
           fetchComplaints={fetchComplaints}
           postComplaint={jest.genMockFunction}
-          refreshBrowser={jest.genMockFunction()}
+          refreshCatalog={jest.genMockFunction()}
           />
       );
       let complaintsUrl = (wrapper.instance() as any).complaintsUrl()
@@ -107,14 +107,14 @@ describe("Complaints", () => {
   describe("behavior", () => {
     let wrapper;
     let instance;
-    let fetchComplaints, resolveComplaints, refreshBrowser;
+    let fetchComplaints, resolveComplaints, refreshCatalog;
     let complaintsData = {
       "http://librarysimplified.org/terms/problem/test-type": 2
     };
 
     beforeEach(() => {
       spyOn(window, "confirm").and.returnValue(true);
-      refreshBrowser = jest.genMockFunction();
+      refreshCatalog = jest.genMockFunction();
       fetchComplaints = jest.genMockFunction();
       resolveComplaints = jest.genMockFunction();
       resolveComplaints.mockReturnValue(new Promise((resolve, reject) => {
@@ -127,7 +127,7 @@ describe("Complaints", () => {
           bookUrl="http://example.com/works/fakeid"
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}
-          refreshBrowser={refreshBrowser}
+          refreshCatalog={refreshCatalog}
           resolveComplaints={resolveComplaints}
           />
       );
@@ -151,13 +151,13 @@ describe("Complaints", () => {
       expect(instance.resolve.mock.calls[0][0]).toBe(Object.keys(complaintsData)[0]);
     });
 
-    it("should fetch and refresh browser when resolve() is called", (done) => {
+    it("should fetch and refresh Catalog when resolve() is called", (done) => {
       let resolveUrl = instance.resolveComplaintsUrl();
       instance.resolve().then(() => {
         expect(resolveComplaints.mock.calls.length).toBe(1);
         expect(resolveComplaints.mock.calls[0][0]).toBe(resolveUrl);
         expect(fetchComplaints.mock.calls.length).toBe(2); // it also fetched on mount
-        expect(refreshBrowser.mock.calls.length).toBe(1);
+        expect(refreshCatalog.mock.calls.length).toBe(1);
         done();
       });
     });

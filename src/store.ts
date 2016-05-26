@@ -1,11 +1,11 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import * as thunk from "redux-thunk";
-import browserReducers from "opds-browser/lib/reducers/index";
+import catalogReducers from "opds-web-client/lib/reducers/index";
 import editorReducers from "./reducers/index";
 
 let reducers = combineReducers({
   editor: editorReducers,
-  browser: browserReducers
+  catalog: catalogReducers
 });
 
 export default function buildStore(initialState?: any) {

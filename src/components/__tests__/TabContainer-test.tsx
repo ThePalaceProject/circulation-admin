@@ -40,7 +40,7 @@ describe("TabContainer", () => {
         tab={null}
         navigate={navigate}
         csrfToken="token"
-        refreshBrowser={jest.genMockFunction()}
+        refreshCatalog={jest.genMockFunction()}
         store={store}
         >
         <div className="bookDetails">Moby Dick</div>

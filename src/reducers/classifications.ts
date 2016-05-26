@@ -1,5 +1,5 @@
 import { GenreTree, ClassificationData } from "../interfaces";
-import { RequestError } from "opds-browser/lib/DataFetcher";
+import { RequestError } from "opds-web-client/lib/DataFetcher";
 
 export interface ClassificationsState {
   genreTree: GenreTree;

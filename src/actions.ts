@@ -1,6 +1,6 @@
 import { BookData, ComplaintsData, GenreTree, ClassificationData } from "./interfaces";
-import DataFetcher from "opds-browser/lib/DataFetcher";
-import { RequestError, RequestRejector } from "opds-browser/lib/DataFetcher";
+import DataFetcher from "opds-web-client/lib/DataFetcher";
+import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
 
 export default class ActionCreator {
   private fetcher: DataFetcher;

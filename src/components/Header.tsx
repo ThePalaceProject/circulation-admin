@@ -1,23 +1,18 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import BrowserLink from "opds-browser/lib/components/BrowserLink";
+import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import * as fs from "fs";
 import logo from "../images/nypl-logo-transparent";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 
-export interface BrowserLinkProps extends React.Props<any> {
-  text?: string;
-  url: string;
-}
-
 export interface HeaderProps extends React.Props<Header> {
-  BrowserLink: typeof BrowserLink;
+  CatalogLink: typeof CatalogLink;
 }
 
 export default class Header extends React.Component<HeaderProps, any> {
   render(): JSX.Element {
     let search = this.props.children ? (React.Children.only(this.props.children) as any) : null;
-    let BrowserLink = this.props.BrowserLink;
+    let CatalogLink = this.props.CatalogLink;
 
     let logoStyle = {
       height: "25px",
@@ -47,18 +42,18 @@ export default class Header extends React.Component<HeaderProps, any> {
 
           <Nav>
             <li>
-              <BrowserLink
+              <CatalogLink
                 collectionUrl={"/admin/complaints"}
                 bookUrl={null}>
                 Complaints
-              </BrowserLink>
+              </CatalogLink>
             </li>
             <li>
-              <BrowserLink
+              <CatalogLink
                 collectionUrl={"/admin/suppressed"}
                 bookUrl={null}>
                 Hidden Books
-              </BrowserLink>
+              </CatalogLink>
             </li>
           </Nav>
         </Navbar.Collapse>

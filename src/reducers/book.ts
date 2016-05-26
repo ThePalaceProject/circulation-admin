@@ -1,5 +1,5 @@
 import { BookData } from "../interfaces";
-import { RequestError } from "opds-browser/lib/DataFetcher";
+import { RequestError } from "opds-web-client/lib/DataFetcher";
 
 interface BookState {
   url: string;

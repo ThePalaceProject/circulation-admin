@@ -1,12 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import DataFetcher from "opds-browser/lib/DataFetcher";
+import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
 import ButtonForm from "./ButtonForm";
 import { BookData, PostComplaint } from "../interfaces";
-import { FetchErrorData } from "opds-browser/lib/interfaces";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ComplaintsProps {
   bookUrl: string;
@@ -19,7 +19,7 @@ export interface ComplaintsProps {
   postComplaint?: PostComplaint;
   resolveComplaints?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
-  refreshBrowser: () => Promise<any>;
+  refreshCatalog: () => Promise<any>;
 }
 
 export class Complaints extends React.Component<ComplaintsProps, any> {
@@ -122,7 +122,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
 
   refresh() {
     this.props.fetchComplaints(this.complaintsUrl());
-    this.props.refreshBrowser();
+    this.props.refreshCatalog();
   };
 
   resolve(type: string) {

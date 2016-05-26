@@ -1,13 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import DataFetcher from "opds-browser/lib/DataFetcher";
+import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
 import EditForm from "./EditForm";
 import ErrorMessage from "./ErrorMessage";
 import { BookData } from "../interfaces";
-import { FetchErrorData } from "opds-browser/lib/interfaces";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface EditorProps extends React.Props<Editor> {
   bookUrl?: string;
@@ -18,7 +18,7 @@ export interface EditorProps extends React.Props<Editor> {
   csrfToken: string;
   store?: Redux.Store;
   fetchBook?: (url: string) => void;
-  refreshBrowser?: () => Promise<any>;
+  refreshCatalog?: () => Promise<any>;
   editBook?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
 }
@@ -125,7 +125,7 @@ export class Editor extends React.Component<EditorProps, any> {
 
   refresh() {
     this.props.fetchBook(this.props.bookAdminUrl);
-    this.props.refreshBrowser();
+    this.props.refreshCatalog();
   };
 
   editBook(url) {
