@@ -44,8 +44,30 @@ export default function adapter(data: OPDSEntry): BookData {
 
   let categories = data.categories.map(category => category.label);
 
+  let subtitle;
+  try {
+    subtitle = data.unparsed["schema:alternativeHeadline"][0]["_"];
+  } catch (e) {
+    subtitle = null;
+  };
+
+  let series;
+  try {
+    series = data.unparsed["schema:Series"][0]["$"]["name"]["value"];
+  } catch (e) {
+    series = null;
+  }
+
+  let seriesPosition;
+  try {
+    seriesPosition = data.unparsed["schema:Series"][0]["$"]["schema:position"]["value"];
+  } catch (e) {
+    seriesPosition = null;
+  }
+
   return {
     title: data.title,
+    subtitle: subtitle,
     summary: data.summary.content,
     audience: audience.term,
     targetAgeRange: targetAgeRange,
@@ -55,6 +77,8 @@ export default function adapter(data: OPDSEntry): BookData {
     restoreLink: restoreLink,
     refreshLink: refreshLink,
     editLink: editLink,
-    issuesLink: issuesLink
+    issuesLink: issuesLink,
+    series: series,
+    seriesPosition: seriesPosition
   };
 }

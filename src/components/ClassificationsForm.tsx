@@ -54,7 +54,6 @@ export default class ClassificationsForm extends React.Component<Classifications
               <EditableInput
                 ref="targetAgeMin"
                 type="text"
-                label=""
                 disabled={this.props.disabled}
                 name="target_age_min"
                 value={this.props.book.targetAgeRange[0]}
@@ -64,7 +63,6 @@ export default class ClassificationsForm extends React.Component<Classifications
               <EditableInput
                 ref="targetAgeMax"
                 type="text"
-                label=""
                 disabled={this.props.disabled}
                 name="target_age_max"
                 value={this.props.book.targetAgeRange[1]}

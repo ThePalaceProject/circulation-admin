@@ -3,7 +3,7 @@ import { Input, ButtonInput } from "react-bootstrap";
 import { BookData } from "../interfaces";
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
-  label: string;
+  label?: string;
   value?: string;
   checked?: boolean;
   name: string;
@@ -33,6 +33,7 @@ export class EditableInput extends React.Component<EditableInputProps, any> {
         value={this.state.value}
         onChange={this.handleChange}
         style={this.props.style}
+        placeholder={this.props.placeholder}
         checked={this.state.checked}
         >
         {this.props.children}
@@ -94,6 +95,35 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           label="Title"
           value={this.props.title}
           />
+        <EditableInput
+          type="text"
+          disabled={this.props.disabled}
+          name="subtitle"
+          label="Subtitle"
+          value={this.props.subtitle}
+          />
+        <div className="form-group">
+          <label>Series</label>
+          <div className="form-inline">
+            <EditableInput
+              style={{ width: "300px" }}
+              type="text"
+              disabled={this.props.disabled}
+              name="series"
+              placeholder="Name"
+              value={this.props.series}
+              />
+            <span>&nbsp;&nbsp;</span>
+            <EditableInput
+              style={{ width: "50px" }}
+              type="text"
+              disabled={this.props.disabled}
+              name="series_position"
+              placeholder="#"
+              value={this.props.seriesPosition}
+              />
+          </div>
+        </div>
         <EditableInput
           style={{ height: "300px" }}
           type="textarea"
