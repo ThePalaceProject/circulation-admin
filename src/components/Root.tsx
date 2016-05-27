@@ -22,11 +22,12 @@ export interface RootProps extends React.Props<Root> {
   };
 }
 
-export interface RootContext extends BookDetailsContainerContext {
+export interface RootContext {
+  homeUrl: string;
 }
 
 export default class Root extends React.Component<RootProps, any> {
-  context: { homeUrl: string; };
+  context: RootContext;
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
 
   constructor(props) {
@@ -39,11 +40,11 @@ export default class Root extends React.Component<RootProps, any> {
     };
   }
 
-  static contextTypes = {
+  static contextTypes: React.ValidationMap<RootContext> = {
     homeUrl: React.PropTypes.string.isRequired
   }
 
-  static childContextTypes = {
+  static childContextTypes: React.ValidationMap<any> = {
     tab: React.PropTypes.string
   };
 

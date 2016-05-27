@@ -9,7 +9,7 @@ export interface DashboardContext {
 export default class Dashboard extends React.Component<any, any> {
   context: DashboardContext;
 
-  static contextTypes = {
+  static contextTypes: React.ValidationMap<DashboardContext> = {
     editorStore: React.PropTypes.object.isRequired
   };
 

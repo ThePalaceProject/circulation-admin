@@ -30,7 +30,7 @@ export interface TabContainerContext {
 export class TabContainer extends React.Component<TabContainerProps, any> {
   context: TabContainerContext;
 
-  static contextTypes = {
+  static contextTypes: React.ValidationMap<TabContainerContext> = {
     router: React.PropTypes.object.isRequired,
     pathFor: React.PropTypes.func.isRequired
   };
