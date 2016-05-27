@@ -8,7 +8,7 @@ import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
 import Classifications from "./Classifications";
 import Complaints from "./Complaints";
-import { BookData, Navigate } from "../interfaces";
+import { BookData, Navigate, PathFor } from "../interfaces";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
   bookUrl: string;
@@ -22,7 +22,19 @@ export interface TabContainerProps extends React.Props<TabContainerProps> {
   clearBook?: () => void;
 }
 
+export interface TabContainerContext {
+  pathFor: PathFor;
+  router: any;
+}
+
 export class TabContainer extends React.Component<TabContainerProps, any> {
+  context: TabContainerContext;
+
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired,
+    pathFor: React.PropTypes.func.isRequired
+  };
+
   render(): JSX.Element {
     let showComplaintCount = (typeof this.props.complaintsCount !== "undefined");
     let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.props.complaintsCount + ")" : "");
@@ -75,9 +87,9 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
   }
 
   handleSelect(tab) {
-    // if (this.props.navigate) {
-    //   this.props.navigate(this.props.collectionUrl, this.props.bookUrl, tab);
-    // }
+    if (this.context.router) {
+      this.context.router.push(this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab));
+    }
   }
 }
 

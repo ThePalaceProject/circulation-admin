@@ -2,6 +2,8 @@
   "ambientDependencies": {
     "core-js": "github:DefinitelyTyped/DefinitelyTyped/core-js/core-js.d.ts#c777572e8532c4d358306fe4c0e17a533f940b04",
     "enzyme": "registry:dt/enzyme#1.2.0+20160324040416",
+    "moment": "registry:dt/moment#2.8.0+20160316155526",
+    "moment-node": "registry:dt/moment-node#2.11.1+20160511043338",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",
     "qs": "github:DefinitelyTyped/DefinitelyTyped/qs/qs.d.ts#7de6c3dd94feaeb21f20054b9f30d5dabc5efabd",
     "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#86dbea8fc37d9473fee465da4f0a21bea4f8cbd9",

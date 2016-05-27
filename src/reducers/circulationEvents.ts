@@ -32,5 +32,8 @@ export default (state: CirculationEventsState = initialState, action) => {
         fetchError: action.error,
         isFetching: false
       });
+
+    default:
+      return state;
   }
 }

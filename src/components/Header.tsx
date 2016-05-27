@@ -10,6 +10,12 @@ export interface HeaderProps extends React.Props<Header> {
 }
 
 export default class Header extends React.Component<HeaderProps, any> {
+  context: { homeUrl: string };
+
+  static contextTypes = {
+    homeUrl: React.PropTypes.string.isRequired
+  }
+
   render(): JSX.Element {
     let search = this.props.children ? (React.Children.only(this.props.children) as any) : null;
 
@@ -42,7 +48,7 @@ export default class Header extends React.Component<HeaderProps, any> {
           <Nav>
             <li>
               <CatalogLink
-                collectionUrl={"/groups"}
+                collectionUrl={this.context.homeUrl}
                 bookUrl={null}>
                 Catalog
               </CatalogLink>

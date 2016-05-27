@@ -4,7 +4,6 @@ import { Router, Route, browserHistory } from "react-router";
 const OPDSCatalog = require("opds-web-client");
 import { NavigateContext } from "opds-web-client/lib/interfaces";
 import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
-import buildStore from "../store";
 import Editor from "./Editor";
 import reducers from "../reducers/index";
 import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
@@ -16,60 +15,54 @@ import computeBreadcrumbs from "../computeBreadcrumbs";
 
 export interface RootProps extends React.Props<Root> {
   csrfToken: string;
-  collectionUrl: string;
-  bookUrl: string;
-  tab: string;
+  params: {
+    collectionUrl: string;
+    bookUrl: string;
+    tab: string;
+  };
 }
 
-export interface RootContext extends BookDetailsContainerContext, NavigateContext {
+export interface RootContext extends BookDetailsContainerContext {
 }
 
 export default class Root extends React.Component<RootProps, any> {
+  context: { homeUrl: string; };
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
-  pathFor: (collectionUrl: string, bookUrl: string) => string;
-  editorStore: Redux.Store;
 
   constructor(props) {
     super(props);
-    let that = this;
-
-    this.editorStore = buildStore();
 
     let title = document.title || "Circulation Manager";
     this.pageTitleTemplate = (collectionTitle, bookTitle) => {
       let details = bookTitle || collectionTitle;
       return title + (details ? " - " + details : "");
     };
+  }
 
-    this.pathFor = (collectionUrl: string, bookUrl: string) => {
-      var path = "/admin/web";
-      path += collectionUrl ? `/collection/${encodeURIComponent(collectionUrl)}` : "";
-      path += bookUrl ? `/book/${encodeURIComponent(bookUrl)}` : "";
-      return path;
-    };
+  static contextTypes = {
+    homeUrl: React.PropTypes.string.isRequired
   }
 
   static childContextTypes = {
-    csrfToken: React.PropTypes.string.isRequired,
-    tab: React.PropTypes.string,
-    editorStore: React.PropTypes.object.isRequired,
-    pathFor: React.PropTypes.func.isRequired
+    tab: React.PropTypes.string
   };
 
-  getChildContext(): RootContext {
+  getChildContext() {
     return {
-      csrfToken: this.props.csrfToken,
-      tab: this.props.tab,
-      editorStore: this.editorStore,
-      pathFor: this.pathFor
+      tab: this.props.params.tab
     };
   }
 
   render(): JSX.Element {
+    let { collectionUrl, bookUrl } = this.props.params;
+
+    collectionUrl = collectionUrl ? decodeURIComponent(collectionUrl) : (this.context.homeUrl || null);
+    bookUrl = bookUrl ? decodeURIComponent(bookUrl) : null;
+
     return (
       <OPDSCatalog
-        collectionUrl={this.props.collectionUrl}
-        bookUrl={this.props.bookUrl}
+        collectionUrl={collectionUrl}
+        bookUrl={bookUrl}
         BookDetailsContainer={BookDetailsContainer}
         Header={Header}
         pageTitleTemplate={this.pageTitleTemplate}

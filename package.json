@@ -21,6 +21,7 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
+    "moment": "^2.13.0",
     "opds-feed-parser": "0.0.11",
     "opds-web-client": "^0.0.17",
     "qs": "^6.1.0",

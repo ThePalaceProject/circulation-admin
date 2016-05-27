@@ -1,4 +1,4 @@
-import { BookData, ComplaintsData, GenreTree, ClassificationData } from "./interfaces";
+import { BookData, ComplaintsData, GenreTree, ClassificationData, CirculationEventData } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
 
@@ -516,14 +516,46 @@ export default class ActionCreator {
   }
 
   fetchCirculationEvents(url: string) {
+    let err: RequestError;
+
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.fetchCirculationEventsRequest(url));
-        this.fetcher.fetchOPDSData(url).then((data: BookData) => {
-          dispatch(this.fetchCirculationEventsSuccess());
-          dispatch(this.loadCirculationEvents(data, url));
-          resolve(data);
-        }).catch((err: RequestError) => {
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: { circulation_events: CirculationEventData[] }) => {
+              dispatch(this.fetchCirculationEventsSuccess());
+              dispatch(this.loadCirculationEvents(data.circulation_events));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchCirculationEventsFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchCirculationEventsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve circulation events",
+                url: url
+              };
+              dispatch(this.fetchCirculationEventsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
           dispatch(this.fetchCirculationEventsFailure(err));
           reject(err);
         });
@@ -543,7 +575,7 @@ export default class ActionCreator {
     return { type: this.FETCH_CIRCULATION_EVENTS_FAILURE, error };
   }
 
-  loadCirculationEvents(data: BookData, url: string) {
-    return { type: this.LOAD_CIRCULATION_EVENTS, data, url };
+  loadCirculationEvents(data: CirculationEventData[]) {
+    return { type: this.LOAD_CIRCULATION_EVENTS, data };
   }
 }

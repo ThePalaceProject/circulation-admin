@@ -71,15 +71,16 @@ export interface ClassificationData {
 }
 
 export interface CirculationEventData {
+  id: number;
+  type: string;
+  patron_id: string;
+  time: string;
   book: {
     title: string;
-    data_source: string;
-    identifier: string;
-    identifier_type: string;
+    url: string;
   };
-  circulationEvent: {
-    type: string;
-    start: string;
-    end: string;
-  }
+}
+
+export interface PathFor {
+  (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
