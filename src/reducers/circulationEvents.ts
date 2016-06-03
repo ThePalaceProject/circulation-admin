@@ -1,7 +1,7 @@
 import { CirculationEventData } from "../interfaces";
 import { RequestError } from "opds-web-client/lib/DataFetcher";
 
-interface CirculationEventsState {
+export interface CirculationEventsState {
   data: CirculationEventData[];
   isFetching: boolean;
   fetchError: RequestError;

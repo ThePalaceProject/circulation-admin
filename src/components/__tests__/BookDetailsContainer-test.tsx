@@ -6,7 +6,6 @@ import { shallow } from "enzyme";
 import buildStore from "../../store";
 import BookDetailsContainer from "../BookDetailsContainer";
 import TabContainer from "../TabContainer";
-import { mockRouterContext } from "./routing";
 
 let initialState = {
   book: {
