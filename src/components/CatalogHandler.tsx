@@ -13,7 +13,7 @@ import * as qs from "qs";
 import createRouter from "../createRouter";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 
-export interface RootProps extends React.Props<Root> {
+export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
   csrfToken: string;
   params: {
     collectionUrl: string;
@@ -22,12 +22,12 @@ export interface RootProps extends React.Props<Root> {
   };
 }
 
-export interface RootContext {
+export interface CatalogHandlerContext {
   homeUrl: string;
 }
 
-export default class Root extends React.Component<RootProps, any> {
-  context: RootContext;
+export default class CatalogHandler extends React.Component<CatalogHandlerProps, any> {
+  context: CatalogHandlerContext;
   pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
 
   constructor(props) {
@@ -40,7 +40,7 @@ export default class Root extends React.Component<RootProps, any> {
     };
   }
 
-  static contextTypes: React.ValidationMap<RootContext> = {
+  static contextTypes: React.ValidationMap<CatalogHandlerContext> = {
     homeUrl: React.PropTypes.string.isRequired
   }
 
