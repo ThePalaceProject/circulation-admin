@@ -1,16 +1,31 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
+import ErrorMessage from "./ErrorMessage";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
-import * as moment from "moment";
+import { CirculationEventData } from "../interfaces";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
-export class CirculationEvents extends React.Component<any, any> {
+export interface CirculationEventsProps {
+  store?: Redux.Store;
+  events?: CirculationEventData[];
+  fetchError?: FetchErrorData;
+  fetchCirculationEvents?: () => Promise<any>;
+  wait?: number;
+}
+
+export class CirculationEvents extends React.Component<CirculationEventsProps, any> {
   timer: any;
 
   render(): JSX.Element {
     return(
       <div className="circulationEvents">
         <h3>Circulation Events</h3>
+
+        { this.props.fetchError &&
+          <ErrorMessage error={this.props.fetchError} />
+        }
+
         <table className="table table-striped">
           <thead>
             <tr>
@@ -30,7 +45,7 @@ export class CirculationEvents extends React.Component<any, any> {
                 </td>
                 <td>{event.patron_id || "-"}</td>
                 <td>{this.formatType(event.type)}</td>
-                <td>{this.formatDate(event.time)}</td>
+                <td>{this.formatTime(event.time)}</td>
               </tr>
             ) }
           </tbody>
@@ -40,12 +55,12 @@ export class CirculationEvents extends React.Component<any, any> {
   }
 
   componentWillMount() {
-    this.props.fetchCirculationEvents("/admin/circulation_events");
+    this.props.fetchCirculationEvents();
 
-    let oneMinute = 10000;
-    this.timer = setInterval(() => {
-      this.props.fetchCirculationEvents("/admin/circulation_events");
-    }, oneMinute);
+    this.timer = setInterval(
+      this.props.fetchCirculationEvents,
+      (this.props.wait || 10) * 1000
+    );
   }
 
   componentWillUnmount() {
@@ -56,15 +71,22 @@ export class CirculationEvents extends React.Component<any, any> {
     return str.replace("_", " ");
   }
 
-  formatDate(str) {
-    return moment(str).format("MMM DD h:mm a");
+  formatTime(str) {
+    let date = new Date(str);
+    let options = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric"
+    };
+    return date.toLocaleString("en-US", options);
   }
 }
 
 function mapStateToProps(state, ownProps) {
   return {
     events: state.editor.circulationEvents.data || [],
-    isFetching: state.editor.circulationEvents.isFetching,
     fetchError: state.editor.circulationEvents.fetchError
   };
 }
@@ -72,7 +94,7 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch) {
   let actions = new ActionCreator();
   return {
-    fetchCirculationEvents: (url) => dispatch(actions.fetchCirculationEvents(url))
+    fetchCirculationEvents: () => dispatch(actions.fetchCirculationEvents())
   };
 }
 

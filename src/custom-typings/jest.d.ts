@@ -20,4 +20,5 @@ declare namespace jest {
   function genMockFunction(): any;
   function mock(moduleName: string): void;
   function setMock(moduleName: string, fn: any): void;
+  function runAllTimers(): void;
 }

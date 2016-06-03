@@ -594,4 +594,82 @@ describe("actions", () => {
       });
     });
   });
+
+  describe("fetchCirculationEvents", () => {
+    let eventsUrl = "/admin/circulation_events";
+
+
+    it("dispatches request, load, and success", (done) => {
+      let dispatch = jest.genMockFunction();
+      let eventsData = "circulation events data";
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 200,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve(eventsData);
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchCirculationEvents()(dispatch).then(data => {
+        expect(dispatch.mock.calls.length).toBe(3);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_CIRCULATION_EVENTS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_CIRCULATION_EVENTS_SUCCESS);
+        expect(dispatch.mock.calls[2][0].type).toBe(actions.LOAD_CIRCULATION_EVENTS);
+        expect(data).toBe(eventsData);
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches server failure", (done) => {
+      let dispatch = jest.genMockFunction();
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 500,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchCirculationEvents()(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_CIRCULATION_EVENTS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_CIRCULATION_EVENTS_FAILURE);
+        expect(err).toEqual({
+          status: 500,
+          response: "test error detail",
+          url: eventsUrl
+        });
+        done();
+      }).catch(err => done.fail(err));
+    });
+
+    it("dispatches network failure", (done) => {
+      let dispatch = jest.genMockFunction();
+      let fetchMock = jest.genMockFunction();
+      fetchMock.mockReturnValue(new Promise<any>((resolve, reject) => {
+        reject({
+          message: "network error"
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchCirculationEvents()(dispatch).catch(err => {
+        expect(dispatch.mock.calls.length).toBe(2);
+        expect(dispatch.mock.calls[0][0].type).toBe(actions.FETCH_CIRCULATION_EVENTS_REQUEST);
+        expect(dispatch.mock.calls[1][0].type).toBe(actions.FETCH_CIRCULATION_EVENTS_FAILURE);
+        expect(err).toEqual({
+          status: null,
+          response: "network error",
+          url: eventsUrl
+        });
+        done();
+      });
+    });
+  });
 });

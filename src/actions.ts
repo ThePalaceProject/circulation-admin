@@ -515,7 +515,8 @@ export default class ActionCreator {
     return { type: this.LOAD_CLASSIFICATIONS, classifications };
   }
 
-  fetchCirculationEvents(url: string) {
+  fetchCirculationEvents() {
+    let url = "/admin/circulation_events";
     let err: RequestError;
 
     return (dispatch => {
