@@ -206,7 +206,7 @@ describe("actions", () => {
   });
 
   describe("postComplaint", () => {
-    let postComplaintUrl = "http://example.com/postComplaint"
+    let postComplaintUrl = "http://example.com/postComplaint";
 
     it("dispatches request and success", (done) => {
       let dispatch = jest.genMockFunction();
@@ -282,7 +282,7 @@ describe("actions", () => {
   });
 
   describe("resolveComplaints", () => {
-    let resolveComplaintsUrl = "http://example.com/resolveComplaints"
+    let resolveComplaintsUrl = "http://example.com/resolveComplaints";
     let dispatch;
     let formData = new FormData();
     formData.append("csrf_token", "token");
@@ -437,7 +437,7 @@ describe("actions", () => {
   });
 
   describe("editClassifications", () => {
-    let editClassificationsUrl = "http://example.com/editClassifications"
+    let editClassificationsUrl = "http://example.com/editClassifications";
     let dispatch;
     let formData = new FormData();
     let newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];

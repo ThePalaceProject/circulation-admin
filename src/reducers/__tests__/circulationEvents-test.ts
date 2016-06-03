@@ -67,7 +67,7 @@ describe("circulation events reducer", () => {
       fetchError: "test error",
       isFetching: false
     });
-    expect(reducer(oldState, action)).toEqual(newState)
+    expect(reducer(oldState, action)).toEqual(newState);
   });
 
   it("handles LOAD_CIRCULATION_EVENTS", () => {

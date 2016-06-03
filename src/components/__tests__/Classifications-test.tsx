@@ -5,8 +5,8 @@ import { shallow } from "enzyme";
 
 import { Classifications } from "../Classifications";
 import ErrorMessage from "../ErrorMessage";
-import ClassificationsForm from "../ClassificationsForm"
-import ClassificationsTable from "../ClassificationsTable"
+import ClassificationsForm from "../ClassificationsForm";
+import ClassificationsTable from "../ClassificationsTable";
 import buildStore from "../../store";
 import genreData from "./genreData";
 import classificationsData from "./classificationsData";
@@ -59,7 +59,7 @@ describe("Classifications", () => {
       let updating = wrapper.find("h4");
       expect(updating.length).toBe(0);
 
-      wrapper.setProps({ isFetching: true })
+      wrapper.setProps({ isFetching: true });
       updating = wrapper.find("h4");
       expect(updating.text()).toBe("Updating");
     });

@@ -61,7 +61,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isFetchingGenreTree: false
     });
-    expect(reducer(oldState, action)).toEqual(newState)
+    expect(reducer(oldState, action)).toEqual(newState);
   });
 
   it("handles LOAD_GENRE_TREE", () => {
@@ -99,7 +99,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isEditingClassifications: false
     });
-    expect(reducer(oldState, action)).toEqual(newState)
+    expect(reducer(oldState, action)).toEqual(newState);
   });
 
   it("handles FETCH_CLASSIFICATIONS_REQUEST", () => {
@@ -126,7 +126,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isFetchingClassifications: false
     });
-    expect(reducer(oldState, action)).toEqual(newState)
+    expect(reducer(oldState, action)).toEqual(newState);
   });
 
   it("handles LOAD_CLASSIFICATIONS", () => {

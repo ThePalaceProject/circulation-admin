@@ -42,7 +42,7 @@ export default class CatalogHandler extends React.Component<CatalogHandlerProps,
 
   static contextTypes: React.ValidationMap<CatalogHandlerContext> = {
     homeUrl: React.PropTypes.string.isRequired
-  }
+  };
 
   static childContextTypes: React.ValidationMap<any> = {
     tab: React.PropTypes.string

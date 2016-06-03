@@ -27,7 +27,7 @@ let initialState = {
 };
 
 describe("TabContainer", () => {
-  let wrapper
+  let wrapper;
   let context;
   let push;
   let store;

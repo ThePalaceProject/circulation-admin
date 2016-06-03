@@ -36,4 +36,4 @@ export default (state: CirculationEventsState = initialState, action) => {
     default:
       return state;
   }
-}
+};

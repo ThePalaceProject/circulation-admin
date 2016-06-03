@@ -57,7 +57,7 @@ describe("complaints reducer", () => {
       fetchError: "test error",
       isFetching: false
     });
-    expect(complaints(oldState, action)).toEqual(newState)
+    expect(complaints(oldState, action)).toEqual(newState);
   });
 
   it("handles LOAD_COMPLAINTS", () => {
@@ -109,7 +109,7 @@ describe("complaints reducer", () => {
       postError: "test error",
       isFetching: false
     });
-    expect(complaints(oldState, action)).toEqual(newState)
+    expect(complaints(oldState, action)).toEqual(newState);
   });
 
   it("handles RESOLVE_COMPLAINTS_REQUEST", () => {
@@ -144,6 +144,6 @@ describe("complaints reducer", () => {
       resolveError: "test error",
       isFetching: false
     });
-    expect(complaints(oldState, action)).toEqual(newState)
+    expect(complaints(oldState, action)).toEqual(newState);
   });
 });

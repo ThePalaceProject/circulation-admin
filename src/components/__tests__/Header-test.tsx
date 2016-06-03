@@ -43,7 +43,7 @@ describe("Header", () => {
   it("shows a search component", () => {
     let search = wrapper.find(TestSearch);
     expect(search).toBeTruthy();
-  })
+  });
 
   it("shows links", () => {
     let catalogLinks = wrapper.find(CatalogLink);

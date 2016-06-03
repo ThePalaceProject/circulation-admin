@@ -14,7 +14,7 @@ export default class Header extends React.Component<HeaderProps, any> {
 
   static contextTypes = {
     homeUrl: React.PropTypes.string.isRequired
-  }
+  };
 
   render(): JSX.Element {
     let search = this.props.children ? (React.Children.only(this.props.children) as any) : null;

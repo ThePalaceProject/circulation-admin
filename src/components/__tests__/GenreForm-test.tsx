@@ -63,7 +63,7 @@ describe("GenreForm", () => {
       genre = wrapper
         .find("select[name='genre']")
         .find("option")
-        .findWhere(option => option.props().value == "Fantasy");
+        .findWhere(option => option.props().value === "Fantasy");
       genre.simulate("click", { target: { value: genre.props().value }});
       expect(wrapper.state("genre")).toBe(genre.props().value);
 

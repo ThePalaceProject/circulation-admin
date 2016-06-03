@@ -20,10 +20,9 @@ describe("Complaints", () => {
         href: "issues url",
         rel: "issues"
       }
-    }
+    };
 
     beforeEach(() => {
-
       fetchComplaints = jest.genMockFunction();
       postComplaint = jest.genMockFunction();
       complaintsData = {
@@ -51,7 +50,7 @@ describe("Complaints", () => {
 
     it("shows complaints", () => {
       let instance =  wrapper.instance() as any;
-      let complaintsKeys = Object.keys(complaintsData)
+      let complaintsKeys = Object.keys(complaintsData);
       let types = wrapper.find(".complaintType").map(type => type.text());
       let counts = wrapper.find(".complaintCount").map(count => parseInt(count.text()));
       expect(types).toEqual(complaintsKeys.map(type => instance.readableComplaintType(type)));
@@ -93,7 +92,7 @@ describe("Complaints", () => {
           refreshCatalog={jest.genMockFunction()}
           />
       );
-      let complaintsUrl = (wrapper.instance() as any).complaintsUrl()
+      let complaintsUrl = (wrapper.instance() as any).complaintsUrl();
 
       let error = wrapper.find(ErrorMessage);
       expect(error.prop("error")).toEqual(fetchError);

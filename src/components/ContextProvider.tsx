@@ -20,7 +20,7 @@ export default class ContextProvider extends React.Component<ContextProviderProp
       path += bookUrl ? `/book/${encodeURIComponent(bookUrl)}` : "";
       path += tab ? `/tab/${tab}` : "";
       return path;
-    }
+    };
   }
 
   static childContextTypes: React.ValidationMap<any> = {

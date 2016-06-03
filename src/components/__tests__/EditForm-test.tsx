@@ -49,7 +49,7 @@ describe("EditableInput", () => {
         <option>option</option>
       </EditableInput>
     );
-    let option = wrapper.find("option")
+    let option = wrapper.find("option");
     expect(option.text()).toEqual("option");
   });
 
