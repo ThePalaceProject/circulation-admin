@@ -75,8 +75,8 @@ describe("Editor", () => {
     let hide = (wrapper.instance() as any).hide;
 
     let form = wrapper.find(ButtonForm);
-    expect(form.props().label).toBe("Hide");
-    expect(form.props().onClick).toBe(hide);
+    expect(form.prop("label")).toBe("Hide");
+    expect(form.prop("onClick")).toBe(hide);
   });
 
   it("shows button form for restore link", () => {
@@ -95,8 +95,8 @@ describe("Editor", () => {
     let restore = (wrapper.instance() as any).restore;
 
     let form = wrapper.find(ButtonForm);
-    expect(form.props().label).toBe("Restore");
-    expect(form.props().onClick).toBe(restore);
+    expect(form.prop("label")).toBe("Restore");
+    expect(form.prop("onClick")).toBe(restore);
   });
 
   it("shows button form for refresh link", () => {
@@ -115,8 +115,8 @@ describe("Editor", () => {
     let refresh = (wrapper.instance() as any).refreshMetadata;
 
     let form = wrapper.find(ButtonForm);
-    expect(form.props().label).toBe("Refresh Metadata");
-    expect(form.props().onClick).toBe(refresh);
+    expect(form.prop("label")).toBe("Refresh Metadata");
+    expect(form.prop("onClick")).toBe(refresh);
   });
 
   it("shows fetch error message", () => {
@@ -138,7 +138,7 @@ describe("Editor", () => {
     let editForm = wrapper.find(EditForm);
     expect(editForm.length).toEqual(0);
     let error = wrapper.find(ErrorMessage);
-    expect(error.props().error).toBe(fetchError);
+    expect(error.prop("error")).toBe(fetchError);
   });
 
   it("shows edit error message with form", () => {
@@ -164,6 +164,6 @@ describe("Editor", () => {
     let editForm = wrapper.find(EditForm);
     expect(editForm.length).toEqual(1);
     let error = wrapper.find(ErrorMessage);
-    expect(error.props().error).toBe(editError);
+    expect(error.prop("error")).toBe(editError);
   });
 });

@@ -4,7 +4,7 @@ jest.dontMock("../ButtonForm");
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Complaints, ComplaintsProps } from "../Complaints";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage, { ErrorMessageProps } from "../ErrorMessage";
 import ButtonForm from "../ButtonForm";
 import ComplaintForm from "../ComplaintForm";
 
@@ -82,7 +82,7 @@ describe("Complaints", () => {
     it("shows fetch error", () => {
       let fetchComplaints = jest.genMockFunction();
       let fetchError = { status: 401, response: "test", url: "test url" };
-      let wrapper = shallow(
+      let wrapper = shallow<ComplaintsProps, any>(
         <Complaints
           csrfToken="token"
           bookUrl="book url"
@@ -96,9 +96,9 @@ describe("Complaints", () => {
       let complaintsUrl = (wrapper.instance() as any).complaintsUrl()
 
       let error = wrapper.find(ErrorMessage);
-      expect(error.props().error).toEqual(fetchError);
+      expect(error.prop("error")).toEqual(fetchError);
 
-      error.props().tryAgain();
+      error.prop("tryAgain")();
       expect(fetchComplaints.mock.calls.length).toBe(2);
       expect(fetchComplaints.mock.calls[1][0]).toBe(complaintsUrl);
     });

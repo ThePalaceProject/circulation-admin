@@ -8,6 +8,7 @@ import { TabContainer } from "../TabContainer";
 import Editor from "../Editor";
 import Classifications from "../Classifications";
 import Complaints from "../Complaints";
+import { mockRouterContext } from "./routing";
 
 let initialState = {
   book: {
@@ -27,24 +28,26 @@ let initialState = {
 
 describe("TabContainer", () => {
   let wrapper
-  let navigate;
+  let context;
+  let push;
   let store;
 
   beforeEach(() => {
-    navigate = jest.genMockFunction();
     store = buildStore();
+    push = jest.genMockFunction();
+    context = mockRouterContext(push);
     wrapper = mount(
       <TabContainer
         bookUrl="book url"
         collectionUrl="collection url"
         tab={null}
-        navigate={navigate}
         csrfToken="token"
         refreshCatalog={jest.genMockFunction()}
         store={store}
         >
         <div className="bookDetails">Moby Dick</div>
-      </TabContainer>
+      </TabContainer>,
+      { context }
     );
   });
 
@@ -78,13 +81,12 @@ describe("TabContainer", () => {
     expect(complaints.props().bookUrl).toBe("book url");
   });
 
-  it("calls navigate when tab is clicked", () => {
+  it("uses router to navigate when tab is clicked", () => {
     let tabs = wrapper.find("a[role='tab']");
     tabs.at(1).simulate("click");
-    expect(navigate.mock.calls.length).toBe(1);
-    expect(navigate.mock.calls[0][0]).toBe("collection url");
-    expect(navigate.mock.calls[0][1]).toBe("book url");
-    expect(navigate.mock.calls[0][2]).toBe("edit");
+    let label = tabs.at(1).text();
+    expect(push.mock.calls.length).toBe(1);
+    expect(push.mock.calls[0][0]).toBe(context.pathFor("collection url", "book url", label));
   });
 
   it("shows complaints count", () => {

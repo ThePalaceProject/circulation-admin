@@ -55,14 +55,14 @@ export default class Header extends React.Component<HeaderProps, any> {
             </li>
             <li>
               <CatalogLink
-                collectionUrl={"/admin/complaints"}
+                collectionUrl={"/admin/web/complaints"}
                 bookUrl={null}>
                 Complaints
               </CatalogLink>
             </li>
             <li>
               <CatalogLink
-                collectionUrl={"/admin/suppressed"}
+                collectionUrl={"/admin/web/suppressed"}
                 bookUrl={null}>
                 Hidden Books
               </CatalogLink>

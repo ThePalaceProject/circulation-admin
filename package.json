@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
-    "enzyme": "^2.2.0",
+    "enzyme": "^2.3.0",
     "file-loader": "^0.8.5",
     "jest": "^0.1.40",
     "jest-cli": "^0.8.2",
