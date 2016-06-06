@@ -56,12 +56,12 @@ describe("Header", () => {
     expect(homeLink.children().text()).toBe("Catalog");
 
     let complaintsLink = catalogLinks.at(1);
-    expect(complaintsLink.prop("collectionUrl")).toBe("/admin/web/complaints");
+    expect(complaintsLink.prop("collectionUrl")).toBe("/admin/complaints");
     expect(complaintsLink.prop("bookUrl")).toBe(null);
     expect(complaintsLink.children().text()).toBe("Complaints");
 
     let hiddenLink = catalogLinks.at(2);
-    expect(hiddenLink.prop("collectionUrl")).toBe("/admin/web/suppressed");
+    expect(hiddenLink.prop("collectionUrl")).toBe("/admin/suppressed");
     expect(hiddenLink.prop("bookUrl")).toBe(null);
     expect(hiddenLink.children().text()).toBe("Hidden Books");
 
