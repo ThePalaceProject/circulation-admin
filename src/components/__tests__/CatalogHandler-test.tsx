@@ -37,7 +37,9 @@ describe("CatalogHandler", () => {
     expect(catalog.prop("BookDetailsContainer").name).toEqual("BookDetailsContainer");
     expect(catalog.prop("Header").name).toEqual("Header");
     expect(catalog.prop("computeBreadcrumbs")).toBeTruthy();
-    expect(catalog.prop("pageTitleTemplate")).toBe(wrapper.instance().pageTitleTemplate);
+    let pageTitleTemplate = catalog.prop("pageTitleTemplate");
+    expect(pageTitleTemplate("Collection", "Book")).toBe("Circulation Manager - Book");
+    expect(pageTitleTemplate("Collection", null)).toBe("Circulation Manager - Collection");
   });
 
   it("uses home url as default collection url", () => {
