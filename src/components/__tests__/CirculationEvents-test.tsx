@@ -5,6 +5,7 @@ import { shallow } from "enzyme";
 
 import { CirculationEvents } from "../CirculationEvents";
 import ErrorMessage from "../ErrorMessage";
+import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { CirculationEventData } from "../../interfaces";
 
@@ -38,10 +39,16 @@ describe("CirculationEvents", () => {
     let fetchCirculationEvents;
 
     beforeEach(() => {
+      fetchCirculationEvents = jest.genMockFunction();
+      fetchCirculationEvents.mockReturnValue(
+        new Promise((resolve, reject) => resolve())
+      );
+
       wrapper = shallow(
         <CirculationEvents
           events={eventsData}
-          fetchCirculationEvents={jest.genMockFunction()}
+          fetchCirculationEvents={fetchCirculationEvents}
+          isLoaded={false}
           />
       );
     });
@@ -77,13 +84,26 @@ describe("CirculationEvents", () => {
         expect(time.text()).toBe(instance.formatTime(data.time));
       });
     });
+
+    it("shows/hides loading indicator", () => {
+      let loading = wrapper.find(LoadingIndicator);
+      expect(loading.length).toBe(1);
+      wrapper.setProps({ isLoaded: true });
+      loading = wrapper.find(LoadingIndicator);
+      expect(loading.length).toBe(0);
+    });
   });
 
   describe("behavior", () => {
     let wrapper;
-    let fetchCirculationEvents = jest.genMockFunction();
+    let fetchCirculationEvents;
 
     beforeEach(() => {
+      fetchCirculationEvents = jest.genMockFunction();
+      fetchCirculationEvents.mockReturnValue(
+        new Promise((resolve, reject) => resolve())
+      );
+
       wrapper = shallow(
         <CirculationEvents
           events={eventsData}
@@ -91,10 +111,6 @@ describe("CirculationEvents", () => {
           wait={1}
           />
       );
-    });
-
-    afterEach(() => {
-
     });
 
     it("fetches events data on mount", () => {

@@ -30,13 +30,15 @@ describe("circulation events reducer", () => {
   let initState: CirculationEventsState = {
     data: null,
     isFetching: false,
-    fetchError: null
+    fetchError: null,
+    isLoaded: false
   };
 
   let errorState: CirculationEventsState = {
     data: null,
     isFetching: false,
     fetchError: { status: 401, response: "test error", url: "test url" },
+    isLoaded: true
   };
 
   it("returns initial state for unrecognized action", () => {
@@ -65,7 +67,8 @@ describe("circulation events reducer", () => {
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isFetching: false
+      isFetching: false,
+      isLoaded: true
     });
     expect(reducer(oldState, action)).toEqual(newState);
   });
@@ -74,7 +77,8 @@ describe("circulation events reducer", () => {
     let action = { type: "LOAD_CIRCULATION_EVENTS", data: eventsData };
     let newState = Object.assign({}, initState, {
       data: eventsData,
-      isFetching: false
+      isFetching: false,
+      isLoaded: true
     });
     expect(reducer(initState, action)).toEqual(newState);
   });

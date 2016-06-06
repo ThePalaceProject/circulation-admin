@@ -5,12 +5,14 @@ export interface CirculationEventsState {
   data: CirculationEventData[];
   isFetching: boolean;
   fetchError: RequestError;
+  isLoaded: boolean;
 }
 
 const initialState: CirculationEventsState = {
   data: null,
   isFetching: false,
   fetchError: null,
+  isLoaded: false
 };
 
 export default (state: CirculationEventsState = initialState, action) => {
@@ -24,13 +26,15 @@ export default (state: CirculationEventsState = initialState, action) => {
     case "LOAD_CIRCULATION_EVENTS":
       return Object.assign({}, state, {
         data: action.data,
-        isFetching: false
+        isFetching: false,
+        isLoaded: true
       });
 
     case "FETCH_CIRCULATION_EVENTS_FAILURE":
       return Object.assign({}, state, {
         fetchError: action.error,
-        isFetching: false
+        isFetching: false,
+        isLoaded: true
       });
 
     default:

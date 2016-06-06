@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
+import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { CirculationEventData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
@@ -12,6 +13,7 @@ export interface CirculationEventsProps {
   fetchError?: FetchErrorData;
   fetchCirculationEvents?: () => Promise<any>;
   wait?: number;
+  isLoaded?: boolean;
 }
 
 export class CirculationEvents extends React.Component<CirculationEventsProps, any> {
@@ -24,6 +26,10 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
 
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
+        }
+
+        { !this.props.isLoaded &&
+          <LoadingIndicator />
         }
 
         <table className="table table-striped">
@@ -87,7 +93,8 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
 function mapStateToProps(state, ownProps) {
   return {
     events: state.editor.circulationEvents.data || [],
-    fetchError: state.editor.circulationEvents.fetchError
+    fetchError: state.editor.circulationEvents.fetchError,
+    isLoaded: state.editor.circulationEvents.isLoaded
   };
 }
 
