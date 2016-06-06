@@ -28,17 +28,6 @@ export interface CatalogHandlerContext {
 
 export default class CatalogHandler extends React.Component<CatalogHandlerProps, any> {
   context: CatalogHandlerContext;
-  pageTitleTemplate: (collectionTitle: string, bookTitle: string) => string;
-
-  constructor(props) {
-    super(props);
-
-    let title = document.title || "Circulation Manager";
-    this.pageTitleTemplate = (collectionTitle, bookTitle) => {
-      let details = bookTitle || collectionTitle;
-      return title + (details ? " - " + details : "");
-    };
-  }
 
   static contextTypes: React.ValidationMap<CatalogHandlerContext> = {
     homeUrl: React.PropTypes.string.isRequired
@@ -60,13 +49,18 @@ export default class CatalogHandler extends React.Component<CatalogHandlerProps,
     collectionUrl = collectionUrl || this.context.homeUrl || null;
     bookUrl = bookUrl || null;
 
+    let pageTitleTemplate = (collectionTitle, bookTitle) => {
+      let details = bookTitle || collectionTitle;
+      return "Circulation Manager" + (details ? " - " + details : "");
+    };
+
     return (
       <OPDSCatalog
         collectionUrl={collectionUrl}
         bookUrl={bookUrl}
         BookDetailsContainer={BookDetailsContainer}
         Header={Header}
-        pageTitleTemplate={this.pageTitleTemplate}
+        pageTitleTemplate={pageTitleTemplate}
         computeBreadcrumbs={computeBreadcrumbs}
         />
     );

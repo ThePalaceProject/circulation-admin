@@ -219,19 +219,17 @@ module.exports = {
         var catalogUrl = result.value;
           this.getAttribute(dashboardSelector, "href", function(result) {
           var dashboardUrl = result.value
-          this.getText(dashboardSelector, function(result) {
-            var dashboardTitle = result.value;
-            this
-              .click(dashboardSelector)
-              .waitForElementNotPresent(loadingSelector, 5000)
-              .assert.noError()
-              .verify.elementPresent(circulationEventsSelector)
-              .verify.titleContains(dashboardTitle)
-              .click(catalogSelector)
-              .waitForElementNotPresent(loadingSelector, 5000)
-              .assert.noError()
-              .verify.elementPresent(nthBreadcrumbSelector(1));
-          });
+          this
+            .click(dashboardSelector)
+            .waitForElementNotPresent(loadingSelector, 5000)
+            .assert.noError()
+            .verify.elementPresent(circulationEventsSelector)
+            .verify.titleContains("Circulation Manager - Dashboard")
+            .click(catalogSelector)
+            .waitForElementNotPresent(loadingSelector, 5000)
+            .assert.noError()
+            .verify.elementPresent(nthBreadcrumbSelector(1))
+            .verify.titleContains("Circulation Manager - All Books");
         });
       });
   },
