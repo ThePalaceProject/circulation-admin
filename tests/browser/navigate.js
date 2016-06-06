@@ -93,17 +93,17 @@ module.exports = {
             .verify.containsText(bookTitleSelector, bookTitle)
             .click(editTabSelector)
             .waitForElementPresent(titleInputSelector, 5000)
-            .verify.urlContains("tab=edit")
+            .verify.urlContains("tab/edit")
             .verify.value(titleInputSelector, bookTitle)
             .click(classificationsTabSelector)
             .waitForElementPresent(genreInputSelector, 5000)
-            .verify.urlContains("tab=classifications")
+            .verify.urlContains("tab/classifications")
             .click(complaintsTabSelector)
             .waitForElementPresent(complaintInputSelector, 5000)
-            .verify.urlContains("tab=complaints")
+            .verify.urlContains("tab/complaints")
             .refresh()
             .waitForElementPresent(complaintInputSelector, 5000)
-            .verify.urlContains("tab=complaints")
+            .verify.urlContains("tab/complaints")
             .verify.titleContains(bookTitle)
             .back()
             .back()
@@ -167,10 +167,10 @@ module.exports = {
       });
   },
 
-  "navigate to top-level pages": function(browser) {
+  "navigate to top-level feeds": function(browser) {
     var laneSelector = "li:first-child .lane h2 a";
-    var complaintsSelector = "ul.nav li:first-child a";
-    var hiddenSelector = "ul.nav li:last-child a";
+    var complaintsSelector = "ul.nav li:nth-child(2) a";
+    var hiddenSelector = "ul.nav li:nth-child(3) a";
 
     browser
       .goHome()
@@ -203,6 +203,34 @@ module.exports = {
                   .assert.containsText(nthBreadcrumbSelector(2), hiddenTitle);
               });
             });
+          });
+        });
+      });
+  },
+
+  "navigate to dashboard and back to catalog": function(browser) {
+    var catalogSelector = "ul.nav li:nth-child(1) a";
+    var dashboardSelector = "ul.nav li:nth-child(4) a";
+    var circulationEventsSelector = ".circulationEvents h3";
+
+    browser
+      .goHome()
+      .getAttribute(catalogSelector, "href", function(result) {
+        var catalogUrl = result.value;
+          this.getAttribute(dashboardSelector, "href", function(result) {
+          var dashboardUrl = result.value
+          this.getText(dashboardSelector, function(result) {
+            var dashboardTitle = result.value;
+            this
+              .click(dashboardSelector)
+              .waitForElementNotPresent(loadingSelector, 5000)
+              .assert.noError()
+              .verify.elementPresent(circulationEventsSelector)
+              .verify.titleContains(dashboardTitle)
+              .click(catalogSelector)
+              .waitForElementNotPresent(loadingSelector, 5000)
+              .assert.noError()
+              .verify.elementPresent(nthBreadcrumbSelector(1));
           });
         });
       });

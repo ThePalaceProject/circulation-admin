@@ -57,8 +57,8 @@ export default class CatalogHandler extends React.Component<CatalogHandlerProps,
   render(): JSX.Element {
     let { collectionUrl, bookUrl } = this.props.params;
 
-    collectionUrl = collectionUrl ? decodeURIComponent(collectionUrl) : (this.context.homeUrl || null);
-    bookUrl = bookUrl ? decodeURIComponent(bookUrl) : null;
+    collectionUrl = collectionUrl || this.context.homeUrl || null;
+    bookUrl = bookUrl || null;
 
     return (
       <OPDSCatalog

@@ -23,4 +23,8 @@ export default class Dashboard extends React.Component<any, any> {
       </div>
     );
   }
+
+  componentWillMount() {
+    document.title = "Circulation Manager - Dashboard";
+  }
 }
