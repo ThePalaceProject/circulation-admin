@@ -40,7 +40,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.props.complaintsCount + ")" : "");
 
     return (
-      <Tabs activeKey={this.props.tab || "details"} animation={false} onSelect={this.handleSelect.bind(this)}>
+      <Tabs id="tabs" activeKey={this.props.tab || "details"} animation={false} onSelect={this.handleSelect.bind(this)}>
         <Tab eventKey={"details"} title="Details">
           <div style={{ paddingTop: "2em" }}>
             { this.props.children }

@@ -75,7 +75,6 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
                       disabled={this.props.isFetching}
                       onClick={() => this.resolve(type)}
                       />
-
                   </td>
                 </tr>
               ) }

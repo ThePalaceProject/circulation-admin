@@ -1,6 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { EditableInput } from "./EditForm";
+import EditableInput from "./EditableInput";
+import EditableSelect from "./EditableSelect";
+import EditableRadio from "./EditableRadio";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
 
@@ -32,8 +34,7 @@ export default class ClassificationsForm extends React.Component<Classifications
 
     return (
       <div className="classificationsForm">
-        <EditableInput
-          type="select"
+        <EditableSelect
           disabled={this.props.disabled}
           style={{ width: 200 }}
           name="audience"
@@ -45,7 +46,7 @@ export default class ClassificationsForm extends React.Component<Classifications
           <option value="Young Adult">Young Adult</option>
           <option value="Adult">Adult</option>
           <option value="Adults Only">Adults Only</option>
-        </EditableInput>
+        </EditableSelect>
 
         { this.shouldShowTargetAge() &&
           <div className="form-group">
@@ -75,7 +76,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         <div className="form-group">
           <label>Fiction Classification</label>
           <div className="form-inline">
-            <EditableInput
+            <EditableRadio
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
@@ -86,7 +87,7 @@ export default class ClassificationsForm extends React.Component<Classifications
               onChange={this.handleFictionChange}
               />
             &nbsp; &nbsp; &nbsp;
-            <EditableInput
+            <EditableRadio
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
@@ -96,7 +97,7 @@ export default class ClassificationsForm extends React.Component<Classifications
               checked={!this.state.fiction}
               onChange={this.handleFictionChange}
               />
-          </div>
+            </div>
         </div>
 
         <div className="form-group">
@@ -157,6 +158,8 @@ export default class ClassificationsForm extends React.Component<Classifications
 
   bookChanged(newBook: BookData): boolean {
     return newBook.audience !== this.props.book.audience ||
+           newBook.targetAgeRange[0] !== this.props.book.targetAgeRange[0] ||
+           newBook.targetAgeRange[1] !== this.props.book.targetAgeRange[1] ||
            newBook.fiction !== this.props.book.fiction ||
            newBook.categories.sort() !== this.props.book.categories.sort();
   }
@@ -222,8 +225,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   handleAudienceChange() {
-    let audience = (this.refs as any).audience;
-    let value = (audience.refs as any).input.getValue();
+    let value = (this.refs as any).audience.getValue();
 
     if (this.validateAudience(value, this.state.genres)) {
       this.setState({ audience: value });
@@ -233,8 +235,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   handleFictionChange() {
-    let fiction = (this.refs as any).fiction;
-    let value = (fiction.refs as any).input.getChecked();
+    let value = (this.refs as any).fiction.getChecked();
     let clearedType = value ? "Nonfiction" : "Fiction";
 
     if (this.state.genres.length === 0 || confirm(`Are you sure? This will clear any ${clearedType} genres you have chosen!`)) {
