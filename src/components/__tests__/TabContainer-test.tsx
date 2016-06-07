@@ -57,7 +57,7 @@ describe("TabContainer", () => {
   });
 
   it("shows details, edit, classifications, and complaints tabs", () => {
-    let links = wrapper.find("a[role='tab']");
+    let links = wrapper.find("ul.nav-tabs").find("a");
     let linkTexts = links.map(link => link.text());
     expect(linkTexts).toContain("Details");
     expect(linkTexts).toContain("Edit");
@@ -82,8 +82,8 @@ describe("TabContainer", () => {
   });
 
   it("uses router to navigate when tab is clicked", () => {
-    let tabs = wrapper.find("a[role='tab']");
-    tabs.at(1).simulate("click");
+    let tabs = wrapper.find("ul.nav-tabs").find("a");
+    tabs.at(1).simulate("click", { target : { dataset: { tabkey: "edit" } } });
     let label = tabs.at(1).text();
     expect(push.mock.calls.length).toBe(1);
     expect(push.mock.calls[0][0]).toBe(context.pathFor("collection url", "book url", label));
@@ -92,7 +92,7 @@ describe("TabContainer", () => {
   it("shows complaints count", () => {
     wrapper.setProps({ complaintsCount: 5 });
 
-    let links = wrapper.find("a[role='tab']");
+    let links = wrapper.find("ul.nav-tabs").find("a");
     let linkTexts = links.map(link => link.text());
     expect(linkTexts).toContain("Complaints (5)");
   });

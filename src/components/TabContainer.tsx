@@ -4,7 +4,6 @@ import editorAdapter from "../editorAdapter";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import { connect } from "react-redux";
-import { Tabs, Tab } from "react-bootstrap";
 import Editor from "./Editor";
 import Classifications from "./Classifications";
 import Complaints from "./Complaints";
@@ -30,6 +29,11 @@ export interface TabContainerContext {
 export class TabContainer extends React.Component<TabContainerProps, any> {
   context: TabContainerContext;
 
+  constructor(props) {
+    super(props);
+    this.handleSelect = this.handleSelect.bind(this);
+  }
+
   static contextTypes: React.ValidationMap<TabContainerContext> = {
     router: React.PropTypes.object.isRequired,
     pathFor: React.PropTypes.func.isRequired
@@ -39,40 +43,75 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     let showComplaintCount = (typeof this.props.complaintsCount !== "undefined");
     let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.props.complaintsCount + ")" : "");
 
+    let tab = this.props.tab || "details";
+    let tabClass = (name) => {
+      return tab === name ? "active" : null;
+    };
+
+    let tabName = (name) => {
+      let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+      if (name === "complaints" && typeof this.props.complaintsCount !== "undefined") {
+        capitalized += " (" + this.props.complaintsCount + ")";
+      }
+      return capitalized;
+    };
+
+    let renderTab = (name, children) => {
+      let display = tab === name ? "block" : "none";
+      return (
+        <div style={{ display }}>
+          { children }
+        </div>
+      );
+    };
+
     return (
-      <Tabs id="tabs" activeKey={this.props.tab || "details"} animation={false} onSelect={this.handleSelect.bind(this)}>
-        <Tab eventKey={"details"} title="Details">
-          <div style={{ paddingTop: "2em" }}>
-            { this.props.children }
-          </div>
-        </Tab>
-        <Tab eventKey={"edit"} title="Edit">
-          <Editor
-            store={this.props.store}
-            csrfToken={this.props.csrfToken}
-            bookUrl={this.props.bookUrl}
-            refreshCatalog={this.props.refreshCatalog}
-            />
-        </Tab>
-        <Tab eventKey={"classifications"} title="Classifications">
-          <Classifications
-            store={this.props.store}
-            csrfToken={this.props.csrfToken}
-            bookUrl={this.props.bookUrl}
-            book={this.props.bookData}
-            refreshCatalog={this.props.refreshCatalog}
-            />
-        </Tab>
-        <Tab eventKey={"complaints"} title={complaintsTitle}>
-          <Complaints
-            store={this.props.store}
-            csrfToken={this.props.csrfToken}
-            bookUrl={this.props.bookUrl}
-            book={this.props.bookData}
-            refreshCatalog={this.props.refreshCatalog}
-            />
-        </Tab>
-      </Tabs>
+      <div className="bookTabs">
+        <ul className="nav nav-tabs">
+          { ["details", "edit", "classifications", "complaints"].map(name =>
+            <li key={name} role="presentation" className={tabClass(name)}>
+              <a href="javascript:void(0)" onClick={this.handleSelect} data-tabkey={name}>{tabName(name)}</a>
+            </li>
+          ) }
+        </ul>
+
+        <div className="bookTabContent">
+          { renderTab("details",
+            <div style={{ paddingTop: "2em" }}>
+              { this.props.children }
+            </div>
+          ) }
+
+          { renderTab("edit",
+            <Editor
+              store={this.props.store}
+              csrfToken={this.props.csrfToken}
+              bookUrl={this.props.bookUrl}
+              refreshCatalog={this.props.refreshCatalog}
+              />
+          ) }
+
+          { renderTab("classifications",
+            <Classifications
+              store={this.props.store}
+              csrfToken={this.props.csrfToken}
+              bookUrl={this.props.bookUrl}
+              book={this.props.bookData}
+              refreshCatalog={this.props.refreshCatalog}
+              />
+          ) }
+
+          { renderTab("complaints",
+            <Complaints
+              store={this.props.store}
+              csrfToken={this.props.csrfToken}
+              bookUrl={this.props.bookUrl}
+              book={this.props.bookData}
+              refreshCatalog={this.props.refreshCatalog}
+              />
+          ) }
+        </div>
+      </div>
     );
   }
 
@@ -86,7 +125,8 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     }
   }
 
-  handleSelect(tab) {
+  handleSelect(event) {
+    let tab = event.target.dataset.tabkey;
     if (this.context.router) {
       this.context.router.push(this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab));
     }

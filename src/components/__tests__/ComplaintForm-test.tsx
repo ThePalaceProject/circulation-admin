@@ -1,17 +1,17 @@
-jest.dontMock("../ComplaintForm");
+jest.autoMockOff();
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
+import { shallow, mount } from "enzyme";
 
 import ComplaintForm from "../ComplaintForm";
+import EditableSelect from "../EditableSelect";
 
 describe("ComplaintForm", () => {
   describe("rendering", () => {
-    let component;
+    let wrapper;
 
     beforeEach(() => {
-      component = TestUtils.renderIntoDocument(
+      wrapper = shallow(
         <ComplaintForm
           disabled={false}
           complaintUrl="complaint url"
@@ -22,13 +22,16 @@ describe("ComplaintForm", () => {
     });
 
     it("shows a select field with default value", () => {
-      let select = TestUtils.findRenderedDOMComponentWithTag(component, "select") as HTMLSelectElement;
-      expect(select.options[select.selectedIndex].innerHTML).toBe("select type");
+      let select = wrapper.find(EditableSelect);
+      expect(select.length).toBe(1);
+      expect(select.prop("disabled")).toBe(false);
+      let option = select.childAt(0);
+      expect(option.text()).toBe("complaint type");
     });
 
     it("shows complaint type options", () => {
-      let options = TestUtils.scryRenderedDOMComponentsWithTag(component, "option");
-      let types = options.map(option => option.getAttribute("value"));
+      let options = wrapper.find("option");
+      let types = options.map(option => option.prop("value"));
       expect(types).toEqual([
         "",
         "cannot-issue-loan",
@@ -47,11 +50,12 @@ describe("ComplaintForm", () => {
     });
 
     it("shows a submit button", () => {
-      let button = TestUtils.findRenderedDOMComponentWithTag(component, "input");
+      let button = wrapper.find("input[type='submit']");
+      expect(button.length).toBe(1);
     });
 
     it("disables", () => {
-      component = TestUtils.renderIntoDocument(
+      wrapper = shallow(
         <ComplaintForm
           disabled={true}
           complaintUrl="complaint url"
@@ -59,18 +63,23 @@ describe("ComplaintForm", () => {
           refreshComplaints={jest.genMockFunction()}
           />
       );
-      let button = TestUtils.findRenderedDOMComponentWithTag(component, "input");
-      expect(button.hasAttribute("disabled")).toBe(true);
+      let button = wrapper.find("input[type='submit']");
+      expect(button.prop("disabled")).toBe(true);
+      let select = wrapper.find(EditableSelect);
+      expect(select.prop("disabled")).toBe(true);
     });
   });
 
-  describe("posting", () => {
-    it("calls postComplaint", () => {
-      let postComplaint = jest.genMockFunction();
+  describe("behavior", () => {
+    let wrapper;
+    let postComplaint;
+
+    beforeEach(() => {
+      postComplaint = jest.genMockFunction();
       postComplaint.mockReturnValue(new Promise((resolve, reject) => {
         resolve();
       }));
-      let component = TestUtils.renderIntoDocument(
+      wrapper = mount(
         <ComplaintForm
           disabled={false}
           complaintUrl="complaint url"
@@ -78,21 +87,20 @@ describe("ComplaintForm", () => {
           refreshComplaints={jest.genMockFunction()}
           />
       );
-      let form = TestUtils.findRenderedDOMComponentWithTag(component, "form");
-      let select = TestUtils.findRenderedDOMComponentWithTag(component, "select") as HTMLSelectElement;
+    });
+
+    it("posts complaints", () => {
+      let form = wrapper.find("form");
+      let select = wrapper.find("select").get(0);
       select.value = "bad-description";
-      TestUtils.Simulate.submit(form);
+      form.simulate("submit");
       expect(postComplaint.mock.calls.length).toBe(1);
       expect(postComplaint.mock.calls[0][0]).toBe("complaint url");
       expect(postComplaint.mock.calls[0][1].type).toBe("http://librarysimplified.org/terms/problem/bad-description");
     });
 
-    it("calls refreshComplaints", (done) => {
-      let postComplaint = jest.genMockFunction();
-      postComplaint.mockReturnValue(new Promise((resolve, reject) => {
-        resolve();
-      }));
-      let component = TestUtils.renderIntoDocument(
+    it("refreshes complaints after post", (done) => {
+      wrapper = mount(
         <ComplaintForm
           disabled={false}
           complaintUrl="complaint url"
@@ -100,58 +108,34 @@ describe("ComplaintForm", () => {
           refreshComplaints={done}
           />
       );
-      let form = TestUtils.findRenderedDOMComponentWithTag(component, "form");
-      let select = TestUtils.findRenderedDOMComponentWithTag(component, "select") as HTMLSelectElement;
+      let form = wrapper.find("form");
+      let select = wrapper.find("select").get(0);
       select.value = "bad-description";
-      TestUtils.Simulate.submit(form);
+      form.simulate("submit");
     });
 
-    it("resets form", (done) => {
-      let postComplaint = jest.genMockFunction();
-      postComplaint.mockReturnValue(new Promise((resolve, reject) => {
-        resolve();
-      }));
-      let component = TestUtils.renderIntoDocument<ComplaintForm>(
-        <ComplaintForm
-          disabled={false}
-          complaintUrl="complaint url"
-          postComplaint={postComplaint}
-          refreshComplaints={jest.genMockFunction()}
-          />
-      );
-      component.resetForm = done;
-      let form = TestUtils.findRenderedDOMComponentWithTag(component, "form");
-      let select = TestUtils.findRenderedDOMComponentWithTag(component, "select") as HTMLSelectElement;
+    it("resets form after post", (done) => {
+      wrapper.instance().resetForm = done;
+      let form = wrapper.find("form");
+      let select = wrapper.find("select").get(0);
       select.value = "bad-description";
-      TestUtils.Simulate.submit(form);
+      form.simulate("submit");
     });
 
     it("displays error if no type is selected", () => {
-      let postComplaint = jest.genMockFunction();
-      postComplaint.mockReturnValue(new Promise((resolve, reject) => {
-        resolve();
-      }));
-      let component = TestUtils.renderIntoDocument<ComplaintForm>(
-        <ComplaintForm
-          disabled={false}
-          complaintUrl="complaint url"
-          postComplaint={postComplaint}
-          refreshComplaints={jest.genMockFunction()}
-          />
-      );
-      let form = TestUtils.findRenderedDOMComponentWithTag(component, "form");
-      TestUtils.Simulate.submit(form);
-      let errors = TestUtils.scryRenderedDOMComponentsWithClass(component, "complaintFormError");
+      let form = wrapper.find("form");
+      form.simulate("submit");
+      let errors = wrapper.find(".complaintFormError");
       expect(errors.length).toBe(1);
-      expect(errors[0].textContent).toBe("You must select a complaint type!");
+      expect(errors.at(0).text()).toBe("You must select a complaint type!");
     });
 
     it("calls showPostError() if post fails", (done) => {
-      let postComplaint = jest.genMockFunction();
+      postComplaint = jest.genMockFunction();
       postComplaint.mockReturnValue(new Promise((resolve, reject) => {
         reject();
       }));
-      let component = TestUtils.renderIntoDocument<ComplaintForm>(
+      wrapper = mount(
         <ComplaintForm
           disabled={false}
           complaintUrl="complaint url"
@@ -159,48 +143,27 @@ describe("ComplaintForm", () => {
           refreshComplaints={jest.genMockFunction()}
           />
       );
-      component.showPostError = done;
-      let form = TestUtils.findRenderedDOMComponentWithTag(component, "form");
-      let select = TestUtils.findRenderedDOMComponentWithTag(component, "select") as HTMLSelectElement;
+      wrapper.instance().showPostError = done;
+      let form = wrapper.find("form");
+      let select = wrapper.find("select").get(0);
       select.value = "bad-description";
-      TestUtils.Simulate.submit(form);
+      form.simulate("submit");
     });
-  });
 
-  describe("resetForm", () => {
     it("resets complaint type", () => {
-      let component = TestUtils.renderIntoDocument<ComplaintForm>(
-        <ComplaintForm
-          disabled={false}
-          complaintUrl="complaint url"
-          postComplaint={jest.genMockFunction()}
-          refreshComplaints={jest.genMockFunction()}
-          />
-      );
-      let select = TestUtils.findRenderedDOMComponentWithTag(component, "select") as HTMLSelectElement;
+      let select = wrapper.find("select").get(0);
       select.value = "bad-description";
-      component.resetForm();
+      wrapper.instance().resetForm();
+      select = wrapper.find("select").get(0);
       expect(select.value).toBe("");
     });
-  });
 
-  describe("showPostError", () => {
     it("shows post error", () => {
-      let component = TestUtils.renderIntoDocument<ComplaintForm>(
-        <ComplaintForm
-          disabled={false}
-          complaintUrl="complaint url"
-          postComplaint={jest.genMockFunction()}
-          refreshComplaints={jest.genMockFunction()}
-          />
-      );
-      let select = TestUtils.findRenderedDOMComponentWithTag(component, "select") as HTMLSelectElement;
-      select.value = "bad-description";
-      component.showPostError();
-      let errors = TestUtils.scryRenderedDOMComponentsWithClass(component, "complaintFormError");
+      wrapper.setState({ errors: ["test error"] });
+      wrapper.update();
+      let errors = wrapper.find(".complaintFormError");
       expect(errors.length).toBe(1);
-      expect(errors[0].textContent).toBe("Couldn't post complaint.");
-      expect(select.value).toBe("bad-description");
+      expect(errors.at(0).text()).toBe("test error");
     });
   });
 });

@@ -4,7 +4,9 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import ClassificationsForm from "../ClassificationsForm";
-import { EditableInput } from "../EditForm";
+import EditableInput from "../EditableInput";
+import EditableSelect from "../EditableSelect";
+import EditableRadio from "../EditableRadio";
 import GenreForm from "../GenreForm";
 import genreData from "./genreData";
 
@@ -45,11 +47,16 @@ describe("ClassificationsForm", () => {
       instance = wrapper.instance();
     });
 
-    it("shows editable select with audience", () => {
-      let input = editableInputByName("audience");
-      expect(input.props().type).toBe("select");
-      expect(input.props().label).toBe("Audience");
-      expect(input.props().value).toBe("Young Adult");
+    it("shows editable select with audience options", () => {
+      let select = wrapper
+        .find(EditableSelect)
+        .filterWhere(input => input.props().name === "audience");
+
+      expect(select.props().label).toBe("Audience");
+      expect(select.props().value).toBe("Young Adult");
+
+      let options = select.children();
+      expect(options.length).toBe(4);
     });
 
     it("shows editable inputs with min and max target age", () => {
@@ -63,18 +70,22 @@ describe("ClassificationsForm", () => {
     });
 
     it("shows editable radio buttons with fiction status", () => {
-      let fictionInput = editableInputByValue("fiction");
-      let nonfictionInput = editableInputByValue("nonfiction");
+      let fictionRadio = wrapper
+        .find(EditableRadio)
+        .filterWhere(input => input.props().value === "fiction");
+      let nonfictionRadio = wrapper
+        .find(EditableRadio)
+        .filterWhere(input => input.props().value === "nonfiction");
 
-      expect(fictionInput.props().type).toBe("radio");
-      expect(fictionInput.props().label).toBe(" Fiction");
-      expect(fictionInput.props().checked).toBe(true);
-      expect(fictionInput.props().value).toBe("fiction");
+      expect(fictionRadio.props().type).toBe("radio");
+      expect(fictionRadio.props().label).toBe(" Fiction");
+      expect(fictionRadio.props().checked).toBe(true);
+      expect(fictionRadio.props().value).toBe("fiction");
 
-      expect(nonfictionInput.props().type).toBe("radio");
-      expect(nonfictionInput.props().label).toBe(" Nonfiction");
-      expect(nonfictionInput.props().checked).toBe(false);
-      expect(nonfictionInput.props().value).toBe("nonfiction");
+      expect(nonfictionRadio.props().type).toBe("radio");
+      expect(nonfictionRadio.props().label).toBe(" Nonfiction");
+      expect(nonfictionRadio.props().checked).toBe(false);
+      expect(nonfictionRadio.props().value).toBe("nonfiction");
     });
 
     it("shows the book's full genres and remove buttons", () => {

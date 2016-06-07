@@ -42,7 +42,7 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   componentWillReceiveProps(props) {
     if (props.value !== this.props.value) {
       this.setState({
-        value: props.value
+        value: props.value || ""
       });
     }
   }
