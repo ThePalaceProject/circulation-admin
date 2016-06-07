@@ -3,7 +3,7 @@ jest.dontMock("../EditForm");
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import EditForm, { EditableInput } from "../EditForm";
+import EditForm, { EditableInput, EditableInputProps } from "../EditForm";
 import { Input, ButtonInput } from "react-bootstrap";
 import { BookData } from "../../interfaces";
 
@@ -19,7 +19,7 @@ describe("EditableInput", () => {
         />
     );
     let input = wrapper.find(Input);
-    expect(input.props().label).toEqual("label");
+    expect(input.prop("label")).toBe("label");
   });
 
   it("shows initial value from props", () => {
@@ -32,9 +32,9 @@ describe("EditableInput", () => {
         value="initial value"
         />
     );
-    expect(wrapper.state().value).toEqual("initial value");
+    expect(wrapper.state().value).toBe("initial value");
     let input = wrapper.find(Input);
-    expect(input.props().value).toEqual("initial value");
+    expect(input.prop("value")).toBe("initial value");
   });
 
   it("shows children from props", () => {
@@ -49,7 +49,7 @@ describe("EditableInput", () => {
         <option>option</option>
       </EditableInput>
     );
-    let option = wrapper.find("option")
+    let option = wrapper.find("option");
     expect(option.text()).toEqual("option");
   });
 
@@ -63,8 +63,8 @@ describe("EditableInput", () => {
         checked={true}
         />
     );
-    let input = wrapper.find(Input)
-    expect(input.props().checked).toEqual(true);
+    let input = wrapper.find(Input);
+    expect(input.prop("checked")).toEqual(true);
   });
 
   it("updates state and value when props change", () => {
@@ -80,7 +80,7 @@ describe("EditableInput", () => {
     wrapper.setProps({ value: "new value" });
     expect(wrapper.state().value).toBe("new value");
     let input = wrapper.find(Input);
-    expect(input.props().value).toEqual("new value");
+    expect(input.prop("value")).toBe("new value");
   });
 
   it("updates state when input changes", () => {
@@ -97,8 +97,8 @@ describe("EditableInput", () => {
     expect(wrapper.state().value).toBe("initial value");
     expect(wrapper.state().checked).toBe(false);
     let input = wrapper.find(Input);
-    expect(input.props().value).toBe("initial value");
-    expect(input.props().checked).toEqual(false);
+    expect(input.prop("value")).toBe("initial value");
+    expect(input.prop("checked")).toEqual(false);
   });
 
   it("updates value in state when input changes", () => {
@@ -146,7 +146,7 @@ describe("EditableInput", () => {
         />
     );
     let input = wrapper.find("input");
-    expect(input.props().disabled).toBeTruthy();
+    expect(input.prop("disabled")).toBe(true);
   });
 
   it("calls provided onChange", () => {
@@ -297,8 +297,8 @@ describe("EditForm", () => {
         />
     );
     let inputs = wrapper.find(EditableInput);
-    inputs.forEach((input) => {
-      expect(input.props().disabled).toBeTruthy();
+    inputs.forEach(input => {
+      expect(input.prop("disabled")).toBe(true);
     });
   });
 });

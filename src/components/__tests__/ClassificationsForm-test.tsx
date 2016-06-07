@@ -47,7 +47,7 @@ describe("ClassificationsForm", () => {
 
     it("shows editable select with audience", () => {
       let input = editableInputByName("audience");
-      expect(input.props().type).toBe("select")
+      expect(input.props().type).toBe("select");
       expect(input.props().label).toBe("Audience");
       expect(input.props().value).toBe("Young Adult");
     });
@@ -191,7 +191,7 @@ describe("ClassificationsForm", () => {
 
       // change to nonfiction should prompt user and clear fiction genre
       expect(window.confirm).toHaveBeenCalled();
-      expect(wrapper.state("genres")).toEqual([])
+      expect(wrapper.state("genres")).toEqual([]);
 
       expect((fictionElement as any).checked).toBe(false);
       expect((nonfictionElement as any).checked).toBe(true);
@@ -273,4 +273,4 @@ describe("ClassificationsForm", () => {
       expect(wrapper.state("genres")).toEqual(["Cooking"]);
     });
   });
-})
+});

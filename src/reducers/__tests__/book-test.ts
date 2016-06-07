@@ -62,7 +62,7 @@ describe("book reducer", () => {
       fetchError: "test error",
       isFetching: false
     });
-    expect(book(oldState, action)).toEqual(newState)
+    expect(book(oldState, action)).toEqual(newState);
   });
 
   it("handles EDIT_BOOK_FAILURE", () => {
@@ -78,7 +78,7 @@ describe("book reducer", () => {
       editError: "test error",
       isFetching: false
     });
-    expect(book(oldState, action)).toEqual(newState)
+    expect(book(oldState, action)).toEqual(newState);
   });
 
   it("handles LOAD_BOOK_ADMIN", () => {

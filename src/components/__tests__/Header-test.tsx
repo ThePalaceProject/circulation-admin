@@ -1,12 +1,11 @@
 jest.dontMock("../Header");
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
+import { shallow } from "enzyme";
 
 import Header from "../Header";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
-import { mockRouterContext } from "opds-web-client/lib/components/__tests__/routing";
+import { Link } from "react-router";
 
 class TestSearch extends React.Component<any, any> {
   render(): JSX.Element {
@@ -17,66 +16,57 @@ class TestSearch extends React.Component<any, any> {
 }
 
 describe("Header", () => {
-  let header;
+  let wrapper;
   let push, context;
 
   beforeEach(() => {
     push = jest.genMockFunction();
-    context = mockRouterContext(push);
+    context = { homeUrl: "home url" };
 
-    class FakeContext extends React.Component<any, any> {
-      static childContextTypes = {
-        router: React.PropTypes.object.isRequired,
-        pathFor: React.PropTypes.func.isRequired
-      };
-
-      getChildContext() {
-        return context;
-      }
-
-      render(): JSX.Element {
-        return (
-          <div>{ this.props.children }</div>
-        );
-      }
-    }
-
-    header = TestUtils.renderIntoDocument(
-      <FakeContext>
-        <Header CatalogLink={CatalogLink}>
-          <TestSearch />
-        </Header>
-      </FakeContext>
+    wrapper = shallow(
+      <Header>
+        <TestSearch />
+      </Header>,
+      { context }
     );
   });
 
   it("shows a logo image", () => {
-    let logo = TestUtils.findRenderedDOMComponentWithTag(header, "img");
+    let logo = wrapper.find("img");
     expect(logo).toBeTruthy();
   });
 
   it("shows the brand name", () => {
-    let brand = TestUtils.findRenderedDOMComponentWithClass(header, "navbar-brand");
-    expect(brand.textContent).toBe("NYPL");
+    expect(wrapper.containsMatchingElement("NYPL")).toBe(true);
   });
 
   it("shows a search component", () => {
-    let search = TestUtils.findRenderedComponentWithType(header, TestSearch);
+    let search = wrapper.find(TestSearch);
     expect(search).toBeTruthy();
-  })
+  });
 
-  it("shows top-level links", () => {
-    let links = TestUtils.scryRenderedComponentsWithType(header, CatalogLink);
-    let elements = links.map(link => ReactDOM.findDOMNode(link));
+  it("shows links", () => {
+    let catalogLinks = wrapper.find(CatalogLink);
 
-    expect(links.length).toBe(2);
+    expect(catalogLinks.length).toBe(3);
 
-    TestUtils.Simulate.click(elements[0], { button: 0 });
-    expect(push.mock.calls.length).toBe(1);
-    expect(push.mock.calls[0][0]).toBe(context.pathFor("/admin/complaints", null));
+    let homeLink = catalogLinks.at(0);
+    expect(homeLink.prop("collectionUrl")).toBe("home url");
+    expect(homeLink.prop("bookUrl")).toBe(null);
+    expect(homeLink.children().text()).toBe("Catalog");
 
-    TestUtils.Simulate.click(elements[1], { button: 0 });
-    expect(push.mock.calls.length).toBe(2);
-    expect(push.mock.calls[1][0]).toBe(context.pathFor("/admin/suppressed", null));
+    let complaintsLink = catalogLinks.at(1);
+    expect(complaintsLink.prop("collectionUrl")).toBe("/admin/complaints");
+    expect(complaintsLink.prop("bookUrl")).toBe(null);
+    expect(complaintsLink.children().text()).toBe("Complaints");
+
+    let hiddenLink = catalogLinks.at(2);
+    expect(hiddenLink.prop("collectionUrl")).toBe("/admin/suppressed");
+    expect(hiddenLink.prop("bookUrl")).toBe(null);
+    expect(hiddenLink.children().text()).toBe("Hidden Books");
+
+    let link = wrapper.find(Link);
+    expect(link.prop("to")).toBe("/admin/web/dashboard");
+    expect(link.children().text()).toBe("Dashboard");
   });
 });

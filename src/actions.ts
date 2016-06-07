@@ -1,4 +1,4 @@
-import { BookData, ComplaintsData, GenreTree, ClassificationData } from "./interfaces";
+import { BookData, ComplaintsData, GenreTree, ClassificationData, CirculationEventData } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
 
@@ -41,6 +41,11 @@ export default class ActionCreator {
   EDIT_CLASSIFICATIONS_REQUEST = "EDIT_CLASSIFICATIONS_REQUEST";
   EDIT_CLASSIFICATIONS_SUCCESS = "EDIT_CLASSIFICATIONS_SUCCESS";
   EDIT_CLASSIFICATIONS_FAILURE = "EDIT_CLASSIFICATIONS_FAILURE";
+
+  FETCH_CIRCULATION_EVENTS_REQUEST = "FETCH_CIRCULATION_EVENTS_REQUEST";
+  FETCH_CIRCULATION_EVENTS_SUCCESS = "FETCH_CIRCULATION_EVENTS_SUCCESS";
+  FETCH_CIRCULATION_EVENTS_FAILURE = "FETCH_CIRCULATION_EVENTS_FAILURE";
+  LOAD_CIRCULATION_EVENTS = "LOAD_CIRCULATION_EVENTS";
 
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
@@ -508,5 +513,70 @@ export default class ActionCreator {
 
   loadClassifications(classifications) {
     return { type: this.LOAD_CLASSIFICATIONS, classifications };
+  }
+
+  fetchCirculationEvents() {
+    let url = "/admin/circulation_events";
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchCirculationEventsRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: { circulation_events: CirculationEventData[] }) => {
+              dispatch(this.fetchCirculationEventsSuccess());
+              dispatch(this.loadCirculationEvents(data.circulation_events));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchCirculationEventsFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchCirculationEventsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve circulation events",
+                url: url
+              };
+              dispatch(this.fetchCirculationEventsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchCirculationEventsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchCirculationEventsRequest(url: string) {
+    return { type: this.FETCH_CIRCULATION_EVENTS_REQUEST, url };
+  }
+
+  fetchCirculationEventsSuccess() {
+    return { type: this.FETCH_CIRCULATION_EVENTS_SUCCESS };
+  }
+
+  fetchCirculationEventsFailure(error?: RequestError) {
+    return { type: this.FETCH_CIRCULATION_EVENTS_FAILURE, error };
+  }
+
+  loadCirculationEvents(data: CirculationEventData[]) {
+    return { type: this.LOAD_CIRCULATION_EVENTS, data };
   }
 }

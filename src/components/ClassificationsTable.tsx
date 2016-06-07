@@ -35,6 +35,6 @@ export default class ClassificationsTable extends React.Component<Classification
   }
 
   readableType(type) {
-    return type.replace(/http:\/\/librarysimplified\.org\/terms\/genres\/([^\/]+)\//, '$1');
+    return type.replace(/http:\/\/librarysimplified\.org\/terms\/genres\/([^\/]+)\//, "$1");
   }
 }

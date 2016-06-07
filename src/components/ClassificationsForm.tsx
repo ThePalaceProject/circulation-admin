@@ -158,7 +158,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   bookChanged(newBook: BookData): boolean {
     return newBook.audience !== this.props.book.audience ||
            newBook.fiction !== this.props.book.fiction ||
-           newBook.categories.sort() !== this.props.book.categories.sort()
+           newBook.categories.sort() !== this.props.book.categories.sort();
   }
 
   bookGenres(book: BookData) {

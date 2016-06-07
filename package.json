@@ -11,7 +11,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "prepublish": "typings install && npm run prod",
-    "test": "tslint -c tslint.json src/*.ts src/*.tsx && tsc && jest",
+    "test": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && tsc && jest",
     "test-browser": "npm run test-chrome && npm run test-firefox",
     "test-chrome": "node_modules/.bin/selenium-standalone install && nightwatch -e chrome",
     "test-firefox": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox",
@@ -21,13 +21,15 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
-    "opds-web-client": "^0.0.17",
+    "moment": "^2.13.0",
     "opds-feed-parser": "0.0.11",
+    "opds-web-client": "^0.0.17",
     "qs": "^6.1.0",
     "react": "^0.14.7",
     "react-bootstrap": "0.28.3",
     "react-dom": "^0.14.7",
     "react-redux": "^4.3.0",
+    "react-router": "^2.4.1",
     "redux": "^3.2.1",
     "redux-thunk": "^1.0.3",
     "request": "^2.69.0",
@@ -36,7 +38,7 @@
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
-    "enzyme": "^2.2.0",
+    "enzyme": "^2.3.0",
     "file-loader": "^0.8.5",
     "jest": "^0.1.40",
     "jest-cli": "^0.8.2",
@@ -48,7 +50,7 @@
     "ts-loader": "^0.8.0",
     "tslint": "^3.10.0",
     "typescript": "^1.8.10",
-    "typings": "^0.7.12",
+    "typings": "^1.0.4",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.12"
   },

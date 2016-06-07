@@ -69,3 +69,18 @@ export interface ClassificationData {
   source: string;
   weight: number;
 }
+
+export interface CirculationEventData {
+  id: number;
+  type: string;
+  patron_id: string;
+  time: string;
+  book: {
+    title: string;
+    url: string;
+  };
+}
+
+export interface PathFor {
+  (collectionUrl: string, bookUrl: string, tab?: string): string;
+}

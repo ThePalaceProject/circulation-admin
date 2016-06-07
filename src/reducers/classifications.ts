@@ -79,4 +79,4 @@ export default (state: ClassificationsState = initialState, action): Classificat
     default:
       return state;
   }
-}
+};

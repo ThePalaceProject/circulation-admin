@@ -1,8 +1,7 @@
 jest.autoMockOff();
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
+import { shallow } from "enzyme";
 
 import buildStore from "../../store";
 import BookDetailsContainer from "../BookDetailsContainer";
@@ -25,51 +24,40 @@ let initialState = {
 };
 
 describe("BookDetailsContainer", () => {
-  let navigate;
-  let container;
+  let wrapper;
   let store;
   let context;
+  let refreshCatalog;
 
   beforeEach(() => {
     store = buildStore();
-    navigate = jest.genMockFunction();
+    context = {
+      editorStore: store,
+      tab: "tab",
+      csrfToken: "token"
+    };
+    refreshCatalog = jest.genMockFunction();
 
-    class FakeContext extends React.Component<any, any> {
-      static childContextTypes = {
-        editorStore: React.PropTypes.object,
-        csrfToken: React.PropTypes.string,
-        navigate: React.PropTypes.func,
-        tab: React.PropTypes.string
-      };
-
-      getChildContext() {
-        return {
-          editorStore: store,
-          csrfToken: "token",
-          navigate: navigate,
-          tab: "tab"
-        };
-      }
-
-      render(): JSX.Element {
-        return (
-          <div>{ this.props.children }</div>
-        );
-      }
-    }
-
-    container = TestUtils.renderIntoDocument(
-      <FakeContext>
-        <BookDetailsContainer bookUrl="book url" collectionUrl="collection url" refreshCatalog={jest.genMockFunction()}>
-          <div className="bookDetails">Moby Dick</div>
-        </BookDetailsContainer>
-      </FakeContext>
+    wrapper = shallow(
+      <BookDetailsContainer
+        bookUrl="book url"
+        collectionUrl="collection url"
+        refreshCatalog={refreshCatalog}>
+        <div className="bookDetails">Moby Dick</div>
+      </BookDetailsContainer>,
+      { context }
     );
   });
 
   it("shows a tab container with initial tab", () => {
-    let tabContainer = TestUtils.findRenderedComponentWithType(container, TabContainer);
+    let tabContainer = wrapper.find(TabContainer);
     expect(tabContainer).toBeTruthy();
-    expect(tabContainer.props.tab).toBe("tab");
+    expect(tabContainer.props().bookUrl).toBe("book url");
+    expect(tabContainer.props().collectionUrl).toBe("collection url");
+    expect(tabContainer.props().tab).toBe("tab");
+    expect(tabContainer.props().csrfToken).toBe("token");
+    expect(tabContainer.props().refreshCatalog).toBe(refreshCatalog);
+    expect(tabContainer.props().store).toBe(store);
+    expect(tabContainer.children()).toEqual(tabContainer.children());
   });
 });
