@@ -1,14 +1,15 @@
 import * as React from "react";
 
-export interface EditableCheckboxProps extends React.HTMLProps<EditableCheckbox> {
+export interface EditableRadioProps extends React.HTMLProps<EditableRadio> {
   label?: string;
-  value?: string;
+  value: string;
   name: string;
   disabled: boolean;
   onChange?: () => any;
+  checked: boolean;
 }
 
-export default class EditableCheckbox extends React.Component<EditableCheckboxProps, any> {
+export default class EditableRadio extends React.Component<EditableRadioProps, any> {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,7 +26,7 @@ export default class EditableCheckbox extends React.Component<EditableCheckboxPr
           type="radio"
           disabled={this.props.disabled}
           name={this.props.name}
-          ref="radio"
+          ref="element"
           value={this.state.value}
           onChange={this.handleChange}
           style={this.props.style}
@@ -60,7 +61,7 @@ export default class EditableCheckbox extends React.Component<EditableCheckboxPr
   }
 
   getValue() {
-    return this.getChecked() ? (this.refs as any).radio.value : null;
+    return this.getChecked() ? (this.refs as any).element.value : null;
   }
 
   getChecked() {

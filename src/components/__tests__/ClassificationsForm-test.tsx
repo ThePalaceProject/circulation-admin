@@ -5,7 +5,6 @@ import { shallow, mount } from "enzyme";
 
 import ClassificationsForm from "../ClassificationsForm";
 import EditableInput from "../EditableInput";
-import EditableSelect from "../EditableSelect";
 import EditableRadio from "../EditableRadio";
 import GenreForm from "../GenreForm";
 import genreData from "./genreData";
@@ -48,10 +47,7 @@ describe("ClassificationsForm", () => {
     });
 
     it("shows editable select with audience options", () => {
-      let select = wrapper
-        .find(EditableSelect)
-        .filterWhere(input => input.props().name === "audience");
-
+      let select = editableInputByName("audience");
       expect(select.props().label).toBe("Audience");
       expect(select.props().value).toBe("Young Adult");
 

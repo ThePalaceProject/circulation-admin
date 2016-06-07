@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import EditableInput from "./EditableInput";
-import EditableSelect from "./EditableSelect";
 import EditableRadio from "./EditableRadio";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
@@ -34,7 +33,8 @@ export default class ClassificationsForm extends React.Component<Classifications
 
     return (
       <div className="classificationsForm">
-        <EditableSelect
+        <EditableInput
+          elementType="select"
           disabled={this.props.disabled}
           style={{ width: 200 }}
           name="audience"
@@ -46,13 +46,14 @@ export default class ClassificationsForm extends React.Component<Classifications
           <option value="Young Adult">Young Adult</option>
           <option value="Adult">Adult</option>
           <option value="Adults Only">Adults Only</option>
-        </EditableSelect>
+        </EditableInput>
 
         { this.shouldShowTargetAge() &&
           <div className="form-group">
             <label>Target Age Range</label>
             <div className="form-inline">
               <EditableInput
+                elementType="input"
                 ref="targetAgeMin"
                 type="text"
                 disabled={this.props.disabled}
@@ -62,6 +63,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                 />
               <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
               <EditableInput
+                elementType="input"
                 ref="targetAgeMax"
                 type="text"
                 disabled={this.props.disabled}

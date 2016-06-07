@@ -1,6 +1,5 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import EditableTextarea from "./EditableTextarea";
 import { BookData } from "../interfaces";
 
 export interface EditFormProps extends BookData {
@@ -20,6 +19,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           value={this.props.csrfToken}
           />
         <EditableInput
+          elementType="input"
           type="text"
           disabled={this.props.disabled}
           name="title"
@@ -27,6 +27,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           value={this.props.title}
           />
         <EditableInput
+          elementType="input"
           type="text"
           disabled={this.props.disabled}
           name="subtitle"
@@ -37,6 +38,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           <label>Series</label>
           <div className="form-inline">
             <EditableInput
+              elementType="input"
               style={{ width: "300px" }}
               type="text"
               disabled={this.props.disabled}
@@ -46,6 +48,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
               />
             <span>&nbsp;&nbsp;</span>
             <EditableInput
+              elementType="input"
               style={{ width: "50px" }}
               type="text"
               disabled={this.props.disabled}
@@ -55,7 +58,8 @@ export default class EditForm extends React.Component<EditFormProps, any> {
               />
           </div>
         </div>
-        <EditableTextarea
+        <EditableInput
+          elementType="textarea"
           style={{ height: "300px" }}
           disabled={this.props.disabled}
           name="summary"

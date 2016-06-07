@@ -4,7 +4,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import ComplaintForm from "../ComplaintForm";
-import EditableSelect from "../EditableSelect";
+import EditableInput from "../EditableInput";
 
 describe("ComplaintForm", () => {
   describe("rendering", () => {
@@ -22,7 +22,7 @@ describe("ComplaintForm", () => {
     });
 
     it("shows a select field with default value", () => {
-      let select = wrapper.find(EditableSelect);
+      let select = wrapper.find(EditableInput);
       expect(select.length).toBe(1);
       expect(select.prop("disabled")).toBe(false);
       let option = select.childAt(0);
@@ -65,7 +65,7 @@ describe("ComplaintForm", () => {
       );
       let button = wrapper.find("input[type='submit']");
       expect(button.prop("disabled")).toBe(true);
-      let select = wrapper.find(EditableSelect);
+      let select = wrapper.find(EditableInput);
       expect(select.prop("disabled")).toBe(true);
     });
   });

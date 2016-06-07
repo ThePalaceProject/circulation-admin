@@ -5,7 +5,6 @@ import { shallow, mount } from "enzyme";
 
 import EditForm from "../EditForm";
 import EditableInput from "../EditableInput";
-import EditableTextarea from "../EditableTextarea";
 import { BookData } from "../../interfaces";
 
 describe("EditForm", () => {
@@ -71,9 +70,7 @@ describe("EditForm", () => {
     });
 
     it("shows editable textarea with summary", () => {
-      let textarea = wrapper
-        .find(EditableTextarea)
-        .filterWhere(textarea => textarea.prop("name") === "summary");
+      let textarea = editableInputByName("summary");
       expect(textarea.prop("label")).toBe("Summary");
       expect(textarea.prop("value")).toBe("summary");
     });

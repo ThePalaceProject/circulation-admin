@@ -1,5 +1,5 @@
 import * as React from "react";
-import EditableSelect from "./EditableSelect";
+import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
 
 export interface ComplaintFormProps {
@@ -39,10 +39,15 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
           <div className="complaintFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
         ) }
         <form onSubmit={this.post} className="form-inline">
-          <EditableSelect ref="type" name="type" placeholder="" disabled={this.props.disabled}>
+          <EditableInput
+            elementType="select"
+            ref="type"
+            name="type"
+            placeholder=""
+            disabled={this.props.disabled}>
             <option value="">complaint type</option>
             { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
-          </EditableSelect> &nbsp;
+          </EditableInput> &nbsp;
           <input className="btn btn-default" type="submit" value="Submit" disabled={this.props.disabled} />
         </form>
       </div>
@@ -52,7 +57,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
   post(event) {
     event.preventDefault();
 
-    let value = (this.refs["type"] as EditableSelect).getValue();
+    let value = (this.refs["type"] as EditableInput).getValue();
 
     if (value) {
       this.setState({ errors: [] });

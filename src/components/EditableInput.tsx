@@ -1,11 +1,8 @@
 import * as React from "react";
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
+  elementType: string;
   label?: string;
-  value?: string;
-  name: string;
-  disabled: boolean;
-  type: string;
   onChange?: () => any;
 }
 
@@ -19,24 +16,29 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   }
 
   render() {
+    let element = this.props.elementType;
+
     return (
       <div className="form-group">
         { this.props.label &&
           <label className="control-label">{this.props.label}</label>
         }
-        <input
-          className="form-control"
-          type={this.props.type}
-          disabled={this.props.disabled}
-          name={this.props.name}
-          ref="input"
-          value={this.state.value}
-          onChange={this.handleChange}
-          style={this.props.style}
-          placeholder={this.props.placeholder}
-          />
+        { this.renderElement() }
       </div>
     );
+  }
+
+  renderElement() {
+    return React.createElement(this.props.elementType, {
+      className: "form-control",
+      disabled: this.props.disabled,
+      name: this.props.name,
+      ref: "element",
+      value: this.state.value,
+      onChange: this.handleChange,
+      style: this.props.style,
+      placeholder: this.props.placeholder,
+    }, this.props.children);
   }
 
   componentWillReceiveProps(props) {
@@ -56,10 +58,10 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   }
 
   getValue() {
-    return (this.refs as any).input.value;
+    return (this.refs as any).element.value;
   }
 
   reset() {
-    (this.refs as any).input.value = "";
+    (this.refs as any).element.value = "";
   }
 }
