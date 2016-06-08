@@ -74,14 +74,14 @@ describe("ClassificationsForm", () => {
         .filterWhere(input => input.props().value === "nonfiction");
 
       expect(fictionRadio.props().type).toBe("radio");
-      expect(fictionRadio.props().label).toBe(" Fiction");
+      expect(fictionRadio.props().label).toBe("Fiction");
       expect(fictionRadio.props().checked).toBe(true);
-      expect(fictionRadio.props().value).toBe("fiction");
+      expect(fictionRadio.props().name).toBe("fiction");
 
       expect(nonfictionRadio.props().type).toBe("radio");
-      expect(nonfictionRadio.props().label).toBe(" Nonfiction");
+      expect(nonfictionRadio.props().label).toBe("Nonfiction");
       expect(nonfictionRadio.props().checked).toBe(false);
-      expect(nonfictionRadio.props().value).toBe("nonfiction");
+      expect(nonfictionRadio.props().name).toBe("fiction");
     });
 
     it("shows the book's full genres and remove buttons", () => {

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
-  elementType: string;
+  elementType?: string;
   label?: string;
   onChange?: () => any;
 }

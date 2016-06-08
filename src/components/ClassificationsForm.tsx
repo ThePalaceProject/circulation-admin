@@ -82,8 +82,8 @@ export default class ClassificationsForm extends React.Component<Classifications
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
-              label=" Fiction"
               value="fiction"
+              label="Fiction"
               ref="fiction"
               checked={this.state.fiction}
               onChange={this.handleFictionChange}
@@ -93,8 +93,8 @@ export default class ClassificationsForm extends React.Component<Classifications
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
-              label=" Nonfiction"
               value="nonfiction"
+              label="Nonfiction"
               ref="nonfiction"
               checked={!this.state.fiction}
               onChange={this.handleFictionChange}
@@ -106,7 +106,9 @@ export default class ClassificationsForm extends React.Component<Classifications
           <label>Genres</label>
           { this.state.genres.sort().map(category =>
             <div key={category} className="bookGenre">
-              <div className="bookGenreName" style={{ display: "inline-block", marginRight: 10 }}>
+              <div
+                className="bookGenreName"
+                style={{ display: "inline-block", marginRight: 10 }}>
                 {this.fullGenre(category)}
               </div>
               <i
@@ -173,12 +175,13 @@ export default class ClassificationsForm extends React.Component<Classifications
 
     return book.categories.filter(category => {
       return !!this.props.genreTree["Fiction"][category] ||
-        !!this.props.genreTree["Nonfiction"][category];
+             !!this.props.genreTree["Nonfiction"][category];
     });
   }
 
   shouldShowTargetAge() {
-    return this.state.audience === "Children" || this.state.audience === "Young Adult";
+    return this.state.audience === "Children" ||
+           this.state.audience === "Young Adult";
   }
 
   filterGenres(genres: string[], fiction: boolean = true) {
@@ -202,7 +205,8 @@ export default class ClassificationsForm extends React.Component<Classifications
       return [];
     }
 
-    return Object.keys(this.props.genreTree[top]).map(key => this.props.genreTree[top][key]);
+    return Object.keys(this.props.genreTree[top])
+                 .map(key => this.props.genreTree[top][key]);
   }
 
   fullGenre(category) {
@@ -239,9 +243,15 @@ export default class ClassificationsForm extends React.Component<Classifications
   handleFictionChange() {
     let value = (this.refs as any).fiction.getChecked();
     let clearedType = value ? "Nonfiction" : "Fiction";
+    let message = "Are you sure? This will clear any " +
+                  clearedType +
+                  " genres you have chosen!";
 
-    if (this.state.genres.length === 0 || confirm(`Are you sure? This will clear any ${clearedType} genres you have chosen!`)) {
-      this.setState({ fiction: value, genres: this.filterGenres(this.state.genres, value) });
+    if (this.state.genres.length === 0 || confirm(message)) {
+      this.setState({
+        fiction: value,
+        genres: this.filterGenres(this.state.genres, value)
+      });
     }
   }
 
@@ -252,7 +262,9 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   removeGenre(genreToRemove) {
-    this.setState({ genres: this.state.genres.filter(genre => genre !== genreToRemove) });
+    this.setState({
+      genres: this.state.genres.filter(genre => genre !== genreToRemove)
+    });
   }
 
   submit() {
