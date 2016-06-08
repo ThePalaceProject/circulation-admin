@@ -1,76 +1,6 @@
 import * as React from "react";
-import { Input, ButtonInput } from "react-bootstrap";
+import EditableInput from "./EditableInput";
 import { BookData } from "../interfaces";
-
-export interface EditableInputProps extends React.HTMLProps<EditableInput> {
-  label?: string;
-  value?: string;
-  checked?: boolean;
-  name: string;
-  disabled: boolean;
-  type: string;
-  onChange?: () => any;
-}
-
-export class EditableInput extends React.Component<EditableInputProps, any> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: props.value,
-      checked: props.checked
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  render() {
-    return (
-      <Input
-        type={this.props.type}
-        disabled={this.props.disabled}
-        name={this.props.name}
-        label={this.props.label}
-        ref="input"
-        value={this.state.value}
-        onChange={this.handleChange}
-        style={this.props.style}
-        placeholder={this.props.placeholder}
-        checked={this.state.checked}
-        >
-        {this.props.children}
-      </Input>
-    );
-  }
-
-  componentWillReceiveProps(props) {
-    if (props.value !== this.props.value) {
-      this.setState({
-        value: props.value
-      });
-    }
-    if (props.checked !== this.props.checked) {
-      this.setState({
-        checked: props.checked
-      });
-    }
-  }
-
-  handleChange() {
-    if (!this.props.onChange || this.props.onChange() !== false) {
-      this.setState({
-        value: this.getValue(),
-        checked: this.getChecked()
-      });
-    }
-  }
-
-  getValue() {
-    return (this.refs as any).input.getValue();
-  }
-
-  getChecked() {
-    return (this.refs as any).input.getChecked();
-  }
-}
 
 export interface EditFormProps extends BookData {
   csrfToken: string;
@@ -89,6 +19,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           value={this.props.csrfToken}
           />
         <EditableInput
+          elementType="input"
           type="text"
           disabled={this.props.disabled}
           name="title"
@@ -96,6 +27,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           value={this.props.title}
           />
         <EditableInput
+          elementType="input"
           type="text"
           disabled={this.props.disabled}
           name="subtitle"
@@ -106,6 +38,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           <label>Series</label>
           <div className="form-inline">
             <EditableInput
+              elementType="input"
               style={{ width: "300px" }}
               type="text"
               disabled={this.props.disabled}
@@ -115,6 +48,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
               />
             <span>&nbsp;&nbsp;</span>
             <EditableInput
+              elementType="input"
               style={{ width: "50px" }}
               type="text"
               disabled={this.props.disabled}
@@ -125,18 +59,19 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           </div>
         </div>
         <EditableInput
+          elementType="textarea"
           style={{ height: "300px" }}
-          type="textarea"
           disabled={this.props.disabled}
           name="summary"
           label="Summary"
           value={this.props.summary}
           />
-        <ButtonInput
+        <button
+          className="btn btn-default"
           disabled={this.props.disabled}
-          type="submit"
-          value="Save"
-          />
+          type="submit">
+          Submit
+        </button>
       </form>
     );
   }

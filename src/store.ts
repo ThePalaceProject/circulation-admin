@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import * as thunk from "redux-thunk";
 import catalogReducers from "opds-web-client/lib/reducers/index";
 import editorReducers from "./reducers/index";
+const thunk = require("redux-thunk").default;
 
 let reducers = combineReducers({
   editor: editorReducers,

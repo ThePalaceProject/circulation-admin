@@ -1,174 +1,11 @@
-jest.dontMock("../EditForm");
+jest.autoMockOff();
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import EditForm, { EditableInput, EditableInputProps } from "../EditForm";
-import { Input, ButtonInput } from "react-bootstrap";
+import EditForm from "../EditForm";
+import EditableInput from "../EditableInput";
 import { BookData } from "../../interfaces";
-
-describe("EditableInput", () => {
-  it("shows label from props", () => {
-    let wrapper = shallow(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={false}
-        value="initial value"
-        />
-    );
-    let input = wrapper.find(Input);
-    expect(input.prop("label")).toBe("label");
-  });
-
-  it("shows initial value from props", () => {
-    let wrapper = shallow(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={false}
-        value="initial value"
-        />
-    );
-    expect(wrapper.state().value).toBe("initial value");
-    let input = wrapper.find(Input);
-    expect(input.prop("value")).toBe("initial value");
-  });
-
-  it("shows children from props", () => {
-    let wrapper = shallow(
-      <EditableInput
-        type="select"
-        label="label"
-        name="name"
-        disabled={false}
-        value="initial value"
-        >
-        <option>option</option>
-      </EditableInput>
-    );
-    let option = wrapper.find("option");
-    expect(option.text()).toEqual("option");
-  });
-
-  it("shows checked from props", () => {
-    let wrapper = shallow(
-      <EditableInput
-        type="select"
-        label="label"
-        name="name"
-        disabled={false}
-        checked={true}
-        />
-    );
-    let input = wrapper.find(Input);
-    expect(input.prop("checked")).toEqual(true);
-  });
-
-  it("updates state and value when props change", () => {
-    let wrapper = shallow(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={false}
-        value="initial value"
-        />
-    );
-    wrapper.setProps({ value: "new value" });
-    expect(wrapper.state().value).toBe("new value");
-    let input = wrapper.find(Input);
-    expect(input.prop("value")).toBe("new value");
-  });
-
-  it("updates state when input changes", () => {
-    let wrapper = mount(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={false}
-        value="initial value"
-        checked={false}
-        />
-    );
-    expect(wrapper.state().value).toBe("initial value");
-    expect(wrapper.state().checked).toBe(false);
-    let input = wrapper.find(Input);
-    expect(input.prop("value")).toBe("initial value");
-    expect(input.prop("checked")).toEqual(false);
-  });
-
-  it("updates value in state when input changes", () => {
-    let wrapper = mount(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={false}
-        value="initial value"
-        />
-    );
-    let input = wrapper.find("input");
-    let inputElement = input.get(0) as any;
-    inputElement.value = "new value";
-    input.simulate("change");
-    expect(wrapper.state().value).toBe("new value");
-  });
-
-  it("updates checked in state when input changes", () => {
-    let wrapper = mount(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={false}
-        value="initial value"
-        />
-    );
-    let input = wrapper.find("input");
-    let inputElement = input.get(0) as any;
-    inputElement.checked = true;
-    input.simulate("change");
-    expect(wrapper.state().checked).toBe(true);
-  });
-
-  it("disables", () => {
-    let wrapper = mount(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={true}
-        value="initial value"
-        />
-    );
-    let input = wrapper.find("input");
-    expect(input.prop("disabled")).toBe(true);
-  });
-
-  it("calls provided onChange", () => {
-    let onChange = jest.genMockFunction();
-    let wrapper = mount(
-      <EditableInput
-        type="text"
-        label="label"
-        name="name"
-        disabled={true}
-        value="initial value"
-        onChange={onChange}
-        />
-    );
-
-    let input = wrapper.find("input");
-    let inputElement = input.get(0) as any;
-    inputElement.value = "new value";
-    input.simulate("change");
-    expect(onChange.mock.calls.length).toBe(1);
-  });
-});
 
 describe("EditForm", () => {
   let bookData: BookData = {
@@ -232,10 +69,10 @@ describe("EditForm", () => {
       expect(input.props().value).toBe("3");
     });
 
-    it("shows editable input with summary", () => {
-      let input = editableInputByName("summary");
-      expect(input.props().label).toBe("Summary");
-      expect(input.props().value).toBe("summary");
+    it("shows editable textarea with summary", () => {
+      let textarea = editableInputByName("summary");
+      expect(textarea.prop("label")).toBe("Summary");
+      expect(textarea.prop("value")).toBe("summary");
     });
   });
 

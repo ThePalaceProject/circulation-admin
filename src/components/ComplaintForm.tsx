@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Input, ButtonInput } from "react-bootstrap";
+import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
 
 export interface ComplaintFormProps {
@@ -39,11 +39,16 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
           <div className="complaintFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
         ) }
         <form onSubmit={this.post} className="form-inline">
-          <Input ref="type" type="select" name="type" placeholder="">
-            <option value="">select type</option>
+          <EditableInput
+            elementType="select"
+            ref="type"
+            name="type"
+            placeholder=""
+            disabled={this.props.disabled}>
+            <option value="">complaint type</option>
             { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
-          </Input> &nbsp;
-          <ButtonInput type="submit" value="Submit" disabled={this.props.disabled} />
+          </EditableInput> &nbsp;
+          <input className="btn btn-default" type="submit" value="Submit" disabled={this.props.disabled} />
         </form>
       </div>
     );
@@ -52,10 +57,9 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
   post(event) {
     event.preventDefault();
 
-    let input = this.refs["type"] as Input;
-    let select = input.refs["input"] as HTMLSelectElement;
+    let value = (this.refs["type"] as EditableInput).getValue();
 
-    if (select.value) {
+    if (value) {
       this.setState({ errors: [] });
     } else {
       this.setState({ errors: ["You must select a complaint type!"] });
@@ -63,12 +67,12 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
     }
 
     let data = {
-      type: "http://librarysimplified.org/terms/problem/" + select.value
+      type: "http://librarysimplified.org/terms/problem/" + value
     };
 
     this.props.postComplaint(this.props.complaintUrl, data).then(response => {
       this.props.refreshComplaints();
-      this.resetForm();
+      this.clear();
     }).catch(err => {
       this.showPostError();
     });
@@ -78,9 +82,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
     this.setState({ errors: ["Couldn't post complaint."] });
   }
 
-  resetForm() {
-    let input = this.refs["type"] as Input;
-    let select = input.refs["input"] as HTMLSelectElement;
-    select.value = "";
+  clear() {
+    (this.refs["type"] as any).clear();
   }
 }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { EditableInput } from "./EditForm";
+import EditableInput from "./EditableInput";
+import EditableRadio from "./EditableRadio";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
 
@@ -33,7 +34,7 @@ export default class ClassificationsForm extends React.Component<Classifications
     return (
       <div className="classificationsForm">
         <EditableInput
-          type="select"
+          elementType="select"
           disabled={this.props.disabled}
           style={{ width: 200 }}
           name="audience"
@@ -52,6 +53,7 @@ export default class ClassificationsForm extends React.Component<Classifications
             <label>Target Age Range</label>
             <div className="form-inline">
               <EditableInput
+                elementType="input"
                 ref="targetAgeMin"
                 type="text"
                 disabled={this.props.disabled}
@@ -61,6 +63,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                 />
               <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
               <EditableInput
+                elementType="input"
                 ref="targetAgeMax"
                 type="text"
                 disabled={this.props.disabled}
@@ -75,35 +78,37 @@ export default class ClassificationsForm extends React.Component<Classifications
         <div className="form-group">
           <label>Fiction Classification</label>
           <div className="form-inline">
-            <EditableInput
+            <EditableRadio
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
-              label=" Fiction"
               value="fiction"
+              label="Fiction"
               ref="fiction"
               checked={this.state.fiction}
               onChange={this.handleFictionChange}
               />
             &nbsp; &nbsp; &nbsp;
-            <EditableInput
+            <EditableRadio
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
-              label=" Nonfiction"
               value="nonfiction"
+              label="Nonfiction"
               ref="nonfiction"
               checked={!this.state.fiction}
               onChange={this.handleFictionChange}
               />
-          </div>
+            </div>
         </div>
 
         <div className="form-group">
           <label>Genres</label>
           { this.state.genres.sort().map(category =>
             <div key={category} className="bookGenre">
-              <div className="bookGenreName" style={{ display: "inline-block", marginRight: 10 }}>
+              <div
+                className="bookGenreName"
+                style={{ display: "inline-block", marginRight: 10 }}>
                 {this.fullGenre(category)}
               </div>
               <i
@@ -157,6 +162,8 @@ export default class ClassificationsForm extends React.Component<Classifications
 
   bookChanged(newBook: BookData): boolean {
     return newBook.audience !== this.props.book.audience ||
+           newBook.targetAgeRange[0] !== this.props.book.targetAgeRange[0] ||
+           newBook.targetAgeRange[1] !== this.props.book.targetAgeRange[1] ||
            newBook.fiction !== this.props.book.fiction ||
            newBook.categories.sort() !== this.props.book.categories.sort();
   }
@@ -168,12 +175,13 @@ export default class ClassificationsForm extends React.Component<Classifications
 
     return book.categories.filter(category => {
       return !!this.props.genreTree["Fiction"][category] ||
-        !!this.props.genreTree["Nonfiction"][category];
+             !!this.props.genreTree["Nonfiction"][category];
     });
   }
 
   shouldShowTargetAge() {
-    return this.state.audience === "Children" || this.state.audience === "Young Adult";
+    return this.state.audience === "Children" ||
+           this.state.audience === "Young Adult";
   }
 
   filterGenres(genres: string[], fiction: boolean = true) {
@@ -197,7 +205,8 @@ export default class ClassificationsForm extends React.Component<Classifications
       return [];
     }
 
-    return Object.keys(this.props.genreTree[top]).map(key => this.props.genreTree[top][key]);
+    return Object.keys(this.props.genreTree[top])
+                 .map(key => this.props.genreTree[top][key]);
   }
 
   fullGenre(category) {
@@ -222,8 +231,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   handleAudienceChange() {
-    let audience = (this.refs as any).audience;
-    let value = (audience.refs as any).input.getValue();
+    let value = (this.refs as any).audience.getValue();
 
     if (this.validateAudience(value, this.state.genres)) {
       this.setState({ audience: value });
@@ -233,12 +241,17 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   handleFictionChange() {
-    let fiction = (this.refs as any).fiction;
-    let value = (fiction.refs as any).input.getChecked();
+    let value = (this.refs as any).fiction.getChecked();
     let clearedType = value ? "Nonfiction" : "Fiction";
+    let message = "Are you sure? This will clear any " +
+                  clearedType +
+                  " genres you have chosen!";
 
-    if (this.state.genres.length === 0 || confirm(`Are you sure? This will clear any ${clearedType} genres you have chosen!`)) {
-      this.setState({ fiction: value, genres: this.filterGenres(this.state.genres, value) });
+    if (this.state.genres.length === 0 || confirm(message)) {
+      this.setState({
+        fiction: value,
+        genres: this.filterGenres(this.state.genres, value)
+      });
     }
   }
 
@@ -249,7 +262,9 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   removeGenre(genreToRemove) {
-    this.setState({ genres: this.state.genres.filter(genre => genre !== genreToRemove) });
+    this.setState({
+      genres: this.state.genres.filter(genre => genre !== genreToRemove)
+    });
   }
 
   submit() {

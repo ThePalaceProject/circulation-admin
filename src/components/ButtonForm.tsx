@@ -1,5 +1,4 @@
 import * as React from "react";
-import { ButtonInput } from "react-bootstrap";
 
 export interface ButtonFormProps extends React.HTMLProps<ButtonForm> {
   label: string;
