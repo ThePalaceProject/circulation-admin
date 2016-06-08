@@ -98,4 +98,22 @@ describe("EditableInput", () => {
     input.simulate("change");
     expect(onChange.mock.calls.length).toBe(1);
   });
+
+  it("clears input", () => {
+    wrapper = mount(
+      <EditableInput
+        elementType="input"
+        type="text"
+        label="label"
+        name="name"
+        disabled={false}
+        value="initial value"
+        />
+    );
+
+    wrapper.instance().clear();
+    expect(wrapper.state("value")).toBe("");
+    let inputElement = wrapper.find("input").get(0) as any;
+    expect(inputElement.value).toBe("");
+  });
 });

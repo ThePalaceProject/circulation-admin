@@ -72,7 +72,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
 
     this.props.postComplaint(this.props.complaintUrl, data).then(response => {
       this.props.refreshComplaints();
-      this.resetForm();
+      this.clear();
     }).catch(err => {
       this.showPostError();
     });
@@ -82,7 +82,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
     this.setState({ errors: ["Couldn't post complaint."] });
   }
 
-  resetForm() {
-    (this.refs["type"] as any).reset();
+  clear() {
+    (this.refs["type"] as any).clear();
   }
 }

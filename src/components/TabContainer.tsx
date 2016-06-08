@@ -32,6 +32,10 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
   constructor(props) {
     super(props);
     this.handleSelect = this.handleSelect.bind(this);
+    this.currentTab = this.currentTab.bind(this);
+    this.tabClass = this.tabClass.bind(this);
+    this.tabDisplayName = this.tabDisplayName.bind(this);
+    this.renderTab = this.renderTab.bind(this);
   }
 
   static contextTypes: React.ValidationMap<TabContainerContext> = {
@@ -43,46 +47,29 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     let showComplaintCount = (typeof this.props.complaintsCount !== "undefined");
     let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.props.complaintsCount + ")" : "");
 
-    let tab = this.props.tab || "details";
-    let tabClass = (name) => {
-      return tab === name ? "active" : null;
-    };
-
-    let tabName = (name) => {
-      let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
-      if (name === "complaints" && typeof this.props.complaintsCount !== "undefined") {
-        capitalized += " (" + this.props.complaintsCount + ")";
-      }
-      return capitalized;
-    };
-
-    let renderTab = (name, children) => {
-      let display = tab === name ? "block" : "none";
-      return (
-        <div style={{ display }}>
-          { children }
-        </div>
-      );
-    };
-
     return (
       <div className="bookTabs">
         <ul className="nav nav-tabs">
           { ["details", "edit", "classifications", "complaints"].map(name =>
-            <li key={name} role="presentation" className={tabClass(name)}>
-              <a href="javascript:void(0)" onClick={this.handleSelect} data-tabkey={name}>{tabName(name)}</a>
+            <li key={name} role="presentation" className={this.tabClass(name)}>
+              <a
+                href="javascript:void(0)"
+                onClick={this.handleSelect}
+                data-tabkey={name}>
+                {this.tabDisplayName(name)}
+              </a>
             </li>
           ) }
         </ul>
 
         <div className="bookTabContent">
-          { renderTab("details",
+          { this.renderTab("details",
             <div style={{ paddingTop: "2em" }}>
               { this.props.children }
             </div>
           ) }
 
-          { renderTab("edit",
+          { this.renderTab("edit",
             <Editor
               store={this.props.store}
               csrfToken={this.props.csrfToken}
@@ -91,7 +78,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
               />
           ) }
 
-          { renderTab("classifications",
+          { this.renderTab("classifications",
             <Classifications
               store={this.props.store}
               csrfToken={this.props.csrfToken}
@@ -101,7 +88,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
               />
           ) }
 
-          { renderTab("complaints",
+          { this.renderTab("complaints",
             <Complaints
               store={this.props.store}
               csrfToken={this.props.csrfToken}
@@ -131,6 +118,31 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
       this.context.router.push(this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab));
     }
   }
+
+  currentTab() {
+    return this.props.tab || "details";
+  }
+
+  tabClass(name) {
+    return this.currentTab() === name ? "active" : null;
+  }
+
+  tabDisplayName(name) {
+    let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+    if (name === "complaints" && typeof this.props.complaintsCount !== "undefined") {
+      capitalized += " (" + this.props.complaintsCount + ")";
+    }
+    return capitalized;
+  };
+
+  renderTab(name, children) {
+    let display = this.currentTab() === name ? "block" : "none";
+    return (
+      <div style={{ display }}>
+        { children }
+      </div>
+    );
+  };
 }
 
 function mapStateToProps(state, ownProps) {

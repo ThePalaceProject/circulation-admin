@@ -61,7 +61,7 @@ export default class EditableInput extends React.Component<EditableInputProps, a
     return (this.refs as any).element.value;
   }
 
-  reset() {
-    (this.refs as any).element.value = "";
+  clear() {
+    this.setState({ value: "" });
   }
 }

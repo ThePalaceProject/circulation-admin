@@ -114,8 +114,8 @@ describe("ComplaintForm", () => {
       form.simulate("submit");
     });
 
-    it("resets form after post", (done) => {
-      wrapper.instance().resetForm = done;
+    it("clears form after post", (done) => {
+      wrapper.instance().clear = done;
       let form = wrapper.find("form");
       let select = wrapper.find("select").get(0);
       select.value = "bad-description";
@@ -150,10 +150,10 @@ describe("ComplaintForm", () => {
       form.simulate("submit");
     });
 
-    it("resets complaint type", () => {
+    it("clears complaint type", () => {
       let select = wrapper.find("select").get(0);
       select.value = "bad-description";
-      wrapper.instance().resetForm();
+      wrapper.instance().clear();
       select = wrapper.find("select").get(0);
       expect(select.value).toBe("");
     });

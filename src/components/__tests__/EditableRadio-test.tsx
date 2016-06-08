@@ -61,4 +61,21 @@ describe("EditableRadio", () => {
     input.simulate("change");
     expect(onChange.mock.calls.length).toBe(1);
   });
+
+  it("clears input", () => {
+    wrapper = mount(
+      <EditableRadio
+        label="label"
+        name="name"
+        disabled={false}
+        value="value"
+        checked={true}
+        />
+    );
+
+    wrapper.instance().clear();
+    expect(wrapper.state("checked")).toBe(false);
+    let inputElement = wrapper.find("input").get(0) as any;
+    expect(inputElement.checked).toBe(false);
+  });
 });

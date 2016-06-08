@@ -29,7 +29,7 @@ export default class EditableRadio extends React.Component<EditableRadioProps, a
           onChange={this.handleChange}
           style={this.props.style}
           placeholder={this.props.placeholder}
-          checked={this.props.checked}
+          checked={this.state.checked}
           />
         {" " + this.props.label}
       </div>
@@ -56,7 +56,7 @@ export default class EditableRadio extends React.Component<EditableRadioProps, a
     return (this.refs as any).element.checked;
   }
 
-  reset() {
-    (this.refs as any).element.checked = false;
+  clear() {
+    this.setState({ checked: false });
   }
 }
