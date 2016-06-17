@@ -117,7 +117,7 @@ module.exports = {
   "navigate to book, press left and right keys": function(browser) {
     var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
     var nextBookSelector = "li:first-child .lane ul.laneBooks li:nth-child(2) a.laneBookLink";
-    var prevBookSelector = "li:last-child .lane ul.laneBooks li:last-child a.laneBookLink";
+    var prevBookSelector = "li:last-child .lane ul.laneBooks li:nth-last-child(2) a.laneBookLink"; // last child is "more" link
     var bookTitleSelector = "h1.bookDetailsTitle";
     var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
     var titleInputSelector = "input[name='title']";
