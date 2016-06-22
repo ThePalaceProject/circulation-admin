@@ -4,6 +4,7 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import CirculationEventsDownloadForm from "./CirculationEventsDownloadForm";
 import { CirculationEventData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -18,11 +19,36 @@ export interface CirculationEventsProps {
 
 export class CirculationEvents extends React.Component<CirculationEventsProps, any> {
   timer: any;
+  context: { showCircEventsDownload: boolean };
+
+  constructor(props) {
+    super(props);
+    this.state = { showDownloadForm: false };
+    this.showDownloadForm = this.showDownloadForm.bind(this);
+    this.hideDownloadForm = this.hideDownloadForm.bind(this);
+  }
+
+  static contextTypes: React.ValidationMap<any> = {
+    showCircEventsDownload: React.PropTypes.bool
+  };
 
   render(): JSX.Element {
     return(
       <div className="circulationEvents">
         <h3>Circulation Events</h3>
+
+        { this.context.showCircEventsDownload &&
+            <button
+              className="btn btn-default"
+              onClick={this.showDownloadForm}>
+              Download CSV
+            </button>
+        }
+
+        <CirculationEventsDownloadForm
+          show={this.state.showDownloadForm}
+          hide={this.hideDownloadForm}
+          />
 
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
@@ -36,7 +62,6 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
           <thead>
             <tr>
               <th>Book</th>
-              <th>Patron ID</th>
               <th>Event</th>
               <th>Time</th>
             </tr>
@@ -49,7 +74,6 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
                     {event.book.title}
                   </CatalogLink>
                 </td>
-                <td>{event.patron_id || "-"}</td>
                 <td>{this.formatType(event.type)}</td>
                 <td>{this.formatTime(event.time)}</td>
               </tr>
@@ -87,6 +111,14 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
       minute: "numeric"
     };
     return date.toLocaleString("en-US", options);
+  }
+
+  showDownloadForm() {
+    this.setState({ showDownloadForm: true });
+  }
+
+  hideDownloadForm() {
+    this.setState({ showDownloadForm: false });
   }
 }
 

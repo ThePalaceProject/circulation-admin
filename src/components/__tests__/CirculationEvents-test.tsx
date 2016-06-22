@@ -4,6 +4,7 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import { CirculationEvents } from "../CirculationEvents";
+import CirculationEventsDownloadForm from "../CirculationEventsDownloadForm";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
@@ -37,6 +38,7 @@ describe("CirculationEvents", () => {
     let wrapper;
     let fetchError = { status: 401, response: "test", url: "test url" };
     let fetchCirculationEvents;
+    let context = { showCircEventsDownload: true };
 
     beforeEach(() => {
       fetchCirculationEvents = jest.genMockFunction();
@@ -49,13 +51,21 @@ describe("CirculationEvents", () => {
           events={eventsData}
           fetchCirculationEvents={fetchCirculationEvents}
           isLoaded={false}
-          />
+          />,
+        { context }
       );
     });
 
     it("shows header", () => {
       let header = wrapper.find("h3");
       expect(header.text()).toBe("Circulation Events");
+    });
+
+    it("shows CirculationEventsDownloadForm", () => {
+      let form = wrapper.find(CirculationEventsDownloadForm);
+      expect(form.length).toBe(1);
+      expect(form.prop("show")).toBe(false);
+      expect(form.prop("hide")).toBe(wrapper.instance().hideDownloadForm);
     });
 
     it("shows error message", () => {
@@ -76,11 +86,9 @@ describe("CirculationEvents", () => {
         let link = row.find(CatalogLink);
         expect(link.prop("bookUrl")).toBe(data.book.url);
         expect(link.children().text()).toBe(data.book.title);
-        let patronId = row.find("td").at(1);
-        expect(patronId.text()).toBe(data.patron_id || "-");
-        let type = row.find("td").at(2);
+        let type = row.find("td").at(1);
         expect(type.text()).toBe(instance.formatType(data.type));
-        let time = row.find("td").at(3);
+        let time = row.find("td").at(2);
         expect(time.text()).toBe(instance.formatTime(data.time));
       });
     });
@@ -97,6 +105,7 @@ describe("CirculationEvents", () => {
   describe("behavior", () => {
     let wrapper;
     let fetchCirculationEvents;
+    let context = { showCircEventsDownload: true };
 
     beforeEach(() => {
       fetchCirculationEvents = jest.genMockFunction();
@@ -109,7 +118,8 @@ describe("CirculationEvents", () => {
           events={eventsData}
           fetchCirculationEvents={fetchCirculationEvents}
           wait={1}
-          />
+          />,
+        { context }
       );
     });
 
@@ -121,6 +131,24 @@ describe("CirculationEvents", () => {
       expect((setInterval as any).mock.calls.length).toBe(1);
       expect((setInterval as any).mock.calls[0][0]).toBe(fetchCirculationEvents);
       expect((setInterval as any).mock.calls[0][1]).toBe(1000);
+    });
+
+    it("shows download form when download button is clicked", () => {
+      let button = wrapper.find("button")
+        .filterWhere(button => button.text() === "Download CSV");
+      expect(button.length).toBe(1);
+      expect(wrapper.state("showDownloadForm")).toBe(false);
+      button.simulate("click");
+      expect(wrapper.state("showDownloadForm")).toBe(true);
+      let form = wrapper.find(CirculationEventsDownloadForm);
+      expect(form.prop("show")).toBe(true);
+    });
+
+    it("hides download form", () => {
+      wrapper.setState({ showDownloadForm: true });
+      let form = wrapper.find(CirculationEventsDownloadForm);
+      form.prop("hide")();
+      expect(wrapper.state("showDownloadForm")).toBe(false);
     });
   });
 });
