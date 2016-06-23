@@ -14,6 +14,9 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
   }
 
   render(): JSX.Element {
+    // date inputs require YYYY-MM-DD format
+    let today = new Date().toISOString().split("T")[0];
+
     return (
       <Modal
         className="circEventsDownloadForm"
@@ -24,12 +27,12 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
         </Modal.Header>
         <Modal.Body>
           <div className="form-group" style={{ width: "160px" }}>
-            <label className="conrol-label">Start Date</label>
-            <input className="form-control" type="date" name="start" ref="start" />
-          </div>
-          <div className="form-group" style={{ width: "160px" }}>
-            <label className="conrol-label">End Date</label>
-            <input className="form-control" type="date" name="end" ref="end" />
+            <label className="conrol-label">Date</label>
+            <input
+              className="form-control"
+              type="date"
+              ref="date"
+              defaultValue={today} />
           </div>
           <button className="btn btn-primary" onClick={this.download}>
             Download
@@ -43,10 +46,9 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
   }
 
   download() {
-    let start = (this.refs as any).start.value || null;
-    let end = (this.refs as any).end.value || null;
+    let date = (this.refs as any).date.value || null;
     let url = "/admin/bulk_circulation_events";
-    let params = qs.stringify({ start, end }, { skipNulls: true });
+    let params = qs.stringify({ date }, { skipNulls: true });
 
     if (params) {
       url += "?" + params;
