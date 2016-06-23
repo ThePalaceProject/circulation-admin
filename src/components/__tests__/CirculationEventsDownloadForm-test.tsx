@@ -16,11 +16,9 @@ describe("CirculationEventsDownloadForm", () => {
     );
   });
 
-  it("shows start and end date inputs", () => {
-    let start = wrapper.find("input[name='start']");
-    expect(start.length).toBe(1);
-    let end = wrapper.find("input[name='end']");
-    expect(end.length).toBe(1);
+  it("shows date input", () => {
+    let date = wrapper.find("input[type='date']");
+    expect(date.length).toBe(1);
   });
 
   it("shows download and close buttons", () => {
