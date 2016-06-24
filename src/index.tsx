@@ -4,7 +4,6 @@ import { Router, Route, browserHistory } from "react-router";
 import ContextProvider from "./components/ContextProvider";
 import CatalogHandler from "./components/CatalogHandler";
 import Dashboard from "./components/Dashboard";
-import * as qs from "qs";
 
 require("bootstrap/dist/css/bootstrap.css");
 require("font-awesome/css/font-awesome.min.css");
