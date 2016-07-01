@@ -43,11 +43,26 @@ export default class CatalogHandler extends React.Component<CatalogHandlerProps,
     };
   }
 
+  expandCollectionUrl(url: string): string {
+    return url ?
+      document.location.origin + "/" + url :
+      url;
+  }
+
+  expandBookUrl(url: string): string {
+    return url ?
+      document.location.origin + "/works/" + url :
+      url;
+  }
+
   render(): JSX.Element {
     let { collectionUrl, bookUrl } = this.props.params;
 
-    collectionUrl = collectionUrl || this.context.homeUrl || null;
-    bookUrl = bookUrl || null;
+    collectionUrl =
+      this.expandCollectionUrl(collectionUrl) ||
+      this.context.homeUrl ||
+      null;
+    bookUrl = this.expandBookUrl(bookUrl) || null;
 
     let pageTitleTemplate = (collectionTitle, bookTitle) => {
       let details = bookTitle || collectionTitle;

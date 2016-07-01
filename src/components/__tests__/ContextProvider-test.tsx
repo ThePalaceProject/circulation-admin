@@ -39,29 +39,54 @@ describe("ContextProvider", () => {
     let bookUrl = "book/url";
     let tab = "tab";
 
+    it("prepares collection url", () => {
+      let host = "http://example.com";
+      document.location.href = host + "/test";
+      let url = host + "/groups/eng/Adult%20Fiction";
+      expect(wrapper.instance().prepareCollectionUrl(url)).toBe("groups%2Feng%2FAdult%2520Fiction");
+    });
+
+    it("prepares book url", () => {
+      let host = "http://example.com";
+      document.location.href = host + "/test";
+      let url = host + "/works/Axis%20360/Axis%20360%20ID/0016201449";
+      expect(wrapper.instance().prepareBookUrl(url)).toBe("Axis%2520360%2FAxis%2520360%2520ID%2F0016201449");
+    });
+
     it("returns a path with collection, book, and tab", () => {
-      let path = wrapper.instance().pathFor(collectionUrl, bookUrl, tab);
-      expect(path).toBe(`/admin/web/collection/${encodeURIComponent(collectionUrl)}/book/${encodeURIComponent(bookUrl)}/tab/${tab}`);
+      let instance = wrapper.instance();
+      let path = instance.pathFor(collectionUrl, bookUrl, tab);
+      expect(path).toBe(
+        `/admin/web/collection/${instance.prepareCollectionUrl(collectionUrl)}` +
+        `/book/${instance.prepareBookUrl(bookUrl)}/tab/${tab}`
+      );
     });
 
     it("returns a path with collection and book", () => {
-      let path = wrapper.instance().pathFor(collectionUrl, bookUrl, null);
-      expect(path).toBe(`/admin/web/collection/${encodeURIComponent(collectionUrl)}/book/${encodeURIComponent(bookUrl)}`);
+      let instance = wrapper.instance();
+      let path = instance.pathFor(collectionUrl, bookUrl, null);
+      expect(path).toBe(
+        `/admin/web/collection/${instance.prepareCollectionUrl(collectionUrl)}` +
+        `/book/${instance.prepareBookUrl(bookUrl)}`
+      );
     });
 
     it("returns a path with only collection", () => {
-      let path = wrapper.instance().pathFor(collectionUrl, null, null);
-      expect(path).toBe(`/admin/web/collection/${encodeURIComponent(collectionUrl)}`);
+      let instance = wrapper.instance();
+      let path = instance.pathFor(collectionUrl, null, null);
+      expect(path).toBe(`/admin/web/collection/${instance.prepareCollectionUrl(collectionUrl)}`);
     });
 
     it("returns a path with only book", () => {
-      let path = wrapper.instance().pathFor(null, bookUrl, null);
-      expect(path).toBe(`/admin/web/book/${encodeURIComponent(bookUrl)}`);
+      let instance = wrapper.instance();
+      let path = instance.pathFor(null, bookUrl, null);
+      expect(path).toBe(`/admin/web/book/${instance.prepareBookUrl(bookUrl)}`);
     });
 
     it("returns a path with book and tab", () => {
-      let path = wrapper.instance().pathFor(null, bookUrl, tab);
-      expect(path).toBe(`/admin/web/book/${encodeURIComponent(bookUrl)}/tab/${tab}`);
+      let instance = wrapper.instance();
+      let path = instance.pathFor(null, bookUrl, tab);
+      expect(path).toBe(`/admin/web/book/${instance.prepareBookUrl(bookUrl)}/tab/${tab}`);
     });
 
     it("returns a path with no collection, book, or tab", () => {

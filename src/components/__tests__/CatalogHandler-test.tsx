@@ -14,8 +14,8 @@ describe("CatalogHandler", () => {
 
   beforeEach(() => {
     params = {
-      collectionUrl: "collection url",
-      bookUrl: "book url",
+      collectionUrl: "collectionurl",
+      bookUrl: "bookurl",
       tab: "tab"
     };
     context = {
@@ -32,8 +32,8 @@ describe("CatalogHandler", () => {
 
   it("renders OPDSCatalog", () => {
     let catalog = wrapper.find(OPDSCatalog);
-    expect(catalog.prop("collectionUrl")).toBe("collection url");
-    expect(catalog.prop("bookUrl")).toBe("book url");
+    expect(catalog.prop("collectionUrl")).toBe("/collectionurl");
+    expect(catalog.prop("bookUrl")).toBe("/works/bookurl");
     expect(catalog.prop("BookDetailsContainer").name).toEqual("BookDetailsContainer");
     expect(catalog.prop("Header").name).toEqual("Header");
     expect(catalog.prop("computeBreadcrumbs")).toBeTruthy();
