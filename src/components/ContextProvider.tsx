@@ -31,11 +31,15 @@ export default class ContextProvider extends React.Component<ContextProviderProp
   }
 
   prepareCollectionUrl(url: string): string {
-    return encodeURIComponent(url.replace(document.location.origin + "/", ""));
+    return encodeURIComponent(
+      url.replace(document.location.origin + "/", "").replace(/\/$/, "").replace(/^\//, "")
+    );
   }
 
   prepareBookUrl(url: string): string {
-    return encodeURIComponent(url.replace(document.location.origin + "/works/", ""));
+    return encodeURIComponent(
+      url.replace(document.location.origin + "/works/", "").replace(/\/$/, "").replace(/^\//, "")
+    );
   }
 
   static childContextTypes: React.ValidationMap<any> = {
