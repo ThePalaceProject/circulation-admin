@@ -2,7 +2,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
-import * as fs from "fs";
 import logo from "../images/nypl-logo-transparent";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 

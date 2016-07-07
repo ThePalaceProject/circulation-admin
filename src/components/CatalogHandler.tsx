@@ -9,12 +9,9 @@ import reducers from "../reducers/index";
 import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
 import Header from "./Header";
 import { BookLink } from "../interfaces";
-import * as qs from "qs";
-import createRouter from "../createRouter";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 
 export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
-  csrfToken: string;
   params: {
     collectionUrl: string;
     bookUrl: string;

@@ -11,8 +11,10 @@ describe("CatalogHandler", () => {
   let params;
   let context;
   let child;
+  let host = "http://example.com";
 
   beforeEach(() => {
+    document.location.href = host + "/test";
     params = {
       collectionUrl: "collectionurl",
       bookUrl: "bookurl",
@@ -23,7 +25,6 @@ describe("CatalogHandler", () => {
     };
     wrapper = shallow(
       <CatalogHandler
-        csrfToken="token"
         params={params}
         />,
       { context }
@@ -32,8 +33,8 @@ describe("CatalogHandler", () => {
 
   it("renders OPDSCatalog", () => {
     let catalog = wrapper.find(OPDSCatalog);
-    expect(catalog.prop("collectionUrl")).toBe("/collectionurl");
-    expect(catalog.prop("bookUrl")).toBe("/works/bookurl");
+    expect(catalog.prop("collectionUrl")).toBe(host + "/collectionurl");
+    expect(catalog.prop("bookUrl")).toBe(host + "/works/bookurl");
     expect(catalog.prop("BookDetailsContainer").name).toEqual("BookDetailsContainer");
     expect(catalog.prop("Header").name).toEqual("Header");
     expect(catalog.prop("computeBreadcrumbs")).toBeTruthy();

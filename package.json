@@ -19,7 +19,7 @@
     "prod": "rm -rf dist && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
   "dependencies": {
-    "bootstrap": "~3.3.6",
+    "bootstrap": "^3.3.6",
     "font-awesome": "^4.6.3",
     "opds-feed-parser": "0.0.11",
     "opds-web-client": "^0.0.19",
