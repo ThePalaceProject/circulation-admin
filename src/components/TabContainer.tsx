@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { Store } from "redux";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -8,12 +8,13 @@ import Editor from "./Editor";
 import Classifications from "./Classifications";
 import Complaints from "./Complaints";
 import { BookData, Navigate, PathFor } from "../interfaces";
+import { State } from "../reducers/index";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
   bookUrl: string;
   bookData?: BookData;
   collectionUrl: string;
-  store: Redux.Store;
+  store: Store<State>;
   csrfToken: string;
   tab: string;
   refreshCatalog: () => Promise<any>;
@@ -171,7 +172,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 let connectOptions = { withRef: true, pure: true };
-const ConnectedTabContainer = connect(
+const ConnectedTabContainer = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps,
   null,

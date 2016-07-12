@@ -1,6 +1,8 @@
 import * as React from "react";
+import { Store } from "redux";
 import buildStore from "../store";
 import { PathFor } from "../interfaces";
+import { State } from "../reducers/index";
 
 export interface ContextProviderProps extends React.Props<any> {
   csrfToken: string;
@@ -9,7 +11,7 @@ export interface ContextProviderProps extends React.Props<any> {
 }
 
 export default class ContextProvider extends React.Component<ContextProviderProps, any> {
-  store: Redux.Store;
+  store: Store<State>;
   pathFor: PathFor;
 
   constructor(props) {

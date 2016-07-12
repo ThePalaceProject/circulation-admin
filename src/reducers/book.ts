@@ -1,7 +1,7 @@
 import { BookData } from "../interfaces";
 import { RequestError } from "opds-web-client/lib/DataFetcher";
 
-interface BookState {
+export interface BookState {
   url: string;
   data: BookData;
   isFetching: boolean;

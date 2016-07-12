@@ -1,12 +1,14 @@
 import * as React from "react";
+import { Store } from "redux";
 import TabContainer from "./TabContainer";
 import { BookDetailsContainerProps } from "opds-web-client/lib/components/Root";
 import { Navigate } from "../interfaces";
+import { State } from "../reducers/index";
 
 export interface BookDetailsContainerContext {
   csrfToken: string;
   tab: string;
-  editorStore: Redux.Store;
+  editorStore: Store<State>;
 }
 
 export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {

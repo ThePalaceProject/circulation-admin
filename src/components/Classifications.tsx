@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Store } from "redux";
 import { connect } from "react-redux";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -8,10 +9,11 @@ import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable  from "./ClassificationsTable";
 import { BookData, Audience, Fiction, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { State } from "../reducers/index";
 
 export interface ClassificationsProps {
   // from parent
-  store: Redux.Store;
+  store: Store<State>;
   bookUrl: string;
   book: BookData;
   csrfToken: string;
@@ -130,7 +132,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedClassifications = connect<ClassificationsProps>(
+const ConnectedClassifications = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps
 )(Classifications);

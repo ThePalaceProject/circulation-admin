@@ -1,9 +1,11 @@
 import * as React from "react";
+import { Store } from "redux";
 import Header from "./Header";
 import CirculationEvents from "./CirculationEvents";
+import { State } from "../reducers/index";
 
 export interface DashboardContext {
-  editorStore: Redux.Store;
+  editorStore: Store<State>;
 }
 
 export default class Dashboard extends React.Component<any, any> {
