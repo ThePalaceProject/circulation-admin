@@ -17,11 +17,29 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     this.store = buildStore();
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
       let path = "/admin/web";
-      path += collectionUrl ? `/collection/${encodeURIComponent(collectionUrl)}` : "";
-      path += bookUrl ? `/book/${encodeURIComponent(bookUrl)}` : "";
+      path +=
+        collectionUrl ?
+        `/collection/${this.prepareCollectionUrl(collectionUrl)}` :
+        "";
+      path +=
+        bookUrl ?
+        `/book/${this.prepareBookUrl(bookUrl)}` :
+        "";
       path += tab ? `/tab/${tab}` : "";
       return path;
     };
+  }
+
+  prepareCollectionUrl(url: string): string {
+    return encodeURIComponent(
+      url.replace(document.location.origin + "/", "").replace(/\/$/, "").replace(/^\//, "")
+    );
+  }
+
+  prepareBookUrl(url: string): string {
+    return encodeURIComponent(
+      url.replace(document.location.origin + "/works/", "").replace(/\/$/, "").replace(/^\//, "")
+    );
   }
 
   static childContextTypes: React.ValidationMap<any> = {
