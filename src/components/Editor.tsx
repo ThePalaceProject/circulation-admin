@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Store } from "redux";
 import { connect } from "react-redux";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -8,6 +9,7 @@ import EditForm from "./EditForm";
 import ErrorMessage from "./ErrorMessage";
 import { BookData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { State } from "../reducers/index";
 
 export interface EditorProps extends React.Props<Editor> {
   bookUrl?: string;
@@ -16,7 +18,7 @@ export interface EditorProps extends React.Props<Editor> {
   fetchError?: FetchErrorData;
   editError?: FetchErrorData;
   csrfToken: string;
-  store?: Redux.Store;
+  store?: Store<State>;
   fetchBook?: (url: string) => void;
   refreshCatalog?: () => Promise<any>;
   editBook?: (url: string, data: FormData) => Promise<any>;
@@ -154,7 +156,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedEditor = connect(
+const ConnectedEditor = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps
 )(Editor);

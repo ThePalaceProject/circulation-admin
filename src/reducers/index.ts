@@ -1,10 +1,17 @@
 import { combineReducers } from "redux";
-import book from "./book";
-import complaints from "./complaints";
-import classifications from "./classifications";
-import circulationEvents from "./circulationEvents";
+import book, { BookState } from "./book";
+import complaints, { ComplaintsState } from "./complaints";
+import classifications, { ClassificationsState } from "./classifications";
+import circulationEvents, { CirculationEventsState } from "./circulationEvents";
 
-export default combineReducers({
+export interface State {
+  book: BookState;
+  complaints: ComplaintsState;
+  classifications: ClassificationsState;
+  circulationEvents: CirculationEventsState;
+}
+
+export default combineReducers<State>({
   book,
   complaints,
   classifications,

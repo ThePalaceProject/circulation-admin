@@ -1,7 +1,7 @@
 import { ComplaintsData } from "../interfaces";
 import { RequestError } from "opds-web-client/lib/DataFetcher";
 
-interface ComplaintsState {
+export interface ComplaintsState {
   url: string;
   data: ComplaintsData;
   isFetching: boolean;

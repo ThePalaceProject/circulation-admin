@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Store } from "redux";
 import { connect } from "react-redux";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -7,13 +8,14 @@ import ComplaintForm from "./ComplaintForm";
 import ButtonForm from "./ButtonForm";
 import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { State } from "../reducers/index";
 
 export interface ComplaintsProps {
   bookUrl: string;
   book: BookData;
   complaints?: any;
   fetchError?: FetchErrorData;
-  store?: Redux.Store;
+  store?: Store<State>;
   csrfToken: string;
   fetchComplaints?: (url: string) => Promise<any>;
   postComplaint?: PostComplaint;
@@ -153,7 +155,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedComplaints = connect(
+const ConnectedComplaints = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps
 )(Complaints);

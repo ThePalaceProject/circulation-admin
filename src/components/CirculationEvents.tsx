@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
@@ -7,9 +8,10 @@ import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import CirculationEventsDownloadForm from "./CirculationEventsDownloadForm";
 import { CirculationEventData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { State } from "../reducers/index";
 
 export interface CirculationEventsProps {
-  store?: Redux.Store;
+  store?: Store<State>;
   events?: CirculationEventData[];
   fetchError?: FetchErrorData;
   fetchCirculationEvents?: () => Promise<any>;
@@ -137,7 +139,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedCirculationEvents = connect(
+const ConnectedCirculationEvents = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps
 )(CirculationEvents);

@@ -1,8 +1,7 @@
 jest.dontMock("../ErrorMessage");
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as TestUtils from "react-addons-test-utils";
+import { mount } from "enzyme";
 
 import ErrorMessage from "../ErrorMessage";
 
@@ -13,11 +12,11 @@ describe("ErrorMessage", () => {
       response: "",
       url: ""
     };
-    let message = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <ErrorMessage error={error} />
     );
-    let alert = TestUtils.findRenderedDOMComponentWithClass(message, "alert-danger");
-    expect(alert.textContent).toContain("logged out");
+    let alert = wrapper.find(".alert-danger");
+    expect(alert.text()).toContain("logged out");
   });
 
   it("shows detail for problem detail", () => {
@@ -26,11 +25,11 @@ describe("ErrorMessage", () => {
       response: JSON.stringify({status: 500, detail: "detail"}),
       url: ""
     };
-    let message = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <ErrorMessage error={error} />
     );
-    let alert = TestUtils.findRenderedDOMComponentWithClass(message, "alert-danger");
-    expect(alert.textContent).toContain("detail");
+    let alert = wrapper.find(".alert-danger");
+    expect(alert.text()).toContain("detail");
   });
 
   it("shows response for non-json response", () => {
@@ -39,11 +38,11 @@ describe("ErrorMessage", () => {
       response: "response",
       url: ""
     };
-    let message = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <ErrorMessage error={error} />
     );
-    let alert = TestUtils.findRenderedDOMComponentWithClass(message, "alert-danger");
-    expect(alert.textContent).toContain("response");
+    let alert = wrapper.find(".alert-danger");
+    expect(alert.text()).toContain("response");
   });
 
   it("shows try again button", () => {
@@ -53,12 +52,12 @@ describe("ErrorMessage", () => {
       url: ""
     };
     let tryAgain = jest.genMockFunction();
-    let message = TestUtils.renderIntoDocument(
+    let wrapper = mount(
       <ErrorMessage error={error} tryAgain={tryAgain} />
     );
-    let tryAgainLink = TestUtils.findRenderedDOMComponentWithTag(message, "a");
-    expect(tryAgainLink.textContent).toContain("Try again");
-    TestUtils.Simulate.click(tryAgainLink);
+    let tryAgainLink = wrapper.find("a");
+    expect(tryAgainLink.text()).toContain("Try again");
+    tryAgainLink.simulate("click");
     expect(tryAgain.mock.calls.length).toEqual(1);
   });
 });
