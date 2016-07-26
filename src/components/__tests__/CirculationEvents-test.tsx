@@ -123,14 +123,29 @@ describe("CirculationEvents", () => {
       );
     });
 
-    it("fetches events data on mount", () => {
-      expect(fetchCirculationEvents.mock.calls.length).toBe(1);
+    it("fetches and queues events data on mount", () => {
+      let fetchAndQueue = jest.genMockFunction();
+      wrapper.instance().fetchAndQueue = fetchAndQueue;
+      wrapper.instance().componentWillMount();
+      expect(fetchAndQueue.mock.calls.length).toBe(1);
     });
 
-    it("sets interval for fetches", () => {
-      expect((setInterval as any).mock.calls.length).toBe(1);
-      expect((setInterval as any).mock.calls[0][0]).toBe(fetchCirculationEvents);
-      expect((setInterval as any).mock.calls[0][1]).toBe(1000);
+    describe("fetchAndQueue", () => {
+      it("sets interval for fetches", (done) => {
+        wrapper.instance().fetchAndQueue().then(() => {
+          // we'd like to just setTimeout.mockClear() and test that
+          // setTimeout has only been called once with the appropriate
+          // arguments, BUT:
+          // fetchAndQueue will already have been called by componentWillMount
+          // for each preceding test, so the resulting setTimeout calls will
+          // happen after each fetchCirculationEvents() call is resolved, which
+          // is unpredictable, so we only look at the last setTimeout call
+          let callCount = (setTimeout as any).mock.calls.length;
+          expect((setTimeout as any).mock.calls[callCount - 1][0]).toBe(wrapper.instance().fetchAndQueue);
+          expect((setTimeout as any).mock.calls[callCount - 1][1]).toBe(1000);
+          done();
+        }).catch(done.fail);
+      });
     });
 
     it("shows download form when download button is clicked", () => {

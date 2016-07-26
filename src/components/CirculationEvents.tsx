@@ -28,6 +28,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
     this.state = { showDownloadForm: false };
     this.showDownloadForm = this.showDownloadForm.bind(this);
     this.hideDownloadForm = this.hideDownloadForm.bind(this);
+    this.fetchAndQueue = this.fetchAndQueue.bind(this);
   }
 
   static contextTypes: React.ValidationMap<any> = {
@@ -87,16 +88,20 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
   }
 
   componentWillMount() {
-    this.props.fetchCirculationEvents();
-
-    this.timer = setInterval(
-      this.props.fetchCirculationEvents,
-      (this.props.wait || 10) * 1000
-    );
+    this.fetchAndQueue();
   }
 
   componentWillUnmount() {
     clearInterval(this.timer);
+  }
+
+  fetchAndQueue() {
+    return this.props.fetchCirculationEvents().then(() => {
+      this.timer = setTimeout(
+        this.fetchAndQueue,
+        (this.props.wait || 10) * 1000
+      );
+    });
   }
 
   formatType(str) {
