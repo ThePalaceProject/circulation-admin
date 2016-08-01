@@ -123,7 +123,7 @@ describe("CirculationEvents", () => {
       );
     });
 
-    it("fetches and queues events data on mount", () => {
+    it("fetches and queues on mount", () => {
       let fetchAndQueue = jest.genMockFunction();
       wrapper.instance().fetchAndQueue = fetchAndQueue;
       wrapper.instance().componentWillMount();
@@ -131,7 +131,7 @@ describe("CirculationEvents", () => {
     });
 
     describe("fetchAndQueue", () => {
-      it("sets interval for fetches", (done) => {
+      it("sets timeout for fetches", (done) => {
         wrapper.instance().fetchAndQueue().then(() => {
           // we'd like to just setTimeout.mockClear() and test that
           // setTimeout has only been called once with the appropriate
