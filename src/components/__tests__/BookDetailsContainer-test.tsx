@@ -7,21 +7,7 @@ import buildStore from "../../store";
 import BookDetailsContainer from "../BookDetailsContainer";
 import TabContainer from "../TabContainer";
 
-let initialState = {
-  book: {
-    url: null,
-    data: null,
-    isFetching: false,
-    fetchError: null,
-    editError: null
-  },
-  complaints: {
-    url: null,
-    data: null,
-    isFetching: false,
-    fetchError: null
-  }
-};
+let promise = new Promise((resolve, reject) => resolve());
 
 describe("BookDetailsContainer", () => {
   let wrapper;
@@ -42,7 +28,9 @@ describe("BookDetailsContainer", () => {
       <BookDetailsContainer
         bookUrl="book url"
         collectionUrl="collection url"
-        refreshCatalog={refreshCatalog}>
+        refreshCatalog={refreshCatalog}
+        borrowBook={jest.genMockFunction().mockReturnValue(promise)}
+        fulfillBook={jest.genMockFunction().mockReturnValue(promise)}>
         <div className="bookDetails">Moby Dick</div>
       </BookDetailsContainer>,
       { context }

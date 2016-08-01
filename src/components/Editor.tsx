@@ -148,7 +148,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch) {
-  let fetcher = new DataFetcher(null, editorAdapter);
+  let fetcher = new DataFetcher({ adapter: editorAdapter });
   let actions = new ActionCreator(fetcher);
   return {
     editBook: (url, data) => dispatch(actions.editBook(url, data)),
