@@ -20,7 +20,7 @@ export interface CirculationEventsProps {
 }
 
 export class CirculationEvents extends React.Component<CirculationEventsProps, any> {
-  timer: any;
+  timer: NodeJS.Timer;
   context: { showCircEventsDownload: boolean };
 
   constructor(props) {
@@ -92,10 +92,10 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    clearTimeout(this.timer);
   }
 
-  fetchAndQueue() {
+  fetchAndQueue(): Promise<any> {
     return this.props.fetchCirculationEvents().then(() => {
       this.timer = setTimeout(
         this.fetchAndQueue,
