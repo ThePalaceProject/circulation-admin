@@ -22,12 +22,15 @@ export interface CirculationEventsProps {
 export class CirculationEvents extends React.Component<CirculationEventsProps, any> {
   timer: any;
   context: { showCircEventsDownload: boolean };
+  _isMounted: boolean;
 
   constructor(props) {
     super(props);
     this.state = { showDownloadForm: false };
     this.showDownloadForm = this.showDownloadForm.bind(this);
     this.hideDownloadForm = this.hideDownloadForm.bind(this);
+    this.fetchAndQueue = this.fetchAndQueue.bind(this);
+    this._isMounted = false;
   }
 
   static contextTypes: React.ValidationMap<any> = {
@@ -87,16 +90,24 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
   }
 
   componentWillMount() {
-    this.props.fetchCirculationEvents();
-
-    this.timer = setInterval(
-      this.props.fetchCirculationEvents,
-      (this.props.wait || 10) * 1000
-    );
+    this._isMounted = true;
+    this.fetchAndQueue();
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    clearTimeout(this.timer);
+    this._isMounted = false;
+  }
+
+  fetchAndQueue(): Promise<any> {
+    return this.props.fetchCirculationEvents().then(() => {
+      if (this._isMounted) {
+        this.timer = setTimeout(
+          this.fetchAndQueue,
+          (this.props.wait || 10) * 1000
+        );
+      }
+    });
   }
 
   formatType(str) {
