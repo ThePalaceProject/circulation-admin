@@ -7,8 +7,6 @@ import buildStore from "../../store";
 import BookDetailsContainer from "../BookDetailsContainer";
 import TabContainer from "../TabContainer";
 
-let promise = new Promise((resolve, reject) => resolve());
-
 describe("BookDetailsContainer", () => {
   let wrapper;
   let store;
