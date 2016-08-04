@@ -28,9 +28,7 @@ describe("BookDetailsContainer", () => {
       <BookDetailsContainer
         bookUrl="book url"
         collectionUrl="collection url"
-        refreshCatalog={refreshCatalog}
-        borrowBook={jest.genMockFunction().mockReturnValue(promise)}
-        fulfillBook={jest.genMockFunction().mockReturnValue(promise)}>
+        refreshCatalog={refreshCatalog}>
         <div className="bookDetails">Moby Dick</div>
       </BookDetailsContainer>,
       { context }
