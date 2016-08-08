@@ -58,7 +58,5 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
     link.href = url;
     link.target = "_blank";
     link.click();
-
-    console.log("downloading!");
   }
 }

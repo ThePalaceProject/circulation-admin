@@ -7,22 +7,6 @@ import buildStore from "../../store";
 import BookDetailsContainer from "../BookDetailsContainer";
 import TabContainer from "../TabContainer";
 
-let initialState = {
-  book: {
-    url: null,
-    data: null,
-    isFetching: false,
-    fetchError: null,
-    editError: null
-  },
-  complaints: {
-    url: null,
-    data: null,
-    isFetching: false,
-    fetchError: null
-  }
-};
-
 describe("BookDetailsContainer", () => {
   let wrapper;
   let store;
