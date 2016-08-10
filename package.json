@@ -23,7 +23,7 @@
     "font-awesome": "^4.6.3",
     "isomorphic-fetch": "^2.2.1",
     "opds-feed-parser": "0.0.12",
-    "opds-web-client": "^0.0.21",
+    "opds-web-client": "^0.0.22",
     "qs": "^6.2.0",
     "react": "^15.1.0",
     "react-bootstrap": "0.29.4",
@@ -69,6 +69,7 @@
     ],
     "globals": {
       "fetch": true
-    }
+    },
+    "persistModuleRegistryBetweenSpecs": true
   }
 }

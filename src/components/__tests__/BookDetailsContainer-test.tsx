@@ -12,6 +12,11 @@ describe("BookDetailsContainer", () => {
   let store;
   let context;
   let refreshCatalog;
+  let bookData = {
+    id: "book id",
+    url: "book url",
+    title: "book title"
+  };
 
   beforeEach(() => {
     store = buildStore();
@@ -24,6 +29,7 @@ describe("BookDetailsContainer", () => {
 
     wrapper = shallow(
       <BookDetailsContainer
+        book={bookData}
         bookUrl="book url"
         collectionUrl="collection url"
         refreshCatalog={refreshCatalog}>
