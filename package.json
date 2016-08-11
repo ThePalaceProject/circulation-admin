@@ -23,11 +23,11 @@
     "font-awesome": "^4.6.3",
     "isomorphic-fetch": "^2.2.1",
     "opds-feed-parser": "0.0.12",
-    "opds-web-client": "^0.0.21",
+    "opds-web-client": "^0.0.22",
     "qs": "^6.2.0",
-    "react": "^15.1.0",
+    "react": "^15.3.0",
     "react-bootstrap": "0.29.4",
-    "react-dom": "^15.1.0",
+    "react-dom": "^15.3.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.4.1",
     "redux": "^3.5.2",
@@ -42,7 +42,7 @@
     "jest-cli": "^0.8.2",
     "json-loader": "^0.5.4",
     "nightwatch": "^0.9.3",
-    "react-addons-test-utils": "^15.1.0",
+    "react-addons-test-utils": "^15.3.0",
     "selenium-standalone": "5.1.0",
     "style-loader": "^0.13.1",
     "ts-loader": "^0.8.2",
@@ -69,6 +69,7 @@
     ],
     "globals": {
       "fetch": true
-    }
+    },
+    "persistModuleRegistryBetweenSpecs": true
   }
 }
