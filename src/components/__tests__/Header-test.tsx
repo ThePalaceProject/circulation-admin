@@ -1,4 +1,5 @@
-jest.dontMock("../Header");
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow } from "enzyme";
@@ -20,7 +21,7 @@ describe("Header", () => {
   let push, context;
 
   beforeEach(() => {
-    push = jest.genMockFunction();
+    push = stub();
     context = { homeUrl: "home url" };
 
     wrapper = shallow(
@@ -33,40 +34,40 @@ describe("Header", () => {
 
   it("shows a logo image", () => {
     let logo = wrapper.find("img");
-    expect(logo).toBeTruthy();
+    expect(logo).to.be.ok;
   });
 
   it("shows the brand name", () => {
-    expect(wrapper.containsMatchingElement("NYPL")).toBe(true);
+    expect(wrapper.containsMatchingElement("NYPL")).to.equal(true);
   });
 
   it("shows a search component", () => {
     let search = wrapper.find(TestSearch);
-    expect(search).toBeTruthy();
+    expect(search).to.be.ok;
   });
 
   it("shows links", () => {
     let catalogLinks = wrapper.find(CatalogLink);
 
-    expect(catalogLinks.length).toBe(3);
+    expect(catalogLinks.length).to.equal(3);
 
     let homeLink = catalogLinks.at(0);
-    expect(homeLink.prop("collectionUrl")).toBe("home url");
-    expect(homeLink.prop("bookUrl")).toBe(null);
-    expect(homeLink.children().text()).toBe("Catalog");
+    expect(homeLink.prop("collectionUrl")).to.equal("home url");
+    expect(homeLink.prop("bookUrl")).to.equal(null);
+    expect(homeLink.children().text()).to.equal("Catalog");
 
     let complaintsLink = catalogLinks.at(1);
-    expect(complaintsLink.prop("collectionUrl")).toBe("/admin/complaints");
-    expect(complaintsLink.prop("bookUrl")).toBe(null);
-    expect(complaintsLink.children().text()).toBe("Complaints");
+    expect(complaintsLink.prop("collectionUrl")).to.equal("/admin/complaints");
+    expect(complaintsLink.prop("bookUrl")).to.equal(null);
+    expect(complaintsLink.children().text()).to.equal("Complaints");
 
     let hiddenLink = catalogLinks.at(2);
-    expect(hiddenLink.prop("collectionUrl")).toBe("/admin/suppressed");
-    expect(hiddenLink.prop("bookUrl")).toBe(null);
-    expect(hiddenLink.children().text()).toBe("Hidden Books");
+    expect(hiddenLink.prop("collectionUrl")).to.equal("/admin/suppressed");
+    expect(hiddenLink.prop("bookUrl")).to.equal(null);
+    expect(hiddenLink.children().text()).to.equal("Hidden Books");
 
     let link = wrapper.find(Link);
-    expect(link.prop("to")).toBe("/admin/web/dashboard");
-    expect(link.children().text()).toBe("Dashboard");
+    expect(link.prop("to")).to.equal("/admin/web/dashboard");
+    expect(link.children().text()).to.equal("Dashboard");
   });
 });

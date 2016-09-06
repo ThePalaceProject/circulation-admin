@@ -1,4 +1,4 @@
-jest.dontMock("../classifications");
+import { expect } from "chai";
 
 import reducer, { ClassificationsState } from "../classifications";
 
@@ -34,7 +34,7 @@ describe("classifications reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(reducer(undefined, {})).toEqual(initState);
+    expect(reducer(undefined, {})).to.deep.equal(initState);
   });
 
   it("handles FETCH_GENRE_TREE_REQUEST", () => {
@@ -44,14 +44,14 @@ describe("classifications reducer", () => {
     let newState = Object.assign({}, initState, {
       isFetchingGenreTree: true
     });
-    expect(reducer(initState, action)).toEqual(newState);
+    expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetchingGenreTree: true,
       fetchError: null
     });
-    expect(reducer(errorState, action)).toEqual(newState);
+    expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles FETCH_GENRE_TREE_FAILURE", () => {
@@ -61,7 +61,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isFetchingGenreTree: false
     });
-    expect(reducer(oldState, action)).toEqual(newState);
+    expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles LOAD_GENRE_TREE", () => {
@@ -70,7 +70,7 @@ describe("classifications reducer", () => {
       genreTree: genreData,
       isFetchingGenreTree: false
     });
-    expect(reducer(initState, action)).toEqual(newState);
+    expect(reducer(initState, action)).to.deep.equal(newState);
   });
 
   it("handles EDIT_CLASSIFICATIONS_REQUEST", () => {
@@ -80,14 +80,14 @@ describe("classifications reducer", () => {
     let newState = Object.assign({}, initState, {
       isEditingClassifications: true
     });
-    expect(reducer(initState, action)).toEqual(newState);
+    expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isEditingClassifications: true,
       fetchError: null
     });
-    expect(reducer(errorState, action)).toEqual(newState);
+    expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles EDIT_CLASSIFICATIONS_FAILURE", () => {
@@ -99,7 +99,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isEditingClassifications: false
     });
-    expect(reducer(oldState, action)).toEqual(newState);
+    expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles FETCH_CLASSIFICATIONS_REQUEST", () => {
@@ -109,14 +109,14 @@ describe("classifications reducer", () => {
     let newState = Object.assign({}, initState, {
       isFetchingClassifications: true
     });
-    expect(reducer(initState, action)).toEqual(newState);
+    expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetchingClassifications: true,
       fetchError: null
     });
-    expect(reducer(errorState, action)).toEqual(newState);
+    expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles FETCH_CLASSIFICATIONS_FAILURE", () => {
@@ -126,7 +126,7 @@ describe("classifications reducer", () => {
       fetchError: "test error",
       isFetchingClassifications: false
     });
-    expect(reducer(oldState, action)).toEqual(newState);
+    expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles LOAD_CLASSIFICATIONS", () => {
@@ -135,6 +135,6 @@ describe("classifications reducer", () => {
       classifications: classificationsData,
       isFetchingClassifications: false
     });
-    expect(reducer(initState, action)).toEqual(newState);
+    expect(reducer(initState, action)).to.deep.equal(newState);
   });
 });

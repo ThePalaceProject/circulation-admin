@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import createRouter from "../createRouter";
 
@@ -7,7 +8,7 @@ describe("createRouter", () => {
     let navigate, router;
 
     beforeEach(() => {
-      navigate = jest.genMockFunction();
+      navigate = stub();
       router = createRouter(navigate);
     });
 
@@ -16,17 +17,17 @@ describe("createRouter", () => {
         pathname: "/path?collection=testcollection&book=testbook"
       });
 
-      expect(navigate.mock.calls.length).toBe(1);
-      expect(navigate.mock.calls[0][0]).toBe("testcollection");
-      expect(navigate.mock.calls[0][1]).toBe("testbook");
+      expect(navigate.callCount).to.equal(1);
+      expect(navigate.args[0][0]).to.equal("testcollection");
+      expect(navigate.args[0][1]).to.equal("testbook");
     });
 
     it("handles location string", () => {
       router.push("/path?collection=testcollection&book=testbook");
 
-      expect(navigate.mock.calls.length).toBe(1);
-      expect(navigate.mock.calls[0][0]).toBe("testcollection");
-      expect(navigate.mock.calls[0][1]).toBe("testbook");
+      expect(navigate.callCount).to.equal(1);
+      expect(navigate.args[0][0]).to.equal("testcollection");
+      expect(navigate.args[0][1]).to.equal("testbook");
     });
   });
 });

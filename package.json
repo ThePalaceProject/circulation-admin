@@ -11,7 +11,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "prepublish": "typings install && npm run prod",
-    "test": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && tsc && jest",
+    "test": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && tsc && mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js",
     "test-browser": "npm run test-chrome && npm run test-firefox",
     "test-chrome": "node_modules/.bin/selenium-standalone install && nightwatch -e chrome",
     "test-firefox": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox",
@@ -35,15 +35,17 @@
     "request": "^2.72.0"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "enzyme": "^2.3.0",
     "file-loader": "^0.8.5",
-    "jest": "^0.1.40",
-    "jest-cli": "^0.8.2",
+    "jsdom": "^9.5.0",
     "json-loader": "^0.5.4",
+    "mocha": "^2.5.3",
     "nightwatch": "^0.9.3",
     "react-addons-test-utils": "^15.3.0",
     "selenium-standalone": "5.1.0",
+    "sinon": "^1.17.4",
     "style-loader": "^0.13.1",
     "ts-loader": "^0.8.2",
     "tslint": "^3.10.2",
@@ -51,25 +53,5 @@
     "typings": "^1.0.4",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
-  },
-  "jest": {
-    "rootDir": "./lib",
-    "testRunner": "../node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js",
-    "testFileExtensions": [
-      "js",
-      "jsx"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json"
-    ],
-    "unmockedModulePathPatterns": [
-      "../node_modules/*"
-    ],
-    "globals": {
-      "fetch": true
-    },
-    "persistModuleRegistryBetweenSpecs": true
   }
 }

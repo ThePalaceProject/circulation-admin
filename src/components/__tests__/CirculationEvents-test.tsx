@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub, spy, useFakeTimers } from "sinon";
 
 import * as React from "react";
 import { shallow } from "enzyme";
@@ -41,8 +42,7 @@ describe("CirculationEvents", () => {
     let context = { showCircEventsDownload: true };
 
     beforeEach(() => {
-      fetchCirculationEvents = jest.genMockFunction();
-      fetchCirculationEvents.mockReturnValue(
+      fetchCirculationEvents = stub().returns(
         new Promise((resolve, reject) => resolve())
       );
 
@@ -58,22 +58,22 @@ describe("CirculationEvents", () => {
 
     it("shows header", () => {
       let header = wrapper.find("h3");
-      expect(header.text()).toBe("Circulation Events");
+      expect(header.text()).to.equal("Circulation Events");
     });
 
     it("shows CirculationEventsDownloadForm", () => {
       let form = wrapper.find(CirculationEventsDownloadForm);
-      expect(form.length).toBe(1);
-      expect(form.prop("show")).toBe(false);
-      expect(form.prop("hide")).toBe(wrapper.instance().hideDownloadForm);
+      expect(form.length).to.equal(1);
+      expect(form.prop("show")).to.equal(false);
+      expect(form.prop("hide")).to.equal(wrapper.instance().hideDownloadForm);
     });
 
     it("shows error message", () => {
       let error = wrapper.find(ErrorMessage);
-      expect(error.length).toBe(0);
+      expect(error.length).to.equal(0);
       wrapper.setProps({ fetchError });
       error = wrapper.find(ErrorMessage);
-      expect(error.length).toBe(1);
+      expect(error.length).to.equal(1);
     });
 
     it("shows table data", () => {
@@ -84,21 +84,21 @@ describe("CirculationEvents", () => {
       rows.forEach((row, i) => {
         let data = eventsData[i];
         let link = row.find(CatalogLink);
-        expect(link.prop("bookUrl")).toBe(data.book.url);
-        expect(link.children().text()).toBe(data.book.title);
+        expect(link.prop("bookUrl")).to.equal(data.book.url);
+        expect(link.children().text()).to.equal(data.book.title);
         let type = row.find("td").at(1);
-        expect(type.text()).toBe(instance.formatType(data.type));
+        expect(type.text()).to.equal(instance.formatType(data.type));
         let time = row.find("td").at(2);
-        expect(time.text()).toBe(instance.formatTime(data.time));
+        expect(time.text()).to.equal(instance.formatTime(data.time));
       });
     });
 
     it("shows/hides loading indicator", () => {
       let loading = wrapper.find(LoadingIndicator);
-      expect(loading.length).toBe(1);
+      expect(loading.length).to.equal(1);
       wrapper.setProps({ isLoaded: true });
       loading = wrapper.find(LoadingIndicator);
-      expect(loading.length).toBe(0);
+      expect(loading.length).to.equal(0);
     });
   });
 
@@ -108,8 +108,7 @@ describe("CirculationEvents", () => {
     let context = { showCircEventsDownload: true };
 
     beforeEach(() => {
-      fetchCirculationEvents = jest.genMockFunction();
-      fetchCirculationEvents.mockReturnValue(
+      fetchCirculationEvents = stub().returns(
         new Promise((resolve, reject) => resolve())
       );
 
@@ -124,46 +123,51 @@ describe("CirculationEvents", () => {
     });
 
     it("fetches and queues on mount", () => {
-      let fetchAndQueue = jest.genMockFunction();
+      let fetchAndQueue = stub();
       wrapper.instance().fetchAndQueue = fetchAndQueue;
       wrapper.instance().componentWillMount();
-      expect(fetchAndQueue.mock.calls.length).toBe(1);
+      expect(fetchAndQueue.callCount).to.equal(1);
     });
 
     describe("fetchAndQueue", () => {
+      let fakeTimer;
+      let fetchAndQueueSpy;
+
+      beforeEach(() => {
+        fetchAndQueueSpy = spy(wrapper.instance(), "fetchAndQueue");
+        fakeTimer = useFakeTimers();
+      });
+
+      afterEach(() => {
+        fakeTimer.restore();
+      });
+
       it("sets timeout for fetches", (done) => {
         wrapper.instance().fetchAndQueue().then(() => {
-          // we'd like to just setTimeout.mockClear() and test that
-          // setTimeout has only been called once with the appropriate
-          // arguments, BUT:
-          // fetchAndQueue will already have been called by componentWillMount
-          // for each preceding test, so the resulting setTimeout calls will
-          // happen after each fetchCirculationEvents() call is resolved, which
-          // is unpredictable, so we only look at the last setTimeout call
-          let callCount = (setTimeout as any).mock.calls.length;
-          expect((setTimeout as any).mock.calls[callCount - 1][0]).toBe(wrapper.instance().fetchAndQueue);
-          expect((setTimeout as any).mock.calls[callCount - 1][1]).toBe(1000);
+          expect(fetchAndQueueSpy.callCount).to.equal(1);
+          fakeTimer.tick(1000);
+          expect(fetchAndQueueSpy.callCount).to.equal(2);
           done();
-        }).catch(done.fail);
+        }).catch(err => { console.log(err); throw(err); });
       });
     });
 
     it("shows download form when download button is clicked", () => {
       let button = wrapper.find("button")
         .filterWhere(button => button.text() === "Download CSV");
-      expect(button.length).toBe(1);
-      expect(wrapper.state("showDownloadForm")).toBe(false);
+      expect(button.length).to.equal(1);
+      expect(wrapper.state("showDownloadForm")).to.equal(false);
       button.simulate("click");
-      expect(wrapper.state("showDownloadForm")).toBe(true);
+      expect(wrapper.state("showDownloadForm")).to.equal(true);
       let form = wrapper.find(CirculationEventsDownloadForm);
-      expect(form.prop("show")).toBe(true);
+      expect(form.prop("show")).to.equal(true);
     });
 
     it("hides download form", () => {
       wrapper.setState({ showDownloadForm: true });
       let form = wrapper.find(CirculationEventsDownloadForm);
       form.prop("hide")();
-      expect(wrapper.state("showDownloadForm")).toBe(false);
+      expect(wrapper.state("showDownloadForm")).to.equal(false);
     });
   });
 });

@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow } from "enzyme";
@@ -10,7 +11,7 @@ describe("CirculationEventsDownloadForm", () => {
   let hide;
 
   beforeEach(() => {
-    hide = jest.genMockFunction();
+    hide = stub();
     wrapper = shallow(
       <CirculationEventsDownloadForm show={true} hide={hide} />
     );
@@ -18,13 +19,13 @@ describe("CirculationEventsDownloadForm", () => {
 
   it("shows date input", () => {
     let date = wrapper.find("input[type='date']");
-    expect(date.length).toBe(1);
+    expect(date.length).to.equal(1);
   });
 
   it("shows download and close buttons", () => {
     let buttons = wrapper.find("button");
-    expect(buttons.length).toBe(2);
-    expect(buttons.at(0).text()).toBe("Download");
-    expect(buttons.at(1).text()).toBe("Close");
+    expect(buttons.length).to.equal(2);
+    expect(buttons.at(0).text()).to.equal("Download");
+    expect(buttons.at(1).text()).to.equal("Close");
   });
 });

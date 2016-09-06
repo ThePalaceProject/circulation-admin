@@ -79,7 +79,7 @@ export default class EditForm extends React.Component<EditFormProps, any> {
   save(event) {
     event.preventDefault();
 
-    let data = new FormData(this.refs["form"] as any);
+    let data = new (window as any).FormData(this.refs["form"] as any);
     this.props.editBook(this.props.editLink.href, data).then(response => {
       this.props.refresh();
     });

@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -34,7 +35,7 @@ describe("ClassificationsForm", () => {
         fiction: true,
         categories: ["Space Opera"]
       };
-      editClassifications = jest.genMockFunction();
+      editClassifications = stub();
       wrapper = shallow(
         <ClassificationsForm
           book={bookData}
@@ -48,21 +49,21 @@ describe("ClassificationsForm", () => {
 
     it("shows editable select with audience options", () => {
       let select = editableInputByName("audience");
-      expect(select.props().label).toBe("Audience");
-      expect(select.props().value).toBe("Young Adult");
+      expect(select.props().label).to.equal("Audience");
+      expect(select.props().value).to.equal("Young Adult");
 
       let options = select.children();
-      expect(options.length).toBe(4);
+      expect(options.length).to.equal(4);
     });
 
     it("shows editable inputs with min and max target age", () => {
       let input = editableInputByName("target_age_min");
-      expect(input.props().label).toBeFalsy();
-      expect(input.props().value).toBe("12");
+      expect(input.props().label).not.to.be.ok;
+      expect(input.props().value).to.equal("12");
 
       input = editableInputByName("target_age_max");
-      expect(input.props().label).toBeFalsy();
-      expect(input.props().value).toBe("16");
+      expect(input.props().label).not.to.be.ok;
+      expect(input.props().value).to.equal("16");
     });
 
     it("shows editable radio buttons with fiction status", () => {
@@ -73,31 +74,31 @@ describe("ClassificationsForm", () => {
         .find(EditableRadio)
         .filterWhere(input => input.props().value === "nonfiction");
 
-      expect(fictionRadio.props().type).toBe("radio");
-      expect(fictionRadio.props().label).toBe("Fiction");
-      expect(fictionRadio.props().checked).toBe(true);
-      expect(fictionRadio.props().name).toBe("fiction");
+      expect(fictionRadio.props().type).to.equal("radio");
+      expect(fictionRadio.props().label).to.equal("Fiction");
+      expect(fictionRadio.props().checked).to.equal(true);
+      expect(fictionRadio.props().name).to.equal("fiction");
 
-      expect(nonfictionRadio.props().type).toBe("radio");
-      expect(nonfictionRadio.props().label).toBe("Nonfiction");
-      expect(nonfictionRadio.props().checked).toBe(false);
-      expect(nonfictionRadio.props().name).toBe("fiction");
+      expect(nonfictionRadio.props().type).to.equal("radio");
+      expect(nonfictionRadio.props().label).to.equal("Nonfiction");
+      expect(nonfictionRadio.props().checked).to.equal(false);
+      expect(nonfictionRadio.props().name).to.equal("fiction");
     });
 
     it("shows the book's full genres and remove buttons", () => {
       let genres = wrapper.find(".bookGenre");
-      expect(genres.length).toBe(bookData.categories.length);
+      expect(genres.length).to.equal(bookData.categories.length);
 
       genres.forEach((genre, i) => {
         let cells = genre.find(".bookGenreName");
-        expect(cells.first().text()).toBe(instance.fullGenre(bookData.categories[i]));
+        expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
 
         let button = genre.find(".removeBookGenre");
-        expect(button.length).toBe(1);
+        expect(button.length).to.equal(1);
 
         // plus accessible remove buttons
         let link = genre.find("a.sr-only");
-        expect(link.length).toBe(1);
+        expect(link.length).to.equal(1);
       });
     });
 
@@ -106,37 +107,40 @@ describe("ClassificationsForm", () => {
       wrapper.setProps({ book: inconsistentBookData });
 
       let genres = wrapper.find(".bookGenre");
-      expect(genres.length).toBe(bookData.categories.length);
+      expect(genres.length).to.equal(bookData.categories.length);
 
       genres.forEach((genre, i) => {
         let cells = genre.find(".bookGenreName");
-        expect(cells.first().text()).toBe(instance.fullGenre(bookData.categories[i]));
+        expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
 
         let button = genre.find(".removeBookGenre");
-        expect(button.length).toBe(1);
+        expect(button.length).to.equal(1);
 
         // plus accessible remove buttons
         let link = genre.find("a.sr-only");
-        expect(link.length).toBe(1);
+        expect(link.length).to.equal(1);
       });
     });
 
     it("shows genre form", () => {
       let form = wrapper.find(GenreForm);
-      expect(form.length).toBe(1);
-      expect(form.props().disabled).toBeFalsy();
-      expect(form.props().genreOptions).toEqual(instance.genreOptions());
-      expect(form.props().bookGenres).toEqual(instance.bookGenres(bookData));
+      expect(form.length).to.equal(1);
+      expect(form.props().disabled).not.to.be.ok;
+      expect(form.props().genreOptions).to.deep.equal(instance.genreOptions());
+      expect(form.props().bookGenres).to.deep.equal(instance.bookGenres(bookData));
     });
 
     it("shows submit button", () => {
       let button = wrapper.find("button").filterWhere(button => button.text() === "Save");
-      expect(button.length).toBe(1);
+      expect(button.length).to.equal(1);
     });
   });
 
   describe("behavior", () => {
+    let confirmStub;
+
     beforeEach(() => {
+      confirmStub = stub(window, "confirm").returns(true);
       bookData = {
         title: "title",
         audience: "Young Adult",
@@ -144,7 +148,7 @@ describe("ClassificationsForm", () => {
         fiction: true,
         categories: ["Space Opera"]
       };
-      editClassifications = jest.genMockFunction();
+      editClassifications = stub();
       wrapper = mount(
         <ClassificationsForm
           book={bookData}
@@ -156,11 +160,15 @@ describe("ClassificationsForm", () => {
       instance = wrapper.instance();
     });
 
+    afterEach(() => {
+      confirmStub.restore();
+    });
+
     it("shows and hides target age inputs when audience changes", () => {
       let minAgeInput = editableInputByName("target_age_min");
       let maxAgeInput = editableInputByName("target_age_max");
-      expect(minAgeInput.length).toBe(1);
-      expect(maxAgeInput.length).toBe(1);
+      expect(minAgeInput.length).to.equal(1);
+      expect(maxAgeInput.length).to.equal(1);
 
       let select = wrapper.find("select[name='audience']") as any;
       let selectElement = select.get(0);
@@ -168,61 +176,58 @@ describe("ClassificationsForm", () => {
       select.simulate("change");
       minAgeInput = editableInputByName("target_age_min");
       maxAgeInput = editableInputByName("target_age_max");
-      expect(minAgeInput.length).toBe(0);
-      expect(maxAgeInput.length).toBe(0);
+      expect(minAgeInput.length).to.equal(0);
+      expect(maxAgeInput.length).to.equal(0);
 
       selectElement.value = "Children";
       select.simulate("change");
       minAgeInput = editableInputByName("target_age_min");
       maxAgeInput = editableInputByName("target_age_max");
-      expect(minAgeInput.length).toBe(1);
-      expect(maxAgeInput.length).toBe(1);
+      expect(minAgeInput.length).to.equal(1);
+      expect(maxAgeInput.length).to.equal(1);
     });
 
     it("changes both fiction status radio buttons", () => {
-      spyOn(window, "confirm").and.returnValue(true);
-
       let fictionInput = wrapper.find("input[value='fiction']");
       let nonfictionInput = wrapper.find("input[value='nonfiction']");
-      expect(fictionInput.length).toEqual(1);
-      expect(nonfictionInput.length).toEqual(1);
+      expect(fictionInput.length).to.equal(1);
+      expect(nonfictionInput.length).to.equal(1);
 
       let fictionElement = fictionInput.get(0);
       let nonfictionElement = nonfictionInput.get(0);
 
-      expect((fictionElement as any).checked).toBe(true);
-      expect((nonfictionElement as any).checked).toBe(false);
+      expect((fictionElement as any).checked).to.equal(true);
+      expect((nonfictionElement as any).checked).to.equal(false);
 
       (nonfictionElement as any).checked = true;
       nonfictionInput.simulate("change");
 
       // change to nonfiction should prompt user and clear fiction genre
-      expect(window.confirm).toHaveBeenCalled();
-      expect(wrapper.state("genres")).toEqual([]);
+      expect(confirmStub.callCount).to.be.above(0);
+      expect(wrapper.state("genres")).to.deep.equal([]);
 
-      expect((fictionElement as any).checked).toBe(false);
-      expect((nonfictionElement as any).checked).toBe(true);
+      expect((fictionElement as any).checked).to.equal(false);
+      expect((nonfictionElement as any).checked).to.equal(true);
 
       (fictionElement as any).checked = true;
       fictionInput.simulate("change");
 
-      expect((fictionElement as any).checked).toBe(true);
-      expect((nonfictionElement as any).checked).toBe(false);
+      expect((fictionElement as any).checked).to.equal(true);
+      expect((nonfictionElement as any).checked).to.equal(false);
     });
 
     it("adds genre to list of selected genres after validating against audience", () => {
       // can't add Erotica to book with Young Adult audience
       instance.addGenre("Erotica");
       let newGenres = wrapper.find(".bookGenreName").map(name => name.text());
-      expect(newGenres.sort()).toEqual(bookData.categories.map(genre => instance.fullGenre(genre)).sort());
+      expect(newGenres.sort()).to.deep.equal(bookData.categories.map(genre => instance.fullGenre(genre)).sort());
 
-      instance.validateAudience = jest.genMockFunction();
-      instance.validateAudience.mockReturnValue(true);
+      instance.validateAudience = stub().returns(true);
       instance.addGenre("Folklore");
 
-      expect(instance.validateAudience.mock.calls.length).toBe(1);
+      expect(instance.validateAudience.callCount).to.equal(1);
       newGenres = wrapper.find(".bookGenreName").map(name => name.text());
-      expect(newGenres).toContain(instance.fullGenre("Folklore"));
+      expect(newGenres).to.contain(instance.fullGenre("Folklore"));
     });
 
     it("removes genre when remove button is clicked", () => {
@@ -230,7 +235,7 @@ describe("ClassificationsForm", () => {
       button.simulate("click");
 
       let newGenres = wrapper.find(".bookGenreName");
-      expect(newGenres.length).toEqual(0);
+      expect(newGenres.length).to.equal(0);
     });
 
     it("calls removes genre when accessible remove button is clicked", () => {
@@ -238,14 +243,14 @@ describe("ClassificationsForm", () => {
       button.simulate("click");
 
       let newGenres = wrapper.find(".bookGenreName");
-      expect(newGenres.length).toEqual(0);
+      expect(newGenres.length).to.equal(0);
     });
 
     it("submits data when submit button is clicked", () => {
       let button = wrapper.find("button").findWhere(button => button.text() === "Save");
       button.simulate("click");
 
-      let formData = new FormData();
+      let formData = new (window as any).FormData();
       formData.append("csrf_token", "token");
       formData.append("audience", "Young Adult");
       formData.append("target_age_min", "12");
@@ -253,8 +258,8 @@ describe("ClassificationsForm", () => {
       formData.append("fiction", "fiction");
       formData.append("genres", "Space Opera");
 
-      expect(editClassifications.mock.calls.length).toBe(1);
-      expect(editClassifications.mock.calls[0][0]).toEqual(formData);
+      expect(editClassifications.callCount).to.equal(1);
+      expect(editClassifications.args[0][0]).to.deep.equal(formData);
     });
 
     it("updates state upon receiving new state-related props", () => {
@@ -265,9 +270,9 @@ describe("ClassificationsForm", () => {
       });
       wrapper.setProps({ book: newBookData });
 
-      expect(wrapper.state("audience")).toBe("Adult");
-      expect(wrapper.state("fiction")).toBe(false);
-      expect(wrapper.state("genres")).toEqual(["Cooking"]);
+      expect(wrapper.state("audience")).to.equal("Adult");
+      expect(wrapper.state("fiction")).to.equal(false);
+      expect(wrapper.state("genres")).to.deep.equal(["Cooking"]);
     });
 
     it("doesn't update state upoen receiving new state-unrelated props", () => {
@@ -276,8 +281,8 @@ describe("ClassificationsForm", () => {
       // form submitted, disabling form
       wrapper.setProps({ disabled: true });
       // state should not change back to earlier book props
-      expect(wrapper.state("fiction")).toBe(false);
-      expect(wrapper.state("genres")).toEqual(["Cooking"]);
+      expect(wrapper.state("fiction")).to.equal(false);
+      expect(wrapper.state("genres")).to.deep.equal(["Cooking"]);
     });
   });
 });

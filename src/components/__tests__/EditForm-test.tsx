@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -39,46 +40,63 @@ describe("EditForm", () => {
           {...bookData}
           csrfToken=""
           disabled={false}
-          refresh={jest.genMockFunction()}
-          editBook={jest.genMockFunction()}
+          refresh={stub()}
+          editBook={stub()}
           />
       );
     });
 
     it("shows editable input with title", () => {
       let input = editableInputByName("title");
-      expect(input.props().label).toBe("Title");
-      expect(input.props().value).toBe("title");
+      expect(input.props().label).to.equal("Title");
+      expect(input.props().value).to.equal("title");
     });
 
     it("shows editable input with subtitle", () => {
       let input = editableInputByName("subtitle");
-      expect(input.props().label).toBe("Subtitle");
-      expect(input.props().value).toBe("subtitle");
+      expect(input.props().label).to.equal("Subtitle");
+      expect(input.props().value).to.equal("subtitle");
     });
 
     it("shows editable input with series", () => {
       let input = editableInputByName("series");
-      expect(input.props().label).toBeFalsy();
-      expect(input.props().value).toBe("series");
+      expect(input.props().label).not.to.be.ok;
+      expect(input.props().value).to.equal("series");
     });
 
     it("shows editable input with series position", () => {
       let input = editableInputByName("series_position");
-      expect(input.props().label).toBeFalsy();
-      expect(input.props().value).toBe("3");
+      expect(input.props().label).not.to.be.ok;
+      expect(input.props().value).to.equal("3");
     });
 
     it("shows editable textarea with summary", () => {
       let textarea = editableInputByName("summary");
-      expect(textarea.prop("label")).toBe("Summary");
-      expect(textarea.prop("value")).toBe("summary");
+      expect(textarea.prop("label")).to.equal("Summary");
+      expect(textarea.prop("value")).to.equal("summary");
     });
   });
 
   it("calls editBook on submit", () => {
-    let editBook = jest.genMockFunction();
-    editBook.mockReturnValue(new Promise((resolve, reject) => {
+    class MockFormData {
+      data: any;
+      constructor(form) {
+        this.data = {};
+        let elements = form.elements;
+        for (let i = 0; i < elements.length; i++) {
+          let element = elements[i];
+          this.data[element.name] = element.value;
+        }
+      }
+
+      get(key) {
+        return { value: this.data[key] };
+      }
+    }
+
+    let formDataStub = stub(window, "FormData", MockFormData);
+
+    let editBook = stub().returns(new Promise((resolve, reject) => {
       resolve();
     }));
     let wrapper = mount(
@@ -86,27 +104,27 @@ describe("EditForm", () => {
         {...bookData}
         csrfToken="token"
         disabled={false}
-        refresh={jest.genMockFunction()}
+        refresh={stub()}
         editBook={editBook}
         />
     );
 
     let form = wrapper.find("form");
     form.simulate("submit");
+    formDataStub.restore();
 
-    expect(editBook.mock.calls.length).toBe(1);
-    expect(editBook.mock.calls[0][0]).toBe("href");
-    expect(editBook.mock.calls[0][1].get("csrf_token").value).toBe("token");
-    expect(editBook.mock.calls[0][1].get("title").value).toBe(bookData.title);
-    expect(editBook.mock.calls[0][1].get("subtitle").value).toBe(bookData.subtitle);
-    expect(editBook.mock.calls[0][1].get("series").value).toBe(bookData.series);
-    expect(editBook.mock.calls[0][1].get("series_position").value).toBe(bookData.seriesPosition);
-    expect(editBook.mock.calls[0][1].get("summary").value).toBe(bookData.summary);
+    expect(editBook.callCount).to.equal(1);
+    expect(editBook.args[0][0]).to.equal("href");
+    expect(editBook.args[0][1].get("csrf_token").value).to.equal("token");
+    expect(editBook.args[0][1].get("title").value).to.equal(bookData.title);
+    expect(editBook.args[0][1].get("subtitle").value).to.equal(bookData.subtitle);
+    expect(editBook.args[0][1].get("series").value).to.equal(bookData.series);
+    expect(editBook.args[0][1].get("series_position").value).to.equal(bookData.seriesPosition);
+    expect(editBook.args[0][1].get("summary").value).to.equal(bookData.summary);
   });
 
   it("refreshes book after editing", (done) => {
-    let editBook = jest.genMockFunction();
-    editBook.mockReturnValue(new Promise((resolve, reject) => {
+    let editBook = stub().returns(new Promise((resolve, reject) => {
       resolve();
     }));
     let wrapper = mount(
@@ -129,13 +147,13 @@ describe("EditForm", () => {
         {...bookData}
         csrfToken=""
         disabled={true}
-        refresh={jest.genMockFunction()}
-        editBook={jest.genMockFunction()}
+        refresh={stub()}
+        editBook={stub()}
         />
     );
     let inputs = wrapper.find(EditableInput);
     inputs.forEach(input => {
-      expect(input.prop("disabled")).toBe(true);
+      expect(input.prop("disabled")).to.equal(true);
     });
   });
 });
