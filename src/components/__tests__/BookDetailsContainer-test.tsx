@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow } from "enzyme";
@@ -25,7 +26,7 @@ describe("BookDetailsContainer", () => {
       tab: "tab",
       csrfToken: "token"
     };
-    refreshCatalog = jest.genMockFunction();
+    refreshCatalog = stub();
 
     wrapper = shallow(
       <BookDetailsContainer
@@ -41,13 +42,13 @@ describe("BookDetailsContainer", () => {
 
   it("shows a tab container with initial tab", () => {
     let tabContainer = wrapper.find(TabContainer);
-    expect(tabContainer).toBeTruthy();
-    expect(tabContainer.props().bookUrl).toBe("book url");
-    expect(tabContainer.props().collectionUrl).toBe("collection url");
-    expect(tabContainer.props().tab).toBe("tab");
-    expect(tabContainer.props().csrfToken).toBe("token");
-    expect(tabContainer.props().refreshCatalog).toBe(refreshCatalog);
-    expect(tabContainer.props().store).toBe(store);
-    expect(tabContainer.children()).toEqual(tabContainer.children());
+    expect(tabContainer).to.be.ok;
+    expect(tabContainer.props().bookUrl).to.equal("book url");
+    expect(tabContainer.props().collectionUrl).to.equal("collection url");
+    expect(tabContainer.props().tab).to.equal("tab");
+    expect(tabContainer.props().csrfToken).to.equal("token");
+    expect(tabContainer.props().refreshCatalog).to.equal(refreshCatalog);
+    expect(tabContainer.props().store).to.equal(store);
+    expect(tabContainer.children()).to.deep.equal(tabContainer.children());
   });
 });

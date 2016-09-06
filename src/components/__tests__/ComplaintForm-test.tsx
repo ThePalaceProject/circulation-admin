@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -15,24 +16,24 @@ describe("ComplaintForm", () => {
         <ComplaintForm
           disabled={false}
           complaintUrl="complaint url"
-          postComplaint={jest.genMockFunction()}
-          refreshComplaints={jest.genMockFunction()}
+          postComplaint={stub()}
+          refreshComplaints={stub()}
           />
       );
     });
 
     it("shows a select field with default value", () => {
       let select = wrapper.find(EditableInput);
-      expect(select.length).toBe(1);
-      expect(select.prop("disabled")).toBe(false);
+      expect(select.length).to.equal(1);
+      expect(select.prop("disabled")).to.equal(false);
       let option = select.childAt(0);
-      expect(option.text()).toBe("complaint type");
+      expect(option.text()).to.equal("complaint type");
     });
 
     it("shows complaint type options", () => {
       let options = wrapper.find("option");
       let types = options.map(option => option.prop("value"));
-      expect(types).toEqual([
+      expect(types).to.deep.equal([
         "",
         "cannot-issue-loan",
         "cannot-render",
@@ -51,7 +52,7 @@ describe("ComplaintForm", () => {
 
     it("shows a submit button", () => {
       let button = wrapper.find("input[type='submit']");
-      expect(button.length).toBe(1);
+      expect(button.length).to.equal(1);
     });
 
     it("disables", () => {
@@ -59,14 +60,14 @@ describe("ComplaintForm", () => {
         <ComplaintForm
           disabled={true}
           complaintUrl="complaint url"
-          postComplaint={jest.genMockFunction()}
-          refreshComplaints={jest.genMockFunction()}
+          postComplaint={stub()}
+          refreshComplaints={stub()}
           />
       );
       let button = wrapper.find("input[type='submit']");
-      expect(button.prop("disabled")).toBe(true);
+      expect(button.prop("disabled")).to.equal(true);
       let select = wrapper.find(EditableInput);
-      expect(select.prop("disabled")).toBe(true);
+      expect(select.prop("disabled")).to.equal(true);
     });
   });
 
@@ -75,8 +76,7 @@ describe("ComplaintForm", () => {
     let postComplaint;
 
     beforeEach(() => {
-      postComplaint = jest.genMockFunction();
-      postComplaint.mockReturnValue(new Promise((resolve, reject) => {
+      postComplaint = stub().returns(new Promise((resolve, reject) => {
         resolve();
       }));
       wrapper = mount(
@@ -84,7 +84,7 @@ describe("ComplaintForm", () => {
           disabled={false}
           complaintUrl="complaint url"
           postComplaint={postComplaint}
-          refreshComplaints={jest.genMockFunction()}
+          refreshComplaints={stub()}
           />
       );
     });
@@ -94,9 +94,9 @@ describe("ComplaintForm", () => {
       let select = wrapper.find("select").get(0);
       select.value = "bad-description";
       form.simulate("submit");
-      expect(postComplaint.mock.calls.length).toBe(1);
-      expect(postComplaint.mock.calls[0][0]).toBe("complaint url");
-      expect(postComplaint.mock.calls[0][1].type).toBe("http://librarysimplified.org/terms/problem/bad-description");
+      expect(postComplaint.callCount).to.equal(1);
+      expect(postComplaint.args[0][0]).to.equal("complaint url");
+      expect(postComplaint.args[0][1].type).to.equal("http://librarysimplified.org/terms/problem/bad-description");
     });
 
     it("refreshes complaints after post", (done) => {
@@ -126,13 +126,12 @@ describe("ComplaintForm", () => {
       let form = wrapper.find("form");
       form.simulate("submit");
       let errors = wrapper.find(".complaintFormError");
-      expect(errors.length).toBe(1);
-      expect(errors.at(0).text()).toBe("You must select a complaint type!");
+      expect(errors.length).to.equal(1);
+      expect(errors.at(0).text()).to.equal("You must select a complaint type!");
     });
 
     it("calls showPostError() if post fails", (done) => {
-      postComplaint = jest.genMockFunction();
-      postComplaint.mockReturnValue(new Promise((resolve, reject) => {
+      postComplaint = stub().returns(new Promise((resolve, reject) => {
         reject();
       }));
       wrapper = mount(
@@ -140,7 +139,7 @@ describe("ComplaintForm", () => {
           disabled={false}
           complaintUrl="complaint url"
           postComplaint={postComplaint}
-          refreshComplaints={jest.genMockFunction()}
+          refreshComplaints={stub()}
           />
       );
       wrapper.instance().showPostError = done;
@@ -155,15 +154,15 @@ describe("ComplaintForm", () => {
       select.value = "bad-description";
       wrapper.instance().clear();
       select = wrapper.find("select").get(0);
-      expect(select.value).toBe("");
+      expect(select.value).to.equal("");
     });
 
     it("shows post error", () => {
       wrapper.setState({ errors: ["test error"] });
       wrapper.update();
       let errors = wrapper.find(".complaintFormError");
-      expect(errors.length).toBe(1);
-      expect(errors.at(0).text()).toBe("test error");
+      expect(errors.length).to.equal(1);
+      expect(errors.at(0).text()).to.equal("test error");
     });
   });
 });

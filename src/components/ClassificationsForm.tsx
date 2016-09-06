@@ -247,7 +247,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                   clearedType +
                   " genres you have chosen!";
 
-    if (this.state.genres.length === 0 || confirm(message)) {
+    if (this.state.genres.length === 0 || window.confirm(message)) {
       this.setState({
         fiction: value,
         genres: this.filterGenres(this.state.genres, value)
@@ -268,7 +268,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   submit() {
-    let data = new FormData();
+    let data = new (window as any).FormData();
     data.append("csrf_token", this.props.csrfToken);
     data.append("audience", this.state.audience);
     if (this.shouldShowTargetAge()) {

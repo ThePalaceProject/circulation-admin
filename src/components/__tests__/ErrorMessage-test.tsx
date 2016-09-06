@@ -1,4 +1,5 @@
-jest.dontMock("../ErrorMessage");
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { mount } from "enzyme";
@@ -16,7 +17,7 @@ describe("ErrorMessage", () => {
       <ErrorMessage error={error} />
     );
     let alert = wrapper.find(".alert-danger");
-    expect(alert.text()).toContain("logged out");
+    expect(alert.text()).to.contain("logged out");
   });
 
   it("shows detail for problem detail", () => {
@@ -29,7 +30,7 @@ describe("ErrorMessage", () => {
       <ErrorMessage error={error} />
     );
     let alert = wrapper.find(".alert-danger");
-    expect(alert.text()).toContain("detail");
+    expect(alert.text()).to.contain("detail");
   });
 
   it("shows response for non-json response", () => {
@@ -42,7 +43,7 @@ describe("ErrorMessage", () => {
       <ErrorMessage error={error} />
     );
     let alert = wrapper.find(".alert-danger");
-    expect(alert.text()).toContain("response");
+    expect(alert.text()).to.contain("response");
   });
 
   it("shows try again button", () => {
@@ -51,13 +52,13 @@ describe("ErrorMessage", () => {
       response: "response",
       url: ""
     };
-    let tryAgain = jest.genMockFunction();
+    let tryAgain = stub();
     let wrapper = mount(
       <ErrorMessage error={error} tryAgain={tryAgain} />
     );
     let tryAgainLink = wrapper.find("a");
-    expect(tryAgainLink.text()).toContain("Try again");
+    expect(tryAgainLink.text()).to.contain("Try again");
     tryAgainLink.simulate("click");
-    expect(tryAgain.mock.calls.length).toEqual(1);
+    expect(tryAgain.callCount).to.equal(1);
   });
 });

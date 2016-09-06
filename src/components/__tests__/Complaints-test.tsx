@@ -1,5 +1,5 @@
-jest.dontMock("../Complaints");
-jest.dontMock("../ButtonForm");
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -23,8 +23,8 @@ describe("Complaints", () => {
     };
 
     beforeEach(() => {
-      fetchComplaints = jest.genMockFunction();
-      postComplaint = jest.genMockFunction();
+      fetchComplaints = stub();
+      postComplaint = stub();
       complaintsData = {
         "http://librarysimplified.org/terms/problem/test-type": 5,
         "http://librarysimplified.org/terms/problem/other-type": 3,
@@ -38,14 +38,14 @@ describe("Complaints", () => {
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}
           postComplaint={postComplaint}
-          refreshCatalog={jest.genMockFunction()}
+          refreshCatalog={stub()}
           />
       );
     });
 
     it("shows book title", () => {
       let title = wrapper.find("h2");
-      expect(title.text()).toBe("test title");
+      expect(title.text()).to.equal("test title");
     });
 
     it("shows complaints", () => {
@@ -53,33 +53,33 @@ describe("Complaints", () => {
       let complaintsKeys = Object.keys(complaintsData);
       let types = wrapper.find(".complaintType").map(type => type.text());
       let counts = wrapper.find(".complaintCount").map(count => parseInt(count.text()));
-      expect(types).toEqual(complaintsKeys.map(type => instance.readableComplaintType(type)));
-      expect(counts).toEqual(complaintsKeys.map(key => complaintsData[key]));
+      expect(types).to.deep.equal(complaintsKeys.map(type => instance.readableComplaintType(type)));
+      expect(counts).to.deep.equal(complaintsKeys.map(key => complaintsData[key]));
     });
 
     it("shows simplified complaint types", () => {
       let types = wrapper.find(".complaintType").map(type => type.text());
-      expect(types).toEqual(["test type", "other type", "last type"]);
+      expect(types).to.deep.equal(["test type", "other type", "last type"]);
     });
 
     it("shows resolve button for each complaint type", () => {
       let buttons = wrapper.find(ButtonForm);
-      expect(buttons.length).toBe(Object.keys(complaintsData).length);
+      expect(buttons.length).to.equal(Object.keys(complaintsData).length);
       buttons.forEach(button => {
-        expect(button.props().disabled).toBeFalsy();
-        expect(button.props().label).toBe("Resolve");
+        expect(button.props().disabled).not.to.be.ok;
+        expect(button.props().label).to.equal("Resolve");
       });
     });
 
     it("shows complaint form", () => {
       let form = wrapper.find(ComplaintForm);
-      expect(form.props().disabled).toBeFalsy();
-      expect(form.props().complaintUrl).toBe(bookData.issuesLink.href);
-      expect(form.props().postComplaint).toBe(postComplaint);
+      expect(form.props().disabled).not.to.be.ok;
+      expect(form.props().complaintUrl).to.equal(bookData.issuesLink.href);
+      expect(form.props().postComplaint).to.equal(postComplaint);
     });
 
     it("shows fetch error", () => {
-      let fetchComplaints = jest.genMockFunction();
+      let fetchComplaints = stub();
       let fetchError = { status: 401, response: "test", url: "test url" };
       let wrapper = shallow(
         <Complaints
@@ -88,18 +88,18 @@ describe("Complaints", () => {
           book={{ title: "test book" }}
           fetchError={fetchError}
           fetchComplaints={fetchComplaints}
-          postComplaint={jest.genMockFunction}
-          refreshCatalog={jest.genMockFunction()}
+          postComplaint={stub()}
+          refreshCatalog={stub()}
           />
       );
       let complaintsUrl = (wrapper.instance() as any).complaintsUrl();
 
       let error = wrapper.find(ErrorMessage);
-      expect(error.prop("error")).toEqual(fetchError);
+      expect(error.prop("error")).to.equal(fetchError);
 
       error.prop("tryAgain")();
-      expect(fetchComplaints.mock.calls.length).toBe(2);
-      expect(fetchComplaints.mock.calls[1][0]).toBe(complaintsUrl);
+      expect(fetchComplaints.callCount).to.equal(2);
+      expect(fetchComplaints.args[1][0]).to.equal(complaintsUrl);
     });
   });
 
@@ -110,13 +110,13 @@ describe("Complaints", () => {
     let complaintsData = {
       "http://librarysimplified.org/terms/problem/test-type": 2
     };
+    let confirmStub;
 
     beforeEach(() => {
-      spyOn(window, "confirm").and.returnValue(true);
-      refreshCatalog = jest.genMockFunction();
-      fetchComplaints = jest.genMockFunction();
-      resolveComplaints = jest.genMockFunction();
-      resolveComplaints.mockReturnValue(new Promise((resolve, reject) => {
+      confirmStub = stub(window, "confirm").returns(true);
+      refreshCatalog = stub();
+      fetchComplaints = stub();
+      resolveComplaints = stub().returns(new Promise((resolve, reject) => {
         resolve();
       }));
       wrapper = mount(
@@ -133,30 +133,34 @@ describe("Complaints", () => {
       instance = (wrapper.instance() as any);
     });
 
+    afterEach(() => {
+      confirmStub.restore();
+    });
+
     it("fetches complaints on mount", () => {
       let complaintsUrl = instance.complaintsUrl();
-      expect(fetchComplaints.mock.calls.length).toBe(1);
-      expect(fetchComplaints.mock.calls[0][0]).toBe(complaintsUrl);
+      expect(fetchComplaints.callCount).to.equal(1);
+      expect(fetchComplaints.args[0][0]).to.equal(complaintsUrl);
     });
 
     it("should call resolve()", () => {
-      instance.resolve = jest.genMockFunction();
+      instance.resolve = stub();
 
       let resolveUrl = (wrapper.instance() as any).resolveComplaintsUrl();
       let input = wrapper.find(ButtonForm);
       input.simulate("click");
 
-      expect(instance.resolve.mock.calls.length).toBe(1);
-      expect(instance.resolve.mock.calls[0][0]).toBe(Object.keys(complaintsData)[0]);
+      expect(instance.resolve.callCount).to.equal(1);
+      expect(instance.resolve.args[0][0]).to.equal(Object.keys(complaintsData)[0]);
     });
 
     it("should fetch and refresh Catalog when resolve() is called", (done) => {
       let resolveUrl = instance.resolveComplaintsUrl();
       instance.resolve().then(() => {
-        expect(resolveComplaints.mock.calls.length).toBe(1);
-        expect(resolveComplaints.mock.calls[0][0]).toBe(resolveUrl);
-        expect(fetchComplaints.mock.calls.length).toBe(2); // it also fetched on mount
-        expect(refreshCatalog.mock.calls.length).toBe(1);
+        expect(resolveComplaints.callCount).to.equal(1);
+        expect(resolveComplaints.args[0][0]).to.equal(resolveUrl);
+        expect(fetchComplaints.callCount).to.equal(2); // it also fetched on mount
+        expect(refreshCatalog.callCount).to.equal(1);
         done();
       });
     });

@@ -1,4 +1,4 @@
-jest.dontMock("../complaints");
+import { expect } from "chai";
 
 import complaints from "../complaints";
 
@@ -22,7 +22,7 @@ describe("complaints reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(complaints(undefined, {})).toEqual(initState);
+    expect(complaints(undefined, {})).to.deep.equal(initState);
   });
 
   it("handles FETCH_COMPLAINTS_REQUEST", () => {
@@ -33,14 +33,14 @@ describe("complaints reducer", () => {
       url: "test url",
       isFetching: true
     });
-    expect(complaints(initState, action)).toEqual(newState);
+    expect(complaints(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
       fetchError: null
     });
-    expect(complaints(errorState, action)).toEqual(newState);
+    expect(complaints(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles FETCH_COMPLAINTS_FAILURE", () => {
@@ -57,7 +57,7 @@ describe("complaints reducer", () => {
       fetchError: "test error",
       isFetching: false
     });
-    expect(complaints(oldState, action)).toEqual(newState);
+    expect(complaints(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles LOAD_COMPLAINTS", () => {
@@ -74,7 +74,7 @@ describe("complaints reducer", () => {
       data: "test data",
       isFetching: false
     });
-    expect(complaints(oldState, action)).toEqual(newState);
+    expect(complaints(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles POST_COMPLAINT_REQUEST", () => {
@@ -85,14 +85,14 @@ describe("complaints reducer", () => {
       url: "test url",
       isFetching: true
     });
-    expect(complaints(initState, action)).toEqual(newState);
+    expect(complaints(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
       fetchError: null
     });
-    expect(complaints(errorState, action)).toEqual(newState);
+    expect(complaints(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles POST_COMPLAINT_FAILURE", () => {
@@ -109,7 +109,7 @@ describe("complaints reducer", () => {
       postError: "test error",
       isFetching: false
     });
-    expect(complaints(oldState, action)).toEqual(newState);
+    expect(complaints(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles RESOLVE_COMPLAINTS_REQUEST", () => {
@@ -120,14 +120,14 @@ describe("complaints reducer", () => {
       url: "test url",
       isFetching: true
     });
-    expect(complaints(initState, action)).toEqual(newState);
+    expect(complaints(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
       fetchError: null
     });
-    expect(complaints(errorState, action)).toEqual(newState);
+    expect(complaints(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles RESOLVE_COMPLAINTS_FAILURE", () => {
@@ -144,6 +144,6 @@ describe("complaints reducer", () => {
       resolveError: "test error",
       isFetching: false
     });
-    expect(complaints(oldState, action)).toEqual(newState);
+    expect(complaints(oldState, action)).to.deep.equal(newState);
   });
 });

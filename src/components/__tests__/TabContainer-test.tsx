@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { mount } from "enzyme";
@@ -34,7 +35,7 @@ describe("TabContainer", () => {
 
   beforeEach(() => {
     store = buildStore();
-    push = jest.genMockFunction();
+    push = stub();
     context = mockRouterContext(push);
     wrapper = mount(
       <TabContainer
@@ -42,7 +43,7 @@ describe("TabContainer", () => {
         collectionUrl="collection url"
         tab={null}
         csrfToken="token"
-        refreshCatalog={jest.genMockFunction()}
+        refreshCatalog={stub()}
         store={store}
         >
         <div className="bookDetails">Moby Dick</div>
@@ -53,40 +54,40 @@ describe("TabContainer", () => {
 
   it("shows book details", () => {
     let details = wrapper.find(".bookDetails");
-    expect(details).toBeTruthy();
+    expect(details).to.be.ok;
   });
 
   it("shows details, edit, classifications, and complaints tabs", () => {
     let links = wrapper.find("ul.nav-tabs").find("a");
     let linkTexts = links.map(link => link.text());
-    expect(linkTexts).toContain("Details");
-    expect(linkTexts).toContain("Edit");
-    expect(linkTexts).toContain("Classifications");
-    expect(linkTexts).toContain("Complaints");
+    expect(linkTexts).to.contain("Details");
+    expect(linkTexts).to.contain("Edit");
+    expect(linkTexts).to.contain("Classifications");
+    expect(linkTexts).to.contain("Complaints");
   });
 
   it("shows Editor", () => {
     let editor = wrapper.find(Editor);
-    expect(editor.props().csrfToken).toBe("token");
-    expect(editor.props().bookUrl).toBe("book url");
+    expect(editor.props().csrfToken).to.equal("token");
+    expect(editor.props().bookUrl).to.equal("book url");
   });
 
   it("shows classifications", () => {
     let classifications = wrapper.find(Classifications);
-    expect(classifications.props().bookUrl).toBe("book url");
+    expect(classifications.props().bookUrl).to.equal("book url");
   });
 
   it("shows Complaints", () => {
     let complaints = wrapper.find(Complaints);
-    expect(complaints.props().bookUrl).toBe("book url");
+    expect(complaints.props().bookUrl).to.equal("book url");
   });
 
   it("uses router to navigate when tab is clicked", () => {
     let tabs = wrapper.find("ul.nav-tabs").find("a");
     tabs.at(1).simulate("click", { target : { dataset: { tabkey: "edit" } } });
     let label = tabs.at(1).text();
-    expect(push.mock.calls.length).toBe(1);
-    expect(push.mock.calls[0][0]).toBe(context.pathFor("collection url", "book url", label));
+    expect(push.callCount).to.equal(1);
+    expect(push.args[0][0]).to.equal(context.pathFor("collection url", "book url", label));
   });
 
   it("shows complaints count", () => {
@@ -94,20 +95,20 @@ describe("TabContainer", () => {
 
     let links = wrapper.find("ul.nav-tabs").find("a");
     let linkTexts = links.map(link => link.text());
-    expect(linkTexts).toContain("Complaints (5)");
+    expect(linkTexts).to.contain("Complaints (5)");
   });
 
   it("clears book data when receiving new book url", () => {
-    let clearBook = jest.genMockFunction();
+    let clearBook = stub();
     wrapper.setProps({ clearBook });
     wrapper.setProps({ bookUrl: "new book url" });
-    expect(clearBook.mock.calls.length).toBe(1);
+    expect(clearBook.callCount).to.equal(1);
   });
 
   it("clears book data on unount", () => {
-    let clearBook = jest.genMockFunction();
+    let clearBook = stub();
     wrapper.setProps({ clearBook });
     wrapper.unmount();
-    expect(clearBook.mock.calls.length).toBe(1);
+    expect(clearBook.callCount).to.equal(1);
   });
 });

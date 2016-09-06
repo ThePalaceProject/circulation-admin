@@ -1,4 +1,4 @@
-jest.dontMock("../book");
+import { expect } from "chai";
 
 import book from "../book";
 
@@ -22,12 +22,12 @@ describe("book reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(book(undefined, {})).toEqual(initState);
+    expect(book(undefined, {})).to.deep.equal(initState);
   });
 
   it("handles CLEAR_BOOK", () => {
     let action = { type: "CLEAR_BOOK" };
-    expect(book(fetchedState, action)).toEqual(initState);
+    expect(book(fetchedState, action)).to.deep.equal(initState);
   });
 
   it("handles FETCH_BOOK_ADMIN_REQUEST", () => {
@@ -38,7 +38,7 @@ describe("book reducer", () => {
       isFetching: true,
       editError: null
     });
-    expect(book(initState, action)).toEqual(newState);
+    expect(book(initState, action)).to.deep.equal(newState);
   });
 
   it("handles EDIT_BOOK_REQUEST", () => {
@@ -46,7 +46,7 @@ describe("book reducer", () => {
     let newState = Object.assign({}, fetchedState, {
       isFetching: true
     });
-    expect(book(fetchedState, action)).toEqual(newState);
+    expect(book(fetchedState, action)).to.deep.equal(newState);
   });
 
   it("handles FETCH_BOOK_ADMIN_FAILURE", () => {
@@ -62,7 +62,7 @@ describe("book reducer", () => {
       fetchError: "test error",
       isFetching: false
     });
-    expect(book(oldState, action)).toEqual(newState);
+    expect(book(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles EDIT_BOOK_FAILURE", () => {
@@ -78,7 +78,7 @@ describe("book reducer", () => {
       editError: "test error",
       isFetching: false
     });
-    expect(book(oldState, action)).toEqual(newState);
+    expect(book(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles LOAD_BOOK_ADMIN", () => {
@@ -94,6 +94,6 @@ describe("book reducer", () => {
       data: "test data",
       isFetching: false
     });
-    expect(book(oldState, action)).toEqual(newState);
+    expect(book(oldState, action)).to.deep.equal(newState);
   });
 });

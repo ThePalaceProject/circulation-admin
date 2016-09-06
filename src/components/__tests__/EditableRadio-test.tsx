@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { mount } from "enzyme";
@@ -10,7 +11,7 @@ describe("EditableRadio", () => {
   let onChange;
 
   beforeEach(() => {
-    onChange = jest.genMockFunction();
+    onChange = stub();
     wrapper = mount(
       <EditableRadio
         type="text"
@@ -24,20 +25,20 @@ describe("EditableRadio", () => {
   });
 
   it("shows label from props", () => {
-    expect(wrapper.text()).toBe(" label");
+    expect(wrapper.text()).to.equal(" label");
   });
 
   it("shows initial checked from props", () => {
-    expect(wrapper.state("checked")).toBe(true);
+    expect(wrapper.state("checked")).to.equal(true);
     let input = wrapper.find("input");
-    expect(input.prop("checked")).toBe(true);
+    expect(input.prop("checked")).to.equal(true);
   });
 
   it("updates state when props change", () => {
     wrapper.setProps({ checked: false });
-    expect(wrapper.state("checked")).toBe(false);
+    expect(wrapper.state("checked")).to.equal(false);
     let input = wrapper.find("input");
-    expect(input.prop("checked")).toBe(false);
+    expect(input.prop("checked")).to.equal(false);
   });
 
   it("updates checked in state when input changes", () => {
@@ -45,13 +46,13 @@ describe("EditableRadio", () => {
     let inputElement = input.get(0) as any;
     inputElement.checked = false;
     input.simulate("change");
-    expect(wrapper.state("checked")).toBe(false);
+    expect(wrapper.state("checked")).to.equal(false);
   });
 
   it("disables", () => {
     wrapper.setProps({ disabled: true });
     let input = wrapper.find("input");
-    expect(input.prop("disabled")).toBe(true);
+    expect(input.prop("disabled")).to.equal(true);
   });
 
   it("calls provided onChange", () => {
@@ -59,7 +60,7 @@ describe("EditableRadio", () => {
     let inputElement = input.get(0) as any;
     inputElement.checked = false;
     input.simulate("change");
-    expect(onChange.mock.calls.length).toBe(1);
+    expect(onChange.callCount).to.equal(1);
   });
 
   it("clears input", () => {
@@ -74,8 +75,8 @@ describe("EditableRadio", () => {
     );
 
     wrapper.instance().clear();
-    expect(wrapper.state("checked")).toBe(false);
+    expect(wrapper.state("checked")).to.equal(false);
     let inputElement = wrapper.find("input").get(0) as any;
-    expect(inputElement.checked).toBe(false);
+    expect(inputElement.checked).to.equal(false);
   });
 });

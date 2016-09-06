@@ -129,7 +129,7 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
   resolve(type: string) {
     if (window.confirm("Are you sure you want to resolve all complaints of this type?")) {
       let url = this.resolveComplaintsUrl();
-      let data = new FormData();
+      let data = new (window as any).FormData();
       data.append("csrf_token", this.props.csrfToken);
       data.append("type", type);
       return this.props.resolveComplaints(url, data).then(this.refresh);

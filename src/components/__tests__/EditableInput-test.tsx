@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -24,25 +25,25 @@ describe("EditableInput", () => {
 
   it("shows label from props", () => {
     let label = wrapper.find("label");
-    expect(label.text()).toBe("label");
+    expect(label.text()).to.equal("label");
   });
 
   it("shows initial value from props", () => {
-    expect(wrapper.state().value).toBe("initial value");
+    expect(wrapper.state().value).to.equal("initial value");
     let input = wrapper.find("input");
-    expect(input.prop("value")).toBe("initial value");
+    expect(input.prop("value")).to.equal("initial value");
   });
 
   it("shows children from props", () => {
     let option = wrapper.find("option");
-    expect(option.text()).toEqual("option");
+    expect(option.text()).to.equal("option");
   });
 
   it("updates state and value when props change", () => {
     wrapper.setProps({ value: "new value" });
-    expect(wrapper.state().value).toBe("new value");
+    expect(wrapper.state().value).to.equal("new value");
     let input = wrapper.find("input");
-    expect(input.prop("value")).toBe("new value");
+    expect(input.prop("value")).to.equal("new value");
   });
 
   it("updates value in state when input changes", () => {
@@ -60,7 +61,7 @@ describe("EditableInput", () => {
     let inputElement = input.get(0) as any;
     inputElement.value = "new value";
     input.simulate("change");
-    expect(wrapper.state().value).toBe("new value");
+    expect(wrapper.state().value).to.equal("new value");
   });
 
   it("disables", () => {
@@ -75,11 +76,11 @@ describe("EditableInput", () => {
         />
     );
     let input = wrapper.find("input");
-    expect(input.prop("disabled")).toBe(true);
+    expect(input.prop("disabled")).to.equal(true);
   });
 
   it("calls provided onChange", () => {
-    let onChange = jest.genMockFunction();
+    let onChange = stub();
     let wrapper = mount(
       <EditableInput
         elementType="input"
@@ -96,7 +97,7 @@ describe("EditableInput", () => {
     let inputElement = input.get(0) as any;
     inputElement.value = "new value";
     input.simulate("change");
-    expect(onChange.mock.calls.length).toBe(1);
+    expect(onChange.callCount).to.equal(1);
   });
 
   it("clears input", () => {
@@ -112,8 +113,8 @@ describe("EditableInput", () => {
     );
 
     wrapper.instance().clear();
-    expect(wrapper.state("value")).toBe("");
+    expect(wrapper.state("value")).to.equal("");
     let inputElement = wrapper.find("input").get(0) as any;
-    expect(inputElement.value).toBe("");
+    expect(inputElement.value).to.equal("");
   });
 });

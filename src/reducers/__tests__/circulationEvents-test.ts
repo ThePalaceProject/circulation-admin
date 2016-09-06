@@ -1,4 +1,4 @@
-jest.dontMock("../circulationEvents");
+import { expect } from "chai";
 
 import reducer, { CirculationEventsState } from "../circulationEvents";
 import { CirculationEventData } from "../../interfaces";
@@ -42,7 +42,7 @@ describe("circulation events reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(reducer(undefined, {})).toEqual(initState);
+    expect(reducer(undefined, {})).to.deep.equal(initState);
   });
 
   it("handles FETCH_CIRCULATION_EVENTS_REQUEST", () => {
@@ -52,14 +52,14 @@ describe("circulation events reducer", () => {
     let newState = Object.assign({}, initState, {
       isFetching: true
     });
-    expect(reducer(initState, action)).toEqual(newState);
+    expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
       fetchError: null
     });
-    expect(reducer(errorState, action)).toEqual(newState);
+    expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles FETCH_CIRCULATION_EVENTS_FAILURE", () => {
@@ -70,7 +70,7 @@ describe("circulation events reducer", () => {
       isFetching: false,
       isLoaded: true
     });
-    expect(reducer(oldState, action)).toEqual(newState);
+    expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles LOAD_CIRCULATION_EVENTS", () => {
@@ -80,6 +80,6 @@ describe("circulation events reducer", () => {
       isFetching: false,
       isLoaded: true
     });
-    expect(reducer(initState, action)).toEqual(newState);
+    expect(reducer(initState, action)).to.deep.equal(newState);
   });
 });

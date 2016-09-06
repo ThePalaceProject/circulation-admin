@@ -1,4 +1,5 @@
-jest.autoMockOff();
+import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow } from "enzyme";
@@ -11,7 +12,7 @@ import ErrorMessage from "../ErrorMessage";
 describe("Editor", () => {
   it("loads admin book url on mount", () => {
     let permalink = "works/1234";
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
 
     let wrapper = shallow(
       <Editor
@@ -21,14 +22,14 @@ describe("Editor", () => {
         />
     );
 
-    expect(fetchBook.mock.calls.length).toBe(1);
-    expect(fetchBook.mock.calls[0][0]).toBe("admin/works/1234");
+    expect(fetchBook.callCount).to.equal(1);
+    expect(fetchBook.args[0][0]).to.equal("admin/works/1234");
   });
 
   it("loads admin book url when given a new book url", () => {
     let permalink = "works/1234";
     let newPermalink = "works/5555";
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
     let element = document.createElement("div");
     let wrapper = shallow(
       <Editor
@@ -40,12 +41,12 @@ describe("Editor", () => {
     wrapper.setProps({ bookUrl: newPermalink });
     wrapper.update();
 
-    expect(fetchBook.mock.calls.length).toBe(2);
-    expect(fetchBook.mock.calls[1][0]).toBe("admin/works/5555");
+    expect(fetchBook.callCount).to.equal(2);
+    expect(fetchBook.args[1][0]).to.equal("admin/works/5555");
   });
 
   it("shows title", () => {
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
     let wrapper = shallow(
       <Editor
         bookData={{ title: "title" }}
@@ -56,11 +57,11 @@ describe("Editor", () => {
     );
 
     let header = wrapper.find("h2");
-    expect(header.text()).toContain("title");
+    expect(header.text()).to.contain("title");
   });
 
   it("shows button form for hide link", () => {
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
     let hideLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/hide"
     };
@@ -75,12 +76,12 @@ describe("Editor", () => {
     let hide = (wrapper.instance() as any).hide;
 
     let form = wrapper.find(ButtonForm);
-    expect(form.prop("label")).toBe("Hide");
-    expect(form.prop("onClick")).toBe(hide);
+    expect(form.prop("label")).to.equal("Hide");
+    expect(form.prop("onClick")).to.equal(hide);
   });
 
   it("shows button form for restore link", () => {
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
     let restoreLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/restore"
     };
@@ -95,12 +96,12 @@ describe("Editor", () => {
     let restore = (wrapper.instance() as any).restore;
 
     let form = wrapper.find(ButtonForm);
-    expect(form.prop("label")).toBe("Restore");
-    expect(form.prop("onClick")).toBe(restore);
+    expect(form.prop("label")).to.equal("Restore");
+    expect(form.prop("onClick")).to.equal(restore);
   });
 
   it("shows button form for refresh link", () => {
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
     let refreshLink = {
       href: "href", rel: "http://librarysimplified/terms/rel/refresh"
     };
@@ -115,12 +116,12 @@ describe("Editor", () => {
     let refresh = (wrapper.instance() as any).refreshMetadata;
 
     let form = wrapper.find(ButtonForm);
-    expect(form.prop("label")).toBe("Refresh Metadata");
-    expect(form.prop("onClick")).toBe(refresh);
+    expect(form.prop("label")).to.equal("Refresh Metadata");
+    expect(form.prop("onClick")).to.equal(refresh);
   });
 
   it("shows fetch error message", () => {
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
     let fetchError = {
       status: 500,
       response: "response",
@@ -136,13 +137,13 @@ describe("Editor", () => {
     );
 
     let editForm = wrapper.find(EditForm);
-    expect(editForm.length).toEqual(0);
+    expect(editForm.length).to.equal(0);
     let error = wrapper.find(ErrorMessage);
-    expect(error.prop("error")).toBe(fetchError);
+    expect(error.prop("error")).to.equal(fetchError);
   });
 
   it("shows edit error message with form", () => {
-    let fetchBook = jest.genMockFunction();
+    let fetchBook = stub();
     let editError = {
       status: 500,
       response: "response",
@@ -162,8 +163,8 @@ describe("Editor", () => {
     );
 
     let editForm = wrapper.find(EditForm);
-    expect(editForm.length).toEqual(1);
+    expect(editForm.length).to.equal(1);
     let error = wrapper.find(ErrorMessage);
-    expect(error.prop("error")).toBe(editError);
+    expect(error.prop("error")).to.equal(editError);
   });
 });

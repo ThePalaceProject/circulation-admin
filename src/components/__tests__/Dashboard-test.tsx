@@ -1,4 +1,4 @@
-jest.autoMockOff();
+import { expect } from "chai";
 
 import * as React from "react";
 import { shallow } from "enzyme";
@@ -21,11 +21,11 @@ describe("Dashboard", () => {
 
   it("shows Header", () => {
     let header = wrapper.find(Header);
-    expect(header.length).toBe(1);
+    expect(header.length).to.equal(1);
   });
 
   it("shows CirculationEvents", () => {
     let events = wrapper.find(CirculationEvents);
-    expect(events.prop("store")).toBe(store);
+    expect(events.prop("store")).to.equal(store);
   });
 });
