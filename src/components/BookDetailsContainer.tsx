@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/book_details_container.scss";
 import { Store } from "redux";
 import TabContainer from "./TabContainer";
 import { BookDetailsContainerProps } from "opds-web-client/lib/components/Root";
@@ -22,7 +23,7 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
 
   render(): JSX.Element {
     return (
-      <div className="bookDetailsContainer" style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
+      <div className="book-details-container">
         <TabContainer
           bookUrl={this.props.bookUrl}
           collectionUrl={this.props.collectionUrl}

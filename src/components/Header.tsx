@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/header.scss";
 import * as ReactDOM from "react-dom";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
@@ -18,20 +19,11 @@ export default class Header extends React.Component<HeaderProps, any> {
   render(): JSX.Element {
     let search = this.props.children ? (React.Children.only(this.props.children) as any) : null;
 
-    let logoStyle = {
-      height: "25px",
-      display: "inline",
-      marginRight: "10px",
-      marginTop: "-5px"
-    };
-
     return (
       <Navbar fluid={true} fixedTop={true}>
         <Navbar.Header>
           <Navbar.Brand>
-            <img
-              style={logoStyle}
-              src={logo} />
+            <img src={logo} className="nypl-logo"/>
             NYPL
           </Navbar.Brand>
           <Navbar.Toggle />

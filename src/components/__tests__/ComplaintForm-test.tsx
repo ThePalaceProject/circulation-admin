@@ -125,7 +125,7 @@ describe("ComplaintForm", () => {
     it("displays error if no type is selected", () => {
       let form = wrapper.find("form");
       form.simulate("submit");
-      let errors = wrapper.find(".complaintFormError");
+      let errors = wrapper.find(".complaint-form-error");
       expect(errors.length).to.equal(1);
       expect(errors.at(0).text()).to.equal("You must select a complaint type!");
     });
@@ -160,7 +160,7 @@ describe("ComplaintForm", () => {
     it("shows post error", () => {
       wrapper.setState({ errors: ["test error"] });
       wrapper.update();
-      let errors = wrapper.find(".complaintFormError");
+      let errors = wrapper.find(".complaint-form-error");
       expect(errors.length).to.equal(1);
       expect(errors.at(0).text()).to.equal("test error");
     });

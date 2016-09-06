@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/dashboard.scss";
 import { Store } from "redux";
 import Header from "./Header";
 import CirculationEvents from "./CirculationEvents";
@@ -19,7 +20,7 @@ export default class Dashboard extends React.Component<any, any> {
     return (
       <div className="dashboard">
         <Header />
-        <div className="dashboardBody" style={{ margin: "10px", marginTop: "60px" }}>
+        <div className="body">
           <CirculationEvents store={this.context.editorStore} />
         </div>
       </div>

@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/classifications_form.scss";
 import * as ReactDOM from "react-dom";
 import EditableInput from "./EditableInput";
 import EditableRadio from "./EditableRadio";
@@ -32,11 +33,10 @@ export default class ClassificationsForm extends React.Component<Classifications
     let genreOptions = this.genreOptions();
 
     return (
-      <div className="classificationsForm">
+      <div className="classifications-form">
         <EditableInput
           elementType="select"
           disabled={this.props.disabled}
-          style={{ width: 200 }}
           name="audience"
           label="Audience"
           ref="audience"
@@ -49,7 +49,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         </EditableInput>
 
         { this.shouldShowTargetAge() &&
-          <div className="form-group">
+          <div className="form-group target-age">
             <label>Target Age Range</label>
             <div className="form-inline">
               <EditableInput
@@ -59,7 +59,6 @@ export default class ClassificationsForm extends React.Component<Classifications
                 disabled={this.props.disabled}
                 name="target_age_min"
                 value={this.props.book.targetAgeRange[0]}
-                style={{width: "50px"}}
                 />
               <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
               <EditableInput
@@ -69,7 +68,6 @@ export default class ClassificationsForm extends React.Component<Classifications
                 disabled={this.props.disabled}
                 name="target_age_max"
                 value={this.props.book.targetAgeRange[1]}
-                style={{width: "50px"}}
                 />
             </div>
           </div>
@@ -105,15 +103,13 @@ export default class ClassificationsForm extends React.Component<Classifications
         <div className="form-group">
           <label>Genres</label>
           { this.state.genres.sort().map(category =>
-            <div key={category} className="bookGenre">
+            <div key={category} className="book-genre">
               <div
-                className="bookGenreName"
-                style={{ display: "inline-block", marginRight: 10 }}>
+                className="book-genre-name">
                 {this.fullGenre(category)}
               </div>
               <i
-                className="fa fa-times removeBookGenre"
-                style={{ color: "#aaa" }}
+                className="fa fa-times remove-book-genre"
                 aria-hidden="true"
                 onClick={() => !this.props.disabled && this.removeGenre(category)}
                 ></i>

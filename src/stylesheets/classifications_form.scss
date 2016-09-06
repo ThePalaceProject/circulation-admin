@@ -1,0 +1,18 @@
+.classifications-form {
+  select {
+    width: 200px;
+  }
+
+  .target-age input {
+    width: 50px;
+  }
+
+  .book-genre-name {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .remove-book-genre {
+    color: #AAA;
+  }
+}

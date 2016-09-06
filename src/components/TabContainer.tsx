@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/tab_container.scss";
 import { Store } from "redux";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -49,7 +50,7 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
     let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.props.complaintsCount + ")" : "");
 
     return (
-      <div className="bookTabs">
+      <div className="book-tabs">
         <ul className="nav nav-tabs">
           { ["details", "edit", "classifications", "complaints"].map(name =>
             <li key={name} role="presentation" className={this.tabClass(name)}>
@@ -63,9 +64,9 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
           ) }
         </ul>
 
-        <div className="bookTabContent">
+        <div className="book-tab-content">
           { this.renderTab("details",
-            <div style={{ paddingTop: "2em" }}>
+            <div className="details">
               { this.props.children }
             </div>
           ) }

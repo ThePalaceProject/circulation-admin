@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/complaints.scss";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -39,11 +40,11 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             <h2>
               {this.props.book.title}
             </h2>
-            <div style={{ height: "35px" }}>
+            <div className="complaints-fetching-container">
               { this.props.isFetching &&
                 <h4>
                   Updating
-                  <i className="fa fa-spinner fa-spin" style={{ marginLeft: "10px" }}></i>
+                  <i className="fa fa-spinner fa-spin"></i>
                 </h4>
               }
             </div>
@@ -67,9 +68,9 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
             <tbody>
               { Object.keys(this.props.complaints).map(type =>
                 <tr key={type} className="complaint">
-                  <td className="complaintType">{this.readableComplaintType(type)}</td>
-                  <td className="complaintCount">{this.props.complaints[type]}</td>
-                  <td style={{ textAlign: "right" }}>
+                  <td className="complaint-type">{this.readableComplaintType(type)}</td>
+                  <td className="complaint-count">{this.props.complaints[type]}</td>
+                  <td className="complaint-resolve">
                     <ButtonForm
                       className="btn-sm"
                       type="submit"

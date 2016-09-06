@@ -30,7 +30,7 @@ describe("ButtonForm", () => {
     });
 
     it("uses provided class and bootstrap classes", () => {
-      expect(input.props().className).to.equal("btn btn-default btn-sm");
+      expect(input.props().className).to.equal("btn btn-default button-form btn-sm");
     });
 
     it("disables", () => {

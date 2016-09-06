@@ -86,14 +86,14 @@ describe("ClassificationsForm", () => {
     });
 
     it("shows the book's full genres and remove buttons", () => {
-      let genres = wrapper.find(".bookGenre");
+      let genres = wrapper.find(".book-genre");
       expect(genres.length).to.equal(bookData.categories.length);
 
       genres.forEach((genre, i) => {
-        let cells = genre.find(".bookGenreName");
+        let cells = genre.find(".book-genre-name");
         expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
 
-        let button = genre.find(".removeBookGenre");
+        let button = genre.find(".remove-book-genre");
         expect(button.length).to.equal(1);
 
         // plus accessible remove buttons
@@ -106,14 +106,14 @@ describe("ClassificationsForm", () => {
       let inconsistentBookData = Object.assign({}, bookData, { fiction: false });
       wrapper.setProps({ book: inconsistentBookData });
 
-      let genres = wrapper.find(".bookGenre");
+      let genres = wrapper.find(".book-genre");
       expect(genres.length).to.equal(bookData.categories.length);
 
       genres.forEach((genre, i) => {
-        let cells = genre.find(".bookGenreName");
+        let cells = genre.find(".book-genre-name");
         expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
 
-        let button = genre.find(".removeBookGenre");
+        let button = genre.find(".remove-book-genre");
         expect(button.length).to.equal(1);
 
         // plus accessible remove buttons
@@ -219,14 +219,14 @@ describe("ClassificationsForm", () => {
     it("adds genre to list of selected genres after validating against audience", () => {
       // can't add Erotica to book with Young Adult audience
       instance.addGenre("Erotica");
-      let newGenres = wrapper.find(".bookGenreName").map(name => name.text());
+      let newGenres = wrapper.find(".book-genre-name").map(name => name.text());
       expect(newGenres.sort()).to.deep.equal(bookData.categories.map(genre => instance.fullGenre(genre)).sort());
 
       instance.validateAudience = stub().returns(true);
       instance.addGenre("Folklore");
 
       expect(instance.validateAudience.callCount).to.equal(1);
-      newGenres = wrapper.find(".bookGenreName").map(name => name.text());
+      newGenres = wrapper.find(".book-genre-name").map(name => name.text());
       expect(newGenres).to.contain(instance.fullGenre("Folklore"));
     });
 
@@ -234,7 +234,7 @@ describe("ClassificationsForm", () => {
       let button = wrapper.find(".fa-times");
       button.simulate("click");
 
-      let newGenres = wrapper.find(".bookGenreName");
+      let newGenres = wrapper.find(".book-genre-name");
       expect(newGenres.length).to.equal(0);
     });
 
@@ -242,7 +242,7 @@ describe("ClassificationsForm", () => {
       let button = wrapper.find("a.sr-only");
       button.simulate("click");
 
-      let newGenres = wrapper.find(".bookGenreName");
+      let newGenres = wrapper.find(".book-genre-name");
       expect(newGenres.length).to.equal(0);
     });
 

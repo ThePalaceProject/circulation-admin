@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/button_form.scss";
 
 export interface ButtonFormProps extends React.HTMLProps<ButtonForm> {
   label: string;
@@ -11,8 +12,7 @@ export default class ButtonForm extends React.Component<ButtonFormProps, any> {
 
     return (
       <input
-        className={"btn btn-default " + this.props.className}
-        style={{ marginRight: "10px" }}
+        className={"btn btn-default button-form " + this.props.className}
         type="submit"
         value={this.props.label}
         onClick={this.props.onClick}

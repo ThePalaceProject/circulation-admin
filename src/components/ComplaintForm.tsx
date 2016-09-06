@@ -1,4 +1,5 @@
 import * as React from "react";
+import "../stylesheets/complaint_form.scss";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
 
@@ -33,10 +34,10 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
     ];
 
     return (
-      <div className="complaintForm">
+      <div className="complaint-form">
         <h3>Add Complaint</h3>
         { this.state.errors.map((error, i) =>
-          <div className="complaintFormError" key={i} style={{ color: "red", marginBottom: "5px" }}>{error}</div>
+          <div className="complaint-form-error" key={i}>{error}</div>
         ) }
         <form onSubmit={this.post} className="form-inline">
           <EditableInput

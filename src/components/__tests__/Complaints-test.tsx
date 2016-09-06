@@ -51,14 +51,14 @@ describe("Complaints", () => {
     it("shows complaints", () => {
       let instance =  wrapper.instance() as any;
       let complaintsKeys = Object.keys(complaintsData);
-      let types = wrapper.find(".complaintType").map(type => type.text());
-      let counts = wrapper.find(".complaintCount").map(count => parseInt(count.text()));
+      let types = wrapper.find(".complaint-type").map(type => type.text());
+      let counts = wrapper.find(".complaint-count").map(count => parseInt(count.text()));
       expect(types).to.deep.equal(complaintsKeys.map(type => instance.readableComplaintType(type)));
       expect(counts).to.deep.equal(complaintsKeys.map(key => complaintsData[key]));
     });
 
     it("shows simplified complaint types", () => {
-      let types = wrapper.find(".complaintType").map(type => type.text());
+      let types = wrapper.find(".complaint-type").map(type => type.text());
       expect(types).to.deep.equal(["test type", "other type", "last type"]);
     });
 
