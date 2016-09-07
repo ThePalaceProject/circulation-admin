@@ -18,12 +18,13 @@ module.exports = {
         var bookTitle = body.match(/<entry [\s\S]+?<title>([^<]+)<\/title>/i)[1];
         var link = body.match(/<link [^>]*rel="alternate[^>]+\/>/i)[0];
         var bookUrl = link.match(/href="([^"]+)"/)[1];
+        var entryBaseUrl = browser.globals.homeUrl.replace("/admin/web/", "/works/");
 
         // transform the book url into an admin book url
         var adminBookUrl =
           browser.globals.homeUrl + "book/" +
           encodeURIComponent(
-            bookUrl.replace(browser.globals.entryBaseUrl, "")
+            bookUrl.replace(entryBaseUrl, "")
           );
 
         browser
@@ -39,7 +40,7 @@ module.exports = {
           .click("button#submit_approve_access")
           .waitForElementVisible("nav", 1000)
           .assert.urlContains(adminBookUrl)
-          .assert.containsText("h1.bookDetailsTitle", bookTitle);
+          .assert.containsText(".book-details .title", bookTitle);
       });
     });
   },
