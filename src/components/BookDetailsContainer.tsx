@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/book_details_container.scss";
 import { Store } from "redux";
 import TabContainer from "./TabContainer";
 import { BookDetailsContainerProps } from "opds-web-client/lib/components/Root";

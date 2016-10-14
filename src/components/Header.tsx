@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/header.scss";
 import * as ReactDOM from "react-dom";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";

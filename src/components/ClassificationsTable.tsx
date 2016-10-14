@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/classifications_table.scss";
 import { ClassificationData } from "../interfaces";
 
 export interface ClassificationsTableProps {

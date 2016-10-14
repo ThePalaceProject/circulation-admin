@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/genre_form.scss";
 import { GenreData } from "../interfaces";
 
 export interface GenreFormProps {

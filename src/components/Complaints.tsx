@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/complaints.scss";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import DataFetcher from "opds-web-client/lib/DataFetcher";

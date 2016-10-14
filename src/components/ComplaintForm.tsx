@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/complaint_form.scss";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
 

@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/button_form.scss";
 
 export interface ButtonFormProps extends React.HTMLProps<ButtonForm> {
   label: string;

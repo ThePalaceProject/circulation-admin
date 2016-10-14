@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/classifications.scss";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import editorAdapter from "../editorAdapter";

@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/edit_form.scss";
 import EditableInput from "./EditableInput";
 import { BookData } from "../interfaces";
 

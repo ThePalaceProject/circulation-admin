@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/circulation_events_download_form.scss";
 import { Modal } from "react-bootstrap";
 import * as qs from "qs";
 

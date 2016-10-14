@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/tab_container.scss";
 import { Store } from "redux";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "opds-web-client/lib/DataFetcher";

@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/classifications_form.scss";
 import * as ReactDOM from "react-dom";
 import EditableInput from "./EditableInput";
 import EditableRadio from "./EditableRadio";

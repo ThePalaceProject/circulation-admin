@@ -5,9 +5,6 @@ import ContextProvider from "./components/ContextProvider";
 import CatalogHandler from "./components/CatalogHandler";
 import Dashboard from "./components/Dashboard";
 
-require("bootstrap/dist/css/bootstrap.css");
-require("font-awesome/css/font-awesome.min.css");
-
 class CirculationWeb {
   constructor(config) {
     let div = document.createElement("div");

@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../stylesheets/dashboard.scss";
 import { Store } from "redux";
 import Header from "./Header";
 import CirculationEvents from "./CirculationEvents";
