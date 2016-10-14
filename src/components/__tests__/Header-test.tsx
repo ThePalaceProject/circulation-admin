@@ -32,13 +32,8 @@ describe("Header", () => {
     );
   });
 
-  it("shows a logo image", () => {
-    let logo = wrapper.find("img");
-    expect(logo).to.be.ok;
-  });
-
   it("shows the brand name", () => {
-    expect(wrapper.containsMatchingElement("NYPL")).to.equal(true);
+    expect(wrapper.containsMatchingElement("Admin")).to.equal(true);
   });
 
   it("shows a search component", () => {

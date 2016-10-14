@@ -2,7 +2,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
-import logo from "../images/nypl-logo-transparent";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 
 export interface HeaderProps extends React.Props<Header> {
@@ -22,8 +21,7 @@ export default class Header extends React.Component<HeaderProps, any> {
       <Navbar fluid={true} fixedTop={true}>
         <Navbar.Header>
           <Navbar.Brand>
-            <img src={logo} className="nypl-logo"/>
-            NYPL
+            Admin
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
