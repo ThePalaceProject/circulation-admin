@@ -12,7 +12,7 @@ export interface EditFormProps extends BookData {
 export default class EditForm extends React.Component<EditFormProps, any> {
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.save.bind(this)}>
+      <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
         <input
           type="hidden"
           name="csrf_token"
@@ -39,7 +39,6 @@ export default class EditForm extends React.Component<EditFormProps, any> {
           <div className="form-inline">
             <EditableInput
               elementType="input"
-              style={{ width: "300px" }}
               type="text"
               disabled={this.props.disabled}
               name="series"
@@ -49,7 +48,6 @@ export default class EditForm extends React.Component<EditFormProps, any> {
             <span>&nbsp;&nbsp;</span>
             <EditableInput
               elementType="input"
-              style={{ width: "50px" }}
               type="text"
               disabled={this.props.disabled}
               name="series_position"
@@ -60,7 +58,6 @@ export default class EditForm extends React.Component<EditFormProps, any> {
         </div>
         <EditableInput
           elementType="textarea"
-          style={{ height: "300px" }}
           disabled={this.props.disabled}
           name="summary"
           label="Summary"

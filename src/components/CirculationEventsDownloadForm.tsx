@@ -19,14 +19,14 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
 
     return (
       <Modal
-        className="circEventsDownloadForm"
+        className="circ-events-download-form"
         show={this.props.show}
         onHide={this.props.hide}>
         <Modal.Header>
           <Modal.Title>Download CSV</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="form-group" style={{ width: "160px" }}>
+          <div className="form-group">
             <label className="conrol-label">Date</label>
             <input
               className="form-control"

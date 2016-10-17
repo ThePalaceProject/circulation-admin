@@ -32,12 +32,12 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
     let disabledProps = this.props.disabled ? { disabled: true } : {};
 
     return (
-      <div className="genreForm">
+      <div className="genre-form">
         <div className="form-inline">
           <select
             name="genre"
             size={this.topLevelGenres().length}
-            className="form-control" style={{ width: "200px" }}
+            className="form-control"
             {...disabledProps}>
             { this.topLevelGenres().map(genre =>
               <option
@@ -54,8 +54,7 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
             <select
               name="subgenre"
               size={subgenres.length}
-              className="form-control"
-              style={{ width: "200px", verticalAlign: "top", marginLeft: "10px" }}
+              className="form-control subgenres"
               {...disabledProps}>
               { subgenres.map(genre =>
                 <option
@@ -73,7 +72,6 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
             <button
               className="btn btn-default"
               type="submit"
-              style={{ verticalAlign: "top", marginLeft: "10px" }}
               onClick={this.addGenre}>
               Add
             </button>

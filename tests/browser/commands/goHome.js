@@ -1,4 +1,4 @@
-var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
+var bookSelector = ".lane-books li:first-child a";
 
 exports.command = function() {
   return this

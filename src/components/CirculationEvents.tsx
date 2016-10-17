@@ -39,7 +39,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, a
 
   render(): JSX.Element {
     return(
-      <div className="circulationEvents">
+      <div className="circulation-events">
         <h3>Circulation Events</h3>
 
         { this.context.showCircEventsDownload &&

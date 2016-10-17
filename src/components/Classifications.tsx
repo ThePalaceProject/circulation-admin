@@ -48,11 +48,11 @@ export class Classifications extends React.Component<ClassificationsProps, any> 
             <h2>
               {this.props.book.title}
             </h2>
-            <div style={{ height: "35px" }}>
+            <div className="classifications-fetching-container">
               { this.props.isFetching &&
                 <h4>
                   Updating
-                  <i className="fa fa-spinner fa-spin" style={{ marginLeft: "10px" }}></i>
+                  <i className="fa fa-spinner fa-spin"></i>
                 </h4>
               }
             </div>

@@ -43,11 +43,11 @@ export class Editor extends React.Component<EditorProps, any> {
             <h2>
               {this.props.bookData.title}
             </h2>
-            <div style={{ height: "35px" }}>
+            <div className="editor-fetching-container">
               { this.props.isFetching &&
                 <h4>
                   Updating
-                  <i className="fa fa-spinner fa-spin" style={{ marginLeft: "10px" }}></i>
+                  <i className="fa fa-spinner fa-spin"></i>
                 </h4>
               }
             </div>

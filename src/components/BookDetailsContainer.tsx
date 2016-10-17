@@ -22,7 +22,7 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
 
   render(): JSX.Element {
     return (
-      <div className="bookDetailsContainer" style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
+      <div className="book-details-container">
         <TabContainer
           bookUrl={this.props.bookUrl}
           collectionUrl={this.props.collectionUrl}

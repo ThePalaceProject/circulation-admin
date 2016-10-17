@@ -1,0 +1,13 @@
+.edit-form {
+  input[name=series] {
+    width: 300px;
+  }
+
+  input[name=series_position] {
+    width: 50px;
+  }
+
+  textarea[name=summary] {
+    height: 300px;
+  }
+}

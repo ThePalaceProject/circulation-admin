@@ -19,7 +19,7 @@ export default class Dashboard extends React.Component<any, any> {
     return (
       <div className="dashboard">
         <Header />
-        <div className="dashboardBody" style={{ margin: "10px", marginTop: "60px" }}>
+        <div className="body">
           <CirculationEvents store={this.context.editorStore} />
         </div>
       </div>

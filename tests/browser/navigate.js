@@ -41,8 +41,8 @@ module.exports = {
   },
 
   "navigate to book in lane and back": function(browser) {
-    var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
-    var bookTitleSelector = "h1.bookDetailsTitle";
+    var bookSelector = ".lane-books li:first-child a";
+    var bookTitleSelector = ".book-details .title";
 
     browser
       .goHome()
@@ -70,8 +70,8 @@ module.exports = {
   },
 
   "navigate to book, click through tabs, refresh page, go back": function(browser) {
-    var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
-    var bookTitleSelector = "h1.bookDetailsTitle";
+    var bookSelector = ".lane-books li:first-child a";
+    var bookTitleSelector = ".book-details .title";
     var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
     var titleInputSelector = "input[name='title']";
     var classificationsTabSelector = "ul.nav-tabs li:nth-child(3) a";
@@ -83,7 +83,7 @@ module.exports = {
       .goHome()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
-        this.getText(bookSelector, function(result) {
+        this.getAttribute(bookSelector, "title", function(result) {
           var bookTitle = result.value;
           this
             .click(bookSelector)
@@ -115,10 +115,10 @@ module.exports = {
   },
 
   "navigate to book, press left and right keys": function(browser) {
-    var bookSelector = "li:first-child .lane ul.laneBooks li:first-child a.laneBookLink";
-    var nextBookSelector = "li:first-child .lane ul.laneBooks li:nth-child(2) a.laneBookLink";
-    var prevBookSelector = "li:last-child .lane ul.laneBooks li:nth-last-child(2) a.laneBookLink"; // last child is "more" link
-    var bookTitleSelector = "h1.bookDetailsTitle";
+    var bookSelector = "li:first-child .lane-books li:first-child a";
+    var nextBookSelector = "li:first-child .lane-books li:nth-child(2) a";
+    var prevBookSelector = "li:last-child .lane-books li:nth-last-child(2) a"; // last child is "more" link
+    var bookTitleSelector = ".book-details .title";
     var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
     var titleInputSelector = "input[name='title']";
 
@@ -126,15 +126,15 @@ module.exports = {
       .goHome()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
-        this.getText(bookSelector, function(result) {
+        this.getAttribute(bookSelector, "title", function(result) {
           var bookTitle = result.value;
           this.getAttribute(nextBookSelector, "href", function(result) {
             var nextBookUrl = result.value;
-            this.getText(nextBookSelector, function(result) {
+            this.getAttribute(nextBookSelector, "title", function(result) {
               var nextBookTitle = result.value;
               this.getAttribute(prevBookSelector, "href", function(result) {
                 var prevBookUrl = result.value;
-                this.getText(prevBookSelector, function(result) {
+                this.getAttribute(prevBookSelector, "title", function(result) {
                   var prevBookTitle = result.value;
                   this
                     .click(bookSelector)
@@ -211,7 +211,7 @@ module.exports = {
   "navigate to dashboard and back to catalog": function(browser) {
     var catalogSelector = "ul.nav li:nth-child(1) a";
     var dashboardSelector = "ul.nav li:nth-child(4) a";
-    var circulationEventsSelector = ".circulationEvents h3";
+    var circulationEventsSelector = ".circulation-events h3";
 
     browser
       .goHome()
@@ -236,19 +236,17 @@ module.exports = {
 
   "navigate to two different book classifications tabs": function(browser) {
     var laneSelector = "li:first-child .lane h2 a";
-    var firstBookSelector = "li:nth-child(2) .lane ul.laneBooks li:first-child a.laneBookLink";
-    var secondBookSelector = "li:nth-child(3) .lane ul.laneBooks li:nth-child(2) a.laneBookLink";
-    var bookTitleSelector = "h1.bookDetailsTitle";
+    var firstBookSelector = "li:nth-child(2) .book a .title";
+    var secondBookSelector = "li:nth-child(3) .book a .title";
+    var bookTitleSelector = ".book-details .title";
     var classificationsTabSelector = "ul.nav-tabs li:nth-child(3) a";
-    var genreSelector = ".bookGenre:nth-child(2) .bookGenreName"; // 2nd child because first is a label
+    var genreSelector = ".book-genre:nth-child(2) .book-genre-name"; // 2nd child because first is a label
 
     browser
       .goHome()
       .click(laneSelector)
       .waitForElementNotPresent(loadingSelector, 5000)
       .waitForElementPresent(nthBreadcrumbSelector(2), 5000)
-      // scroll 200px above element so that it's not blocked by the header
-      .moveToElement(firstBookSelector, 0, -200)
       .click(firstBookSelector)
       .waitForElementNotPresent(loadingSelector, 5000)
       .waitForElementPresent(bookTitleSelector, 5000)
@@ -264,8 +262,6 @@ module.exports = {
               .click(nthBreadcrumbSelector(2))
               .waitForElementNotPresent(loadingSelector, 5000)
               .waitForElementPresent(secondBookSelector, 5000)
-              // scroll 200px above element so that it's not blocked by the header
-              .moveToElement(secondBookSelector, 0, -200)
               .click(secondBookSelector)
               .waitForElementNotPresent(loadingSelector, 5000)
               .waitForElementPresent(bookTitleSelector, 50000)

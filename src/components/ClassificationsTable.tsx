@@ -8,9 +8,9 @@ export interface ClassificationsTableProps {
 export default class ClassificationsTable extends React.Component<ClassificationsTableProps, any> {
   render(): JSX.Element {
     return (
-      <div className="bookClassifications" style={{ marginTop: "30px" }}>
+      <div className="classifications-table">
         <h3>Related Classifications</h3>
-        <table className="table bookClassifications">
+        <table className="table">
           <thead>
             <tr>
               <th>Type</th>
@@ -21,7 +21,7 @@ export default class ClassificationsTable extends React.Component<Classification
           </thead>
           <tbody>
             { this.props.classifications.map(classification =>
-              <tr key={classification.source + ":" + classification.name} className="bookClassification">
+              <tr key={classification.source + ":" + classification.name}>
                 <td>{this.readableType(classification.type)}</td>
                 <td>{classification.name}</td>
                 <td>{classification.source}</td>
