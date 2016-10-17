@@ -83,7 +83,7 @@ module.exports = {
       .goHome()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
-        this.getText(bookSelector, function(result) {
+        this.getAttribute(bookSelector, "title", function(result) {
           var bookTitle = result.value;
           this
             .click(bookSelector)
@@ -126,15 +126,15 @@ module.exports = {
       .goHome()
       .getAttribute(bookSelector, "href", function(result) {
         var bookUrl = result.value;
-        this.getText(bookSelector, function(result) {
+        this.getAttribute(bookSelector, "title", function(result) {
           var bookTitle = result.value;
           this.getAttribute(nextBookSelector, "href", function(result) {
             var nextBookUrl = result.value;
-            this.getText(nextBookSelector, function(result) {
+            this.getAttribute(nextBookSelector, "title", function(result) {
               var nextBookTitle = result.value;
               this.getAttribute(prevBookSelector, "href", function(result) {
                 var prevBookUrl = result.value;
-                this.getText(prevBookSelector, function(result) {
+                this.getAttribute(prevBookSelector, "title", function(result) {
                   var prevBookTitle = result.value;
                   this
                     .click(bookSelector)
