@@ -650,4 +650,79 @@ describe("actions", () => {
       }).catch(err => { console.log(err); throw(err); });
     });
   });
+
+  describe("fetchStats", () => {
+    let statsUrl = "/admin/stats";
+
+
+    it("dispatches request, load, and success", (done) => {
+      let dispatch = stub();
+      let statsData = "stats";
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 200,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve(statsData);
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchStats()(dispatch).then(data => {
+        expect(dispatch.callCount).to.equal(3);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_STATS_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_STATS_SUCCESS);
+        expect(dispatch.args[2][0].type).to.equal(actions.LOAD_STATS);
+        expect(data).to.deep.equal(statsData);
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches server failure", (done) => {
+      let dispatch = stub();
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 500,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchStats()(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_STATS_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_STATS_FAILURE);
+        expect(err).to.deep.equal({
+          status: 500,
+          response: "test error detail",
+          url: statsUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches network failure", (done) => {
+      let dispatch = stub();
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        reject({
+          message: "network error"
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchStats()(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_STATS_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_STATS_FAILURE);
+        expect(err).to.deep.equal({
+          status: null,
+          response: "network error",
+          url: statsUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+  });
 });

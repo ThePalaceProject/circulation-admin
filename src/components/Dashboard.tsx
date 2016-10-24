@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import Header from "./Header";
+import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
 import { State } from "../reducers/index";
 
@@ -20,6 +21,7 @@ export default class Dashboard extends React.Component<any, any> {
       <div className="dashboard">
         <Header />
         <div className="body">
+          <Stats store={this.context.editorStore} />
           <CirculationEvents store={this.context.editorStore} />
         </div>
       </div>

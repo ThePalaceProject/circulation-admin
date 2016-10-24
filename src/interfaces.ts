@@ -81,6 +81,27 @@ export interface CirculationEventData {
   };
 }
 
+export interface StatsData {
+  patrons: {
+    total: number;
+    with_active_loans: number;
+    with_active_loans_or_holds: number;
+    loans: number;
+    holds: number;
+  };
+  inventory: {
+    titles: number;
+    licenses: number;
+    available_licenses: number;
+  };
+  vendors: {
+    overdrive: number;
+    bibliotheca: number;
+    axis360: number;
+    open_access: number;
+  };
+}
+
 export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
