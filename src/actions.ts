@@ -1,4 +1,4 @@
-import { BookData, ComplaintsData, GenreTree, ClassificationData, CirculationEventData } from "./interfaces";
+import { BookData, ComplaintsData, GenreTree, ClassificationData, CirculationEventData, StatsData } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
 
@@ -46,6 +46,11 @@ export default class ActionCreator {
   FETCH_CIRCULATION_EVENTS_SUCCESS = "FETCH_CIRCULATION_EVENTS_SUCCESS";
   FETCH_CIRCULATION_EVENTS_FAILURE = "FETCH_CIRCULATION_EVENTS_FAILURE";
   LOAD_CIRCULATION_EVENTS = "LOAD_CIRCULATION_EVENTS";
+
+  FETCH_STATS_REQUEST = "FETCH_STATS_REQUEST";
+  FETCH_STATS_SUCCESS = "FETCH_STATS_SUCCESS";
+  FETCH_STATS_FAILURE = "FETCH_STATS_FAILURE";
+  LOAD_STATS = "LOAD_STATS";
 
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
@@ -578,5 +583,70 @@ export default class ActionCreator {
 
   loadCirculationEvents(data: CirculationEventData[]) {
     return { type: this.LOAD_CIRCULATION_EVENTS, data };
+  }
+
+  fetchStats() {
+    let url = "/admin/stats";
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchStatsRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: StatsData) => {
+              dispatch(this.fetchStatsSuccess());
+              dispatch(this.loadStats(data));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchStatsFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchStatsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve stats",
+                url: url
+              };
+              dispatch(this.fetchStatsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchStatsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchStatsRequest(url: string) {
+    return { type: this.FETCH_STATS_REQUEST, url };
+  }
+
+  fetchStatsSuccess() {
+    return { type: this.FETCH_STATS_SUCCESS };
+  }
+
+  fetchStatsFailure(error?: RequestError) {
+    return { type: this.FETCH_STATS_FAILURE, error };
+  }
+
+  loadStats(data: StatsData) {
+    return { type: this.LOAD_STATS, data };
   }
 }

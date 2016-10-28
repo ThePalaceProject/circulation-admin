@@ -6,6 +6,7 @@ import { shallow } from "enzyme";
 import Dashboard from "../Dashboard";
 import Header from "../Header";
 import CirculationEvents from "../CirculationEvents";
+import Stats from "../Stats";
 import buildStore from "../../store";
 
 describe("Dashboard", () => {
@@ -27,5 +28,10 @@ describe("Dashboard", () => {
   it("shows CirculationEvents", () => {
     let events = wrapper.find(CirculationEvents);
     expect(events.prop("store")).to.equal(store);
+  });
+
+  it("shows Stats", () => {
+    let stats = wrapper.find(Stats);
+    expect(stats.prop("store")).to.equal(store);
   });
 });

@@ -1,0 +1,22 @@
+.stats {
+  ul {
+    border-bottom: 1px solid black;
+  }
+
+  li {
+    text-align: center;
+    margin: 10px;
+    max-width: 175px;
+
+    .stat-grouping-label {
+      font-size: 200%;
+      width: 150px;
+      text-align: left;
+    }
+
+    .stat-value {
+      font-size: 300%;
+      line-height: 1em;
+    }
+  }
+}
