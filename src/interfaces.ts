@@ -95,10 +95,10 @@ export interface StatsData {
     available_licenses: number;
   };
   vendors: {
-    overdrive: number;
-    bibliotheca: number;
-    axis360: number;
-    open_access: number;
+    overdrive?: number;
+    bibliotheca?: number;
+    axis360?: number;
+    open_access?: number;
   };
 }
 

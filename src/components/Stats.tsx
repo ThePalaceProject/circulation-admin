@@ -19,6 +19,33 @@ export interface StatsProps {
 export class Stats extends React.Component<StatsProps, any> {
 
   render(): JSX.Element {
+    let patronCounts = [
+      { key: "total", label: "Total Patrons" },
+      { key: "with_active_loans", label: "Patrons with Active Loans" },
+      { key: "with_active_loans_or_holds", label : "Patrons with Active Loans or Holds" },
+      { key: "loans", label: "Active Loans" },
+      { key: "holds", label: "Active Holds" }
+    ].map(countInfo => {
+      return {
+        label: countInfo.label,
+        count: this.props.stats ? this.props.stats.patrons[countInfo.key] : 0
+      };
+    });
+
+    let vendorCounts = [
+      { key: "overdrive", label: "Overdrive" },
+      { key: "bibliotheca", label: "Bibliotheca" },
+      { key: "axis360", label: "Axis 360" },
+      { key: "open_access", label: "Open Access" }
+    ].map(vendor => {
+      return {
+        label: vendor.label,
+        count: this.props.stats ? this.props.stats.vendors[vendor.key] : 0
+      };
+    }).filter(vendor => {
+      return vendor.count && vendor.count > 0;
+    });
+
     return (
       <div>
         { this.props.fetchError &&
@@ -33,26 +60,12 @@ export class Stats extends React.Component<StatsProps, any> {
           <div className="stats">
             <ul className="list-inline">
               <li><div className="stat-grouping-label">Patrons</div></li>
-              <li>
-                <div>Total Patrons:</div>
-                <div className="stat-value">{this.props.stats.patrons.total}</div>
-              </li>
-              <li>
-                <div>Patrons with Active Loans:</div>
-                <div className="stat-value">{this.props.stats.patrons.with_active_loans}</div>
-              </li>
-              <li>
-                <div>Patrons with Active Loans or Holds:</div>
-                <div className="stat-value">{this.props.stats.patrons.with_active_loans_or_holds}</div>
-              </li>
-              <li>
-                <div>Active Loans:</div>
-                <div className="stat-value">{this.props.stats.patrons.loans}</div>
-              </li>
-              <li>
-                <div>Active Holds:</div>
-                <div className="stat-value">{this.props.stats.patrons.holds}</div>
-              </li>
+              { patronCounts.map(patronCount =>
+                <li>
+                  <div>{patronCount.label}:</div>
+                  <div className="stat-value">{patronCount.count}</div>
+                </li>
+              ) }
             </ul>
             <ul className="list-inline">
               <li><div className="stat-grouping-label">Inventory</div></li>
@@ -71,30 +84,12 @@ export class Stats extends React.Component<StatsProps, any> {
             </ul>
             <ul className="list-inline">
               <li><div className="stat-grouping-label">Vendors</div></li>
-              { this.props.stats.vendors.overdrive > 0 ?
+              { vendorCounts.map(vendor =>
                 <li>
-                  <div>Overdrive Titles:</div>
-                  <div className="stat-value">{this.props.stats.vendors.overdrive}</div>
-                </li> : null
-              }
-              { this.props.stats.vendors.bibliotheca > 0 ?
-                <li>
-                  <div>Bibliotheca Titles:</div>
-                  <div className="stat-value">{this.props.stats.vendors.bibliotheca}</div>
-                </li> : null
-              }
-              { this.props.stats.vendors.axis360 > 0 ?
-                <li>
-                  <div>Axis 360 Titles:</div>
-                  <div className="stat-value">{this.props.stats.vendors.axis360}</div>
-                </li> : null
-              }
-              { this.props.stats.vendors.open_access > 0 ?
-                <li>
-                  <div>Open Access Titles:</div>
-                  <div className="stat-value">{this.props.stats.vendors.open_access}</div>
-                </li> : null
-              }
+                  <div>{vendor.label} Titles:</div>
+                  <div className="stat-value">{vendor.count}</div>
+                </li>
+              ) }
             </ul>
           </div>
         }
