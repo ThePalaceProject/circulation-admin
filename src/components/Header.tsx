@@ -15,10 +15,8 @@ export default class Header extends React.Component<HeaderProps, any> {
   };
 
   render(): JSX.Element {
-    let search = this.props.children ? (React.Children.only(this.props.children) as any) : null;
-
     return (
-      <Navbar fluid={true} fixedTop={true}>
+      <Navbar fluid={true}>
         <Navbar.Header>
           <Navbar.Brand>
             Admin
@@ -27,12 +25,6 @@ export default class Header extends React.Component<HeaderProps, any> {
         </Navbar.Header>
 
         <Navbar.Collapse>
-          { search &&
-            <Nav pullRight>
-              { React.cloneElement(search, { className: "navbar-form navbar-right" }) }
-            </Nav>
-          }
-
           <Nav>
             <li>
               <CatalogLink

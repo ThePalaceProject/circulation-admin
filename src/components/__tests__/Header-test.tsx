@@ -8,14 +8,6 @@ import Header from "../Header";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
 
-class TestSearch extends React.Component<any, any> {
-  render(): JSX.Element {
-    return (
-      <div className="test-search">collection</div>
-    );
-  }
-}
-
 describe("Header", () => {
   let wrapper;
   let push, context;
@@ -25,20 +17,13 @@ describe("Header", () => {
     context = { homeUrl: "home url" };
 
     wrapper = shallow(
-      <Header>
-        <TestSearch />
-      </Header>,
+      <Header />,
       { context }
     );
   });
 
   it("shows the brand name", () => {
     expect(wrapper.containsMatchingElement("Admin")).to.equal(true);
-  });
-
-  it("shows a search component", () => {
-    let search = wrapper.find(TestSearch);
-    expect(search).to.be.ok;
   });
 
   it("shows links", () => {
