@@ -112,7 +112,7 @@ describe("EditableInput", () => {
         />
     );
 
-    wrapper.instance().clear();
+    (wrapper.instance() as EditableInput).clear();
     expect(wrapper.state("value")).to.equal("");
     let inputElement = wrapper.find("input").get(0) as any;
     expect(inputElement.value).to.equal("");
