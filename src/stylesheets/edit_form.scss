@@ -1,4 +1,8 @@
 .edit-form {
+  label {
+    width: 100%;
+  }
+
   input[name=series] {
     width: 300px;
   }
