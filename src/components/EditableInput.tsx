@@ -21,9 +21,14 @@ export default class EditableInput extends React.Component<EditableInputProps, a
     return (
       <div className="form-group">
         { this.props.label &&
-          <label className="control-label">{this.props.label}</label>
+          <label className="control-label">
+            {this.props.label}
+            { this.renderElement() }
+          </label>
         }
-        { this.renderElement() }
+        { !this.props.label &&
+          this.renderElement()
+        }
       </div>
     );
   }
@@ -31,7 +36,9 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   renderElement() {
     return React.createElement(this.props.elementType, {
       className: "form-control",
+      type: this.props.type,
       disabled: this.props.disabled,
+      readOnly: this.props.readOnly,
       name: this.props.name,
       ref: "element",
       value: this.state.value,
@@ -50,7 +57,7 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   }
 
   handleChange() {
-    if (!this.props.onChange || this.props.onChange() !== false) {
+    if (!this.props.readOnly && (!this.props.onChange || this.props.onChange() !== false)) {
       this.setState({
         value: this.getValue()
       });

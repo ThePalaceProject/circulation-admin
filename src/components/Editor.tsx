@@ -5,7 +5,7 @@ import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
-import EditForm from "./EditForm";
+import BookEditForm from "./BookEditForm";
 import ErrorMessage from "./ErrorMessage";
 import { BookData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
@@ -83,7 +83,7 @@ export class Editor extends React.Component<EditorProps, any> {
             }
 
             { this.props.bookData.editLink &&
-              <EditForm
+              <BookEditForm
                 {...this.props.bookData}
                 csrfToken={this.props.csrfToken}
                 disabled={this.props.isFetching}

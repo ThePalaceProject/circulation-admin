@@ -4,11 +4,11 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import EditForm from "../EditForm";
+import BookEditForm from "../BookEditForm";
 import EditableInput from "../EditableInput";
 import { BookData } from "../../interfaces";
 
-describe("EditForm", () => {
+describe("BookEditForm", () => {
   let bookData: BookData = {
     title: "title",
     subtitle: "subtitle",
@@ -36,7 +36,7 @@ describe("EditForm", () => {
     };
     beforeEach(() => {
       wrapper = shallow(
-        <EditForm
+        <BookEditForm
           {...bookData}
           csrfToken=""
           disabled={false}
@@ -100,7 +100,7 @@ describe("EditForm", () => {
       resolve();
     }));
     let wrapper = mount(
-      <EditForm
+      <BookEditForm
         {...bookData}
         csrfToken="token"
         disabled={false}
@@ -128,7 +128,7 @@ describe("EditForm", () => {
       resolve();
     }));
     let wrapper = mount(
-      <EditForm
+      <BookEditForm
         {...bookData}
         csrfToken=""
         disabled={false}
@@ -143,7 +143,7 @@ describe("EditForm", () => {
 
   it("disables all inputs", () => {
     let wrapper = shallow(
-      <EditForm
+      <BookEditForm
         {...bookData}
         csrfToken=""
         disabled={true}

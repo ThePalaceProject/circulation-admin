@@ -1,25 +1,12 @@
 import * as React from "react";
 import { Store } from "redux";
-import editorAdapter from "../editorAdapter";
-import DataFetcher from "opds-web-client/lib/DataFetcher";
-import ActionCreator from "../actions";
-import { connect } from "react-redux";
-import Editor from "./Editor";
-import Classifications from "./Classifications";
-import Complaints from "./Complaints";
-import { BookData, Navigate, PathFor } from "../interfaces";
+import { Navigate, PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
-  bookUrl: string;
-  bookData?: BookData;
-  collectionUrl: string;
   store: Store<State>;
   csrfToken: string;
   tab: string;
-  refreshCatalog: () => Promise<any>;
-  complaintsCount?: number;
-  clearBook?: () => void;
 }
 
 export interface TabContainerContext {
@@ -27,13 +14,15 @@ export interface TabContainerContext {
   router: any;
 }
 
-export class TabContainer extends React.Component<TabContainerProps, any> {
+export abstract class TabContainer<T extends TabContainerProps> extends React.Component<T, any> {
   context: TabContainerContext;
 
   constructor(props) {
     super(props);
     this.handleSelect = this.handleSelect.bind(this);
     this.currentTab = this.currentTab.bind(this);
+    this.defaultTab = this.defaultTab.bind(this);
+    this.tabs = this.tabs.bind(this);
     this.tabClass = this.tabClass.bind(this);
     this.tabDisplayName = this.tabDisplayName.bind(this);
     this.renderTab = this.renderTab.bind(this);
@@ -45,13 +34,10 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
   };
 
   render(): JSX.Element {
-    let showComplaintCount = (typeof this.props.complaintsCount !== "undefined");
-    let complaintsTitle = "Complaints" + (showComplaintCount ? " (" + this.props.complaintsCount + ")" : "");
-
     return (
-      <div className="book-tabs">
+      <div>
         <ul className="nav nav-tabs">
-          { ["details", "edit", "classifications", "complaints"].map(name =>
+          { Object.keys(this.tabs()).map(name =>
             <li key={name} role="presentation" className={this.tabClass(name)}>
               <a
                 href="javascript:void(0)"
@@ -63,65 +49,24 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
           ) }
         </ul>
 
-        <div className="book-tab-content">
-          { this.renderTab("details",
-            <div className="details">
-              { this.props.children }
-            </div>
-          ) }
-
-          { this.renderTab("edit",
-            <Editor
-              store={this.props.store}
-              csrfToken={this.props.csrfToken}
-              bookUrl={this.props.bookUrl}
-              refreshCatalog={this.props.refreshCatalog}
-              />
-          ) }
-
-          { this.renderTab("classifications",
-            <Classifications
-              store={this.props.store}
-              csrfToken={this.props.csrfToken}
-              bookUrl={this.props.bookUrl}
-              book={this.props.bookData}
-              refreshCatalog={this.props.refreshCatalog}
-              />
-          ) }
-
-          { this.renderTab("complaints",
-            <Complaints
-              store={this.props.store}
-              csrfToken={this.props.csrfToken}
-              bookUrl={this.props.bookUrl}
-              book={this.props.bookData}
-              refreshCatalog={this.props.refreshCatalog}
-              />
+        <div className="tab-content">
+          { Object.keys(this.tabs()).map(name =>
+            this.renderTab(name, this.tabs()[name])
           ) }
         </div>
       </div>
     );
   }
 
-  componentWillUnmount() {
-    this.props.clearBook();
-  }
+  abstract handleSelect(event)
+  abstract tabs()
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.bookUrl !== this.props.bookUrl) {
-      this.props.clearBook();
-    }
-  }
-
-  handleSelect(event) {
-    let tab = event.target.dataset.tabkey;
-    if (this.context.router) {
-      this.context.router.push(this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab));
-    }
+  defaultTab() {
+    return Object.keys(this.tabs())[0];
   }
 
   currentTab() {
-    return this.props.tab || "details";
+    return this.props.tab || this.defaultTab();
   }
 
   tabClass(name) {
@@ -129,54 +74,18 @@ export class TabContainer extends React.Component<TabContainerProps, any> {
   }
 
   tabDisplayName(name) {
-    let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
-    if (name === "complaints" && typeof this.props.complaintsCount !== "undefined") {
-      capitalized += " (" + this.props.complaintsCount + ")";
-    }
+    const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
     return capitalized;
   };
 
   renderTab(name, children) {
     let display = this.currentTab() === name ? "block" : "none";
     return (
-      <div style={{ display }}>
+      <div style={{ display }} key={name}>
         { children }
       </div>
     );
   };
 }
 
-function mapStateToProps(state, ownProps) {
-  let complaintsCount;
-
-  if (state.editor.complaints.data) {
-    complaintsCount = Object.keys(state.editor.complaints.data).reduce((result, type) => {
-      return result + state.editor.complaints.data[type];
-    }, 0);
-  } else {
-    complaintsCount = undefined;
-  }
-
-  return {
-    complaintsCount: complaintsCount,
-    bookData: state.editor.book.data
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  let fetcher = new DataFetcher({ adapter: editorAdapter });
-  let actions = new ActionCreator(fetcher);
-  return {
-    clearBook: () => dispatch(actions.clearBook())
-  };
-}
-
-let connectOptions = { withRef: true, pure: true };
-const ConnectedTabContainer = connect<any, any, any>(
-  mapStateToProps,
-  mapDispatchToProps,
-  null,
-  connectOptions
-)(TabContainer);
-
-export default ConnectedTabContainer;
+export default TabContainer;

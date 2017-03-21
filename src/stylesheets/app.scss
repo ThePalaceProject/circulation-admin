@@ -2,6 +2,7 @@
 @import "../../node_modules/font-awesome/css/font-awesome.min.css";
 @import "../../node_modules/opds-web-client/lib/stylesheets/app.scss";
 @import "book_details_container";
+@import "book_details_tab_container";
 @import "button_form";
 @import "circulation_events_download_form";
 @import "classifications";
@@ -15,4 +16,3 @@
 @import "genre_form";
 @import "header";
 @import "stats";
-@import "tab_container";

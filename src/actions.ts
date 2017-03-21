@@ -1,4 +1,4 @@
-import { BookData, ComplaintsData, GenreTree, ClassificationData, CirculationEventData, StatsData } from "./interfaces";
+import { BookData, ComplaintsData, GenreTree, ClassificationData, CirculationEventData, StatsData, LibrariesData, CollectionsData } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
 
@@ -51,6 +51,24 @@ export default class ActionCreator {
   FETCH_STATS_SUCCESS = "FETCH_STATS_SUCCESS";
   FETCH_STATS_FAILURE = "FETCH_STATS_FAILURE";
   LOAD_STATS = "LOAD_STATS";
+
+  FETCH_LIBRARIES_REQUEST = "FETCH_LIBRARIES_REQUEST";
+  FETCH_LIBRARIES_SUCCESS = "FETCH_LIBRARIES_SUCCESS";
+  FETCH_LIBRARIES_FAILURE = "FETCH_LIBRARIES_FAILURE";
+  LOAD_LIBRARIES = "LOAD_LIBRARIES";
+
+  EDIT_LIBRARY_REQUEST = "EDIT_LIBRARY_REQUEST";
+  EDIT_LIBRARY_SUCCESS = "EDIT_LIBRARY_SUCCESS";
+  EDIT_LIBRARY_FAILURE = "EDIT_LIBRARY_FAILURE";
+
+  FETCH_COLLECTIONS_REQUEST = "FETCH_COLLECTIONS_REQUEST";
+  FETCH_COLLECTIONS_SUCCESS = "FETCH_COLLECTIONS_SUCCESS";
+  FETCH_COLLECTIONS_FAILURE = "FETCH_COLLECTIONS_FAILURE";
+  LOAD_COLLECTIONS = "LOAD_COLLECTIONS";
+
+  EDIT_COLLECTION_REQUEST = "EDIT_COLLECTION_REQUEST";
+  EDIT_COLLECTION_SUCCESS = "EDIT_COLLECTION_SUCCESS";
+  EDIT_COLLECTION_FAILURE = "EDIT_COLLECTION_FAILURE";
 
   constructor(fetcher?: DataFetcher) {
     this.fetcher = fetcher || new DataFetcher();
@@ -648,5 +666,253 @@ export default class ActionCreator {
 
   loadStats(data: StatsData) {
     return { type: this.LOAD_STATS, data };
+  }
+
+  fetchLibraries() {
+    let url = "/admin/libraries";
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchLibrariesRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: LibrariesData) => {
+              dispatch(this.fetchLibrariesSuccess());
+              dispatch(this.loadLibraries(data));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchLibrariesFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchLibrariesFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve libraries",
+                url: url
+              };
+              dispatch(this.fetchLibrariesFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchLibrariesFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchLibrariesRequest(url: string) {
+    return { type: this.FETCH_LIBRARIES_REQUEST, url };
+  }
+
+  fetchLibrariesSuccess() {
+    return { type: this.FETCH_LIBRARIES_SUCCESS };
+  }
+
+  fetchLibrariesFailure(error?: RequestError) {
+    return { type: this.FETCH_LIBRARIES_FAILURE, error };
+  }
+
+  loadLibraries(data: LibrariesData) {
+    return { type: this.LOAD_LIBRARIES, data };
+  }
+
+  editLibrary(data: FormData) {
+    let err: RequestError;
+    const url = "/admin/libraries";
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.editLibraryRequest());
+        fetch(url, {
+          method: "POST",
+          body: data,
+          credentials: "same-origin"
+        }).then(response => {
+          if (response.status === 200 || response.status === 201) {
+            dispatch(this.editLibrarySuccess());
+            resolve(response);
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.editLibraryFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to edit library",
+                url: url
+              };
+              dispatch(this.editLibraryFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.editLibraryFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  editLibraryRequest() {
+    return { type: this.EDIT_LIBRARY_REQUEST };
+  }
+
+  editLibrarySuccess() {
+    return { type: this.EDIT_LIBRARY_SUCCESS };
+  }
+
+  editLibraryFailure(error?: RequestError) {
+    return { type: this.EDIT_LIBRARY_FAILURE, error };
+  }
+
+  fetchCollections() {
+    let url = "/admin/collections";
+    let err: RequestError;
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.fetchCollectionsRequest(url));
+        fetch(url, { credentials: "same-origin" }).then(response => {
+          if (response.status === 200) {
+            response.json().then((data: CollectionsData) => {
+              dispatch(this.fetchCollectionsSuccess());
+              dispatch(this.loadCollections(data));
+              resolve(data);
+            }).catch(err => {
+              dispatch(this.fetchCollectionsFailure(err));
+              reject(err);
+            });
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.fetchCollectionsFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to retrieve collections",
+                url: url
+              };
+              dispatch(this.fetchCollectionsFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.fetchCollectionsFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  fetchCollectionsRequest(url: string) {
+    return { type: this.FETCH_COLLECTIONS_REQUEST, url };
+  }
+
+  fetchCollectionsSuccess() {
+    return { type: this.FETCH_COLLECTIONS_SUCCESS };
+  }
+
+  fetchCollectionsFailure(error?: RequestError) {
+    return { type: this.FETCH_COLLECTIONS_FAILURE, error };
+  }
+
+  loadCollections(data: CollectionsData) {
+    return { type: this.LOAD_COLLECTIONS, data };
+  }
+
+  editCollection(data: FormData) {
+    let err: RequestError;
+    const url = "/admin/collections";
+
+    return (dispatch => {
+      return new Promise((resolve, reject: RequestRejector) => {
+        dispatch(this.editCollectionRequest());
+        fetch(url, {
+          method: "POST",
+          body: data,
+          credentials: "same-origin"
+        }).then(response => {
+          if (response.status === 200 || response.status === 201) {
+            dispatch(this.editCollectionSuccess());
+            resolve(response);
+          } else {
+            response.json().then(data => {
+              err = {
+                status: response.status,
+                response: data.detail,
+                url: url
+              };
+              dispatch(this.editCollectionFailure(err));
+              reject(err);
+            }).catch(parseError => {
+              err = {
+                status: response.status,
+                response: "Failed to edit collection",
+                url: url
+              };
+              dispatch(this.editCollectionFailure(err));
+              reject(err);
+            });
+          }
+        }).catch(err => {
+          err = {
+            status: null,
+            response: err.message,
+            url: url
+          };
+          dispatch(this.editCollectionFailure(err));
+          reject(err);
+        });
+      });
+    }).bind(this);
+  }
+
+  editCollectionRequest() {
+    return { type: this.EDIT_COLLECTION_REQUEST };
+  }
+
+  editCollectionSuccess() {
+    return { type: this.EDIT_COLLECTION_SUCCESS };
+  }
+
+  editCollectionFailure(error?: RequestError) {
+    return { type: this.EDIT_COLLECTION_FAILURE, error };
   }
 }

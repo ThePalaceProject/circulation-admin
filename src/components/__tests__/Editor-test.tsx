@@ -6,7 +6,7 @@ import { shallow } from "enzyme";
 
 import { Editor } from "../Editor";
 import ButtonForm from "../ButtonForm";
-import EditForm from "../EditForm";
+import BookEditForm from "../BookEditForm";
 import ErrorMessage from "../ErrorMessage";
 
 describe("Editor", () => {
@@ -136,7 +136,7 @@ describe("Editor", () => {
         />
     );
 
-    let editForm = wrapper.find(EditForm);
+    let editForm = wrapper.find(BookEditForm);
     expect(editForm.length).to.equal(0);
     let error = wrapper.find(ErrorMessage);
     expect(error.prop("error")).to.equal(fetchError);
@@ -162,7 +162,7 @@ describe("Editor", () => {
         />
     );
 
-    let editForm = wrapper.find(EditForm);
+    let editForm = wrapper.find(BookEditForm);
     expect(editForm.length).to.equal(1);
     let error = wrapper.find(ErrorMessage);
     expect(error.prop("error")).to.equal(editError);

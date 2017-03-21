@@ -102,6 +102,40 @@ export interface StatsData {
   };
 }
 
+export interface LibraryData {
+  uuid?: string;
+  name?: string;
+  short_name?: string;
+  library_registry_short_name?: string;
+  library_registry_shared_secret?: string;
+}
+
+export interface LibrariesData {
+  libraries: LibraryData[];
+}
+
+export interface CollectionData {
+  name: string;
+  protocol: string;
+  libraries: string[];
+  [key: string]: string | string[];
+}
+
+export interface ProtocolField {
+  key: string;
+  label: string;
+}
+
+export interface ProtocolData {
+  name: string;
+  fields: ProtocolField[];
+}
+
+export interface CollectionsData {
+  collections: CollectionData[];
+  protocols: ProtocolData[];
+}
+
 export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }

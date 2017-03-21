@@ -50,6 +50,9 @@ export default class Header extends React.Component<HeaderProps, any> {
             <li>
               <Link to="/admin/web/dashboard">Dashboard</Link>
             </li>
+            <li>
+              <Link to="/admin/web/config">Configuration</Link>
+            </li>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

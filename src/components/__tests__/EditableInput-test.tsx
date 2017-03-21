@@ -25,7 +25,7 @@ describe("EditableInput", () => {
 
   it("shows label from props", () => {
     let label = wrapper.find("label");
-    expect(label.text()).to.equal("label");
+    expect(label.text()).to.contain("label");
   });
 
   it("shows initial value from props", () => {
