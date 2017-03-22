@@ -29,7 +29,7 @@ export default class Config extends React.Component<ConfigProps, any> {
 
   render(): JSX.Element {
     return (
-      <div className="settings">
+      <div className="config">
         <Header />
         <ConfigTabContainer
           tab={this.props.params.tab}
