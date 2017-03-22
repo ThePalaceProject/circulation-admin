@@ -15,7 +15,6 @@ export interface ConfigProps extends React.Props<ConfigProps> {
 export interface ConfigContext {
   editorStore: Store<State>;
   csrfToken: string;
-  router: any;
 }
 
 export default class Config extends React.Component<ConfigProps, any> {
@@ -23,8 +22,7 @@ export default class Config extends React.Component<ConfigProps, any> {
 
   static contextTypes: React.ValidationMap<ConfigContext> = {
     editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired,
-    router: React.PropTypes.object
+    csrfToken: React.PropTypes.string.isRequired
   };
 
   render(): JSX.Element {
