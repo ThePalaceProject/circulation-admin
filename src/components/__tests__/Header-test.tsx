@@ -46,8 +46,14 @@ describe("Header", () => {
     expect(hiddenLink.prop("bookUrl")).to.equal(null);
     expect(hiddenLink.children().text()).to.equal("Hidden Books");
 
-    let link = wrapper.find(Link);
-    expect(link.prop("to")).to.equal("/admin/web/dashboard");
-    expect(link.children().text()).to.equal("Dashboard");
+    let links = wrapper.find(Link);
+
+    let dashboardLink = links.at(0);
+    expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
+    expect(dashboardLink.children().text()).to.equal("Dashboard");
+
+    let settingsLink = links.at(1);
+    expect(settingsLink.prop("to")).to.equal("/admin/web/config");
+    expect(settingsLink.children().text()).to.equal("Configuration");
   });
 });

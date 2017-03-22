@@ -2,14 +2,14 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { BookData } from "../interfaces";
 
-export interface EditFormProps extends BookData {
+export interface BookEditFormProps extends BookData {
   csrfToken: string;
   disabled: boolean;
   refresh: () => any;
   editBook: (url: string, data: FormData) => Promise<any>;
 }
 
-export default class EditForm extends React.Component<EditFormProps, any> {
+export default class BookEditForm extends React.Component<BookEditFormProps, any> {
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">

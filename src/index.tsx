@@ -4,6 +4,7 @@ import { Router, Route, browserHistory } from "react-router";
 import ContextProvider from "./components/ContextProvider";
 import CatalogHandler from "./components/CatalogHandler";
 import Dashboard from "./components/Dashboard";
+import Config from "./components/Config";
 
 class CirculationWeb {
   constructor(config) {
@@ -18,6 +19,7 @@ class CirculationWeb {
         <Router history={browserHistory}>
           <Route path={editorPath} component={CatalogHandler} />
           <Route path="/admin/web/dashboard" component={Dashboard} />
+          <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={Config} />
         </Router>
       </ContextProvider>,
       document.getElementById("opds-catalog")

@@ -6,7 +6,7 @@ import { shallow } from "enzyme";
 
 import buildStore from "../../store";
 import BookDetailsContainer from "../BookDetailsContainer";
-import TabContainer from "../TabContainer";
+import BookDetailsTabContainer from "../BookDetailsTabContainer";
 
 describe("BookDetailsContainer", () => {
   let wrapper;
@@ -41,7 +41,7 @@ describe("BookDetailsContainer", () => {
   });
 
   it("shows a tab container with initial tab", () => {
-    let tabContainer = wrapper.find(TabContainer);
+    let tabContainer = wrapper.find(BookDetailsTabContainer);
     expect(tabContainer).to.be.ok;
     expect(tabContainer.props().bookUrl).to.equal("book url");
     expect(tabContainer.props().collectionUrl).to.equal("collection url");

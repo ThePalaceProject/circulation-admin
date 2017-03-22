@@ -74,7 +74,7 @@ describe("EditableRadio", () => {
         />
     );
 
-    wrapper.instance().clear();
+    (wrapper.instance() as EditableRadio).clear();
     expect(wrapper.state("checked")).to.equal(false);
     let inputElement = wrapper.find("input").get(0) as any;
     expect(inputElement.checked).to.equal(false);

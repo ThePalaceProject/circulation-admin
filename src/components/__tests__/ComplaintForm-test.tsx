@@ -110,7 +110,7 @@ describe("ComplaintForm", () => {
       );
       let form = wrapper.find("form");
       let select = wrapper.find("select").get(0);
-      select.value = "bad-description";
+      (select as any).value = "bad-description";
       form.simulate("submit");
     });
 
@@ -118,7 +118,7 @@ describe("ComplaintForm", () => {
       wrapper.instance().clear = done;
       let form = wrapper.find("form");
       let select = wrapper.find("select").get(0);
-      select.value = "bad-description";
+      (select as any).value = "bad-description";
       form.simulate("submit");
     });
 
@@ -142,16 +142,16 @@ describe("ComplaintForm", () => {
           refreshComplaints={stub()}
           />
       );
-      wrapper.instance().showPostError = done;
+      (wrapper.instance() as ComplaintForm).showPostError = done;
       let form = wrapper.find("form");
       let select = wrapper.find("select").get(0);
-      select.value = "bad-description";
+      (select as any).value = "bad-description";
       form.simulate("submit");
     });
 
     it("clears complaint type", () => {
       let select = wrapper.find("select").get(0);
-      select.value = "bad-description";
+      (select as any).value = "bad-description";
       wrapper.instance().clear();
       select = wrapper.find("select").get(0);
       expect(select.value).to.equal("");

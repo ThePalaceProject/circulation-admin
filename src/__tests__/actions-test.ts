@@ -725,4 +725,304 @@ describe("actions", () => {
       }).catch(err => { console.log(err); throw(err); });
     });
   });
+
+  describe("fetchLibraries", () => {
+    let librariesUrl = "/admin/libraries";
+
+
+    it("dispatches request, load, and success", (done) => {
+      let dispatch = stub();
+      let librariesData = "libraries";
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 200,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve(librariesData);
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchLibraries()(dispatch).then(data => {
+        expect(dispatch.callCount).to.equal(3);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_LIBRARIES_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_LIBRARIES_SUCCESS);
+        expect(dispatch.args[2][0].type).to.equal(actions.LOAD_LIBRARIES);
+        expect(data).to.deep.equal(librariesData);
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches server failure", (done) => {
+      let dispatch = stub();
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 500,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchLibraries()(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_LIBRARIES_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_LIBRARIES_FAILURE);
+        expect(err).to.deep.equal({
+          status: 500,
+          response: "test error detail",
+          url: librariesUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches network failure", (done) => {
+      let dispatch = stub();
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        reject({
+          message: "network error"
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchLibraries()(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_LIBRARIES_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_LIBRARIES_FAILURE);
+        expect(err).to.deep.equal({
+          status: null,
+          response: "network error",
+          url: librariesUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+  });
+
+  describe("editLibrary", () => {
+    let editLibraryUrl = "/admin/libraries";
+    let dispatch;
+    let formData = new (window as any).FormData();
+    formData.append("csrf_token", "token");
+    formData.append("name", "new name");
+
+    beforeEach(() => {
+      dispatch = stub();
+    });
+
+    it("dispatches request and success", (done) => {
+      let fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        update({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      actions.editLibrary(formData)(dispatch).then(response => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.EDIT_LIBRARY_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.EDIT_LIBRARY_SUCCESS);
+        expect(fetchMock.callCount).to.equal(1);
+        expect(fetchMock.args[0][0]).to.equal(editLibraryUrl);
+        expect(fetchMock.args[0][1].method).to.equal("POST");
+        expect(fetchMock.args[0][1].body).to.equal(formData);
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches failure on server failure", (done) => {
+      let fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        update({
+          status: 500,
+          json: () => new Promise<any>((update, reject) => {
+            update({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.editLibrary(formData)(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.EDIT_LIBRARY_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.EDIT_LIBRARY_FAILURE);
+        expect(fetchMock.callCount).to.equal(1);
+        expect(err).to.deep.equal({
+          status: 500,
+          response: "test error detail",
+          url: editLibraryUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches failure on network failure", (done) => {
+      let fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        reject({ message : "test error" });
+      }));
+      fetch = fetchMock;
+
+      actions.editLibrary(formData)(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.EDIT_LIBRARY_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.EDIT_LIBRARY_FAILURE);
+        expect(fetchMock.callCount).to.equal(1);
+        expect(err).to.deep.equal({
+          status: null,
+          response: "test error",
+          url: editLibraryUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+  });
+
+  describe("fetchCollections", () => {
+    let collectionsUrl = "/admin/collections";
+
+
+    it("dispatches request, load, and success", (done) => {
+      let dispatch = stub();
+      let collectionsData = "collections";
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 200,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve(collectionsData);
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchCollections()(dispatch).then(data => {
+        expect(dispatch.callCount).to.equal(3);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_COLLECTIONS_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_COLLECTIONS_SUCCESS);
+        expect(dispatch.args[2][0].type).to.equal(actions.LOAD_COLLECTIONS);
+        expect(data).to.deep.equal(collectionsData);
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches server failure", (done) => {
+      let dispatch = stub();
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({
+          status: 500,
+          json: () => new Promise<any>((resolve, reject) => {
+            resolve({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchCollections()(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_COLLECTIONS_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_COLLECTIONS_FAILURE);
+        expect(err).to.deep.equal({
+          status: 500,
+          response: "test error detail",
+          url: collectionsUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches network failure", (done) => {
+      let dispatch = stub();
+      let fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        reject({
+          message: "network error"
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.fetchCollections()(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.FETCH_COLLECTIONS_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.FETCH_COLLECTIONS_FAILURE);
+        expect(err).to.deep.equal({
+          status: null,
+          response: "network error",
+          url: collectionsUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+  });
+
+  describe("editCollection", () => {
+    let editCollectionUrl = "/admin/collections";
+    let dispatch;
+    let formData = new (window as any).FormData();
+    formData.append("csrf_token", "token");
+    formData.append("name", "new name");
+
+    beforeEach(() => {
+      dispatch = stub();
+    });
+
+    it("dispatches request and success", (done) => {
+      let fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        update({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      actions.editCollection(formData)(dispatch).then(response => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.EDIT_COLLECTION_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.EDIT_COLLECTION_SUCCESS);
+        expect(fetchMock.callCount).to.equal(1);
+        expect(fetchMock.args[0][0]).to.equal(editCollectionUrl);
+        expect(fetchMock.args[0][1].method).to.equal("POST");
+        expect(fetchMock.args[0][1].body).to.equal(formData);
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches failure on server failure", (done) => {
+      let fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        update({
+          status: 500,
+          json: () => new Promise<any>((update, reject) => {
+            update({ status: 500, detail: "test error detail" });
+          })
+        });
+      }));
+      fetch = fetchMock;
+
+      actions.editCollection(formData)(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.EDIT_COLLECTION_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.EDIT_COLLECTION_FAILURE);
+        expect(fetchMock.callCount).to.equal(1);
+        expect(err).to.deep.equal({
+          status: 500,
+          response: "test error detail",
+          url: editCollectionUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+
+    it("dispatches failure on network failure", (done) => {
+      let fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        reject({ message : "test error" });
+      }));
+      fetch = fetchMock;
+
+      actions.editCollection(formData)(dispatch).catch(err => {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(actions.EDIT_COLLECTION_REQUEST);
+        expect(dispatch.args[1][0].type).to.equal(actions.EDIT_COLLECTION_FAILURE);
+        expect(fetchMock.callCount).to.equal(1);
+        expect(err).to.deep.equal({
+          status: null,
+          response: "test error",
+          url: editCollectionUrl
+        });
+        done();
+      }).catch(err => { console.log(err); throw(err); });
+    });
+  });
 });
