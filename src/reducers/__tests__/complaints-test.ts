@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import complaints from "../complaints";
+import ActionCreator from "../../actions";
 
 describe("complaints reducer", () => {
   let initState = {
@@ -25,8 +26,8 @@ describe("complaints reducer", () => {
     expect(complaints(undefined, {})).to.deep.equal(initState);
   });
 
-  it("handles FETCH_COMPLAINTS_REQUEST", () => {
-    let action = { type: "FETCH_COMPLAINTS_REQUEST", url: "test url" };
+  it("handles COMPLAINTS_REQUEST", () => {
+    let action = { type: ActionCreator.COMPLAINTS_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -43,8 +44,8 @@ describe("complaints reducer", () => {
     expect(complaints(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_COMPLAINTS_FAILURE", () => {
-    let action = { type: "FETCH_COMPLAINTS_FAILURE", error: "test error" };
+  it("handles COMPLAINTS_FAILURE", () => {
+    let action = { type: ActionCreator.COMPLAINTS_FAILURE, error: "test error" };
     let oldState = {
       url: "test url",
       data: null,
@@ -60,8 +61,8 @@ describe("complaints reducer", () => {
     expect(complaints(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LOAD_COMPLAINTS", () => {
-    let action = { type: "LOAD_COMPLAINTS", data: "test data" };
+  it("handles COMPLAINTS_LOAD", () => {
+    let action = { type: ActionCreator.COMPLAINTS_LOAD, data: { complaints: "test data" } };
     let oldState = {
       url: "test url",
       data: null,
@@ -78,7 +79,7 @@ describe("complaints reducer", () => {
   });
 
   it("handles POST_COMPLAINT_REQUEST", () => {
-    let action = { type: "POST_COMPLAINT_REQUEST", url: "test url" };
+    let action = { type: ActionCreator.POST_COMPLAINT_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -96,7 +97,7 @@ describe("complaints reducer", () => {
   });
 
   it("handles POST_COMPLAINT_FAILURE", () => {
-    let action = { type: "POST_COMPLAINT_FAILURE", error: "test error" };
+    let action = { type: ActionCreator.POST_COMPLAINT_FAILURE, error: "test error" };
     let oldState = {
       url: "test url",
       data: null,
@@ -113,7 +114,7 @@ describe("complaints reducer", () => {
   });
 
   it("handles RESOLVE_COMPLAINTS_REQUEST", () => {
-    let action = { type: "RESOLVE_COMPLAINTS_REQUEST", url: "test url" };
+    let action = { type: ActionCreator.RESOLVE_COMPLAINTS_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -131,7 +132,7 @@ describe("complaints reducer", () => {
   });
 
   it("handles RESOLVE_COMPLAINTS_FAILURE", () => {
-    let action = { type: "RESOLVE_COMPLAINTS_FAILURE", error: "test error" };
+    let action = { type: ActionCreator.RESOLVE_COMPLAINTS_FAILURE, error: "test error" };
     let oldState = {
       url: "test url",
       data: null,

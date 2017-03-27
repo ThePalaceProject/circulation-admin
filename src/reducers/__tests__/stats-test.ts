@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import reducer, { StatsState } from "../stats";
 import { StatsData } from "../../interfaces";
+import ActionCreator from "../../actions";
 
 describe("stats reducer", () => {
   let statsData: StatsData = {
@@ -43,8 +44,8 @@ describe("stats reducer", () => {
     expect(reducer(undefined, {})).to.deep.equal(initState);
   });
 
-  it("handles FETCH_STATS_REQUEST", () => {
-    let action = { type: "FETCH_STATS_REQUEST", url: "test url" };
+  it("handles STATS_REQUEST", () => {
+    let action = { type: ActionCreator.STATS_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -60,8 +61,8 @@ describe("stats reducer", () => {
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_STATS_FAILURE", () => {
-    let action = { type: "FETCH_STATS_FAILURE", error: "test error" };
+  it("handles STATS_FAILURE", () => {
+    let action = { type: ActionCreator.STATS_FAILURE, error: "test error" };
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
@@ -71,8 +72,8 @@ describe("stats reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LOAD_STATS", () => {
-    let action = { type: "LOAD_STATS", data: statsData };
+  it("handles STATS_LOAD", () => {
+    let action = { type: ActionCreator.STATS_LOAD, data: statsData };
     let newState = Object.assign({}, initState, {
       data: statsData,
       isFetching: false,

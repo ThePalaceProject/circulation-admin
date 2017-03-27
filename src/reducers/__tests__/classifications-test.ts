@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import reducer, { ClassificationsState } from "../classifications";
+import ActionCreator from "../../actions";
 
 describe("classifications reducer", () => {
   let genreData = {
@@ -37,8 +38,8 @@ describe("classifications reducer", () => {
     expect(reducer(undefined, {})).to.deep.equal(initState);
   });
 
-  it("handles FETCH_GENRE_TREE_REQUEST", () => {
-    let action = { type: "FETCH_GENRE_TREE_REQUEST", url: "test url" };
+  it("handles GENRE_TREE_REQUEST", () => {
+    let action = { type: ActionCreator.GENRE_TREE_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -54,8 +55,8 @@ describe("classifications reducer", () => {
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_GENRE_TREE_FAILURE", () => {
-    let action = { type: "FETCH_GENRE_TREE_FAILURE", error: "test error" };
+  it("handles GENRE_TREE_FAILURE", () => {
+    let action = { type: ActionCreator.GENRE_TREE_FAILURE, error: "test error" };
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
@@ -64,8 +65,8 @@ describe("classifications reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LOAD_GENRE_TREE", () => {
-    let action = { type: "LOAD_GENRE_TREE", data: genreData };
+  it("handles GENRE_TREE_LOAD", () => {
+    let action = { type: ActionCreator.GENRE_TREE_LOAD, data: genreData };
     let newState = Object.assign({}, initState, {
       genreTree: genreData,
       isFetchingGenreTree: false
@@ -74,7 +75,7 @@ describe("classifications reducer", () => {
   });
 
   it("handles EDIT_CLASSIFICATIONS_REQUEST", () => {
-    let action = { type: "EDIT_CLASSIFICATIONS_REQUEST", url: "test url" };
+    let action = { type: ActionCreator.EDIT_CLASSIFICATIONS_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -91,7 +92,7 @@ describe("classifications reducer", () => {
   });
 
   it("handles EDIT_CLASSIFICATIONS_FAILURE", () => {
-    let action = { type: "EDIT_CLASSIFICATIONS_FAILURE", error: "test error" };
+    let action = { type: ActionCreator.EDIT_CLASSIFICATIONS_FAILURE, error: "test error" };
     let oldState = Object.assign({}, initState, {
       isEditingClassifications: true
     });
@@ -102,8 +103,8 @@ describe("classifications reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_CLASSIFICATIONS_REQUEST", () => {
-    let action = { type: "FETCH_CLASSIFICATIONS_REQUEST", url: "test url" };
+  it("handles CLASSIFICATIONS_REQUEST", () => {
+    let action = { type: ActionCreator.CLASSIFICATIONS_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -119,8 +120,8 @@ describe("classifications reducer", () => {
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_CLASSIFICATIONS_FAILURE", () => {
-    let action = { type: "FETCH_CLASSIFICATIONS_FAILURE", error: "test error" };
+  it("handles CLASSIFICATIONS_FAILURE", () => {
+    let action = { type: ActionCreator.CLASSIFICATIONS_FAILURE, error: "test error" };
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
@@ -129,8 +130,8 @@ describe("classifications reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LOAD_CLASSIFICATIONS", () => {
-    let action = { type: "LOAD_CLASSIFICATIONS", classifications: classificationsData };
+  it("handles CLASSIFICATIONS_LOAD", () => {
+    let action = { type: ActionCreator.CLASSIFICATIONS_LOAD, data: { classifications: classificationsData } };
     let newState = Object.assign({}, initState, {
       classifications: classificationsData,
       isFetchingClassifications: false

@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import book from "../book";
+import ActionCreator from "../../actions";
 
 describe("book reducer", () => {
   let initState = {
@@ -26,12 +27,12 @@ describe("book reducer", () => {
   });
 
   it("handles CLEAR_BOOK", () => {
-    let action = { type: "CLEAR_BOOK" };
+    let action = { type: ActionCreator.BOOK_CLEAR };
     expect(book(fetchedState, action)).to.deep.equal(initState);
   });
 
-  it("handles FETCH_BOOK_ADMIN_REQUEST", () => {
-    let action = { type: "FETCH_BOOK_ADMIN_REQUEST", url: "test url" };
+  it("handles BOOK_ADMIN_REQUEST", () => {
+    let action = { type: ActionCreator.BOOK_ADMIN_REQUEST, url: "test url" };
     let oldState = Object.assign({}, initState, { editError: "error" });
     let newState = Object.assign({}, initState, {
       url: "test url",
@@ -42,15 +43,15 @@ describe("book reducer", () => {
   });
 
   it("handles EDIT_BOOK_REQUEST", () => {
-    let action = { type: "EDIT_BOOK_REQUEST" };
+    let action = { type: ActionCreator.EDIT_BOOK_REQUEST };
     let newState = Object.assign({}, fetchedState, {
       isFetching: true
     });
     expect(book(fetchedState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_BOOK_ADMIN_FAILURE", () => {
-    let action = { type: "FETCH_BOOK_ADMIN_FAILURE", error: "test error" };
+  it("handles BOOK_ADMIN_FAILURE", () => {
+    let action = { type: ActionCreator.BOOK_ADMIN_FAILURE, error: "test error" };
     let oldState = {
       url: "test url",
       data: null,
@@ -66,7 +67,7 @@ describe("book reducer", () => {
   });
 
   it("handles EDIT_BOOK_FAILURE", () => {
-    let action = { type: "EDIT_BOOK_FAILURE", error: "test error" };
+    let action = { type: ActionCreator.EDIT_BOOK_FAILURE, error: "test error" };
     let oldState = {
       url: "test url",
       data: null,
@@ -81,8 +82,8 @@ describe("book reducer", () => {
     expect(book(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LOAD_BOOK_ADMIN", () => {
-    let action = { type: "LOAD_BOOK_ADMIN", data: "test data", url: "test url" };
+  it("handles BOOK_ADMIN_LOAD", () => {
+    let action = { type: ActionCreator.BOOK_ADMIN_LOAD, data: "test data", url: "test url" };
     let oldState = {
       url: "test url",
       data: null,
