@@ -1,5 +1,6 @@
 import { RequestError } from "opds-web-client/lib/DataFetcher";
 import { CollectionsData } from "../interfaces";
+import ActionCreator from "../actions";
 
 export interface CollectionsState {
   data: CollectionsData;
@@ -19,39 +20,39 @@ const initialState: CollectionsState = {
 
 export default(state: CollectionsState = initialState, action) => {
   switch (action.type) {
-    case "FETCH_COLLECTIONS_REQUEST":
+    case ActionCreator.COLLECTIONS_REQUEST:
       return Object.assign({}, state, {
         isFetching: true,
         fetchError: null
       });
 
-    case "LOAD_COLLECTIONS":
+    case ActionCreator.COLLECTIONS_LOAD:
       return Object.assign({}, state, {
         data: action.data,
         isFetching: false,
         isLoaded: true
       });
 
-    case "FETCH_COLLECTIONS_FAILURE":
+    case ActionCreator.COLLECTIONS_FAILURE:
       return Object.assign({}, state, {
         fetchError: action.error,
         isFetching: false,
         isLoaded: true
       });
 
-    case "EDIT_COLLECTION_REQUEST":
+    case ActionCreator.EDIT_COLLECTION_REQUEST:
       return Object.assign({}, state, {
         isEditing: true,
         fetchError: null
       });
 
-    case "EDIT_COLLECTION_SUCCESS":
+    case ActionCreator.EDIT_COLLECTION_SUCCESS:
       return Object.assign({}, state, {
         isEditing: false,
         fetchError: null
       });
 
-    case "EDIT_COLLECTION_FAILURE":
+    case ActionCreator.EDIT_COLLECTION_FAILURE:
       return Object.assign({}, state, {
         isEditing: false,
         fetchError: action.error

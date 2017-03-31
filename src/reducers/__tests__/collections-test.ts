@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import reducer, { CollectionsState } from "../collections";
 import { CollectionsData } from "../../interfaces";
+import ActionCreator from "../../actions";
 
 describe("collections reducer", () => {
   let collectionsData: CollectionsData = {
@@ -39,8 +40,8 @@ describe("collections reducer", () => {
     expect(reducer(undefined, {})).to.deep.equal(initState);
   });
 
-  it("handles FETCH_COLLECTIONS_REQUEST", () => {
-    let action = { type: "FETCH_COLLECTIONS_REQUEST", url: "test_url" };
+  it("handles COLLECTIONS_REQUEST", () => {
+    let action = { type: ActionCreator.COLLECTIONS_REQUEST, url: "test_url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -56,8 +57,8 @@ describe("collections reducer", () => {
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_COLLECTIONS_FAILURE", () => {
-    let action = { type: "FETCH_COLLECTIONS_FAILURE", error: "test error" };
+  it("handles COLLECTIONS_FAILURE", () => {
+    let action = { type: ActionCreator.COLLECTIONS_FAILURE, error: "test error" };
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
@@ -67,8 +68,8 @@ describe("collections reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LOAD_COLLECTIONS", () => {
-    let action = { type: "LOAD_COLLECTIONS", data: collectionsData };
+  it("handles COLLECTIONS_LOAD", () => {
+    let action = { type: ActionCreator.COLLECTIONS_LOAD, data: collectionsData };
     let newState = Object.assign({}, initState, {
       data: collectionsData,
       isFetching: false,
@@ -78,7 +79,7 @@ describe("collections reducer", () => {
   });
 
   it("handles EDIT_COLLECTION_REQUEST", () => {
-    let action = { type: "EDIT_COLLECTION_REQUEST", url: "test url" };
+    let action = { type: ActionCreator.EDIT_COLLECTION_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -95,7 +96,7 @@ describe("collections reducer", () => {
   });
 
   it("handles EDIT_COLLECTION_FAILURE", () => {
-    let action = { type: "EDIT_COLLECTION_FAILURE", error: "test error" };
+    let action = { type: ActionCreator.EDIT_COLLECTION_FAILURE, error: "test error" };
     let oldState = Object.assign({}, initState, {
       isEditing: true
     });
@@ -107,7 +108,7 @@ describe("collections reducer", () => {
   });
 
   it("handles EDIT_COLLECTION_SUCCESS", () => {
-    let action = { type: "EDIT_COLLECTION_SUCCESS" };
+    let action = { type: ActionCreator.EDIT_COLLECTION_SUCCESS };
     let oldState = Object.assign({}, initState, {
       isEditing: true
     });

@@ -1,5 +1,6 @@
 import { RequestError } from "opds-web-client/lib/DataFetcher";
 import { StatsData } from "../interfaces";
+import ActionCreator from "../actions";
 
 export interface StatsState {
   data: StatsData;
@@ -17,20 +18,20 @@ const initialState: StatsState = {
 
 export default (state: StatsState = initialState, action) => {
   switch (action.type) {
-    case "FETCH_STATS_REQUEST":
+    case ActionCreator.STATS_REQUEST:
       return Object.assign({}, state, {
         isFetching: true,
         fetchError: null
       });
 
-    case "LOAD_STATS":
+    case ActionCreator.STATS_LOAD:
       return Object.assign({}, state, {
         data: action.data,
         isFetching: false,
         isLoaded: true
       });
 
-    case "FETCH_STATS_FAILURE":
+    case ActionCreator.STATS_FAILURE:
        return Object.assign({}, state, {
          fetchError: action.error,
          isFetching: false,

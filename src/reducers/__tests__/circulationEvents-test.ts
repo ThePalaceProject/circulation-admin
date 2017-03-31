@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import reducer, { CirculationEventsState } from "../circulationEvents";
 import { CirculationEventData } from "../../interfaces";
+import ActionCreator from "../../actions";
 
 describe("circulation events reducer", () => {
   let eventsData: CirculationEventData[] = [
@@ -45,8 +46,8 @@ describe("circulation events reducer", () => {
     expect(reducer(undefined, {})).to.deep.equal(initState);
   });
 
-  it("handles FETCH_CIRCULATION_EVENTS_REQUEST", () => {
-    let action = { type: "FETCH_CIRCULATION_EVENTS_REQUEST", url: "test url" };
+  it("handles CIRCULATION_EVENTS_REQUEST", () => {
+    let action = { type: ActionCreator.CIRCULATION_EVENTS_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -62,8 +63,8 @@ describe("circulation events reducer", () => {
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles FETCH_CIRCULATION_EVENTS_FAILURE", () => {
-    let action = { type: "FETCH_CIRCULATION_EVENTS_FAILURE", error: "test error" };
+  it("handles CIRCULATION_EVENTS_FAILURE", () => {
+    let action = { type: ActionCreator.CIRCULATION_EVENTS_FAILURE, error: "test error" };
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
@@ -73,8 +74,8 @@ describe("circulation events reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LOAD_CIRCULATION_EVENTS", () => {
-    let action = { type: "LOAD_CIRCULATION_EVENTS", data: eventsData };
+  it("handles CIRCULATION_EVENTS_LOAD", () => {
+    let action = { type: ActionCreator.CIRCULATION_EVENTS_LOAD, data: { circulation_events: eventsData } };
     let newState = Object.assign({}, initState, {
       data: eventsData,
       isFetching: false,
