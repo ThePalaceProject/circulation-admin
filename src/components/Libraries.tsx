@@ -41,7 +41,7 @@ export class Libraries extends React.Component<LibrariesProps, any> {
           <div>
             <h2>Edit libraries</h2>
             <ul>
-              { this.props.libraries && this.props.libraries.map((library, index) =>
+              { this.props.libraries.map((library, index) =>
                   <li key={index}>
                     <h3>{library.name || library.short_name}</h3>
                     <a href={"/admin/web/config/libraries/edit/" + library.uuid}>Edit library</a>

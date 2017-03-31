@@ -1,4 +1,9 @@
-import { BookData, ComplaintsData, GenreTree, ClassificationData, CirculationEventData, StatsData, LibrariesData, CollectionsData } from "./interfaces";
+import {
+  BookData, ComplaintsData, GenreTree, ClassificationData,
+  CirculationEventData, StatsData,
+  LibrariesData, CollectionsData,
+  AdminAuthServicesData
+} from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
 import BaseActionCreator from "opds-web-client/lib/actions";
@@ -18,6 +23,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_LIBRARY = "EDIT_LIBRARY";
   static readonly COLLECTIONS = "COLLECTIONS";
   static readonly EDIT_COLLECTION = "EDIT_COLLECTION";
+  static readonly ADMIN_AUTH_SERVICES = "ADMIN_AUTH_SERVICES";
+  static readonly EDIT_ADMIN_AUTH_SERVICE = "EDIT_ADMIN_AUTH_SERVICE";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -81,6 +88,15 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_COLLECTION_REQUEST = "EDIT_COLLECTION_REQUEST";
   static readonly EDIT_COLLECTION_SUCCESS = "EDIT_COLLECTION_SUCCESS";
   static readonly EDIT_COLLECTION_FAILURE = "EDIT_COLLECTION_FAILURE";
+
+  static readonly ADMIN_AUTH_SERVICES_REQUEST = "ADMIN_AUTH_SERVICES_REQUEST";
+  static readonly ADMIN_AUTH_SERVICES_SUCCESS = "ADMIN_AUTH_SERVICES_SUCCESS";
+  static readonly ADMIN_AUTH_SERVICES_FAILURE = "ADMIN_AUTH_SERVICES_FAILURE";
+  static readonly ADMIN_AUTH_SERVICES_LOAD = "ADMIN_AUTH_SERVICES_LOAD";
+
+  static readonly EDIT_ADMIN_AUTH_SERVICE_REQUEST = "EDIT_ADMIN_AUTH_SERVICE_REQUEST";
+  static readonly EDIT_ADMIN_AUTH_SERVICE_SUCCESS = "EDIT_ADMIN_AUTH_SERVICE_SUCCESS";
+  static readonly EDIT_ADMIN_AUTH_SERVICE_FAILURE = "EDIT_ADMIN_AUTH_SERVICE_FAILURE";
 
   constructor(fetcher?: DataFetcher) {
     fetcher = fetcher || new DataFetcher();
@@ -243,5 +259,15 @@ export default class ActionCreator extends BaseActionCreator {
   editCollection(data: FormData) {
     const url = "/admin/collections";
     return this.postForm(ActionCreator.EDIT_COLLECTION, url, data).bind(this);
+  }
+
+  fetchAdminAuthServices() {
+    const url = "/admin/admin_auth_services";
+    return this.fetchJSON<AdminAuthServicesData>(ActionCreator.ADMIN_AUTH_SERVICES, url).bind(this);
+  }
+
+  editAdminAuthService(data: FormData) {
+    const url = "/admin/admin_auth_services";
+    return this.postForm(ActionCreator.EDIT_ADMIN_AUTH_SERVICE, url, data).bind(this);
   }
 }

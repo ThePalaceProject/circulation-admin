@@ -1,6 +1,7 @@
 import * as React from "react";
 import Libraries from "./Libraries";
 import Collections from "./Collections";
+import AdminAuthServices from "./AdminAuthServices";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -26,6 +27,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
+      ),
+      adminAuth: (
+        <AdminAuthServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
       )
     };
   }
@@ -34,6 +43,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     let tab = event.target.dataset.tabkey;
     if (this.context.router) {
       this.context.router.push("/admin/web/config/" + tab);
+    }
+  }
+
+  tabDisplayName(name) {
+    if (name === "adminAuth") {
+      return "Admin Authentication";
+    } else {
+      return super.tabDisplayName(name);
     }
   }
 

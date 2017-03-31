@@ -6,6 +6,7 @@ import circulationEvents, { CirculationEventsState } from "./circulationEvents";
 import stats, { StatsState } from "./stats";
 import libraries, { LibrariesState } from "./libraries";
 import collections, { CollectionsState } from "./collections";
+import adminAuthServices, { AdminAuthServicesState } from "./adminAuthServices";
 
 export interface State {
   book: BookState;
@@ -15,6 +16,7 @@ export interface State {
   stats: StatsState;
   libraries: LibrariesState;
   collections: CollectionsState;
+  adminAuthServices: AdminAuthServicesState;
 }
 
 export default combineReducers<State>({
@@ -24,5 +26,6 @@ export default combineReducers<State>({
   circulationEvents,
   stats,
   libraries,
-  collections
+  collections,
+  adminAuthServices
 });

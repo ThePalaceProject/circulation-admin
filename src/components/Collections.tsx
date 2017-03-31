@@ -43,7 +43,7 @@ export class Collections extends React.Component<CollectionsProps, any> {
           <div>
             <h2>Edit collections</h2>
             <ul>
-              { this.props.collections && this.props.collections.map((collection, index) =>
+              { this.props.collections.map((collection, index) =>
                   <li key={index}>
                     <h3>{collection.name}</h3>
                     <a href={"/admin/web/config/collections/edit/" + collection.name}>Edit collection</a>

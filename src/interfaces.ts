@@ -139,3 +139,14 @@ export interface CollectionsData {
 export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
+
+export interface AdminAuthServiceData {
+  name: string;
+  provider: string;
+  [key: string]: string | string[];
+}
+
+export interface AdminAuthServicesData {
+  admin_auth_services: AdminAuthServiceData[];
+  providers: string[];
+}

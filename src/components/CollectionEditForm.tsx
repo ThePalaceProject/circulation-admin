@@ -175,7 +175,7 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
 
   addLibrary() {
     const library = (this.refs["addLibrary"] as any).value;
-    if (this.state.libraries.indexOf(library !== -1)) {
+    if (this.state.libraries.indexOf(library) === -1) {
       this.setState({ libraries: this.state.libraries.concat([library]) });
     }
   }
