@@ -15,7 +15,17 @@ export interface AdminAuthServiceEditFormState {
   domains: string[];
 }
 
+export interface AdminAuthServiceEditFormContext {
+  settingUp: boolean;
+}
+
 export default class AdminAuthServiceEditForm extends React.Component<AdminAuthServiceEditFormProps, AdminAuthServiceEditFormState> {
+  context: AdminAuthServiceEditFormContext;
+
+  static contextTypes: React.ValidationMap<AdminAuthServiceEditFormContext> = {
+    settingUp: React.PropTypes.bool.isRequired
+  };
+
   constructor(props) {
     super(props);
     let defaultProvider;
@@ -151,6 +161,13 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
     const data = new (window as any).FormData(this.refs["form"] as any);
     data.append("domains", JSON.stringify(this.state.domains));
     this.props.editItem(data).then(() => {
+      // If we're setting up admin auth for the first time, refresh the page
+      // to go to login.
+      if (this.context.settingUp) {
+        window.location.reload();
+        return;
+      }
+
       // If a new admin auth service was created, go to its edit page.
       if (!this.props.item && data.get("name")) {
         window.location.href = "/admin/web/config/adminAuth/edit/" + data.get("name");

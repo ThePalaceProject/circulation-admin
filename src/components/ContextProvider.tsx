@@ -8,6 +8,7 @@ export interface ContextProviderProps extends React.Props<any> {
   csrfToken: string;
   homeUrl: string;
   showCircEventsDownload?: boolean;
+  settingUp?: boolean;
 }
 
 export default class ContextProvider extends React.Component<ContextProviderProps, any> {
@@ -49,7 +50,8 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     pathFor: React.PropTypes.func.isRequired,
     csrfToken: React.PropTypes.string.isRequired,
     homeUrl: React.PropTypes.string.isRequired,
-    showCircEventsDownload: React.PropTypes.bool.isRequired
+    showCircEventsDownload: React.PropTypes.bool.isRequired,
+    settingUp: React.PropTypes.bool.isRequired
   };
 
   getChildContext() {
@@ -58,7 +60,8 @@ export default class ContextProvider extends React.Component<ContextProviderProp
       pathFor: this.pathFor,
       csrfToken: this.props.csrfToken,
       homeUrl: this.props.homeUrl,
-      showCircEventsDownload: this.props.showCircEventsDownload || false
+      showCircEventsDownload: this.props.showCircEventsDownload || false,
+      settingUp: this.props.settingUp || false
     };
   }
 
