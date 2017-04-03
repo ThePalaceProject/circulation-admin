@@ -134,6 +134,7 @@ export interface ProtocolData {
 export interface CollectionsData {
   collections: CollectionData[];
   protocols: ProtocolData[];
+  allLibraries?: LibraryData[];
 }
 
 export interface PathFor {

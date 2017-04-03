@@ -4,26 +4,38 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { Collections } from "../Collections";
+import { EditableConfigList, EditFormProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import CollectionEditForm from "../CollectionEditForm";
 
-describe("Collections", () => {
+describe("EditableConfigList", () => {
+  interface Thing {
+    name: string;
+  }
+
+  interface Things {
+    things: Thing[];
+  }
+
+  class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, void> {
+    render(): JSX.Element {
+      return <div>Test</div>;
+    }
+  }
+
+  class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
+    EditForm = ThingEditForm;
+    listDataKey = "things";
+    itemTypeName = "thing";
+    urlBase = "/admin/things/";
+    identifierKey = "name";
+  }
+
   let wrapper;
   let fetchData;
   let editItem;
-  let collectionsData = [{
-    name: "name",
-    protocol: "OPDS Import",
-    url: "test.com",
-    libraries: [],
-  }];
-  let data = {
-    collections: collectionsData,
-    protocols: [{ name: "OPDS Import", fields: [] }],
-    allLibraries: []
-  };
+  let thingData = { name: "name" };
+  let thingsData = { things: [thingData] };
 
   const pause = () => {
     return new Promise<void>(resolve => setTimeout(resolve, 0));
@@ -34,8 +46,8 @@ describe("Collections", () => {
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
-      <Collections
-        data={data}
+      <ThingEditableConfigList
+        data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
         csrfToken="token"
@@ -61,27 +73,27 @@ describe("Collections", () => {
     expect(loading.length).to.equal(1);
   });
 
-  it("shows collection list", () => {
-    let collection = wrapper.find("li");
-    expect(collection.length).to.equal(1);
-    expect(collection.text()).to.contain("name");
-    let editLink = collection.find("a");
-    expect(editLink.props().href).to.equal("/admin/web/config/collections/edit/name");
+  it("shows thing list", () => {
+    let thing = wrapper.find("li");
+    expect(thing.length).to.equal(1);
+    expect(thing.text()).to.contain("name");
+    let editLink = thing.find("a");
+    expect(editLink.props().href).to.equal("/admin/things/edit/name");
   });
 
   it("shows create link", () => {
     let createLink = wrapper.find("div > a");
     expect(createLink.length).to.equal(1);
-    expect(createLink.props().href).to.equal("/admin/web/config/collections/create");
+    expect(createLink.props().href).to.equal("/admin/things/create");
   });
 
   it("shows create form", () => {
-    let form = wrapper.find(CollectionEditForm);
+    let form = wrapper.find(ThingEditForm);
     expect(form.length).to.equal(0);
     wrapper.setProps({ editOrCreate: "create" });
-    form = wrapper.find(CollectionEditForm);
+    form = wrapper.find(ThingEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().data).to.deep.equal(thingsData);
     expect(form.props().item).to.be.undefined;
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
@@ -89,19 +101,19 @@ describe("Collections", () => {
 
   it("shows edit form", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "name" });
-    let form = wrapper.find(CollectionEditForm);
+    let form = wrapper.find(ThingEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().data).to.deep.equal(data);
-    expect(form.props().item).to.equal(collectionsData[0]);
+    expect(form.props().data).to.deep.equal(thingsData);
+    expect(form.props().item).to.equal(thingData);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
-  it("fetches collections on mount and passes edit function to form", async () => {
+  it("fetches data on mount and passes edit function to form", async () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(CollectionEditForm);
+    let form = wrapper.find(ThingEditForm);
 
     expect(editItem.callCount).to.equal(0);
     form.props().editItem();
