@@ -19,6 +19,10 @@ describe("AdminAuthServiceEditForm", () => {
     domains: ["nypl.org"]
   };
   let providersData = ["OAuth provider", "some other provider"];
+  let data = {
+    admin_auth_services: [adminAuthServiceData],
+    providers: providersData
+  };
 
   let editableInputByName = (name) => {
     let inputs = wrapper.find(EditableInput);
@@ -33,10 +37,10 @@ describe("AdminAuthServiceEditForm", () => {
       editAdminAuthService = stub();
       wrapper = shallow(
         <AdminAuthServiceEditForm
+          data={data}
           csrfToken="token"
           disabled={false}
-          providers={providersData}
-          editAdminAuthService={editAdminAuthService}
+          editItem={editAdminAuthService}
           />
       );
     });
@@ -51,7 +55,7 @@ describe("AdminAuthServiceEditForm", () => {
       expect(input.props().value).not.to.be.ok;
       expect(input.props().readOnly).to.equal(false);
 
-      wrapper.setProps({ adminAuthService: adminAuthServiceData });
+      wrapper.setProps({ item: adminAuthServiceData });
       input = editableInputByName("name");
       expect(input.props().value).to.equal("name");
       expect(input.props().readOnly).to.equal(true);
@@ -69,11 +73,11 @@ describe("AdminAuthServiceEditForm", () => {
 
       wrapper = shallow(
         <AdminAuthServiceEditForm
+          data={data}
           csrfToken="token"
           disabled={false}
-          providers={providersData}
-          editAdminAuthService={editAdminAuthService}
-          adminAuthService={adminAuthServiceData}
+          editItem={editAdminAuthService}
+          item={adminAuthServiceData}
           />
       );
       input = editableInputByName("provider");
@@ -87,7 +91,7 @@ describe("AdminAuthServiceEditForm", () => {
       expect(input.props().value).to.be.ok;
       expect(input.props().value).to.equal("https://accounts.google.com/o/oauth2/auth");
 
-      wrapper.setProps({ adminAuthService: adminAuthServiceData });
+      wrapper.setProps({ item: adminAuthServiceData });
       input = editableInputByName("url");
       expect(input.props().value).to.equal("url");
     });
@@ -96,7 +100,7 @@ describe("AdminAuthServiceEditForm", () => {
       let input = editableInputByName("username");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ adminAuthService: adminAuthServiceData });
+      wrapper.setProps({ item: adminAuthServiceData });
       input = editableInputByName("username");
       expect(input.props().value).to.equal("user");
     });
@@ -105,7 +109,7 @@ describe("AdminAuthServiceEditForm", () => {
       let input = editableInputByName("password");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ adminAuthService: adminAuthServiceData });
+      wrapper.setProps({ item: adminAuthServiceData });
       input = editableInputByName("password");
       expect(input.props().value).to.equal("pass");
     });
@@ -116,11 +120,11 @@ describe("AdminAuthServiceEditForm", () => {
 
       wrapper = shallow(
         <AdminAuthServiceEditForm
+          data={data}
           csrfToken="token"
           disabled={false}
-          providers={providersData}
-          editAdminAuthService={editAdminAuthService}
-          adminAuthService={adminAuthServiceData}
+          editItem={editAdminAuthService}
+          item={adminAuthServiceData}
           />
       );
       domain = wrapper.find(".admin-auth-service-domain");
@@ -140,10 +144,10 @@ describe("AdminAuthServiceEditForm", () => {
       editAdminAuthService = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <AdminAuthServiceEditForm
+          data={data}
           csrfToken="token"
           disabled={false}
-          providers={providersData}
-          editAdminAuthService={editAdminAuthService}
+          editItem={editAdminAuthService}
           />
       );
     });
@@ -168,11 +172,11 @@ describe("AdminAuthServiceEditForm", () => {
     it("removes a library", () => {
       wrapper = shallow(
         <AdminAuthServiceEditForm
+          data={data}
           csrfToken="token"
           disabled={false}
-          providers={providersData}
-          editAdminAuthService={editAdminAuthService}
-          adminAuthService={adminAuthServiceData}
+          editItem={editAdminAuthService}
+          item={adminAuthServiceData}
           />
       );
       let domain = wrapper.find(".admin-auth-service-domain");
@@ -187,7 +191,7 @@ describe("AdminAuthServiceEditForm", () => {
     });
 
     it("submits data", () => {
-      wrapper.setProps({ adminAuthService: adminAuthServiceData });
+      wrapper.setProps({ item: adminAuthServiceData });
 
       let form = wrapper.find("form");
       form.simulate("submit");

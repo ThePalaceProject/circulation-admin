@@ -11,30 +11,33 @@ import AdminAuthServiceEditForm from "../AdminAuthServiceEditForm";
 
 describe("AdminAuthServices", () => {
   let wrapper;
-  let fetchAdminAuthServices;
-  let editAdminAuthService;
-  let adminAuthServicesData = [{
-    name: "name",
-    provider: "OAuth provider",
-    url: "test.com",
-    username: "user",
-    password: "pass",
-    domains: []
-  }];
+  let fetchData;
+  let editItem;
+  let data = {
+    admin_auth_services: [{
+      name: "name",
+      provider: "OAuth provider",
+      url: "test.com",
+      username: "user",
+      password: "pass",
+      domains: []
+    }],
+    providers: ["OAuth provider"]
+  };
 
   const pause = () => {
     return new Promise<void>(resolve => setTimeout(resolve, 0));
   };
 
   beforeEach(() => {
-    fetchAdminAuthServices = stub();
-    editAdminAuthService = stub().returns(new Promise<void>(resolve => resolve()));
+    fetchData = stub();
+    editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
       <AdminAuthServices
-        adminAuthServices={adminAuthServicesData}
-        fetchAdminAuthServices={fetchAdminAuthServices}
-        editAdminAuthService={editAdminAuthService}
+        data={data}
+        fetchData={fetchData}
+        editItem={editItem}
         csrfToken="token"
         isFetching={false}
         />
@@ -78,7 +81,8 @@ describe("AdminAuthServices", () => {
     wrapper.setProps({ editOrCreate: "create" });
     form = wrapper.find(AdminAuthServiceEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().adminAuthService).to.be.undefined;
+    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().item).to.be.undefined;
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
@@ -87,22 +91,23 @@ describe("AdminAuthServices", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "name" });
     let form = wrapper.find(AdminAuthServiceEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().adminAuthService).to.equal(adminAuthServicesData[0]);
+    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().item).to.equal(data.admin_auth_services[0]);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
   it("fetches admin auth services on mount and passes edit function to form", async () => {
-    expect(fetchAdminAuthServices.callCount).to.equal(1);
+    expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
     let form = wrapper.find(AdminAuthServiceEditForm);
 
-    expect(editAdminAuthService.callCount).to.equal(0);
-    form.props().editAdminAuthService();
-    expect(editAdminAuthService.callCount).to.equal(1);
+    expect(editItem.callCount).to.equal(0);
+    form.props().editItem();
+    expect(editItem.callCount).to.equal(1);
 
     await pause();
-    expect(fetchAdminAuthServices.callCount).to.equal(2);
+    expect(fetchData.callCount).to.equal(2);
   });
 });

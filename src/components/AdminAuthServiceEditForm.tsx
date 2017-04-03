@@ -1,25 +1,30 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { AdminAuthServiceData } from "../interfaces";
+import { AdminAuthServicesData, AdminAuthServiceData } from "../interfaces";
 
 export interface AdminAuthServiceEditFormProps {
-  adminAuthService?: AdminAuthServiceData;
+  data: AdminAuthServicesData;
+  item?: AdminAuthServiceData;
   csrfToken: string;
   disabled: boolean;
-  providers: string[];
-  editAdminAuthService: (data: FormData) => Promise<any>;
+  editItem: (data: FormData) => Promise<void>;
 }
 
-export default class AdminAuthServiceEditForm extends React.Component<AdminAuthServiceEditFormProps, any> {
+export interface AdminAuthServiceEditFormState {
+  provider: string;
+  domains: string[];
+}
+
+export default class AdminAuthServiceEditForm extends React.Component<AdminAuthServiceEditFormProps, AdminAuthServiceEditFormState> {
   constructor(props) {
     super(props);
     let defaultProvider;
-    if (this.props.providers && this.props.providers.length) {
-      defaultProvider = this.props.providers[0];
+    if (this.props.data && this.props.data.providers && this.props.data.providers.length) {
+      defaultProvider = this.props.data.providers[0];
     }
     this.state = {
-      provider: (this.props.adminAuthService && this.props.adminAuthService.provider) || defaultProvider,
-      domains: (this.props.adminAuthService && this.props.adminAuthService["domains"]) || []
+      provider: (this.props.item && this.props.item.provider) || defaultProvider,
+      domains: (this.props.item && this.props.item["domains"]) || []
     };
     this.handleProviderChange = this.handleProviderChange.bind(this);
     this.addDomain = this.addDomain.bind(this);
@@ -39,22 +44,22 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
           elementType="input"
           type="text"
           disabled={this.props.disabled}
-          readOnly={!!(this.props.adminAuthService && this.props.adminAuthService.name)}
+          readOnly={!!(this.props.item && this.props.item.name)}
           name="name"
           label="Name"
-          value={this.props.adminAuthService && this.props.adminAuthService.name}
+          value={this.props.item && this.props.item.name}
           />
         <EditableInput
           elementType="select"
           disabled={this.props.disabled}
-          readOnly={!!(this.props.adminAuthService && this.props.adminAuthService.provider)}
+          readOnly={!!(this.props.item && this.props.item.provider)}
           name="provider"
           label="Provider"
           value={this.state.provider}
           ref="provider"
           onChange={this.handleProviderChange}
           >
-          { this.props.providers && this.props.providers.length > 0 && this.props.providers.map(provider =>
+          { this.props.data && this.props.data.providers && this.props.data.providers.length > 0 && this.props.data.providers.map(provider =>
               <option key={provider} value={provider}>{provider}</option>
             )
           }
@@ -65,7 +70,7 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
           disabled={this.props.disabled}
           name="url"
           label="Authentication URI"
-          value={this.props.adminAuthService && this.props.adminAuthService["url"] || "https://accounts.google.com/o/oauth2/auth" }
+          value={this.props.item && this.props.item["url"] || "https://accounts.google.com/o/oauth2/auth" }
           />
         <EditableInput
           elementType="input"
@@ -73,7 +78,7 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
           disabled={this.props.disabled}
           name="username"
           label="Client ID"
-          value={this.props.adminAuthService && this.props.adminAuthService["username"]}
+          value={this.props.item && this.props.item["username"]}
           />
         <EditableInput
           elementType="input"
@@ -81,7 +86,7 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
           disabled={this.props.disabled}
           name="password"
           label="Client Secret"
-          value={this.props.adminAuthService && this.props.adminAuthService["password"]}
+          value={this.props.item && this.props.item["password"]}
           />
         <div className="form-group">
           <label>Allowed Domains</label>
@@ -125,16 +130,19 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.adminAuthService && newProps.adminAuthService.provider) {
-      if (!this.props.adminAuthService || !this.props.adminAuthService.provider || (this.props.adminAuthService.provider !== newProps.adminAuthService.provider)) {
-        this.setState({ provider: newProps.adminAuthService.provider });
+    let provider = this.state.provider;
+    let domains = this.state.domains;
+    if (newProps.item && newProps.item.provider) {
+      if (!this.props.item || !this.props.item.provider || (this.props.item.provider !== newProps.item.provider)) {
+        provider =  newProps.item.provider;
       }
     }
-    if (newProps.adminAuthService && newProps.adminAuthService["domains"]) {
-     if (!this.props.adminAuthService || !this.props.adminAuthService["domains"] || (this.props.adminAuthService["domains"] !== newProps.adminAuthService["domains"])) {
-       this.setState({ domains: newProps.adminAuthService["domains"] });
+    if (newProps.item && newProps.item["domains"]) {
+     if (!this.props.item || !this.props.item["domains"] || (this.props.item["domains"] !== newProps.item["domains"])) {
+       domains =  newProps.item["domains"];
      }
     }
+    this.setState({ provider, domains });
   }
 
   save(event) {
@@ -142,9 +150,9 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
 
     const data = new (window as any).FormData(this.refs["form"] as any);
     data.append("domains", JSON.stringify(this.state.domains));
-    this.props.editAdminAuthService(data).then(() => {
+    this.props.editItem(data).then(() => {
       // If a new admin auth service was created, go to its edit page.
-      if (!this.props.adminAuthService && data.get("name")) {
+      if (!this.props.item && data.get("name")) {
         window.location.href = "/admin/web/config/adminAuth/edit/" + data.get("name");
       }
     });
@@ -152,17 +160,23 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
 
   handleProviderChange() {
     const provider = (this.refs["provider"] as any).getValue();
-    this.setState({ provider });
+    this.setState({ provider, domains: this.state.domains });
   }
 
   removeDomain(domain: string) {
-    this.setState({ domains: this.state.domains.filter(stateDomain => stateDomain !== domain) });
+    this.setState({
+      provider: this.state.provider,
+      domains: this.state.domains.filter(stateDomain => stateDomain !== domain)
+    });
   }
 
   addDomain() {
     const domain = (this.refs["addDomain"] as any).value;
     if (this.state.domains.indexOf(domain) === -1) {
-      this.setState({ domains: this.state.domains.concat([domain]) });
+      this.setState({
+        provider: this.state.provider,
+        domains: this.state.domains.concat([domain])
+      });
     }
   }
 }

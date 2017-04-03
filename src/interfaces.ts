@@ -144,6 +144,7 @@ export interface PathFor {
 export interface AdminAuthServiceData {
   name: string;
   provider: string;
+  domains: string[];
   [key: string]: string | string[];
 }
 
