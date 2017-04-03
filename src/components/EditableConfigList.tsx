@@ -51,7 +51,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
 
         { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] && this.props.data[this.listDataKey].length > 0 &&
           <div>
-            <h2>Edit {this.itemTypeName}s</h2>
+            <h2>Edit {this.itemTypeName} configurations</h2>
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
                   <li key={index}>

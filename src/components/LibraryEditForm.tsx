@@ -1,15 +1,20 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { LibraryData } from "../interfaces";
+import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {
-  library?: LibraryData;
+  data: LibrariesData;
+  item?: LibraryData;
   csrfToken: string;
   disabled: boolean;
-  editLibrary: (data: FormData) => Promise<any>;
+  editItem: (data: FormData) => Promise<void>;
 }
 
-export default class LibraryEditForm extends React.Component<LibraryEditFormProps, any> {
+export interface LibraryEditFormState {
+  useRandomSecret: boolean;
+}
+
+export default class LibraryEditForm extends React.Component<LibraryEditFormProps, LibraryEditFormState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +34,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         <input
           type="hidden"
           name="uuid"
-          value={this.props.library && this.props.library.uuid}
+          value={this.props.item && this.props.item.uuid}
           />
         <EditableInput
           elementType="input"
@@ -37,7 +42,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           disabled={this.props.disabled}
           name="name"
           label="Name"
-          value={this.props.library && this.props.library.name}
+          value={this.props.item && this.props.item.name}
           />
         <EditableInput
           elementType="input"
@@ -45,7 +50,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           disabled={this.props.disabled}
           name="short_name"
           label="Short name"
-          value={this.props.library && this.props.library.short_name}
+          value={this.props.item && this.props.item.short_name}
           />
         <EditableInput
           elementType="input"
@@ -53,9 +58,9 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           disabled={this.props.disabled}
           name="library_registry_short_name"
           label="Short name (for library registry)"
-          value={this.props.library && this.props.library.library_registry_short_name}
+          value={this.props.item && this.props.item.library_registry_short_name}
           />
-        { (!this.props.library || !this.props.library.library_registry_shared_secret) &&
+        { (!this.props.item || !this.props.item.library_registry_shared_secret) &&
           <EditableInput
             elementType="input"
             type="checkbox"
@@ -73,7 +78,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             disabled={this.props.disabled}
             name="library_registry_shared_secret"
             label="Shared secret (for library registry)"
-            value={this.props.library && this.props.library.library_registry_shared_secret}
+            value={this.props.item && this.props.item.library_registry_shared_secret}
             />
           }
         <button
@@ -90,7 +95,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     event.preventDefault();
 
     const data = new (window as any).FormData(this.refs["form"] as any);
-    this.props.editLibrary(data);
+    this.props.editItem(data);
   }
 
   handleRandomSecretChange() {

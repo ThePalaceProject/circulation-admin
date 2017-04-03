@@ -30,9 +30,10 @@ describe("LibraryEditForm", () => {
       editLibrary = stub();
       wrapper = shallow(
         <LibraryEditForm
+          data={{ libraries: [libraryData] }}
           csrfToken="token"
           disabled={false}
-          editLibrary={editLibrary}
+          editItem={editLibrary}
           />
       );
     });
@@ -46,7 +47,7 @@ describe("LibraryEditForm", () => {
       let input = wrapper.find("input[name=\"uuid\"]");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
       input = wrapper.find("input[name=\"uuid\"]");
       expect(input.props().value).to.equal("uuid");
     });
@@ -55,7 +56,7 @@ describe("LibraryEditForm", () => {
       let input = editableInputByName("name");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
       input = editableInputByName("name");
       expect(input.props().value).to.equal("name");
     });
@@ -64,7 +65,7 @@ describe("LibraryEditForm", () => {
       let input = editableInputByName("short_name");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
       input = editableInputByName("short_name");
       expect(input.props().value).to.equal("short_name");
     });
@@ -73,7 +74,7 @@ describe("LibraryEditForm", () => {
       let input = editableInputByName("library_registry_short_name");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
       input = editableInputByName("library_registry_short_name");
       expect(input.props().value).to.equal("registry name");
     });
@@ -84,7 +85,7 @@ describe("LibraryEditForm", () => {
       expect(input.props().type).to.equal("checkbox");
 
       // it's still there if there's a library but no shared secret
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
       input = editableInputByName("random_library_registry_shared_secret");
       expect(input.props().label).to.contain("random");
       expect(input.props().type).to.equal("checkbox");
@@ -93,7 +94,7 @@ describe("LibraryEditForm", () => {
       libraryData = Object.assign({}, libraryData, {
         library_registry_shared_secret: "secret"
       });
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
       input = editableInputByName("random_library_registry_shared_secret");
       expect(input.length).to.equal(0);
     });
@@ -102,7 +103,7 @@ describe("LibraryEditForm", () => {
       let input = editableInputByName("library_registry_shared_secret");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
       input = editableInputByName("library_registry_shared_secret");
       expect(input.props().value).to.equal("secret");
     });
@@ -113,9 +114,10 @@ describe("LibraryEditForm", () => {
       editLibrary = stub();
       wrapper = mount(
         <LibraryEditForm
+          data={{ libraries: [libraryData] }}
           csrfToken="token"
           disabled={false}
-          editLibrary={editLibrary}
+          editItem={editLibrary}
           />
       );
     });
@@ -135,7 +137,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("submits data", () => {
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ item: libraryData });
 
       let form = wrapper.find("form");
       form.simulate("submit");

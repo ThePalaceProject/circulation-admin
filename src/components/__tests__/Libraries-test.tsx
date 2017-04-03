@@ -11,29 +11,31 @@ import LibraryEditForm from "../LibraryEditForm";
 
 describe("Libraries", () => {
   let wrapper;
-  let fetchLibraries;
-  let editLibrary;
-  let librariesData = [{
-    uuid: "uuid",
-    name: "name",
-    short_name: "short_name",
-    library_registry_short_name: "registry name",
-    library_registry_shared_secret: "secret"
-  }];
+  let fetchData;
+  let editItem;
+  let data = {
+    libraries: [{
+      uuid: "uuid",
+      name: "name",
+      short_name: "short_name",
+      library_registry_short_name: "registry name",
+      library_registry_shared_secret: "secret"
+    }]
+  };
 
   const pause = () => {
     return new Promise<void>(resolve => setTimeout(resolve, 0));
   };
 
   beforeEach(() => {
-    fetchLibraries = stub();
-    editLibrary = stub().returns(new Promise<void>(resolve => resolve()));
+    fetchData = stub();
+    editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
       <Libraries
-        libraries={librariesData}
-        fetchLibraries={fetchLibraries}
-        editLibrary={editLibrary}
+        data={data}
+        fetchData={fetchData}
+        editItem={editItem}
         csrfToken="token"
         isFetching={false}
         />
@@ -77,7 +79,8 @@ describe("Libraries", () => {
     wrapper.setProps({ editOrCreate: "create" });
     form = wrapper.find(LibraryEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().library).to.be.undefined;
+    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().item).to.be.undefined;
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
@@ -86,22 +89,23 @@ describe("Libraries", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "uuid" });
     let form = wrapper.find(LibraryEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().library).to.equal(librariesData[0]);
+    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().item).to.equal(data.libraries[0]);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
   it("fetches libraries on mount and passes edit function to form", async () => {
-    expect(fetchLibraries.callCount).to.equal(1);
+    expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
     let form = wrapper.find(LibraryEditForm);
 
-    expect(editLibrary.callCount).to.equal(0);
-    form.props().editLibrary();
-    expect(editLibrary.callCount).to.equal(1);
+    expect(editItem.callCount).to.equal(0);
+    form.props().editItem();
+    expect(editItem.callCount).to.equal(1);
 
     await pause();
-    expect(fetchLibraries.callCount).to.equal(2);
+    expect(fetchData.callCount).to.equal(2);
   });
 });
