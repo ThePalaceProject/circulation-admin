@@ -4,23 +4,25 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { Libraries } from "../Libraries";
+import { AdminAuthServices } from "../AdminAuthServices";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import LibraryEditForm from "../LibraryEditForm";
+import AdminAuthServiceEditForm from "../AdminAuthServiceEditForm";
 
-describe("Libraries", () => {
+describe("AdminAuthServices", () => {
   let wrapper;
   let fetchData;
   let editItem;
   let data = {
-    libraries: [{
-      uuid: "uuid",
+    admin_auth_services: [{
       name: "name",
-      short_name: "short_name",
-      library_registry_short_name: "registry name",
-      library_registry_shared_secret: "secret"
-    }]
+      provider: "OAuth provider",
+      url: "test.com",
+      username: "user",
+      password: "pass",
+      domains: []
+    }],
+    providers: ["OAuth provider"]
   };
 
   const pause = () => {
@@ -32,7 +34,7 @@ describe("Libraries", () => {
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
-      <Libraries
+      <AdminAuthServices
         data={data}
         fetchData={fetchData}
         editItem={editItem}
@@ -59,25 +61,25 @@ describe("Libraries", () => {
     expect(loading.length).to.equal(1);
   });
 
-  it("shows library list", () => {
-    let library = wrapper.find("li");
-    expect(library.length).to.equal(1);
-    expect(library.text()).to.contain("name");
-    let editLink = library.find("a");
-    expect(editLink.props().href).to.equal("/admin/web/config/libraries/edit/uuid");
+  it("shows admin auth service list", () => {
+    let adminAuthService = wrapper.find("li");
+    expect(adminAuthService.length).to.equal(1);
+    expect(adminAuthService.text()).to.contain("name");
+    let editLink = adminAuthService.find("a");
+    expect(editLink.props().href).to.equal("/admin/web/config/adminAuth/edit/name");
   });
 
   it("shows create link", () => {
     let createLink = wrapper.find("div > a");
     expect(createLink.length).to.equal(1);
-    expect(createLink.props().href).to.equal("/admin/web/config/libraries/create");
+    expect(createLink.props().href).to.equal("/admin/web/config/adminAuth/create");
   });
 
   it("shows create form", () => {
-    let form = wrapper.find(LibraryEditForm);
+    let form = wrapper.find(AdminAuthServiceEditForm);
     expect(form.length).to.equal(0);
     wrapper.setProps({ editOrCreate: "create" });
-    form = wrapper.find(LibraryEditForm);
+    form = wrapper.find(AdminAuthServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.be.undefined;
@@ -86,20 +88,20 @@ describe("Libraries", () => {
   });
 
   it("shows edit form", () => {
-    wrapper.setProps({ editOrCreate: "edit", identifier: "uuid" });
-    let form = wrapper.find(LibraryEditForm);
+    wrapper.setProps({ editOrCreate: "edit", identifier: "name" });
+    let form = wrapper.find(AdminAuthServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
-    expect(form.props().item).to.equal(data.libraries[0]);
+    expect(form.props().item).to.equal(data.admin_auth_services[0]);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
-  it("fetches libraries on mount and passes edit function to form", async () => {
+  it("fetches admin auth services on mount and passes edit function to form", async () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(LibraryEditForm);
+    let form = wrapper.find(AdminAuthServiceEditForm);
 
     expect(editItem.callCount).to.equal(0);
     form.props().editItem();

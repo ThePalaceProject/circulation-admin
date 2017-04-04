@@ -8,6 +8,7 @@ import buildStore from "../../store";
 import ConfigTabContainer from "../ConfigTabContainer";
 import Libraries from "../Libraries";
 import Collections from "../Collections";
+import AdminAuthServices from "../AdminAuthServices";
 import { mockRouterContext } from "./routing";
 
 
@@ -33,11 +34,12 @@ describe("ConfigTabContainer", () => {
     );
   });
 
-  it("shows libraries and collections tabs", () => {
+  it("shows tabs", () => {
     let links = wrapper.find("ul.nav-tabs").find("a");
     let linkTexts = links.map(link => link.text());
     expect(linkTexts).to.contain("Libraries");
     expect(linkTexts).to.contain("Collections");
+    expect(linkTexts).to.contain("Admin Authentication");
   });
 
   it("shows Libraries", () => {
@@ -52,6 +54,13 @@ describe("ConfigTabContainer", () => {
     expect(collections.props().csrfToken).to.equal("token");
     expect(collections.props().editOrCreate).to.equal("edit");
     expect(collections.props().identifier).to.equal("identifier");
+  });
+
+  it("shows AdminAuthServices", () => {
+    let adminAuthServices = wrapper.find("AdminAuthServices");
+    expect(adminAuthServices.props().csrfToken).to.equal("token");
+    expect(adminAuthServices.props().editOrCreate).to.equal("edit");
+    expect(adminAuthServices.props().identifier).to.equal("identifier");
   });
 
   it("uses router to navigate when tab is clicked", () => {

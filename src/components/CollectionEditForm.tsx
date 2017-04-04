@@ -1,26 +1,25 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { CollectionData, LibraryData, ProtocolData } from "../interfaces";
+import { CollectionsData, CollectionData } from "../interfaces";
 
 export interface CollectionEditFormProps {
-  collection?: CollectionData;
+  data: CollectionsData;
+  item?: CollectionData;
   csrfToken: string;
   disabled: boolean;
-  protocols: ProtocolData[];
-  allLibraries: LibraryData[];
-  editCollection: (data: FormData) => Promise<any>;
+  editItem: (data: FormData) => Promise<void>;
 }
 
 export default class CollectionEditForm extends React.Component<CollectionEditFormProps, any> {
   constructor(props) {
     super(props);
     let defaultProtocol;
-    if (this.props.protocols && this.props.protocols.length) {
-       defaultProtocol = this.props.protocols[0].name;
+    if (this.props.data.protocols && this.props.data.protocols.length) {
+       defaultProtocol = this.props.data.protocols[0].name;
     }
     this.state = {
-      protocol: (this.props.collection && this.props.collection.protocol) || defaultProtocol,
-      libraries: (this.props.collection && this.props.collection.libraries) || []
+      protocol: (this.props.item && this.props.item.protocol) || defaultProtocol,
+      libraries: (this.props.item && this.props.item.libraries) || []
     };
     this.handleProtocolChange = this.handleProtocolChange.bind(this);
     this.addLibrary = this.addLibrary.bind(this);
@@ -41,27 +40,27 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
           elementType="input"
           type="text"
           disabled={this.props.disabled}
-          readOnly={!!(this.props.collection && this.props.collection.name)}
+          readOnly={!!(this.props.item && this.props.item.name)}
           name="name"
           label="Name"
-          value={this.props.collection && this.props.collection.name}
+          value={this.props.item && this.props.item.name}
           />
         <EditableInput
           elementType="select"
           disabled={this.props.disabled}
-          readOnly={!!(this.props.collection && this.props.collection.protocol)}
+          readOnly={!!(this.props.item && this.props.item.protocol)}
           name="protocol"
           label="Protocol"
           value={this.state.protocol}
           ref="protocol"
           onChange={this.handleProtocolChange}
           >
-          { this.props.protocols && this.props.protocols.length > 0 && this.props.protocols.map(protocol =>
+          { this.props.data.protocols && this.props.data.protocols.length > 0 && this.props.data.protocols.map(protocol =>
               <option key={protocol.name} value={protocol.name}>{protocol.name}</option>
             )
           }
         </EditableInput>
-        { this.props.protocols && this.protocolFields() && this.protocolFields().map(field =>
+        { this.props.data.protocols && this.protocolFields() && this.protocolFields().map(field =>
             <EditableInput
               key={field.key}
               elementType="input"
@@ -69,7 +68,7 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
               disabled={this.props.disabled}
               name={field.key}
               label={field.label}
-              value={this.props.collection && this.props.collection[field.key]}
+              value={this.props.item && this.props.item[field.key]}
               />
           )
         }
@@ -123,14 +122,14 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.collection && newProps.collection.protocol) {
-      if (!this.props.collection || !this.props.collection.protocol || (this.props.collection.protocol !== newProps.collection.protocol)) {
-        this.setState({ protocol: newProps.collection.protocol });
+    if (newProps.item && newProps.item.protocol) {
+      if (!this.props.item || !this.props.item.protocol || (this.props.item.protocol !== newProps.item.protocol)) {
+        this.setState({ protocol: newProps.item.protocol });
       }
     }
-    if (newProps.collection && newProps.collection.libraries) {
-      if (!this.props.collection || !this.props.collection.libraries || (this.props.collection.libraries !== newProps.collection.libraries)) {
-        this.setState({ libraries: newProps.collection.libraries });
+    if (newProps.item && newProps.item.libraries) {
+      if (!this.props.item || !this.props.item.libraries || (this.props.item.libraries !== newProps.item.libraries)) {
+        this.setState({ libraries: newProps.item.libraries });
       }
     }
   }
@@ -140,9 +139,9 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
 
     const data = new (window as any).FormData(this.refs["form"] as any);
     data.append("libraries", JSON.stringify(this.state.libraries));
-    this.props.editCollection(data).then(() => {
+    this.props.editItem(data).then(() => {
       // If a new collection was created, go to its edit page.
-      if (!this.props.collection && data.get("name")) {
+      if (!this.props.item && data.get("name")) {
         window.location.href = "/admin/web/config/collections/edit/" + data.get("name");
       }
     });
@@ -154,8 +153,8 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
   }
 
   protocolFields() {
-    if (this.state.protocol && this.props.protocols) {
-      for (const protocol of this.props.protocols) {
+    if (this.state.protocol && this.props.data.protocols) {
+      for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.fields;
         }
@@ -165,7 +164,7 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
   }
 
   availableLibraries(): string[] {
-    const names = (this.props.allLibraries || []).map(library => library.short_name);
+    const names = (this.props.data.allLibraries || []).map(library => library.short_name);
     return names.filter(name => this.state.libraries.indexOf(name) === -1);
   }
 
@@ -175,7 +174,7 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
 
   addLibrary() {
     const library = (this.refs["addLibrary"] as any).value;
-    if (this.state.libraries.indexOf(library !== -1)) {
+    if (this.state.libraries.indexOf(library) === -1) {
       this.setState({ libraries: this.state.libraries.concat([library]) });
     }
   }

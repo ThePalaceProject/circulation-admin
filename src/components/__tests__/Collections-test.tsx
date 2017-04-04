@@ -11,28 +11,33 @@ import CollectionEditForm from "../CollectionEditForm";
 
 describe("Collections", () => {
   let wrapper;
-  let fetchCollections;
-  let editCollection;
+  let fetchData;
+  let editItem;
   let collectionsData = [{
     name: "name",
     protocol: "OPDS Import",
     url: "test.com",
     libraries: [],
   }];
+  let data = {
+    collections: collectionsData,
+    protocols: [{ name: "OPDS Import", fields: [] }],
+    allLibraries: []
+  };
 
   const pause = () => {
     return new Promise<void>(resolve => setTimeout(resolve, 0));
   };
 
   beforeEach(() => {
-    fetchCollections = stub();
-    editCollection = stub().returns(new Promise<void>(resolve => resolve()));
+    fetchData = stub();
+    editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
       <Collections
-        collections={collectionsData}
-        fetchCollections={fetchCollections}
-        editCollection={editCollection}
+        data={data}
+        fetchData={fetchData}
+        editItem={editItem}
         csrfToken="token"
         isFetching={false}
         />
@@ -76,7 +81,8 @@ describe("Collections", () => {
     wrapper.setProps({ editOrCreate: "create" });
     form = wrapper.find(CollectionEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().collection).to.be.undefined;
+    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().item).to.be.undefined;
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
@@ -85,22 +91,23 @@ describe("Collections", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "name" });
     let form = wrapper.find(CollectionEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().collection).to.equal(collectionsData[0]);
+    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().item).to.equal(collectionsData[0]);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
   it("fetches collections on mount and passes edit function to form", async () => {
-    expect(fetchCollections.callCount).to.equal(1);
+    expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
     let form = wrapper.find(CollectionEditForm);
 
-    expect(editCollection.callCount).to.equal(0);
-    form.props().editCollection();
-    expect(editCollection.callCount).to.equal(1);
+    expect(editItem.callCount).to.equal(0);
+    form.props().editItem();
+    expect(editItem.callCount).to.equal(1);
 
     await pause();
-    expect(fetchCollections.callCount).to.equal(2);
+    expect(fetchData.callCount).to.equal(2);
   });
 });

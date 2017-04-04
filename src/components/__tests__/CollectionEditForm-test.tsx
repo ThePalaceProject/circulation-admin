@@ -36,6 +36,11 @@ describe("CollectionEditForm", () => {
     { "short_name": "nypl" },
     { "short_name": "bpl" }
   ];
+  let collectionsData = {
+    collections: [collectionData],
+    protocols: protocolsData,
+    allLibraries: allLibraries
+  };
 
   let editableInputByName = (name) => {
     let inputs = wrapper.find(EditableInput);
@@ -52,9 +57,8 @@ describe("CollectionEditForm", () => {
         <CollectionEditForm
           csrfToken="token"
           disabled={false}
-          protocols={protocolsData}
-          allLibraries={allLibraries}
-          editCollection={editCollection}
+          data={collectionsData}
+          editItem={editCollection}
           />
       );
     });
@@ -69,7 +73,7 @@ describe("CollectionEditForm", () => {
       expect(input.props().value).not.to.be.ok;
       expect(input.props().readOnly).to.equal(false);
 
-      wrapper.setProps({ collection: collectionData });
+      wrapper.setProps({ item: collectionData });
       input = editableInputByName("name");
       expect(input.props().value).to.equal("name");
       expect(input.props().readOnly).to.equal(true);
@@ -89,10 +93,9 @@ describe("CollectionEditForm", () => {
         <CollectionEditForm
           csrfToken="token"
           disabled={false}
-          protocols={protocolsData}
-          allLibraries={allLibraries}
-          editCollection={editCollection}
-          collection={collectionData}
+          data={collectionsData}
+          editItem={editCollection}
+          item={collectionData}
           />
       );
       input = editableInputByName("protocol");
@@ -115,10 +118,9 @@ describe("CollectionEditForm", () => {
         <CollectionEditForm
           csrfToken="token"
           disabled={false}
-          protocols={protocolsData}
-          allLibraries={allLibraries}
-          editCollection={editCollection}
-          collection={collectionData}
+          data={collectionsData}
+          editItem={editCollection}
+          item={collectionData}
           />
       );
 
@@ -142,10 +144,9 @@ describe("CollectionEditForm", () => {
         <CollectionEditForm
           csrfToken="token"
           disabled={false}
-          protocols={protocolsData}
-          allLibraries={allLibraries}
-          editCollection={editCollection}
-          collection={collectionData}
+          data={collectionsData}
+          editItem={editCollection}
+          item={collectionData}
           />
       );
       library = wrapper.find(".collection-library");
@@ -167,10 +168,9 @@ describe("CollectionEditForm", () => {
         <CollectionEditForm
           csrfToken="token"
           disabled={false}
-          protocols={protocolsData}
-          allLibraries={allLibraries}
-          editCollection={editCollection}
-          collection={collectionData}
+          data={collectionsData}
+          editItem={editCollection}
+          item={collectionData}
           />
       );
       select = wrapper.find("select[name='add-library']");
@@ -189,9 +189,8 @@ describe("CollectionEditForm", () => {
         <CollectionEditForm
           csrfToken="token"
           disabled={false}
-          protocols={protocolsData}
-          allLibraries={allLibraries}
-          editCollection={editCollection}
+          data={collectionsData}
+          editItem={editCollection}
           />
       );
     });
@@ -249,10 +248,9 @@ describe("CollectionEditForm", () => {
         <CollectionEditForm
           csrfToken="token"
           disabled={false}
-          protocols={protocolsData}
-          allLibraries={allLibraries}
-          editCollection={editCollection}
-          collection={collectionData}
+          data={collectionsData}
+          editItem={editCollection}
+          item={collectionData}
           />
       );
       let library = wrapper.find(".collection-library");
@@ -267,7 +265,7 @@ describe("CollectionEditForm", () => {
     });
 
     it("submits data", () => {
-      wrapper.setProps({ collection: collectionData });
+      wrapper.setProps({ item: collectionData });
 
       let form = wrapper.find("form");
       form.simulate("submit");

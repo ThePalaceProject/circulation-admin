@@ -4,24 +4,38 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { Libraries } from "../Libraries";
+import { EditableConfigList, EditFormProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import LibraryEditForm from "../LibraryEditForm";
 
-describe("Libraries", () => {
+describe("EditableConfigList", () => {
+  interface Thing {
+    name: string;
+  }
+
+  interface Things {
+    things: Thing[];
+  }
+
+  class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, void> {
+    render(): JSX.Element {
+      return <div>Test</div>;
+    }
+  }
+
+  class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
+    EditForm = ThingEditForm;
+    listDataKey = "things";
+    itemTypeName = "thing";
+    urlBase = "/admin/things/";
+    identifierKey = "name";
+  }
+
   let wrapper;
   let fetchData;
   let editItem;
-  let data = {
-    libraries: [{
-      uuid: "uuid",
-      name: "name",
-      short_name: "short_name",
-      library_registry_short_name: "registry name",
-      library_registry_shared_secret: "secret"
-    }]
-  };
+  let thingData = { name: "name" };
+  let thingsData = { things: [thingData] };
 
   const pause = () => {
     return new Promise<void>(resolve => setTimeout(resolve, 0));
@@ -32,8 +46,8 @@ describe("Libraries", () => {
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
-      <Libraries
-        data={data}
+      <ThingEditableConfigList
+        data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
         csrfToken="token"
@@ -59,47 +73,47 @@ describe("Libraries", () => {
     expect(loading.length).to.equal(1);
   });
 
-  it("shows library list", () => {
-    let library = wrapper.find("li");
-    expect(library.length).to.equal(1);
-    expect(library.text()).to.contain("name");
-    let editLink = library.find("a");
-    expect(editLink.props().href).to.equal("/admin/web/config/libraries/edit/uuid");
+  it("shows thing list", () => {
+    let thing = wrapper.find("li");
+    expect(thing.length).to.equal(1);
+    expect(thing.text()).to.contain("name");
+    let editLink = thing.find("a");
+    expect(editLink.props().href).to.equal("/admin/things/edit/name");
   });
 
   it("shows create link", () => {
     let createLink = wrapper.find("div > a");
     expect(createLink.length).to.equal(1);
-    expect(createLink.props().href).to.equal("/admin/web/config/libraries/create");
+    expect(createLink.props().href).to.equal("/admin/things/create");
   });
 
   it("shows create form", () => {
-    let form = wrapper.find(LibraryEditForm);
+    let form = wrapper.find(ThingEditForm);
     expect(form.length).to.equal(0);
     wrapper.setProps({ editOrCreate: "create" });
-    form = wrapper.find(LibraryEditForm);
+    form = wrapper.find(ThingEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().data).to.deep.equal(thingsData);
     expect(form.props().item).to.be.undefined;
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
   it("shows edit form", () => {
-    wrapper.setProps({ editOrCreate: "edit", identifier: "uuid" });
-    let form = wrapper.find(LibraryEditForm);
+    wrapper.setProps({ editOrCreate: "edit", identifier: "name" });
+    let form = wrapper.find(ThingEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().data).to.deep.equal(data);
-    expect(form.props().item).to.equal(data.libraries[0]);
+    expect(form.props().data).to.deep.equal(thingsData);
+    expect(form.props().item).to.equal(thingData);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
-  it("fetches libraries on mount and passes edit function to form", async () => {
+  it("fetches data on mount and passes edit function to form", async () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(LibraryEditForm);
+    let form = wrapper.find(ThingEditForm);
 
     expect(editItem.callCount).to.equal(0);
     form.props().editItem();

@@ -134,8 +134,21 @@ export interface ProtocolData {
 export interface CollectionsData {
   collections: CollectionData[];
   protocols: ProtocolData[];
+  allLibraries?: LibraryData[];
 }
 
 export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
+}
+
+export interface AdminAuthServiceData {
+  name: string;
+  provider: string;
+  domains: string[];
+  [key: string]: string | string[];
+}
+
+export interface AdminAuthServicesData {
+  admin_auth_services: AdminAuthServiceData[];
+  providers: string[];
 }
