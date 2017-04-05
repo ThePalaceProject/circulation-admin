@@ -1,5 +1,5 @@
 var breadcrumbSelector = "ol.breadcrumb";
-var loadingSelector = "h1.loading";
+var loadingSelector = ".loading";
 var nthBreadcrumbSelector = function(n) {
   return `ol.breadcrumb li:nth-child(${n})`
 };
@@ -42,6 +42,7 @@ module.exports = {
 
   "navigate to book in lane and back": function(browser) {
     var bookSelector = ".lane-books li:first-child a";
+    var bookLinkTitleSelector = bookSelector + " .title";
     var bookTitleSelector = ".book-details .title";
 
     browser
@@ -50,7 +51,7 @@ module.exports = {
         var catalogUrl = result.value;
         this.getAttribute(bookSelector, "href", function(result) {
           var bookUrl = result.value;
-          this.getText(bookSelector, function(result) {
+          this.getText(bookLinkTitleSelector, function(result) {
             var bookTitle = result.value;
             this
               .click(bookSelector)
@@ -110,59 +111,6 @@ module.exports = {
             .back()
             .waitForElementPresent(bookTitleSelector, 5000)
             .verify.urlEquals(bookUrl);
-        });
-      });
-  },
-
-  "navigate to book, press left and right keys": function(browser) {
-    var bookSelector = "li:first-child .lane-books li:first-child a";
-    var nextBookSelector = "li:first-child .lane-books li:nth-child(2) a";
-    var prevBookSelector = "li:last-child .lane-books li:nth-last-child(2) a"; // last child is "more" link
-    var bookTitleSelector = ".book-details .title";
-    var editTabSelector = "ul.nav-tabs li:nth-child(2) a";
-    var titleInputSelector = "input[name='title']";
-
-    browser
-      .goHome()
-      .getAttribute(bookSelector, "href", function(result) {
-        var bookUrl = result.value;
-        this.getAttribute(bookSelector, "title", function(result) {
-          var bookTitle = result.value;
-          this.getAttribute(nextBookSelector, "href", function(result) {
-            var nextBookUrl = result.value;
-            this.getAttribute(nextBookSelector, "title", function(result) {
-              var nextBookTitle = result.value;
-              this.getAttribute(prevBookSelector, "href", function(result) {
-                var prevBookUrl = result.value;
-                this.getAttribute(prevBookSelector, "title", function(result) {
-                  var prevBookTitle = result.value;
-                  this
-                    .click(bookSelector)
-                    .verify.noError()
-                    .verify.urlEquals(bookUrl)
-                    .verify.containsText(bookTitleSelector, bookTitle)
-                    .keys(browser.Keys.RIGHT_ARROW)
-                    .verify.urlEquals(nextBookUrl)
-                    .verify.containsText(bookTitleSelector, nextBookTitle)
-                    .click(editTabSelector)
-                    .waitForElementPresent(titleInputSelector, 5000)
-                    .waitForElementNotPresent(".fa-spinner", 5000)
-                    .verify.value(titleInputSelector, nextBookTitle)
-                    .keys(browser.Keys.LEFT_ARROW)
-                    .verify.urlEquals(bookUrl)
-                    .verify.containsText(bookTitleSelector, bookTitle)
-                    .keys(browser.Keys.LEFT_ARROW)
-                    .verify.urlEquals(prevBookUrl)
-                    .verify.containsText(bookTitleSelector, prevBookTitle)
-                    .click(editTabSelector)
-                    .waitForElementPresent(titleInputSelector, 5000)
-                    .waitForElementNotPresent(".fa-spinner", 5000)
-                    .pause(50)
-                    .verify.value(titleInputSelector, prevBookTitle)
-                });
-              });
-            });
-          });
         });
       });
   },
