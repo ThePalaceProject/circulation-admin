@@ -141,11 +141,19 @@ export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
 
+export interface AdminData {
+  email: string;
+  password?: string;
+}
+
 export interface AdminAuthServiceData {
   name: string;
   provider: string;
-  domains: string[];
-  [key: string]: string | string[];
+  url?: string;
+  username?: string;
+  password?: string;
+  domains?: string[];
+  admins?: AdminData[];
 }
 
 export interface AdminAuthServicesData {
