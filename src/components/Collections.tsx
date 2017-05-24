@@ -14,7 +14,9 @@ export class Collections extends EditableConfigList<CollectionsData, CollectionD
 
 function mapStateToProps(state, ownProps) {
   const data = Object.assign({}, state.editor.collections && state.editor.collections.data || {});
-  data.allLibraries = state.editor.collections.libraries;
+  if (state.editor.libraries && state.editor.libraries.data) {
+    data.allLibraries = state.editor.libraries.data.libraries;
+  }
   return {
     data: data,
     fetchError: state.editor.collections.fetchError,
