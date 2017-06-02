@@ -10,6 +10,7 @@ export class Collections extends EditableConfigList<CollectionsData, CollectionD
   itemTypeName = "collection";
   urlBase = "/admin/web/config/collections/";
   identifierKey = "name";
+  labelKey = "name";
 }
 
 function mapStateToProps(state, ownProps) {

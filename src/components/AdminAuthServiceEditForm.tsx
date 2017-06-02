@@ -1,6 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { AdminAuthServicesData, AdminAuthServiceData, AdminData } from "../interfaces";
+import { AdminAuthServicesData, AdminAuthServiceData } from "../interfaces";
 
 export interface AdminAuthServiceEditFormProps {
   data: AdminAuthServicesData;
@@ -13,7 +13,6 @@ export interface AdminAuthServiceEditFormProps {
 export interface AdminAuthServiceEditFormState {
   provider: string;
   domains: string[];
-  admins: AdminData[];
 }
 
 export interface AdminAuthServiceEditFormContext {
@@ -35,14 +34,11 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
     }
     this.state = {
       provider: (this.props.item && this.props.item.provider) || defaultProvider,
-      domains: (this.props.item && this.props.item["domains"]) || [],
-      admins: (this.props.item && this.props.item["admins"]) || [],
+      domains: (this.props.item && this.props.item["domains"]) || []
     };
     this.handleProviderChange = this.handleProviderChange.bind(this);
     this.addDomain = this.addDomain.bind(this);
     this.removeDomain = this.removeDomain.bind(this);
-    this.addAdmin = this.addAdmin.bind(this);
-    this.removeAdmin = this.removeAdmin.bind(this);
     this.save = this.save.bind(this);
   }
 
@@ -53,15 +49,6 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
           type="hidden"
           name="csrf_token"
           value={this.props.csrfToken}
-          />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          readOnly={!!(this.props.item && this.props.item.name)}
-          name="name"
-          label="Name"
-          value={this.props.item && this.props.item.name}
           />
         <EditableInput
           elementType="select"
@@ -138,53 +125,6 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
             </div>
           </div>
         }
-        { this.state.provider === "Local Password" &&
-          <div className="form-group">
-            <label>Admins</label>
-            { this.state.admins.map(admin =>
-                <div key={admin.email} className="admin-auth-service-admin">
-                  <span>{admin.email} </span>
-                  { admin.password &&
-                    <span>/ {admin.password} </span>
-                  }
-                  <i
-                    className="fa fa-times"
-                    aria-hidden="true"
-                    onClick={() => !this.props.disabled && this.removeAdmin(admin)}
-                    ></i>
-                  <a
-                    className="sr-only"
-                    onClick={() => !this.props.disabled && this.removeAdmin(admin)}
-                    >remove</a>
-                </div>
-              )
-            }
-            <div className="form-group add-admin-form">
-              <EditableInput
-                elementType="input"
-                type="text"
-                disabled={this.props.disabled}
-                name="email"
-                label="Admin email"
-                ref="addAdminEmail"
-                />
-              <EditableInput
-                elementType="input"
-                type="text"
-                disabled={this.props.disabled}
-                name="password"
-                label="Admin password"
-                ref="addAdminPassword"
-                />
-              <button
-                type="button"
-                className="btn btn-default add-admin"
-                disabled={this.props.disabled}
-                onClick={this.addAdmin}
-                >Add Admin</button>
-            </div>
-          </div>
-        }
         <button
           type="submit"
           className="btn btn-default"
@@ -197,7 +137,6 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
   componentWillReceiveProps(newProps) {
     let provider = this.state.provider;
     let domains = this.state.domains;
-    let admins = this.state.admins;
     if (newProps.item && newProps.item.provider) {
       if (!this.props.item || !this.props.item.provider || (this.props.item.provider !== newProps.item.provider)) {
         provider =  newProps.item.provider;
@@ -208,12 +147,7 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
        domains =  newProps.item["domains"];
      }
     }
-    if (newProps.item && newProps.item["admins"]) {
-      if (!this.props.item || !this.props.item["admins"] || (this.props.item["admins"] !== newProps.item["admins"])) {
-        admins = newProps.item["admins"];
-      }
-    }
-    this.setState({ provider, domains, admins });
+    this.setState({ provider, domains });
   }
 
   save(event) {
@@ -221,7 +155,6 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
 
     const data = new (window as any).FormData(this.refs["form"] as any);
     data.append("domains", JSON.stringify(this.state.domains));
-    data.append("admins", JSON.stringify(this.state.admins));
     this.props.editItem(data).then(() => {
       // If we're setting up admin auth for the first time, refresh the page
       // to go to login.
@@ -239,14 +172,13 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
 
   handleProviderChange() {
     const provider = (this.refs["provider"] as any).getValue();
-    this.setState({ provider, domains: this.state.domains, admins: this.state.admins });
+    this.setState({ provider, domains: this.state.domains });
   }
 
   removeDomain(domain: string) {
     this.setState({
       provider: this.state.provider,
-      domains: this.state.domains.filter(stateDomain => stateDomain !== domain),
-      admins: this.state.admins
+      domains: this.state.domains.filter(stateDomain => stateDomain !== domain)
     });
   }
 
@@ -255,29 +187,8 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
     if (this.state.domains.indexOf(domain) === -1) {
       this.setState({
         provider: this.state.provider,
-        domains: this.state.domains.concat([domain]),
-        admins: this.state.admins
+        domains: this.state.domains.concat([domain])
       });
     }
-  }
-
-  removeAdmin(admin: any) {
-    this.setState({
-      provider: this.state.provider,
-      domains: this.state.domains,
-      admins: this.state.admins.filter(stateAdmin => stateAdmin.email !== admin.email)
-    });
-  }
-
-  addAdmin() {
-    const adminEmail = (this.refs["addAdminEmail"] as any).getValue();
-    const adminPassword = (this.refs["addAdminPassword"] as any).getValue();
-    const newAdmins = this.state.admins;
-    newAdmins.push({ email: adminEmail, password: adminPassword });
-    this.setState({
-      provider: this.state.provider,
-      domains: this.state.domains,
-      admins: newAdmins
-    });
   }
 }

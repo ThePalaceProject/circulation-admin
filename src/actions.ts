@@ -2,7 +2,7 @@ import {
   BookData, ComplaintsData, GenreTree, ClassificationData,
   CirculationEventData, StatsData,
   LibrariesData, CollectionsData,
-  AdminAuthServicesData
+  AdminAuthServicesData, IndividualAdminsData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -25,6 +25,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_COLLECTION = "EDIT_COLLECTION";
   static readonly ADMIN_AUTH_SERVICES = "ADMIN_AUTH_SERVICES";
   static readonly EDIT_ADMIN_AUTH_SERVICE = "EDIT_ADMIN_AUTH_SERVICE";
+  static readonly INDIVIDUAL_ADMINS = "INDIVIDUAL_ADMINS";
+  static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -97,6 +99,15 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_ADMIN_AUTH_SERVICE_REQUEST = "EDIT_ADMIN_AUTH_SERVICE_REQUEST";
   static readonly EDIT_ADMIN_AUTH_SERVICE_SUCCESS = "EDIT_ADMIN_AUTH_SERVICE_SUCCESS";
   static readonly EDIT_ADMIN_AUTH_SERVICE_FAILURE = "EDIT_ADMIN_AUTH_SERVICE_FAILURE";
+
+  static readonly INDIVIDUAL_ADMINS_REQUEST = "INDIVIDUAL_ADMINS_REQUEST";
+  static readonly INDIVIDUAL_ADMINS_SUCCESS = "INDIVIDUAL_ADMINS_SUCCESS";
+  static readonly INDIVIDUAL_ADMINS_FAILURE = "INDIVIDUAL_ADMINS_FAILURE";
+  static readonly INDIVIDUAL_ADMINS_LOAD = "INDIVIDUAL_ADMINS_LOAD";
+
+  static readonly EDIT_INDIVIDUAL_ADMIN_REQUEST = "EDIT_INDIVIDUAL_ADMIN_REQUEST";
+  static readonly EDIT_INDIVIDUAL_ADMIN_SUCCESS = "EDIT_INDIVIDUAL_ADMIN_SUCCESS";
+  static readonly EDIT_INDIVIDUAL_ADMIN_FAILURE = "EDIT_INDIVIDUAL_ADMIN_FAILURE";
 
   constructor(fetcher?: DataFetcher) {
     fetcher = fetcher || new DataFetcher();
@@ -269,5 +280,15 @@ export default class ActionCreator extends BaseActionCreator {
   editAdminAuthService(data: FormData) {
     const url = "/admin/admin_auth_services";
     return this.postForm(ActionCreator.EDIT_ADMIN_AUTH_SERVICE, url, data).bind(this);
+  }
+
+  fetchIndividualAdmins() {
+    const url = "/admin/individual_admins";
+    return this.fetchJSON<IndividualAdminsData>(ActionCreator.INDIVIDUAL_ADMINS, url).bind(this);
+  }
+
+  editIndividualAdmin(data: FormData) {
+    const url = "/admin/individual_admins";
+    return this.postForm(ActionCreator.EDIT_INDIVIDUAL_ADMIN, url, data).bind(this);
   }
 }

@@ -10,6 +10,7 @@ export class Libraries extends EditableConfigList<LibrariesData, LibraryData> {
   itemTypeName = "library";
   urlBase = "/admin/web/config/libraries/";
   identifierKey = "uuid";
+  labelKey = "name";
 }
 
 function mapStateToProps(state, ownProps) {

@@ -31,6 +31,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
   abstract itemTypeName: string;
   abstract urlBase: string;
   abstract identifierKey: string;
+  abstract labelKey: string;
 
   constructor(props) {
     super(props);
@@ -39,7 +40,6 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
 
   render(): JSX.Element {
     let EditForm = this.EditForm;
-
     return (
       <div>
         { this.props.fetchError &&
@@ -55,7 +55,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
                   <li key={index}>
-                    <h3>{item.name}</h3>
+                    <h3>{item[this.labelKey]}</h3>
                     <a href={this.urlBase + "edit/" + item[this.identifierKey]}>Edit {this.itemTypeName}</a>
                   </li>
                 )

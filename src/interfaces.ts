@@ -141,22 +141,24 @@ export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
 
-export interface AdminData {
-  email: string;
-  password?: string;
-}
-
 export interface AdminAuthServiceData {
-  name: string;
   provider: string;
   url?: string;
   username?: string;
   password?: string;
   domains?: string[];
-  admins?: AdminData[];
 }
 
 export interface AdminAuthServicesData {
   admin_auth_services: AdminAuthServiceData[];
   providers: string[];
+}
+
+export interface IndividualAdminData {
+  email: string;
+  password?: string;
+}
+
+export interface IndividualAdminsData {
+  individualAdmins?: IndividualAdminData[];
 }
