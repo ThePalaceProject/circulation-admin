@@ -15,7 +15,6 @@ describe("AdminAuthServices", () => {
   let editItem;
   let data = {
     admin_auth_services: [{
-      name: "name",
       provider: "OAuth provider",
       url: "test.com",
       username: "user",
@@ -64,9 +63,9 @@ describe("AdminAuthServices", () => {
   it("shows admin auth service list", () => {
     let adminAuthService = wrapper.find("li");
     expect(adminAuthService.length).to.equal(1);
-    expect(adminAuthService.text()).to.contain("name");
+    expect(adminAuthService.text()).to.contain("OAuth provider");
     let editLink = adminAuthService.find("a");
-    expect(editLink.props().href).to.equal("/admin/web/config/adminAuth/edit/name");
+    expect(editLink.props().href).to.equal("/admin/web/config/adminAuth/edit/OAuth provider");
   });
 
   it("shows create link", () => {
@@ -88,7 +87,7 @@ describe("AdminAuthServices", () => {
   });
 
   it("shows edit form", () => {
-    wrapper.setProps({ editOrCreate: "edit", identifier: "name" });
+    wrapper.setProps({ editOrCreate: "edit", identifier: "OAuth provider" });
     let form = wrapper.find(AdminAuthServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);

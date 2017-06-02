@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import AdminAuthServices from "./AdminAuthServices";
+import IndividualAdmins from "./IndividualAdmins";
 import { State } from "../reducers/index";
 
 export interface SetupContext {
@@ -18,11 +19,18 @@ export default class Setup extends React.Component<void, void> {
 
   render(): JSX.Element {
     return (
-      <AdminAuthServices
-        store={this.context.editorStore}
-        csrfToken={this.context.csrfToken}
-        editOrCreate="create"
-        />
+      <div>
+        <AdminAuthServices
+          store={this.context.editorStore}
+          csrfToken={this.context.csrfToken}
+          editOrCreate="create"
+          />
+        <IndividualAdmins
+          store={this.context.editorStore}
+          csrfToken={this.context.csrfToken}
+          editOrCreate="create"
+          />
+      </div>
     );
   }
 }

@@ -7,6 +7,7 @@ import { shallow } from "enzyme";
 import buildStore from "../../store";
 import Setup from "../Setup";
 import AdminAuthServices from "../AdminAuthServices";
+import IndividualAdmins from "../IndividualAdmins";
 
 describe("Setup", () => {
   let wrapper;
@@ -32,6 +33,15 @@ describe("Setup", () => {
     expect(adminAuthServices.props().store).to.equal(store);
     expect(adminAuthServices.props().csrfToken).to.equal("token");
     expect(adminAuthServices.props().editOrCreate).to.equal("create");
-    expect(adminAuthServices.props().adminAuthService).to.be.undefined;
+    expect(adminAuthServices.props().identifier).to.be.undefined;
+  });
+
+  it("shows individual admins create form", () => {
+    let individualAdmins = wrapper.find(IndividualAdmins);
+    expect(individualAdmins).to.be.ok;
+    expect(individualAdmins.props().store).to.equal(store);
+    expect(individualAdmins.props().csrfToken).to.equal("token");
+    expect(individualAdmins.props().editOrCreate).to.equal("create");
+    expect(individualAdmins.props().identifier).to.be.undefined;
   });
 });

@@ -549,4 +549,50 @@ describe("actions", () => {
       expect(fetchMock.args[0][1].body).to.equal(formData);
     });
   });
+
+  describe("fetchIndividualAdmins", () => {
+    it("dispatches request, load, and success", async () => {
+      const dispatch = stub();
+      const individualAdminsData = "individualAdmins";
+      fetcher.testData = {
+        ok: true,
+        status: 200,
+        json: () => new Promise<any>((resolve, reject) => {
+          resolve(individualAdminsData);
+        })
+      };
+      fetcher.resolve = true;
+
+      const data = await actions.fetchIndividualAdmins()(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(ActionCreator.INDIVIDUAL_ADMINS_REQUEST);
+      expect(dispatch.args[1][0].type).to.equal(ActionCreator.INDIVIDUAL_ADMINS_SUCCESS);
+      expect(dispatch.args[2][0].type).to.equal(ActionCreator.INDIVIDUAL_ADMINS_LOAD);
+      expect(data).to.deep.equal(individualAdminsData);
+    });
+  });
+
+  describe("editIndividualAdmin", () => {
+    it("dispatches request and success", async () => {
+      const editIndividualAdminUrl = "/admin/individual_admins";
+      const dispatch = stub();
+      const formData = new (window as any).FormData();
+      formData.append("csrf_token", "token");
+      formData.append("email", "email");
+
+      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        update({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      await actions.editIndividualAdmin(formData)(dispatch);
+      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_INDIVIDUAL_ADMIN_REQUEST);
+      expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_INDIVIDUAL_ADMIN_SUCCESS);
+      expect(fetchMock.callCount).to.equal(1);
+      expect(fetchMock.args[0][0]).to.equal(editIndividualAdminUrl);
+      expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(fetchMock.args[0][1].body).to.equal(formData);
+    });
+  });
 });

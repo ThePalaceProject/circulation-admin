@@ -7,6 +7,7 @@ import stats, { StatsState } from "./stats";
 import libraries, { LibrariesState } from "./libraries";
 import collections, { CollectionsState } from "./collections";
 import adminAuthServices, { AdminAuthServicesState } from "./adminAuthServices";
+import individualAdmins, { IndividualAdminsState } from "./individualAdmins";
 
 export interface State {
   book: BookState;
@@ -17,6 +18,7 @@ export interface State {
   libraries: LibrariesState;
   collections: CollectionsState;
   adminAuthServices: AdminAuthServicesState;
+  individualAdmins: IndividualAdminsState;
 }
 
 export default combineReducers<State>({
@@ -27,5 +29,6 @@ export default combineReducers<State>({
   stats,
   libraries,
   collections,
-  adminAuthServices
+  adminAuthServices,
+  individualAdmins
 });

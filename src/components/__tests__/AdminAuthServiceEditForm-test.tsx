@@ -11,19 +11,13 @@ describe("AdminAuthServiceEditForm", () => {
   let wrapper;
   let editAdminAuthService;
   let oauthServiceData = {
-    name: "google",
     provider: "Google OAuth",
     url: "url",
     username: "user",
     password: "pass",
     domains: ["nypl.org"]
   };
-  let passwordServiceData = {
-    name: "password",
-    provider: "Local Password",
-    admins: [{ email: "admin@nypl.org" }]
-  };
-  let providersData = ["Google OAuth", "Local Password"];
+  let providersData = ["Google OAuth", "Other Provider"];
   let data;
 
   let editableInputByName = (name) => {
@@ -37,7 +31,7 @@ describe("AdminAuthServiceEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       data = {
-        admin_auth_services: [oauthServiceData, passwordServiceData],
+        admin_auth_services: [oauthServiceData],
         providers: providersData
       };
       editAdminAuthService = stub();
@@ -56,17 +50,6 @@ describe("AdminAuthServiceEditForm", () => {
       expect(input.props().value).to.equal("token");
     });
 
-    it("renders name", () => {
-      let input = editableInputByName("name");
-      expect(input.props().value).not.to.be.ok;
-      expect(input.props().readOnly).to.equal(false);
-
-      wrapper.setProps({ item: oauthServiceData });
-      input = editableInputByName("name");
-      expect(input.props().value).to.equal("google");
-      expect(input.props().readOnly).to.equal(true);
-    });
-
     it("renders provider", () => {
       let input = editableInputByName("provider");
       // starts with first provider in list
@@ -75,7 +58,7 @@ describe("AdminAuthServiceEditForm", () => {
       let children = input.find("option");
       expect(children.length).to.equal(2);
       expect(children.at(0).text()).to.contain("Google OAuth");
-      expect(children.at(1).text()).to.contain("Local Password");
+      expect(children.at(1).text()).to.contain("Other Provider");
 
       wrapper = shallow(
         <AdminAuthServiceEditForm
@@ -160,53 +143,6 @@ describe("AdminAuthServiceEditForm", () => {
         expect(input.props().label).to.equal("Add an allowed domain");
       });
     });
-
-    describe("with password auth provider", () => {
-      beforeEach(() => {
-        data = {
-          admin_auth_services: [passwordServiceData],
-          providers: ["Local Password"]
-        };
-        wrapper = shallow(
-          <AdminAuthServiceEditForm
-            data={data}
-            csrfToken="token"
-            disabled={false}
-            editItem={editAdminAuthService}
-            />
-        );
-      });
-
-      it("renders admin emails", () => {
-        let admin = wrapper.find(".admin-auth-service-admin");
-        expect(admin.length).to.equal(0);
-
-        wrapper = shallow(
-          <AdminAuthServiceEditForm
-            data={data}
-            csrfToken="token"
-            disabled={false}
-            editItem={editAdminAuthService}
-            item={passwordServiceData}
-            />
-        );
-        admin = wrapper.find(".admin-auth-service-admin");
-        expect(admin.length).to.equal(1);
-        expect(admin.text()).to.contain("admin@nypl.org");
-        expect(admin.text()).to.contain("remove");
-      });
-
-      it("renders admin add inputs", () => {
-        let emailInput = editableInputByName("email");
-        expect(emailInput.props().label).to.equal("Admin email");
-
-        let passwordInput = editableInputByName("password");
-        expect(passwordInput.props().label).to.equal("Admin password");
-
-        let button = wrapper.find("button.add-admin");
-        expect(button.text()).to.equal("Add Admin");
-      });
-    });
   });
 
   describe("behavior", () => {
@@ -277,100 +213,11 @@ describe("AdminAuthServiceEditForm", () => {
         expect(editAdminAuthService.callCount).to.equal(1);
         let formData = editAdminAuthService.args[0][0];
         expect(formData.get("csrf_token")).to.equal("token");
-        expect(formData.get("name")).to.equal("google");
         expect(formData.get("provider")).to.equal("Google OAuth");
         expect(formData.get("url")).to.equal("url");
         expect(formData.get("username")).to.equal("user");
         expect(formData.get("password")).to.equal("pass");
         expect(formData.get("domains")).to.equal(JSON.stringify(["nypl.org"]));
-      });
-
-      it("goes to admin auth service edit page after creating a new admin auth service", () => {
-        let input = wrapper.find("input[name='name']");
-        let inputElement = input.get(0);
-        inputElement.value = "newName";
-        input.simulate("change");
-
-        let form = wrapper.find("form");
-        form.simulate("submit");
-
-        expect(editAdminAuthService.callCount).to.equal(1);
-        let formData = editAdminAuthService.args[0][0];
-        expect(formData.get("csrf_token")).to.equal("token");
-        expect(formData.get("name")).to.equal("newName");
-      });
-    });
-
-    describe("with password auth provider", () => {
-      beforeEach(() => {
-        data = {
-          admin_auth_services: [passwordServiceData],
-          providers: ["Local Password"]
-        };
-        wrapper = mount(
-          <AdminAuthServiceEditForm
-            data={data}
-            csrfToken="token"
-            disabled={false}
-            editItem={editAdminAuthService}
-            />
-        );
-      });
-
-      it("adds an admin", () => {
-        let admin = wrapper.find(".admin-auth-service-admin");
-        expect(admin.length).to.equal(0);
-
-        let emailInput = editableInputByName("email");
-        let emailInputElement = emailInput.find("input").get(0);
-        emailInputElement.value = "admin1@nypl.org";
-
-        let passwordInput = editableInputByName("password");
-        let passwordInputElement = passwordInput.find("input").get(0);
-        passwordInputElement.value = "password";
-
-        let addButton = wrapper.find("button.add-admin");
-        addButton.simulate("click");
-
-        admin = wrapper.find(".admin-auth-service-admin");
-        expect(admin.length).to.equal(1);
-        expect(admin.text()).to.contain("admin1@nypl.org");
-        expect(admin.text()).to.contain("password");
-      });
-
-      it("removes an admin", () => {
-        wrapper = shallow(
-          <AdminAuthServiceEditForm
-            data={data}
-            csrfToken="token"
-            disabled={false}
-            editItem={editAdminAuthService}
-            item={passwordServiceData}
-            />
-        );
-        let admin = wrapper.find(".admin-auth-service-admin");
-        expect(admin.length).to.equal(1);
-        expect(admin.text()).to.contain("admin@nypl.org");
-
-        let removeButton = admin.find("i");
-        removeButton.simulate("click");
-
-        admin = wrapper.find(".admin-auth-service-admin");
-        expect(admin.length).to.equal(0);
-      });
-
-      it("submits data", () => {
-        wrapper.setProps({ item: passwordServiceData });
-
-        let form = wrapper.find("form");
-        form.simulate("submit");
-
-        expect(editAdminAuthService.callCount).to.equal(1);
-        let formData = editAdminAuthService.args[0][0];
-        expect(formData.get("csrf_token")).to.equal("token");
-        expect(formData.get("name")).to.equal("password");
-        expect(formData.get("provider")).to.equal("Local Password");
-        expect(formData.get("admins")).to.equal(JSON.stringify([{ email: "admin@nypl.org" }]));
       });
     });
   });
