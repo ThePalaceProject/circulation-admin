@@ -108,10 +108,19 @@ export interface LibraryData {
   short_name?: string;
   library_registry_short_name?: string;
   library_registry_shared_secret?: string;
+  settings?: {
+    [key: string]: string;
+  };
+}
+
+export interface LibrarySettingField {
+  key: string;
+  label: string;
 }
 
 export interface LibrariesData {
   libraries: LibraryData[];
+  settings?: LibrarySettingField[];
 }
 
 export interface CollectionData {

@@ -14,8 +14,16 @@ describe("LibraryEditForm", () => {
     uuid: "uuid",
     name: "name",
     short_name: "short_name",
-    library_registry_short_name: "registry name"
+    library_registry_short_name: "registry name",
+    settings: {
+      "privacy-policy": "http://privacy",
+      "copyright": "http://copyright"
+    }
   };
+  let settingFields = [
+    { key: "privacy-policy", label: "Privacy Policy" },
+    { key: "copyright", label: "Copyright" }
+  ];
 
   let editableInputByName = (name) => {
     let inputs = wrapper.find(EditableInput);
@@ -30,7 +38,7 @@ describe("LibraryEditForm", () => {
       editLibrary = stub();
       wrapper = shallow(
         <LibraryEditForm
-          data={{ libraries: [libraryData] }}
+          data={{ libraries: [libraryData], settings: settingFields }}
           csrfToken="token"
           disabled={false}
           editItem={editLibrary}
@@ -107,6 +115,21 @@ describe("LibraryEditForm", () => {
       input = editableInputByName("library_registry_shared_secret");
       expect(input.props().value).to.equal("secret");
     });
+
+    it("renders settings", () => {
+      let privacyInput = editableInputByName("privacy-policy");
+      expect(privacyInput.props().label).to.equal("Privacy Policy");
+      expect(privacyInput.props().value).not.to.be.ok;
+      let copyrightInput = editableInputByName("copyright");
+      expect(copyrightInput.props().label).to.equal("Copyright");
+      expect(copyrightInput.props().value).not.to.be.ok;
+
+      wrapper.setProps({ item: libraryData });
+      privacyInput = editableInputByName("privacy-policy");
+      expect(privacyInput.props().value).to.equal("http://privacy");
+      copyrightInput = editableInputByName("copyright");
+      expect(copyrightInput.props().value).to.equal("http://copyright");
+    });
   });
 
   describe("behavior", () => {
@@ -114,7 +137,7 @@ describe("LibraryEditForm", () => {
       editLibrary = stub();
       wrapper = mount(
         <LibraryEditForm
-          data={{ libraries: [libraryData] }}
+          data={{ libraries: [libraryData], settings: settingFields }}
           csrfToken="token"
           disabled={false}
           editItem={editLibrary}
@@ -149,6 +172,8 @@ describe("LibraryEditForm", () => {
       expect(formData.get("name")).to.equal("name");
       expect(formData.get("short_name")).to.equal("short_name");
       expect(formData.get("library_registry_short_name")).to.equal("registry name");
+      expect(formData.get("privacy-policy")).to.equal("http://privacy");
+      expect(formData.get("copyright")).to.equal("http://copyright");
     });
   });
 });
