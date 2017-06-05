@@ -81,7 +81,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             value={this.props.item && this.props.item.library_registry_shared_secret}
             />
         }
-        { this.props.data.settings && this.props.data.settings.map(setting =>
+        { this.props.data && this.props.data.settings && this.props.data.settings.map(setting =>
           <EditableInput
             elementType="input"
             type="text"
