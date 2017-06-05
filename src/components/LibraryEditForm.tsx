@@ -80,7 +80,18 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             label="Shared secret (for library registry)"
             value={this.props.item && this.props.item.library_registry_shared_secret}
             />
-          }
+        }
+        { this.props.data.settings && this.props.data.settings.map(setting =>
+          <EditableInput
+            elementType="input"
+            type="text"
+            disabled={this.props.disabled}
+            name={setting.key}
+            label={setting.label}
+            value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+            />
+          )
+        }
         <button
           className="btn btn-default"
           disabled={this.props.disabled}
