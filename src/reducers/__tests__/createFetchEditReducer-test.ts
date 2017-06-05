@@ -1,19 +1,19 @@
 import { expect } from "chai";
 
-import reducer, { LibrariesState } from "../libraries";
-import { LibrariesData } from "../../interfaces";
-import ActionCreator from "../../actions";
+import createFetchEditReducer, { FetchEditState } from "../createFetchEditReducer";
 
-describe("libraries reducer", () => {
-  let librariesData: LibrariesData = {
-    libraries: [{
-      uuid: "1234",
-      name: "abcd",
-      short_name: "abcd"
-    }]
+describe("fetch-edit reducer", () => {
+  interface TestData {
+    s: string;
+    n: number;
+  }
+
+  let testData: TestData = {
+    s: "test",
+    n: 5
   };
 
-  let initState: LibrariesState = {
+  let initState: FetchEditState<TestData> = {
     data: null,
     isFetching: false,
     isEditing: false,
@@ -21,7 +21,7 @@ describe("libraries reducer", () => {
     isLoaded: false
   };
 
-  let errorState: LibrariesState = {
+  let errorState: FetchEditState<TestData> = {
     data: null,
     isFetching: false,
     isEditing: false,
@@ -29,12 +29,14 @@ describe("libraries reducer", () => {
     isLoaded: true
   };
 
+  let reducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT");
+
   it("returns initial state for unrecognized action", () => {
     expect(reducer(undefined, {})).to.deep.equal(initState);
   });
 
-  it("handles LIBRARIES_REQUEST", () => {
-    let action = { type: ActionCreator.LIBRARIES_REQUEST, url: "test_url" };
+  it("handles fetch request", () => {
+    let action = { type: "TEST_FETCH_REQUEST", url: "test_url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -50,8 +52,8 @@ describe("libraries reducer", () => {
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles LIBRARIES_FAILURE", () => {
-    let action = { type: ActionCreator.LIBRARIES_FAILURE, error: "test error" };
+  it("handles fetch failure", () => {
+    let action = { type: "TEST_FETCH_FAILURE", error: "test error" };
     let oldState = Object.assign({}, initState, { isFetching: true });
     let newState = Object.assign({}, oldState, {
       fetchError: "test error",
@@ -61,18 +63,18 @@ describe("libraries reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles LIBRARIES_LOAD", () => {
-    let action = { type: ActionCreator.LIBRARIES_LOAD, data: librariesData };
+  it("handles load", () => {
+    let action = { type: "TEST_FETCH_LOAD", data: testData };
     let newState = Object.assign({}, initState, {
-      data: librariesData,
+      data: testData,
       isFetching: false,
       isLoaded: true
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
   });
 
-  it("handles EDIT_LIBRARY_REQUEST", () => {
-    let action = { type: ActionCreator.EDIT_LIBRARY_REQUEST, url: "test url" };
+  it("handles edit request", () => {
+    let action = { type: "TEST_EDIT_REQUEST", url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
@@ -88,8 +90,8 @@ describe("libraries reducer", () => {
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
-  it("handles EDIT_LIBRARY_FAILURE", () => {
-    let action = { type: ActionCreator.EDIT_LIBRARY_FAILURE, error: "test error" };
+  it("handles edit failure", () => {
+    let action = { type: "TEST_EDIT_FAILURE", error: "test error" };
     let oldState = Object.assign({}, initState, {
       isEditing: true
     });
@@ -100,8 +102,8 @@ describe("libraries reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles EDIT_LIBRARY_SUCCESS", () => {
-    let action = { type: ActionCreator.EDIT_LIBRARY_SUCCESS };
+  it("handles edit success", () => {
+    let action = { type: "TEST_EDIT_SUCCESS" };
     let oldState = Object.assign({}, initState, {
       isEditing: true
     });
