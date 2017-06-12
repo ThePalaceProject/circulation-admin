@@ -427,9 +427,9 @@ describe("actions", () => {
 
       const data = await actions.fetchLibraries()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.LIBRARIES_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.LIBRARIES_SUCCESS);
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.LIBRARIES_LOAD);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.LIBRARIES}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.LIBRARIES}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.LIBRARIES}_${ActionCreator.LOAD}`);
       expect(data).to.deep.equal(librariesData);
     });
   });
@@ -449,8 +449,8 @@ describe("actions", () => {
 
       await actions.editLibrary(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_LIBRARY_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_LIBRARY_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.SUCCESS}`);
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(editLibraryUrl);
       expect(fetchMock.args[0][1].method).to.equal("POST");
@@ -473,9 +473,9 @@ describe("actions", () => {
 
       const data = await actions.fetchCollections()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.COLLECTIONS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.COLLECTIONS_SUCCESS);
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.COLLECTIONS_LOAD);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.COLLECTIONS}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.COLLECTIONS}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.COLLECTIONS}_${ActionCreator.LOAD}`);
       expect(data).to.deep.equal(collectionsData);
     });
   });
@@ -495,8 +495,8 @@ describe("actions", () => {
 
       await actions.editCollection(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_COLLECTION_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_COLLECTION_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.SUCCESS}`);
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(editCollectionUrl);
       expect(fetchMock.args[0][1].method).to.equal("POST");
@@ -519,9 +519,9 @@ describe("actions", () => {
 
       const data = await actions.fetchAdminAuthServices()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.ADMIN_AUTH_SERVICES_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.ADMIN_AUTH_SERVICES_SUCCESS);
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.ADMIN_AUTH_SERVICES_LOAD);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.LOAD}`);
       expect(data).to.deep.equal(adminAuthServicesData);
     });
   });
@@ -541,8 +541,8 @@ describe("actions", () => {
 
       await actions.editAdminAuthService(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_ADMIN_AUTH_SERVICE_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_ADMIN_AUTH_SERVICE_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.SUCCESS}`);
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(editAdminAuthServiceUrl);
       expect(fetchMock.args[0][1].method).to.equal("POST");
@@ -565,9 +565,9 @@ describe("actions", () => {
 
       const data = await actions.fetchIndividualAdmins()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.INDIVIDUAL_ADMINS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.INDIVIDUAL_ADMINS_SUCCESS);
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.INDIVIDUAL_ADMINS_LOAD);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.LOAD}`);
       expect(data).to.deep.equal(individualAdminsData);
     });
   });
@@ -587,8 +587,8 @@ describe("actions", () => {
 
       await actions.editIndividualAdmin(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_INDIVIDUAL_ADMIN_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_INDIVIDUAL_ADMIN_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.SUCCESS}`);
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(editIndividualAdminUrl);
       expect(fetchMock.args[0][1].method).to.equal("POST");

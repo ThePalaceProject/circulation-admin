@@ -4,10 +4,13 @@ import complaints, { ComplaintsState } from "./complaints";
 import classifications, { ClassificationsState } from "./classifications";
 import circulationEvents, { CirculationEventsState } from "./circulationEvents";
 import stats, { StatsState } from "./stats";
-import libraries, { LibrariesState } from "./libraries";
-import collections, { CollectionsState } from "./collections";
-import adminAuthServices, { AdminAuthServicesState } from "./adminAuthServices";
-import individualAdmins, { IndividualAdminsState } from "./individualAdmins";
+import libraries from "./libraries";
+import collections from "./collections";
+import adminAuthServices from "./adminAuthServices";
+import individualAdmins from "./individualAdmins";
+import { FetchEditState } from "./createFetchEditReducer";
+import { LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData } from "../interfaces";
+
 
 export interface State {
   book: BookState;
@@ -15,10 +18,10 @@ export interface State {
   classifications: ClassificationsState;
   circulationEvents: CirculationEventsState;
   stats: StatsState;
-  libraries: LibrariesState;
-  collections: CollectionsState;
-  adminAuthServices: AdminAuthServicesState;
-  individualAdmins: IndividualAdminsState;
+  libraries: FetchEditState<LibrariesData>;
+  collections: FetchEditState<CollectionsData>;
+  adminAuthServices: FetchEditState<AdminAuthServicesData>;
+  individualAdmins: FetchEditState<IndividualAdminsData>;
 }
 
 export default combineReducers<State>({
