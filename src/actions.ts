@@ -2,7 +2,8 @@ import {
   BookData, ComplaintsData, GenreTree, ClassificationData,
   CirculationEventData, StatsData,
   LibrariesData, CollectionsData,
-  AdminAuthServicesData, IndividualAdminsData
+  AdminAuthServicesData, IndividualAdminsData,
+  PatronAuthServicesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -27,6 +28,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_ADMIN_AUTH_SERVICE = "EDIT_ADMIN_AUTH_SERVICE";
   static readonly INDIVIDUAL_ADMINS = "INDIVIDUAL_ADMINS";
   static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
+  static readonly PATRON_AUTH_SERVICES = "PATRON_AUTH_SERVICES";
+  static readonly EDIT_PATRON_AUTH_SERVICE = "EDIT_PATRON_AUTH_SERVICE";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -254,5 +257,15 @@ export default class ActionCreator extends BaseActionCreator {
   editIndividualAdmin(data: FormData) {
     const url = "/admin/individual_admins";
     return this.postForm(ActionCreator.EDIT_INDIVIDUAL_ADMIN, url, data).bind(this);
+  }
+
+  fetchPatronAuthServices() {
+    const url = "/admin/patron_auth_services";
+    return this.fetchJSON<PatronAuthServicesData>(ActionCreator.PATRON_AUTH_SERVICES, url).bind(this);
+  }
+
+  editPatronAuthService(data: FormData) {
+    const url = "/admin/patron_auth_services";
+    return this.postForm(ActionCreator.EDIT_PATRON_AUTH_SERVICE, url, data).bind(this);
   }
 }

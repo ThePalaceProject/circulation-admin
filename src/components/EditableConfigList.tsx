@@ -36,6 +36,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
   constructor(props) {
     super(props);
     this.editItem = this.editItem.bind(this);
+    this.label = this.label.bind(this);
   }
 
   render(): JSX.Element {
@@ -55,7 +56,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
                   <li key={index}>
-                    <h3>{item[this.labelKey]}</h3>
+                    <h3>{this.label(item)}</h3>
                     <a href={this.urlBase + "edit/" + item[this.identifierKey]}>Edit {this.itemTypeName}</a>
                   </li>
                 )
@@ -96,6 +97,10 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
     );
   }
 
+  label(item): string {
+    return item[this.labelKey];
+  }
+
   componentWillMount() {
     if (this.props.fetchData) {
       this.props.fetchData();
@@ -110,7 +115,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
   itemToEdit(): U | null {
     if (this.props.editOrCreate === "edit" && this.props.data && this.props.data[this.listDataKey]) {
       for (const item of this.props.data[this.listDataKey]) {
-        if (item[this.identifierKey] === this.props.identifier) {
+        if (String(item[this.identifierKey]) === this.props.identifier) {
           return item;
         }
       }

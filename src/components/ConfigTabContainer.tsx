@@ -3,6 +3,7 @@ import Libraries from "./Libraries";
 import Collections from "./Collections";
 import AdminAuthServices from "./AdminAuthServices";
 import IndividualAdmins from "./IndividualAdmins";
+import PatronAuthServices from "./PatronAuthServices";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -44,6 +45,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
+      ),
+      patronAuth: (
+        <PatronAuthServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
       )
     };
   }
@@ -60,6 +69,8 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       return "Admin Authentication";
     } else if (name === "individualAdmins") {
       return "Individual Admins";
+    } else if (name === "patronAuth") {
+      return "Patron Authentication";
     } else {
       return super.tabDisplayName(name);
     }

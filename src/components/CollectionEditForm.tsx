@@ -56,11 +56,11 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
           onChange={this.handleProtocolChange}
           >
           { this.props.data.protocols && this.props.data.protocols.length > 0 && this.props.data.protocols.map(protocol =>
-              <option key={protocol.name} value={protocol.name}>{protocol.name}</option>
+              <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
             )
           }
         </EditableInput>
-        { this.props.data.protocols && this.protocolFields() && this.protocolFields().map(field =>
+        { this.props.data && this.props.data.protocols && this.protocolFields() && this.protocolFields().map(field =>
             <EditableInput
               key={field.key}
               elementType="input"

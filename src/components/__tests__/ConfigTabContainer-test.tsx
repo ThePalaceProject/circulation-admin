@@ -10,6 +10,7 @@ import Libraries from "../Libraries";
 import Collections from "../Collections";
 import AdminAuthServices from "../AdminAuthServices";
 import IndividualAdmins from "../IndividualAdmins";
+import PatronAuthServices from "../PatronAuthServices";
 import { mockRouterContext } from "./routing";
 
 
@@ -70,6 +71,13 @@ describe("ConfigTabContainer", () => {
     expect(individualAdmins.props().csrfToken).to.equal("token");
     expect(individualAdmins.props().editOrCreate).to.equal("edit");
     expect(individualAdmins.props().identifier).to.equal("identifier");
+  });
+
+  it("shows PatronAuthServices", () => {
+    let patronAuthServices = wrapper.find(PatronAuthServices);
+    expect(patronAuthServices.props().csrfToken).to.equal("token");
+    expect(patronAuthServices.props().editOrCreate).to.equal("edit");
+    expect(patronAuthServices.props().identifier).to.equal("identifier");
   });
 
   it("uses router to navigate when tab is clicked", () => {

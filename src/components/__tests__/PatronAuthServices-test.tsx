@@ -4,44 +4,36 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { EditableConfigList, EditFormProps } from "../EditableConfigList";
+import { PatronAuthServices } from "../PatronAuthServices";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import PatronAuthServiceEditForm from "../PatronAuthServiceEditForm";
 
-describe("EditableConfigList", () => {
-  interface Thing {
-    id: number;
-    label: string;
-  }
-
-  interface Things {
-    things: Thing[];
-  }
-
-  class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, void> {
-    render(): JSX.Element {
-      return <div>Test</div>;
-    }
-  }
-
-  class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
-    EditForm = ThingEditForm;
-    listDataKey = "things";
-    itemTypeName = "thing";
-    urlBase = "/admin/things/";
-    identifierKey = "id";
-    labelKey = "label";
-
-    label(item): string {
-      return "test " + super.label(item);
-    }
-  }
-
+describe("PatronAuthServices", () => {
   let wrapper;
   let fetchData;
   let editItem;
-  let thingData = { id: 5, label: "label" };
-  let thingsData = { things: [thingData] };
+  let data = {
+    patron_auth_services: [{
+      id: 2,
+      protocol: "test protocol",
+      settings: {
+        "test_setting": "test setting"
+      },
+      libraries: [{
+        short_name: "nypl",
+        test_library_setting: "test library setting"
+      }]
+    }],
+    protocols: [{
+      name: "test protocol",
+      label: "test protocol label",
+      fields: []
+    }],
+    allLibraries: [{
+      short_name: "nypl"
+    }]
+  };
 
   const pause = () => {
     return new Promise<void>(resolve => setTimeout(resolve, 0));
@@ -52,8 +44,8 @@ describe("EditableConfigList", () => {
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
-      <ThingEditableConfigList
-        data={thingsData}
+      <PatronAuthServices
+        data={data}
         fetchData={fetchData}
         editItem={editItem}
         csrfToken="token"
@@ -79,47 +71,47 @@ describe("EditableConfigList", () => {
     expect(loading.length).to.equal(1);
   });
 
-  it("shows thing list", () => {
-    let thing = wrapper.find("li");
-    expect(thing.length).to.equal(1);
-    expect(thing.text()).to.contain("test label");
-    let editLink = thing.find("a");
-    expect(editLink.props().href).to.equal("/admin/things/edit/5");
+  it("shows patron auth service list", () => {
+    let patronAuthService = wrapper.find("li");
+    expect(patronAuthService.length).to.equal(1);
+    expect(patronAuthService.text()).to.contain("test protocol label");
+    let editLink = patronAuthService.find("a");
+    expect(editLink.props().href).to.equal("/admin/web/config/patronAuth/edit/2");
   });
 
   it("shows create link", () => {
     let createLink = wrapper.find("div > a");
     expect(createLink.length).to.equal(1);
-    expect(createLink.props().href).to.equal("/admin/things/create");
+    expect(createLink.props().href).to.equal("/admin/web/config/patronAuth/create");
   });
 
   it("shows create form", () => {
-    let form = wrapper.find(ThingEditForm);
+    let form = wrapper.find(PatronAuthServiceEditForm);
     expect(form.length).to.equal(0);
     wrapper.setProps({ editOrCreate: "create" });
-    form = wrapper.find(ThingEditForm);
+    form = wrapper.find(PatronAuthServiceEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().data).to.deep.equal(thingsData);
+    expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.be.undefined;
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
   it("shows edit form", () => {
-    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
-    let form = wrapper.find(ThingEditForm);
+    wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
+    let form = wrapper.find(PatronAuthServiceEditForm);
     expect(form.length).to.equal(1);
-    expect(form.props().data).to.deep.equal(thingsData);
-    expect(form.props().item).to.equal(thingData);
+    expect(form.props().data).to.deep.equal(data);
+    expect(form.props().item).to.equal(data.patron_auth_services[0]);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
   });
 
-  it("fetches data on mount and passes edit function to form", async () => {
+  it("fetches patron auth services on mount and passes edit function to form", async () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(ThingEditForm);
+    let form = wrapper.find(PatronAuthServiceEditForm);
 
     expect(editItem.callCount).to.equal(0);
     form.props().editItem();
