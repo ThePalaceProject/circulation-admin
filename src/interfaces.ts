@@ -133,11 +133,17 @@ export interface CollectionData {
 export interface ProtocolField {
   key: string;
   label: string;
+  optional?: boolean;
+  type?: string;
+  options?: ProtocolField[];
 }
 
 export interface ProtocolData {
   name: string;
+  label?: string;
+  description?: string;
   fields: ProtocolField[];
+  library_fields?: ProtocolField[];
 }
 
 export interface CollectionsData {
@@ -170,4 +176,24 @@ export interface IndividualAdminData {
 
 export interface IndividualAdminsData {
   individualAdmins?: IndividualAdminData[];
+}
+
+export interface PatronAuthServiceLibrary {
+  short_name: string;
+  [key: string]: string;
+}
+
+export interface PatronAuthServiceData {
+  id: string | number;
+  protocol: string;
+  settings?: {
+    [key: string]: string;
+  };
+  libraries?: PatronAuthServiceLibrary[];
+}
+
+export interface PatronAuthServicesData {
+  patron_auth_services: PatronAuthServiceData[];
+  protocols: ProtocolData[];
+  allLibraries?: LibraryData[];
 }

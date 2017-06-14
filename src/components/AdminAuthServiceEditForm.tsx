@@ -164,8 +164,8 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
       }
 
       // If a new admin auth service was created, go to its edit page.
-      if (!this.props.item && data.get("name")) {
-        window.location.href = "/admin/web/config/adminAuth/edit/" + data.get("name");
+      if (!this.props.item && data.get("provider")) {
+        window.location.href = "/admin/web/config/adminAuth/edit/" + data.get("provider");
       }
     });
   }
