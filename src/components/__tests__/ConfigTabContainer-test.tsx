@@ -11,6 +11,7 @@ import Collections from "../Collections";
 import AdminAuthServices from "../AdminAuthServices";
 import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
+import SitewideSettings from "../SitewideSettings";
 import { mockRouterContext } from "./routing";
 
 
@@ -45,39 +46,14 @@ describe("ConfigTabContainer", () => {
     expect(linkTexts).to.contain("Individual Admins");
   });
 
-  it("shows Libraries", () => {
-    let libraries = wrapper.find(Libraries);
-    expect(libraries.props().csrfToken).to.equal("token");
-    expect(libraries.props().editOrCreate).to.equal("edit");
-    expect(libraries.props().identifier).to.equal("identifier");
-  });
-
-  it("shows Collections", () => {
-    let collections = wrapper.find(Collections);
-    expect(collections.props().csrfToken).to.equal("token");
-    expect(collections.props().editOrCreate).to.equal("edit");
-    expect(collections.props().identifier).to.equal("identifier");
-  });
-
-  it("shows AdminAuthServices", () => {
-    let adminAuthServices = wrapper.find(AdminAuthServices);
-    expect(adminAuthServices.props().csrfToken).to.equal("token");
-    expect(adminAuthServices.props().editOrCreate).to.equal("edit");
-    expect(adminAuthServices.props().identifier).to.equal("identifier");
-  });
-
-  it("shows IndividualAdmins", () => {
-    let individualAdmins = wrapper.find(IndividualAdmins);
-    expect(individualAdmins.props().csrfToken).to.equal("token");
-    expect(individualAdmins.props().editOrCreate).to.equal("edit");
-    expect(individualAdmins.props().identifier).to.equal("identifier");
-  });
-
-  it("shows PatronAuthServices", () => {
-    let patronAuthServices = wrapper.find(PatronAuthServices);
-    expect(patronAuthServices.props().csrfToken).to.equal("token");
-    expect(patronAuthServices.props().editOrCreate).to.equal("edit");
-    expect(patronAuthServices.props().identifier).to.equal("identifier");
+  it("shows components", () => {
+    const componentClasses = [Libraries, Collections, AdminAuthServices, IndividualAdmins, PatronAuthServices, SitewideSettings];
+    for (const componentClass of componentClasses) {
+      const component = wrapper.find(componentClass);
+      expect(component.props().csrfToken).to.equal("token");
+      expect(component.props().editOrCreate).to.equal("edit");
+      expect(component.props().identifier).to.equal("identifier");
+    }
   });
 
   it("uses router to navigate when tab is clicked", () => {

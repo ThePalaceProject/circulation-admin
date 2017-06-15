@@ -197,3 +197,13 @@ export interface PatronAuthServicesData {
   protocols: ProtocolData[];
   allLibraries?: LibraryData[];
 }
+
+export interface SitewideSettingData {
+  key: string;
+  value: string;
+}
+
+export interface SitewideSettingsData {
+  settings: SitewideSettingData[];
+  fields: ProtocolField[];
+}

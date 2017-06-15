@@ -9,8 +9,12 @@ import collections from "./collections";
 import adminAuthServices from "./adminAuthServices";
 import individualAdmins from "./individualAdmins";
 import patronAuthServices from "./patronAuthServices";
+import sitewideSettings from "./sitewideSettings";
 import { FetchEditState } from "./createFetchEditReducer";
-import { LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData, PatronAuthServicesData } from "../interfaces";
+import {
+  LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
+  PatronAuthServicesData, SitewideSettingsData
+} from "../interfaces";
 
 
 export interface State {
@@ -24,6 +28,7 @@ export interface State {
   adminAuthServices: FetchEditState<AdminAuthServicesData>;
   individualAdmins: FetchEditState<IndividualAdminsData>;
   patronAuthServices: FetchEditState<PatronAuthServicesData>;
+  sitewideSettings: FetchEditState<SitewideSettingsData>;
 }
 
 export default combineReducers<State>({
@@ -36,5 +41,6 @@ export default combineReducers<State>({
   collections,
   adminAuthServices,
   individualAdmins,
-  patronAuthServices
+  patronAuthServices,
+  sitewideSettings
 });
