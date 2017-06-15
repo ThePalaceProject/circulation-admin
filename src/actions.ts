@@ -3,7 +3,7 @@ import {
   CirculationEventData, StatsData,
   LibrariesData, CollectionsData,
   AdminAuthServicesData, IndividualAdminsData,
-  PatronAuthServicesData
+  PatronAuthServicesData, SitewideSettingsData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -30,6 +30,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
   static readonly PATRON_AUTH_SERVICES = "PATRON_AUTH_SERVICES";
   static readonly EDIT_PATRON_AUTH_SERVICE = "EDIT_PATRON_AUTH_SERVICE";
+  static readonly SITEWIDE_SETTINGS = "SITEWIDE_SETTINGS";
+  static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -267,5 +269,15 @@ export default class ActionCreator extends BaseActionCreator {
   editPatronAuthService(data: FormData) {
     const url = "/admin/patron_auth_services";
     return this.postForm(ActionCreator.EDIT_PATRON_AUTH_SERVICE, url, data).bind(this);
+  }
+
+  fetchSitewideSettings() {
+    const url = "/admin/sitewide_settings";
+    return this.fetchJSON<SitewideSettingsData>(ActionCreator.SITEWIDE_SETTINGS, url).bind(this);
+  }
+
+  editSitewideSetting(data: FormData) {
+    const url = "/admin/sitewide_settings";
+    return this.postForm(ActionCreator.EDIT_SITEWIDE_SETTING, url, data).bind(this);
   }
 }
