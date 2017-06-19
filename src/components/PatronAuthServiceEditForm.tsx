@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import ProtocolFormField from "./ProtocolFormField";
 import { PatronAuthServiceLibrary, PatronAuthServicesData, PatronAuthServiceData, ProtocolData } from "../interfaces";
 
 export interface PatronAuthServiceEditFormProps {
@@ -66,33 +67,11 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
           <p>{ this.protocolDescription() }</p>
         }
         { this.props.data && this.props.data.protocols && this.protocolFields() && this.protocolFields().map(field =>
-            <div key={field.key}>
-              { field.type === "text" || field.type === undefined &&
-                <EditableInput
-                  elementType="input"
-                  type="text"
-                  disabled={this.props.disabled}
-                  name={field.key}
-                  label={field.label + (field.optional ? " (optional)" : "")}
-                  value={this.props.item && this.props.item.settings && this.props.item.settings[field.key]}
-                  />
-              }
-              { field.type === "select" &&
-                <EditableInput
-                  elementType="select"
-                  disabled={this.props.disabled}
-                  readOnly={!!(this.props.item && this.props.item[field.key])}
-                  name={field.key}
-                  label={field.label + (field.optional ? " (optional)" : "")}
-                  value={this.props.item && this.props.item.settings && this.props.item.settings[field.key]}
-                  >
-                  { field.options && field.options.map(option =>
-                      <option key={option.key} value={option.key}>{option.label}</option>
-                    )
-                  }
-                </EditableInput>
-              }
-            </div>
+            <ProtocolFormField
+              field={field}
+              disabled={this.props.disabled}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[field.key]}
+              />
           )
         }
         <div class="form-group">
@@ -127,33 +106,11 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
               }
             </select>
            { this.props.data && this.props.data.protocols && this.protocolLibraryFields() && this.protocolLibraryFields().map(field =>
-                <div key={field.key}>
-                  { field.type === "text" || field.type === undefined &&
-                    <EditableInput
-                      elementType="input"
-                      type="text"
-                      disabled={this.props.disabled}
-                      name={field.key}
-                      label={field.label + (field.optional ? " (optional)" : "")}
-                      ref={field.key}
-                      />
-                  }
-                  { field.type === "select" &&
-                    <EditableInput
-                      elementType="select"
-                      disabled={this.props.disabled}
-                      readOnly={!!(this.props.item && this.props.item[field.key])}
-                      name={field.key}
-                      label={field.label + (field.optional ? " (optional)" : "")}
-                      ref={field.key}
-                      >
-                      { field.options && field.options.map(option =>
-                          <option key={option.key} value={option.key}>{option.label}</option>
-                        )
-                      }
-                    </EditableInput>
-                  }
-                </div>
+                <ProtocolFormField
+                  field={field}
+                  disabled={this.props.disabled}
+                  ref={field.key}
+                  />
               )
             }
             <button
