@@ -109,7 +109,7 @@ export interface LibraryData {
   library_registry_short_name?: string;
   library_registry_shared_secret?: string;
   settings?: {
-    [key: string]: string;
+    [key: string]: string | string[];
   };
 }
 

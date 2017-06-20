@@ -5,7 +5,7 @@ import { ProtocolField } from "../interfaces";
 export interface ProtocolFormFieldProps {
   field: ProtocolField;
   disabled: boolean;
-  value?: string;
+  value?: string | string[];
 }
 
 export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, void> {
@@ -38,6 +38,23 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             )
           }
         </EditableInput>
+      );
+    } else if (field.type === "list") {
+      return (
+        <div>
+          <h3>{field.label}</h3>
+          { field.options && field.options.map(option =>
+              <EditableInput
+                elementType="input"
+                type="checkbox"
+                disabled={this.props.disabled}
+                name={`${field.key}_${option.key}`}
+                label={option.label}
+                checked={this.props.value && (this.props.value.indexOf(option.key) !== -1)}
+                />
+            )
+          }
+        </div>
       );
     }
   }

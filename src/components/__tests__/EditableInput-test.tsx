@@ -17,6 +17,7 @@ describe("EditableInput", () => {
         label="label"
         name="name"
         disabled={false}
+        checked={true}
         value="initial value">
         <option>option</option>
       </EditableInput>
@@ -32,6 +33,7 @@ describe("EditableInput", () => {
     expect(wrapper.state().value).to.equal("initial value");
     let input = wrapper.find("input");
     expect(input.prop("value")).to.equal("initial value");
+    expect(input.prop("checked")).to.equal(true);
   });
 
   it("shows children from props", () => {
@@ -40,10 +42,12 @@ describe("EditableInput", () => {
   });
 
   it("updates state and value when props change", () => {
-    wrapper.setProps({ value: "new value" });
+    wrapper.setProps({ value: "new value", checked: false });
     expect(wrapper.state().value).to.equal("new value");
+    expect(wrapper.state().checked).to.equal(false);
     let input = wrapper.find("input");
     expect(input.prop("value")).to.equal("new value");
+    expect(input.prop("checked")).to.equal(false);
   });
 
   it("updates value in state when input changes", () => {
@@ -62,6 +66,23 @@ describe("EditableInput", () => {
     inputElement.value = "new value";
     input.simulate("change");
     expect(wrapper.state().value).to.equal("new value");
+
+    // This also works with a checkbox.
+    wrapper = mount(
+      <EditableInput
+        elementType="input"
+        type="checkbox"
+        label="label"
+        name="name"
+        disabled={false}
+        checked={true}
+        />
+    );
+    input = wrapper.find("input");
+    inputElement = input.get(0) as any;
+    inputElement.checked = false;
+    input.simulate("change");
+    expect(wrapper.state().checked).to.equal(false);
   });
 
   it("disables", () => {
@@ -114,7 +135,9 @@ describe("EditableInput", () => {
 
     (wrapper.instance() as EditableInput).clear();
     expect(wrapper.state("value")).to.equal("");
+    expect(wrapper.state("checked")).to.equal(false);
     let inputElement = wrapper.find("input").get(0) as any;
     expect(inputElement.value).to.equal("");
+    expect(inputElement.checked).to.equal(false);
   });
 });

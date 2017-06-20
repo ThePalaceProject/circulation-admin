@@ -82,4 +82,49 @@ describe("ProtocolFormField", () => {
     expect(children.at(1).prop("value")).to.equal("option2");
     expect(children.at(1).text()).to.contain("option 2");
   });
+
+  it("renders list field", () => {
+    const field = {
+      key: "field",
+      label: "label",
+      type: "list",
+      options: [
+        { key: "option1", label: "option 1" },
+        { key: "option2", label: "option 2" },
+        { key: "option3", label: "option 3" }
+      ]
+    };
+    const wrapper = shallow(
+      <ProtocolFormField
+        field={field}
+        disabled={false}
+        />
+    );
+
+    expect(wrapper.find("div").text()).to.contain("label");
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(3);
+
+    expect(input.at(0).prop("name")).to.equal("field_option1");
+    expect(input.at(1).prop("name")).to.equal("field_option2");
+    expect(input.at(2).prop("name")).to.equal("field_option3");
+
+    expect(input.at(0).prop("label")).to.equal("option 1");
+    expect(input.at(1).prop("label")).to.equal("option 2");
+    expect(input.at(2).prop("label")).to.equal("option 3");
+
+    expect(input.at(0).prop("checked")).not.to.be.ok;
+    expect(input.at(1).prop("checked")).not.to.be.ok;
+    expect(input.at(2).prop("checked")).not.to.be.ok;
+
+    wrapper.setProps({ value: ["option1", "option3"] });
+
+    input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(3);
+
+    expect(input.at(0).prop("checked")).to.be.ok;
+    expect(input.at(1).prop("checked")).not.to.be.ok;
+    expect(input.at(2).prop("checked")).to.be.ok;
+  });
 });
