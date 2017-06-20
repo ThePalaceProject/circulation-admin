@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import PatronAuthServiceEditForm from "../PatronAuthServiceEditForm";
 import EditableInput from "../EditableInput";
+import ProtocolFormField from "../ProtocolFormField";
 
 describe("PatronAuthServiceEditForm", () => {
   let wrapper;
@@ -52,7 +53,8 @@ describe("PatronAuthServiceEditForm", () => {
       fields: [
         { key: "text_setting", label: "text label" },
         { key: "protocol2_setting", label: "protocol2 label" },
-      ]
+      ],
+      library_fields: []
     }
   ];
   let allLibraries = [
@@ -69,6 +71,14 @@ describe("PatronAuthServiceEditForm", () => {
     let inputs = wrapper.find(EditableInput);
     if (inputs.length >= 1) {
       return inputs.filterWhere(input => input.props().name === name);
+    }
+    return [];
+  };
+
+  let protocolFormFieldByKey = (key) => {
+    let formFields = wrapper.find(ProtocolFormField);
+    if (formFields.length >= 1) {
+      return formFields.filterWhere(formField => formField.props().field.key === key);
     }
     return [];
   };
@@ -129,23 +139,15 @@ describe("PatronAuthServiceEditForm", () => {
     });
 
     it("renders protocol fields", () => {
-      let input = editableInputByName("text_setting");
+      let input = protocolFormFieldByKey("text_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().label).to.equal("text label (optional)");
-      expect(input.props().type).to.equal("text");
+      expect(input.props().field).to.equal(protocolsData[0].fields[0]);
 
-      input = editableInputByName("select_setting");
+      input = protocolFormFieldByKey("select_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().label).to.equal("select label");
-      expect(input.props().elementType).to.equal("select");
-      let children = input.find("option");
-      expect(children.length).to.equal(2);
-      expect(children.at(0).props().value).to.equal("option1");
-      expect(children.at(0).text()).to.contain("option 1");
-      expect(children.at(1).props().value).to.equal("option2");
-      expect(children.at(1).text()).to.contain("option 2");
+      expect(input.props().field).to.equal(protocolsData[0].fields[1]);
 
-      input = editableInputByName("protocol2_setting");
+      input = protocolFormFieldByKey("protocol2_setting");
       expect(input.length).to.equal(0);
 
       wrapper = shallow(
@@ -158,14 +160,14 @@ describe("PatronAuthServiceEditForm", () => {
           />
       );
 
-      input = editableInputByName("text_setting");
+      input = protocolFormFieldByKey("text_setting");
       expect(input.props().value).to.equal("text setting");
-      expect(input.props().label).to.equal("text label (optional)");
+      expect(input.props().field).to.equal(protocolsData[0].fields[0]);
 
-      input = editableInputByName("select_setting");
+      input = protocolFormFieldByKey("select_setting");
       expect(input.props().value).to.equal("option2");
 
-      input = editableInputByName("protocol2_setting");
+      input = protocolFormFieldByKey("protocol2_setting");
       expect(input.length).to.equal(0);
     });
 
@@ -197,21 +199,13 @@ describe("PatronAuthServiceEditForm", () => {
       expect(options.at(0).props().value).to.equal("nypl");
       expect(options.at(1).props().value).to.equal("bpl");
 
-      let input = editableInputByName("library_text_setting");
+      let input = protocolFormFieldByKey("library_text_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().label).to.equal("library text label (optional)");
-      expect(input.props().type).to.equal("text");
+      expect(input.props().field).to.equal(protocolsData[0].library_fields[0]);
 
-      input = editableInputByName("library_select_setting");
+      input = protocolFormFieldByKey("library_select_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().label).to.equal("library select label");
-      expect(input.props().elementType).to.equal("select");
-      let children = input.find("option");
-      expect(children.length).to.equal(2);
-      expect(children.at(0).props().value).to.equal("option3");
-      expect(children.at(0).text()).to.contain("option 3");
-      expect(children.at(1).props().value).to.equal("option4");
-      expect(children.at(1).text()).to.contain("option 4");
+      expect(input.props().field).to.equal(protocolsData[0].library_fields[1]);
 
       wrapper = shallow(
         <PatronAuthServiceEditForm
@@ -229,21 +223,13 @@ describe("PatronAuthServiceEditForm", () => {
       expect(options.length).to.equal(1);
       expect(options.at(0).props().value).to.equal("bpl");
 
-      input = editableInputByName("library_text_setting");
+      input = protocolFormFieldByKey("library_text_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().label).to.equal("library text label (optional)");
-      expect(input.props().type).to.equal("text");
+      expect(input.props().field).to.equal(protocolsData[0].library_fields[0]);
 
-      input = editableInputByName("library_select_setting");
+      input = protocolFormFieldByKey("library_select_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().label).to.equal("library select label");
-      expect(input.props().elementType).to.equal("select");
-      children = input.find("option");
-      expect(children.length).to.equal(2);
-      expect(children.at(0).props().value).to.equal("option3");
-      expect(children.at(0).text()).to.contain("option 3");
-      expect(children.at(1).props().value).to.equal("option4");
-      expect(children.at(1).text()).to.contain("option 4");
+      expect(input.props().field).to.equal(protocolsData[0].library_fields[1]);
     });
   });
 
@@ -261,11 +247,11 @@ describe("PatronAuthServiceEditForm", () => {
     });
 
     it("changes fields when protocol changes", () => {
-      let textSettingInput = editableInputByName("text_setting");
-      let selectSettingInput = editableInputByName("select_setting");
-      let libraryTextSettingInput = editableInputByName("library_text_setting");
-      let librarySelectSettingInput = editableInputByName("library_select_setting");
-      let protocol2SettingInput = editableInputByName("protocol2_setting");
+      let textSettingInput = protocolFormFieldByKey("text_setting");
+      let selectSettingInput = protocolFormFieldByKey("select_setting");
+      let libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
+      let librarySelectSettingInput = protocolFormFieldByKey("library_select_setting");
+      let protocol2SettingInput = protocolFormFieldByKey("protocol2_setting");
       expect(textSettingInput.length).to.equal(1);
       expect(selectSettingInput.length).to.equal(1);
       expect(libraryTextSettingInput.length).to.equal(1);
@@ -277,11 +263,11 @@ describe("PatronAuthServiceEditForm", () => {
       selectElement.value = "protocol 2";
       select.simulate("change");
 
-      textSettingInput = editableInputByName("text_setting");
-      selectSettingInput = editableInputByName("select_setting");
-      libraryTextSettingInput = editableInputByName("library_text_setting");
-      librarySelectSettingInput = editableInputByName("library_select_setting");
-      protocol2SettingInput = editableInputByName("protocol2_setting");
+      textSettingInput = protocolFormFieldByKey("text_setting");
+      selectSettingInput = protocolFormFieldByKey("select_setting");
+      libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
+      librarySelectSettingInput = protocolFormFieldByKey("library_select_setting");
+      protocol2SettingInput = protocolFormFieldByKey("protocol2_setting");
       expect(textSettingInput.length).to.equal(1);
       expect(selectSettingInput.length).to.equal(0);
       expect(libraryTextSettingInput.length).to.equal(0);
@@ -291,11 +277,11 @@ describe("PatronAuthServiceEditForm", () => {
       selectElement.value = "protocol 1";
       select.simulate("change");
 
-      textSettingInput = editableInputByName("text_setting");
-      selectSettingInput = editableInputByName("select_setting");
-      libraryTextSettingInput = editableInputByName("library_text_setting");
-      librarySelectSettingInput = editableInputByName("library_select_setting");
-      protocol2SettingInput = editableInputByName("protocol2_setting");
+      textSettingInput = protocolFormFieldByKey("text_setting");
+      selectSettingInput = protocolFormFieldByKey("select_setting");
+      libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
+      librarySelectSettingInput = protocolFormFieldByKey("library_select_setting");
+      protocol2SettingInput = protocolFormFieldByKey("protocol2_setting");
       expect(textSettingInput.length).to.equal(1);
       expect(selectSettingInput.length).to.equal(1);
       expect(libraryTextSettingInput.length).to.equal(1);

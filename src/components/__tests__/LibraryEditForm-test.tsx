@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
+import ProtocolFormField from "../ProtocolFormField";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -29,6 +30,14 @@ describe("LibraryEditForm", () => {
     let inputs = wrapper.find(EditableInput);
     if (inputs.length >= 1) {
       return inputs.filterWhere(input => input.props().name === name);
+    }
+    return [];
+  };
+
+  let protocolFormFieldByKey = (key) => {
+    let formFields = wrapper.find(ProtocolFormField);
+    if (formFields.length >= 1) {
+      return formFields.filterWhere(formField => formField.props().field.key === key);
     }
     return [];
   };
@@ -117,17 +126,17 @@ describe("LibraryEditForm", () => {
     });
 
     it("renders settings", () => {
-      let privacyInput = editableInputByName("privacy-policy");
-      expect(privacyInput.props().label).to.equal("Privacy Policy");
+      let privacyInput = protocolFormFieldByKey("privacy-policy");
+      expect(privacyInput.props().field).to.equal(settingFields[0]);
       expect(privacyInput.props().value).not.to.be.ok;
-      let copyrightInput = editableInputByName("copyright");
-      expect(copyrightInput.props().label).to.equal("Copyright");
+      let copyrightInput = protocolFormFieldByKey("copyright");
+      expect(copyrightInput.props().field).to.equal(settingFields[1]);
       expect(copyrightInput.props().value).not.to.be.ok;
 
       wrapper.setProps({ item: libraryData });
-      privacyInput = editableInputByName("privacy-policy");
+      privacyInput = protocolFormFieldByKey("privacy-policy");
       expect(privacyInput.props().value).to.equal("http://privacy");
-      copyrightInput = editableInputByName("copyright");
+      copyrightInput = protocolFormFieldByKey("copyright");
       expect(copyrightInput.props().value).to.equal("http://copyright");
     });
   });

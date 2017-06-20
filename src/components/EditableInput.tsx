@@ -10,7 +10,8 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value || ""
+      value: props.value || "",
+      checked: props.checked || false
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -42,6 +43,7 @@ export default class EditableInput extends React.Component<EditableInputProps, a
       name: this.props.name,
       ref: "element",
       value: this.state.value,
+      checked: this.state.checked,
       onChange: this.handleChange,
       style: this.props.style,
       placeholder: this.props.placeholder,
@@ -54,13 +56,24 @@ export default class EditableInput extends React.Component<EditableInputProps, a
         value: props.value || ""
       });
     }
+    if (props.checked !== this.props.checked) {
+      this.setState({
+        checked: props.checked || false
+      });
+    }
   }
 
   handleChange() {
     if (!this.props.readOnly && (!this.props.onChange || this.props.onChange() !== false)) {
-      this.setState({
-        value: this.getValue()
-      });
+      if (this.props.type === "checkbox") {
+        this.setState({
+          checked: !this.state.checked
+        });
+      } else {
+        this.setState({
+          value: this.getValue()
+        });
+      }
     }
   }
 
@@ -69,6 +82,6 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   }
 
   clear() {
-    this.setState({ value: "" });
+    this.setState({ value: "", checked: false });
   }
 }

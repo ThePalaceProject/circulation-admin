@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import ProtocolFormField from "./ProtocolFormField";
 import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {
@@ -82,12 +83,9 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             />
         }
         { this.props.data && this.props.data.settings && this.props.data.settings.map(setting =>
-          <EditableInput
-            elementType="input"
-            type="text"
+          <ProtocolFormField
+            field={setting}
             disabled={this.props.disabled}
-            name={setting.key}
-            label={setting.label}
             value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
             />
           )
