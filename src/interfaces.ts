@@ -142,6 +142,7 @@ export interface ProtocolData {
   name: string;
   label?: string;
   description?: string;
+  sitewide?: boolean;
   fields: ProtocolField[];
   library_fields?: ProtocolField[];
 }
@@ -206,4 +207,19 @@ export interface SitewideSettingData {
 export interface SitewideSettingsData {
   settings: SitewideSettingData[];
   fields: ProtocolField[];
+}
+
+export interface MetadataServiceData {
+  id: string | number;
+  protocol: string;
+  settings?: {
+    [key: string]: string;
+  };
+  libraries?: string[];
+}
+
+export interface MetadataServicesData {
+  metadata_services: MetadataServiceData[];
+  protocols: ProtocolData[];
+  allLibraries?: LibraryData[];
 }
