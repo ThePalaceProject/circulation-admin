@@ -12,6 +12,7 @@ import AdminAuthServices from "../AdminAuthServices";
 import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
+import MetadataServices from "../MetadataServices";
 import { mockRouterContext } from "./routing";
 
 
@@ -44,10 +45,17 @@ describe("ConfigTabContainer", () => {
     expect(linkTexts).to.contain("Collections");
     expect(linkTexts).to.contain("Admin Authentication");
     expect(linkTexts).to.contain("Individual Admins");
+    expect(linkTexts).to.contain("Patron Authentication");
+    expect(linkTexts).to.contain("Sitewide Settings");
+    expect(linkTexts).to.contain("Metadata");
   });
 
   it("shows components", () => {
-    const componentClasses = [Libraries, Collections, AdminAuthServices, IndividualAdmins, PatronAuthServices, SitewideSettings];
+    const componentClasses = [
+      Libraries, Collections, AdminAuthServices,
+      IndividualAdmins, PatronAuthServices, SitewideSettings,
+      MetadataServices
+    ];
     for (const componentClass of componentClasses) {
       const component = wrapper.find(componentClass);
       expect(component.props().csrfToken).to.equal("token");

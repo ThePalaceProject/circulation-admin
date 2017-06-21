@@ -3,7 +3,8 @@ import {
   CirculationEventData, StatsData,
   LibrariesData, CollectionsData,
   AdminAuthServicesData, IndividualAdminsData,
-  PatronAuthServicesData, SitewideSettingsData
+  PatronAuthServicesData, SitewideSettingsData,
+  MetadataServicesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -32,6 +33,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_PATRON_AUTH_SERVICE = "EDIT_PATRON_AUTH_SERVICE";
   static readonly SITEWIDE_SETTINGS = "SITEWIDE_SETTINGS";
   static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
+  static readonly METADATA_SERVICES = "METADATA_SERVICES";
+  static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -279,5 +282,15 @@ export default class ActionCreator extends BaseActionCreator {
   editSitewideSetting(data: FormData) {
     const url = "/admin/sitewide_settings";
     return this.postForm(ActionCreator.EDIT_SITEWIDE_SETTING, url, data).bind(this);
+  }
+
+  fetchMetadataServices() {
+    const url = "/admin/metadata_services";
+    return this.fetchJSON<MetadataServicesData>(ActionCreator.METADATA_SERVICES, url).bind(this);
+  }
+
+  editMetadataService(data: FormData) {
+    const url = "/admin/metadata_services";
+    return this.postForm(ActionCreator.EDIT_METADATA_SERVICE, url, data).bind(this);
   }
 }

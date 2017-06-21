@@ -19,7 +19,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           disabled={this.props.disabled}
           name={field.key}
           label={field.label + (field.optional ? " (optional)" : "")}
-          value={this.props.value}
+          value={this.props.value || field.default}
           ref="element"
           />
       );
@@ -30,7 +30,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           disabled={this.props.disabled}
           name={field.key}
           label={field.label + (field.optional ? " (optional)" : "")}
-          value={this.props.value}
+          value={this.props.value || field.default}
           ref="element"
           >
           { field.options && field.options.map(option =>
