@@ -133,6 +133,7 @@ export interface CollectionData {
 export interface ProtocolField {
   key: string;
   label: string;
+  default?: string;
   optional?: boolean;
   type?: string;
   options?: ProtocolField[];

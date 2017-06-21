@@ -52,6 +52,29 @@ describe("ProtocolFormField", () => {
     expect(input.prop("value")).to.be.undefined;
   });
 
+  it("renders field with default", () => {
+    const field = {
+      key: "field",
+      label: "label",
+      default: "default"
+    };
+    const wrapper = shallow(
+      <ProtocolFormField
+        field={field}
+        disabled={true}
+        />
+    );
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    expect(input.prop("name")).to.equal("field");
+    expect(input.prop("value")).to.equal("default");
+
+    wrapper.setProps({ value: "test" });
+    input = wrapper.find(EditableInput);
+    expect(input.prop("value")).to.equal("test");
+  });
+
   it("renders select field", () => {
     const field = {
       key: "field",
