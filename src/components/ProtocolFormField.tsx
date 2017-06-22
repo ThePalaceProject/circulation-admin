@@ -1,54 +1,67 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { ProtocolField } from "../interfaces";
+import { SettingData } from "../interfaces";
 
 export interface ProtocolFormFieldProps {
-  field: ProtocolField;
+  setting: SettingData;
   disabled: boolean;
   value?: string | string[];
 }
 
-export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, void> {
+export interface ProtocolFormFieldState {
+  listItems?: string [];
+}
+
+export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, ProtocolFormFieldState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      listItems: (props.value as string[]) || []
+    };
+    this.addListItem = this.addListItem.bind(this);
+    this.removeListItem = this.removeListItem.bind(this);
+  }
+
   render(): JSX.Element {
-    const field = this.props.field;
-    if (field.type === "text" || field.type === undefined) {
+    const setting = this.props.setting;
+    if (setting.type === "text" || setting.type === undefined) {
       return (
         <EditableInput
           elementType="input"
           type="text"
           disabled={this.props.disabled}
-          name={field.key}
-          label={field.label + (field.optional ? " (optional)" : "")}
-          value={this.props.value || field.default}
+          name={setting.key}
+          label={setting.label + (setting.optional ? " (optional)" : "")}
+          value={this.props.value || setting.default}
           ref="element"
           />
       );
-    } else if (field.type === "select") {
+    } else if (setting.type === "select") {
       return (
         <EditableInput
           elementType="select"
           disabled={this.props.disabled}
-          name={field.key}
-          label={field.label + (field.optional ? " (optional)" : "")}
-          value={this.props.value || field.default}
+          name={setting.key}
+          label={setting.label + (setting.optional ? " (optional)" : "")}
+          value={this.props.value || setting.default}
           ref="element"
           >
-          { field.options && field.options.map(option =>
+          { setting.options && setting.options.map(option =>
               <option key={option.key} value={option.key}>{option.label}</option>
             )
           }
         </EditableInput>
       );
-    } else if (field.type === "list") {
+    } else if (setting.type === "list" && setting.options) {
       return (
         <div>
-          <h3>{field.label}</h3>
-          { field.options && field.options.map(option =>
+          <h3>{setting.label}</h3>
+          { setting.options.map(option =>
               <EditableInput
                 elementType="input"
                 type="checkbox"
                 disabled={this.props.disabled}
-                name={`${field.key}_${option.key}`}
+                name={`${setting.key}_${option.key}`}
                 label={option.label}
                 checked={this.props.value && (this.props.value.indexOf(option.key) !== -1)}
                 />
@@ -56,10 +69,62 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           }
         </div>
       );
+    } else if (setting.type === "list") {
+      return (
+        <div>
+          <h3>{setting.label}</h3>
+          { this.state.listItems && this.state.listItems.map(listItem =>
+              <div className="form-group">
+                <EditableInput
+                  elementType="input"
+                  type="text"
+                  disabled={this.props.disabled}
+                  name={setting.key}
+                  value={listItem}
+                  />
+                <i
+                  className="fa fa-times"
+                  aria-hidden="true"
+                  onClick={() => !this.props.disabled && this.removeListItem(listItem)}
+                  ></i>
+                <a
+                  className="sr-only"
+                  onClick={() => !this.props.disabled && this.removeListItem(listItem)}
+                  >remove</a>
+              </div>
+            )
+          }
+          <div className="form-group">
+            <EditableInput
+              elementType="input"
+              type="text"
+              disabled={this.props.disabled}
+              name={setting.key}
+              ref="addListItem"
+              />
+            <button
+              type="button"
+              className="btn btn-default add-list-item"
+              disabled={this.props.disabled}
+              onClick={this.addListItem}
+              >Add</button>
+          </div>
+        </div>
+      );
     }
   }
 
   getValue() {
     return (this.refs["element"] as any).getValue();
+  }
+
+  removeListItem(listItem: string) {
+    this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
+  }
+
+  addListItem() {
+    const listItem = (this.refs["addListItem"] as any).getValue();
+    this.setState({ listItems: this.state.listItems.concat(listItem) });
+    (this.refs["addListItem"] as any).clear();
   }
 }

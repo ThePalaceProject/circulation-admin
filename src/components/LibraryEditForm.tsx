@@ -84,7 +84,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         }
         { this.props.data && this.props.data.settings && this.props.data.settings.map(setting =>
           <ProtocolFormField
-            field={setting}
+            setting={setting}
             disabled={this.props.disabled}
             value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
             />

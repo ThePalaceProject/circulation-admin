@@ -28,7 +28,7 @@ describe("PatronAuthServiceEditForm", () => {
     {
       name: "protocol 1",
       label: "protocol 1 label",
-      fields: [
+      settings: [
         { key: "text_setting", label: "text label", optional: true },
         { key: "select_setting", label: "select label", type: "select",
           options: [
@@ -37,7 +37,7 @@ describe("PatronAuthServiceEditForm", () => {
           ]
         }
       ],
-      library_fields: [
+      library_settings: [
         { key: "library_text_setting", label: "library text label", optional: true },
         { key: "library_select_setting", label: "library select label", type: "select",
           options: [
@@ -50,11 +50,11 @@ describe("PatronAuthServiceEditForm", () => {
     {
       name: "protocol 2",
       label: "protocol 2 label",
-      fields: [
+      settings: [
         { key: "text_setting", label: "text label" },
         { key: "protocol2_setting", label: "protocol2 label" },
       ],
-      library_fields: []
+      library_settings: []
     }
   ];
   let allLibraries = [
@@ -78,7 +78,7 @@ describe("PatronAuthServiceEditForm", () => {
   let protocolFormFieldByKey = (key) => {
     let formFields = wrapper.find(ProtocolFormField);
     if (formFields.length >= 1) {
-      return formFields.filterWhere(formField => formField.props().field.key === key);
+      return formFields.filterWhere(formField => formField.props().setting.key === key);
     }
     return [];
   };
@@ -141,11 +141,11 @@ describe("PatronAuthServiceEditForm", () => {
     it("renders protocol fields", () => {
       let input = protocolFormFieldByKey("text_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().field).to.equal(protocolsData[0].fields[0]);
+      expect(input.props().setting).to.equal(protocolsData[0].settings[0]);
 
       input = protocolFormFieldByKey("select_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().field).to.equal(protocolsData[0].fields[1]);
+      expect(input.props().setting).to.equal(protocolsData[0].settings[1]);
 
       input = protocolFormFieldByKey("protocol2_setting");
       expect(input.length).to.equal(0);
@@ -162,7 +162,7 @@ describe("PatronAuthServiceEditForm", () => {
 
       input = protocolFormFieldByKey("text_setting");
       expect(input.props().value).to.equal("text setting");
-      expect(input.props().field).to.equal(protocolsData[0].fields[0]);
+      expect(input.props().setting).to.equal(protocolsData[0].settings[0]);
 
       input = protocolFormFieldByKey("select_setting");
       expect(input.props().value).to.equal("option2");
@@ -201,11 +201,11 @@ describe("PatronAuthServiceEditForm", () => {
 
       let input = protocolFormFieldByKey("library_text_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().field).to.equal(protocolsData[0].library_fields[0]);
+      expect(input.props().setting).to.equal(protocolsData[0].library_settings[0]);
 
       input = protocolFormFieldByKey("library_select_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().field).to.equal(protocolsData[0].library_fields[1]);
+      expect(input.props().setting).to.equal(protocolsData[0].library_settings[1]);
 
       wrapper = shallow(
         <PatronAuthServiceEditForm
@@ -225,11 +225,11 @@ describe("PatronAuthServiceEditForm", () => {
 
       input = protocolFormFieldByKey("library_text_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().field).to.equal(protocolsData[0].library_fields[0]);
+      expect(input.props().setting).to.equal(protocolsData[0].library_settings[0]);
 
       input = protocolFormFieldByKey("library_select_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().field).to.equal(protocolsData[0].library_fields[1]);
+      expect(input.props().setting).to.equal(protocolsData[0].library_settings[1]);
     });
   });
 

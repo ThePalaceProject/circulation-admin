@@ -9,8 +9,8 @@ export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData,
   listDataKey = "admin_auth_services";
   itemTypeName = "admin authentication service";
   urlBase = "/admin/web/config/adminAuth/";
-  identifierKey = "provider";
-  labelKey = "provider";
+  identifierKey = "protocol";
+  labelKey = "protocol";
 }
 
 function mapStateToProps(state, ownProps) {

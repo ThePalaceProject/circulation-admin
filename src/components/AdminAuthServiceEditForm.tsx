@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { AdminAuthServicesData, AdminAuthServiceData } from "../interfaces";
+import ProtocolFormField from "./ProtocolFormField";
+import { AdminAuthServicesData, AdminAuthServiceData, ProtocolData } from "../interfaces";
 
 export interface AdminAuthServiceEditFormProps {
   data: AdminAuthServicesData;
@@ -11,8 +12,7 @@ export interface AdminAuthServiceEditFormProps {
 }
 
 export interface AdminAuthServiceEditFormState {
-  provider: string;
-  domains: string[];
+  protocol: string;
 }
 
 export interface AdminAuthServiceEditFormContext {
@@ -28,17 +28,14 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
 
   constructor(props) {
     super(props);
-    let defaultProvider;
-    if (this.props.data && this.props.data.providers && this.props.data.providers.length) {
-      defaultProvider = this.props.data.providers[0];
+    let defaultProtocol;
+    if (this.props.data && this.props.data.protocols && this.props.data.protocols.length) {
+      defaultProtocol = this.props.data.protocols[0].name;
     }
     this.state = {
-      provider: (this.props.item && this.props.item.provider) || defaultProvider,
-      domains: (this.props.item && this.props.item["domains"]) || []
+      protocol: (this.props.item && this.props.item.protocol) || defaultProtocol,
     };
-    this.handleProviderChange = this.handleProviderChange.bind(this);
-    this.addDomain = this.addDomain.bind(this);
-    this.removeDomain = this.removeDomain.bind(this);
+    this.handleProtocolChange = this.handleProtocolChange.bind(this);
     this.save = this.save.bind(this);
   }
 
@@ -53,77 +50,26 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
         <EditableInput
           elementType="select"
           disabled={this.props.disabled}
-          readOnly={!!(this.props.item && this.props.item.provider)}
-          name="provider"
-          label="Provider"
-          value={this.state.provider}
-          ref="provider"
-          onChange={this.handleProviderChange}
+          readOnly={!!(this.props.item && this.props.item.protocol)}
+          name="protocol"
+          label="Protocol"
+          value={this.state.protocol}
+          ref="protocol"
+          onChange={this.handleProtocolChange}
           >
-          { this.props.data && this.props.data.providers && this.props.data.providers.length > 0 && this.props.data.providers.map(provider =>
-              <option key={provider} value={provider}>{provider}</option>
+          { this.props.data && this.props.data.protocols && this.props.data.protocols.length > 0 && this.props.data.protocols.map(protocol =>
+              <option key={protocol.name} value={protocol.name}>{protocol.label}</option>
             )
           }
         </EditableInput>
-        { this.state.provider === "Google OAuth" &&
-          <div>
-            <EditableInput
-              elementType="input"
-              type="text"
+        { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
+            <ProtocolFormField
+              key={setting.key}
+              setting={setting}
               disabled={this.props.disabled}
-              name="url"
-              label="Authentication URI"
-              value={this.props.item && this.props.item["url"] || "https://accounts.google.com/o/oauth2/auth" }
+              value={this.props.item && this.props.item[setting.key]}
               />
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              name="username"
-              label="Client ID"
-              value={this.props.item && this.props.item["username"]}
-              />
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              name="password"
-              label="Client Secret"
-              value={this.props.item && this.props.item["password"]}
-              />
-            <div className="form-group">
-              <label>Allowed Domains</label>
-              { this.state.domains.map(domain =>
-                  <div key={domain} className="admin-auth-service-domain">
-                    <div>{domain}</div>
-                    <i
-                      className="fa fa-times"
-                      aria-hidden="true"
-                      onClick={() => !this.props.disabled && this.removeDomain(domain)}
-                      ></i>
-                    <a
-                      className="sr-only"
-                      onClick={() => !this.props.disabled && this.removeDomain(domain)}
-                      >remove</a>
-                  </div>
-                )
-              }
-            </div>
-            <div className="form-group">
-              <input
-                type="text"
-                name="add-domain"
-                label="Add an allowed domain"
-                ref="addDomain"
-                />
-              <button
-                type="button"
-                className="btn btn-default add-domain"
-                disabled={this.props.disabled}
-                onClick={this.addDomain}
-                >Add Domain</button>
-            </div>
-          </div>
+          )
         }
         <button
           type="submit"
@@ -135,26 +81,19 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
   }
 
   componentWillReceiveProps(newProps) {
-    let provider = this.state.provider;
-    let domains = this.state.domains;
-    if (newProps.item && newProps.item.provider) {
-      if (!this.props.item || !this.props.item.provider || (this.props.item.provider !== newProps.item.provider)) {
-        provider =  newProps.item.provider;
+    let protocol = this.state.protocol;
+    if (newProps.item && newProps.item.protocol) {
+      if (!this.props.item || !this.props.item.protocol || (this.props.item.protocol !== newProps.item.protocol)) {
+        protocol =  newProps.item.protocol;
       }
     }
-    if (newProps.item && newProps.item["domains"]) {
-     if (!this.props.item || !this.props.item["domains"] || (this.props.item["domains"] !== newProps.item["domains"])) {
-       domains =  newProps.item["domains"];
-     }
-    }
-    this.setState({ provider, domains });
+    this.setState({ protocol });
   }
 
   save(event) {
     event.preventDefault();
 
     const data = new (window as any).FormData(this.refs["form"] as any);
-    data.append("domains", JSON.stringify(this.state.domains));
     this.props.editItem(data).then(() => {
       // If we're setting up admin auth for the first time, refresh the page
       // to go to login.
@@ -165,30 +104,40 @@ export default class AdminAuthServiceEditForm extends React.Component<AdminAuthS
 
       // If a new admin auth service was created, go to its edit page.
       if (!this.props.item && data.get("provider")) {
-        window.location.href = "/admin/web/config/adminAuth/edit/" + data.get("provider");
+        window.location.href = "/admin/web/config/adminAuth/edit/" + data.get("protocol");
       }
     });
   }
 
-  handleProviderChange() {
-    const provider = (this.refs["provider"] as any).getValue();
-    this.setState({ provider, domains: this.state.domains });
-  }
+  availableProtocols(): ProtocolData[] {
+    const allProtocols = this.props.data && this.props.data.protocols || [];
 
-  removeDomain(domain: string) {
-    this.setState({
-      provider: this.state.provider,
-      domains: this.state.domains.filter(stateDomain => stateDomain !== domain)
-    });
-  }
-
-  addDomain() {
-    const domain = (this.refs["addDomain"] as any).value;
-    if (this.state.domains.indexOf(domain) === -1) {
-      this.setState({
-        provider: this.state.provider,
-        domains: this.state.domains.concat([domain])
-      });
+    // If we're editing an existing service, the protocol can't be changed,
+    // so there's only one available protocol.
+    if (this.props.item) {
+      for (const protocol of allProtocols) {
+        if (protocol.name === this.props.item.protocol) {
+          return [protocol];
+        }
+      }
     }
+
+    return allProtocols;
+  }
+
+  handleProtocolChange() {
+    const protocol = (this.refs["protocol"] as any).getValue();
+    this.setState({ protocol });
+  }
+
+  protocolSettings() {
+    if (this.state.protocol && this.props.data.protocols) {
+      for (const protocol of this.props.data.protocols) {
+        if (protocol.name === this.state.protocol) {
+          return protocol.settings;
+        }
+      }
+    }
+    return [];
   }
 }

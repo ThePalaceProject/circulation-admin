@@ -20,13 +20,13 @@ describe("MetadataServices", () => {
       settings: {
         "test_setting": "test setting"
       },
-      libraries: ["nypl"],
+      libraries: [{ short_name: "nypl" }],
     }],
     protocols: [{
       name: "test protocol",
       label: "test protocol label",
       sitewide: false,
-      fields: []
+      settings: []
     }],
     allLibraries: [{
       short_name: "nypl"

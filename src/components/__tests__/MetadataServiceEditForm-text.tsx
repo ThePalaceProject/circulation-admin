@@ -17,13 +17,13 @@ describe("MetadataServiceEditForm", () => {
     settings: {
       text_setting: "text setting"
     },
-    libraries: ["nypl"],
+    libraries: [{ short_name: "nypl" }],
   };
   let protocolsData = [
     {
       name: "protocol 1",
       label: "protocol 1 label",
-      fields: [
+      settings: [
         { key: "text_setting", label: "text label" }
       ],
       sitewide: true
@@ -31,7 +31,7 @@ describe("MetadataServiceEditForm", () => {
     {
       name: "protocol 2",
       label: "protocol 2 label",
-      fields: [
+      settings: [
         { key: "text_setting", label: "text label" },
         { key: "protocol2_setting", label: "protocol2 label" },
       ],
@@ -59,7 +59,7 @@ describe("MetadataServiceEditForm", () => {
   let protocolFormFieldByKey = (key) => {
     let formFields = wrapper.find(ProtocolFormField);
     if (formFields.length >= 1) {
-      return formFields.filterWhere(formField => formField.props().field.key === key);
+      return formFields.filterWhere(formField => formField.props().setting.key === key);
     }
     return [];
   };
@@ -122,7 +122,7 @@ describe("MetadataServiceEditForm", () => {
     it("renders protocol fields", () => {
       let input = protocolFormFieldByKey("text_setting");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().field).to.equal(protocolsData[0].fields[0]);
+      expect(input.props().setting).to.equal(protocolsData[0].settings[0]);
 
       input = protocolFormFieldByKey("protocol2_setting");
       expect(input.length).to.equal(0);
@@ -139,7 +139,7 @@ describe("MetadataServiceEditForm", () => {
 
       input = protocolFormFieldByKey("text_setting");
       expect(input.props().value).to.equal("text setting");
-      expect(input.props().field).to.equal(protocolsData[0].fields[0]);
+      expect(input.props().setting).to.equal(protocolsData[0].settings[0]);
 
       input = protocolFormFieldByKey("protocol2_setting");
       expect(input.length).to.equal(0);
@@ -306,7 +306,7 @@ describe("MetadataServiceEditForm", () => {
 
       let stateLibraries = wrapper.state().libraries;
       expect(stateLibraries.length).to.equal(1);
-      expect(stateLibraries[0]).to.equal("bpl");
+      expect(stateLibraries[0]).to.deep.equal({ short_name: "bpl" });
     });
 
     it("removes a library", () => {

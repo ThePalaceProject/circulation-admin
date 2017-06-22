@@ -15,13 +15,13 @@ describe("AdminAuthServices", () => {
   let editItem;
   let data = {
     admin_auth_services: [{
-      provider: "OAuth provider",
+      protocol: "OAuth provider",
       url: "test.com",
       username: "user",
       password: "pass",
       domains: []
     }],
-    providers: ["OAuth provider"]
+    protocols: [{ name: "OAuth provider", label: "OAuth Provider", settings: [] }]
   };
 
   const pause = () => {
