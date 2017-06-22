@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import CollectionEditForm from "../CollectionEditForm";
 import EditableInput from "../EditableInput";
+import ProtocolFormField from "../ProtocolFormField";
 
 describe("CollectionEditForm", () => {
   let wrapper;
@@ -15,18 +16,18 @@ describe("CollectionEditForm", () => {
     protocol: "Overdrive",
     username: "username",
     password: "password",
-    libraries: ["nypl"]
+    libraries: [{ short_name: "nypl" }]
   };
   let protocolsData = [
     {
       name: "OPDS Import",
-      fields: [
+      settings: [
         { key: "url", label: "URL" }
       ]
     },
     {
       name: "Overdrive",
-      fields: [
+      settings: [
         { key: "username", label: "Client Key" },
         { key: "password", label: "Client Secret" }
       ]
@@ -46,6 +47,14 @@ describe("CollectionEditForm", () => {
     let inputs = wrapper.find(EditableInput);
     if (inputs.length >= 1) {
       return inputs.filterWhere(input => input.props().name === name);
+    }
+    return [];
+  };
+
+  let protocolFormFieldByKey = (key) => {
+    let formFields = wrapper.find(ProtocolFormField);
+    if (formFields.length >= 1) {
+      return formFields.filterWhere(formField => formField.props().setting.key === key);
     }
     return [];
   };
@@ -104,14 +113,14 @@ describe("CollectionEditForm", () => {
     });
 
     it("renders protocol fields", () => {
-      let input = editableInputByName("url");
+      let input = protocolFormFieldByKey("url");
       expect(input.props().value).not.to.be.ok;
-      expect(input.props().label).to.equal("URL");
+      expect(input.props().setting).to.equal(protocolsData[0].settings[0]);
 
-      input = editableInputByName("username");
+      input = protocolFormFieldByKey("username");
       expect(input.length).to.equal(0);
 
-      input = editableInputByName("password");
+      input = protocolFormFieldByKey("password");
       expect(input.length).to.equal(0);
 
       wrapper = shallow(
@@ -124,16 +133,16 @@ describe("CollectionEditForm", () => {
           />
       );
 
-      input = editableInputByName("url");
+      input = protocolFormFieldByKey("url");
       expect(input.length).to.equal(0);
 
-      input = editableInputByName("username");
+      input = protocolFormFieldByKey("username");
       expect(input.props().value).to.equal("username");
-      expect(input.props().label).to.equal("Client Key");
+      expect(input.props().setting).to.equal(protocolsData[1].settings[0]);
 
-      input = editableInputByName("password");
+      input = protocolFormFieldByKey("password");
       expect(input.props().value).to.equal("password");
-      expect(input.props().label).to.equal("Client Secret");
+      expect(input.props().setting).to.equal(protocolsData[1].settings[1]);
     });
 
     it("renders libraries in collection", () => {
@@ -277,7 +286,7 @@ describe("CollectionEditForm", () => {
       expect(formData.get("protocol")).to.equal("Overdrive");
       expect(formData.get("username")).to.equal("username");
       expect(formData.get("password")).to.equal("password");
-      expect(formData.get("libraries")).to.equal(JSON.stringify(["nypl"]));
+      expect(formData.get("libraries")).to.equal(JSON.stringify([{ short_name: "nypl" }]));
     });
 
     it("goes to collection edit page after creating a new collection", () => {

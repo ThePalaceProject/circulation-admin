@@ -13,9 +13,9 @@ export class SitewideSettings extends EditableConfigList<SitewideSettingsData, S
   labelKey = "key";
 
   label(item): string {
-    for (const field of this.props.data.fields) {
-      if (field.key === item.key) {
-        return field.label;
+    for (const setting of this.props.data.all_settings) {
+      if (setting.key === item.key) {
+        return setting.label;
       }
     }
     return item.key;

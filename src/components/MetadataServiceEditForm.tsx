@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { MetadataServicesData, MetadataServiceData, ProtocolData } from "../interfaces";
+import { LibraryWithSettingsData, MetadataServicesData, MetadataServiceData, ProtocolData } from "../interfaces";
 
 export interface MetadataServiceEditFormProps {
   data: MetadataServicesData;
@@ -13,7 +13,7 @@ export interface MetadataServiceEditFormProps {
 
 export interface MetadataServiceEditFormState {
   protocol: string;
-  libraries: string[];
+  libraries: LibraryWithSettingsData[];
 }
 
 export default class MetadataServiceEditForm extends React.Component<MetadataServiceEditFormProps, MetadataServiceEditFormState> {
@@ -66,12 +66,12 @@ export default class MetadataServiceEditForm extends React.Component<MetadataSer
         { this.protocolDescription() &&
           <p>{ this.protocolDescription() }</p>
         }
-        { this.props.data && this.props.data.protocols && this.protocolFields() && this.protocolFields().map(field =>
+        { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField
-              key={field.key}
-              field={field}
+              key={setting.key}
+              setting={setting}
               disabled={this.props.disabled}
-              value={this.props.item && this.props.item.settings && this.props.item.settings[field.key]}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               />
           )
         }
@@ -79,8 +79,8 @@ export default class MetadataServiceEditForm extends React.Component<MetadataSer
           <div className="form-group">
             <label>Libraries</label>
             { this.state.libraries.map(library =>
-                <div key={library} className="metadata-service-library">
-                  <div>{library}</div>
+                <div key={library.short_name} className="metadata-service-library">
+                  <div>{library.short_name}</div>
                   <i
                     className="fa fa-times"
                     aria-hidden="true"
@@ -108,11 +108,12 @@ export default class MetadataServiceEditForm extends React.Component<MetadataSer
                 )
               }
             </select>
-           { this.props.data && this.props.data.protocols && this.protocolLibraryFields() && this.protocolLibraryFields().map(field =>
+           { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
                 <ProtocolFormField
-                  field={field}
+                  key={setting.key}
+                  setting={setting}
                   disabled={this.props.disabled}
-                  ref={field.key}
+                  ref={setting.key}
                   />
               )
             }
@@ -184,11 +185,11 @@ export default class MetadataServiceEditForm extends React.Component<MetadataSer
     this.setState({ protocol, libraries: this.state.libraries });
   }
 
-  protocolFields() {
+  protocolSettings() {
     if (this.state.protocol && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
-          return protocol.fields;
+          return protocol.settings;
         }
       }
     }
@@ -217,11 +218,11 @@ export default class MetadataServiceEditForm extends React.Component<MetadataSer
     return false;
   }
 
-  protocolLibraryFields() {
+  protocolLibrarySettings() {
     if (this.state.protocol && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
-          return protocol.library_fields;
+          return protocol.library_settings || [];
         }
       }
     }
@@ -232,7 +233,7 @@ export default class MetadataServiceEditForm extends React.Component<MetadataSer
     const names = (this.props.data.allLibraries || []).map(library => library.short_name);
     return names.filter(name => {
       for (const library of this.state.libraries) {
-        if (library === name) {
+        if (library.short_name === name) {
           return false;
         }
       }
@@ -241,13 +242,20 @@ export default class MetadataServiceEditForm extends React.Component<MetadataSer
   }
 
   removeLibrary(library) {
-    const libraries = this.state.libraries.filter(stateLibrary => stateLibrary !== library);
+    const libraries = this.state.libraries.filter(stateLibrary => stateLibrary.short_name !== library.short_name);
     this.setState({ protocol: this.state.protocol, libraries });
   }
 
   addLibrary() {
     const name = (this.refs["addLibrary"] as any).value;
-    const libraries = this.state.libraries.concat(name);
+    const newLibrary = { short_name: name };
+    for (const setting of this.protocolLibrarySettings()) {
+      const value = (this.refs[setting.key] as any).getValue();
+      if (value) {
+        newLibrary[setting.key] = value;
+      }
+    }
+    const libraries = this.state.libraries.concat(newLibrary);
     this.setState({ protocol: this.state.protocol, libraries });
   }
 }

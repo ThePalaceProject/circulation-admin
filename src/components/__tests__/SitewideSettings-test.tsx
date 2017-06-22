@@ -17,7 +17,7 @@ describe("SitewideSettings", () => {
     settings: [
       { key: "test key", value: "test value" }
     ],
-    fields: [
+    all_settings: [
       { key: "test key", label: "test label" }
     ]
   };

@@ -28,7 +28,7 @@ describe("PatronAuthServices", () => {
     protocols: [{
       name: "test protocol",
       label: "test protocol label",
-      fields: []
+      settings: []
     }],
     allLibraries: [{
       short_name: "nypl"

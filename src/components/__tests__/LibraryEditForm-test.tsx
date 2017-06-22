@@ -37,7 +37,7 @@ describe("LibraryEditForm", () => {
   let protocolFormFieldByKey = (key) => {
     let formFields = wrapper.find(ProtocolFormField);
     if (formFields.length >= 1) {
-      return formFields.filterWhere(formField => formField.props().field.key === key);
+      return formFields.filterWhere(formField => formField.props().setting.key === key);
     }
     return [];
   };
@@ -127,10 +127,10 @@ describe("LibraryEditForm", () => {
 
     it("renders settings", () => {
       let privacyInput = protocolFormFieldByKey("privacy-policy");
-      expect(privacyInput.props().field).to.equal(settingFields[0]);
+      expect(privacyInput.props().setting).to.equal(settingFields[0]);
       expect(privacyInput.props().value).not.to.be.ok;
       let copyrightInput = protocolFormFieldByKey("copyright");
-      expect(copyrightInput.props().field).to.equal(settingFields[1]);
+      expect(copyrightInput.props().setting).to.equal(settingFields[1]);
       expect(copyrightInput.props().value).not.to.be.ok;
 
       wrapper.setProps({ item: libraryData });

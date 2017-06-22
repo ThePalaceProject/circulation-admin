@@ -21,7 +21,7 @@ describe("Collections", () => {
   }];
   let data = {
     collections: collectionsData,
-    protocols: [{ name: "OPDS Import", fields: [] }],
+    protocols: [{ name: "OPDS Import", settings: [] }],
     allLibraries: []
   };
 

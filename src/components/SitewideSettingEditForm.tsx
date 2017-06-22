@@ -19,7 +19,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
   render(): JSX.Element {
     return (
       <div>
-        { this.availableFields().length > 0 &&
+        { this.availableSettings().length > 0 &&
           <form ref="form" onSubmit={this.save} className="edit-form">
             <input
               type="hidden"
@@ -34,8 +34,8 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
               label="key"
               value={this.props.item && this.props.item.key}
               >
-              { this.availableFields().map(field =>
-                  <option key={field.key} value={field.key}>{field.label}</option>
+              { this.availableSettings().map(setting =>
+                  <option key={setting.key} value={setting.key}>{setting.label}</option>
                 )
               }
             </EditableInput>
@@ -54,7 +54,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
               >Submit</button>
           </form>
         }
-        { this.availableFields().length === 0 &&
+        { this.availableSettings().length === 0 &&
           <p>All sitewide settings have already been created.</p>
         }
       </div>
@@ -72,29 +72,29 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     });
   }
 
-  availableFields() {
-    const fields = this.props.data && this.props.data.fields || [];
+  availableSettings() {
+    const allSettings = this.props.data && this.props.data.all_settings || [];
     if (this.props.item) {
-      for (const field of fields) {
-        if (field.key === this.props.item.key) {
-          return [field];
+      for (const setting of allSettings) {
+        if (setting.key === this.props.item.key) {
+          return [setting];
         }
       }
     } else {
-      const availableFields = [];
-      for (const field of fields) {
+      const availableSettings = [];
+      for (const possibleSetting of allSettings) {
         let hasSetting = false;
-        for (const setting of (this.props.data && this.props.data.settings) || []) {
-          if (setting.key === field.key) {
+        for (const actualSetting of (this.props.data && this.props.data.settings) || []) {
+          if (actualSetting.key === possibleSetting.key) {
             hasSetting = true;
           }
         }
         if (!hasSetting) {
-          availableFields.push(field);
+          availableSettings.push(possibleSetting);
         }
       }
-      return availableFields;
+      return availableSettings;
     }
-    return fields;
+    return allSettings;
   }
 }

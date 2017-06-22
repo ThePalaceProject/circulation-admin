@@ -14,14 +14,14 @@ describe("SitewideSettingEditForm", () => {
     key: "test_key",
     value: "value"
   };
-  let fields = [
+  let allSettings = [
     { key: "test_key", label: "label" },
     { key: "other_key1", label: "label1" },
     { key: "other_key2", label: "label2" }
   ];
   let settingsData = {
     settings: [settingData],
-    fields: fields
+    all_settings: allSettings
   };
 
   let editableInputByName = (name) => {
@@ -48,7 +48,7 @@ describe("SitewideSettingEditForm", () => {
     it("renders message if there are no remaining fields", () => {
       let data = {
         settings: [settingData],
-        fields: [fields[0]]
+        all_settings: [allSettings[0]]
       };
       wrapper = shallow(
         <SitewideSettingEditForm

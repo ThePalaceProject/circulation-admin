@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { PatronAuthServiceLibrary, PatronAuthServicesData, PatronAuthServiceData, ProtocolData } from "../interfaces";
+import { LibraryWithSettingsData, PatronAuthServicesData, PatronAuthServiceData, ProtocolData } from "../interfaces";
 
 export interface PatronAuthServiceEditFormProps {
   data: PatronAuthServicesData;
@@ -13,7 +13,7 @@ export interface PatronAuthServiceEditFormProps {
 
 export interface PatronAuthServiceEditFormState {
   protocol: string;
-  libraries: PatronAuthServiceLibrary[];
+  libraries: LibraryWithSettingsData[];
 }
 
 export default class PatronAuthServiceEditForm extends React.Component<PatronAuthServiceEditFormProps, PatronAuthServiceEditFormState> {
@@ -66,11 +66,11 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
         { this.protocolDescription() &&
           <p>{ this.protocolDescription() }</p>
         }
-        { this.props.data && this.props.data.protocols && this.protocolFields() && this.protocolFields().map(field =>
+        { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField
-              field={field}
+              setting={setting}
               disabled={this.props.disabled}
-              value={this.props.item && this.props.item.settings && this.props.item.settings[field.key]}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               />
           )
         }
@@ -105,11 +105,11 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
                 )
               }
             </select>
-           { this.props.data && this.props.data.protocols && this.protocolLibraryFields() && this.protocolLibraryFields().map(field =>
+           { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
                 <ProtocolFormField
-                  field={field}
+                  setting={setting}
                   disabled={this.props.disabled}
-                  ref={field.key}
+                  ref={setting.key}
                   />
               )
             }
@@ -181,11 +181,11 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
     this.setState({ protocol, libraries: this.state.libraries });
   }
 
-  protocolFields() {
+  protocolSettings() {
     if (this.state.protocol && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
-          return protocol.fields;
+          return protocol.settings;
         }
       }
     }
@@ -203,11 +203,11 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
     return "";
   }
 
-  protocolLibraryFields() {
+  protocolLibrarySettings() {
     if (this.state.protocol && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
-          return protocol.library_fields;
+          return protocol.library_settings || [];
         }
       }
     }
@@ -234,10 +234,10 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
   addLibrary() {
     const name = (this.refs["addLibrary"] as any).value;
     const newLibrary = { short_name: name };
-    for (const field of this.protocolLibraryFields()) {
-      const value = (this.refs[field.key] as any).getValue();
+    for (const setting of this.protocolLibrarySettings()) {
+      const value = (this.refs[setting.key] as any).getValue();
       if (value) {
-        newLibrary[field.key] = value;
+        newLibrary[setting.key] = value;
       }
     }
     const libraries = this.state.libraries.concat(newLibrary);

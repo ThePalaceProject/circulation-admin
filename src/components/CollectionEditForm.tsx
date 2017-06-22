@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import ProtocolFormField from "./ProtocolFormField";
 import { CollectionsData, CollectionData } from "../interfaces";
 
 export interface CollectionEditFormProps {
@@ -60,31 +61,28 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
             )
           }
         </EditableInput>
-        { this.props.data && this.props.data.protocols && this.protocolFields() && this.protocolFields().map(field =>
-            <EditableInput
-              key={field.key}
-              elementType="input"
-              type="text"
+        { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
+            <ProtocolFormField
+              key={setting.key}
+              setting={setting}
               disabled={this.props.disabled}
-              name={field.key}
-              label={field.label}
-              value={this.props.item && this.props.item[field.key]}
+              value={this.props.item && this.props.item[setting.key] as string}
               />
           )
         }
         <div className="form-group">
           <label>Libraries</label>
           { this.state.libraries.map(library =>
-              <div key={library} className="collection-library">
-                <div>{library}</div>
+              <div key={library.short_name} className="collection-library">
+                <div>{library.short_name}</div>
                 <i
                   className="fa fa-times"
                   aria-hidden="true"
-                  onClick={() => !this.props.disabled && this.removeLibrary(library)}
+                  onClick={() => !this.props.disabled && this.removeLibrary(library.short_name)}
                   ></i>
                 <a
                   className="sr-only"
-                  onClick={() => !this.props.disabled && this.removeLibrary(library)}
+                  onClick={() => !this.props.disabled && this.removeLibrary(library.short_name)}
                   >remove</a>
               </div>
             )
@@ -152,11 +150,11 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
     this.setState({ protocol });
   }
 
-  protocolFields() {
+  protocolSettings() {
     if (this.state.protocol && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
-          return protocol.fields;
+          return protocol.settings;
         }
       }
     }
@@ -165,17 +163,24 @@ export default class CollectionEditForm extends React.Component<CollectionEditFo
 
   availableLibraries(): string[] {
     const names = (this.props.data.allLibraries || []).map(library => library.short_name);
-    return names.filter(name => this.state.libraries.indexOf(name) === -1);
+    return names.filter(name => {
+      for (const library of this.state.libraries) {
+        if (library.short_name === name) {
+          return false;
+        }
+      }
+      return true;
+    });
   }
 
   removeLibrary(library: string) {
-    this.setState({ libraries: this.state.libraries.filter(stateLibrary => stateLibrary !== library) });
+    this.setState({ libraries: this.state.libraries.filter(stateLibrary => stateLibrary.short_name !== library) });
   }
 
   addLibrary() {
-    const library = (this.refs["addLibrary"] as any).value;
-    if (this.state.libraries.indexOf(library) === -1) {
-      this.setState({ libraries: this.state.libraries.concat([library]) });
-    }
+    const name = (this.refs["addLibrary"] as any).value;
+    const newLibrary = { short_name: name };
+    const libraries = this.state.libraries.concat(newLibrary);
+    this.setState({ protocol: this.state.protocol, libraries });
   }
 }
