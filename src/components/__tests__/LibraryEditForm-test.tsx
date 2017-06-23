@@ -51,6 +51,7 @@ describe("LibraryEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editLibrary}
+          urlBase={"url base"}
           />
       );
     });
@@ -143,13 +144,14 @@ describe("LibraryEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editLibrary = stub();
+      editLibrary = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           csrfToken="token"
           disabled={false}
           editItem={editLibrary}
+          urlBase={"url base"}
           />
       );
     });

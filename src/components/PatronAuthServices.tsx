@@ -2,10 +2,10 @@ import EditableConfigList from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
-import PatronAuthServiceEditForm from "./PatronAuthServiceEditForm";
+import ServiceEditForm from "./ServiceEditForm";
 
 export class PatronAuthServices extends EditableConfigList<PatronAuthServicesData, PatronAuthServiceData> {
-  EditForm = PatronAuthServiceEditForm;
+  EditForm = ServiceEditForm;
   listDataKey = "patron_auth_services";
   itemTypeName = "patron authentication service";
   urlBase = "/admin/web/config/patronAuth/";

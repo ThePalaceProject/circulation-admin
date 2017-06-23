@@ -2,10 +2,10 @@ import EditableConfigList from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { MetadataServicesData, MetadataServiceData } from "../interfaces";
-import MetadataServiceEditForm from "./MetadataServiceEditForm";
+import ServiceEditForm from "./ServiceEditForm";
 
 export class MetadataServices extends EditableConfigList<MetadataServicesData, MetadataServiceData> {
-  EditForm = MetadataServiceEditForm;
+  EditForm = ServiceEditForm;
   listDataKey = "metadata_services";
   itemTypeName = "metadata service";
   urlBase = "/admin/web/config/metadata/";

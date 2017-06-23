@@ -2,14 +2,14 @@ import EditableConfigList from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { CollectionsData, CollectionData, LibraryData } from "../interfaces";
-import CollectionEditForm from "./CollectionEditForm";
+import ServiceEditForm from "./ServiceEditForm";
 
 export class Collections extends EditableConfigList<CollectionsData, CollectionData> {
-  EditForm =  CollectionEditForm;
+  EditForm =  ServiceEditForm;
   listDataKey = "collections";
   itemTypeName = "collection";
   urlBase = "/admin/web/config/collections/";
-  identifierKey = "name";
+  identifierKey = "id";
   labelKey = "name";
 }
 

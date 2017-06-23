@@ -23,6 +23,7 @@ export interface EditFormProps<T, U> {
   csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  urlBase: string;
 }
 
 export abstract class EditableConfigList<T, U> extends React.Component<EditableConfigListProps<T>, void> {
@@ -77,6 +78,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
               csrfToken={this.props.csrfToken}
               disabled={this.props.isFetching}
               editItem={this.editItem}
+              urlBase={this.urlBase}
               />
           </div>
         }
@@ -90,6 +92,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
               csrfToken={this.props.csrfToken}
               disabled={this.props.isFetching}
               editItem={this.editItem}
+              urlBase={this.urlBase}
               />
           </div>
         }

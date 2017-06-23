@@ -2,10 +2,10 @@ import EditableConfigList from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { AdminAuthServicesData, AdminAuthServiceData } from "../interfaces";
-import AdminAuthServiceEditForm from "./AdminAuthServiceEditForm";
+import ServiceEditForm from "./ServiceEditForm";
 
 export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData, AdminAuthServiceData> {
-  EditForm = AdminAuthServiceEditForm;
+  EditForm = ServiceEditForm;
   listDataKey = "admin_auth_services";
   itemTypeName = "admin authentication service";
   urlBase = "/admin/web/config/adminAuth/";

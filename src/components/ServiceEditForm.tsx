@@ -1,22 +1,24 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { LibraryWithSettingsData, PatronAuthServicesData, PatronAuthServiceData, ProtocolData } from "../interfaces";
+import { LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
+import { EditFormProps } from "./EditableConfigList";
 
-export interface PatronAuthServiceEditFormProps {
-  data: PatronAuthServicesData;
-  item?: PatronAuthServiceData;
+export interface ServiceEditFormProps<T> {
+  data: T;
+  item?: ServiceData;
   csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  urlBase: string;
 }
 
-export interface PatronAuthServiceEditFormState {
+export interface ServiceEditFormState {
   protocol: string;
   libraries: LibraryWithSettingsData[];
 }
 
-export default class PatronAuthServiceEditForm extends React.Component<PatronAuthServiceEditFormProps, PatronAuthServiceEditFormState> {
+export default class ServiceEditForm<T extends ServicesData> extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
   constructor(props) {
     super(props);
     let defaultProtocol;
@@ -41,13 +43,21 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
           name="csrf_token"
           value={this.props.csrfToken}
           />
-        { this.props.item &&
+        { this.props.item && this.props.item.id &&
           <input
             type="hidden"
             name="id"
             value={String(this.props.item.id)}
             />
         }
+        <EditableInput
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          name="name"
+          label="Name"
+          value={this.props.item && this.props.item.name}
+          />
         <EditableInput
           elementType="select"
           disabled={this.props.disabled}
@@ -68,31 +78,34 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
         }
         { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField
+              key={setting.key}
               setting={setting}
               disabled={this.props.disabled}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               />
           )
         }
-        <div class="form-group">
-          <label>Libraries</label>
-          { this.state.libraries.map(library =>
-              <div key={library.short_name} className="patron-auth-service-library">
-                <div>{library.short_name}</div>
-                <i
-                  className="fa fa-times"
-                  aria-hidden="true"
-                  onClick={() => !this.props.disabled && this.removeLibrary(library)}
-                  ></i>
-                <a
-                  className="sr-only"
-                  onClick={() => !this.props.disabled && this.removeLibrary(library)}
-                  >remove</a>
-              </div>
-            )
-          }
-        </div>
-        { this.availableLibraries().length > 0 &&
+        { !this.sitewide() &&
+          <div className="form-group">
+            <label>Libraries</label>
+            { this.state.libraries.map(library =>
+                <div key={library.short_name} className="service-library">
+                  <div>{library.short_name}</div>
+                  <i
+                    className="fa fa-times"
+                    aria-hidden="true"
+                    onClick={() => !this.props.disabled && this.removeLibrary(library)}
+                    ></i>
+                  <a
+                    className="sr-only"
+                    onClick={() => !this.props.disabled && this.removeLibrary(library)}
+                    >remove</a>
+                </div>
+              )
+            }
+          </div>
+        }
+        { !this.sitewide() && this.availableLibraries().length > 0 &&
           <div className="form-group">
             <select
               disabled={this.props.disabled}
@@ -105,13 +118,14 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
                 )
               }
             </select>
-           { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
+            { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
                 <ProtocolFormField
+                  key={setting.key}
                   setting={setting}
                   disabled={this.props.disabled}
                   ref={setting.key}
                   />
-              )
+                )
             }
             <button
               type="button"
@@ -145,19 +159,6 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
       }
     }
     this.setState({ protocol, libraries });
-  }
-
-  save(event) {
-    event.preventDefault();
-
-    const data = new (window as any).FormData(this.refs["form"] as any);
-    data.append("libraries", JSON.stringify(this.state.libraries));
-    this.props.editItem(data).then(() => {
-      // If a new patron auth service was created, go back to the list of patron auth services.
-      if (!this.props.item) {
-        window.location.href = "/admin/web/config/patronAuth";
-      }
-    });
   }
 
   availableProtocols(): ProtocolData[] {
@@ -214,8 +215,19 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
     return [];
   }
 
+  sitewide() {
+    if (this.state.protocol && this.props.data.protocols) {
+      for (const protocol of this.props.data.protocols) {
+        if (protocol.name === this.state.protocol) {
+          return protocol.sitewide;
+        }
+      }
+    }
+    return false;
+  }
+
   availableLibraries(): string[] {
-    const names = (this.props.data.allLibraries || []).map(library => library.short_name);
+    const names = (this.props.data && this.props.data.allLibraries || []).map(library => library.short_name);
     return names.filter(name => {
       for (const library of this.state.libraries) {
         if (library.short_name === name) {
@@ -242,5 +254,18 @@ export default class PatronAuthServiceEditForm extends React.Component<PatronAut
     }
     const libraries = this.state.libraries.concat(newLibrary);
     this.setState({ protocol: this.state.protocol, libraries });
+  }
+
+  save(event) {
+    event.preventDefault();
+
+    const data = new (window as any).FormData(this.refs["form"] as any);
+    data.append("libraries", JSON.stringify(this.state.libraries));
+    this.props.editItem(data).then(() => {
+      // If a new service was created, go back to the list of services.
+      if (!this.props.item) {
+        window.location.href = this.props.urlBase;
+      }
+    });
   }
 }

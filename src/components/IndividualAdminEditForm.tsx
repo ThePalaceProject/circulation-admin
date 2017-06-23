@@ -8,6 +8,7 @@ export interface IndividualAdminEditFormProps {
   csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  urlBase: string;
 }
 
 export interface IndividualAdminEditFormContext {
