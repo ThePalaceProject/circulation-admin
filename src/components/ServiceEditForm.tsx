@@ -153,6 +153,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         protocol = newProps.item.protocol;
       }
     }
+    if (!protocol && this.availableProtocols(newProps).length > 0) {
+        protocol = this.availableProtocols(newProps)[0].name;
+    }
     if (newProps.item && newProps.item.libraries) {
       if (!this.props.item || !this.props.item.libraries || (this.props.item.libraries !== newProps.item.libraries)) {
         libraries = newProps.item.libraries;
@@ -161,14 +164,15 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState({ protocol, libraries });
   }
 
-  availableProtocols(): ProtocolData[] {
-    const allProtocols = this.props.data && this.props.data.protocols || [];
+  availableProtocols(props?): ProtocolData[] {
+    props = props || this.props;
+    const allProtocols = props.data && props.data.protocols || [];
 
     // If we're editing an existing service, the protocol can't be changed,
     // so there's only one available protocol.
-    if (this.props.item) {
+    if (props.item) {
       for (const protocol of allProtocols) {
-        if (protocol.name === this.props.item.protocol) {
+        if (protocol.name === props.item.protocol) {
           return [protocol];
         }
       }

@@ -70,7 +70,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
           <a href={this.urlBase + "create"}>Create a new {this.itemTypeName}</a>
         }
 
-        { !this.props.isFetching && (this.props.editOrCreate === "create") &&
+        { (this.props.editOrCreate === "create") &&
           <div>
             <h2>Create a new {this.itemTypeName}</h2>
             <EditForm
@@ -83,7 +83,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
           </div>
         }
 
-        { !this.props.isFetching && this.itemToEdit() &&
+        { this.itemToEdit() &&
           <div>
             <h2>Edit {this.itemTypeName}</h2>
             <EditForm
