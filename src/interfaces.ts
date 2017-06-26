@@ -128,13 +128,6 @@ export interface LibraryWithSettingsData {
   [key: string]: string;
 }
 
-export interface CollectionData {
-  name: string;
-  protocol: string;
-  libraries: LibraryWithSettingsData[];
-  [key: string]: string | LibraryWithSettingsData[];
-}
-
 export interface SettingData {
   key: string;
   label: string;
@@ -153,24 +146,35 @@ export interface ProtocolData {
   library_settings?: SettingData[];
 }
 
-export interface CollectionsData {
-  collections: CollectionData[];
+export interface ServiceData {
+  id?: string | number;
+  name?: string;
+  protocol: string;
+  settings?: {
+    [key: string]: string;
+  };
+  libraries?: LibraryWithSettingsData[];
+}
+
+export interface ServicesData {
   protocols: ProtocolData[];
   allLibraries?: LibraryData[];
+}
+
+export interface CollectionData extends ServiceData {}
+
+export interface CollectionsData extends ServicesData {
+  collections: CollectionData[];
 }
 
 export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
 
-export interface AdminAuthServiceData {
-  protocol: string;
-  [key: string]: string | string[];
-}
+export interface AdminAuthServiceData extends ServiceData {}
 
-export interface AdminAuthServicesData {
+export interface AdminAuthServicesData extends ServicesData {
   admin_auth_services: AdminAuthServiceData[];
-  protocols: ProtocolData[];
 }
 
 export interface IndividualAdminData {
@@ -182,19 +186,10 @@ export interface IndividualAdminsData {
   individualAdmins?: IndividualAdminData[];
 }
 
-export interface PatronAuthServiceData {
-  id: string | number;
-  protocol: string;
-  settings?: {
-    [key: string]: string;
-  };
-  libraries?: LibraryWithSettingsData[];
-}
+export interface PatronAuthServiceData extends ServiceData {}
 
-export interface PatronAuthServicesData {
+export interface PatronAuthServicesData extends ServicesData {
   patron_auth_services: PatronAuthServiceData[];
-  protocols: ProtocolData[];
-  allLibraries?: LibraryData[];
 }
 
 export interface SitewideSettingData {
@@ -207,17 +202,8 @@ export interface SitewideSettingsData {
   all_settings: SettingData[];
 }
 
-export interface MetadataServiceData {
-  id: string | number;
-  protocol: string;
-  settings?: {
-    [key: string]: string;
-  };
-  libraries?: LibraryWithSettingsData[];
-}
+export interface MetadataServiceData extends ServiceData {}
 
-export interface MetadataServicesData {
+export interface MetadataServicesData extends ServicesData {
   metadata_services: MetadataServiceData[];
-  protocols: ProtocolData[];
-  allLibraries?: LibraryData[];
 }

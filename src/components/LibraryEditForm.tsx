@@ -9,6 +9,7 @@ export interface LibraryEditFormProps {
   csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  urlBase: string;
 }
 
 export interface LibraryEditFormState {
@@ -104,7 +105,12 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     event.preventDefault();
 
     const data = new (window as any).FormData(this.refs["form"] as any);
-    this.props.editItem(data);
+    this.props.editItem(data).then(() => {
+      // If a new library was created, go back to the list of libraries.
+      if (!this.props.item) {
+        window.location.href = this.props.urlBase;
+      }
+    });
   }
 
   handleRandomSecretChange() {

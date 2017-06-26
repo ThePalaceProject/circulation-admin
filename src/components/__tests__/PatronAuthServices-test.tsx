@@ -7,7 +7,7 @@ import { shallow } from "enzyme";
 import { PatronAuthServices } from "../PatronAuthServices";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import PatronAuthServiceEditForm from "../PatronAuthServiceEditForm";
+import ServiceEditForm from "../ServiceEditForm";
 
 describe("PatronAuthServices", () => {
   let wrapper;
@@ -86,10 +86,10 @@ describe("PatronAuthServices", () => {
   });
 
   it("shows create form", () => {
-    let form = wrapper.find(PatronAuthServiceEditForm);
+    let form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(0);
     wrapper.setProps({ editOrCreate: "create" });
-    form = wrapper.find(PatronAuthServiceEditForm);
+    form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.be.undefined;
@@ -99,7 +99,7 @@ describe("PatronAuthServices", () => {
 
   it("shows edit form", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
-    let form = wrapper.find(PatronAuthServiceEditForm);
+    let form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.equal(data.patron_auth_services[0]);
@@ -111,7 +111,7 @@ describe("PatronAuthServices", () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(PatronAuthServiceEditForm);
+    let form = wrapper.find(ServiceEditForm);
 
     expect(editItem.callCount).to.equal(0);
     form.props().editItem();

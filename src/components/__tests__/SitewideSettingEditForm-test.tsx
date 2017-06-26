@@ -41,6 +41,7 @@ describe("SitewideSettingEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
+          urlBase={"url base"}
           />
       );
     });
@@ -56,6 +57,7 @@ describe("SitewideSettingEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
+          urlBase={"url base"}
           />
       );
       let message = wrapper.find("p");
@@ -106,6 +108,7 @@ describe("SitewideSettingEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
+          urlBase={"url base"}
           />
       );
     });

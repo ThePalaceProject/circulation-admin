@@ -4,14 +4,17 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import PatronAuthServiceEditForm from "../PatronAuthServiceEditForm";
+import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import { ServicesData } from "../../interfaces";
 
-describe("PatronAuthServiceEditForm", () => {
+describe("ServiceEditForm", () => {
+  let TestServiceEditForm: new(props: ServiceEditFormProps<ServicesData>) => React.Component<ServiceEditFormProps<ServicesData>, ServiceEditFormState> = ServiceEditForm;
   let wrapper;
-  let editPatronAuthService;
-  let patronAuthServiceData = {
+  let editService;
+  let urlBase = "/services";
+  let serviceData = {
     id: 2,
     protocol: "protocol 1",
     settings: {
@@ -28,6 +31,7 @@ describe("PatronAuthServiceEditForm", () => {
     {
       name: "protocol 1",
       label: "protocol 1 label",
+      sitewide: false,
       settings: [
         { key: "text_setting", label: "text label", optional: true },
         { key: "select_setting", label: "select label", type: "select",
@@ -50,6 +54,7 @@ describe("PatronAuthServiceEditForm", () => {
     {
       name: "protocol 2",
       label: "protocol 2 label",
+      sitewide: true,
       settings: [
         { key: "text_setting", label: "text label" },
         { key: "protocol2_setting", label: "protocol2 label" },
@@ -61,8 +66,8 @@ describe("PatronAuthServiceEditForm", () => {
     { "short_name": "nypl" },
     { "short_name": "bpl" }
   ];
-  let patronAuthServicesData = {
-    patron_auth_services: [patronAuthServiceData],
+  let servicesData = {
+    services: [serviceData],
     protocols: protocolsData,
     allLibraries: allLibraries
   };
@@ -85,13 +90,15 @@ describe("PatronAuthServiceEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editPatronAuthService = stub();
+      editService = stub();
+
       wrapper = shallow(
-        <PatronAuthServiceEditForm
+        <TestServiceEditForm
           csrfToken="token"
           disabled={false}
-          data={patronAuthServicesData}
-          editItem={editPatronAuthService}
+          data={servicesData}
+          editItem={editService}
+          urlBase={urlBase}
           />
       );
     });
@@ -105,7 +112,7 @@ describe("PatronAuthServiceEditForm", () => {
       let input = wrapper.find("input[name=\"id\"]");
       expect(input.length).to.equal(0);
 
-      wrapper.setProps({ item: patronAuthServiceData });
+      wrapper.setProps({ item: serviceData });
       input = wrapper.find("input[name=\"id\"]");
       expect(input.props().type).to.equal("hidden");
       expect(input.props().value).to.equal("2");
@@ -122,12 +129,13 @@ describe("PatronAuthServiceEditForm", () => {
       expect(children.at(1).text()).to.contain("protocol 2 label");
 
       wrapper = shallow(
-        <PatronAuthServiceEditForm
+        <TestServiceEditForm
           csrfToken="token"
           disabled={false}
-          data={patronAuthServicesData}
-          editItem={editPatronAuthService}
-          item={patronAuthServiceData}
+          data={servicesData}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
           />
       );
       input = editableInputByName("protocol");
@@ -151,12 +159,13 @@ describe("PatronAuthServiceEditForm", () => {
       expect(input.length).to.equal(0);
 
       wrapper = shallow(
-        <PatronAuthServiceEditForm
+        <TestServiceEditForm
           csrfToken="token"
           disabled={false}
-          data={patronAuthServicesData}
-          editItem={editPatronAuthService}
-          item={patronAuthServiceData}
+          data={servicesData}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
           />
       );
 
@@ -171,23 +180,92 @@ describe("PatronAuthServiceEditForm", () => {
       expect(input.length).to.equal(0);
     });
 
+    it("doesn't render libraries for sitewide protocol", () => {
+      let servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [servicesData.protocols[1]]
+      });
+
+      wrapper = shallow(
+        <TestServiceEditForm
+          csrfToken="token"
+          disabled={false}
+          data={servicesDataSitewide}
+          editItem={editService}
+          urlBase={urlBase}
+          />
+      );
+      let library = wrapper.find(".service-library");
+      expect(library.length).to.equal(0);
+
+      let serviceDataSitewide = Object.assign({}, servicesData, {
+        libraries: []
+      });
+      wrapper = shallow(
+        <TestServiceEditForm
+          csrfToken="token"
+          disabled={false}
+          data={servicesDataSitewide}
+          editItem={editService}
+          item={serviceDataSitewide}
+          urlBase={urlBase}
+          />
+      );
+      library = wrapper.find(".service-library");
+      expect(library.length).to.equal(0);
+    });
+
     it("renders libraries", () => {
-      let library = wrapper.find(".patron-auth-service-library");
+      let library = wrapper.find(".service-library");
       expect(library.length).to.equal(0);
 
       wrapper = shallow(
-        <PatronAuthServiceEditForm
+        <TestServiceEditForm
           csrfToken="token"
           disabled={false}
-          data={patronAuthServicesData}
-          editItem={editPatronAuthService}
-          item={patronAuthServiceData}
+          data={servicesData}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
           />
       );
-      library = wrapper.find(".patron-auth-service-library");
+      library = wrapper.find(".service-library");
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("nypl");
       expect(library.text()).to.contain("remove");
+    });
+
+    it("doesn't render library add dropdown for sitewide protocol", () => {
+      let servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [servicesData.protocols[1]]
+      });
+
+      wrapper = shallow(
+        <TestServiceEditForm
+          csrfToken="token"
+          disabled={false}
+          data={servicesDataSitewide}
+          editItem={editService}
+          urlBase={urlBase}
+          />
+      );
+      let select = wrapper.find("select[name='add-library']");
+      expect(select.length).to.equal(0);
+
+      let serviceDataSitewide = Object.assign({}, servicesData, {
+        libraries: []
+      });
+      wrapper = shallow(
+        <TestServiceEditForm
+          csrfToken="token"
+          disabled={false}
+          data={servicesDataSitewide}
+          editItem={editService}
+          item={serviceDataSitewide}
+          urlBase={urlBase}
+          />
+      );
+      select = wrapper.find("select[name='add-library']");
+      expect(select.length).to.equal(0);
     });
 
     it("renders library add dropdown and library fields", () => {
@@ -208,12 +286,13 @@ describe("PatronAuthServiceEditForm", () => {
       expect(input.props().setting).to.equal(protocolsData[0].library_settings[1]);
 
       wrapper = shallow(
-        <PatronAuthServiceEditForm
+        <TestServiceEditForm
           csrfToken="token"
           disabled={false}
-          data={patronAuthServicesData}
-          editItem={editPatronAuthService}
-          item={patronAuthServiceData}
+          data={servicesData}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
           />
       );
       select = wrapper.find("select[name='add-library']");
@@ -235,13 +314,14 @@ describe("PatronAuthServiceEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editPatronAuthService = stub().returns(new Promise<void>(resolve => resolve()));
+      editService = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
-        <PatronAuthServiceEditForm
+        <TestServiceEditForm
           csrfToken="token"
           disabled={false}
-          data={patronAuthServicesData}
-          editItem={editPatronAuthService}
+          data={servicesData}
+          editItem={editService}
+          urlBase={urlBase}
           />
       );
     });
@@ -290,7 +370,7 @@ describe("PatronAuthServiceEditForm", () => {
     });
 
     it("adds a library with settings", () => {
-      let library = wrapper.find(".patron-auth-service-library");
+      let library = wrapper.find(".service-library");
       expect(library.length).to.equal(0);
 
       let select = wrapper.find("select[name='add-library']") as any;
@@ -306,7 +386,7 @@ describe("PatronAuthServiceEditForm", () => {
       let addButton = wrapper.find("button.add-library");
       addButton.simulate("click");
 
-      library = wrapper.find(".patron-auth-service-library");
+      library = wrapper.find(".service-library");
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("bpl");
       expect(library.text()).to.contain("remove");
@@ -320,39 +400,40 @@ describe("PatronAuthServiceEditForm", () => {
 
     it("removes a library", () => {
       wrapper = shallow(
-        <PatronAuthServiceEditForm
+        <TestServiceEditForm
           csrfToken="token"
           disabled={false}
-          data={patronAuthServicesData}
-          editItem={editPatronAuthService}
-          item={patronAuthServiceData}
+          data={servicesData}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
           />
       );
-      let library = wrapper.find(".patron-auth-service-library");
+      let library = wrapper.find(".service-library");
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("nypl");
 
       let removeButton = library.find("i");
       removeButton.simulate("click");
 
-      library = wrapper.find(".patron-auth-service-library");
+      library = wrapper.find(".service-library");
       expect(library.length).to.equal(0);
     });
 
     it("submits data", () => {
-      wrapper.setProps({ item: patronAuthServiceData });
+      wrapper.setProps({ item: serviceData });
 
       let form = wrapper.find("form");
       form.simulate("submit");
 
-      expect(editPatronAuthService.callCount).to.equal(1);
-      let formData = editPatronAuthService.args[0][0];
+      expect(editService.callCount).to.equal(1);
+      let formData = editService.args[0][0];
       expect(formData.get("csrf_token")).to.equal("token");
       expect(formData.get("id")).to.equal("2");
       expect(formData.get("protocol")).to.equal("protocol 1");
       expect(formData.get("text_setting")).to.equal("text setting");
       expect(formData.get("select_setting")).to.equal("option2");
-      expect(formData.get("libraries")).to.equal(JSON.stringify(patronAuthServiceData.libraries));
+      expect(formData.get("libraries")).to.equal(JSON.stringify(serviceData.libraries));
     });
   });
 });

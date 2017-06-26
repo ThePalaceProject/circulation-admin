@@ -7,7 +7,7 @@ import { shallow } from "enzyme";
 import { AdminAuthServices } from "../AdminAuthServices";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import AdminAuthServiceEditForm from "../AdminAuthServiceEditForm";
+import ServiceEditForm from "../ServiceEditForm";
 
 describe("AdminAuthServices", () => {
   let wrapper;
@@ -75,10 +75,10 @@ describe("AdminAuthServices", () => {
   });
 
   it("shows create form", () => {
-    let form = wrapper.find(AdminAuthServiceEditForm);
+    let form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(0);
     wrapper.setProps({ editOrCreate: "create" });
-    form = wrapper.find(AdminAuthServiceEditForm);
+    form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.be.undefined;
@@ -88,7 +88,7 @@ describe("AdminAuthServices", () => {
 
   it("shows edit form", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "OAuth provider" });
-    let form = wrapper.find(AdminAuthServiceEditForm);
+    let form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.equal(data.admin_auth_services[0]);
@@ -100,7 +100,7 @@ describe("AdminAuthServices", () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(AdminAuthServiceEditForm);
+    let form = wrapper.find(ServiceEditForm);
 
     expect(editItem.callCount).to.equal(0);
     form.props().editItem();

@@ -8,6 +8,7 @@ export interface SitewideSettingEditFormProps {
   csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  urlBase: string;
 }
 
 export default class SitewideSettingEditForm extends React.Component<SitewideSettingEditFormProps, void> {

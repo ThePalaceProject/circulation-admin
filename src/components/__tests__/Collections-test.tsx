@@ -7,13 +7,14 @@ import { shallow } from "enzyme";
 import { Collections } from "../Collections";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import CollectionEditForm from "../CollectionEditForm";
+import ServiceEditForm from "../ServiceEditForm";
 
 describe("Collections", () => {
   let wrapper;
   let fetchData;
   let editItem;
   let collectionsData = [{
+    id: 2,
     name: "name",
     protocol: "OPDS Import",
     url: "test.com",
@@ -66,7 +67,7 @@ describe("Collections", () => {
     expect(collection.length).to.equal(1);
     expect(collection.text()).to.contain("name");
     let editLink = collection.find("a");
-    expect(editLink.props().href).to.equal("/admin/web/config/collections/edit/name");
+    expect(editLink.props().href).to.equal("/admin/web/config/collections/edit/2");
   });
 
   it("shows create link", () => {
@@ -76,10 +77,10 @@ describe("Collections", () => {
   });
 
   it("shows create form", () => {
-    let form = wrapper.find(CollectionEditForm);
+    let form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(0);
     wrapper.setProps({ editOrCreate: "create" });
-    form = wrapper.find(CollectionEditForm);
+    form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.be.undefined;
@@ -88,8 +89,8 @@ describe("Collections", () => {
   });
 
   it("shows edit form", () => {
-    wrapper.setProps({ editOrCreate: "edit", identifier: "name" });
-    let form = wrapper.find(CollectionEditForm);
+    wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
+    let form = wrapper.find(ServiceEditForm);
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(data);
     expect(form.props().item).to.equal(collectionsData[0]);
@@ -101,7 +102,7 @@ describe("Collections", () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(CollectionEditForm);
+    let form = wrapper.find(ServiceEditForm);
 
     expect(editItem.callCount).to.equal(0);
     form.props().editItem();
