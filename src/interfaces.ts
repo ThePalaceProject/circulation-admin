@@ -207,3 +207,9 @@ export interface MetadataServiceData extends ServiceData {}
 export interface MetadataServicesData extends ServicesData {
   metadata_services: MetadataServiceData[];
 }
+
+export interface AnalyticsServiceData extends ServiceData {}
+
+export interface AnalyticsServicesData extends ServicesData {
+  analytics_services: AnalyticsServiceData[];
+}

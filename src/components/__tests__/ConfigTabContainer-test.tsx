@@ -13,6 +13,7 @@ import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
+import AnalyticsServices from "../AnalyticsServices";
 import { mockRouterContext } from "./routing";
 
 
@@ -54,7 +55,7 @@ describe("ConfigTabContainer", () => {
     const componentClasses = [
       Libraries, Collections, AdminAuthServices,
       IndividualAdmins, PatronAuthServices, SitewideSettings,
-      MetadataServices
+      MetadataServices, AnalyticsServices
     ];
     for (const componentClass of componentClasses) {
       const component = wrapper.find(componentClass);

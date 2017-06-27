@@ -4,7 +4,7 @@ import {
   LibrariesData, CollectionsData,
   AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData,
-  MetadataServicesData
+  MetadataServicesData, AnalyticsServicesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -35,6 +35,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
   static readonly METADATA_SERVICES = "METADATA_SERVICES";
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
+  static readonly ANALYTICS_SERVICES = "ANALYTICS_SERVICES";
+  static readonly EDIT_ANALYTICS_SERVICE = "EDIT_ANALYTICS_SERVICE";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -292,5 +294,15 @@ export default class ActionCreator extends BaseActionCreator {
   editMetadataService(data: FormData) {
     const url = "/admin/metadata_services";
     return this.postForm(ActionCreator.EDIT_METADATA_SERVICE, url, data).bind(this);
+  }
+
+  fetchAnalyticsServices() {
+    const url = "/admin/analytics_services";
+    return this.fetchJSON<AnalyticsServicesData>(ActionCreator.ANALYTICS_SERVICES, url).bind(this);
+  }
+
+  editAnalyticsService(data: FormData) {
+    const url = "/admin/analytics_services";
+    return this.postForm(ActionCreator.EDIT_ANALYTICS_SERVICE, url, data).bind(this);
   }
 }
