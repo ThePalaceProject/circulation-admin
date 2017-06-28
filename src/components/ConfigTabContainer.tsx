@@ -6,6 +6,7 @@ import IndividualAdmins from "./IndividualAdmins";
 import PatronAuthServices from "./PatronAuthServices";
 import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
+import AnalyticsServices from "./AnalyticsServices";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -66,6 +67,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       ),
       metadata: (
         <MetadataServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      ),
+      analytics: (
+        <AnalyticsServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
