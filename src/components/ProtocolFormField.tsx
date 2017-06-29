@@ -144,7 +144,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
 
   randomize() {
     const element = (this.refs["element"] as any);
-    const chars = "1234567890abcdef";
+    const chars = "1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()";
     let random = "";
     for (let i = 0; i < 32; i++) {
       random += chars.charAt(Math.floor(Math.random() * chars.length));
