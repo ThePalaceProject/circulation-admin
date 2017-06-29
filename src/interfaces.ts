@@ -106,8 +106,6 @@ export interface LibraryData {
   uuid?: string;
   name?: string;
   short_name?: string;
-  library_registry_short_name?: string;
-  library_registry_shared_secret?: string;
   settings?: {
     [key: string]: string | string[];
   };
@@ -133,6 +131,7 @@ export interface SettingData {
   label: string;
   default?: string;
   optional?: boolean;
+  randomizable?: boolean;
   type?: string;
   options?: SettingData[];
 }
@@ -212,4 +211,10 @@ export interface AnalyticsServiceData extends ServiceData {}
 
 export interface AnalyticsServicesData extends ServicesData {
   analytics_services: AnalyticsServiceData[];
+}
+
+export interface DRMServiceData extends ServiceData {}
+
+export interface DRMServicesData extends ServicesData {
+  drm_services: DRMServiceData[];
 }

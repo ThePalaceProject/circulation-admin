@@ -4,7 +4,8 @@ import {
   LibrariesData, CollectionsData,
   AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData,
-  MetadataServicesData, AnalyticsServicesData
+  MetadataServicesData, AnalyticsServicesData,
+  DRMServicesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -37,6 +38,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
   static readonly ANALYTICS_SERVICES = "ANALYTICS_SERVICES";
   static readonly EDIT_ANALYTICS_SERVICE = "EDIT_ANALYTICS_SERVICE";
+  static readonly DRM_SERVICES = "DRM_SERVICES";
+  static readonly EDIT_DRM_SERVICE = "EDIT_DRM_SERVICE";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -304,5 +307,15 @@ export default class ActionCreator extends BaseActionCreator {
   editAnalyticsService(data: FormData) {
     const url = "/admin/analytics_services";
     return this.postForm(ActionCreator.EDIT_ANALYTICS_SERVICE, url, data).bind(this);
+  }
+
+  fetchDRMServices() {
+    const url = "/admin/drm_services";
+    return this.fetchJSON<DRMServicesData>(ActionCreator.DRM_SERVICES, url).bind(this);
+  }
+
+  editDRMService(data: FormData) {
+    const url = "/admin/drm_services";
+    return this.postForm(ActionCreator.EDIT_DRM_SERVICE, url, data).bind(this);
   }
 }

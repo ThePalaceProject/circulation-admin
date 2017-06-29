@@ -52,6 +52,41 @@ describe("ProtocolFormField", () => {
     expect(input.prop("value")).to.be.undefined;
   });
 
+  it("renders randomizable setting", () => {
+    const setting = {
+      key: "setting",
+      label: "label",
+      randomizable: true
+    };
+    const wrapper = mount(
+      <ProtocolFormField
+        setting={setting}
+        disabled={false}
+        />
+    );
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    expect(input.prop("disabled")).to.equal(false);
+    expect(input.prop("name")).to.equal("setting");
+    expect(input.prop("value")).to.be.undefined;
+    let button = wrapper.find("button");
+    expect(button.length).to.equal(1);
+    expect(button.prop("disabled")).to.equal(false);
+    expect(button.text()).to.contain("random");
+
+    button.simulate("click");
+    expect((wrapper.instance() as ProtocolFormField).getValue()).to.be.ok;
+    expect((wrapper.instance() as ProtocolFormField).getValue().length).to.equal(32);
+
+    wrapper.setProps({ value: "test" });
+    input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    expect(input.prop("value")).to.equal("test");
+    button = wrapper.find("button");
+    expect(button.length).to.equal(0);
+  });
+
   it("renders setting with default", () => {
     const setting = {
       key: "setting",

@@ -20,21 +20,35 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     };
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
+    this.randomize = this.randomize.bind(this);
   }
 
   render(): JSX.Element {
     const setting = this.props.setting;
     if (setting.type === "text" || setting.type === undefined) {
       return (
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          name={setting.key}
-          label={setting.label + (setting.optional ? " (optional)" : "")}
-          value={this.props.value || setting.default}
-          ref="element"
-          />
+        <div className={setting.randomizable ? "randomizable" : ""}>
+          <EditableInput
+            elementType="input"
+            type="text"
+            disabled={this.props.disabled}
+            name={setting.key}
+            label={setting.label + (setting.optional ? " (optional)" : "")}
+            value={this.props.value || setting.default}
+            ref="element"
+            />
+            { setting.randomizable && !this.props.value &&
+              <div className="text-right">
+                <button
+                  className="btn btn-default"
+                  disabled={this.props.disabled}
+                  onClick={this.randomize}
+                  type="button">
+                  Set to random value
+                </button>
+              </div>
+            }
+        </div>
       );
     } else if (setting.type === "select") {
       return (
@@ -126,5 +140,15 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     const listItem = (this.refs["addListItem"] as any).getValue();
     this.setState({ listItems: this.state.listItems.concat(listItem) });
     (this.refs["addListItem"] as any).clear();
+  }
+
+  randomize() {
+    const element = (this.refs["element"] as any);
+    const chars = "1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()";
+    let random = "";
+    for (let i = 0; i < 32; i++) {
+      random += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    element.setState({ value: random });
   }
 }
