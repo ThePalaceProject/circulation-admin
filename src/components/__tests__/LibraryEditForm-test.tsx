@@ -15,7 +15,6 @@ describe("LibraryEditForm", () => {
     uuid: "uuid",
     name: "name",
     short_name: "short_name",
-    library_registry_short_name: "registry name",
     settings: {
       "privacy-policy": "http://privacy",
       "copyright": "http://copyright"
@@ -88,44 +87,6 @@ describe("LibraryEditForm", () => {
       expect(input.props().value).to.equal("short_name");
     });
 
-    it("renders registry short name", () => {
-      let input = editableInputByName("library_registry_short_name");
-      expect(input.props().value).not.to.be.ok;
-
-      wrapper.setProps({ item: libraryData });
-      input = editableInputByName("library_registry_short_name");
-      expect(input.props().value).to.equal("registry name");
-    });
-
-    it("renders random registry shared secret checkbox", () => {
-      let input = editableInputByName("random_library_registry_shared_secret");
-      expect(input.props().label).to.contain("random");
-      expect(input.props().type).to.equal("checkbox");
-
-      // it's still there if there's a library but no shared secret
-      wrapper.setProps({ item: libraryData });
-      input = editableInputByName("random_library_registry_shared_secret");
-      expect(input.props().label).to.contain("random");
-      expect(input.props().type).to.equal("checkbox");
-
-      // but it's gone if there's a library with a secret
-      libraryData = Object.assign({}, libraryData, {
-        library_registry_shared_secret: "secret"
-      });
-      wrapper.setProps({ item: libraryData });
-      input = editableInputByName("random_library_registry_shared_secret");
-      expect(input.length).to.equal(0);
-    });
-
-    it("renders registry shared secret", () => {
-      let input = editableInputByName("library_registry_shared_secret");
-      expect(input.props().value).not.to.be.ok;
-
-      wrapper.setProps({ item: libraryData });
-      input = editableInputByName("library_registry_shared_secret");
-      expect(input.props().value).to.equal("secret");
-    });
-
     it("renders settings", () => {
       let privacyInput = protocolFormFieldByKey("privacy-policy");
       expect(privacyInput.props().setting).to.equal(settingFields[0]);
@@ -156,20 +117,6 @@ describe("LibraryEditForm", () => {
       );
     });
 
-    it("shows and hides secret field when random secret is selected/unselected", () => {
-      let randomSecret = editableInputByName("random_library_registry_shared_secret");
-      let secret = editableInputByName("library_registry_shared_secret");
-      expect(secret.length).to.equal(1);
-
-      randomSecret.find("input").simulate("change");
-      secret = editableInputByName("library_registry_shared_secret");
-      expect(secret.length).to.equal(0);
-
-      randomSecret.find("input").simulate("change");
-      secret = editableInputByName("library_registry_shared_secret");
-      expect(secret.length).to.equal(1);
-    });
-
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
@@ -182,7 +129,6 @@ describe("LibraryEditForm", () => {
       expect(formData.get("uuid")).to.equal("uuid");
       expect(formData.get("name")).to.equal("name");
       expect(formData.get("short_name")).to.equal("short_name");
-      expect(formData.get("library_registry_short_name")).to.equal("registry name");
       expect(formData.get("privacy-policy")).to.equal("http://privacy");
       expect(formData.get("copyright")).to.equal("http://copyright");
     });

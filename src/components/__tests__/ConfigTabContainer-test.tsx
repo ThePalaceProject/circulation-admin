@@ -14,6 +14,7 @@ import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
 import AnalyticsServices from "../AnalyticsServices";
+import DRMServices from "../DRMServices";
 import { mockRouterContext } from "./routing";
 
 
@@ -49,13 +50,14 @@ describe("ConfigTabContainer", () => {
     expect(linkTexts).to.contain("Patron Authentication");
     expect(linkTexts).to.contain("Sitewide Settings");
     expect(linkTexts).to.contain("Metadata");
+    expect(linkTexts).to.contain("DRM");
   });
 
   it("shows components", () => {
     const componentClasses = [
       Libraries, Collections, AdminAuthServices,
       IndividualAdmins, PatronAuthServices, SitewideSettings,
-      MetadataServices, AnalyticsServices
+      MetadataServices, AnalyticsServices, DRMServices
     ];
     for (const componentClass of componentClasses) {
       const component = wrapper.find(componentClass);

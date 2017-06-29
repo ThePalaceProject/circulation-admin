@@ -12,19 +12,7 @@ export interface LibraryEditFormProps {
   urlBase: string;
 }
 
-export interface LibraryEditFormState {
-  useRandomSecret: boolean;
-}
-
-export default class LibraryEditForm extends React.Component<LibraryEditFormProps, LibraryEditFormState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      useRandomSecret: false
-    };
-    this.handleRandomSecretChange = this.handleRandomSecretChange.bind(this);
-  }
-
+export default class LibraryEditForm extends React.Component<LibraryEditFormProps, void> {
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
@@ -54,35 +42,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           label="Short name"
           value={this.props.item && this.props.item.short_name}
           />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          name="library_registry_short_name"
-          label="Short name (for library registry)"
-          value={this.props.item && this.props.item.library_registry_short_name}
-          />
-        { (!this.props.item || !this.props.item.library_registry_shared_secret) &&
-          <EditableInput
-            elementType="input"
-            type="checkbox"
-            disabled={this.props.disabled}
-            name="random_library_registry_shared_secret"
-            label="Set the library registry shared secret to a random value"
-            onChange={this.handleRandomSecretChange}
-            ref="randomSecret"
-            />
-        }
-        { !this.state.useRandomSecret &&
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            name="library_registry_shared_secret"
-            label="Shared secret (for library registry)"
-            value={this.props.item && this.props.item.library_registry_shared_secret}
-            />
-        }
         { this.props.data && this.props.data.settings && this.props.data.settings.map(setting =>
           <ProtocolFormField
             setting={setting}
@@ -111,10 +70,5 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         window.location.href = this.props.urlBase;
       }
     });
-  }
-
-  handleRandomSecretChange() {
-    const value = !this.state.useRandomSecret;
-    this.setState({ useRandomSecret: value });
   }
 }
