@@ -37,7 +37,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             value={this.props.value || setting.default}
             ref="element"
             />
-            { setting.randomizable &&
+            { setting.randomizable && !this.props.value &&
               <div className="text-right">
                 <button
                   className="btn btn-default"

@@ -78,6 +78,13 @@ describe("ProtocolFormField", () => {
     button.simulate("click");
     expect((wrapper.instance() as ProtocolFormField).getValue()).to.be.ok;
     expect((wrapper.instance() as ProtocolFormField).getValue().length).to.equal(32);
+
+    wrapper.setProps({ value: "test" });
+    input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    expect(input.prop("value")).to.equal("test");
+    button = wrapper.find("button");
+    expect(button.length).to.equal(0);
   });
 
   it("renders setting with default", () => {
