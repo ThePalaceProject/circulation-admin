@@ -9,6 +9,7 @@ import MetadataServices from "./MetadataServices";
 import AnalyticsServices from "./AnalyticsServices";
 import DRMServices from "./DRMServices";
 import CDNServices from "./CDNServices";
+import SearchServices from "./SearchServices";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -93,6 +94,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       ),
       cdn: (
         <CDNServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      ),
+      search: (
+        <SearchServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}

@@ -37,6 +37,10 @@ describe("EditableConfigList", () => {
     }
   }
 
+  class OneThingEditableConfigList extends ThingEditableConfigList {
+    limitOne = true;
+  }
+
   let wrapper;
   let fetchData;
   let editItem;
@@ -91,6 +95,33 @@ describe("EditableConfigList", () => {
     let createLink = wrapper.find("div > a");
     expect(createLink.length).to.equal(1);
     expect(createLink.props().href).to.equal("/admin/things/create");
+  });
+
+  it("hides create link if only one item is allowed and it already exists", () => {
+    wrapper = shallow(
+      <OneThingEditableConfigList
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        csrfToken="token"
+        isFetching={false}
+        />
+    );
+    let createLink = wrapper.find("div > a");
+    expect(createLink.length).to.equal(0);
+
+    wrapper = shallow(
+      <OneThingEditableConfigList
+        data={{ things: [] }}
+        fetchData={fetchData}
+        editItem={editItem}
+        csrfToken="token"
+        isFetching={false}
+        />
+    );
+    createLink = wrapper.find("div > a");
+    expect(createLink.length).to.equal(1);
+    expect(createLink.prop("href")).to.equal("/admin/things/create");
   });
 
   it("shows create form", () => {
