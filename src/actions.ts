@@ -5,7 +5,7 @@ import {
   AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData,
   MetadataServicesData, AnalyticsServicesData,
-  DRMServicesData
+  DRMServicesData, CDNServicesData, SearchServicesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -40,6 +40,10 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_ANALYTICS_SERVICE = "EDIT_ANALYTICS_SERVICE";
   static readonly DRM_SERVICES = "DRM_SERVICES";
   static readonly EDIT_DRM_SERVICE = "EDIT_DRM_SERVICE";
+  static readonly CDN_SERVICES = "CDN_SERVICES";
+  static readonly EDIT_CDN_SERVICE = "EDIT_CDN_SERVICE";
+  static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
+  static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -317,5 +321,25 @@ export default class ActionCreator extends BaseActionCreator {
   editDRMService(data: FormData) {
     const url = "/admin/drm_services";
     return this.postForm(ActionCreator.EDIT_DRM_SERVICE, url, data).bind(this);
+  }
+
+  fetchCDNServices() {
+    const url = "/admin/cdn_services";
+    return this.fetchJSON<CDNServicesData>(ActionCreator.CDN_SERVICES, url).bind(this);
+  }
+
+  editCDNService(data: FormData) {
+    const url = "/admin/cdn_services";
+    return this.postForm(ActionCreator.EDIT_CDN_SERVICE, url, data).bind(this);
+  }
+
+  fetchSearchServices() {
+    const url = "/admin/search_services";
+    return this.fetchJSON<SearchServicesData>(ActionCreator.SEARCH_SERVICES, url).bind(this);
+  }
+
+  editSearchService(data: FormData) {
+    const url = "/admin/search_services";
+    return this.postForm(ActionCreator.EDIT_SEARCH_SERVICE, url, data).bind(this);
   }
 }

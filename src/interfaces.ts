@@ -218,3 +218,15 @@ export interface DRMServiceData extends ServiceData {}
 export interface DRMServicesData extends ServicesData {
   drm_services: DRMServiceData[];
 }
+
+export interface CDNServiceData extends ServiceData {}
+
+export interface CDNServicesData extends ServicesData {
+  cdn_services: CDNServiceData[];
+}
+
+export interface SearchServiceData extends ServiceData {}
+
+export interface SearchServicesData extends ServicesData {
+  search_services: SearchServiceData[];
+}

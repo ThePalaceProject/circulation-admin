@@ -33,6 +33,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
   abstract urlBase: string;
   abstract identifierKey: string;
   abstract labelKey: string;
+  limitOne = false;
 
   constructor(props) {
     super(props);
@@ -66,7 +67,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
           </div>
         }
 
-        { !this.props.isFetching && !this.props.editOrCreate &&
+        { !this.props.isFetching && !this.props.editOrCreate && (!this.limitOne || this.props.data[this.listDataKey] && this.props.data[this.listDataKey].length === 0) &&
           <a href={this.urlBase + "create"}>Create a new {this.itemTypeName}</a>
         }
 

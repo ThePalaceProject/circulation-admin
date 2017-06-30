@@ -8,6 +8,8 @@ import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
 import AnalyticsServices from "./AnalyticsServices";
 import DRMServices from "./DRMServices";
+import CDNServices from "./CDNServices";
+import SearchServices from "./SearchServices";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -89,6 +91,22 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
+      ),
+      cdn: (
+        <CDNServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      ),
+      search: (
+        <SearchServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
       )
     };
   }
@@ -111,6 +129,8 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       return "Sitewide Settings";
     } else if (name === "drm") {
       return "DRM";
+    } else if (name === "cdn") {
+      return "CDN";
     } else {
       return super.tabDisplayName(name);
     }

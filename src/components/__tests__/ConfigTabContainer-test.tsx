@@ -15,6 +15,8 @@ import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
 import AnalyticsServices from "../AnalyticsServices";
 import DRMServices from "../DRMServices";
+import CDNServices from "../CDNServices";
+import SearchServices from "../SearchServices";
 import { mockRouterContext } from "./routing";
 
 
@@ -51,13 +53,15 @@ describe("ConfigTabContainer", () => {
     expect(linkTexts).to.contain("Sitewide Settings");
     expect(linkTexts).to.contain("Metadata");
     expect(linkTexts).to.contain("DRM");
+    expect(linkTexts).to.contain("CDN");
   });
 
   it("shows components", () => {
     const componentClasses = [
       Libraries, Collections, AdminAuthServices,
       IndividualAdmins, PatronAuthServices, SitewideSettings,
-      MetadataServices, AnalyticsServices, DRMServices
+      MetadataServices, AnalyticsServices, DRMServices,
+      CDNServices, SearchServices
     ];
     for (const componentClass of componentClasses) {
       const component = wrapper.find(componentClass);
