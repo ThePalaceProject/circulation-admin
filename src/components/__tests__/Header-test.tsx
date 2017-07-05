@@ -5,6 +5,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import { Header } from "../Header";
+import EditableInput from "../EditableInput";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
 
@@ -28,7 +29,7 @@ describe("Header", () => {
     });
 
     it("shows library dropdown when libraries are available", () => {
-      let select = wrapper.find("select");
+      let select = wrapper.find(EditableInput);
       expect(select.length).to.equal(0);
 
       let libraries = [
@@ -36,8 +37,9 @@ describe("Header", () => {
         { short_name: "bpl" }
       ];
       wrapper.setProps({ libraries });
-      select = wrapper.find("select");
+      select = wrapper.find(EditableInput);
       expect(select.length).to.equal(1);
+      expect(select.props().elementType).to.equal("select");
       expect(select.props().value).to.equal("nypl");
       let options = select.children();
       expect(options.length).to.equal(2);
@@ -47,11 +49,11 @@ describe("Header", () => {
       expect(options.at(1).props().value).to.equal("bpl");
 
       wrapper.setContext({ library: "bpl" });
-      select = wrapper.find("select");
+      select = wrapper.find(EditableInput);
       expect(select.props().value).to.equal("bpl");
 
       wrapper.setContext({});
-      select = wrapper.find("select");
+      select = wrapper.find(EditableInput);
       options = select.children();
       expect(options.length).to.equal(3);
       expect(options.at(0).text()).to.equal("Select a library");

@@ -5,6 +5,7 @@ import { Store } from "redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
+import EditableInput from "./EditableInput";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
@@ -36,7 +37,8 @@ export class Header extends React.Component<HeaderProps, any> {
             Admin
           </Navbar.Brand>
           { this.props.libraries && this.props.libraries.length > 0 &&
-            <select
+            <EditableInput
+              elementType="select"
               ref="library"
               value={this.context.library}
               onChange={this.changeLibrary}
@@ -48,7 +50,7 @@ export class Header extends React.Component<HeaderProps, any> {
                   <option key={library.short_name} value={library.short_name}>{library.name || library.short_name}</option>
                 )
               }
-            </select>
+            </EditableInput>
           }
           <Navbar.Toggle />
         </Navbar.Header>
@@ -101,7 +103,7 @@ export class Header extends React.Component<HeaderProps, any> {
   }
 
   changeLibrary() {
-    let library = (this.refs["library"] as any).value;
+    let library = (this.refs["library"] as any).getValue();
     if (library) {
       this.context.router.push("/admin/web/collection/" + library + "%2Fgroups");
     }

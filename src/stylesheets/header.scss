@@ -5,7 +5,12 @@
   margin-top: -5px;
 }
 
-.navbar-header select {
-  color: $pagetextcolor;
-  margin-top: 15px;
+.navbar-header .form-group {
+  display: inline-block;
+  margin-top: 7px;
+}
+
+.navbar-header .form-control {
+  display: inline-block;
+  width: auto;
 }
