@@ -6,7 +6,6 @@ import { State } from "../reducers/index";
 
 export interface ContextProviderProps extends React.Props<any> {
   csrfToken: string;
-  homeUrl: string;
   showCircEventsDownload?: boolean;
   settingUp?: boolean;
 }
@@ -49,7 +48,6 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     editorStore: React.PropTypes.object.isRequired,
     pathFor: React.PropTypes.func.isRequired,
     csrfToken: React.PropTypes.string.isRequired,
-    homeUrl: React.PropTypes.string.isRequired,
     showCircEventsDownload: React.PropTypes.bool.isRequired,
     settingUp: React.PropTypes.bool.isRequired
   };
@@ -59,7 +57,6 @@ export default class ContextProvider extends React.Component<ContextProviderProp
       editorStore: this.store,
       pathFor: this.pathFor,
       csrfToken: this.props.csrfToken,
-      homeUrl: this.props.homeUrl,
       showCircEventsDownload: this.props.showCircEventsDownload || false,
       settingUp: this.props.settingUp || false
     };
