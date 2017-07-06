@@ -41,7 +41,8 @@ describe("SitewideSettingEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
-          urlBase={"url base"}
+          urlBase="url base"
+          listDataKey="settings"
           />
       );
     });
@@ -57,7 +58,8 @@ describe("SitewideSettingEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
-          urlBase={"url base"}
+          urlBase="url base"
+          listDataKey="settings"
           />
       );
       let message = wrapper.find("p");
@@ -108,7 +110,8 @@ describe("SitewideSettingEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
-          urlBase={"url base"}
+          urlBase="url base"
+          listDataKey="settings"
           />
       );
     });

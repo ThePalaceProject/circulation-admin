@@ -142,6 +142,7 @@ export interface ProtocolData {
   description?: string;
   sitewide?: boolean;
   settings: SettingData[];
+  child_settings?: SettingData[];
   library_settings?: SettingData[];
 }
 
@@ -149,6 +150,7 @@ export interface ServiceData {
   id?: string | number;
   name?: string;
   protocol: string;
+  parent_id?: string | number;
   settings?: {
     [key: string]: string;
   };

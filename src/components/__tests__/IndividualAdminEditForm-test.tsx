@@ -32,7 +32,8 @@ describe("IndividualAdminEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editIndividualAdmin}
-          urlBase={"url base"}
+          urlBase="url base"
+          listDataKey="admins"
           />
       );
     });
@@ -71,7 +72,8 @@ describe("IndividualAdminEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editIndividualAdmin}
-          urlBase={"url base"}
+          urlBase="url base"
+          listDataKey="admins"
           />
       );
     });

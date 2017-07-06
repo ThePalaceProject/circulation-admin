@@ -9,6 +9,7 @@ export interface SitewideSettingEditFormProps {
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
+  listDataKey: string;
 }
 
 export default class SitewideSettingEditForm extends React.Component<SitewideSettingEditFormProps, void> {
