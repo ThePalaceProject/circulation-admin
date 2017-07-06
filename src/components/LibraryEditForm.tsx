@@ -10,6 +10,7 @@ export interface LibraryEditFormProps {
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
+  listDataKey: string;
 }
 
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, void> {

@@ -24,6 +24,7 @@ export interface EditFormProps<T, U> {
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
+  listDataKey: string;
 }
 
 export abstract class EditableConfigList<T, U> extends React.Component<EditableConfigListProps<T>, void> {
@@ -80,6 +81,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
               disabled={this.props.isFetching}
               editItem={this.editItem}
               urlBase={this.urlBase}
+              listDataKey={this.listDataKey}
               />
           </div>
         }
@@ -94,6 +96,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
               disabled={this.props.isFetching}
               editItem={this.editItem}
               urlBase={this.urlBase}
+              listDataKey={this.listDataKey}
               />
           </div>
         }

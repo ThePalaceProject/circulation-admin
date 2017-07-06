@@ -9,6 +9,7 @@ export interface IndividualAdminEditFormProps {
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
+  listDataKey: string;
 }
 
 export interface IndividualAdminEditFormContext {

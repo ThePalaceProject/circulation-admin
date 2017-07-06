@@ -50,7 +50,8 @@ describe("LibraryEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editLibrary}
-          urlBase={"url base"}
+          urlBase="url base"
+          listDataKey="libraries"
           />
       );
     });
@@ -112,7 +113,8 @@ describe("LibraryEditForm", () => {
           csrfToken="token"
           disabled={false}
           editItem={editLibrary}
-          urlBase={"url base"}
+          urlBase="url base"
+          listDataKey="libraries"
           />
       );
     });

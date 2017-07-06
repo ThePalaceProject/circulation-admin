@@ -134,6 +134,7 @@ describe("EditableConfigList", () => {
     expect(form.props().item).to.be.undefined;
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
+    expect(form.props().listDataKey).to.equal("things");
   });
 
   it("shows edit form", () => {
@@ -144,6 +145,7 @@ describe("EditableConfigList", () => {
     expect(form.props().item).to.equal(thingData);
     expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
+    expect(form.props().listDataKey).to.equal("things");
   });
 
   it("fetches data on mount and passes edit function to form", async () => {
