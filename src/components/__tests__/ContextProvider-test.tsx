@@ -14,8 +14,7 @@ describe("ContextProvider", () => {
   beforeEach(() => {
     wrapper = shallow(
       <ContextProvider
-        csrfToken="token"
-        homeUrl="home url">
+        csrfToken="token">
         <FakeChild />
       </ContextProvider>
     );
@@ -27,7 +26,6 @@ describe("ContextProvider", () => {
     expect(context.editorStore.getState().catalog).to.be.ok;
     expect(context.pathFor).to.equal(wrapper.instance().pathFor);
     expect(context.csrfToken).to.equal("token");
-    expect(context.homeUrl).to.equal("home url");
   });
 
   it("renders child", () => {

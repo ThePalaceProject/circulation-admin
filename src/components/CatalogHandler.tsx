@@ -19,25 +19,34 @@ export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
   };
 }
 
-export interface CatalogHandlerContext {
-  homeUrl: string;
-}
-
 export default class CatalogHandler extends React.Component<CatalogHandlerProps, any> {
-  context: CatalogHandlerContext;
-
-  static contextTypes: React.ValidationMap<CatalogHandlerContext> = {
-    homeUrl: React.PropTypes.string.isRequired
-  };
-
   static childContextTypes: React.ValidationMap<any> = {
-    tab: React.PropTypes.string
+    tab: React.PropTypes.string,
+    library: React.PropTypes.string
   };
 
   getChildContext() {
     return {
-      tab: this.props.params.tab
+      tab: this.props.params.tab,
+      library: this.getLibrary()
     };
+  }
+
+  getLibrary(): string {
+    let { collectionUrl, bookUrl } = this.props.params;
+    if (collectionUrl) {
+      let urlParts = collectionUrl.split("/");
+      if (urlParts.length > 0) {
+        return urlParts[0];
+      }
+    }
+    if (bookUrl) {
+      let urlParts = bookUrl.split("/");
+      if (urlParts.length > 0) {
+        return urlParts[0];
+      }
+    }
+    return null;
   }
 
   expandCollectionUrl(url: string): string {
@@ -53,11 +62,16 @@ export default class CatalogHandler extends React.Component<CatalogHandlerProps,
   }
 
   render(): JSX.Element {
+    if (!this.getLibrary()) {
+      return (
+        <Header />
+      );
+    }
+
     let { collectionUrl, bookUrl } = this.props.params;
 
     collectionUrl =
       this.expandCollectionUrl(collectionUrl) ||
-      this.context.homeUrl ||
       null;
     bookUrl = this.expandBookUrl(bookUrl) || null;
 
