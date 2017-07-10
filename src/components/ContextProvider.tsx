@@ -39,9 +39,17 @@ export default class ContextProvider extends React.Component<ContextProviderProp
   }
 
   prepareBookUrl(url: string): string {
-    return encodeURIComponent(
-      url.replace(document.location.origin + "/works/", "").replace(/\/$/, "").replace(/^\//, "")
-    );
+    const regexp = new RegExp(document.location.origin + "/(.*)/works/(.*)");
+    const match = regexp.exec(url);
+    if (match) {
+      const library = match[1];
+      const work = match[2];
+      return encodeURIComponent(
+        library + "/" + work
+      );
+    } else {
+      return url;
+    }
   }
 
   static childContextTypes: React.ValidationMap<any> = {

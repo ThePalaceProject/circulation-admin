@@ -28,12 +28,11 @@ export default class CatalogHandler extends React.Component<CatalogHandlerProps,
   getChildContext() {
     return {
       tab: this.props.params.tab,
-      library: this.getLibrary()
+      library: this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl)
     };
   }
 
-  getLibrary(): string {
-    let { collectionUrl, bookUrl } = this.props.params;
+  getLibrary(collectionUrl, bookUrl): string {
     if (collectionUrl) {
       let urlParts = collectionUrl.split("/");
       if (urlParts.length > 0) {
@@ -56,13 +55,16 @@ export default class CatalogHandler extends React.Component<CatalogHandlerProps,
   }
 
   expandBookUrl(url: string): string {
-    return url ?
-      document.location.origin + "/works/" + url :
-      url;
+    if (url) {
+      const library = this.getLibrary(null, url);
+      return document.location.origin + "/" + library + "/works/" + url.replace(library + "/", "");
+    } else {
+      return url;
+    }
   }
 
   render(): JSX.Element {
-    if (!this.getLibrary()) {
+    if (!this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl)) {
       return (
         <Header />
       );

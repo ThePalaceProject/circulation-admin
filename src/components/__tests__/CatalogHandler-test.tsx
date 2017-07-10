@@ -20,7 +20,7 @@ describe("CatalogHandler", () => {
     (jsdom as any).changeURL(window, host + "/test");
     params = {
       collectionUrl: "library/collectionurl",
-      bookUrl: "bookurl",
+      bookUrl: "library/bookurl",
       tab: "tab"
     };
     wrapper = shallow(
@@ -33,7 +33,7 @@ describe("CatalogHandler", () => {
   it("renders OPDSCatalog", () => {
     let catalog = wrapper.find(OPDSCatalog);
     expect(catalog.prop("collectionUrl")).to.equal(host + "/library/collectionurl");
-    expect(catalog.prop("bookUrl")).to.equal(host + "/works/bookurl");
+    expect(catalog.prop("bookUrl")).to.equal(host + "/library/works/bookurl");
     expect(catalog.prop("BookDetailsContainer").name).to.equal(BookDetailsContainer.name);
     expect(catalog.prop("Header").name).to.equal(Header.name);
     expect(catalog.prop("computeBreadcrumbs")).to.be.ok;
