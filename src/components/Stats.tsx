@@ -63,7 +63,7 @@ export class Stats extends React.Component<StatsProps, any> {
               { patronCounts.map(patronCount =>
                 <li>
                   <div>{patronCount.label}:</div>
-                  <div className="stat-value">{patronCount.count}</div>
+                  <div className="stat-value">{this.formatNumber(patronCount.count)}</div>
                 </li>
               ) }
             </ul>
@@ -71,11 +71,11 @@ export class Stats extends React.Component<StatsProps, any> {
               <li><div className="stat-grouping-label">Inventory</div></li>
               <li>
                 <div>Total Titles:</div>
-                <div className="stat-value">{this.props.stats.inventory.titles}</div>
+                <div className="stat-value">{this.formatNumber(this.props.stats.inventory.titles)}</div>
               </li>
               <li>
                 <div>Total Licenses:</div>
-                <div className="stat-value">{this.props.stats.inventory.licenses}</div>
+                <div className="stat-value">{this.formatNumber(this.props.stats.inventory.licenses)}</div>
               </li>
               <li>
                 <div>Available Licenses:</div>
@@ -87,7 +87,7 @@ export class Stats extends React.Component<StatsProps, any> {
               { vendorCounts.map(vendor =>
                 <li>
                   <div>{vendor.label} Titles:</div>
-                  <div className="stat-value">{vendor.count}</div>
+                  <div className="stat-value">{this.formatNumber(vendor.count)}</div>
                 </li>
               ) }
             </ul>
@@ -95,6 +95,10 @@ export class Stats extends React.Component<StatsProps, any> {
         }
       </div>
     );
+  }
+
+  formatNumber(n) {
+    return Number(n).toLocaleString();
   }
 
   componentWillMount() {
