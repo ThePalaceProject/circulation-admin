@@ -56,8 +56,8 @@ export class Header extends React.Component<HeaderProps, any> {
         </Navbar.Header>
 
         <Navbar.Collapse>
-          <Nav>
-            { this.context.library &&
+          { this.context.library &&
+            <Nav>
               <li>
                 <CatalogLink
                   collectionUrl={"/" + this.context.library + "/groups"}
@@ -65,8 +65,6 @@ export class Header extends React.Component<HeaderProps, any> {
                   Catalog
                 </CatalogLink>
               </li>
-            }
-            { this.context.library &&
               <li>
                 <CatalogLink
                   collectionUrl={"/" + this.context.library + "/admin/complaints"}
@@ -74,8 +72,6 @@ export class Header extends React.Component<HeaderProps, any> {
                   Complaints
                 </CatalogLink>
               </li>
-            }
-            { this.context.library &&
               <li>
                 <CatalogLink
                   collectionUrl={"/" + this.context.library + "/admin/suppressed"}
@@ -83,7 +79,9 @@ export class Header extends React.Component<HeaderProps, any> {
                   Hidden Books
                 </CatalogLink>
               </li>
-            }
+          </Nav>
+          }
+          <Nav className="pull-right">
             <li>
               <Link to="/admin/web/dashboard">Dashboard</Link>
             </li>
