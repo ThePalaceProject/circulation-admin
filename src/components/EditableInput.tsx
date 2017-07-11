@@ -3,6 +3,7 @@ import * as React from "react";
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
   label?: string;
+  description?: string;
   onChange?: () => any;
 }
 
@@ -30,6 +31,9 @@ export default class EditableInput extends React.Component<EditableInputProps, a
         }
         { !this.props.label &&
           this.renderElement()
+        }
+        { this.props.description &&
+          <span className="description" dangerouslySetInnerHTML={{__html: this.props.description}} />
         }
       </div>
     );

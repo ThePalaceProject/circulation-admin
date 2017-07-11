@@ -11,7 +11,8 @@ describe("ProtocolFormField", () => {
   it("renders text setting", () => {
     const setting = {
       key: "setting",
-      label: "label"
+      label: "label",
+      description: "<p>description</p>"
     };
     const wrapper = shallow(
       <ProtocolFormField
@@ -22,9 +23,11 @@ describe("ProtocolFormField", () => {
 
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
+    expect(input.prop("type")).to.equal("text");
     expect(input.prop("disabled")).to.equal(true);
     expect(input.prop("name")).to.equal("setting");
     expect(input.prop("label")).to.equal("label");
+    expect(input.prop("description")).to.equal("<p>description</p>");
     expect(input.prop("value")).to.be.undefined;
 
     wrapper.setProps({ value: "test" });
@@ -111,6 +114,34 @@ describe("ProtocolFormField", () => {
     expect(input.prop("value")).to.equal("test");
   });
 
+  it("renders number setting", () => {
+    const setting = {
+      key: "setting",
+      type: "number",
+      label: "label",
+      description: "<p>description</p>"
+    };
+    const wrapper = shallow(
+      <ProtocolFormField
+        setting={setting}
+        disabled={true}
+        />
+    );
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    expect(input.prop("type")).to.equal("number");
+    expect(input.prop("disabled")).to.equal(true);
+    expect(input.prop("name")).to.equal("setting");
+    expect(input.prop("label")).to.equal("label");
+    expect(input.prop("description")).to.equal("<p>description</p>");
+    expect(input.prop("value")).to.be.undefined;
+
+    wrapper.setProps({ value: "test" });
+    input = wrapper.find(EditableInput);
+    expect(input.prop("value")).to.equal("test");
+  });
+
   it("renders select setting", () => {
     const setting = {
       key: "setting",
@@ -146,6 +177,7 @@ describe("ProtocolFormField", () => {
     const setting = {
       key: "setting",
       label: "label",
+      description: "<p>description</p>",
       type: "list",
       options: [
         { key: "option1", label: "option 1" },
@@ -161,6 +193,8 @@ describe("ProtocolFormField", () => {
     );
 
     expect(wrapper.find("div").text()).to.contain("label");
+    let description = wrapper.find(".description");
+    expect(description.html()).to.contain("<p>description</p>");
 
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(3);
@@ -191,6 +225,7 @@ describe("ProtocolFormField", () => {
     const setting = {
       key: "setting",
       label: "label",
+      description: "<p>description</p>",
       type: "list"
     };
     let wrapper = mount(
@@ -205,6 +240,8 @@ describe("ProtocolFormField", () => {
     expect(input.length).to.equal(1);
     let button = wrapper.find("button");
     expect(button.length).to.equal(1);
+    let description = wrapper.find(".description");
+    expect(description.html()).to.contain("<p>description</p>");
 
     wrapper = mount(
       <ProtocolFormField

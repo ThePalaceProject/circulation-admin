@@ -34,6 +34,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           name="name"
           label="Name"
           value={this.props.item && this.props.item.name}
+          description="The human-readable name of this library."
           />
         <EditableInput
           elementType="input"
@@ -42,6 +43,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           name="short_name"
           label="Short name"
           value={this.props.item && this.props.item.short_name}
+          description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
           />
         { this.props.data && this.props.data.settings && this.props.data.settings.map(setting =>
           <ProtocolFormField

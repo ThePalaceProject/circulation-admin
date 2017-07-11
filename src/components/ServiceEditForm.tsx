@@ -72,15 +72,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           value={this.state.protocol}
           ref="protocol"
           onChange={this.handleProtocolChange}
+          description={this.protocolDescription() }
           >
           { this.availableProtocols().map(protocol =>
               <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
             )
           }
         </EditableInput>
-        { this.protocolDescription() &&
-          <p>{ this.protocolDescription() }</p>
-        }
         { this.props.data && this.allowsParent() && (this.availableParents().length > 0) &&
           <EditableInput
             elementType="select"

@@ -43,6 +43,7 @@ describe("ServiceEditForm", () => {
     {
       name: "protocol 1",
       label: "protocol 1 label",
+      description: "protocol 1 description",
       sitewide: false,
       settings: [
         { key: "text_setting", label: "text label", optional: true },
@@ -66,6 +67,7 @@ describe("ServiceEditForm", () => {
     {
       name: "protocol 2",
       label: "protocol 2 label",
+      description: "protocol 2 description",
       sitewide: true,
       settings: [
         { key: "text_setting", label: "text label" },
@@ -137,6 +139,7 @@ describe("ServiceEditForm", () => {
       // starts with first protocol in list
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(false);
+      expect(input.props().description).to.equal("protocol 1 description");
       let children = input.find("option");
       expect(children.length).to.equal(3);
       expect(children.at(0).text()).to.contain("protocol 1 label");
@@ -156,6 +159,7 @@ describe("ServiceEditForm", () => {
       input = editableInputByName("protocol");
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(true);
+      expect(input.props().description).to.equal("protocol 1 description");
       children = input.find("option");
       expect(children.length).to.equal(1);
       expect(children.text()).to.contain("protocol 1 label");
@@ -472,7 +476,7 @@ describe("ServiceEditForm", () => {
       );
     });
 
-    it("changes fields when protocol changes", () => {
+    it("changes fields and description when protocol changes", () => {
       let textSettingInput = protocolFormFieldByKey("text_setting");
       let selectSettingInput = protocolFormFieldByKey("select_setting");
       let libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
@@ -483,6 +487,9 @@ describe("ServiceEditForm", () => {
       expect(libraryTextSettingInput.length).to.equal(1);
       expect(librarySelectSettingInput.length).to.equal(1);
       expect(protocol2SettingInput.length).to.equal(0);
+
+      let protocolInput = editableInputByName("protocol");
+      expect(protocolInput.prop("description")).to.equal("protocol 1 description");
 
       let select = wrapper.find("select[name='protocol']") as any;
       let selectElement = select.get(0);
@@ -500,6 +507,9 @@ describe("ServiceEditForm", () => {
       expect(librarySelectSettingInput.length).to.equal(0);
       expect(protocol2SettingInput.length).to.equal(1);
 
+      protocolInput = editableInputByName("protocol");
+      expect(protocolInput.prop("description")).to.equal("protocol 2 description");
+
       selectElement.value = "protocol 1";
       select.simulate("change");
 
@@ -513,6 +523,9 @@ describe("ServiceEditForm", () => {
       expect(libraryTextSettingInput.length).to.equal(1);
       expect(librarySelectSettingInput.length).to.equal(1);
       expect(protocol2SettingInput.length).to.equal(0);
+
+      protocolInput = editableInputByName("protocol");
+      expect(protocolInput.prop("description")).to.equal("protocol 1 description");
     });
 
     it("changes fields when parent changes", () => {

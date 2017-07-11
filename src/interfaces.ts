@@ -129,6 +129,7 @@ export interface LibraryWithSettingsData {
 export interface SettingData {
   key: string;
   label: string;
+  description?: string;
   default?: string;
   optional?: boolean;
   randomizable?: boolean;

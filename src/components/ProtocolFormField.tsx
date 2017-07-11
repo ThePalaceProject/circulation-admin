@@ -35,6 +35,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             disabled={this.props.disabled}
             name={setting.key}
             label={setting.label + (setting.optional ? " (optional)" : "")}
+            description={setting.description}
             value={this.props.value || setting.default}
             ref="element"
             />
@@ -51,6 +52,20 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             }
         </div>
       );
+    } else if (setting.type === "number") {
+      return (
+        <EditableInput
+          elementType="input"
+          type="number"
+          step={1}
+          disabled={this.props.disabled}
+          name={setting.key}
+          label={setting.label + (setting.optional ? " (optional)" : "")}
+          description={setting.description}
+          value={this.props.value || setting.default}
+          ref="element"
+          />
+      );
     } else if (setting.type === "select") {
       return (
         <EditableInput
@@ -58,6 +73,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           disabled={this.props.disabled}
           name={setting.key}
           label={setting.label + (setting.optional ? " (optional)" : "")}
+          description={setting.description}
           value={this.props.value || setting.default}
           ref="element"
           >
@@ -70,7 +86,10 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     } else if (setting.type === "list" && setting.options) {
       return (
         <div>
-          <h3>{setting.label}</h3>
+          <label>{setting.label + (setting.optional ? " (optional)" : "")}</label>
+          { setting.description &&
+            <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
+          }
           { setting.options.map(option =>
               <EditableInput
                 elementType="input"
@@ -87,7 +106,10 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     } else if (setting.type === "list") {
       return (
         <div>
-          <h3>{setting.label}</h3>
+          <label>{setting.label + (setting.optional ? " (optional)" : "")}</label>
+          { setting.description &&
+            <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
+          }
           { this.state.listItems && this.state.listItems.map(listItem =>
               <Removable
                 disabled={this.props.disabled}
