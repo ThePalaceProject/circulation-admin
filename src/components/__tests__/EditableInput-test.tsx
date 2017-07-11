@@ -27,6 +27,10 @@ describe("EditableInput", () => {
   it("shows label from props", () => {
     let label = wrapper.find("label");
     expect(label.text()).to.contain("label");
+
+    wrapper.setProps({ "type": "checkbox" });
+    label = wrapper.find("label");
+    expect(label.text()).to.contain("label");
   });
 
   it("shows initial value from props", () => {
