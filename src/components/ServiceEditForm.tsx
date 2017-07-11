@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import Removable from "./Removable";
 import { LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
 
@@ -110,18 +111,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           <div className="form-group">
             <label>Libraries</label>
             { this.state.libraries.map(library =>
-                <div key={library.short_name} className="service-library">
-                  <div>{library.short_name}</div>
-                  <i
-                    className="fa fa-times"
-                    aria-hidden="true"
-                    onClick={() => !this.props.disabled && this.removeLibrary(library)}
-                    ></i>
-                  <a
-                    className="sr-only"
-                    onClick={() => !this.props.disabled && this.removeLibrary(library)}
-                    >remove</a>
-                </div>
+                <Removable
+                  key={library.short_name}
+                  disabled={this.props.disabled}
+                  onRemove={() => this.removeLibrary(library)}
+                  >
+                  {library.short_name}
+                </Removable>
               )
             }
           </div>

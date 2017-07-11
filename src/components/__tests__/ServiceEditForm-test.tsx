@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import Removable from "../Removable";
 import { ServicesData } from "../../interfaces";
 
 describe("ServiceEditForm", () => {
@@ -334,7 +335,7 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
 
       let serviceDataSitewide = Object.assign({}, servicesData, {
@@ -351,12 +352,12 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
     });
 
     it("renders libraries", () => {
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
 
       wrapper = shallow(
@@ -370,10 +371,9 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.text()).to.contain("nypl");
-      expect(library.text()).to.contain("remove");
+      expect(library.props().children).to.contain("nypl");
     });
 
     it("doesn't render library add dropdown for sitewide protocol", () => {
@@ -556,7 +556,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("adds a library with settings", () => {
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
 
       let select = wrapper.find("select[name='add-library']") as any;
@@ -572,7 +572,7 @@ describe("ServiceEditForm", () => {
       let addButton = wrapper.find("button.add-library");
       addButton.simulate("click");
 
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("bpl");
       expect(library.text()).to.contain("remove");
@@ -596,14 +596,14 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.text()).to.contain("nypl");
+      expect(library.prop("children")).to.contain("nypl");
 
-      let removeButton = library.find("i");
-      removeButton.simulate("click");
+      let onRemove = library.prop("onRemove");
+      onRemove();
 
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
     });
 

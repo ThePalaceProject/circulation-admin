@@ -5,6 +5,7 @@ import { shallow, mount } from "enzyme";
 
 import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
+import Removable from "../Removable";
 
 describe("ProtocolFormField", () => {
   it("renders text setting", () => {
@@ -226,5 +227,18 @@ describe("ProtocolFormField", () => {
     expect(input.at(0).props().value).to.equal("option1");
     expect(input.at(1).props().value).to.equal("option2");
     expect(input.at(2).props().value).to.equal("option3");
+
+    let removables = wrapper.find(Removable);
+    expect(removables.length).to.equal(3);
+    let remove = removables.at(0).find(".remove");
+    remove.simulate("click");
+
+    input = wrapper.find("input[name='setting']") as any;
+    expect(input.length).to.equal(3);
+    expect(input.at(0).props().value).to.equal("option2");
+    expect(input.at(1).props().value).to.equal("option3");
+
+    removables = wrapper.find(Removable);
+    expect(removables.length).to.equal(2);
   });
 });

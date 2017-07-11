@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import Removable from "./Removable";
 import { SettingData } from "../interfaces";
 
 export interface ProtocolFormFieldProps {
@@ -88,7 +89,10 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         <div>
           <h3>{setting.label}</h3>
           { this.state.listItems && this.state.listItems.map(listItem =>
-              <div className="form-group">
+              <Removable
+                disabled={this.props.disabled}
+                onRemove={() => this.removeListItem(listItem)}
+                >
                 <EditableInput
                   elementType="input"
                   type="text"
@@ -96,16 +100,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                   name={setting.key}
                   value={listItem}
                   />
-                <i
-                  className="fa fa-times"
-                  aria-hidden="true"
-                  onClick={() => !this.props.disabled && this.removeListItem(listItem)}
-                  ></i>
-                <a
-                  className="sr-only"
-                  onClick={() => !this.props.disabled && this.removeListItem(listItem)}
-                  >remove</a>
-              </div>
+              </Removable>
             )
           }
           <div className="form-group">
