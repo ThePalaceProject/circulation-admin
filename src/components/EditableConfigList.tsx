@@ -53,25 +53,28 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
           <LoadingIndicator />
         }
 
-        { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] && this.props.data[this.listDataKey].length > 0 &&
+        { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] &&
           <div>
             <h2>Edit {this.itemTypeName} configurations</h2>
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
                   <li key={index}>
-                    <h3>{this.label(item)}</h3>
-                    <a href={this.urlBase + "edit/" + item[this.identifierKey]}>Edit {this.itemTypeName}</a>
+                    <h3>
+                      <a href={this.urlBase + "edit/" + item[this.identifierKey]}>{this.label(item)}</a>
+                    </h3>
                   </li>
                 )
+              }
+              { (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
+                <li>
+                  <h3>
+                    <a href={this.urlBase + "create"}>Create a new {this.itemTypeName}</a>
+                  </h3>
+                </li>
               }
             </ul>
           </div>
         }
-
-        { !this.props.isFetching && !this.props.editOrCreate && (!this.limitOne || this.props.data[this.listDataKey] && this.props.data[this.listDataKey].length === 0) &&
-          <a href={this.urlBase + "create"}>Create a new {this.itemTypeName}</a>
-        }
-
         { (this.props.editOrCreate === "create") &&
           <div>
             <h2>Create a new {this.itemTypeName}</h2>
