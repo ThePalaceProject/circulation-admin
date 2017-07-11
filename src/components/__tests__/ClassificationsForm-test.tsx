@@ -87,19 +87,17 @@ describe("ClassificationsForm", () => {
 
     it("shows the book's full genres and remove buttons", () => {
       let genres = wrapper.find(".book-genre");
-      expect(genres.length).to.equal(bookData.categories.length);
+      expect(genres.length).to.equal(1);
 
-      genres.forEach((genre, i) => {
-        let cells = genre.find(".book-genre-name");
-        expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
+      let cells = genres.find(".book-genre-name");
+      expect(cells.first().text()).to.equal("Science Fiction > Space Opera");
 
-        let button = genre.find(".remove-book-genre");
-        expect(button.length).to.equal(1);
+      let button = genres.find(".remove-book-genre");
+      expect(button.length).to.equal(1);
 
-        // plus accessible remove buttons
-        let link = genre.find("a.sr-only");
-        expect(link.length).to.equal(1);
-      });
+      // plus accessible remove buttons
+      let link = genres.find("a.sr-only");
+      expect(link.length).to.equal(1);
     });
 
     it("shows the book's full genres and remove buttons even if inconsistent with fiction status", () => {
@@ -107,19 +105,17 @@ describe("ClassificationsForm", () => {
       wrapper.setProps({ book: inconsistentBookData });
 
       let genres = wrapper.find(".book-genre");
-      expect(genres.length).to.equal(bookData.categories.length);
+      expect(genres.length).to.equal(1);
 
-      genres.forEach((genre, i) => {
-        let cells = genre.find(".book-genre-name");
-        expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
+      let cells = genres.find(".book-genre-name");
+      expect(cells.first().text()).to.equal("Science Fiction > Space Opera");
 
-        let button = genre.find(".remove-book-genre");
-        expect(button.length).to.equal(1);
+      let button = genres.find(".remove-book-genre");
+      expect(button.length).to.equal(1);
 
-        // plus accessible remove buttons
-        let link = genre.find("a.sr-only");
-        expect(link.length).to.equal(1);
-      });
+      // plus accessible remove buttons
+      let link = genres.find("a.sr-only");
+      expect(link.length).to.equal(1);
     });
 
     it("shows genre form", () => {

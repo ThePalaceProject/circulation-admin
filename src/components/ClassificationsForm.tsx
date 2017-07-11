@@ -205,12 +205,12 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   fullGenre(category) {
-    ["Fiction", "Nonfiction"].forEach(top => {
+    for (const top of ["Fiction", "Nonfiction"]) {
       let genre = this.props.genreTree[top][category];
       if (genre) {
         return genre.parents.concat([genre.name]).join(" > ");
       }
-    });
+    }
 
     return category;
   }
