@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import Removable from "../Removable";
 import { ServicesData } from "../../interfaces";
 
 describe("ServiceEditForm", () => {
@@ -42,6 +43,7 @@ describe("ServiceEditForm", () => {
     {
       name: "protocol 1",
       label: "protocol 1 label",
+      description: "protocol 1 description",
       sitewide: false,
       settings: [
         { key: "text_setting", label: "text label", optional: true },
@@ -65,6 +67,7 @@ describe("ServiceEditForm", () => {
     {
       name: "protocol 2",
       label: "protocol 2 label",
+      description: "protocol 2 description",
       sitewide: true,
       settings: [
         { key: "text_setting", label: "text label" },
@@ -136,6 +139,7 @@ describe("ServiceEditForm", () => {
       // starts with first protocol in list
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(false);
+      expect(input.props().description).to.equal("protocol 1 description");
       let children = input.find("option");
       expect(children.length).to.equal(3);
       expect(children.at(0).text()).to.contain("protocol 1 label");
@@ -155,6 +159,7 @@ describe("ServiceEditForm", () => {
       input = editableInputByName("protocol");
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(true);
+      expect(input.props().description).to.equal("protocol 1 description");
       children = input.find("option");
       expect(children.length).to.equal(1);
       expect(children.text()).to.contain("protocol 1 label");
@@ -334,7 +339,7 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
 
       let serviceDataSitewide = Object.assign({}, servicesData, {
@@ -351,12 +356,12 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
     });
 
     it("renders libraries", () => {
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
 
       wrapper = shallow(
@@ -370,10 +375,9 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.text()).to.contain("nypl");
-      expect(library.text()).to.contain("remove");
+      expect(library.props().children).to.contain("nypl");
     });
 
     it("doesn't render library add dropdown for sitewide protocol", () => {
@@ -472,7 +476,7 @@ describe("ServiceEditForm", () => {
       );
     });
 
-    it("changes fields when protocol changes", () => {
+    it("changes fields and description when protocol changes", () => {
       let textSettingInput = protocolFormFieldByKey("text_setting");
       let selectSettingInput = protocolFormFieldByKey("select_setting");
       let libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
@@ -483,6 +487,9 @@ describe("ServiceEditForm", () => {
       expect(libraryTextSettingInput.length).to.equal(1);
       expect(librarySelectSettingInput.length).to.equal(1);
       expect(protocol2SettingInput.length).to.equal(0);
+
+      let protocolInput = editableInputByName("protocol");
+      expect(protocolInput.prop("description")).to.equal("protocol 1 description");
 
       let select = wrapper.find("select[name='protocol']") as any;
       let selectElement = select.get(0);
@@ -500,6 +507,9 @@ describe("ServiceEditForm", () => {
       expect(librarySelectSettingInput.length).to.equal(0);
       expect(protocol2SettingInput.length).to.equal(1);
 
+      protocolInput = editableInputByName("protocol");
+      expect(protocolInput.prop("description")).to.equal("protocol 2 description");
+
       selectElement.value = "protocol 1";
       select.simulate("change");
 
@@ -513,6 +523,9 @@ describe("ServiceEditForm", () => {
       expect(libraryTextSettingInput.length).to.equal(1);
       expect(librarySelectSettingInput.length).to.equal(1);
       expect(protocol2SettingInput.length).to.equal(0);
+
+      protocolInput = editableInputByName("protocol");
+      expect(protocolInput.prop("description")).to.equal("protocol 1 description");
     });
 
     it("changes fields when parent changes", () => {
@@ -556,7 +569,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("adds a library with settings", () => {
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
 
       let select = wrapper.find("select[name='add-library']") as any;
@@ -572,7 +585,7 @@ describe("ServiceEditForm", () => {
       let addButton = wrapper.find("button.add-library");
       addButton.simulate("click");
 
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("bpl");
       expect(library.text()).to.contain("remove");
@@ -596,14 +609,14 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(".service-library");
+      let library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.text()).to.contain("nypl");
+      expect(library.prop("children")).to.contain("nypl");
 
-      let removeButton = library.find("i");
-      removeButton.simulate("click");
+      let onRemove = library.prop("onRemove");
+      onRemove();
 
-      library = wrapper.find(".service-library");
+      library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
     });
 

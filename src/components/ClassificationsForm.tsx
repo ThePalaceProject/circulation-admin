@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import EditableInput from "./EditableInput";
 import EditableRadio from "./EditableRadio";
+import Removable from "./Removable";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
 
@@ -102,21 +103,13 @@ export default class ClassificationsForm extends React.Component<Classifications
         <div className="form-group">
           <label>Genres</label>
           { this.state.genres.sort().map(category =>
-            <div key={category} className="book-genre">
-              <div
-                className="book-genre-name">
-                {this.fullGenre(category)}
-              </div>
-              <i
-                className="fa fa-times remove-book-genre"
-                aria-hidden="true"
-                onClick={() => !this.props.disabled && this.removeGenre(category)}
-                ></i>
-              <a
-                className="sr-only"
-                onClick={() => !this.props.disabled && this.removeGenre(category)}
-                >remove</a>
-            </div>
+            <Removable
+              key={category}
+              disabled={this.props.disabled}
+              onRemove={() => this.removeGenre(category)}
+              >
+              {this.fullGenre(category)}
+            </Removable>
           ) }
         </div>
 
@@ -205,12 +198,12 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   fullGenre(category) {
-    ["Fiction", "Nonfiction"].forEach(top => {
+    for (const top of ["Fiction", "Nonfiction"]) {
       let genre = this.props.genreTree[top][category];
       if (genre) {
         return genre.parents.concat([genre.name]).join(" > ");
       }
-    });
+    }
 
     return category;
   }

@@ -84,15 +84,17 @@ describe("EditableConfigList", () => {
   });
 
   it("shows thing list", () => {
-    let thing = wrapper.find("li");
-    expect(thing.length).to.equal(1);
-    expect(thing.text()).to.contain("test label");
-    let editLink = thing.find("a");
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(2);
+    expect(things.at(0).text()).to.contain("test label");
+    let editLink = things.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/things/edit/5");
   });
 
   it("shows create link", () => {
-    let createLink = wrapper.find("div > a");
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(2);
+    let createLink = things.at(1).find("a");
     expect(createLink.length).to.equal(1);
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
@@ -107,8 +109,8 @@ describe("EditableConfigList", () => {
         isFetching={false}
         />
     );
-    let createLink = wrapper.find("div > a");
-    expect(createLink.length).to.equal(0);
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(1);
 
     wrapper = shallow(
       <OneThingEditableConfigList
@@ -119,7 +121,9 @@ describe("EditableConfigList", () => {
         isFetching={false}
         />
     );
-    createLink = wrapper.find("div > a");
+    things = wrapper.find("li");
+    expect(things.length).to.equal(1);
+    let createLink = things.find("a");
     expect(createLink.length).to.equal(1);
     expect(createLink.prop("href")).to.equal("/admin/things/create");
   });

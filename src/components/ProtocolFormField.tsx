@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import Removable from "./Removable";
 import { SettingData } from "../interfaces";
 
 export interface ProtocolFormFieldProps {
@@ -34,6 +35,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             disabled={this.props.disabled}
             name={setting.key}
             label={setting.label + (setting.optional ? " (optional)" : "")}
+            description={setting.description}
             value={this.props.value || setting.default}
             ref="element"
             />
@@ -50,6 +52,20 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             }
         </div>
       );
+    } else if (setting.type === "number") {
+      return (
+        <EditableInput
+          elementType="input"
+          type="number"
+          step={1}
+          disabled={this.props.disabled}
+          name={setting.key}
+          label={setting.label + (setting.optional ? " (optional)" : "")}
+          description={setting.description}
+          value={this.props.value || setting.default}
+          ref="element"
+          />
+      );
     } else if (setting.type === "select") {
       return (
         <EditableInput
@@ -57,6 +73,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           disabled={this.props.disabled}
           name={setting.key}
           label={setting.label + (setting.optional ? " (optional)" : "")}
+          description={setting.description}
           value={this.props.value || setting.default}
           ref="element"
           >
@@ -69,7 +86,10 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     } else if (setting.type === "list" && setting.options) {
       return (
         <div>
-          <h3>{setting.label}</h3>
+          <label>{setting.label + (setting.optional ? " (optional)" : "")}</label>
+          { setting.description &&
+            <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
+          }
           { setting.options.map(option =>
               <EditableInput
                 elementType="input"
@@ -86,9 +106,15 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     } else if (setting.type === "list") {
       return (
         <div>
-          <h3>{setting.label}</h3>
+          <label>{setting.label + (setting.optional ? " (optional)" : "")}</label>
+          { setting.description &&
+            <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
+          }
           { this.state.listItems && this.state.listItems.map(listItem =>
-              <div className="form-group">
+              <Removable
+                disabled={this.props.disabled}
+                onRemove={() => this.removeListItem(listItem)}
+                >
                 <EditableInput
                   elementType="input"
                   type="text"
@@ -96,16 +122,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                   name={setting.key}
                   value={listItem}
                   />
-                <i
-                  className="fa fa-times"
-                  aria-hidden="true"
-                  onClick={() => !this.props.disabled && this.removeListItem(listItem)}
-                  ></i>
-                <a
-                  className="sr-only"
-                  onClick={() => !this.props.disabled && this.removeListItem(listItem)}
-                  >remove</a>
-              </div>
+              </Removable>
             )
           }
           <div className="form-group">

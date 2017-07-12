@@ -3,6 +3,7 @@ import * as React from "react";
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
   label?: string;
+  description?: string;
   onChange?: () => any;
 }
 
@@ -23,12 +24,16 @@ export default class EditableInput extends React.Component<EditableInputProps, a
       <div className="form-group">
         { this.props.label &&
           <label className="control-label">
-            {this.props.label}
+            { this.props.type !== "checkbox" && this.props.label }
             { this.renderElement() }
+            { this.props.type === "checkbox" && this.props.label }
           </label>
         }
         { !this.props.label &&
           this.renderElement()
+        }
+        { this.props.description &&
+          <span className="description" dangerouslySetInnerHTML={{__html: this.props.description}} />
         }
       </div>
     );
@@ -36,7 +41,7 @@ export default class EditableInput extends React.Component<EditableInputProps, a
 
   renderElement() {
     return React.createElement(this.props.elementType, {
-      className: "form-control",
+      className: (this.props.type !== "checkbox" ? "form-control" : ""),
       type: this.props.type,
       disabled: this.props.disabled,
       readOnly: this.props.readOnly,

@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import ClassificationsForm from "../ClassificationsForm";
 import EditableInput from "../EditableInput";
 import EditableRadio from "../EditableRadio";
+import Removable from "../Removable";
 import GenreForm from "../GenreForm";
 import genreData from "./genreData";
 
@@ -85,41 +86,19 @@ describe("ClassificationsForm", () => {
       expect(nonfictionRadio.props().name).to.equal("fiction");
     });
 
-    it("shows the book's full genres and remove buttons", () => {
-      let genres = wrapper.find(".book-genre");
-      expect(genres.length).to.equal(bookData.categories.length);
-
-      genres.forEach((genre, i) => {
-        let cells = genre.find(".book-genre-name");
-        expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
-
-        let button = genre.find(".remove-book-genre");
-        expect(button.length).to.equal(1);
-
-        // plus accessible remove buttons
-        let link = genre.find("a.sr-only");
-        expect(link.length).to.equal(1);
-      });
+    it("shows the book's full genres with remove buttons", () => {
+      let genres = wrapper.find(Removable);
+      expect(genres.length).to.equal(1);
+      expect(genres.props().children).to.contain("Science Fiction > Space Opera");
     });
 
-    it("shows the book's full genres and remove buttons even if inconsistent with fiction status", () => {
+    it("shows the book's full genres with remove buttons even if inconsistent with fiction status", () => {
       let inconsistentBookData = Object.assign({}, bookData, { fiction: false });
       wrapper.setProps({ book: inconsistentBookData });
 
-      let genres = wrapper.find(".book-genre");
-      expect(genres.length).to.equal(bookData.categories.length);
-
-      genres.forEach((genre, i) => {
-        let cells = genre.find(".book-genre-name");
-        expect(cells.first().text()).to.equal(instance.fullGenre(bookData.categories[i]));
-
-        let button = genre.find(".remove-book-genre");
-        expect(button.length).to.equal(1);
-
-        // plus accessible remove buttons
-        let link = genre.find("a.sr-only");
-        expect(link.length).to.equal(1);
-      });
+      let genres = wrapper.find(Removable);
+      expect(genres.length).to.equal(1);
+      expect(genres.props().children).to.contain("Science Fiction > Space Opera");
     });
 
     it("shows genre form", () => {
@@ -219,30 +198,25 @@ describe("ClassificationsForm", () => {
     it("adds genre to list of selected genres after validating against audience", () => {
       // can't add Erotica to book with Young Adult audience
       instance.addGenre("Erotica");
-      let newGenres = wrapper.find(".book-genre-name").map(name => name.text());
-      expect(newGenres.sort()).to.deep.equal(bookData.categories.map(genre => instance.fullGenre(genre)).sort());
+      let newGenres = wrapper.find(Removable).map(name => name.text());
+      expect(newGenres.length).to.equal(1);
+      expect(newGenres[0]).to.contain(instance.fullGenre(bookData.categories[0]) + "remove");
+      expect(newGenres[0]).not.to.contain("Erotica");
 
       instance.validateAudience = stub().returns(true);
       instance.addGenre("Folklore");
 
       expect(instance.validateAudience.callCount).to.equal(1);
-      newGenres = wrapper.find(".book-genre-name").map(name => name.text());
-      expect(newGenres).to.contain(instance.fullGenre("Folklore"));
+      newGenres = wrapper.find(Removable).map(name => name.text());
+      expect(newGenres).to.contain(instance.fullGenre("Folklore") + "remove");
     });
 
     it("removes genre when remove button is clicked", () => {
-      let button = wrapper.find(".fa-times");
-      button.simulate("click");
+      let button = wrapper.find(Removable);
+      let onRemove = button.props().onRemove;
+      onRemove();
 
-      let newGenres = wrapper.find(".book-genre-name");
-      expect(newGenres.length).to.equal(0);
-    });
-
-    it("calls removes genre when accessible remove button is clicked", () => {
-      let button = wrapper.find("a.sr-only");
-      button.simulate("click");
-
-      let newGenres = wrapper.find(".book-genre-name");
+      let newGenres = wrapper.find(Removable);
       expect(newGenres.length).to.equal(0);
     });
 
