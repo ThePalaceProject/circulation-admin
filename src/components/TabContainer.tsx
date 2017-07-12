@@ -35,7 +35,7 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
 
   render(): JSX.Element {
     return (
-      <div>
+      <div className="tab-container">
         <ul className="nav nav-tabs">
           { Object.keys(this.tabs()).map(name =>
             <li key={name} role="presentation" className={this.tabClass(name)}>
