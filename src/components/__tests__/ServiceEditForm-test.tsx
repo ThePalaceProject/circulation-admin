@@ -78,8 +78,8 @@ describe("ServiceEditForm", () => {
     parentProtocol
   ];
   let allLibraries = [
-    { "short_name": "nypl" },
-    { "short_name": "bpl" }
+    { "short_name": "nypl", name: "New York Public Library" },
+    { "short_name": "bpl", name: "Brooklyn Public Library" }
   ];
   let servicesData = {
     services: [serviceData],
@@ -377,7 +377,7 @@ describe("ServiceEditForm", () => {
       );
       library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.props().children).to.contain("nypl");
+      expect(library.props().children).to.contain("New York Public Library");
     });
 
     it("doesn't render library add dropdown for sitewide protocol", () => {
@@ -587,7 +587,7 @@ describe("ServiceEditForm", () => {
 
       library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.text()).to.contain("bpl");
+      expect(library.text()).to.contain("Brooklyn Public Library");
       expect(library.text()).to.contain("remove");
 
       let stateLibraries = wrapper.state().libraries;
@@ -611,7 +611,7 @@ describe("ServiceEditForm", () => {
       );
       let library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.prop("children")).to.contain("nypl");
+      expect(library.prop("children")).to.contain("New York Public Library");
 
       let onRemove = library.prop("onRemove");
       onRemove();

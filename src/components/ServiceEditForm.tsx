@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import Removable from "./Removable";
-import { LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
+import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
 
 export interface ServiceEditFormProps<T> {
@@ -114,7 +114,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                   disabled={this.props.disabled}
                   onRemove={() => this.removeLibrary(library)}
                   >
-                  {library.short_name}
+                  {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
                 </Removable>
               )
             }
@@ -129,7 +129,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               ref="addLibrary"
               >
               { this.availableLibraries().map(library =>
-                  <option key={library} value={library}>{library}</option>
+                  <option key={library.short_name} value={library.short_name}>{library.name}</option>
                 )
               }
             </select>
@@ -287,11 +287,21 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     return false;
   }
 
-  availableLibraries(): string[] {
-    const names = (this.props.data && this.props.data.allLibraries || []).map(library => library.short_name);
-    return names.filter(name => {
-      for (const library of this.state.libraries) {
-        if (library.short_name === name) {
+  getLibrary(shortName: string): LibraryData {
+    const libraries = this.props.data && this.props.data.allLibraries || [];
+    for (const library of libraries) {
+      if (library.short_name === shortName) {
+        return library;
+      }
+    }
+    return null;
+  }
+
+  availableLibraries(): LibraryData[] {
+    const libraries = this.props.data && this.props.data.allLibraries || [];
+    return libraries.filter(library => {
+      for (const stateLibrary of this.state.libraries) {
+        if (stateLibrary.short_name === library.short_name) {
           return false;
         }
       }
