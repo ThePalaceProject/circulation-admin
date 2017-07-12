@@ -125,14 +125,16 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
               </Removable>
             )
           }
-          <div className="form-group">
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              name={setting.key}
-              ref="addListItem"
-              />
+          <div>
+            <span className="add-list-item">
+              <EditableInput
+                elementType="input"
+                type="text"
+                disabled={this.props.disabled}
+                name={setting.key}
+                ref="addListItem"
+                />
+            </span>
             <button
               type="button"
               className="btn btn-default add-list-item"

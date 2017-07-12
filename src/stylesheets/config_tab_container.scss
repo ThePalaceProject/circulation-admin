@@ -1,0 +1,31 @@
+.config {
+  .tab-container {
+    position: relative;
+
+    .nav-tabs {
+      width: 25%;
+      position: absolute;
+      left: 0;
+      border-right: 1px solid #DDD;
+
+      li {
+        display: block;
+        width: 100%;
+        border-top: 1px solid #DDD;
+
+        a {
+          padding-left: 15px;
+          width: 100%;
+        }
+      }
+    }
+
+    .tab-content {
+      width: 73%;
+      max-width: 700px;
+      position: absolute;
+      left: 27%;
+      padding: 40px;
+    }
+  }
+}
