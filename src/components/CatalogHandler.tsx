@@ -22,13 +22,13 @@ export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
 export default class CatalogHandler extends React.Component<CatalogHandlerProps, any> {
   static childContextTypes: React.ValidationMap<any> = {
     tab: React.PropTypes.string,
-    library: React.PropTypes.string
+    library: React.PropTypes.func
   };
 
   getChildContext() {
     return {
       tab: this.props.params.tab,
-      library: this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl)
+      library: () => this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl)
     };
   }
 

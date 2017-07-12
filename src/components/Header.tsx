@@ -17,10 +17,10 @@ export interface HeaderProps extends React.Props<Header> {
 }
 
 export class Header extends React.Component<HeaderProps, any> {
-  context: { library: string, router: Router };
+  context: { library: () => string, router: Router };
 
   static contextTypes = {
-    library: React.PropTypes.string,
+    library: React.PropTypes.func,
     router: React.PropTypes.object.isRequired
   };
 
@@ -40,7 +40,7 @@ export class Header extends React.Component<HeaderProps, any> {
             <EditableInput
               elementType="select"
               ref="library"
-              value={this.context.library}
+              value={this.context.library && this.context.library()}
               onChange={this.changeLibrary}
               >
               { !this.context.library &&
@@ -60,21 +60,21 @@ export class Header extends React.Component<HeaderProps, any> {
             <Nav>
               <li>
                 <CatalogLink
-                  collectionUrl={"/" + this.context.library + "/groups"}
+                  collectionUrl={"/" + this.context.library() + "/groups"}
                   bookUrl={null}>
                   Catalog
                 </CatalogLink>
               </li>
               <li>
                 <CatalogLink
-                  collectionUrl={"/" + this.context.library + "/admin/complaints"}
+                  collectionUrl={"/" + this.context.library() + "/admin/complaints"}
                   bookUrl={null}>
                   Complaints
                 </CatalogLink>
               </li>
               <li>
                 <CatalogLink
-                  collectionUrl={"/" + this.context.library + "/admin/suppressed"}
+                  collectionUrl={"/" + this.context.library() + "/admin/suppressed"}
                   bookUrl={null}>
                   Hidden Books
                 </CatalogLink>
@@ -104,6 +104,7 @@ export class Header extends React.Component<HeaderProps, any> {
     let library = (this.refs["library"] as any).getValue();
     if (library) {
       this.context.router.push("/admin/web/collection/" + library + "%2Fgroups");
+      this.forceUpdate();
     }
   }
 }
