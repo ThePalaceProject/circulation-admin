@@ -15,7 +15,7 @@ describe("Header", () => {
 
   beforeEach(() => {
     push = stub();
-    context = { library: "nypl" };
+    context = { library: () => "nypl" };
 
     wrapper = shallow(
       <Header />,
@@ -48,7 +48,7 @@ describe("Header", () => {
       expect(options.at(1).text()).to.equal("bpl");
       expect(options.at(1).props().value).to.equal("bpl");
 
-      wrapper.setContext({ library: "bpl" });
+      wrapper.setContext({ library: () => "bpl" });
       select = wrapper.find(EditableInput);
       expect(select.props().value).to.equal("bpl");
 

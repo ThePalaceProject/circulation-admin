@@ -58,16 +58,16 @@ describe("CatalogHandler", () => {
 
   it("includes library in child context", () => {
     let context = wrapper.instance().getChildContext();
-    expect(context.library).to.equal("library");
+    expect(context.library()).to.equal("library");
 
     let newParams = Object.assign({}, params, { collectionUrl: null, bookUrl: "library/bookurl" });
     wrapper.setProps({ params: newParams });
     context = wrapper.instance().getChildContext();
-    expect(context.library).to.equal("library");
+    expect(context.library()).to.equal("library");
 
     newParams = Object.assign({}, params, { collectionUrl: null, bookUrl: null });
     wrapper.setProps({ params: newParams });
     context = wrapper.instance().getChildContext();
-    expect(context.library).to.equal(null);
+    expect(context.library()).to.equal(null);
   });
 });
