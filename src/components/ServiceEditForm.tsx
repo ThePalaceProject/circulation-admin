@@ -89,7 +89,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             ref="parent"
             onChange={this.handleParentChange}
             >
-            <option value="none">None</option>
+            <option value="">None</option>
             { this.availableParents().map(parent =>
                 <option key={parent.id} value={parent.id}>{parent.name || parent.id}</option>
               )
@@ -233,7 +233,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   handleParentChange() {
     let parentId = (this.refs["parent"] as any).getValue();
-    if (parentId === "none") {
+    if (parentId === "") {
       parentId = null;
     }
     this.setState({ protocol: this.state.protocol, parentId, libraries: this.state.libraries });
