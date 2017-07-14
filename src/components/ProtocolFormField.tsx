@@ -144,6 +144,23 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           </div>
         </div>
       );
+    } else if (setting.type === "image") {
+      return (
+        <div>
+          <label>{setting.label + (setting.optional ? " (optional)" : "")}</label>
+          { this.props.value &&
+            <img src={String(this.props.value)} />
+          }
+          <EditableInput
+            elementType="input"
+            type="file"
+            disabled={this.props.disabled}
+            name={setting.key}
+            description={setting.description}
+            accept="image/*"
+            />
+        </div>
+      );
     }
   }
 

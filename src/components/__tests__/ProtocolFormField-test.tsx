@@ -279,4 +279,39 @@ describe("ProtocolFormField", () => {
     removables = wrapper.find(Removable);
     expect(removables.length).to.equal(2);
   });
+
+  it("renders image setting", () => {
+    const setting = {
+      key: "setting",
+      label: "label",
+      description: "<p>description</p>",
+      type: "image"
+    };
+    const wrapper = shallow(
+      <ProtocolFormField
+        setting={setting}
+        disabled={true}
+        />
+    );
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    expect(input.prop("type")).to.equal("file");
+    expect(input.prop("disabled")).to.equal(true);
+    expect(input.prop("name")).to.equal("setting");
+    expect(input.prop("label")).to.be.undefined;
+    expect(input.prop("description")).to.equal("<p>description</p>");
+    expect(input.prop("value")).to.be.undefined;
+    expect(input.prop("accept")).to.equal("image/*");
+    let label = wrapper.find("label");
+    expect(label.text()).to.equal("label");
+
+    wrapper.setProps({ value: "image data" });
+    input = wrapper.find(EditableInput);
+    expect(input.prop("value")).to.be.undefined;
+    label = wrapper.find("label");
+    expect(label.text()).to.equal("label");
+    let img = wrapper.find("img");
+    expect(img.prop("src")).to.equal("image data");
+  });
 });
