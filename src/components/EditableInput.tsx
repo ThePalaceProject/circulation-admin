@@ -52,6 +52,7 @@ export default class EditableInput extends React.Component<EditableInputProps, a
       onChange: this.handleChange,
       style: this.props.style,
       placeholder: this.props.placeholder,
+      accept: this.props.accept
     }, this.props.children);
   }
 
