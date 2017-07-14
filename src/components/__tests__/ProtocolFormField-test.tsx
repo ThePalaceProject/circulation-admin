@@ -183,7 +183,8 @@ describe("ProtocolFormField", () => {
         { key: "option1", label: "option 1" },
         { key: "option2", label: "option 2" },
         { key: "option3", label: "option 3" }
-      ]
+      ],
+      default: ["option2", "option3"]
     };
     const wrapper = shallow(
       <ProtocolFormField
@@ -208,8 +209,8 @@ describe("ProtocolFormField", () => {
     expect(input.at(2).prop("label")).to.equal("option 3");
 
     expect(input.at(0).prop("checked")).not.to.be.ok;
-    expect(input.at(1).prop("checked")).not.to.be.ok;
-    expect(input.at(2).prop("checked")).not.to.be.ok;
+    expect(input.at(1).prop("checked")).to.be.ok;
+    expect(input.at(2).prop("checked")).to.be.ok;
 
     wrapper.setProps({ value: ["option1", "option3"] });
 

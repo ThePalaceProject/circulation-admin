@@ -558,7 +558,7 @@ describe("ServiceEditForm", () => {
       input = protocolFormFieldByKey("child_setting");
       expect(input.length).to.equal(1);
 
-      selectElement.value = "none";
+      selectElement.value = "";
       select.simulate("change");
 
       input = protocolFormFieldByKey("parent_setting");

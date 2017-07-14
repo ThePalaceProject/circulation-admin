@@ -97,7 +97,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                 disabled={this.props.disabled}
                 name={`${setting.key}_${option.key}`}
                 label={option.label}
-                checked={this.props.value && (this.props.value.indexOf(option.key) !== -1)}
+                checked={(this.props.value && (this.props.value.indexOf(option.key) !== -1)) || (!this.props.value && setting.default && setting.default.indexOf(option.key) !== -1)}
                 />
             )
           }

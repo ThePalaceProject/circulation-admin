@@ -130,7 +130,7 @@ export interface SettingData {
   key: string;
   label: string;
   description?: string;
-  default?: string;
+  default?: string | string[];
   optional?: boolean;
   randomizable?: boolean;
   type?: string;
