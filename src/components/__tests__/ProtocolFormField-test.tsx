@@ -14,7 +14,7 @@ describe("ProtocolFormField", () => {
       label: "label",
       description: "<p>description</p>"
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <ProtocolFormField
         setting={setting}
         disabled={true}
@@ -33,6 +33,11 @@ describe("ProtocolFormField", () => {
     wrapper.setProps({ value: "test" });
     input = wrapper.find(EditableInput);
     expect(input.prop("value")).to.equal("test");
+    let inputElement = input.find("input").get(0) as any;
+    expect(inputElement.value).to.equal("test");
+
+    (wrapper.instance() as ProtocolFormField).clear();
+    expect(inputElement.value).to.equal("");
   });
 
   it("renders optional setting", () => {
@@ -278,6 +283,10 @@ describe("ProtocolFormField", () => {
 
     removables = wrapper.find(Removable);
     expect(removables.length).to.equal(2);
+
+    (wrapper.instance() as ProtocolFormField).clear();
+    removables = wrapper.find(Removable);
+    expect(removables.length).to.equal(0);
   });
 
   it("renders image setting", () => {

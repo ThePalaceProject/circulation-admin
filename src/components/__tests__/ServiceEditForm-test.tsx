@@ -8,6 +8,7 @@ import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
 import Removable from "../Removable";
+import Editable from "../Editable";
 import { ServicesData } from "../../interfaces";
 
 describe("ServiceEditForm", () => {
@@ -360,9 +361,33 @@ describe("ServiceEditForm", () => {
       expect(library.length).to.equal(0);
     });
 
-    it("renders libraries", () => {
+    it("renders removable and editable libraries", () => {
       let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
+
+      wrapper = mount(
+        <TestServiceEditForm
+          csrfToken="token"
+          disabled={false}
+          data={servicesData}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
+          listDataKey="services"
+          />
+      );
+      library = wrapper.find(Removable);
+      expect(library.length).to.equal(1);
+      let editable = library.find(Editable);
+      expect(editable.length).to.equal(1);
+      expect(editable.props().children).to.contain("New York Public Library");
+    });
+
+    it("renders removable but not editable libraries", () => {
+      let library = wrapper.find(Removable);
+      expect(library.length).to.equal(0);
+
+      let newServiceData = Object.assign({}, serviceData, { protocol: "protocol 3" });
 
       wrapper = shallow(
         <TestServiceEditForm
@@ -370,7 +395,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesData}
           editItem={editService}
-          item={serviceData}
+          item={newServiceData}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -417,7 +442,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("renders library add dropdown and library fields", () => {
-      let select = wrapper.find("select[name='add-library']");
+      let select = editableInputByName("add-library");
       expect(select.props().label).to.equal("Add Library");
 
       let options = select.find("option");
@@ -444,7 +469,7 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      select = wrapper.find("select[name='add-library']");
+      select = editableInputByName("add-library");
       expect(select.props().label).to.equal("Add Library");
 
       options = select.find("option");
@@ -589,16 +614,22 @@ describe("ServiceEditForm", () => {
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("Brooklyn Public Library");
       expect(library.text()).to.contain("remove");
+      expect(library.text()).to.contain("edit");
 
       let stateLibraries = wrapper.state().libraries;
       expect(stateLibraries.length).to.equal(1);
       expect(stateLibraries[0].short_name).to.equal("bpl");
       expect(stateLibraries[0].library_text_setting).to.equal("library text");
       expect(stateLibraries[0].library_select_setting).to.equal("option4");
+
+      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      expect(libraryTextSettingInput.get(0).value).to.equal("");
+      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      expect(librarySelectSettingInput.get(0).value).to.equal("option3");
     });
 
     it("removes a library", () => {
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           csrfToken="token"
           disabled={false}
@@ -611,13 +642,73 @@ describe("ServiceEditForm", () => {
       );
       let library = wrapper.find(Removable);
       expect(library.length).to.equal(1);
-      expect(library.prop("children")).to.contain("New York Public Library");
+      expect(library.text()).to.contain("New York Public Library");
 
       let onRemove = library.prop("onRemove");
       onRemove();
 
       library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
+    });
+
+    it("edits a library", () => {
+      wrapper = mount(
+        <TestServiceEditForm
+          csrfToken="token"
+          disabled={false}
+          data={servicesData}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
+          listDataKey="services"
+          />
+      );
+      let library = wrapper.find(Removable).find(Editable);
+      expect(library.length).to.equal(1);
+      expect(library.text()).to.contain("New York Public Library");
+
+      let onEdit = library.prop("onEdit");
+      onEdit();
+
+      let settings = wrapper.find(".edit-library-settings");
+      expect(settings.length).to.equal(1);
+      let libraryTextSettingInput = settings.find("input[name='library_text_setting']") as any;
+      expect(libraryTextSettingInput.get(0).value).to.equal("library text setting");
+      let librarySelectSettingInput = settings.find("select[name='library_select_setting']") as any;
+      expect(librarySelectSettingInput.get(0).value).to.equal("option4");
+
+      libraryTextSettingInput.get(0).value = "new library text";
+      libraryTextSettingInput.simulate("change");
+      librarySelectSettingInput.get(0).value = "option3";
+      librarySelectSettingInput.simulate("change");
+
+      onEdit();
+
+      settings = wrapper.find(".edit-library-settings");
+      expect(settings.length).to.equal(0);
+
+      onEdit();
+
+      settings = wrapper.find(".edit-library-settings");
+      expect(settings.length).to.equal(1);
+      libraryTextSettingInput = settings.find("input[name='library_text_setting']") as any;
+      expect(libraryTextSettingInput.get(0).value).to.equal("library text setting");
+      librarySelectSettingInput = settings.find("select[name='library_select_setting']") as any;
+      expect(librarySelectSettingInput.get(0).value).to.equal("option4");
+
+      libraryTextSettingInput.get(0).value = "new library text";
+      libraryTextSettingInput.simulate("change");
+      librarySelectSettingInput.get(0).value = "option3";
+      librarySelectSettingInput.simulate("change");
+
+      let saveButton = settings.find("button");
+      saveButton.simulate("click");
+
+      let stateLibraries = wrapper.state().libraries;
+      expect(stateLibraries.length).to.equal(1);
+      expect(stateLibraries[0].short_name).to.equal("nypl");
+      expect(stateLibraries[0].library_text_setting).to.equal("new library text");
+      expect(stateLibraries[0].library_select_setting).to.equal("option3");
     });
 
     it("submits data", () => {

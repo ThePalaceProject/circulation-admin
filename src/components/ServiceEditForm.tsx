@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import Editable from "./Editable";
 import Removable from "./Removable";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
@@ -19,6 +20,7 @@ export interface ServiceEditFormState {
   protocol: string;
   parentId: string | null;
   libraries: LibraryWithSettingsData[];
+  expandedLibraries: string[];
 }
 
 export default class ServiceEditForm<T extends ServicesData> extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
@@ -31,11 +33,14 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.state = {
       protocol: (this.props.item && this.props.item.protocol) || defaultProtocol,
       parentId: (this.props.item && this.props.item.parent_id && String(this.props.item.parent_id)) || null,
-      libraries: (this.props.item && this.props.item.libraries) || []
+      libraries: (this.props.item && this.props.item.libraries) || [],
+      expandedLibraries: []
     };
     this.handleProtocolChange = this.handleProtocolChange.bind(this);
     this.handleParentChange = this.handleParentChange.bind(this);
     this.addLibrary = this.addLibrary.bind(this);
+    this.editLibrary = this.editLibrary.bind(this);
+    this.expandLibrary = this.expandLibrary.bind(this);
     this.removeLibrary = this.removeLibrary.bind(this);
     this.save = this.save.bind(this);
   }
@@ -109,20 +114,52 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           <div className="form-group">
             <label>Libraries</label>
             { this.state.libraries.map(library =>
-                <Removable
-                  key={library.short_name}
-                  disabled={this.props.disabled}
-                  onRemove={() => this.removeLibrary(library)}
-                  >
-                  {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
-                </Removable>
+                <div key={library.short_name}>
+                  <Removable
+                    disabled={this.props.disabled}
+                    onRemove={() => this.removeLibrary(library)}
+                    >
+                    { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0 &&
+                      <Editable
+                        disabled={this.props.disabled}
+                        onEdit={() => this.expandLibrary(library)}
+                        >
+                        {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
+                      </Editable>
+                    }
+                    { !(this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0) &&
+                      this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name
+                    }
+                  </Removable>
+                  { this.isExpanded(library) &&
+                    <div className="edit-library-settings">
+                      { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
+                        <ProtocolFormField
+                          key={setting.key}
+                          setting={setting}
+                          disabled={this.props.disabled}
+                          value={library[setting.key]}
+                          ref={library.short_name + "_" + setting.key}
+                          />
+                        )
+                      }
+                      <button
+                        type="button"
+                        className="btn btn-default edit-library"
+                        disabled={this.props.disabled}
+                        onClick={() => this.editLibrary(library)}
+                        >Save</button>
+                    </div>
+                  }
+                </div>
               )
             }
           </div>
         }
         { !this.sitewide() && this.availableLibraries().length > 0 &&
           <div className="form-group">
-            <select
+            <EditableInput
+              elementType="select"
               disabled={this.props.disabled}
               name="add-library"
               label="Add Library"
@@ -132,7 +169,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                   <option key={library.short_name} value={library.short_name}>{library.name}</option>
                 )
               }
-            </select>
+            </EditableInput>
             { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
                 <ProtocolFormField
                   key={setting.key}
@@ -184,7 +221,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         libraries = newProps.item.libraries;
       }
     }
-    this.setState({ protocol, parentId, libraries });
+    this.setState({ protocol, parentId, libraries, expandedLibraries: this.state.expandedLibraries });
   }
 
   availableProtocols(props?): ProtocolData[] {
@@ -206,7 +243,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   handleProtocolChange() {
     const protocol = (this.refs["protocol"] as any).getValue();
-    this.setState({ protocol, parentId: this.state.parentId, libraries: this.state.libraries });
+    this.setState({ protocol, parentId: this.state.parentId, libraries: this.state.libraries, expandedLibraries: this.state.expandedLibraries });
   }
 
   allowsParent(): boolean {
@@ -236,7 +273,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     if (parentId === "") {
       parentId = null;
     }
-    this.setState({ protocol: this.state.protocol, parentId, libraries: this.state.libraries });
+    this.setState({ protocol: this.state.protocol, parentId, libraries: this.state.libraries, expandedLibraries: this.state.expandedLibraries });
   }
 
   protocolSettings() {
@@ -309,22 +346,53 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     });
   }
 
+  isExpanded(library) {
+    return this.state.expandedLibraries.indexOf(library.short_name) !== -1;
+  }
+
   removeLibrary(library) {
     const libraries = this.state.libraries.filter(stateLibrary => stateLibrary.short_name !== library.short_name);
-    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries });
+    const expandedLibraries = this.state.expandedLibraries.filter(shortName => shortName !== library.short_name);
+    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries, expandedLibraries });
+  }
+
+  expandLibrary(library) {
+    if (!this.isExpanded(library)) {
+      const expandedLibraries = this.state.expandedLibraries;
+      expandedLibraries.push(library.short_name);
+      this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries: this.state.libraries, expandedLibraries});
+    } else {
+      const expandedLibraries = this.state.expandedLibraries.filter(shortName => shortName !== library.short_name);
+      this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries: this.state.libraries, expandedLibraries});
+    }
+  }
+
+  editLibrary(library) {
+    const libraries = this.state.libraries.filter(stateLibrary => stateLibrary.short_name !== library.short_name);
+    const expandedLibraries = this.state.expandedLibraries.filter(shortName => shortName !== library.short_name);
+    const newLibrary = { short_name: library.short_name };
+    for (const setting of this.protocolLibrarySettings()) {
+      const value = (this.refs[library.short_name + "_" + setting.key] as any).getValue();
+      if (value) {
+        newLibrary[setting.key] = value;
+      }
+    }
+    libraries.push(newLibrary);
+    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries, expandedLibraries });
   }
 
   addLibrary() {
-    const name = (this.refs["addLibrary"] as any).value;
+    const name = (this.refs["addLibrary"] as any).getValue();
     const newLibrary = { short_name: name };
     for (const setting of this.protocolLibrarySettings()) {
       const value = (this.refs[setting.key] as any).getValue();
       if (value) {
         newLibrary[setting.key] = value;
       }
+      (this.refs[setting.key] as any).clear();
     }
     const libraries = this.state.libraries.concat(newLibrary);
-    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries });
+    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries, expandedLibraries: this.state.expandedLibraries });
   }
 
   save(event) {

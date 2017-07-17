@@ -187,4 +187,12 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     }
     element.setState({ value: random });
   }
+
+  clear() {
+    const element = (this.refs["element"] as any);
+    if (element) {
+      element.clear();
+    }
+    this.setState({ listItems: [] });
+  }
 }
