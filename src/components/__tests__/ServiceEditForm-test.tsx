@@ -441,22 +441,20 @@ describe("ServiceEditForm", () => {
       expect(select.length).to.equal(0);
     });
 
-    it("renders library add dropdown and library fields", () => {
+    it("renders library add dropdown", () => {
       let select = editableInputByName("add-library");
       expect(select.props().label).to.equal("Add Library");
 
       let options = select.find("option");
-      expect(options.length).to.equal(2);
-      expect(options.at(0).props().value).to.equal("nypl");
-      expect(options.at(1).props().value).to.equal("bpl");
+      expect(options.length).to.equal(3);
+      expect(options.at(0).props().value).to.equal("none");
+      expect(options.at(1).props().value).to.equal("nypl");
+      expect(options.at(2).props().value).to.equal("bpl");
 
       let input = protocolFormFieldByKey("library_text_setting");
-      expect(input.props().value).not.to.be.ok;
-      expect(input.props().setting).to.equal(protocolsData[0].library_settings[0]);
-
+      expect(input.length).to.equal(0);
       input = protocolFormFieldByKey("library_select_setting");
-      expect(input.props().value).not.to.be.ok;
-      expect(input.props().setting).to.equal(protocolsData[0].library_settings[1]);
+      expect(input.length).to.equal(0);
 
       wrapper = shallow(
         <TestServiceEditForm
@@ -473,16 +471,9 @@ describe("ServiceEditForm", () => {
       expect(select.props().label).to.equal("Add Library");
 
       options = select.find("option");
-      expect(options.length).to.equal(1);
-      expect(options.at(0).props().value).to.equal("bpl");
-
-      input = protocolFormFieldByKey("library_text_setting");
-      expect(input.props().value).not.to.be.ok;
-      expect(input.props().setting).to.equal(protocolsData[0].library_settings[0]);
-
-      input = protocolFormFieldByKey("library_select_setting");
-      expect(input.props().value).not.to.be.ok;
-      expect(input.props().setting).to.equal(protocolsData[0].library_settings[1]);
+      expect(options.length).to.equal(2);
+      expect(options.at(0).props().value).to.equal("none");
+      expect(options.at(1).props().value).to.equal("bpl");
     });
   });
 
@@ -502,6 +493,11 @@ describe("ServiceEditForm", () => {
     });
 
     it("changes fields and description when protocol changes", () => {
+      // Select a library so the library settings are shown.
+      let librarySelect = wrapper.find("select[name='add-library']") as any;
+      librarySelect.get(0).value = "nypl";
+      librarySelect.simulate("change");
+
       let textSettingInput = protocolFormFieldByKey("text_setting");
       let selectSettingInput = protocolFormFieldByKey("select_setting");
       let libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
@@ -597,13 +593,35 @@ describe("ServiceEditForm", () => {
       let library = wrapper.find(Removable);
       expect(library.length).to.equal(0);
 
+      let libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      expect(libraryTextSettingInput.length).to.equal(0);
+      let librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      expect(librarySelectSettingInput.length).to.equal(0);
+
       let select = wrapper.find("select[name='add-library']") as any;
       select.get(0).value = "bpl";
+      select.simulate("change");
 
-      let libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      expect(libraryTextSettingInput.length).to.equal(1);
+      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      expect(librarySelectSettingInput.length).to.equal(1);
+
+      select.get(0).value = "none";
+      select.simulate("change");
+
+      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      expect(libraryTextSettingInput.length).to.equal(0);
+      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      expect(librarySelectSettingInput.length).to.equal(0);
+
+      select.get(0).value = "bpl";
+      select.simulate("change");
+
+      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
       libraryTextSettingInput.get(0).value = "library text";
       libraryTextSettingInput.simulate("change");
-      let librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
       librarySelectSettingInput.get(0).value = "option4";
       librarySelectSettingInput.simulate("change");
 
@@ -621,6 +639,10 @@ describe("ServiceEditForm", () => {
       expect(stateLibraries[0].short_name).to.equal("bpl");
       expect(stateLibraries[0].library_text_setting).to.equal("library text");
       expect(stateLibraries[0].library_select_setting).to.equal("option4");
+
+      select = wrapper.find("select[name='add-library']") as any;
+      select.get(0).value = "nypl";
+      select.simulate("change");
 
       libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
       expect(libraryTextSettingInput.get(0).value).to.equal("");

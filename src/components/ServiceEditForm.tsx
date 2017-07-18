@@ -21,6 +21,7 @@ export interface ServiceEditFormState {
   parentId: string | null;
   libraries: LibraryWithSettingsData[];
   expandedLibraries: string[];
+  selectedLibrary: string | null;
 }
 
 export default class ServiceEditForm<T extends ServicesData> extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
@@ -34,10 +35,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       protocol: (this.props.item && this.props.item.protocol) || defaultProtocol,
       parentId: (this.props.item && this.props.item.parent_id && String(this.props.item.parent_id)) || null,
       libraries: (this.props.item && this.props.item.libraries) || [],
-      expandedLibraries: []
+      expandedLibraries: [],
+      selectedLibrary: null
     };
     this.handleProtocolChange = this.handleProtocolChange.bind(this);
     this.handleParentChange = this.handleParentChange.bind(this);
+    this.selectLibrary = this.selectLibrary.bind(this);
     this.addLibrary = this.addLibrary.bind(this);
     this.editLibrary = this.editLibrary.bind(this);
     this.expandLibrary = this.expandLibrary.bind(this);
@@ -164,27 +167,34 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               name="add-library"
               label="Add Library"
               ref="addLibrary"
+              value={this.state.selectedLibrary}
+              onChange={this.selectLibrary}
               >
+              <option value="none">Select a library</option>
               { this.availableLibraries().map(library =>
                   <option key={library.short_name} value={library.short_name}>{library.name}</option>
                 )
               }
             </EditableInput>
-            { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
-                <ProtocolFormField
-                  key={setting.key}
-                  setting={setting}
+            { this.state.selectedLibrary &&
+              <div>
+                { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
+                    <ProtocolFormField
+                      key={setting.key}
+                      setting={setting}
+                      disabled={this.props.disabled}
+                      ref={setting.key}
+                      />
+                  )
+                }
+                <button
+                  type="button"
+                  className="btn btn-default add-library"
                   disabled={this.props.disabled}
-                  ref={setting.key}
-                  />
-                )
+                  onClick={this.addLibrary}
+                  >Add Library</button>
+              </div>
             }
-            <button
-              type="button"
-              className="btn btn-default add-library"
-              disabled={this.props.disabled}
-              onClick={this.addLibrary}
-              >Add Library</button>
           </div>
         }
         <button
@@ -221,7 +231,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         libraries = newProps.item.libraries;
       }
     }
-    this.setState({ protocol, parentId, libraries, expandedLibraries: this.state.expandedLibraries });
+    const newState = Object.assign({}, this.state, { protocol, parentId, libraries });
+    this.setState(newState);
   }
 
   availableProtocols(props?): ProtocolData[] {
@@ -243,7 +254,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   handleProtocolChange() {
     const protocol = (this.refs["protocol"] as any).getValue();
-    this.setState({ protocol, parentId: this.state.parentId, libraries: this.state.libraries, expandedLibraries: this.state.expandedLibraries });
+    const newState = Object.assign({}, this.state, { protocol });
+    this.setState(newState);
   }
 
   allowsParent(): boolean {
@@ -273,7 +285,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     if (parentId === "") {
       parentId = null;
     }
-    this.setState({ protocol: this.state.protocol, parentId, libraries: this.state.libraries, expandedLibraries: this.state.expandedLibraries });
+    const newState = Object.assign({}, this.state, { parentId });
+    this.setState(newState);
   }
 
   protocolSettings() {
@@ -346,6 +359,15 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     });
   }
 
+  selectLibrary() {
+    let name = (this.refs["addLibrary"] as any).getValue();
+    if (name === "none") {
+      name = null;
+    }
+    const newState = Object.assign({}, this.state, { selectedLibrary: name });
+    this.setState(newState);
+  }
+
   isExpanded(library) {
     return this.state.expandedLibraries.indexOf(library.short_name) !== -1;
   }
@@ -353,17 +375,20 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   removeLibrary(library) {
     const libraries = this.state.libraries.filter(stateLibrary => stateLibrary.short_name !== library.short_name);
     const expandedLibraries = this.state.expandedLibraries.filter(shortName => shortName !== library.short_name);
-    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries, expandedLibraries });
+    const newState = Object.assign({}, this.state, { libraries, expandedLibraries });
+    this.setState(newState);
   }
 
   expandLibrary(library) {
     if (!this.isExpanded(library)) {
       const expandedLibraries = this.state.expandedLibraries;
       expandedLibraries.push(library.short_name);
-      this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries: this.state.libraries, expandedLibraries});
+      const newState = Object.assign({}, this.state, { expandedLibraries });
+      this.setState(newState);
     } else {
       const expandedLibraries = this.state.expandedLibraries.filter(shortName => shortName !== library.short_name);
-      this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries: this.state.libraries, expandedLibraries});
+      const newState = Object.assign({}, this.state, { expandedLibraries });
+      this.setState(newState);
     }
   }
 
@@ -378,11 +403,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       }
     }
     libraries.push(newLibrary);
-    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries, expandedLibraries });
+    const newState = Object.assign({}, this.state, { libraries, expandedLibraries });
+    this.setState(newState);
   }
 
   addLibrary() {
-    const name = (this.refs["addLibrary"] as any).getValue();
+    const name = this.state.selectedLibrary;
     const newLibrary = { short_name: name };
     for (const setting of this.protocolLibrarySettings()) {
       const value = (this.refs[setting.key] as any).getValue();
@@ -392,7 +418,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       (this.refs[setting.key] as any).clear();
     }
     const libraries = this.state.libraries.concat(newLibrary);
-    this.setState({ protocol: this.state.protocol, parentId: this.state.parentId, libraries, expandedLibraries: this.state.expandedLibraries });
+    const newState = Object.assign({}, this.state, { libraries });
+    this.setState(newState);
   }
 
   save(event) {
