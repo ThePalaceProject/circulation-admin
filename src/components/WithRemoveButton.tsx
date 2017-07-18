@@ -1,15 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-export interface RemovableProps {
+export interface WithRemoveButtonProps {
   disabled: boolean;
   onRemove: () => void;
 }
 
-export default class Removable extends React.Component<RemovableProps, void> {
+export default class WithRemoveButton extends React.Component<WithRemoveButtonProps, void> {
   render(): JSX.Element {
     return (
-      <div className="removable">
+      <div className="with-remove-button">
         <span>
           { this.props.children }
         </span>

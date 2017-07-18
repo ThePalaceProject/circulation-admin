@@ -1,8 +1,8 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import Editable from "./Editable";
-import Removable from "./Removable";
+import WithEditButton from "./WithEditButton";
+import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
 
@@ -118,22 +118,22 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             <label>Libraries</label>
             { this.state.libraries.map(library =>
                 <div key={library.short_name}>
-                  <Removable
+                  <WithRemoveButton
                     disabled={this.props.disabled}
                     onRemove={() => this.removeLibrary(library)}
                     >
                     { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0 &&
-                      <Editable
+                      <WithEditButton
                         disabled={this.props.disabled}
                         onEdit={() => this.expandLibrary(library)}
                         >
                         {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
-                      </Editable>
+                      </WithEditButton>
                     }
                     { !(this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0) &&
                       this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name
                     }
-                  </Removable>
+                  </WithRemoveButton>
                   { this.isExpanded(library) &&
                     <div className="edit-library-settings">
                       { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>

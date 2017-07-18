@@ -1,15 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-export interface EditableProps {
+export interface WithEditButtonProps {
   disabled: boolean;
   onEdit: () => void;
 }
 
-export default class Editable extends React.Component<EditableProps, void> {
+export default class WithEditButton extends React.Component<WithEditButtonProps, void> {
   render(): JSX.Element {
     return (
-      <div className="editable">
+      <div className="with-edit-button">
         <span>
           { this.props.children }
         </span>

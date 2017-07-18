@@ -4,21 +4,21 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import Removable from "../Removable";
+import WithRemoveButton from "../WithRemoveButton";
 
-describe("Removable", () => {
+describe("WithRemoveButton", () => {
   let wrapper;
   let onRemove;
 
   beforeEach(() => {
     onRemove = stub();
     wrapper = shallow(
-      <Removable
+      <WithRemoveButton
         disabled={false}
         onRemove={onRemove}
         >
         child
-      </Removable>
+      </WithRemoveButton>
     );
   });
 

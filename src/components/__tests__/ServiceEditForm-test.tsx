@@ -7,8 +7,8 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
-import Removable from "../Removable";
-import Editable from "../Editable";
+import WithRemoveButton from "../WithRemoveButton";
+import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
 
 describe("ServiceEditForm", () => {
@@ -340,7 +340,7 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(Removable);
+      let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
 
       let serviceDataSitewide = Object.assign({}, servicesData, {
@@ -357,12 +357,12 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      library = wrapper.find(Removable);
+      library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
     });
 
     it("renders removable and editable libraries", () => {
-      let library = wrapper.find(Removable);
+      let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
 
       wrapper = mount(
@@ -376,15 +376,15 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      library = wrapper.find(Removable);
+      library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
-      let editable = library.find(Editable);
+      let editable = library.find(WithEditButton);
       expect(editable.length).to.equal(1);
       expect(editable.props().children).to.contain("New York Public Library");
     });
 
     it("renders removable but not editable libraries", () => {
-      let library = wrapper.find(Removable);
+      let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
 
       let newServiceData = Object.assign({}, serviceData, { protocol: "protocol 3" });
@@ -400,7 +400,7 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      library = wrapper.find(Removable);
+      library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
       expect(library.props().children).to.contain("New York Public Library");
     });
@@ -590,7 +590,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("adds a library with settings", () => {
-      let library = wrapper.find(Removable);
+      let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
 
       let libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
@@ -628,7 +628,7 @@ describe("ServiceEditForm", () => {
       let addButton = wrapper.find("button.add-library");
       addButton.simulate("click");
 
-      library = wrapper.find(Removable);
+      library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("Brooklyn Public Library");
       expect(library.text()).to.contain("remove");
@@ -662,14 +662,14 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(Removable);
+      let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("New York Public Library");
 
       let onRemove = library.prop("onRemove");
       onRemove();
 
-      library = wrapper.find(Removable);
+      library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
     });
 
@@ -685,7 +685,7 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(Removable).find(Editable);
+      let library = wrapper.find(WithRemoveButton).find(WithEditButton);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("New York Public Library");
 

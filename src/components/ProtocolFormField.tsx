@@ -1,6 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import Removable from "./Removable";
+import WithRemoveButton from "./WithRemoveButton";
 import { SettingData } from "../interfaces";
 
 export interface ProtocolFormFieldProps {
@@ -111,7 +111,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
           }
           { this.state.listItems && this.state.listItems.map(listItem =>
-              <Removable
+              <WithRemoveButton
                 disabled={this.props.disabled}
                 onRemove={() => this.removeListItem(listItem)}
                 >
@@ -122,7 +122,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                   name={setting.key}
                   value={listItem}
                   />
-              </Removable>
+              </WithRemoveButton>
             )
           }
           <div>

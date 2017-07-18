@@ -4,21 +4,21 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import Editable from "../Editable";
+import WithEditButton from "../WithEditButton";
 
-describe("Editable", () => {
+describe("WithEditButton", () => {
   let wrapper;
   let onEdit;
 
   beforeEach(() => {
     onEdit = stub();
     wrapper = shallow(
-      <Editable
+      <WithEditButton
         disabled={false}
         onEdit={onEdit}
         >
         child
-      </Editable>
+      </WithEditButton>
     );
   });
 
