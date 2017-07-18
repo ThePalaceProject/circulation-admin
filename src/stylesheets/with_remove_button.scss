@@ -1,0 +1,11 @@
+.with-remove-button {
+  > span {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .remove {
+    color: #AAA;
+    cursor: pointer;
+  }
+}

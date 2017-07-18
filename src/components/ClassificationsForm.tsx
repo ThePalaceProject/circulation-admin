@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import EditableInput from "./EditableInput";
 import EditableRadio from "./EditableRadio";
-import Removable from "./Removable";
+import WithRemoveButton from "./WithRemoveButton";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
 
@@ -103,13 +103,13 @@ export default class ClassificationsForm extends React.Component<Classifications
         <div className="form-group">
           <label>Genres</label>
           { this.state.genres.sort().map(category =>
-            <Removable
+            <WithRemoveButton
               key={category}
               disabled={this.props.disabled}
               onRemove={() => this.removeGenre(category)}
               >
               {this.fullGenre(category)}
-            </Removable>
+            </WithRemoveButton>
           ) }
         </div>
 

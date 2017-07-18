@@ -5,7 +5,7 @@ import { shallow, mount } from "enzyme";
 
 import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
-import Removable from "../Removable";
+import WithRemoveButton from "../WithRemoveButton";
 
 describe("ProtocolFormField", () => {
   it("renders text setting", () => {
@@ -14,7 +14,7 @@ describe("ProtocolFormField", () => {
       label: "label",
       description: "<p>description</p>"
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <ProtocolFormField
         setting={setting}
         disabled={true}
@@ -33,6 +33,11 @@ describe("ProtocolFormField", () => {
     wrapper.setProps({ value: "test" });
     input = wrapper.find(EditableInput);
     expect(input.prop("value")).to.equal("test");
+    let inputElement = input.find("input").get(0) as any;
+    expect(inputElement.value).to.equal("test");
+
+    (wrapper.instance() as ProtocolFormField).clear();
+    expect(inputElement.value).to.equal("");
   });
 
   it("renders optional setting", () => {
@@ -266,7 +271,7 @@ describe("ProtocolFormField", () => {
     expect(input.at(1).props().value).to.equal("option2");
     expect(input.at(2).props().value).to.equal("option3");
 
-    let removables = wrapper.find(Removable);
+    let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(3);
     let remove = removables.at(0).find(".remove");
     remove.simulate("click");
@@ -276,8 +281,12 @@ describe("ProtocolFormField", () => {
     expect(input.at(0).props().value).to.equal("option2");
     expect(input.at(1).props().value).to.equal("option3");
 
-    removables = wrapper.find(Removable);
+    removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
+
+    (wrapper.instance() as ProtocolFormField).clear();
+    removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(0);
   });
 
   it("renders image setting", () => {

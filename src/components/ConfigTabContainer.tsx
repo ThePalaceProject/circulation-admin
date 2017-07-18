@@ -10,6 +10,7 @@ import AnalyticsServices from "./AnalyticsServices";
 import DRMServices from "./DRMServices";
 import CDNServices from "./CDNServices";
 import SearchServices from "./SearchServices";
+import DiscoveryServices from "./DiscoveryServices";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -102,6 +103,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       ),
       search: (
         <SearchServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      ),
+      discovery: (
+        <DiscoveryServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}

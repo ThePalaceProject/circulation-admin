@@ -1,10 +1,11 @@
-.removable {
+.with-edit-button {
   > span {
     display: inline-block;
     margin-right: 10px;
   }
 
-  .remove {
+  .edit {
     color: #AAA;
+    cursor: pointer;
   }
 }

@@ -5,7 +5,8 @@ import {
   AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData,
   MetadataServicesData, AnalyticsServicesData,
-  DRMServicesData, CDNServicesData, SearchServicesData
+  DRMServicesData, CDNServicesData, SearchServicesData,
+  DiscoveryServicesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -44,6 +45,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_CDN_SERVICE = "EDIT_CDN_SERVICE";
   static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
   static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
+  static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
+  static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -341,5 +344,15 @@ export default class ActionCreator extends BaseActionCreator {
   editSearchService(data: FormData) {
     const url = "/admin/search_services";
     return this.postForm(ActionCreator.EDIT_SEARCH_SERVICE, url, data).bind(this);
+  }
+
+  fetchDiscoveryServices() {
+    const url = "/admin/discovery_services";
+    return this.fetchJSON<DiscoveryServicesData>(ActionCreator.DISCOVERY_SERVICES, url).bind(this);
+  }
+
+  editDiscoveryService(data: FormData) {
+    const url = "/admin/discovery_services";
+    return this.postForm(ActionCreator.EDIT_DISCOVERY_SERVICE, url, data).bind(this);
   }
 }

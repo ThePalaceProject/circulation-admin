@@ -15,11 +15,13 @@ import analyticsServices from "./analyticsServices";
 import drmServices from "./drmServices";
 import cdnServices from "./cdnServices";
 import searchServices from "./searchServices";
+import discoveryServices from "./discoveryServices";
 import { FetchEditState } from "./createFetchEditReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
-  AnalyticsServicesData, DRMServicesData, CDNServicesData, SearchServicesData
+  AnalyticsServicesData, DRMServicesData, CDNServicesData, SearchServicesData,
+  DiscoveryServicesData
 } from "../interfaces";
 
 
@@ -40,6 +42,7 @@ export interface State {
   drmServices: FetchEditState<DRMServicesData>;
   cdnServices: FetchEditState<CDNServicesData>;
   searchServices: FetchEditState<SearchServicesData>;
+  discoveryServices: FetchEditState<DiscoveryServicesData>;
 }
 
 export default combineReducers<State>({
@@ -58,5 +61,6 @@ export default combineReducers<State>({
   analyticsServices,
   drmServices,
   cdnServices,
-  searchServices
+  searchServices,
+  discoveryServices
 });

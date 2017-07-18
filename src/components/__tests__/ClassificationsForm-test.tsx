@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import ClassificationsForm from "../ClassificationsForm";
 import EditableInput from "../EditableInput";
 import EditableRadio from "../EditableRadio";
-import Removable from "../Removable";
+import WithRemoveButton from "../WithRemoveButton";
 import GenreForm from "../GenreForm";
 import genreData from "./genreData";
 
@@ -87,7 +87,7 @@ describe("ClassificationsForm", () => {
     });
 
     it("shows the book's full genres with remove buttons", () => {
-      let genres = wrapper.find(Removable);
+      let genres = wrapper.find(WithRemoveButton);
       expect(genres.length).to.equal(1);
       expect(genres.props().children).to.contain("Science Fiction > Space Opera");
     });
@@ -96,7 +96,7 @@ describe("ClassificationsForm", () => {
       let inconsistentBookData = Object.assign({}, bookData, { fiction: false });
       wrapper.setProps({ book: inconsistentBookData });
 
-      let genres = wrapper.find(Removable);
+      let genres = wrapper.find(WithRemoveButton);
       expect(genres.length).to.equal(1);
       expect(genres.props().children).to.contain("Science Fiction > Space Opera");
     });
@@ -198,7 +198,7 @@ describe("ClassificationsForm", () => {
     it("adds genre to list of selected genres after validating against audience", () => {
       // can't add Erotica to book with Young Adult audience
       instance.addGenre("Erotica");
-      let newGenres = wrapper.find(Removable).map(name => name.text());
+      let newGenres = wrapper.find(WithRemoveButton).map(name => name.text());
       expect(newGenres.length).to.equal(1);
       expect(newGenres[0]).to.contain(instance.fullGenre(bookData.categories[0]) + "remove");
       expect(newGenres[0]).not.to.contain("Erotica");
@@ -207,16 +207,16 @@ describe("ClassificationsForm", () => {
       instance.addGenre("Folklore");
 
       expect(instance.validateAudience.callCount).to.equal(1);
-      newGenres = wrapper.find(Removable).map(name => name.text());
+      newGenres = wrapper.find(WithRemoveButton).map(name => name.text());
       expect(newGenres).to.contain(instance.fullGenre("Folklore") + "remove");
     });
 
     it("removes genre when remove button is clicked", () => {
-      let button = wrapper.find(Removable);
+      let button = wrapper.find(WithRemoveButton);
       let onRemove = button.props().onRemove;
       onRemove();
 
-      let newGenres = wrapper.find(Removable);
+      let newGenres = wrapper.find(WithRemoveButton);
       expect(newGenres.length).to.equal(0);
     });
 
