@@ -47,6 +47,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
   static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
   static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
+  static readonly REGISTER_LIBRARY = "REGISTER_LIBRARY";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -354,5 +355,10 @@ export default class ActionCreator extends BaseActionCreator {
   editDiscoveryService(data: FormData) {
     const url = "/admin/discovery_services";
     return this.postForm(ActionCreator.EDIT_DISCOVERY_SERVICE, url, data).bind(this);
+  }
+
+  registerLibrary(data: FormData) {
+    const url = "/admin/library_registrations";
+    return this.postForm(ActionCreator.REGISTER_LIBRARY, url, data).bind(this);
   }
 }

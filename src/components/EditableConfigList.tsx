@@ -27,7 +27,7 @@ export interface EditFormProps<T, U> {
   listDataKey: string;
 }
 
-export abstract class EditableConfigList<T, U> extends React.Component<EditableConfigListProps<T>, void> {
+export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, void> {
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
@@ -133,5 +133,7 @@ export abstract class EditableConfigList<T, U> extends React.Component<EditableC
     return null;
   }
 }
+
+export abstract class EditableConfigList<T, U> extends GenericEditableConfigList<T, U, EditableConfigListProps<T>> {}
 
 export default EditableConfigList;
