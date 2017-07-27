@@ -216,12 +216,6 @@ export interface AnalyticsServicesData extends ServicesData {
   analytics_services: AnalyticsServiceData[];
 }
 
-export interface DRMServiceData extends ServiceData {}
-
-export interface DRMServicesData extends ServicesData {
-  drm_services: DRMServiceData[];
-}
-
 export interface CDNServiceData extends ServiceData {}
 
 export interface CDNServicesData extends ServicesData {

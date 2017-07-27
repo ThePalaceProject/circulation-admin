@@ -7,7 +7,6 @@ import PatronAuthServices from "./PatronAuthServices";
 import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
 import AnalyticsServices from "./AnalyticsServices";
-import DRMServices from "./DRMServices";
 import CDNServices from "./CDNServices";
 import SearchServices from "./SearchServices";
 import DiscoveryServices from "./DiscoveryServices";
@@ -85,14 +84,6 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
           identifier={this.props.identifier}
           />
       ),
-      drm: (
-        <DRMServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      ),
       cdn: (
         <CDNServices
           store={this.props.store}
@@ -136,8 +127,6 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       return "Patron Authentication";
     } else if (name === "sitewideSettings") {
       return "Sitewide Settings";
-    } else if (name === "drm") {
-      return "DRM";
     } else if (name === "cdn") {
       return "CDN";
     } else {

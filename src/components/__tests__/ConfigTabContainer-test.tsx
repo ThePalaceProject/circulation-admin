@@ -14,7 +14,6 @@ import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
 import AnalyticsServices from "../AnalyticsServices";
-import DRMServices from "../DRMServices";
 import CDNServices from "../CDNServices";
 import SearchServices from "../SearchServices";
 import DiscoveryServices from "../DiscoveryServices";
@@ -53,7 +52,6 @@ describe("ConfigTabContainer", () => {
     expect(linkTexts).to.contain("Patron Authentication");
     expect(linkTexts).to.contain("Sitewide Settings");
     expect(linkTexts).to.contain("Metadata");
-    expect(linkTexts).to.contain("DRM");
     expect(linkTexts).to.contain("CDN");
   });
 
@@ -61,8 +59,8 @@ describe("ConfigTabContainer", () => {
     const componentClasses = [
       Libraries, Collections, AdminAuthServices,
       IndividualAdmins, PatronAuthServices, SitewideSettings,
-      MetadataServices, AnalyticsServices, DRMServices,
-      CDNServices, SearchServices, DiscoveryServices
+      MetadataServices, AnalyticsServices, CDNServices,
+      SearchServices, DiscoveryServices
     ];
     for (const componentClass of componentClasses) {
       const component = wrapper.find(componentClass);
