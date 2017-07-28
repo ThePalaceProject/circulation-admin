@@ -5,7 +5,7 @@ import {
   AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData,
   MetadataServicesData, AnalyticsServicesData,
-  DRMServicesData, CDNServicesData, SearchServicesData,
+  CDNServicesData, SearchServicesData,
   DiscoveryServicesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -39,8 +39,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
   static readonly ANALYTICS_SERVICES = "ANALYTICS_SERVICES";
   static readonly EDIT_ANALYTICS_SERVICE = "EDIT_ANALYTICS_SERVICE";
-  static readonly DRM_SERVICES = "DRM_SERVICES";
-  static readonly EDIT_DRM_SERVICE = "EDIT_DRM_SERVICE";
   static readonly CDN_SERVICES = "CDN_SERVICES";
   static readonly EDIT_CDN_SERVICE = "EDIT_CDN_SERVICE";
   static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
@@ -315,16 +313,6 @@ export default class ActionCreator extends BaseActionCreator {
   editAnalyticsService(data: FormData) {
     const url = "/admin/analytics_services";
     return this.postForm(ActionCreator.EDIT_ANALYTICS_SERVICE, url, data).bind(this);
-  }
-
-  fetchDRMServices() {
-    const url = "/admin/drm_services";
-    return this.fetchJSON<DRMServicesData>(ActionCreator.DRM_SERVICES, url).bind(this);
-  }
-
-  editDRMService(data: FormData) {
-    const url = "/admin/drm_services";
-    return this.postForm(ActionCreator.EDIT_DRM_SERVICE, url, data).bind(this);
   }
 
   fetchCDNServices() {

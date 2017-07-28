@@ -12,7 +12,6 @@ import patronAuthServices from "./patronAuthServices";
 import sitewideSettings from "./sitewideSettings";
 import metadataServices from "./metadataServices";
 import analyticsServices from "./analyticsServices";
-import drmServices from "./drmServices";
 import cdnServices from "./cdnServices";
 import searchServices from "./searchServices";
 import discoveryServices from "./discoveryServices";
@@ -21,7 +20,7 @@ import { FetchEditState } from "./createFetchEditReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
-  AnalyticsServicesData, DRMServicesData, CDNServicesData, SearchServicesData,
+  AnalyticsServicesData, CDNServicesData, SearchServicesData,
   DiscoveryServicesData
 } from "../interfaces";
 
@@ -40,7 +39,6 @@ export interface State {
   sitewideSettings: FetchEditState<SitewideSettingsData>;
   metadataServices: FetchEditState<MetadataServicesData>;
   analyticsServices: FetchEditState<AnalyticsServicesData>;
-  drmServices: FetchEditState<DRMServicesData>;
   cdnServices: FetchEditState<CDNServicesData>;
   searchServices: FetchEditState<SearchServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
@@ -61,7 +59,6 @@ export default combineReducers<State>({
   sitewideSettings,
   metadataServices,
   analyticsServices,
-  drmServices,
   cdnServices,
   searchServices,
   discoveryServices,
