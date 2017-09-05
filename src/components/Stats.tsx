@@ -62,7 +62,7 @@ export class Stats extends React.Component<StatsProps, any> {
               <li><div className="stat-grouping-label">Patrons</div></li>
               { patronCounts.map(patronCount =>
                 <li>
-                  <div>{patronCount.label}:</div>
+                  <div className="stat-label">{patronCount.label}:</div>
                   <div className="stat-value">{this.formatNumber(patronCount.count)}</div>
                 </li>
               ) }
@@ -70,15 +70,15 @@ export class Stats extends React.Component<StatsProps, any> {
             <ul className="list-inline">
               <li><div className="stat-grouping-label">Inventory</div></li>
               <li>
-                <div>Total Titles:</div>
+                <div className="stat-label">Total Titles:</div>
                 <div className="stat-value">{this.formatNumber(this.props.stats.inventory.titles)}</div>
               </li>
               <li>
-                <div>Total Licenses:</div>
+                <div className="stat-label">Total Licenses:</div>
                 <div className="stat-value">{this.formatNumber(this.props.stats.inventory.licenses)}</div>
               </li>
               <li>
-                <div>Available Licenses:</div>
+                <div className="stat-label">Available Licenses:</div>
                 <div className="stat-value">{Math.round(this.props.stats.inventory.available_licenses * 100 / this.props.stats.inventory.licenses)}%</div>
               </li>
             </ul>
@@ -86,7 +86,7 @@ export class Stats extends React.Component<StatsProps, any> {
               <li><div className="stat-grouping-label">Vendors</div></li>
               { vendorCounts.map(vendor =>
                 <li>
-                  <div>{vendor.label} Titles:</div>
+                  <div className="stat-label">{vendor.label} Titles:</div>
                   <div className="stat-value">{this.formatNumber(vendor.count)}</div>
                 </li>
               ) }

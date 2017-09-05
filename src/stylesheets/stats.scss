@@ -6,12 +6,15 @@
   li {
     text-align: center;
     margin: 10px;
-    max-width: 175px;
 
     .stat-grouping-label {
       font-size: 200%;
       width: 150px;
       text-align: left;
+    }
+
+    .stat-label {
+      max-width: 175px;
     }
 
     .stat-value {
