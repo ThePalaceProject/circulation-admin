@@ -56,7 +56,7 @@ export class Header extends React.Component<HeaderProps, any> {
         </Navbar.Header>
 
         <Navbar.Collapse>
-          { this.context.library &&
+          { this.context.library && this.context.library() &&
             <Nav>
               <li>
                 <CatalogLink
