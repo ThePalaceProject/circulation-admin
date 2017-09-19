@@ -1,6 +1,6 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "Web Front-end for Library Simplified Circulation Manager",
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
     "font-awesome": "^4.6.3",
     "isomorphic-fetch": "^2.2.1",
     "opds-feed-parser": "0.0.13",
-    "opds-web-client": "^0.1.13",
+    "opds-web-client": "^0.1.16",
     "qs": "^6.2.0",
     "react": "^15.3.0",
     "react-bootstrap": "0.29.4",
