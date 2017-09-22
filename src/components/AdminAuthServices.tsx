@@ -11,6 +11,7 @@ export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData,
   urlBase = "/admin/web/config/adminAuth/";
   identifierKey = "protocol";
   labelKey = "protocol";
+  limitOne = true;
 }
 
 function mapStateToProps(state, ownProps) {
