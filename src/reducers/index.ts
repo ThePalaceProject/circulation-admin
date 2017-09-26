@@ -16,12 +16,13 @@ import cdnServices from "./cdnServices";
 import searchServices from "./searchServices";
 import discoveryServices from "./discoveryServices";
 import registerLibrary, { RegisterLibraryState } from "./registerLibrary";
+import libraryRegistrations from "./libraryRegistrations";
 import { FetchEditState } from "./createFetchEditReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData,
-  DiscoveryServicesData
+  DiscoveryServicesData, LibraryRegistrationsData
 } from "../interfaces";
 
 
@@ -43,6 +44,7 @@ export interface State {
   searchServices: FetchEditState<SearchServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
   registerLibrary: RegisterLibraryState;
+  libraryRegistrations: FetchEditState<LibraryRegistrationsData>;
 }
 
 export default combineReducers<State>({
@@ -62,5 +64,6 @@ export default combineReducers<State>({
   cdnServices,
   searchServices,
   discoveryServices,
-  registerLibrary
+  registerLibrary,
+  libraryRegistrations
 });

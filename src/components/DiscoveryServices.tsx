@@ -2,11 +2,13 @@ import * as React from "react";
 import { GenericEditableConfigList, EditableConfigListProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { DiscoveryServicesData, DiscoveryServiceData, LibraryData } from "../interfaces";
+import { DiscoveryServicesData, DiscoveryServiceData, LibraryData, LibraryRegistrationsData } from "../interfaces";
 import DiscoveryServiceEditForm from "./DiscoveryServiceEditForm";
 
 export interface DiscoveryServicesProps extends EditableConfigListProps<DiscoveryServicesData> {
-  registerLibrary: (library: LibraryData) => void;
+  registerLibrary: (library: LibraryData) => Promise<void>;
+  fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
+  isFetchingLibraryRegistrations?: boolean;
 }
 
 export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServicesData, DiscoveryServiceData, DiscoveryServicesProps> {
@@ -29,10 +31,22 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
           data.append("csrf_token", this.props.csrfToken);
           data.append("library_short_name", library.short_name);
           data.append("integration_id", this.itemToEdit().id);
-          this.props.registerLibrary(data);
+          this.props.registerLibrary(data).then(() => {
+            if (this.props.fetchLibraryRegistrations) {
+              console.log("fetching");
+              this.props.fetchLibraryRegistrations();
+            }
+          });
         }
       }
     };
+  }
+
+  componentWillMount() {
+    super.componentWillMount();
+    if (this.props.fetchLibraryRegistrations) {
+      this.props.fetchLibraryRegistrations();
+    }
   }
 }
 
@@ -41,10 +55,14 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
+  if (state.editor.libraryRegistrations && state.editor.libraryRegistrations.data) {
+    data.libraryRegistrations = state.editor.libraryRegistrations.data.library_registrations;
+  }
   return {
     data: data,
     fetchError: state.editor.discoveryServices.fetchError || (state.editor.registerLibrary && state.editor.registerLibrary.fetchError),
-    isFetching: state.editor.discoveryServices.isFetching || state.editor.discoveryServices.isEditing || (state.editor.registerLibrary && state.editor.registerLibrary.isFetching)
+    isFetching: state.editor.discoveryServices.isFetching || state.editor.discoveryServices.isEditing || (state.editor.registerLibrary && state.editor.registerLibrary.isFetching),
+    isFetchingLibraryRegistrations: state.editor.libraryRegistrations && state.editor.libraryRegistrations.isFetching
   };
 }
 
@@ -53,7 +71,8 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchData: () => dispatch(actions.fetchDiscoveryServices()),
     editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data)),
-    registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data))
+    registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data)),
+    fetchLibraryRegistrations: () => dispatch(actions.fetchLibraryRegistrations())
   };
 }
 

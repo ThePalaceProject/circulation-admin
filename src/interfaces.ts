@@ -232,4 +232,18 @@ export interface DiscoveryServiceData extends ServiceData {}
 
 export interface DiscoveryServicesData extends ServicesData {
   discovery_services: DiscoveryServiceData[];
+  libraryRegistrations?: LibraryRegistrationData[];
+}
+
+export interface LibraryDataWithStatus extends LibraryData {
+  status: string;
+}
+
+export interface LibraryRegistrationData {
+  id: string | number;
+  libraries: LibraryDataWithStatus[];
+}
+
+export interface LibraryRegistrationsData {
+  library_registrations: LibraryRegistrationData[];
 }

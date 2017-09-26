@@ -18,13 +18,48 @@ export default class DiscoveryServiceEditForm extends ServiceEditForm<DiscoveryS
             <h2>Register libraries</h2>
             { this.props.data.allLibraries.map(library =>
                 <div className="discovery-service-library" key={library.short_name}>
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    disabled={this.props.disabled}
-                    onClick={() => this.context.registerLibrary(library)}
-                    >Register</button>
-                  {library.name}
+                  { this.getRegistrationStatus(library) === "success" &&
+                    <div>
+                      { library.name }
+                      <span className="bg-success">
+                        Registered
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        disabled={this.props.disabled}
+                        onClick={() => this.context.registerLibrary(library)}
+                        >Update registration</button>
+                    </div>
+                  }
+                  { this.getRegistrationStatus(library) === "failure" &&
+                    <div>
+                      { library.name }
+                      <span className="bg-danger">
+                        Registration failed
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        disabled={this.props.disabled}
+                        onClick={() => this.context.registerLibrary(library)}
+                        >Retry registration</button>
+                    </div>
+                  }
+                  { this.getRegistrationStatus(library) === null &&
+                    <div>
+                      { library.name }
+                      <span className="bg-warning">
+                        Not registered
+                      </span>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        disabled={this.props.disabled}
+                        onClick={() => this.context.registerLibrary(library)}
+                        >Register</button>
+                    </div>
+                  }
                 </div>
               )
             }
@@ -32,5 +67,20 @@ export default class DiscoveryServiceEditForm extends ServiceEditForm<DiscoveryS
         }
       </div>
     );
+  }
+
+  getRegistrationStatus(library): string | null {
+    const serviceId = this.props.item && this.props.item.id;
+    const libraryRegistrations = this.props.data && this.props.data.libraryRegistrations || [];
+    for (const serviceInfo of libraryRegistrations) {
+      if (serviceInfo.id === serviceId) {
+        for (const libraryInfo of serviceInfo.libraries) {
+          if (libraryInfo.short_name === library.short_name) {
+            return libraryInfo.status;
+          }
+        }
+      }
+    }
+    return null;
   }
 }

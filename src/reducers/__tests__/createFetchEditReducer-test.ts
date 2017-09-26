@@ -30,9 +30,11 @@ describe("fetch-edit reducer", () => {
   };
 
   let reducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT");
+  let fetchOnlyReducer = createFetchEditReducer<TestData>("TEST_FETCH");
 
   it("returns initial state for unrecognized action", () => {
     expect(reducer(undefined, {})).to.deep.equal(initState);
+    expect(fetchOnlyReducer(undefined, {})).to.deep.equal(initState);
   });
 
   it("handles fetch request", () => {
@@ -43,6 +45,7 @@ describe("fetch-edit reducer", () => {
       isFetching: true
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(fetchOnlyReducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
@@ -50,6 +53,7 @@ describe("fetch-edit reducer", () => {
       fetchError: null
     });
     expect(reducer(errorState, action)).to.deep.equal(newState);
+    expect(fetchOnlyReducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles fetch failure", () => {
@@ -61,6 +65,7 @@ describe("fetch-edit reducer", () => {
       isLoaded: true
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);
+    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles load", () => {
@@ -71,6 +76,7 @@ describe("fetch-edit reducer", () => {
       isLoaded: true
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(fetchOnlyReducer(initState, action)).to.deep.equal(newState);
   });
 
   it("handles edit request", () => {
@@ -81,6 +87,8 @@ describe("fetch-edit reducer", () => {
       isEditing: true
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
+    // fetch only reducer does nothing
+    expect(fetchOnlyReducer(initState, action)).to.deep.equal(initState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
@@ -88,6 +96,8 @@ describe("fetch-edit reducer", () => {
       fetchError: null
     });
     expect(reducer(errorState, action)).to.deep.equal(newState);
+    // fetch only reducer does nothing
+    expect(fetchOnlyReducer(errorState, action)).to.deep.equal(errorState);
   });
 
   it("handles edit failure", () => {
@@ -100,6 +110,8 @@ describe("fetch-edit reducer", () => {
       isEditing: false
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);
+    // fetch only reducer does nothing
+    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(oldState);
   });
 
   it("handles edit success", () => {
@@ -111,5 +123,7 @@ describe("fetch-edit reducer", () => {
       isEditing: false
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);
+    // fetch only reducer does nothing
+    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(oldState);
   });
 });
