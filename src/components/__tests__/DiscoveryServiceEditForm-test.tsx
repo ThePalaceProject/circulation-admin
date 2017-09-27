@@ -22,12 +22,21 @@ describe("DiscoveryServiceEditForm", () => {
   }];
   let allLibraries = [
     { "short_name": "nypl", name: "New York Public Library" },
-    { "short_name": "bpl", name: "Brooklyn Public Library" }
+    { "short_name": "bpl", name: "Brooklyn Public Library" },
+    { "short_name": "qpl", name: "Queens Public Library" }
   ];
+  let libraryRegistrationsData = [{
+    id: 1,
+    libraries: [
+      { short_name: "nypl", status: "success" },
+      { short_name: "bpl", status: "failure" }
+    ]
+  }];
   let servicesData = {
     discovery_services: [serviceData],
     protocols: protocolsData,
-    allLibraries: allLibraries
+    allLibraries: allLibraries,
+    libraryRegistrations: libraryRegistrationsData
   };
 
   describe("rendering", () => {
@@ -52,12 +61,16 @@ describe("DiscoveryServiceEditForm", () => {
       expect(libraries.length).to.equal(0);
     });
 
-    it("renders all libraries in edit form", () => {
+    it("renders all libraries in edit form, with registration status", () => {
       wrapper.setProps({ item: serviceData });
       let libraries = wrapper.find(".discovery-service-library");
-      expect(libraries.length).to.equal(2);
+      expect(libraries.length).to.equal(3);
       expect(libraries.at(0).text()).to.contain("New York Public Library");
+      expect(libraries.at(0).text()).to.contain("Registered");
       expect(libraries.at(1).text()).to.contain("Brooklyn Public Library");
+      expect(libraries.at(1).text()).to.contain("Registration failed");
+      expect(libraries.at(2).text()).to.contain("Queens Public Library");
+      expect(libraries.at(2).text()).to.contain("Not registered");
     });
   });
 
@@ -93,6 +106,11 @@ describe("DiscoveryServiceEditForm", () => {
       bplButton.simulate("click");
 
       expect(registerLibrary.callCount).to.equal(2);
+
+      let qplButton = libraries.at(2).find("button");
+      qplButton.simulate("click");
+
+      expect(registerLibrary.callCount).to.equal(3);
     });
   });
 });

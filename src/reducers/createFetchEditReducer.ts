@@ -13,7 +13,7 @@ export interface FetchEditReducer<T> {
   (state: FetchEditState<T>, action): FetchEditState<T>;
 }
 
-export default<T> (fetchPrefix: string, editPrefix: string): FetchEditReducer<T> => {
+export default<T> (fetchPrefix: string, editPrefix?: string): FetchEditReducer<T> => {
   const initialState: FetchEditState<T> = {
     data: null,
     isFetching: false,
@@ -44,25 +44,32 @@ export default<T> (fetchPrefix: string, editPrefix: string): FetchEditReducer<T>
           isLoaded: true
         });
 
-      case `${editPrefix}_${ActionCreator.REQUEST}`:
-        return Object.assign({}, state, {
-          isEditing: true,
-          fetchError: null
-        });
-
-      case `${editPrefix}_${ActionCreator.SUCCESS}`:
-        return Object.assign({}, state, {
-          isEditing: false,
-          fetchError: null
-        });
-
-      case `${editPrefix}_${ActionCreator.FAILURE}`:
-        return Object.assign({}, state, {
-          isEditing: false,
-          fetchError: action.error
-        });
 
       default:
+        if (editPrefix) {
+          switch (action.type) {
+            case `${editPrefix}_${ActionCreator.REQUEST}`:
+              return Object.assign({}, state, {
+                isEditing: true,
+                fetchError: null
+              });
+
+            case `${editPrefix}_${ActionCreator.SUCCESS}`:
+              return Object.assign({}, state, {
+                isEditing: false,
+                fetchError: null
+              });
+
+            case `${editPrefix}_${ActionCreator.FAILURE}`:
+              return Object.assign({}, state, {
+                isEditing: false,
+                fetchError: action.error
+              });
+
+            default:
+              return state;
+          }
+        }
         return state;
     }
   };

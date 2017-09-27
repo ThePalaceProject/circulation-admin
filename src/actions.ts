@@ -6,7 +6,7 @@ import {
   PatronAuthServicesData, SitewideSettingsData,
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
-  DiscoveryServicesData
+  DiscoveryServicesData, LibraryRegistrationsData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -46,6 +46,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
   static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
   static readonly REGISTER_LIBRARY = "REGISTER_LIBRARY";
+  static readonly LIBRARY_REGISTRATIONS = "LIBRARY_REGISTRATIONS";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -348,5 +349,10 @@ export default class ActionCreator extends BaseActionCreator {
   registerLibrary(data: FormData) {
     const url = "/admin/library_registrations";
     return this.postForm(ActionCreator.REGISTER_LIBRARY, url, data).bind(this);
+  }
+
+  fetchLibraryRegistrations() {
+    const url = "/admin/library_registrations";
+    return this.fetchJSON<LibraryRegistrationsData>(ActionCreator.LIBRARY_REGISTRATIONS, url).bind(this);
   }
 }

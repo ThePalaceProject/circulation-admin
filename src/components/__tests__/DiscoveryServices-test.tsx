@@ -9,8 +9,10 @@ import { DiscoveryServices } from "../DiscoveryServices";
 describe("DiscoveryServices", () => {
   let wrapper;
   let registerLibrary;
+  let fetchLibraryRegistrations;
   beforeEach(() => {
-    registerLibrary = stub();
+    registerLibrary = stub().returns(new Promise<void>(resolve => resolve()));
+    fetchLibraryRegistrations = stub();
     wrapper = shallow(
       <DiscoveryServices
         csrfToken="token"
@@ -18,12 +20,15 @@ describe("DiscoveryServices", () => {
         data={{ discovery_services: [{ id: "2", protocol: "test protocol" }], protocols: [] }}
         identifier="2"
         registerLibrary={registerLibrary}
+        fetchLibraryRegistrations={fetchLibraryRegistrations}
         />
     );
   });
 
-  it("includes registerLibrary in child context", () => {
+  it("includes registerLibrary in child context, and fetches library registrations on mount and after registering", async () => {
     let context = wrapper.instance().getChildContext();
+
+    expect(fetchLibraryRegistrations.callCount).to.equal(1);
 
     const library = { short_name: "nypl" };
     context.registerLibrary(library);
@@ -33,5 +38,9 @@ describe("DiscoveryServices", () => {
     expect(formData.get("csrf_token")).to.equal("token");
     expect(formData.get("library_short_name")).to.equal("nypl");
     expect(formData.get("integration_id")).to.equal("2");
+
+    let pause = new Promise<void>(resolve => setTimeout(resolve, 0));
+    await pause;
+    expect(fetchLibraryRegistrations.callCount).to.equal(2);
   });
 });
