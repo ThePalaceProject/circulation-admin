@@ -79,6 +79,9 @@ export class Header extends React.Component<HeaderProps, any> {
                   Hidden Books
                 </CatalogLink>
               </li>
+              <li>
+                <Link to={"/admin/web/lists/" + this.context.library()}>Lists</Link>
+              </li>
           </Nav>
           }
           <Nav className="pull-right">

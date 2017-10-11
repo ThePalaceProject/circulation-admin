@@ -1,0 +1,73 @@
+.custom-list-editor {
+  margin-left: 20px;
+  flex-grow: 1;
+
+  .custom-list-editor-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    span {
+      margin: 5px;
+    }
+
+    h3 {
+      display: inline-block;
+
+      .form-group {
+        display: inline-block;
+      }
+    }
+
+    a {
+      margin-left: 5px;
+      font-size: 0.7em;
+    }
+  }
+
+  .custom-list-drag-and-drop {
+    width: 100%;
+  }
+
+  .custom-list-search-results, .custom-list-entries {
+    float: left;
+    width: 44%;
+    margin-top: 15px;
+    margin-right: 5px;
+
+    > div {
+      border: 1px solid $pagecolorlight;
+      padding: 10px;
+
+      &.dragging-over {
+        border-color: $pagetextcolor;
+      }
+
+      .search-result, .custom-list-entry {
+        border: 1px solid $pagecolorlight;
+        padding: 10px;
+        cursor: grab;
+        cursor: -webkit-grab;
+
+        &.dragging {
+          border: 1px solid $pagetextcolor;
+          background-color: $pagecolorlight;
+        }
+
+        .title {
+          font-weight: bold;
+        }
+
+        .authors {
+          font-size: 0.7em;
+        }
+      }
+    }
+  }
+}
+
+.dragging {
+  user-select: none;
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}

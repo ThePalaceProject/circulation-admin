@@ -17,12 +17,14 @@ import searchServices from "./searchServices";
 import discoveryServices from "./discoveryServices";
 import registerLibrary, { RegisterLibraryState } from "./registerLibrary";
 import libraryRegistrations from "./libraryRegistrations";
+import customLists from "./customLists";
+import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
 import { FetchEditState } from "./createFetchEditReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData,
-  DiscoveryServicesData, LibraryRegistrationsData
+  DiscoveryServicesData, LibraryRegistrationsData, CustomListsData
 } from "../interfaces";
 
 
@@ -45,6 +47,8 @@ export interface State {
   discoveryServices: FetchEditState<DiscoveryServicesData>;
   registerLibrary: RegisterLibraryState;
   libraryRegistrations: FetchEditState<LibraryRegistrationsData>;
+  customLists: FetchEditState<CustomListsData>;
+  collection: CollectionState;
 }
 
 export default combineReducers<State>({
@@ -65,5 +69,7 @@ export default combineReducers<State>({
   searchServices,
   discoveryServices,
   registerLibrary,
-  libraryRegistrations
+  libraryRegistrations,
+  customLists,
+  collection
 });

@@ -6,7 +6,8 @@ import {
   PatronAuthServicesData, SitewideSettingsData,
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
-  DiscoveryServicesData, LibraryRegistrationsData
+  DiscoveryServicesData, LibraryRegistrationsData,
+  CustomListsData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -47,6 +48,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
   static readonly REGISTER_LIBRARY = "REGISTER_LIBRARY";
   static readonly LIBRARY_REGISTRATIONS = "LIBRARY_REGISTRATIONS";
+  static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
+  static readonly EDIT_CUSTOM_LIST = "EDIT_CUSTOM_LIST";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -354,5 +357,15 @@ export default class ActionCreator extends BaseActionCreator {
   fetchLibraryRegistrations() {
     const url = "/admin/library_registrations";
     return this.fetchJSON<LibraryRegistrationsData>(ActionCreator.LIBRARY_REGISTRATIONS, url).bind(this);
+  }
+
+  fetchCustomLists(library: string) {
+    const url = "/" + library + "/admin/custom_lists";
+    return this.fetchJSON<CustomListsData>(ActionCreator.CUSTOM_LISTS, url).bind(this);
+  }
+
+  editCustomList(library: string, data: FormData) {
+    const url = "/" + library + "/admin/custom_lists";
+    return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data).bind(this);
   }
 }
