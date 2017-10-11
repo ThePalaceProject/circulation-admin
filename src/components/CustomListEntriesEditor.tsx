@@ -27,6 +27,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.reset = this.reset.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.addAll = this.addAll.bind(this);
+    this.deleteAll = this.deleteAll.bind(this);
   }
 
   render(): JSX.Element {
@@ -35,6 +37,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         <div className="custom-list-drag-and-drop">
           <div className="custom-list-search-results">
             <h4>Search Results</h4>
+            { this.props.searchResults && (this.searchResultsNotInEntries().length > 0) &&
+              <button
+                className="btn btn-default add-all-button"
+                onClick={this.addAll}
+                >Add all to list</button>
+            }
             <Droppable
               droppableId="search-results"
               isDropDisabled={this.state.draggingFrom !== "custom-list-entries"}
@@ -44,7 +52,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   ref={provided.innerRef}
                   className={snapshot.isDraggingOver ? "dragging-over" : ""}
                   >
-                  { this.props.searchResults && this.searchResultsNotInEntries().map(book =>
+                  { this.state.draggingFrom === "custom-list-entries" &&
+                    <p>Drag books here to remove them from the list.</p>
+                  }
+                  { (this.state.draggingFrom !== "custom-list-entries") && this.props.searchResults && this.searchResultsNotInEntries().map(book =>
                     <Draggable key={this.getPwid(book)} draggableId={this.getPwid(book)}>
                       {(provided, snapshot) => (
                         <div>
@@ -69,7 +80,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
           </div>
 
           <div className="custom-list-entries">
-            <h4>Books in this List</h4>
+            <h4>Books in this List ({ this.state.entries.length })</h4>
+            { (this.state.entries.length > 0) &&
+              <button
+                className="btn btn-default delete-all-button"
+                onClick={this.deleteAll}
+                >Delete all from list</button>
+            }
             <Droppable
               droppableId="custom-list-entries"
               isDropDisabled={this.state.draggingFrom !== "search-results"}
@@ -163,5 +180,23 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
     this.setState({ draggingFrom: null, entries });
     document.body.classList.remove("dragging");
+  }
+
+  addAll() {
+    let entries = [];
+
+    for (const result of this.searchResultsNotInEntries()) {
+      entries.push({ pwid: this.getPwid(result), title: result.title, authors: result.authors });
+    }
+
+    for (const entry of this.state.entries) {
+      entries.push(entry);
+    }
+
+    this.setState({ draggingFrom: null, entries });
+  }
+
+  deleteAll() {
+    this.setState({ draggingFrom: null, entries: [] });
   }
 }

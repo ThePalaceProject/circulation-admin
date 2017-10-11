@@ -33,11 +33,20 @@
     float: left;
     width: 44%;
     margin-top: 15px;
-    margin-right: 5px;
+    margin-right: 20px;
+
+    h4 {
+      display: inline-block;
+    }
+
+    button {
+      float: right;
+    }
 
     > div {
       border: 1px solid $pagecolorlight;
       padding: 10px;
+      min-height: 50vh;
 
       &.dragging-over {
         border-color: $pagetextcolor;

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import * as React from "react";
-import { mount } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 const dnd = require("react-beautiful-dnd");
 const Droppable = dnd.Droppable;
@@ -239,5 +239,52 @@ describe("CustomListEntriesEditor", () => {
     expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(1);
     (wrapper.instance() as CustomListEntriesEditor).reset();
     expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(2);
+  });
+
+  it("hides add all button when there are no search results", () => {
+    let wrapper = shallow(
+      <CustomListEntriesEditor entries={entriesData} />
+    );
+    let button = wrapper.find(".add-all-button");
+    expect(button.length).to.equal(0);
+  });
+
+  it("adds all search results to list", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor searchResults={searchResultsData} entries={entriesData} />
+    );
+    let button = wrapper.find(".add-all-button");
+    button.simulate("click");
+
+    let entriesContainer = wrapper.find(".custom-list-entries");
+    let droppable = entriesContainer.find(Droppable);
+    let entries = droppable.find(Draggable);
+    expect(entries.length).to.equal(5);
+
+    expect(entries.at(0).text()).to.contain("result 1");
+    expect(entries.at(1).text()).to.contain("result 2");
+    expect(entries.at(2).text()).to.contain("result 3");
+    expect(entries.at(3).text()).to.contain("entry A");
+    expect(entries.at(4).text()).to.contain("entry B");
+  });
+
+  it("hides delete all button when there are no entries", () => {
+    let wrapper = shallow(
+      <CustomListEntriesEditor searchResults={searchResultsData} />
+    );
+    let button = wrapper.find(".delete-all-button");
+    expect(button.length).to.equal(0);
+  });
+
+  it("deletes all entries from list", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor entries={entriesData} />
+    );
+    let button = wrapper.find(".delete-all-button");
+    button.simulate("click");
+    let entriesContainer = wrapper.find(".custom-list-entries");
+    let droppable = entriesContainer.find(Droppable);
+    let entries = droppable.find(Draggable);
+    expect(entries.length).to.equal(0);
   });
 });
