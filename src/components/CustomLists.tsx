@@ -17,6 +17,7 @@ export interface CustomListsProps extends React.Props<CustomListsProps> {
   identifier?: string;
   csrfToken: string;
   lists: CustomListData[];
+  editedIdentifier?: string;
   searchResults: CollectionData;
   fetchError?: FetchErrorData;
   isFetching: boolean;
@@ -94,6 +95,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               editCustomList={this.editCustomList}
               search={this.props.search}
               searchResults={this.props.searchResults}
+              editedIdentifier={this.props.editedIdentifier}
               />
           }
 
@@ -166,6 +168,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 function mapStateToProps(state, ownProps) {
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
+    editedIdentifier: state.editor.customLists && state.editor.customLists.editedIdentifier,
     fetchError: state.editor.customLists.fetchError,
     isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing,
     searchResults: state.editor.collection && state.editor.collection.data

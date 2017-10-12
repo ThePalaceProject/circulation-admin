@@ -90,6 +90,42 @@ describe("CustomListEditor", () => {
     getEntriesStub.restore();
   });
 
+  it("navigates to edit page after a new list is created", async () => {
+    // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
+    // Start on the create page.
+    Object.defineProperty(window.location, "href", { writable: true, value: "/admin/web/lists/library/create" });
+
+    wrapper = mount(
+      <CustomListEditor
+        csrfToken="token"
+        library="library"
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        />
+    );
+    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
+    let newEntries = [
+      { pwid: "pwid1" }, { pwid: "pwid2" }
+    ];
+    let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
+    let saveButton = wrapper.find(".save-list");
+    saveButton.simulate("click");
+
+    expect(editCustomList.callCount).to.equal(1);
+    getTextStub.restore();
+    getEntriesStub.restore();
+
+    wrapper.setProps({ editedIdentifier: "5" });
+    // Let the call stack clear so the callback after editCustomList will run.
+    const pause = (): Promise<void> => {
+        return new Promise<void>(resolve => setTimeout(resolve, 0));
+    };
+    await pause();
+    expect(window.location.href).to.contain("edit");
+    expect(window.location.href).to.contain("5");
+  });
+
   it("cancels changes", () => {
     let listNameReset = stub(TextWithEditMode.prototype, "reset");
     let listEntriesReset = stub(CustomListEntriesEditor.prototype, "reset");

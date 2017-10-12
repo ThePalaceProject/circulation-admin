@@ -135,6 +135,7 @@ describe("CustomLists", () => {
     expect(editor.props().library).to.equal("library");
     expect(editor.props().search).to.equal(search);
     expect(editor.props().searchResults).to.equal(searchResults);
+    expect(editor.props().editedIdentifier).to.be.undefined;
 
     expect(fetchCustomLists.callCount).to.equal(1);
     let editCustomListProp = editor.props().editCustomList;
@@ -143,6 +144,10 @@ describe("CustomLists", () => {
     expect(editCustomList.args[0][0]).to.equal("library");
     expect(fetchCustomLists.callCount).to.equal(2);
     expect(fetchCustomLists.args[1][0]).to.equal("library");
+
+    wrapper.setProps({ editedIdentifier: "5" });
+    editor = wrapper.find(CustomListEditor);
+    expect(editor.props().editedIdentifier).to.equal("5");
   });
 
   it("renders edit form", () => {
