@@ -148,7 +148,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   searchResultsNotInEntries() {
     let entryPwids = this.state.entries.map(entry => entry.pwid);
-    return this.props.searchResults.books.filter(book => !entryPwids.includes(this.getPwid(book)));
+    return this.props.searchResults.books.filter(book => {
+      const pwid = this.getPwid(book);
+      for (const entryPwid of entryPwids) {
+        if (entryPwid === pwid) {
+          return false;
+        }
+      }
+      return true;
+    });
   }
 
   onDragStart(initial) {
