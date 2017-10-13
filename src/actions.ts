@@ -50,6 +50,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly LIBRARY_REGISTRATIONS = "LIBRARY_REGISTRATIONS";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
   static readonly EDIT_CUSTOM_LIST = "EDIT_CUSTOM_LIST";
+  static readonly DELETE_CUSTOM_LIST = "DELETE_CUSTOM_LIST";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -101,14 +102,19 @@ export default class ActionCreator extends BaseActionCreator {
     super(fetcher);
   }
 
-  postForm(type: string, url: string, data: FormData) {
+  postForm(type: string, url: string, data: FormData, csrfToken?: string, method?: string) {
     let err: RequestError;
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.request(type));
+        let headers = new Headers();
+        if (csrfToken) {
+          headers.append("X-CSRF-Token", csrfToken);
+        }
         fetch(url, {
-          method: "POST",
+          method: method || "POST",
+          headers: headers,
           body: data,
           credentials: "same-origin"
         }).then(response => {
@@ -369,8 +375,14 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<CustomListsData>(ActionCreator.CUSTOM_LISTS, url).bind(this);
   }
 
-  editCustomList(library: string, data: FormData) {
+  editCustomList(library: string, data: FormData, csrfToken) {
     const url = "/" + library + "/admin/custom_lists";
-    return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data).bind(this);
+    return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data, csrfToken).bind(this);
+  }
+
+  deleteCustomList(library: string, listId: string, csrfToken: string) {
+    const url = "/" + library + "/admin/custom_list/" + listId;
+    const data = new (window as any).FormData();
+    return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, data, csrfToken, "DELETE").bind(this);
   }
 }

@@ -9,16 +9,18 @@ import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import EditableRadio from "../EditableRadio";
 import CustomListEditor from "../CustomListEditor";
+import { Link } from "react-router";
 
 describe("CustomLists", () => {
   let wrapper;
   let fetchCustomLists;
   let editCustomList;
+  let deleteCustomList;
   let search;
 
-  let lists = [
+  let listsData = [
     { id: 1, name: "a list", entries: [] },
-    { id: 2, name: "z list", entries: [] }
+    { id: 2, name: "z list", entries: [{ pwid: "1", title: "title", authors: [] }] }
   ];
 
   let searchResults = {
@@ -33,17 +35,19 @@ describe("CustomLists", () => {
   beforeEach(() => {
     fetchCustomLists = stub();
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
+    deleteCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
 
     wrapper = shallow(
       <CustomLists
         csrfToken="token"
         library="library"
-        lists={lists}
+        lists={listsData}
         searchResults={searchResults}
         isFetching={false}
         fetchCustomLists={fetchCustomLists}
         editCustomList={editCustomList}
+        deleteCustomList={deleteCustomList}
         search={search}
         />
     );
@@ -76,12 +80,16 @@ describe("CustomLists", () => {
   it("renders lists", () => {
     let lists = wrapper.find("li");
     expect(lists.length).to.equal(2);
-    let listALink = lists.at(0).childAt(0);
-    let listZLink = lists.at(1).childAt(0);
-    expect(listALink.props().children).to.equal("a list");
-    expect(listZLink.props().children).to.equal("z list");
-    expect(listALink.props().to).to.equal("/admin/web/lists/library/edit/1");
-    expect(listZLink.props().to).to.equal("/admin/web/lists/library/edit/2");
+    let listAHeader = lists.at(0).childAt(0);
+    let listZHeader = lists.at(1).childAt(0);
+    let listADetails = lists.at(0).childAt(1);
+    let listZDetails = lists.at(1).childAt(1);
+    expect(listAHeader.text()).to.contain("a list");
+    expect(listAHeader.text()).to.contain("1");
+    expect(listZHeader.text()).to.contain("z list");
+    expect(listZHeader.text()).to.contain("2");
+    expect(listADetails.text()).to.contain("Books in list: 0");
+    expect(listZDetails.text()).to.contain("Books in list: 1");
   });
 
   it("sorts lists", () => {
@@ -89,11 +97,12 @@ describe("CustomLists", () => {
       <CustomLists
         csrfToken="token"
         library="library"
-        lists={lists}
+        lists={listsData}
         searchResults={searchResults}
         isFetching={false}
         fetchCustomLists={fetchCustomLists}
         editCustomList={editCustomList}
+        deleteCustomList={deleteCustomList}
         search={search}
         />
     );
@@ -122,6 +131,69 @@ describe("CustomLists", () => {
     secondLink = sortedLists.at(1).childAt(0);
     expect(firstLink.text()).to.contain("a list");
     expect(secondLink.text()).to.contain("z list");
+  });
+
+  it("renders delete button and edit link or disabled editing message", () => {
+    let lists = wrapper.find("li");
+    expect(lists.length).to.equal(2);
+    expect(lists.at(0).props().className).not.to.contain("active");
+    expect(lists.at(1).props().className).not.to.contain("active");
+
+    let listAEditLink = lists.at(0).find(Link);
+    let listZEditLink = lists.at(1).find(Link);
+    let listAButtons = lists.at(0).find("button");
+    let listZButtons = lists.at(1).find("button");
+
+    expect(listAEditLink.length).to.equal(1);
+    expect(listAEditLink.props().to).to.equal("/admin/web/lists/library/edit/1");
+    expect(listZEditLink.length).to.equal(1);
+    expect(listZEditLink.props().to).to.equal("/admin/web/lists/library/edit/2");
+    expect(listAButtons.length).to.equal(1);
+    expect(listAButtons.text()).to.contain("Delete List");
+    expect(listAButtons.text()).not.to.contain("Editing");
+    expect(listZButtons.length).to.equal(1);
+    expect(listZButtons.text()).to.contain("Delete List");
+    expect(listZButtons.text()).not.to.contain("Editing");
+
+    wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
+    lists = wrapper.find("li");
+    expect(lists.at(0).props().className).not.to.contain("active");
+    expect(lists.at(1).props().className).to.contain("active");
+
+    listAEditLink = lists.at(0).find(Link);
+    listZEditLink = lists.at(1).find(Link);
+    listAButtons = lists.at(0).find("button");
+    listZButtons = lists.at(1).find("button");
+
+    expect(listAEditLink.length).to.equal(1);
+    expect(listAEditLink.props().to).to.equal("/admin/web/lists/library/edit/1");
+    expect(listZEditLink.length).to.equal(0);
+    expect(listAButtons.length).to.equal(1);
+    expect(listAButtons.text()).to.contain("Delete List");
+    expect(listAButtons.text()).not.to.contain("Editing");
+    expect(listZButtons.length).to.equal(2);
+    expect(listZButtons.at(0).text()).to.contain("Editing");
+    expect(listZButtons.at(1).text()).to.contain("Delete List");
+  });
+
+  it("deletes a list", () => {
+    let lists = wrapper.find("li");
+    let deleteButton = lists.at(0).find("button");
+    deleteButton.simulate("click");
+
+    expect(deleteCustomList.callCount).to.equal(1);
+    expect(deleteCustomList.args[0][0]).to.equal("library");
+    expect(deleteCustomList.args[0][1]).to.equal("1");
+    expect(deleteCustomList.args[0][2]).to.equal("token");
+  });
+
+  it("edits a list", () => {
+    const testData = new (window as any).FormData();
+    (wrapper.instance() as CustomLists).editCustomList(testData);
+    expect(editCustomList.callCount).to.equal(1);
+    expect(editCustomList.args[0][0]).to.equal("library");
+    expect(editCustomList.args[0][1]).to.equal(testData);
+    expect(editCustomList.args[0][2]).to.equal("token");
   });
 
   it("renders create form", async () => {
@@ -157,10 +229,31 @@ describe("CustomLists", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
     editor = wrapper.find(CustomListEditor);
     expect(editor.length).to.equal(1);
-    expect(editor.props().list).to.deep.equal(lists[1]);
+    expect(editor.props().list).to.deep.equal(listsData[1]);
     expect(editor.props().csrfToken).to.equal("token");
     expect(editor.props().library).to.equal("library");
     expect(editor.props().search).to.equal(search);
     expect(editor.props().searchResults).to.equal(searchResults);
+  });
+
+  it("scrolls to top when switching to edit page for a list", () => {
+    wrapper = mount(
+      <CustomLists
+        csrfToken="token"
+        library="library"
+        lists={listsData}
+        searchResults={searchResults}
+        isFetching={false}
+        fetchCustomLists={fetchCustomLists}
+        editCustomList={editCustomList}
+        deleteCustomList={deleteCustomList}
+        search={search}
+        />
+    );
+
+    (wrapper.instance().refs["container"] as HTMLDivElement).scrollTop = 100;
+
+    wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
+    expect((wrapper.instance().refs["container"] as HTMLDivElement).scrollTop).to.equal(0);
   });
 });

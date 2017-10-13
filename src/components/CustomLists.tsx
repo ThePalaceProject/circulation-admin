@@ -22,7 +22,8 @@ export interface CustomListsProps extends React.Props<CustomListsProps> {
   fetchError?: FetchErrorData;
   isFetching: boolean;
   fetchCustomLists: (library: string) => Promise<CustomListsData>;
-  editCustomList: (library: string, data: FormData) => Promise<void>;
+  editCustomList: (library: string, data: FormData, csrfToken: string) => Promise<void>;
+  deleteCustomList: (library: string, listId: string, csrfToken: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
 }
 
@@ -34,6 +35,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   constructor(props) {
     super(props);
     this.editCustomList = this.editCustomList.bind(this);
+    this.deleteCustomList = this.deleteCustomList.bind(this);
     this.changeSort = this.changeSort.bind(this);
     this.state = {
       sort: "asc"
@@ -42,7 +44,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   render(): JSX.Element {
     return (
-      <div className="custom-lists-container">
+      <div className="custom-lists-container" ref="container">
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
         }
@@ -74,14 +76,40 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
                   disabled={false}
                   />
                 <ul>
-                  { this.sortedLists().map(list =>
-                      <li key={list.id}>
-                        <Link
-                          to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
-                          >{ list.name }
-                        </Link>
-                      </li>
-                    )
+                  { this.sortedLists().map(list => {
+                      const active = (list === this.customListToEdit());
+                      return (
+                        <li key={list.id} className={active ? "active" : "" }>
+                          <div>
+                            <div>{ list.name }</div>
+                            <div>ID-{ list.id }</div>
+                          </div>
+                          <div>
+                            <div>Books in list: { list.entries.length }</div>
+                            <div>
+                              { active &&
+                                <button
+                                  className="btn btn-default disabled"
+                                  disabled={true}
+                                  >Editing</button>
+                              }
+                              { !active &&
+                                <Link
+                                  className="btn btn-default"
+                                  to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
+                                  >Edit List
+                                </Link>
+                              }
+                              <button
+                                className="btn btn-default"
+                                onClick={() => this.deleteCustomList(String(list.id))}
+                                >Delete List
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })
                   }
                 </ul>
               </div>
@@ -120,6 +148,16 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.identifier && nextProps.identifier !== this.props.identifier) {
+      // We're opening the edit page for a list. Scroll back to the top.
+        const container = this.refs["container"] as HTMLDivElement;
+        if (container) {
+          container.scrollTop = 0;
+        }
+    }
+  }
+
   changeSort() {
     const oldSort = this.state.sort;
     if (oldSort === "asc") {
@@ -149,7 +187,12 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   }
 
   async editCustomList(data: FormData): Promise<void> {
-    await this.props.editCustomList(this.props.library, data);
+    await this.props.editCustomList(this.props.library, data, this.props.csrfToken);
+    this.props.fetchCustomLists(this.props.library);
+  }
+
+  async deleteCustomList(id: string): Promise<void> {
+    await this.props.deleteCustomList(this.props.library, id, this.props.csrfToken);
     this.props.fetchCustomLists(this.props.library);
   }
 
@@ -180,7 +223,8 @@ function mapDispatchToProps(dispatch) {
   let actions = new ActionCreator(fetcher);
   return {
     fetchCustomLists: (library: string) => dispatch(actions.fetchCustomLists(library)),
-    editCustomList: (library: string, data: FormData) => dispatch(actions.editCustomList(library, data)),
+    editCustomList: (library: string, data: FormData, csrfToken: string) => dispatch(actions.editCustomList(library, data, csrfToken)),
+    deleteCustomList: (library: string, listId: string, csrfToken: string) => dispatch(actions.deleteCustomList(library, listId, csrfToken)),
     search: (url: string) => dispatch(actions.fetchCollection(url))
   };
 }

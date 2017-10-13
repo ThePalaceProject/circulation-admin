@@ -26,11 +26,16 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
-          <TextWithEditMode
-            text={this.props.list && this.props.list.name}
-            placeholder="list name"
-            ref="listName"
-            />
+          <div>
+            <TextWithEditMode
+              text={this.props.list && this.props.list.name}
+              placeholder="list name"
+              ref="listName"
+              />
+            { this.props.list &&
+              <h4>ID-{this.props.list.id}</h4>
+            }
+          </div>
           <span>
             <button
               className="btn btn-default save-list"

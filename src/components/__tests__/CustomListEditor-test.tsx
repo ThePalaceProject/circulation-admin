@@ -53,6 +53,12 @@ describe("CustomListEditor", () => {
     expect(name.props().placeholder).to.equal("list name");
   });
 
+  it("shows list id", () => {
+    let listId = wrapper.find(".custom-list-editor-header h4");
+    expect(listId.length).to.equal(1);
+    expect(listId.text()).to.contain("1");
+  });
+
   it("shows entries editor with list entries and search results", () => {
     let entriesEditor = wrapper.find(CustomListEntriesEditor);
     expect(entriesEditor.length).to.equal(1);
