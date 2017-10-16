@@ -5,10 +5,13 @@
   .custom-list-editor-header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+
+    > div {
+      width: 50%;
+    }
 
     span {
-      margin: 5px;
+      margin: 15px 0px;
     }
 
     h3 {
@@ -27,6 +30,10 @@
       margin-left: 5px;
       font-size: 0.7em;
     }
+  }
+
+  .form-inline input {
+    width: 50%;
   }
 
   .custom-list-drag-and-drop {
