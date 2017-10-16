@@ -92,6 +92,45 @@ describe("CustomLists", () => {
     expect(listZDetails.text()).to.contain("Books in list: 1");
   });
 
+  it("navigates to create or edit page on initial load", () => {
+    // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
+    // Start on the lists page, without edit or create.
+    Object.defineProperty(window.location, "href", { writable: true, value: "/admin/web/lists/library" });
+
+    wrapper = mount(
+      <CustomLists
+        csrfToken="token"
+        library="library"
+        lists={undefined}
+        searchResults={searchResults}
+        isFetching={false}
+        fetchCustomLists={fetchCustomLists}
+        editCustomList={editCustomList}
+        deleteCustomList={deleteCustomList}
+        search={search}
+        />
+    );
+    wrapper.setProps({ lists: [] });
+    expect(window.location.href).to.contain("create");
+
+    wrapper = mount(
+      <CustomLists
+        csrfToken="token"
+        library="library"
+        lists={undefined}
+        searchResults={searchResults}
+        isFetching={false}
+        fetchCustomLists={fetchCustomLists}
+        editCustomList={editCustomList}
+        deleteCustomList={deleteCustomList}
+        search={search}
+        />
+    );
+    wrapper.setProps({ lists: listsData });
+    expect(window.location.href).to.contain("edit");
+    expect(window.location.href).to.contain("1");
+  });
+
   it("sorts lists", () => {
     wrapper = mount(
       <CustomLists

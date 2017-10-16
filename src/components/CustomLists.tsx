@@ -156,6 +156,18 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
           container.scrollTop = 0;
         }
     }
+
+    // If we've fetched lists but we're not on the edit or create page,
+    // redirect to the edit page for the first list, or the create page
+    // if there are no lists.
+    if (!nextProps.editOrCreate && nextProps.lists && !nextProps.fetchError) {
+      if (nextProps.lists.length === 0) {
+        window.location.href += "/create";
+      } else {
+        const firstList = this.sortedLists(nextProps.lists)[0];
+        window.location.href += "/edit/" + firstList.id;
+      }
+    }
   }
 
   changeSort() {
@@ -167,8 +179,9 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     }
   }
 
-  sortedLists() {
-    return (this.props.lists || []).sort((a, b) => {
+  sortedLists(lists?: CustomListData[]) {
+    lists = lists || this.props.lists || [];
+    return (lists).sort((a, b) => {
       let first = a;
       let second = b;
       if (this.state.sort === "desc") {
@@ -213,7 +226,7 @@ function mapStateToProps(state, ownProps) {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     editedIdentifier: state.editor.customLists && state.editor.customLists.editedIdentifier,
     fetchError: state.editor.customLists.fetchError,
-    isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing,
+    isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || !ownProps.editOrCreate,
     searchResults: state.editor.collection && state.editor.collection.data
   };
 }
