@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import PencilIcon from "./icons/PencilIcon";
 
 export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
   text?: string;
@@ -48,7 +49,9 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
             <a
               href="#"
               onClick={this.startEditMode}
-              >Edit {this.props.placeholder}</a>
+              >Edit {this.props.placeholder}
+                <PencilIcon />
+            </a>
           </h3>
         }
       </div>

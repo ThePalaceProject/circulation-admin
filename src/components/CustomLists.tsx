@@ -10,6 +10,8 @@ import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableRadio from "./EditableRadio";
+import PencilIcon from "./icons/PencilIcon";
+import TrashIcon from "./icons/TrashIcon";
 
 export interface CustomListsProps extends React.Props<CustomListsProps> {
   library: string;
@@ -98,12 +100,14 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
                                   className="btn btn-default"
                                   to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
                                   >Edit List
+                                    <PencilIcon />
                                 </Link>
                               }
                               <button
                                 className="btn btn-default"
                                 onClick={() => this.deleteCustomList(String(list.id))}
                                 >Delete List
+                                  <TrashIcon />
                               </button>
                             </div>
                           </div>

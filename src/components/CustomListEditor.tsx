@@ -3,6 +3,8 @@ import { CustomListData, CustomListEntryData } from "../interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import CustomListEntriesEditor from "./CustomListEntriesEditor";
+import XCloseIcon from "./icons/XCloseIcon";
+import SearchIcon from "./icons/SearchIcon";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   csrfToken: string;
@@ -59,7 +61,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 href="#"
                 className="cancel-changes"
                 onClick={this.reset}
-                >Cancel changes</a>
+                >Cancel changes
+                  <XCloseIcon />
+              </a>
             }
           </span>
         </div>
@@ -73,7 +77,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               />&nbsp;
             <button
               className="btn btn-default"
-              type="submit">Search</button>
+              type="submit">Search
+                <SearchIcon />
+            </button>
           </form>
 
           <CustomListEntriesEditor

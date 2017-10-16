@@ -29,11 +29,47 @@
     a {
       margin-left: 5px;
       font-size: 0.7em;
+      color: $linkcolor;
+
+      svg {
+        margin-left: 5px;
+        height: 0.7em;
+        width: 0.7em;
+        fill: $linkcolor;
+      }
+
+      &.cancel-changes svg {
+        height: 1.5em;
+        width: 1.5em;
+        margin-bottom: -3px;
+      }
+
+      &:hover {
+        color: $linkhovercolor;
+        svg {
+          fill: $linkhovercolor;
+        }
+      }
     }
   }
 
-  .form-inline input {
-    width: 50%;
+  .form-inline {
+    input {
+      width: 50%;
+    }
+
+    button {
+      svg {
+        width: 0.7em;
+        height: 0.7em;
+        margin-left: 10px;
+        fill: $invertedlinkcolor;
+      }
+
+      &:hover svg {
+        fill: $linkcolor;
+      }
+    }
   }
 
   .custom-list-drag-and-drop {
@@ -52,6 +88,17 @@
 
     button {
       float: right;
+
+      svg {
+        height: 0.7em;
+        width: 0.7em;
+        margin-left: 5px;
+        fill: $invertedlinkcolor;
+      }
+
+      &:hover svg {
+        fill: $linkcolor;
+      }
     }
 
     > div {
@@ -64,6 +111,8 @@
       }
 
       .search-result, .custom-list-entry {
+        display: flex;
+        flex-direction: row;
         border: 1px solid $pagecolorlight;
         padding: 10px;
         cursor: grab;
@@ -72,6 +121,13 @@
         &.dragging {
           border: 1px solid $pagetextcolor;
           background-color: $pagecolorlight;
+        }
+
+        svg {
+          width: 0.7em;
+          height: 0.7em;
+          margin-top: 6px;
+          margin-right: 10px;
         }
 
         .title {

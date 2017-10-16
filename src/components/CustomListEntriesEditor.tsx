@@ -5,6 +5,9 @@ const Droppable = dnd.Droppable;
 const Draggable = dnd.Draggable;
 import { CustomListEntryData } from "../interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
+import ApplyIcon from "./icons/ApplyIcon";
+import TrashIcon from "./icons/TrashIcon";
+import GrabIcon from "./icons/GrabIcon";
 
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
   entries?: CustomListEntryData[];
@@ -42,7 +45,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               <button
                 className="btn btn-default add-all-button"
                 onClick={this.addAll}
-                >Add all to list</button>
+                >Add all to list
+                  <ApplyIcon />
+              </button>
             }
             <Droppable
               droppableId="search-results"
@@ -66,8 +71,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                             style={provided.draggableStyle}
                             {...provided.dragHandleProps}
                             >
-                            <div className="title">{ book.title }</div>
-                            <div className="authors">{ book.authors.join(", ") }</div>
+                            <GrabIcon />
+                            <div>
+                              <div className="title">{ book.title }</div>
+                              <div className="authors">{ book.authors.join(", ") }</div>
+                            </div>
                           </div>
                           { provided.placeholder }
                         </div>
@@ -86,7 +94,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               <button
                 className="btn btn-default delete-all-button"
                 onClick={this.deleteAll}
-                >Delete all from list</button>
+                >Delete all from list
+                  <TrashIcon />
+              </button>
             }
             <Droppable
               droppableId="custom-list-entries"
@@ -108,8 +118,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                             style={provided.draggableStyle}
                             {...provided.dragHandleProps}
                             >
-                            <div className="title">{ book.title }</div>
-                            <div className="authors">{ book.authors.join(", ") }</div>
+                            <GrabIcon />
+                            <div>
+                              <div className="title">{ book.title }</div>
+                              <div className="authors">{ book.authors.join(", ") }</div>
+                            </div>
                           </div>
                           { provided.placeholder }
                         </div>

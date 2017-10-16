@@ -78,9 +78,24 @@
         width: 100%;
         font-size: 0.9em;
         margin: 5px 0px;
+        color: $invertedlinkcolor;
 
         &:not(.disabled) {
           cursor: pointer;
+        }
+
+        svg {
+          height: 0.7em;
+          width: 0.7em;
+          margin-left: 5px;
+          fill: $invertedlinkcolor;
+        }
+
+        &:hover {
+          color: $linkcolor;
+          svg {
+            fill: $linkcolor;
+          }
         }
       }
     }
