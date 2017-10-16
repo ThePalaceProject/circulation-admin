@@ -9,6 +9,7 @@ import { CollectionData } from "opds-web-client/lib/interfaces";
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
   entries?: CustomListEntryData[];
   searchResults?: CollectionData;
+  onUpdate?: (entries: CustomListEntryData[]) => void;
 }
 
 export interface CustomListEntriesEditorState {
@@ -144,6 +145,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       draggingFrom: null,
       entries: this.props.entries || []
     });
+    if (this.props.onUpdate) {
+      this.props.onUpdate(this.props.entries || []);
+    }
   }
 
   searchResultsNotInEntries() {
@@ -187,6 +191,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
 
     this.setState({ draggingFrom: null, entries });
+    if (this.props.onUpdate) {
+      this.props.onUpdate(entries);
+    }
     document.body.classList.remove("dragging");
   }
 
@@ -202,9 +209,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
 
     this.setState({ draggingFrom: null, entries });
+    if (this.props.onUpdate) {
+      this.props.onUpdate(entries);
+    }
   }
 
   deleteAll() {
     this.setState({ draggingFrom: null, entries: [] });
+    if (this.props.onUpdate) {
+      this.props.onUpdate([]);
+    }
   }
 }

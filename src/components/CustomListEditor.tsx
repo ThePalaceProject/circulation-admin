@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CustomListData } from "../interfaces";
+import { CustomListData, CustomListEntryData } from "../interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import CustomListEntriesEditor from "./CustomListEntriesEditor";
@@ -14,9 +14,21 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   search: (url: string) => Promise<CollectionData>;
 }
 
-export default class CustomListEditor extends React.Component<CustomListEditorProps, void> {
+export interface CustomListEditorState {
+  name: string;
+  entries: CustomListEntryData[];
+}
+
+export default class CustomListEditor extends React.Component<CustomListEditorProps, CustomListEditorState> {
   constructor(props) {
     super(props);
+    this.state = {
+      name: this.props.list && this.props.list.name,
+      entries: this.props.list && this.props.list.entries || []
+    };
+
+    this.changeName = this.changeName.bind(this);
+    this.changeEntries = this.changeEntries.bind(this);
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
     this.search = this.search.bind(this);
@@ -30,6 +42,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <TextWithEditMode
               text={this.props.list && this.props.list.name}
               placeholder="list name"
+              onUpdate={this.changeName}
               ref="listName"
               />
             { this.props.list &&
@@ -41,11 +54,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               className="btn btn-default save-list"
               onClick={this.save}
               >Save this list</button>
-            <a
-              href="#"
-              className="cancel-changes"
-              onClick={this.reset}
-              >Cancel changes</a>
+            { this.hasChanges() &&
+              <a
+                href="#"
+                className="cancel-changes"
+                onClick={this.reset}
+                >Cancel changes</a>
+            }
           </span>
         </div>
         <div>
@@ -64,11 +79,52 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           <CustomListEntriesEditor
             searchResults={this.props.searchResults}
             entries={this.props.list && this.props.list.entries}
+            onUpdate={this.changeEntries}
             ref="listEntries"
             />
         </div>
       </div>
     );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.list && (!nextProps.list || nextProps.list.id !== this.props.list.id)) {
+      this.setState({
+        name: nextProps.list && nextProps.list.name,
+        entries: nextProps.list && nextProps.list.entries
+      });
+    }
+  }
+
+  hasChanges(): boolean {
+    const nameChanged = (this.props.list && this.props.list.name !== this.state.name);
+    let entriesChanged = false;
+    if (this.props.list && this.props.list.entries.length !== this.state.entries.length) {
+      entriesChanged = true;
+    } else {
+      for (const propEntry of this.props.list && this.props.list.entries || []) {
+        let found = false;
+        for (const stateEntry of this.state.entries) {
+          if (stateEntry.pwid === propEntry.pwid) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          entriesChanged = true;
+          break;
+        }
+      }
+    }
+    return nameChanged || entriesChanged;
+  }
+
+  changeName(name: string) {
+    this.setState({ name, entries: this.state.entries });
+  }
+
+  changeEntries(entries: CustomListEntryData[]) {
+    this.setState({ entries, name: this.state.name });
   }
 
   save() {

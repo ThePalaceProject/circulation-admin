@@ -146,11 +146,45 @@ describe("CustomListEditor", () => {
         search={search}
         />
     );
+
+    // the cancel button isn't shown when there are no changes.
     let cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(0);
+
+    (wrapper.instance() as CustomListEditor).changeName("new name");
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
     expect(listNameReset.callCount).to.equal(1);
     expect(listEntriesReset.callCount).to.equal(1);
+
+    (wrapper.instance() as CustomListEditor).changeName(listData.name);
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(0);
+
+    wrapper = mount(
+      <CustomListEditor
+        csrfToken="token"
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        />
+    );
+    (wrapper.instance() as CustomListEditor).changeEntries([{ pwid: "1234", title: "a", authors: [] }]);
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(1);
+    cancelButton.simulate("click");
+
+    expect(listNameReset.callCount).to.equal(2);
+    expect(listEntriesReset.callCount).to.equal(2);
+    cancelButton = wrapper.find(".cancel-changes");
+
+    (wrapper.instance() as CustomListEditor).changeEntries(listData.entries);
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(0);
 
     listNameReset.restore();
     listEntriesReset.restore();

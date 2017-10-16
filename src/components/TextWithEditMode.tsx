@@ -4,6 +4,7 @@ import EditableInput from "./EditableInput";
 export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
   text?: string;
   placeholder: string;
+  onUpdate?: (text: string) => void;
 }
 
 export interface TextWithEditModeState {
@@ -63,6 +64,9 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
   updateText() {
     const text = (this.refs["text"] as EditableInput).getValue();
     this.setState({ text, editMode: false });
+    if (this.props.onUpdate) {
+      this.props.onUpdate(text);
+    }
   }
 
   startEditMode() {
@@ -81,5 +85,8 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
 
   reset() {
     this.setState({ text: this.props.text, editMode: !this.props.text });
+    if (this.props.onUpdate) {
+      this.props.onUpdate(this.props.text);
+    }
   }
 }

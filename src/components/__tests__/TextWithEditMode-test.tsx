@@ -8,6 +8,12 @@ import TextWithEditMode from "../TextWithEditMode";
 import EditableInput from "../EditableInput";
 
 describe("TextWithEditMode", () => {
+  let onUpdate;
+
+  beforeEach(() => {
+    onUpdate = stub();
+  });
+
   it("renders text", () => {
     let wrapper = shallow(
       <TextWithEditMode text="test" placeholder="editable thing" />
@@ -54,7 +60,10 @@ describe("TextWithEditMode", () => {
 
   it("switches out of edit mode", () => {
     let wrapper = mount(
-      <TextWithEditMode placeholder="editable thing" />
+      <TextWithEditMode
+        placeholder="editable thing"
+        onUpdate={onUpdate}
+        />
     );
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
@@ -65,6 +74,8 @@ describe("TextWithEditMode", () => {
     saveLink.simulate("click");
     input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
+    expect(onUpdate.callCount).to.equal(1);
+    expect(onUpdate.args[0][0]).to.equal("new value");
 
     expect(wrapper.text()).to.contain("new value");
 
@@ -96,19 +107,29 @@ describe("TextWithEditMode", () => {
   it("resets", () => {
     let getValueStub = stub(EditableInput.prototype, "getValue").returns("new value");
     let wrapper = mount(
-      <TextWithEditMode placeholder="editable thing" />
+      <TextWithEditMode
+        placeholder="editable thing"
+        onUpdate={onUpdate}
+        />
     );
     let saveLink = wrapper.find("a");
     saveLink.simulate("click");
     expect(wrapper.text()).to.contain("new value");
+    expect(onUpdate.callCount).to.equal(1);
 
     (wrapper.instance() as TextWithEditMode).reset();
     expect(wrapper.text()).not.to.contain("new value");
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
+    expect(onUpdate.callCount).to.equal(2);
+    expect(onUpdate.args[1][0]).to.be.undefined;
 
     wrapper = mount(
-      <TextWithEditMode text="test" placeholder="editable thing" />
+      <TextWithEditMode
+        text="test"
+        placeholder="editable thing"
+        onUpdate={onUpdate}
+        />
     );
     let editLink = wrapper.find("a");
     editLink.simulate("click");
@@ -116,10 +137,13 @@ describe("TextWithEditMode", () => {
     saveLink.simulate("click");
     expect(wrapper.text()).not.to.contain("test");
     expect(wrapper.text()).to.contain("new value");
+    expect(onUpdate.callCount).to.equal(3);
 
     (wrapper.instance() as TextWithEditMode).reset();
     expect(wrapper.text()).not.to.contain("new value");
     expect(wrapper.text()).to.contain("test");
+    expect(onUpdate.callCount).to.equal(4);
+    expect(onUpdate.args[3][0]).to.equal("test");
 
     getValueStub.restore();
   });

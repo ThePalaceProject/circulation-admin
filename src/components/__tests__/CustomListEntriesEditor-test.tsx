@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -11,6 +12,7 @@ import CustomListEntriesEditor from "../CustomListEntriesEditor";
 
 describe("CustomListEntriesEditor", () => {
   let wrapper;
+  let onUpdate;
 
   let searchResultsData = {
     id: "id",
@@ -29,6 +31,10 @@ describe("CustomListEntriesEditor", () => {
     { pwid: "pwidA", title: "entry A", authors: ["author A"] },
     { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"] }
   ];
+
+  beforeEach(() => {
+    onUpdate = stub();
+  });
 
   it("renders search results", () => {
     let wrapper = mount(
@@ -133,7 +139,11 @@ describe("CustomListEntriesEditor", () => {
 
   it("drags from search results to list entries", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor searchResults={searchResultsData} entries={entriesData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        entries={entriesData}
+        onUpdate={onUpdate}
+        />
     );
 
     // simulate starting a drag from search results
@@ -163,11 +173,19 @@ describe("CustomListEntriesEditor", () => {
     let entries = droppable.find(Draggable);
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
+    expect(onUpdate.callCount).to.equal(1);
+    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"] };
+    const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
+    expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
 
   it("drags from list entries to search results", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor searchResults={searchResultsData} entries={entriesData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        entries={entriesData}
+        onUpdate={onUpdate}
+        />
     );
 
     // simulate starting a drag from entries
@@ -199,11 +217,17 @@ describe("CustomListEntriesEditor", () => {
     let entries = droppable.find(Draggable);
     expect(entries.length).to.equal(1);
     expect(entries.at(0).text()).to.contain("entry B");
+    expect(onUpdate.callCount).to.equal(1);
+    const expectedEntries = [entriesData[1]];
+    expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
 
   it("resets", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor searchResults={searchResultsData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        onUpdate={onUpdate}
+        />
     );
 
     // simulate dropping a search result on entries
@@ -218,11 +242,16 @@ describe("CustomListEntriesEditor", () => {
     });
 
     expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(1);
+    expect(onUpdate.callCount).to.equal(1);
     (wrapper.instance() as CustomListEntriesEditor).reset();
     expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(0);
+    expect(onUpdate.callCount).to.equal(2);
 
     wrapper = mount(
-      <CustomListEntriesEditor entries={entriesData} />
+      <CustomListEntriesEditor
+        entries={entriesData}
+        onUpdate={onUpdate}
+        />
     );
 
     // simulate dropping an entry on search results
@@ -237,8 +266,10 @@ describe("CustomListEntriesEditor", () => {
     });
 
     expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(1);
+    expect(onUpdate.callCount).to.equal(3);
     (wrapper.instance() as CustomListEntriesEditor).reset();
     expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(2);
+    expect(onUpdate.callCount).to.equal(4);
   });
 
   it("hides add all button when there are no search results", () => {
@@ -251,7 +282,11 @@ describe("CustomListEntriesEditor", () => {
 
   it("adds all search results to list", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor searchResults={searchResultsData} entries={entriesData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        entries={entriesData}
+        onUpdate={onUpdate}
+        />
     );
     let button = wrapper.find(".add-all-button");
     button.simulate("click");
@@ -266,6 +301,8 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(2).text()).to.contain("result 3");
     expect(entries.at(3).text()).to.contain("entry A");
     expect(entries.at(4).text()).to.contain("entry B");
+    expect(onUpdate.callCount).to.equal(1);
+    expect(onUpdate.args[0][0].length).to.equal(5);
   });
 
   it("hides delete all button when there are no entries", () => {
@@ -278,7 +315,10 @@ describe("CustomListEntriesEditor", () => {
 
   it("deletes all entries from list", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor entries={entriesData} />
+      <CustomListEntriesEditor
+        entries={entriesData}
+        onUpdate={onUpdate}
+        />
     );
     let button = wrapper.find(".delete-all-button");
     button.simulate("click");
@@ -286,5 +326,7 @@ describe("CustomListEntriesEditor", () => {
     let droppable = entriesContainer.find(Droppable);
     let entries = droppable.find(Draggable);
     expect(entries.length).to.equal(0);
+    expect(onUpdate.callCount).to.equal(1);
+    expect(onUpdate.args[0][0].length).to.equal(0);
   });
 });
