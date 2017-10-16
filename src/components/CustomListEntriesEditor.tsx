@@ -8,6 +8,8 @@ import { CollectionData } from "opds-web-client/lib/interfaces";
 import ApplyIcon from "./icons/ApplyIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
+import AddIcon from "./icons/AddIcon";
+import XCloseIcon from "./icons/XCloseIcon";
 
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
   entries?: CustomListEntryData[];
@@ -40,15 +42,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="custom-list-drag-and-drop">
           <div className="custom-list-search-results">
-            <h4>Search Results</h4>
-            { this.props.searchResults && (this.searchResultsNotInEntries().length > 0) &&
-              <button
-                className="btn btn-default add-all-button"
-                onClick={this.addAll}
-                >Add all to list
-                  <ApplyIcon />
-              </button>
-            }
+            <div className="droppable-header">
+              <h4>Search Results</h4>
+              { this.props.searchResults && (this.searchResultsNotInEntries().length > 0) &&
+                <button
+                  className="btn btn-default add-all-button"
+                  onClick={this.addAll}
+                  >Add all to list
+                    <ApplyIcon />
+                </button>
+              }
+            </div>
             <Droppable
               droppableId="search-results"
               isDropDisabled={this.state.draggingFrom !== "custom-list-entries"}
@@ -56,7 +60,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  className={snapshot.isDraggingOver ? "dragging-over" : ""}
+                  className={snapshot.isDraggingOver ? "droppable dragging-over" : "droppable"}
                   >
                   { this.state.draggingFrom === "custom-list-entries" &&
                     <p>Drag books here to remove them from the list.</p>
@@ -76,6 +80,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="title">{ book.title }</div>
                               <div className="authors">{ book.authors.join(", ") }</div>
                             </div>
+                            <div className="links">
+                              <a
+                                href="#"
+                                onClick={() => { this.add(this.getPwid(book)); }}
+                                >Add to list
+                                  <AddIcon />
+                              </a>
+                            </div>
                           </div>
                           { provided.placeholder }
                         </div>
@@ -89,15 +101,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
           </div>
 
           <div className="custom-list-entries">
-            <h4>Books in this List ({ this.state.entries.length })</h4>
-            { (this.state.entries.length > 0) &&
-              <button
-                className="btn btn-default delete-all-button"
-                onClick={this.deleteAll}
-                >Delete all from list
-                  <TrashIcon />
-              </button>
-            }
+            <div className="droppable-header">
+              <h4>Books in this List ({ this.state.entries.length })</h4>
+              { (this.state.entries.length > 0) &&
+                <button
+                  className="btn btn-default delete-all-button"
+                  onClick={this.deleteAll}
+                  >Delete all from list
+                    <TrashIcon />
+                </button>
+              }
+            </div>
             <Droppable
               droppableId="custom-list-entries"
               isDropDisabled={this.state.draggingFrom !== "search-results"}
@@ -105,7 +119,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  className={snapshot.isDraggingOver ? "dragging-over" : ""}
+                  className={snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"}
                   >
                   <p>Drag search results here to add them to the list.</p>
                   { this.state.entries && this.state.entries.map(book =>
@@ -122,6 +136,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                             <div>
                               <div className="title">{ book.title }</div>
                               <div className="authors">{ book.authors.join(", ") }</div>
+                            </div>
+                            <div className="links">
+                              <a
+                                href="#"
+                                onClick={() => { this.delete(book.pwid); }}
+                                >Remove from list
+                                  <TrashIcon />
+                              </a>
                             </div>
                           </div>
                           { provided.placeholder }
@@ -191,23 +213,36 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     const source = result.source;
     const destination = result.destination;
 
-    let entries = this.state.entries.slice(0);
     if (source.droppableId === "search-results" && destination && destination.droppableId === "custom-list-entries") {
-      for (const result of this.props.searchResults.books) {
-        if (this.getPwid(result) === draggableId) {
-          entries.unshift({ pwid: this.getPwid(result), title: result.title, authors: result.authors });
-        }
-      }
+      this.add(draggableId);
     }
     if (source.droppableId === "custom-list-entries" && destination && destination.droppableId === "search-results") {
-      entries = entries.filter(entry => entry.pwid !== draggableId);
+      this.delete(draggableId);
     }
 
+    document.body.classList.remove("dragging");
+  }
+
+  add(pwid: string) {
+    let entries = this.state.entries.slice(0);
+    for (const result of this.props.searchResults.books) {
+      if (this.getPwid(result) === pwid) {
+        entries.unshift({ pwid: pwid, title: result.title, authors: result.authors });
+      }
+    }
     this.setState({ draggingFrom: null, entries });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
     }
-    document.body.classList.remove("dragging");
+  }
+
+  delete(pwid: string) {
+    let entries = this.state.entries.slice(0);
+    entries = entries.filter(entry => entry.pwid !== pwid);
+    this.setState({ draggingFrom: null, entries });
+    if (this.props.onUpdate) {
+      this.props.onUpdate(entries);
+    }
   }
 
   addAll() {

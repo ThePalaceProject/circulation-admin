@@ -222,6 +222,53 @@ describe("CustomListEntriesEditor", () => {
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
 
+  it("adds a search result to the list", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        entries={entriesData}
+        onUpdate={onUpdate}
+        />
+    );
+
+    let addLink = wrapper.find(".custom-list-search-results .links a");
+    addLink.at(0).simulate("click");
+
+    // the item has been added to entries at the beginning of the list
+    let entriesContainer = wrapper.find(".custom-list-entries");
+    let droppable = entriesContainer.find(Droppable);
+    let entries = droppable.find(Draggable);
+    expect(entries.length).to.equal(3);
+    expect(entries.at(0).text()).to.contain("result 1");
+    expect(onUpdate.callCount).to.equal(1);
+    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"] };
+    const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
+    expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
+  });
+
+  it("removes an entry from the list", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        entries={entriesData}
+        onUpdate={onUpdate}
+        />
+    );
+
+    let deleteLink = wrapper.find(".custom-list-entries .links a");
+    deleteLink.at(0).simulate("click");
+
+    // the item has been removed from entries
+    let entriesContainer = wrapper.find(".custom-list-entries");
+    let droppable = entriesContainer.find(Droppable);
+    let entries = droppable.find(Draggable);
+    expect(entries.length).to.equal(1);
+    expect(entries.at(0).text()).to.contain("entry B");
+    expect(onUpdate.callCount).to.equal(1);
+    const expectedEntries = [entriesData[1]];
+    expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
+  });
+
   it("resets", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
