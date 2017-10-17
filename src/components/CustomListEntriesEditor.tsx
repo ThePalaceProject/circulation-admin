@@ -235,8 +235,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     if (source.droppableId === "search-results" && destination && destination.droppableId === "custom-list-entries") {
       this.add(draggableId);
     }
-    if (source.droppableId === "custom-list-entries" && destination && destination.droppableId === "search-results") {
+    else if (source.droppableId === "custom-list-entries" && destination && destination.droppableId === "search-results") {
       this.delete(draggableId);
+    } else {
+      this.setState({ draggingFrom: null, entries: this.state.entries });
     }
 
     document.body.classList.remove("dragging");

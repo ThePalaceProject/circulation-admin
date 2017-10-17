@@ -204,6 +204,46 @@ describe("CustomListEntriesEditor", () => {
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
 
+  it("shows message in place of search results when dragging from list entries", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
+    );
+
+    // simulate starting a drag from list entries
+    (wrapper.instance() as CustomListEntriesEditor).onDragStart({
+      draggableId: "pwidA",
+      source: {
+        droppableId: "custom-list-entries"
+      }
+    });
+
+    let resultsContainer = wrapper.find(".custom-list-search-results");
+    let droppable = resultsContainer.find(Droppable);
+    let message = droppable.find("p");
+    expect(droppable.prop("isDropDisabled")).to.equal(false);
+    expect(message.length).to.equal(1);
+    expect(message.text()).to.contain("here to remove");
+
+    // if you drop anywhere on the page, the message goes away.
+    // simulate dropping outside a droppable (no destination)
+    (wrapper.instance() as CustomListEntriesEditor).onDragEnd({
+      draggableId: "pwidA",
+      source: {
+        droppableId: "custom-list-entries"
+      }
+    });
+
+    resultsContainer = wrapper.find(".custom-list-search-results");
+    droppable = resultsContainer.find(Droppable);
+    message = droppable.find("p");
+    expect(droppable.prop("isDropDisabled")).to.equal(true);
+    expect(message.length).to.equal(0);
+  });
+
   it("drags from list entries to search results", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
