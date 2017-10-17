@@ -11,11 +11,11 @@
   }
 
   .custom-lists {
+    display: flex;
+    flex-direction: row;
     height: 100%;
     width: 100%;
     position: absolute;
-    display: flex;
-    flex-direction: row;
   }
 
   .custom-lists-sidebar {
