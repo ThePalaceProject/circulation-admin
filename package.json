@@ -1,6 +1,6 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "Web Front-end for Library Simplified Circulation Manager",
   "repository": {
     "type": "git",
