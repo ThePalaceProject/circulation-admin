@@ -7,6 +7,7 @@ export interface FetchEditState<T> {
   isEditing: boolean;
   fetchError: RequestError | null;
   isLoaded: boolean;
+  editedIdentifier?: string;
 }
 
 export interface FetchEditReducer<T> {
@@ -19,7 +20,8 @@ export default<T> (fetchPrefix: string, editPrefix?: string): FetchEditReducer<T
     isFetching: false,
     isEditing: false,
     fetchError: null,
-    isLoaded: false
+    isLoaded: false,
+    editedIdentifier: null
   };
 
   const fetchEditReducer = (state: FetchEditState<T> = initialState, action): FetchEditState<T> => {
@@ -51,7 +53,8 @@ export default<T> (fetchPrefix: string, editPrefix?: string): FetchEditReducer<T
             case `${editPrefix}_${ActionCreator.REQUEST}`:
               return Object.assign({}, state, {
                 isEditing: true,
-                fetchError: null
+                fetchError: null,
+                editedIdentifier: null
               });
 
             case `${editPrefix}_${ActionCreator.SUCCESS}`:
@@ -64,6 +67,11 @@ export default<T> (fetchPrefix: string, editPrefix?: string): FetchEditReducer<T
               return Object.assign({}, state, {
                 isEditing: false,
                 fetchError: action.error
+              });
+
+            case `${editPrefix}_${ActionCreator.LOAD}`:
+              return Object.assign({}, state, {
+                editedIdentifier: action.data
               });
 
             default:

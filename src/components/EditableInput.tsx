@@ -18,8 +18,6 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   }
 
   render() {
-    let element = this.props.elementType;
-
     return (
       <div className="form-group">
         { this.props.label &&
@@ -40,7 +38,7 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   }
 
   renderElement() {
-    return React.createElement(this.props.elementType, {
+    return React.createElement(this.props.elementType || "input", {
       className: (this.props.type !== "checkbox" ? "form-control" : ""),
       type: this.props.type,
       disabled: this.props.disabled,

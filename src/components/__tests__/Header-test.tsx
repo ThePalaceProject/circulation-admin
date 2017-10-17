@@ -88,16 +88,26 @@ describe("Header", () => {
       expect(catalogLinks.length).to.equal(0);
     });
 
-    it("shows sitewide links", () => {
+    it("shows sitewide links and non-catalog library links", () => {
       let links = wrapper.find(Link);
 
-      let dashboardLink = links.at(0);
+      let listsLink = links.at(0);
+      expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
+      expect(listsLink.children().text()).to.equal("Lists");
+
+      let dashboardLink = links.at(1);
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
 
-      let settingsLink = links.at(1);
+      let settingsLink = links.at(2);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config");
       expect(settingsLink.children().text()).to.equal("Configuration");
+
+      wrapper.setContext({});
+      links = wrapper.find(Link);
+
+      dashboardLink = links.at(0);
+      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
     });
   });
 

@@ -18,7 +18,8 @@ describe("fetch-edit reducer", () => {
     isFetching: false,
     isEditing: false,
     fetchError: null,
-    isLoaded: false
+    isLoaded: false,
+    editedIdentifier: null
   };
 
   let errorState: FetchEditState<TestData> = {
@@ -26,7 +27,8 @@ describe("fetch-edit reducer", () => {
     isFetching: false,
     isEditing: false,
     fetchError: { status: 400, response: "test error", url: "test url" },
-    isLoaded: true
+    isLoaded: true,
+    editedIdentifier: null
   };
 
   let reducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT");
@@ -125,5 +127,15 @@ describe("fetch-edit reducer", () => {
     expect(reducer(oldState, action)).to.deep.equal(newState);
     // fetch only reducer does nothing
     expect(fetchOnlyReducer(oldState, action)).to.deep.equal(oldState);
+  });
+
+  it("handles edit load", () => {
+    let action = { type: "TEST_EDIT_LOAD", data: "5" };
+    let newState = Object.assign({}, initState, {
+      editedIdentifier: "5"
+    });
+    expect(reducer(initState, action)).to.deep.equal(newState);
+    // fetch only reducer does nothing
+    expect(fetchOnlyReducer(initState, action)).to.deep.equal(initState);
   });
 });

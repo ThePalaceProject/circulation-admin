@@ -45,20 +45,46 @@ describe("actions", () => {
     formData.append("csrf_token", "token");
     formData.append("test", "test");
 
-    it("dispatches request and success", async () => {
+    it("dispatches request, success, and load", async () => {
       const dispatch = stub();
+      const responseText = stub().returns(new Promise<string>((resolve) => {
+        resolve("response");
+      }));
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200 });
+        resolve({ status: 200, text: responseText });
       }));
       fetch = fetchMock;
 
       await actions.postForm(type, url, formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${type}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[2][0].data).to.equal("response");
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
       expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(fetchMock.args[0][1].body).to.equal(formData);
+    });
+
+    it("dispatches a DELETE request with a csrf token header", async () => {
+      const dispatch = stub();
+      const responseText = stub().returns(new Promise<string>((resolve) => {
+        resolve("response");
+      }));
+      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({ status: 200, text: responseText });
+      }));
+      fetch = fetchMock;
+
+      await actions.postForm(type, url, formData, "token", "DELETE")(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(fetchMock.callCount).to.equal(1);
+      expect(fetchMock.args[0][0]).to.equal(url);
+      expect(fetchMock.args[0][1].method).to.equal("DELETE");
+      const expectedHeaders = new Headers();
+      expectedHeaders.append("X-CSRF-Token", "token");
+      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
       expect(fetchMock.args[0][1].body).to.equal(formData);
     });
 

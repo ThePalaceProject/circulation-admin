@@ -247,3 +247,19 @@ export interface LibraryRegistrationData {
 export interface LibraryRegistrationsData {
   library_registrations: LibraryRegistrationData[];
 }
+
+export interface CustomListEntryData {
+  pwid: string;
+  title: string;
+  authors: string[];
+}
+
+export interface CustomListData {
+  id: string | number;
+  name: string;
+  entries: CustomListEntryData[];
+}
+
+export interface CustomListsData {
+  custom_lists: CustomListData[];
+}
