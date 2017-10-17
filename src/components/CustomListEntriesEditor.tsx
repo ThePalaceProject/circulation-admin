@@ -102,19 +102,16 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </div>
               )}
               </Droppable>
-              { this.props.isFetchingMoreSearchResults &&
+              { this.props.searchResults && this.props.searchResults.nextPageUrl &&
                 <button
                   className="btn btn-default load-more-button"
-                  disabled={true}
-                  ><MoreDotsIcon />
-                </button>
-              }
-              { this.props.searchResults && !this.props.isFetchingMoreSearchResults &&
-                <button
-                  className="btn btn-default load-more-button"
-                  href="#"
+                  disabled={this.props.isFetchingMoreSearchResults}
                   onClick={this.loadMore}
-                  >Load more
+                  >
+                    { this.props.isFetchingMoreSearchResults ?
+                      <MoreDotsIcon /> :
+                      "Load more"
+                    }
                 </button>
               }
           </div>
@@ -291,7 +288,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   loadMore() {
-    let nextPageUrl = this.props.searchResults.nextPageUrl;
-    this.props.loadMoreSearchResults(nextPageUrl);
+    if (this.props.searchResults && !this.props.isFetchingMoreSearchResults) {
+      let nextPageUrl = this.props.searchResults.nextPageUrl;
+      this.props.loadMoreSearchResults(nextPageUrl);
+    }
   }
 }

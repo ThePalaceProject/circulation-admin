@@ -464,7 +464,7 @@ describe("CustomListEntriesEditor", () => {
     expect(onUpdate.args[0][0].length).to.equal(0);
   });
 
-  it("disables load more button when loading more search results", () => {
+  it("hides load more button when there's no next link", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
@@ -473,14 +473,32 @@ describe("CustomListEntriesEditor", () => {
         isFetchingMoreSearchResults={false}
         />
     );
-    // When there are no search results at all yet, the button doesn't show.
+    // no search results at all
     let button = wrapper.find(".load-more-button");
     expect(button.length).to.equal(0);
 
+    // search results with no next link
     wrapper.setProps({ searchResults: searchResultsData });
     button = wrapper.find(".load-more-button");
+    expect(button.length).to.equal(0);
+  });
+
+  it("disables load more button when loading more search results", () => {
+    let searchResultsWithNext = Object.assign({}, searchResultsData, {
+      nextPageUrl: "next"
+    });
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={searchResultsWithNext}
+        entries={entriesData}
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
+    );
+    let button = wrapper.find(".load-more-button");
     expect(button.length).to.equal(1);
-    expect(button.prop("disabled")).to.be.undefined;
+    expect(button.prop("disabled")).to.equal(false);
 
     wrapper.setProps({ isFetchingMoreSearchResults: true });
     button = wrapper.find(".load-more-button");
@@ -489,9 +507,12 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("loads more search results", () => {
+    let searchResultsWithNext = Object.assign({}, searchResultsData, {
+      nextPageUrl: "next"
+    });
     let wrapper = mount(
       <CustomListEntriesEditor
-        searchResults={searchResultsData}
+        searchResults={searchResultsWithNext}
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
