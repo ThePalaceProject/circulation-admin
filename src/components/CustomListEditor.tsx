@@ -112,15 +112,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     if (this.props.list && this.props.list.entries.length !== this.state.entries.length) {
       entriesChanged = true;
     } else {
-      for (const propEntry of this.props.list && this.props.list.entries || []) {
-        let found = false;
-        for (const stateEntry of this.state.entries) {
-          if (stateEntry.pwid === propEntry.pwid) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
+      let propsPwids = (this.props.list && this.props.list.entries || []).map(entry => entry.pwid).sort();
+      let statePwids = this.state.entries.map(entry => entry.pwid).sort();
+      for (let i = 0; i < propsPwids.length; i++) {
+        if (propsPwids[i] !== statePwids[i]) {
           entriesChanged = true;
           break;
         }
