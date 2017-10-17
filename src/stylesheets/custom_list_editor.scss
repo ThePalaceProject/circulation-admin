@@ -1,11 +1,13 @@
 .custom-list-editor {
+  display: flex;
+  flex-direction: column;
   margin-left: 20px;
   flex-grow: 1;
-  overflow-y: scroll;
 
   .custom-list-editor-header {
     display: flex;
     flex-direction: row;
+    flex: 0 0 auto;
 
     > div {
       width: 50%;
@@ -74,13 +76,22 @@
     }
   }
 
+  .custom-list-editor-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
   .custom-list-drag-and-drop {
-    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
   }
 
   .custom-list-search-results, .custom-list-entries {
-    float: left;
-    width: 44%;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 44%;
     margin-top: 15px;
     margin-right: 20px;
 
@@ -104,13 +115,16 @@
     }
 
     .droppable-header {
+      flex: 0 0 auto;
       overflow: hidden;
     }
 
     .droppable {
       border: 1px solid $pagecolorlight;
       padding: 10px;
-      min-height: 50vh;
+      flex: 1;
+      overflow-y: scroll;
+      margin-bottom: 15px;
 
       &.dragging-over {
         border-color: $pagetextcolor;

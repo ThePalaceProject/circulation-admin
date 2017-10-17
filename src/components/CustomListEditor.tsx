@@ -69,7 +69,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             }
           </span>
         </div>
-        <div>
+        <div className="custom-list-editor-body">
           <h4>Search for titles</h4>
           <form className="form-inline" onSubmit={this.search}>
             <input
