@@ -102,7 +102,7 @@ export default class ActionCreator extends BaseActionCreator {
     super(fetcher);
   }
 
-  postForm(type: string, url: string, data: FormData, csrfToken?: string, method?: string) {
+  postForm(type: string, url: string, data: FormData | null, csrfToken?: string, method?: string) {
     let err: RequestError;
 
     return (dispatch => {
@@ -382,7 +382,6 @@ export default class ActionCreator extends BaseActionCreator {
 
   deleteCustomList(library: string, listId: string, csrfToken: string) {
     const url = "/" + library + "/admin/custom_list/" + listId;
-    const data = new (window as any).FormData();
-    return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, data, csrfToken, "DELETE").bind(this);
+    return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, null, csrfToken, "DELETE").bind(this);
   }
 }
