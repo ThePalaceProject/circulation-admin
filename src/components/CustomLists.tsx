@@ -215,8 +215,10 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   }
 
   async deleteCustomList(id: string): Promise<void> {
-    await this.props.deleteCustomList(this.props.library, id, this.props.csrfToken);
-    this.props.fetchCustomLists(this.props.library);
+    if (window.confirm("Are you sure you want to delete list " + id + "?")) {
+      await this.props.deleteCustomList(this.props.library, id, this.props.csrfToken);
+      this.props.fetchCustomLists(this.props.library);
+    }
   }
 
   customListToEdit(): CustomListData | null {

@@ -226,14 +226,23 @@ describe("CustomLists", () => {
   });
 
   it("deletes a list", () => {
+    let confirmStub = stub(window, "confirm").returns(false);
+
     let lists = wrapper.find("li");
     let deleteButton = lists.at(0).find("button");
+    deleteButton.simulate("click");
+
+    expect(deleteCustomList.callCount).to.equal(0);
+
+    confirmStub.returns(true);
     deleteButton.simulate("click");
 
     expect(deleteCustomList.callCount).to.equal(1);
     expect(deleteCustomList.args[0][0]).to.equal("library");
     expect(deleteCustomList.args[0][1]).to.equal("1");
     expect(deleteCustomList.args[0][2]).to.equal("token");
+
+    confirmStub.restore();
   });
 
   it("edits a list", () => {
