@@ -48,7 +48,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   render(): JSX.Element {
     return (
-      <div className="custom-lists-container" ref="container">
+      <div className="custom-lists-container">
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
         }
@@ -159,14 +159,6 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.identifier && nextProps.identifier !== this.props.identifier) {
-      // We're opening the edit page for a list. Scroll back to the top.
-        const container = this.refs["container"] as HTMLDivElement;
-        if (container) {
-          container.scrollTop = 0;
-        }
-    }
-
     // If we've fetched lists but we're not on the edit or create page,
     // redirect to the edit page for the first list, or the create page
     // if there are no lists.

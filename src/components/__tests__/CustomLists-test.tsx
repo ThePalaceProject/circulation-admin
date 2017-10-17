@@ -297,27 +297,4 @@ describe("CustomLists", () => {
     expect(editor.props().searchResults).to.equal(searchResults);
     expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
   });
-
-  it("scrolls to top when switching to edit page for a list", () => {
-    wrapper = mount(
-      <CustomLists
-        csrfToken="token"
-        library="library"
-        lists={listsData}
-        searchResults={searchResults}
-        isFetching={false}
-        isFetchingMoreSearchResults={false}
-        fetchCustomLists={fetchCustomLists}
-        editCustomList={editCustomList}
-        deleteCustomList={deleteCustomList}
-        search={search}
-        loadMoreSearchResults={loadMoreSearchResults}
-        />
-    );
-
-    (wrapper.instance().refs["container"] as HTMLDivElement).scrollTop = 100;
-
-    wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
-    expect((wrapper.instance().refs["container"] as HTMLDivElement).scrollTop).to.equal(0);
-  });
 });
