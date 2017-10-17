@@ -139,7 +139,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   save() {
     const data = new (window as any).FormData();
-    data.append("csrf_token", this.props.csrfToken);
     if (this.props.list) {
       data.append("id", this.props.list.id);
     }
