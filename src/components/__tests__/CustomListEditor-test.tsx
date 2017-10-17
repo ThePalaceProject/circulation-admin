@@ -12,6 +12,7 @@ describe("CustomListEditor", () => {
   let wrapper;
   let editCustomList;
   let search;
+  let loadMoreSearchResults;
 
   let listData = {
     id: 1,
@@ -34,6 +35,7 @@ describe("CustomListEditor", () => {
   beforeEach(() => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
+    loadMoreSearchResults = stub();
     wrapper = shallow(
       <CustomListEditor
         csrfToken="token"
@@ -42,6 +44,8 @@ describe("CustomListEditor", () => {
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
   });
@@ -64,6 +68,8 @@ describe("CustomListEditor", () => {
     expect(entriesEditor.length).to.equal(1);
     expect(entriesEditor.props().entries).to.equal(listData.entries);
     expect(entriesEditor.props().searchResults).to.equal(searchResults);
+    expect(entriesEditor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
+    expect(entriesEditor.props().isFetchingMoreSearchResults).to.equal(false);
   });
 
   it("saves list", () => {
@@ -75,6 +81,8 @@ describe("CustomListEditor", () => {
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
@@ -108,6 +116,8 @@ describe("CustomListEditor", () => {
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
@@ -144,6 +154,8 @@ describe("CustomListEditor", () => {
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
 
@@ -171,6 +183,8 @@ describe("CustomListEditor", () => {
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
     (wrapper.instance() as CustomListEditor).changeEntries([{ pwid: "1234", title: "a", authors: [] }]);
@@ -199,6 +213,8 @@ describe("CustomListEditor", () => {
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
     let input = wrapper.find(".form-control") as any;

@@ -17,6 +17,7 @@ describe("CustomLists", () => {
   let editCustomList;
   let deleteCustomList;
   let search;
+  let loadMoreSearchResults;
 
   let listsData = [
     { id: 1, name: "a list", entries: [] },
@@ -37,6 +38,7 @@ describe("CustomLists", () => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     deleteCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
+    loadMoreSearchResults = stub();
 
     wrapper = shallow(
       <CustomLists
@@ -45,10 +47,12 @@ describe("CustomLists", () => {
         lists={listsData}
         searchResults={searchResults}
         isFetching={false}
+        isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
         />
     );
   });
@@ -104,10 +108,12 @@ describe("CustomLists", () => {
         lists={undefined}
         searchResults={searchResults}
         isFetching={false}
+        isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
         />
     );
     wrapper.setProps({ lists: [] });
@@ -120,10 +126,12 @@ describe("CustomLists", () => {
         lists={undefined}
         searchResults={searchResults}
         isFetching={false}
+        isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
         />
     );
     wrapper.setProps({ lists: listsData });
@@ -139,10 +147,12 @@ describe("CustomLists", () => {
         lists={listsData}
         searchResults={searchResults}
         isFetching={false}
+        isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
         />
     );
     let radioButtons = wrapper.find(EditableRadio);
@@ -245,8 +255,10 @@ describe("CustomLists", () => {
     expect(editor.props().csrfToken).to.equal("token");
     expect(editor.props().library).to.equal("library");
     expect(editor.props().search).to.equal(search);
+    expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
     expect(editor.props().searchResults).to.equal(searchResults);
     expect(editor.props().editedIdentifier).to.be.undefined;
+    expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
 
     expect(fetchCustomLists.callCount).to.equal(1);
     let editCustomListProp = editor.props().editCustomList;
@@ -272,7 +284,9 @@ describe("CustomLists", () => {
     expect(editor.props().csrfToken).to.equal("token");
     expect(editor.props().library).to.equal("library");
     expect(editor.props().search).to.equal(search);
+    expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
     expect(editor.props().searchResults).to.equal(searchResults);
+    expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
   });
 
   it("scrolls to top when switching to edit page for a list", () => {
@@ -283,10 +297,12 @@ describe("CustomLists", () => {
         lists={listsData}
         searchResults={searchResults}
         isFetching={false}
+        isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
         />
     );
 

@@ -14,6 +14,8 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   searchResults?: CollectionData;
   editCustomList: (data: FormData) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
+  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  isFetchingMoreSearchResults: boolean;
 }
 
 export interface CustomListEditorState {
@@ -85,7 +87,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           <CustomListEntriesEditor
             searchResults={this.props.searchResults}
             entries={this.props.list && this.props.list.entries}
+            loadMoreSearchResults={this.props.loadMoreSearchResults}
             onUpdate={this.changeEntries}
+            isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
             ref="listEntries"
             />
         </div>

@@ -13,6 +13,7 @@ import CustomListEntriesEditor from "../CustomListEntriesEditor";
 describe("CustomListEntriesEditor", () => {
   let wrapper;
   let onUpdate;
+  let loadMoreSearchResults;
 
   let searchResultsData = {
     id: "id",
@@ -34,11 +35,16 @@ describe("CustomListEntriesEditor", () => {
 
   beforeEach(() => {
     onUpdate = stub();
+    loadMoreSearchResults = stub();
   });
 
   it("renders search results", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor searchResults={searchResultsData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
     );
     let resultsContainer = wrapper.find(".custom-list-search-results");
     expect(resultsContainer.length).to.equal(1);
@@ -59,7 +65,11 @@ describe("CustomListEntriesEditor", () => {
 
   it("renders list entries", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor entries={entriesData} />
+      <CustomListEntriesEditor
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
     );
 
     let entriesContainer = wrapper.find(".custom-list-entries");
@@ -83,7 +93,12 @@ describe("CustomListEntriesEditor", () => {
     ];
 
     let wrapper = mount(
-      <CustomListEntriesEditor searchResults={searchResultsData} entries={entriesData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
     );
 
     let resultsContainer = wrapper.find(".custom-list-search-results");
@@ -103,7 +118,11 @@ describe("CustomListEntriesEditor", () => {
 
   it("prevents dragging within search results", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor searchResults={searchResultsData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
     );
 
     // simulate starting a drag from search results
@@ -121,7 +140,11 @@ describe("CustomListEntriesEditor", () => {
 
   it("prevents dragging within list entries", () => {
     let wrapper = mount(
-      <CustomListEntriesEditor entries={entriesData} />
+      <CustomListEntriesEditor
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
     );
 
     // simulate starting a drag from list entries
@@ -143,6 +166,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         entries={entriesData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
 
@@ -185,6 +210,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         entries={entriesData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
 
@@ -228,6 +255,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         entries={entriesData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
 
@@ -252,6 +281,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         entries={entriesData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
 
@@ -274,6 +305,8 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
 
@@ -298,6 +331,8 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
 
@@ -321,7 +356,11 @@ describe("CustomListEntriesEditor", () => {
 
   it("hides add all button when there are no search results", () => {
     let wrapper = shallow(
-      <CustomListEntriesEditor entries={entriesData} />
+      <CustomListEntriesEditor
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
     );
     let button = wrapper.find(".add-all-button");
     expect(button.length).to.equal(0);
@@ -333,6 +372,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         entries={entriesData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
     let button = wrapper.find(".add-all-button");
@@ -354,7 +395,11 @@ describe("CustomListEntriesEditor", () => {
 
   it("hides delete all button when there are no entries", () => {
     let wrapper = shallow(
-      <CustomListEntriesEditor searchResults={searchResultsData} />
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
     );
     let button = wrapper.find(".delete-all-button");
     expect(button.length).to.equal(0);
@@ -365,6 +410,8 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
         />
     );
     let button = wrapper.find(".delete-all-button");
@@ -375,5 +422,45 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(0);
     expect(onUpdate.callCount).to.equal(1);
     expect(onUpdate.args[0][0].length).to.equal(0);
+  });
+
+  it("disables load more button when loading more search results", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
+    );
+    // When there are no search results at all yet, the button doesn't show.
+    let button = wrapper.find(".load-more-button");
+    expect(button.length).to.equal(0);
+
+    wrapper.setProps({ searchResults: searchResultsData });
+    button = wrapper.find(".load-more-button");
+    expect(button.length).to.equal(1);
+    expect(button.prop("disabled")).to.be.undefined;
+
+    wrapper.setProps({ isFetchingMoreSearchResults: true });
+    button = wrapper.find(".load-more-button");
+    expect(button.length).to.equal(1);
+    expect(button.prop("disabled")).to.equal(true);
+  });
+
+  it("loads more search results", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        entries={entriesData}
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
+    );
+
+    let button = wrapper.find(".load-more-button");
+    button.simulate("click");
+    expect(loadMoreSearchResults.callCount).to.equal(1);
   });
 });

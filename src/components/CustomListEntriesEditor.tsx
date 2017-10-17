@@ -10,11 +10,14 @@ import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
 import AddIcon from "./icons/AddIcon";
 import XCloseIcon from "./icons/XCloseIcon";
+import MoreDotsIcon from "./icons/MoreDotsIcon";
 
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
   entries?: CustomListEntryData[];
   searchResults?: CollectionData;
+  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   onUpdate?: (entries: CustomListEntryData[]) => void;
+  isFetchingMoreSearchResults: boolean;
 }
 
 export interface CustomListEntriesEditorState {
@@ -35,6 +38,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.onDragEnd = this.onDragEnd.bind(this);
     this.addAll = this.addAll.bind(this);
     this.deleteAll = this.deleteAll.bind(this);
+    this.loadMore = this.loadMore.bind(this);
   }
 
   render(): JSX.Element {
@@ -98,6 +102,21 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </div>
               )}
               </Droppable>
+              { this.props.isFetchingMoreSearchResults &&
+                <button
+                  className="btn btn-default load-more-button"
+                  disabled={true}
+                  ><MoreDotsIcon />
+                </button>
+              }
+              { this.props.searchResults && !this.props.isFetchingMoreSearchResults &&
+                <button
+                  className="btn btn-default load-more-button"
+                  href="#"
+                  onClick={this.loadMore}
+                  >Load more
+                </button>
+              }
           </div>
 
           <div className="custom-list-entries">
@@ -267,5 +286,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     if (this.props.onUpdate) {
       this.props.onUpdate([]);
     }
+  }
+
+  loadMore() {
+    let nextPageUrl = this.props.searchResults.nextPageUrl;
+    this.props.loadMoreSearchResults(nextPageUrl);
   }
 }
