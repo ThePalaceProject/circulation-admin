@@ -107,7 +107,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
                               }
                               <button
                                 className="btn btn-default"
-                                onClick={() => this.deleteCustomList(String(list.id))}
+                                onClick={() => this.deleteCustomList(list)}
                                 >Delete List
                                   <TrashIcon />
                               </button>
@@ -206,9 +206,9 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     this.props.fetchCustomLists(this.props.library);
   }
 
-  async deleteCustomList(id: string): Promise<void> {
-    if (window.confirm("Are you sure you want to delete list " + id + "?")) {
-      await this.props.deleteCustomList(this.props.library, id, this.props.csrfToken);
+  async deleteCustomList(list: CustomListData): Promise<void> {
+    if (window.confirm("Are you sure you want to delete list \"" + list.name + "\"?")) {
+      await this.props.deleteCustomList(this.props.library, String(list.id), this.props.csrfToken);
       this.props.fetchCustomLists(this.props.library);
     }
   }
