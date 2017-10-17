@@ -95,7 +95,6 @@ describe("CustomListEditor", () => {
 
     expect(editCustomList.callCount).to.equal(1);
     let formData = editCustomList.args[0][0];
-    expect(formData.get("csrf_token")).to.equal("token");
     expect(formData.get("id")).to.equal("1");
     expect(formData.get("name")).to.equal("new list name");
     expect(formData.get("entries")).to.equal(JSON.stringify(newEntries));
