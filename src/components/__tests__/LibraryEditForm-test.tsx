@@ -47,18 +47,12 @@ describe("LibraryEditForm", () => {
       wrapper = shallow(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
-          csrfToken="token"
           disabled={false}
           editItem={editLibrary}
           urlBase="url base"
           listDataKey="libraries"
           />
       );
-    });
-
-    it("renders hidden csrf token", () => {
-      let input = wrapper.find("input[name=\"csrf_token\"]");
-      expect(input.props().value).to.equal("token");
     });
 
     it("renders hidden uuid", () => {
@@ -110,7 +104,6 @@ describe("LibraryEditForm", () => {
       wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
-          csrfToken="token"
           disabled={false}
           editItem={editLibrary}
           urlBase="url base"
@@ -127,7 +120,6 @@ describe("LibraryEditForm", () => {
 
       expect(editLibrary.callCount).to.equal(1);
       let formData = editLibrary.args[0][0];
-      expect(formData.get("csrf_token")).to.equal("token");
       expect(formData.get("uuid")).to.equal("uuid");
       expect(formData.get("name")).to.equal("name");
       expect(formData.get("short_name")).to.equal("short_name");

@@ -38,7 +38,6 @@ describe("CustomListEditor", () => {
     loadMoreSearchResults = stub();
     wrapper = shallow(
       <CustomListEditor
-        csrfToken="token"
         library="library"
         list={listData}
         searchResults={searchResults}
@@ -75,7 +74,6 @@ describe("CustomListEditor", () => {
   it("saves list", () => {
     wrapper = mount(
       <CustomListEditor
-        csrfToken="token"
         library="library"
         list={listData}
         searchResults={searchResults}
@@ -110,7 +108,6 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        csrfToken="token"
         library="library"
         searchResults={searchResults}
         editCustomList={editCustomList}
@@ -147,7 +144,6 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        csrfToken="token"
         library="library"
         list={listData}
         searchResults={searchResults}
@@ -176,7 +172,6 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        csrfToken="token"
         library="library"
         list={listData}
         searchResults={searchResults}
@@ -206,7 +201,6 @@ describe("CustomListEditor", () => {
   it("searches", () => {
     wrapper = mount(
       <CustomListEditor
-        csrfToken="token"
         library="library"
         list={listData}
         searchResults={searchResults}

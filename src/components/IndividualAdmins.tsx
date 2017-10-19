@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
@@ -21,15 +21,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator();
   return {
     fetchData: () => dispatch(actions.fetchIndividualAdmins()),
-    editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data))
+    editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data, ownProps.csrfToken))
   };
 }
 
-const ConnectedIndividualAdmins = connect<any, any, any>(
+const ConnectedIndividualAdmins = connect<EditableConfigListStateProps<IndividualAdminsData>, EditableConfigListDispatchProps<IndividualAdminsData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(IndividualAdmins);

@@ -41,7 +41,6 @@ describe("ClassificationsForm", () => {
         <ClassificationsForm
           book={bookData}
           genreTree={genreData}
-          csrfToken="token"
           editClassifications={editClassifications}
           />
       );
@@ -132,7 +131,6 @@ describe("ClassificationsForm", () => {
         <ClassificationsForm
           book={bookData}
           genreTree={genreData}
-          csrfToken="token"
           editClassifications={editClassifications}
           />
       );

@@ -8,15 +8,23 @@ import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 
-export interface StatsProps {
-  store?: Store<State>;
+export interface StatsStateProps {
   stats?: StatsData;
   fetchError?: FetchErrorData;
-  fetchStats?: () => Promise<any>;
   isLoaded?: boolean;
 }
 
-export class Stats extends React.Component<StatsProps, any> {
+export interface StatsDispatchProps {
+  fetchStats?: () => Promise<any>;
+}
+
+export interface StatsOwnProps {
+  store?: Store<State>;
+}
+
+export interface StatsProps extends StatsStateProps, StatsDispatchProps, StatsOwnProps {}
+
+export class Stats extends React.Component<StatsProps, void> {
 
   render(): JSX.Element {
     let patronCounts = [
@@ -123,7 +131,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedStats = connect<any, any, any>(
+const ConnectedStats = connect<StatsStateProps, StatsDispatchProps, StatsOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(Stats);

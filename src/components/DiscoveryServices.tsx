@@ -1,15 +1,20 @@
 import * as React from "react";
-import { GenericEditableConfigList, EditableConfigListProps } from "./EditableConfigList";
+import { GenericEditableConfigList, EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { DiscoveryServicesData, DiscoveryServiceData, LibraryData, LibraryRegistrationsData } from "../interfaces";
 import DiscoveryServiceEditForm from "./DiscoveryServiceEditForm";
 
-export interface DiscoveryServicesProps extends EditableConfigListProps<DiscoveryServicesData> {
-  registerLibrary: (library: LibraryData) => Promise<void>;
-  fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
+export interface DiscoveryServicesStateProps extends EditableConfigListStateProps<DiscoveryServicesData> {
   isFetchingLibraryRegistrations?: boolean;
 }
+
+export interface DiscoveryServicesDispatchProps extends EditableConfigListDispatchProps<DiscoveryServicesData> {
+  registerLibrary: (data: FormData) => Promise<void>;
+  fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
+}
+
+export interface DiscoveryServicesProps extends DiscoveryServicesStateProps, DiscoveryServicesDispatchProps, EditableConfigListOwnProps {};
 
 export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServicesData, DiscoveryServiceData, DiscoveryServicesProps> {
   EditForm = DiscoveryServiceEditForm;
@@ -28,7 +33,6 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
       registerLibrary: (library: LibraryData) => {
         if (this.itemToEdit()) {
           const data = new (window as any).FormData();
-          data.append("csrf_token", this.props.csrfToken);
           data.append("library_short_name", library.short_name);
           data.append("integration_id", this.itemToEdit().id);
           this.props.registerLibrary(data).then(() => {
@@ -66,17 +70,17 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator();
   return {
     fetchData: () => dispatch(actions.fetchDiscoveryServices()),
-    editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data)),
-    registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data)),
+    editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data, ownProps.csrfToken)),
+    registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data, ownProps.csrfToken)),
     fetchLibraryRegistrations: () => dispatch(actions.fetchLibraryRegistrations())
   };
 }
 
-const ConnectedDiscoveryServices = connect<any, any, any>(
+const ConnectedDiscoveryServices = connect<DiscoveryServicesStateProps, DiscoveryServicesDispatchProps, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(DiscoveryServices);

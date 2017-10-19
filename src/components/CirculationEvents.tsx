@@ -10,16 +10,28 @@ import { CirculationEventData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 
-export interface CirculationEventsProps {
-  store?: Store<State>;
+export interface CirculationEventsStateProps {
   events?: CirculationEventData[];
   fetchError?: FetchErrorData;
-  fetchCirculationEvents?: () => Promise<any>;
-  wait?: number;
   isLoaded?: boolean;
 }
 
-export class CirculationEvents extends React.Component<CirculationEventsProps, any> {
+export interface CirculationEventsDispatchProps {
+  fetchCirculationEvents?: () => Promise<any>;
+}
+
+export interface CirculationEventsOwnProps {
+  store?: Store<State>;
+  wait?: number;
+}
+
+export interface CirculationEventsProps extends CirculationEventsStateProps, CirculationEventsDispatchProps, CirculationEventsOwnProps {}
+
+export interface CirculationEventsState {
+  showDownloadForm: boolean;
+}
+
+export class CirculationEvents extends React.Component<CirculationEventsProps, CirculationEventsState> {
   timer: any;
   context: { showCircEventsDownload: boolean };
   _isMounted: boolean;
@@ -150,7 +162,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedCirculationEvents = connect<any, any, any>(
+const ConnectedCirculationEvents = connect<CirculationEventsStateProps, CirculationEventsDispatchProps, CirculationEventsOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(CirculationEvents);

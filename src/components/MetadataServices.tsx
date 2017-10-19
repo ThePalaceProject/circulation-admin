@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { MetadataServicesData, MetadataServiceData } from "../interfaces";
@@ -34,15 +34,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator();
   return {
     fetchData: () => dispatch(actions.fetchMetadataServices()),
-    editItem: (data: FormData) => dispatch(actions.editMetadataService(data))
+    editItem: (data: FormData) => dispatch(actions.editMetadataService(data, ownProps.csrfToken))
   };
 }
 
-const ConnectedMetadataServices = connect<any, any, any>(
+const ConnectedMetadataServices = connect<EditableConfigListStateProps<MetadataServicesData>, EditableConfigListDispatchProps<MetadataServicesData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(MetadataServices);

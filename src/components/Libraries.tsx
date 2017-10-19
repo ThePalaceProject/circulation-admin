@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { LibrariesData, LibraryData } from "../interfaces";
@@ -25,15 +25,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator();
   return {
     fetchData: () => dispatch(actions.fetchLibraries()),
-    editItem: (data: FormData) => dispatch(actions.editLibrary(data))
+    editItem: (data: FormData) => dispatch(actions.editLibrary(data, ownProps.csrfToken))
   };
 }
 
-const ConnectedLibraries = connect<any, any, any>(
+const ConnectedLibraries = connect<EditableConfigListStateProps<LibrariesData>, EditableConfigListDispatchProps<LibrariesData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(Libraries);

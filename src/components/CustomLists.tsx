@@ -1,6 +1,8 @@
 import * as React from "react";
+import { Store } from "redux";
 import { connect } from "react-redux";
 import { Link } from "react-router";
+import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
@@ -13,23 +15,32 @@ import EditableRadio from "./EditableRadio";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
 
-export interface CustomListsProps extends React.Props<CustomListsProps> {
-  library: string;
-  editOrCreate?: string;
-  identifier?: string;
-  csrfToken: string;
+export interface CustomListsStateProps {
   lists: CustomListData[];
   editedIdentifier?: string;
   searchResults: CollectionData;
   fetchError?: FetchErrorData;
   isFetching: boolean;
   isFetchingMoreSearchResults: boolean;
-  fetchCustomLists: (library: string) => Promise<CustomListsData>;
-  editCustomList: (library: string, data: FormData, csrfToken: string) => Promise<void>;
-  deleteCustomList: (library: string, listId: string, csrfToken: string) => Promise<void>;
+}
+
+export interface CustomListsDispatchProps {
+  fetchCustomLists: () => Promise<CustomListsData>;
+  editCustomList: (data: FormData) => Promise<void>;
+  deleteCustomList: (listId: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
 }
+
+export interface CustomListsOwnProps {
+  store?: Store<State>;
+  library: string;
+  editOrCreate?: string;
+  identifier?: string;
+  csrfToken: string;
+}
+
+export interface CustomListsProps extends React.Props<CustomListsProps>, CustomListsStateProps, CustomListsDispatchProps, CustomListsOwnProps {}
 
 export interface CustomListsState {
   sort: string;
@@ -124,7 +135,6 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
           { this.props.editOrCreate === "create" &&
             <CustomListEditor
-              csrfToken={this.props.csrfToken}
               library={this.props.library}
               editCustomList={this.editCustomList}
               search={this.props.search}
@@ -137,7 +147,6 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
           { this.customListToEdit() &&
             <CustomListEditor
-              csrfToken={this.props.csrfToken}
               library={this.props.library}
               list={this.customListToEdit()}
               editCustomList={this.editCustomList}
@@ -154,7 +163,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   componentWillMount() {
     if (this.props.fetchCustomLists) {
-      this.props.fetchCustomLists(this.props.library);
+      this.props.fetchCustomLists();
     }
   }
 
@@ -202,14 +211,14 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   }
 
   async editCustomList(data: FormData): Promise<void> {
-    await this.props.editCustomList(this.props.library, data, this.props.csrfToken);
-    this.props.fetchCustomLists(this.props.library);
+    await this.props.editCustomList(data);
+    this.props.fetchCustomLists();
   }
 
   async deleteCustomList(list: CustomListData): Promise<void> {
     if (window.confirm("Are you sure you want to delete list \"" + list.name + "\"?")) {
-      await this.props.deleteCustomList(this.props.library, String(list.id), this.props.csrfToken);
-      this.props.fetchCustomLists(this.props.library);
+      await this.props.deleteCustomList(String(list.id));
+      this.props.fetchCustomLists();
     }
   }
 
@@ -236,19 +245,19 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher({ adapter });
   let actions = new ActionCreator(fetcher);
   return {
-    fetchCustomLists: (library: string) => dispatch(actions.fetchCustomLists(library)),
-    editCustomList: (library: string, data: FormData, csrfToken: string) => dispatch(actions.editCustomList(library, data, csrfToken)),
-    deleteCustomList: (library: string, listId: string, csrfToken: string) => dispatch(actions.deleteCustomList(library, listId, csrfToken)),
+    fetchCustomLists: () => dispatch(actions.fetchCustomLists(ownProps.library)),
+    editCustomList: (data: FormData) => dispatch(actions.editCustomList(ownProps.library, data, ownProps.csrfToken)),
+    deleteCustomList: (listId: string) => dispatch(actions.deleteCustomList(ownProps.library, listId, ownProps.csrfToken)),
     search: (url: string) => dispatch(actions.fetchCollection(url)),
     loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url))
   };
 }
 
-const ConnectedCustomLists = connect<any, any, any>(
+const ConnectedCustomLists = connect<CustomListsStateProps, CustomListsDispatchProps, CustomListsOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(CustomLists);

@@ -6,7 +6,6 @@ import { LibrariesData, LibraryData } from "../interfaces";
 export interface LibraryEditFormProps {
   data: LibrariesData;
   item?: LibraryData;
-  csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
@@ -17,11 +16,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
-        <input
-          type="hidden"
-          name="csrf_token"
-          value={this.props.csrfToken}
-          />
         <input
           type="hidden"
           name="uuid"

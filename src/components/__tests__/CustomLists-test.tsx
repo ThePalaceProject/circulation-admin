@@ -238,9 +238,7 @@ describe("CustomLists", () => {
     deleteButton.simulate("click");
 
     expect(deleteCustomList.callCount).to.equal(1);
-    expect(deleteCustomList.args[0][0]).to.equal("library");
-    expect(deleteCustomList.args[0][1]).to.equal("1");
-    expect(deleteCustomList.args[0][2]).to.equal("token");
+    expect(deleteCustomList.args[0][0]).to.equal("1");
 
     confirmStub.restore();
   });
@@ -249,9 +247,7 @@ describe("CustomLists", () => {
     const testData = new (window as any).FormData();
     (wrapper.instance() as CustomLists).editCustomList(testData);
     expect(editCustomList.callCount).to.equal(1);
-    expect(editCustomList.args[0][0]).to.equal("library");
-    expect(editCustomList.args[0][1]).to.equal(testData);
-    expect(editCustomList.args[0][2]).to.equal("token");
+    expect(editCustomList.args[0][0]).to.equal(testData);
   });
 
   it("renders create form", async () => {
@@ -261,7 +257,6 @@ describe("CustomLists", () => {
     wrapper.setProps({ editOrCreate: "create" });
     editor = wrapper.find(CustomListEditor);
     expect(editor.length).to.equal(1);
-    expect(editor.props().csrfToken).to.equal("token");
     expect(editor.props().library).to.equal("library");
     expect(editor.props().search).to.equal(search);
     expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
@@ -273,9 +268,7 @@ describe("CustomLists", () => {
     let editCustomListProp = editor.props().editCustomList;
     await editCustomListProp();
     expect(editCustomList.callCount).to.equal(1);
-    expect(editCustomList.args[0][0]).to.equal("library");
     expect(fetchCustomLists.callCount).to.equal(2);
-    expect(fetchCustomLists.args[1][0]).to.equal("library");
 
     wrapper.setProps({ editedIdentifier: "5" });
     editor = wrapper.find(CustomListEditor);
@@ -290,7 +283,6 @@ describe("CustomLists", () => {
     editor = wrapper.find(CustomListEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().list).to.deep.equal(listsData[1]);
-    expect(editor.props().csrfToken).to.equal("token");
     expect(editor.props().library).to.equal("library");
     expect(editor.props().search).to.equal(search);
     expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);

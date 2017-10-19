@@ -42,7 +42,6 @@ describe("actions", () => {
     const type = "TEST";
     const url = "http://example.com/test";
     const formData = new (window as any).FormData();
-    formData.append("csrf_token", "token");
     formData.append("test", "test");
 
     it("dispatches request, success, and load", async () => {
@@ -55,7 +54,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.postForm(type, url, formData)(dispatch);
+      await actions.postForm(type, url, formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
@@ -64,10 +63,13 @@ describe("actions", () => {
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
       expect(fetchMock.args[0][1].method).to.equal("POST");
+      const expectedHeaders = new Headers();
+      expectedHeaders.append("X-CSRF-Token", "token");
+      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
       expect(fetchMock.args[0][1].body).to.equal(formData);
     });
 
-    it("dispatches a DELETE request with a csrf token header", async () => {
+    it("dispatches a DELETE request", async () => {
       const dispatch = stub();
       const responseText = stub().returns(new Promise<string>((resolve) => {
         resolve("response");
@@ -97,7 +99,7 @@ describe("actions", () => {
       fetch = fetchMock;
 
       try {
-        await actions.postForm(type, url, formData)(dispatch);
+        await actions.postForm(type, url, formData, "token")(dispatch);
         // shouldn't get here
         expect(false).to.equal(true);
       } catch (err) {
@@ -121,7 +123,7 @@ describe("actions", () => {
       fetch = fetchMock;
 
       try {
-        await actions.postForm(type, url, formData)(dispatch);
+        await actions.postForm(type, url, formData, "token")(dispatch);
         // shouldn't get here
         expect(false).to.equal(true);
       } catch (err) {
@@ -157,6 +159,25 @@ describe("actions", () => {
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
       expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(fetchMock.args[0][1].body).to.equal(JSON.stringify(jsonData));
+    });
+
+    it("includes CSRF token header if provided", async () => {
+      const dispatch = stub();
+      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      await actions.postJSON<{ test: number }>(type, url, jsonData, "token")(dispatch);
+      expect(fetchMock.callCount).to.equal(1);
+      expect(fetchMock.args[0][0]).to.equal(url);
+      expect(fetchMock.args[0][1].method).to.equal("POST");
+      const expectedHeaders = new Headers();
+      expectedHeaders.append("Accept", "application/json");
+      expectedHeaders.append("Content-Type", "application/json");
+      expectedHeaders.append("X-CSRF-Token", "token");
+      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
       expect(fetchMock.args[0][1].body).to.equal(JSON.stringify(jsonData));
     });
 
@@ -233,14 +254,13 @@ describe("actions", () => {
       const editBookUrl = "http://example.com/editBook";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("title", "title");
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
       }));
       fetch = fetchMock;
 
-      await actions.editBook(editBookUrl, formData)(dispatch);
+      await actions.editBook(editBookUrl, formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_BOOK_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_BOOK_SUCCESS);
@@ -304,14 +324,13 @@ describe("actions", () => {
       const resolveComplaintsUrl = "http://example.com/resolveComplaints";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("type", "test type");
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
       }));
       fetch = fetchMock;
 
-      await actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch);
+      await actions.resolveComplaints(resolveComplaintsUrl, formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_SUCCESS);
@@ -350,7 +369,6 @@ describe("actions", () => {
       const dispatch = stub();
       const formData = new (window as any).FormData();
       const newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
-      formData.append("csrf_token", "token");
       newGenreTree.forEach(genre => formData.append("genres", genre));
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -358,7 +376,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editClassifications(editClassificationsUrl, formData)(dispatch);
+      await actions.editClassifications(editClassificationsUrl, formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_SUCCESS);
@@ -465,7 +483,6 @@ describe("actions", () => {
       const editLibraryUrl = "/admin/libraries";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("name", "new name");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -473,7 +490,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editLibrary(formData)(dispatch);
+      await actions.editLibrary(formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.SUCCESS}`);
@@ -511,7 +528,6 @@ describe("actions", () => {
       const editCollectionUrl = "/admin/collections";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("name", "new name");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -519,7 +535,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editCollection(formData)(dispatch);
+      await actions.editCollection(formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.SUCCESS}`);
@@ -557,7 +573,6 @@ describe("actions", () => {
       const editAdminAuthServiceUrl = "/admin/admin_auth_services";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("name", "new name");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -565,7 +580,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editAdminAuthService(formData)(dispatch);
+      await actions.editAdminAuthService(formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.SUCCESS}`);
@@ -603,7 +618,6 @@ describe("actions", () => {
       const editIndividualAdminUrl = "/admin/individual_admins";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("email", "email");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -611,7 +625,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editIndividualAdmin(formData)(dispatch);
+      await actions.editIndividualAdmin(formData, "token")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.SUCCESS}`);

@@ -11,21 +11,29 @@ import { BookData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 
-export interface EditorProps extends React.Props<Editor> {
-  bookUrl?: string;
+export interface EditorStateProps {
   bookData?: BookData;
   bookAdminUrl?: string;
   fetchError?: FetchErrorData;
   editError?: FetchErrorData;
-  csrfToken: string;
-  store?: Store<State>;
-  fetchBook?: (url: string) => void;
-  refreshCatalog?: () => Promise<any>;
-  editBook?: (url: string, data: FormData) => Promise<any>;
   isFetching?: boolean;
 }
 
-export class Editor extends React.Component<EditorProps, any> {
+export interface EditorDispatchProps {
+  fetchBook?: (url: string) => void;
+  editBook?: (url: string, data: FormData | null) => Promise<any>;
+}
+
+export interface EditorOwnProps {
+  bookUrl?: string;
+  csrfToken: string;
+  store?: Store<State>;
+  refreshCatalog?: () => Promise<any>;
+}
+
+export interface EditorProps extends React.Props<Editor>, EditorStateProps, EditorDispatchProps, EditorOwnProps {}
+
+export class Editor extends React.Component<EditorProps, void> {
   constructor(props) {
     super(props);
     this.editBook = this.editBook.bind(this);
@@ -85,7 +93,6 @@ export class Editor extends React.Component<EditorProps, any> {
             { this.props.bookData.editLink &&
               <BookEditForm
                 {...this.props.bookData}
-                csrfToken={this.props.csrfToken}
                 disabled={this.props.isFetching}
                 editBook={this.props.editBook}
                 refresh={this.refresh} />
@@ -131,9 +138,7 @@ export class Editor extends React.Component<EditorProps, any> {
   };
 
   editBook(url) {
-    let data = new FormData();
-    data.append("csrf_token", this.props.csrfToken);
-    return this.props.editBook(url, data).then(this.refresh);
+    return this.props.editBook(url, null).then(this.refresh);
   }
 }
 
@@ -147,16 +152,16 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher({ adapter: editorAdapter });
   let actions = new ActionCreator(fetcher);
   return {
-    editBook: (url, data) => dispatch(actions.editBook(url, data)),
+    editBook: (url, data) => dispatch(actions.editBook(url, data, ownProps.csrfToken)),
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url))
   };
 }
 
-const ConnectedEditor = connect<any, any, any>(
+const ConnectedEditor = connect<EditorStateProps, EditorDispatchProps, EditorOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(Editor);

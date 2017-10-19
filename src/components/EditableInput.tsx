@@ -7,7 +7,12 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   onChange?: () => any;
 }
 
-export default class EditableInput extends React.Component<EditableInputProps, any> {
+export interface EditableInputState {
+  value: string;
+  checked: boolean;
+}
+
+export default class EditableInput extends React.Component<EditableInputProps, EditableInputState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -55,29 +60,27 @@ export default class EditableInput extends React.Component<EditableInputProps, a
   }
 
   componentWillReceiveProps(props) {
+    let value = this.state.value;
+    let checked = this.state.checked;
     if (props.value !== this.props.value) {
-      this.setState({
-        value: props.value || ""
-      });
+      value = props.value || "";
     }
     if (props.checked !== this.props.checked) {
-      this.setState({
-        checked: props.checked || false
-      });
+      checked = props.checked || false;
     }
+    this.setState({ value, checked });
   }
 
   handleChange() {
     if (!this.props.readOnly && (!this.props.onChange || this.props.onChange() !== false)) {
+      let value = this.state.value;
+      let checked = this.state.checked;
       if (this.props.type === "checkbox") {
-        this.setState({
-          checked: !this.state.checked
-        });
+        checked = !this.state.checked;
       } else {
-        this.setState({
-          value: this.getValue()
-        });
+        value = this.getValue();
       }
+      this.setState({ value, checked });
     }
   }
 

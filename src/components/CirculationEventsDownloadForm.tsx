@@ -7,7 +7,7 @@ export interface CirculationEventsDownloadFormProps extends React.Props<Circulat
   hide: () => void;
 }
 
-export default class CirculationEventsDownloadForm extends React.Component<CirculationEventsDownloadFormProps, any> {
+export default class CirculationEventsDownloadForm extends React.Component<CirculationEventsDownloadFormProps, void> {
   constructor(props) {
     super(props);
     this.download = this.download.bind(this);

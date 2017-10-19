@@ -9,7 +9,6 @@ import { BookData, GenreTree } from "../interfaces";
 export interface ClassificationsFormProps {
   book: BookData;
   genreTree: GenreTree;
-  csrfToken: string;
   editClassifications: (data: FormData) => Promise<any>;
   disabled?: boolean;
 }
@@ -257,7 +256,6 @@ export default class ClassificationsForm extends React.Component<Classifications
 
   submit() {
     let data = new (window as any).FormData();
-    data.append("csrf_token", this.props.csrfToken);
     data.append("audience", this.state.audience);
     if (this.shouldShowTargetAge()) {
       data.append("target_age_min", (this.refs as any).targetAgeMin.getValue());

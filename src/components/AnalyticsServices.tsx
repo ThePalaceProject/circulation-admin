@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { AnalyticsServicesData, AnalyticsServiceData } from "../interfaces";
@@ -34,15 +34,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator();
   return {
     fetchData: () => dispatch(actions.fetchAnalyticsServices()),
-    editItem: (data: FormData) => dispatch(actions.editAnalyticsService(data))
+    editItem: (data: FormData) => dispatch(actions.editAnalyticsService(data, ownProps.csrfToken))
   };
 }
 
-const ConnectedAnalyticsServices = connect<any, any, any>(
+const ConnectedAnalyticsServices = connect<EditableConfigListStateProps<AnalyticsServicesData>, EditableConfigListDispatchProps<AnalyticsServicesData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(AnalyticsServices);

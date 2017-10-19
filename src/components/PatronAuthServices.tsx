@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
@@ -34,15 +34,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator();
   return {
     fetchData: () => dispatch(actions.fetchPatronAuthServices()),
-    editItem: (data: FormData) => dispatch(actions.editPatronAuthService(data))
+    editItem: (data: FormData) => dispatch(actions.editPatronAuthService(data, ownProps.csrfToken))
   };
 }
 
-const ConnectedPatronAuthServices = connect<any, any, any>(
+const ConnectedPatronAuthServices = connect<EditableConfigListStateProps<PatronAuthServicesData>, EditableConfigListDispatchProps<PatronAuthServicesData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(PatronAuthServices);

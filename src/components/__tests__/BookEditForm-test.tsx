@@ -38,7 +38,6 @@ describe("BookEditForm", () => {
       wrapper = shallow(
         <BookEditForm
           {...bookData}
-          csrfToken=""
           disabled={false}
           refresh={stub()}
           editBook={stub()}
@@ -102,7 +101,6 @@ describe("BookEditForm", () => {
     let wrapper = mount(
       <BookEditForm
         {...bookData}
-        csrfToken="token"
         disabled={false}
         refresh={stub()}
         editBook={editBook}
@@ -115,7 +113,6 @@ describe("BookEditForm", () => {
 
     expect(editBook.callCount).to.equal(1);
     expect(editBook.args[0][0]).to.equal("href");
-    expect(editBook.args[0][1].get("csrf_token").value).to.equal("token");
     expect(editBook.args[0][1].get("title").value).to.equal(bookData.title);
     expect(editBook.args[0][1].get("subtitle").value).to.equal(bookData.subtitle);
     expect(editBook.args[0][1].get("series").value).to.equal(bookData.series);
@@ -130,7 +127,6 @@ describe("BookEditForm", () => {
     let wrapper = mount(
       <BookEditForm
         {...bookData}
-        csrfToken=""
         disabled={false}
         refresh={done}
         editBook={editBook}
@@ -145,7 +141,6 @@ describe("BookEditForm", () => {
     let wrapper = shallow(
       <BookEditForm
         {...bookData}
-        csrfToken=""
         disabled={true}
         refresh={stub()}
         editBook={stub()}

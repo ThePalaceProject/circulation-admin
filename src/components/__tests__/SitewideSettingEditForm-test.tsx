@@ -38,7 +38,6 @@ describe("SitewideSettingEditForm", () => {
       wrapper = shallow(
         <SitewideSettingEditForm
           data={settingsData}
-          csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
           urlBase="url base"
@@ -55,7 +54,6 @@ describe("SitewideSettingEditForm", () => {
       wrapper = shallow(
         <SitewideSettingEditForm
           data={data}
-          csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
           urlBase="url base"
@@ -67,11 +65,6 @@ describe("SitewideSettingEditForm", () => {
 
       let input = wrapper.find("input[name=\"csrf_token\"]");
       expect(input.length).to.equal(0);
-    });
-
-    it("renders hidden csrf token", () => {
-      let input = wrapper.find("input[name=\"csrf_token\"]");
-      expect(input.props().value).to.equal("token");
     });
 
     it("renders key", () => {
@@ -107,7 +100,6 @@ describe("SitewideSettingEditForm", () => {
       wrapper = mount(
         <SitewideSettingEditForm
           data={settingsData}
-          csrfToken="token"
           disabled={false}
           editItem={editSitewideSetting}
           urlBase="url base"
@@ -124,7 +116,6 @@ describe("SitewideSettingEditForm", () => {
 
       expect(editSitewideSetting.callCount).to.equal(1);
       let formData = editSitewideSetting.args[0][0];
-      expect(formData.get("csrf_token")).to.equal("token");
       expect(formData.get("key")).to.equal("test_key");
       expect(formData.get("value")).to.equal("value");
     });

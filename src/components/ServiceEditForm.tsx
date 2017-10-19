@@ -9,7 +9,6 @@ import { EditFormProps } from "./EditableConfigList";
 export interface ServiceEditFormProps<T> {
   data: T;
   item?: ServiceData;
-  csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
@@ -51,11 +50,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save} className="edit-form">
-        <input
-          type="hidden"
-          name="csrf_token"
-          value={this.props.csrfToken}
-          />
         { this.props.item && this.props.item.id &&
           <input
             type="hidden"
@@ -418,7 +412,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       (this.refs[setting.key] as any).clear();
     }
     const libraries = this.state.libraries.concat(newLibrary);
-    const newState = Object.assign({}, this.state, { libraries });
+    const newState = Object.assign({}, this.state, { libraries, selectedLibrary: null });
     this.setState(newState);
   }
 

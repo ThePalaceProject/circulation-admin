@@ -29,18 +29,12 @@ describe("IndividualAdminEditForm", () => {
       wrapper = shallow(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData] }}
-          csrfToken="token"
           disabled={false}
           editItem={editIndividualAdmin}
           urlBase="url base"
           listDataKey="admins"
           />
       );
-    });
-
-    it("renders hidden csrf token", () => {
-      let input = wrapper.find("input[name=\"csrf_token\"]");
-      expect(input.props().value).to.equal("token");
     });
 
     it("renders email", () => {
@@ -69,7 +63,6 @@ describe("IndividualAdminEditForm", () => {
       wrapper = mount(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData] }}
-          csrfToken="token"
           disabled={false}
           editItem={editIndividualAdmin}
           urlBase="url base"
@@ -90,7 +83,6 @@ describe("IndividualAdminEditForm", () => {
 
       expect(editIndividualAdmin.callCount).to.equal(1);
       let formData = editIndividualAdmin.args[0][0];
-      expect(formData.get("csrf_token")).to.equal("token");
       expect(formData.get("email")).to.equal("test@nypl.org");
       expect(formData.get("password")).to.equal("newPassword");
     });
