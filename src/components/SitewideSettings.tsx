@@ -31,10 +31,10 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator();
+  let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchSitewideSettings()),
-    editItem: (data: FormData) => dispatch(actions.editSitewideSetting(data, ownProps.csrfToken))
+    editItem: (data: FormData) => dispatch(actions.editSitewideSetting(data))
   };
 }
 

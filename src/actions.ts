@@ -97,20 +97,26 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly STATS_FAILURE = "STATS_FAILURE";
   static readonly STATS_LOAD = "STATS_LOAD";
 
-  constructor(fetcher?: DataFetcher) {
+  csrfToken: string;
+
+  constructor(fetcher?: DataFetcher, csrfToken?: string) {
     fetcher = fetcher || new DataFetcher();
     super(fetcher);
+    csrfToken = csrfToken || null;
+    this.csrfToken = csrfToken;
   }
 
 
-  postForm(type: string, url: string, data: FormData | null, csrfToken: string, method?: string) {
+  postForm(type: string, url: string, data: FormData | null, method?: string) {
     let err: RequestError;
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.request(type));
         let headers = new Headers();
-        headers.append("X-CSRF-Token", csrfToken);
+        if (this.csrfToken) {
+          headers.append("X-CSRF-Token", this.csrfToken);
+        }
         fetch(url, {
           method: method || "POST",
           headers: headers,
@@ -157,15 +163,15 @@ export default class ActionCreator extends BaseActionCreator {
     }).bind(this);
   }
 
-  postJSON<T>(type: string, url: string, data: T, csrfToken?: string) {
+  postJSON<T>(type: string, url: string, data: T) {
     let err: RequestError;
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.request(type, url));
         let headers = new Headers();
-        if (csrfToken) {
-          headers.append("X-CSRF-Token", csrfToken);
+        if (this.csrfToken) {
+          headers.append("X-CSRF-Token", this.csrfToken);
         }
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
@@ -214,8 +220,8 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchOPDS<BookData>(ActionCreator.BOOK_ADMIN, url).bind(this);
   }
 
-  editBook(url: string, data: FormData | null, csrfToken: string) {
-    return this.postForm(ActionCreator.EDIT_BOOK, url, data, csrfToken).bind(this);
+  editBook(url: string, data: FormData | null) {
+    return this.postForm(ActionCreator.EDIT_BOOK, url, data).bind(this);
   }
 
   fetchComplaints(url: string) {
@@ -226,16 +232,16 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postJSON<{type: string}>(ActionCreator.POST_COMPLAINT, url, data).bind(this);
   }
 
-  resolveComplaints(url: string, data: FormData, csrfToken: string) {
-    return this.postForm(ActionCreator.RESOLVE_COMPLAINTS, url, data, csrfToken).bind(this);
+  resolveComplaints(url: string, data: FormData) {
+    return this.postForm(ActionCreator.RESOLVE_COMPLAINTS, url, data).bind(this);
   }
 
   fetchGenreTree(url: string) {
     return this.fetchJSON<GenreTree>(ActionCreator.GENRE_TREE, url).bind(this);
   }
 
-  editClassifications(url: string, data: FormData, csrfToken: string) {
-    return this.postForm(ActionCreator.EDIT_CLASSIFICATIONS, url, data, csrfToken).bind(this);
+  editClassifications(url: string, data: FormData) {
+    return this.postForm(ActionCreator.EDIT_CLASSIFICATIONS, url, data).bind(this);
   }
 
   fetchClassifications(url: string) {
@@ -257,9 +263,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<LibrariesData>(ActionCreator.LIBRARIES, url).bind(this);
   }
 
-  editLibrary(data: FormData, csrfToken) {
+  editLibrary(data: FormData) {
     const url = "/admin/libraries";
-    return this.postForm(ActionCreator.EDIT_LIBRARY, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_LIBRARY, url, data).bind(this);
   }
 
   fetchCollections() {
@@ -267,9 +273,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<CollectionsData>(ActionCreator.COLLECTIONS, url).bind(this);
   }
 
-  editCollection(data: FormData, csrfToken: string) {
+  editCollection(data: FormData) {
     const url = "/admin/collections";
-    return this.postForm(ActionCreator.EDIT_COLLECTION, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_COLLECTION, url, data).bind(this);
   }
 
   fetchAdminAuthServices() {
@@ -277,9 +283,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<AdminAuthServicesData>(ActionCreator.ADMIN_AUTH_SERVICES, url).bind(this);
   }
 
-  editAdminAuthService(data: FormData, csrfToken: string) {
+  editAdminAuthService(data: FormData) {
     const url = "/admin/admin_auth_services";
-    return this.postForm(ActionCreator.EDIT_ADMIN_AUTH_SERVICE, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_ADMIN_AUTH_SERVICE, url, data).bind(this);
   }
 
   fetchIndividualAdmins() {
@@ -287,9 +293,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<IndividualAdminsData>(ActionCreator.INDIVIDUAL_ADMINS, url).bind(this);
   }
 
-  editIndividualAdmin(data: FormData, csrfToken: string) {
+  editIndividualAdmin(data: FormData) {
     const url = "/admin/individual_admins";
-    return this.postForm(ActionCreator.EDIT_INDIVIDUAL_ADMIN, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_INDIVIDUAL_ADMIN, url, data).bind(this);
   }
 
   fetchPatronAuthServices() {
@@ -297,9 +303,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<PatronAuthServicesData>(ActionCreator.PATRON_AUTH_SERVICES, url).bind(this);
   }
 
-  editPatronAuthService(data: FormData, csrfToken: string) {
+  editPatronAuthService(data: FormData) {
     const url = "/admin/patron_auth_services";
-    return this.postForm(ActionCreator.EDIT_PATRON_AUTH_SERVICE, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_PATRON_AUTH_SERVICE, url, data).bind(this);
   }
 
   fetchSitewideSettings() {
@@ -307,9 +313,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<SitewideSettingsData>(ActionCreator.SITEWIDE_SETTINGS, url).bind(this);
   }
 
-  editSitewideSetting(data: FormData, csrfToken: string) {
+  editSitewideSetting(data: FormData) {
     const url = "/admin/sitewide_settings";
-    return this.postForm(ActionCreator.EDIT_SITEWIDE_SETTING, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_SITEWIDE_SETTING, url, data).bind(this);
   }
 
   fetchMetadataServices() {
@@ -317,9 +323,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<MetadataServicesData>(ActionCreator.METADATA_SERVICES, url).bind(this);
   }
 
-  editMetadataService(data: FormData, csrfToken: string) {
+  editMetadataService(data: FormData) {
     const url = "/admin/metadata_services";
-    return this.postForm(ActionCreator.EDIT_METADATA_SERVICE, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_METADATA_SERVICE, url, data).bind(this);
   }
 
   fetchAnalyticsServices() {
@@ -327,9 +333,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<AnalyticsServicesData>(ActionCreator.ANALYTICS_SERVICES, url).bind(this);
   }
 
-  editAnalyticsService(data: FormData, csrfToken: string) {
+  editAnalyticsService(data: FormData) {
     const url = "/admin/analytics_services";
-    return this.postForm(ActionCreator.EDIT_ANALYTICS_SERVICE, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_ANALYTICS_SERVICE, url, data).bind(this);
   }
 
   fetchCDNServices() {
@@ -337,9 +343,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<CDNServicesData>(ActionCreator.CDN_SERVICES, url).bind(this);
   }
 
-  editCDNService(data: FormData, csrfToken: string) {
+  editCDNService(data: FormData) {
     const url = "/admin/cdn_services";
-    return this.postForm(ActionCreator.EDIT_CDN_SERVICE, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_CDN_SERVICE, url, data).bind(this);
   }
 
   fetchSearchServices() {
@@ -347,9 +353,9 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<SearchServicesData>(ActionCreator.SEARCH_SERVICES, url).bind(this);
   }
 
-  editSearchService(data: FormData, csrfToken: string) {
+  editSearchService(data: FormData) {
     const url = "/admin/search_services";
-    return this.postForm(ActionCreator.EDIT_SEARCH_SERVICE, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_SEARCH_SERVICE, url, data).bind(this);
   }
 
   fetchDiscoveryServices() {
@@ -357,14 +363,14 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<DiscoveryServicesData>(ActionCreator.DISCOVERY_SERVICES, url).bind(this);
   }
 
-  editDiscoveryService(data: FormData, csrfToken: string) {
+  editDiscoveryService(data: FormData) {
     const url = "/admin/discovery_services";
-    return this.postForm(ActionCreator.EDIT_DISCOVERY_SERVICE, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_DISCOVERY_SERVICE, url, data).bind(this);
   }
 
-  registerLibrary(data: FormData, csrfToken: string) {
+  registerLibrary(data: FormData) {
     const url = "/admin/library_registrations";
-    return this.postForm(ActionCreator.REGISTER_LIBRARY, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.REGISTER_LIBRARY, url, data).bind(this);
   }
 
   fetchLibraryRegistrations() {
@@ -377,13 +383,13 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<CustomListsData>(ActionCreator.CUSTOM_LISTS, url).bind(this);
   }
 
-  editCustomList(library: string, data: FormData, csrfToken: string) {
+  editCustomList(library: string, data: FormData) {
     const url = "/" + library + "/admin/custom_lists";
-    return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data).bind(this);
   }
 
-  deleteCustomList(library: string, listId: string, csrfToken: string) {
+  deleteCustomList(library: string, listId: string) {
     const url = "/" + library + "/admin/custom_list/" + listId;
-    return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, null, csrfToken, "DELETE").bind(this);
+    return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, null, "DELETE").bind(this);
   }
 }

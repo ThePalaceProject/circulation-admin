@@ -154,11 +154,11 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
-  let actions = new ActionCreator(fetcher);
+  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchComplaints: (url) => dispatch(actions.fetchComplaints(url)),
     postComplaint: (url, data) => dispatch(actions.postComplaint(url, data)),
-    resolveComplaints: (url, data) => dispatch(actions.resolveComplaints(url, data, ownProps.csrfToken))
+    resolveComplaints: (url, data) => dispatch(actions.resolveComplaints(url, data))
   };
 }
 

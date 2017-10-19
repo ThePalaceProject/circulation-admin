@@ -27,10 +27,10 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator();
+  let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchCDNServices()),
-    editItem: (data: FormData) => dispatch(actions.editCDNService(data, ownProps.csrfToken))
+    editItem: (data: FormData) => dispatch(actions.editCDNService(data))
   };
 }
 

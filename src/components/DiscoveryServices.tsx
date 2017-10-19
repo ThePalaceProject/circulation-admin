@@ -71,11 +71,11 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator();
+  let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchDiscoveryServices()),
-    editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data, ownProps.csrfToken)),
-    registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data, ownProps.csrfToken)),
+    editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data)),
+    registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data)),
     fetchLibraryRegistrations: () => dispatch(actions.fetchLibraryRegistrations())
   };
 }

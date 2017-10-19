@@ -154,9 +154,9 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher({ adapter: editorAdapter });
-  let actions = new ActionCreator(fetcher);
+  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
-    editBook: (url, data) => dispatch(actions.editBook(url, data, ownProps.csrfToken)),
+    editBook: (url, data) => dispatch(actions.editBook(url, data)),
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url))
   };
 }

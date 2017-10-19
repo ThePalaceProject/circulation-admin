@@ -35,7 +35,7 @@ class MockDataFetcher {
 };
 
 const fetcher = new MockDataFetcher() as any;
-const actions = new ActionCreator(fetcher);
+const actions = new ActionCreator(fetcher, "token");
 
 describe("actions", () => {
   describe("postForm", () => {
@@ -54,7 +54,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.postForm(type, url, formData, "token")(dispatch);
+      await actions.postForm(type, url, formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
@@ -79,7 +79,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.postForm(type, url, formData, "token", "DELETE")(dispatch);
+      await actions.postForm(type, url, formData, "DELETE")(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
@@ -99,7 +99,7 @@ describe("actions", () => {
       fetch = fetchMock;
 
       try {
-        await actions.postForm(type, url, formData, "token")(dispatch);
+        await actions.postForm(type, url, formData)(dispatch);
         // shouldn't get here
         expect(false).to.equal(true);
       } catch (err) {
@@ -123,7 +123,7 @@ describe("actions", () => {
       fetch = fetchMock;
 
       try {
-        await actions.postForm(type, url, formData, "token")(dispatch);
+        await actions.postForm(type, url, formData)(dispatch);
         // shouldn't get here
         expect(false).to.equal(true);
       } catch (err) {
@@ -156,20 +156,6 @@ describe("actions", () => {
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(url);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(JSON.stringify(jsonData));
-    });
-
-    it("includes CSRF token header if provided", async () => {
-      const dispatch = stub();
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200 });
-      }));
-      fetch = fetchMock;
-
-      await actions.postJSON<{ test: number }>(type, url, jsonData, "token")(dispatch);
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
       expect(fetchMock.args[0][1].method).to.equal("POST");
@@ -260,7 +246,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editBook(editBookUrl, formData, "token")(dispatch);
+      await actions.editBook(editBookUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_BOOK_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_BOOK_SUCCESS);
@@ -330,7 +316,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.resolveComplaints(resolveComplaintsUrl, formData, "token")(dispatch);
+      await actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_SUCCESS);
@@ -376,7 +362,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editClassifications(editClassificationsUrl, formData, "token")(dispatch);
+      await actions.editClassifications(editClassificationsUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_SUCCESS);
@@ -490,7 +476,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editLibrary(formData, "token")(dispatch);
+      await actions.editLibrary(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.SUCCESS}`);
@@ -535,7 +521,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editCollection(formData, "token")(dispatch);
+      await actions.editCollection(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.SUCCESS}`);
@@ -580,7 +566,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editAdminAuthService(formData, "token")(dispatch);
+      await actions.editAdminAuthService(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.SUCCESS}`);
@@ -625,7 +611,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.editIndividualAdmin(formData, "token")(dispatch);
+      await actions.editIndividualAdmin(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.SUCCESS}`);

@@ -26,10 +26,10 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator();
+  let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchCollections()),
-    editItem: (data: FormData) => dispatch(actions.editCollection(data, ownProps.csrfToken))
+    editItem: (data: FormData) => dispatch(actions.editCollection(data))
   };
 }
 

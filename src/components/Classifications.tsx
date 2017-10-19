@@ -128,12 +128,12 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher({ adapter: editorAdapter });
-  let actions = new ActionCreator(fetcher);
+  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
     fetchGenreTree: (url: string) => dispatch(actions.fetchGenreTree(url)),
     fetchClassifications: (url: string) => dispatch(actions.fetchClassifications(url)),
-    editClassifications: (url: string, data: FormData) => dispatch(actions.editClassifications(url, data, ownProps.csrfToken))
+    editClassifications: (url: string, data: FormData) => dispatch(actions.editClassifications(url, data))
   };
 }
 

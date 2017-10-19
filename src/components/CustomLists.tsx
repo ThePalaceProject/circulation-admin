@@ -247,11 +247,11 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher({ adapter });
-  let actions = new ActionCreator(fetcher);
+  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchCustomLists: () => dispatch(actions.fetchCustomLists(ownProps.library)),
-    editCustomList: (data: FormData) => dispatch(actions.editCustomList(ownProps.library, data, ownProps.csrfToken)),
-    deleteCustomList: (listId: string) => dispatch(actions.deleteCustomList(ownProps.library, listId, ownProps.csrfToken)),
+    editCustomList: (data: FormData) => dispatch(actions.editCustomList(ownProps.library, data)),
+    deleteCustomList: (listId: string) => dispatch(actions.deleteCustomList(ownProps.library, listId)),
     search: (url: string) => dispatch(actions.fetchCollection(url)),
     loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url))
   };
