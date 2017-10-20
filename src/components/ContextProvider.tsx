@@ -10,7 +10,7 @@ export interface ContextProviderProps extends React.Props<any> {
   settingUp?: boolean;
 }
 
-export default class ContextProvider extends React.Component<ContextProviderProps, any> {
+export default class ContextProvider extends React.Component<ContextProviderProps, void> {
   store: Store<State>;
   pathFor: PathFor;
 

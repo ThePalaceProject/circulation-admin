@@ -8,7 +8,12 @@ export interface GenreFormProps {
   disabled?: boolean;
 }
 
-export default class GenreForm extends React.Component<GenreFormProps, any> {
+export interface GenreFormState {
+  genre: string | null;
+  subgenre: string | null;
+}
+
+export default class GenreForm extends React.Component<GenreFormProps, GenreFormState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -91,11 +96,11 @@ export default class GenreForm extends React.Component<GenreFormProps, any> {
   }
 
   handleGenreSelect(event) {
-    this.setState({ genre: event.target.value });
+    this.setState({ genre: event.target.value, subgenre: null });
   }
 
   handleSubgenreSelect(event) {
-    this.setState({ subgenre: event.target.value });
+    this.setState({ genre: this.state.genre, subgenre: event.target.value });
   }
 
   resetForm() {

@@ -5,7 +5,7 @@ export interface ClassificationsTableProps {
   classifications: ClassificationData[];
 }
 
-export default class ClassificationsTable extends React.Component<ClassificationsTableProps, any> {
+export default class ClassificationsTable extends React.Component<ClassificationsTableProps, void> {
   render(): JSX.Element {
     return (
       <div className="classifications-table">

@@ -45,7 +45,6 @@ describe("DiscoveryServiceEditForm", () => {
       registerLibrary = stub();
       wrapper = shallow(
         <DiscoveryServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -80,7 +79,6 @@ describe("DiscoveryServiceEditForm", () => {
       registerLibrary = stub();
       wrapper = shallow(
         <DiscoveryServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           item={serviceData}

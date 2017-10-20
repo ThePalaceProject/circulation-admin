@@ -110,7 +110,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -118,11 +117,6 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-    });
-
-    it("renders hidden csrf token", () => {
-      let input = wrapper.find("input[name=\"csrf_token\"]");
-      expect(input.props().value).to.equal("token");
     });
 
     it("renders hidden id", () => {
@@ -148,7 +142,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -180,7 +173,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -210,7 +202,6 @@ describe("ServiceEditForm", () => {
       const newService = Object.assign({}, serviceData, { protocol: "protocol 3" });
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           item={newService}
@@ -230,7 +221,6 @@ describe("ServiceEditForm", () => {
       let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService, childService] });
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
@@ -251,7 +241,6 @@ describe("ServiceEditForm", () => {
       childService.parent_id = parentService.id;
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
@@ -275,7 +264,6 @@ describe("ServiceEditForm", () => {
       let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService, childService] });
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
@@ -301,7 +289,6 @@ describe("ServiceEditForm", () => {
       childService.parent_id = parentService.id;
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
@@ -332,7 +319,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataSitewide}
           editItem={editService}
@@ -348,7 +334,6 @@ describe("ServiceEditForm", () => {
       });
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataSitewide}
           editItem={editService}
@@ -367,7 +352,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = mount(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -391,7 +375,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -412,7 +395,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataSitewide}
           editItem={editService}
@@ -428,7 +410,6 @@ describe("ServiceEditForm", () => {
       });
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataSitewide}
           editItem={editService}
@@ -458,7 +439,6 @@ describe("ServiceEditForm", () => {
 
       wrapper = shallow(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -482,7 +462,6 @@ describe("ServiceEditForm", () => {
       editService = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -554,7 +533,6 @@ describe("ServiceEditForm", () => {
       let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService], protocols: [parentProtocol] });
       wrapper = mount(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesDataWithParent}
           editItem={editService}
@@ -653,7 +631,6 @@ describe("ServiceEditForm", () => {
     it("removes a library", () => {
       wrapper = mount(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -676,7 +653,6 @@ describe("ServiceEditForm", () => {
     it("edits a library", () => {
       wrapper = mount(
         <TestServiceEditForm
-          csrfToken="token"
           disabled={false}
           data={servicesData}
           editItem={editService}
@@ -741,7 +717,6 @@ describe("ServiceEditForm", () => {
 
       expect(editService.callCount).to.equal(1);
       let formData = editService.args[0][0];
-      expect(formData.get("csrf_token")).to.equal("token");
       expect(formData.get("id")).to.equal("2");
       expect(formData.get("protocol")).to.equal("protocol 1");
       expect(formData.get("text_setting")).to.equal("text setting");

@@ -97,20 +97,25 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly STATS_FAILURE = "STATS_FAILURE";
   static readonly STATS_LOAD = "STATS_LOAD";
 
-  constructor(fetcher?: DataFetcher) {
+  csrfToken: string;
+
+  constructor(fetcher?: DataFetcher, csrfToken?: string) {
     fetcher = fetcher || new DataFetcher();
     super(fetcher);
+    csrfToken = csrfToken || null;
+    this.csrfToken = csrfToken;
   }
 
-  postForm(type: string, url: string, data: FormData | null, csrfToken?: string, method?: string) {
+
+  postForm(type: string, url: string, data: FormData | null, method?: string) {
     let err: RequestError;
 
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.request(type));
         let headers = new Headers();
-        if (csrfToken) {
-          headers.append("X-CSRF-Token", csrfToken);
+        if (this.csrfToken) {
+          headers.append("X-CSRF-Token", this.csrfToken);
         }
         fetch(url, {
           method: method || "POST",
@@ -164,12 +169,15 @@ export default class ActionCreator extends BaseActionCreator {
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.request(type, url));
+        let headers = new Headers();
+        if (this.csrfToken) {
+          headers.append("X-CSRF-Token", this.csrfToken);
+        }
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/json");
         fetch(url, {
           method: "POST",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          },
+          headers: headers,
           body: JSON.stringify(data),
           credentials: "same-origin"
         }).then(response => {
@@ -212,7 +220,7 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchOPDS<BookData>(ActionCreator.BOOK_ADMIN, url).bind(this);
   }
 
-  editBook(url: string, data: FormData) {
+  editBook(url: string, data: FormData | null) {
     return this.postForm(ActionCreator.EDIT_BOOK, url, data).bind(this);
   }
 
@@ -375,13 +383,13 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<CustomListsData>(ActionCreator.CUSTOM_LISTS, url).bind(this);
   }
 
-  editCustomList(library: string, data: FormData, csrfToken) {
+  editCustomList(library: string, data: FormData) {
     const url = "/" + library + "/admin/custom_lists";
-    return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data, csrfToken).bind(this);
+    return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data).bind(this);
   }
 
-  deleteCustomList(library: string, listId: string, csrfToken: string) {
+  deleteCustomList(library: string, listId: string) {
     const url = "/" + library + "/admin/custom_list/" + listId;
-    return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, null, csrfToken, "DELETE").bind(this);
+    return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, null, "DELETE").bind(this);
   }
 }

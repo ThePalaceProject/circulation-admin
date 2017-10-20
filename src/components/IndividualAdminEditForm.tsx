@@ -5,7 +5,6 @@ import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
   item?: IndividualAdminData;
-  csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
@@ -31,11 +30,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save} className="edit-form">
-        <input
-          type="hidden"
-          name="csrf_token"
-          value={this.props.csrfToken}
-          />
         <EditableInput
           elementType="input"
           type="text"

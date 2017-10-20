@@ -7,7 +7,7 @@ export interface ErrorMessageProps {
   tryAgain?: () => any;
 }
 
-export default class ErrorMessage extends React.Component<ErrorMessageProps, any> {
+export default class ErrorMessage extends React.Component<ErrorMessageProps, void> {
   render(): JSX.Element {
     let status = this.props.error.status;
 

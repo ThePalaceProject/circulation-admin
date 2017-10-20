@@ -8,7 +8,11 @@ export interface EditableRadioProps extends React.HTMLProps<EditableRadio> {
   checked: boolean;
 }
 
-export default class EditableRadio extends React.Component<EditableRadioProps, any> {
+export interface EditableRadioState {
+  checked: boolean;
+}
+
+export default class EditableRadio extends React.Component<EditableRadioProps, EditableRadioState> {
   constructor(props) {
     super(props);
     this.state = {

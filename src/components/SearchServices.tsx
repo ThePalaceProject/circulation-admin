@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { SearchServicesData, SearchServiceData } from "../interfaces";
@@ -23,15 +23,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  let actions = new ActionCreator();
+function mapDispatchToProps(dispatch, ownProps) {
+  let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchSearchServices()),
     editItem: (data: FormData) => dispatch(actions.editSearchService(data))
   };
 }
 
-const ConnectedSearchServices = connect<any, any, any>(
+const ConnectedSearchServices = connect<EditableConfigListStateProps<SearchServicesData>, EditableConfigListDispatchProps<SearchServicesData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(SearchServices);

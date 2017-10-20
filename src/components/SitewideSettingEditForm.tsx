@@ -5,7 +5,6 @@ import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
 export interface SitewideSettingEditFormProps {
   data: SitewideSettingsData;
   item?: SitewideSettingData;
-  csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
@@ -23,11 +22,6 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
       <div>
         { this.availableSettings().length > 0 &&
           <form ref="form" onSubmit={this.save} className="edit-form">
-            <input
-              type="hidden"
-              name="csrf_token"
-              value={this.props.csrfToken}
-              />
             <EditableInput
               elementType="select"
               disabled={this.props.disabled}

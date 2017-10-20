@@ -10,21 +10,29 @@ import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 
-export interface ComplaintsProps {
-  bookUrl: string;
-  book: BookData;
+export interface ComplaintsStateProps {
   complaints?: any;
   fetchError?: FetchErrorData;
-  store?: Store<State>;
-  csrfToken: string;
+  isFetching?: boolean;
+}
+
+export interface ComplaintsDispatchProps {
   fetchComplaints?: (url: string) => Promise<any>;
   postComplaint?: PostComplaint;
   resolveComplaints?: (url: string, data: FormData) => Promise<any>;
-  isFetching?: boolean;
+}
+
+export interface ComplaintsOwnProps {
+  bookUrl: string;
+  book: BookData;
+  store?: Store<State>;
+  csrfToken: string;
   refreshCatalog: () => Promise<any>;
 }
 
-export class Complaints extends React.Component<ComplaintsProps, any> {
+export interface ComplaintsProps extends ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps {};
+
+export class Complaints extends React.Component<ComplaintsProps, void> {
   constructor(props) {
     super(props);
     this.resolve = this.resolve.bind(this);
@@ -130,7 +138,6 @@ export class Complaints extends React.Component<ComplaintsProps, any> {
     if (window.confirm("Are you sure you want to resolve all complaints of this type?")) {
       let url = this.resolveComplaintsUrl();
       let data = new (window as any).FormData();
-      data.append("csrf_token", this.props.csrfToken);
       data.append("type", type);
       return this.props.resolveComplaints(url, data).then(this.refresh);
     }
@@ -145,9 +152,9 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
-  let actions = new ActionCreator(fetcher);
+  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchComplaints: (url) => dispatch(actions.fetchComplaints(url)),
     postComplaint: (url, data) => dispatch(actions.postComplaint(url, data)),
@@ -155,7 +162,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedComplaints = connect<any, any, any>(
+const ConnectedComplaints = connect<ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(Complaints);

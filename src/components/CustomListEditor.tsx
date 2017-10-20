@@ -7,7 +7,6 @@ import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
-  csrfToken: string;
   library: string;
   list?: CustomListData;
   editedIdentifier?: string;

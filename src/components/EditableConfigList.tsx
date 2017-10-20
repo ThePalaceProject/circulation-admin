@@ -5,22 +5,29 @@ import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 
-export interface EditableConfigListProps<T> {
-  store?: Store<State>;
+export interface EditableConfigListStateProps<T> {
   data?: T;
   fetchError?: FetchErrorData;
+  isFetching?: boolean;
+}
+
+export interface EditableConfigListDispatchProps<T> {
   fetchData?: () => Promise<T>;
   editItem?: (data: FormData) => Promise<void>;
-  isFetching?: boolean;
+}
+
+export interface EditableConfigListOwnProps {
+  store?: Store<State>;
   csrfToken: string;
   editOrCreate?: string;
   identifier?: string;
 }
 
+export interface EditableConfigListProps<T> extends EditableConfigListStateProps<T>, EditableConfigListDispatchProps<T>, EditableConfigListOwnProps {}
+
 export interface EditFormProps<T, U> {
   item?: U;
   data: T;
-  csrfToken: string;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
@@ -80,7 +87,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             <h2>Create a new {this.itemTypeName}</h2>
             <EditForm
               data={this.props.data}
-              csrfToken={this.props.csrfToken}
               disabled={this.props.isFetching}
               editItem={this.editItem}
               urlBase={this.urlBase}
@@ -95,7 +101,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             <EditForm
               item={this.itemToEdit()}
               data={this.props.data}
-              csrfToken={this.props.csrfToken}
               disabled={this.props.isFetching}
               editItem={this.editItem}
               urlBase={this.urlBase}

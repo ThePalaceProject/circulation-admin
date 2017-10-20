@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { CDNServicesData, CDNServiceData } from "../interfaces";
@@ -26,15 +26,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  let actions = new ActionCreator();
+function mapDispatchToProps(dispatch, ownProps) {
+  let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchCDNServices()),
     editItem: (data: FormData) => dispatch(actions.editCDNService(data))
   };
 }
 
-const ConnectedCDNServices = connect<any, any, any>(
+const ConnectedCDNServices = connect<EditableConfigListStateProps<CDNServicesData>, EditableConfigListDispatchProps<CDNServicesData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(CDNServices);

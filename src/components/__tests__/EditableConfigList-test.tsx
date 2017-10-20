@@ -136,7 +136,6 @@ describe("EditableConfigList", () => {
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(thingsData);
     expect(form.props().item).to.be.undefined;
-    expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
     expect(form.props().listDataKey).to.equal("things");
   });
@@ -147,7 +146,6 @@ describe("EditableConfigList", () => {
     expect(form.length).to.equal(1);
     expect(form.props().data).to.deep.equal(thingsData);
     expect(form.props().item).to.equal(thingData);
-    expect(form.props().csrfToken).to.equal("token");
     expect(form.props().disabled).to.equal(false);
     expect(form.props().listDataKey).to.equal("things");
   });

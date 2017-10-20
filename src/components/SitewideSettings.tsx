@@ -1,4 +1,4 @@
-import EditableConfigList from "./EditableConfigList";
+import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
@@ -30,15 +30,15 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  let actions = new ActionCreator();
+function mapDispatchToProps(dispatch, ownProps) {
+  let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchSitewideSettings()),
     editItem: (data: FormData) => dispatch(actions.editSitewideSetting(data))
   };
 }
 
-const ConnectedSitewideSettings = connect<any, any, any>(
+const ConnectedSitewideSettings = connect<EditableConfigListStateProps<SitewideSettingsData>, EditableConfigListDispatchProps<SitewideSettingsData>, EditableConfigListOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(SitewideSettings);

@@ -35,7 +35,6 @@ describe("DiscoveryServices", () => {
 
     expect(registerLibrary.callCount).to.equal(1);
     const formData = registerLibrary.args[0][0];
-    expect(formData.get("csrf_token")).to.equal("token");
     expect(formData.get("library_short_name")).to.equal("nypl");
     expect(formData.get("integration_id")).to.equal("2");
 

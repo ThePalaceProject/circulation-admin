@@ -79,7 +79,6 @@ describe("Classifications", () => {
       let form = wrapper.find(ClassificationsForm);
       expect(form.props().book).to.equal(bookData);
       expect(form.props().genreTree).to.equal(genreData);
-      expect(form.props().csrfToken).to.equal("token");
       expect(form.props().editClassifications).to.equal(instance.editClassifications);
     });
 

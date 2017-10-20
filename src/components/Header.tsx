@@ -11,12 +11,21 @@ import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { Router } from "opds-web-client/lib/interfaces";
 
-export interface HeaderProps extends React.Props<Header> {
+export interface HeaderStateProps {
   libraries?: LibraryData[];
+}
+
+export interface HeaderDispatchProps {
   fetchLibraries?: () => Promise<LibrariesData>;
 }
 
-export class Header extends React.Component<HeaderProps, any> {
+export interface HeaderOwnProps {
+  store?: Store<State>;
+}
+
+export interface HeaderProps extends React.Props<Header>, HeaderStateProps, HeaderDispatchProps, HeaderOwnProps {}
+
+export class Header extends React.Component<HeaderProps, void> {
   context: { library: () => string, router: Router };
 
   static contextTypes = {
@@ -125,14 +134,14 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedHeader = connect<any, any, any>(
+const ConnectedHeader = connect<HeaderStateProps, HeaderDispatchProps, HeaderOwnProps>(
   mapStateToProps,
   mapDispatchToProps,
 )(Header);
 
 /** HeaderWithStore is a wrapper component to pass the store as a prop to the
     ConnectedHeader, since it's not in the regular place in the context. */
-export default class HeaderWithStore extends React.Component<any, any> {
+export default class HeaderWithStore extends React.Component<void, void> {
   context: { editorStore: Store<State> };
 
   static contextTypes = {

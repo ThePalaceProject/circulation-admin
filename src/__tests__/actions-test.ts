@@ -35,14 +35,13 @@ class MockDataFetcher {
 };
 
 const fetcher = new MockDataFetcher() as any;
-const actions = new ActionCreator(fetcher);
+const actions = new ActionCreator(fetcher, "token");
 
 describe("actions", () => {
   describe("postForm", () => {
     const type = "TEST";
     const url = "http://example.com/test";
     const formData = new (window as any).FormData();
-    formData.append("csrf_token", "token");
     formData.append("test", "test");
 
     it("dispatches request, success, and load", async () => {
@@ -64,10 +63,13 @@ describe("actions", () => {
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
       expect(fetchMock.args[0][1].method).to.equal("POST");
+      const expectedHeaders = new Headers();
+      expectedHeaders.append("X-CSRF-Token", "token");
+      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
       expect(fetchMock.args[0][1].body).to.equal(formData);
     });
 
-    it("dispatches a DELETE request with a csrf token header", async () => {
+    it("dispatches a DELETE request", async () => {
       const dispatch = stub();
       const responseText = stub().returns(new Promise<string>((resolve) => {
         resolve("response");
@@ -77,7 +79,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.postForm(type, url, formData, "token", "DELETE")(dispatch);
+      await actions.postForm(type, url, formData, "DELETE")(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
@@ -157,6 +159,11 @@ describe("actions", () => {
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(url);
       expect(fetchMock.args[0][1].method).to.equal("POST");
+      const expectedHeaders = new Headers();
+      expectedHeaders.append("Accept", "application/json");
+      expectedHeaders.append("Content-Type", "application/json");
+      expectedHeaders.append("X-CSRF-Token", "token");
+      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
       expect(fetchMock.args[0][1].body).to.equal(JSON.stringify(jsonData));
     });
 
@@ -233,7 +240,6 @@ describe("actions", () => {
       const editBookUrl = "http://example.com/editBook";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("title", "title");
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
@@ -304,7 +310,6 @@ describe("actions", () => {
       const resolveComplaintsUrl = "http://example.com/resolveComplaints";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("type", "test type");
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
@@ -350,7 +355,6 @@ describe("actions", () => {
       const dispatch = stub();
       const formData = new (window as any).FormData();
       const newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
-      formData.append("csrf_token", "token");
       newGenreTree.forEach(genre => formData.append("genres", genre));
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -465,7 +469,6 @@ describe("actions", () => {
       const editLibraryUrl = "/admin/libraries";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("name", "new name");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -511,7 +514,6 @@ describe("actions", () => {
       const editCollectionUrl = "/admin/collections";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("name", "new name");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -557,7 +559,6 @@ describe("actions", () => {
       const editAdminAuthServiceUrl = "/admin/admin_auth_services";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("name", "new name");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
@@ -603,7 +604,6 @@ describe("actions", () => {
       const editIndividualAdminUrl = "/admin/individual_admins";
       const dispatch = stub();
       const formData = new (window as any).FormData();
-      formData.append("csrf_token", "token");
       formData.append("email", "email");
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {

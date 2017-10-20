@@ -11,21 +11,16 @@ import { BookData, Audience, Fiction, GenreTree, ClassificationData } from "../i
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 
-export interface ClassificationsProps {
-  // from parent
-  store: Store<State>;
-  bookUrl: string;
-  book: BookData;
-  csrfToken: string;
-  refreshCatalog: () => Promise<any>;
-
+export interface ClassificationsStateProps {
   // from store
   bookAdminUrl?: string;
   genreTree?: GenreTree;
   classifications?: ClassificationData[];
   fetchError?: FetchErrorData;
   isFetching?: boolean;
+}
 
+export interface ClassificationsDispatchProps {
   // from actions
   fetchBook?: (url: string) => Promise<any>;
   fetchGenreTree?: (url: string) => Promise<any>;
@@ -33,7 +28,18 @@ export interface ClassificationsProps {
   editClassifications?: (url: string, data: FormData) => Promise<any>;
 }
 
-export class Classifications extends React.Component<ClassificationsProps, any> {
+export interface ClassificationsOwnProps {
+  // from parent
+  store: Store<State>;
+  csrfToken: string;
+  bookUrl: string;
+  book: BookData;
+  refreshCatalog: () => Promise<any>;
+}
+
+export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {};
+
+export class Classifications extends React.Component<ClassificationsProps, void> {
   constructor(props) {
     super(props);
     this.refresh = this.refresh.bind(this);
@@ -68,7 +74,6 @@ export class Classifications extends React.Component<ClassificationsProps, any> 
             book={this.props.book}
             genreTree={this.props.genreTree}
             disabled={this.props.isFetching}
-            csrfToken={this.props.csrfToken}
             editClassifications={this.editClassifications}
             />
         }
@@ -121,9 +126,9 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher({ adapter: editorAdapter });
-  let actions = new ActionCreator(fetcher);
+  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
     fetchGenreTree: (url: string) => dispatch(actions.fetchGenreTree(url)),
@@ -132,7 +137,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedClassifications = connect<any, any, any>(
+const ConnectedClassifications = connect<ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(Classifications);
