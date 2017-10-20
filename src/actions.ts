@@ -128,9 +128,11 @@ export default class ActionCreator extends BaseActionCreator {
             if (response.text) {
               response.text().then(text => {
                 dispatch(this.load<string>(type, text));
+                resolve(response);
               });
+            } else {
+              resolve(response);
             }
-            resolve(response);
           } else {
             response.json().then(data => {
               err = {

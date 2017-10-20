@@ -18,6 +18,7 @@ function mapStateToProps(state, ownProps) {
   const data = Object.assign({}, state.editor.searchServices && state.editor.searchServices.data || {});
   return {
     data: data,
+    editedIdentifier: state.editor.searchServices && state.editor.searchServices.editedIdentifier,
     fetchError: state.editor.searchServices.fetchError,
     isFetching: state.editor.searchServices.isFetching || state.editor.searchServices.isEditing
   };

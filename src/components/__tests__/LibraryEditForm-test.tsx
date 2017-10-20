@@ -126,5 +126,25 @@ describe("LibraryEditForm", () => {
       expect(formData.get("privacy-policy")).to.equal("http://privacy");
       expect(formData.get("copyright")).to.equal("http://copyright");
     });
+
+    it("navigates to edit form after creating a new library", async () => {
+      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
+      // Start on the create page.
+      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
+
+      let form = wrapper.find("form");
+      form.simulate("submit");
+
+      expect(editLibrary.callCount).to.equal(1);
+
+      wrapper.setProps({ editedIdentifier: "5" });
+      // Let the call stack clear so the callback after editItem will run.
+      const pause = (): Promise<void> => {
+          return new Promise<void>(resolve => setTimeout(resolve, 0));
+      };
+      await pause();
+      expect(window.location.href).to.contain("edit");
+      expect(window.location.href).to.contain("5");
+    });
   });
 });

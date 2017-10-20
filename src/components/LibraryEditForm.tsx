@@ -10,6 +10,7 @@ export interface LibraryEditFormProps {
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
   listDataKey: string;
+  editedIdentifier?: string;
 }
 
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, void> {
@@ -62,9 +63,9 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
     const data = new (window as any).FormData(this.refs["form"] as any);
     this.props.editItem(data).then(() => {
-      // If a new library was created, go back to the list of libraries.
-      if (!this.props.item) {
-        window.location.href = this.props.urlBase;
+      // If a new library was created, go to the new library's edit page.
+      if (!this.props.item && this.props.editedIdentifier) {
+        window.location.href = this.props.urlBase + "edit/" + this.props.editedIdentifier;
       }
     });
   }

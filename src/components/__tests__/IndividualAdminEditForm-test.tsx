@@ -71,20 +71,36 @@ describe("IndividualAdminEditForm", () => {
       );
     });
 
-    it("submits data", () => {
-      wrapper.setProps({ item: adminData });
-      let input = wrapper.find("input[name='password']");
-      let inputElement = input.get(0);
-      inputElement.value = "newPassword";
-      input.simulate("change");
+    it("submits data", async () => {
+      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
+      // Start on the create page.
+      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
+
+      let emailInput = wrapper.find("input[name='email']");
+      let emailInputElement = emailInput.get(0);
+      emailInputElement.value = "newEmail";
+      emailInput.simulate("change");
+      let pwInput = wrapper.find("input[name='password']");
+      let pwInputElement = pwInput.get(0);
+      pwInputElement.value = "newPassword";
+      pwInput.simulate("change");
 
       let form = wrapper.find("form");
       form.simulate("submit");
 
       expect(editIndividualAdmin.callCount).to.equal(1);
       let formData = editIndividualAdmin.args[0][0];
-      expect(formData.get("email")).to.equal("test@nypl.org");
+      expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
+
+      wrapper.setProps({ editedIdentifier: "newEmail" });
+      // Let the call stack clear so the callback after editItem will run.
+      const pause = (): Promise<void> => {
+          return new Promise<void>(resolve => setTimeout(resolve, 0));
+      };
+      await pause();
+      expect(window.location.href).to.contain("edit");
+      expect(window.location.href).to.contain("newEmail");
     });
   });
 });

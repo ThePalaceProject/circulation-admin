@@ -723,5 +723,25 @@ describe("ServiceEditForm", () => {
       expect(formData.get("select_setting")).to.equal("option2");
       expect(formData.get("libraries")).to.equal(JSON.stringify(serviceData.libraries));
     });
+
+    it("navigates to edit form after creating a new service", async () => {
+      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
+      // Start on the create page.
+      Object.defineProperty(window.location, "href", { writable: true, value: "/services/create" });
+
+      let form = wrapper.find("form");
+      form.simulate("submit");
+
+      expect(editService.callCount).to.equal(1);
+
+      wrapper.setProps({ editedIdentifier: "5" });
+      // Let the call stack clear so the callback after editItem will run.
+      const pause = (): Promise<void> => {
+          return new Promise<void>(resolve => setTimeout(resolve, 0));
+      };
+      await pause();
+      expect(window.location.href).to.contain("edit");
+      expect(window.location.href).to.contain("5");
+    });
   });
 });
