@@ -17,6 +17,7 @@ export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData,
 function mapStateToProps(state, ownProps) {
   return {
     data: state.editor.adminAuthServices && state.editor.adminAuthServices.data,
+    editedIdentifier: state.editor.adminAuthServices && state.editor.adminAuthServices.editedIdentifier,
     fetchError: state.editor.adminAuthServices.fetchError,
     isFetching: state.editor.adminAuthServices.isFetching || state.editor.adminAuthServices.isEditing
   };

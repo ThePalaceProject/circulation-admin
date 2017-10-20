@@ -13,6 +13,7 @@ export interface ServiceEditFormProps<T> {
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
   listDataKey: string;
+  editedIdentifier?: string;
 }
 
 export interface ServiceEditFormState {
@@ -422,9 +423,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     const data = new (window as any).FormData(this.refs["form"] as any);
     data.append("libraries", JSON.stringify(this.state.libraries));
     this.props.editItem(data).then(() => {
-      // If a new service was created, go back to the list of services.
-      if (!this.props.item) {
-        window.location.href = this.props.urlBase;
+      // If a new service was created, go to its edit page.
+      if (!this.props.item && this.props.editedIdentifier) {
+        window.location.href = this.props.urlBase + "edit/" + this.props.editedIdentifier;
       }
     });
   }

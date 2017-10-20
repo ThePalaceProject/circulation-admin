@@ -29,6 +29,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
+    editedIdentifier: state.editor.patronAuthServices && state.editor.patronAuthServices.editedIdentifier,
     fetchError: state.editor.patronAuthServices.fetchError,
     isFetching: state.editor.patronAuthServices.isFetching || state.editor.patronAuthServices.isEditing
   };

@@ -9,6 +9,7 @@ export interface IndividualAdminEditFormProps {
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
   listDataKey: string;
+  editedIdentifier?: string;
 }
 
 export interface IndividualAdminEditFormContext {
@@ -67,8 +68,8 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       }
 
       // If a new admin was created, go to its edit page.
-      if (!this.props.item && data.get("email")) {
-        window.location.href = "/admin/web/config/individualAdmins/edit/" + data.get("email");
+      if (!this.props.item && this.props.editedIdentifier) {
+        window.location.href = this.props.urlBase + "edit/" + this.props.editedIdentifier;
       }
     });
   }

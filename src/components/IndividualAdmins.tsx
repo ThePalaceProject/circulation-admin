@@ -16,6 +16,7 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
 function mapStateToProps(state, ownProps) {
   return {
     data: state.editor.individualAdmins && state.editor.individualAdmins.data,
+    editedIdentifier: state.editor.individualAdmins && state.editor.individualAdmins.editedIdentifier,
     fetchError: state.editor.individualAdmins.fetchError,
     isFetching: state.editor.individualAdmins.isFetching || state.editor.individualAdmins.isEditing
   };

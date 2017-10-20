@@ -20,6 +20,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
+    editedIdentifier: state.editor.collections && state.editor.collections.editedIdentifier,
     fetchError: state.editor.collections.fetchError,
     isFetching: state.editor.collections.isFetching || state.editor.collections.isEditing
   };
