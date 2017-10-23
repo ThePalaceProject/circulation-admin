@@ -44,6 +44,7 @@ describe("EditableConfigList", () => {
   let wrapper;
   let fetchData;
   let editItem;
+  let deleteItem;
   let thingData = { id: 5, label: "label" };
   let thingsData = { things: [thingData] };
 
@@ -54,12 +55,14 @@ describe("EditableConfigList", () => {
   beforeEach(() => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
+    deleteItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
       <ThingEditableConfigList
         data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
+        deleteItem={deleteItem}
         csrfToken="token"
         isFetching={false}
         />
@@ -126,6 +129,26 @@ describe("EditableConfigList", () => {
     let createLink = things.find("a");
     expect(createLink.length).to.equal(1);
     expect(createLink.prop("href")).to.equal("/admin/things/create");
+  });
+
+  it("deletes an item", () => {
+    let confirmStub = stub(window, "confirm").returns(false);
+
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(2);
+    let deleteButton = things.at(0).find("button");
+    expect(deleteButton.length).to.equal(1);
+    deleteButton.simulate("click");
+
+    expect(deleteItem.callCount).to.equal(0);
+
+    confirmStub.returns(true);
+    deleteButton.simulate("click");
+
+    expect(deleteItem.callCount).to.equal(1);
+    expect(deleteItem.args[0][0]).to.equal(5);
+
+    confirmStub.restore();
   });
 
   it("shows create form", () => {

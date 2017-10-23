@@ -15,6 +15,7 @@ export interface EditableConfigListStateProps<T> {
 export interface EditableConfigListDispatchProps<T> {
   fetchData?: () => Promise<T>;
   editItem?: (data: FormData) => Promise<void>;
+  deleteItem?: (identifier: string | number) => Promise<void>;
 }
 
 export interface EditableConfigListOwnProps {
@@ -71,6 +72,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                     <h3>
                       <a href={this.urlBase + "edit/" + item[this.identifierKey]}>{this.label(item)}</a>
                     </h3>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => this.delete(item) }
+                      >Delete
+                    </button>
                   </li>
                 )
               }
@@ -140,6 +146,13 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       }
     }
     return null;
+  }
+
+  async delete(item: U): Promise<void> {
+    if (window.confirm("Are you sure you want to delete \"" + this.label(item) + "\"?")) {
+      await this.props.deleteItem(item[this.identifierKey]);
+      this.props.fetchData();
+    }
   }
 }
 

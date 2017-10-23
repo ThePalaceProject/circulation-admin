@@ -26,7 +26,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchIndividualAdmins()),
-    editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data))
+    editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteIndividualAdmin(identifier))
   };
 }
 
