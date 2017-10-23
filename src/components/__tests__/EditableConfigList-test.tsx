@@ -88,16 +88,14 @@ describe("EditableConfigList", () => {
 
   it("shows thing list", () => {
     let things = wrapper.find("li");
-    expect(things.length).to.equal(2);
+    expect(things.length).to.equal(1);
     expect(things.at(0).text()).to.contain("test label");
     let editLink = things.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/things/edit/5");
   });
 
   it("shows create link", () => {
-    let things = wrapper.find("li");
-    expect(things.length).to.equal(2);
-    let createLink = things.at(1).find("a");
+    let createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
@@ -112,8 +110,8 @@ describe("EditableConfigList", () => {
         isFetching={false}
         />
     );
-    let things = wrapper.find("li");
-    expect(things.length).to.equal(1);
+    let createLink = wrapper.find(".create-item");
+    expect(createLink.length).to.equal(0);
 
     wrapper = shallow(
       <OneThingEditableConfigList
@@ -124,9 +122,7 @@ describe("EditableConfigList", () => {
         isFetching={false}
         />
     );
-    things = wrapper.find("li");
-    expect(things.length).to.equal(1);
-    let createLink = things.find("a");
+    createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
     expect(createLink.prop("href")).to.equal("/admin/things/create");
   });
@@ -135,8 +131,8 @@ describe("EditableConfigList", () => {
     let confirmStub = stub(window, "confirm").returns(false);
 
     let things = wrapper.find("li");
-    expect(things.length).to.equal(2);
-    let deleteButton = things.at(0).find("button");
+    expect(things.length).to.equal(1);
+    let deleteButton = things.at(0).find(".delete-item");
     expect(deleteButton.length).to.equal(1);
     deleteButton.simulate("click");
 

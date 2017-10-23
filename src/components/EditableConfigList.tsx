@@ -4,6 +4,8 @@ import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
+import PencilIcon from "./icons/PencilIcon";
+import TrashIcon from "./icons/TrashIcon";
 
 export interface EditableConfigListStateProps<T> {
   data?: T;
@@ -56,6 +58,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     let EditForm = this.EditForm;
     return (
       <div>
+        <h2>{this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration</h2>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
         }
@@ -65,34 +68,45 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
         { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] &&
           <div>
-            <h2>Edit {this.itemTypeName} configurations</h2>
+            { (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
+              <a
+                className="btn btn-default create-item"
+                href={this.urlBase + "create"}
+                >Create new {this.itemTypeName}</a>
+            }
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
                   <li key={index}>
-                    <h3>
-                      <a href={this.urlBase + "edit/" + item[this.identifierKey]}>{this.label(item)}</a>
-                    </h3>
+                    <h4>
+                      {this.label(item)}
+                    </h4>
+                    <a
+                      className="btn btn-default edit-item"
+                      href={this.urlBase + "edit/" + item[this.identifierKey]}
+                      >
+                        <span>
+                          Edit
+                          <PencilIcon />
+                        </span>
+                    </a>
                     <button
-                      className="btn btn-danger"
+                      className="btn btn-default delete-item"
                       onClick={() => this.delete(item) }
-                      >Delete
+                      >
+                        <span>
+                          Delete
+                          <TrashIcon />
+                        </span>
                     </button>
                   </li>
                 )
-              }
-              { (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
-                <li>
-                  <h3>
-                    <a href={this.urlBase + "create"}>Create a new {this.itemTypeName}</a>
-                  </h3>
-                </li>
               }
             </ul>
           </div>
         }
         { (this.props.editOrCreate === "create") &&
           <div>
-            <h2>Create a new {this.itemTypeName}</h2>
+            <h3>Create a new {this.itemTypeName}</h3>
             <EditForm
               data={this.props.data}
               disabled={this.props.isFetching}
@@ -106,7 +120,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
         { this.itemToEdit() &&
           <div>
-            <h2>Edit {this.itemTypeName}</h2>
+            <h3>Edit {this.label(this.itemToEdit())}</h3>
             <EditForm
               item={this.itemToEdit()}
               data={this.props.data}

@@ -51,7 +51,7 @@ describe("MetadataServices", () => {
 
   it("shows metadata service list", () => {
     let metadataService = wrapper.find("li");
-    expect(metadataService.length).to.equal(2);
+    expect(metadataService.length).to.equal(1);
     expect(metadataService.at(0).text()).to.contain("test protocol label");
     let editLink = metadataService.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/web/config/metadata/edit/2");

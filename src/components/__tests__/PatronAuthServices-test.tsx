@@ -53,7 +53,7 @@ describe("PatronAuthServices", () => {
 
   it("shows patron auth service list", () => {
     let patronAuthService = wrapper.find("li");
-    expect(patronAuthService.length).to.equal(2);
+    expect(patronAuthService.length).to.equal(1);
     expect(patronAuthService.at(0).text()).to.contain("test protocol label");
     let editLink = patronAuthService.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/web/config/patronAuth/edit/2");
