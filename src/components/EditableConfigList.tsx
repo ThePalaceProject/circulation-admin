@@ -163,7 +163,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   async delete(item: U): Promise<void> {
-    if (window.confirm("Are you sure you want to delete \"" + this.label(item) + "\"?")) {
+    if (window.confirm("Delete \"" + this.label(item) + "\"?")) {
       await this.props.deleteItem(item[this.identifierKey]);
       this.props.fetchData();
     }
