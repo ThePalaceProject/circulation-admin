@@ -26,26 +26,37 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly STATS = "STATS";
   static readonly LIBRARIES = "LIBRARIES";
   static readonly EDIT_LIBRARY = "EDIT_LIBRARY";
+  static readonly DELETE_LIBRARY = "DELETE_LIBRARY";
   static readonly COLLECTIONS = "COLLECTIONS";
   static readonly EDIT_COLLECTION = "EDIT_COLLECTION";
+  static readonly DELETE_COLLECTION = "DELETE_COLLECTION";
   static readonly ADMIN_AUTH_SERVICES = "ADMIN_AUTH_SERVICES";
   static readonly EDIT_ADMIN_AUTH_SERVICE = "EDIT_ADMIN_AUTH_SERVICE";
+  static readonly DELETE_ADMIN_AUTH_SERVICE = "DELETE_ADMIN_AUTH_SERVICE";
   static readonly INDIVIDUAL_ADMINS = "INDIVIDUAL_ADMINS";
   static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
+  static readonly DELETE_INDIVIDUAL_ADMIN = "DELETE_INDIVIDUAL_ADMIN";
   static readonly PATRON_AUTH_SERVICES = "PATRON_AUTH_SERVICES";
   static readonly EDIT_PATRON_AUTH_SERVICE = "EDIT_PATRON_AUTH_SERVICE";
+  static readonly DELETE_PATRON_AUTH_SERVICE = "DELETE_PATRON_AUTH_SERVICE";
   static readonly SITEWIDE_SETTINGS = "SITEWIDE_SETTINGS";
   static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
+  static readonly DELETE_SITEWIDE_SETTING = "DELETE_SITEWIDE_SETTING";
   static readonly METADATA_SERVICES = "METADATA_SERVICES";
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
+  static readonly DELETE_METADATA_SERVICE = "DELETE_METADATA_SERVICE";
   static readonly ANALYTICS_SERVICES = "ANALYTICS_SERVICES";
   static readonly EDIT_ANALYTICS_SERVICE = "EDIT_ANALYTICS_SERVICE";
+  static readonly DELETE_ANALYTICS_SERVICE = "DELETE_ANALYTICS_SERVICE";
   static readonly CDN_SERVICES = "CDN_SERVICES";
   static readonly EDIT_CDN_SERVICE = "EDIT_CDN_SERVICE";
+  static readonly DELETE_CDN_SERVICE = "DELETE_CDN_SERVICE";
   static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
   static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
+  static readonly DELETE_SEARCH_SERVICE = "DELETE_SEARCH_SERVICE";
   static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
   static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
+  static readonly DELETE_DISCOVERY_SERVICE = "DELETE_DISCOVERY_SERVICE";
   static readonly REGISTER_LIBRARY = "REGISTER_LIBRARY";
   static readonly LIBRARY_REGISTRATIONS = "LIBRARY_REGISTRATIONS";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
@@ -270,6 +281,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.EDIT_LIBRARY, url, data).bind(this);
   }
 
+  deleteLibrary(identifier: string | number) {
+    const url = "/admin/library/" + identifier;
+    return this.postForm(ActionCreator.DELETE_LIBRARY, url, null, "DELETE").bind(this);
+  }
+
   fetchCollections() {
     let url = "/admin/collections";
     return this.fetchJSON<CollectionsData>(ActionCreator.COLLECTIONS, url).bind(this);
@@ -278,6 +294,11 @@ export default class ActionCreator extends BaseActionCreator {
   editCollection(data: FormData) {
     const url = "/admin/collections";
     return this.postForm(ActionCreator.EDIT_COLLECTION, url, data).bind(this);
+  }
+
+  deleteCollection(identifier: string | number) {
+    const url = "/admin/collection/" + identifier;
+    return this.postForm(ActionCreator.DELETE_COLLECTION, url, null, "DELETE").bind(this);
   }
 
   fetchAdminAuthServices() {
@@ -290,6 +311,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.EDIT_ADMIN_AUTH_SERVICE, url, data).bind(this);
   }
 
+  deleteAdminAuthService(identifier: string | number) {
+    const url = "/admin/admin_auth_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_ADMIN_AUTH_SERVICE, url, null, "DELETE").bind(this);
+  }
+
   fetchIndividualAdmins() {
     const url = "/admin/individual_admins";
     return this.fetchJSON<IndividualAdminsData>(ActionCreator.INDIVIDUAL_ADMINS, url).bind(this);
@@ -298,6 +324,11 @@ export default class ActionCreator extends BaseActionCreator {
   editIndividualAdmin(data: FormData) {
     const url = "/admin/individual_admins";
     return this.postForm(ActionCreator.EDIT_INDIVIDUAL_ADMIN, url, data).bind(this);
+  }
+
+  deleteIndividualAdmin(identifier: string | number) {
+    const url = "/admin/individual_admin/" + identifier;
+    return this.postForm(ActionCreator.DELETE_INDIVIDUAL_ADMIN, url, null, "DELETE").bind(this);
   }
 
   fetchPatronAuthServices() {
@@ -310,6 +341,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.EDIT_PATRON_AUTH_SERVICE, url, data).bind(this);
   }
 
+  deletePatronAuthService(identifier: string | number) {
+    const url = "/admin/patron_auth_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_PATRON_AUTH_SERVICE, url, null, "DELETE").bind(this);
+  }
+
   fetchSitewideSettings() {
     const url = "/admin/sitewide_settings";
     return this.fetchJSON<SitewideSettingsData>(ActionCreator.SITEWIDE_SETTINGS, url).bind(this);
@@ -318,6 +354,11 @@ export default class ActionCreator extends BaseActionCreator {
   editSitewideSetting(data: FormData) {
     const url = "/admin/sitewide_settings";
     return this.postForm(ActionCreator.EDIT_SITEWIDE_SETTING, url, data).bind(this);
+  }
+
+  deleteSitewideSetting(identifier: string | number) {
+    const url = "/admin/sitewide_setting/" + identifier;
+    return this.postForm(ActionCreator.DELETE_SITEWIDE_SETTING, url, null, "DELETE").bind(this);
   }
 
   fetchMetadataServices() {
@@ -330,6 +371,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.EDIT_METADATA_SERVICE, url, data).bind(this);
   }
 
+  deleteMetadataService(identifier: string | number) {
+    const url = "/admin/metadata_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_METADATA_SERVICE, url, null, "DELETE").bind(this);
+  }
+
   fetchAnalyticsServices() {
     const url = "/admin/analytics_services";
     return this.fetchJSON<AnalyticsServicesData>(ActionCreator.ANALYTICS_SERVICES, url).bind(this);
@@ -338,6 +384,11 @@ export default class ActionCreator extends BaseActionCreator {
   editAnalyticsService(data: FormData) {
     const url = "/admin/analytics_services";
     return this.postForm(ActionCreator.EDIT_ANALYTICS_SERVICE, url, data).bind(this);
+  }
+
+  deleteAnalyticsService(identifier: string | number) {
+    const url = "/admin/analytics_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_ANALYTICS_SERVICE, url, null, "DELETE").bind(this);
   }
 
   fetchCDNServices() {
@@ -350,6 +401,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.EDIT_CDN_SERVICE, url, data).bind(this);
   }
 
+  deleteCDNService(identifier: string | number) {
+    const url = "/admin/cdn_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_CDN_SERVICE, url, null, "DELETE").bind(this);
+  }
+
   fetchSearchServices() {
     const url = "/admin/search_services";
     return this.fetchJSON<SearchServicesData>(ActionCreator.SEARCH_SERVICES, url).bind(this);
@@ -360,6 +416,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.EDIT_SEARCH_SERVICE, url, data).bind(this);
   }
 
+  deleteSearchService(identifier: string | number) {
+    const url = "/admin/search_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_SEARCH_SERVICE, url, null, "DELETE").bind(this);
+  }
+
   fetchDiscoveryServices() {
     const url = "/admin/discovery_services";
     return this.fetchJSON<DiscoveryServicesData>(ActionCreator.DISCOVERY_SERVICES, url).bind(this);
@@ -368,6 +429,11 @@ export default class ActionCreator extends BaseActionCreator {
   editDiscoveryService(data: FormData) {
     const url = "/admin/discovery_services";
     return this.postForm(ActionCreator.EDIT_DISCOVERY_SERVICE, url, data).bind(this);
+  }
+
+  deleteDiscoveryService(identifier: string | number) {
+    const url = "/admin/discovery_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_DISCOVERY_SERVICE, url, null, "DELETE").bind(this);
   }
 
   registerLibrary(data: FormData) {

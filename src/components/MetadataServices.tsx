@@ -39,7 +39,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchMetadataServices()),
-    editItem: (data: FormData) => dispatch(actions.editMetadataService(data))
+    editItem: (data: FormData) => dispatch(actions.editMetadataService(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteMetadataService(identifier))
   };
 }
 

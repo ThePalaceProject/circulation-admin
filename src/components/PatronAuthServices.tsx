@@ -39,7 +39,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchPatronAuthServices()),
-    editItem: (data: FormData) => dispatch(actions.editPatronAuthService(data))
+    editItem: (data: FormData) => dispatch(actions.editPatronAuthService(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deletePatronAuthService(identifier))
   };
 }
 

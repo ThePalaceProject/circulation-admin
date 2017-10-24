@@ -76,6 +76,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     fetchData: () => dispatch(actions.fetchDiscoveryServices()),
     editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteDiscoveryService(identifier)),
     registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data)),
     fetchLibraryRegistrations: () => dispatch(actions.fetchLibraryRegistrations())
   };

@@ -40,7 +40,7 @@ describe("SitewideSettings", () => {
 
   it("shows sitewide setting list", () => {
     let sitewideSetting = wrapper.find("li");
-    expect(sitewideSetting.length).to.equal(2);
+    expect(sitewideSetting.length).to.equal(1);
     expect(sitewideSetting.at(0).text()).to.contain("test label");
     let editLink = sitewideSetting.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/web/config/sitewideSettings/edit/test key");

@@ -39,7 +39,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchAnalyticsServices()),
-    editItem: (data: FormData) => dispatch(actions.editAnalyticsService(data))
+    editItem: (data: FormData) => dispatch(actions.editAnalyticsService(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteAnalyticsService(identifier))
   };
 }
 

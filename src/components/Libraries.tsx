@@ -30,7 +30,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchLibraries()),
-    editItem: (data: FormData) => dispatch(actions.editLibrary(data))
+    editItem: (data: FormData) => dispatch(actions.editLibrary(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteLibrary(identifier))
   };
 }
 

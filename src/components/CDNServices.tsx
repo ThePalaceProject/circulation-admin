@@ -31,7 +31,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchCDNServices()),
-    editItem: (data: FormData) => dispatch(actions.editCDNService(data))
+    editItem: (data: FormData) => dispatch(actions.editCDNService(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteCDNService(identifier))
   };
 }
 

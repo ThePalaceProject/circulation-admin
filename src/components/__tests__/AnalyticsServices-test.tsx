@@ -50,7 +50,7 @@ describe("AnalyticsServices", () => {
 
   it("shows analytics service list", () => {
     let service = wrapper.find("li");
-    expect(service.length).to.equal(2);
+    expect(service.length).to.equal(1);
     expect(service.at(0).text()).to.contain("test protocol label");
     let editLink = service.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/web/config/analytics/edit/2");

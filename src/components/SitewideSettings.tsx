@@ -35,7 +35,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchSitewideSettings()),
-    editItem: (data: FormData) => dispatch(actions.editSitewideSetting(data))
+    editItem: (data: FormData) => dispatch(actions.editSitewideSetting(data)),
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteSitewideSetting(identifier))
   };
 }
 

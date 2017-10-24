@@ -26,6 +26,45 @@
       position: absolute;
       left: 27%;
       padding: 40px;
+
+      ul {
+        padding-left: 10px;
+
+        li {
+          display: flex;
+          flex-direction: row;
+          margin: 20px 0px;
+          padding-bottom: 5px;
+          border-bottom: 1px solid $pagetextcolor;
+
+          h4 {
+            margin-right: 20px;
+          }
+
+          .btn-default {
+            display: flex;
+            flex-direction: column;
+            margin-right: 10px;
+          }
+        }
+      }
+
+      a.btn-default, button.btn-default {
+        color: $pagecolor;
+        svg {
+          height: 0.7em;
+          width: 0.7em;
+          margin-left: 5px;
+          fill: $pagecolor;
+        }
+    
+        &:hover, &:focus {
+          color: $pagetextcolor;
+          svg {
+            fill: $pagetextcolor;
+          }
+        }
+      }
     }
   }
 }

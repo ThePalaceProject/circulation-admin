@@ -44,6 +44,7 @@ describe("EditableConfigList", () => {
   let wrapper;
   let fetchData;
   let editItem;
+  let deleteItem;
   let thingData = { id: 5, label: "label" };
   let thingsData = { things: [thingData] };
 
@@ -54,12 +55,14 @@ describe("EditableConfigList", () => {
   beforeEach(() => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
+    deleteItem = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
       <ThingEditableConfigList
         data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
+        deleteItem={deleteItem}
         csrfToken="token"
         isFetching={false}
         />
@@ -85,16 +88,14 @@ describe("EditableConfigList", () => {
 
   it("shows thing list", () => {
     let things = wrapper.find("li");
-    expect(things.length).to.equal(2);
+    expect(things.length).to.equal(1);
     expect(things.at(0).text()).to.contain("test label");
     let editLink = things.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/things/edit/5");
   });
 
   it("shows create link", () => {
-    let things = wrapper.find("li");
-    expect(things.length).to.equal(2);
-    let createLink = things.at(1).find("a");
+    let createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
@@ -109,8 +110,8 @@ describe("EditableConfigList", () => {
         isFetching={false}
         />
     );
-    let things = wrapper.find("li");
-    expect(things.length).to.equal(1);
+    let createLink = wrapper.find(".create-item");
+    expect(createLink.length).to.equal(0);
 
     wrapper = shallow(
       <OneThingEditableConfigList
@@ -121,11 +122,29 @@ describe("EditableConfigList", () => {
         isFetching={false}
         />
     );
-    things = wrapper.find("li");
-    expect(things.length).to.equal(1);
-    let createLink = things.find("a");
+    createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
     expect(createLink.prop("href")).to.equal("/admin/things/create");
+  });
+
+  it("deletes an item", () => {
+    let confirmStub = stub(window, "confirm").returns(false);
+
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(1);
+    let deleteButton = things.at(0).find(".delete-item");
+    expect(deleteButton.length).to.equal(1);
+    deleteButton.simulate("click");
+
+    expect(deleteItem.callCount).to.equal(0);
+
+    confirmStub.returns(true);
+    deleteButton.simulate("click");
+
+    expect(deleteItem.callCount).to.equal(1);
+    expect(deleteItem.args[0][0]).to.equal(5);
+
+    confirmStub.restore();
   });
 
   it("shows create form", () => {
