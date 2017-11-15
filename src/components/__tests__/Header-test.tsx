@@ -95,11 +95,15 @@ describe("Header", () => {
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
       expect(listsLink.children().text()).to.equal("Lists");
 
-      let dashboardLink = links.at(1);
+      let lanesLink = links.at(1);
+      expect(lanesLink.prop("to")).to.equal("/admin/web/lanes/nypl");
+      expect(lanesLink.children().text()).to.equal("Lanes");
+
+      let dashboardLink = links.at(2);
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
 
-      let settingsLink = links.at(2);
+      let settingsLink = links.at(3);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config");
       expect(settingsLink.children().text()).to.equal("Configuration");
 

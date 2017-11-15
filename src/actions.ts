@@ -7,7 +7,7 @@ import {
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
-  CustomListsData
+  CustomListsData, LanesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -62,6 +62,11 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
   static readonly EDIT_CUSTOM_LIST = "EDIT_CUSTOM_LIST";
   static readonly DELETE_CUSTOM_LIST = "DELETE_CUSTOM_LIST";
+  static readonly LANES = "LANES";
+  static readonly EDIT_LANE = "EDIT_LANE";
+  static readonly DELETE_LANE = "DELETE_LANE";
+  static readonly CHANGE_LANE_VISIBILITY = "CHANGE_LANE_VISIBILITY";
+  static readonly RESET_LANES = "RESET_LANES";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -459,5 +464,35 @@ export default class ActionCreator extends BaseActionCreator {
   deleteCustomList(library: string, listId: string) {
     const url = "/" + library + "/admin/custom_list/" + listId;
     return this.postForm(ActionCreator.DELETE_CUSTOM_LIST, url, null, "DELETE").bind(this);
+  }
+
+  fetchLanes(library: string) {
+    const url = "/" + library + "/admin/lanes";
+    return this.fetchJSON<LanesData>(ActionCreator.LANES, url).bind(this);
+  }
+
+  editLane(library: string, data: FormData) {
+    const url = "/" + library + "/admin/lanes";
+    return this.postForm(ActionCreator.EDIT_LANE, url, data).bind(this);
+  }
+
+  deleteLane(library: string, identifier: string) {
+    const url = "/" + library + "/admin/lane/" + identifier;
+    return this.postForm(ActionCreator.DELETE_LANE, url, null, "DELETE").bind(this);
+  }
+
+  showLane(library: string, identifier: string) {
+    const url = "/" + library + "/admin/lane/" + identifier + "/show";
+    return this.postForm(ActionCreator.CHANGE_LANE_VISIBILITY, url, null).bind(this);
+  }
+
+  hideLane(library: string, identifier: string) {
+    const url = "/" + library + "/admin/lane/" + identifier + "/hide";
+    return this.postForm(ActionCreator.CHANGE_LANE_VISIBILITY, url, null).bind(this);
+  }
+
+  resetLanes(library: string) {
+    const url = "/" + library + "/admin/lanes/reset";
+    return this.postForm(ActionCreator.RESET_LANES, url, null).bind(this);
   }
 }

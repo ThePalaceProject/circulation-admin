@@ -18,13 +18,17 @@ import discoveryServices from "./discoveryServices";
 import registerLibrary, { RegisterLibraryState } from "./registerLibrary";
 import libraryRegistrations from "./libraryRegistrations";
 import customLists from "./customLists";
+import lanes from "./lanes";
+import laneVisibility from "./laneVisibility";
+import resetLanes from "./resetLanes";
 import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
 import { FetchEditState } from "./createFetchEditReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData,
-  DiscoveryServicesData, LibraryRegistrationsData, CustomListsData
+  DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
+  LanesData
 } from "../interfaces";
 
 
@@ -49,6 +53,9 @@ export interface State {
   libraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
   collection: CollectionState;
+  lanes: FetchEditState<LanesData>;
+  laneVisibility: FetchEditState<void>;
+  resetLanes: FetchEditState<void>;
 }
 
 export default combineReducers<State>({
@@ -71,5 +78,8 @@ export default combineReducers<State>({
   registerLibrary,
   libraryRegistrations,
   customLists,
-  collection
+  collection,
+  lanes,
+  laneVisibility,
+  resetLanes
 });
