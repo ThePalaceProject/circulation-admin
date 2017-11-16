@@ -97,6 +97,22 @@ describe("Lanes", () => {
   });
 
   it("renders and expands and collapses lanes and sublanes", () => {
+    const expectExpanded = (lane) => {
+      let collapse = lane.find("> div > span > .collapse-button");
+      expect(collapse.length).to.equal(1);
+      let expand = lane.find("> div > span > .expand-button");
+      expect(expand.length).to.equal(0);
+      return collapse;
+    };
+
+    const expectCollapsed = (lane) => {
+      let collapse = lane.find("> div > span > .collapse-button");
+      expect(collapse.length).to.equal(0);
+      let expand = lane.find("> div > span > .expand-button");
+      expect(expand.length).to.equal(1);
+      return expand;
+    };
+
     let topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
     expect(topLevelLanes.length).to.equal(2);
     let lane1 = topLevelLanes.at(0);
@@ -107,24 +123,15 @@ describe("Lanes", () => {
     expect(lane4.text()).to.contain("(1)");
 
     // both top-level lanes are expanded to start.
-    let lane1Collapse = lane1.find("> div > span > .collapse-button");
-    expect(lane1Collapse.length).to.equal(1);
-    let lane1Expand = lane1.find("> div > span > .expand-button");
-    expect(lane1Expand.length).to.equal(0);
-    let lane4Collapse = lane4.find("> div > span > .collapse-button");
-    expect(lane4Collapse.length).to.equal(1);
-    let lane4Expand = lane4.find("> div > span > .expand-button");
-    expect(lane4Expand.length).to.equal(0);
+    expectExpanded(lane1);
+    expectExpanded(lane4);
 
     // lane 1 has one sublane which is collapsed
     let sublane2 = lane1.find("> ul > li");
     expect(sublane2.text()).to.contain("sublane 2");
     expect(sublane2.text()).to.contain("(3)");
     expect(sublane2.length).to.equal(1);
-    let sublane2Collapse = sublane2.find("> div > span > .collapse-button");
-    expect(sublane2Collapse.length).to.equal(0);
-    let sublane2Expand = sublane2.find("> div > span > .expand-button");
-    expect(sublane2Expand.length).to.equal(1);
+    let sublane2Expand = expectCollapsed(sublane2);
 
     // lane 4 has no sublanes
     let lane4Sublanes = lane4.find("> ul > li");
@@ -139,37 +146,28 @@ describe("Lanes", () => {
     topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
     lane1 = topLevelLanes.at(0);
     sublane2 = lane1.find("> ul > li");
-    sublane2Collapse = sublane2.find("> div > span > .collapse-button");
-    expect(sublane2Collapse.length).to.equal(1);
-    sublane2Expand = sublane2.find("> div > span > .expand-button");
-    expect(sublane2Expand.length).to.equal(0);
+    let sublane2Collapse = expectExpanded(sublane2);
     sublane3 = sublane2.find("> ul > li");
     expect(sublane3.length).to.equal(1);
     expect(sublane3.text()).to.contain("sublane 3");
     expect(sublane3.text()).to.contain("(2)");
+    expectCollapsed(sublane3);
 
     // if we collapse sublane 2, sublane 3 is hidden again.
-    sublane2Collapse = sublane2.find("> div > span > .collapse-button");
     sublane2Collapse.simulate("click");
     topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
     lane1 = topLevelLanes.at(0);
     sublane2 = lane1.find("> ul > li");
-    sublane2Collapse = sublane2.find("> div > span > .collapse-button");
-    expect(sublane2Collapse.length).to.equal(0);
-    sublane2Expand = sublane2.find("> div > span > .expand-button");
-    expect(sublane2Expand.length).to.equal(1);
+    expectCollapsed(sublane2);
     sublane3 = sublane2.find("> ul > li");
     expect(sublane3.length).to.equal(0);
 
     // if we collapse lane 1, sublane 2 is hidden.
-    lane1Collapse = lane1.find("> div > span > .collapse-button");
+    let lane1Collapse = expectExpanded(lane1);
     lane1Collapse.simulate("click");
     topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
     lane1 = topLevelLanes.at(0);
-    lane1Collapse = lane1.find("> div > span > .collapse-button");
-    expect(lane1Collapse.length).to.equal(0);
-    lane1Expand = lane1.find("> div > span > .expand-button");
-    expect(lane1Expand.length).to.equal(1);
+    let lane1Expand = expectCollapsed(lane1);
     sublane2 = lane1.find("> ul > li");
     expect(sublane2.length).to.equal(0);
 
@@ -177,10 +175,7 @@ describe("Lanes", () => {
     lane1Expand.simulate("click");
     topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
     lane1 = topLevelLanes.at(0);
-    lane1Collapse = lane1.find("> div > span > .collapse-button");
-    expect(lane1Collapse.length).to.equal(1);
-    lane1Expand = lane1.find("> div > span > .expand-button");
-    expect(lane1Expand.length).to.equal(0);
+    expectExpanded(lane1);
     sublane2 = lane1.find("> ul > li");
     expect(sublane2.length).to.equal(1);
   });
