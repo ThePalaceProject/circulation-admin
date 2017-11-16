@@ -80,6 +80,14 @@ describe("LaneEditor", () => {
     visibility = h4.at(1);
     expect(visibility.text()).not.to.contain("visible");
     expect(visibility.text()).to.contain("hidden");
+
+    wrapper.setProps({ parent: hiddenLane });
+    h4 = wrapper.find(".lane-editor-header h4");
+    expect(h4.length).to.be.at.least(2);
+    visibility = h4.at(1);
+    expect(visibility.text()).not.to.contain("visible");
+    expect(visibility.text()).to.contain("hidden");
+    expect(visibility.text()).to.contain("parent");
   });
 
   it("shows parent of new lane", () => {

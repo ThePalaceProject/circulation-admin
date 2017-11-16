@@ -110,7 +110,12 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
               <div>This lane is currently visible. <VisibleIcon /></div>
             }
             { this.props.lane && !this.props.lane.visible &&
+              (!this.props.parent || this.props.parent.visible) &&
               <div>This lane is currently hidden. <HiddenIcon /></div>
+            }
+            { this.props.lane && !this.props.lane.visible &&
+              this.props.parent && !this.props.parent.visible &&
+              <div>This lane's parent is currently hidden. <HiddenIcon /></div>
             }
             </h4>
           </div>
