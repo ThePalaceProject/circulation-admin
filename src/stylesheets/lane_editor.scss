@@ -1,16 +1,19 @@
-.custom-list-editor {
+.lane-editor {
   display: flex;
   flex-direction: column;
-  margin-left: 20px;
   flex-grow: 1;
+  margin-left: 20px;
+  margin-right: 10px;
 
-  .custom-list-editor-header {
+  .lane-editor-header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex: 0 0 auto;
 
     > div {
-      width: 50%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
     }
 
     span {
@@ -28,6 +31,9 @@
 
     h4 {
       color: lighten($pagetextcolor, 40%);
+      svg {
+        fill: lighten($pagetextcolor, 40%);
+      }
     }
 
     a {
@@ -53,38 +59,44 @@
         }
       }
     }
-  }
 
-  .form-inline {
-    input {
-      width: 50%;
-    }
+    .btn {
+      margin-left: 5px;
+      color: $invertedlinkcolor;
 
-    button {
       svg {
-        margin-left: 10px;
+        margin-left: 5px;
         fill: $invertedlinkcolor;
       }
 
-      &:hover svg {
-        fill: $linkcolor;
+      &.cancel-changes svg {
+        height: 1.5em;
+        width: 1.5em;
+        margin-bottom: -3px;
+      }
+
+      &:hover {
+        color: $linkcolor;
+        svg {
+          fill: $linkcolor;
+        }
       }
     }
   }
 
-  .custom-list-editor-body {
+  .lane-editor-body {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
   }
 
-  .custom-list-drag-and-drop {
+  .lane-custom-lists-drag-and-drop {
     display: flex;
     flex-direction: row;
     flex-grow: 1;
   }
 
-  .custom-list-search-results, .custom-list-entries {
+  .available-lists, .current-lists {
     display: flex;
     flex-direction: column;
     flex-basis: 44%;
@@ -124,7 +136,7 @@
         border-color: $pagetextcolor;
       }
 
-      .search-result, .custom-list-entry {
+      .available-list, .current-list {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -143,7 +155,7 @@
 
           &.links {
             text-align: right;
-          }
+          }          
         }
 
         svg {
@@ -165,20 +177,14 @@
           }
         }
 
-        .title {
+        .list-name, .list-id {
           font-weight: bold;
         }
 
-        .authors {
+        .list-count {
           font-size: 0.7em;
         }
       }
     }
   }
-}
-
-.dragging {
-  user-select: none;
-  cursor: grabbing;
-  cursor: -webkit-grabbing;
 }

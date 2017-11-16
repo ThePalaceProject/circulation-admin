@@ -1,0 +1,157 @@
+.lane-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .lanes-container {
+    flex: 1;
+    position: relative;
+    overflow-y: hidden;
+    padding-bottom: 10px;
+  }
+
+  .lanes {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+  }
+
+  .lanes-sidebar {
+    min-width: 400px;
+    border: 1px solid $gray;
+    padding: 15px;
+    margin: 7px;
+    overflow-y: scroll;
+  }
+
+  .lanes-sidebar ul {
+    list-style-type: none;
+    padding-left: 30px;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 5px;
+      border-bottom: 1px solid $gray;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.active {
+        background-color: $pagecolorlight;
+      }
+
+      > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 5px;
+
+        &.lane-buttons {
+          align-self: flex-end;
+        }
+      }
+
+      > a {
+        align-self: flex-end;
+      }
+    }
+  }
+
+  .lanes-sidebar > ul {
+    padding-left: 0px;
+    margin-top: 10px;
+    border-top: 4px solid $gray;
+  }
+
+  .collapse-button, .expand-button {
+    display: inline-block;
+    cursor: pointer;
+
+    svg {
+      margin-left: 5px;
+      margin-right: 5px;
+      fill: $pagetextcolor;
+    }
+  }
+
+  .expand-button svg {
+    transform: rotate(90deg);
+  }
+
+  .lanes-sidebar a {
+    &:not(disabled) {
+      cursor: pointer;
+    }
+
+    svg {
+      margin-left: 5px;
+      fill: $linkcolor;
+    }
+
+    &:hover, &:focus, &:active {
+      color: $linkhovercolor;
+      svg {
+        fill: $linkhovercolor;
+      }
+    }
+  }
+
+  .lanes-sidebar a.btn {
+    display: inline-block;
+    font-size: 0.9em;
+    color: $invertedlinkcolor;
+    margin-left: 5px;
+    
+    svg {
+      fill: $invertedlinkcolor;
+    }
+
+    &:hover, &:focus, &:active {
+      color: $linkcolor;
+      svg {
+        fill: $linkcolor;
+      }
+    }
+  }
+
+  .lanes-sidebar a.btn.reset-lanes {
+    float: right;
+    font-weight: bold;
+    color: $linkcolor;
+    border: 1px solid $linkcolor;
+    border-radius: 0px;
+    svg {
+      fill: $linkcolor;
+    }
+
+    &:hover, &:focus, &:active {
+      color: $linkhovercolor;
+      svg {
+        fill: $linkhovercolor;
+      }
+    }
+  }
+
+  .reset {
+    margin: 10px;
+    max-width: 500px;
+
+    .btn {
+      svg {
+        margin-left: 5px;
+        fill: $invertedlinkcolor;
+      }
+
+      &:hover, &:focus, &:active {
+        color: $linkcolor;
+        svg {
+          fill: $linkcolor;
+        }
+      }
+    }
+  }
+}

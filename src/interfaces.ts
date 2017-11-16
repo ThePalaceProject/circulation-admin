@@ -263,3 +263,16 @@ export interface CustomListData {
 export interface CustomListsData {
   custom_lists: CustomListData[];
 }
+
+export interface LaneData {
+  id: string | number;
+  display_name: string;
+  visible: boolean;
+  count: number;
+  sublanes: LaneData[];
+  custom_list_ids: number[];
+}
+
+export interface LanesData {
+  lanes: LaneData[];
+}

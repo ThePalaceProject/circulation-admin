@@ -91,7 +91,10 @@ export class Header extends React.Component<HeaderProps, void> {
               <li>
                 <Link to={"/admin/web/lists/" + this.context.library()}>Lists</Link>
               </li>
-          </Nav>
+              <li>
+                <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
+              </li>
+            </Nav>
           }
           <Nav className="pull-right">
             <li>
