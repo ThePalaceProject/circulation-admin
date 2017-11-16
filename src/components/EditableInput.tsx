@@ -62,13 +62,18 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   componentWillReceiveProps(props) {
     let value = this.state.value;
     let checked = this.state.checked;
+    let changed = false;
     if (props.value !== this.props.value) {
       value = props.value || "";
+      changed = true;
     }
     if (props.checked !== this.props.checked) {
       checked = props.checked || false;
+      changed = true;
     }
-    this.setState({ value, checked });
+    if (changed) {
+      this.setState({ value, checked });
+    }
   }
 
   handleChange() {
