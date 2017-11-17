@@ -271,6 +271,7 @@ export interface LaneData {
   count: number;
   sublanes: LaneData[];
   custom_list_ids: number[];
+  inherit_parent_restrictions: boolean;
 }
 
 export interface LanesData {

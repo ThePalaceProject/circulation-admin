@@ -28,15 +28,18 @@ describe("Lanes", () => {
   ];
 
   let subsublaneData: LaneData = {
-    id: 3, display_name: "sublane 3", visible: false, count: 2, sublanes: [], custom_list_ids: [2]
+    id: 3, display_name: "sublane 3", visible: false, count: 2, sublanes: [],
+    custom_list_ids: [2], inherit_parent_restrictions: false
   };
   let sublaneData: LaneData = {
-    id: 2, display_name: "sublane 2", visible: false, count: 3, sublanes: [subsublaneData], custom_list_ids: [2]
+    id: 2, display_name: "sublane 2", visible: false, count: 3, sublanes: [subsublaneData],
+    custom_list_ids: [2], inherit_parent_restrictions: false
   };
   let lanesData: LaneData[] = [
     { id: 1, display_name: "lane 1", visible: true, count: 5,
-      sublanes: [sublaneData], custom_list_ids: [1] },
-    { id: 4, display_name: "lane 4", visible: true, count: 1, sublanes: [], custom_list_ids: [] }
+      sublanes: [sublaneData], custom_list_ids: [1], inherit_parent_restrictions: true },
+    { id: 4, display_name: "lane 4", visible: true, count: 1, sublanes: [],
+      custom_list_ids: [], inherit_parent_restrictions: false }
   ];
 
   beforeEach(() => {

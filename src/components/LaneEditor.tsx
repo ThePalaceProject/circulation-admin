@@ -1,6 +1,7 @@
 import * as React from "react";
 import { LaneData, CustomListData } from "../interfaces";
 import TextWithEditMode from "./TextWithEditMode";
+import EditableInput from "./EditableInput";
 import LaneCustomListsEditor from "./LaneCustomListsEditor";
 import TrashIcon from "./icons/TrashIcon";
 import XCloseIcon from "./icons/XCloseIcon";
@@ -22,6 +23,7 @@ export interface LaneEditorProps extends React.Props<LaneEditor> {
 export interface LaneEditorState {
   name: string;
   customListIds: number[];
+  inheritParentRestrictions: boolean;
 }
 
 export default class LaneEditor extends React.Component<LaneEditorProps, LaneEditorState> {
@@ -29,10 +31,12 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
     super(props);
     this.state = {
       name: this.props.lane && this.props.lane.display_name,
-      customListIds: this.props.lane && this.props.lane.custom_list_ids || []
+      customListIds: this.props.lane && this.props.lane.custom_list_ids || [],
+      inheritParentRestrictions: this.props.lane && this.props.lane.inherit_parent_restrictions
     };
     this.changeName = this.changeName.bind(this);
     this.changeCustomLists = this.changeCustomLists.bind(this);
+    this.changeInheritParentRestrictions = this.changeInheritParentRestrictions.bind(this);
     this.delete = this.delete.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
@@ -98,7 +102,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
               }
             </span>
           </div>
-          <div>
+          <div className="lane-details">
             <h4>
             { !this.props.lane && this.props.parent &&
               <div>New sublane of {this.props.parent.display_name}</div>
@@ -118,6 +122,13 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
               <div>This lane's parent is currently hidden. <HiddenIcon /></div>
             }
             </h4>
+            <EditableInput
+              type="checkbox"
+              name="inherit_parent_restrictions"
+              checked={this.state.inheritParentRestrictions}
+              label="Inherit restrictions from parent lane"
+              onChange={this.changeInheritParentRestrictions}
+              />
           </div>
         </div>
         <div className="lane-editor-body">
@@ -136,7 +147,8 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
     if (this.props.lane && (!nextProps.lane || nextProps.lane.id !== this.props.lane.id) ) {
       this.setState({
         name: nextProps.lane && nextProps.lane.display_name,
-        customListIds: nextProps.lane && nextProps.lane.custom_list_ids || []
+        customListIds: nextProps.lane && nextProps.lane.custom_list_ids || [],
+        inheritParentRestrictions: nextProps.lane && nextProps.lane.inherit_parent_restrictions
       });
     }
   }
@@ -156,7 +168,11 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
         }
       }
     }
-    return nameChanged || listsChanged;
+    let inheritParentRestrictionsChanged = false;
+    if (this.props.lane && this.props.lane.inherit_parent_restrictions !== this.state.inheritParentRestrictions) {
+      inheritParentRestrictionsChanged = true;
+    }
+    return nameChanged || listsChanged || inheritParentRestrictionsChanged;
   }
 
   changeName(name: string) {
@@ -165,6 +181,11 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
 
   changeCustomLists(customListIds: number[]) {
     this.setState(Object.assign({}, this.state, { customListIds }));
+  }
+
+  changeInheritParentRestrictions() {
+    let inheritParentRestrictions = !this.state.inheritParentRestrictions;
+    this.setState(Object.assign({}, this.state, { inheritParentRestrictions }));
   }
 
   delete() {
@@ -197,6 +218,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
     data.append("display_name", name);
     let listIds = (this.refs["laneCustomLists"] as LaneCustomListsEditor).getCustomListIds();
     data.append("custom_list_ids", JSON.stringify(listIds));
+    data.append("inherit_parent_restrictions", this.state.inheritParentRestrictions);
     this.props.editLane(data).then(() => {
       // If a new lane was created, go to its edit page.
       if (!this.props.lane && this.props.editedIdentifier) {
@@ -208,5 +230,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   reset() {
     (this.refs["laneName"] as TextWithEditMode).reset();
     (this.refs["laneCustomLists"] as LaneCustomListsEditor).reset();
+    let inheritParentRestrictions = this.props.lane && this.props.lane.inherit_parent_restrictions;
+    this.setState(Object.assign({}, this.state, { inheritParentRestrictions }));
   }
 }

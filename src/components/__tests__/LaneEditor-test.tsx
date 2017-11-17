@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import LaneEditor from "../LaneEditor";
 import TextWithEditMode from "../TextWithEditMode";
+import EditableInput from "../EditableInput";
 import LaneCustomListsEditor from "../LaneCustomListsEditor";
 
 describe("LaneEditor", () => {
@@ -30,9 +31,11 @@ describe("LaneEditor", () => {
       visible: true,
       count: 3,
       sublanes: [],
-      custom_list_ids: [1]
+      custom_list_ids: [1],
+      inherit_parent_restrictions: false
     }],
-    custom_list_ids: [1]
+    custom_list_ids: [1],
+    inherit_parent_restrictions: true
   };
 
   beforeEach(() => {
@@ -102,6 +105,17 @@ describe("LaneEditor", () => {
     expect(parentInfo.text()).to.contain("sublane of lane");
   });
 
+  it("shows and changes inherit parent restrictions setting", () => {
+    let input = wrapper.find(EditableInput);
+    expect(input.props().checked).to.be.true;
+    expect(input.props().label).to.contain("restrictions");
+
+    let onChange = input.props().onChange;
+    onChange();
+    input = wrapper.find(EditableInput);
+    expect(input.props().checked).to.be.false;
+  });
+
   it("shows custom lists editor", () => {
     let listsEditor = wrapper.find(LaneCustomListsEditor);
     expect(listsEditor.length).to.equal(1);
@@ -168,6 +182,7 @@ describe("LaneEditor", () => {
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new lane name");
     let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
+    (wrapper.instance() as LaneEditor).changeInheritParentRestrictions();
 
     let saveButton = wrapper.find(".save-lane");
     saveButton.simulate("click");
@@ -178,6 +193,7 @@ describe("LaneEditor", () => {
     expect(formData.get("parent_id")).to.equal("1");
     expect(formData.get("display_name")).to.equal("new lane name");
     expect(formData.get("custom_list_ids")).to.equal(JSON.stringify([1, 2]));
+    expect(formData.get("inherit_parent_restrictions")).to.equal("false");
 
     getTextStub.restore();
     getCustomListIdsStub.restore();
@@ -252,6 +268,16 @@ describe("LaneEditor", () => {
     expect(customListsResetStub.callCount).to.equal(2);
 
     (wrapper.instance() as LaneEditor).changeCustomLists(laneData.custom_list_ids);
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(0);
+
+    (wrapper.instance() as LaneEditor).changeInheritParentRestrictions();
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(1);
+    cancelButton.simulate("click");
+
+    expect(nameResetStub.callCount).to.equal(3);
+    expect(customListsResetStub.callCount).to.equal(3);
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
