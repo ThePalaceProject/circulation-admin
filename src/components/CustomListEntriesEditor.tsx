@@ -25,6 +25,7 @@ export interface CustomListEntriesEditorState {
   entries: CustomListEntryData[];
 }
 
+/** Drag and drop interface for adding books from search results to a custom list. */
 export default class CustomListEntriesEditor extends React.Component<CustomListEntriesEditorProps, CustomListEntriesEditorState> {
   constructor(props) {
     super(props);

@@ -4,6 +4,10 @@ import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
+/** Right panel for patron authentication services on the system
+    configuration page. Shows a list of current patron authentication
+    services and allows creating a new service or editing or deleting
+    an existing service. */
 export class PatronAuthServices extends EditableConfigList<PatronAuthServicesData, PatronAuthServiceData> {
   EditForm = ServiceEditForm;
   listDataKey = "patron_auth_services";

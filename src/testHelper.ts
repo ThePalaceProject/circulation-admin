@@ -1,5 +1,6 @@
 import { jsdom } from "jsdom";
 
+/** Set up the DOM and global variables for tests. */
 const doc = jsdom("<!doctype html><html><body></body></html>");
 const win = doc.defaultView;
 

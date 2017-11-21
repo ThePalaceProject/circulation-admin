@@ -6,7 +6,7 @@ import * as ReactDOM from "react-dom";
 import { mount } from "enzyme";
 
 const CirculationWeb = require("../index");
-import Setup from "../components/Setup";
+import SetupPage from "../components/SetupPage";
 import { Router } from "react-router";
 
 describe("CirculationWeb", () => {
@@ -16,7 +16,7 @@ describe("CirculationWeb", () => {
     expect(renderSpy.callCount).to.equal(1);
     const component = renderSpy.args[0][0];
     const wrapper = mount(component);
-    const setup = wrapper.find(Setup);
+    const setup = wrapper.find(SetupPage);
     expect(setup.length).to.equal(1);
     renderSpy.restore();
   });

@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { MetadataServicesData, MetadataServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
+/** Right panel for metadata services on the system configuration page.
+    Shows a list of current metadata services and allows creating a new
+    service or editing or deleting an existing service. */
 export class MetadataServices extends EditableConfigList<MetadataServicesData, MetadataServiceData> {
   EditForm = ServiceEditForm;
   listDataKey = "metadata_services";

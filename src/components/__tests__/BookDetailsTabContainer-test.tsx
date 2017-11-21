@@ -6,7 +6,7 @@ import { mount } from "enzyme";
 
 import buildStore from "../../store";
 import { BookDetailsTabContainer } from "../BookDetailsTabContainer";
-import Editor from "../Editor";
+import BookDetailsEditor from "../BookDetailsEditor";
 import Classifications from "../Classifications";
 import Complaints from "../Complaints";
 import { mockRouterContext } from "./routing";
@@ -51,8 +51,8 @@ describe("BookDetailsTabContainer", () => {
     expect(linkTexts).to.contain("Complaints");
   });
 
-  it("shows Editor", () => {
-    let editor = wrapper.find(Editor);
+  it("shows editor", () => {
+    let editor = wrapper.find(BookDetailsEditor);
     expect(editor.props().csrfToken).to.equal("token");
     expect(editor.props().bookUrl).to.equal("book url");
   });

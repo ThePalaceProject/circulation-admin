@@ -5,14 +5,18 @@ import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
 import { State } from "../reducers/index";
 
-export interface DashboardContext {
+export interface DashboardPageContext {
   editorStore: Store<State>;
 }
 
-export default class Dashboard extends React.Component<void, void> {
-  context: DashboardContext;
+/** Page that shows high-level statistics about patrons and collections
+    and a list of the most recent circulation events.
+    This currently shows information for the entire circulation
+    manager, but probably should be updated to be per-library. */
+export default class DashboardPage extends React.Component<void, void> {
+  context: DashboardPageContext;
 
-  static contextTypes: React.ValidationMap<DashboardContext> = {
+  static contextTypes: React.ValidationMap<DashboardPageContext> = {
     editorStore: React.PropTypes.object.isRequired
   };
 

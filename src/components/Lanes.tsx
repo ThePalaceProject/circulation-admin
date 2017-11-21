@@ -52,6 +52,8 @@ export interface LanesState {
   };
 }
 
+/** Body of the lanes page, with all a library's lanes shown in a left sidebar and
+    a lane editor on the right. */
 export class Lanes extends React.Component<LanesProps, LanesState> {
   constructor(props) {
     super(props);

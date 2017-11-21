@@ -16,6 +16,7 @@ export interface IndividualAdminEditFormContext {
   settingUp: boolean;
 }
 
+/** Form for editing an individual admin from the individual admin configuration page. */
 export default class IndividualAdminEditForm extends React.Component<IndividualAdminEditFormProps, void> {
   context: IndividualAdminEditFormContext;
 

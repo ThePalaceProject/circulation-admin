@@ -4,7 +4,7 @@ import Header from "./Header";
 import ConfigTabContainer from "./ConfigTabContainer";
 import { State } from "../reducers/index";
 
-export interface ConfigProps extends React.Props<ConfigProps> {
+export interface ConfigPageProps extends React.Props<ConfigPageProps> {
   params: {
     tab: string;
     editOrCreate: string;
@@ -12,15 +12,17 @@ export interface ConfigProps extends React.Props<ConfigProps> {
   };
 }
 
-export interface ConfigContext {
+export interface ConfigPageContext {
   editorStore: Store<State>;
   csrfToken: string;
 }
 
-export default class Config extends React.Component<ConfigProps, any> {
-  context: ConfigContext;
+/** System configuration page. Extracts parameters from its context
+    and passes them to `ConfigTabContainer` as props. */
+export default class ConfigPage extends React.Component<ConfigPageProps, void> {
+  context: ConfigPageContext;
 
-  static contextTypes: React.ValidationMap<ConfigContext> = {
+  static contextTypes: React.ValidationMap<ConfigPageContext> = {
     editorStore: React.PropTypes.object.isRequired,
     csrfToken: React.PropTypes.string.isRequired
   };

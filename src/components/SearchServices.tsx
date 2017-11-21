@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { SearchServicesData, SearchServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
+/** Right panel for search sercices on the system configuration page.
+    Shows a list of current search services and allows creating a new
+    service or editing or deleting an existing service. */
 export class SearchServices extends EditableConfigList<SearchServicesData, SearchServiceData> {
   EditForm = ServiceEditForm;
   listDataKey = "search_services";

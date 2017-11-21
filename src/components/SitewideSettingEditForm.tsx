@@ -11,6 +11,7 @@ export interface SitewideSettingEditFormProps {
   listDataKey: string;
 }
 
+/** Form for editing a single sitewide setting. */
 export default class SitewideSettingEditForm extends React.Component<SitewideSettingEditFormProps, void> {
   constructor(props) {
     super(props);

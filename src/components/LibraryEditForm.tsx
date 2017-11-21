@@ -13,6 +13,8 @@ export interface LibraryEditFormProps {
   editedIdentifier?: string;
 }
 
+/** Form for editing a library's configuration, on the libraries tab of the
+    system configuration page. */
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, void> {
   render(): JSX.Element {
     return (

@@ -4,12 +4,12 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import * as jsdom from "jsdom";
 
-import CatalogHandler from "../CatalogHandler";
+import CatalogPage from "../CatalogPage";
 import OPDSCatalog from "opds-web-client/lib/components/OPDSCatalog";
 import Header from "../Header";
 import BookDetailsContainer from "../BookDetailsContainer";
 
-describe("CatalogHandler", () => {
+describe("CatalogPage", () => {
   let wrapper;
   let params;
   let context;
@@ -24,7 +24,7 @@ describe("CatalogHandler", () => {
       tab: "tab"
     };
     wrapper = shallow(
-      <CatalogHandler
+      <CatalogPage
         params={params}
         />
     );

@@ -39,6 +39,12 @@ export interface EditFormProps<T, U> {
   editedIdentifier?: string;
 }
 
+/** Shows a list of configuration services of a particular type and allows creating a new
+    service or editing or deleting an existing services. Used for many of the tabs on the
+    system configuration page.
+
+    GenericEditableConfigList allows subclasses to define additional props. Subclasses of
+    EditableConfigList cannot change the props and do not have to specify a type for them. */
 export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, void> {
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
   abstract listDataKey: string;

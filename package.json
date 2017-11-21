@@ -1,7 +1,7 @@
 {
   "name": "simplified-circulation-web",
   "version": "0.0.51",
-  "description": "Web Front-end for Library Simplified Circulation Manager",
+  "description": "Web Front-end for Library Simplified Circulation Manager Admin Interface",
   "repository": {
     "type": "git",
     "url": "https://github.com/NYPL-Simplified/circulation-web.git"

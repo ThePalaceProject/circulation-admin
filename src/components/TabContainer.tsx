@@ -14,6 +14,9 @@ export interface TabContainerContext {
   router: any;
 }
 
+/** Renders a list of navigation tabs and the content of the current tab.
+    Subclasses must define the tabs and the method to call when a new tab
+    is clicked. */
 export abstract class TabContainer<T extends TabContainerProps> extends React.Component<T, any> {
   context: TabContainerContext;
 

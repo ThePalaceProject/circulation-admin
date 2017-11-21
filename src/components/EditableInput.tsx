@@ -12,6 +12,10 @@ export interface EditableInputState {
   checked: boolean;
 }
 
+/** Renders an input element with a value that can be changed. It's necessary to have this
+    because if the element gets its value from a prop, the user won't be able to make any changes.
+    This component keeps an updated value in its state. This also handles rendering an optional
+    label and description for the input. */
 export default class EditableInput extends React.Component<EditableInputProps, EditableInputState> {
   constructor(props) {
     super(props);
@@ -27,9 +31,10 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       <div className="form-group">
         { this.props.label &&
           <label className="control-label">
-            { this.props.type !== "checkbox" && this.props.label }
+            { this.props.type !== "checkbox" && this.props.type !== "radio" && this.props.label }
             { this.renderElement() }
             { this.props.type === "checkbox" && this.props.label }
+            { this.props.type === "radio" && " " + this.props.label }
           </label>
         }
         { !this.props.label &&
@@ -44,7 +49,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
 
   renderElement() {
     return React.createElement(this.props.elementType || "input", {
-      className: (this.props.type !== "checkbox" ? "form-control" : ""),
+      className: ((this.props.type !== "checkbox" && this.props.type !== "radio") ? "form-control" : ""),
       type: this.props.type,
       disabled: this.props.disabled,
       readOnly: this.props.readOnly,
@@ -80,7 +85,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
     if (!this.props.readOnly && (!this.props.onChange || this.props.onChange() !== false)) {
       let value = this.state.value;
       let checked = this.state.checked;
-      if (this.props.type === "checkbox") {
+      if (this.props.type === "checkbox" || this.props.type === "radio") {
         checked = !this.state.checked;
       } else {
         value = this.getValue();
@@ -91,6 +96,10 @@ export default class EditableInput extends React.Component<EditableInputProps, E
 
   getValue() {
     return (this.refs as any).element.value;
+  }
+
+  getChecked() {
+    return (this.refs as any).element.checked;
   }
 
   clear() {

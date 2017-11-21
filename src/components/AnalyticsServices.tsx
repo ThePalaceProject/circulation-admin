@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { AnalyticsServicesData, AnalyticsServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
+/** Right panel for analytics services on the system configuration page.
+    Shows a list of current analytics services and allows creating a new
+    service or editing or deleting an existing service. */
 export class AnalyticsServices extends EditableConfigList<AnalyticsServicesData, AnalyticsServiceData> {
   EditForm = ServiceEditForm;
   listDataKey = "analytics_services";

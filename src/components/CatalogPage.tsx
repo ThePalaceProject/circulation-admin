@@ -4,14 +4,13 @@ import { Router, Route, browserHistory } from "react-router";
 const OPDSCatalog = require("opds-web-client");
 import { NavigateContext } from "opds-web-client/lib/interfaces";
 import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
-import Editor from "./Editor";
 import reducers from "../reducers/index";
 import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
 import Header from "./Header";
 import { BookLink } from "../interfaces";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 
-export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
+export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
     collectionUrl: string;
     bookUrl: string;
@@ -19,7 +18,9 @@ export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
   };
 }
 
-export default class CatalogHandler extends React.Component<CatalogHandlerProps, any> {
+/** Extracts URL parameters and renders the OPDS Web Client for the appropriate catalog
+    and book, using the admin interface header and book details wrapper with extra tabs. */
+export default class CatalogPage extends React.Component<CatalogPageProps, void> {
   static childContextTypes: React.ValidationMap<any> = {
     tab: React.PropTypes.string,
     library: React.PropTypes.func

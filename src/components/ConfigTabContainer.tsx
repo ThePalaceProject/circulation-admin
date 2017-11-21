@@ -17,6 +17,8 @@ export interface ConfigTabContainerProps extends TabContainerProps {
   identifier?: string;
 }
 
+/** Body of the system configuration page, with a tab for each type of
+    service that can be configured. */
 export default class ConfigTabContainer extends TabContainer<ConfigTabContainerProps> {
   tabs() {
     return {

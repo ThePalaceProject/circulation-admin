@@ -11,7 +11,7 @@ import { BookData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 
-export interface EditorStateProps {
+export interface BookDetailsEditorStateProps {
   bookData?: BookData;
   bookAdminUrl?: string;
   fetchError?: FetchErrorData;
@@ -19,21 +19,22 @@ export interface EditorStateProps {
   isFetching?: boolean;
 }
 
-export interface EditorDispatchProps {
+export interface BookDetailsEditorDispatchProps {
   fetchBook?: (url: string) => void;
   editBook?: (url: string, data: FormData | null) => Promise<any>;
 }
 
-export interface EditorOwnProps {
+export interface BookDetailsEditorOwnProps {
   bookUrl?: string;
   csrfToken: string;
   store?: Store<State>;
   refreshCatalog?: () => Promise<any>;
 }
 
-export interface EditorProps extends React.Props<Editor>, EditorStateProps, EditorDispatchProps, EditorOwnProps {}
+export interface BookDetailsEditorProps extends React.Props<BookDetailsEditor>, BookDetailsEditorStateProps, BookDetailsEditorDispatchProps, BookDetailsEditorOwnProps {}
 
-export class Editor extends React.Component<EditorProps, void> {
+/** Tab for editing a book's metadata on the book details page. */
+export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, void> {
   constructor(props) {
     super(props);
     this.editBook = this.editBook.bind(this);
@@ -161,9 +162,9 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedEditor = connect<EditorStateProps, EditorDispatchProps, EditorOwnProps>(
+const ConnectedBookDetailsEditor = connect<BookDetailsEditorStateProps, BookDetailsEditorDispatchProps, BookDetailsEditorOwnProps>(
   mapStateToProps,
   mapDispatchToProps
-)(Editor);
+)(BookDetailsEditor);
 
-export default ConnectedEditor;
+export default ConnectedBookDetailsEditor;

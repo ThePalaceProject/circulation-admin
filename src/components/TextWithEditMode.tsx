@@ -13,6 +13,8 @@ export interface TextWithEditModeState {
   text: string | null;
 }
 
+/** Renders text with a link to switch to edit mode and show an editable input instead.
+    If the text isn't defined yet, it starts in edit mode. */
 export default class TextWithEditMode extends React.Component<TextWithEditModeProps, TextWithEditModeState> {
   constructor(props) {
     super(props);

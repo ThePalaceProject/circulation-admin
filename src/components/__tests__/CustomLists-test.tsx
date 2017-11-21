@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import { CustomLists } from "../CustomLists";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import EditableRadio from "../EditableRadio";
+import EditableInput from "../EditableInput";
 import CustomListEditor from "../CustomListEditor";
 import { Link } from "react-router";
 
@@ -155,7 +155,7 @@ describe("CustomLists", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         />
     );
-    let radioButtons = wrapper.find(EditableRadio);
+    let radioButtons = wrapper.find(EditableInput);
     let ascendingButton = radioButtons.at(0);
     let descendingButton = radioButtons.at(1);
     expect(ascendingButton.prop("checked")).to.equal(true);

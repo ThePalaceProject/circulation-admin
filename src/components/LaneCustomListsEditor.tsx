@@ -19,6 +19,7 @@ export interface LaneCustomListsEditorState {
   customListIds: number[];
 }
 
+/** Drag and drop interface for adding custom lists to a lane. */
 export default class LaneCustomListsEditor extends React.Component<LaneCustomListsEditorProps, LaneCustomListsEditorState> {
 
   constructor(props) {

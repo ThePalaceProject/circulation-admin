@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
 import SitewideSettingEditForm from "./SitewideSettingEditForm";
 
+/** Right panel for sitewide settings on the system configuration page.
+    Shows a list of current sitewide settings and allows creating a new
+    setting or editing or deleting an existing setting. */
 export class SitewideSettings extends EditableConfigList<SitewideSettingsData, SitewideSettingData> {
   EditForm = SitewideSettingEditForm;
   listDataKey = "settings";
