@@ -3,13 +3,13 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import Dashboard from "../Dashboard";
+import DashboardPage from "../DashboardPage";
 import Header from "../Header";
 import CirculationEvents from "../CirculationEvents";
 import Stats from "../Stats";
 import buildStore from "../../store";
 
-describe("Dashboard", () => {
+describe("DashboardPage", () => {
   let wrapper;
   let store;
   let context;
@@ -17,7 +17,7 @@ describe("Dashboard", () => {
   beforeEach(() => {
     store = buildStore();
     context = { editorStore: store };
-    wrapper = shallow(<Dashboard />, { context });
+    wrapper = shallow(<DashboardPage />, { context });
   });
 
   it("shows Header", () => {

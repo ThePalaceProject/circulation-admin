@@ -4,7 +4,7 @@ import AdminAuthServices from "./AdminAuthServices";
 import IndividualAdmins from "./IndividualAdmins";
 import { State } from "../reducers/index";
 
-export interface SetupContext {
+export interface SetupPageContext {
   editorStore: Store<State>;
   csrfToken: string;
 }
@@ -15,10 +15,10 @@ export interface SetupContext {
     The page only allows setting up admin authentication. Once that's done, the
     page will automatically refresh so the admin can log in, and after that the
     full interface will show. */
-export default class Setup extends React.Component<void, void> {
-  context: SetupContext;
+export default class SetupPage extends React.Component<void, void> {
+  context: SetupPageContext;
 
-  static contextTypes: React.ValidationMap<SetupContext> = {
+  static contextTypes: React.ValidationMap<SetupPageContext> = {
     editorStore: React.PropTypes.object.isRequired,
     csrfToken: React.PropTypes.string.isRequired
   };

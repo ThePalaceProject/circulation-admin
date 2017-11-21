@@ -5,10 +5,10 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import buildStore from "../../store";
-import Config from "../Config";
+import ConfigPage from "../ConfigPage";
 import ConfigTabContainer from "../ConfigTabContainer";
 
-describe("Config", () => {
+describe("ConfigPage", () => {
   let wrapper;
   let store;
   let context;
@@ -26,7 +26,7 @@ describe("Config", () => {
     };
 
     wrapper = shallow(
-      <Config
+      <ConfigPage
         params={params}
         />,
       { context }

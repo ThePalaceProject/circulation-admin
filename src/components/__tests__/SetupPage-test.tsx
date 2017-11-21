@@ -5,11 +5,11 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import buildStore from "../../store";
-import Setup from "../Setup";
+import SetupPage from "../SetupPage";
 import AdminAuthServices from "../AdminAuthServices";
 import IndividualAdmins from "../IndividualAdmins";
 
-describe("Setup", () => {
+describe("SetupPage", () => {
   let wrapper;
   let store;
   let context;
@@ -22,7 +22,7 @@ describe("Setup", () => {
     };
 
     wrapper = shallow(
-      <Setup />,
+      <SetupPage />,
       { context }
     );
   });

@@ -10,7 +10,7 @@ import Header from "./Header";
 import { BookLink } from "../interfaces";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 
-export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
+export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
     collectionUrl: string;
     bookUrl: string;
@@ -20,7 +20,7 @@ export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
 
 /** Extracts URL parameters and renders the OPDS Web Client for the appropriate catalog
     and book, using the admin interface header and book details wrapper with extra tabs. */
-export default class CatalogHandler extends React.Component<CatalogHandlerProps, any> {
+export default class CatalogPage extends React.Component<CatalogPageProps, void> {
   static childContextTypes: React.ValidationMap<any> = {
     tab: React.PropTypes.string,
     library: React.PropTypes.func
