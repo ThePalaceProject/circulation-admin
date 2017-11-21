@@ -11,7 +11,7 @@ import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
-import EditableRadio from "./EditableRadio";
+import EditableInput from "./EditableInput";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
 
@@ -78,14 +78,16 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               >Create New List</Link>
             { this.props.lists && this.props.lists.length > 0 &&
               <div>
-                <EditableRadio
+                <EditableInput
+                  type="radio"
                   label="Sort A-Z"
                   name="sort"
                   onChange={this.changeSort}
                   checked={this.state.sort === "asc"}
                   disabled={false}
                   />
-                <EditableRadio
+                <EditableInput
+                  type="radio"
                   label="Sort Z-A"
                   name="sort"
                   onChange={this.changeSort}

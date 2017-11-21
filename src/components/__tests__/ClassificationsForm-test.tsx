@@ -6,7 +6,6 @@ import { shallow, mount } from "enzyme";
 
 import ClassificationsForm from "../ClassificationsForm";
 import EditableInput from "../EditableInput";
-import EditableRadio from "../EditableRadio";
 import WithRemoveButton from "../WithRemoveButton";
 import GenreForm from "../GenreForm";
 import genreData from "./genreData";
@@ -68,10 +67,10 @@ describe("ClassificationsForm", () => {
 
     it("shows editable radio buttons with fiction status", () => {
       let fictionRadio = wrapper
-        .find(EditableRadio)
+        .find(EditableInput)
         .filterWhere(input => input.props().value === "fiction");
       let nonfictionRadio = wrapper
-        .find(EditableRadio)
+        .find(EditableInput)
         .filterWhere(input => input.props().value === "nonfiction");
 
       expect(fictionRadio.props().type).to.equal("radio");

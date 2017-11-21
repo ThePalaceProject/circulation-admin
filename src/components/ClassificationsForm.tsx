@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import EditableInput from "./EditableInput";
-import EditableRadio from "./EditableRadio";
 import WithRemoveButton from "./WithRemoveButton";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
@@ -77,7 +76,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         <div className="form-group">
           <label>Fiction Classification</label>
           <div className="form-inline">
-            <EditableRadio
+            <EditableInput
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
@@ -88,7 +87,7 @@ export default class ClassificationsForm extends React.Component<Classifications
               onChange={this.handleFictionChange}
               />
             &nbsp; &nbsp; &nbsp;
-            <EditableRadio
+            <EditableInput
               type="radio"
               disabled={this.props.disabled}
               name="fiction"
