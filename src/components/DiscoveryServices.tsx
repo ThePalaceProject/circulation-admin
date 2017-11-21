@@ -16,6 +16,9 @@ export interface DiscoveryServicesDispatchProps extends EditableConfigListDispat
 
 export interface DiscoveryServicesProps extends DiscoveryServicesStateProps, DiscoveryServicesDispatchProps, EditableConfigListOwnProps {};
 
+/** Right panel for discovery services on the system configuration page.
+    Shows a list of current discovery services and allows creating a new
+    service or editing or deleting an existing service. */
 export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServicesData, DiscoveryServiceData, DiscoveryServicesProps> {
   EditForm = DiscoveryServiceEditForm;
   listDataKey = "discovery_services";

@@ -1,6 +1,10 @@
 import { CollectionData, LinkData } from "opds-web-client/lib/interfaces";
 import { hierarchyComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
 
+/** Compute the list of breadcrumbs to show above the collection page.
+    If the server provides <simplified:breadcrumbs> tags, those will be used
+    with the current collection added as the final breadcrumb. Otherwise,
+    it falls back to OPDS Web Client's breadcrumbs. */
 export default (collection: CollectionData, history: LinkData[]): LinkData[] => {
   let links = [];
 

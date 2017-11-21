@@ -17,6 +17,7 @@ export interface CustomListPageContext {
   csrfToken: string;
 }
 
+/** Page that shows all lists for a library and allows creating and editing lists. */
 export default class CustomListPage extends React.Component<CustomListPageProps, CustomListPageContext> {
   context: CustomListPageContext;
 

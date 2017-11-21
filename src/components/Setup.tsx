@@ -9,6 +9,12 @@ export interface SetupContext {
   csrfToken: string;
 }
 
+/** Page that's displayed the first time the admin interface is opened when
+    setting up a new circulation manager. The app knows to show this page based
+    on a setting that passed in to the CirculationWeb constructor from the server.
+    The page only allows setting up admin authentication. Once that's done, the
+    page will automatically refresh so the admin can log in, and after that the
+    full interface will show. */
 export default class Setup extends React.Component<void, void> {
   context: SetupContext;
 

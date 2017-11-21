@@ -19,6 +19,8 @@ export interface CatalogHandlerProps extends React.Props<CatalogHandler> {
   };
 }
 
+/** Extracts URL parameters and renders the OPDS Web Client for the appropriate catalog
+    and book, using the admin interface header and book details wrapper with extra tabs. */
 export default class CatalogHandler extends React.Component<CatalogHandlerProps, any> {
   static childContextTypes: React.ValidationMap<any> = {
     tab: React.PropTypes.string,

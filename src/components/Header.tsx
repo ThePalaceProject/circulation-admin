@@ -25,6 +25,8 @@ export interface HeaderOwnProps {
 
 export interface HeaderProps extends React.Props<Header>, HeaderStateProps, HeaderDispatchProps, HeaderOwnProps {}
 
+/** Header of all admin interface pages, with a dropdown for selecting a library,
+    library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, void> {
   context: { library: () => string, router: Router };
 

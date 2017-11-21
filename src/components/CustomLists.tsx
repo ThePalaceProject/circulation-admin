@@ -46,6 +46,8 @@ export interface CustomListsState {
   sort: string;
 }
 
+/** Body of the custom lists page, with all a library's lists shown in a left sidebar and
+    a list editor on the right. */
 export class CustomLists extends React.Component<CustomListsProps, CustomListsState> {
   constructor(props) {
     super(props);

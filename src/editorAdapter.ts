@@ -1,6 +1,8 @@
 import { BookData } from "./interfaces";
 import { OPDSEntry } from "opds-feed-parser";
 
+/** Extract metadata and links from an OPDS entry for use on the
+    book details page. */
 export default function adapter(data: OPDSEntry): BookData {
   let hideLink = data.links.find(link => {
     return link.rel === "http://librarysimplified.org/terms/rel/hide";

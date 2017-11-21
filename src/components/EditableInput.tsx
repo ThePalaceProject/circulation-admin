@@ -12,6 +12,10 @@ export interface EditableInputState {
   checked: boolean;
 }
 
+/** Renders an input element with a value that can be changed. It's necessary to have this
+    because if the element gets its value from a prop, the user won't be able to make any changes.
+    This component keeps an updated value in its state. This also handles rendering an optional
+    label and description for the input. */
 export default class EditableInput extends React.Component<EditableInputProps, EditableInputState> {
   constructor(props) {
     super(props);

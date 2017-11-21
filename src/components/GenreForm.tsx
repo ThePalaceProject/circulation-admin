@@ -13,6 +13,8 @@ export interface GenreFormState {
   subgenre: string | null;
 }
 
+/** Form for selecting a genre to add to a book, used on the classifications tab
+    of the book detail page. */
 export default class GenreForm extends React.Component<GenreFormProps, GenreFormState> {
   constructor(props) {
     super(props);

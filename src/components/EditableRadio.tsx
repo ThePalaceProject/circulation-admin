@@ -12,6 +12,8 @@ export interface EditableRadioState {
   checked: boolean;
 }
 
+/** Renders a radio button with a value that can be changed by the user.
+    Similar to `EditableInput`, but specifically for a radio button. */
 export default class EditableRadio extends React.Component<EditableRadioProps, EditableRadioState> {
   constructor(props) {
     super(props);

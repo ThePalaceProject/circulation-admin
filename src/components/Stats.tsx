@@ -24,6 +24,7 @@ export interface StatsOwnProps {
 
 export interface StatsProps extends StatsStateProps, StatsDispatchProps, StatsOwnProps {}
 
+/** Displays statistics about patrons, licenses, and vendors from the server. */
 export class Stats extends React.Component<StatsProps, void> {
 
   render(): JSX.Element {

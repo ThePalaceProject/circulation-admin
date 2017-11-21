@@ -18,6 +18,8 @@ export interface BookDetailsTabContainerProps extends TabContainerProps {
   clearBook?: () => void;
 }
 
+/** Wraps the book details component from OPDSWebClient with additional tabs
+    for editing metadata, classifications, and complaints. */
 export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContainerProps> {
 
   componentWillUnmount() {

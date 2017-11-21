@@ -9,6 +9,10 @@ export interface DashboardContext {
   editorStore: Store<State>;
 }
 
+/** Page that shows high-level statistics about patrons and collections
+    and a list of the most recent circulation events.
+    This currently shows information for the entire circulation
+    manager, but probably should be updated to be per-library. */
 export default class Dashboard extends React.Component<void, void> {
   context: DashboardContext;
 

@@ -7,6 +7,8 @@ export interface ErrorMessageProps {
   tryAgain?: () => any;
 }
 
+/** Shows a bootstrap error message at the top of the page when there's a bad
+    response from the server. */
 export default class ErrorMessage extends React.Component<ErrorMessageProps, void> {
   render(): JSX.Element {
     let status = this.props.error.status;

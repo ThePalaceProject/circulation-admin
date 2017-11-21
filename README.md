@@ -1,5 +1,19 @@
 # circulation-web
-Web front-end for the Circulation Manager
+Web front-end for the Circulation Manager administrative interface
+
+## Setup
+
+This package is meant to be used with the Library Simplified [Circulation Manager](https://github.com/NYPL-Simplified/circulation).
+
+To use the published version with your circulation manager, run `npm install` from `api/admin`.
+
+If you're working on the admin interface and want to test local changes, you can link your local clone of this repository to your local circulation manager. Run `npm link` in this repository, then run `npm link simplified-circulation-web` from `api/admin` in the circulation manager.
+
+## Publishing
+
+This package is [published to npm](https://www.npmjs.com/package/simplified-circulation-web).
+
+To publish a new version, you need to create an npm account and be a collaborator on the package. Then you can run `npm publish` from your local copy of the repository.
 
 
 ## License

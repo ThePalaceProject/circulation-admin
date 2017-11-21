@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { CollectionsData, CollectionData, LibraryData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
+/** Right panel for collections on the system configuration page.
+    Shows a list of current collections and allows creating a new
+    collection or editing or deleting an existing collection. */
 export class Collections extends EditableConfigList<CollectionsData, CollectionData> {
   EditForm =  ServiceEditForm;
   listDataKey = "collections";

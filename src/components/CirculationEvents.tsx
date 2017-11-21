@@ -31,6 +31,8 @@ export interface CirculationEventsState {
   showDownloadForm: boolean;
 }
 
+/** Shows a continuously updating list of the most recent circulation events, and
+    a button to download a CSV of circulation events for a particular date. */
 export class CirculationEvents extends React.Component<CirculationEventsProps, CirculationEventsState> {
   timer: any;
   context: { showCircEventsDownload: boolean };

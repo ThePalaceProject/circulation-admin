@@ -17,6 +17,8 @@ export interface ConfigContext {
   csrfToken: string;
 }
 
+/** System configuration page. Extracts parameters from its context
+    and passes them to `ConfigTabContainer` as props. */
 export default class Config extends React.Component<ConfigProps, any> {
   context: ConfigContext;
 

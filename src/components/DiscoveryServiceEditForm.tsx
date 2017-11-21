@@ -2,6 +2,9 @@ import * as React from "react";
 import ServiceEditForm from "./ServiceEditForm";
 import { DiscoveryServicesData } from "../interfaces";
 
+/** Form for editing discovery services on the discovery service configuration tab.
+    Includes the same form as other services but an addition section with a list
+    of libraries and their registration statuses and buttons to register them. */
 export default class DiscoveryServiceEditForm extends ServiceEditForm<DiscoveryServicesData> {
   context: { registerLibrary: (library) => void };
 

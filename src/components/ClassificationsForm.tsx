@@ -13,6 +13,8 @@ export interface ClassificationsFormProps {
   disabled?: boolean;
 }
 
+/** Form for editing a books classifications on the classifications tab of the
+    book detail page. */
 export default class ClassificationsForm extends React.Component<ClassificationsFormProps, any> {
   constructor(props) {
     super(props);

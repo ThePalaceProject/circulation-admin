@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { CDNServicesData, CDNServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
+/** Right panel for CDN services on the system configuration page.
+    Shows a list of current CDN services and allows creating a new
+    service or editing or deleting an existing service. */
 export class CDNServices extends EditableConfigList<CDNServicesData, CDNServiceData> {
   EditForm = ServiceEditForm;
   listDataKey = "cdn_services";

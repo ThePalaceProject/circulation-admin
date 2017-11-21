@@ -9,6 +9,7 @@ export interface ComplaintFormProps {
   refreshComplaints: () => void;
 }
 
+/** Form for adding a new complaint to a book, from the complaints tab of the book detail page. */
 export default class ComplaintForm extends React.Component<ComplaintFormProps, any> {
   constructor(props) {
     super(props);

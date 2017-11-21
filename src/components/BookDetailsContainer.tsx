@@ -11,7 +11,10 @@ export interface BookDetailsContainerContext {
   editorStore: Store<State>;
 }
 
-export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, any> {
+/** Wrapper for `BookDetailsTabContainer` that extracts parameters from its context
+    and converts them into props. This component is passed into the OPDSCatalog from
+    opds-web-client to replace the body of the book details page. */
+export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, void> {
   context: BookDetailsContainerContext;
 
   static contextTypes = {

@@ -8,6 +8,8 @@ let reducers = combineReducers({
   catalog: catalogReducers
 });
 
+/** Build a redux store with reducers specific to the admin interface
+    as well as reducers from opds-web-client. */
 export default function buildStore(initialState?: any) {
   return createStore(
     reducers,

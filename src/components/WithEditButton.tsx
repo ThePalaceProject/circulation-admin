@@ -6,6 +6,7 @@ export interface WithEditButtonProps {
   onEdit: () => void;
 }
 
+/** When wrapped around an element, renders an edit button next to the element. */
 export default class WithEditButton extends React.Component<WithEditButtonProps, void> {
   render(): JSX.Element {
     return (

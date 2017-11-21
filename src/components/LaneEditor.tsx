@@ -26,6 +26,7 @@ export interface LaneEditorState {
   inheritParentRestrictions: boolean;
 }
 
+/** Right panel of the lanes page for editing a single lane. */
 export default class LaneEditor extends React.Component<LaneEditorProps, LaneEditorState> {
   constructor(props) {
     super(props);

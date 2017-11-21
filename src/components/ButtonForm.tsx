@@ -5,6 +5,7 @@ export interface ButtonFormProps extends React.HTMLProps<ButtonForm> {
   disabled?: boolean;
 }
 
+/** Submit button. */
 export default class ButtonForm extends React.Component<ButtonFormProps, any> {
   render(): JSX.Element {
     let disabledProps = this.props.disabled ? { disabled: true } : {};

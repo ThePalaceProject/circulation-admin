@@ -33,6 +33,7 @@ export interface EditorOwnProps {
 
 export interface EditorProps extends React.Props<Editor>, EditorStateProps, EditorDispatchProps, EditorOwnProps {}
 
+/** Tab for editing a book's metadata on the book details page. */
 export class Editor extends React.Component<EditorProps, void> {
   constructor(props) {
     super(props);

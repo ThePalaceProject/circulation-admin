@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { AdminAuthServicesData, AdminAuthServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 
+/** Right panel for admin authentication services on the system configuration page.
+    Shows a list of current admin authentication services and allows creating a new
+    service or editing or deleting an existing service. */
 export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData, AdminAuthServiceData> {
   EditForm = ServiceEditForm;
   listDataKey = "admin_auth_services";

@@ -22,6 +22,7 @@ export interface CustomListEditorState {
   entries: CustomListEntryData[];
 }
 
+/** Right panel of the lists page for editing a single list. */
 export default class CustomListEditor extends React.Component<CustomListEditorProps, CustomListEditorState> {
   constructor(props) {
     super(props);

@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
+/** Right panel for individual admin configuration on the system configuration page.
+    Shows a list of current individual admins and allows create a new admin or
+    editing or deleting an existing admin. */
 export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, IndividualAdminData> {
   EditForm = IndividualAdminEditForm;
   listDataKey = "individualAdmins";

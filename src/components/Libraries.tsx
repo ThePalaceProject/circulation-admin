@@ -4,6 +4,9 @@ import ActionCreator from "../actions";
 import { LibrariesData, LibraryData } from "../interfaces";
 import LibraryEditForm from "./LibraryEditForm";
 
+/** Right panel for library configuration on the system configuration page.
+    Shows a list of current libraries and allows creating a new library or
+    editing or deleting an existing library. */
 export class Libraries extends EditableConfigList<LibrariesData, LibraryData> {
   EditForm = LibraryEditForm;
   listDataKey = "libraries";

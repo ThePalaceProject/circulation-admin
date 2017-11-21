@@ -8,6 +8,7 @@ export interface BookEditFormProps extends BookData {
   editBook: (url: string, data: FormData) => Promise<any>;
 }
 
+/** Edit a book's metadata in the edit tab on the book details page. */
 export default class BookEditForm extends React.Component<BookEditFormProps, any> {
   render(): JSX.Element {
     return (
