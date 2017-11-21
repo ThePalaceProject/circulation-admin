@@ -4,18 +4,18 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { Editor } from "../Editor";
+import { BookDetailsEditor } from "../BookDetailsEditor";
 import ButtonForm from "../ButtonForm";
 import BookEditForm from "../BookEditForm";
 import ErrorMessage from "../ErrorMessage";
 
-describe("Editor", () => {
+describe("BookDetailsEditor", () => {
   it("loads admin book url on mount", () => {
     let permalink = "works/1234";
     let fetchBook = stub();
 
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookUrl={permalink}
         fetchBook={fetchBook}
         csrfToken={"token"}
@@ -32,7 +32,7 @@ describe("Editor", () => {
     let fetchBook = stub();
     let element = document.createElement("div");
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookUrl={permalink}
         fetchBook={fetchBook}
         csrfToken={"token"}
@@ -48,7 +48,7 @@ describe("Editor", () => {
   it("shows title", () => {
     let fetchBook = stub();
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookData={{ title: "title" }}
         bookUrl="url"
         csrfToken="token"
@@ -66,7 +66,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified.org/terms/rel/hide"
     };
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookData={{ title: "title", hideLink: hideLink }}
         bookUrl="url"
         csrfToken="token"
@@ -86,7 +86,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified.org/terms/rel/restore"
     };
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookData={{ title: "title", restoreLink: restoreLink }}
         bookUrl="url"
         csrfToken="token"
@@ -106,7 +106,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified/terms/rel/refresh"
     };
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookData={{ title: "title", refreshLink: refreshLink }}
         bookUrl="url"
         csrfToken="token"
@@ -128,7 +128,7 @@ describe("Editor", () => {
       url: ""
     };
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookData={{ title: "title" }}
         bookUrl="url" csrfToken="token"
         fetchError={fetchError}
@@ -153,7 +153,7 @@ describe("Editor", () => {
       href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
     };
     let wrapper = shallow(
-      <Editor
+      <BookDetailsEditor
         bookData={{ title: "title", editLink: editLink }}
         bookUrl="url"
         csrfToken="token"

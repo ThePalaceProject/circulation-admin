@@ -3,7 +3,7 @@ import editorAdapter from "../editorAdapter";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import { connect } from "react-redux";
-import Editor from "./Editor";
+import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
 import Complaints from "./Complaints";
 import { BookData } from "../interfaces";
@@ -40,7 +40,7 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
         </div>
       ),
       edit: (
-        <Editor
+        <BookDetailsEditor
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           bookUrl={this.props.bookUrl}

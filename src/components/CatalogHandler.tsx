@@ -4,7 +4,6 @@ import { Router, Route, browserHistory } from "react-router";
 const OPDSCatalog = require("opds-web-client");
 import { NavigateContext } from "opds-web-client/lib/interfaces";
 import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
-import Editor from "./Editor";
 import reducers from "../reducers/index";
 import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
 import Header from "./Header";
