@@ -10,31 +10,49 @@ import BookEditForm from "../BookEditForm";
 import ErrorMessage from "../ErrorMessage";
 
 describe("BookDetailsEditor", () => {
-  it("loads admin book url on mount", () => {
-    let permalink = "works/1234";
-    let fetchBook = stub();
+  let fetchBook;
+  let fetchRoles;
+  let fetchLanguages;
+  let fetchMedia;
+  let editBook;
+  let dispatchProps;
 
+  beforeEach(() => {
+    fetchBook = stub();
+    fetchRoles = stub();
+    fetchLanguages = stub();
+    fetchMedia = stub();
+    editBook = stub();
+    dispatchProps = {
+      fetchBook, fetchRoles, fetchLanguages, fetchMedia, editBook
+    };
+  });
+
+  it("loads admin book url, roles, languages, and media on mount", () => {
+    let permalink = "works/1234";
     let wrapper = shallow(
       <BookDetailsEditor
         bookUrl={permalink}
-        fetchBook={fetchBook}
+        {...dispatchProps}
         csrfToken={"token"}
         />
     );
 
     expect(fetchBook.callCount).to.equal(1);
     expect(fetchBook.args[0][0]).to.equal("admin/works/1234");
+    expect(fetchRoles.callCount).to.equal(1);
+    expect(fetchLanguages.callCount).to.equal(1);
+    expect(fetchMedia.callCount).to.equal(1);
   });
 
   it("loads admin book url when given a new book url", () => {
     let permalink = "works/1234";
     let newPermalink = "works/5555";
-    let fetchBook = stub();
     let element = document.createElement("div");
     let wrapper = shallow(
       <BookDetailsEditor
         bookUrl={permalink}
-        fetchBook={fetchBook}
+        {...dispatchProps}
         csrfToken={"token"}
         />
     );
@@ -46,13 +64,12 @@ describe("BookDetailsEditor", () => {
   });
 
   it("shows title", () => {
-    let fetchBook = stub();
     let wrapper = shallow(
       <BookDetailsEditor
         bookData={{ title: "title" }}
         bookUrl="url"
         csrfToken="token"
-        fetchBook={fetchBook}
+        {...dispatchProps}
         />
     );
 
@@ -61,7 +78,6 @@ describe("BookDetailsEditor", () => {
   });
 
   it("shows button form for hide link", () => {
-    let fetchBook = stub();
     let hideLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/hide"
     };
@@ -70,7 +86,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ title: "title", hideLink: hideLink }}
         bookUrl="url"
         csrfToken="token"
-        fetchBook={fetchBook}
+        {...dispatchProps}
         />
     );
     let hide = (wrapper.instance() as any).hide;
@@ -81,7 +97,6 @@ describe("BookDetailsEditor", () => {
   });
 
   it("shows button form for restore link", () => {
-    let fetchBook = stub();
     let restoreLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/restore"
     };
@@ -90,7 +105,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ title: "title", restoreLink: restoreLink }}
         bookUrl="url"
         csrfToken="token"
-        fetchBook={fetchBook}
+        {...dispatchProps}
         />
     );
     let restore = (wrapper.instance() as any).restore;
@@ -101,7 +116,6 @@ describe("BookDetailsEditor", () => {
   });
 
   it("shows button form for refresh link", () => {
-    let fetchBook = stub();
     let refreshLink = {
       href: "href", rel: "http://librarysimplified/terms/rel/refresh"
     };
@@ -110,7 +124,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ title: "title", refreshLink: refreshLink }}
         bookUrl="url"
         csrfToken="token"
-        fetchBook={fetchBook}
+        {...dispatchProps}
         />
     );
     let refresh = (wrapper.instance() as any).refreshMetadata;
@@ -121,7 +135,6 @@ describe("BookDetailsEditor", () => {
   });
 
   it("shows fetch error message", () => {
-    let fetchBook = stub();
     let fetchError = {
       status: 500,
       response: "response",
@@ -132,7 +145,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ title: "title" }}
         bookUrl="url" csrfToken="token"
         fetchError={fetchError}
-        fetchBook={fetchBook}
+        {...dispatchProps}
         />
     );
 
@@ -143,7 +156,6 @@ describe("BookDetailsEditor", () => {
   });
 
   it("shows edit error message with form", () => {
-    let fetchBook = stub();
     let editError = {
       status: 500,
       response: "response",
@@ -158,7 +170,7 @@ describe("BookDetailsEditor", () => {
         bookUrl="url"
         csrfToken="token"
         editError={editError}
-        fetchBook={fetchBook}
+        {...dispatchProps}
         />
     );
 
@@ -166,5 +178,41 @@ describe("BookDetailsEditor", () => {
     expect(editForm.length).to.equal(1);
     let error = wrapper.find(ErrorMessage);
     expect(error.prop("error")).to.equal(editError);
+  });
+
+  it("shows book edit form", () => {
+    let roles = {
+      "aut": "Author",
+      "nar": "Narrator"
+    };
+    let languages = {
+      "eng": ["English"],
+      "spa": ["Spanish"]
+    };
+    let media = {
+      "http://schema.org/AudioObject": "Audio",
+      "http://schema.org/Book": "Book"
+    };
+    let editLink = {
+      href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
+    };
+    let wrapper = shallow(
+      <BookDetailsEditor
+        bookData={{ title: "title", editLink }}
+        bookUrl="url"
+        csrfToken="token"
+        {...dispatchProps}
+        roles={roles}
+        languages={languages}
+        media={media}
+        />
+    );
+
+    let editForm = wrapper.find(BookEditForm);
+    expect(editForm.length).to.equal(1);
+    expect(editForm.prop("title")).to.equal("title");
+    expect(editForm.prop("roles")).to.equal(roles);
+    expect(editForm.prop("languages")).to.equal(languages);
+    expect(editForm.prop("media")).to.equal(media);
   });
 });

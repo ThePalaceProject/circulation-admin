@@ -21,6 +21,9 @@ import customLists from "./customLists";
 import lanes from "./lanes";
 import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
+import roles from "./roles";
+import media from "./media";
+import languages from "./languages";
 import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
 import { FetchEditState } from "./createFetchEditReducer";
 import {
@@ -28,7 +31,7 @@ import {
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
-  LanesData
+  LanesData, RolesData, MediaData, LanguagesData
 } from "../interfaces";
 
 
@@ -56,6 +59,9 @@ export interface State {
   lanes: FetchEditState<LanesData>;
   laneVisibility: FetchEditState<void>;
   resetLanes: FetchEditState<void>;
+  roles: FetchEditState<RolesData>;
+  media: FetchEditState<MediaData>;
+  languages: FetchEditState<LanguagesData>;
 }
 
 export default combineReducers<State>({
@@ -81,5 +87,8 @@ export default combineReducers<State>({
   collection,
   lanes,
   laneVisibility,
-  resetLanes
+  resetLanes,
+  roles,
+  media,
+  languages
 });

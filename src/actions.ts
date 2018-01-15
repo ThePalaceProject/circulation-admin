@@ -7,7 +7,8 @@ import {
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
-  CustomListsData, LanesData
+  CustomListsData, LanesData, RolesData, MediaData,
+  LanguagesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -18,6 +19,9 @@ import BaseActionCreator from "opds-web-client/lib/actions";
 export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_BOOK = "EDIT_BOOK";
   static readonly BOOK_ADMIN = "BOOK_ADMIN";
+  static readonly ROLES = "ROLES";
+  static readonly MEDIA = "MEDIA";
+  static readonly LANGUAGES = "LANGUAGES";
   static readonly COMPLAINTS = "COMPLAINTS";
   static readonly POST_COMPLAINT = "POST_COMPLAINT";
   static readonly RESOLVE_COMPLAINTS = "RESOLVE_COMPLAINTS";
@@ -242,6 +246,21 @@ export default class ActionCreator extends BaseActionCreator {
 
   editBook(url: string, data: FormData | null) {
     return this.postForm(ActionCreator.EDIT_BOOK, url, data).bind(this);
+  }
+
+  fetchRoles() {
+    let url = "/admin/roles";
+    return this.fetchJSON<RolesData>(ActionCreator.ROLES, url).bind(this);
+  }
+
+  fetchMedia() {
+    let url = "/admin/media";
+    return this.fetchJSON<MediaData>(ActionCreator.MEDIA, url).bind(this);
+  }
+
+  fetchLanguages() {
+    let url = "/admin/languages";
+    return this.fetchJSON<LanguagesData>(ActionCreator.LANGUAGES, url).bind(this);
   }
 
   fetchComplaints(url: string) {
