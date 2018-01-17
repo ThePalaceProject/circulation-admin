@@ -179,7 +179,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           label="Rating (1-5, higher is better)"
           min={1}
           max={5}
-          value={this.props.rating && String(Math.round((this.props.rating * 4) + 1))}
+          value={this.props.rating && String(Math.round(this.props.rating))}
           />
         <EditableInput
           elementType="textarea"

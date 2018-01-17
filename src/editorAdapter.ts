@@ -74,7 +74,13 @@ export default function adapter(data: OPDSEntry): BookData {
 
   let rating;
   try {
-    rating = data.unparsed["schema:Rating"][0]["$"]["schema:ratingValue"]["value"];
+    let ratings = data.unparsed["schema:Rating"];
+    for (let ratingTag of ratings) {
+      if (ratingTag["$"]["schema:additionalType"]["value"] === "http://schema.org/ratingValue") {
+        rating = ratingTag["$"]["schema:ratingValue"]["value"];
+        break;
+      }
+    }
   } catch (e) {
     rating = null;
   }

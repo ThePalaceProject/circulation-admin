@@ -42,7 +42,7 @@ describe("BookEditForm", () => {
     publisher: "publisher",
     imprint: "imprint",
     issued: "2017-04-03",
-    rating: 0.75,
+    rating: 4,
     editLink: {
       href: "href",
       rel: "edit"

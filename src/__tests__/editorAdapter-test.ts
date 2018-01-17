@@ -39,7 +39,12 @@ describe("editorAdapter", () => {
           "schema:additionalType": { value: "medium" }
         },
         "bib:publisherImprint": [{ "_": "imprint" }],
-        "schema:Rating": [{ "$": { "schema:ratingValue": { value: "5" }}}]
+        "schema:Rating": [
+          { "$": { "schema:ratingValue": { value: "0.3" },
+                   "schema:additionalType": { value: "http://librarysimplified.org/terms/rel/quality" }}},
+          { "$": { "schema:ratingValue": { value: "4" },
+                   "schema:additionalType": { value: "http://schema.org/ratingValue" }}}
+        ]
       }
     });
 
@@ -65,7 +70,7 @@ describe("editorAdapter", () => {
     expect(adapted.publisher).to.equal("publisher");
     expect(adapted.imprint).to.equal("imprint");
     expect(adapted.issued).to.equal("issued");
-    expect(adapted.rating).to.equal("5");
+    expect(adapted.rating).to.equal("4");
   });
 
   it("doesn't crash when expected data is missing", () => {
