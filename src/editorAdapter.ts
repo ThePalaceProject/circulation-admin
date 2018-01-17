@@ -62,7 +62,7 @@ export default function adapter(data: OPDSEntry): BookData {
 
   let imprint;
   try {
-    imprint = data.unparsed["simplified:imprint"][0]["_"];
+    imprint = data.unparsed["bib:publisherImprint"][0]["_"];
   } catch (e) {
     imprint = null;
   }

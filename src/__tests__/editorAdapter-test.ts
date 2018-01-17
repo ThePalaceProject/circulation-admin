@@ -38,7 +38,7 @@ describe("editorAdapter", () => {
         "$": {
           "schema:additionalType": { value: "medium" }
         },
-        "simplified:imprint": [{ "_": "imprint" }],
+        "bib:publisherImprint": [{ "_": "imprint" }],
         "schema:Rating": [{ "$": { "schema:ratingValue": { value: "5" }}}]
       }
     });
