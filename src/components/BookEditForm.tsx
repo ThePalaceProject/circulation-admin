@@ -51,7 +51,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           <label>Authors and Contributors</label>
           { this.state.contributors.map(contributor =>
               <WithRemoveButton
-                key={contributor.name}
+                key={contributor.name + contributor.role}
                 disabled={this.props.disabled}
                 onRemove={() => this.removeContributor(contributor)}
                 >
