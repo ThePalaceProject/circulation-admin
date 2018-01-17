@@ -124,7 +124,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
               disabled={this.props.disabled}
               name="series_position"
               placeholder="#"
-              value={this.props.seriesPosition && String(this.props.seriesPosition)}
+              value={this.props.seriesPosition !== undefined && this.props.seriesPosition !== null && String(this.props.seriesPosition)}
               />
           </div>
         </div>
