@@ -11,12 +11,24 @@ export interface CategoryData {
   label: string;
 }
 
+export interface ContributorData {
+  name: string;
+  uri?: string;
+  role?: string;
+}
+
 export interface BookData {
   title: string;
+  authors?: ContributorData[];
+  contributors?: ContributorData[];
   subtitle?: string;
   fiction?: boolean;
   audience?: string;
   targetAgeRange?: string[];
+  medium?: string;
+  language?: string;
+  publisher?: string;
+  imprint?: string;
   summary?: string;
   hideLink?: LinkData;
   restoreLink?: LinkData;
@@ -25,7 +37,21 @@ export interface BookData {
   issuesLink?: LinkData;
   categories?: string[];
   series?: string;
-  seriesPosition?: string;
+  seriesPosition?: number;
+  issued?: string;
+  rating?: number;
+}
+
+export interface RolesData {
+  [key: string]: string;
+}
+
+export interface MediaData {
+  [key: string]: string;
+}
+
+export interface LanguagesData {
+  [key: string]: string[];
 }
 
 export interface BookLink {

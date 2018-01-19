@@ -14,4 +14,22 @@
   textarea[name=summary] {
     height: 300px;
   }
+
+  .with-remove-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+  }
+
+  .contributor-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+
+    .form-group {
+      margin-right: 10px;
+    }
+  }
 }

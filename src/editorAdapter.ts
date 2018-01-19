@@ -53,25 +53,45 @@ export default function adapter(data: OPDSEntry): BookData {
     subtitle = null;
   };
 
-  let series;
+  let medium;
   try {
-    series = data.unparsed["schema:Series"][0]["$"]["name"]["value"];
+    medium = data.unparsed["$"]["schema:additionalType"]["value"];
   } catch (e) {
-    series = null;
+    medium = null;
   }
 
-  let seriesPosition;
+  let imprint;
   try {
-    seriesPosition = data.unparsed["schema:Series"][0]["$"]["schema:position"]["value"];
+    imprint = data.unparsed["bib:publisherImprint"][0]["_"];
   } catch (e) {
-    seriesPosition = null;
+    imprint = null;
+  }
+
+  let authors = [];
+  for (let author of data.authors) {
+    authors.push(Object.assign({}, author, { role: "aut" }));
+  }
+
+  let rating;
+  try {
+    let ratings = data.unparsed["schema:Rating"];
+    for (let ratingTag of ratings) {
+      if (ratingTag["$"]["schema:additionalType"]["value"] === "http://schema.org/ratingValue") {
+        rating = ratingTag["$"]["schema:ratingValue"]["value"];
+        break;
+      }
+    }
+  } catch (e) {
+    rating = null;
   }
 
   return {
     title: data.title,
+    authors: authors,
+    contributors: data.contributors,
     subtitle: subtitle,
     summary: data.summary.content,
-    audience: audience.term,
+    audience: audience && audience.term,
     targetAgeRange: targetAgeRange,
     fiction: fiction,
     categories: categories,
@@ -80,7 +100,13 @@ export default function adapter(data: OPDSEntry): BookData {
     refreshLink: refreshLink,
     editLink: editLink,
     issuesLink: issuesLink,
-    series: series,
-    seriesPosition: seriesPosition
+    series: data.series && data.series.name,
+    seriesPosition: data.series && data.series.position,
+    medium: medium,
+    language: data.language,
+    publisher: data.publisher,
+    imprint: imprint,
+    issued: data.issued,
+    rating: rating
   };
 }
