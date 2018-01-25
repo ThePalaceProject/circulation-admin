@@ -28,6 +28,8 @@ export default<T> (fetchPrefix: string, editPrefix?: string): FetchEditReducer<T
     switch (action.type) {
       case `${fetchPrefix}_${ActionCreator.REQUEST}`:
         return Object.assign({}, state, {
+          data: null,
+          isLoaded: false,
           isFetching: true,
           fetchError: null
         });

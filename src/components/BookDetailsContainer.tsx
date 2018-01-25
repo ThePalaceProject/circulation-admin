@@ -9,6 +9,7 @@ export interface BookDetailsContainerContext {
   csrfToken: string;
   tab: string;
   editorStore: Store<State>;
+  library: (collectionUrl: string, bookUrl: string) => string;
 }
 
 /** Wrapper for `BookDetailsTabContainer` that extracts parameters from its context
@@ -20,7 +21,8 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
   static contextTypes = {
     csrfToken: React.PropTypes.string.isRequired,
     tab: React.PropTypes.string,
-    editorStore: React.PropTypes.object.isRequired
+    editorStore: React.PropTypes.object.isRequired,
+    library: React.PropTypes.func.isRequired
   };
 
   render(): JSX.Element {
@@ -31,6 +33,7 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
           collectionUrl={this.props.collectionUrl}
           refreshCatalog={this.props.refreshCatalog}
           tab={this.context.tab}
+          library={this.context.library}
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}>
           { this.props.children }

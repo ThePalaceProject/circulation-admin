@@ -21,6 +21,7 @@ export default class Autocomplete extends React.Component<AutocompleteProps, voi
           list={this.props.name + "-autocomplete-list"}
           label={this.props.label}
           value={this.props.value}
+          ref="input"
           />
         <datalist
           id={this.props.name + "-autocomplete-list"}
@@ -32,5 +33,9 @@ export default class Autocomplete extends React.Component<AutocompleteProps, voi
         </datalist>
       </div>
     );
+  }
+
+  getValue() {
+    return (this.refs["input"] as any).getValue();
   }
 }

@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
 import Complaints from "./Complaints";
+import CustomListsForBook from "./CustomListsForBook";
 import { BookData } from "../interfaces";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
@@ -16,6 +17,7 @@ export interface BookDetailsTabContainerProps extends TabContainerProps {
   refreshCatalog: () => Promise<any>;
   complaintsCount?: number;
   clearBook?: () => void;
+  library: (collectionUrl, bookUrl) => string;
 }
 
 /** Wraps the book details component from OPDSWebClient with additional tabs
@@ -63,6 +65,16 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
           bookUrl={this.props.bookUrl}
           book={this.props.bookData}
           refreshCatalog={this.props.refreshCatalog}
+          />
+      ),
+      lists: (
+        <CustomListsForBook
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          bookUrl={this.props.bookUrl}
+          book={this.props.bookData}
+          refreshCatalog={this.props.refreshCatalog}
+          library={this.props.library(this.props.collectionUrl, this.props.bookUrl)}
           />
       )
     };
