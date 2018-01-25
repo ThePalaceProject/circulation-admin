@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import book, { BookState } from "./book";
 import complaints, { ComplaintsState } from "./complaints";
 import classifications, { ClassificationsState } from "./classifications";
+import customListsForBook from "./customListsForBook";
 import circulationEvents, { CirculationEventsState } from "./circulationEvents";
 import stats, { StatsState } from "./stats";
 import libraries from "./libraries";
@@ -39,6 +40,7 @@ export interface State {
   book: BookState;
   complaints: ComplaintsState;
   classifications: ClassificationsState;
+  customListsForBook: FetchEditState<CustomListsData>;
   circulationEvents: CirculationEventsState;
   stats: StatsState;
   libraries: FetchEditState<LibrariesData>;
@@ -68,6 +70,7 @@ export default combineReducers<State>({
   book,
   complaints,
   classifications,
+  customListsForBook,
   circulationEvents,
   stats,
   libraries,

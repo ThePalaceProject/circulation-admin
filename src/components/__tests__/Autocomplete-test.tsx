@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import Autocomplete from "../Autocomplete";
 import EditableInput from "../EditableInput";
@@ -44,6 +44,23 @@ describe("Autocomplete", () => {
       expect(options.at(0).props().value).to.equal("a");
       expect(options.at(1).props().value).to.equal("b");
       expect(options.at(2).props().value).to.equal("c");
+    });
+  });
+
+  describe("behavior", () => {
+    it("returns value", () => {
+      wrapper = mount(
+        <Autocomplete
+          autocompleteValues={autocompleteValues}
+          disabled={false}
+          name="test"
+          label="Test"
+          value="b"
+          />
+      );
+      let getValueStub = stub(EditableInput.prototype, "getValue").returns("test value");
+      expect((wrapper.instance() as Autocomplete).getValue()).to.equal("test value");
+      getValueStub.restore();
     });
   });
 });

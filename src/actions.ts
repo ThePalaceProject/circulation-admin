@@ -28,6 +28,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly GENRE_TREE = "GENRE_TREE";
   static readonly CLASSIFICATIONS = "CLASSIFICATIONS";
   static readonly EDIT_CLASSIFICATIONS = "EDIT_CLASSIFICATIONS";
+  static readonly CUSTOM_LISTS_FOR_BOOK = "CUSTOM_LISTS_FOR_BOOK";
+  static readonly EDIT_CUSTOM_LISTS_FOR_BOOK = "EDIT_CUSTOM_LISTS_FOR_BOOK";
   static readonly CIRCULATION_EVENTS = "CIRCULATION_EVENTS";
   static readonly STATS = "STATS";
   static readonly LIBRARIES = "LIBRARIES";
@@ -285,6 +287,14 @@ export default class ActionCreator extends BaseActionCreator {
 
   fetchClassifications(url: string) {
     return this.fetchJSON<{ classifications: ClassificationData[] }>(ActionCreator.CLASSIFICATIONS, url).bind(this);
+  }
+
+  fetchCustomListsForBook(url: string) {
+    return this.fetchJSON<CustomListsData>(ActionCreator.CUSTOM_LISTS_FOR_BOOK, url).bind(this);
+  }
+
+  editCustomListsForBook(url: string, data: FormData) {
+    return this.postForm(ActionCreator.EDIT_CUSTOM_LISTS_FOR_BOOK, url, data).bind(this);
   }
 
   fetchCirculationEvents() {

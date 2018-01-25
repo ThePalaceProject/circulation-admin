@@ -9,6 +9,7 @@ import { BookDetailsTabContainer } from "../BookDetailsTabContainer";
 import BookDetailsEditor from "../BookDetailsEditor";
 import Classifications from "../Classifications";
 import Complaints from "../Complaints";
+import CustomListsForBook from "../CustomListsForBook";
 import { mockRouterContext } from "./routing";
 
 
@@ -30,6 +31,7 @@ describe("BookDetailsTabContainer", () => {
         csrfToken="token"
         refreshCatalog={stub()}
         store={store}
+        library={(a,b) => "library"}
         >
         <div className="bookDetails">Moby Dick</div>
       </BookDetailsTabContainer>,
@@ -65,6 +67,12 @@ describe("BookDetailsTabContainer", () => {
   it("shows Complaints", () => {
     let complaints = wrapper.find(Complaints);
     expect(complaints.props().bookUrl).to.equal("book url");
+  });
+
+  it("shows lists", () => {
+    let lists = wrapper.find(CustomListsForBook);
+    expect(lists.props().bookUrl).to.equal("book url");
+    expect(lists.props().library).to.equal("library");
   });
 
   it("uses router to navigate when tab is clicked", () => {

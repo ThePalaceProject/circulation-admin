@@ -281,9 +281,9 @@ export interface CustomListEntryData {
 }
 
 export interface CustomListData {
-  id: string | number;
+  id?: string | number;
   name: string;
-  entries: CustomListEntryData[];
+  entries?: CustomListEntryData[];
 }
 
 export interface CustomListsData {
