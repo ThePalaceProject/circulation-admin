@@ -284,6 +284,7 @@ export interface CustomListData {
   id?: string | number;
   name: string;
   entries?: CustomListEntryData[];
+  collections?: CollectionData[];
 }
 
 export interface CustomListsData {
