@@ -18,10 +18,12 @@ describe("CustomLists", () => {
   let deleteCustomList;
   let search;
   let loadMoreSearchResults;
+  let fetchCollections;
 
   let listsData = [
-    { id: 1, name: "a list", entries: [] },
-    { id: 2, name: "z list", entries: [{ pwid: "1", title: "title", authors: [] }] }
+    { id: 1, name: "a list", entries: [], collections: [] },
+    { id: 2, name: "z list", entries: [{ pwid: "1", title: "title", authors: [] }],
+      collections: [{id: 3, name: "collection 3", protocol: "protocol" }] }
   ];
 
   let searchResults = {
@@ -33,12 +35,19 @@ describe("CustomLists", () => {
     navigationLinks: []
   };
 
+  let collections = [
+    { id: 1, name: "collection 1", protocol: "protocol", libraries: [{ short_name: "other library" }] },
+    { id: 2, name: "collection 2", protocol: "protocol", libraries: [{ short_name: "library" }] },
+    { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
+  ];
+
   beforeEach(() => {
     fetchCustomLists = stub();
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     deleteCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
     loadMoreSearchResults = stub();
+    fetchCollections = stub();
 
     wrapper = shallow(
       <CustomLists
@@ -46,6 +55,7 @@ describe("CustomLists", () => {
         library="library"
         lists={listsData}
         searchResults={searchResults}
+        collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
@@ -53,6 +63,7 @@ describe("CustomLists", () => {
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        fetchCollections={fetchCollections}
         />
     );
   });
@@ -107,6 +118,7 @@ describe("CustomLists", () => {
         library="library"
         lists={undefined}
         searchResults={searchResults}
+        collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
@@ -114,6 +126,7 @@ describe("CustomLists", () => {
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        fetchCollections={fetchCollections}
         />
     );
     wrapper.setProps({ lists: [] });
@@ -125,6 +138,7 @@ describe("CustomLists", () => {
         library="library"
         lists={undefined}
         searchResults={searchResults}
+        collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
@@ -132,6 +146,7 @@ describe("CustomLists", () => {
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        fetchCollections={fetchCollections}
         />
     );
     wrapper.setProps({ lists: listsData });
@@ -146,6 +161,7 @@ describe("CustomLists", () => {
         library="library"
         lists={listsData}
         searchResults={searchResults}
+        collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
@@ -153,6 +169,7 @@ describe("CustomLists", () => {
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        fetchCollections={fetchCollections}
         />
     );
     let radioButtons = wrapper.find(EditableInput);
@@ -263,6 +280,7 @@ describe("CustomLists", () => {
     expect(editor.props().searchResults).to.equal(searchResults);
     expect(editor.props().editedIdentifier).to.be.undefined;
     expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
+    expect(editor.props().collections).to.deep.equal([collections[1], collections[2]]);
 
     expect(fetchCustomLists.callCount).to.equal(1);
     let editCustomListProp = editor.props().editCustomList;
@@ -288,5 +306,6 @@ describe("CustomLists", () => {
     expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
     expect(editor.props().searchResults).to.equal(searchResults);
     expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
+    expect(editor.props().collections).to.deep.equal([collections[1], collections[2]]);
   });
 });

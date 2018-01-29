@@ -6,7 +6,7 @@ import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
-import { CustomListData, CustomListsData } from "../interfaces";
+import { CustomListData, CustomListsData, CollectionsData, CollectionData as AdminCollectionData } from "../interfaces";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
@@ -17,6 +17,7 @@ import TrashIcon from "./icons/TrashIcon";
 
 export interface CustomListsStateProps {
   lists: CustomListData[];
+  collections: AdminCollectionData[];
   editedIdentifier?: string;
   searchResults: CollectionData;
   fetchError?: FetchErrorData;
@@ -30,6 +31,7 @@ export interface CustomListsDispatchProps {
   deleteCustomList: (listId: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  fetchCollections: () => Promise<CollectionsData>;
 }
 
 export interface CustomListsOwnProps {
@@ -140,6 +142,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
           { this.props.editOrCreate === "create" &&
             <CustomListEditor
               library={this.props.library}
+              collections={this.collectionsForLibrary()}
               editCustomList={this.editCustomList}
               search={this.props.search}
               loadMoreSearchResults={this.props.loadMoreSearchResults}
@@ -153,6 +156,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
             <CustomListEditor
               library={this.props.library}
               list={this.customListToEdit()}
+              collections={this.collectionsForLibrary()}
               editCustomList={this.editCustomList}
               search={this.props.search}
               loadMoreSearchResults={this.props.loadMoreSearchResults}
@@ -168,6 +172,9 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   componentWillMount() {
     if (this.props.fetchCustomLists) {
       this.props.fetchCustomLists();
+    }
+    if (this.props.fetchCollections) {
+      this.props.fetchCollections();
     }
   }
 
@@ -236,16 +243,30 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     }
     return null;
   }
+
+  collectionsForLibrary(): AdminCollectionData[] {
+    const collections: AdminCollectionData[] = [];
+    for (const collection of this.props.collections || []) {
+      for (const library of collection.libraries || []) {
+        if (library.short_name === this.props.library) {
+          collections.push(collection);
+          break;
+        }
+      }
+    }
+    return collections;
+  }
 }
 
 function mapStateToProps(state, ownProps) {
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     editedIdentifier: state.editor.customLists && state.editor.customLists.editedIdentifier,
-    fetchError: state.editor.customLists.fetchError,
-    isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching),
+    fetchError: state.editor.customLists.fetchError || state.editor.collections.fetchError,
+    isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,
     searchResults: state.editor.collection && state.editor.collection.data,
-    isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage
+    isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage,
+    collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections
   };
 }
 
@@ -257,7 +278,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     editCustomList: (data: FormData) => dispatch(actions.editCustomList(ownProps.library, data)),
     deleteCustomList: (listId: string) => dispatch(actions.deleteCustomList(ownProps.library, listId)),
     search: (url: string) => dispatch(actions.fetchCollection(url)),
-    loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url))
+    loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),
+    fetchCollections: () => dispatch(actions.fetchCollections())
   };
 }
 

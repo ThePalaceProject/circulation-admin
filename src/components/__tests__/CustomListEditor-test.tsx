@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import CustomListEditor from "../CustomListEditor";
 import TextWithEditMode from "../TextWithEditMode";
+import EditableInput from "../EditableInput";
 import CustomListEntriesEditor from "../CustomListEntriesEditor";
 
 describe("CustomListEditor", () => {
@@ -20,6 +21,9 @@ describe("CustomListEditor", () => {
     entries: [
       { pwid: "1", title: "title 1", authors: ["author 1"] },
       { pwid: "2", title: "title 2", authors: ["author 2a", "author 2b"] }
+    ],
+    collections: [
+      { id: 2, name: "collection 2", protocol: "protocol" }
     ]
   };
 
@@ -32,6 +36,12 @@ describe("CustomListEditor", () => {
     navigationLinks: []
   };
 
+  let collections = [
+    { id: 1, name: "collection 1", protocol: "protocol", libraries: [{ short_name: "library" }] },
+    { id: 2, name: "collection 2", protocol: "protocol", libraries: [{ short_name: "library" }] },
+    { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
+  ];
+
   beforeEach(() => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
@@ -41,6 +51,7 @@ describe("CustomListEditor", () => {
         library="library"
         list={listData}
         searchResults={searchResults}
+        collections={collections}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -71,6 +82,20 @@ describe("CustomListEditor", () => {
     expect(entriesEditor.props().isFetchingMoreSearchResults).to.equal(false);
   });
 
+  it("shows collections", () => {
+    let inputs = wrapper.find(EditableInput);
+    expect(inputs.length).to.equal(3);
+    expect(inputs.at(0).props().label).to.equal("collection 1");
+    expect(inputs.at(0).props().value).to.equal("1");
+    expect(inputs.at(0).props().checked).to.equal(false);
+    expect(inputs.at(1).props().label).to.equal("collection 2");
+    expect(inputs.at(1).props().value).to.equal("2");
+    expect(inputs.at(1).props().checked).to.equal(true);
+    expect(inputs.at(2).props().label).to.equal("collection 3");
+    expect(inputs.at(2).props().value).to.equal("3");
+    expect(inputs.at(2).props().checked).to.equal(false);
+  });
+
   it("saves list", () => {
     wrapper = mount(
       <CustomListEditor
@@ -96,6 +121,7 @@ describe("CustomListEditor", () => {
     expect(formData.get("id")).to.equal("1");
     expect(formData.get("name")).to.equal("new list name");
     expect(formData.get("entries")).to.equal(JSON.stringify(newEntries));
+    expect(formData.get("collections")).to.equal(JSON.stringify([2]));
 
     getTextStub.restore();
     getEntriesStub.restore();
@@ -147,6 +173,7 @@ describe("CustomListEditor", () => {
         library="library"
         list={listData}
         searchResults={searchResults}
+        collections={collections}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -170,11 +197,20 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
+    (wrapper.instance() as CustomListEditor).changeCollection(collections[0]);
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(1);
+    cancelButton.simulate("click");
+
+    cancelButton = wrapper.find(".cancel-changes");
+    expect(cancelButton.length).to.equal(0);
+
     wrapper = mount(
       <CustomListEditor
         library="library"
         list={listData}
         searchResults={searchResults}
+        collections={collections}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -186,8 +222,8 @@ describe("CustomListEditor", () => {
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
-    expect(listNameReset.callCount).to.equal(2);
-    expect(listEntriesReset.callCount).to.equal(2);
+    expect(listNameReset.callCount).to.equal(3);
+    expect(listEntriesReset.callCount).to.equal(3);
     cancelButton = wrapper.find(".cancel-changes");
 
     (wrapper.instance() as CustomListEditor).changeEntries(listData.entries);
@@ -196,6 +232,35 @@ describe("CustomListEditor", () => {
 
     listNameReset.restore();
     listEntriesReset.restore();
+  });
+
+  it("changes selected collections", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        collections={collections}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        />
+    );
+
+    let inputs = wrapper.find(EditableInput);
+    expect(inputs.at(0).props().checked).to.equal(false);
+    expect(inputs.at(1).props().checked).to.equal(true);
+
+    inputs.at(0).props().onChange();
+    inputs = wrapper.find(EditableInput);
+    expect(inputs.at(0).props().checked).to.equal(true);
+    expect(inputs.at(1).props().checked).to.equal(true);
+
+    inputs.at(1).props().onChange();
+    inputs = wrapper.find(EditableInput);
+    expect(inputs.at(0).props().checked).to.equal(true);
+    expect(inputs.at(1).props().checked).to.equal(false);
   });
 
   it("searches", () => {

@@ -30,6 +30,12 @@
       color: lighten($pagetextcolor, 40%);
     }
 
+    .collections .form-group {
+      float: left;
+      margin-right: 15px;
+      margin-bottom: 2px;
+    }
+
     a {
       margin-left: 5px;
       font-size: 0.7em;
