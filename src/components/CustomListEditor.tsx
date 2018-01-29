@@ -179,16 +179,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   changeCollection(collection: AdminCollectionData) {
-    let hadCollection = false;
-    const newCollections = [];
-    for (const stateCollection of this.state.collections) {
-      if (stateCollection.id === collection.id) {
-        hadCollection = true;
-      } else {
-        newCollections.push(stateCollection);
-      }
-    }
-    if (!hadCollection) {
+    const hasCollection = this.hasCollection(collection);
+    let newCollections;
+    if (hasCollection) {
+      newCollections = this.state.collections.filter(stateCollection => stateCollection.id !== collection.id);
+    } else {
+      newCollections = this.state.collections.slice(0);
       newCollections.push(collection);
     }
     this.setState({ name: this.state.name, entries: this.state.entries, collections: newCollections });
