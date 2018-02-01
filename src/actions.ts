@@ -7,8 +7,8 @@ import {
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
-  CustomListsData, LanesData, RolesData, MediaData,
-  LanguagesData
+  CustomListsData, CustomListDetailsData, LanesData,
+  RolesData, MediaData, LanguagesData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -68,6 +68,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly REGISTER_LIBRARY = "REGISTER_LIBRARY";
   static readonly LIBRARY_REGISTRATIONS = "LIBRARY_REGISTRATIONS";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
+  static readonly CUSTOM_LIST_DETAILS = "CUSTOM_LIST_DETAILS";
   static readonly EDIT_CUSTOM_LIST = "EDIT_CUSTOM_LIST";
   static readonly DELETE_CUSTOM_LIST = "DELETE_CUSTOM_LIST";
   static readonly LANES = "LANES";
@@ -487,8 +488,16 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<CustomListsData>(ActionCreator.CUSTOM_LISTS, url).bind(this);
   }
 
-  editCustomList(library: string, data: FormData) {
-    const url = "/" + library + "/admin/custom_lists";
+  fetchCustomListDetails(library: string, id: string) {
+    const url = "/" + library + "/admin/custom_list/" + id;
+    return this.fetchJSON<CustomListDetailsData>(ActionCreator.CUSTOM_LIST_DETAILS, url).bind(this);
+  }
+
+  editCustomList(library: string, data: FormData, id?: string) {
+    let url = "/" + library + "/admin/custom_lists";
+    if (id) {
+      url = "/" + library + "/admin/custom_list/" + id;
+    }
     return this.postForm(ActionCreator.EDIT_CUSTOM_LIST, url, data).bind(this);
   }
 

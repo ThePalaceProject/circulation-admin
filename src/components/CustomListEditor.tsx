@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CustomListData, CustomListEntryData, CollectionData as AdminCollectionData } from "../interfaces";
+import { CustomListDetailsData, CustomListEntryData, CollectionData as AdminCollectionData } from "../interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
@@ -9,11 +9,11 @@ import SearchIcon from "./icons/SearchIcon";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
-  list?: CustomListData;
+  list?: CustomListDetailsData;
   collections?: AdminCollectionData[];
   editedIdentifier?: string;
   searchResults?: CollectionData;
-  editCustomList: (data: FormData) => Promise<void>;
+  editCustomList: (data: FormData, listId?: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   isFetchingMoreSearchResults: boolean;
@@ -56,7 +56,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             { this.props.list &&
               <h4>ID-{this.props.list.id}</h4>
             }
-            { this.props.collections && this.props.collections.length &&
+            { this.props.collections && this.props.collections.length > 0 &&
               <div>
                 <span>Automatically add new books from these collections to this list:</span>
                 <div className="collections">
@@ -201,7 +201,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     data.append("entries", JSON.stringify(entries));
     let collections = this.state.collections.map(collection => collection.id);
     data.append("collections", JSON.stringify(collections));
-    this.props.editCustomList(data).then(() => {
+    this.props.editCustomList(data, this.props.list && String(this.props.list.id)).then(() => {
       // If a new list was created, go to the new list's edit page.
       if (!this.props.list && this.props.editedIdentifier) {
         window.location.href = "/admin/web/lists/" + this.props.library + "/edit/" + this.props.editedIdentifier;

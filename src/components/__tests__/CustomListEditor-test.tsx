@@ -122,6 +122,8 @@ describe("CustomListEditor", () => {
     expect(formData.get("name")).to.equal("new list name");
     expect(formData.get("entries")).to.equal(JSON.stringify(newEntries));
     expect(formData.get("collections")).to.equal(JSON.stringify([2]));
+    let listId = editCustomList.args[0][1];
+    expect(listId).to.equal("1");
 
     getTextStub.restore();
     getEntriesStub.restore();

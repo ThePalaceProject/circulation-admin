@@ -14,6 +14,7 @@ import { Link } from "react-router";
 describe("CustomLists", () => {
   let wrapper;
   let fetchCustomLists;
+  let fetchCustomListDetails;
   let editCustomList;
   let deleteCustomList;
   let search;
@@ -21,10 +22,12 @@ describe("CustomLists", () => {
   let fetchCollections;
 
   let listsData = [
-    { id: 1, name: "a list", entries: [], collections: [] },
-    { id: 2, name: "z list", entries: [{ pwid: "1", title: "title", authors: [] }],
+    { id: 1, name: "a list", entry_count: 0, collections: [] },
+    { id: 2, name: "z list", entry_count: 1,
       collections: [{id: 3, name: "collection 3", protocol: "protocol" }] }
   ];
+
+  let entry = { pwid: "1", title: "title", authors: [] };
 
   let searchResults = {
     id: "id",
@@ -43,6 +46,7 @@ describe("CustomLists", () => {
 
   beforeEach(() => {
     fetchCustomLists = stub();
+    fetchCustomListDetails = stub();
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     deleteCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
@@ -59,6 +63,7 @@ describe("CustomLists", () => {
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
+        fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
@@ -122,6 +127,7 @@ describe("CustomLists", () => {
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
+        fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
@@ -142,6 +148,7 @@ describe("CustomLists", () => {
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
+        fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
@@ -165,6 +172,7 @@ describe("CustomLists", () => {
         isFetching={false}
         isFetchingMoreSearchResults={false}
         fetchCustomLists={fetchCustomLists}
+        fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
@@ -262,9 +270,10 @@ describe("CustomLists", () => {
 
   it("edits a list", () => {
     const testData = new (window as any).FormData();
-    (wrapper.instance() as CustomLists).editCustomList(testData);
+    (wrapper.instance() as CustomLists).editCustomList(testData, "id");
     expect(editCustomList.callCount).to.equal(1);
     expect(editCustomList.args[0][0]).to.equal(testData);
+    expect(editCustomList.args[0][1]).to.equal("id");
   });
 
   it("renders create form", async () => {
@@ -275,6 +284,7 @@ describe("CustomLists", () => {
     editor = wrapper.find(CustomListEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
+    expect(editor.props().list).to.be.undefined;
     expect(editor.props().search).to.equal(search);
     expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
     expect(editor.props().searchResults).to.equal(searchResults);
@@ -297,15 +307,26 @@ describe("CustomLists", () => {
     let editor = wrapper.find(CustomListEditor);
     expect(editor.length).to.equal(0);
 
-    wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
+    let listDetails = Object.assign({}, listsData[1], { entries: [entry] });
+    wrapper.setProps({ editOrCreate: "edit", identifier: "2", listDetails });
     editor = wrapper.find(CustomListEditor);
     expect(editor.length).to.equal(1);
-    expect(editor.props().list).to.deep.equal(listsData[1]);
+    expect(editor.props().list).to.deep.equal(listDetails);
     expect(editor.props().library).to.equal("library");
     expect(editor.props().search).to.equal(search);
     expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
     expect(editor.props().searchResults).to.equal(searchResults);
     expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
     expect(editor.props().collections).to.deep.equal([collections[1], collections[2]]);
+
+    expect(fetchCustomListDetails.callCount).to.equal(1);
+
+    // When the component switches to a different list, it fetches the new
+    // list details.
+    let newListDetails = Object.assign({}, listsData[0], { entries: [] });
+    wrapper.setProps({ identifier: "1", listDetails: newListDetails });
+    editor = wrapper.find(CustomListEditor);
+    expect(editor.props().list).to.deep.equal(newListDetails);
+    expect(fetchCustomListDetails.callCount).to.equal(2);
   });
 });
