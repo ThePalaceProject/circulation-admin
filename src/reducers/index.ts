@@ -19,6 +19,7 @@ import discoveryServices from "./discoveryServices";
 import registerLibrary, { RegisterLibraryState } from "./registerLibrary";
 import libraryRegistrations from "./libraryRegistrations";
 import customLists from "./customLists";
+import customListDetails from "./customListDetails";
 import lanes from "./lanes";
 import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
@@ -32,7 +33,7 @@ import {
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
-  LanesData, RolesData, MediaData, LanguagesData
+  CustomListDetailsData, LanesData, RolesData, MediaData, LanguagesData
 } from "../interfaces";
 
 
@@ -57,6 +58,7 @@ export interface State {
   registerLibrary: RegisterLibraryState;
   libraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
+  customListDetails: FetchEditState<CustomListDetailsData>;
   collection: CollectionState;
   lanes: FetchEditState<LanesData>;
   laneVisibility: FetchEditState<void>;
@@ -87,6 +89,7 @@ export default combineReducers<State>({
   registerLibrary,
   libraryRegistrations,
   customLists,
+  customListDetails,
   collection,
   lanes,
   laneVisibility,

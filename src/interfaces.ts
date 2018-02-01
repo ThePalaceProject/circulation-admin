@@ -283,8 +283,12 @@ export interface CustomListEntryData {
 export interface CustomListData {
   id?: string | number;
   name: string;
-  entries?: CustomListEntryData[];
+  entry_count?: number;
   collections?: CollectionData[];
+}
+
+export interface CustomListDetailsData extends CustomListData {
+  entries: CustomListEntryData[];
 }
 
 export interface CustomListsData {

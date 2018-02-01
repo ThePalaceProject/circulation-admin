@@ -6,7 +6,7 @@ import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
-import { CustomListData, CustomListsData, CollectionsData, CollectionData as AdminCollectionData } from "../interfaces";
+import { CustomListData, CustomListDetailsData, CustomListsData, CollectionsData, CollectionData as AdminCollectionData } from "../interfaces";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
@@ -17,6 +17,7 @@ import TrashIcon from "./icons/TrashIcon";
 
 export interface CustomListsStateProps {
   lists: CustomListData[];
+  listDetails?: CustomListDetailsData;
   collections: AdminCollectionData[];
   editedIdentifier?: string;
   searchResults: CollectionData;
@@ -27,7 +28,8 @@ export interface CustomListsStateProps {
 
 export interface CustomListsDispatchProps {
   fetchCustomLists: () => Promise<CustomListsData>;
-  editCustomList: (data: FormData) => Promise<void>;
+  fetchCustomListDetails: (listId: string) => Promise<CustomListDetailsData>;
+  editCustomList: (data: FormData, listId?: string) => Promise<void>;
   deleteCustomList: (listId: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
@@ -98,7 +100,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
                   />
                 <ul>
                   { this.sortedLists().map(list => {
-                      const active = (list === this.customListToEdit());
+                      const active = (String(list.id) === this.props.identifier);
                       return (
                         <li key={list.id} className={active ? "active" : "" }>
                           <div>
@@ -106,7 +108,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
                             <div>ID-{ list.id }</div>
                           </div>
                           <div>
-                            <div>Books in list: { list.entries.length }</div>
+                            <div>Books in list: { list.entry_count }</div>
                             <div>
                               { active &&
                                 <button
@@ -152,10 +154,10 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               />
           }
 
-          { this.customListToEdit() &&
+          { this.props.editOrCreate === "edit" &&
             <CustomListEditor
               library={this.props.library}
-              list={this.customListToEdit()}
+              list={this.props.listDetails}
               collections={this.collectionsForLibrary()}
               editCustomList={this.editCustomList}
               search={this.props.search}
@@ -173,6 +175,9 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     if (this.props.fetchCustomLists) {
       this.props.fetchCustomLists();
     }
+    if (this.props.editOrCreate === "edit" && this.props.fetchCustomListDetails) {
+      this.props.fetchCustomListDetails(this.props.identifier);
+    }
     if (this.props.fetchCollections) {
       this.props.fetchCollections();
     }
@@ -189,6 +194,11 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
         const firstList = this.sortedLists(nextProps.lists)[0];
         window.location.href += "/edit/" + firstList.id;
       }
+    }
+
+    // If we switched lists, fetch the details for the new list.
+    if (nextProps.identifier && nextProps.fetchCustomListDetails && nextProps.identifier !== this.props.identifier) {
+      nextProps.fetchCustomListDetails(nextProps.identifier);
     }
   }
 
@@ -221,8 +231,8 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     });
   }
 
-  async editCustomList(data: FormData): Promise<void> {
-    await this.props.editCustomList(data);
+  async editCustomList(data: FormData, listId?: string): Promise<void> {
+    await this.props.editCustomList(data, listId);
     this.props.fetchCustomLists();
   }
 
@@ -231,17 +241,6 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
       await this.props.deleteCustomList(String(list.id));
       this.props.fetchCustomLists();
     }
-  }
-
-  customListToEdit(): CustomListData | null {
-    if (this.props.editOrCreate === "edit" && this.props.lists) {
-      for (const list of this.props.lists) {
-        if (String(list.id) === this.props.identifier) {
-          return list;
-        }
-      }
-    }
-    return null;
   }
 
   collectionsForLibrary(): AdminCollectionData[] {
@@ -261,9 +260,10 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 function mapStateToProps(state, ownProps) {
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
+    listDetails: state.editor.customListDetails && state.editor.customListDetails.data,
     editedIdentifier: state.editor.customLists && state.editor.customLists.editedIdentifier,
     fetchError: state.editor.customLists.fetchError || state.editor.collections.fetchError,
-    isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,
+    isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || state.editor.customListDetails.isFetching || state.editor.customListDetails.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,
     searchResults: state.editor.collection && state.editor.collection.data,
     isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage,
     collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections
@@ -275,7 +275,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchCustomLists: () => dispatch(actions.fetchCustomLists(ownProps.library)),
-    editCustomList: (data: FormData) => dispatch(actions.editCustomList(ownProps.library, data)),
+    fetchCustomListDetails: (listId: string) => dispatch(actions.fetchCustomListDetails(ownProps.library, listId)),
+    editCustomList: (data: FormData, listId?: string) => dispatch(actions.editCustomList(ownProps.library, data, listId)),
     deleteCustomList: (listId: string) => dispatch(actions.deleteCustomList(ownProps.library, listId)),
     search: (url: string) => dispatch(actions.fetchCollection(url)),
     loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),

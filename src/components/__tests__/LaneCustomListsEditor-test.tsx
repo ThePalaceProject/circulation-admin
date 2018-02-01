@@ -15,9 +15,9 @@ describe("LaneCustomListsEditor", () => {
   let onUpdate;
 
   let allCustomListsData = [
-    { id: 1, name: "list 1", entries: [] },
-    { id: 2, name: "list 2", entries: [{ pwid: "2a", title: "", authors: []}, { pwid: "2b", title: "", authors: []}] },
-    { id: 3, name: "list 3", entries: [] }
+    { id: 1, name: "list 1", entry_count: 0 },
+    { id: 2, name: "list 2", entry_count: 2 },
+    { id: 3, name: "list 3", entry_count: 0 }
   ];
 
   beforeEach(() => {

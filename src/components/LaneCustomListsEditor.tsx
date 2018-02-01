@@ -66,7 +66,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
                             <GrabIcon />
                             <div className="list-info">
                               <div className="list-name">{list.name}</div>
-                              <div className="list-count">Items in list: {list.entries.length}</div>
+                              <div className="list-count">Items in list: {list.entry_count}</div>
                               <div className="list-id">ID-{list.id}</div>
                             </div>
                             <div className="links">
@@ -116,7 +116,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
                             <GrabIcon />
                             <div className="list-info">
                               <div className="list-name">{list.name}</div>
-                              <div className="list-count">Items in list: {list.entries.length}</div>
+                              <div className="list-count">Items in list: {list.entry_count}</div>
                               <div className="list-id">ID-{list.id}</div>
                             </div>
                             <div className="links">
