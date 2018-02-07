@@ -128,6 +128,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         collections: (nextProps.list && nextProps.list.collections) || []
       });
     }
+    else if ((!this.props.list || !this.props.list.collections) && nextProps.list && nextProps.list.collections) {
+      this.setState({
+        name: this.state.name,
+        entries: this.state.entries,
+        collections: nextProps.list.collections
+      });
+    }
   }
 
   hasChanges(): boolean {
