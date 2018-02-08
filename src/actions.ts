@@ -8,7 +8,8 @@ import {
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
   CustomListsData, CustomListDetailsData, LanesData,
-  RolesData, MediaData, LanguagesData
+  RolesData, MediaData, LanguagesData,
+  StorageServicesData,
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -62,6 +63,9 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
   static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
   static readonly DELETE_SEARCH_SERVICE = "DELETE_SEARCH_SERVICE";
+  static readonly STORAGE_SERVICES = "STORAGE_SERVICES";
+  static readonly EDIT_STORAGE_SERVICE = "EDIT_STORAGE_SERVICE";
+  static readonly DELETE_STORAGE_SERVICE = "DELETE_STORAGE_SERVICE";
   static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
   static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
   static readonly DELETE_DISCOVERY_SERVICE = "DELETE_DISCOVERY_SERVICE";
@@ -456,6 +460,21 @@ export default class ActionCreator extends BaseActionCreator {
   deleteSearchService(identifier: string | number) {
     const url = "/admin/search_service/" + identifier;
     return this.postForm(ActionCreator.DELETE_SEARCH_SERVICE, url, null, "DELETE").bind(this);
+  }
+
+  fetchStorageServices() {
+    const url = "/admin/storage_services";
+    return this.fetchJSON<StorageServicesData>(ActionCreator.STORAGE_SERVICES, url).bind(this);
+  }
+
+  editStorageService(data: FormData) {
+    const url = "/admin/storage_services";
+    return this.postForm(ActionCreator.EDIT_STORAGE_SERVICE, url, data).bind(this);
+  }
+
+  deleteStorageService(identifier: string | number) {
+    const url = "/admin/storage_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_STORAGE_SERVICE, url, null, "DELETE").bind(this);
   }
 
   fetchDiscoveryServices() {
