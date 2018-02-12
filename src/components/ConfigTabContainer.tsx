@@ -103,6 +103,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
           identifier={this.props.identifier}
           />
       ),
+      storage: (
+        <StorageServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      ),
       discovery: (
         <DiscoveryServices
           store={this.props.store}
@@ -111,14 +119,6 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
           identifier={this.props.identifier}
           />
       ),
-      storage: (
-        <StorageServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      )
     };
   }
 

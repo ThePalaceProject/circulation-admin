@@ -4,3 +4,4 @@ node_modules/*
 typings/*
 tests/browser/globals.js
 *~
+npm-debug.log
