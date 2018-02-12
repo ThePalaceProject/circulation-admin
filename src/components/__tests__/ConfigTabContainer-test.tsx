@@ -16,6 +16,7 @@ import MetadataServices from "../MetadataServices";
 import AnalyticsServices from "../AnalyticsServices";
 import CDNServices from "../CDNServices";
 import SearchServices from "../SearchServices";
+import StorageServices from "../StorageServices";
 import DiscoveryServices from "../DiscoveryServices";
 import { mockRouterContext } from "./routing";
 
@@ -60,7 +61,7 @@ describe("ConfigTabContainer", () => {
       Libraries, Collections, AdminAuthServices,
       IndividualAdmins, PatronAuthServices, SitewideSettings,
       MetadataServices, AnalyticsServices, CDNServices,
-      SearchServices, DiscoveryServices
+      SearchServices, StorageServices, DiscoveryServices
     ];
     for (const componentClass of componentClasses) {
       const component = wrapper.find(componentClass);

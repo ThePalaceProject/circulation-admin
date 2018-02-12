@@ -254,6 +254,12 @@ export interface SearchServicesData extends ServicesData {
   search_services: SearchServiceData[];
 }
 
+export interface StorageServiceData extends ServiceData {}
+
+export interface StorageServicesData extends ServicesData {
+  storage_services: StorageServiceData[];
+}
+
 export interface DiscoveryServiceData extends ServiceData {}
 
 export interface DiscoveryServicesData extends ServicesData {
