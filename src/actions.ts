@@ -9,7 +9,7 @@ import {
   DiscoveryServicesData, LibraryRegistrationsData,
   CustomListsData, CustomListDetailsData, LanesData,
   RolesData, MediaData, LanguagesData,
-  StorageServicesData,
+  StorageServicesData, LoggingSettingsData,
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -51,6 +51,9 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly SITEWIDE_SETTINGS = "SITEWIDE_SETTINGS";
   static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
   static readonly DELETE_SITEWIDE_SETTING = "DELETE_SITEWIDE_SETTING";
+  static readonly LOGGING_SETTINGS = "LOGGING_SETTINGS";
+  static readonly EDIT_LOGGING_SETTING = "EDIT_LOGGING_SETTING";
+  static readonly DELETE_LOGGING_SETTING = "DELETE_LOGGING_SETTING";
   static readonly METADATA_SERVICES = "METADATA_SERVICES";
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
   static readonly DELETE_METADATA_SERVICE = "DELETE_METADATA_SERVICE";
@@ -400,6 +403,21 @@ export default class ActionCreator extends BaseActionCreator {
   deleteSitewideSetting(identifier: string | number) {
     const url = "/admin/sitewide_setting/" + identifier;
     return this.postForm(ActionCreator.DELETE_SITEWIDE_SETTING, url, null, "DELETE").bind(this);
+  }
+
+  fetchLoggingSettings() {
+    const url = "/admin/logging_settings";
+    return this.fetchJSON<LoggingSettingsData>(ActionCreator.LOGGING_SETTINGS, url).bind(this);
+  }
+
+  editLoggingSetting(data: FormData) {
+    const url = "/admin/logging_settings";
+    return this.postForm(ActionCreator.EDIT_LOGGING_SETTING, url, data).bind(this);
+  }
+
+  deleteLoggingSetting(identifier: string | number) {
+    const url = "/admin/logging_setting/" + identifier;
+    return this.postForm(ActionCreator.DELETE_LOGGING_SETTING, url, null, "DELETE").bind(this);
   }
 
   fetchMetadataServices() {

@@ -4,7 +4,7 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
   label?: string;
   description?: string;
-  onChange?: () => any;
+  onChange?: (e: any) => any;
 }
 
 export interface EditableInputState {
@@ -85,7 +85,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   handleChange() {
-    if (!this.props.readOnly && (!this.props.onChange || this.props.onChange() !== false)) {
+    if (!this.props.readOnly && (!this.props.onChange || this.props.onChange(this.getValue()) !== false)) {
       let value = this.state.value;
       let checked = this.state.checked;
       if (this.props.type === "checkbox" || this.props.type === "radio") {

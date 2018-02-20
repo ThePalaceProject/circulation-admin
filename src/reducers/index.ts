@@ -11,6 +11,7 @@ import adminAuthServices from "./adminAuthServices";
 import individualAdmins from "./individualAdmins";
 import patronAuthServices from "./patronAuthServices";
 import sitewideSettings from "./sitewideSettings";
+import loggingSettings from "./loggingSettings";
 import metadataServices from "./metadataServices";
 import analyticsServices from "./analyticsServices";
 import cdnServices from "./cdnServices";
@@ -31,7 +32,7 @@ import collection, { CollectionState } from "opds-web-client/lib/reducers/collec
 import { FetchEditState } from "./createFetchEditReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
-  PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
+  PatronAuthServicesData, SitewideSettingsData, LoggingSettingsData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
   DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
   CustomListDetailsData, LanesData, RolesData, MediaData, LanguagesData
@@ -51,6 +52,7 @@ export interface State {
   individualAdmins: FetchEditState<IndividualAdminsData>;
   patronAuthServices: FetchEditState<PatronAuthServicesData>;
   sitewideSettings: FetchEditState<SitewideSettingsData>;
+  loggingSettings: FetchEditState<LoggingSettingsData>;
   metadataServices: FetchEditState<MetadataServicesData>;
   analyticsServices: FetchEditState<AnalyticsServicesData>;
   cdnServices: FetchEditState<CDNServicesData>;
@@ -83,6 +85,7 @@ export default combineReducers<State>({
   individualAdmins,
   patronAuthServices,
   sitewideSettings,
+  loggingSettings,
   metadataServices,
   analyticsServices,
   cdnServices,

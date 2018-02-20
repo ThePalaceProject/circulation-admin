@@ -230,6 +230,18 @@ export interface SitewideSettingsData {
   all_settings: SettingData[];
 }
 
+export interface LoggingSettingData {
+  key: string;
+  value: string;
+  type?: string;
+  options?: SettingData[];
+}
+
+export interface LoggingSettingsData {
+  settings: LoggingSettingData[];
+  all_settings: SettingData[];
+}
+
 export interface MetadataServiceData extends ServiceData {}
 
 export interface MetadataServicesData extends ServicesData {

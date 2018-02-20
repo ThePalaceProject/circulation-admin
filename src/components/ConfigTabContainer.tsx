@@ -11,6 +11,7 @@ import CDNServices from "./CDNServices";
 import SearchServices from "./SearchServices";
 import StorageServices from "./StorageServices";
 import DiscoveryServices from "./DiscoveryServices";
+import LoggingSettings from "./LoggingSettings";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -65,6 +66,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       ),
       sitewideSettings: (
         <SitewideSettings
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      ),
+      loggingSettings: (
+        <LoggingSettings
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
