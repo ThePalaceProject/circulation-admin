@@ -104,7 +104,6 @@ export default class LoggingSettingEditForm extends React.Component<LoggingSetti
 
   availableSettings() {
     const allSettings = this.props.data && this.props.data.all_settings || [];
-    // console.log(allSettings);
     if (this.props.item) {
       for (const setting of allSettings) {
         if (setting.key === this.props.item.key) {
