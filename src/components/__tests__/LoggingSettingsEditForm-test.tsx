@@ -121,8 +121,8 @@ describe("LoggingSettingEditForm", () => {
 
       expect(editLoggingSetting.callCount).to.equal(1);
       let formData = editLoggingSetting.args[0][0];
-      expect(formData.get("key")).to.eql({ value: "test_key" });
-      expect(formData.get("value")).to.eql({ value: "" });
+      expect(formData.get("key")).to.eql("test_key");
+      expect(formData.get("value")).to.eql("value");
     });
   });
 });
