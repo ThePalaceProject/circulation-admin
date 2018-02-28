@@ -2,13 +2,14 @@ import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDis
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { LoggingSettingsData, LoggingSettingData } from "../interfaces";
-import LoggingSettingEditForm from "./LoggingSettingEditForm";
+// import LoggingSettingEditForm from "./LoggingSettingEditForm";
+import ServiceEditForm from "./ServiceEditForm";
 
 /** Right panel for logging settings on the system configuration page.
     Shows a list of current logging settings and allows creating a new
     setting or editing or deleting an existing setting. */
 export class LoggingSettings extends EditableConfigList<LoggingSettingsData, LoggingSettingData> {
-  EditForm = LoggingSettingEditForm;
+  EditForm = ServiceEditForm;
   listDataKey = "settings";
   itemTypeName = "logging setting";
   urlBase = "/admin/web/config/loggingSettings/";
@@ -26,6 +27,7 @@ export class LoggingSettings extends EditableConfigList<LoggingSettingsData, Log
 }
 
 function mapStateToProps(state, ownProps) {
+  // console.log(state.editor.loggingSettings)
   return {
     data: state.editor.loggingSettings && state.editor.loggingSettings.data,
     editedIdentifier: state.editor.loggingSettings && state.editor.loggingSettings.editedIdentifier,

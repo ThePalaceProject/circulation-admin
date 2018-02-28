@@ -245,7 +245,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         }
       }
     }
-
+    console.log('protocol', allProtocols);
     return allProtocols;
   }
 
