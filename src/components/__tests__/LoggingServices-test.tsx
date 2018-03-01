@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { LoggingServices } from "../loggingServices";
+import { LoggingServices } from "../LoggingServices";
 
 describe("LoggingServices", () => {
   let wrapper;
