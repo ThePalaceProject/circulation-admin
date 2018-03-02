@@ -16,13 +16,27 @@ describe("SitewideSettingEditForm", () => {
   };
   let settingDataWithDescription = {
     key: "other_key1",
-    label: "label1",
+    value: "label1",
     description: "some description",
+  };
+  let settingDataWithSelect = {
+    key: "other_key2",
+    value: "label2",
   };
   let allSettings = [
     { key: "test_key", label: "label" },
     { key: "other_key1", label: "label1", description: "some description" },
-    { key: "other_key2", label: "label2" }
+    {
+      key: "other_key2",
+      label: "label2",
+      type: "select",
+      options: [
+        { key: "select_key1", label: "select label1" },
+        { key: "select_key2", label: "select label2" },
+        { key: "select_key3", label: "select label3" },
+        { key: "select_key4", label: "select label4" },
+      ]
+    }
   ];
   let settingsData = {
     settings: [settingData],
@@ -105,6 +119,16 @@ describe("SitewideSettingEditForm", () => {
       expect(description.length).to.equal(1);
       expect(description.prop("dangerouslySetInnerHTML")).to.eql({ __html: "some description" });
     });
+
+    it("should render a select value option", () => {
+      wrapper.setProps({ item: settingDataWithSelect });
+      wrapper.setState({ inputKey: "other_key2" });
+
+      let firstSelect = editableInputByName("key");
+      let dynamicSelect = editableInputByName("value");
+      expect(firstSelect.props().value).to.equal("other_key2");
+      expect(dynamicSelect.props().value).to.equal("label2");
+    });
   });
 
   describe("behavior", () => {
@@ -131,6 +155,41 @@ describe("SitewideSettingEditForm", () => {
       let formData = editSitewideSetting.args[0][0];
       expect(formData.get("key")).to.equal("test_key");
       expect(formData.get("value")).to.equal("value");
+    });
+
+    it("should switch between rendering a select and input value options", () => {
+      let select = wrapper.find("select");
+      let input = wrapper.find("input");
+
+      let selectValue = editableInputByName("value");
+      let inputValue = editableInputByName("key");
+
+      expect(select.length).to.equal(1);
+      expect(input.length).to.equal(1);
+      expect(inputValue.props().value).to.equal(undefined);
+      expect(selectValue.props().value).to.equal(undefined);
+
+      // select.simulate("change", { target: { value: "other_key2" } });
+      wrapper.setProps({ item: settingDataWithSelect });
+      wrapper.setState({ inputKey: "other_key2" });
+
+      select = wrapper.find("select");
+      input = wrapper.find("input");
+      expect(inputValue.props().value).to.equal("other_key2");
+      expect(selectValue.props().value).to.equal("label2");
+      expect(select.length).to.equal(2);
+      expect(input.length).to.equal(0);
+
+      // select.simulate("change", { target: { value: "other_key2" } });
+      wrapper.setProps({ item: settingDataWithDescription});
+      wrapper.setState({ inputKey: "other_key1 " });
+
+      select = wrapper.find("select");
+      input = wrapper.find("input");
+      expect(inputValue.props().value).to.equal("other_key1");
+      expect(selectValue.props().value).to.equal("label1");
+      expect(select.length).to.equal(1);
+      expect(input.length).to.equal(1);
     });
   });
 });
