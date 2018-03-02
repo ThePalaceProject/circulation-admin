@@ -223,6 +223,7 @@ export interface PatronAuthServicesData extends ServicesData {
 export interface SitewideSettingData {
   key: string;
   value: string;
+  description?: string;
 }
 
 export interface SitewideSettingsData {

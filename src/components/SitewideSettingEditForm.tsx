@@ -11,8 +11,12 @@ export interface SitewideSettingEditFormProps {
   listDataKey: string;
 }
 
+export interface SitewideSettingEditFormState {
+  inputKey: string;
+}
+
 /** Form for editing a single sitewide setting. */
-export default class SitewideSettingEditForm extends React.Component<SitewideSettingEditFormProps, any> {
+export default class SitewideSettingEditForm extends React.Component<SitewideSettingEditFormProps, SitewideSettingEditFormState> {
   constructor(props) {
     super(props);
     this.save = this.save.bind(this);
@@ -24,10 +28,17 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
 
   render(): JSX.Element {
     const inputKey = this.state.inputKey;
-    const logType = !!(inputKey === "log_level" || inputKey === "database_log_level");
+    const availableSettings = this.availableSettings();
+    let settingToRender;
+    availableSettings.forEach(setting => {
+      if (setting.key === inputKey) {
+        settingToRender = setting;
+      }
+    });
+    const selectType = !!(settingToRender && settingToRender.options && settingToRender.options.length);
     return (
       <div>
-        { this.availableSettings().length > 0 &&
+        { availableSettings.length > 0 &&
           <form ref="form" onSubmit={this.save} className="edit-form">
             <EditableInput
               elementType="select"
@@ -38,23 +49,25 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
               value={this.props.item && this.props.item.key}
               onChange={this.onChange}
             >
-              { this.availableSettings().map(setting =>
+              {
+                availableSettings.map(setting =>
                   <option key={setting.key} value={setting.key}>{setting.label}</option>
                 )
               }
             </EditableInput>
             {
-              logType ? (
+              selectType ? (
                 <EditableInput
                   elementType="select"
                   name="value"
                   label="Value"
                   value={this.props.item && this.props.item.value}
                 >
-                  { this.availableSettings().map(setting => {
+                  {
+                    availableSettings.map(setting => {
                       if (setting.key === inputKey) {
                         return setting.options.map(s => {
-                          return <option key={s.key} value={s.key}>{s.value}</option>;
+                          return <option key={s.key} value={s.key}>{s.label}</option>;
                         });
                       }
                     })
@@ -70,6 +83,13 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                   value={this.props.item && this.props.item.value}
                 />
               )
+            }
+            {
+              availableSettings.map(setting => {
+                if (setting.key === inputKey && setting.description) {
+                  return <p className="description" dangerouslySetInnerHTML={{__html: setting.description}} />;
+                }
+              })
             }
             <button
               type="submit"

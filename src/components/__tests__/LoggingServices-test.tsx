@@ -89,7 +89,6 @@ describe("LoggingServices", () => {
   });
 
   it("shows logging service list", () => {
-    console.log(wrapper);
     let loggingService = wrapper.find("li");
     expect(loggingService.length).to.equal(1);
     expect(loggingService.at(0).text()).to.contain("logglyEdit<PencilIcon />Delete<TrashIcon />");

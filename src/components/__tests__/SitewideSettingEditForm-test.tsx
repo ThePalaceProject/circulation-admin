@@ -12,11 +12,16 @@ describe("SitewideSettingEditForm", () => {
   let editSitewideSetting;
   let settingData = {
     key: "test_key",
-    value: "value"
+    value: "value",
+  };
+  let settingDataWithDescription = {
+    key: "other_key1",
+    label: "label1",
+    description: "some description",
   };
   let allSettings = [
     { key: "test_key", label: "label" },
-    { key: "other_key1", label: "label1" },
+    { key: "other_key1", label: "label1", description: "some description" },
     { key: "other_key2", label: "label2" }
   ];
   let settingsData = {
@@ -91,6 +96,14 @@ describe("SitewideSettingEditForm", () => {
       wrapper.setProps({ item: settingData });
       input = editableInputByName("value");
       expect(input.props().value).to.equal("value");
+    });
+
+    it("should render a description", () => {
+      wrapper.setProps({ item: settingDataWithDescription });
+      const description = wrapper.find(".description");
+
+      expect(description.length).to.equal(1);
+      expect(description.prop("dangerouslySetInnerHTML")).to.eql({ __html: "some description" });
     });
   });
 
