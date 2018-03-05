@@ -161,33 +161,22 @@ describe("SitewideSettingEditForm", () => {
       let select = wrapper.find("select");
       let input = wrapper.find("input");
 
-      let selectValue = editableInputByName("value");
-      let inputValue = editableInputByName("key");
-
       expect(select.length).to.equal(1);
       expect(input.length).to.equal(1);
-      expect(inputValue.props().value).to.equal(undefined);
-      expect(selectValue.props().value).to.equal(undefined);
 
       // select.simulate("change", { target: { value: "other_key2" } });
-      wrapper.setProps({ item: settingDataWithSelect });
       wrapper.setState({ inputKey: "other_key2" });
 
       select = wrapper.find("select");
       input = wrapper.find("input");
-      expect(inputValue.props().value).to.equal("other_key2");
-      expect(selectValue.props().value).to.equal("label2");
       expect(select.length).to.equal(2);
       expect(input.length).to.equal(0);
 
       // select.simulate("change", { target: { value: "other_key2" } });
-      wrapper.setProps({ item: settingDataWithDescription});
       wrapper.setState({ inputKey: "other_key1 " });
 
       select = wrapper.find("select");
       input = wrapper.find("input");
-      expect(inputValue.props().value).to.equal("other_key1");
-      expect(selectValue.props().value).to.equal("label1");
       expect(select.length).to.equal(1);
       expect(input.length).to.equal(1);
     });
