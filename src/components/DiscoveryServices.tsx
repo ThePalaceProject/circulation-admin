@@ -3,7 +3,7 @@ import { GenericEditableConfigList, EditableConfigListStateProps, EditableConfig
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { DiscoveryServicesData, DiscoveryServiceData, LibraryData, LibraryRegistrationsData } from "../interfaces";
-import DiscoveryServiceEditForm from "./DiscoveryServiceEditForm";
+import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 
 export interface DiscoveryServicesStateProps extends EditableConfigListStateProps<DiscoveryServicesData> {
   isFetchingLibraryRegistrations?: boolean;
@@ -15,6 +15,8 @@ export interface DiscoveryServicesDispatchProps extends EditableConfigListDispat
 }
 
 export interface DiscoveryServicesProps extends DiscoveryServicesStateProps, DiscoveryServicesDispatchProps, EditableConfigListOwnProps {};
+
+class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {};
 
 /** Right panel for discovery services on the system configuration page.
     Shows a list of current discovery services and allows creating a new
@@ -40,7 +42,6 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
           data.append("integration_id", this.itemToEdit().id);
           this.props.registerLibrary(data).then(() => {
             if (this.props.fetchLibraryRegistrations) {
-              console.log("fetching");
               this.props.fetchLibraryRegistrations();
             }
           });
@@ -62,15 +63,15 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
-  if (state.editor.libraryRegistrations && state.editor.libraryRegistrations.data) {
-    data.libraryRegistrations = state.editor.libraryRegistrations.data.library_registrations;
+  if (state.editor.discoveryServiceLibraryRegistrations && state.editor.discoveryServiceLibraryRegistrations.data) {
+    data.libraryRegistrations = state.editor.discoveryServiceLibraryRegistrations.data.library_registrations;
   }
   return {
     data: data,
     editedIdentifier: state.editor.discoveryServices && state.editor.discoveryServices.editedIdentifier,
-    fetchError: state.editor.discoveryServices.fetchError || (state.editor.registerLibrary && state.editor.registerLibrary.fetchError),
-    isFetching: state.editor.discoveryServices.isFetching || state.editor.discoveryServices.isEditing || (state.editor.registerLibrary && state.editor.registerLibrary.isFetching),
-    isFetchingLibraryRegistrations: state.editor.libraryRegistrations && state.editor.libraryRegistrations.isFetching
+    fetchError: state.editor.discoveryServices.fetchError || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.fetchError),
+    isFetching: state.editor.discoveryServices.isFetching || state.editor.discoveryServices.isEditing || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.isFetching),
+    isFetchingLibraryRegistrations: state.editor.discoveryServiceLibraryRegistrations && state.editor.discoveryServiceLibraryRegistrations.isFetching
   };
 }
 
@@ -80,8 +81,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchData: () => dispatch(actions.fetchDiscoveryServices()),
     editItem: (data: FormData) => dispatch(actions.editDiscoveryService(data)),
     deleteItem: (identifier: string | number) => dispatch(actions.deleteDiscoveryService(identifier)),
-    registerLibrary: (data: FormData) => dispatch(actions.registerLibrary(data)),
-    fetchLibraryRegistrations: () => dispatch(actions.fetchLibraryRegistrations())
+    registerLibrary: (data: FormData) => dispatch(actions.registerLibraryWithDiscoveryService(data)),
+    fetchLibraryRegistrations: () => dispatch(actions.fetchDiscoveryServiceLibraryRegistrations())
   };
 }
 

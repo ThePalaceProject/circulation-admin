@@ -69,8 +69,10 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
   static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
   static readonly DELETE_DISCOVERY_SERVICE = "DELETE_DISCOVERY_SERVICE";
-  static readonly REGISTER_LIBRARY = "REGISTER_LIBRARY";
-  static readonly LIBRARY_REGISTRATIONS = "LIBRARY_REGISTRATIONS";
+  static readonly REGISTER_LIBRARY_WITH_DISCOVERY_SERVICE = "REGISTER_LIBRARY_WITH_DISCOVERY_SERVICE";
+  static readonly DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS = "DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS";
+  static readonly REGISTER_LIBRARY_WITH_COLLECTION = "REGISTER_LIBRARY_WITH_COLLECTION";
+  static readonly COLLECTION_LIBRARY_REGISTRATIONS = "COLLECTION_LIBRARY_REGISTRATIONS";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
   static readonly CUSTOM_LIST_DETAILS = "CUSTOM_LIST_DETAILS";
   static readonly EDIT_CUSTOM_LIST = "EDIT_CUSTOM_LIST";
@@ -492,14 +494,24 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.DELETE_DISCOVERY_SERVICE, url, null, "DELETE").bind(this);
   }
 
-  registerLibrary(data: FormData) {
-    const url = "/admin/library_registrations";
-    return this.postForm(ActionCreator.REGISTER_LIBRARY, url, data).bind(this);
+  registerLibraryWithDiscoveryService(data: FormData) {
+    const url = "/admin/discovery_service_library_registrations";
+    return this.postForm(ActionCreator.REGISTER_LIBRARY_WITH_DISCOVERY_SERVICE, url, data).bind(this);
   }
 
-  fetchLibraryRegistrations() {
-    const url = "/admin/library_registrations";
-    return this.fetchJSON<LibraryRegistrationsData>(ActionCreator.LIBRARY_REGISTRATIONS, url).bind(this);
+  fetchDiscoveryServiceLibraryRegistrations() {
+    const url = "/admin/discovery_service_library_registrations";
+    return this.fetchJSON<LibraryRegistrationsData>(ActionCreator.DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS, url).bind(this);
+  }
+
+  registerLibraryWithCollection(data: FormData) {
+    const url = "/admin/collection_library_registrations";
+    return this.postForm(ActionCreator.REGISTER_LIBRARY_WITH_COLLECTION, url, data).bind(this);
+  }
+
+  fetchCollectionLibraryRegistrations() {
+    const url = "/admin/collection_library_registrations";
+    return this.fetchJSON<LibraryRegistrationsData>(ActionCreator.COLLECTION_LIBRARY_REGISTRATIONS, url).bind(this);
   }
 
   fetchCustomLists(library: string) {

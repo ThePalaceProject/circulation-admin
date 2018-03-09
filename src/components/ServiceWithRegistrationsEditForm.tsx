@@ -1,11 +1,11 @@
 import * as React from "react";
 import ServiceEditForm from "./ServiceEditForm";
-import { DiscoveryServicesData } from "../interfaces";
+import { ServicesWithRegistrationsData } from "../interfaces";
 
 /** Form for editing discovery services on the discovery service configuration tab.
     Includes the same form as other services but an addition section with a list
     of libraries and their registration statuses and buttons to register them. */
-export default class DiscoveryServiceEditForm extends ServiceEditForm<DiscoveryServicesData> {
+export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegistrationsData> extends ServiceEditForm<T> {
   context: { registerLibrary: (library) => void };
 
   static contextTypes = {
@@ -16,11 +16,11 @@ export default class DiscoveryServiceEditForm extends ServiceEditForm<DiscoveryS
     return (
       <div>
         {super.render()}
-        { this.props.item && this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.length > 0 &&
+        { this.props.item && this.protocolSupportsRegistration() && this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.length > 0 &&
           <div>
             <h2>Register libraries</h2>
             { this.props.data.allLibraries.map(library =>
-                <div className="discovery-service-library" key={library.short_name}>
+                <div className="service-with-registrations-library" key={library.short_name}>
                   { this.getRegistrationStatus(library) === "success" &&
                     <div>
                       { library.name }
@@ -85,5 +85,16 @@ export default class DiscoveryServiceEditForm extends ServiceEditForm<DiscoveryS
       }
     }
     return null;
+  }
+
+  protocolSupportsRegistration(): boolean {
+    if (this.state.protocol && this.props.data.protocols) {
+      for (const protocol of this.props.data.protocols) {
+        if (protocol.name === this.state.protocol) {
+          return !!protocol.supports_registration;
+        }
+      }
+    }
+    return false;
   }
 }
