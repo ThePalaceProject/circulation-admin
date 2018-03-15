@@ -168,6 +168,7 @@ export interface ProtocolData {
   label?: string;
   description?: string;
   sitewide?: boolean;
+  supports_registration?: boolean;
   settings: SettingData[];
   child_settings?: SettingData[];
   library_settings?: SettingData[];
@@ -189,9 +190,13 @@ export interface ServicesData {
   allLibraries?: LibraryData[];
 }
 
+export interface ServicesWithRegistrationsData extends ServicesData {
+  libraryRegistrations?: LibraryRegistrationData[];
+}
+
 export interface CollectionData extends ServiceData {}
 
-export interface CollectionsData extends ServicesData {
+export interface CollectionsData extends ServicesWithRegistrationsData {
   collections: CollectionData[];
 }
 
@@ -262,9 +267,8 @@ export interface StorageServicesData extends ServicesData {
 
 export interface DiscoveryServiceData extends ServiceData {}
 
-export interface DiscoveryServicesData extends ServicesData {
+export interface DiscoveryServicesData extends ServicesWithRegistrationsData {
   discovery_services: DiscoveryServiceData[];
-  libraryRegistrations?: LibraryRegistrationData[];
 }
 
 export interface LibraryDataWithStatus extends LibraryData {

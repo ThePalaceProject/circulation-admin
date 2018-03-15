@@ -17,8 +17,10 @@ import cdnServices from "./cdnServices";
 import searchServices from "./searchServices";
 import storageServices from "./storageServices";
 import discoveryServices from "./discoveryServices";
-import registerLibrary, { RegisterLibraryState } from "./registerLibrary";
-import libraryRegistrations from "./libraryRegistrations";
+import registerLibraryWithDiscoveryService from "./registerLibraryWithDiscoveryService";
+import discoveryServiceLibraryRegistrations from "./discoveryServiceLibraryRegistrations";
+import registerLibraryWithCollection from "./registerLibraryWithCollection";
+import collectionLibraryRegistrations from "./collectionLibraryRegistrations";
 import customLists from "./customLists";
 import customListDetails from "./customListDetails";
 import lanes from "./lanes";
@@ -29,6 +31,7 @@ import media from "./media";
 import languages from "./languages";
 import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
 import { FetchEditState } from "./createFetchEditReducer";
+import { RegisterLibraryState } from "./createRegisterLibraryReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
@@ -57,8 +60,10 @@ export interface State {
   searchServices: FetchEditState<SearchServicesData>;
   storageServices: FetchEditState<StorageServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
-  registerLibrary: RegisterLibraryState;
-  libraryRegistrations: FetchEditState<LibraryRegistrationsData>;
+  registerLibraryWithDiscoveryService: RegisterLibraryState;
+  discoveryServiceLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
+  registerLibraryWithCollection: RegisterLibraryState;
+  collectionLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
   customListDetails: FetchEditState<CustomListDetailsData>;
   collection: CollectionState;
@@ -89,8 +94,10 @@ export default combineReducers<State>({
   searchServices,
   storageServices,
   discoveryServices,
-  registerLibrary,
-  libraryRegistrations,
+  registerLibraryWithDiscoveryService,
+  discoveryServiceLibraryRegistrations,
+  registerLibraryWithCollection,
+  collectionLibraryRegistrations,
   customLists,
   customListDetails,
   collection,
