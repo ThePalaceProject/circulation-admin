@@ -11,6 +11,7 @@ import adminAuthServices from "./adminAuthServices";
 import individualAdmins from "./individualAdmins";
 import patronAuthServices from "./patronAuthServices";
 import sitewideSettings from "./sitewideSettings";
+import loggingServices from "./loggingServices";
 import metadataServices from "./metadataServices";
 import analyticsServices from "./analyticsServices";
 import cdnServices from "./cdnServices";
@@ -34,7 +35,7 @@ import { FetchEditState } from "./createFetchEditReducer";
 import { RegisterLibraryState } from "./createRegisterLibraryReducer";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
-  PatronAuthServicesData, SitewideSettingsData, MetadataServicesData,
+  PatronAuthServicesData, SitewideSettingsData, LoggingServicesData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
   DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
   CustomListDetailsData, LanesData, RolesData, MediaData, LanguagesData
@@ -54,6 +55,7 @@ export interface State {
   individualAdmins: FetchEditState<IndividualAdminsData>;
   patronAuthServices: FetchEditState<PatronAuthServicesData>;
   sitewideSettings: FetchEditState<SitewideSettingsData>;
+  loggingServices: FetchEditState<LoggingServicesData>;
   metadataServices: FetchEditState<MetadataServicesData>;
   analyticsServices: FetchEditState<AnalyticsServicesData>;
   cdnServices: FetchEditState<CDNServicesData>;
@@ -88,6 +90,7 @@ export default combineReducers<State>({
   individualAdmins,
   patronAuthServices,
   sitewideSettings,
+  loggingServices,
   metadataServices,
   analyticsServices,
   cdnServices,

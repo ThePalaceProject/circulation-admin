@@ -94,6 +94,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           }
           { setting.options.map(option =>
               <EditableInput
+                key={option.key}
                 elementType="input"
                 type="checkbox"
                 disabled={this.props.disabled}

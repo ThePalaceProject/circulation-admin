@@ -228,11 +228,18 @@ export interface PatronAuthServicesData extends ServicesData {
 export interface SitewideSettingData {
   key: string;
   value: string;
+  description?: string;
 }
 
 export interface SitewideSettingsData {
   settings: SitewideSettingData[];
   all_settings: SettingData[];
+}
+
+export interface LoggingServiceData extends ServiceData {}
+
+export interface LoggingServicesData extends ServicesData {
+  logging_services: LoggingServiceData[];
 }
 
 export interface MetadataServiceData extends ServiceData {}
