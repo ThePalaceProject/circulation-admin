@@ -325,3 +325,9 @@ export interface LaneData {
 export interface LanesData {
   lanes: LaneData[];
 }
+
+export interface Media {
+  type: string;
+  label: string;
+  active: boolean;
+}

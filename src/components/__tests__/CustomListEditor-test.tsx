@@ -84,7 +84,7 @@ describe("CustomListEditor", () => {
 
   it("shows collections", () => {
     let inputs = wrapper.find(EditableInput);
-    expect(inputs.length).to.equal(3);
+    expect(inputs.length).to.equal(6);
     expect(inputs.at(0).props().label).to.equal("collection 1");
     expect(inputs.at(0).props().value).to.equal("1");
     expect(inputs.at(0).props().checked).to.equal(false);
@@ -94,6 +94,20 @@ describe("CustomListEditor", () => {
     expect(inputs.at(2).props().label).to.equal("collection 3");
     expect(inputs.at(2).props().value).to.equal("3");
     expect(inputs.at(2).props().checked).to.equal(false);
+  });
+
+  it("shows state media options", () => {
+    let inputs = wrapper.find(EditableInput);
+    expect(inputs.length).to.equal(6);
+    expect(inputs.at(3).props().label).to.equal("All");
+    expect(inputs.at(3).props().value).to.equal("all");
+    expect(inputs.at(3).props().checked).to.equal(true);
+    expect(inputs.at(4).props().label).to.equal("Audiobooks");
+    expect(inputs.at(4).props().value).to.equal("audiobooks");
+    expect(inputs.at(4).props().checked).to.equal(false);
+    expect(inputs.at(5).props().label).to.equal("E-books");
+    expect(inputs.at(5).props().value).to.equal("ebooks");
+    expect(inputs.at(5).props().checked).to.equal(false);
   });
 
   it("saves list", () => {
@@ -285,5 +299,61 @@ describe("CustomListEditor", () => {
 
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0]).to.equal("/library/search?q=test");
+  });
+
+  it("searches with audiobooks selected", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        collections={collections}
+      />
+    );
+    let textInput = wrapper.find(".form-control") as any;
+    textInput.get(0).value = "harry potter";
+    let radioInput = wrapper.find(".media-selection input") as any;
+    const audiobookInput = radioInput.at(1);
+    let searchForm = wrapper.find("form");
+
+    audiobookInput.checked = true;
+    audiobookInput.simulate("change");
+
+    searchForm.simulate("submit");
+
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][0]).to.equal("/library/search?q=harry%20potter&media=audiobooks");
+  });
+
+  it("searches with ebook selected", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        collections={collections}
+      />
+    );
+    let textInput = wrapper.find(".form-control") as any;
+    textInput.get(0).value = "oliver twist";
+    let radioInput = wrapper.find(".media-selection input") as any;
+    const ebookInput = radioInput.at(2);
+    let searchForm = wrapper.find("form");
+
+    ebookInput.checked = true;
+    ebookInput.simulate("change");
+
+    searchForm.simulate("submit");
+
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][0]).to.equal("/library/search?q=oliver%20twist&media=ebooks");
   });
 });

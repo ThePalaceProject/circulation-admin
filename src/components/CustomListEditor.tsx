@@ -1,5 +1,10 @@
 import * as React from "react";
-import { CustomListDetailsData, CustomListEntryData, CollectionData as AdminCollectionData } from "../interfaces";
+import {
+  CustomListDetailsData,
+  CustomListEntryData,
+  CollectionData as AdminCollectionData,
+  Media,
+} from "../interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
@@ -17,12 +22,6 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   isFetchingMoreSearchResults: boolean;
-}
-
-export interface Media {
-  type: string;
-  label: string;
-  active: boolean;
 }
 
 export interface CustomListEditorState {
@@ -53,7 +52,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.reset = this.reset.bind(this);
     this.search = this.search.bind(this);
     this.changeMedia = this.changeMedia.bind(this);
-    this.getMediaTerm = this.getMediaTerm.bind(this);
+    this.getMediaQuery = this.getMediaQuery.bind(this);
   }
 
   render(): JSX.Element {
@@ -87,6 +86,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                     )
                   }
                 </div>
+                <br /><br />
                 <span>Select the media to search for:</span>
                 <div className="media-selection">
                   {
@@ -274,10 +274,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     });
   }
 
-  getMediaTerm() {
-    let media = '';
-
-    this.state.media.map(m => {
+  getMediaQuery() {
+    let media = "";
+    this.state.media.forEach(m => {
       if (m.active && m.type !== "all") {
         media = `&media=${encodeURIComponent(m.type)}`;
       }
@@ -289,9 +288,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   search(event) {
     event.preventDefault();
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
-    const mediaTerm = this.getMediaTerm();
-    console.log(mediaTerm);
-    const url = "/" + this.props.library + "/search?q=" + searchTerms + mediaTerm;
+    const mediaQuery = this.getMediaQuery();
+    const url = "/" + this.props.library + "/search?q=" + searchTerms + mediaQuery;
     this.props.search(url);
   }
 }
