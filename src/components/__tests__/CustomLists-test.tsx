@@ -20,6 +20,7 @@ describe("CustomLists", () => {
   let search;
   let loadMoreSearchResults;
   let fetchCollections;
+  let fetchMedia;
 
   let listsData = [
     { id: 1, name: "a list", entry_count: 0, collections: [] },
@@ -52,6 +53,7 @@ describe("CustomLists", () => {
     search = stub();
     loadMoreSearchResults = stub();
     fetchCollections = stub();
+    fetchMedia = stub();
 
     wrapper = shallow(
       <CustomLists
@@ -69,6 +71,7 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
+        fetchMedia={fetchMedia}
         />
     );
   });
@@ -133,6 +136,7 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
+        fetchMedia={fetchMedia}
         />
     );
     wrapper.setProps({ lists: [] });
@@ -154,6 +158,7 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
+        fetchMedia={fetchMedia}
         />
     );
     wrapper.setProps({ lists: listsData });
@@ -178,6 +183,7 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
+        fetchMedia={fetchMedia}
         />
     );
     let radioButtons = wrapper.find(EditableInput);

@@ -3,7 +3,7 @@ import {
   CustomListDetailsData,
   CustomListEntryData,
   CollectionData as AdminCollectionData,
-  Media,
+  MediaData,
 } from "../interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
@@ -22,13 +22,15 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   isFetchingMoreSearchResults: boolean;
+  media?: MediaData;
 }
 
 export interface CustomListEditorState {
   name: string;
   entries: CustomListEntryData[];
   collections: AdminCollectionData[];
-  media?: Media[];
+  media?: MediaData;
+  mediaSelected?: string;
 }
 
 /** Right panel of the lists page for editing a single list. */
@@ -39,11 +41,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       name: this.props.list && this.props.list.name,
       entries: (this.props.list && this.props.list.entries) || [],
       collections: (this.props.list && this.props.list.collections) || [],
-      media: [
-        { type: "all", label: "All", active: true },
-        { type: "audiobooks", label: "Audiobooks", active: false },
-        { type: "ebooks", label: "E-books", active: false }
-      ],
+      media: this.props.media || {},
+      mediaSelected: "all",
     };
 
     this.changeName = this.changeName.bind(this);
@@ -53,6 +52,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.search = this.search.bind(this);
     this.changeMedia = this.changeMedia.bind(this);
     this.getMediaQuery = this.getMediaQuery.bind(this);
+    this.getMediaElements = this.getMediaElements.bind(this);
   }
 
   render(): JSX.Element {
@@ -86,23 +86,17 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                     )
                   }
                 </div>
-                <br /><br />
-                <span>Select the media to search for:</span>
-                <div className="media-selection">
-                  {
-                    this.state.media.map(media =>
-                      <EditableInput
-                        key={media.type}
-                        type="radio"
-                        name="media-selection"
-                        checked={media.active}
-                        label={media.label}
-                        value={media.type}
-                        onChange={() => this.changeMedia(media)}
-                      />
-                    )
-                  }
-                </div>
+                {
+                  this.props.media && (
+                    <div>
+                      <br /><br />
+                      <span>Select the media to search for:</span>
+                      <div className="media-selection">
+                        {this.getMediaElements(this.props.media)}
+                      </div>
+                    </div>
+                  )
+                }
               </div>
             }
           </div>
@@ -227,21 +221,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.setState({ name: this.state.name, entries: this.state.entries, collections: newCollections });
   }
 
-  changeMedia(media: Media) {
-    const updatedMedia = this.state.media.map(m => {
-      if (m.type === media.type) {
-        m.active = true;
-      } else {
-        m.active = false;
-      }
-      return m;
-    });
-
+  changeMedia(media: string) {
     this.setState({
       name: this.state.name,
       entries: this.state.entries,
       collections: this.state.collections,
-      media: updatedMedia
+      media: this.state.media,
+      mediaSelected: media,
     });
   }
 
@@ -275,15 +261,54 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   getMediaQuery() {
-    let media = "";
-    this.state.media.forEach(m => {
-      if (m.active && m.type !== "all") {
-        media = `&media=${encodeURIComponent(m.type)}`;
-      }
-    });
+    let query = "";
+    if (this.state.mediaSelected && this.state.mediaSelected !== "all") {
+      query = `&media=${encodeURIComponent(this.state.mediaSelected)}`;
+    }
 
-    return media;
+    return query;
   }
+
+  getMediaElements(media) {
+    const filteredMedia = {};
+    const mediaElems = [];
+    mediaElems.push(
+      <EditableInput
+        key="all"
+        type="radio"
+        name="media-selection"
+        checked={"all" === this.state.mediaSelected}
+        label="All"
+        value="all"
+        onChange={() => this.changeMedia("all")}
+      />
+    );
+
+    for (const key in media) {
+      const label = media[key];
+      if (media.hasOwnProperty(key) && (label === "Audio" || label === "Book")) {
+        filteredMedia[key] = media[key];
+      }
+    }
+
+    for (const key in filteredMedia) {
+      let label = media[key];
+
+      mediaElems.push(
+        <EditableInput
+          key={key}
+          type="radio"
+          name="media-selection"
+          checked={key === this.state.mediaSelected}
+          label={label}
+          value={key}
+          onChange={() => this.changeMedia(key)}
+        />
+      );
+    }
+
+    return mediaElems;
+  };
 
   search(event) {
     event.preventDefault();

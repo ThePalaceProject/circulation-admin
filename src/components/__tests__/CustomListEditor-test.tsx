@@ -42,6 +42,16 @@ describe("CustomListEditor", () => {
     { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
   ];
 
+  let media = {
+    "http://bib.schema.org/Audiobook": "Audio",
+    "http://schema.org/Course": "Courseware",
+    "http://schema.org/EBook": "Book",
+    "http://schema.org/ImageObject": "Image",
+    "http://schema.org/MusicRecording": "Music",
+    "http://schema.org/PublicationIssue": "Periodical",
+    "http://schema.org/VideoObject": "Video",
+  };
+
   beforeEach(() => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
@@ -56,7 +66,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+        media={media}
+      />
     );
   });
 
@@ -96,17 +107,16 @@ describe("CustomListEditor", () => {
     expect(inputs.at(2).props().checked).to.equal(false);
   });
 
-  it("shows state media options", () => {
+  it("shows media options", () => {
     let inputs = wrapper.find(EditableInput);
-    expect(inputs.length).to.equal(6);
     expect(inputs.at(3).props().label).to.equal("All");
     expect(inputs.at(3).props().value).to.equal("all");
     expect(inputs.at(3).props().checked).to.equal(true);
-    expect(inputs.at(4).props().label).to.equal("Audiobooks");
-    expect(inputs.at(4).props().value).to.equal("audiobooks");
+    expect(inputs.at(4).props().label).to.equal("Audio");
+    expect(inputs.at(4).props().value).to.equal("http://bib.schema.org/Audiobook");
     expect(inputs.at(4).props().checked).to.equal(false);
-    expect(inputs.at(5).props().label).to.equal("E-books");
-    expect(inputs.at(5).props().value).to.equal("ebooks");
+    expect(inputs.at(5).props().label).to.equal("Book");
+    expect(inputs.at(5).props().value).to.equal("http://schema.org/EBook");
     expect(inputs.at(5).props().checked).to.equal(false);
   });
 
@@ -312,6 +322,7 @@ describe("CustomListEditor", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
         collections={collections}
+        media={media}
       />
     );
     let textInput = wrapper.find(".form-control") as any;
@@ -326,7 +337,8 @@ describe("CustomListEditor", () => {
     searchForm.simulate("submit");
 
     expect(search.callCount).to.equal(1);
-    expect(search.args[0][0]).to.equal("/library/search?q=harry%20potter&media=audiobooks");
+    expect(search.args[0][0])
+      .to.equal("/library/search?q=harry%20potter&media=http%3A%2F%2Fbib.schema.org%2FAudiobook");
   });
 
   it("searches with ebook selected", () => {
@@ -340,6 +352,7 @@ describe("CustomListEditor", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
         collections={collections}
+        media={media}
       />
     );
     let textInput = wrapper.find(".form-control") as any;
@@ -354,6 +367,7 @@ describe("CustomListEditor", () => {
     searchForm.simulate("submit");
 
     expect(search.callCount).to.equal(1);
-    expect(search.args[0][0]).to.equal("/library/search?q=oliver%20twist&media=ebooks");
+    expect(search.args[0][0])
+      .to.equal("/library/search?q=oliver%20twist&media=http%3A%2F%2Fschema.org%2FEBook");
   });
 });

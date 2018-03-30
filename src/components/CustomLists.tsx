@@ -6,7 +6,14 @@ import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
-import { CustomListData, CustomListDetailsData, CustomListsData, CollectionsData, CollectionData as AdminCollectionData } from "../interfaces";
+import {
+  CustomListData,
+  CustomListDetailsData,
+  CustomListsData,
+  CollectionsData,
+  CollectionData as AdminCollectionData,
+  MediaData,
+} from "../interfaces";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
@@ -24,6 +31,7 @@ export interface CustomListsStateProps {
   fetchError?: FetchErrorData;
   isFetching: boolean;
   isFetchingMoreSearchResults: boolean;
+  media?: MediaData;
 }
 
 export interface CustomListsDispatchProps {
@@ -34,6 +42,7 @@ export interface CustomListsDispatchProps {
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   fetchCollections: () => Promise<CollectionsData>;
+  fetchMedia: () => void;
 }
 
 export interface CustomListsOwnProps {
@@ -151,6 +160,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               searchResults={this.props.searchResults}
               editedIdentifier={this.props.editedIdentifier}
               isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+              media={this.props.media}
               />
           }
 
@@ -164,6 +174,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               loadMoreSearchResults={this.props.loadMoreSearchResults}
               searchResults={this.props.searchResults}
               isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+              media={this.props.media}
               />
           }
         </div>
@@ -181,6 +192,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     if (this.props.fetchCollections) {
       this.props.fetchCollections();
     }
+    this.props.fetchMedia();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -266,7 +278,8 @@ function mapStateToProps(state, ownProps) {
     isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || state.editor.customListDetails.isFetching || state.editor.customListDetails.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,
     searchResults: state.editor.collection && state.editor.collection.data,
     isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage,
-    collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections
+    collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections,
+    media: state.editor.media.data,
   };
 }
 
@@ -280,7 +293,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     deleteCustomList: (listId: string) => dispatch(actions.deleteCustomList(ownProps.library, listId)),
     search: (url: string) => dispatch(actions.fetchCollection(url)),
     loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),
-    fetchCollections: () => dispatch(actions.fetchCollections())
+    fetchCollections: () => dispatch(actions.fetchCollections()),
+    fetchMedia: () => dispatch(actions.fetchMedia()),
   };
 }
 
