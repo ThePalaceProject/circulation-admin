@@ -29,7 +29,6 @@ export interface CustomListEditorState {
   name: string;
   entries: CustomListEntryData[];
   collections: AdminCollectionData[];
-  media?: MediaData;
   mediaSelected?: string;
 }
 
@@ -41,7 +40,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       name: this.props.list && this.props.list.name,
       entries: (this.props.list && this.props.list.entries) || [],
       collections: (this.props.list && this.props.list.collections) || [],
-      media: this.props.media || {},
       mediaSelected: "all",
     };
 
@@ -51,7 +49,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.reset = this.reset.bind(this);
     this.search = this.search.bind(this);
     this.changeMedia = this.changeMedia.bind(this);
-    this.getMediaQuery = this.getMediaQuery.bind(this);
     this.getMediaElements = this.getMediaElements.bind(this);
   }
 
@@ -221,13 +218,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.setState({ name: this.state.name, entries: this.state.entries, collections: newCollections });
   }
 
-  changeMedia(media: string) {
+  changeMedia(mediaSelected: string) {
     this.setState({
       name: this.state.name,
       entries: this.state.entries,
       collections: this.state.collections,
-      media: this.state.media,
-      mediaSelected: media,
+      mediaSelected,
     });
   }
 

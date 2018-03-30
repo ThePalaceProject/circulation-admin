@@ -370,4 +370,40 @@ describe("CustomListEditor", () => {
     expect(search.args[0][0])
       .to.equal("/library/search?q=oliver%20twist&media=http%3A%2F%2Fschema.org%2FEBook");
   });
+
+  it("should keep the same state when the list prop gets updated", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        collections={collections}
+        media={media}
+      />
+    );
+    const updatedList = { id: 2, name: "updated list", entry_count: 0, collections: [] };
+    const newList = Object.assign({}, updatedList, { entries: [] });
+    const radioInput = wrapper.find(".media-selection input") as any;
+    const ebookInput = radioInput.at(2);
+    let textInput = wrapper.find(".form-control") as any;
+
+    textInput.get(0).value = "oliver twist";
+    ebookInput.checked = true;
+    ebookInput.simulate("change");
+
+    expect(wrapper.props().list).to.deep.equal(listData);
+    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(wrapper.state("mediaSelected")).to.equal("http://schema.org/EBook");
+
+    // Update the component with a new list.
+    wrapper.setProps({ identifier: "2", list: newList });
+
+    expect(wrapper.props().list).to.deep.equal(newList);
+    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(wrapper.state("mediaSelected")).to.equal("http://schema.org/EBook");
+  });
 });
