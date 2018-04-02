@@ -42,6 +42,16 @@ describe("CustomListEditor", () => {
     { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
   ];
 
+  let media = {
+    "http://bib.schema.org/Audiobook": "Audio",
+    "http://schema.org/Course": "Courseware",
+    "http://schema.org/EBook": "Book",
+    "http://schema.org/ImageObject": "Image",
+    "http://schema.org/MusicRecording": "Music",
+    "http://schema.org/PublicationIssue": "Periodical",
+    "http://schema.org/VideoObject": "Video",
+  };
+
   beforeEach(() => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
@@ -56,7 +66,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+        media={media}
+      />
     );
   });
 
@@ -84,7 +95,7 @@ describe("CustomListEditor", () => {
 
   it("shows collections", () => {
     let inputs = wrapper.find(EditableInput);
-    expect(inputs.length).to.equal(3);
+    expect(inputs.length).to.equal(6);
     expect(inputs.at(0).props().label).to.equal("collection 1");
     expect(inputs.at(0).props().value).to.equal("1");
     expect(inputs.at(0).props().checked).to.equal(false);
@@ -94,6 +105,19 @@ describe("CustomListEditor", () => {
     expect(inputs.at(2).props().label).to.equal("collection 3");
     expect(inputs.at(2).props().value).to.equal("3");
     expect(inputs.at(2).props().checked).to.equal(false);
+  });
+
+  it("shows media options", () => {
+    let inputs = wrapper.find(EditableInput);
+    expect(inputs.at(3).props().label).to.equal("All");
+    expect(inputs.at(3).props().value).to.equal("all");
+    expect(inputs.at(3).props().checked).to.equal(true);
+    expect(inputs.at(4).props().label).to.equal("Audio");
+    expect(inputs.at(4).props().value).to.equal("http://bib.schema.org/Audiobook");
+    expect(inputs.at(4).props().checked).to.equal(false);
+    expect(inputs.at(5).props().label).to.equal("Book");
+    expect(inputs.at(5).props().value).to.equal("http://schema.org/EBook");
+    expect(inputs.at(5).props().checked).to.equal(false);
   });
 
   it("saves list", () => {
@@ -285,5 +309,101 @@ describe("CustomListEditor", () => {
 
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0]).to.equal("/library/search?q=test");
+  });
+
+  it("searches with audiobooks selected", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        collections={collections}
+        media={media}
+      />
+    );
+    let textInput = wrapper.find(".form-control") as any;
+    textInput.get(0).value = "harry potter";
+    let radioInput = wrapper.find(".media-selection input") as any;
+    const audiobookInput = radioInput.at(1);
+    let searchForm = wrapper.find("form");
+
+    audiobookInput.checked = true;
+    audiobookInput.simulate("change");
+
+    searchForm.simulate("submit");
+
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][0])
+      .to.equal("/library/search?q=harry%20potter&media=http%3A%2F%2Fbib.schema.org%2FAudiobook");
+  });
+
+  it("searches with ebook selected", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        collections={collections}
+        media={media}
+      />
+    );
+    let textInput = wrapper.find(".form-control") as any;
+    textInput.get(0).value = "oliver twist";
+    let radioInput = wrapper.find(".media-selection input") as any;
+    const ebookInput = radioInput.at(2);
+    let searchForm = wrapper.find("form");
+
+    ebookInput.checked = true;
+    ebookInput.simulate("change");
+
+    searchForm.simulate("submit");
+
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][0])
+      .to.equal("/library/search?q=oliver%20twist&media=http%3A%2F%2Fschema.org%2FEBook");
+  });
+
+  it("should keep the same state when the list prop gets updated", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        collections={collections}
+        media={media}
+      />
+    );
+    const updatedList = { id: 2, name: "updated list", entry_count: 0, collections: [] };
+    const newList = Object.assign({}, updatedList, { entries: [] });
+    const radioInput = wrapper.find(".media-selection input") as any;
+    const ebookInput = radioInput.at(2);
+    let textInput = wrapper.find(".form-control") as any;
+
+    textInput.get(0).value = "oliver twist";
+    ebookInput.checked = true;
+    ebookInput.simulate("change");
+
+    expect(wrapper.props().list).to.deep.equal(listData);
+    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(wrapper.state("mediaSelected")).to.equal("http://schema.org/EBook");
+
+    // Update the component with a new list.
+    wrapper.setProps({ identifier: "2", list: newList });
+
+    expect(wrapper.props().list).to.deep.equal(newList);
+    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(wrapper.state("mediaSelected")).to.equal("http://schema.org/EBook");
   });
 });
