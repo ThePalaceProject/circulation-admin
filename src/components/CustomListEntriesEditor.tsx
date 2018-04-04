@@ -83,7 +83,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                             ref={provided.innerRef}
                             style={provided.draggableStyle}
                             {...provided.dragHandleProps}
-                            >
+                          >
                             <GrabIcon />
                             <div>
                               <div className="title">{ book.title }</div>
@@ -144,9 +144,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   className={snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"}
                   >
                   <p>Drag search results here to add them to the list.</p>
-                  { this.state.entries && this.state.entries.map((book, i) => {
-                    const mediumSvgIcon = this.getMediumSVG(book.medium);
-                    return (
+                  { this.state.entries && this.state.entries.map((book, i) => (
                       <Draggable key={book.pwid} draggableId={book.pwid}>
                         {(provided, snapshot) => (
                           <li>
@@ -161,7 +159,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                                 <div className="title">{ book.title }</div>
                                 <div className="authors">{ book.authors.join(", ") }</div>
                               </div>
-                              {mediumSvgIcon}
+                              {this.getMediumSVG(book.medium)}
                               <div className="links">
                                 <a
                                   href="#"
@@ -175,8 +173,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                           </li>
                         )}
                       </Draggable>
-                    )}
-                  )}
+                    ))}
                   { provided.placeholder }
                 </ul>
               )}

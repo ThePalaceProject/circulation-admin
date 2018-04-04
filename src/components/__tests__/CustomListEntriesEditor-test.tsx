@@ -10,6 +10,11 @@ const Draggable = dnd.Draggable;
 
 import CustomListEntriesEditor from "../CustomListEntriesEditor";
 
+import {
+  AudioHeadphoneIcon,
+  BookIcon,
+} from "@nypl/dgx-svg-icons";
+
 describe("CustomListEntriesEditor", () => {
   let wrapper;
   let onUpdate;
@@ -22,15 +27,18 @@ describe("CustomListEntriesEditor", () => {
     lanes: [],
     navigationLinks: [],
     books: [
-      { id: "1", title: "result 1", authors: ["author 1"], raw: { "simplified:pwid": [{ "_": "pwid1"}] } },
-      { id: "2", title: "result 2", authors: ["author 2a", "author 2b"], raw: { "simplified:pwid": [{ "_": "pwid2"}] } },
-      { id: "3", title: "result 3", authors: ["author 3"], raw: { "simplified:pwid": [{ "_": "pwid3"}] } }
+      { id: "1", title: "result 1", authors: ["author 1"],
+        raw: { "simplified:pwid": [{ "_": "pwid1"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
+      { id: "2", title: "result 2", authors: ["author 2a", "author 2b"],
+        raw: { "simplified:pwid": [{ "_": "pwid2"}], "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" } } }},
+      { id: "3", title: "result 3", authors: ["author 3"],
+        raw: { "simplified:pwid": [{ "_": "pwid3"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
     ]
   };
 
   let entriesData = [
-    { pwid: "pwidA", title: "entry A", authors: ["author A"] },
-    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"] }
+    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook" },
+    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook" }
   ];
 
   beforeEach(() => {
@@ -63,6 +71,22 @@ describe("CustomListEntriesEditor", () => {
     expect(results.at(2).text()).to.contain("author 3");
   });
 
+  it("renders SVG icons for each search results", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+      />
+    );
+    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const audioSVGs = resultsContainer.find(AudioHeadphoneIcon);
+    const bookSVGs = resultsContainer.find(BookIcon);
+
+    expect(audioSVGs.length).to.equal(1);
+    expect(bookSVGs.length).to.equal(2);
+  });
+
   it("renders list entries", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
@@ -86,6 +110,23 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(1).text()).to.contain("entry B");
     expect(entries.at(1).text()).to.contain("author B1, author B2");
   });
+
+  it("renders SVG icons for each entry", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+      />
+    );
+    let entriesContainer = wrapper.find(".custom-list-entries");
+    const audioSVGs = entriesContainer.find(AudioHeadphoneIcon);
+    const bookSVGs = entriesContainer.find(BookIcon);
+
+    expect(audioSVGs.length).to.equal(1);
+    expect(bookSVGs.length).to.equal(1);
+  });
+
 
   it("doesn't include search results that are already in the list", () => {
     let entriesData = [
@@ -199,7 +240,7 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
-    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"] };
+    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"], medium: "http://schema.org/EBook" };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
@@ -310,7 +351,7 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
-    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"] };
+    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"], medium: "http://schema.org/EBook" };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
