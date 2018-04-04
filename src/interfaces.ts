@@ -295,6 +295,7 @@ export interface CustomListEntryData {
   pwid: string;
   title: string;
   authors: string[];
+  medium?: string;
 }
 
 export interface CustomListData {

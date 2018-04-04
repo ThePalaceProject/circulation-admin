@@ -11,6 +11,10 @@ import GrabIcon from "./icons/GrabIcon";
 import AddIcon from "./icons/AddIcon";
 import XCloseIcon from "./icons/XCloseIcon";
 import MoreDotsIcon from "./icons/MoreDotsIcon";
+import {
+  AudioHeadphoneIcon,
+  BookIcon,
+} from "@nypl/dgx-svg-icons";
 
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
   entries?: CustomListEntryData[];
@@ -61,19 +65,19 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
             <Droppable
               droppableId="search-results"
               isDropDisabled={this.state.draggingFrom !== "custom-list-entries"}
-              >
+            >
               {(provided, snapshot) => (
-                <div
+                <ul
                   ref={provided.innerRef}
                   className={snapshot.isDraggingOver ? "droppable dragging-over" : "droppable"}
                   >
                   { this.state.draggingFrom === "custom-list-entries" &&
                     <p>Drag books here to remove them from the list.</p>
                   }
-                  { (this.state.draggingFrom !== "custom-list-entries") && this.props.searchResults && this.searchResultsNotInEntries().map(book =>
+                  { (this.state.draggingFrom !== "custom-list-entries") && this.props.searchResults && this.searchResultsNotInEntries().map((book, i) =>
                     <Draggable key={this.getPwid(book)} draggableId={this.getPwid(book)}>
                       {(provided, snapshot) => (
-                        <div>
+                        <li>
                           <div
                             className={"search-result" + (snapshot.isDragging ? " dragging" : "")}
                             ref={provided.innerRef}
@@ -85,6 +89,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="title">{ book.title }</div>
                               <div className="authors">{ book.authors.join(", ") }</div>
                             </div>
+                            {this.getMediumSVG(this.getMedium(book))}
                             <div className="links">
                               <a
                                 href="#"
@@ -95,12 +100,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                             </div>
                           </div>
                           { provided.placeholder }
-                        </div>
+                        </li>
                       )}
                     </Draggable>
                   )}
                   { provided.placeholder }
-                </div>
+                </ul>
               )}
               </Droppable>
               { this.props.searchResults && this.props.searchResults.nextPageUrl &&
@@ -134,42 +139,46 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               isDropDisabled={this.state.draggingFrom !== "search-results"}
               >
               {(provided, snapshot) => (
-                <div
+                <ul
                   ref={provided.innerRef}
                   className={snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"}
                   >
                   <p>Drag search results here to add them to the list.</p>
-                  { this.state.entries && this.state.entries.map(book =>
-                    <Draggable key={book.pwid} draggableId={book.pwid}>
-                      {(provided, snapshot) => (
-                        <div>
-                          <div
-                            className={"custom-list-entry" + (snapshot.isDragging ? " dragging" : "")}
-                            ref={provided.innerRef}
-                            style={provided.draggableStyle}
-                            {...provided.dragHandleProps}
+                  { this.state.entries && this.state.entries.map((book, i) => {
+                    const mediumSvgIcon = this.getMediumSVG(book.medium);
+                    return (
+                      <Draggable key={book.pwid} draggableId={book.pwid}>
+                        {(provided, snapshot) => (
+                          <li>
+                            <div
+                              className={"custom-list-entry" + (snapshot.isDragging ? " dragging" : "")}
+                              ref={provided.innerRef}
+                              style={provided.draggableStyle}
+                              {...provided.dragHandleProps}
                             >
-                            <GrabIcon />
-                            <div>
-                              <div className="title">{ book.title }</div>
-                              <div className="authors">{ book.authors.join(", ") }</div>
+                              <GrabIcon />
+                              <div>
+                                <div className="title">{ book.title }</div>
+                                <div className="authors">{ book.authors.join(", ") }</div>
+                              </div>
+                              {mediumSvgIcon}
+                              <div className="links">
+                                <a
+                                  href="#"
+                                  onClick={() => { this.delete(book.pwid); }}
+                                  >Remove from list
+                                    <TrashIcon />
+                                </a>
+                              </div>
                             </div>
-                            <div className="links">
-                              <a
-                                href="#"
-                                onClick={() => { this.delete(book.pwid); }}
-                                >Remove from list
-                                  <TrashIcon />
-                              </a>
-                            </div>
-                          </div>
-                          { provided.placeholder }
-                        </div>
-                      )}
-                    </Draggable>
+                            { provided.placeholder }
+                          </li>
+                        )}
+                      </Draggable>
+                    )}
                   )}
                   { provided.placeholder }
-                </div>
+                </ul>
               )}
             </Droppable>
           </div>
@@ -186,6 +195,19 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   getPwid(book) {
     return book.raw["simplified:pwid"][0]["_"];
+  }
+
+  getMedium(book) {
+    return book.raw["$"]["schema:additionalType"].value;
+  }
+
+  getMediumSVG(medium) {
+    const svgMediumTypes = {
+      "http://bib.schema.org/Audiobook": <AudioHeadphoneIcon ariaHidden className="draggable-item-icon" />,
+      "http://schema.org/EBook": <BookIcon ariaHidden className="draggable-item-icon" />,
+    };
+
+    return svgMediumTypes[medium];
   }
 
   getEntries(): CustomListEntryData[] {
@@ -246,7 +268,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let entries = this.state.entries.slice(0);
     for (const result of this.props.searchResults.books) {
       if (this.getPwid(result) === pwid) {
-        entries.unshift({ pwid: pwid, title: result.title, authors: result.authors });
+        const medium = this.getMedium(result);
+        entries.unshift({ pwid: pwid, title: result.title, authors: result.authors, medium });
       }
     }
     this.setState({ draggingFrom: null, entries });
@@ -268,7 +291,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let entries = [];
 
     for (const result of this.searchResultsNotInEntries()) {
-      entries.push({ pwid: this.getPwid(result), title: result.title, authors: result.authors });
+      const medium = this.getMedium(result);
+      entries.push({ pwid: this.getPwid(result), title: result.title, authors: result.authors, medium });
     }
 
     for (const entry of this.state.entries) {

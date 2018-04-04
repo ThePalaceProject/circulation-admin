@@ -20,6 +20,7 @@
     "prod": "rm -rf dist && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
   "dependencies": {
+    "@nypl/dgx-svg-icons": "0.3.4",
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.6.3",
     "isomorphic-fetch": "^2.2.1",
