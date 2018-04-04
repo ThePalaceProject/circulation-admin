@@ -91,7 +91,7 @@ describe("LoggingServices", () => {
   it("shows logging service list", () => {
     let loggingService = wrapper.find("li");
     expect(loggingService.length).to.equal(1);
-    expect(loggingService.at(0).text()).to.contain("logglyEdit<PencilIcon />Delete<TrashIcon />");
+    expect(loggingService.at(0).text()).to.contain("Edit<PencilIcon />logglyDelete<TrashIcon />");
     let editLink = loggingService.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/web/config/loggingServices/edit/1");
   });

@@ -83,9 +83,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
                   <li key={index}>
-                    <h4>
-                      {this.label(item)}
-                    </h4>
                     <a
                       className="btn btn-default edit-item"
                       href={this.urlBase + "edit/" + item[this.identifierKey]}
@@ -95,8 +92,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                           <PencilIcon />
                         </span>
                     </a>
+                    <h4>
+                      {this.label(item)}
+                    </h4>
                     <button
-                      className="btn btn-default delete-item"
+                      className="btn btn-danger delete-item"
                       onClick={() => this.delete(item) }
                       >
                         <span>
