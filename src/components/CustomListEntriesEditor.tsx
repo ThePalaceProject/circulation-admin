@@ -199,12 +199,16 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   getMediumSVG(medium) {
+    if (!medium) {
+      return null;
+    }
+
     const svgMediumTypes = {
       "http://bib.schema.org/Audiobook": <AudioHeadphoneIcon ariaHidden className="draggable-item-icon" />,
       "http://schema.org/EBook": <BookIcon ariaHidden className="draggable-item-icon" />,
     };
 
-    return svgMediumTypes[medium];
+    return svgMediumTypes[medium] || null;
   }
 
   getEntries(): CustomListEntryData[] {

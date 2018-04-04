@@ -87,6 +87,23 @@ describe("CustomListEntriesEditor", () => {
     expect(bookSVGs.length).to.equal(2);
   });
 
+  it("doesn't render any SVG icon with bad medium value", () => {
+    searchResultsData.books[2].raw["$"]["schema:additionalType"].value = "";
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+      />
+    );
+    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const audioSVGs = resultsContainer.find(AudioHeadphoneIcon);
+    const bookSVGs = resultsContainer.find(BookIcon);
+
+    expect(audioSVGs.length).to.equal(1);
+    expect(bookSVGs.length).to.equal(1);
+  });
+
   it("renders list entries", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
@@ -126,7 +143,6 @@ describe("CustomListEntriesEditor", () => {
     expect(audioSVGs.length).to.equal(1);
     expect(bookSVGs.length).to.equal(1);
   });
-
 
   it("doesn't include search results that are already in the list", () => {
     let entriesData = [
