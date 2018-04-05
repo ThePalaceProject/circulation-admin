@@ -85,8 +85,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 </div>
                 {
                   this.props.media && (
-                    <div>
-                      <br /><br />
+                    <div className="media">
                       <span>Select the media to search for:</span>
                       <div className="media-selection">
                         {this.getMediaElements(this.props.media)}
