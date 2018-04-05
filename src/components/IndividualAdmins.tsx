@@ -17,8 +17,12 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
 }
 
 function mapStateToProps(state, ownProps) {
+  const data = Object.assign({}, state.editor.individualAdmins && state.editor.individualAdmins.data || {});
+  if (state.editor.libraries && state.editor.libraries.data) {
+    data.allLibraries = state.editor.libraries.data.libraries;
+  }
   return {
-    data: state.editor.individualAdmins && state.editor.individualAdmins.data,
+    data: data,
     editedIdentifier: state.editor.individualAdmins && state.editor.individualAdmins.editedIdentifier,
     fetchError: state.editor.individualAdmins.fetchError,
     isFetching: state.editor.individualAdmins.isFetching || state.editor.individualAdmins.isEditing
