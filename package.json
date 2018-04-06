@@ -1,6 +1,6 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.0.60",
+  "version": "0.0.61",
   "description": "Web Front-end for Library Simplified Circulation Manager Admin Interface",
   "repository": {
     "type": "git",
@@ -13,6 +13,7 @@
     "prepublish": "typings install && npm run prod",
     "lint": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && sass-lint -c .sass-lint.yml -v -q",
     "test": "npm run lint && tsc && cp -r src/stylesheets lib && mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js",
+    "test-file": "npm run lint && tsc && cp -r src/stylesheets lib && mocha --require lib/testHelper.js",
     "test-browser": "npm run test-chrome && npm run test-firefox",
     "test-chrome": "node_modules/.bin/selenium-standalone install && nightwatch -e chrome",
     "test-firefox": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox",
@@ -20,6 +21,7 @@
     "prod": "rm -rf dist && NODE_ENV=production webpack -p --progress --display-modules --config webpack.prod.config"
   },
   "dependencies": {
+    "@nypl/dgx-svg-icons": "0.3.4",
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.6.3",
     "isomorphic-fetch": "^2.2.1",
