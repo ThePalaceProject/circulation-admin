@@ -14,6 +14,8 @@ describe("CustomListEditor", () => {
   let editCustomList;
   let search;
   let loadMoreSearchResults;
+  let childContextTypes;
+  let fullContext;
 
   let listData = {
     id: 1,
@@ -56,6 +58,24 @@ describe("CustomListEditor", () => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
     loadMoreSearchResults = stub();
+    childContextTypes = {
+      pathFor: React.PropTypes.func.isRequired,
+      router: React.PropTypes.object.isRequired,
+    };
+    fullContext = Object.assign({}, {
+      pathFor: stub().returns("url"),
+      router: {
+        createHref: stub(),
+        push: stub(),
+        isActive: stub(),
+        replace: stub(),
+        go: stub(),
+        goBack: stub(),
+        goForward: stub(),
+        setRouteLeaveHook: stub()
+      }
+    });
+
     wrapper = shallow(
       <CustomListEditor
         library="library"
@@ -67,7 +87,8 @@ describe("CustomListEditor", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
         media={media}
-      />
+      />,
+      { context: fullContext, childContextTypes }
     );
   });
 
@@ -130,7 +151,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
     let newEntries = [
@@ -166,7 +188,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
     let newEntries = [
@@ -204,7 +227,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // the cancel button isn't shown when there are no changes.
@@ -241,7 +265,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     (wrapper.instance() as CustomListEditor).changeEntries([{ pwid: "1234", title: "a", authors: [] }]);
     cancelButton = wrapper.find(".cancel-changes");
@@ -271,7 +296,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     let inputs = wrapper.find(EditableInput);
@@ -299,7 +325,8 @@ describe("CustomListEditor", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let input = wrapper.find(".form-control") as any;
     input.get(0).value = "test";
@@ -323,7 +350,8 @@ describe("CustomListEditor", () => {
         isFetchingMoreSearchResults={false}
         collections={collections}
         media={media}
-      />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let textInput = wrapper.find(".form-control") as any;
     textInput.get(0).value = "harry potter";
@@ -353,7 +381,8 @@ describe("CustomListEditor", () => {
         isFetchingMoreSearchResults={false}
         collections={collections}
         media={media}
-      />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let textInput = wrapper.find(".form-control") as any;
     textInput.get(0).value = "oliver twist";
@@ -383,7 +412,8 @@ describe("CustomListEditor", () => {
         isFetchingMoreSearchResults={false}
         collections={collections}
         media={media}
-      />
+      />,
+      { context: fullContext, childContextTypes }
     );
     const updatedList = { id: 2, name: "updated list", entry_count: 0, collections: [] };
     const newList = Object.assign({}, updatedList, { entries: [] });

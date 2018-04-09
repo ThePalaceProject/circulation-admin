@@ -29,18 +29,18 @@ describe("CustomListEntriesEditor", () => {
     lanes: [],
     navigationLinks: [],
     books: [
-      { id: "1", title: "result 1", authors: ["author 1"],
+      { id: "1", title: "result 1", authors: ["author 1"], url: "some/url1",
         raw: { "simplified:pwid": [{ "_": "pwid1"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
-      { id: "2", title: "result 2", authors: ["author 2a", "author 2b"],
+      { id: "2", title: "result 2", authors: ["author 2a", "author 2b"], url: "some/url2",
         raw: { "simplified:pwid": [{ "_": "pwid2"}], "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" } } }},
-      { id: "3", title: "result 3", authors: ["author 3"],
+      { id: "3", title: "result 3", authors: ["author 3"], url: "some/url3",
         raw: { "simplified:pwid": [{ "_": "pwid3"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
     ]
   };
 
   let entriesData = [
-    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook" },
-    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook" }
+    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "some/urlA", },
+    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook", url: "some/urlB", }
   ];
 
   beforeEach(() => {
@@ -90,6 +90,32 @@ describe("CustomListEntriesEditor", () => {
     expect(results.at(1).text()).to.contain("author 2a, author 2b");
     expect(results.at(2).text()).to.contain("result 3");
     expect(results.at(2).text()).to.contain("author 3");
+  });
+
+  it("renders a link to view each search result", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+    let resultsContainer = wrapper.find(".custom-list-search-results");
+    expect(resultsContainer.length).to.equal(1);
+
+    let droppable = resultsContainer.find(Droppable);
+    expect(droppable.length).to.equal(1);
+
+    let results = droppable.find(Draggable);
+    expect(results.length).to.equal(3);
+
+    expect(results.at(0).find("CatalogLink").text()).to.equal("View details");
+    expect(results.at(0).find("CatalogLink").prop("bookUrl")).to.equal("some/url1");
+    expect(results.at(1).find("CatalogLink").text()).to.equal("View details");
+    expect(results.at(1).find("CatalogLink").prop("bookUrl")).to.equal("some/url2");
+    expect(results.at(2).find("CatalogLink").text()).to.equal("View details");
+    expect(results.at(2).find("CatalogLink").prop("bookUrl")).to.equal("some/url3");
   });
 
   it("renders SVG icons for each search results", () => {
@@ -150,6 +176,31 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(0).text()).to.contain("author A");
     expect(entries.at(1).text()).to.contain("entry B");
     expect(entries.at(1).text()).to.contain("author B1, author B2");
+  });
+
+  it("renders a link to view each entry", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        isFetchingMoreSearchResults={false}
+        library="myLibrary"
+      />,
+      { context: fullContext, childContextTypes }
+    );
+    let entriesContainer = wrapper.find(".custom-list-entries");
+    expect(entriesContainer.length).to.equal(1);
+
+    let droppable = entriesContainer.find(Droppable);
+    expect(droppable.length).to.equal(1);
+
+    let entries = droppable.find(Draggable);
+    expect(entries.length).to.equal(2);
+
+    expect(entries.at(0).find("CatalogLink").text()).to.equal("View details");
+    expect(entries.at(0).find("CatalogLink").prop("bookUrl")).to.equal("myLibrary%2FURI%2Fsome%2FurlA");
+    expect(entries.at(1).find("CatalogLink").text()).to.equal("View details");
+    expect(entries.at(1).find("CatalogLink").prop("bookUrl")).to.equal("myLibrary%2FURI%2Fsome%2FurlB");
   });
 
   it("renders SVG icons for each entry", () => {

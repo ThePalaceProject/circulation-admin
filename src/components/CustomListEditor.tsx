@@ -134,7 +134,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             onUpdate={this.changeEntries}
             isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
             ref="listEntries"
-            />
+            library={this.props.library}
+          />
         </div>
       </div>
     );
