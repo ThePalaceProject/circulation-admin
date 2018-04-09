@@ -4,6 +4,8 @@ import BookDetailsTabContainer from "./BookDetailsTabContainer";
 import { BookDetailsContainerProps } from "opds-web-client/lib/components/Root";
 import { Navigate } from "../interfaces";
 import { State } from "../reducers/index";
+import { Link } from "react-router";
+import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 
 export interface BookDetailsContainerContext {
   csrfToken: string;
@@ -28,6 +30,13 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
   render(): JSX.Element {
     return (
       <div className="book-details-container">
+        { !this.props.collectionUrl &&
+          <a
+            href="#"
+            onClick={() => history.back()}
+            className="list-back-link"
+          ><GenericWedgeIcon /> Go Back to list</a>
+        }
         <BookDetailsTabContainer
           bookUrl={this.props.bookUrl}
           collectionUrl={this.props.collectionUrl}

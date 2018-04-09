@@ -128,6 +128,10 @@
       &:hover svg {
         fill: $linkcolor;
       }
+
+      &.load-more-button {
+        margin-bottom: 50px;
+      }
     }
 
     .droppable-header {
@@ -161,7 +165,8 @@
         }
 
         > div {
-          width: 50%;
+          flex-grow: 0;
+          flex-basis: 35%;
 
           &.links {
             text-align: right;
@@ -169,8 +174,21 @@
         }
 
         svg {
+          flex-grow: 0;
           margin-top: 6px;
           margin-right: 10px;
+          flex-basis: 10%;
+
+          &:first-child {
+            flex-basis: 3%
+          }
+        }
+
+        > a {
+          margin: 0 0 0 5px;
+          width: 10%;
+          flex-grow: 0;
+          flex-basis: 10%;
         }
 
         a {
@@ -198,7 +216,7 @@
         .draggable-item-icon {
           height: 3rem;
           width: 3rem;
-          margin: -10px 0 0 10px;
+          margin: -10px 0 0 0;
         }
       }
     }

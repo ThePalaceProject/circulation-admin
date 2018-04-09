@@ -15,6 +15,7 @@ import {
   AudioHeadphoneIcon,
   BookIcon,
 } from "@nypl/dgx-svg-icons";
+import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
   entries?: CustomListEntryData[];
@@ -90,6 +91,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="authors">{ book.authors.join(", ") }</div>
                             </div>
                             {this.getMediumSVG(this.getMedium(book))}
+                            {this.getCatalogLink(book)}
                             <div className="links">
                               <a
                                 href="#"
@@ -192,6 +194,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   getPwid(book) {
     return book.raw["simplified:pwid"][0]["_"];
+  }
+
+  getCatalogLink(book) {
+    if (!book) {
+      return null;
+    }
+
+    return <CatalogLink bookUrl={book.url} title={book.title}>View details</CatalogLink>;
   }
 
   getMedium(book) {
