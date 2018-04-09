@@ -19,6 +19,8 @@ describe("CustomListEntriesEditor", () => {
   let wrapper;
   let onUpdate;
   let loadMoreSearchResults;
+  let childContextTypes;
+  let fullContext;
 
   let searchResultsData = {
     id: "id",
@@ -44,6 +46,24 @@ describe("CustomListEntriesEditor", () => {
   beforeEach(() => {
     onUpdate = stub();
     loadMoreSearchResults = stub();
+
+    childContextTypes = {
+      pathFor: React.PropTypes.func.isRequired,
+      router: React.PropTypes.object.isRequired,
+    };
+    fullContext = Object.assign({}, {
+      pathFor: stub().returns("url"),
+      router: {
+        createHref: stub(),
+        push: stub(),
+        isActive: stub(),
+        replace: stub(),
+        go: stub(),
+        goBack: stub(),
+        goForward: stub(),
+        setRouteLeaveHook: stub()
+      }
+    });
   });
 
   it("renders search results", () => {
@@ -52,7 +72,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let resultsContainer = wrapper.find(".custom-list-search-results");
     expect(resultsContainer.length).to.equal(1);
@@ -77,7 +98,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-      />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let resultsContainer = wrapper.find(".custom-list-search-results");
     const audioSVGs = resultsContainer.find(AudioHeadphoneIcon);
@@ -94,7 +116,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-      />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let resultsContainer = wrapper.find(".custom-list-search-results");
     const audioSVGs = resultsContainer.find(AudioHeadphoneIcon);
@@ -110,7 +133,8 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     let entriesContainer = wrapper.find(".custom-list-entries");
@@ -134,7 +158,8 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-      />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let entriesContainer = wrapper.find(".custom-list-entries");
     const audioSVGs = entriesContainer.find(AudioHeadphoneIcon);
@@ -155,7 +180,8 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     let resultsContainer = wrapper.find(".custom-list-search-results");
@@ -179,7 +205,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // simulate starting a drag from search results
@@ -201,7 +228,8 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // simulate starting a drag from list entries
@@ -225,7 +253,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // simulate starting a drag from search results
@@ -267,7 +296,8 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // simulate starting a drag from list entries
@@ -309,7 +339,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // simulate starting a drag from entries
@@ -354,7 +385,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     let addLink = wrapper.find(".custom-list-search-results .links a");
@@ -380,7 +412,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     let deleteLink = wrapper.find(".custom-list-entries .links a");
@@ -404,7 +437,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // simulate dropping a search result on entries
@@ -430,7 +464,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     // simulate dropping an entry on search results
@@ -457,7 +492,8 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let button = wrapper.find(".add-all-button");
     expect(button.length).to.equal(0);
@@ -471,7 +507,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let button = wrapper.find(".add-all-button");
     button.simulate("click");
@@ -496,7 +533,8 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let button = wrapper.find(".delete-all-button");
     expect(button.length).to.equal(0);
@@ -509,7 +547,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let button = wrapper.find(".delete-all-button");
     button.simulate("click");
@@ -528,7 +567,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     // no search results at all
     let button = wrapper.find(".load-more-button");
@@ -551,7 +591,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
     let button = wrapper.find(".load-more-button");
     expect(button.length).to.equal(1);
@@ -574,7 +615,8 @@ describe("CustomListEntriesEditor", () => {
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
         isFetchingMoreSearchResults={false}
-        />
+      />,
+      { context: fullContext, childContextTypes }
     );
 
     let button = wrapper.find(".load-more-button");
