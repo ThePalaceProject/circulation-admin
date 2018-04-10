@@ -27,11 +27,11 @@ describe("CustomListEntriesEditor", () => {
     lanes: [],
     navigationLinks: [],
     books: [
-      { id: "1", title: "result 1", authors: ["author 1"],
+      { id: "1", title: "result 1", authors: ["author 1"], language: "eng",
         raw: { "simplified:pwid": [{ "_": "pwid1"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
-      { id: "2", title: "result 2", authors: ["author 2a", "author 2b"],
+      { id: "2", title: "result 2", authors: ["author 2a", "author 2b"], language: "eng",
         raw: { "simplified:pwid": [{ "_": "pwid2"}], "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" } } }},
-      { id: "3", title: "result 3", authors: ["author 3"],
+      { id: "3", title: "result 3", authors: ["author 3"], language: "eng",
         raw: { "simplified:pwid": [{ "_": "pwid3"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
     ]
   };
@@ -146,7 +146,7 @@ describe("CustomListEntriesEditor", () => {
 
   it("doesn't include search results that are already in the list", () => {
     let entriesData = [
-      { pwid: "pwid1", title: "result 1", authors: ["author 1"] }
+      { pwid: "pwid1", title: "result 1", authors: ["author 1"], language: "eng" }
     ];
 
     let wrapper = mount(
@@ -256,7 +256,13 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
-    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"], medium: "http://schema.org/EBook" };
+    const newEntry = {
+      pwid: "pwid1",
+      title: "result 1",
+      authors: ["author 1"],
+      medium: "http://schema.org/EBook",
+      language: "eng",
+    };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
@@ -367,7 +373,13 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
-    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"], medium: "http://schema.org/EBook" };
+    const newEntry = {
+      pwid: "pwid1",
+      title: "result 1",
+      authors: ["author 1"],
+      medium: "http://schema.org/EBook",
+      language: "eng",
+    };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });

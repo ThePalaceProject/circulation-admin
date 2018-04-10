@@ -296,6 +296,7 @@ export interface CustomListEntryData {
   title: string;
   authors: string[];
   medium?: string;
+  language?: string;
 }
 
 export interface CustomListData {
