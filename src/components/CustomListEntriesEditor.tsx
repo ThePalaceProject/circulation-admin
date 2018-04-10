@@ -199,15 +199,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   getCatalogLink(book) {
-    if (!book) {
+    if (!book.url) {
       return null;
     }
-    let bookUrl = book.url ? book.url.replace(/\/admin/, "") : "";
 
     return (
       <CatalogLink
         collectionUrl={this.props.opdsFeedUrl}
-        bookUrl={bookUrl}
+        bookUrl={book.url}
         title={book.title}
         target="_blank"
       >

@@ -39,7 +39,7 @@ describe("CustomListEntriesEditor", () => {
   };
 
   let entriesData = [
-    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "/admin/some/urlA", },
+    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "/some/urlA", },
     { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook", url: "/some/urlB", }
   ];
 
