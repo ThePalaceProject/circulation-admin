@@ -53,6 +53,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   render(): JSX.Element {
+    const listName = this.props.list && this.props.list.name ? this.props.list.name : "";
+    const opdsFeedUrl = `${this.props.library}/lists/${listName}/crawlable`;
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -134,7 +136,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             onUpdate={this.changeEntries}
             isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
             ref="listEntries"
-            library={this.props.library}
+            opdsFeedUrl={opdsFeedUrl}
           />
         </div>
       </div>

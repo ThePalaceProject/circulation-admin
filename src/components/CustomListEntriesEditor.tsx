@@ -23,7 +23,7 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   onUpdate?: (entries: CustomListEntryData[]) => void;
   isFetchingMoreSearchResults: boolean;
-  library?: string;
+  opdsFeedUrl?: string;
 }
 
 export interface CustomListEntriesEditorState {
@@ -163,7 +163,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                                 <div className="authors">{ book.authors.join(", ") }</div>
                               </div>
                               {this.getMediumSVG(book.medium)}
-                              {this.getCatalogLink(book, "entry")}
+                              {this.getCatalogLink(book)}
                               <div className="links">
                                 <a
                                   href="#"
@@ -198,17 +198,22 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     return book.raw["simplified:pwid"][0]["_"];
   }
 
-  getCatalogLink(book, type = "") {
+  getCatalogLink(book) {
     if (!book) {
       return null;
     }
-    let bookUrl = book.url;
+    let bookUrl = book.url ? book.url.replace(/\/admin/, "") : "";
 
-    if (type === "entry") {
-      bookUrl = (this.props.library ? this.props.library : "") + encodeURIComponent(`/URI/${book.url}`);
-    }
-
-    return <CatalogLink bookUrl={bookUrl} title={book.title}>View details</CatalogLink>;
+    return (
+      <CatalogLink
+        collectionUrl={this.props.opdsFeedUrl}
+        bookUrl={bookUrl}
+        title={book.title}
+        target="_blank"
+      >
+        View details
+      </CatalogLink>
+    );
   }
 
   getMedium(book) {
