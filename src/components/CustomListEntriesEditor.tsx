@@ -15,6 +15,7 @@ import {
   AudioHeadphoneIcon,
   BookIcon,
 } from "@nypl/dgx-svg-icons";
+import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
   entries?: CustomListEntryData[];
@@ -22,6 +23,7 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   onUpdate?: (entries: CustomListEntryData[]) => void;
   isFetchingMoreSearchResults: boolean;
+  opdsFeedUrl?: string;
 }
 
 export interface CustomListEntriesEditorState {
@@ -90,6 +92,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="authors">{ book.authors.join(", ") }</div>
                             </div>
                             {this.getMediumSVG(this.getMedium(book))}
+                            {this.getCatalogLink(book)}
                             <div className="links">
                               <a
                                 href="#"
@@ -160,6 +163,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                                 <div className="authors">{ book.authors.join(", ") }</div>
                               </div>
                               {this.getMediumSVG(book.medium)}
+                              {this.getCatalogLink(book)}
                               <div className="links">
                                 <a
                                   href="#"
@@ -192,6 +196,23 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   getPwid(book) {
     return book.raw["simplified:pwid"][0]["_"];
+  }
+
+  getCatalogLink(book) {
+    if (!book.url) {
+      return null;
+    }
+
+    return (
+      <CatalogLink
+        collectionUrl={this.props.opdsFeedUrl}
+        bookUrl={book.url}
+        title={book.title}
+        target="_blank"
+      >
+        View details
+      </CatalogLink>
+    );
   }
 
   getMedium(book) {
@@ -270,7 +291,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     for (const result of this.props.searchResults.books) {
       if (this.getPwid(result) === pwid) {
         const medium = this.getMedium(result);
-        entries.unshift({ pwid: pwid, title: result.title, authors: result.authors, medium });
+        entries.unshift({
+          pwid: pwid,
+          title: result.title,
+          authors: result.authors,
+          url: result.url,
+          medium,
+        });
       }
     }
     this.setState({ draggingFrom: null, entries });
@@ -293,7 +320,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
     for (const result of this.searchResultsNotInEntries()) {
       const medium = this.getMedium(result);
-      entries.push({ pwid: this.getPwid(result), title: result.title, authors: result.authors, medium });
+      entries.push({
+        pwid: this.getPwid(result),
+        title: result.title,
+        authors: result.authors,
+        url: result.url,
+        medium,
+      });
     }
 
     for (const entry of this.state.entries) {
