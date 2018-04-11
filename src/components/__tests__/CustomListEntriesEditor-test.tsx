@@ -336,7 +336,13 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
-    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"], medium: "http://schema.org/EBook" };
+    const newEntry = {
+      pwid: "pwid1",
+      title: "result 1",
+      authors: ["author 1"],
+      medium: "http://schema.org/EBook",
+      url: "/some/url1",
+    };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
@@ -450,7 +456,13 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
-    const newEntry = { pwid: "pwid1", title: "result 1", authors: ["author 1"], medium: "http://schema.org/EBook" };
+    const newEntry = {
+      pwid: "pwid1",
+      title: "result 1",
+      authors: ["author 1"],
+      medium: "http://schema.org/EBook",
+      url: "/some/url1",
+    };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });

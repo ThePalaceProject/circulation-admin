@@ -291,7 +291,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     for (const result of this.props.searchResults.books) {
       if (this.getPwid(result) === pwid) {
         const medium = this.getMedium(result);
-        entries.unshift({ pwid: pwid, title: result.title, authors: result.authors, medium });
+        entries.unshift({
+          pwid: pwid,
+          title: result.title,
+          authors: result.authors,
+          url: result.url,
+          medium,
+        });
       }
     }
     this.setState({ draggingFrom: null, entries });
@@ -314,7 +320,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
     for (const result of this.searchResultsNotInEntries()) {
       const medium = this.getMedium(result);
-      entries.push({ pwid: this.getPwid(result), title: result.title, authors: result.authors, medium });
+      entries.push({
+        pwid: this.getPwid(result),
+        title: result.title,
+        authors: result.authors,
+        url: result.url,
+        medium,
+      });
     }
 
     for (const entry of this.state.entries) {
