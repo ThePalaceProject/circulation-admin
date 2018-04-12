@@ -219,6 +219,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     return book.raw["$"]["schema:additionalType"].value;
   }
 
+  getLanguage(book) {
+    return book.language || "";
+  }
+
   getMediumSVG(medium) {
     if (!medium) {
       return null;
@@ -291,12 +295,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     for (const result of this.props.searchResults.books) {
       if (this.getPwid(result) === pwid) {
         const medium = this.getMedium(result);
+        const language = this.getLanguage(result);
         entries.unshift({
           pwid: pwid,
           title: result.title,
           authors: result.authors,
           url: result.url,
           medium,
+          language
         });
       }
     }
@@ -320,12 +326,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
     for (const result of this.searchResultsNotInEntries()) {
       const medium = this.getMedium(result);
+      const language = this.getLanguage(result);
       entries.push({
         pwid: this.getPwid(result),
         title: result.title,
         authors: result.authors,
         url: result.url,
         medium,
+        language
       });
     }
 

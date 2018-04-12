@@ -297,6 +297,7 @@ export interface CustomListEntryData {
   authors: string[];
   medium?: string;
   url?: string;
+  language?: string;
 }
 
 export interface CustomListData {
