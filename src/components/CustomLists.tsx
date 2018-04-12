@@ -12,7 +12,8 @@ import {
   CustomListsData,
   CollectionsData,
   CollectionData as AdminCollectionData,
-  MediaData,
+  LibraryData,
+  LibrariesData,
 } from "../interfaces";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
@@ -31,7 +32,7 @@ export interface CustomListsStateProps {
   fetchError?: FetchErrorData;
   isFetching: boolean;
   isFetchingMoreSearchResults: boolean;
-  media?: MediaData;
+  libraries?: LibrariesData;
 }
 
 export interface CustomListsDispatchProps {
@@ -42,7 +43,7 @@ export interface CustomListsDispatchProps {
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   fetchCollections: () => Promise<CollectionsData>;
-  fetchMedia: () => void;
+  fetchLibraries: () => void;
 }
 
 export interface CustomListsOwnProps {
@@ -67,12 +68,15 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     this.editCustomList = this.editCustomList.bind(this);
     this.deleteCustomList = this.deleteCustomList.bind(this);
     this.changeSort = this.changeSort.bind(this);
+    this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
     this.state = {
       sort: "asc"
     };
   }
 
   render(): JSX.Element {
+    const enabledEntryPoints = this.getEnabledEntryPoints(this.props.libraries);
+
     return (
       <div className="custom-lists-container">
         { this.props.fetchError &&
@@ -160,8 +164,8 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               searchResults={this.props.searchResults}
               editedIdentifier={this.props.editedIdentifier}
               isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-              media={this.props.media}
-              />
+              entryPoints={enabledEntryPoints}
+            />
           }
 
           { this.props.editOrCreate === "edit" &&
@@ -174,8 +178,8 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               loadMoreSearchResults={this.props.loadMoreSearchResults}
               searchResults={this.props.searchResults}
               isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-              media={this.props.media}
-              />
+              entryPoints={enabledEntryPoints}
+            />
           }
         </div>
       </div>
@@ -192,7 +196,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     if (this.props.fetchCollections) {
       this.props.fetchCollections();
     }
-    this.props.fetchMedia();
+    this.props.fetchLibraries();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -243,6 +247,21 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     });
   }
 
+  getEnabledEntryPoints(libraries: LibrariesData) {
+    if (!libraries) {
+      return;
+    }
+    let library;
+
+    libraries.libraries.forEach(lib => {
+      if (lib.short_name === this.props.library) {
+        library = lib;
+      }
+    });
+
+    return library.settings.enabled_entry_points || [];
+  }
+
   async editCustomList(data: FormData, listId?: string): Promise<void> {
     await this.props.editCustomList(data, listId);
     this.props.fetchCustomLists();
@@ -279,7 +298,7 @@ function mapStateToProps(state, ownProps) {
     searchResults: state.editor.collection && state.editor.collection.data,
     isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage,
     collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections,
-    media: state.editor.media.data,
+    libraries: state.editor.libraries.data,
   };
 }
 
@@ -294,7 +313,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     search: (url: string) => dispatch(actions.fetchCollection(url)),
     loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),
     fetchCollections: () => dispatch(actions.fetchCollections()),
-    fetchMedia: () => dispatch(actions.fetchMedia()),
+    fetchLibraries: () => dispatch(actions.fetchLibraries()),
   };
 }
 
