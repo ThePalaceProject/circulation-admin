@@ -353,14 +353,14 @@ describe("CustomLists", () => {
     expect(fetchCustomListDetails.callCount).to.equal(2);
   });
 
-  it("gets the correct entry points list", () => {
+  it("gets the correct entry points list from the right library", () => {
     let entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
 
     expect(entryPoints.length).to.equal(2);
     expect(entryPoints).to.eql(["Book", "Audio"]);
   });
 
-  it("sorts lists", () => {
+  it("gets the correct entry points list from the second available library", () => {
     wrapper = mount(
       <CustomLists
         csrfToken="token"
