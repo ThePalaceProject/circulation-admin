@@ -14,6 +14,10 @@ describe("IndividualAdminEditForm", () => {
     email: "test@nypl.org",
     password: "password"
   };
+  let allLibraries = [
+    { short_name: "nypl" },
+    { short_name: "bpl" }
+  ];
 
   let editableInputByName = (name) => {
     let inputs = wrapper.find(EditableInput);
@@ -28,7 +32,7 @@ describe("IndividualAdminEditForm", () => {
       editIndividualAdmin = stub();
       wrapper = shallow(
         <IndividualAdminEditForm
-          data={{ individualAdmins: [adminData] }}
+          data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}
           editItem={editIndividualAdmin}
           urlBase="url base"
@@ -54,6 +58,281 @@ describe("IndividualAdminEditForm", () => {
       input = editableInputByName("password");
       // Doesn't show the old password even if it's in the props.
       expect(input.props().value).not.to.be.ok;
+    });
+
+    describe("roles", () => {
+      let input;
+      let adminDataWithRoles;
+      let systemAdmin = [{ role: "system" }];
+      let managerAll = [{ role: "manager-all" }];
+      let librarianAll = [{ role: "librarian-all" }];
+      let nyplManager = [{ role: "manager", library: "nypl" }];
+      let bplManager = [{ role: "manager", library: "bpl" }];
+      let bothManager = [{ role: "manager", library: "nypl" }, { role: "manager", library: "bpl" }];
+      let nyplLibrarian = [{ role: "librarian", library: "nypl" }];
+      let bplLibrarian = [{ role: "librarian", library: "bpl" }];
+      let bothLibrarian = [{ role: "librarian", library: "nypl" }, { role: "librarian", library: "bpl" }];
+      let nyplManagerBplLibrarian = [{ role: "manager", library: "nypl" }, { role: "librarian", library: "bpl" }];
+      let nyplManagerLibrarianAll = [{ role: "manager", library: "nypl" }, { role: "librarian-all" }];
+
+      it("renders system admin role", () => {
+        let role = "system";
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+      });
+
+      it("renders manager all role", () => {
+        let role = "manager-all";
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: librarianAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+      });
+
+      it("renders librarian all role", () => {
+        let role = "librarian-all";
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: librarianAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+      });
+
+      it("renders manager role for each library", () => {
+        let role = "manager-nypl";
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: librarianAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        role = "manager-bpl";
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: librarianAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+      });
+
+      it("renders librarian role for each library", () => {
+        let role = "librarian-nypl";
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: librarianAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bplLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        role = "librarian-bpl";
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bothManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: librarianAll });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bplManager });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).not.to.be.ok;
+
+        adminDataWithRoles = Object.assign({}, adminData, { roles: bplLibrarian });
+        wrapper.setProps({ item: adminDataWithRoles });
+        input = editableInputByName(role);
+        expect(input.props().checked).to.be.ok;
+      });
     });
   });
 

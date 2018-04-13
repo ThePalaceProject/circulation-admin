@@ -106,7 +106,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     elementType="input"
                     type="checkbox"
                     disabled={this.props.disabled}
-                    name="manager"
+                    name={"manager-" + library.short_name}
                     label=""
                     checked={this.isSelected("manager", library.short_name)}
                     onChange={() => this.handleRoleChange("manager", library.short_name)}
@@ -117,7 +117,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     elementType="input"
                     type="checkbox"
                     disabled={this.props.disabled}
-                    name="librarian"
+                    name={"librarian-" + library.short_name}
                     label=""
                     checked={this.isSelected("librarian", library.short_name)}
                     onChange={() => this.handleRoleChange("librarian", library.short_name)}
@@ -134,6 +134,12 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           >Submit</button>
       </form>
     );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.item && nextProps.item !== this.props.item) {
+      this.setState({ roles: nextProps.item.roles || [] });
+    }
   }
 
   isSelected(role: string, library?: string) {
@@ -230,7 +236,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
            }
         } else {
           const roles = this.state.roles.filter(stateRole => stateRole.library !== library);
-          this.setState(Object.assign({}, this.state, { roles }));  
+          this.setState(Object.assign({}, this.state, { roles }));
         }
       } else {
           const roles = this.state.roles;
@@ -238,7 +244,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           this.setState(Object.assign({}, this.state, { roles }));
       }
     }
-  }  
+  }
 
   save(event) {
     event.preventDefault();
