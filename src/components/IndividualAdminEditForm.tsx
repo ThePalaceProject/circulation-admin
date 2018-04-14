@@ -178,7 +178,9 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       }
     } else if (role === "librarian-all") {
       if (this.isSelected(role)) {
-        this.setState(Object.assign({}, this.state, { roles: [] }));
+        // Remove librarian-all role, but leave manager roles.
+        const roles = this.state.roles.filter(stateRole => stateRole.role === "manager");
+        this.setState(Object.assign({}, this.state, { roles }));
       } else {
         // Remove old librarian roles, but leave manager roles.
         const roles = this.state.roles.filter(stateRole => stateRole.role === "manager");
@@ -200,8 +202,12 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           roles.push({ role: "librarian-all" });
           this.setState(Object.assign({}, this.state, { roles }));
         } else {
+          // Remove the manager role for this library and add the librarian role,
+          // unless librarian-all is already selected.
           const roles = this.state.roles.filter(stateRole => stateRole.library !== library);
-          roles.push({ role: "manager", library: library });
+          if (!this.isSelected("librarian-all")) {
+            roles.push({ role: "librarian", library: library });
+          }
           this.setState(Object.assign({}, this.state, { roles }));
         }
       } else {
@@ -249,6 +255,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   save(event) {
     event.preventDefault();
     const data = new (window as any).FormData(this.refs["form"] as any);
+    data.append("roles", JSON.stringify(this.state.roles));
     this.props.editItem(data).then(() => {
       // If we're setting up an admin for the first time, refresh the page
       // to go to login.
