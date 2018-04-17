@@ -45,22 +45,20 @@ describe("CustomLists", () => {
     { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
   ];
 
-  let libraries = {
-    libraries: [
-      {
-        short_name: "library",
-        settings: {
-          enabled_entry_points: ["Book", "Audio"],
-        },
+  let libraries = [
+    {
+      short_name: "library",
+      settings: {
+        enabled_entry_points: ["Book", "Audio"],
       },
-      {
-        short_name: "another library",
-        settings: {
-          enabled_entry_points: ["Audio"],
-        },
+    },
+    {
+      short_name: "another library",
+      settings: {
+        enabled_entry_points: ["Audio"],
       },
-    ],
-  };
+    },
+  ];
 
   beforeEach(() => {
     fetchCustomLists = stub();

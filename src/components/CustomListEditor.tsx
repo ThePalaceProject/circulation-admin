@@ -85,14 +85,14 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                   }
                 </div>
                 {
-                  this.props.entryPoints && (
+                  this.props.entryPoints.length ? (
                     <div className="entry-points">
                       <span>Select the entry point to search for:</span>
                       <div className="entry-points-selection">
                         {this.getEntryPointsElms(this.props.entryPoints)}
                       </div>
                     </div>
-                  )
+                  ) : null
                 }
               </div>
             }
@@ -274,7 +274,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       <EditableInput
         key="all"
         type="radio"
-        name="enty-points-selection"
+        name="entry-points-selection"
         checked={"all" === this.state.entryPointSelected}
         label="All"
         value="all"
@@ -287,7 +287,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         <EditableInput
           key={entryPoint}
           type="radio"
-          name="enty-points-selection"
+          name="entry-points-selection"
           checked={entryPoint === this.state.entryPointSelected}
           label={entryPoint}
           value={entryPoint}

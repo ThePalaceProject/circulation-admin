@@ -13,7 +13,6 @@ import {
   CollectionsData,
   CollectionData as AdminCollectionData,
   LibraryData,
-  LibrariesData,
 } from "../interfaces";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
@@ -32,7 +31,7 @@ export interface CustomListsStateProps {
   fetchError?: FetchErrorData;
   isFetching: boolean;
   isFetchingMoreSearchResults: boolean;
-  libraries?: LibrariesData;
+  libraries?: LibraryData[];
 }
 
 export interface CustomListsDispatchProps {
@@ -247,13 +246,13 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     });
   }
 
-  getEnabledEntryPoints(libraries: LibrariesData) {
+  getEnabledEntryPoints(libraries: LibraryData[]) {
     if (!libraries) {
-      return;
+      return [];
     }
     let library;
 
-    libraries.libraries.forEach(lib => {
+    libraries.forEach(lib => {
       if (lib.short_name === this.props.library) {
         library = lib;
       }
@@ -298,7 +297,7 @@ function mapStateToProps(state, ownProps) {
     searchResults: state.editor.collection && state.editor.collection.data,
     isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage,
     collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections,
-    libraries: state.editor.libraries.data,
+    libraries: state.editor.libraries.data && state.editor.libraries.data.libraries,
   };
 }
 
