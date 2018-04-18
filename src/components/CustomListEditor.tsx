@@ -68,7 +68,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               <h4>ID-{this.props.list.id}</h4>
             }
             { this.props.collections && this.props.collections.length > 0 &&
-              <div>
+              <div className="custom-list-filters">
                 <span>Automatically add new books from these collections to this list:</span>
                 <div className="collections">
                   { this.props.collections.map(collection =>

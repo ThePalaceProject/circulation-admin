@@ -13,8 +13,13 @@
       width: 50%;
     }
 
+    .custom-list-filters {
+      display: flex;
+      flex-direction: column;
+    }
+
     span {
-      margin: 15px 0px;
+      margin: 5px 0px;
     }
 
     h3 {
@@ -42,7 +47,7 @@
 
     .entry-points {
       display: block;
-      margin: 20px 0 10px;
+      margin: 0;
       padding-top: 15px;
       width: 100%;
 
