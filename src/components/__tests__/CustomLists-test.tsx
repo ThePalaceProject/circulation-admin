@@ -20,7 +20,7 @@ describe("CustomLists", () => {
   let search;
   let loadMoreSearchResults;
   let fetchCollections;
-  let fetchMedia;
+  let fetchLibraries;
 
   let listsData = [
     { id: 1, name: "a list", entry_count: 0, collections: [] },
@@ -45,6 +45,21 @@ describe("CustomLists", () => {
     { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
   ];
 
+  let libraries = [
+    {
+      short_name: "library",
+      settings: {
+        enabled_entry_points: ["Book", "Audio"],
+      },
+    },
+    {
+      short_name: "another library",
+      settings: {
+        enabled_entry_points: ["Audio"],
+      },
+    },
+  ];
+
   beforeEach(() => {
     fetchCustomLists = stub();
     fetchCustomListDetails = stub();
@@ -53,7 +68,7 @@ describe("CustomLists", () => {
     search = stub();
     loadMoreSearchResults = stub();
     fetchCollections = stub();
-    fetchMedia = stub();
+    fetchLibraries = stub();
 
     wrapper = shallow(
       <CustomLists
@@ -71,8 +86,8 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
-        fetchMedia={fetchMedia}
-        />
+        fetchLibraries={fetchLibraries}
+      />
     );
   });
 
@@ -136,8 +151,8 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
-        fetchMedia={fetchMedia}
-        />
+        fetchLibraries={fetchLibraries}
+      />
     );
     wrapper.setProps({ lists: [] });
     expect(window.location.href).to.contain("create");
@@ -158,8 +173,8 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
-        fetchMedia={fetchMedia}
-        />
+        fetchLibraries={fetchLibraries}
+      />
     );
     wrapper.setProps({ lists: listsData });
     expect(window.location.href).to.contain("edit");
@@ -183,8 +198,8 @@ describe("CustomLists", () => {
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
-        fetchMedia={fetchMedia}
-        />
+        fetchLibraries={fetchLibraries}
+      />
     );
     let radioButtons = wrapper.find(EditableInput);
     let ascendingButton = radioButtons.at(0);
@@ -334,5 +349,39 @@ describe("CustomLists", () => {
     editor = wrapper.find(CustomListEditor);
     expect(editor.props().list).to.deep.equal(newListDetails);
     expect(fetchCustomListDetails.callCount).to.equal(2);
+  });
+
+  it("gets the correct entry points list from the right library", () => {
+    let entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
+
+    expect(entryPoints.length).to.equal(2);
+    expect(entryPoints).to.eql(["Book", "Audio"]);
+  });
+
+  it("gets the correct entry points list from the second available library", () => {
+    wrapper = mount(
+      <CustomLists
+        csrfToken="token"
+        library="another library"
+        lists={listsData}
+        searchResults={searchResults}
+        collections={collections}
+        isFetching={false}
+        isFetchingMoreSearchResults={false}
+        fetchCustomLists={fetchCustomLists}
+        fetchCustomListDetails={fetchCustomListDetails}
+        editCustomList={editCustomList}
+        deleteCustomList={deleteCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        fetchCollections={fetchCollections}
+        fetchLibraries={fetchLibraries}
+      />
+    );
+
+    let entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
+
+    expect(entryPoints.length).to.equal(1);
+    expect(entryPoints).to.eql(["Audio"]);
   });
 });

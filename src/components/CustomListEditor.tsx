@@ -3,7 +3,6 @@ import {
   CustomListDetailsData,
   CustomListEntryData,
   CollectionData as AdminCollectionData,
-  MediaData,
 } from "../interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
@@ -22,14 +21,14 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   isFetchingMoreSearchResults: boolean;
-  media?: MediaData;
+  entryPoints?: string[];
 }
 
 export interface CustomListEditorState {
   name: string;
   entries: CustomListEntryData[];
   collections: AdminCollectionData[];
-  mediaSelected?: string;
+  entryPointSelected?: string;
 }
 
 /** Right panel of the lists page for editing a single list. */
@@ -40,7 +39,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       name: this.props.list && this.props.list.name,
       entries: (this.props.list && this.props.list.entries) || [],
       collections: (this.props.list && this.props.list.collections) || [],
-      mediaSelected: "all",
+      entryPointSelected: "all",
     };
 
     this.changeName = this.changeName.bind(this);
@@ -48,8 +47,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
     this.search = this.search.bind(this);
-    this.changeMedia = this.changeMedia.bind(this);
-    this.getMediaElements = this.getMediaElements.bind(this);
+    this.changeEntryPoint = this.changeEntryPoint.bind(this);
+    this.getEntryPointsElms = this.getEntryPointsElms.bind(this);
   }
 
   render(): JSX.Element {
@@ -69,7 +68,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               <h4>ID-{this.props.list.id}</h4>
             }
             { this.props.collections && this.props.collections.length > 0 &&
-              <div>
+              <div className="custom-list-filters">
                 <span>Automatically add new books from these collections to this list:</span>
                 <div className="collections">
                   { this.props.collections.map(collection =>
@@ -86,14 +85,14 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                   }
                 </div>
                 {
-                  this.props.media && (
-                    <div className="media">
-                      <span>Select the media to search for:</span>
-                      <div className="media-selection">
-                        {this.getMediaElements(this.props.media)}
+                  this.props.entryPoints.length ? (
+                    <div className="entry-points">
+                      <span>Select the entry point to search for:</span>
+                      <div className="entry-points-selection">
+                        {this.getEntryPointsElms(this.props.entryPoints)}
                       </div>
                     </div>
-                  )
+                  ) : null
                 }
               </div>
             }
@@ -220,12 +219,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.setState({ name: this.state.name, entries: this.state.entries, collections: newCollections });
   }
 
-  changeMedia(mediaSelected: string) {
+  changeEntryPoint(entryPointSelected: string) {
     this.setState({
       name: this.state.name,
       entries: this.state.entries,
       collections: this.state.collections,
-      mediaSelected,
+      entryPointSelected,
     });
   }
 
@@ -254,65 +253,57 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.setState({
       name: this.state.name,
       entries: this.state.entries,
-      collections: (this.props.list && this.props.list.collections) || []
+      collections: (this.props.list && this.props.list.collections) || [],
+      entryPointSelected: "all",
     });
   }
 
-  getMediaQuery() {
+  getEntryPointQuery() {
+    const entryPointSelected = this.state.entryPointSelected;
     let query = "";
-    if (this.state.mediaSelected && this.state.mediaSelected !== "all") {
-      query = `&media=${encodeURIComponent(this.state.mediaSelected)}`;
+    if (entryPointSelected && entryPointSelected !== "all") {
+      query = `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
     }
 
     return query;
   }
 
-  getMediaElements(media) {
-    const filteredMedia = {};
-    const mediaElems = [];
-    mediaElems.push(
+  getEntryPointsElms(entryPoints) {
+    const entryPointsElms = [];
+    entryPointsElms.push(
       <EditableInput
         key="all"
         type="radio"
-        name="media-selection"
-        checked={"all" === this.state.mediaSelected}
+        name="entry-points-selection"
+        checked={"all" === this.state.entryPointSelected}
         label="All"
         value="all"
-        onChange={() => this.changeMedia("all")}
+        onChange={() => this.changeEntryPoint("all")}
       />
     );
 
-    for (const key in media) {
-      const label = media[key];
-      if (media.hasOwnProperty(key) && (label === "Audio" || label === "Book")) {
-        filteredMedia[key] = media[key];
-      }
-    }
-
-    for (const key in filteredMedia) {
-      let label = media[key];
-
-      mediaElems.push(
+    entryPoints.forEach(entryPoint =>
+      entryPointsElms.push(
         <EditableInput
-          key={key}
+          key={entryPoint}
           type="radio"
-          name="media-selection"
-          checked={key === this.state.mediaSelected}
-          label={label}
-          value={key}
-          onChange={() => this.changeMedia(key)}
+          name="entry-points-selection"
+          checked={entryPoint === this.state.entryPointSelected}
+          label={entryPoint}
+          value={entryPoint}
+          onChange={() => this.changeEntryPoint(entryPoint)}
         />
-      );
-    }
+      )
+    );
 
-    return mediaElems;
+    return entryPointsElms;
   };
 
   search(event) {
     event.preventDefault();
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
-    const mediaQuery = this.getMediaQuery();
-    const url = "/" + this.props.library + "/search?q=" + searchTerms + mediaQuery;
+    const entryPointQuery = this.getEntryPointQuery();
+    const url = "/" + this.props.library + "/search?q=" + searchTerms + entryPointQuery;
     this.props.search(url);
   }
 }
