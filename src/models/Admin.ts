@@ -2,80 +2,64 @@ import { AdminRoleData } from "../interfaces";
 
 export default class Admin {
    roles: AdminRoleData[];
+   private systemAdmin: boolean = false;
+   private sitewideLibraryManager: boolean = false;
+   private sitewideLibrarian: boolean = false;
+   private manager: boolean = false;
+   private libraryRoles: {[library: string]: string} = {};
 
    constructor(roles: AdminRoleData[]) {
      this.roles = roles;
+     for (const role of this.roles) {
+       switch (role.role) {
+         case "system": {
+           this.systemAdmin = true;
+         }
+         case "manager-all": {
+           this.sitewideLibraryManager = true;
+           this.manager = true;
+         }
+         case "librarian-all": {
+           this.sitewideLibrarian = true;
+           break;
+         }
+         case "manager": {
+           this.manager = true;
+           this.libraryRoles[role.library] = "manager";
+           break;
+         }
+         case "librarian": {
+           this.libraryRoles[role.library] = "librarian";
+           break;
+         }
+         default: {
+           break;
+         }
+       }
+     }
    }
 
    isSystemAdmin() {
-     for (const role of this.roles) {
-       if (role.role === "system") {
-         return true;
-       }
-     }
-     return false;
+     return this.systemAdmin;
    }
 
    isSitewideLibraryManager() {
-     if (this.isSystemAdmin()) {
-       return true;
-     }
-     for (const role of this.roles) {
-       if (role.role === "manager-all") {
-         return true;
-       }
-     }
-     return false;
+     return this.sitewideLibraryManager;
    }
 
    isSitewideLibrarian() {
-     if (this.isSitewideLibraryManager()) {
-       return true;
-     }
-     for (const role of this.roles) {
-       if (role.role === "librarian-all") {
-         return true;
-       }
-     }
-     return false;
+     return this.sitewideLibrarian;
    }
 
    isLibraryManager(library: string) {
-     if (this.isSitewideLibraryManager()) {
-       return true;
-     }
-     for (const role of this.roles) {
-       if (role.role === "manager" && role.library === library) {
-         return true;
-       }
-     }
-     return false;
+     return this.sitewideLibraryManager || this.libraryRoles[library] === "manager";
    }
 
    isLibrarian(library: string) {
-     if (this.isSitewideLibrarian()) {
-       return true;
-     }
-     if (this.isLibraryManager(library)) {
-       return true;
-     }
-     for (const role of this.roles) {
-       if (role.role === "librarian" && role.library === library) {
-         return true;
-       }
-     }
-     return false;
+     return this.isLibraryManager(library) || this.sitewideLibrarian || this.libraryRoles[library] === "librarian";
    }
 
    isLibraryManagerOfSomeLibrary() {
-     if (this.isSitewideLibraryManager()) {
-       return true;
-     }
-     for (const role of this.roles) {
-       if (role.role === "manager") {
-         return true;
-       }
-     }
-     return false;
+     return this.manager;
    }
 };
