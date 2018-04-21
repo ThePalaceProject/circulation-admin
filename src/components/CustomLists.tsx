@@ -14,6 +14,7 @@ import {
   CollectionData as AdminCollectionData,
   MediaData,
 } from "../interfaces";
+import Admin from "../models/Admin";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
@@ -62,6 +63,12 @@ export interface CustomListsState {
 /** Body of the custom lists page, with all a library's lists shown in a left sidebar and
     a list editor on the right. */
 export class CustomLists extends React.Component<CustomListsProps, CustomListsState> {
+  context: { admin: Admin };
+
+  static contextTypes = {
+    admin: React.PropTypes.object.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.editCustomList = this.editCustomList.bind(this);
@@ -133,12 +140,14 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
                                     <PencilIcon />
                                 </Link>
                               }
-                              <button
-                                className="btn btn-default"
-                                onClick={() => this.deleteCustomList(list)}
-                                >Delete List
-                                  <TrashIcon />
-                              </button>
+                              { this.context.admin.isLibraryManager(this.props.library) &&
+                                <button
+                                  className="btn btn-default"
+                                  onClick={() => this.deleteCustomList(list)}
+                                  >Delete List
+                                    <TrashIcon />
+                                </button>
+                              }
                             </div>
                           </div>
                         </li>

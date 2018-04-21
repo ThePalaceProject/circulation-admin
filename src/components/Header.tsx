@@ -5,6 +5,7 @@ import { Store } from "redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
+import Admin from "../models/Admin";
 import EditableInput from "./EditableInput";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
@@ -28,11 +29,12 @@ export interface HeaderProps extends React.Props<Header>, HeaderStateProps, Head
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, void> {
-  context: { library: () => string, router: Router };
+  context: { library: () => string, router: Router, admin: Admin };
 
   static contextTypes = {
     library: React.PropTypes.func,
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
+    admin: React.PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -93,18 +95,22 @@ export class Header extends React.Component<HeaderProps, void> {
               <li>
                 <Link to={"/admin/web/lists/" + this.context.library()}>Lists</Link>
               </li>
-              <li>
-                <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
-              </li>
+              { this.context.admin.isLibraryManager(this.context.library()) &&
+                <li>
+                  <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
+                </li>
+              }
             </Nav>
           }
           <Nav className="pull-right">
             <li>
               <Link to="/admin/web/dashboard">Dashboard</Link>
             </li>
-            <li>
-              <Link to="/admin/web/config">Configuration</Link>
-            </li>
+            { this.context.admin.isLibraryManagerOfSomeLibrary() &&
+              <li>
+                <Link to="/admin/web/config">System Configuration</Link>
+              </li>
+            }
           </Nav>
         </Navbar.Collapse>
       </Navbar>

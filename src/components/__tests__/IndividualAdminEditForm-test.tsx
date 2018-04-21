@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
+import Admin from "../../models/Admin";
 
 describe("IndividualAdminEditForm", () => {
   let wrapper;
@@ -48,7 +49,8 @@ describe("IndividualAdminEditForm", () => {
           editItem={editIndividualAdmin}
           urlBase="url base"
           listDataKey="admins"
-          />
+          />,
+        { context: { admin: new Admin(systemAdmin) }}
       );
     });
 
@@ -72,11 +74,12 @@ describe("IndividualAdminEditForm", () => {
     });
 
     describe("roles", () => {
-      const expectRole = (startingRoles, role, shouldBeChecked: boolean) => {
+      const expectRole = (startingRoles, role, shouldBeChecked: boolean, shouldBeEnabled: boolean = true) => {
         let adminDataWithRoles = Object.assign({}, adminData, { roles: startingRoles });
         wrapper.setProps({ item: adminDataWithRoles });
         let input = editableInputByName(role);
         expect(input.props().checked).to.equal(shouldBeChecked);
+        expect(input.props().disabled).to.equal(!shouldBeEnabled);
       };
 
       it("renders system admin role", () => {
@@ -84,6 +87,12 @@ describe("IndividualAdminEditForm", () => {
         expectRole(systemAdmin, "system", true);
         expectRole(managerAll, "system", false);
         expectRole(bothLibrarian, "system", false);
+
+        wrapper.setContext({ admin: new Admin(managerAll) });
+        expectRole([], "system", false, false);
+        expectRole(systemAdmin, "system", true, false);
+        expectRole(managerAll, "system", false, false);
+        expectRole(bothLibrarian, "system", false, false);
       });
 
       it("renders manager all role", () => {
@@ -93,6 +102,22 @@ describe("IndividualAdminEditForm", () => {
         expectRole(bothManager, "manager-all", false);
         expectRole(nyplManager, "manager-all", false);
         expectRole(librarianAll, "manager-all", false);
+
+        wrapper.setContext({ admin: new Admin(librarianAll) });
+        expectRole([], "manager-all", false, false);
+        expectRole(systemAdmin, "manager-all", true, false);
+        expectRole(managerAll, "manager-all", true, false);
+        expectRole(bothManager, "manager-all", false, false);
+        expectRole(nyplManager, "manager-all", false, false);
+        expectRole(librarianAll, "manager-all", false, false);
+
+        wrapper.setContext({ admin: new Admin(nyplManager) });
+        expectRole([], "manager-all", false, false);
+        expectRole(systemAdmin, "manager-all", true, false);
+        expectRole(managerAll, "manager-all", true, false);
+        expectRole(bothManager, "manager-all", false, false);
+        expectRole(nyplManager, "manager-all", false, false);
+        expectRole(librarianAll, "manager-all", false, false);
       });
 
       it("renders librarian all role", () => {
@@ -104,6 +129,26 @@ describe("IndividualAdminEditForm", () => {
         expectRole(librarianAll, "librarian-all", true);
         expectRole(bothLibrarian, "librarian-all", false);
         expectRole(nyplLibrarian, "librarian-all", false);
+
+        wrapper.setContext({ admin: new Admin(nyplManager) });
+        expectRole([], "librarian-all", false, false);
+        expectRole(systemAdmin, "librarian-all", true, false);
+        expectRole(managerAll, "librarian-all", true, false);
+        expectRole(bothManager, "librarian-all", false, false);
+        expectRole(nyplManager, "librarian-all", false, false);
+        expectRole(librarianAll, "librarian-all", true, false);
+        expectRole(bothLibrarian, "librarian-all", false, false);
+        expectRole(nyplLibrarian, "librarian-all", false, false);
+
+        wrapper.setContext({ admin: new Admin(librarianAll) });
+        expectRole([], "librarian-all", false, false);
+        expectRole(systemAdmin, "librarian-all", true, false);
+        expectRole(managerAll, "librarian-all", true, false);
+        expectRole(bothManager, "librarian-all", false, false);
+        expectRole(nyplManager, "librarian-all", false, false);
+        expectRole(librarianAll, "librarian-all", true, false);
+        expectRole(bothLibrarian, "librarian-all", false, false);
+        expectRole(nyplLibrarian, "librarian-all", false, false);
       });
 
       it("renders manager role for each library", () => {
@@ -123,6 +168,44 @@ describe("IndividualAdminEditForm", () => {
         expectRole(librarianAll, "manager-bpl", false);
         expectRole(bplManager, "manager-bpl", true);
         expectRole(nyplLibrarian, "manager-bpl", false);
+
+        wrapper.setContext({ admin: new Admin(nyplManager) });
+
+        expectRole([], "manager-nypl", false, true);
+        expectRole(systemAdmin, "manager-nypl", true, false);
+        expectRole(managerAll, "manager-nypl", true, false);
+        expectRole(bothManager, "manager-nypl", true, true);
+        expectRole(nyplManager, "manager-nypl", true, true);
+        expectRole(librarianAll, "manager-nypl", false, true);
+        expectRole(bplManager, "manager-nypl", false, true);
+        expectRole(nyplLibrarian, "manager-nypl", false, true);
+
+        expectRole(systemAdmin, "manager-bpl", true, false);
+        expectRole(managerAll, "manager-bpl", true, false);
+        expectRole(bothManager, "manager-bpl", true, false);
+        expectRole(nyplManager, "manager-bpl", false, false);
+        expectRole(librarianAll, "manager-bpl", false, false);
+        expectRole(bplManager, "manager-bpl", true, false);
+        expectRole(nyplLibrarian, "manager-bpl", false, false);
+
+        wrapper.setContext({ admin: new Admin(managerAll) });
+
+        expectRole([], "manager-nypl", false, true);
+        expectRole(systemAdmin, "manager-nypl", true, false);
+        expectRole(managerAll, "manager-nypl", true, true);
+        expectRole(bothManager, "manager-nypl", true, true);
+        expectRole(nyplManager, "manager-nypl", true, true);
+        expectRole(librarianAll, "manager-nypl", false, true);
+        expectRole(bplManager, "manager-nypl", false, true);
+        expectRole(nyplLibrarian, "manager-nypl", false, true);
+
+        expectRole(systemAdmin, "manager-bpl", true, false);
+        expectRole(managerAll, "manager-bpl", true, true);
+        expectRole(bothManager, "manager-bpl", true, true);
+        expectRole(nyplManager, "manager-bpl", false, true);
+        expectRole(librarianAll, "manager-bpl", false, true);
+        expectRole(bplManager, "manager-bpl", true, true);
+        expectRole(nyplLibrarian, "manager-bpl", false, true);
       });
 
       it("renders librarian role for each library", () => {
@@ -144,6 +227,48 @@ describe("IndividualAdminEditForm", () => {
         expectRole(bplManager, "librarian-bpl", true);
         expectRole(nyplLibrarian, "librarian-bpl", false);
         expectRole(bplLibrarian, "librarian-bpl", true);
+
+        wrapper.setContext({ admin: new Admin(nyplManager) });
+
+        expectRole([], "librarian-nypl", false, true);
+        expectRole(systemAdmin, "librarian-nypl", true, false);
+        expectRole(managerAll, "librarian-nypl", true, false);
+        expectRole(bothManager, "librarian-nypl", true, true);
+        expectRole(nyplManager, "librarian-nypl", true, true);
+        expectRole(librarianAll, "librarian-nypl", true, false);
+        expectRole(bplManager, "librarian-nypl", false, true);
+        expectRole(nyplLibrarian, "librarian-nypl", true, true);
+        expectRole(bplLibrarian, "librarian-nypl", false, true);
+
+        expectRole(systemAdmin, "librarian-bpl", true, false);
+        expectRole(managerAll, "librarian-bpl", true, false);
+        expectRole(bothManager, "librarian-bpl", true, false);
+        expectRole(nyplManager, "librarian-bpl", false, false);
+        expectRole(librarianAll, "librarian-bpl", true, false);
+        expectRole(bplManager, "librarian-bpl", true, false);
+        expectRole(nyplLibrarian, "librarian-bpl", false, false);
+        expectRole(bplLibrarian, "librarian-bpl", true, false);
+
+        wrapper.setContext({ admin: new Admin(managerAll) });
+
+        expectRole([], "librarian-nypl", false, true);
+        expectRole(systemAdmin, "librarian-nypl", true, false);
+        expectRole(managerAll, "librarian-nypl", true, true);
+        expectRole(bothManager, "librarian-nypl", true, true);
+        expectRole(nyplManager, "librarian-nypl", true, true);
+        expectRole(librarianAll, "librarian-nypl", true, true);
+        expectRole(bplManager, "librarian-nypl", false, true);
+        expectRole(nyplLibrarian, "librarian-nypl", true, true);
+        expectRole(bplLibrarian, "librarian-nypl", false, true);
+
+        expectRole(systemAdmin, "librarian-bpl", true, false);
+        expectRole(managerAll, "librarian-bpl", true, true);
+        expectRole(bothManager, "librarian-bpl", true, true);
+        expectRole(nyplManager, "librarian-bpl", false, true);
+        expectRole(librarianAll, "librarian-bpl", true, true);
+        expectRole(bplManager, "librarian-bpl", true, true);
+        expectRole(nyplLibrarian, "librarian-bpl", false, true);
+        expectRole(bplLibrarian, "librarian-bpl", true, true);
       });
     });
   });
@@ -158,7 +283,8 @@ describe("IndividualAdminEditForm", () => {
           editItem={editIndividualAdmin}
           urlBase="url base"
           listDataKey="admins"
-          />
+          />,
+        { context: { admin: new Admin(systemAdmin) }}
       );
     });
 

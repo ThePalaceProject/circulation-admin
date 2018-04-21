@@ -74,7 +74,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
         { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] &&
           <div>
-            { (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
+            { (!this.limitOne || this.props.data[this.listDataKey].length === 0) && this.canCreate() &&
               <a
                 className="btn btn-default create-item"
                 href={this.urlBase + "create"}
@@ -95,15 +95,17 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                     <h4>
                       {this.label(item)}
                     </h4>
-                    <button
-                      className="btn btn-danger delete-item"
-                      onClick={() => this.delete(item) }
-                      >
-                        <span>
-                          Delete
-                          <TrashIcon />
-                        </span>
-                    </button>
+                    { this.canDelete(item) &&
+                      <button
+                        className="btn btn-danger delete-item"
+                        onClick={() => this.delete(item) }
+                        >
+                          <span>
+                            Delete
+                            <TrashIcon />
+                          </span>
+                      </button>
+                    }
                   </li>
                 )
               }
@@ -144,6 +146,14 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  canCreate() {
+    return true;
+  }
+
+  canDelete(item) {
+    return true;
   }
 
   componentWillMount() {

@@ -25,6 +25,13 @@ interface ConfigurationSettings {
       for configuring admin authentication. The admin will need to set that up
       and log in before accessing the rest of the interface. */
   settingUp: boolean;
+
+  /** `roles` contains the logged in admin's roles: system admininstrator,
+      or library manager or librarian for one or more libraries. */
+  roles?: {
+    role: string;
+    library?: string;
+  }[];
 }
 
 /** The main admin interface application. Create an instance of this class

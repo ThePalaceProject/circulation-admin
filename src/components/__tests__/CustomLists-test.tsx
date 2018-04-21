@@ -10,6 +10,7 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import EditableInput from "../EditableInput";
 import CustomListEditor from "../CustomListEditor";
 import { Link } from "react-router";
+import Admin from "../../models/Admin";
 
 describe("CustomLists", () => {
   let wrapper;
@@ -45,6 +46,9 @@ describe("CustomLists", () => {
     { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
   ];
 
+  const libraryManager = new Admin([{ "role": "manager", "library": "library" }]);
+  const librarian = new Admin([{ "role": "librarian", "library": "library" }]);
+
   beforeEach(() => {
     fetchCustomLists = stub();
     fetchCustomListDetails = stub();
@@ -72,7 +76,8 @@ describe("CustomLists", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
         fetchMedia={fetchMedia}
-        />
+        />,
+      { context: { admin: libraryManager }}
     );
   });
 
@@ -137,7 +142,8 @@ describe("CustomLists", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
         fetchMedia={fetchMedia}
-        />
+        />,
+      { context: { admin: libraryManager }}
     );
     wrapper.setProps({ lists: [] });
     expect(window.location.href).to.contain("create");
@@ -159,7 +165,8 @@ describe("CustomLists", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
         fetchMedia={fetchMedia}
-        />
+        />,
+      { context: { admin: libraryManager }}
     );
     wrapper.setProps({ lists: listsData });
     expect(window.location.href).to.contain("edit");
@@ -184,7 +191,8 @@ describe("CustomLists", () => {
         loadMoreSearchResults={loadMoreSearchResults}
         fetchCollections={fetchCollections}
         fetchMedia={fetchMedia}
-        />
+        />,
+      { context: { admin: libraryManager }}
     );
     let radioButtons = wrapper.find(EditableInput);
     let ascendingButton = radioButtons.at(0);
@@ -213,7 +221,7 @@ describe("CustomLists", () => {
     expect(secondLink.text()).to.contain("z list");
   });
 
-  it("renders delete button and edit link or disabled editing message", () => {
+  it("renders delete button and edit link or disabled editing message for library manager", () => {
     let lists = wrapper.find("li");
     expect(lists.length).to.equal(2);
     expect(lists.at(0).props().className).not.to.contain("active");
@@ -254,6 +262,43 @@ describe("CustomLists", () => {
     expect(listZButtons.length).to.equal(2);
     expect(listZButtons.at(0).text()).to.contain("Editing");
     expect(listZButtons.at(1).text()).to.contain("Delete List");
+  });
+
+  it("renders edit link but does not render delete button for librarian", () => {
+    wrapper = shallow(
+      <CustomLists
+        csrfToken="token"
+        library="library"
+        lists={listsData}
+        searchResults={searchResults}
+        collections={collections}
+        isFetching={false}
+        isFetchingMoreSearchResults={false}
+        fetchCustomLists={fetchCustomLists}
+        fetchCustomListDetails={fetchCustomListDetails}
+        editCustomList={editCustomList}
+        deleteCustomList={deleteCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        fetchCollections={fetchCollections}
+        fetchMedia={fetchMedia}
+        />,
+      { context: { admin: librarian }}
+    );
+    let lists = wrapper.find("li");
+    expect(lists.length).to.equal(2);
+
+    let listAEditLink = lists.at(0).find(Link);
+    let listZEditLink = lists.at(1).find(Link);
+    let listAButtons = lists.at(0).find("button");
+    let listZButtons = lists.at(1).find("button");
+
+    expect(listAEditLink.length).to.equal(1);
+    expect(listAEditLink.props().to).to.equal("/admin/web/lists/library/edit/1");
+    expect(listZEditLink.length).to.equal(1);
+    expect(listZEditLink.props().to).to.equal("/admin/web/lists/library/edit/2");
+    expect(listAButtons.length).to.equal(0);
+    expect(listZButtons.length).to.equal(0);
   });
 
   it("deletes a list", () => {

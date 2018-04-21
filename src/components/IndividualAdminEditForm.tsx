@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import { IndividualAdminsData, IndividualAdminData, AdminRoleData } from "../interfaces";
+import Admin from "../models/Admin";
 
 export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
@@ -18,6 +19,7 @@ export interface IndividualAdminEditFormState {
 
 export interface IndividualAdminEditFormContext {
   settingUp: boolean;
+  admin: Admin;
 }
 
 /** Form for editing an individual admin from the individual admin configuration page. */
@@ -25,7 +27,8 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   context: IndividualAdminEditFormContext;
 
   static contextTypes: React.ValidationMap<IndividualAdminEditFormContext> = {
-    settingUp: React.PropTypes.bool.isRequired
+    settingUp: React.PropTypes.bool.isRequired,
+    admin: React.PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -61,7 +64,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         <EditableInput
           elementType="input"
           type="checkbox"
-          disabled={this.props.disabled}
+          disabled={this.isDisabled("system")}
           name="system"
           label="System Admin"
           checked={this.isSelected("system")}
@@ -75,7 +78,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                 <EditableInput
                   elementType="input"
                    type="checkbox"
-                   disabled={this.props.disabled}
+                   disabled={this.isDisabled("manager-all")}
                    name="manager-all"
                    label="Library Manager"
                    checked={this.isSelected("manager-all")}
@@ -86,7 +89,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                 <EditableInput
                   elementType="input"
                   type="checkbox"
-                  disabled={this.props.disabled}
+                  disabled={this.isDisabled("librarian-all")}
                   name="librarian-all"
                   label="Librarian"
                   checked={this.isSelected("librarian-all")}
@@ -105,7 +108,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                   <EditableInput
                     elementType="input"
                     type="checkbox"
-                    disabled={this.props.disabled}
+                    disabled={this.isDisabled("manager", library.short_name)}
                     name={"manager-" + library.short_name}
                     label=""
                     checked={this.isSelected("manager", library.short_name)}
@@ -116,7 +119,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                   <EditableInput
                     elementType="input"
                     type="checkbox"
-                    disabled={this.props.disabled}
+                    disabled={this.isDisabled("librarian", library.short_name)}
                     name={"librarian-" + library.short_name}
                     label=""
                     checked={this.isSelected("librarian", library.short_name)}
@@ -161,6 +164,30 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       }
     }
     return false;
+  }
+
+  isDisabled(role: string, library?: string) {
+    if (this.props.disabled) {
+      return true;
+    }
+    if (role === "system" || this.isSelected("system")) {
+      return !this.context.admin.isSystemAdmin();
+    }
+    if (role === "manager-all" || role === "librarian-all") {
+      return !this.context.admin.isSitewideLibraryManager();
+    }
+    if (role === "manager") {
+      if (this.isSelected("manager-all")) {
+        return !this.context.admin.isSitewideLibraryManager();
+      }
+      return !this.context.admin.isLibraryManager(library);
+    }
+    if (role === "librarian") {
+      if (this.isSelected("librarian-all")) {
+        return !this.context.admin.isSitewideLibraryManager();
+      }
+      return !this.context.admin.isLibraryManager(library);
+    }
   }
 
   handleRoleChange(role: string, library?: string) {

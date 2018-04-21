@@ -12,123 +12,139 @@ import SearchServices from "./SearchServices";
 import StorageServices from "./StorageServices";
 import DiscoveryServices from "./DiscoveryServices";
 import LoggingServices from "./LoggingServices";
-import { TabContainer, TabContainerProps } from "./TabContainer";
+import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
+import Admin from "../models/Admin";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
   editOrCreate?: string;
   identifier?: string;
 }
 
+export interface ConfigTabContainerContext extends TabContainerContext {
+  admin: Admin;
+}
+
 /** Body of the system configuration page, with a tab for each type of
     service that can be configured. */
 export default class ConfigTabContainer extends TabContainer<ConfigTabContainerProps> {
+  context: ConfigTabContainerContext;
+  static contextTypes: React.ValidationMap<ConfigTabContainerContext> = {
+    router: React.PropTypes.object.isRequired,
+    pathFor: React.PropTypes.func.isRequired,
+    admin: React.PropTypes.object.isRequired
+  };
+
   tabs() {
-    return {
-      libraries: (
+    const tabs = {};
+    if (this.context.admin.isLibraryManagerOfSomeLibrary()) {
+      tabs["libraries"] = (
         <Libraries
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      collections: (
-        <Collections
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      ),
-      adminAuth: (
-        <AdminAuthServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      ),
-      individualAdmins: (
+      );
+      tabs["individualAdmins"] = (
         <IndividualAdmins
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      patronAuth: (
+      );
+    }
+    if (this.context.admin.isSystemAdmin()) {
+      tabs["collections"] = (
+        <Collections
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      );
+      tabs["adminAuth"] = (
+        <AdminAuthServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      );
+      tabs["patronAuth"] = (
         <PatronAuthServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      sitewideSettings: (
+      );
+      tabs["sitewideSettings"] = (
         <SitewideSettings
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      loggingServices: (
+      );
+      tabs["logging"] = (
         <LoggingServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      metadata: (
+      );
+      tabs["metadata"] = (
         <MetadataServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      analytics: (
+      );
+      tabs["analytics"] = (
         <AnalyticsServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      cdn: (
+      );
+      tabs["cdn"] = (
         <CDNServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      search: (
+      );
+      tabs["search"] = (
         <SearchServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      storage: (
+      );
+      tabs["storage"] = (
         <StorageServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-      discovery: (
+      );
+      tabs["discovery"] = (
         <DiscoveryServices
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
           identifier={this.props.identifier}
           />
-      ),
-    };
+      );
+    }
+    return tabs;
   }
 
   handleSelect(event) {
@@ -142,15 +158,13 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     if (name === "adminAuth") {
       return "Admin Authentication";
     } else if (name === "individualAdmins") {
-      return "Individual Admins";
+      return "Admins";
     } else if (name === "patronAuth") {
       return "Patron Authentication";
     } else if (name === "sitewideSettings") {
       return "Sitewide Settings";
     } else if (name === "cdn") {
       return "CDN";
-    } else if (name === "loggingServices") {
-      return "Logging";
     } else {
       return super.tabDisplayName(name);
     }
