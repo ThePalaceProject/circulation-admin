@@ -107,4 +107,78 @@ describe("Admin", () => {
     expect(libraryManagerASitewideLibrarian.isLibraryManagerOfSomeLibrary()).to.be.ok;
     expect(libraryManagerALibrarianB.isLibraryManagerOfSomeLibrary()).to.be.ok;
   });
+
+  it("checks for specific roles", () => {
+    expect(systemAdmin.hasRole("system")).to.be.ok;
+    expect(systemAdmin.hasRole("manager-all")).to.be.ok;
+    expect(systemAdmin.hasRole("librarian-all")).to.be.ok;
+    expect(systemAdmin.hasRole("manager", "a")).to.be.ok;
+    expect(systemAdmin.hasRole("librarian", "a")).to.be.ok;
+    expect(systemAdmin.hasRole("manager", "b")).to.be.ok;
+    expect(systemAdmin.hasRole("librarian", "b")).to.be.ok;
+
+    expect(sitewideLibraryManager.hasRole("system")).not.to.be.ok;
+    expect(sitewideLibraryManager.hasRole("manager-all")).to.be.ok;
+    expect(sitewideLibraryManager.hasRole("librarian-all")).to.be.ok;
+    expect(sitewideLibraryManager.hasRole("manager", "a")).to.be.ok;
+    expect(sitewideLibraryManager.hasRole("librarian", "a")).to.be.ok;
+    expect(sitewideLibraryManager.hasRole("manager", "b")).to.be.ok;
+    expect(sitewideLibraryManager.hasRole("librarian", "b")).to.be.ok;
+
+    expect(sitewideLibrarian.hasRole("system")).not.to.be.ok;
+    expect(sitewideLibrarian.hasRole("manager-all")).not.to.be.ok;
+    expect(sitewideLibrarian.hasRole("librarian-all")).to.be.ok;
+    expect(sitewideLibrarian.hasRole("manager", "a")).not.to.be.ok;
+    expect(sitewideLibrarian.hasRole("librarian", "a")).to.be.ok;
+    expect(sitewideLibrarian.hasRole("manager", "b")).not.to.be.ok;
+    expect(sitewideLibrarian.hasRole("librarian", "b")).to.be.ok;
+
+    expect(libraryManagerA.hasRole("system")).not.to.be.ok;
+    expect(libraryManagerA.hasRole("manager-all")).not.to.be.ok;
+    expect(libraryManagerA.hasRole("librarian-all")).not.to.be.ok;
+    expect(libraryManagerA.hasRole("manager", "a")).to.be.ok;
+    expect(libraryManagerA.hasRole("librarian", "a")).to.be.ok;
+    expect(libraryManagerA.hasRole("manager", "b")).not.to.be.ok;
+    expect(libraryManagerA.hasRole("librarian", "b")).not.to.be.ok;
+
+    expect(librarianA.hasRole("system")).not.to.be.ok;
+    expect(librarianA.hasRole("manager-all")).not.to.be.ok;
+    expect(librarianA.hasRole("librarian-all")).not.to.be.ok;
+    expect(librarianA.hasRole("manager", "a")).not.to.be.ok;
+    expect(librarianA.hasRole("librarian", "a")).to.be.ok;
+    expect(librarianA.hasRole("manager", "b")).not.to.be.ok;
+    expect(librarianA.hasRole("librarian", "b")).not.to.be.ok;
+
+    expect(libraryManagerB.hasRole("system")).not.to.be.ok;
+    expect(libraryManagerB.hasRole("manager-all")).not.to.be.ok;
+    expect(libraryManagerB.hasRole("librarian-all")).not.to.be.ok;
+    expect(libraryManagerB.hasRole("manager", "a")).not.to.be.ok;
+    expect(libraryManagerB.hasRole("librarian", "a")).not.to.be.ok;
+    expect(libraryManagerB.hasRole("manager", "b")).to.be.ok;
+    expect(libraryManagerB.hasRole("librarian", "b")).to.be.ok;
+
+    expect(librarianB.hasRole("system")).not.to.be.ok;
+    expect(librarianB.hasRole("manager-all")).not.to.be.ok;
+    expect(librarianB.hasRole("librarian-all")).not.to.be.ok;
+    expect(librarianB.hasRole("manager", "a")).not.to.be.ok;
+    expect(librarianB.hasRole("librarian", "a")).not.to.be.ok;
+    expect(librarianB.hasRole("manager", "b")).not.to.be.ok;
+    expect(librarianB.hasRole("librarian", "b")).to.be.ok;
+
+    expect(libraryManagerASitewideLibrarian.hasRole("system")).not.to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("manager-all")).not.to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("librarian-all")).to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("manager", "a")).to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("librarian", "a")).to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("manager", "b")).not.to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("librarian", "b")).to.be.ok;
+
+    expect(libraryManagerALibrarianB.hasRole("system")).not.to.be.ok;
+    expect(libraryManagerALibrarianB.hasRole("manager-all")).not.to.be.ok;
+    expect(libraryManagerALibrarianB.hasRole("librarian-all")).not.to.be.ok;
+    expect(libraryManagerALibrarianB.hasRole("manager", "a")).to.be.ok;
+    expect(libraryManagerALibrarianB.hasRole("librarian", "a")).to.be.ok;
+    expect(libraryManagerALibrarianB.hasRole("manager", "b")).not.to.be.ok;
+    expect(libraryManagerALibrarianB.hasRole("librarian", "b")).to.be.ok;
+  });
 });
