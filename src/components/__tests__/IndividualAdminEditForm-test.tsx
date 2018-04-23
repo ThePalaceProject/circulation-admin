@@ -270,6 +270,14 @@ describe("IndividualAdminEditForm", () => {
         expectRole(nyplLibrarian, "librarian-bpl", false, true);
         expectRole(bplLibrarian, "librarian-bpl", true, true);
       });
+
+      it("does not render roles when setting up first admin", () => {
+        wrapper.setContext({ settingUp: true });
+        for (const role of ["system", "manager-all", "librarian-all", "manager-nypl", "librarian-nypl"]) {
+          let input = editableInputByName(role);
+          expect(input.length).to.equal(0);
+        }
+      });
     });
   });
 
@@ -454,6 +462,30 @@ describe("IndividualAdminEditForm", () => {
       await pause();
       expect(window.location.href).to.contain("edit");
       expect(window.location.href).to.contain("newEmail");
+    });
+
+    it("submits system admin when setting up", () => {
+      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
+
+      wrapper.setContext({ settingUp: true });
+
+      let emailInput = wrapper.find("input[name='email']");
+      let emailInputElement = emailInput.get(0);
+      emailInputElement.value = "newEmail";
+      emailInput.simulate("change");
+      let pwInput = wrapper.find("input[name='password']");
+      let pwInputElement = pwInput.get(0);
+      pwInputElement.value = "newPassword";
+      pwInput.simulate("change");
+
+      let form = wrapper.find("form");
+      form.simulate("submit");
+
+      expect(editIndividualAdmin.callCount).to.equal(1);
+      let formData = editIndividualAdmin.args[0][0];
+      expect(formData.get("email")).to.equal("newEmail");
+      expect(formData.get("password")).to.equal("newPassword");
+      expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "system" }]));
     });
   });
 });

@@ -60,76 +60,80 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           name="password"
           label="Password"
           />
-        <h4>Roles</h4>
-        <EditableInput
-          elementType="input"
-          type="checkbox"
-          disabled={this.isDisabled("system")}
-          name="system"
-          label="System Admin"
-          checked={this.isSelected("system")}
-          onChange={() => this.handleRoleChange("system")}
-          />
-        <table className="library-admin-roles">
-          <thead>
-            <tr>
-              <th></th>
-              <th>
-                <EditableInput
-                  elementType="input"
-                   type="checkbox"
-                   disabled={this.isDisabled("manager-all")}
-                   name="manager-all"
-                   label="Library Manager"
-                   checked={this.isSelected("manager-all")}
-                   onChange={() => this.handleRoleChange("manager-all")}
-                   />
-              </th>
-              <th>
-                <EditableInput
-                  elementType="input"
-                  type="checkbox"
-                  disabled={this.isDisabled("librarian-all")}
-                  name="librarian-all"
-                  label="Librarian"
-                  checked={this.isSelected("librarian-all")}
-                  onChange={() => this.handleRoleChange("librarian-all")}
-                  />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            { this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.map(library =>
-              <tr key={library.short_name}>
-                <td>
-                  {library.name}
-                </td>
-                <td>
-                  <EditableInput
-                    elementType="input"
-                    type="checkbox"
-                    disabled={this.isDisabled("manager", library.short_name)}
-                    name={"manager-" + library.short_name}
-                    label=""
-                    checked={this.isSelected("manager", library.short_name)}
-                    onChange={() => this.handleRoleChange("manager", library.short_name)}
-                    />
-                </td>
-                <td>
-                  <EditableInput
-                    elementType="input"
-                    type="checkbox"
-                    disabled={this.isDisabled("librarian", library.short_name)}
-                    name={"librarian-" + library.short_name}
-                    label=""
-                    checked={this.isSelected("librarian", library.short_name)}
-                    onChange={() => this.handleRoleChange("librarian", library.short_name)}
-                    />
-                </td>
-              </tr>
-            ) }
-          </tbody>
-        </table>
+        { !this.context.settingUp &&
+          <div>
+            <h4>Roles</h4>
+            <EditableInput
+              elementType="input"
+              type="checkbox"
+              disabled={this.isDisabled("system")}
+              name="system"
+              label="System Admin"
+              checked={this.isSelected("system")}
+              onChange={() => this.handleRoleChange("system")}
+              />
+            <table className="library-admin-roles">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>
+                    <EditableInput
+                      elementType="input"
+                       type="checkbox"
+                       disabled={this.isDisabled("manager-all")}
+                       name="manager-all"
+                       label="Library Manager"
+                       checked={this.isSelected("manager-all")}
+                       onChange={() => this.handleRoleChange("manager-all")}
+                       />
+                  </th>
+                  <th>
+                    <EditableInput
+                      elementType="input"
+                      type="checkbox"
+                      disabled={this.isDisabled("librarian-all")}
+                      name="librarian-all"
+                      label="Librarian"
+                      checked={this.isSelected("librarian-all")}
+                      onChange={() => this.handleRoleChange("librarian-all")}
+                      />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                { this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.map(library =>
+                  <tr key={library.short_name}>
+                    <td>
+                      {library.name}
+                    </td>
+                    <td>
+                      <EditableInput
+                        elementType="input"
+                        type="checkbox"
+                        disabled={this.isDisabled("manager", library.short_name)}
+                        name={"manager-" + library.short_name}
+                        label=""
+                        checked={this.isSelected("manager", library.short_name)}
+                        onChange={() => this.handleRoleChange("manager", library.short_name)}
+                        />
+                    </td>
+                    <td>
+                      <EditableInput
+                        elementType="input"
+                        type="checkbox"
+                        disabled={this.isDisabled("librarian", library.short_name)}
+                        name={"librarian-" + library.short_name}
+                        label=""
+                        checked={this.isSelected("librarian", library.short_name)}
+                        onChange={() => this.handleRoleChange("librarian", library.short_name)}
+                        />
+                    </td>
+                  </tr>
+                ) }
+              </tbody>
+            </table>
+          </div>
+        }
         <button
           type="submit"
           className="btn btn-default"
@@ -265,7 +269,12 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   save(event) {
     event.preventDefault();
     const data = new (window as any).FormData(this.refs["form"] as any);
-    data.append("roles", JSON.stringify(this.state.admin.roles));
+    let roles = this.state.admin.roles;
+    if (this.context && this.context.settingUp) {
+      // When setting up the only thing you can do is create a system admin.
+      roles = [{ role: "system" }];
+    }
+    data.append("roles", JSON.stringify(roles));
     this.props.editItem(data).then(() => {
       // If we're setting up an admin for the first time, refresh the page
       // to go to login.
