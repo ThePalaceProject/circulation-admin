@@ -9,6 +9,7 @@ export interface ContextProviderProps extends React.Props<any> {
   csrfToken: string;
   showCircEventsDownload?: boolean;
   settingUp?: boolean;
+  email?: string;
   roles?: {
     role: string;
     library?: string;
@@ -25,7 +26,7 @@ export default class ContextProvider extends React.Component<ContextProviderProp
   constructor(props) {
     super(props);
     this.store = buildStore();
-    this.admin = new Admin(props.roles || []);
+    this.admin = new Admin(props.roles || [], props.email || null);
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
       let path = "/admin/web";
       path +=

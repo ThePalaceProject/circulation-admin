@@ -131,6 +131,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly STATS_FAILURE = "STATS_FAILURE";
   static readonly STATS_LOAD = "STATS_LOAD";
 
+  static readonly CHANGE_PASSWORD = "CHANGE_PASSWORD";
+
   csrfToken: string;
 
   constructor(fetcher?: DataFetcher, csrfToken?: string) {
@@ -583,5 +585,10 @@ export default class ActionCreator extends BaseActionCreator {
   resetLanes(library: string) {
     const url = "/" + library + "/admin/lanes/reset";
     return this.postForm(ActionCreator.RESET_LANES, url, null).bind(this);
+  }
+
+  changePassword(data: FormData) {
+    const url = "/admin/change_password";
+    return this.postForm(ActionCreator.CHANGE_PASSWORD, url, data).bind(this);
   }
 }

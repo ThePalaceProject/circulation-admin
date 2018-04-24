@@ -7,6 +7,7 @@ import CustomListPage from "./components/CustomListPage";
 import LanePage from "./components/LanePage";
 import DashboardPage from "./components/DashboardPage";
 import ConfigPage from "./components/ConfigPage";
+import AccountPage from "./components/AccountPage";
 import SetupPage from "./components/SetupPage";
 
 interface ConfigurationSettings {
@@ -25,6 +26,9 @@ interface ConfigurationSettings {
       for configuring admin authentication. The admin will need to set that up
       and log in before accessing the rest of the interface. */
   settingUp: boolean;
+
+  /** `email` will be the email address of the currently logged in admin. */
+  email?: string;
 
   /** `roles` contains the logged in admin's roles: system admininstrator,
       or library manager or librarian for one or more libraries. */
@@ -62,6 +66,7 @@ class CirculationWeb {
             <Route path={lanePagePath} component={LanePage} />
             <Route path="/admin/web/dashboard" component={DashboardPage} />
             <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
+            <Route path="/admin/web/account" component={AccountPage} />
           </Router>
         </ContextProvider>,
         document.getElementById("opds-catalog")

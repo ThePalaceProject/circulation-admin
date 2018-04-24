@@ -17,6 +17,7 @@ describe("ContextProvider", () => {
       <ContextProvider
         csrfToken="token"
         roles={ [{ "role": "system" }] }
+        email="email"
         >
         <FakeChild />
       </ContextProvider>
@@ -32,6 +33,7 @@ describe("ContextProvider", () => {
     expect(context.settingUp).not.to.be.ok;
     expect(context.admin instanceof Admin).to.be.ok;
     expect(context.admin.isSystemAdmin()).to.be.ok;
+    expect(context.admin.email).to.equal("email");
   });
 
   it("renders child", () => {

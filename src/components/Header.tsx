@@ -26,9 +26,13 @@ export interface HeaderOwnProps {
 
 export interface HeaderProps extends React.Props<Header>, HeaderStateProps, HeaderDispatchProps, HeaderOwnProps {}
 
+export interface HeaderState {
+  showAccountDropdown: boolean;
+}
+
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
-export class Header extends React.Component<HeaderProps, void> {
+export class Header extends React.Component<HeaderProps, HeaderState> {
   context: { library: () => string, router: Router, admin: Admin };
 
   static contextTypes = {
@@ -39,7 +43,9 @@ export class Header extends React.Component<HeaderProps, void> {
 
   constructor(props) {
     super(props);
+    this.state = { showAccountDropdown: false };
     this.changeLibrary = this.changeLibrary.bind(this);
+    this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
   }
 
   render(): JSX.Element {
@@ -111,6 +117,24 @@ export class Header extends React.Component<HeaderProps, void> {
                 <Link to="/admin/web/config">System Configuration</Link>
               </li>
             }
+            { this.context.admin.email &&
+              <li className="dropdown">
+                <a
+                  className="dropdown-toggle"
+                  href="#"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded={this.state.showAccountDropdown}
+                  onClick={this.toggleAccountDropdown}
+                  >{ this.context.admin.email } &#9660;</a>
+                { this.state.showAccountDropdown &&
+                  <ul className="dropdown-menu">
+                    <li><Link to="/admin/web/account">Change password</Link></li>
+                    <li><a href="/admin/sign_out">Sign out</a></li>
+                  </ul>
+                }
+              </li>
+            }
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -129,6 +153,11 @@ export class Header extends React.Component<HeaderProps, void> {
       this.context.router.push("/admin/web/collection/" + library + "%2Fgroups");
       this.forceUpdate();
     }
+  }
+
+  toggleAccountDropdown() {
+    let showAccountDropdown = !this.state.showAccountDropdown;
+    this.setState({ showAccountDropdown });
   }
 }
 

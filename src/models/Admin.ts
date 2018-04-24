@@ -2,14 +2,16 @@ import { AdminRoleData } from "../interfaces";
 
 export default class Admin {
   roles: AdminRoleData[];
+  email: string | null = null;
   private systemAdmin: boolean = false;
   private sitewideLibraryManager: boolean = false;
   private sitewideLibrarian: boolean = false;
   private manager: boolean = false;
   private libraryRoles: {[library: string]: string} = {};
 
-  constructor(roles: AdminRoleData[]) {
+  constructor(roles: AdminRoleData[], email?: string) {
     this.roles = roles;
+    this.email = email;
     for (const role of roles) {
       switch (role.role) {
         case "system": {

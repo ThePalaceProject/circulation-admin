@@ -16,6 +16,11 @@ describe("Admin", () => {
   const libraryManagerALibrarianB = new Admin([{ "role": "manager", "library": "a" },
                                                { "role": "librarian", "library": "b" }]);
 
+  it("stores email", () => {
+    expect((new Admin([], "email")).email).to.equal("email");
+    expect((new Admin([])).email).not.to.be.ok;
+  });
+
   it("identifies system admins", () => {
     expect(systemAdmin.isSystemAdmin()).to.be.ok;
     expect(sitewideLibraryManager.isSystemAdmin()).not.to.be.ok;

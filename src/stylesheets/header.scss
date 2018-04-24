@@ -19,3 +19,23 @@
   display: inline-block;
   width: auto;
 }
+
+.navbar-nav .dropdown-menu {
+  display: block;
+  background-color: $dark;
+
+  a {
+    background-color: $dark;
+    color: $pagecolorlight;
+
+    &:hover, &:visited, &:active {
+      background-color: $dark;
+      color: $pagecolorlight;
+      text-decoration: underline;
+    }
+  }
+}
+
+.navbar-collapse.in {
+  overflow-y: visible;
+}

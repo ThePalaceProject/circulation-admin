@@ -133,6 +133,15 @@ describe("Header", () => {
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
     });
+
+    it("shows account dropdown when the admin has an email", () => {
+      const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
+      wrapper.setContext({ library: () => "nypl", admin: admin });
+
+      let links = wrapper.find("a.dropdown-toggle");
+      expect(links.length).to.equal(1);
+      expect(links.text()).to.contain("admin@nypl.org");
+    });
   });
 
   describe("behavior", () => {
@@ -184,6 +193,27 @@ describe("Header", () => {
 
       expect(fullContext.router.push.callCount).to.equal(1);
       expect(fullContext.router.push.args[0][0]).to.equal("/admin/web/collection/bpl%2Fgroups");
+    });
+
+    it("toggles account dropdown", () => {
+      const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
+      wrapper.setContext({ library: () => "nypl", admin: admin });
+
+      let toggle = wrapper.find("a.dropdown-toggle");
+      let dropdownLinks = wrapper.find("ul.dropdown-menu a");
+      expect(dropdownLinks.length).to.equal(0);
+
+      toggle.simulate("click");
+      dropdownLinks = wrapper.find("ul.dropdown-menu li");
+      expect(dropdownLinks.length).to.equal(2);
+      let changePassword = dropdownLinks.find(Link);
+      expect(changePassword.prop("to")).to.equal("/admin/web/account");
+      let signOut = dropdownLinks.find("a");
+      expect(signOut.prop("href")).to.equal("/admin/sign_out");
+
+      toggle.simulate("click");
+      dropdownLinks = wrapper.find("ul.dropdown-menu li");
+      expect(dropdownLinks.length).to.equal(0);
     });
   });
 });
