@@ -323,4 +323,37 @@ describe("ProtocolFormField", () => {
     let img = wrapper.find("img");
     expect(img.prop("src")).to.equal("image data");
   });
+
+  it("gets value of list setting without options", () => {
+    const setting = {
+      key: "setting",
+      label: "label",
+      description: "<p>description</p>",
+      type: "list"
+    };
+    let wrapper = mount(
+      <ProtocolFormField
+        setting={setting}
+        disabled={false}
+        value={["item 1", "item 2"]}
+        />
+    );
+    expect((wrapper.instance() as ProtocolFormField).getValue()).to.deep.equal(["item 1", "item 2"]);
+  });
+
+  it("gets value of text setting", () => {
+    const setting = {
+      key: "setting",
+      label: "label",
+      description: "<p>description</p>"
+    };
+    const wrapper = mount(
+      <ProtocolFormField
+        setting={setting}
+        disabled={true}
+        value="test"
+        />
+    );
+    expect((wrapper.instance() as ProtocolFormField).getValue()).to.equal("test");
+  });
 });

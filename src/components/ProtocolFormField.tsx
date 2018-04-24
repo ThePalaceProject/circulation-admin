@@ -168,7 +168,11 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   getValue() {
-    return (this.refs["element"] as any).getValue();
+    if (this.props.setting.type === "list" && !this.props.setting.options) {
+      return this.state.listItems;
+    } else {
+      return (this.refs["element"] as any).getValue();
+    }
   }
 
   removeListItem(listItem: string) {

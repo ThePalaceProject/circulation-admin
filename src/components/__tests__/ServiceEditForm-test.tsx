@@ -312,7 +312,7 @@ describe("ServiceEditForm", () => {
       expect(input.props().value).to.equal("child setting");
     });
 
-    it("doesn't render libraries for sitewide protocol", () => {
+    it("doesn't render libraries for sitewide protocol without library settings", () => {
       let servicesDataSitewide = Object.assign({}, servicesData, {
         protocols: [servicesData.protocols[1]]
       });
@@ -344,6 +344,25 @@ describe("ServiceEditForm", () => {
       );
       library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
+    });
+
+    it("renders libraries for a sitewide protocol with library settings", () => {
+      let servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [Object.assign({}, servicesData.protocols[1], { sitewide: true })]
+      });
+
+      wrapper = mount(
+        <TestServiceEditForm
+          disabled={false}
+          data={servicesDataSitewide}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
+          listDataKey="services"
+          />
+      );
+      let library = wrapper.find(WithRemoveButton);
+      expect(library.length).to.equal(1);
     });
 
     it("renders removable and editable libraries", () => {
@@ -422,7 +441,26 @@ describe("ServiceEditForm", () => {
       expect(select.length).to.equal(0);
     });
 
-    it("renders library add dropdown", () => {
+    it("renders library add dropdown for a sitewide protocol with library settings", () => {
+      let servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [Object.assign({}, servicesData.protocols[1], { sitewide: true })]
+      });
+
+      wrapper = mount(
+        <TestServiceEditForm
+          disabled={false}
+          data={servicesDataSitewide}
+          editItem={editService}
+          item={serviceData}
+          urlBase={urlBase}
+          listDataKey="services"
+          />
+      );
+      let select = wrapper.find("select[name='add-library']");
+      expect(select.length).to.equal(1);
+    });
+
+    it("renders library add dropdown for a non-sitewide protocol", () => {
       let select = editableInputByName("add-library");
       expect(select.props().label).to.equal("Add Library");
 
