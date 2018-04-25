@@ -1,7 +1,9 @@
+import * as React from "react";
 import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
+import Admin from "../models/Admin";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
 /** Right panel for individual admin configuration on the system configuration page.
@@ -14,6 +16,15 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
   urlBase = "/admin/web/config/individualAdmins/";
   identifierKey = "email";
   labelKey = "email";
+
+  context: { admin: Admin };
+  static contextTypes = {
+    admin: React.PropTypes.object.isRequired
+  };
+
+  canDelete(item) {
+    return this.context.admin.isSystemAdmin();
+  }
 }
 
 function mapStateToProps(state, ownProps) {
