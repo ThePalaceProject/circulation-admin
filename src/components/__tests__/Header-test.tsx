@@ -138,7 +138,7 @@ describe("Header", () => {
       const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
       wrapper.setContext({ library: () => "nypl", admin: admin });
 
-      let links = wrapper.find("a.dropdown-toggle");
+      let links = wrapper.find("li.dropdown > a");
       expect(links.length).to.equal(1);
       expect(links.text()).to.contain("admin@nypl.org");
     });
@@ -199,7 +199,7 @@ describe("Header", () => {
       const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
       wrapper.setContext({ library: () => "nypl", admin: admin });
 
-      let toggle = wrapper.find("a.dropdown-toggle");
+      let toggle = wrapper.find("li.dropdown > a");
       let dropdownLinks = wrapper.find("ul.dropdown-menu a");
       expect(dropdownLinks.length).to.equal(0);
 

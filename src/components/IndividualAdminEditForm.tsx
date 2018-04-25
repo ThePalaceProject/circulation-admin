@@ -53,13 +53,15 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           label="Email"
           value={this.props.item && this.props.item.email}
           />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          name="password"
-          label="Password"
-          />
+        { this.canChangePassword() &&
+          <EditableInput
+            elementType="input"
+            type="text"
+            disabled={this.props.disabled}
+            name="password"
+            label="Password"
+            />
+        }
         { !this.context.settingUp &&
           <div>
             <h4>Roles</h4>
@@ -146,6 +148,28 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   componentWillReceiveProps(nextProps) {
     if (nextProps.item && nextProps.item !== this.props.item) {
       this.setState({ admin: new Admin(nextProps.item.roles || []) });
+    }
+  }
+
+  canChangePassword() {
+    if (!this.props.item || !this.props.item.roles) {
+      return true;
+    }
+    if (this.props.item.roles.length === 0) {
+      return this.context.admin.isLibraryManagerOfSomeLibrary();
+    }
+    let targetAdmin = new Admin(this.props.item.roles || []);
+    if (targetAdmin.isSystemAdmin()) {
+      return this.context.admin.isSystemAdmin();
+    } else if (targetAdmin.isSitewideLibraryManager()) {
+      return this.context.admin.isSitewideLibraryManager();
+    } else {
+      for (const role of targetAdmin.roles) {
+        if (this.context.admin.isLibraryManager(role.library)) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 

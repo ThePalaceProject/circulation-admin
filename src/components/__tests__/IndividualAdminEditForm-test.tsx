@@ -63,14 +63,94 @@ describe("IndividualAdminEditForm", () => {
       expect(input.props().value).to.equal("test@nypl.org");
     });
 
-    it("renders password", () => {
+    it("renders password if admin is allowed to edit it", () => {
       let input = editableInputByName("password");
       expect(input.props().value).not.to.be.ok;
 
-      wrapper.setProps({ item: adminData });
-      input = editableInputByName("password");
-      // Doesn't show the old password even if it's in the props.
-      expect(input.props().value).not.to.be.ok;
+      const expectPasswordEditable = (targetAdminRoles, editingAdminRoles, editable: boolean = true) => {
+        let targetAdmin = new Admin(targetAdminRoles);
+        let editingAdmin = new Admin(editingAdminRoles);
+        wrapper.setProps({ item: targetAdmin });
+        wrapper.setContext({ admin: editingAdmin });
+        let input = editableInputByName("password");
+        if (editable) {
+          expect(input.length).to.equal(1);
+          // The old password isn't shown even if it's editable.
+          expect(input.props().value).not.to.be.ok;
+        } else {
+          expect(input.length).to.equal(0);
+        }
+      };
+
+      expectPasswordEditable([], systemAdmin);
+      expectPasswordEditable([], managerAll);
+      expectPasswordEditable([], librarianAll, false);
+      expectPasswordEditable([], nyplManager);
+      expectPasswordEditable([], nyplLibrarian, false);
+      expectPasswordEditable([], nyplManagerLibrarianAll);
+
+      expectPasswordEditable(systemAdmin, systemAdmin);
+      expectPasswordEditable(systemAdmin, managerAll, false);
+      expectPasswordEditable(systemAdmin, librarianAll, false);
+      expectPasswordEditable(systemAdmin, nyplManager, false);
+      expectPasswordEditable(systemAdmin, nyplLibrarian, false);
+      expectPasswordEditable(systemAdmin, nyplManagerLibrarianAll, false);
+
+      expectPasswordEditable(managerAll, systemAdmin);
+      expectPasswordEditable(managerAll, managerAll);
+      expectPasswordEditable(managerAll, librarianAll, false);
+      expectPasswordEditable(managerAll, nyplManager, false);
+      expectPasswordEditable(managerAll, nyplLibrarian, false);
+      expectPasswordEditable(managerAll, nyplManagerLibrarianAll, false);
+
+      expectPasswordEditable(librarianAll, systemAdmin);
+      expectPasswordEditable(librarianAll, managerAll);
+      expectPasswordEditable(librarianAll, librarianAll, false);
+      expectPasswordEditable(librarianAll, nyplManager, false);
+      expectPasswordEditable(librarianAll, nyplLibrarian, false);
+      expectPasswordEditable(librarianAll, nyplManagerLibrarianAll, false);
+
+      expectPasswordEditable(nyplManager, systemAdmin);
+      expectPasswordEditable(nyplManager, managerAll);
+      expectPasswordEditable(nyplManager, librarianAll, false);
+      expectPasswordEditable(nyplManager, nyplManager);
+      expectPasswordEditable(nyplManager, nyplLibrarian, false);
+      expectPasswordEditable(nyplManager, nyplManagerLibrarianAll);
+
+      expectPasswordEditable(bplManager, systemAdmin);
+      expectPasswordEditable(bplManager, managerAll);
+      expectPasswordEditable(bplManager, librarianAll, false);
+      expectPasswordEditable(bplManager, nyplManager, false);
+      expectPasswordEditable(bplManager, nyplLibrarian, false);
+      expectPasswordEditable(bplManager, nyplManagerLibrarianAll, false);
+
+      expectPasswordEditable(bothManager, systemAdmin);
+      expectPasswordEditable(bothManager, managerAll);
+      expectPasswordEditable(bothManager, librarianAll, false);
+      expectPasswordEditable(bothManager, nyplManager);
+      expectPasswordEditable(bothManager, nyplLibrarian, false);
+      expectPasswordEditable(bothManager, nyplManagerLibrarianAll);
+
+      expectPasswordEditable(nyplLibrarian, systemAdmin);
+      expectPasswordEditable(nyplLibrarian, managerAll);
+      expectPasswordEditable(nyplLibrarian, librarianAll, false);
+      expectPasswordEditable(nyplLibrarian, nyplManager);
+      expectPasswordEditable(nyplLibrarian, nyplLibrarian, false);
+      expectPasswordEditable(nyplLibrarian, nyplManagerLibrarianAll);
+
+      expectPasswordEditable(bplLibrarian, systemAdmin);
+      expectPasswordEditable(bplLibrarian, managerAll);
+      expectPasswordEditable(bplLibrarian, librarianAll, false);
+      expectPasswordEditable(bplLibrarian, nyplManager, false);
+      expectPasswordEditable(bplLibrarian, nyplLibrarian, false);
+      expectPasswordEditable(bplLibrarian, nyplManagerLibrarianAll, false);
+
+      expectPasswordEditable(nyplManagerLibrarianAll, systemAdmin);
+      expectPasswordEditable(nyplManagerLibrarianAll, managerAll);
+      expectPasswordEditable(nyplManagerLibrarianAll, librarianAll, false);
+      expectPasswordEditable(nyplManagerLibrarianAll, nyplManager);
+      expectPasswordEditable(nyplManagerLibrarianAll, nyplLibrarian, false);
+      expectPasswordEditable(nyplManagerLibrarianAll, nyplManagerLibrarianAll);
     });
 
     describe("roles", () => {

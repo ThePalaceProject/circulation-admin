@@ -28,10 +28,9 @@
     background-color: $dark;
     color: $pagecolorlight;
 
-    &:hover, &:visited, &:active {
-      background-color: $dark;
-      color: $pagecolorlight;
-      text-decoration: underline;
+    &:hover, &:visited, &:active, &:focus {
+      background-color: $pagecolorlight;
+      color: $dark;
     }
   }
 }

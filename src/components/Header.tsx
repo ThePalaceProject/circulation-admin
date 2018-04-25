@@ -120,7 +120,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             { this.context.admin.email &&
               <li className="dropdown">
                 <a
-                  className="dropdown-toggle"
                   href="#"
                   role="button"
                   aria-haspopup="true"
