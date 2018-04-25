@@ -46,6 +46,12 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     this.state = { showAccountDropdown: false };
     this.changeLibrary = this.changeLibrary.bind(this);
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
+
+    document.body.addEventListener("click", (event: MouseEvent) => {
+      if (this.state.showAccountDropdown && (event.target as any).className !== "account-dropdown-toggle") {
+        this.toggleAccountDropdown();
+      }
+    });
   }
 
   render(): JSX.Element {
@@ -121,6 +127,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li className="dropdown">
                 <a
                   href="#"
+                  className="account-dropdown-toggle"
                   role="button"
                   aria-haspopup="true"
                   aria-expanded={this.state.showAccountDropdown}
