@@ -23,6 +23,8 @@
 .navbar-nav .dropdown-menu {
   display: block;
   background-color: $dark;
+  left: auto;
+  right: 0;
 
   a {
     background-color: $dark;
