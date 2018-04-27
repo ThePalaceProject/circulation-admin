@@ -19,3 +19,24 @@
   display: inline-block;
   width: auto;
 }
+
+.navbar-nav .dropdown-menu {
+  display: block;
+  background-color: $dark;
+  left: auto;
+  right: 0;
+
+  a {
+    background-color: $dark;
+    color: $pagecolorlight;
+
+    &:hover, &:visited, &:active, &:focus {
+      background-color: $pagecolorlight;
+      color: $dark;
+    }
+  }
+}
+
+.navbar-collapse.in {
+  overflow-y: visible;
+}

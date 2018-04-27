@@ -110,7 +110,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               />
           )
         }
-        { !this.sitewide() &&
+        { (!this.sitewide() || this.protocolLibrarySettings().length > 0) &&
           <div className="form-group">
             <label>Libraries</label>
             { this.state.libraries.map(library =>
@@ -156,7 +156,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             }
           </div>
         }
-        { !this.sitewide() && this.availableLibraries().length > 0 &&
+        { (!this.sitewide() || this.protocolLibrarySettings().length > 0) && this.availableLibraries().length > 0 &&
           <div className="form-group">
             <EditableInput
               elementType="select"

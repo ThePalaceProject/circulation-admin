@@ -31,6 +31,7 @@ import roles from "./roles";
 import media from "./media";
 import languages from "./languages";
 import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
+import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
 import { RegisterLibraryState } from "./createRegisterLibraryReducer";
 import {
@@ -75,6 +76,7 @@ export interface State {
   roles: FetchEditState<RolesData>;
   media: FetchEditState<MediaData>;
   languages: FetchEditState<LanguagesData>;
+  changePassword: FetchEditState<void>;
 }
 
 export default combineReducers<State>({
@@ -109,5 +111,6 @@ export default combineReducers<State>({
   resetLanes,
   roles,
   media,
-  languages
+  languages,
+  changePassword
 });

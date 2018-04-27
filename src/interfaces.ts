@@ -210,13 +210,20 @@ export interface AdminAuthServicesData extends ServicesData {
   admin_auth_services: AdminAuthServiceData[];
 }
 
+export interface AdminRoleData {
+  library?: string;
+  role: string;
+}
+
 export interface IndividualAdminData {
   email: string;
   password?: string;
+  roles?: AdminRoleData[];
 }
 
 export interface IndividualAdminsData {
   individualAdmins?: IndividualAdminData[];
+  allLibraries?: LibraryData[];
 }
 
 export interface PatronAuthServiceData extends ServiceData {}

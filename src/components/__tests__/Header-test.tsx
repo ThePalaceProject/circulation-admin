@@ -8,14 +8,18 @@ import { Header } from "../Header";
 import EditableInput from "../EditableInput";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
+import Admin from "../../models/Admin";
 
 describe("Header", () => {
   let wrapper;
   let push, context;
 
+  const libraryManager = new Admin([{ "role": "manager", "library": "nypl" }]);
+  const librarian = new Admin([{ "role": "librarian", "library": "nypl" }]);
+
   beforeEach(() => {
     push = stub();
-    context = { library: () => "nypl" };
+    context = { library: () => "nypl", admin: libraryManager };
 
     wrapper = shallow(
       <Header />,
@@ -48,11 +52,11 @@ describe("Header", () => {
       expect(options.at(1).text()).to.equal("bpl");
       expect(options.at(1).props().value).to.equal("bpl");
 
-      wrapper.setContext({ library: () => "bpl" });
+      wrapper.setContext({ library: () => "bpl", admin: libraryManager });
       select = wrapper.find(EditableInput);
       expect(select.props().value).to.equal("bpl");
 
-      wrapper.setContext({});
+      wrapper.setContext({ admin: libraryManager });
       select = wrapper.find(EditableInput);
       options = select.children();
       expect(options.length).to.equal(3);
@@ -83,13 +87,14 @@ describe("Header", () => {
       expect(hiddenLink.prop("bookUrl")).to.equal(null);
       expect(hiddenLink.children().text()).to.equal("Hidden Books");
 
-      wrapper.setContext({});
+      wrapper.setContext({ admin: libraryManager });
       catalogLinks = wrapper.find(CatalogLink);
       expect(catalogLinks.length).to.equal(0);
     });
 
-    it("shows sitewide links and non-catalog library links", () => {
+    it("shows sitewide links and non-catalog library links for library manager", () => {
       let links = wrapper.find(Link);
+      expect(links.length).to.equal(4);
 
       let listsLink = links.at(0);
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
@@ -105,13 +110,37 @@ describe("Header", () => {
 
       let settingsLink = links.at(3);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config");
-      expect(settingsLink.children().text()).to.equal("Configuration");
+      expect(settingsLink.children().text()).to.equal("System Configuration");
 
-      wrapper.setContext({});
+      wrapper.setContext({ admin: libraryManager });
       links = wrapper.find(Link);
 
       dashboardLink = links.at(0);
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
+    });
+
+    it("shows sitewide and non-catalog library links for librarian", () => {
+      wrapper.setContext({ library: () => "nypl", admin: librarian });
+
+      let links = wrapper.find(Link);
+      expect(links.length).to.equal(2);
+
+      let listsLink = links.at(0);
+      expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
+      expect(listsLink.children().text()).to.equal("Lists");
+
+      let dashboardLink = links.at(1);
+      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
+      expect(dashboardLink.children().text()).to.equal("Dashboard");
+    });
+
+    it("shows account dropdown when the admin has an email", () => {
+      const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
+      wrapper.setContext({ library: () => "nypl", admin: admin });
+
+      let links = wrapper.find("li.dropdown > a");
+      expect(links.length).to.equal(1);
+      expect(links.text()).to.contain("admin@nypl.org");
     });
   });
 
@@ -121,7 +150,8 @@ describe("Header", () => {
       wrapper = shallow(
         <Header
           fetchLibraries={fetchLibraries}
-          />
+          />,
+        { context: { admin: libraryManager }}
       );
       expect(fetchLibraries.callCount).to.equal(1);
     });
@@ -133,7 +163,8 @@ describe("Header", () => {
       ];
       let childContextTypes = {
         router: React.PropTypes.object.isRequired,
-        pathFor: React.PropTypes.func.isRequired
+        pathFor: React.PropTypes.func.isRequired,
+        admin: React.PropTypes.object.isRequired
       };
       let fullContext = Object.assign({}, context, {
         pathFor: stub().returns("url"),
@@ -146,7 +177,8 @@ describe("Header", () => {
           goBack: stub(),
           goForward: stub(),
           setRouteLeaveHook: stub()
-        }
+        },
+        admin: libraryManager
       });
       wrapper = mount(
         <Header
@@ -161,6 +193,27 @@ describe("Header", () => {
 
       expect(fullContext.router.push.callCount).to.equal(1);
       expect(fullContext.router.push.args[0][0]).to.equal("/admin/web/collection/bpl%2Fgroups");
+    });
+
+    it("toggles account dropdown", () => {
+      const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
+      wrapper.setContext({ library: () => "nypl", admin: admin });
+
+      let toggle = wrapper.find("li.dropdown > a");
+      let dropdownLinks = wrapper.find("ul.dropdown-menu a");
+      expect(dropdownLinks.length).to.equal(0);
+
+      toggle.simulate("click");
+      dropdownLinks = wrapper.find("ul.dropdown-menu li");
+      expect(dropdownLinks.length).to.equal(2);
+      let changePassword = dropdownLinks.find(Link);
+      expect(changePassword.prop("to")).to.equal("/admin/web/account");
+      let signOut = dropdownLinks.find("a");
+      expect(signOut.prop("href")).to.equal("/admin/sign_out");
+
+      toggle.simulate("click");
+      dropdownLinks = wrapper.find("ul.dropdown-menu li");
+      expect(dropdownLinks.length).to.equal(0);
     });
   });
 });

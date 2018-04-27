@@ -24,6 +24,9 @@ describe("EditableConfigList", () => {
     }
   }
 
+  let canCreate: boolean;
+  let canDelete: boolean;
+
   class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
     EditForm = ThingEditForm;
     listDataKey = "things";
@@ -34,6 +37,14 @@ describe("EditableConfigList", () => {
 
     label(item): string {
       return "test " + super.label(item);
+    }
+
+    canCreate() {
+      return canCreate;
+    }
+
+    canDelete(item) {
+      return canDelete;
     }
   }
 
@@ -56,6 +67,8 @@ describe("EditableConfigList", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
     deleteItem = stub().returns(new Promise<void>(resolve => resolve()));
+    canCreate = true;
+    canDelete = true;
 
     wrapper = shallow(
       <ThingEditableConfigList
@@ -100,6 +113,22 @@ describe("EditableConfigList", () => {
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
 
+  it("hides create link if canCreate returns false", () => {
+    canCreate = false;
+    wrapper = shallow(
+      <ThingEditableConfigList
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+        />
+    );
+    let createLink = wrapper.find(".create-item");
+    expect(createLink.length).to.equal(0);
+  });
+
   it("hides create link if only one item is allowed and it already exists", () => {
     wrapper = shallow(
       <OneThingEditableConfigList
@@ -125,6 +154,25 @@ describe("EditableConfigList", () => {
     createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
     expect(createLink.prop("href")).to.equal("/admin/things/create");
+  });
+
+  it("hides delete button if canDelete returns false", () => {
+    canDelete = false;
+    wrapper = shallow(
+      <ThingEditableConfigList
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+        />
+    );
+
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(1);
+    let deleteButton = things.at(0).find(".delete-item");
+    expect(deleteButton.length).to.equal(0);
   });
 
   it("deletes an item", () => {

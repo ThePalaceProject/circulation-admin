@@ -1,7 +1,9 @@
+import * as React from "react";
 import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { LibrariesData, LibraryData } from "../interfaces";
+import Admin from "../models/Admin";
 import LibraryEditForm from "./LibraryEditForm";
 
 /** Right panel for library configuration on the system configuration page.
@@ -15,8 +17,21 @@ export class Libraries extends EditableConfigList<LibrariesData, LibraryData> {
   identifierKey = "uuid";
   labelKey = "name";
 
+  context: { admin: Admin };
+  static contextTypes = {
+    admin: React.PropTypes.object.isRequired
+  };
+
   label(item): string {
     return item[this.labelKey] || item.short_name || item.uuid;
+  }
+
+  canCreate() {
+    return this.context.admin.isSystemAdmin();
+  }
+
+  canDelete(item) {
+    return this.context.admin.isSystemAdmin();
   }
 }
 

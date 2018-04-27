@@ -18,8 +18,12 @@ export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData,
 }
 
 function mapStateToProps(state, ownProps) {
+  const data = Object.assign({}, state.editor.adminAuthServices && state.editor.adminAuthServices.data);
+  if (state.editor.libraries && state.editor.libraries.data) {
+    data.allLibraries = state.editor.libraries.data.libraries;
+  }
   return {
-    data: state.editor.adminAuthServices && state.editor.adminAuthServices.data,
+    data,
     editedIdentifier: state.editor.adminAuthServices && state.editor.adminAuthServices.editedIdentifier,
     fetchError: state.editor.adminAuthServices.fetchError,
     isFetching: state.editor.adminAuthServices.isFetching || state.editor.adminAuthServices.isEditing

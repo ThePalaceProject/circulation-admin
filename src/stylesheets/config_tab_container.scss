@@ -1,3 +1,5 @@
+$dangercolor: #D9534F;
+
 .config {
   .tab-container {
     position: relative;
@@ -33,23 +35,25 @@
         li {
           display: flex;
           flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          max-width: 600px;
           margin: 20px 0px;
           padding-bottom: 5px;
           border-bottom: 1px solid $pagetextcolor;
 
           h4 {
             margin-right: 20px;
+            flex-grow: 1;
           }
 
           .btn-default {
-            display: flex;
-            flex-direction: column;
             margin-right: 10px;
           }
         }
       }
 
-      a.btn-default, button.btn-default {
+      a.btn-default, button.btn-default, a.btn-danger, button.btn-danger {
         color: $pagecolor;
         svg {
           height: 0.7em;
@@ -62,6 +66,18 @@
           color: $pagetextcolor;
           svg {
             fill: $pagetextcolor;
+          }
+        }
+      }
+
+      a.btn-danger, button.btn-danger {
+        border-radius: 0;
+        &:hover {
+          background-color: white;
+          border-color: $dangercolor;
+          color: $dangercolor;
+          svg {
+            fill: $dangercolor;
           }
         }
       }

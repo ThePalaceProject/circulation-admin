@@ -5,6 +5,7 @@ import { shallow } from "enzyme";
 import * as jsdom from "jsdom";
 
 import ContextProvider from "../ContextProvider";
+import Admin from "../../models/Admin";
 
 class FakeChild extends React.Component<any, any> {}
 
@@ -14,7 +15,10 @@ describe("ContextProvider", () => {
   beforeEach(() => {
     wrapper = shallow(
       <ContextProvider
-        csrfToken="token">
+        csrfToken="token"
+        roles={ [{ "role": "system" }] }
+        email="email"
+        >
         <FakeChild />
       </ContextProvider>
     );
@@ -26,6 +30,10 @@ describe("ContextProvider", () => {
     expect(context.editorStore.getState().catalog).to.be.ok;
     expect(context.pathFor).to.equal(wrapper.instance().pathFor);
     expect(context.csrfToken).to.equal("token");
+    expect(context.settingUp).not.to.be.ok;
+    expect(context.admin instanceof Admin).to.be.ok;
+    expect(context.admin.isSystemAdmin()).to.be.ok;
+    expect(context.admin.email).to.equal("email");
   });
 
   it("renders child", () => {

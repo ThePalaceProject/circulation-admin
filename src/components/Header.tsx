@@ -5,6 +5,7 @@ import { Store } from "redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
+import Admin from "../models/Admin";
 import EditableInput from "./EditableInput";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
@@ -25,19 +26,32 @@ export interface HeaderOwnProps {
 
 export interface HeaderProps extends React.Props<Header>, HeaderStateProps, HeaderDispatchProps, HeaderOwnProps {}
 
+export interface HeaderState {
+  showAccountDropdown: boolean;
+}
+
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
-export class Header extends React.Component<HeaderProps, void> {
-  context: { library: () => string, router: Router };
+export class Header extends React.Component<HeaderProps, HeaderState> {
+  context: { library: () => string, router: Router, admin: Admin };
 
   static contextTypes = {
     library: React.PropTypes.func,
-    router: React.PropTypes.object.isRequired
+    router: React.PropTypes.object.isRequired,
+    admin: React.PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
+    this.state = { showAccountDropdown: false };
     this.changeLibrary = this.changeLibrary.bind(this);
+    this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
+
+    document.body.addEventListener("click", (event: MouseEvent) => {
+      if (this.state.showAccountDropdown && (event.target as any).className !== "account-dropdown-toggle") {
+        this.toggleAccountDropdown();
+      }
+    });
   }
 
   render(): JSX.Element {
@@ -93,18 +107,40 @@ export class Header extends React.Component<HeaderProps, void> {
               <li>
                 <Link to={"/admin/web/lists/" + this.context.library()}>Lists</Link>
               </li>
-              <li>
-                <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
-              </li>
+              { this.context.admin.isLibraryManager(this.context.library()) &&
+                <li>
+                  <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
+                </li>
+              }
             </Nav>
           }
           <Nav className="pull-right">
             <li>
               <Link to="/admin/web/dashboard">Dashboard</Link>
             </li>
-            <li>
-              <Link to="/admin/web/config">Configuration</Link>
-            </li>
+            { this.context.admin.isLibraryManagerOfSomeLibrary() &&
+              <li>
+                <Link to="/admin/web/config">System Configuration</Link>
+              </li>
+            }
+            { this.context.admin.email &&
+              <li className="dropdown">
+                <a
+                  href="#"
+                  className="account-dropdown-toggle"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded={this.state.showAccountDropdown}
+                  onClick={this.toggleAccountDropdown}
+                  >{ this.context.admin.email } &#9660;</a>
+                { this.state.showAccountDropdown &&
+                  <ul className="dropdown-menu">
+                    <li><Link to="/admin/web/account">Change password</Link></li>
+                    <li><a href="/admin/sign_out">Sign out</a></li>
+                  </ul>
+                }
+              </li>
+            }
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -123,6 +159,11 @@ export class Header extends React.Component<HeaderProps, void> {
       this.context.router.push("/admin/web/collection/" + library + "%2Fgroups");
       this.forceUpdate();
     }
+  }
+
+  toggleAccountDropdown() {
+    let showAccountDropdown = !this.state.showAccountDropdown;
+    this.setState({ showAccountDropdown });
   }
 }
 
