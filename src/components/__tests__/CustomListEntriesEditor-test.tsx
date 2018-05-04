@@ -30,7 +30,11 @@ describe("CustomListEntriesEditor", () => {
     navigationLinks: [],
     books: [
       { id: "1", title: "result 1", authors: ["author 1"], url: "/some/url1", language: "eng",
-        raw: { "simplified:pwid": [{ "_": "pwid1"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
+        raw: {
+          "simplified:pwid": [{ "_": "pwid1"}], "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } },
+          "bibframe:distribution": [{ "$": { "bibframe:ProviderName": { value: "Standard eBooks" } } }],
+        }
+      },
       { id: "2", title: "result 2", authors: ["author 2a", "author 2b"], url: "/some/url2", language: "eng",
         raw: { "simplified:pwid": [{ "_": "pwid2"}], "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" } } }},
       { id: "3", title: "result 3", authors: ["author 3"], url: "/some/url3", language: "eng",
@@ -39,8 +43,8 @@ describe("CustomListEntriesEditor", () => {
   };
 
   let entriesData = [
-    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "/some/urlA", },
-    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook", url: "/some/urlB", }
+    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "/some/urlA", data_source: "Standard ebooks" },
+    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook", url: "/some/urlB", data_source: "Standard ebooks" }
   ];
 
   beforeEach(() => {
@@ -343,6 +347,7 @@ describe("CustomListEntriesEditor", () => {
       medium: "http://schema.org/EBook",
       language: "eng",
       url: "/some/url1",
+      data_source: "Standard eBooks",
     };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
@@ -464,6 +469,7 @@ describe("CustomListEntriesEditor", () => {
       medium: "http://schema.org/EBook",
       language: "eng",
       url: "/some/url1",
+      data_source: "Standard eBooks",
     };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);

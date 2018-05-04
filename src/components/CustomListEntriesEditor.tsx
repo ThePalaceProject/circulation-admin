@@ -236,6 +236,16 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     return svgMediumTypes[medium] || null;
   }
 
+  getDataSource(book) {
+    if (!book.raw || !book.raw["bibframe:distribution"] ||
+      !book.raw["bibframe:distribution"].length || !book.raw["bibframe:distribution"][0]["$"] ||
+      !book.raw["bibframe:distribution"][0]["$"]["bibframe:ProviderName"]) {
+      return "";
+    }
+
+    return book.raw["bibframe:distribution"][0]["$"]["bibframe:ProviderName"].value;
+  }
+
   getEntries(): CustomListEntryData[] {
     return this.state.entries;
   }
@@ -296,13 +306,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       if (this.getPwid(result) === pwid) {
         const medium = this.getMedium(result);
         const language = this.getLanguage(result);
+        const data_source = this.getDataSource(result);
         entries.unshift({
           pwid: pwid,
           title: result.title,
           authors: result.authors,
           url: result.url,
           medium,
-          language
+          language,
+          data_source,
         });
       }
     }
@@ -327,13 +339,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     for (const result of this.searchResultsNotInEntries()) {
       const medium = this.getMedium(result);
       const language = this.getLanguage(result);
+      const data_source = this.getDataSource(result);
       entries.push({
         pwid: this.getPwid(result),
         title: result.title,
         authors: result.authors,
         url: result.url,
         medium,
-        language
+        language,
+        data_source,
       });
     }
 
