@@ -305,7 +305,7 @@ export interface CustomListEntryData {
   medium?: string;
   url?: string;
   language?: string;
-  data_source_id?: string;
+  data_source?: string;
 }
 
 export interface CustomListData {

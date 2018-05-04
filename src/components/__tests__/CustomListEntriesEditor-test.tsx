@@ -43,8 +43,8 @@ describe("CustomListEntriesEditor", () => {
   };
 
   let entriesData = [
-    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "/some/urlA", data_source_id: "34" },
-    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook", url: "/some/urlB", data_source_id: "34" }
+    { pwid: "pwidA", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "/some/urlA", data_source: "Standard ebooks" },
+    { pwid: "pwidB", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook", url: "/some/urlB", data_source: "Standard ebooks" }
   ];
 
   beforeEach(() => {
@@ -347,7 +347,7 @@ describe("CustomListEntriesEditor", () => {
       medium: "http://schema.org/EBook",
       language: "eng",
       url: "/some/url1",
-      data_source_id: "",
+      data_source: "Standard eBooks",
     };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
@@ -469,7 +469,7 @@ describe("CustomListEntriesEditor", () => {
       medium: "http://schema.org/EBook",
       language: "eng",
       url: "/some/url1",
-      data_source_id: "",
+      data_source: "Standard eBooks",
     };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
