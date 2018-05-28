@@ -2,6 +2,8 @@ import { combineReducers } from "redux";
 import book, { BookState } from "./book";
 import complaints, { ComplaintsState } from "./complaints";
 import classifications, { ClassificationsState } from "./classifications";
+import bookCoverPreview, { BookCoverPreviewState } from "./bookCoverPreview";
+import bookCover from "./bookCover";
 import customListsForBook from "./customListsForBook";
 import circulationEvents, { CirculationEventsState } from "./circulationEvents";
 import stats, { StatsState } from "./stats";
@@ -30,6 +32,7 @@ import resetLanes from "./resetLanes";
 import roles from "./roles";
 import media from "./media";
 import languages from "./languages";
+import rightsStatuses from "./rightsStatuses";
 import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
 import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
@@ -39,7 +42,8 @@ import {
   PatronAuthServicesData, SitewideSettingsData, LoggingServicesData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
   DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
-  CustomListDetailsData, LanesData, RolesData, MediaData, LanguagesData
+  CustomListDetailsData, LanesData, RolesData, MediaData, LanguagesData,
+  RightsStatusData
 } from "../interfaces";
 
 
@@ -47,6 +51,8 @@ export interface State {
   book: BookState;
   complaints: ComplaintsState;
   classifications: ClassificationsState;
+  bookCoverPreview: BookCoverPreviewState;
+  bookCover: FetchEditState<string>;
   customListsForBook: FetchEditState<CustomListsData>;
   circulationEvents: CirculationEventsState;
   stats: StatsState;
@@ -76,6 +82,7 @@ export interface State {
   roles: FetchEditState<RolesData>;
   media: FetchEditState<MediaData>;
   languages: FetchEditState<LanguagesData>;
+  rightsStatuses: FetchEditState<RightsStatusData>;
   changePassword: FetchEditState<void>;
 }
 
@@ -83,6 +90,8 @@ export default combineReducers<State>({
   book,
   complaints,
   classifications,
+  bookCoverPreview,
+  bookCover,
   customListsForBook,
   circulationEvents,
   stats,
@@ -112,5 +121,6 @@ export default combineReducers<State>({
   roles,
   media,
   languages,
+  rightsStatuses,
   changePassword
 });

@@ -115,6 +115,31 @@ describe("actions", () => {
       }
     });
 
+    it("dispatches failure on non-JSON response", async () => {
+      const dispatch = stub();
+      const nonJsonResponse = new Promise(() => { throw "Not JSON"; });
+      const fetchMock = stub().returns(new Promise<any>(resolve => {
+        resolve({ status: 500, json: () => nonJsonResponse });
+      }));
+      fetch = fetchMock;
+
+      try {
+        await actions.postForm(type, url, formData, "POST", "Default error")(dispatch);
+        // shouldn't get here
+        expect(false).to.equal(true);
+      } catch (err) {
+        expect(dispatch.callCount).to.equal(2);
+        expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
+        expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
+        expect(fetchMock.callCount).to.equal(1);
+        expect(err).to.deep.equal({
+          status: 500,
+          response: "Default error",
+          url: url
+        });
+      }
+    });
+
     it("dispatches failure on no response", async () => {
       const dispatch = stub();
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {

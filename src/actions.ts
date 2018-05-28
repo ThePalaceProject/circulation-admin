@@ -8,7 +8,7 @@ import {
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
   CustomListsData, CustomListDetailsData, LanesData,
-  RolesData, MediaData, LanguagesData,
+  RolesData, MediaData, LanguagesData, RightsStatusData,
   StorageServicesData, LoggingServicesData,
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -23,12 +23,16 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly ROLES = "ROLES";
   static readonly MEDIA = "MEDIA";
   static readonly LANGUAGES = "LANGUAGES";
+  static readonly RIGHTS_STATUSES = "RIGHTS_STATUSES";
   static readonly COMPLAINTS = "COMPLAINTS";
   static readonly POST_COMPLAINT = "POST_COMPLAINT";
   static readonly RESOLVE_COMPLAINTS = "RESOLVE_COMPLAINTS";
   static readonly GENRE_TREE = "GENRE_TREE";
   static readonly CLASSIFICATIONS = "CLASSIFICATIONS";
   static readonly EDIT_CLASSIFICATIONS = "EDIT_CLASSIFICATIONS";
+  static readonly BOOK_COVER = "BOOK_COVER";
+  static readonly EDIT_BOOK_COVER = "EDIT_BOOK_COVER";
+  static readonly PREVIEW_BOOK_COVER = "PREVIEW_BOOK_COVER";
   static readonly CUSTOM_LISTS_FOR_BOOK = "CUSTOM_LISTS_FOR_BOOK";
   static readonly EDIT_CUSTOM_LISTS_FOR_BOOK = "EDIT_CUSTOM_LISTS_FOR_BOOK";
   static readonly CIRCULATION_EVENTS = "CIRCULATION_EVENTS";
@@ -143,7 +147,7 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
 
-  postForm(type: string, url: string, data: FormData | null, method?: string) {
+  postForm(type: string, url: string, data: FormData | null, method?: string, defaultErrorMessage?: string) {
     let err: RequestError;
 
     return (dispatch => {
@@ -181,7 +185,7 @@ export default class ActionCreator extends BaseActionCreator {
             }).catch(parseError => {
               err = {
                 status: response.status,
-                response: "Failed to save changes",
+                response: defaultErrorMessage || "Failed to save changes",
                 url: url
               };
               dispatch(this.failure(type, err));
@@ -277,6 +281,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<LanguagesData>(ActionCreator.LANGUAGES, url).bind(this);
   }
 
+  fetchRightsStatuses() {
+    let url = "/admin/rights_status";
+    return this.fetchJSON<RightsStatusData>(ActionCreator.RIGHTS_STATUSES, url).bind(this);
+  }
+
   fetchComplaints(url: string) {
     return this.fetchJSON<ComplaintsData>(ActionCreator.COMPLAINTS, url).bind(this);
   }
@@ -299,6 +308,22 @@ export default class ActionCreator extends BaseActionCreator {
 
   fetchClassifications(url: string) {
     return this.fetchJSON<{ classifications: ClassificationData[] }>(ActionCreator.CLASSIFICATIONS, url).bind(this);
+  }
+
+  fetchBookCover(url: string) {
+    return null;
+  }
+
+  editBookCover(url: string, data: FormData) {
+    return this.postForm(ActionCreator.EDIT_BOOK_COVER, url, data).bind(this);
+  }
+
+  fetchBookCoverPreview(url: string, data: FormData) {
+    return this.postForm(ActionCreator.PREVIEW_BOOK_COVER, url, data, "POST", "Could not load preview").bind(this);
+  }
+
+  clearBookCoverPreview() {
+    return this.clear(ActionCreator.PREVIEW_BOOK_COVER);
   }
 
   fetchCustomListsForBook(url: string) {

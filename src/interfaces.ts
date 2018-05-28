@@ -35,11 +35,13 @@ export interface BookData {
   refreshLink?: LinkData;
   editLink?: LinkData;
   issuesLink?: LinkData;
+  changeCoverLink?: LinkData;
   categories?: string[];
   series?: string;
   seriesPosition?: number;
   issued?: string;
   rating?: number;
+  coverUrl?: string;
 }
 
 export interface RolesData {
@@ -52,6 +54,14 @@ export interface MediaData {
 
 export interface LanguagesData {
   [key: string]: string[];
+}
+
+export interface RightsStatusData {
+  [key: string]: {
+    name: string,
+    open_access: boolean,
+    allows_derivatives: boolean
+  };
 }
 
 export interface BookLink {

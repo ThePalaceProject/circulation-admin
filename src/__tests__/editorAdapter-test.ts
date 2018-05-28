@@ -25,7 +25,9 @@ describe("editorAdapter", () => {
         { href: "restore", rel: "http://librarysimplified.org/terms/rel/restore", type: "type", title: "title" },
         { href: "refresh", rel: "http://librarysimplified.org/terms/rel/refresh", type: "type", title: "title" },
         { href: "edit", rel: "edit", type: "type", title: "title" },
-        { href: "issues", rel: "issues", type: "type", title: "title" }
+        { href: "issues", rel: "issues", type: "type", title: "title" },
+        { href: "change-cover", rel: "http://librarysimplified.org/terms/rel/change_cover", type: "type", title: "title" },
+        { href: "cover", rel: "http://opds-spec.org/image", type: "image/png", title: "title" },
       ],
       issued: "issued",
       language: "language",
@@ -63,6 +65,8 @@ describe("editorAdapter", () => {
     expect(adapted.refreshLink).to.deep.equal(entry.links[2]);
     expect(adapted.editLink).to.deep.equal(entry.links[3]);
     expect(adapted.issuesLink).to.deep.equal(entry.links[4]);
+    expect(adapted.changeCoverLink).to.deep.equal(entry.links[5]);
+    expect(adapted.coverUrl).to.equal(entry.links[6].href);
     expect(adapted.series).to.equal("series");
     expect(adapted.seriesPosition).to.equal(2);
     expect(adapted.medium).to.equal("medium");

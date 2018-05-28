@@ -24,6 +24,10 @@ export default function adapter(data: OPDSEntry): BookData {
     return link.rel === "issues";
   });
 
+  let changeCoverLink = data.links.find(link => {
+    return link.rel === "http://librarysimplified.org/terms/rel/change_cover";
+  });
+
   let audience = data.categories.find(category => {
     return category.scheme === "http://schema.org/audience";
   });
@@ -85,6 +89,14 @@ export default function adapter(data: OPDSEntry): BookData {
     rating = null;
   }
 
+  let imageLink = data.links.find(link => {
+    return link.rel === "http://opds-spec.org/image";
+  });
+  let coverUrl;
+  if (imageLink) {
+    coverUrl = imageLink.href;
+  }
+
   return {
     title: data.title,
     authors: authors,
@@ -100,6 +112,7 @@ export default function adapter(data: OPDSEntry): BookData {
     refreshLink: refreshLink,
     editLink: editLink,
     issuesLink: issuesLink,
+    changeCoverLink: changeCoverLink,
     series: data.series && data.series.name,
     seriesPosition: data.series && data.series.position,
     medium: medium,
@@ -107,6 +120,7 @@ export default function adapter(data: OPDSEntry): BookData {
     publisher: data.publisher,
     imprint: imprint,
     issued: data.issued,
-    rating: rating
+    rating: rating,
+    coverUrl: coverUrl
   };
 }
