@@ -310,10 +310,6 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<{ classifications: ClassificationData[] }>(ActionCreator.CLASSIFICATIONS, url).bind(this);
   }
 
-  fetchBookCover(url: string) {
-    return null;
-  }
-
   editBookCover(url: string, data: FormData) {
     return this.postForm(ActionCreator.EDIT_BOOK_COVER, url, data).bind(this);
   }
