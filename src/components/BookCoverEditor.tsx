@@ -147,6 +147,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
                         }
                       )
                     }
+                    <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
                   </EditableInput>
                   <EditableInput
                     elementType="textarea"
