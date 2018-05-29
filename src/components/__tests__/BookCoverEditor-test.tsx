@@ -129,11 +129,13 @@ describe("BookCoverEditor", () => {
       expect(rightsStatusInput.props().label).to.equal("License");
 
       let children = rightsStatusInput.children();
-      expect(children.length).to.equal(2);
+      expect(children.length).to.equal(3);
       expect(children.at(0).props().value).to.equal("http://creativecommons.org/licenses/by/4.0/");
       expect(children.at(0).text()).to.equal("Creative Commons Attribution (CC BY)");
-      expect(children.at(1).props().value).to.equal("http://librarysimplified.org/terms/rights-status/unknown");
-      expect(children.at(1).text()).to.equal("Other");
+      expect(children.at(1).props().value).to.equal("http://librarysimplified.org/terms/rights-status/in-copyright");
+      expect(children.at(1).text()).to.equal("In Copyright");
+      expect(children.at(2).props().value).to.equal("http://librarysimplified.org/terms/rights-status/unknown");
+      expect(children.at(2).text()).to.equal("Other");
 
       let explanationInput = editableInputByName("rights_explanation");
       expect(explanationInput.length).to.equal(1);
