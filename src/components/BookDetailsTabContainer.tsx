@@ -5,6 +5,7 @@ import ActionCreator from "../actions";
 import { connect } from "react-redux";
 import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
+import BookCoverEditor from "./BookCoverEditor";
 import Complaints from "./Complaints";
 import CustomListsForBook from "./CustomListsForBook";
 import { BookData } from "../interfaces";
@@ -35,49 +36,60 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
   }
 
   tabs() {
-    return {
-      details: (
-        <div className="details">
-          { this.props.children }
-        </div>
-      ),
-      edit: (
-        <BookDetailsEditor
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          bookUrl={this.props.bookUrl}
-          refreshCatalog={this.props.refreshCatalog}
-          />
-      ),
-      classifications: (
-        <Classifications
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          bookUrl={this.props.bookUrl}
-          book={this.props.bookData}
-          refreshCatalog={this.props.refreshCatalog}
-          />
-      ),
-      complaints: (
-        <Complaints
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          bookUrl={this.props.bookUrl}
-          book={this.props.bookData}
-          refreshCatalog={this.props.refreshCatalog}
-          />
-      ),
-      lists: (
-        <CustomListsForBook
+    const tabs = {};
+    tabs["details"] = (
+      <div className="details">
+        { this.props.children }
+      </div>
+    );
+    tabs["edit"] = (
+      <BookDetailsEditor
+        store={this.props.store}
+        csrfToken={this.props.csrfToken}
+        bookUrl={this.props.bookUrl}
+        refreshCatalog={this.props.refreshCatalog}
+        />
+    );
+    tabs["classifications"] = (
+      <Classifications
+        store={this.props.store}
+        csrfToken={this.props.csrfToken}
+        bookUrl={this.props.bookUrl}
+        book={this.props.bookData}
+        refreshCatalog={this.props.refreshCatalog}
+        />
+    );
+    if (this.props.bookData && this.props.bookData.changeCoverLink) {
+      tabs["cover"] = (
+        <BookCoverEditor
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           bookUrl={this.props.bookUrl}
           book={this.props.bookData}
           refreshCatalog={this.props.refreshCatalog}
-          library={this.props.library(this.props.collectionUrl, this.props.bookUrl)}
           />
-      )
-    };
+      );
+    }
+    tabs["complaints"] = (
+      <Complaints
+        store={this.props.store}
+        csrfToken={this.props.csrfToken}
+        bookUrl={this.props.bookUrl}
+        book={this.props.bookData}
+        refreshCatalog={this.props.refreshCatalog}
+        />
+    );
+    tabs["lists"] = (
+      <CustomListsForBook
+        store={this.props.store}
+        csrfToken={this.props.csrfToken}
+        bookUrl={this.props.bookUrl}
+        book={this.props.bookData}
+        refreshCatalog={this.props.refreshCatalog}
+        library={this.props.library(this.props.collectionUrl, this.props.bookUrl)}
+        />
+    );
+    return tabs;
   }
 
   handleSelect(event) {

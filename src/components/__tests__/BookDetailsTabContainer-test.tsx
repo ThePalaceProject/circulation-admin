@@ -53,6 +53,24 @@ describe("BookDetailsTabContainer", () => {
     expect(linkTexts).to.contain("Complaints");
   });
 
+  it("only shows cover tab when the book data has a change cover link", () => {
+    let links = wrapper.find("ul.nav-tabs").find("a");
+    let linkTexts = links.map(link => link.text());
+    expect(linkTexts).not.to.contain("Cover");
+
+    let bookData = {
+      title: "title",
+      changeCoverLink: {
+        href: "/change-cover",
+        rel: "http://librarysimplified.org/terms/rel/change_cover"
+      }
+    };
+    wrapper.setProps({ bookData });
+    links = wrapper.find("ul.nav-tabs").find("a");
+    linkTexts = links.map(link => link.text());
+    expect(linkTexts).to.contain("Cover");
+  });
+
   it("shows editor", () => {
     let editor = wrapper.find(BookDetailsEditor);
     expect(editor.props().csrfToken).to.equal("token");
