@@ -66,7 +66,7 @@ describe("BookDetailsEditor", () => {
   it("shows title", () => {
     let wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ title: "title" }}
+        bookData={{ id: "id", title: "title" }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
@@ -83,7 +83,7 @@ describe("BookDetailsEditor", () => {
     };
     let wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ title: "title", hideLink: hideLink }}
+        bookData={{ id: "id",  title: "title", hideLink: hideLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
@@ -102,7 +102,7 @@ describe("BookDetailsEditor", () => {
     };
     let wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ title: "title", restoreLink: restoreLink }}
+        bookData={{ id: "id", title: "title", restoreLink: restoreLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
@@ -121,7 +121,7 @@ describe("BookDetailsEditor", () => {
     };
     let wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ title: "title", refreshLink: refreshLink }}
+        bookData={{ id: "id", title: "title", refreshLink: refreshLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
@@ -142,7 +142,7 @@ describe("BookDetailsEditor", () => {
     };
     let wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ title: "title" }}
+        bookData={{ id: "id", title: "title" }}
         bookUrl="url" csrfToken="token"
         fetchError={fetchError}
         {...dispatchProps}
@@ -166,7 +166,7 @@ describe("BookDetailsEditor", () => {
     };
     let wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ title: "title", editLink: editLink }}
+        bookData={{ id: "id", title: "title", editLink: editLink }}
         bookUrl="url"
         csrfToken="token"
         editError={editError}
@@ -198,7 +198,7 @@ describe("BookDetailsEditor", () => {
     };
     let wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ title: "title", editLink }}
+        bookData={{ id: "id", title: "title", editLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}

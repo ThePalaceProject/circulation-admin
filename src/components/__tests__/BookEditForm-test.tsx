@@ -27,6 +27,7 @@ describe("BookEditForm", () => {
   };
 
   let bookData: BookData = {
+    id: "id",
     title: "title",
     subtitle: "subtitle",
     authors: [{ name: "An Author", role: "aut" }],

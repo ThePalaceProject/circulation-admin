@@ -77,7 +77,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                     <p>Drag books here to remove them from the list.</p>
                   }
                   { (this.state.draggingFrom !== "custom-list-entries") && this.props.searchResults && this.searchResultsNotInEntries().map((book, i) =>
-                    <Draggable key={this.getPwid(book)} draggableId={this.getPwid(book)}>
+                    <Draggable key={book.id} draggableId={book.id}>
                       {(provided, snapshot) => (
                         <li>
                           <div
@@ -96,7 +96,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                             <div className="links">
                               <a
                                 href="#"
-                                onClick={() => { this.add(this.getPwid(book)); }}
+                                onClick={() => { this.add(book.id); }}
                                 >Add to list
                                   <AddIcon />
                               </a>
@@ -148,7 +148,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   >
                   <p>Drag search results here to add them to the list.</p>
                   { this.state.entries && this.state.entries.map((book, i) => (
-                      <Draggable key={book.pwid} draggableId={book.pwid}>
+                      <Draggable key={book.identifier_urn} draggableId={book.identifier_urn}>
                         {(provided, snapshot) => (
                           <li>
                             <div
@@ -167,7 +167,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="links">
                                 <a
                                   href="#"
-                                  onClick={() => { this.delete(book.pwid); }}
+                                  onClick={() => { this.delete(book.identifier_urn); }}
                                   >Remove from list
                                     <TrashIcon />
                                 </a>
@@ -192,10 +192,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     if (nextProps.entries && nextProps.entries !== this.props.entries) {
       this.setState({ draggingFrom: null, entries: nextProps.entries || [] });
     }
-  }
-
-  getPwid(book) {
-    return book.raw["simplified:pwid"][0]["_"];
   }
 
   getCatalogLink(book) {
@@ -236,16 +232,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     return svgMediumTypes[medium] || null;
   }
 
-  getDataSource(book) {
-    if (!book.raw || !book.raw["bibframe:distribution"] ||
-      !book.raw["bibframe:distribution"].length || !book.raw["bibframe:distribution"][0]["$"] ||
-      !book.raw["bibframe:distribution"][0]["$"]["bibframe:ProviderName"]) {
-      return "";
-    }
-
-    return book.raw["bibframe:distribution"][0]["$"]["bibframe:ProviderName"].value;
-  }
-
   getEntries(): CustomListEntryData[] {
     return this.state.entries;
   }
@@ -261,11 +247,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   searchResultsNotInEntries() {
-    let entryPwids = this.state.entries.map(entry => entry.pwid);
+    let entryUrns = this.state.entries.map(entry => entry.identifier_urn);
     return this.props.searchResults.books.filter(book => {
-      const pwid = this.getPwid(book);
-      for (const entryPwid of entryPwids) {
-        if (entryPwid === pwid) {
+      for (const entryUrn of entryUrns) {
+        if (entryUrn === book.id) {
           return false;
         }
       }
@@ -300,21 +285,19 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     document.body.classList.remove("dragging");
   }
 
-  add(pwid: string) {
+  add(urn: string) {
     let entries = this.state.entries.slice(0);
     for (const result of this.props.searchResults.books) {
-      if (this.getPwid(result) === pwid) {
+      if (result.id === urn) {
         const medium = this.getMedium(result);
         const language = this.getLanguage(result);
-        const data_source = this.getDataSource(result);
         entries.unshift({
-          pwid: pwid,
+          identifier_urn: result.id,
           title: result.title,
           authors: result.authors,
           url: result.url,
           medium,
           language,
-          data_source,
         });
       }
     }
@@ -324,9 +307,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
   }
 
-  delete(pwid: string) {
+  delete(urn: string) {
     let entries = this.state.entries.slice(0);
-    entries = entries.filter(entry => entry.pwid !== pwid);
+    entries = entries.filter(entry => entry.identifier_urn !== urn);
     this.setState({ draggingFrom: null, entries });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
@@ -339,15 +322,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     for (const result of this.searchResultsNotInEntries()) {
       const medium = this.getMedium(result);
       const language = this.getLanguage(result);
-      const data_source = this.getDataSource(result);
       entries.push({
-        pwid: this.getPwid(result),
+        identifier_urn: result.id,
         title: result.title,
         authors: result.authors,
         url: result.url,
         medium,
         language,
-        data_source,
       });
     }
 

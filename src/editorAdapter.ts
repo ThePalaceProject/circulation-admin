@@ -98,6 +98,7 @@ export default function adapter(data: OPDSEntry): BookData {
   }
 
   return {
+    id: data.id,
     title: data.title,
     authors: authors,
     contributors: data.contributors,
