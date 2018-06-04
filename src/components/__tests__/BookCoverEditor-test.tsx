@@ -29,6 +29,7 @@ describe("BookCoverEditor", () => {
   };
 
   let bookData: BookData = {
+    id: "id",
     title: "title",
     coverUrl: "/cover",
     changeCoverLink: {

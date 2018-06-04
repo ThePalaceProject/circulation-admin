@@ -18,6 +18,7 @@ export interface ContributorData {
 }
 
 export interface BookData {
+  id: string;
   title: string;
   authors?: ContributorData[];
   contributors?: ContributorData[];
@@ -309,13 +310,12 @@ export interface LibraryRegistrationsData {
 }
 
 export interface CustomListEntryData {
-  pwid: string;
+  identifier_urn: string;
   title: string;
   authors: string[];
   medium?: string;
   url?: string;
   language?: string;
-  data_source?: string;
 }
 
 export interface CustomListData {

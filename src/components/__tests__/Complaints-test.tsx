@@ -15,6 +15,7 @@ describe("Complaints", () => {
     let complaintsData;
     let wrapper;
     let bookData = {
+      id: "id",
       title: "test title",
       issuesLink: {
         href: "issues url",
@@ -85,7 +86,7 @@ describe("Complaints", () => {
         <Complaints
           csrfToken="token"
           bookUrl="book url"
-          book={{ title: "test book" }}
+          book={{ id: "id", title: "test book" }}
           fetchError={fetchError}
           fetchComplaints={fetchComplaints}
           postComplaint={stub()}
@@ -122,7 +123,7 @@ describe("Complaints", () => {
       wrapper = mount(
         <Complaints
           csrfToken="token"
-          book={{ title: "test book" }}
+          book={{ id: "id", title: "test book" }}
           bookUrl="http://example.com/works/fakeid"
           complaints={complaintsData}
           fetchComplaints={fetchComplaints}

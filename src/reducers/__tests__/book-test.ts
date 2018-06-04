@@ -15,6 +15,7 @@ describe("book reducer", () => {
   let fetchedState = {
     url: "test url",
     data: {
+      id: "id",
       title: "test book"
     },
     isFetching: false,

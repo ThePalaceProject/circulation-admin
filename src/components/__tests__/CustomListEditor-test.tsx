@@ -21,8 +21,8 @@ describe("CustomListEditor", () => {
     id: 1,
     name: "list",
     entries: [
-      { pwid: "1", title: "title 1", authors: ["author 1"] },
-      { pwid: "2", title: "title 2", authors: ["author 2a", "author 2b"] }
+      { identifier_urn: "1", title: "title 1", authors: ["author 1"] },
+      { identifier_urn: "2", title: "title 2", authors: ["author 2a", "author 2b"] }
     ],
     collections: [
       { id: 2, name: "collection 2", protocol: "protocol" }
@@ -149,7 +149,7 @@ describe("CustomListEditor", () => {
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
     let newEntries = [
-      { pwid: "pwid1" }, { pwid: "pwid2" }
+      { identifier_urn: "urn1" }, { identifier_urn: "urn2" }
     ];
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-list");
@@ -187,7 +187,7 @@ describe("CustomListEditor", () => {
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
     let newEntries = [
-      { pwid: "pwid1" }, { pwid: "pwid2" }
+      { identifier_urn: "urn1" }, { identifier_urn: "urn2" }
     ];
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-list");
@@ -264,7 +264,7 @@ describe("CustomListEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    (wrapper.instance() as CustomListEditor).changeEntries([{ pwid: "1234", title: "a", authors: [] }]);
+    (wrapper.instance() as CustomListEditor).changeEntries([{ identifier_urn: "1234", title: "a", authors: [] }]);
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");

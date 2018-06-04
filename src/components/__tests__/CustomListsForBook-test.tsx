@@ -15,6 +15,7 @@ describe("CustomListsForBook", () => {
   let editCustomListsForBook;
   let refreshCatalog;
   let bookData = {
+    id: "id",
     title: "test title"
   };
   let allCustomLists = [
