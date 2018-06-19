@@ -37,7 +37,8 @@ export default class EntryPointsContainer extends React.Component<EntryPointsCon
 
     let selectedTab = "All";
     let selectedEP = collectionUrl ? collectionUrl.split("?") : [];
-    let selectedEP2 = selectedEP[1] ? selectedEP[1].split("=")[1] : "";
+    // Making Book the default value
+    let entrypointValue = selectedEP[1] ? selectedEP[1].split("=")[1] : "Book";
     const homeLink = this.props.links[0] ? this.props.links[0].url : "";
 
     // The tabs should only display on the homepage
@@ -52,7 +53,7 @@ export default class EntryPointsContainer extends React.Component<EntryPointsCon
           collectionUrl={this.props.collectionUrl}
           library={this.context.library}
           store={this.context.editorStore}
-          activeValue={selectedEP2}
+          activeValue={entrypointValue}
           homeLink={homeLink}>
         </EntryPointsTabContainer>
       </div>

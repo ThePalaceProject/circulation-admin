@@ -67,16 +67,19 @@ export class EntryPointsTabContainer extends React.Component<EntryPointsTabConta
       <div className="entry-point-tab-container">
         <ul className="nav nav-tabs">
           { entryPoints.map(entryPoint => {
-              const entryPointValue = mapEntryPointsToSchema[entryPoint].value;
-              const activeClass = !!(this.props.activeValue === entryPointValue) ?
+              const { value, label } = mapEntryPointsToSchema[entryPoint];
+              const activeClass = !!(this.props.activeValue === entryPoint) ?
                 "active" : "";
-              const url = `${this.props.homeLink}?entrypoint=${entryPointValue}`;
+              const url = `${this.props.homeLink}?entrypoint=${entryPoint}`;
+              const svg = svgMediumTypes[value] ? svgMediumTypes[value] : null;
+              const noSVGClass = !svg ? "no-svg" : "";
+
               return (
-                <li role="presentation" className={activeClass}>
+                <li role="presentation" className={`${activeClass} ${noSVGClass}`}>
                   <CatalogLink
                     collectionUrl={url}
                     bookUrl={null}>
-                    {svgMediumTypes[entryPointValue]}{mapEntryPointsToSchema[entryPoint].label}
+                    {svg}{label}
                   </CatalogLink>
                 </li>
               );
