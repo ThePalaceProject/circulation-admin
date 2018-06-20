@@ -69,7 +69,7 @@ export default class BookDetails extends DefaultBookDetails<DefaultBookDetailsPr
       "http://schema.org/typicalAgeRange"
     ];
     let fictionScheme = "http://librarysimplified.org/terms/fiction/";
-    let rawCategories = this.props.book.raw.category;
+    let rawCategories = this.props.book.raw.category || [];
 
     let categories = rawCategories.filter(category =>
       category["$"]["label"] && category["$"]["scheme"] &&
