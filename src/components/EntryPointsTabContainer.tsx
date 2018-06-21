@@ -6,26 +6,12 @@ import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import ActionCreator from "../actions";
 import { connect } from "react-redux";
-import BookDetailsEditor from "./BookDetailsEditor";
-import Classifications from "./Classifications";
-import BookCoverEditor from "./BookCoverEditor";
-import Complaints from "./Complaints";
-import CustomListsForBook from "./CustomListsForBook";
-import {
-  BookData,
-  LibraryData,
-} from "../interfaces";
-import { TabContainer, TabContainerProps } from "./TabContainer";
+import { LibraryData } from "../interfaces";
 import {
   AudioHeadphoneIcon,
   BookIcon,
 } from "@nypl/dgx-svg-icons";
 
-export interface EntryPointsTabContainerStateProps {
-  bookUrl: string;
-  collectionUrl: string;
-  library: (collectionUrl, bookUrl) => string;
-}
 export interface EntryPointsTabContainerDispatchProps {
   fetchLibraries: () => void;
 }
@@ -34,9 +20,11 @@ export interface EntryPointsTabContainerOwnProps {
   store?: Store<State>;
   activeValue?: string;
   homeLink?: string;
+  collectionUrl: string;
+  library: (collectionUrl, bookUrl) => string;
 }
 
-export interface EntryPointsTabContainerProps extends React.Props<EntryPointsTabContainerProps>, EntryPointsTabContainerStateProps, EntryPointsTabContainerDispatchProps, EntryPointsTabContainerOwnProps {}
+export interface EntryPointsTabContainerProps extends EntryPointsTabContainerDispatchProps, EntryPointsTabContainerOwnProps {}
 
 /** Wraps the book details component from OPDSWebClient with additional tabs
     for editing metadata, classifications, and complaints. */
@@ -63,30 +51,32 @@ export class EntryPointsTabContainer extends React.Component<EntryPointsTabConta
       "http://schema.org/EBook": <BookIcon ariaHidden className="draggable-item-icon" />,
     };
 
-    return (
-      <div className="entry-point-tab-container">
-        <ul className="nav nav-tabs">
-          { entryPoints.map(entryPoint => {
-              const { value, label } = mapEntryPointsToSchema[entryPoint];
-              const activeClass = !!(this.props.activeValue === entryPoint) ?
-                "active" : "";
-              const url = `${this.props.homeLink}?entrypoint=${entryPoint}`;
-              const svg = svgMediumTypes[value] ? svgMediumTypes[value] : null;
-              const noSVGClass = !svg ? "no-svg" : "";
+    if (!entryPoints.length) {
+      return null;
+    }
 
-              return (
-                <li role="presentation" className={`${activeClass} ${noSVGClass}`}>
-                  <CatalogLink
-                    collectionUrl={url}
-                    bookUrl={null}>
-                    {svg}{label}
-                  </CatalogLink>
-                </li>
-              );
-            })
-          }
-        </ul>
-      </div>
+    return (
+      <ul className="nav nav-tabs">
+        { entryPoints.map(entryPoint => {
+            const { value, label } = mapEntryPointsToSchema[entryPoint];
+            const activeClass = !!(this.props.activeValue === entryPoint) ?
+              "active" : "";
+            const url = `${this.props.homeLink}?entrypoint=${entryPoint}`;
+            const svg = svgMediumTypes[value] ? svgMediumTypes[value] : null;
+            const noSVGClass = !svg ? "no-svg" : "";
+
+            return (
+              <li role="presentation" className={`${activeClass} ${noSVGClass}`}>
+                <CatalogLink
+                  collectionUrl={url}
+                  bookUrl={null}>
+                  {svg}{label}
+                </CatalogLink>
+              </li>
+            );
+          })
+        }
+      </ul>
     );
   }
 
@@ -99,7 +89,7 @@ export class EntryPointsTabContainer extends React.Component<EntryPointsTabConta
       return [];
     }
     let library;
-    const libraryStr = this.props.library(this.props.collectionUrl, this.props.bookUrl);
+    const libraryStr = this.props.library(this.props.collectionUrl, null);
 
     libraries.forEach(lib => {
       if (lib.short_name === libraryStr) {
