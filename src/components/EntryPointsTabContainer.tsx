@@ -6,7 +6,7 @@ import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import ActionCreator from "../actions";
 import { connect } from "react-redux";
-import { LibraryData } from "../interfaces";
+import { LibraryData, PathFor } from "../interfaces";
 import {
   AudioHeadphoneIcon,
   BookIcon,
@@ -14,6 +14,10 @@ import {
 
 export interface EntryPointsTabContainerDispatchProps {
   fetchLibraries: () => void;
+}
+export interface EntryPointsTabContainerContext {
+  pathFor: PathFor;
+  router: any;
 }
 export interface EntryPointsTabContainerOwnProps {
   libraries?: LibraryData[];
@@ -29,10 +33,17 @@ export interface EntryPointsTabContainerProps extends EntryPointsTabContainerDis
 /** Wraps the book details component from OPDSWebClient with additional tabs
     for editing metadata, classifications, and complaints. */
 export class EntryPointsTabContainer extends React.Component<EntryPointsTabContainerProps, any> {
+  context: EntryPointsTabContainerContext;
+
   constructor(props) {
     super(props);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
   }
+
+  static contextTypes: React.ValidationMap<EntryPointsTabContainerContext> = {
+    router: React.PropTypes.object.isRequired,
+    pathFor: React.PropTypes.func.isRequired
+  };
 
   render(): JSX.Element {
     const entryPoints = this.getEnabledEntryPoints(this.props.libraries);
@@ -47,8 +58,10 @@ export class EntryPointsTabContainer extends React.Component<EntryPointsTabConta
       },
     };
     const svgMediumTypes = {
-      "http://bib.schema.org/Audiobook": <AudioHeadphoneIcon ariaHidden className="draggable-item-icon" />,
-      "http://schema.org/EBook": <BookIcon ariaHidden className="draggable-item-icon" />,
+      "http://bib.schema.org/Audiobook":
+        <AudioHeadphoneIcon ariaHidden className="draggable-item-icon" title="Audio Headphones Icon" />,
+      "http://schema.org/EBook":
+        <BookIcon ariaHidden className="draggable-item-icon" title="Book Icon" />,
     };
 
     if (!entryPoints.length) {
@@ -66,7 +79,11 @@ export class EntryPointsTabContainer extends React.Component<EntryPointsTabConta
             const noSVGClass = !svg ? "no-svg" : "";
 
             return (
-              <li role="presentation" className={`${activeClass} ${noSVGClass}`}>
+              <li
+                key={value}
+                role="presentation"
+                className={`${activeClass} ${noSVGClass}`}
+              >
                 <CatalogLink
                   collectionUrl={url}
                   bookUrl={null}>

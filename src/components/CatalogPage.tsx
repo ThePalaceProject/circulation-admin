@@ -92,7 +92,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
         Header={Header}
         pageTitleTemplate={pageTitleTemplate}
         computeBreadcrumbs={computeBreadcrumbs}
-        EntryPointsTabs={EntryPointsContainer}
+        CollectionHeader={EntryPointsContainer}
       />
     );
   }
