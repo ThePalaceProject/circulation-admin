@@ -7,6 +7,13 @@ import { shallow } from "enzyme";
 import buildStore from "../../store";
 import BookDetailsContainer from "../BookDetailsContainer";
 import BookDetailsTabContainer from "../BookDetailsTabContainer";
+import BookDetails from "../BookDetails";
+
+class DefaultBookDetails extends React.Component<any, any> {
+  render() {
+    return <div></div>;
+  }
+}
 
 describe("BookDetailsContainer", () => {
   let wrapper;
@@ -35,10 +42,19 @@ describe("BookDetailsContainer", () => {
         bookUrl="book url"
         collectionUrl="collection url"
         refreshCatalog={refreshCatalog}>
-        <div className="bookDetails">Moby Dick</div>
-      </BookDetailsContainer>,
+        <DefaultBookDetails
+         book={bookData}
+         anotherProp="anotherProp"
+         />
+     </BookDetailsContainer>,
       { context }
     );
+  });
+
+  it("renders BookDetails with its child's props", () => {
+    let bookDetails = wrapper.find(BookDetails);
+    expect(bookDetails.prop("book")).to.equal(bookData);
+    expect(bookDetails.prop("anotherProp")).to.equal("anotherProp");
   });
 
   it("shows a tab container with initial tab", () => {
@@ -51,6 +67,5 @@ describe("BookDetailsContainer", () => {
     expect(tabContainer.props().csrfToken).to.equal("token");
     expect(tabContainer.props().refreshCatalog).to.equal(refreshCatalog);
     expect(tabContainer.props().store).to.equal(store);
-    expect(tabContainer.children()).to.deep.equal(tabContainer.children());
   });
 });
