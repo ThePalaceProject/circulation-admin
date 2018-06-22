@@ -12,15 +12,14 @@ import {
   BookIcon,
 } from "@nypl/dgx-svg-icons";
 
-export interface EntryPointsTabContainerDispatchProps {
+export interface EntryPointsTabsDispatchProps {
   fetchLibraries: () => void;
 }
-export interface EntryPointsTabContainerContext {
+export interface EntryPointsTabsContext {
   pathFor: PathFor;
   router: any;
 }
-export interface EntryPointsTabContainerOwnProps {
-  libraries?: LibraryData[];
+export interface EntryPointsTabsOwnProps {
   store?: Store<State>;
   activeValue?: string;
   homeLink?: string;
@@ -28,19 +27,22 @@ export interface EntryPointsTabContainerOwnProps {
   library: (collectionUrl, bookUrl) => string;
 }
 
-export interface EntryPointsTabContainerProps extends EntryPointsTabContainerDispatchProps, EntryPointsTabContainerOwnProps {}
+export interface EntryPointsTabsStateProps {
+  libraries?: LibraryData[];
+}
 
-/** Wraps the book details component from OPDSWebClient with additional tabs
-    for editing metadata, classifications, and complaints. */
-export class EntryPointsTabContainer extends React.Component<EntryPointsTabContainerProps, any> {
-  context: EntryPointsTabContainerContext;
+export interface EntryPointsTabsProps extends EntryPointsTabsDispatchProps, EntryPointsTabsStateProps, EntryPointsTabsOwnProps {}
+
+/** This component renders a library's entrypoints as linked tabs. */
+export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, EntryPointsTabsStateProps> {
+  context: EntryPointsTabsContext;
 
   constructor(props) {
     super(props);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
   }
 
-  static contextTypes: React.ValidationMap<EntryPointsTabContainerContext> = {
+  static contextTypes: React.ValidationMap<EntryPointsTabsContext> = {
     router: React.PropTypes.object.isRequired,
     pathFor: React.PropTypes.func.isRequired
   };
@@ -59,9 +61,8 @@ export class EntryPointsTabContainer extends React.Component<EntryPointsTabConta
     };
     const svgMediumTypes = {
       "http://bib.schema.org/Audiobook":
-        <AudioHeadphoneIcon ariaHidden className="draggable-item-icon" title="Audio Headphones Icon" />,
-      "http://schema.org/EBook":
-        <BookIcon ariaHidden className="draggable-item-icon" title="Book Icon" />,
+        <AudioHeadphoneIcon ariaHidden title="Audio Headphones Icon" />,
+      "http://schema.org/EBook": <BookIcon ariaHidden title="Book Icon" />,
     };
 
     if (!entryPoints.length) {
@@ -132,9 +133,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedEntryPointsTabContainer = connect<any, any, any>(
+const ConnectedEntryPointsTabs = connect<EntryPointsTabsStateProps, EntryPointsTabsDispatchProps, EntryPointsTabsOwnProps>(
   mapStateToProps,
   mapDispatchToProps,
-)(EntryPointsTabContainer);
+)(EntryPointsTabs);
 
-export default ConnectedEntryPointsTabContainer;
+export default ConnectedEntryPointsTabs;

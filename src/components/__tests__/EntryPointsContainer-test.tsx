@@ -6,11 +6,11 @@ import { shallow } from "enzyme";
 
 import buildStore from "../../store";
 import EntryPointsContainer from "../EntryPointsContainer";
-import EntryPointsTabContainer from "../EntryPointsTabContainer";
+import EntryPointsTabs from "../EntryPointsTabs";
 import { LinkData } from "opds-web-client/lib/interfaces";
 
 describe("EntryPointsContainer", () => {
-  let links: LinkData[];
+  let breadcrumbsLinks: LinkData[];
   let wrapper;
   let store;
   let context;
@@ -24,7 +24,7 @@ describe("EntryPointsContainer", () => {
   });
 
   it("shows a tab container with default selected tab of Book", () => {
-    links = [{
+    breadcrumbsLinks = [{
       id: "1st id",
       text: "1st title",
       url: "1st url"
@@ -36,13 +36,13 @@ describe("EntryPointsContainer", () => {
 
     wrapper = shallow(
       <EntryPointsContainer
-        links={links}
+        breadcrumbsLinks={breadcrumbsLinks}
         collectionUrl="collection url"
       />,
       { context }
     );
 
-    let entryPointsContainer = wrapper.find(EntryPointsTabContainer);
+    let entryPointsContainer = wrapper.find(EntryPointsTabs);
     expect(entryPointsContainer).to.be.ok;
     expect(entryPointsContainer.props().collectionUrl).to.equal("collection url");
     expect(entryPointsContainer.props().library).to.equal(context.library);
@@ -52,7 +52,7 @@ describe("EntryPointsContainer", () => {
   });
 
   it("shows a tab container with Audio selected value", () => {
-    links = [{
+    breadcrumbsLinks = [{
       id: "1st id",
       text: "1st title",
       url: "1st url"
@@ -64,13 +64,13 @@ describe("EntryPointsContainer", () => {
 
     wrapper = shallow(
       <EntryPointsContainer
-        links={links}
+        breadcrumbsLinks={breadcrumbsLinks}
         collectionUrl="collectionUrl?entrypoint=Audio"
       />,
       { context }
     );
 
-    let entryPointsContainer = wrapper.find(EntryPointsTabContainer);
+    let entryPointsContainer = wrapper.find(EntryPointsTabs);
     expect(entryPointsContainer).to.be.ok;
     expect(entryPointsContainer.props().collectionUrl).to.equal("collectionUrl?entrypoint=Audio");
     expect(entryPointsContainer.props().library).to.equal(context.library);

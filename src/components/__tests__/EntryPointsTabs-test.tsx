@@ -5,11 +5,11 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import buildStore from "../../store";
-import { EntryPointsTabContainer } from "../EntryPointsTabContainer";
+import { EntryPointsTabs } from "../EntryPointsTabs";
 import { mockRouterContext } from "./routing";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 
-describe("EntryPointsTabContainer", () => {
+describe("EntryPointsTabs", () => {
   let wrapper;
   let context;
   let push;
@@ -38,7 +38,7 @@ describe("EntryPointsTabContainer", () => {
 
   it("should not generate any tabs", () => {
     wrapper = shallow(
-      <EntryPointsTabContainer
+      <EntryPointsTabs
         fetchLibraries={fetchLibraries}
         libraries={libraries}
         collectionUrl="collection url"
@@ -56,7 +56,7 @@ describe("EntryPointsTabContainer", () => {
 
   it("should generate two tabs with two entry points", () => {
     wrapper = shallow(
-      <EntryPointsTabContainer
+      <EntryPointsTabs
         fetchLibraries={fetchLibraries}
         libraries={libraries}
         collectionUrl="collection url"
@@ -90,7 +90,7 @@ describe("EntryPointsTabContainer", () => {
 
   it("should generate one tab with an active entry point", () => {
     wrapper = shallow(
-      <EntryPointsTabContainer
+      <EntryPointsTabs
         fetchLibraries={fetchLibraries}
         libraries={libraries}
         collectionUrl="collection url"
@@ -118,7 +118,7 @@ describe("EntryPointsTabContainer", () => {
 
   it("uses router to navigate when a tab is clicked", () => {
     wrapper = mount(
-      <EntryPointsTabContainer
+      <EntryPointsTabs
         fetchLibraries={fetchLibraries}
         libraries={libraries}
         collectionUrl="collection url"
