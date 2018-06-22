@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 
 import buildStore from "../../store";
 import { EntryPointsTabs } from "../EntryPointsTabs";
@@ -117,7 +117,7 @@ describe("EntryPointsTabs", () => {
   });
 
   it("uses router to navigate when a tab is clicked", () => {
-    wrapper = mount(
+    wrapper = shallow(
       <EntryPointsTabs
         fetchLibraries={fetchLibraries}
         libraries={libraries}
@@ -130,11 +130,16 @@ describe("EntryPointsTabs", () => {
       { context }
     );
 
-    let tabs = wrapper.find("ul.nav-tabs").find("a");
-    tabs.at(1).simulate("click");
-    let label = tabs.at(1).text();
+    const links = wrapper.find("ul.nav-tabs").find(CatalogLink);
+    const ebookLink = links.at(0);
+    const audioBookLink = links.at(1);
 
-    expect(push.callCount).to.equal(1);
-    expect(push.args[0][0]).to.equal(context.pathFor("collection url", "book url", label));
+    expect(ebookLink.prop("collectionUrl")).to.equal("home url?entrypoint=Book");
+    expect(ebookLink.prop("bookUrl")).to.equal(null);
+    expect(ebookLink.children().at(1).text()).to.equal("eBooks");
+
+    expect(audioBookLink.prop("collectionUrl")).to.equal("home url?entrypoint=Audio");
+    expect(audioBookLink.prop("bookUrl")).to.equal(null);
+    expect(audioBookLink.children().at(1).text()).to.equal("Audio Books");
   });
 });

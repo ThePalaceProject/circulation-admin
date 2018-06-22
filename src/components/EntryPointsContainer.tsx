@@ -20,11 +20,6 @@ export default class EntryPointsContainer extends React.Component<CollectionHead
   };
 
   render(): JSX.Element {
-    const mapEntryPointsToLabels = {
-      "http://schema.org/EBook": "eBooks",
-      "http://bib.schema.org/Audiobook": "Audio Books",
-    };
-
     const { collectionUrl } = this.props;
     const entryPointQuery = collectionUrl ? collectionUrl.split("?") : [];
     // Making Book the default value
