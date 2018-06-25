@@ -56,6 +56,10 @@ describe("CirculationEvents", () => {
       );
     });
 
+    afterEach(() => {
+      wrapper.instance().componentWillUnmount();
+    });
+
     it("shows header", () => {
       let header = wrapper.find("h3");
       expect(header.text()).to.equal("Circulation Events");
@@ -122,11 +126,15 @@ describe("CirculationEvents", () => {
       );
     });
 
+    afterEach(() => {
+      wrapper.instance().componentWillUnmount();
+    });
+
     it("fetches and queues on mount", () => {
-      let fetchAndQueue = stub();
-      wrapper.instance().fetchAndQueue = fetchAndQueue;
+      let fetchAndQueue = stub(wrapper.instance(), "fetchAndQueue");
       wrapper.instance().componentWillMount();
       expect(fetchAndQueue.callCount).to.equal(1);
+      fetchAndQueue.restore();
     });
 
     describe("fetchAndQueue", () => {
@@ -142,13 +150,11 @@ describe("CirculationEvents", () => {
         fakeTimer.restore();
       });
 
-      it("sets timeout for fetches", (done) => {
-        wrapper.instance().fetchAndQueue().then(() => {
-          expect(fetchAndQueueSpy.callCount).to.equal(1);
-          fakeTimer.tick(1000);
-          expect(fetchAndQueueSpy.callCount).to.equal(2);
-          done();
-        }).catch(err => { console.log(err); throw(err); });
+      it("sets timeout for fetches", async () => {
+        await wrapper.instance().fetchAndQueue();
+        expect(fetchAndQueueSpy.callCount).to.equal(1);
+        fakeTimer.tick(1000);
+        expect(fetchAndQueueSpy.callCount).to.equal(2);
       });
     });
 
