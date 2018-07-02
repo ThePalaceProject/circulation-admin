@@ -157,7 +157,7 @@ describe("Complaints", () => {
 
     it("should fetch and refresh Catalog when resolve() is called", (done) => {
       let resolveUrl = instance.resolveComplaintsUrl();
-      instance.resolve().then(() => {
+      instance.resolve("wrong-author").then(() => {
         expect(resolveComplaints.callCount).to.equal(1);
         expect(resolveComplaints.args[0][0]).to.equal(resolveUrl);
         expect(fetchComplaints.callCount).to.equal(2); // it also fetched on mount
