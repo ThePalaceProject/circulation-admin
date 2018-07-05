@@ -8,23 +8,23 @@ export default class EntryPointsContainer extends React.Component<CollectionHead
   render(): JSX.Element {
     const { facetGroups } = this.props;
 
-    let formats = { label: "", facets: [] };
+    let facets = [];
     if (facetGroups.length) {
       facetGroups.forEach(facetGroup => {
         if (facetGroup.label === "Formats") {
-          formats = facetGroup;
+          facets = facetGroup.facets;
         }
       });
     }
 
     // The tabs should only display on the homepage
-    if (!formats.facets.length) {
+    if (!facets.length) {
       return null;
     }
 
     return (
       <div className="entry-points-tab-container">
-        <EntryPointsTabs formats={formats} />
+        <EntryPointsTabs facets={facets} />
       </div>
     );
   }

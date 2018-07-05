@@ -12,13 +12,10 @@ describe("EntryPointsTabs", () => {
   let wrapper;
   let context;
   let push;
-  let formats = {
-    facets: [
-      { label: "Books", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Book", active: true },
-      { label: "Audio", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: false },
-    ],
-    label: "Formats",
-  };
+  let facets = [
+    { label: "Books", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Book", active: true },
+    { label: "Audio", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: false },
+  ];
 
   beforeEach(() => {
     push = stub();
@@ -33,7 +30,7 @@ describe("EntryPointsTabs", () => {
   });
 
   it("should generate two tabs with two entry points", () => {
-    wrapper = shallow(<EntryPointsTabs formats={formats} />, { context });
+    wrapper = shallow(<EntryPointsTabs facets={facets} />, { context });
 
     let ul = wrapper.find(".nav-tabs");
     expect(ul).to.be.ok;
@@ -51,7 +48,7 @@ describe("EntryPointsTabs", () => {
   });
 
   it("uses router to navigate when a tab is clicked", () => {
-    wrapper = shallow(<EntryPointsTabs formats={formats} />, { context });
+    wrapper = shallow(<EntryPointsTabs facets={facets} />, { context });
 
     const links = wrapper.find("ul.nav-tabs").find(CatalogLink);
     const ebookLink = links.at(0);
@@ -63,10 +60,10 @@ describe("EntryPointsTabs", () => {
   });
 
   it("should generate one tab with an active entry point", () => {
-    formats.facets = [
+    facets = [
       { label: "Audio", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: true },
     ];
-    wrapper = shallow(<EntryPointsTabs formats={formats} />, { context });
+    wrapper = shallow(<EntryPointsTabs facets={facets} />, { context });
 
     let ul = wrapper.find(".nav-tabs");
     expect(ul).to.be.ok;

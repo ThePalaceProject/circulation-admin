@@ -1,6 +1,6 @@
 import * as React from "react";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
-import { FacetGroupData } from "opds-web-client/lib/interfaces";
+import { FacetData } from "opds-web-client/lib/interfaces";
 import { PathFor } from "../interfaces";
 import {
   AudioHeadphoneIcon,
@@ -12,7 +12,7 @@ export interface EntryPointsTabsContext {
   router: any;
 }
 export interface EntryPointsTabsProps {
-  formats?: FacetGroupData;
+  facets?: FacetData[];
 }
 
 /** This component renders a library's entrypoints as linked tabs. */
@@ -50,7 +50,7 @@ export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, void>
       "": null,
     };
 
-    let entryPoints = this.props.formats ? this.props.formats.facets : [];
+    let entryPoints = this.props.facets ? this.props.facets : [];
     if (!entryPoints.length) {
       return null;
     }

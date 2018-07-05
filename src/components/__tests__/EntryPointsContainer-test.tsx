@@ -20,7 +20,7 @@ describe("EntryPointsContainer", () => {
     expect(wrapper.html()).to.equal(null);
   });
 
-  it("shows a tab container with Audio selected value", () => {
+  it("shows a tab container with facets when the label is 'Formats'", () => {
     facetGroups = [
       {
         facets: [],
@@ -37,8 +37,8 @@ describe("EntryPointsContainer", () => {
 
     wrapper = shallow(<EntryPointsContainer facetGroups={facetGroups} />);
 
-    let entryPointsContainer = wrapper.find(EntryPointsTabs);
-    expect(entryPointsContainer).to.be.ok;
-    expect(entryPointsContainer.props().formats).to.equal(facetGroups[1]);
+    let entryPointsTabs = wrapper.find(EntryPointsTabs);
+    expect(entryPointsTabs).to.be.ok;
+    expect(entryPointsTabs.props().facets).to.equal(facetGroups[1].facets);
   });
 });
