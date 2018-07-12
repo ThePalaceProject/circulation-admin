@@ -122,7 +122,7 @@ export class Complaints extends React.Component<ComplaintsProps, void> {
     return this.props.bookUrl.replace("works", "admin/works") + "/resolve_complaints";
   }
 
-  readableComplaintType(type) {
+  readableComplaintType(type: string) {
     let match = type.match(/\/terms\/problem\/(.+)$/);
     if (match) {
       return match[1].replace("-", " ");
@@ -137,7 +137,8 @@ export class Complaints extends React.Component<ComplaintsProps, void> {
   };
 
   resolve(type: string) {
-    if (window.confirm("Are you sure you want to resolve all complaints of this type?")) {
+    let readableType = this.readableComplaintType(type);
+    if (window.confirm(`Resolve all "${readableType}" complaints for this book?`)) {
       let url = this.resolveComplaintsUrl();
       let data = new (window as any).FormData();
       data.append("type", type);
