@@ -1,0 +1,51 @@
+.config {
+  .tab-container {
+    .tab-content {
+      ul {
+        li {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+$white: #fff; // for tint lint pass
+
+/// Slightly lighten a color
+/// @access public
+/// @param {Color} $color - color to tint
+/// @param {Number} $percentage - percentage of `$color` in returned color
+/// @return {Color}
+
+@function tint($color, $percentage) {
+  @return mix($white, $color, $percentage);
+}
+
+.tab-content {
+  li {
+    &.success,
+    &.failure {
+      padding: 10px;
+      word-wrap: break-word;
+      border-radius: 3px;
+    }
+
+    &.success {
+      // $nypl-green;
+      // $nypl-green-tint: #f3f7e6;
+      background-color: #f3f7e6;
+      // $nypl-green-bright
+      border: 0.0625rem #008918 solid;
+      color: #000;
+    }
+    &.failure {
+      // nypl-red = D0343A
+      // $nypl-red-error: tint($nypl-red, 80%);
+      background-color: tint(#D0343A, 80%);
+      // $nypl-red-dark
+      border: 0.0625rem #97272c solid;
+      color: #000;
+    }
+  }
+}

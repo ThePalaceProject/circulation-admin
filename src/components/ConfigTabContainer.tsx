@@ -12,6 +12,7 @@ import SearchServices from "./SearchServices";
 import StorageServices from "./StorageServices";
 import DiscoveryServices from "./DiscoveryServices";
 import LoggingServices from "./LoggingServices";
+import SelfTests from "./SelfTests";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 import Admin from "../models/Admin";
 
@@ -129,6 +130,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       );
       tabs["storage"] = (
         <StorageServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      );
+      tabs["selftests"] = (
+        <SelfTests
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           editOrCreate={this.props.editOrCreate}
