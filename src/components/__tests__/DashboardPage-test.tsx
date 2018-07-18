@@ -17,7 +17,7 @@ describe("DashboardPage", () => {
   beforeEach(() => {
     store = buildStore();
     context = { editorStore: store };
-    wrapper = shallow(<DashboardPage />, { context });
+    wrapper = shallow(<DashboardPage params={{}} />, { context });
   });
 
   it("shows Header", () => {
@@ -25,13 +25,24 @@ describe("DashboardPage", () => {
     expect(header.length).to.equal(1);
   });
 
-  it("shows CirculationEvents", () => {
+  it("shows CirculationEvents when there is no library", () => {
     let events = wrapper.find(CirculationEvents);
+    expect(events.length).to.equal(1);
     expect(events.prop("store")).to.equal(store);
+
+    wrapper.setProps({ params: { library: "NYPL" } });
+    events = wrapper.find(CirculationEvents);
+    expect(events.length).to.equal(0);
   });
 
   it("shows Stats", () => {
     let stats = wrapper.find(Stats);
     expect(stats.prop("store")).to.equal(store);
+    expect(stats.prop("library")).to.be.undefined;
+
+    wrapper.setProps({ params: { library: "NYPL" } });
+    stats = wrapper.find(Stats);
+    expect(stats.prop("store")).to.equal(store);
+    expect(stats.prop("library")).to.equal("NYPL");
   });
 });

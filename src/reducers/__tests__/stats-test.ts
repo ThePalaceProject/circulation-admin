@@ -5,7 +5,7 @@ import { StatsData } from "../../interfaces";
 import ActionCreator from "../../actions";
 
 describe("stats reducer", () => {
-  let statsData: StatsData = {
+  let statsData: StatsData = { NYPL: {
     patrons:  {
       total: 3456,
       with_active_loans: 55,
@@ -18,13 +18,33 @@ describe("stats reducer", () => {
       licenses: 123456,
       available_licenses: 100000
     },
-    vendors: {
-      overdrive: 500,
-      bibliotheca: 400,
-      axis360: 300,
-      open_access: 1000
+    collections: {
+      Overdrive: {
+        licensed_titles: 500,
+        open_access_titles: 10,
+        licenses: 350,
+        available_licenses: 100
+      },
+      Bibliotheca: {
+        licensed_titles: 400,
+        open_access_titles: 0,
+        licenses: 300,
+        available_licenses: 170
+      },
+      "Axis 360": {
+        licensed_titles: 300,
+        open_access_titles: 0,
+        licenses: 280,
+        available_licenses: 260
+      },
+      "Open Bookshelf" : {
+        licensed_titles: 0,
+        open_access_titles: 1200,
+        licenses: 0,
+        available_licenses: 0
+      }
     }
-  };
+  }};
 
   let initState: StatsState = {
     data: null,

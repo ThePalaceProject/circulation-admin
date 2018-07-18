@@ -64,7 +64,7 @@ class CirculationWeb {
             <Route path={catalogEditorPath} component={CatalogPage} />
             <Route path={customListPagePath} component={CustomListPage} />
             <Route path={lanePagePath} component={LanePage} />
-            <Route path="/admin/web/dashboard" component={DashboardPage} />
+            <Route path="/admin/web/dashboard(/:library)" component={DashboardPage} />
             <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
             <Route path="/admin/web/account" component={AccountPage} />
           </Router>

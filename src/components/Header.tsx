@@ -68,7 +68,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               value={this.context.library && this.context.library()}
               onChange={this.changeLibrary}
               >
-              { !this.context.library &&
+              { (!this.context.library || !this.context.library()) &&
                 <option>Select a library</option>
               }
               { this.props.libraries.map(library =>
@@ -112,12 +112,17 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
                 </li>
               }
+              <li>
+                <Link to={"/admin/web/dashboard/" + this.context.library()}>Dashboard</Link>
+              </li>
             </Nav>
           }
           <Nav className="pull-right">
-            <li>
-              <Link to="/admin/web/dashboard">Dashboard</Link>
-            </li>
+            { (!this.context.library || !this.context.library()) &&
+              <li>
+                <Link to="/admin/web/dashboard">Dashboard</Link>
+              </li>
+            }
             { this.context.admin.isLibraryManagerOfSomeLibrary() &&
               <li>
                 <Link to="/admin/web/config">System Configuration</Link>
