@@ -9,6 +9,7 @@ import ServiceEditForm from "./ServiceEditForm";
     setting or editing or deleting an existing setting. */
 export class LoggingServices extends EditableConfigList<LoggingServicesData, LoggingServiceData> {
   EditForm = ServiceEditForm;
+  AdditionalContent = null;
   listDataKey = "logging_services";
   itemTypeName = "logging services";
   urlBase = "/admin/web/config/loggingServices/";

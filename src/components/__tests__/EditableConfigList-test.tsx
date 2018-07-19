@@ -28,6 +28,7 @@ describe("EditableConfigList", () => {
   let canDelete: boolean;
 
   class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
+    AdditionalContent = null;
     EditForm = ThingEditForm;
     listDataKey = "things";
     itemTypeName = "thing";

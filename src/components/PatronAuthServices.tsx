@@ -10,6 +10,7 @@ import ServiceEditForm from "./ServiceEditForm";
     an existing service. */
 export class PatronAuthServices extends EditableConfigList<PatronAuthServicesData, PatronAuthServiceData> {
   EditForm = ServiceEditForm;
+  AdditionalContent = null;
   listDataKey = "patron_auth_services";
   itemTypeName = "patron authentication service";
   urlBase = "/admin/web/config/patronAuth/";

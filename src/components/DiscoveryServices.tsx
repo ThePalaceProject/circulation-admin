@@ -23,6 +23,7 @@ class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<Discover
     service or editing or deleting an existing service. */
 export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServicesData, DiscoveryServiceData, DiscoveryServicesProps> {
   EditForm = DiscoveryServiceEditForm;
+  AdditionalContent = null;
   listDataKey = "discovery_services";
   itemTypeName = "discovery service";
   urlBase = "/admin/web/config/discovery/";

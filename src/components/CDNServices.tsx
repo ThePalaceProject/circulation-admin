@@ -9,6 +9,7 @@ import ServiceEditForm from "./ServiceEditForm";
     service or editing or deleting an existing service. */
 export class CDNServices extends EditableConfigList<CDNServicesData, CDNServiceData> {
   EditForm = ServiceEditForm;
+  AdditionalContent = null;
   listDataKey = "cdn_services";
   itemTypeName = "CDN service";
   urlBase = "/admin/web/config/cdn/";

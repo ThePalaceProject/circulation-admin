@@ -9,6 +9,7 @@ import SitewideSettingEditForm from "./SitewideSettingEditForm";
     setting or editing or deleting an existing setting. */
 export class SitewideSettings extends EditableConfigList<SitewideSettingsData, SitewideSettingData> {
   EditForm = SitewideSettingEditForm;
+  AdditionalContent = null;
   listDataKey = "settings";
   itemTypeName = "sitewide setting";
   urlBase = "/admin/web/config/sitewideSettings/";

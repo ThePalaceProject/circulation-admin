@@ -31,11 +31,11 @@ export interface EditableConfigListProps<T> extends EditableConfigListStateProps
 
 export interface EditFormProps<T, U> {
   item?: U;
-  data: T;
-  disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
-  urlBase: string;
-  listDataKey: string;
+  data?: T;
+  disabled?: boolean;
+  editItem?: (data: FormData) => Promise<void>;
+  urlBase?: string;
+  listDataKey?: string;
   editedIdentifier?: string;
 }
 
@@ -47,6 +47,7 @@ export interface EditFormProps<T, U> {
     EditableConfigList cannot change the props and do not have to specify a type for them. */
 export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, void> {
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
+  abstract AdditionalContent?: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
@@ -62,8 +63,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   render(): JSX.Element {
     let EditForm = this.EditForm;
+    let AdditionalContent = this.AdditionalContent;
     return (
-      <div>
+      <div className={`admin-${this.itemTypeName}`}>
         <h2>{this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration</h2>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
@@ -105,6 +107,10 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                             <TrashIcon />
                           </span>
                       </button>
+                    }
+                    {
+                      AdditionalContent &&
+                      <AdditionalContent item={item} />
                     }
                   </li>
                 )

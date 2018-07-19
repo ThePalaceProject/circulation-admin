@@ -9,6 +9,7 @@ import ServiceEditForm from "./ServiceEditForm";
     service or editing or deleting an existing service. */
 export class AnalyticsServices extends EditableConfigList<AnalyticsServicesData, AnalyticsServiceData> {
   EditForm = ServiceEditForm;
+  AdditionalContent = null;
   listDataKey = "analytics_services";
   itemTypeName = "analytics service";
   urlBase = "/admin/web/config/analytics/";

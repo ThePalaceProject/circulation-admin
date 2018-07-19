@@ -9,6 +9,7 @@ import ServiceEditForm from "./ServiceEditForm";
     service or editing or deleting an existing service. */
 export class SearchServices extends EditableConfigList<SearchServicesData, SearchServiceData> {
   EditForm = ServiceEditForm;
+  AdditionalContent = null;
   listDataKey = "search_services";
   itemTypeName = "search service";
   urlBase = "/admin/web/config/search/";
