@@ -13,8 +13,8 @@ describe("EntryPointsTabs", () => {
   let context;
   let push;
   let facets = [
-    { label: "Books", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Book", active: true },
-    { label: "Audio", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: false },
+    { label: "eBooks", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Book", active: true },
+    { label: "Audiobooks", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: false },
   ];
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe("EntryPointsTabs", () => {
     let bookLink = catalogLinks.at(0);
     let audioLink = catalogLinks.at(1);
     expect(bookLink.children().at(1).text()).to.equal("eBooks");
-    expect(audioLink.children().at(1).text()).to.equal("Audio Books");
+    expect(audioLink.children().at(1).text()).to.equal("Audiobooks");
   });
 
   it("uses router to navigate when a tab is clicked", () => {
@@ -56,12 +56,12 @@ describe("EntryPointsTabs", () => {
 
     expect(ebookLink.children().at(1).text()).to.equal("eBooks");
 
-    expect(audioBookLink.children().at(1).text()).to.equal("Audio Books");
+    expect(audioBookLink.children().at(1).text()).to.equal("Audiobooks");
   });
 
   it("should generate one tab with an active entry point", () => {
     facets = [
-      { label: "Audio", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: true },
+      { label: "Audiobooks", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: true },
     ];
     wrapper = shallow(<EntryPointsTabs facets={facets} />, { context });
 
@@ -74,6 +74,6 @@ describe("EntryPointsTabs", () => {
     expect(catalogLinks.length).to.equal(1);
 
     let bookLink = catalogLinks.at(0);
-    expect(bookLink.children().at(1).text()).to.equal("Audio Books");
+    expect(bookLink.children().at(1).text()).to.equal("Audiobooks");
   });
 });

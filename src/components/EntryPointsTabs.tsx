@@ -29,36 +29,28 @@ export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, void>
   };
 
   render(): JSX.Element {
-    const mapEntryPointsToSchema = {
-      "All": {
-        value: "",
-        label: "All",
-      },
-      "Books": {
-        value: "http://schema.org/EBook",
-        label: "eBooks",
-      },
-      "Audio": {
-        value: "http://bib.schema.org/Audiobook",
-        label: "Audio Books",
-      },
-    };
-    const svgMediumTypes = {
-      "http://bib.schema.org/Audiobook":
-        <AudioHeadphoneIcon ariaHidden title="Audio Headphones Icon" />,
-      "http://schema.org/EBook": <BookIcon ariaHidden title="Book Icon" />,
-      "": null,
-    };
-
     let entryPoints = this.props.facets ? this.props.facets : [];
     if (!entryPoints.length) {
       return null;
     }
 
+    const mapEntryPointsToSchema = {
+      "All": "http://schema.org/CreativeWork",
+      "eBooks": "http://schema.org/EBook",
+      "Audiobooks": "http://bib.schema.org/Audiobook",
+    };
+    const svgMediumTypes = {
+      "http://bib.schema.org/Audiobook":
+        <AudioHeadphoneIcon ariaHidden title="Audio Headphones Icon" />,
+      "http://schema.org/EBook": <BookIcon ariaHidden title="Book Icon" />,
+      "http://schema.org/CreativeWork": null,
+    };
+
     return (
-      <ul className="nav nav-tabs">
+      <ul className="nav nav-tabs entry-points-list">
         { entryPoints.map(entryPoint => {
-            const { value, label } = mapEntryPointsToSchema[entryPoint.label];
+            const label = entryPoint.label;
+            const value = mapEntryPointsToSchema[label];
             const activeClass = entryPoint.active ? "active" : "";
             const url = entryPoint.href;
             const svg = svgMediumTypes[value] ? svgMediumTypes[value] : null;
@@ -66,7 +58,7 @@ export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, void>
 
             return (
               <li
-                key={value}
+                key={label}
                 role="presentation"
                 className={`${activeClass} ${noSVGClass}`}
               >

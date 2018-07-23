@@ -6,48 +6,50 @@
     border-bottom: 1px solid $dark;
   }
 
-  li {
-    &.no-svg {
+  .entry-points-list {
+    li {
+      &.no-svg {
+        a {
+          padding: 11px;
+        }
+      }
+
+      &.active {
+        a,
+        a:hover,
+        a:focus,
+        a:visited {
+          border: 1px solid $dark;
+          border-bottom-color: transparent;
+
+          svg {
+            fill: $dark;
+          }
+        }
+      }
+
       a {
-        padding: 11px;
-      }
-    }
+        min-width: 100px;
+        text-align: center;
 
-    &.active {
-      a,
-      a:hover,
-      a:focus,
-      a:visited {
-        border: 1px solid $dark;
-        border-bottom-color: transparent;
-
-        svg {
-          fill: $dark;
+        &:visited {
+          svg {
+            fill: $linkvisitedcolor;
+          }
+        }
+        &:hover {
+          svg {
+            fill: $linkhovercolor;
+          }
         }
       }
-    }
 
-    a {
-      min-width: 100px;
-      text-align: center;
-
-      &:visited {
-        svg {
-          fill: $linkvisitedcolor;
-        }
+      svg {
+        height: 28px;
+        width: 28px;
+        margin: 0 3px -9px 0;
+        fill: $linkcolor;
       }
-      &:hover {
-        svg {
-          fill: $linkhovercolor;
-        }
-      }
-    }
-
-    svg {
-      height: 28px;
-      width: 28px;
-      margin: 0 3px -9px 0;
-      fill: $linkcolor;
     }
   }
 }

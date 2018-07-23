@@ -8,37 +8,63 @@ import buildStore from "../../store";
 import EntryPointsContainer from "../EntryPointsContainer";
 import EntryPointsTabs from "../EntryPointsTabs";
 import { LinkData } from "opds-web-client/lib/interfaces";
+import { mockRouterContext } from "./routing";
+
+class DefaultCollection extends React.Component<any, any> {
+  render() {
+    return <div></div>;
+  }
+}
 
 describe("EntryPointsContainer", () => {
-  let facetGroups;
+  let context;
+  let path;
   let wrapper;
 
-  it("should not render if no facets were passed", () => {
-    facetGroups = [];
+  beforeEach(() => {
+    path = stub();
+    context = mockRouterContext(path);
+  });
 
-    wrapper = shallow(<EntryPointsContainer facetGroups={facetGroups} />);
-    expect(wrapper.html()).to.equal(null);
+  it("should not render the EntryPointsTabs component if no facets were passed", () => {
+    let collection = { facetGroups: [], lanes: [], books: [], navigationLinks: [] };
+
+    wrapper = shallow(
+      (<EntryPointsContainer>
+        <DefaultCollection collection={collection} />
+      </EntryPointsContainer>),
+      { context });
+    let entryPointsTabs = wrapper.find(EntryPointsTabs);
+    expect(entryPointsTabs.html()).to.equal("");
+    expect(entryPointsTabs.props().facets).to.eql([]);
   });
 
   it("shows a tab container with facets when the label is 'Formats'", () => {
-    facetGroups = [
+    let collection = { facetGroups: [] };
+    let facetGroups = [
       {
         facets: [],
         label: "Some other facets",
       },
       {
         facets: [
-          { label: "Books", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Book", active: false },
-          { label: "Audio", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: false },
+          { label: "eBooks", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Book", active: false },
+          { label: "Audiobooks", href: "http://circulation.librarysimplified.org/groups/?entrypoint=Audio", active: false },
         ],
         label: "Formats",
       }
     ];
 
-    wrapper = shallow(<EntryPointsContainer facetGroups={facetGroups} />);
+    collection.facetGroups = facetGroups;
+
+    wrapper = shallow(
+      (<EntryPointsContainer>
+        <DefaultCollection collection={collection} />
+      </EntryPointsContainer>),
+      { context });
 
     let entryPointsTabs = wrapper.find(EntryPointsTabs);
     expect(entryPointsTabs).to.be.ok;
-    expect(entryPointsTabs.props().facets).to.equal(facetGroups[1].facets);
+    expect(entryPointsTabs.props().facets).to.eql(facetGroups[1].facets);
   });
 });
