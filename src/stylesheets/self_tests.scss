@@ -10,16 +10,18 @@
         padding: 20px 0 0;
         flex-grow: 1;
 
-        & > div {
+        & > div:first-child() {
           display: flex;
           justify-content: space-between;
         }
 
         .results {
           display: none;
+          align-items: center;
+          flex-wrap: wrap;
 
           &.active {
-            display: block;
+            display: flex;
           }
 
           ul {

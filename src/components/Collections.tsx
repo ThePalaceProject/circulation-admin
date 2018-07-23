@@ -52,18 +52,18 @@ export class AdditionalContent extends React.Component<AdditionalContentProps, A
     }
     const startTime = new Date(collection.self_test_results.start).toDateString();
     const endTime = new Date(collection.self_test_results.end);
-    const expandResultClass = expand ? "active" : "";
+    const expandResultClass = expand ? "active in" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
 
     return (
       <div className="collection-selftests">
         <div>
           <p>Tests last ran on {startTime} and lasted {collection.self_test_results.duration}s.</p>
-          <button onClick={this.toggleView}>{resultsLabel} Results</button>
+          <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
-        <div className={`results ${expandResultClass}`}>
+        <div className={`results collapse ${expandResultClass}`}>
           <h3>Self Test Results</h3>
-          <button onClick={this.toggleView}>Run tests</button>
+          <button onClick={this.toggleView} className="btn btn-default">Run tests</button>
           <ul>
             {
               collection.self_test_results &&
