@@ -11,7 +11,7 @@ export default class EntryPointsContainer extends React.Component<CollectionCont
     const collectionCopy = JSON.parse(JSON.stringify(child.props.collection));
     const facetGroups = collectionCopy && collectionCopy.facetGroups ?
       collectionCopy.facetGroups : [];
-    const newProps = JSON.parse(JSON.stringify(child.props));
+    const newProps = Object.assign({}, child.props);
 
     let facets = [];
     if (facetGroups && facetGroups.length) {
@@ -30,7 +30,8 @@ export default class EntryPointsContainer extends React.Component<CollectionCont
       }
     }
 
-    newProps.collection.facetGroups = facetGroups;
+    collectionCopy.facetGroups = facetGroups;
+    newProps.collection = collectionCopy;
     const collection = React.createElement(Collection, newProps);
 
     return (
