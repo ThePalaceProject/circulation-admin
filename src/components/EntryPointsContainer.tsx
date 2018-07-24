@@ -8,9 +8,10 @@ import Collection from "opds-web-client/lib/components/Collection";
 export default class EntryPointsContainer extends React.Component<CollectionContainerProps, void> {
   render(): JSX.Element {
     const child = React.Children.only(this.props.children);
-    const facetGroups = child.props.collection && child.props.collection.facetGroups ?
-      child.props.collection.facetGroups.slice() : [];
-    const newProps = Object.assign({}, child.props);
+    const collectionCopy = JSON.parse(JSON.stringify(child.props.collection));
+    const facetGroups = collectionCopy && collectionCopy.facetGroups ?
+      collectionCopy.facetGroups : [];
+    const newProps = JSON.parse(JSON.stringify(child.props));
 
     let facets = [];
     if (facetGroups && facetGroups.length) {
