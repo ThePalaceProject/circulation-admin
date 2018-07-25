@@ -118,7 +118,7 @@ export interface CirculationEventData {
   };
 }
 
-export interface StatsData {
+export interface LibraryStatsData {
   patrons: {
     total: number;
     with_active_loans: number;
@@ -131,12 +131,18 @@ export interface StatsData {
     licenses: number;
     available_licenses: number;
   };
-  vendors: {
-    overdrive?: number;
-    bibliotheca?: number;
-    axis360?: number;
-    open_access?: number;
+  collections: {
+    [key: string]: {
+      licensed_titles: number;
+      open_access_titles: number;
+      licenses: number;
+      available_licenses: number;
+    };
   };
+}
+
+export interface StatsData {
+  [key: string]: LibraryStatsData;
 }
 
 export interface LibraryData {

@@ -105,18 +105,22 @@ describe("Header", () => {
       expect(lanesLink.children().text()).to.equal("Lanes");
 
       let dashboardLink = links.at(2);
-      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
+      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
 
       let settingsLink = links.at(3);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config");
       expect(settingsLink.children().text()).to.equal("System Configuration");
 
+      // no selected library
       wrapper.setContext({ admin: libraryManager });
       links = wrapper.find(Link);
 
       dashboardLink = links.at(0);
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
+
+      settingsLink = links.at(1);
+      expect(settingsLink.prop("to")).to.equal("/admin/web/config");
     });
 
     it("shows sitewide and non-catalog library links for librarian", () => {
@@ -130,7 +134,7 @@ describe("Header", () => {
       expect(listsLink.children().text()).to.equal("Lists");
 
       let dashboardLink = links.at(1);
-      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
+      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
     });
 
