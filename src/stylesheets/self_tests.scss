@@ -10,15 +10,21 @@
         padding: 20px 0 0;
         flex-grow: 1;
 
-        & > div:first-child() {
+        & > div:first-child {
           display: flex;
           justify-content: space-between;
+          align-items: baseline;
+        }
+
+        .btn-default {
+          margin-right: 0;
         }
 
         .results {
           display: none;
           align-items: center;
           flex-wrap: wrap;
+          justify-content: space-between;
 
           &.active {
             display: flex;

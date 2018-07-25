@@ -126,17 +126,6 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
       this.props.fetchLibraryRegistrations();
     }
   }
-
-  // render() {
-  //   console.log(this.props);
-  //
-  //   return (
-  //     <div>
-  //       <h3>test</h3>
-  //       {super.render()}
-  //     </div>
-  //   );
-  // }
 }
 
 function mapStateToProps(state, ownProps) {
