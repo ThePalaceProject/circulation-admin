@@ -100,10 +100,10 @@ describe("LibraryStats", () => {
       let chart = groups.at(3).find(BarChart);
       expect(chart.length).to.equal(1);
       expect(chart.props().data).to.deep.equal([
-        { label: "Overdrive", Titles: 500 },
-        { label: "Bibliotheca", Titles: 400 },
-        { label: "Axis 360", Titles: 300 },
-        { label: "Open Bookshelf", Titles: 1200 }
+        { label: "Overdrive", "Licensed Titles": 490, "Open Access Titles": 10 },
+        { label: "Bibliotheca", "Licensed Titles": 400, "Open Access Titles" : 0 },
+        { label: "Axis 360", "Licensed Titles": 300, "Open Access Titles": 0 },
+        { label: "Open Bookshelf", "Licensed Titles": 0, "Open Access Titles": 1200 }
       ]);
     });
 

@@ -19,10 +19,13 @@ export default class LibraryStats extends React.Component<LibraryStatsProps, voi
       return {
         label: collection,
         // The "Titles" key is displayed in the default recharts tooltip.
-        Titles: data.licensed_titles + data.open_access_titles
+        "Open Access Titles": data.open_access_titles,
+        "Licensed Titles": data.licensed_titles
       };
     }).filter(collection => {
-      return collection.Titles && collection.Titles > 0;
+      let open_access = collection["Open Access Titles"];
+      let licensed = collection["Licensed Titles"];
+      return (open_access && open_access > 0) || (licensed && licensed > 0);
     });
 
     return (
@@ -89,7 +92,8 @@ export default class LibraryStats extends React.Component<LibraryStatsProps, voi
                   <XAxis dataKey="label" interval={0} angle={-45} textAnchor="end" padding={{ left: 50, right: 50 }} height={175} />
                   <YAxis hide={true} />
                   <Tooltip />
-                  <Bar dataKey="Titles" barSize={50} />
+                  <Bar stackId="collections" dataKey="Licensed Titles" barSize={50} fill="#737373" />
+                  <Bar stackId="collections" dataKey="Open Access Titles" barSize={50} fill="#000000" />
                 </BarChart>
               </div>
             }
