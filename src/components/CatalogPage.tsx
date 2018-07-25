@@ -5,10 +5,11 @@ const OPDSCatalog = require("opds-web-client");
 import { NavigateContext } from "opds-web-client/lib/interfaces";
 import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
 import reducers from "../reducers/index";
-import BookDetailsContainer, { BookDetailsContainerContext } from "./BookDetailsContainer";
+import BookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
 import { BookLink } from "../interfaces";
 import computeBreadcrumbs from "../computeBreadcrumbs";
+import EntryPointsContainer from "./EntryPointsContainer";
 
 export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
@@ -91,7 +92,8 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
         Header={Header}
         pageTitleTemplate={pageTitleTemplate}
         computeBreadcrumbs={computeBreadcrumbs}
-        />
+        CollectionContainer={EntryPointsContainer}
+      />
     );
   }
 }
