@@ -39,9 +39,10 @@ export interface EditFormProps<T, U> {
   editedIdentifier?: string;
 }
 
-export interface AdditionalContentProps<T, U> extends EditFormProps<T, U> {
+export interface AdditionalContentProps<T, U> {
   store?: Store<State>;
   csrfToken?: string;
+  item?: U;
 }
 
 /** Shows a list of configuration services of a particular type and allows creating a new

@@ -62,7 +62,7 @@
 
 
 
-$white: #fff; // for tint lint pass
+$white: #FFF; // for tint lint pass
 
 /// Slightly lighten a color
 /// @access public
@@ -84,19 +84,18 @@ $white: #fff; // for tint lint pass
     }
 
     &.success {
-      // $nypl-green;
       // $nypl-green-tint: #f3f7e6;
-      background-color: #f3f7e6;
+      background-color: #F3F7E6;
       // $nypl-green-bright
       border: 0.0625rem #008918 solid;
       color: #000;
     }
     &.failure {
-      // nypl-red = D0343A
+      // nypl-red: D0343A
       // $nypl-red-error: tint($nypl-red, 80%);
       background-color: tint(#D0343A, 80%);
       // $nypl-red-dark
-      border: 0.0625rem #97272c solid;
+      border: 0.0625rem #97272C solid;
       color: #000;
     }
   }

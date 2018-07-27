@@ -3,8 +3,7 @@ import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
-import { CollectionsData, CollectionData, LibraryData, LibraryRegistrationsData,
-  ServiceData, SelfTestsData } from "../interfaces";
+import { ServiceData } from "../interfaces";
 
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 
@@ -123,6 +122,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   const collectionId = ownProps.item.id;
+
   return {
     getSelfTests: (identifier: string | number) => dispatch(actions.getSelfTests(collectionId)),
     runSelfTests: (identifier: string | number) => dispatch(actions.runSelfTests(identifier))

@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { EditableConfigList, EditFormProps } from "../EditableConfigList";
+import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
@@ -24,11 +24,17 @@ describe("EditableConfigList", () => {
     }
   }
 
+  class AdditionalContent extends React.Component<AdditionalContentProps<Things, Thing>, void> {
+    render(): JSX.Element {
+      return <div>Test Additional Content</div>;
+    }
+  }
+
   let canCreate: boolean;
   let canDelete: boolean;
 
   class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
-    AdditionalContent = null;
+    AdditionalContent = AdditionalContent;
     EditForm = ThingEditForm;
     listDataKey = "things";
     itemTypeName = "thing";
