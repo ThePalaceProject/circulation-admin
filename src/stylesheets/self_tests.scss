@@ -10,6 +10,23 @@
         padding: 20px 0 0;
         flex-grow: 1;
 
+
+        svg {
+          height: 30px;
+          width: 30px;
+          align-self: center;
+
+          &.success {
+            // $nypl-green-bright
+            fill: #008918;
+          }
+
+          &.failure {
+            // $nypl-red
+            fill: #D0343A;
+          }
+        }
+
         & > div:first-child {
           display: flex;
           justify-content: space-between;

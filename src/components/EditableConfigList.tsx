@@ -39,6 +39,11 @@ export interface EditFormProps<T, U> {
   editedIdentifier?: string;
 }
 
+export interface AdditionalContentProps<T, U> extends EditFormProps<T, U> {
+  store?: Store<State>;
+  csrfToken?: string;
+}
+
 /** Shows a list of configuration services of a particular type and allows creating a new
     service or editing or deleting an existing services. Used for many of the tabs on the
     system configuration page.
@@ -47,7 +52,7 @@ export interface EditFormProps<T, U> {
     EditableConfigList cannot change the props and do not have to specify a type for them. */
 export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, void> {
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
-  abstract AdditionalContent?: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
+  abstract AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
@@ -110,7 +115,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                     }
                     {
                       AdditionalContent &&
-                      <AdditionalContent item={item} />
+                      <AdditionalContent
+                        item={item}
+                        store={this.props.store}
+                        csrfToken={this.props.csrfToken}
+                      />
                     }
                   </li>
                 )
