@@ -9,6 +9,7 @@
     background-color: $pagecolorlight;
     border-radius: 20px;
     padding: 10px;    
+    overflow-x: scroll;
 
     &.stat-group-wide {
       grid-column-start: 1;
