@@ -6,7 +6,6 @@ import ServiceEditForm from "./ServiceEditForm";
 
 /** Right panel for storage services on the system configuration page. */
 export class StorageServices extends EditableConfigList<StorageServicesData, StorageServiceData> {
-  AdditionalContent = null;
   EditForm = ServiceEditForm;
   listDataKey = "storage_services";
   itemTypeName = "storage service";

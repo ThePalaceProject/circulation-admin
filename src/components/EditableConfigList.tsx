@@ -53,13 +53,13 @@ export interface AdditionalContentProps<T, U> {
     EditableConfigList cannot change the props and do not have to specify a type for them. */
 export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, void> {
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
-  abstract AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
   abstract identifierKey: string;
   abstract labelKey: string;
   limitOne = false;
+  AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
 
   constructor(props) {
     super(props);
@@ -69,7 +69,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   render(): JSX.Element {
     let EditForm = this.EditForm;
-    let AdditionalContent = this.AdditionalContent;
+    let AdditionalContent = this.AdditionalContent || null;
     return (
       <div className={`admin-${this.itemTypeName}`}>
         <h2>{this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration</h2>

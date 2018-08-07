@@ -9,7 +9,6 @@ import ServiceEditForm from "./ServiceEditForm";
     service or editing or deleting an existing service. */
 export class MetadataServices extends EditableConfigList<MetadataServicesData, MetadataServiceData> {
   EditForm = ServiceEditForm;
-  AdditionalContent = null;
   listDataKey = "metadata_services";
   itemTypeName = "metadata service";
   urlBase = "/admin/web/config/metadata/";

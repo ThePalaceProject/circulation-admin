@@ -3,7 +3,7 @@ import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
-import { ServiceData } from "../interfaces";
+import { ServiceData, SelfTestsData } from "../interfaces";
 
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 
@@ -18,7 +18,7 @@ export interface SelfTestsStateProps {
 
 export interface SelfTestsDispatchProps {
   runSelfTests?: (identifier: string | number) => Promise<void>;
-  getSelfTests?: (identifier: string | number) => Promise<void>;
+  getSelfTests?: (identifier: string | number) => Promise<SelfTestsData>;
 }
 
 export interface SelfTestsOwnProps {
@@ -51,23 +51,27 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const startDate = date.toDateString();
     const startTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-    const expandResultClass = expand ? "active in" : "";
+    const expandResultClass = expand ? "active" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
     const results = collection.self_test_results && collection.self_test_results.results;
-    const r = (result) => !result.success;
-    const successOrFailure = results.some(r);
-    const resultIcon = successOrFailure ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
+    const findFailures = (result) => !result.success;
+    const oneFailedResult = results.some(findFailures);
+    const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
+    const duration = collection.self_test_results.duration.toFixed(2);
 
     return (
       <div className="collection-selftests">
         <div>
           {resultIcon}
-          <p>Tests last ran on {startDate} {startTime} and lasted {collection.self_test_results.duration}s.</p>
+          <p>Tests last ran on {startDate} {startTime} and lasted {duration}s.</p>
           <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h3>Self Test Results</h3>
-          <button onClick={(e) => this.runSelfTests(e, collection.id)} className="btn btn-default">Run tests</button>
+          <button onClick={(e) => this.runSelfTests(e, collection.id)} className="btn btn-default">
+            Run tests
+          </button>
+
           <ul>
             {
               results.map(result => {

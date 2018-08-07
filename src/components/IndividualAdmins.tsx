@@ -11,7 +11,6 @@ import IndividualAdminEditForm from "./IndividualAdminEditForm";
     editing or deleting an existing admin. */
 export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, IndividualAdminData> {
   EditForm = IndividualAdminEditForm;
-  AdditionalContent = null;
   listDataKey = "individualAdmins";
   itemTypeName = "individual admin";
   urlBase = "/admin/web/config/individualAdmins/";

@@ -11,7 +11,6 @@ import LibraryEditForm from "./LibraryEditForm";
     editing or deleting an existing library. */
 export class Libraries extends EditableConfigList<LibrariesData, LibraryData> {
   EditForm = LibraryEditForm;
-  AdditionalContent = null;
   listDataKey = "libraries";
   itemTypeName = "library";
   urlBase = "/admin/web/config/libraries/";

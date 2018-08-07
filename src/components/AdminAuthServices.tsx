@@ -9,7 +9,6 @@ import ServiceEditForm from "./ServiceEditForm";
     service or editing or deleting an existing service. */
 export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData, AdminAuthServiceData> {
   EditForm = ServiceEditForm;
-  AdditionalContent = null;
   listDataKey = "admin_auth_services";
   itemTypeName = "admin authentication service";
   urlBase = "/admin/web/config/adminAuth/";
