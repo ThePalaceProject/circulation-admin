@@ -63,12 +63,12 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       <div className="collection-selftests">
         <div>
           {resultIcon}
-          <p>Tests last ran on {startDate} {startTime} and lasted {duration}s.</p>
+          <p className="description">Tests last ran on {startDate} {startTime} and lasted {duration}s.</p>
           <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h3>Self Test Results</h3>
-          <button onClick={(e) => this.runSelfTests(e, collection.id)} className="btn btn-default">
+          <button onClick={(e) => this.runSelfTests(e, collection.id)} className="btn btn-default runSelfTests">
             Run tests
           </button>
 
@@ -79,11 +79,19 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
                 return (
                   <li className={successColor} key={result.name}>
                     <h4>{result.name}</h4>
-                    {result.result ? <p>result: {result.result}</p> : null}
-                    <p>success: {`${result.success}`}</p>
+                    {
+                      result.result ?
+                        <p className="result-description">result: {result.result}</p>
+                        : null
+                    }
+                    <p className="success-description">
+                      success: {`${result.success}`}
+                    </p>
                     {
                       !result.success && (
-                        <p>exception: {result.exception.message}</p>
+                        <p className="exception-description">
+                          exception: {result.exception.message}
+                        </p>
                       )
                     }
                   </li>

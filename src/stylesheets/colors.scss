@@ -1,0 +1,8 @@
+$white: #FFF; // for tint lint pass
+
+// Some NYPL specific colors:
+$green-tint: #F3F7E6;
+$green-bright: #008918;
+$red: #D0343A;
+$red-dark: #97272C;
+$red-error: tint($red, 80%);

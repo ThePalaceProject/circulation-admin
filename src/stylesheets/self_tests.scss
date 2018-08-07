@@ -60,20 +60,6 @@
   }
 }
 
-
-
-$white: #FFF; // for tint lint pass
-
-/// Slightly lighten a color
-/// @access public
-/// @param {Color} $color - color to tint
-/// @param {Number} $percentage - percentage of `$color` in returned color
-/// @return {Color}
-
-@function tint($color, $percentage) {
-  @return mix($white, $color, $percentage);
-}
-
 .tab-content {
   li {
     &.success,
@@ -84,18 +70,13 @@ $white: #FFF; // for tint lint pass
     }
 
     &.success {
-      // $nypl-green-tint: #f3f7e6;
-      background-color: #F3F7E6;
-      // $nypl-green-bright
-      border: 0.0625rem #008918 solid;
+      background-color: $green-tint;
+      border: 0.0625rem $green-bright solid;
       color: #000;
     }
     &.failure {
-      // nypl-red: D0343A
-      // $nypl-red-error: tint($nypl-red, 80%);
-      background-color: tint(#D0343A, 80%);
-      // $nypl-red-dark
-      border: 0.0625rem #97272C solid;
+      background-color: $red-error;
+      border: 0.0625rem $red-dark solid;
       color: #000;
     }
   }

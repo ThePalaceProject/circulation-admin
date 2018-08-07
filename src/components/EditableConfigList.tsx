@@ -94,11 +94,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                     <a
                       className="btn btn-default edit-item"
                       href={this.urlBase + "edit/" + item[this.identifierKey]}
-                      >
-                        <span>
-                          Edit
-                          <PencilIcon />
-                        </span>
+                    >
+                      <span>
+                        Edit
+                        <PencilIcon />
+                      </span>
                     </a>
                     <h4>
                       {this.label(item)}
@@ -107,11 +107,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                       <button
                         className="btn btn-danger delete-item"
                         onClick={() => this.delete(item) }
-                        >
-                          <span>
-                            Delete
-                            <TrashIcon />
-                          </span>
+                      >
+                        <span>
+                          Delete
+                          <TrashIcon />
+                        </span>
                       </button>
                     }
                     {

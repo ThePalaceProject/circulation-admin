@@ -34,7 +34,6 @@ describe("EditableConfigList", () => {
   let canDelete: boolean;
 
   class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
-    AdditionalContent = AdditionalContent;
     EditForm = ThingEditForm;
     listDataKey = "things";
     itemTypeName = "thing";
@@ -57,6 +56,10 @@ describe("EditableConfigList", () => {
 
   class OneThingEditableConfigList extends ThingEditableConfigList {
     limitOne = true;
+  }
+
+  class ThingAdditionalContentEditableConfigList extends ThingEditableConfigList {
+    AdditionalContent = AdditionalContent;
   }
 
   let wrapper;
@@ -236,5 +239,28 @@ describe("EditableConfigList", () => {
 
     await pause();
     expect(fetchData.callCount).to.equal(2);
+  });
+
+  it("should not render the AdditionalContent component", () => {
+    let additionalContent = wrapper.find(AdditionalContent);
+    expect(additionalContent.length).to.equal(0);
+  });
+
+  it("should render the AdditionalContent component", () => {
+    wrapper = shallow(
+      <ThingAdditionalContentEditableConfigList
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+      />
+    );
+
+    let additionalContent = wrapper.find(AdditionalContent);
+    expect(additionalContent.length).to.equal(1);
+    expect(additionalContent.props().item).to.deep.equal(thingData);
+    expect(additionalContent.props().csrfToken).to.equal("token");
   });
 });
