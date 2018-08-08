@@ -1,25 +1,57 @@
 .stats {
-  ul {
-    border-bottom: 1px solid black;
+  display: grid;
+  grid-gap: 1rem 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem,1fr));
+  padding: 0px;
+
+  .stat-group {
+    display: grid;
+    background-color: $pagecolorlight;
+    border-radius: 20px;
+    padding: 10px;    
+    overflow-x: scroll;
+
+    &.stat-group-wide {
+      grid-column-start: 1;
+      grid-column-end: -1;
+    }
+
+    ul {
+      padding: 0px;
+    }
+
+    h3 {
+      margin: 10px;
+      margin-bottom: 2px;
+    }
   }
 
-  li {
-    text-align: center;
-    margin: 10px;
-
-    .stat-grouping-label {
-      font-size: 200%;
-      width: 150px;
-      text-align: left;
-    }
-
-    .stat-label {
-      max-width: 175px;
-    }
-
-    .stat-value {
-      font-size: 300%;
-      line-height: 1em;
-    }
+  .stat-grouping-label {
+    text-align: left;
   }
+
+  svg {
+    width: inherit;
+    height: inherit;
+  }
+
+  .stat-label {
+    line-height: 1rem;
+  }
+
+  .stat-value {
+    font-size: 300%;
+    line-height: 1rem;
+    margin-right: .5rem;
+  }
+
+  .single-stat {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin: 10px 0px;
+    padding: 10px;
+  }
+
 }
+
