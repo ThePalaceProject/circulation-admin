@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import { SelfTests } from "../SelfTests";
 import {
@@ -104,7 +104,7 @@ describe("SelfTests", () => {
       const failSVGIcon = wrapper.find(XIcon);
       const description = wrapper.find(".description");
 
-      // There's only on self test result in the collection and it passes.
+      // There's only one self test result in the collection and it passes.
       expect(failSVGIcon.length).to.equal(0);
       expect(passSVGIcon.length).to.equal(1);
 
@@ -136,7 +136,7 @@ describe("SelfTests", () => {
       const failSVGIcon = wrapper.find(XIcon);
       const description = wrapper.find(".description");
 
-      // There are two self tests but one of them failed.
+      // There are two self tests but one of them failed, so show a failing icon.
       expect(failSVGIcon.length).to.equal(1);
       expect(passSVGIcon.length).to.equal(0);
 
@@ -161,20 +161,23 @@ describe("SelfTests", () => {
     });
   });
 
-  describe("Get new results", async () => {
+  describe("Get new results", () => {
     let runSelfTests;
+    let getSelfTests;
 
     beforeEach(() => {
       runSelfTests = stub().returns(new Promise<void>(resolve => resolve()));
-      wrapper = shallow(
+      getSelfTests = stub().returns(new Promise<void>(resolve => resolve()));
+      wrapper = mount(
         <SelfTests
           item={collections[0]}
           runSelfTests={runSelfTests}
+          getSelfTests={getSelfTests}
         />
       );
     });
 
-    it("should run new self tests", () => {
+    it("should run new self tests", async () => {
       const runSelfTestsBtn = wrapper.find(".runSelfTests");
 
       expect(runSelfTests.callCount).to.equal(0);

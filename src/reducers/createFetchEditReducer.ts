@@ -14,7 +14,7 @@ export interface FetchEditReducer<T> {
   (state: FetchEditState<T>, action): FetchEditState<T>;
 }
 
-export default<T> (fetchPrefix: string, editPrefix?: string, extraAction?: string, manipulateData?): FetchEditReducer<T> => {
+export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?): FetchEditReducer<T> => {
   const initialState: FetchEditState<T> = {
     data: null,
     isFetching: false,
@@ -49,35 +49,14 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraAction?: strin
         });
 
       default:
-        if (extraAction) {
-          switch (action.type) {
-            case `${extraAction}_${ActionCreator.REQUEST}`:
-              return Object.assign({}, state, {
-                data: state.data,
-                isLoaded: false,
-                isFetching: true,
-                fetchError: null
-              });
-            case `${extraAction}_${ActionCreator.SUCCESS}`:
-              return Object.assign({}, state, {
-                fetchError: null
-              });
-            case `${extraAction}_${ActionCreator.FAILURE}`:
-              return Object.assign({}, state, {
-                fetchError: action.error,
-                isFetching: false,
-                isLoaded: true
-              });
-            case `${extraAction}_${ActionCreator.LOAD}`:
-              const data = manipulateData ?
-                manipulateData(state.data, action) : state.data;
-              return Object.assign({}, state, {
-                data: data,
-                isFetching: false,
-                isLoaded: true
-              });
-            default:
-              return state;
+        if (extraActions) {
+          let manipulateDataFunction;
+
+          if (action.type in extraActions) {
+            manipulateDataFunction = extraActions[action.type];
+            return manipulateDataFunction(state, action);
+          } else {
+            return state;
           }
         }
 

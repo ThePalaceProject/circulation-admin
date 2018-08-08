@@ -36,14 +36,19 @@ describe("fetch-edit reducer", () => {
     return data;
   };
 
+  const extraActions = {
+    EXTRAACTION_REQUEST: (state, action) => state,
+    EXTRAACTION_LOAD: manipulateData,
+  };
+
   let reducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT");
   let fetchOnlyReducer = createFetchEditReducer<TestData>("TEST_FETCH");
-  let extraActionReducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT", "TEST_EXTRA");
-  let extraActionAndFunctionReducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT", "TEST_EXTRA", manipulateData);
+  let extraActionReducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT", extraActions);
 
   it("returns initial state for unrecognized action", () => {
     expect(reducer(undefined, {})).to.deep.equal(initState);
     expect(fetchOnlyReducer(undefined, {})).to.deep.equal(initState);
+    expect(extraActionReducer(undefined, {})).to.deep.equal(initState);
   });
 
   it("handles fetch request", () => {
@@ -165,7 +170,7 @@ describe("fetch-edit reducer", () => {
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetching: true,
+      isFetching: false,
     });
     expect(extraActionReducer(initState, action)).to.deep.equal(newState);
   });
@@ -173,19 +178,9 @@ describe("fetch-edit reducer", () => {
   it("handles extra action data load", () => {
     let action = { type: "TEST_EXTRA_LOAD", url: "test url" };
     let newState = Object.assign({}, initState, {
-      isLoaded: true,
+      isLoaded: false,
     });
 
     expect(extraActionReducer(initState, action)).to.deep.equal(newState);
-  });
-
-  it("handles extra action and function to manipulate data load", () => {
-    let action = { type: "TEST_EXTRA_LOAD", url: "test url" };
-    let newState = Object.assign({}, initState, {
-      data: 10,
-      isLoaded: true,
-    });
-
-    expect(extraActionAndFunctionReducer(initState, action)).to.deep.equal(newState);
   });
 });

@@ -49,7 +49,10 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     }
     const date = new Date(collection.self_test_results.start);
     const startDate = date.toDateString();
-    const startTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const hours = ("0" + date.getHours()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+    const seconds = ("0" + date.getSeconds()).slice(-2);
+    const startTime = `${hours}:${minutes}:${seconds}`;
 
     const expandResultClass = expand ? "active" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
