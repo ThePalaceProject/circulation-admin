@@ -617,12 +617,12 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   getSelfTests(identifier: string | number) {
-    const url = `/admin/collections_self_tests/${identifier}`;
+    const url = `/admin/collection_self_tests/${identifier}`;
     return this.fetchJSON<SelfTestsData>(ActionCreator.GET_SELF_TESTS, url).bind(this);
   }
 
   runSelfTests(identifier: string | number) {
-    const url = `/admin/collections_self_tests/${identifier}`;
+    const url = `/admin/collection_self_tests/${identifier}`;
     return this.postForm(ActionCreator.RUN_SELF_TESTS, url, null).bind(this);
   }
 }

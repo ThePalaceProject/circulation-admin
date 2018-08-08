@@ -671,7 +671,7 @@ describe("actions", () => {
 
   describe("runSelfTests", () => {
     it("dispatches request and success", async () => {
-      const collectionSelfTestURL = "/admin/collections_self_tests";
+      const collectionSelfTestURL = "/admin/collection_self_tests";
       const dispatch = stub();
 
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
