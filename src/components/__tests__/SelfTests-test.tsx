@@ -108,7 +108,7 @@ describe("SelfTests", () => {
       expect(failSVGIcon.length).to.equal(0);
       expect(passSVGIcon.length).to.equal(1);
 
-      expect(description.text()).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
+      expect(description.text().trim()).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
     });
 
     it("should display detail information for each self test result for the collection", () => {
@@ -140,7 +140,7 @@ describe("SelfTests", () => {
       expect(failSVGIcon.length).to.equal(1);
       expect(passSVGIcon.length).to.equal(0);
 
-      expect(description.text()).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
+      expect(description.text().trim()).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
     });
 
     it("should display detail information for each self test result for the collection", () => {

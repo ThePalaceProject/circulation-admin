@@ -2,3 +2,9 @@ language: node_js
 
 node_js:
   - "7"
+
+before_script:
+- export TZ=America/New_York
+- date
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
