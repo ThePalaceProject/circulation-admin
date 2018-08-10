@@ -31,11 +31,11 @@ export interface EditableConfigListProps<T> extends EditableConfigListStateProps
 
 export interface EditFormProps<T, U> {
   item?: U;
-  data?: T;
-  disabled?: boolean;
-  editItem?: (data: FormData) => Promise<void>;
-  urlBase?: string;
-  listDataKey?: string;
+  data: T;
+  disabled: boolean;
+  editItem: (data: FormData) => Promise<void>;
+  urlBase: string;
+  listDataKey: string;
   editedIdentifier?: string;
 }
 

@@ -6,7 +6,7 @@
           flex-wrap: wrap;
         }
       }
-      .collection-selftests {
+      .integration-selftests {
         padding: 20px 0 0;
         flex-grow: 1;
 
@@ -17,13 +17,11 @@
           align-self: center;
 
           &.success {
-            // $nypl-green-bright
-            fill: #008918;
+            fill: $green-bright;
           }
 
           &.failure {
-            // $nypl-red
-            fill: #D0343A;
+            fill: $red;
           }
         }
 

@@ -17,8 +17,8 @@ export interface SelfTestsStateProps {
 }
 
 export interface SelfTestsDispatchProps {
-  runSelfTests?: (identifier: string | number) => Promise<void>;
-  getSelfTests?: (identifier: string | number) => Promise<SelfTestsData>;
+  runSelfTests?: () => Promise<void>;
+  getSelfTests?: () => Promise<SelfTestsData>;
 }
 
 export interface SelfTestsOwnProps {
@@ -41,13 +41,13 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   }
 
   render() {
-    const collection = this.props.item;
+    const integration = this.props.item;
     const expand = this.state.expand;
 
-    if (!collection || !collection.self_test_results) {
+    if (!integration || !integration.self_test_results) {
       return null;
     }
-    const date = new Date(collection.self_test_results.start);
+    const date = new Date(integration.self_test_results.start);
     const startDate = date.toDateString();
     const hours = ("0" + date.getHours()).slice(-2);
     const minutes = ("0" + date.getMinutes()).slice(-2);
@@ -56,14 +56,14 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
 
     const expandResultClass = expand ? "active" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
-    const results = collection.self_test_results && collection.self_test_results.results;
+    const results = integration.self_test_results && integration.self_test_results.results;
     const findFailures = (result) => !result.success;
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
-    const duration = collection.self_test_results.duration.toFixed(2);
+    const duration = integration.self_test_results.duration.toFixed(2);
 
     return (
-      <div className="collection-selftests">
+      <div className="integration-selftests">
         <div>
           {resultIcon}
           <p className="description">Tests last ran on {startDate} {startTime} and lasted {duration}s.</p>
@@ -71,7 +71,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h3>Self Test Results</h3>
-          <button onClick={(e) => this.runSelfTests(e, collection.id)} className="btn btn-default runSelfTests">
+          <button onClick={(e) => this.runSelfTests(e)} className="btn btn-default runSelfTests">
             Run tests
           </button>
 
@@ -111,10 +111,10 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.setState({ expand: !this.state.expand });
   }
 
-  async runSelfTests(e, identifier: string | number) {
+  async runSelfTests(e) {
     e.preventDefault();
-    await this.props.runSelfTests(identifier);
-    this.props.getSelfTests(identifier);
+    await this.props.runSelfTests();
+    this.props.getSelfTests();
   }
 }
 
@@ -136,11 +136,11 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
-  const collectionId = ownProps.item.id;
+  const integration = ownProps.item.id;
 
   return {
-    getSelfTests: (identifier: string | number) => dispatch(actions.getSelfTests(collectionId)),
-    runSelfTests: (identifier: string | number) => dispatch(actions.runSelfTests(identifier))
+    getSelfTests: () => dispatch(actions.getSelfTests(integration)),
+    runSelfTests: () => dispatch(actions.runSelfTests(integration))
   };
 }
 

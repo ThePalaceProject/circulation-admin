@@ -10,6 +10,9 @@ import {
   XIcon,
 } from "@nypl/dgx-svg-icons";
 
+
+// SelfTests can take more than just a collection (an integration can have
+// self tests), but just testing collection data right now.
 const collections = [
   {
     id: 1,
@@ -91,11 +94,11 @@ describe("SelfTests", () => {
     wrapper = shallow(
       <SelfTests item={{} as any} />
     );
-    expect(wrapper.hasClass("collection-selftests")).to.equal(false);
+    expect(wrapper.hasClass("integration-selftests")).to.equal(false);
   });
 
   it("should render the SelfTests component", () => {
-    expect(wrapper.hasClass("collection-selftests")).to.equal(true);
+    expect(wrapper.hasClass("integration-selftests")).to.equal(true);
   });
 
   describe("Successful self tests", () => {
