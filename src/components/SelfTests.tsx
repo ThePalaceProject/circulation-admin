@@ -13,7 +13,7 @@ import {
 } from "@nypl/dgx-svg-icons";
 
 export interface SelfTestsStateProps {
-  item: ServiceData;
+  item?: ServiceData;
 }
 
 export interface SelfTestsDispatchProps {
@@ -71,6 +71,9 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h3>Self Test Results</h3>
+          {this.props.isFetching &&
+            <span>Running new self tests</span>
+          }
           <button onClick={(e) => this.runSelfTests(e)} className="btn btn-default runSelfTests">
             Run tests
           </button>
@@ -78,9 +81,9 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
           <ul>
             {
               results.map(result => {
-                const successColor = result.success ? "success" : "failure";
+                const colorResultClass = result.success ? "success" : "failure";
                 return (
-                  <li className={successColor} key={result.name}>
+                  <li className={colorResultClass} key={result.name}>
                     <h4>{result.name}</h4>
                     {
                       result.result ?
@@ -119,28 +122,20 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
 }
 
 function mapStateToProps(state, ownProps) {
-  const stateResults = state.editor.selfTests &&
-    state.editor.selfTests.data && state.editor.selfTests.data.collection;
-  const propsResults = ownProps.item && ownProps.item;
-  let item = propsResults;
-
-  if (stateResults && stateResults.id === propsResults.id) {
-    item = stateResults;
-  }
-
+  const selfTests = state.editor.selfTests;
   return {
-    item,
+    isFetching: selfTests.isFetching,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
-  const integration = ownProps.item.id;
+  const integrationId = ownProps.item.id;
 
   return {
-    getSelfTests: () => dispatch(actions.getSelfTests(integration)),
-    runSelfTests: () => dispatch(actions.runSelfTests(integration))
+    getSelfTests: () => dispatch(actions.getSelfTests(integrationId)),
+    runSelfTests: () => dispatch(actions.runSelfTests(integrationId))
   };
 }
 
