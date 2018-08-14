@@ -10,6 +10,7 @@ import {
   CustomListsData, CustomListDetailsData, LanesData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
   StorageServicesData, LoggingServicesData, SelfTestsData,
+  PatronData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -139,6 +140,8 @@ export default class ActionCreator extends BaseActionCreator {
 
   static readonly GET_SELF_TESTS = "GET_SELF_TESTS";
   static readonly RUN_SELF_TESTS = "RUN_SELF_TESTS";
+
+  static readonly PATRON_LOOKUP = "PATRON_LOOKUP";
 
   csrfToken: string;
 
@@ -624,5 +627,10 @@ export default class ActionCreator extends BaseActionCreator {
   runSelfTests(identifier: string | number) {
     const url = `/admin/collection_self_tests/${identifier}`;
     return this.postForm(ActionCreator.RUN_SELF_TESTS, url, null).bind(this);
+  }
+
+  patronLookup(data: FormData) {
+    const url = "/admin/manage_patrons";
+    return this.postForm(ActionCreator.PATRON_LOOKUP, url, data).bind(this);
   }
 }

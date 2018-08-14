@@ -273,6 +273,16 @@ export interface PatronAuthServicesData extends ServicesData {
   patron_auth_services: PatronAuthServiceData[];
 }
 
+export interface PatronData {
+  permanent_id: number;
+  authorization_identifier: string | number;
+  username: string;
+  external_type: string;
+  block_reason: string;
+  personal_name: string;
+  email_address: string;
+}
+
 export interface SitewideSettingData {
   key: string;
   value: string;

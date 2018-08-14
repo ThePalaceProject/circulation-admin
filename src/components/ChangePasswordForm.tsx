@@ -88,6 +88,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
       this.setState({ success: false, error: "Passwords do not match." });
     } else {
       const data = new (window as any).FormData(this.refs["form"] as any);
+      console.log(data);
       this.props.changePassword(data).then(() => {
         this.setState({ success: true, error: null });
       });
