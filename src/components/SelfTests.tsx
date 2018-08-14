@@ -14,6 +14,7 @@ import {
 
 export interface SelfTestsStateProps {
   item?: ServiceData;
+  isFetching?: boolean;
 }
 
 export interface SelfTestsDispatchProps {
@@ -29,13 +30,17 @@ export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsSt
 
 export interface SelfTestsState {
   expand: boolean;
+  runTests: boolean;
 }
 
 export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   constructor(props) {
     super(props);
 
-    this.state = { expand: false };
+    this.state = {
+      expand: false,
+      runTests: false,
+    };
     this.toggleView = this.toggleView.bind(this);
     this.runSelfTests = this.runSelfTests.bind(this);
   }
@@ -61,6 +66,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
     const duration = integration.self_test_results.duration.toFixed(2);
+    const isFetching = !!(this.props.isFetching && this.state.runTests);
 
     return (
       <div className="integration-selftests">
@@ -71,7 +77,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h3>Self Test Results</h3>
-          {this.props.isFetching &&
+          {isFetching &&
             <span>Running new self tests</span>
           }
           <button onClick={(e) => this.runSelfTests(e)} className="btn btn-default runSelfTests">
@@ -83,7 +89,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
               results.map(result => {
                 const colorResultClass = result.success ? "success" : "failure";
                 return (
-                  <li className={colorResultClass} key={result.name}>
+                  <li className={isFetching ? "loading-self-test" : colorResultClass} key={result.name}>
                     <h4>{result.name}</h4>
                     {
                       result.result ?
@@ -111,13 +117,26 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   }
 
   toggleView() {
-    this.setState({ expand: !this.state.expand });
+    this.setState({
+      expand: !this.state.expand,
+      runTests: this.state.runTests,
+    });
   }
 
   async runSelfTests(e) {
     e.preventDefault();
+    this.setState({
+      expand: this.state.expand,
+      runTests: true,
+    });
+
     await this.props.runSelfTests();
     this.props.getSelfTests();
+
+    this.setState({
+      expand: this.state.expand,
+      runTests: false,
+    });
   }
 }
 

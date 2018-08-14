@@ -60,11 +60,18 @@
 
 .tab-content {
   li {
+    &.loading-self-test,
     &.success,
     &.failure {
       padding: 10px;
       word-wrap: break-word;
       border-radius: 3px;
+    }
+
+    &.loading-self-test {
+      background-color: $light-gray;
+      border: 0.0625rem $dark-gray solid;
+      color: #000;
     }
     &.success {
       background-color: $green-tint;

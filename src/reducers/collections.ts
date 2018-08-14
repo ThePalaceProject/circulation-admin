@@ -4,7 +4,7 @@ import createFetchEditReducer from "./createFetchEditReducer";
 
 // This is only to update a specific collection's self test results property.
 const loadCB = (state, action) => {
-  const data = Object.assign({}, state.data);
+  const data = JSON.parse(JSON.stringify(state.data));
   if (!data.collections.length) {
     return {};
   }
@@ -16,7 +16,7 @@ const loadCB = (state, action) => {
   });
 
   return Object.assign({}, state, {
-    data: state.data,
+    data: data,
     isFetching: false,
     isLoaded: true,
   });

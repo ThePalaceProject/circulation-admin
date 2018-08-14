@@ -18,14 +18,9 @@ const successCB = (state, action) => {
   });
 };
 
-const loadCB = (state, action) => {
-  return {};
-};
-
 const extraActions = {
   [`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.REQUEST}`]: requestCB,
   [`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.SUCCESS}`]: successCB,
-  [`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.LOAD}`]: loadCB,
 };
 
 export default createFetchEditReducer<ServiceData>(
