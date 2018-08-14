@@ -31,14 +31,17 @@ describe("fetch-edit reducer", () => {
     editedIdentifier: null
   };
 
-  const manipulateData = (data, action) => {
-    data = 10;
-    return data;
+  const manipulateData = (state, action) => {
+    let data = 10;
+    return Object.assign({}, state, {
+      data: data,
+      isLoaded: true,
+    });
   };
 
   const extraActions = {
-    EXTRAACTION_REQUEST: (state, action) => state,
-    EXTRAACTION_LOAD: manipulateData,
+    EXTRA_ACTION_REQUEST: (state, action) => state,
+    EXTRA_ACTION_LOAD: manipulateData,
   };
 
   let reducer = createFetchEditReducer<TestData>("TEST_FETCH", "TEST_EDIT");
@@ -166,19 +169,18 @@ describe("fetch-edit reducer", () => {
   });
 
   it("handles extra action request", () => {
-    let action = { type: "TEST_EXTRA_REQUEST", url: "test url" };
+    let action = { type: "EXTRA_ACTION_REQUEST", url: "test url" };
 
     // start with empty state
-    let newState = Object.assign({}, initState, {
-      isFetching: false,
-    });
+    let newState = Object.assign({}, initState);
     expect(extraActionReducer(initState, action)).to.deep.equal(newState);
   });
 
   it("handles extra action data load", () => {
-    let action = { type: "TEST_EXTRA_LOAD", url: "test url" };
+    let action = { type: "EXTRA_ACTION_LOAD", url: "test url" };
     let newState = Object.assign({}, initState, {
-      isLoaded: false,
+      data: 10,
+      isLoaded: true,
     });
 
     expect(extraActionReducer(initState, action)).to.deep.equal(newState);
