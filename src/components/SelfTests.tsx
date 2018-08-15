@@ -48,31 +48,40 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   render() {
     const integration = this.props.item;
     const expand = this.state.expand;
+    let date;
+    let startDate;
+    let hours;
+    let minutes;
+    let seconds;
+    let startTime;
+    let results = [];
+    let duration;
 
-    if (!integration || !integration.self_test_results) {
-      return null;
+    if (integration.self_test_results) {
+      date = new Date(integration.self_test_results.start);
+      startDate = date.toDateString();
+      hours = ("0" + date.getHours()).slice(-2);
+      minutes = ("0" + date.getMinutes()).slice(-2);
+      seconds = ("0" + date.getSeconds()).slice(-2);
+      startTime = `${hours}:${minutes}:${seconds}`;
+      results = integration.self_test_results && integration.self_test_results.results;
+      duration = integration.self_test_results.duration.toFixed(2);
     }
-    const date = new Date(integration.self_test_results.start);
-    const startDate = date.toDateString();
-    const hours = ("0" + date.getHours()).slice(-2);
-    const minutes = ("0" + date.getMinutes()).slice(-2);
-    const seconds = ("0" + date.getSeconds()).slice(-2);
-    const startTime = `${hours}:${minutes}:${seconds}`;
-
     const expandResultClass = expand ? "active" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
-    const results = integration.self_test_results && integration.self_test_results.results;
     const findFailures = (result) => !result.success;
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
-    const duration = integration.self_test_results.duration.toFixed(2);
     const isFetching = !!(this.props.isFetching && this.state.runTests);
+    const testDescription = integration.self_test_results ?
+      `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
+      "No self tests previously run.";
 
     return (
       <div className="integration-selftests">
         <div>
           {resultIcon}
-          <p className="description">Tests last ran on {startDate} {startTime} and lasted {duration}s.</p>
+          <p className="description">{testDescription}</p>
           <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
         <div className={`results collapse ${expandResultClass}`}>
@@ -88,33 +97,36 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
             Run tests
           </button>
 
-          <ul>
-            {
-              results.map(result => {
-                const colorResultClass = result.success ? "success" : "failure";
-                return (
-                  <li className={isFetching ? "loading-self-test" : colorResultClass} key={result.name}>
-                    <h4>{result.name}</h4>
-                    {
-                      result.result ?
-                        <p className="result-description">result: {result.result}</p>
-                        : null
-                    }
-                    <p className="success-description">
-                      success: {`${result.success}`}
-                    </p>
-                    {
-                      !result.success && (
-                        <p className="exception-description">
-                          exception: {result.exception.message}
+          {
+            integration.self_test_results &&
+              <ul>
+                {
+                  results.map(result => {
+                    const colorResultClass = result.success ? "success" : "failure";
+                    return (
+                      <li className={isFetching ? "loading-self-test" : colorResultClass} key={result.name}>
+                        <h4>{result.name}</h4>
+                        {
+                          result.result ?
+                            <p className="result-description">result: {result.result}</p>
+                            : null
+                        }
+                        <p className="success-description">
+                          success: {`${result.success}`}
                         </p>
-                      )
-                    }
-                  </li>
-                );
-              })
-            }
-          </ul>
+                        {
+                          !result.success && (
+                            <p className="exception-description">
+                              exception: {result.exception.message}
+                            </p>
+                          )
+                        }
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+          }
         </div>
       </div>
     );
