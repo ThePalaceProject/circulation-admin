@@ -274,13 +274,16 @@ export interface PatronAuthServicesData extends ServicesData {
 }
 
 export interface PatronData {
-  permanent_id: number;
+  authorization_expires: string | number;
   authorization_identifier: string | number;
-  username: string;
-  external_type: string;
+  authorization_identifiers: string[];
   block_reason: string;
-  personal_name: string;
   email_address: string;
+  external_type: string;
+  fines: string;
+  permanent_id: string;
+  personal_name: string;
+  username: string;
 }
 
 export interface SitewideSettingData {

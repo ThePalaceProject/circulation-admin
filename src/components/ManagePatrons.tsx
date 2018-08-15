@@ -19,9 +19,13 @@ export interface ManagePatronsStateProps {
   patron?: PatronData;
   isFetching?: boolean;
 }
+export interface PatronResponse {
+  text: PatronData;
+  response: IResponse;
+}
 
 export interface ManagePatronsDispatchProps {
-  patronLookup?: (data: FormData) => Promise<void>;
+  patronLookup?: (data: FormData) => Promise<PatronResponse>;
 }
 
 export interface ManagePatronsOwnProps {
@@ -50,10 +54,13 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
 
     this.props.patronLookup(data)
       .then(result => {
-        console.log("result", result);
+        const patronInfo = result.text;
+        this.setState({
+          error: {status: 200, response: "", url: ""},
+          patron: patronInfo,
+        });
       })
       .catch(error => {
-        console.log("error", error);
         this.setState({error, patron: null});
       });
   }
@@ -79,6 +86,32 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
             className="btn btn-default"
             >Submit</button>
         </form>
+        { this.state.patron &&
+          <section>
+            <ul>
+              <h3>Patron Information</h3>
+              { this.state.patron.username &&
+                <li>Username: {this.state.patron.username}</li>
+              }
+              { this.state.patron.personal_name &&
+                <li>Personal Name: {this.state.patron.personal_name}</li>
+              }
+              { this.state.patron.email_address &&
+                <li>Email Address: {this.state.patron.email_address}</li>
+              }
+              <li>Identifier: {this.state.patron.authorization_identifier}</li>
+            </ul>
+            <ul>
+              <h3>Patron Actions</h3>
+              <li>
+                <h4>Reset Adobe Id</h4>
+                <p>reset id info goes here!</p>
+                <button>Reset Adobe ID</button>
+              </li>
+            </ul>
+          </section>
+        }
+
       </div>
     );
   }

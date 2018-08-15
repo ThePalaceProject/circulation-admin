@@ -153,7 +153,14 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
 
-  postForm(type: string, url: string, data: FormData | null, method?: string, defaultErrorMessage?: string) {
+  postForm(
+    type: string,
+    url: string,
+    data: FormData | null,
+    method?: string,
+    defaultErrorMessage?: string,
+    returnType?: string,
+  ) {
     let err: RequestError;
 
     return (dispatch => {
@@ -174,7 +181,11 @@ export default class ActionCreator extends BaseActionCreator {
             if (response.text) {
               response.text().then(text => {
                 dispatch(this.load<string>(type, text));
-                resolve(response);
+                if (returnType === "JSON") {
+                  resolve({ response, text: JSON.parse(text) });
+                } else {
+                  resolve(response);
+                }
               });
             } else {
               resolve(response);
@@ -631,6 +642,6 @@ export default class ActionCreator extends BaseActionCreator {
 
   patronLookup(data: FormData) {
     const url = "/admin/manage_patrons";
-    return this.postForm(ActionCreator.PATRON_LOOKUP, url, data).bind(this);
+    return this.postForm(ActionCreator.PATRON_LOOKUP, url, data, "POST", "", "JSON").bind(this);
   }
 }

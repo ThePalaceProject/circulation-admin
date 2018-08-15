@@ -90,11 +90,11 @@ describe("SelfTests", () => {
     );
   });
 
-  it("should not render the SelfTests component", () => {
+  it("should render the SelfTests component with empty self_test_results", () => {
     wrapper = shallow(
       <SelfTests item={{} as any} />
     );
-    expect(wrapper.hasClass("integration-selftests")).to.equal(false);
+    expect(wrapper.hasClass("integration-selftests")).to.equal(true);
   });
 
   it("should render the SelfTests component", () => {

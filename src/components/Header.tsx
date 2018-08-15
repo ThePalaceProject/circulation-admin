@@ -11,6 +11,7 @@ import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { Router } from "opds-web-client/lib/interfaces";
+import ManagePatrons from "./ManagePatrons";
 
 export interface HeaderStateProps {
   libraries?: LibraryData[];
@@ -207,4 +208,3 @@ export default class HeaderWithStore extends React.Component<void, void> {
     );
   }
 }
-
