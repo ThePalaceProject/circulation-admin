@@ -616,13 +616,11 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.CHANGE_PASSWORD, url, data).bind(this);
   }
 
-  getSelfTests(identifier: string | number) {
-    const url = `/admin/collection_self_tests/${identifier}`;
+  getSelfTests(url: string) {
     return this.fetchJSON<SelfTestsData>(ActionCreator.GET_SELF_TESTS, url).bind(this);
   }
 
-  runSelfTests(identifier: string | number) {
-    const url = `/admin/collection_self_tests/${identifier}`;
+  runSelfTests(url: string) {
     return this.postForm(ActionCreator.RUN_SELF_TESTS, url, null).bind(this);
   }
 }

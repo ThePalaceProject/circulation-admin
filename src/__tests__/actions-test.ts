@@ -650,6 +650,7 @@ describe("actions", () => {
   describe("getSelfTests", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();
+      const collectionSelfTestURL = "/admin/collection_self_tests";
       const selfTestData = "selfTestData";
       fetcher.testData = {
         ok: true,
@@ -660,7 +661,7 @@ describe("actions", () => {
       };
       fetcher.resolve = true;
 
-      const data = await actions.getSelfTests("1")(dispatch);
+      const data = await actions.getSelfTests(`${collectionSelfTestURL}/1`)(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.SUCCESS}`);
@@ -679,7 +680,7 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      await actions.runSelfTests("1")(dispatch);
+      await actions.runSelfTests(`${collectionSelfTestURL}/1`)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.SUCCESS}`);
