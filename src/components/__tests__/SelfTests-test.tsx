@@ -90,15 +90,17 @@ describe("SelfTests", () => {
     );
   });
 
-  it("should not render the SelfTests component", () => {
+  it("should render the SelfTests component but no results", () => {
     wrapper = shallow(
       <SelfTests item={{} as any} />
     );
-    expect(wrapper.hasClass("integration-selftests")).to.equal(false);
+    expect(wrapper.hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.find("ul").length).to.equal(0);
   });
 
-  it("should render the SelfTests component", () => {
+  it("should render the SelfTests component with results", () => {
     expect(wrapper.hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.find("ul").length).to.equal(1);
   });
 
   describe("Successful self tests", () => {

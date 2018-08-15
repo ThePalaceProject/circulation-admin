@@ -75,12 +75,12 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const isFetching = !!(this.props.isFetching && this.state.runTests);
     const testDescription = integration.self_test_results ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
-      "No self tests previously run.";
+      "No self test results found.";
 
     return (
       <div className="integration-selftests">
         <div>
-          {resultIcon}
+          {results.length ? resultIcon : null}
           <p className="description">{testDescription}</p>
           <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
