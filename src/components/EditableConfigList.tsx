@@ -71,7 +71,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     let EditForm = this.EditForm;
     let AdditionalContent = this.AdditionalContent || null;
     return (
-      <div className={`admin-${this.itemTypeName}`}>
+      <div className={AdditionalContent ? "has-additional-content" : ""}>
         <h2>{this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration</h2>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />

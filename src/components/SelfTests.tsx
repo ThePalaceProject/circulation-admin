@@ -80,7 +80,11 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
           {isFetching &&
             <span>Running new self tests</span>
           }
-          <button onClick={(e) => this.runSelfTests(e)} className="btn btn-default runSelfTests">
+          <button
+            onClick={(e) => this.runSelfTests(e)}
+            className="btn btn-default runSelfTests"
+            disabled={this.props.isFetching}
+          >
             Run tests
           </button>
 
