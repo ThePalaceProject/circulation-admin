@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { ServiceData, SelfTestsData } from "../interfaces";
+import ErrorMessage from "./ErrorMessage";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 
@@ -31,6 +33,7 @@ export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsSt
 export interface SelfTestsState {
   expand: boolean;
   runTests: boolean;
+  error: FetchErrorData;
 }
 
 export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
@@ -40,6 +43,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.state = {
       expand: false,
       runTests: false,
+      error: null,
     };
     this.toggleView = this.toggleView.bind(this);
     this.runSelfTests = this.runSelfTests.bind(this);
@@ -98,6 +102,11 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
           </button>
 
           {
+            this.state.error &&
+              <ErrorMessage error={this.state.error} />
+          }
+
+          {
             integration.self_test_results &&
               <ul>
                 {
@@ -136,6 +145,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.setState({
       expand: !this.state.expand,
       runTests: this.state.runTests,
+      error: null,
     });
   }
 
@@ -144,15 +154,25 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.setState({
       expand: this.state.expand,
       runTests: true,
+      error: null,
     });
 
-    await this.props.runSelfTests();
-    this.props.getSelfTests();
-
-    this.setState({
-      expand: this.state.expand,
-      runTests: false,
-    });
+    this.props.runSelfTests()
+      .then(() => {
+        this.props.getSelfTests();
+        this.setState({
+          expand: this.state.expand,
+          runTests: false,
+          error: null,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          expand: this.state.expand,
+          runTests: false,
+          error: error,
+        });
+      });
   }
 }
 
