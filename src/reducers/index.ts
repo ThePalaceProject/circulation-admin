@@ -29,6 +29,7 @@ import customListDetails from "./customListDetails";
 import lanes from "./lanes";
 import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
+import selfTests from "./selfTests";
 import roles from "./roles";
 import media from "./media";
 import languages from "./languages";
@@ -79,6 +80,7 @@ export interface State {
   lanes: FetchEditState<LanesData>;
   laneVisibility: FetchEditState<void>;
   resetLanes: FetchEditState<void>;
+  selfTests: FetchEditState<void>;
   roles: FetchEditState<RolesData>;
   media: FetchEditState<MediaData>;
   languages: FetchEditState<LanguagesData>;
@@ -118,6 +120,7 @@ export default combineReducers<State>({
   lanes,
   laneVisibility,
   resetLanes,
+  selfTests,
   roles,
   media,
   languages,

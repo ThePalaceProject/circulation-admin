@@ -9,7 +9,7 @@ import {
   DiscoveryServicesData, LibraryRegistrationsData,
   CustomListsData, CustomListDetailsData, LanesData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
-  StorageServicesData, LoggingServicesData,
+  StorageServicesData, LoggingServicesData, SelfTestsData,
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -136,6 +136,9 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly STATS_LOAD = "STATS_LOAD";
 
   static readonly CHANGE_PASSWORD = "CHANGE_PASSWORD";
+
+  static readonly GET_SELF_TESTS = "GET_SELF_TESTS";
+  static readonly RUN_SELF_TESTS = "RUN_SELF_TESTS";
 
   csrfToken: string;
 
@@ -611,5 +614,13 @@ export default class ActionCreator extends BaseActionCreator {
   changePassword(data: FormData) {
     const url = "/admin/change_password";
     return this.postForm(ActionCreator.CHANGE_PASSWORD, url, data).bind(this);
+  }
+
+  getSelfTests(url: string) {
+    return this.fetchJSON<SelfTestsData>(ActionCreator.GET_SELF_TESTS, url).bind(this);
+  }
+
+  runSelfTests(url: string) {
+    return this.postForm(ActionCreator.RUN_SELF_TESTS, url, null).bind(this);
   }
 }

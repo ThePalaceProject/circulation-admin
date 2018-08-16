@@ -1,6 +1,10 @@
 @import "../../node_modules/bootstrap/dist/css/bootstrap.css";
 @import "../../node_modules/font-awesome/css/font-awesome.min.css";
 @import "../../node_modules/opds-web-client/lib/stylesheets/app.scss";
+
+@import "mixins";
+@import "colors";
+
 @import "admin_auth_service_edit_form";
 @import "book_details_container";
 @import "book_details_tab_container";
@@ -29,6 +33,7 @@
 @import "lane_editor";
 @import "lanes";
 @import "protocol_form_field";
+@import "self_tests";
 @import "stats";
 @import "with_edit_button";
 @import "with_remove_button";

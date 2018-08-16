@@ -1,0 +1,92 @@
+.tab-container {
+  .tab-content {
+    .has-additional-content {
+      & > div > ul {
+        li {
+          flex-wrap: wrap;
+        }
+      }
+      .integration-selftests {
+        padding: 20px 0 0;
+        flex-grow: 1;
+        width: 100%;
+
+        svg {
+          height: 30px;
+          width: 30px;
+          align-self: center;
+
+          &.success {
+            fill: $green-bright;
+          }
+
+          &.failure {
+            fill: $red;
+          }
+        }
+
+        & > div:first-child {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+        }
+
+        .btn-default {
+          margin-right: 0;
+        }
+
+        .results {
+          display: none;
+          align-items: center;
+          flex-wrap: wrap;
+          justify-content: space-between;
+
+          &.active {
+            display: flex;
+          }
+
+          ul {
+            padding-left: 0;
+
+            li {
+              display: block;
+            }
+          }
+
+          .alert {
+            width: 100%;
+            margin-top: 15px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.tab-content {
+  li {
+    &.loading-self-test,
+    &.success,
+    &.failure {
+      padding: 10px;
+      word-wrap: break-word;
+      border-radius: 3px;
+    }
+
+    &.loading-self-test {
+      background-color: $light-gray;
+      border: 0.0625rem $dark-gray solid;
+      color: #000;
+    }
+    &.success {
+      background-color: $green-tint;
+      border: 0.0625rem $green-bright solid;
+      color: #000;
+    }
+    &.failure {
+      background-color: $red-error;
+      border: 0.0625rem $red-dark solid;
+      color: #000;
+    }
+  }
+}

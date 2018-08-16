@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { EditableConfigList, EditFormProps } from "../EditableConfigList";
+import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
@@ -21,6 +21,12 @@ describe("EditableConfigList", () => {
   class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, void> {
     render(): JSX.Element {
       return <div>Test</div>;
+    }
+  }
+
+  class AdditionalContent extends React.Component<AdditionalContentProps<Things, Thing>, void> {
+    render(): JSX.Element {
+      return <div>Test Additional Content</div>;
     }
   }
 
@@ -50,6 +56,10 @@ describe("EditableConfigList", () => {
 
   class OneThingEditableConfigList extends ThingEditableConfigList {
     limitOne = true;
+  }
+
+  class ThingAdditionalContentEditableConfigList extends ThingEditableConfigList {
+    AdditionalContent = AdditionalContent;
   }
 
   let wrapper;
@@ -229,5 +239,28 @@ describe("EditableConfigList", () => {
 
     await pause();
     expect(fetchData.callCount).to.equal(2);
+  });
+
+  it("should not render the AdditionalContent component", () => {
+    let additionalContent = wrapper.find(AdditionalContent);
+    expect(additionalContent.length).to.equal(0);
+  });
+
+  it("should render the AdditionalContent component", () => {
+    wrapper = shallow(
+      <ThingAdditionalContentEditableConfigList
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+      />
+    );
+
+    let additionalContent = wrapper.find(AdditionalContent);
+    expect(additionalContent.length).to.equal(1);
+    expect(additionalContent.props().item).to.deep.equal(thingData);
+    expect(additionalContent.props().csrfToken).to.equal("token");
   });
 });

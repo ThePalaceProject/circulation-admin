@@ -39,6 +39,12 @@ export interface EditFormProps<T, U> {
   editedIdentifier?: string;
 }
 
+export interface AdditionalContentProps<T, U> {
+  store?: Store<State>;
+  csrfToken?: string;
+  item?: U;
+}
+
 /** Shows a list of configuration services of a particular type and allows creating a new
     service or editing or deleting an existing services. Used for many of the tabs on the
     system configuration page.
@@ -53,6 +59,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   abstract identifierKey: string;
   abstract labelKey: string;
   limitOne = false;
+  AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
 
   constructor(props) {
     super(props);
@@ -62,8 +69,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   render(): JSX.Element {
     let EditForm = this.EditForm;
+    let AdditionalContent = this.AdditionalContent || null;
     return (
-      <div>
+      <div className={AdditionalContent ? "has-additional-content" : ""}>
         <h2>{this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration</h2>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
@@ -86,11 +94,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                     <a
                       className="btn btn-default edit-item"
                       href={this.urlBase + "edit/" + item[this.identifierKey]}
-                      >
-                        <span>
-                          Edit
-                          <PencilIcon />
-                        </span>
+                    >
+                      <span>
+                        Edit
+                        <PencilIcon />
+                      </span>
                     </a>
                     <h4>
                       {this.label(item)}
@@ -99,12 +107,20 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                       <button
                         className="btn btn-danger delete-item"
                         onClick={() => this.delete(item) }
-                        >
-                          <span>
-                            Delete
-                            <TrashIcon />
-                          </span>
+                      >
+                        <span>
+                          Delete
+                          <TrashIcon />
+                        </span>
                       </button>
+                    }
+                    {
+                      AdditionalContent &&
+                      <AdditionalContent
+                        item={item}
+                        store={this.props.store}
+                        csrfToken={this.props.csrfToken}
+                      />
                     }
                   </li>
                 )

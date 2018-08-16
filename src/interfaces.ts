@@ -191,6 +191,29 @@ export interface ProtocolData {
   library_settings?: SettingData[];
 }
 
+export interface SelfTestsException {
+  class: string;
+  debug_message: string;
+  message: string;
+}
+
+export interface SelfTestsResult {
+  duration: number;
+  end: string;
+  exception?: SelfTestsException;
+  name: string;
+  result?: string;
+  start: string;
+  success: boolean;
+}
+
+export interface SelfTestsData {
+  duration: number;
+  start: string;
+  end: string;
+  results: SelfTestsResult[];
+}
+
 export interface ServiceData {
   id?: string | number;
   name?: string;
@@ -200,6 +223,7 @@ export interface ServiceData {
     [key: string]: string;
   };
   libraries?: LibraryWithSettingsData[];
+  self_test_results?: SelfTestsData;
 }
 
 export interface ServicesData {

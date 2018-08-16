@@ -646,4 +646,47 @@ describe("actions", () => {
       expect(fetchMock.args[0][1].body).to.equal(formData);
     });
   });
+
+  describe("getSelfTests", () => {
+    it("dispatches request, load, and success", async () => {
+      const dispatch = stub();
+      const collectionSelfTestURL = "/admin/collection_self_tests";
+      const selfTestData = "selfTestData";
+      fetcher.testData = {
+        ok: true,
+        status: 200,
+        json: () => new Promise<any>((resolve, reject) => {
+          resolve(selfTestData);
+        })
+      };
+      fetcher.resolve = true;
+
+      const data = await actions.getSelfTests(`${collectionSelfTestURL}/1`)(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.LOAD}`);
+      expect(data).to.deep.equal(selfTestData);
+    });
+  });
+
+  describe("runSelfTests", () => {
+    it("dispatches request and success", async () => {
+      const collectionSelfTestURL = "/admin/collection_self_tests";
+      const dispatch = stub();
+
+      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
+        update({ status: 200 });
+      }));
+      fetch = fetchMock;
+
+      await actions.runSelfTests(`${collectionSelfTestURL}/1`)(dispatch);
+      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.SUCCESS}`);
+      expect(fetchMock.callCount).to.equal(1);
+      expect(fetchMock.args[0][0]).to.equal(`${collectionSelfTestURL}/1`);
+      expect(fetchMock.args[0][1].method).to.equal("POST");
+    });
+  });
 });
