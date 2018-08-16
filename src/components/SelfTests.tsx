@@ -89,7 +89,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
           <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
         <div className={`results collapse ${expandResultClass}`}>
-          <h3>Self Test Results</h3>
+          <h4>Self Test Results</h4>
           {isFetching &&
             <span>Running new self tests</span>
           }
@@ -157,22 +157,21 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       error: null,
     });
 
-    this.props.runSelfTests()
-      .then(() => {
-        this.props.getSelfTests();
-        this.setState({
-          expand: this.state.expand,
-          runTests: false,
-          error: null,
-        });
-      })
-      .catch(error => {
-        this.setState({
-          expand: this.state.expand,
-          runTests: false,
-          error: error,
-        });
+    try {
+      await this.props.runSelfTests();
+      this.props.getSelfTests();
+      this.setState({
+        expand: this.state.expand,
+        runTests: false,
+        error: null,
       });
+    } catch (error) {
+      this.setState({
+        expand: this.state.expand,
+        runTests: false,
+        error: error,
+      });
+    }
   }
 }
 
