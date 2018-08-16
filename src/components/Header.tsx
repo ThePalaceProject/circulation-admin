@@ -11,7 +11,6 @@ import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { Router } from "opds-web-client/lib/interfaces";
-import ManagePatrons from "./ManagePatrons";
 
 export interface HeaderStateProps {
   libraries?: LibraryData[];
@@ -39,7 +38,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   static contextTypes = {
     library: React.PropTypes.func,
     router: React.PropTypes.object.isRequired,
-    admin: React.PropTypes.object.isRequired
+    admin: React.PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -116,6 +115,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li>
                 <Link to={"/admin/web/dashboard/" + this.context.library()}>Dashboard</Link>
               </li>
+              { this.context.admin.isSystemAdmin() &&
+                <li>
+                  <Link to={"/admin/web/patrons/" + this.context.library()}>Manage Patrons</Link>
+                </li>
+              }
             </Nav>
           }
           <Nav className="pull-right">

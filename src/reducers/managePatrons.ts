@@ -1,8 +1,7 @@
-import { CollectionsData } from "../interfaces";
 import ActionCreator from "../actions";
 import createFetchEditReducer from "./createFetchEditReducer";
 
-export default createFetchEditReducer<CollectionsData>(
+export default createFetchEditReducer<void>(
   ActionCreator.PATRON_LOOKUP,
-  ActionCreator.EDIT_COLLECTION,
+  ActionCreator.RESET_ADOBE_ID,
 );
