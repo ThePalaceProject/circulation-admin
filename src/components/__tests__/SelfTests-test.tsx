@@ -95,10 +95,12 @@ describe("SelfTests", () => {
       <SelfTests item={{} as any} />
     );
     expect(wrapper.hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.find("ul").length).to.equal(0);
   });
 
-  it("should render the SelfTests component", () => {
+  it("should render the SelfTests component with results", () => {
     expect(wrapper.hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.find("ul").length).to.equal(1);
   });
 
   describe("Successful self tests", () => {
@@ -188,6 +190,42 @@ describe("SelfTests", () => {
       runSelfTestsBtn.simulate("click");
 
       expect(runSelfTests.callCount).to.equal(1);
+    });
+
+    it("should run new self tests but get an error", async () => {
+      const error = {
+        status: 400,
+        response: "Failed to run new tests.",
+        url: "/admin/collection_self_tests/12",
+      };
+      runSelfTests = stub().returns(new Promise<void>((resolve, reject) => reject(error)));
+      getSelfTests = stub().returns(new Promise<void>(resolve => resolve()));
+      wrapper = mount(
+        <SelfTests
+          item={collections[0]}
+          runSelfTests={runSelfTests}
+          getSelfTests={getSelfTests}
+        />
+      );
+      const runSelfTestsBtn = wrapper.find(".runSelfTests");
+      let alert = wrapper.find(".alert");
+
+      expect(runSelfTests.callCount).to.equal(0);
+      expect(wrapper.state("error")).to.equal(null);
+      expect(alert.length).to.equal(0);
+
+      runSelfTestsBtn.simulate("click");
+
+      expect(runSelfTests.callCount).to.equal(1);
+
+      const pause = (): Promise<void> => {
+        return new Promise<void>(resolve => setTimeout(resolve, 0));
+      };
+      await pause();
+
+      alert = wrapper.find(".alert");
+      expect(alert.length).to.equal(1);
+      expect(wrapper.state("error")).to.equal(error);
     });
   });
 });

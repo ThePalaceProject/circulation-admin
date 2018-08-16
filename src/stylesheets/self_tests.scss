@@ -1,6 +1,6 @@
 .tab-container {
   .tab-content {
-    .admin-collection {
+    .has-additional-content {
       & > div > ul {
         li {
           flex-wrap: wrap;
@@ -9,7 +9,7 @@
       .integration-selftests {
         padding: 20px 0 0;
         flex-grow: 1;
-
+        width: 100%;
 
         svg {
           height: 30px;
@@ -51,6 +51,11 @@
             li {
               display: block;
             }
+          }
+
+          .alert {
+            width: 100%;
+            margin-top: 15px;
           }
         }
       }

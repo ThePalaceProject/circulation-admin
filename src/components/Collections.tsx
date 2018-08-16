@@ -19,6 +19,11 @@ export interface CollectionsProps extends CollectionsStateProps, CollectionsDisp
 
 class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsData> {};
 
+/** Right panel for collections on the system configuration page.
+    Shows a list of current collections and allows creating a new
+    collection or editing or deleting an existing collection.
+    Also allows registering libraries with the collection when
+    the collection supports it. */
 export class Collections extends GenericEditableConfigList<CollectionsData, CollectionData, CollectionsProps> {
   EditForm = CollectionEditForm;
   AdditionalContent = SelfTests;

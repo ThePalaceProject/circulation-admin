@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { ServiceData, SelfTestsData } from "../interfaces";
+import ErrorMessage from "./ErrorMessage";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 
@@ -31,6 +33,7 @@ export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsSt
 export interface SelfTestsState {
   expand: boolean;
   runTests: boolean;
+  error: FetchErrorData;
 }
 
 export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
@@ -40,6 +43,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.state = {
       expand: false,
       runTests: false,
+      error: null,
     };
     this.toggleView = this.toggleView.bind(this);
     this.runSelfTests = this.runSelfTests.bind(this);
@@ -48,69 +52,90 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   render() {
     const integration = this.props.item;
     const expand = this.state.expand;
+    let date;
+    let startDate;
+    let hours;
+    let minutes;
+    let seconds;
+    let startTime;
+    let results = [];
+    let duration;
 
-    if (!integration || !integration.self_test_results) {
-      return null;
+    if (integration.self_test_results) {
+      date = new Date(integration.self_test_results.start);
+      startDate = date.toDateString();
+      hours = ("0" + date.getHours()).slice(-2);
+      minutes = ("0" + date.getMinutes()).slice(-2);
+      seconds = ("0" + date.getSeconds()).slice(-2);
+      startTime = `${hours}:${minutes}:${seconds}`;
+      results = integration.self_test_results.results;
+      duration = integration.self_test_results.duration.toFixed(2);
     }
-    const date = new Date(integration.self_test_results.start);
-    const startDate = date.toDateString();
-    const hours = ("0" + date.getHours()).slice(-2);
-    const minutes = ("0" + date.getMinutes()).slice(-2);
-    const seconds = ("0" + date.getSeconds()).slice(-2);
-    const startTime = `${hours}:${minutes}:${seconds}`;
-
     const expandResultClass = expand ? "active" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
-    const results = integration.self_test_results && integration.self_test_results.results;
     const findFailures = (result) => !result.success;
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
-    const duration = integration.self_test_results.duration.toFixed(2);
     const isFetching = !!(this.props.isFetching && this.state.runTests);
+    const testDescription = integration.self_test_results ?
+      `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
+      "No self test results found.";
 
     return (
       <div className="integration-selftests">
         <div>
-          {resultIcon}
-          <p className="description">Tests last ran on {startDate} {startTime} and lasted {duration}s.</p>
+          {results.length ? resultIcon : null}
+          <p className="description">{testDescription}</p>
           <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
         <div className={`results collapse ${expandResultClass}`}>
-          <h3>Self Test Results</h3>
+          <h4>Self Test Results</h4>
           {isFetching &&
             <span>Running new self tests</span>
           }
-          <button onClick={(e) => this.runSelfTests(e)} className="btn btn-default runSelfTests">
+          <button
+            onClick={(e) => this.runSelfTests(e)}
+            className="btn btn-default runSelfTests"
+            disabled={this.props.isFetching}
+          >
             Run tests
           </button>
 
-          <ul>
-            {
-              results.map(result => {
-                const colorResultClass = result.success ? "success" : "failure";
-                return (
-                  <li className={isFetching ? "loading-self-test" : colorResultClass} key={result.name}>
-                    <h4>{result.name}</h4>
-                    {
-                      result.result ?
-                        <p className="result-description">result: {result.result}</p>
-                        : null
-                    }
-                    <p className="success-description">
-                      success: {`${result.success}`}
-                    </p>
-                    {
-                      !result.success && (
-                        <p className="exception-description">
-                          exception: {result.exception.message}
+          {
+            this.state.error &&
+              <ErrorMessage error={this.state.error} />
+          }
+
+          {
+            integration.self_test_results &&
+              <ul>
+                {
+                  results.map(result => {
+                    const colorResultClass = result.success ? "success" : "failure";
+                    return (
+                      <li className={isFetching ? "loading-self-test" : colorResultClass} key={result.name}>
+                        <h4>{result.name}</h4>
+                        {
+                          result.result ?
+                            <p className="result-description">result: {result.result}</p>
+                            : null
+                        }
+                        <p className="success-description">
+                          success: {`${result.success}`}
                         </p>
-                      )
-                    }
-                  </li>
-                );
-              })
-            }
-          </ul>
+                        {
+                          !result.success && (
+                            <p className="exception-description">
+                              exception: {result.exception.message}
+                            </p>
+                          )
+                        }
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+          }
         </div>
       </div>
     );
@@ -120,6 +145,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.setState({
       expand: !this.state.expand,
       runTests: this.state.runTests,
+      error: null,
     });
   }
 
@@ -128,15 +154,24 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.setState({
       expand: this.state.expand,
       runTests: true,
+      error: null,
     });
 
-    await this.props.runSelfTests();
-    this.props.getSelfTests();
-
-    this.setState({
-      expand: this.state.expand,
-      runTests: false,
-    });
+    try {
+      await this.props.runSelfTests();
+      this.props.getSelfTests();
+      this.setState({
+        expand: this.state.expand,
+        runTests: false,
+        error: null,
+      });
+    } catch (error) {
+      this.setState({
+        expand: this.state.expand,
+        runTests: false,
+        error: error,
+      });
+    }
   }
 }
 
@@ -151,10 +186,11 @@ function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   const integrationId = ownProps.item.id;
+  const url = `/admin/collection_self_tests/${integrationId}`;
 
   return {
-    getSelfTests: () => dispatch(actions.getSelfTests(integrationId)),
-    runSelfTests: () => dispatch(actions.runSelfTests(integrationId))
+    getSelfTests: () => dispatch(actions.getSelfTests(url)),
+    runSelfTests: () => dispatch(actions.runSelfTests(url))
   };
 }
 
