@@ -66,8 +66,7 @@ export class PatronActionsList extends React.Component<PatronActionsListProps, P
 
   render() {
     return (
-      <ul>
-        <h3>Patron Actions</h3>
+      <ul className="patron-actions">
         <li>
           <h4>Reset Adobe Id</h4>
           { this.state.error.status > 200 &&
@@ -77,7 +76,7 @@ export class PatronActionsList extends React.Component<PatronActionsListProps, P
             <Alert bsStyle="success">Adobe ID for patron {this.props.patron.authorization_identifier} has been reset.</Alert>
           }
           <p>This feature allows you to delete an existing Adobe account ID for an individual patron so that a new one can be assigned–this will happen automatically when the user logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that they will lose any existing loans or reserves when the new account is created.</p>
-          <button onClick={this.resetAdobeId}>Reset Adobe ID</button>
+          <button className="btn btn-default" onClick={this.resetAdobeId}>Reset Adobe ID</button>
 
         </li>
       </ul>

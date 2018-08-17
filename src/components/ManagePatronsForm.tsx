@@ -66,7 +66,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
 
   render() {
     return (
-      <div>
+      <div className="manage-patrons-form">
         { this.state.error.status !== 200 &&
           <ErrorMessage error={this.state.error} />
         }

@@ -56,29 +56,28 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
 
   render() {
     return (
-      <div>
+      <div className="manage-patrons-page">
         <Header />
+        <h2>Manage Patrons</h2>
         <div className="manage-patrons">
-          <h2>Manage Patrons</h2>
           <ManagePatronsForm
             store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
             patronInfo={this.patronInfo}
           />
           { this.state.patron &&
-            <section>
-              <ul>
-                <h3>Patron Information</h3>
+            <section className="patron-info">
+              <ul className="patron-data-list">
                 { this.state.patron.username &&
-                  <li>Username: {this.state.patron.username}</li>
+                  <li><label>Username</label><p>{this.state.patron.username}</p></li>
                 }
                 { this.state.patron.personal_name &&
-                  <li>Personal Name: {this.state.patron.personal_name}</li>
+                  <li><label>Personal Name</label><p>{this.state.patron.personal_name}</p></li>
                 }
                 { this.state.patron.email_address &&
-                  <li>Email Address: {this.state.patron.email_address}</li>
+                  <li><label>Email Address</label><p>{this.state.patron.email_address}</p></li>
                 }
-                <li>Identifier: {this.state.patron.authorization_identifier}</li>
+                <li><label>Identifier</label><p>{this.state.patron.authorization_identifier}</p></li>
               </ul>
               <PatronActionsList
                 store={this.context.editorStore}
@@ -87,6 +86,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
               />
             </section>
           }
+
         </div>
 
       </div>
