@@ -10,12 +10,15 @@ import EditableInput from "./EditableInput";
 import ErrorMessage from "./ErrorMessage";
 import { Alert } from "react-bootstrap";
 import ManagePatronsForm from "./ManagePatronsForm";
-import PatronActionsList from "./PatronActionsList";
+import ResetAdobeId from "./ResetAdobeId";
 import Header from "./Header";
+import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
+import ManagePatronsTabContainer from "./ManagePatronsTabContainer";
 
 export interface ManagePatronsProps extends React.Props<ManagePatronsProps> {
   params: {
     library?: string;
+    tab: string;
   };
 }
 
@@ -24,11 +27,7 @@ export interface ManagePatronsContext {
   csrfToken: string;
 }
 
-export interface ManagePatronsState {
-  patron: PatronData;
-}
-
-export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePatronsState> {
+export class ManagePatrons extends React.Component<ManagePatronsProps, void> {
   context: ManagePatronsContext;
 
   static contextTypes: React.ValidationMap<ManagePatronsContext> = {
@@ -40,14 +39,6 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
     library: React.PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = { patron: null };
-
-    this.patronInfo = this.patronInfo.bind(this);
-  }
-
   getChildContext() {
     return {
       library: () => this.props.params.library
@@ -56,45 +47,24 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
 
   render() {
     return (
-      <div className="manage-patrons-page">
+      <div className="manage-patrons-page config">
         <Header />
-        <h2>Manage Patrons</h2>
+        <h2>Patron Manager</h2>
         <div className="manage-patrons">
           <ManagePatronsForm
             store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
-            patronInfo={this.patronInfo}
           />
-          { this.state.patron &&
-            <section className="patron-info">
-              <ul className="patron-data-list">
-                { this.state.patron.username &&
-                  <li><label>Username</label><p>{this.state.patron.username}</p></li>
-                }
-                { this.state.patron.personal_name &&
-                  <li><label>Personal Name</label><p>{this.state.patron.personal_name}</p></li>
-                }
-                { this.state.patron.email_address &&
-                  <li><label>Email Address</label><p>{this.state.patron.email_address}</p></li>
-                }
-                <li><label>Identifier</label><p>{this.state.patron.authorization_identifier}</p></li>
-              </ul>
-              <PatronActionsList
-                store={this.context.editorStore}
-                csrfToken={this.context.csrfToken}
-                patron={this.state.patron}
-              />
-            </section>
-          }
 
+          <ManagePatronsTabContainer
+            tab={this.props.params.tab}
+            store={this.context.editorStore}
+            csrfToken={this.context.csrfToken}
+            library={this.props.params.library}
+          />
         </div>
-
       </div>
     );
-  }
-
-  patronInfo(patron: PatronData) {
-    this.setState({ patron });
   }
 }
 

@@ -117,7 +117,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               </li>
               { this.context.admin.isSystemAdmin() &&
                 <li>
-                  <Link to={"/admin/web/patrons/" + this.context.library()}>Manage Patrons</Link>
+                  <Link to={"/admin/web/patrons/" + this.context.library()}>Patron Manager</Link>
                 </li>
               }
             </Nav>

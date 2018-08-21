@@ -8,13 +8,9 @@ import { PatronData } from "../interfaces";
 import ButtonForm from "./ButtonForm";
 import EditableInput from "./EditableInput";
 import ErrorMessage from "./ErrorMessage";
+import { Alert } from "react-bootstrap";
 
-export interface PatronError {
-  status: boolean;
-  message: string;
-}
-
-export interface ManagePatronsStateProps {
+export interface ManagePatronsFormStateProps {
   patron?: PatronData;
   isFetching?: boolean;
 }
@@ -23,23 +19,22 @@ export interface PatronResponse {
   response: IResponse;
 }
 
-export interface ManagePatronsDispatchProps {
+export interface ManagePatronsFormDispatchProps {
   patronLookup?: (data: FormData) => Promise<PatronResponse>;
 }
 
-export interface ManagePatronsOwnProps {
+export interface ManagePatronsFormOwnProps {
   store?: Store<State>;
   csrfToken?: string;
-  patronInfo: (patron: PatronData) => void;
 }
 
-export interface ManagePatronsProps extends React.Props<ManagePatronsProps>, ManagePatronsStateProps, ManagePatronsDispatchProps, ManagePatronsOwnProps {}
+export interface ManagePatronsFormProps extends React.Props<ManagePatronsFormProps>, ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps {}
 
-export interface ManagePatronsState {
+export interface ManagePatronsFormState {
   error: FetchErrorData;
 }
 
-export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePatronsState> {
+export class ManagePatrons extends React.Component<ManagePatronsFormProps, ManagePatronsFormState> {
   constructor(props) {
     super(props);
     this.state = { error: {status: 200, response: "", url: ""} };
@@ -52,12 +47,8 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
     data.append("identifier", ((this.refs["identifier"] as any).getValue()));
 
     try {
-      const response = await this.props.patronLookup(data);
-      const patronInfo = response.text;
-      this.setState({
-        error: {status: 200, response: "", url: ""},
-      });
-      this.props.patronInfo(patronInfo);
+      await this.props.patronLookup(data);
+      this.setState({ error: {status: 200, response: "", url: ""} });
     }
     catch (error) {
       this.setState({ error });
@@ -65,10 +56,16 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
   }
 
   render() {
+    const patron = this.props.patron;
+    const patronExists = patron && patron.authorization_identifier;
+
     return (
       <div className="manage-patrons-form">
-        { this.state.error.status !== 200 &&
+        { (this.state.error.status !== 200 && !patronExists) &&
           <ErrorMessage error={this.state.error} />
+        }
+        { (this.state.error.status === 200 && patronExists) &&
+          <Alert bsStyle="success">Patron found {patron.authorization_identifier}</Alert>
         }
         <form onSubmit={this.submit} className="edit-form" ref="form">
           <EditableInput
@@ -90,9 +87,9 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, ManagePat
 }
 
 function mapStateToProps(state, ownProps) {
-  const data = state.editor.managePatrons;
+  const patron = state.editor.patronManager && state.editor.patronManager.data;
   return {
-    patron: data,
+    patron: JSON.parse(patron),
   };
 }
 
@@ -103,9 +100,9 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedManagePatrons = connect<ManagePatronsStateProps, ManagePatronsDispatchProps, ManagePatronsOwnProps>(
+const ConnectedManagePatronsForm = connect<ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps>(
   mapStateToProps,
   mapDispatchToProps
 )(ManagePatrons);
 
-export default ConnectedManagePatrons;
+export default ConnectedManagePatronsForm;

@@ -68,7 +68,7 @@ class CirculationWeb {
             <Route path="/admin/web/dashboard(/:library)" component={DashboardPage} />
             <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
             <Route path="/admin/web/account" component={AccountPage} />
-            <Route path="/admin/web/patrons(/:library)" component={ManagePatrons} />
+            <Route path="/admin/web/patrons(/:library)(/:tab)" component={ManagePatrons} />
           </Router>
         </ContextProvider>,
         document.getElementById("opds-catalog")

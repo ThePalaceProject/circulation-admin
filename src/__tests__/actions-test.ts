@@ -69,6 +69,32 @@ describe("actions", () => {
       expect(fetchMock.args[0][1].body).to.equal(formData);
     });
 
+    it("postForm with JSON response dispatches request, success, and load", async () => {
+      const dispatch = stub();
+      const textResponse = "{\"id\": \"test\", \"name\": \"test\"}";
+      const responseText = stub().returns(new Promise<any>((resolve) => {
+        resolve(textResponse);
+      }));
+      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({ status: 200, text: responseText });
+      }));
+      fetch = fetchMock;
+
+      await actions.postForm(type, url, formData, "POST", "", "JSON")(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${type}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[2][0].data).to.equal(textResponse);
+      expect(fetchMock.callCount).to.equal(1);
+      expect(fetchMock.args[0][0]).to.equal(url);
+      expect(fetchMock.args[0][1].method).to.equal("POST");
+      const expectedHeaders = new Headers();
+      expectedHeaders.append("X-CSRF-Token", "token");
+      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
+      expect(fetchMock.args[0][1].body).to.equal(formData);
+    });
+
     it("dispatches a DELETE request", async () => {
       const dispatch = stub();
       const responseText = stub().returns(new Promise<string>((resolve) => {
@@ -687,6 +713,33 @@ describe("actions", () => {
       expect(fetchMock.callCount).to.equal(1);
       expect(fetchMock.args[0][0]).to.equal(`${collectionSelfTestURL}/1`);
       expect(fetchMock.args[0][1].method).to.equal("POST");
+    });
+  });
+
+  describe("patronLookup", () => {
+    it("dispatches request and success", async () => {
+      const formData = new (window as any).FormData();
+      formData.append("test", "test");
+      const dispatch = stub();
+      const textResponse = "{\"id\": \"test\", \"name\": \"test\"}";
+      const responseText = stub().returns(new Promise<any>((resolve) => {
+        resolve(textResponse);
+      }));
+      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({ status: 200, text: responseText });
+      }));
+      fetch = fetchMock;
+
+      const data = await actions.patronLookup(formData)(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.LOAD}`);
+      expect(fetchMock.callCount).to.equal(1);
+      expect(fetchMock.args[0][0]).to.equal("/admin/manage_patrons");
+      expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(data.text).to.eql(JSON.parse(textResponse));
     });
   });
 });
