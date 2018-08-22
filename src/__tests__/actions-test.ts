@@ -742,4 +742,25 @@ describe("actions", () => {
       expect(data.text).to.eql(JSON.parse(textResponse));
     });
   });
+
+  describe("resetAdobeId", () => {
+    it("dispatches request and success", async () => {
+      const formData = new (window as any).FormData();
+      const dispatch = stub();
+      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
+        resolve({ status: 200 });
+      }));
+      fetch = fetchMock;
+      const data = await actions.resetAdobeId(formData)(dispatch);
+      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.SUCCESS}`);
+      expect(fetchMock.callCount).to.equal(1);
+      expect(fetchMock.args[0][0]).to.equal("/admin/manage_patrons/reset_adobe_id");
+      expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(data.status).to.equal(200);
+    });
+  });
+
 });

@@ -278,12 +278,12 @@ export interface PatronData {
   authorization_identifier: string | number;
   authorization_identifiers: string[];
   block_reason: string;
-  email_address: string;
+  email_address?: string;
   external_type: string;
   fines: string;
   permanent_id: string;
-  personal_name: string;
-  username: string;
+  personal_name?: string;
+  username?: string;
 }
 
 export interface SitewideSettingData {

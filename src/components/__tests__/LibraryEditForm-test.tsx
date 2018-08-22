@@ -108,7 +108,7 @@ describe("LibraryEditForm", () => {
           editItem={editLibrary}
           urlBase="url base"
           listDataKey="libraries"
-          />
+        />
       );
     });
 
