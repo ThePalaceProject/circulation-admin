@@ -40,7 +40,7 @@ export interface PatronActionsListState {
   checked: boolean;
 }
 
-export class PatronActionsList extends React.Component<PatronActionsListProps, PatronActionsListState> {
+export class ResetAdobeId extends React.Component<PatronActionsListProps, PatronActionsListState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -112,14 +112,13 @@ export class PatronActionsList extends React.Component<PatronActionsListProps, P
                   <li><label>Identifier</label><p>{patron.authorization_identifier}</p></li>
                 </ul>
               </section>
-              <p><b>Patron <i>{patron && patron.username}</i> will lose any existing loans or reserves when the Adobe ID is reset.</b></p>
+              <p className="patron-warning"><b>Patron {patron && patron.username} will lose any existing loans or reserves when the Adobe ID is reset.</b></p>
               <EditableInput
                 type="checkbox"
                 name="resetAdobeId"
                 checked={this.state.checked}
                 label="Patron has been informed about this change"
                 onChange={this.verifiedToReset}
-                disabled={!patronExists}
                 />
               <button
                 className="btn btn-default"
@@ -143,9 +142,9 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedPatronActionsList = connect<PatronActionsListStateProps, PatronActionsListDispatchProps, PatronActionsListOwnProps>(
+const ConnectedResetAdobeId = connect<PatronActionsListStateProps, PatronActionsListDispatchProps, PatronActionsListOwnProps>(
   null,
   mapDispatchToProps
-)(PatronActionsList);
+)(ResetAdobeId);
 
-export default ConnectedPatronActionsList;
+export default ConnectedResetAdobeId;

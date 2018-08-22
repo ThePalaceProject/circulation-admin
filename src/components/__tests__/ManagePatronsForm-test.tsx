@@ -14,6 +14,19 @@ import { Alert } from "react-bootstrap";
 
 import ActionCreator from "../../actions";
 
+let patron = {
+  authorization_expires: "",
+  username: "User Name",
+  personal_name: "Personal Name",
+  email_address: "user@email.com",
+  authorization_identifier: "1234",
+  authorization_identifiers: [""],
+  block_reason: "",
+  external_type: "",
+  fines: "",
+  permanent_id: "",
+};
+
 describe("ManagePatronsForm", () => {
 
   let wrapper;
@@ -59,16 +72,10 @@ describe("ManagePatronsForm", () => {
   });
 
   describe("behavior", () => {
-    let dispatchProps;
     let patronLookup;
-    let dispatch;
 
     beforeEach(() => {
       patronLookup = stub().returns(new Promise<void>(resolve => resolve()));
-      dispatch = stub();
-      dispatchProps = {
-        patronLookup
-      };
       store = buildStore();
       wrapper = mount(
         <ManagePatronsForm
@@ -86,16 +93,58 @@ describe("ManagePatronsForm", () => {
       expect(patronLookup.callCount).to.equal(1);
     });
 
-    it("displays an error message if the status is not 200", () => {
+    it("displays an error message if there is an error", () => {
       let errorMessage = wrapper.find(ErrorMessage);
+      const fetchError = {status: 400, response: "", url: ""};
       expect(errorMessage.length).to.equal(0);
 
-      wrapper.setState({ error: {status: 400, response: "", url: ""} });
+      wrapper.setProps({ fetchError });
 
       errorMessage = wrapper.find(ErrorMessage);
       expect(errorMessage.length).to.equal(1);
+      expect(errorMessage.hasClass("alert-danger")).to.equal(true);
+      expect(errorMessage.props().error).to.equal(fetchError);
     });
 
+    it("should display a no identifier if the input field is blank when searching", async () => {
+      const fetchError = { status: 400, response: "No patron identifier provided", url: "" };
+      patronLookup = stub();
+        // .returns(new Promise<void>((resolve, reject) => reject(fetchError)));
+      wrapper = mount(
+        <ManagePatronsForm
+          store={store}
+          csrfToken="token"
+          patronLookup={patronLookup}
+        />
+      );
+
+      let errorMessage = wrapper.find(ErrorMessage);
+      expect(errorMessage.length).to.equal(0);
+
+      let button = wrapper.find("button");
+
+      // TODO: make this work
+      // await button.simulate("submit");
+      wrapper.setProps({ fetchError });
+
+      errorMessage = wrapper.find(ErrorMessage);
+      expect(errorMessage.length).to.equal(1);
+      expect(errorMessage.hasClass("alert-danger")).to.equal(true);
+      expect(errorMessage.props().error).to.equal(fetchError);
+      expect(errorMessage.text()).to.equal("Error: No patron identifier provided");
+    });
+
+    it("should display a success alert message when a patron is found", () => {
+      let alert = wrapper.find(Alert);
+      expect(alert.length).to.equal(0);
+
+      wrapper.setProps({ patron });
+
+      alert = wrapper.find(Alert);
+      expect(alert.length).to.equal(1);
+      expect(alert.hasClass("alert-success")).to.equal(true);
+      expect(alert.text()).to.equal(`Patron found ${patron.authorization_identifier}`);
+    });
   });
 
 });
