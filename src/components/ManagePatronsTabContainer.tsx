@@ -10,16 +10,13 @@ import { PatronData } from "../interfaces";
 
 export interface ManagePatronsTabContainerStateProps {
   patron?: PatronData;
-  isFetching?: boolean;
 }
 export interface PatronResponse {
   text: PatronData;
   response: IResponse;
 }
 
-export interface ManagePatronsTabContainerDispatchProps {
-  patronLookup?: (data: FormData) => Promise<PatronResponse>;
-}
+export interface ManagePatronsTabContainerDispatchProps {}
 
 export interface ManagePatronsTabContainerOwnProps {
   store: Store<State>;
@@ -89,16 +86,9 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
-  return {
-    patronLookup: (data: FormData) => dispatch(actions.patronLookup(data)),
-  };
-}
-
 const ConnectedManagePatronsTabContainer = connect<ManagePatronsTabContainerStateProps, ManagePatronsTabContainerDispatchProps, ManagePatronsTabContainerOwnProps>(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(ManagePatronsTabContainer);
 
 export default ConnectedManagePatronsTabContainer;
