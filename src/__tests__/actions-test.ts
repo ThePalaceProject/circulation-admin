@@ -743,7 +743,7 @@ describe("actions", () => {
     });
   });
 
-  describe.only("resetAdobeId", () => {
+  describe("resetAdobeId", () => {
     it("dispatches request and success", async () => {
       const formData = new (window as any).FormData();
       const dispatch = stub();

@@ -34,7 +34,7 @@ export interface ManagePatronsFormState {
   error: FetchErrorData;
 }
 
-export class ManagePatrons extends React.Component<ManagePatronsFormProps, ManagePatronsFormState> {
+export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, ManagePatronsFormState> {
   constructor(props) {
     super(props);
     this.state = { error: {status: 200, response: "", url: ""} };
@@ -55,10 +55,9 @@ export class ManagePatrons extends React.Component<ManagePatronsFormProps, Manag
     }
   }
 
-  render() {
+  render(): JSX.Element {
     const patron = this.props.patron;
-    const patronExists = patron && patron.authorization_identifier;
-
+    const patronExists = !!(patron && patron.authorization_identifier);
     return (
       <div className="manage-patrons-form">
         { (this.state.error.status !== 200 && !patronExists) &&
@@ -93,16 +92,16 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+export function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    patronLookup: (data: FormData) => dispatch(actions.patronLookup(data)),
+    patronLookup: (data: FormData) => dispatch(actions.patronLookup(data))
   };
-}
+};
 
 const ConnectedManagePatronsForm = connect<ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps>(
   mapStateToProps,
   mapDispatchToProps
-)(ManagePatrons);
+)(ManagePatronsForm);
 
 export default ConnectedManagePatronsForm;
