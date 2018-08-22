@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import buildStore from "../../store";
 
 import { mapDispatchToProps } from "../ManagePatronsForm";
-import ManagePatronsForm from "../ManagePatronsForm";
+import { ManagePatronsForm } from "../ManagePatronsForm";
 import EditableInput from "../EditableInput";
 import ErrorMessage from "../ErrorMessage";
 import { Alert } from "react-bootstrap";
@@ -64,7 +64,7 @@ describe("ManagePatronsForm", () => {
     let dispatch;
 
     beforeEach(() => {
-      patronLookup = stub().returns(new Promise(resolve => resolve()));
+      patronLookup = stub().returns(new Promise<void>(resolve => resolve()));
       dispatch = stub();
       dispatchProps = {
         patronLookup
@@ -74,28 +74,24 @@ describe("ManagePatronsForm", () => {
         <ManagePatronsForm
           store={store}
           csrfToken="token"
-          {...dispatchProps}
+          patronLookup={patronLookup}
         />
       );
     });
 
     it("calls patronLookup on dispatch", async () => {
-      const data = new (window as any).FormData();
-      let actions = new ActionCreator(null, "token");
-      mapDispatchToProps(dispatch, {}).patronLookup(data);
-      expect(dispatch.callCount).to.equal(1);
-      // expect(dispatch.args[0][0]).to.eql(actions.patronLookup(data));
+      const form = wrapper.find("form");
+      expect(patronLookup.callCount).to.equal(0);
+      form.simulate("submit");
+      expect(patronLookup.callCount).to.equal(1);
     });
 
-    it.only("displays an error message if the status is not 200", () => {
-      wrapper = shallow(
-        <ManagePatronsForm
-          store={store}
-          csrfToken="token"
-        />
-      );
+    it("displays an error message if the status is not 200", () => {
       let errorMessage = wrapper.find(ErrorMessage);
+      expect(errorMessage.length).to.equal(0);
+
       wrapper.setState({ error: {status: 400, response: "", url: ""} });
+
       errorMessage = wrapper.find(ErrorMessage);
       expect(errorMessage.length).to.equal(1);
     });

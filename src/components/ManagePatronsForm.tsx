@@ -28,7 +28,7 @@ export interface ManagePatronsFormOwnProps {
   csrfToken?: string;
 }
 
-export interface ManagePatronsFormProps extends React.Props<ManagePatronsFormProps>, ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps {}
+export interface ManagePatronsFormProps extends ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps {}
 
 export interface ManagePatronsFormState {
   error: FetchErrorData;
