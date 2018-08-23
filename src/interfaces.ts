@@ -328,6 +328,7 @@ export interface DiscoveryServicesData extends ServicesWithRegistrationsData {
 
 export interface LibraryDataWithStatus extends LibraryData {
   status: string;
+  stage?: string;
 }
 
 export interface LibraryRegistrationData {
