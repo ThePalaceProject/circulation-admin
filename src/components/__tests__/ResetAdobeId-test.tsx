@@ -84,22 +84,13 @@ describe("ResetAdobeId", () => {
       );
     });
 
-    it("should display the patron's information", () => {
+    it("should show the PatronInfo list", () => {
       const patronInfo = wrapper.find(".patron-info");
-      const patronList = patronInfo.find("ul");
-      const patronItemInfo = patronList.find("li");
-
-      expect(patronList.length).to.equal(1);
-      expect(patronItemInfo.length).to.equal(4);
-      expect(patronItemInfo.at(0).text()).to.equal("Username:User Name");
-      expect(patronItemInfo.at(1).text()).to.equal("Personal Name:Personal Name");
-      expect(patronItemInfo.at(2).text()).to.equal("Email Address:user@email.com");
-      expect(patronItemInfo.at(3).text()).to.equal("Identifier:1234");
+      expect(patronInfo.length).to.equal(1);
     });
 
     it("should display a warning message before the submission button", () => {
       const patronWarning = wrapper.find(".patron-warning");
-
       expect(patronWarning.text()).to.equal("Patron User Name will lose any existing loans or reserves when the Adobe ID is reset.");
     });
   });
@@ -203,30 +194,11 @@ describe("ResetAdobeId", () => {
       expect(alert.text()).to.equal("Error: failed to reset Adobe ID for patron 1234");
     });
 
-    it("should update the patron's information if a new patron was searched and found", () => {
-      it("should display the patron's information", () => {
-        const patronInfo = wrapper.find(".patron-info");
-        const patronList = patronInfo.find("ul");
-        const patronItemInfo = patronList.find("li");
+    it("should update the warning message if a new patron was searched and found", () => {
+      wrapper.setProps({ patron: patrons[1] });
+      const patronWarning = wrapper.find(".patron-warning");
 
-        expect(patronList.length).to.equal(1);
-        expect(patronItemInfo.length).to.equal(4);
-        expect(patronItemInfo.at(0).text()).to.equal("UsernameUser Name");
-        expect(patronItemInfo.at(1).text()).to.equal("Personal NamePersonal Name");
-        expect(patronItemInfo.at(2).text()).to.equal("Email Addressuser@email.com");
-        expect(patronItemInfo.at(3).text()).to.equal("Identifier1234");
-
-        wrapper.setProps({ patron: patrons[1] });
-
-        expect(patronList.length).to.equal(1);
-        expect(patronItemInfo.length).to.equal(2);
-        expect(patronItemInfo.at(0).text()).to.equal("Personal NamePersonal Name2");
-        expect(patronItemInfo.at(1).text()).to.equal("Identifier5678");
-
-        const patronWarning = wrapper.find(".patron-warning");
-
-        expect(patronWarning.text()).to.equal("Patron  will lose any existing loans or reserves when the Adobe ID is reset.");
-      });
+      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose any existing loans or reserves when the Adobe ID is reset.");
     });
   });
 });

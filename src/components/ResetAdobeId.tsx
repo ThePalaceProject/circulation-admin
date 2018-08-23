@@ -7,6 +7,7 @@ import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { PatronData } from "../interfaces";
 import { Alert } from "react-bootstrap";
 import EditableInput from "./EditableInput";
+import PatronInfo from "./PatronInfo";
 
 export interface PatronError {
   status: boolean;
@@ -98,20 +99,7 @@ export class ResetAdobeId extends React.Component<PatronActionsListProps, Patron
         <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or reserves.</p>
         { patron ?
             <div>
-              <section className="patron-info">
-                <ul className="patron-data-list">
-                  { patron.username &&
-                    <li><label>Username:</label><p>{patron.username}</p></li>
-                  }
-                  { patron.personal_name &&
-                    <li><label>Personal Name:</label><p>{patron.personal_name}</p></li>
-                  }
-                  { patron.email_address &&
-                    <li><label>Email Address:</label><p>{patron.email_address}</p></li>
-                  }
-                  <li><label>Identifier:</label><p>{patron.authorization_identifier}</p></li>
-                </ul>
-              </section>
+              <PatronInfo patron={patron} />
               <p className="patron-warning"><b>Patron {patron && (patron.username || patron.personal_name)} will lose any existing loans or reserves when the Adobe ID is reset.</b></p>
               <EditableInput
                 type="checkbox"
