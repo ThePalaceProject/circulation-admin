@@ -41,7 +41,7 @@ describe("Patron Info", () => {
       />
     );
   });
-  
+
   it("should display the patron's information", () => {
     const patronList = wrapper.find("ul");
     const patronInfoItem = patronList.find("li");

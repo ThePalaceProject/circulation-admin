@@ -14,7 +14,7 @@ export interface PatronError {
   message: string;
 }
 
-export interface PatronActionsListStateProps {
+export interface ResetAdobeIdStateProps {
   isFetching?: boolean;
 }
 
@@ -23,25 +23,25 @@ export interface PatronResponse {
   response: IResponse;
 }
 
-export interface PatronActionsListDispatchProps {
+export interface ResetAdobeIdDispatchProps {
   resetAdobeId?: (data: FormData) => Promise<PatronResponse>;
 }
 
-export interface PatronActionsListOwnProps {
+export interface ResetAdobeIdOwnProps {
   store?: Store<State>;
   csrfToken?: string;
   patron: PatronData;
 }
 
-export interface PatronActionsListProps extends React.Props<PatronActionsListProps>, PatronActionsListStateProps, PatronActionsListDispatchProps, PatronActionsListOwnProps {}
+export interface ResetAdobeIdProps extends React.Props<ResetAdobeIdProps>, ResetAdobeIdStateProps, ResetAdobeIdDispatchProps, ResetAdobeIdOwnProps {}
 
-export interface PatronActionsListState {
+export interface ResetAdobeIdState {
   error: FetchErrorData;
   success: boolean;
   checked: boolean;
 }
 
-export class ResetAdobeId extends React.Component<PatronActionsListProps, PatronActionsListState> {
+export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeIdState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -130,7 +130,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedResetAdobeId = connect<PatronActionsListStateProps, PatronActionsListDispatchProps, PatronActionsListOwnProps>(
+const ConnectedResetAdobeId = connect<ResetAdobeIdStateProps, ResetAdobeIdDispatchProps, ResetAdobeIdOwnProps>(
   null,
   mapDispatchToProps
 )(ResetAdobeId);

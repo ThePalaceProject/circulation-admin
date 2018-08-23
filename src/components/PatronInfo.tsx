@@ -1,12 +1,11 @@
 import * as React from "react";
 import { PatronData } from "../interfaces";
 
-export interface PatronInfoOwnProps {
+export interface PatronInfoProps {
   patron: PatronData;
 }
-export interface PatronInfoProps extends PatronInfoOwnProps {}
 
-export default class PatronInfo extends React.Component<PatronInfoProps, {}> {
+export default class PatronInfo extends React.Component<PatronInfoProps, void> {
 
   constructor(props) {
     super(props);
