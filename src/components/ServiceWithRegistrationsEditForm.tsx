@@ -21,7 +21,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
           <div>
             <h2>Register libraries</h2>
             { this.props.data.allLibraries.map(library => {
-                const setRegistryStage = this.getLibraryProp(library, "stage");
+                const setRegistryStage = this.getLibraryProp(library, "stage") || "testing";
                 const registration_stage =
                   (this.state.registration_stage && this.state.registration_stage[library.short_name]) || "testing";
 
