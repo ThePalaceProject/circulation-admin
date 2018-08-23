@@ -55,7 +55,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
           <ErrorMessage error={fetchError} />
         }
         { (!fetchError && patronExists) &&
-          <Alert bsStyle="success">Patron found {patron.authorization_identifier}</Alert>
+          <Alert bsStyle="success">Patron found: {patron.authorization_identifier}</Alert>
         }
         <form onSubmit={this.submit} className="edit-form" ref="form">
           <EditableInput
@@ -64,7 +64,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
             name="identifier"
             label="Barcode"
             className="form-control"
-            placeholder="Patron Barcode">
+            placeholder="Enter the patron's barcode">
           </EditableInput>
           <button
             type="submit"

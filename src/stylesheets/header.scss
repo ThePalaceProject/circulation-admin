@@ -37,6 +37,11 @@
   }
 }
 
+.pull-right {
+  display: flex;
+  flex-direction: column;
+}
 .navbar-collapse.in {
   overflow-y: visible;
+
 }

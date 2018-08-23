@@ -88,31 +88,31 @@ export class ResetAdobeId extends React.Component<PatronActionsListProps, Patron
 
     return (
       <div className="patron-actions">
-        <h4>Reset Adobe Id</h4>
+        <h4>Reset Adobe ID</h4>
         { this.state.error.status > 200 &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
         { this.state.success &&
           <Alert bsStyle="success">Adobe ID for patron {patron.authorization_identifier} has been reset.</Alert>
         }
-        <p>This feature allows you to delete an existing Adobe account ID for an individual patron so that a new one can be assigned–this will happen automatically when the user logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that they will lose any existing loans or reserves when the new account is created.</p>
+        <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or reserves.</p>
         { patron ?
             <div>
               <section className="patron-info">
                 <ul className="patron-data-list">
                   { patron.username &&
-                    <li><label>Username</label><p>{patron.username}</p></li>
+                    <li><label>Username:</label><p>{patron.username}</p></li>
                   }
                   { patron.personal_name &&
-                    <li><label>Personal Name</label><p>{patron.personal_name}</p></li>
+                    <li><label>Personal Name:</label><p>{patron.personal_name}</p></li>
                   }
                   { patron.email_address &&
-                    <li><label>Email Address</label><p>{patron.email_address}</p></li>
+                    <li><label>Email Address:</label><p>{patron.email_address}</p></li>
                   }
-                  <li><label>Identifier</label><p>{patron.authorization_identifier}</p></li>
+                  <li><label>Identifier:</label><p>{patron.authorization_identifier}</p></li>
                 </ul>
               </section>
-              <p className="patron-warning"><b>Patron {patron && patron.username} will lose any existing loans or reserves when the Adobe ID is reset.</b></p>
+              <p className="patron-warning"><b>Patron {patron && (patron.username || patron.personal_name)} will lose any existing loans or reserves when the Adobe ID is reset.</b></p>
               <EditableInput
                 type="checkbox"
                 name="resetAdobeId"
@@ -128,7 +128,7 @@ export class ResetAdobeId extends React.Component<PatronActionsListProps, Patron
                 Reset Adobe ID
               </button>
             </div> :
-            <p><b>Search patron to begin</b></p>
+            <p><b>Search for a patron to begin.</b></p>
         }
       </div>
     );

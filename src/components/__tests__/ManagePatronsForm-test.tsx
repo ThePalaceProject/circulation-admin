@@ -143,7 +143,7 @@ describe("ManagePatronsForm", () => {
       alert = wrapper.find(Alert);
       expect(alert.length).to.equal(1);
       expect(alert.hasClass("alert-success")).to.equal(true);
-      expect(alert.text()).to.equal(`Patron found ${patron.authorization_identifier}`);
+      expect(alert.text()).to.equal(`Patron found: ${patron.authorization_identifier}`);
     });
   });
 

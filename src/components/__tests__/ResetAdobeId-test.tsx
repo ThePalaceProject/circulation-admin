@@ -58,7 +58,7 @@ describe("ResetAdobeId", () => {
 
     it("has a header", () => {
       let header = wrapper.find("h4");
-      expect(header.text()).to.equal("Reset Adobe Id");
+      expect(header.text()).to.equal("Reset Adobe ID");
     });
 
     it("doesn't have a .patron-info section", () => {
@@ -66,9 +66,9 @@ describe("ResetAdobeId", () => {
       expect(patronInfo.length).to.equal(0);
     });
 
-    it("should display message to search patron to begin", () => {
+    it("should display message to search for patron to begin", () => {
       let instructions = wrapper.find("p").at(1);
-      expect(instructions.text()).to.equal("Search patron to begin");
+      expect(instructions.text()).to.equal("Search for a patron to begin.");
     });
   });
 
@@ -91,10 +91,10 @@ describe("ResetAdobeId", () => {
 
       expect(patronList.length).to.equal(1);
       expect(patronItemInfo.length).to.equal(4);
-      expect(patronItemInfo.at(0).text()).to.equal("UsernameUser Name");
-      expect(patronItemInfo.at(1).text()).to.equal("Personal NamePersonal Name");
-      expect(patronItemInfo.at(2).text()).to.equal("Email Addressuser@email.com");
-      expect(patronItemInfo.at(3).text()).to.equal("Identifier1234");
+      expect(patronItemInfo.at(0).text()).to.equal("Username:User Name");
+      expect(patronItemInfo.at(1).text()).to.equal("Personal Name:Personal Name");
+      expect(patronItemInfo.at(2).text()).to.equal("Email Address:user@email.com");
+      expect(patronItemInfo.at(3).text()).to.equal("Identifier:1234");
     });
 
     it("should display a warning message before the submission button", () => {
