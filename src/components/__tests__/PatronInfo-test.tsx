@@ -5,7 +5,6 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import PatronInfo from "../PatronInfo";
 
-
 let patrons = [
   {
     authorization_expires: "",
@@ -64,5 +63,4 @@ describe("Patron Info", () => {
     expect(patronInfoItem.at(0).text()).to.equal("Personal Name:Personal Name2");
     expect(patronInfoItem.at(1).text()).to.equal("Identifier:5678");
   });
-
 });

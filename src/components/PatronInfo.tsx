@@ -6,7 +6,6 @@ export interface PatronInfoProps {
 }
 
 export default class PatronInfo extends React.Component<PatronInfoProps, void> {
-
   constructor(props) {
     super(props);
   }
@@ -30,5 +29,4 @@ export default class PatronInfo extends React.Component<PatronInfoProps, void> {
       </section>
     );
   }
-
 }
