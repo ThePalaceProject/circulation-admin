@@ -44,7 +44,6 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
           const data = new (window as any).FormData();
           data.append("library_short_name", library.short_name);
           data.append("collection_id", this.itemToEdit().id);
-          console.log("register with stage type: ")
           this.props.registerLibrary(data).then(() => {
             if (this.props.fetchLibraryRegistrations) {
               this.props.fetchLibraryRegistrations();
@@ -71,7 +70,6 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.data) {
     data.libraryRegistrations = state.editor.collectionLibraryRegistrations.data.library_registrations;
   }
-  // console.log(state.editor);
   return {
     data: data,
     editedIdentifier: state.editor.collections && state.editor.collections.editedIdentifier,

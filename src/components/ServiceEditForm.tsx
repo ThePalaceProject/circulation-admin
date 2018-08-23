@@ -22,6 +22,7 @@ export interface ServiceEditFormState {
   libraries: LibraryWithSettingsData[];
   expandedLibraries: string[];
   selectedLibrary: string | null;
+  registration_stage?: { [key: string]: string } | null;
 }
 
 /** Form for editing service configuration based on protocol information from the server.
