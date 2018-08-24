@@ -57,9 +57,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   render(): JSX.Element {
 
     let isLibraryManager = this.context.library && this.context.admin.isLibraryManager(this.context.library());
-    let isSystemAdmin = this.context.admin.isSystemAdmin();
-    let canAccessPatronManager = isLibraryManager || isSystemAdmin;
-
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
@@ -120,7 +117,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li>
                 <Link to={"/admin/web/dashboard/" + this.context.library()}>Dashboard</Link>
               </li>
-              { canAccessPatronManager &&
+              { isLibraryManager &&
                 <li>
                   <Link to={"/admin/web/patrons/" + this.context.library()}>Patron Manager</Link>
                 </li>

@@ -31,7 +31,7 @@ export interface ResetAdobeIdOwnProps {
 export interface ResetAdobeIdProps extends React.Props<ResetAdobeIdProps>, ResetAdobeIdStateProps, ResetAdobeIdDispatchProps, ResetAdobeIdOwnProps {}
 
 export interface ResetAdobeIdState {
-  error: FetchErrorData;
+  error?: FetchErrorData;
   success: boolean;
   checked: boolean;
 }
@@ -40,7 +40,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
   constructor(props) {
     super(props);
     this.state = {
-      error: { status: 200, response: "", url: "" },
+      // error: { status: 200, response: "", url: "" },
       success: false,
       checked: false,
     };
@@ -85,7 +85,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
     return (
       <div className="patron-actions">
         <h4>Reset Adobe ID</h4>
-        { this.state.error.status > 200 &&
+        { (this.state.error && this.state.error.status > 200) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
         { this.state.success &&
