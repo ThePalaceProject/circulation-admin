@@ -40,8 +40,6 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
   async submit(e) {
     e.preventDefault();
     const data = new (window as any).FormData(this.refs["form"] as any);
-    // data.append("identifier", ((this.refs["identifier"] as any).getValue()));
-
     await this.props.patronLookup(data);
   }
 
