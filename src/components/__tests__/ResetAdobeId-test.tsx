@@ -91,8 +91,14 @@ describe("ResetAdobeId", () => {
 
     it("should display a warning message before the submission button", () => {
       const patronWarning = wrapper.find(".patron-warning");
-      expect(patronWarning.text()).to.equal("Patron User Name will lose any existing loans or reserves when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal("Patron User Name will lose any existing loans or holds when the Adobe ID is reset.");
     });
+
+    it("should have a submission button with a .btn-danger class", () => {
+      const button = wrapper.find("button");
+      expect(button.hasClass("btn-danger")).to.equal(true);
+    });
+
   });
 
   describe("Behavior", () => {
@@ -113,7 +119,6 @@ describe("ResetAdobeId", () => {
 
     it("should have a disabled submit button", () => {
       const button = wrapper.find("button");
-
       expect(button.props().disabled).to.equal(true);
     });
 
@@ -127,6 +132,17 @@ describe("ResetAdobeId", () => {
 
       expect(wrapper.state().checked).to.equal(true);
       expect(button.props().disabled).to.equal(false);
+    });
+
+    it("should disable the submit button when the checkbox is unchecked", () => {
+      const input = wrapper.find("input");
+      const button = wrapper.find("button");
+      expect(button.props().disabled).to.equal(true);
+      wrapper.setState({ checked: true });
+      expect(button.props().disabled).to.equal(false);
+      input.simulate("change");
+      wrapper.update();
+      expect(button.props().disabled).to.equal(true);
     });
 
     it("should reset the adobe ID when the button is clicked", () => {
@@ -183,9 +199,6 @@ describe("ResetAdobeId", () => {
       // the button so it can be clicked.
       wrapper.setState({ checked: true, error });
 
-      // TODO: make this work
-      // await button.simulate("click");
-
       alert = wrapper.find(Alert);
       expect(wrapper.state().success).to.equal(false);
       expect(wrapper.state().error).to.eql(error);
@@ -197,8 +210,7 @@ describe("ResetAdobeId", () => {
     it("should update the warning message if a new patron was searched and found", () => {
       wrapper.setProps({ patron: patrons[1] });
       const patronWarning = wrapper.find(".patron-warning");
-
-      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose any existing loans or reserves when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose any existing loans or holds when the Adobe ID is reset.");
     });
   });
 });

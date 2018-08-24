@@ -9,11 +9,6 @@ import { Alert } from "react-bootstrap";
 import EditableInput from "./EditableInput";
 import PatronInfo from "./PatronInfo";
 
-export interface PatronError {
-  status: boolean;
-  message: string;
-}
-
 export interface ResetAdobeIdStateProps {
   isFetching?: boolean;
 }
@@ -50,7 +45,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
       checked: false,
     };
     this.resetAdobeId = this.resetAdobeId.bind(this);
-    this.verifiedToReset = this.verifiedToReset.bind(this);
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
   }
 
   async resetAdobeId(e) {
@@ -75,7 +70,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
     }
   }
 
-  verifiedToReset() {
+  toggleCheckbox() {
     this.setState({
       success: this.state.success,
       error: this.state.error,
@@ -96,20 +91,20 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { this.state.success &&
           <Alert bsStyle="success">Adobe ID for patron {patron.authorization_identifier} has been reset.</Alert>
         }
-        <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or reserves.</p>
+        <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or holds.</p>
         { patron ?
             <div>
               <PatronInfo patron={patron} />
-              <p className="patron-warning"><b>Patron {patron && (patron.username || patron.personal_name)} will lose any existing loans or reserves when the Adobe ID is reset.</b></p>
+              <p className="patron-warning"><b>Patron {patron && (patron.username || patron.personal_name)} will lose any existing loans or holds when the Adobe ID is reset.</b></p>
               <EditableInput
                 type="checkbox"
                 name="resetAdobeId"
                 checked={this.state.checked}
                 label="Patron has been informed about this change"
-                onChange={this.verifiedToReset}
+                onChange={this.toggleCheckbox}
                 />
               <button
-                className="btn btn-default"
+                className="btn btn-danger"
                 onClick={this.resetAdobeId}
                 disabled={!this.state.checked}
               >

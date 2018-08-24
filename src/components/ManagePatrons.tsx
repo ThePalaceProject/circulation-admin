@@ -2,17 +2,8 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
-import ActionCreator from "../actions";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
-import { PatronData } from "../interfaces";
-import ButtonForm from "./ButtonForm";
-import EditableInput from "./EditableInput";
-import ErrorMessage from "./ErrorMessage";
-import { Alert } from "react-bootstrap";
 import ManagePatronsForm from "./ManagePatronsForm";
-import ResetAdobeId from "./ResetAdobeId";
 import Header from "./Header";
-import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 import ManagePatronsTabContainer from "./ManagePatronsTabContainer";
 
 export interface ManagePatronsProps extends React.Props<ManagePatronsProps> {

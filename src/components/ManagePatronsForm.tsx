@@ -39,15 +39,15 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
 
   async submit(e) {
     e.preventDefault();
-    const data = new (window as any).FormData();
-    data.append("identifier", ((this.refs["identifier"] as any).getValue()));
+    const data = new (window as any).FormData(this.refs["form"] as any);
+    // data.append("identifier", ((this.refs["identifier"] as any).getValue()));
 
     await this.props.patronLookup(data);
   }
 
   render(): JSX.Element {
     const { patron, fetchError } = this.props;
-    const patronExists = !!(patron && patron.authorization_identifier);
+    const patronExists = !!(patron);
 
     return (
       <div className="manage-patrons-form">

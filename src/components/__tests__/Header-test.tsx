@@ -93,9 +93,9 @@ describe("Header", () => {
       expect(catalogLinks.length).to.equal(0);
     });
 
-    it("shows sitewide links and non-catalog library links for library manager", () => {
+    it("shows sitewide links, non-catalog library links, and patron manager link for library manager", () => {
       let links = wrapper.find(Link);
-      expect(links.length).to.equal(4);
+      expect(links.length).to.equal(5);
 
       let listsLink = links.at(0);
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
@@ -109,9 +109,14 @@ describe("Header", () => {
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
 
-      let settingsLink = links.at(3);
+      let patronManagerLink = links.at(3);
+      expect(patronManagerLink.prop("to")).to.equal("/admin/web/patrons/nypl");
+      expect(patronManagerLink.children().text()).to.equal("Patron Manager");
+
+      let settingsLink = links.at(4);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config");
       expect(settingsLink.children().text()).to.equal("System Configuration");
+
 
       // no selected library
       wrapper.setContext({ admin: libraryManager });
@@ -123,9 +128,6 @@ describe("Header", () => {
       settingsLink = links.at(1);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config");
     });
-
-
-
 
     it("shows sitewide and non-catalog library links for librarian", () => {
       wrapper.setContext({ library: () => "nypl", admin: librarian });
@@ -151,21 +153,22 @@ describe("Header", () => {
     });
 
     describe("patron manager display", () => {
-      it("does not show Patron Manager link for library manager", () => {
-        wrapper.setContext({ library: () => "nypl", admin: libraryManager });
-        let links = wrapper.find(Link);
-        links.forEach((link) => {
-          expect(link.children().text()).to.not.equal("Patron Manager");
-        });
-      });
       it("does not show Patron Manager link for librarian", () => {
         wrapper.setContext({ library: () => "nypl", admin: librarian });
         let links = wrapper.find(Link);
+        expect(links.length).to.equal(2);
         links.forEach((link) => {
           expect(link.children().text()).to.not.equal("Patron Manager");
         });
       });
-      it("shows patron manager link for system admin", () => {
+      it("shows Patron Manager link for library manager", () => {
+        wrapper.setContext({ library: () => "nypl", admin: libraryManager });
+        let links = wrapper.find(Link);
+        let patronManagerLink = links.at(3);
+        expect(links.length).to.equal(5);
+        expect(patronManagerLink.children().text()).to.equal("Patron Manager");
+      });
+      it("shows Patron Manager link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
         let links = wrapper.find(Link);
         let patronManagerLink = links.at(3);

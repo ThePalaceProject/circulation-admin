@@ -46,8 +46,11 @@ export class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabCont
   };
 
   tabs() {
+    let isLibraryManager = this.props.library && this.context.admin.isLibraryManager(this.props.library);
+    let isSystemAdmin = this.context.admin.isSystemAdmin();
+    let canAccessPatronManager = isLibraryManager || isSystemAdmin;
     const tabs = {};
-    if (this.context.admin.isSystemAdmin()) {
+    if (canAccessPatronManager) {
       tabs["resetAdobeId"] = (
         <ResetAdobeId
           store={this.props.store}

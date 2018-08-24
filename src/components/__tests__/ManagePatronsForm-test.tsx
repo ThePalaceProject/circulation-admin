@@ -109,7 +109,6 @@ describe("ManagePatronsForm", () => {
     it("should display a no identifier if the input field is blank when searching", async () => {
       const fetchError = { status: 400, response: "No patron identifier provided", url: "" };
       patronLookup = stub();
-        // .returns(new Promise<void>((resolve, reject) => reject(fetchError)));
       wrapper = mount(
         <ManagePatronsForm
           store={store}
@@ -122,9 +121,6 @@ describe("ManagePatronsForm", () => {
       expect(errorMessage.length).to.equal(0);
 
       let button = wrapper.find("button");
-
-      // TODO: make this work
-      // await button.simulate("submit");
       wrapper.setProps({ fetchError });
 
       errorMessage = wrapper.find(ErrorMessage);
