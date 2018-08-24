@@ -13,6 +13,12 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
     registerLibrary: React.PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = Object.assign({}, this.state, { registration_stage: {} });
+  }
+
   render(): JSX.Element {
     return (
       <div>
@@ -36,7 +42,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                             elementType="select"
                             name="registration_stage"
                             label="Stage"
-                            value={setRegistryStage || "testing"}
+                            value={setRegistryStage}
                             ref={`stage-${library.short_name}`}
                             onChange={() => this.updateRegistrationStage(library)}
                           >
@@ -98,6 +104,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
 
   updateRegistrationStage(library) {
     const registration_stage = (this.refs[`stage-${library.short_name}`] as any).getValue();
+
     this.setState({
       protocol: this.state.protocol,
       parentId: this.state.parentId,

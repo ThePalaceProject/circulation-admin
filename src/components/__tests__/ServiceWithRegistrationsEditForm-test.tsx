@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import { DiscoveryServicesData } from "../../interfaces";
 import ServiceWithRegistrationsEditForm from "../ServiceWithRegistrationsEditForm";
@@ -201,10 +201,31 @@ describe("ServiceWithRegistrationsEditForm", () => {
       expect(registerLibrary.callCount).to.equal(3);
     });
 
-    // it.only("should update the registration stage type in the state from the dropdown", () => {
-    //   let libraryRegistrationInfo = wrapper.find(".library-registration-info");
-    //   let bpl = libraryRegistrationInfo.at(1);
-    //   let bplEditableInput = bpl.find(EditableInput);
-    // });
+    it("should update the registration stage type in the state from the dropdown", async () => {
+      editService = stub();
+      registerLibrary = stub();
+      wrapper = mount(
+        <DiscoveryServiceEditForm
+          disabled={false}
+          data={servicesData}
+          item={serviceData}
+          editItem={editService}
+          urlBase="url base"
+          listDataKey="discovery_services"
+          />,
+        { context: { registerLibrary } }
+      );
+      let libraryRegistrationInfo = wrapper.find(".library-registration-info");
+      let bpl = libraryRegistrationInfo.at(1);
+      let bplEditableInput = bpl.find(EditableInput);
+
+      expect(wrapper.state().registration_stage.bpl).to.equal(undefined);
+      expect(bplEditableInput.props().value).to.equal("testing");
+
+      bplEditableInput.props().onChange({ "short_name": "bpl", name: "Brooklyn Public Library" });
+
+      expect(wrapper.state().registration_stage.bpl).to.equal("testing");
+      expect(bplEditableInput.props().value).to.equal("testing");
+    });
   });
 });
