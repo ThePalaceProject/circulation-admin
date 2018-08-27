@@ -11,7 +11,7 @@ export class LoggingServices extends EditableConfigList<LoggingServicesData, Log
   EditForm = ServiceEditForm;
   listDataKey = "logging_services";
   itemTypeName = "logging services";
-  urlBase = "/admin/web/config/loggingServices/";
+  urlBase = "/admin/web/config/logging/";
   identifierKey = "id";
   labelKey = "protocol";
 }
