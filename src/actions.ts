@@ -179,14 +179,15 @@ export default class ActionCreator extends BaseActionCreator {
         }).then(response => {
           if (response.status === 200 || response.status === 201) {
             dispatch(this.success(type));
-            if (response.text) {
+            if (response.json && returnType === "JSON") {
+              response.json().then(data => {
+                dispatch(this.load<string>(type, data));
+                resolve(response);
+              });
+            } else if (response.text) {
               response.text().then(text => {
                 dispatch(this.load<string>(type, text));
-                if (returnType === "JSON") {
-                  resolve({ response, text: JSON.parse(text) });
-                } else {
-                  resolve(response);
-                }
+                resolve(response);
               });
             } else {
               resolve(response);

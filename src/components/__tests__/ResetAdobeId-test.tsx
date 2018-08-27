@@ -127,6 +127,7 @@ describe("ResetAdobeId", () => {
       const button = wrapper.find("button");
 
       expect(wrapper.state().checked).to.equal(false);
+
       input.simulate("change");
       wrapper.update();
 
@@ -138,18 +139,22 @@ describe("ResetAdobeId", () => {
       const input = wrapper.find("input");
       const button = wrapper.find("button");
       expect(button.props().disabled).to.equal(true);
+
       wrapper.setState({ checked: true });
       expect(button.props().disabled).to.equal(false);
+
       input.simulate("change");
       wrapper.update();
       expect(button.props().disabled).to.equal(true);
     });
 
-    it("should reset the adobe ID when the button is clicked", () => {
+    it("should call the adobe ID action when the button is clicked", () => {
       const data = new (window as any).FormData();
       data.append("identifier", patrons[0].authorization_identifier);
       const button = wrapper.find("button");
       wrapper.setState({ checked: true });
+
+      expect(resetAdobeId.callCount).to.equal(0);
 
       button.simulate("click");
 
@@ -157,30 +162,26 @@ describe("ResetAdobeId", () => {
       expect(resetAdobeId.args[0][0]).to.eql(data);
     });
 
-    it("should show a success alert message if the reset is successful", async () => {
+    it("should show a success alert message if the reset is successful", () => {
       const button = wrapper.find("button");
       let alert = wrapper.find(Alert);
 
-      // Manually setting the state `checked` attribute to true to enable
-      // the button so it can be clicked.
-      wrapper.setState({ checked: true });
-
-      expect(wrapper.state().success).to.equal(false);
+      expect(wrapper.props().editedIdentifier).to.equal(undefined);
       expect(alert.length).to.equal(0);
 
-      await button.simulate("click");
+      wrapper.setProps({ editedIdentifier: "Success" });
 
       alert = wrapper.find(Alert);
-      expect(wrapper.state().success).to.equal(true);
+      expect(wrapper.props().editedIdentifier).to.equal("Success");
       expect(alert.length).to.equal(1);
       expect(alert.hasClass("alert-success")).to.equal(true);
       expect(alert.text()).to.equal("Adobe ID for patron 1234 has been reset.");
     });
 
     it("should show a failure alert message if the reset fails", async () => {
-      const error = { status: 400, response: "", url: "" };
+      const fetchError = { status: 400, response: "", url: "" };
       resetAdobeId = stub()
-        .returns(new Promise<void>((resolve, reject) => reject(error)));
+        .returns(new Promise<void>((resolve, reject) => reject(fetchError)));
       wrapper = mount(
         <ResetAdobeId
           store={store}
@@ -193,15 +194,13 @@ describe("ResetAdobeId", () => {
       const button = wrapper.find("button");
       let alert = wrapper.find(Alert);
 
+      expect(wrapper.props().fetchError).to.eql(undefined);
       expect(alert.length).to.equal(0);
 
-      // Manually setting the state `checked` attribute to true to enable
-      // the button so it can be clicked.
-      wrapper.setState({ checked: true, error });
+      wrapper.setProps({ fetchError });
 
       alert = wrapper.find(Alert);
-      expect(wrapper.state().success).to.equal(false);
-      expect(wrapper.state().error).to.eql(error);
+      expect(wrapper.props().fetchError).to.eql(fetchError);
       expect(alert.length).to.equal(1);
       expect(alert.hasClass("alert-danger")).to.equal(true);
       expect(alert.text()).to.equal("Error: failed to reset Adobe ID for patron 1234");

@@ -10,16 +10,12 @@ import EditableInput from "./EditableInput";
 import PatronInfo from "./PatronInfo";
 
 export interface ResetAdobeIdStateProps {
-  isFetching?: boolean;
-}
-
-export interface PatronResponse {
-  text: PatronData;
-  response: IResponse;
+  fetchError?: FetchErrorData;
+  editedIdentifier?: string;
 }
 
 export interface ResetAdobeIdDispatchProps {
-  resetAdobeId?: (data: FormData) => Promise<PatronResponse>;
+  resetAdobeId?: (data: FormData) => Promise<void>;
 }
 
 export interface ResetAdobeIdOwnProps {
@@ -31,8 +27,6 @@ export interface ResetAdobeIdOwnProps {
 export interface ResetAdobeIdProps extends React.Props<ResetAdobeIdProps>, ResetAdobeIdStateProps, ResetAdobeIdDispatchProps, ResetAdobeIdOwnProps {}
 
 export interface ResetAdobeIdState {
-  error?: FetchErrorData;
-  success: boolean;
   checked: boolean;
 }
 
@@ -40,8 +34,6 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
   constructor(props) {
     super(props);
     this.state = {
-      // error: { status: 200, response: "", url: "" },
-      success: false,
       checked: false,
     };
     this.resetAdobeId = this.resetAdobeId.bind(this);
@@ -53,29 +45,12 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
     const data = new (window as any).FormData();
     data.append("identifier", this.props.patron.authorization_identifier);
 
-    try {
-      const response = await this.props.resetAdobeId(data);
-      this.setState({
-        success: true,
-        error: { status: 200, response: "", url: "" },
-        checked: false
-      });
-    }
-    catch (error) {
-      this.setState({
-        success: false,
-        error: error,
-        checked: false
-      });
-    }
+    await this.props.resetAdobeId(data);
+    this.setState({ checked: false });
   }
 
   toggleCheckbox() {
-    this.setState({
-      success: this.state.success,
-      error: this.state.error,
-      checked: !this.state.checked,
-    });
+    this.setState({ checked: !this.state.checked });
   }
 
   render() {
@@ -85,10 +60,10 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
     return (
       <div className="patron-actions">
         <h4>Reset Adobe ID</h4>
-        { (this.state.error && this.state.error.status > 200) &&
+        { (this.props.fetchError && this.props.fetchError.status > 200) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
-        { this.state.success &&
+        { this.props.editedIdentifier === "Success" &&
           <Alert bsStyle="success">Adobe ID for patron {patron.authorization_identifier} has been reset.</Alert>
         }
         <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or holds.</p>
@@ -118,6 +93,15 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
   }
 }
 
+function mapStateToProps(state, ownProps) {
+  const patronManager = state.editor.patronManager && state.editor.patronManager;
+
+  return {
+    fetchError: patronManager && patronManager.fetchError,
+    editedIdentifier: patronManager && patronManager.editedIdentifier,
+  };
+}
+
 function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
@@ -126,7 +110,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 const ConnectedResetAdobeId = connect<ResetAdobeIdStateProps, ResetAdobeIdDispatchProps, ResetAdobeIdOwnProps>(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ResetAdobeId);
 

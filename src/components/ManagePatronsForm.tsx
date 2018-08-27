@@ -14,13 +14,9 @@ export interface ManagePatronsFormStateProps {
   patron?: PatronData;
   fetchError?: FetchErrorData;
 }
-export interface PatronResponse {
-  text: PatronData;
-  response: IResponse;
-}
 
 export interface ManagePatronsFormDispatchProps {
-  patronLookup?: (data: FormData) => Promise<PatronResponse>;
+  patronLookup?: (data: FormData) => Promise<void>;
 }
 
 export interface ManagePatronsFormOwnProps {
@@ -40,6 +36,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
   async submit(e) {
     e.preventDefault();
     const data = new (window as any).FormData(this.refs["form"] as any);
+
     await this.props.patronLookup(data);
   }
 
@@ -77,8 +74,8 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
 function mapStateToProps(state, ownProps) {
   const patronManager = state.editor.patronManager && state.editor.patronManager;
   return {
-    patron: JSON.parse(patronManager.data),
-    fetchError: patronManager.fetchError,
+    patron: patronManager && patronManager.data,
+    fetchError: patronManager && patronManager.fetchError,
   };
 }
 

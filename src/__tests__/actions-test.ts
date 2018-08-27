@@ -721,12 +721,15 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("test", "test");
       const dispatch = stub();
-      const textResponse = "{\"id\": \"test\", \"name\": \"test\"}";
+      const response = { "id": "test", "name": "test" };
       const responseText = stub().returns(new Promise<any>((resolve) => {
-        resolve(textResponse);
+        resolve(response);
       }));
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200, text: responseText });
+        resolve({
+          status: 200,
+          json: responseText,
+        });
       }));
       fetch = fetchMock;
 
@@ -739,7 +742,7 @@ describe("actions", () => {
       expect(fetchMock.args[0][0]).to.equal("/admin/manage_patrons");
       expect(fetchMock.args[0][1].method).to.equal("POST");
       expect(fetchMock.args[0][1].body).to.equal(formData);
-      expect(data.text).to.eql(JSON.parse(textResponse));
+      expect(data.json).to.eql(responseText);
     });
   });
 

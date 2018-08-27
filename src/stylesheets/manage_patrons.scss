@@ -1,11 +1,15 @@
 .manage-patrons-page {
   height: 100%;
-  padding: 1%;
+
+  h2 {
+    padding: 1%;
+  }
+
   .manage-patrons {
     height: 70%;
     width: 100%;
-    margin: auto;
-    padding: 0;
+    padding: 1%;
+
     .manage-patrons-form, .patron-info {
       display: flex;
       flex-direction: column;
@@ -48,6 +52,7 @@
         }
       }
     }
+
     .tab-container {
       min-height: 450px;
       .nav-tabs {
@@ -67,10 +72,9 @@
         }
       }
     }
+
     .tab-content {
       padding: 0;
     }
-
-
   }
 }

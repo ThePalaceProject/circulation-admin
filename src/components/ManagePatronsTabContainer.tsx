@@ -81,9 +81,9 @@ export class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabCont
 }
 
 function mapStateToProps(state, ownProps) {
-  const patron = state.editor.patronManager && state.editor.patronManager.data;
+  const patronManager = state.editor.patronManager && state.editor.patronManager;
   return {
-    patron: JSON.parse(patron),
+    patron: patronManager && patronManager.data,
   };
 }
 

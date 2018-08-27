@@ -6,8 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import buildStore from "../../store";
 
-import { mapDispatchToProps } from "../ManagePatronsForm";
-import { ManagePatronsForm } from "../ManagePatronsForm";
+import { mapDispatchToProps, ManagePatronsForm } from "../ManagePatronsForm";
 import EditableInput from "../EditableInput";
 import ErrorMessage from "../ErrorMessage";
 import { Alert } from "react-bootstrap";
@@ -120,7 +119,6 @@ describe("ManagePatronsForm", () => {
       let errorMessage = wrapper.find(ErrorMessage);
       expect(errorMessage.length).to.equal(0);
 
-      let button = wrapper.find("button");
       wrapper.setProps({ fetchError });
 
       errorMessage = wrapper.find(ErrorMessage);
