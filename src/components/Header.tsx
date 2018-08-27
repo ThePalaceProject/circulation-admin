@@ -85,40 +85,40 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse>
           { this.context.library && this.context.library() &&
             <Nav>
-              <li>
+              <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/groups"}
                   bookUrl={null}>
                   Catalog
                 </CatalogLink>
               </li>
-              <li>
+              <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/complaints"}
                   bookUrl={null}>
                   Complaints
                 </CatalogLink>
               </li>
-              <li>
+              <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/suppressed"}
                   bookUrl={null}>
                   Hidden Books
                 </CatalogLink>
               </li>
-              <li>
+              <li className="header-link">
                 <Link to={"/admin/web/lists/" + this.context.library()}>Lists</Link>
               </li>
               { isLibraryManager &&
-                <li>
+                <li className="header-link">
                   <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
                 </li>
               }
-              <li>
+              <li className="header-link">
                 <Link to={"/admin/web/dashboard/" + this.context.library()}>Dashboard</Link>
               </li>
               { isLibraryManager &&
-                <li>
+                <li className="header-link">
                   <Link to={"/admin/web/patrons/" + this.context.library()}>Patron Manager</Link>
                 </li>
               }
@@ -126,12 +126,12 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           }
           <Nav className="pull-right">
             { (!this.context.library || !this.context.library()) &&
-              <li>
+              <li className="header-link">
                 <Link to="/admin/web/dashboard">Dashboard</Link>
               </li>
             }
             { this.context.admin.isLibraryManagerOfSomeLibrary() &&
-              <li>
+              <li className="header-link">
                 <Link to="/admin/web/config">System Configuration</Link>
               </li>
             }
