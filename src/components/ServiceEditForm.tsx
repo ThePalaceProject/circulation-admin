@@ -22,12 +22,11 @@ export interface ServiceEditFormState {
   libraries: LibraryWithSettingsData[];
   expandedLibraries: string[];
   selectedLibrary: string | null;
-  registration_stage?: { [key: string]: string } | null;
 }
 
 /** Form for editing service configuration based on protocol information from the server.
     Used on most tabs on the system configuration page. */
-export default class ServiceEditForm<T extends ServicesData> extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
+export default class ServiceEditForm<T extends ServicesData, ServiceEditFormState> extends React.Component<ServiceEditFormProps<T>, any> {
   constructor(props) {
     super(props);
     let defaultProtocol;

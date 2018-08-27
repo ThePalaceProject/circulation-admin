@@ -1,12 +1,16 @@
 import * as React from "react";
-import ServiceEditForm from "./ServiceEditForm";
+import ServiceEditForm, { ServiceEditFormState } from "./ServiceEditForm";
 import EditableInput from "./EditableInput";
 import { ServicesWithRegistrationsData, LibraryDataWithStatus } from "../interfaces";
+
+export interface ServicesWithRegistrationsDataState extends ServiceEditFormState {
+  registration_stage?: { [key: string]: string } | null;
+}
 
 /** Form for editing discovery services on the discovery service configuration tab.
     Includes the same form as other services but an addition section with a list
     of libraries and their registration statuses and buttons to register them. */
-export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegistrationsData> extends ServiceEditForm<T> {
+export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegistrationsData> extends ServiceEditForm<T, ServicesWithRegistrationsDataState> {
   context: { registerLibrary: (library, registration_stage) => void };
 
   static contextTypes = {
@@ -27,7 +31,8 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
           <div>
             <h2>Register libraries</h2>
             { this.props.data.allLibraries.map(library => {
-                const setRegistryStage = this.getLibraryProp(library, "stage") || "testing";
+                const libraryRegistrationStatus = this.getLibraryProp(library, "status");
+                const setRegistryStage = this.getLibraryProp(library, "stage");
                 const registration_stage =
                   (this.state.registration_stage && this.state.registration_stage[library.short_name]) || "testing";
 
@@ -36,13 +41,16 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                     <div className="library-name">{ library.name }</div>
                     <div className="library-registration-info">
                       <div className="current-stage">
-                        <span>Current Stage: {setRegistryStage}</span>
+                        { (setRegistryStage && libraryRegistrationStatus !== "failure") ?
+                          <span>Current Stage: {setRegistryStage}</span> :
+                          <span>No current stage</span>
+                        }
                         { setRegistryStage !== "production" &&
                           <EditableInput
                             elementType="select"
                             name="registration_stage"
                             label="Stage"
-                            value={setRegistryStage}
+                            value={setRegistryStage || "testing"}
                             ref={`stage-${library.short_name}`}
                             onChange={() => this.updateRegistrationStage(library)}
                           >
@@ -52,7 +60,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                         }
                       </div>
 
-                      { this.getLibraryProp(library, "status") === "success" &&
+                      { libraryRegistrationStatus === "success" &&
                         <div>
                           <span className="bg-success">
                             Registered
@@ -65,7 +73,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                             >Update registration</button>
                         </div>
                       }
-                      { this.getLibraryProp(library, "status") === "failure" &&
+                      { libraryRegistrationStatus === "failure" &&
                         <div>
                           <span className="bg-danger">
                             Registration failed
@@ -78,7 +86,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                             >Retry registration</button>
                         </div>
                       }
-                      { this.getLibraryProp(library, "status") === null &&
+                      { libraryRegistrationStatus === null &&
                         <div>
                           <span className="bg-warning">
                             Not registered

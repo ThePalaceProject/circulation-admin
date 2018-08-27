@@ -34,7 +34,7 @@ describe("ServiceWithRegistrationsEditForm", () => {
     id: 1,
     libraries: [
       { short_name: "nypl", status: "success", stage: "production" },
-      { short_name: "bpl", status: "failure", stage: "testing" }
+      { short_name: "bpl", status: "failure", stage: "testing" },
     ]
   }];
   let servicesData = {
@@ -117,19 +117,56 @@ describe("ServiceWithRegistrationsEditForm", () => {
         );
       });
       it("should render the current registration stage", () => {
+        // Adding an additional library to display the currect stage when
+        // they are in the "testing" stage and their registration was
+        // successful, unlike being in the "testing" stage and
+        // an unsuccessful registration.
+        let libraryRegistrationsDataWBoston = [{
+          id: 1,
+          libraries: [
+            { short_name: "nypl", status: "success", stage: "production" },
+            { short_name: "bpl", status: "failure", stage: "testing" },
+            { short_name: "boston", status: "success", stage: "testing" }
+          ]
+        }];
+        let allLibrariesWBoston = [
+          { "short_name": "nypl", name: "New York Public Library" },
+          { "short_name": "bpl", name: "Brooklyn Public Library" },
+          { "short_name": "qpl", name: "Queens Public Library" },
+          { "short_name": "boston", name: "Boston Public Library" }
+        ];
+        servicesData.allLibraries = allLibrariesWBoston;
+        servicesData.libraryRegistrations = libraryRegistrationsDataWBoston;
+
+        editService = stub();
+        registerLibrary = stub();
+        wrapper = shallow(
+          <DiscoveryServiceEditForm
+            disabled={false}
+            data={servicesData}
+            item={serviceData}
+            editItem={editService}
+            urlBase="url base"
+            listDataKey="discovery_services"
+            />,
+          { context: { registerLibrary } }
+        );
         let libraryRegistrationInfo = wrapper.find(".library-registration-info");
 
         let nypl = libraryRegistrationInfo.at(0);
         let bpl = libraryRegistrationInfo.at(1);
         let qpl = libraryRegistrationInfo.at(2);
+        let bostonpl = libraryRegistrationInfo.at(3);
 
         let nyplCurrentStage = nypl.find(".current-stage span");
         let bplCurrentStage = bpl.find(".current-stage span");
         let qplCurrentStage = qpl.find(".current-stage span");
+        let bostonCurrentStage = bostonpl.find(".current-stage span");
 
         expect(nyplCurrentStage.text()).to.equal("Current Stage: production");
-        expect(bplCurrentStage.text()).to.equal("Current Stage: testing");
-        expect(qplCurrentStage.text()).to.equal("Current Stage: testing");
+        expect(bplCurrentStage.text()).to.equal("No current stage");
+        expect(qplCurrentStage.text()).to.equal("No current stage");
+        expect(bostonCurrentStage.text()).to.equal("Current Stage: testing");
       });
 
       it("should render a registration stage type dropdown with two options", () => {
@@ -226,6 +263,62 @@ describe("ServiceWithRegistrationsEditForm", () => {
 
       expect(wrapper.state().registration_stage.bpl).to.equal("testing");
       expect(bplEditableInput.props().value).to.equal("testing");
+    });
+
+    it.only("should update the state stage value when using the dropdown per library", () => {
+      editService = stub();
+      registerLibrary = stub();
+      wrapper = mount(
+        <DiscoveryServiceEditForm
+          disabled={false}
+          data={servicesData}
+          item={serviceData}
+          editItem={editService}
+          urlBase="url base"
+          listDataKey="discovery_services"
+          />,
+        { context: { registerLibrary } }
+      );
+
+      let libraryRegistrationInfo = wrapper.find(".library-registration-info");
+      let bpl = libraryRegistrationInfo.at(1);
+      let bplSelect = bpl.find("select");
+      let bplSelectElement = bplSelect.get(0);
+      let qpl = libraryRegistrationInfo.at(2);
+      let qplSelect = qpl.find("select");
+      let qplSelectElement = qplSelect.get(0);
+
+      expect(wrapper.state().registration_stage).to.eql({});
+
+      bplSelectElement.value = "testing";
+      bplSelect.simulate("change");
+
+      expect(wrapper.state().registration_stage).to.eql({
+        "bpl": "testing",
+      });
+
+      bplSelectElement.value = "production";
+      bplSelect.simulate("change");
+
+      expect(wrapper.state().registration_stage).to.eql({
+        "bpl": "production",
+      });
+
+      qplSelectElement.value = "testing";
+      qplSelect.simulate("change");
+
+      expect(wrapper.state().registration_stage).to.eql({
+        "bpl": "production",
+        "qpl": "testing",
+      });
+
+      qplSelectElement.value = "production";
+      qplSelect.simulate("change");
+
+      expect(wrapper.state().registration_stage).to.eql({
+        "bpl": "production",
+        "qpl": "production",
+      });
     });
   });
 });
