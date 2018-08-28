@@ -82,7 +82,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           <Navbar.Toggle />
         </Navbar.Header>
 
-        <Navbar.Collapse>
+        <Navbar.Collapse className="menu">
           { this.context.library && this.context.library() &&
             <Nav>
               <li className="header-link">

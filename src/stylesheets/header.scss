@@ -41,16 +41,16 @@
   }
 }
 
-.header-link a {
-  padding-left: 5px !important;
-  padding-right: 5px !important;
+.menu .header-link a {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .pull-right {
-  max-width: 50%;
-  min-width: 30%;
   display: flex;
   justify-content: flex-end;
+  max-width: 50%;
+  min-width: 30%;
 }
 
 .navbar-collapse.in {
