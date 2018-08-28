@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import ManagePatrons from "../ManagePatrons";
+import ManagePatrons from "../managePatrons";
 import ActionCreator from "../../actions";
 
 describe("ManagePatrons reducer", () => {
