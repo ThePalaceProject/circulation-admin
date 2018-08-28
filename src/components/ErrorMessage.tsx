@@ -11,8 +11,10 @@ export interface ErrorMessageProps {
     response from the server. */
 export default class ErrorMessage extends React.Component<ErrorMessageProps, void> {
   render(): JSX.Element {
-    let status = this.props.error.status;
 
+    let status = this.props.error.status;
+    let errorMessageHeader;
+    let errorMessageText;
     if (status === 401) {
       return (
         <Alert bsStyle="danger">
@@ -29,12 +31,23 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
       try {
         response = JSON.parse(this.props.error.response).detail;
       } catch (e) {
-        // response wasn't json
         response = this.props.error.response;
+        if (this.isProblemDetail(response)) {
+          response = this.parseProblemDetail(response);
+          errorMessageHeader = response.title;
+          errorMessageText = response.description + response.status + ": " + response.detail;
+        }
+      }
+      if (!errorMessageText) {
+        errorMessageText = "Error: " + response;
       }
       return (
         <Alert bsStyle="danger">
-          <h4>Error: {response}<br />
+          <h4>
+            { errorMessageHeader &&
+              <p><b>{errorMessageHeader}</b>&nbsp;</p>
+            }
+            {errorMessageText}<br />
             { this.props.tryAgain &&
               <a onClick={this.tryAgain.bind(this)}>Try again</a>
             }
@@ -42,6 +55,27 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
         </Alert>
       );
     }
+  }
+
+  isProblemDetail(response) {
+    if (response.split(":")[0]) {
+      return response.split(":")[0] === "Remote service returned a problem detail document";
+    }
+    return false;
+  }
+
+  parseProblemDetail(response) {
+    let [status, detail, title] = this.extractProperty(response, ["\"status\": ", "\"detail\": ", "\"title\": "]);
+    let description = "Remote service returned a problem detail document with status ";
+    return {description, status, detail, title};
+  }
+
+  extractProperty(response, propertyStrings) {
+    let properties = [];
+    propertyStrings.map((propertyString) => {
+      properties.push(response.split(propertyString)[1].split(",")[0].replace(/["'}]/g, ""));
+    });
+    return properties;
   }
 
   tryAgain() {

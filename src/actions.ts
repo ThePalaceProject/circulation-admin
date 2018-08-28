@@ -185,7 +185,8 @@ export default class ActionCreator extends BaseActionCreator {
               };
               dispatch(this.failure(type, err));
               reject(err);
-            }).catch(parseError => {
+            })
+            .catch(parseError => {
               err = {
                 status: response.status,
                 response: defaultErrorMessage || "Failed to save changes",
