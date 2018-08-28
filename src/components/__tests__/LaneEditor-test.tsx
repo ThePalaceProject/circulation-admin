@@ -220,7 +220,7 @@ describe("LaneEditor", () => {
     getTextStub.restore();
     getCustomListIdsStub.restore();
 
-    wrapper.setProps({ editedIdentifier: 5 });
+    wrapper.setProps({ responseBody: 5 });
     // Let the call stack clear so the callback after editLane will run.
     const pause = (): Promise<void> => {
         return new Promise<void>(resolve => setTimeout(resolve, 0));

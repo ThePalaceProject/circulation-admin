@@ -72,7 +72,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
-    editedIdentifier: state.editor.collections && state.editor.collections.editedIdentifier,
+    responseBody: state.editor.collections && state.editor.collections.responseBody,
     fetchError: state.editor.collections.fetchError || (state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.fetchError) || (state.editor.registerLibraryWithCollection && state.editor.registerLibraryWithCollection.fetchError),
     isFetching: state.editor.collections.isFetching || state.editor.collections.isEditing,
     isFetchingLibraryRegistrations: state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.isFetching

@@ -19,7 +19,7 @@ function mapStateToProps(state, ownProps) {
   const data = Object.assign({}, state.editor.storageServices && state.editor.storageServices.data || {});
   return {
     data: data,
-    editedIdentifier: state.editor.storageServices && state.editor.storageServices.editedIdentifier,
+    responseBody: state.editor.storageServices && state.editor.storageServices.responseBody,
     fetchError: state.editor.storageServices.fetchError,
     isFetching: state.editor.storageServices.isFetching || state.editor.storageServices.isEditing
   };

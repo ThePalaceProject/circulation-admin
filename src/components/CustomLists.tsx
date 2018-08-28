@@ -27,7 +27,7 @@ export interface CustomListsStateProps {
   lists: CustomListData[];
   listDetails?: CustomListDetailsData;
   collections: AdminCollectionData[];
-  editedIdentifier?: string;
+  responseBody?: string;
   searchResults: CollectionData;
   fetchError?: FetchErrorData;
   isFetching: boolean;
@@ -170,7 +170,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               search={this.props.search}
               loadMoreSearchResults={this.props.loadMoreSearchResults}
               searchResults={this.props.searchResults}
-              editedIdentifier={this.props.editedIdentifier}
+              responseBody={this.props.responseBody}
               isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
               entryPoints={enabledEntryPoints}
             />
@@ -300,7 +300,7 @@ function mapStateToProps(state, ownProps) {
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     listDetails: state.editor.customListDetails && state.editor.customListDetails.data,
-    editedIdentifier: state.editor.customLists && state.editor.customLists.editedIdentifier,
+    responseBody: state.editor.customLists && state.editor.customLists.responseBody,
     fetchError: state.editor.customLists.fetchError || state.editor.collections.fetchError,
     isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || state.editor.customListDetails.isFetching || state.editor.customListDetails.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,
     searchResults: state.editor.collection && state.editor.collection.data,

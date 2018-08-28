@@ -9,7 +9,7 @@ describe("collections reducer", () => {
     isFetching: false,
     isEditing: false,
     fetchError: null,
-    editedIdentifier: null,
+    responseBody: null,
     isLoaded: false,
   };
 

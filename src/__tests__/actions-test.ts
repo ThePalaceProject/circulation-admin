@@ -766,4 +766,15 @@ describe("actions", () => {
     });
   });
 
+  describe("resetPatronData", () => {
+    it("dispatches load", () => {
+      const dispatch = stub();
+
+      actions.resetPatronData()(dispatch);
+
+      expect(dispatch.callCount).to.equal(1);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RESET_PATRON_DATA}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].data).to.equal(null);
+    });
+  });
 });

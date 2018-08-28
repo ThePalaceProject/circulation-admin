@@ -166,16 +166,17 @@ describe("ResetAdobeId", () => {
       const button = wrapper.find("button");
       let alert = wrapper.find(Alert);
 
-      expect(wrapper.props().editedIdentifier).to.equal(undefined);
+      expect(wrapper.props().responseBody).to.equal(undefined);
       expect(alert.length).to.equal(0);
 
-      wrapper.setProps({ editedIdentifier: "Success" });
+      // This reponse now comes from the server.
+      wrapper.setProps({ responseBody: "Adobe ID for patron has been reset." });
 
       alert = wrapper.find(Alert);
-      expect(wrapper.props().editedIdentifier).to.equal("Success");
+      expect(wrapper.props().responseBody).to.equal("Adobe ID for patron has been reset.");
       expect(alert.length).to.equal(1);
       expect(alert.hasClass("alert-success")).to.equal(true);
-      expect(alert.text()).to.equal("Adobe ID for patron 1234 has been reset.");
+      expect(alert.text()).to.equal("Adobe ID for patron has been reset.");
     });
 
     it("should show a failure alert message if the reset fails", async () => {

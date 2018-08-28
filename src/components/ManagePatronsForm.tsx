@@ -17,6 +17,7 @@ export interface ManagePatronsFormStateProps {
 
 export interface ManagePatronsFormDispatchProps {
   patronLookup?: (data: FormData) => Promise<void>;
+  resetPatronData?: () => Promise<void>;
 }
 
 export interface ManagePatronsFormOwnProps {
@@ -38,6 +39,10 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
     const data = new (window as any).FormData(this.refs["form"] as any);
 
     await this.props.patronLookup(data);
+  }
+
+  componentWillUnmount() {
+    this.props.resetPatronData();
   }
 
   render(): JSX.Element {
@@ -82,7 +87,8 @@ function mapStateToProps(state, ownProps) {
 export function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    patronLookup: (data: FormData) => dispatch(actions.patronLookup(data))
+    patronLookup: (data: FormData) => dispatch(actions.patronLookup(data)),
+    resetPatronData: () => dispatch(actions.resetPatronData()),
   };
 };
 

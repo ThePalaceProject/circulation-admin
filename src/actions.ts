@@ -142,6 +142,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly RUN_SELF_TESTS = "RUN_SELF_TESTS";
 
   static readonly PATRON_LOOKUP = "PATRON_LOOKUP";
+  static readonly RESET_PATRON_DATA = "RESET_PATRON_DATA";
   static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
 
   csrfToken: string;
@@ -648,5 +649,9 @@ export default class ActionCreator extends BaseActionCreator {
   resetAdobeId(data: FormData) {
     const url = "/admin/manage_patrons/reset_adobe_id";
     return this.postForm(ActionCreator.RESET_ADOBE_ID, url, data).bind(this);
+  }
+
+  resetPatronData() {
+    return (dispatch) => dispatch(this.load<string>(ActionCreator.RESET_PATRON_DATA, null));
   }
 }

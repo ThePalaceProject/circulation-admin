@@ -15,7 +15,7 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
   list?: CustomListDetailsData;
   collections?: AdminCollectionData[];
-  editedIdentifier?: string;
+  responseBody?: string;
   searchResults?: CollectionData;
   editCustomList: (data: FormData, listId?: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
@@ -241,8 +241,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     data.append("collections", JSON.stringify(collections));
     this.props.editCustomList(data, this.props.list && String(this.props.list.id)).then(() => {
       // If a new list was created, go to the new list's edit page.
-      if (!this.props.list && this.props.editedIdentifier) {
-        window.location.href = "/admin/web/lists/" + this.props.library + "/edit/" + this.props.editedIdentifier;
+      if (!this.props.list && this.props.responseBody) {
+        window.location.href = "/admin/web/lists/" + this.props.library + "/edit/" + this.props.responseBody;
       }
     });
   }

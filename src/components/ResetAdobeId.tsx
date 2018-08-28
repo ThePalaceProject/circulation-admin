@@ -11,7 +11,7 @@ import PatronInfo from "./PatronInfo";
 
 export interface ResetAdobeIdStateProps {
   fetchError?: FetchErrorData;
-  editedIdentifier?: string;
+  responseBody?: string;
 }
 
 export interface ResetAdobeIdDispatchProps {
@@ -54,17 +54,21 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
   }
 
   render() {
-    const patron = this.props.patron;
+    const {
+      patron,
+      fetchError,
+      responseBody,
+    } = this.props;
     const patronExists = !!(patron && patron.authorization_identifier);
 
     return (
       <div className="patron-actions">
         <h4>Reset Adobe ID</h4>
-        { (this.props.fetchError && this.props.fetchError.status > 200) &&
+        { (fetchError && fetchError.status > 200 && patronExists) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
-        { this.props.editedIdentifier === "Success" &&
-          <Alert bsStyle="success">Adobe ID for patron {patron.authorization_identifier} has been reset.</Alert>
+        { responseBody &&
+          <Alert bsStyle="success">{responseBody}</Alert>
         }
         <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or holds.</p>
         { patron ?
@@ -98,7 +102,7 @@ function mapStateToProps(state, ownProps) {
 
   return {
     fetchError: patronManager && patronManager.fetchError,
-    editedIdentifier: patronManager && patronManager.editedIdentifier,
+    responseBody: patronManager && patronManager.responseBody,
   };
 }
 

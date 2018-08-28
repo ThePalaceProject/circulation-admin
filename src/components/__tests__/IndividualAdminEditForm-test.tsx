@@ -534,7 +534,7 @@ describe("IndividualAdminEditForm", () => {
       expect(formData.get("password")).to.equal("newPassword");
       expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "librarian-all" }, { role: "manager", library: "nypl" }]));
 
-      wrapper.setProps({ editedIdentifier: "newEmail" });
+      wrapper.setProps({ responseBody: "newEmail" });
       // Let the call stack clear so the callback after editItem will run.
       const pause = (): Promise<void> => {
           return new Promise<void>(resolve => setTimeout(resolve, 0));
