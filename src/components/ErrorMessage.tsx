@@ -15,6 +15,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
     let status = this.props.error.status;
     let errorMessageHeader;
     let errorMessageText;
+
     if (status === 401) {
       return (
         <Alert bsStyle="danger">
@@ -32,14 +33,18 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
         response = JSON.parse(this.props.error.response).detail;
       } catch (e) {
         response = this.props.error.response;
-        if (this.isProblemDetail(response)) {
-          response = this.parseProblemDetail(response);
-          errorMessageHeader = response.title;
-          errorMessageText = response.description + response.status + ": " + response.detail;
+        // The response might be a problem detail document encoded as a string rather than as JSON;
+        // if so, we need to parse it and display the relevant information from it
+        // (rather than just displaying the entire string, which is hard to read)
+        let pdString = "Remote service returned a problem detail document";
+        if (this.isProblemDetail(response, pdString)) {
+          response = this.parseProblemDetail(response, pdString);
+          errorMessageHeader = response.title ? response.title : "Error";
+          errorMessageText = `${response.description}${response.status}: ${response.detail}`;
         }
       }
       if (!errorMessageText) {
-        errorMessageText = "Error: " + response;
+        errorMessageText = `Error: ${response}`;
       }
       return (
         <Alert bsStyle="danger">
@@ -57,25 +62,43 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
     }
   }
 
-  isProblemDetail(response) {
-    if (response.split(":")[0]) {
-      return response.split(":")[0] === "Remote service returned a problem detail document";
-    }
-    return false;
+  isProblemDetail(response, pdString) {
+    // Problem detail strings start with the phrase "Remote service returned a problem detail document";
+    // checking for it is the easiest way to test whether this is a problem detail string.
+    let pdRegExp = new RegExp(pdString);
+    return pdRegExp.test(response);
   }
 
-  parseProblemDetail(response) {
-    let [status, detail, title] = this.extractProperty(response, ["\"status\": ", "\"detail\": ", "\"title\": "]);
-    let description = "Remote service returned a problem detail document with status ";
-    return {description, status, detail, title};
+  parseProblemDetail(response, pdString) {
+    // We're going to want to check the second half of the string for the "detail" property.
+    // The first half of the string--"Remote service returned a problem detail document"--contains
+    // an irrelevant instance of the word "detail."  So we split the string in half and just send
+    // the second half to be searched in.
+    let responseData = response.split(pdString)[1];
+    let pdInfo = this.extractProperties(responseData, ["\"status\": ", "\"detail\": ", "\"title\": "]);
+    // this.extractProperties returns an object in which the keys are "status", "detail", and "title"
+    // and the values are extracted from the problem detail string.  If the problem detail string was missing
+    // one of those three properties, the value will be set as an empty string instead.
+    pdInfo["description"] = pdInfo["status"] ? `${pdString} with status ` : pdString;
+    return pdInfo;
   }
 
-  extractProperty(response, propertyStrings) {
-    let properties = [];
+  extractProperties(response, propertyStrings) {
+    let result = {};
     propertyStrings.map((propertyString) => {
-      properties.push(response.split(propertyString)[1].split(",")[0].replace(/["'}]/g, ""));
+      // We clean up the string containing the name of the property and convert it to a RegExp so that
+      // we can more easily check whether the problem detail has it.
+      let property = propertyString.replace(/[": ]/g, "");
+      let propertyRegExp = new RegExp(property);
+      let value = "";
+      // If the problem detail does have this property, pull the value out of the
+      // string and remove any extraneous characters and whitespaces from it
+      if (propertyRegExp.test(response)) {
+        value = response.split(property)[1].split(",")[0].replace(/["':}]/g, "").trim();
+      }
+      result[property] = value;
     });
-    return properties;
+    return result;
   }
 
   tryAgain() {
