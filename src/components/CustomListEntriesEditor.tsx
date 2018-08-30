@@ -182,6 +182,16 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
             </Droppable>
+            <button
+              className="btn btn-default load-more-button"
+              disabled={this.props.isFetchingMoreSearchResults}
+              onClick={this.loadMore}
+              >
+                { this.props.isFetchingMoreSearchResults ?
+                  <MoreDotsIcon /> :
+                  "Load more"
+                }
+            </button>
           </div>
         </div>
       </DragDropContext>
