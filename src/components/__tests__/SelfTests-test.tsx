@@ -159,8 +159,6 @@ describe("SelfTests", () => {
         />
       );
 
-      const passSVGIcon = wrapper.find(CheckSoloIcon);
-      const failSVGIcon = wrapper.find(XIcon);
       const description = wrapper.find(".description");
 
       expect(description.text().trim()).to.equal("Exception getting self-test results for collection ...");
