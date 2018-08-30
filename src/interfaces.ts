@@ -212,6 +212,7 @@ export interface SelfTestsData {
   start: string;
   end: string;
   results: SelfTestsResult[];
+  exception?: string;
 }
 
 export interface ServiceData {
