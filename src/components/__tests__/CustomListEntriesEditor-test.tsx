@@ -639,12 +639,12 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
     // no search results at all
-    let button = wrapper.find(".load-more-button");
+    let button = wrapper.find(".custom-list-search-results .load-more-button");
     expect(button.length).to.equal(0);
 
     // search results with no next link
     wrapper.setProps({ searchResults: searchResultsData });
-    button = wrapper.find(".load-more-button");
+    button = wrapper.find(".custom-list-search-results .load-more-button");
     expect(button.length).to.equal(0);
   });
 
@@ -662,12 +662,12 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let button = wrapper.find(".load-more-button");
+    let button = wrapper.find(".custom-list-search-results .load-more-button");
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).to.equal(false);
 
     wrapper.setProps({ isFetchingMoreSearchResults: true });
-    button = wrapper.find(".load-more-button");
+    button = wrapper.find(".custom-list-search-results .load-more-button");
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).to.equal(true);
   });
@@ -687,7 +687,7 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let button = wrapper.find(".load-more-button");
+    let button = wrapper.find(".custom-list-search-results .load-more-button");
     button.simulate("click");
     expect(loadMoreSearchResults.callCount).to.equal(1);
   });
