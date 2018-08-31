@@ -46,6 +46,74 @@ describe("ErrorMessage", () => {
     expect(alert.text()).to.contain("response");
   });
 
+  it("parses non-JSON problem detail string", () => {
+    let pd = "Remote service returned a problem detail document: {\"status\": 502, \"detail\": problem text, \"title\": TITLE}";
+    let error = {
+      status: 500,
+      response: pd,
+      url: ""
+    };
+    let message = "Remote service returned a problem detail document with status 502: problem text";
+    let wrapper = mount(
+      <ErrorMessage error={error} />
+    );
+    let alert = wrapper.find(".alert-danger");
+    let title = wrapper.find("b");
+    expect(alert.text()).to.contain(message);
+    expect(title.text()).to.equal("TITLE");
+  });
+
+  it("can handle missing detail property in non-JSON problem detail string", () => {
+    let pd = "Remote service returned a problem detail document: {\"status\": 502, \"title\": TITLE}";
+    let error = {
+      status: 500,
+      response: pd,
+      url: ""
+    };
+    let message = "Remote service returned a problem detail document with status 502: ";
+    let wrapper = mount(
+      <ErrorMessage error={error} />
+    );
+    let alert = wrapper.find(".alert-danger");
+    let title = wrapper.find("b");
+    expect(alert.text()).to.contain(message);
+    expect(title.text()).to.equal("TITLE");
+  });
+
+  it("can handle missing status property in non-JSON problem detail string", () => {
+    let pd = "Remote service returned a problem detail document:  {\"detail\": problem text, \"title\": TITLE}";
+    let error = {
+      status: 500,
+      response: pd,
+      url: ""
+    };
+    let message = "Remote service returned a problem detail document: ";
+    let wrapper = mount(
+      <ErrorMessage error={error} />
+    );
+    let alert = wrapper.find(".alert-danger");
+    let title = wrapper.find("b");
+    expect(alert.text()).to.contain(message);
+    expect(title.text()).to.equal("TITLE");
+  });
+
+  it("can handle missing title property in non-JSON problem detail string", () => {
+    let pd = "Remote service returned a problem detail document:  {\"status\": 502, \"detail\": problem text}";
+    let error = {
+      status: 500,
+      response: pd,
+      url: ""
+    };
+    let message = "Remote service returned a problem detail document with status 502: ";
+    let wrapper = mount(
+      <ErrorMessage error={error} />
+    );
+    let alert = wrapper.find(".alert-danger");
+    let title = wrapper.find("b");
+    expect(alert.text()).to.contain(message);
+    expect(title.text()).to.equal("Error");
+  });
+
   it("shows try again button", () => {
     let error = {
       status: 500,

@@ -52,6 +52,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   render() {
     const integration = this.props.item;
     const expand = this.state.expand;
+    const selfTestException = integration.self_test_results && integration.self_test_results.exception;
     let date;
     let startDate;
     let hours;
@@ -61,7 +62,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     let results = [];
     let duration;
 
-    if (integration.self_test_results) {
+    if (integration.self_test_results && !selfTestException) {
       date = new Date(integration.self_test_results.start);
       startDate = date.toDateString();
       hours = ("0" + date.getHours()).slice(-2);
@@ -80,12 +81,13 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const testDescription = integration.self_test_results ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
+    const failedSelfTest = selfTestException ? selfTestException : "";
 
     return (
       <div className="integration-selftests">
         <div>
           {results.length ? resultIcon : null}
-          <p className="description">{testDescription}</p>
+          <p className="description">{failedSelfTest ? failedSelfTest : testDescription}</p>
           <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
         <div className={`results collapse ${expandResultClass}`}>
