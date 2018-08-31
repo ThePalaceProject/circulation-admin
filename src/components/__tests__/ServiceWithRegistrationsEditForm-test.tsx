@@ -265,7 +265,7 @@ describe("ServiceWithRegistrationsEditForm", () => {
       expect(bplEditableInput.props().value).to.equal("testing");
     });
 
-    it.only("should update the state stage value when using the dropdown per library", () => {
+    it("should update the state stage value when using the dropdown per library", () => {
       editService = stub();
       registerLibrary = stub();
       wrapper = mount(

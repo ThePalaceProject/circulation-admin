@@ -32,7 +32,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
             <h2>Register libraries</h2>
             { this.props.data.allLibraries.map(library => {
                 const libraryRegistrationStatus = this.getLibraryProp(library, "status");
-                const setRegistryStage = this.getLibraryProp(library, "stage");
+                const currentRegistryStage = this.getLibraryProp(library, "stage");
                 const registration_stage =
                   (this.state.registration_stage && this.state.registration_stage[library.short_name]) || "testing";
 
@@ -41,16 +41,16 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                     <div className="library-name">{ library.name }</div>
                     <div className="library-registration-info">
                       <div className="current-stage">
-                        { (setRegistryStage && libraryRegistrationStatus !== "failure") ?
-                          <span>Current Stage: {setRegistryStage}</span> :
+                        { (currentRegistryStage && libraryRegistrationStatus !== "failure") ?
+                          <span>Current Stage: {currentRegistryStage}</span> :
                           <span>No current stage</span>
                         }
-                        { setRegistryStage !== "production" &&
+                        { currentRegistryStage !== "production" &&
                           <EditableInput
                             elementType="select"
                             name="registration_stage"
                             label="Stage"
-                            value={setRegistryStage || "testing"}
+                            value={currentRegistryStage || "testing"}
                             ref={`stage-${library.short_name}`}
                             onChange={() => this.updateRegistrationStage(library)}
                           >
@@ -65,12 +65,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                           <span className="bg-success">
                             Registered
                           </span>
-                          <button
-                            type="button"
-                            className="btn btn-default"
-                            disabled={this.props.disabled}
-                            onClick={() => this.context.registerLibrary(library, registration_stage)}
-                            >Update registration</button>
+                          {this.registerButton("Update registration", library, registration_stage)}
                         </div>
                       }
                       { libraryRegistrationStatus === "failure" &&
@@ -78,12 +73,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                           <span className="bg-danger">
                             Registration failed
                           </span>
-                          <button
-                            type="button"
-                            className="btn btn-default"
-                            disabled={this.props.disabled}
-                            onClick={() => this.context.registerLibrary(library, registration_stage)}
-                            >Retry registration</button>
+                          {this.registerButton("Retry registration", library, registration_stage)}
                         </div>
                       }
                       { libraryRegistrationStatus === null &&
@@ -91,12 +81,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
                           <span className="bg-warning">
                             Not registered
                           </span>
-                          <button
-                            type="button"
-                            className="btn btn-default"
-                            disabled={this.props.disabled}
-                            onClick={() => this.context.registerLibrary(library, registration_stage)}
-                            >Register</button>
+                          {this.registerButton("Register", library, registration_stage)}
                         </div>
                       }
                     </div>
@@ -107,6 +92,19 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
           </div>
         }
       </div>
+    );
+  }
+
+  registerButton(label, library, registration_stage) {
+    return (
+      <button
+        type="button"
+        className="btn btn-default"
+        disabled={this.props.disabled}
+        onClick={() => this.context.registerLibrary(library, registration_stage)}
+      >
+        {label}
+      </button>
     );
   }
 
