@@ -16,13 +16,14 @@ export interface ResetAdobeIdStateProps {
 }
 
 export interface ResetAdobeIdDispatchProps {
-  resetAdobeId?: (data: FormData) => Promise<void>;
+  resetAdobeId?: (data: FormData, library: string) => Promise<void>;
 }
 
 export interface ResetAdobeIdOwnProps {
   store?: Store<State>;
   csrfToken?: string;
   patron: PatronData;
+  library: string;
 }
 
 export interface ResetAdobeIdProps extends React.Props<ResetAdobeIdProps>, ResetAdobeIdStateProps, ResetAdobeIdDispatchProps, ResetAdobeIdOwnProps {}
@@ -46,7 +47,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
     const data = new (window as any).FormData();
     data.append("identifier", this.props.patron.authorization_identifier);
 
-    await this.props.resetAdobeId(data);
+    await this.props.resetAdobeId(data, this.props.library);
     this.setState({ checked: false });
   }
 
@@ -77,6 +78,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         <ManagePatronsForm
           store={this.props.store}
           csrfToken={this.props.csrfToken}
+          library={this.props.library}
         />
         { patron ?
             <div className="reset-adobe-id">
@@ -119,7 +121,7 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    resetAdobeId: (data: FormData) => dispatch(actions.resetAdobeId(data)),
+    resetAdobeId: (data: FormData, library: string) => dispatch(actions.resetAdobeId(data, library)),
   };
 }
 

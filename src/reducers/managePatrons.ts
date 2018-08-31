@@ -15,7 +15,7 @@ const loadCB = (state, action) => {
 };
 
 const extraActions = {
-  [`${ActionCreator.RESET_PATRON_DATA}_${ActionCreator.LOAD}`]: loadCB,
+  [`${ActionCreator.CLEAR_PATRON_DATA}_${ActionCreator.LOAD}`]: loadCB,
 };
 
 export default createFetchEditReducer<PatronData>(

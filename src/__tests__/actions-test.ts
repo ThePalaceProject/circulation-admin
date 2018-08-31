@@ -733,13 +733,13 @@ describe("actions", () => {
       }));
       fetch = fetchMock;
 
-      const data = await actions.patronLookup(formData)(dispatch);
+      const data = await actions.patronLookup(formData, "nypl")(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.SUCCESS}`);
       expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.LOAD}`);
       expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal("/admin/manage_patrons");
+      expect(fetchMock.args[0][0]).to.equal("/nypl/admin/manage_patrons");
       expect(fetchMock.args[0][1].method).to.equal("POST");
       expect(fetchMock.args[0][1].body).to.equal(formData);
       expect(data.json).to.eql(responseText);
@@ -754,26 +754,26 @@ describe("actions", () => {
         resolve({ status: 200 });
       }));
       fetch = fetchMock;
-      const data = await actions.resetAdobeId(formData)(dispatch);
+      const data = await actions.resetAdobeId(formData, "nypl")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.SUCCESS}`);
       expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal("/admin/manage_patrons/reset_adobe_id");
+      expect(fetchMock.args[0][0]).to.equal("/nypl/admin/manage_patrons/reset_adobe_id");
       expect(fetchMock.args[0][1].method).to.equal("POST");
       expect(fetchMock.args[0][1].body).to.equal(formData);
       expect(data.status).to.equal(200);
     });
   });
 
-  describe("resetPatronData", () => {
+  describe("clearPatronData", () => {
     it("dispatches load", () => {
       const dispatch = stub();
 
-      actions.resetPatronData()(dispatch);
+      actions.clearPatronData()(dispatch);
 
       expect(dispatch.callCount).to.equal(1);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RESET_PATRON_DATA}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.CLEAR_PATRON_DATA}_${ActionCreator.LOAD}`);
       expect(dispatch.args[0][0].data).to.equal(null);
     });
   });

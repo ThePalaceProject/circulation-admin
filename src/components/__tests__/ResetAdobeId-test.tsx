@@ -48,6 +48,7 @@ describe("ResetAdobeId", () => {
           store={store}
           csrfToken="token"
           patron={null}
+          library="nypl"
         />
       );
     });
@@ -80,6 +81,7 @@ describe("ResetAdobeId", () => {
           store={store}
           csrfToken="token"
           patron={patrons[0]}
+          library="nypl"
         />
       );
     });
@@ -113,6 +115,7 @@ describe("ResetAdobeId", () => {
           csrfToken="token"
           patron={patrons[0]}
           resetAdobeId={resetAdobeId}
+          library="nypl"
         />
       );
     });
@@ -189,6 +192,7 @@ describe("ResetAdobeId", () => {
           csrfToken="token"
           patron={patrons[0]}
           resetAdobeId={resetAdobeId}
+          library="nypl"
         />
       );
 

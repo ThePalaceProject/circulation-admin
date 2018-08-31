@@ -16,13 +16,14 @@ export interface ManagePatronsFormStateProps {
 }
 
 export interface ManagePatronsFormDispatchProps {
-  patronLookup?: (data: FormData) => Promise<void>;
-  resetPatronData?: () => Promise<void>;
+  patronLookup?: (data: FormData, library: string) => Promise<void>;
+  clearPatronData?: () => Promise<void>;
 }
 
 export interface ManagePatronsFormOwnProps {
   store?: Store<State>;
   csrfToken?: string;
+  library: string;
 }
 
 export interface ManagePatronsFormProps extends ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps {}
@@ -37,12 +38,11 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
   async submit(e) {
     e.preventDefault();
     const data = new (window as any).FormData(this.refs["form"] as any);
-
-    await this.props.patronLookup(data);
+    await this.props.patronLookup(data, this.props.library);
   }
 
   componentWillUnmount() {
-    this.props.resetPatronData();
+    this.props.clearPatronData();
   }
 
   render(): JSX.Element {
@@ -87,8 +87,8 @@ function mapStateToProps(state, ownProps) {
 export function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    patronLookup: (data: FormData) => dispatch(actions.patronLookup(data)),
-    resetPatronData: () => dispatch(actions.resetPatronData()),
+    patronLookup: (data: FormData, library: string) => dispatch(actions.patronLookup(data, library)),
+    clearPatronData: () => dispatch(actions.clearPatronData()),
   };
 };
 

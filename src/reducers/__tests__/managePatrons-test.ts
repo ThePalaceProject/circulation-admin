@@ -17,9 +17,9 @@ describe("ManagePatrons reducer", () => {
     expect(ManagePatrons(undefined, {})).to.deep.equal(initState);
   });
 
-  it("handles RESET_PATRON_DATA_LOAD", () => {
+  it("handles CLEAR_PATRON_DATA_LOAD", () => {
     let action = {
-      type: `${ActionCreator.RESET_PATRON_DATA}_LOAD`,
+      type: `${ActionCreator.CLEAR_PATRON_DATA}_LOAD`,
       data: null,
     };
     let oldPatronState = {

@@ -54,6 +54,7 @@ export class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabCont
           store={this.props.store}
           csrfToken={this.props.csrfToken}
           patron={this.props.patron}
+          library={this.props.library}
         />
       );
     }

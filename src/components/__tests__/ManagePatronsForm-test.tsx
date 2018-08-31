@@ -39,6 +39,7 @@ describe("ManagePatronsForm", () => {
         <ManagePatronsForm
           store={store}
           csrfToken="token"
+          library="nypl"
         />
       );
     });
@@ -81,6 +82,7 @@ describe("ManagePatronsForm", () => {
           store={store}
           csrfToken="token"
           patronLookup={patronLookup}
+          library="nypl"
         />
       );
     });
@@ -113,6 +115,7 @@ describe("ManagePatronsForm", () => {
           store={store}
           csrfToken="token"
           patronLookup={patronLookup}
+          library="nypl"
         />
       );
 
