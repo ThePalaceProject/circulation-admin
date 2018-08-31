@@ -6,6 +6,7 @@ import ActionCreator from "../actions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { PatronData } from "../interfaces";
 import { Alert } from "react-bootstrap";
+import ManagePatronsForm from "./ManagePatronsForm";
 import EditableInput from "./EditableInput";
 import PatronInfo from "./PatronInfo";
 
@@ -70,7 +71,13 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { responseBody &&
           <Alert bsStyle="success">{responseBody}</Alert>
         }
-        <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit. Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or holds.</p>
+        <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned
+          automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit.
+          Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or holds.</p>
+        <ManagePatronsForm
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+        />
         { patron ?
             <div>
               <PatronInfo patron={patron} />

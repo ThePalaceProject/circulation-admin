@@ -40,13 +40,8 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, void> {
     return (
       <div className="manage-patrons-page config">
         <Header />
-        <h2>Patron Manager</h2>
         <div className="manage-patrons">
-          <ManagePatronsForm
-            store={this.context.editorStore}
-            csrfToken={this.context.csrfToken}
-          />
-
+          <h2>Patron Manager</h2>
           <ManagePatronsTabContainer
             tab={this.props.params.tab}
             store={this.context.editorStore}
