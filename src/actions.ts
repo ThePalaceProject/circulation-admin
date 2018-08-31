@@ -164,7 +164,6 @@ export default class ActionCreator extends BaseActionCreator {
     returnType?: string,
   ) {
     let err: RequestError;
-
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.request(type));

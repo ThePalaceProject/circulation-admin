@@ -31,10 +31,9 @@ describe("ManagePatrons", () => {
     expect(wrapper.hasClass("manage-patrons-page")).to.equal(true);
   });
 
-  it("shows ManagePatronsForm", () => {
-    let form = wrapper.find(ManagePatronsForm);
-    expect(form.prop("store")).to.equal(store);
-    expect(form.prop("csrfToken")).to.equal("token");
+  it("shows heading", () => {
+    let heading = wrapper.find("h2");
+    expect(heading.text()).to.equal("Patron Manager");
   });
 
   it("shows ManagePatronsTabContainer", () => {

@@ -95,7 +95,7 @@ describe("ResetAdobeId", () => {
     });
 
     it("should have a submission button with a .btn-danger class", () => {
-      const button = wrapper.find("button");
+      const button = wrapper.find(".reset-adobe-id button");
       expect(button.hasClass("btn-danger")).to.equal(true);
     });
 
@@ -118,13 +118,13 @@ describe("ResetAdobeId", () => {
     });
 
     it("should have a disabled submit button", () => {
-      const button = wrapper.find("button");
+      const button = wrapper.find(".reset-adobe-id button");
       expect(button.props().disabled).to.equal(true);
     });
 
     it("should enable the submit button when the checkbox is checked", () => {
-      const input = wrapper.find("input");
-      const button = wrapper.find("button");
+      const input = wrapper.find(".reset-adobe-id input");
+      const button = wrapper.find(".reset-adobe-id button");
 
       expect(wrapper.state().checked).to.equal(false);
 
@@ -136,8 +136,8 @@ describe("ResetAdobeId", () => {
     });
 
     it("should disable the submit button when the checkbox is unchecked", () => {
-      const input = wrapper.find("input");
-      const button = wrapper.find("button");
+      const input = wrapper.find(".reset-adobe-id input");
+      const button = wrapper.find(".reset-adobe-id button");
       expect(button.props().disabled).to.equal(true);
 
       wrapper.setState({ checked: true });
@@ -151,7 +151,7 @@ describe("ResetAdobeId", () => {
     it("should call the adobe ID action when the button is clicked", () => {
       const data = new (window as any).FormData();
       data.append("identifier", patrons[0].authorization_identifier);
-      const button = wrapper.find("button");
+      const button = wrapper.find(".reset-adobe-id button");
       wrapper.setState({ checked: true });
 
       expect(resetAdobeId.callCount).to.equal(0);

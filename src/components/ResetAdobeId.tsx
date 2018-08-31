@@ -79,7 +79,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
           csrfToken={this.props.csrfToken}
         />
         { patron ?
-            <div>
+            <div className="reset-adobe-id">
               <PatronInfo patron={patron} />
               <p className="patron-warning"><b>Patron {patron && (patron.username || patron.personal_name)} will lose any existing loans or holds when the Adobe ID is reset.</b></p>
               <EditableInput
