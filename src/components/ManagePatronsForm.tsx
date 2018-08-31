@@ -51,12 +51,6 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
 
     return (
       <div className="manage-patrons-form">
-        { (fetchError && fetchError.status !== 200 && !patronExists) &&
-          <ErrorMessage error={fetchError} />
-        }
-        { (!fetchError && patronExists) &&
-          <Alert bsStyle="success">Patron found: {patron.authorization_identifier}</Alert>
-        }
         <form onSubmit={this.submit} className="edit-form" ref="form">
           <EditableInput
             elementType="input"
@@ -71,6 +65,12 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
             className="btn btn-default"
             >Submit</button>
         </form>
+        { (fetchError && !patronExists) &&
+          <ErrorMessage error={fetchError} />
+        }
+        { (!fetchError && patronExists) &&
+          <Alert bsStyle="success">Patron found: {patron.authorization_identifier}</Alert>
+        }
       </div>
     );
   }

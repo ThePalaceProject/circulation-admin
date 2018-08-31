@@ -65,7 +65,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
     return (
       <div className="patron-actions">
         <h4>Reset Adobe ID</h4>
-        { (fetchError && fetchError.status > 200 && patronExists) &&
+        { (fetchError && patronExists) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
         { responseBody &&
@@ -81,7 +81,10 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { patron ?
             <div className="reset-adobe-id">
               <PatronInfo patron={patron} />
-              <p className="patron-warning"><b>Patron {patron && (patron.username || patron.personal_name)} will lose any existing loans or holds when the Adobe ID is reset.</b></p>
+              <p className="patron-warning">
+                <b>Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
+                   lose any existing loans or holds when the Adobe ID is reset.</b>
+              </p>
               <EditableInput
                 type="checkbox"
                 name="resetAdobeId"
