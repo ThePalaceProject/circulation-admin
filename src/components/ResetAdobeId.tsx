@@ -13,6 +13,7 @@ import PatronInfo from "./PatronInfo";
 export interface ResetAdobeIdStateProps {
   fetchError?: FetchErrorData;
   responseBody?: string;
+  patron?: PatronData;
 }
 
 export interface ResetAdobeIdDispatchProps {
@@ -22,7 +23,6 @@ export interface ResetAdobeIdDispatchProps {
 export interface ResetAdobeIdOwnProps {
   store?: Store<State>;
   csrfToken?: string;
-  patron: PatronData;
   library: string;
 }
 
@@ -69,9 +69,6 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { (fetchError && patronExists) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
-        { responseBody &&
-          <Alert bsStyle="success">{responseBody}</Alert>
-        }
         <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned
           automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit.
           Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or holds.</p>
@@ -87,6 +84,12 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
                 <b>Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
                    lose any existing loans or holds when the Adobe ID is reset.</b>
               </p>
+              { responseBody &&
+                <Alert bsStyle="success">
+                  {responseBody}
+                  <br/>Please instruct the patron to log out and log back into their account.
+                </Alert>
+              }
               <EditableInput
                 type="checkbox"
                 name="resetAdobeId"
@@ -115,6 +118,7 @@ function mapStateToProps(state, ownProps) {
   return {
     fetchError: patronManager && patronManager.fetchError,
     responseBody: patronManager && patronManager.responseBody,
+    patron: patronManager && patronManager.data
   };
 }
 

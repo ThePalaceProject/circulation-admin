@@ -179,7 +179,7 @@ describe("ResetAdobeId", () => {
       expect(wrapper.props().responseBody).to.equal("Adobe ID for patron has been reset.");
       expect(alert.length).to.equal(1);
       expect(alert.hasClass("alert-success")).to.equal(true);
-      expect(alert.text()).to.equal("Adobe ID for patron has been reset.");
+      expect(alert.text()).to.equal("Adobe ID for patron has been reset.Please instruct the patron to log out and log back into their account.");
     });
 
     it("should show a failure alert message if the reset fails", async () => {

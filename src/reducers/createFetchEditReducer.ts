@@ -60,8 +60,6 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
           if (action.type in extraActions) {
             manipulateDataFunction = extraActions[action.type];
             return manipulateDataFunction(state, action);
-          } else {
-            return state;
           }
         }
 

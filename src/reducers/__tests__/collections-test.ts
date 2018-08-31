@@ -31,7 +31,8 @@ describe("collections reducer", () => {
     let action = { type: `${ActionCreator.EDIT_COLLECTION}_REQUEST` };
     let newState = Object.assign({}, initState, {
       fetchError: null,
-      isFetching: false
+      isFetching: false,
+      isEditing: true,
     });
     expect(collections(initState, action)).to.deep.equal(newState);
   });

@@ -6,30 +6,13 @@ import ActionCreator from "../actions";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 import Admin from "../models/Admin";
 import ResetAdobeId from "./ResetAdobeId";
-import { PatronData } from "../interfaces";
 
-export interface ManagePatronsTabContainerStateProps {
-  patron?: PatronData;
-}
-export interface PatronResponse {
-  text: PatronData;
-  response: IResponse;
-}
-
-export interface ManagePatronsTabContainerDispatchProps {}
-
-export interface ManagePatronsTabContainerOwnProps {
+export interface ManagePatronsTabContainerProps extends TabContainerProps {
   store: Store<State>;
   csrfToken: string;
   library: string;
   tab: string;
 }
-
-export interface ManagePatronsTabContainerProps extends
-  TabContainerProps,
-  ManagePatronsTabContainerStateProps,
-  ManagePatronsTabContainerDispatchProps,
-  ManagePatronsTabContainerOwnProps {}
 
 export interface ManagePatronsTabContainerContext extends TabContainerContext {
   admin: Admin;
@@ -37,7 +20,7 @@ export interface ManagePatronsTabContainerContext extends TabContainerContext {
 
 /** Body of the Patron Manager page, with a tab for each type of
     action that can be performed on a patron. */
-export class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabContainerProps> {
+export default class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabContainerProps> {
   context: ManagePatronsTabContainerContext;
   static contextTypes: React.ValidationMap<ManagePatronsTabContainerContext> = {
     router: React.PropTypes.object.isRequired,
@@ -53,7 +36,6 @@ export class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabCont
         <ResetAdobeId
           store={this.props.store}
           csrfToken={this.props.csrfToken}
-          patron={this.props.patron}
           library={this.props.library}
         />
       );
@@ -80,17 +62,3 @@ export class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabCont
     return "resetAdobeId";
   }
 }
-
-function mapStateToProps(state, ownProps) {
-  const patronManager = state.editor.patronManager && state.editor.patronManager;
-  return {
-    patron: patronManager && patronManager.data,
-  };
-}
-
-const ConnectedManagePatronsTabContainer = connect<ManagePatronsTabContainerStateProps, ManagePatronsTabContainerDispatchProps, ManagePatronsTabContainerOwnProps>(
-  mapStateToProps,
-  null
-)(ManagePatronsTabContainer);
-
-export default ConnectedManagePatronsTabContainer;
