@@ -86,11 +86,6 @@ describe("ResetAdobeId", () => {
       );
     });
 
-    it("should show the PatronInfo list", () => {
-      const patronInfo = wrapper.find(".patron-info");
-      expect(patronInfo.length).to.equal(1);
-    });
-
     it("should display a warning message before the submission button", () => {
       const patronWarning = wrapper.find(".patron-warning");
       expect(patronWarning.text()).to.equal("Patron User Name will lose any existing loans or holds when the Adobe ID is reset.");

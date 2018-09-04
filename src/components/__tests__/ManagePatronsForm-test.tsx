@@ -142,6 +142,13 @@ describe("ManagePatronsForm", () => {
       expect(alert.hasClass("alert-success")).to.equal(true);
       expect(alert.text()).to.equal(`Patron found: ${patron.authorization_identifier}`);
     });
+
+    it("should show the PatronInfo list when a patron is found", () => {
+      wrapper.setProps({ patron });
+      const patronInfo = wrapper.find(".patron-info");
+      expect(patronInfo.length).to.equal(1);
+    });
+
   });
 
 });

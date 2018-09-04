@@ -8,7 +8,6 @@ import { PatronData } from "../interfaces";
 import { Alert } from "react-bootstrap";
 import ManagePatronsForm from "./ManagePatronsForm";
 import EditableInput from "./EditableInput";
-import PatronInfo from "./PatronInfo";
 
 export interface ResetAdobeIdStateProps {
   fetchError?: FetchErrorData;
@@ -79,7 +78,6 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         />
         { patron ?
             <div className="reset-adobe-id">
-              <PatronInfo patron={patron} />
               <p className="patron-warning">
                 <b>Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
                    lose any existing loans or holds when the Adobe ID is reset.</b>

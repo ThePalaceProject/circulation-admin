@@ -8,6 +8,7 @@ import { PatronData } from "../interfaces";
 import ButtonForm from "./ButtonForm";
 import EditableInput from "./EditableInput";
 import ErrorMessage from "./ErrorMessage";
+import PatronInfo from "./PatronInfo";
 import { Alert } from "react-bootstrap";
 
 export interface ManagePatronsFormStateProps {
@@ -70,6 +71,9 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
         }
         { (!fetchError && patronExists) &&
           <Alert bsStyle="success">Patron found: {patron.authorization_identifier}</Alert>
+        }
+        { (!fetchError && patronExists) &&
+          <PatronInfo patron={patron} />
         }
       </div>
     );
