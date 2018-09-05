@@ -119,7 +119,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               </li>
               { isLibraryManager &&
                 <li className="header-link">
-                  <Link to={"/admin/web/patrons/" + this.context.library()}>Patron Manager</Link>
+                  <Link to={"/admin/web/patrons/" + this.context.library()}>Patrons</Link>
                 </li>
               }
             </Nav>

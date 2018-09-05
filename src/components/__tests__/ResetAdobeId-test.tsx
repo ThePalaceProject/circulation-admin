@@ -88,7 +88,7 @@ describe("ResetAdobeId", () => {
 
     it("should display a warning message before the submission button", () => {
       const patronWarning = wrapper.find(".patron-warning");
-      expect(patronWarning.text()).to.equal("Patron User Name will lose any existing loans or holds when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal("Patron User Name will lose any existing loans when the Adobe ID is reset.");
     });
 
     it("should have a submission button with a .btn-danger class", () => {
@@ -177,6 +177,20 @@ describe("ResetAdobeId", () => {
       expect(alert.text()).to.equal("Adobe ID for patron has been reset.Please instruct the patron to log out and log back into their account.");
     });
 
+    it("should hide the checkbox and the reset button if the reset is successful", () => {
+      let input = wrapper.find(".reset-adobe-id input");
+      let button = wrapper.find(".reset-adobe-id button");
+      expect(input.length).to.equal(1);
+      expect(button.length).to.equal(1);
+
+      wrapper.setProps({ responseBody: "Adobe ID for patron has been reset." });
+      input = wrapper.find(".reset-adobe-id input");
+      button = wrapper.find(".reset-adobe-id button");
+
+      expect(input.length).to.equal(0);
+      expect(button.length).to.equal(0);
+    });
+
     it("should show a failure alert message if the reset fails", async () => {
       const fetchError = { status: 400, response: "", url: "" };
       resetAdobeId = stub()
@@ -209,7 +223,21 @@ describe("ResetAdobeId", () => {
     it("should update the warning message if a new patron was searched and found", () => {
       wrapper.setProps({ patron: patrons[1] });
       const patronWarning = wrapper.find(".patron-warning");
-      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose any existing loans or holds when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose any existing loans when the Adobe ID is reset.");
+    });
+
+    it("should restore the checkbox and the reset button if a new patron was searched and found", () => {
+      wrapper.setProps({ responseBody: "Adobe ID for patron has been reset." });
+      let input = wrapper.find(".reset-adobe-id input");
+      let button = wrapper.find(".reset-adobe-id button");
+      expect(input.length).to.equal(0);
+      expect(button.length).to.equal(0);
+
+      wrapper.setProps({ responseBody: "" });
+      input = wrapper.find(".reset-adobe-id input");
+      button = wrapper.find(".reset-adobe-id button");
+      expect(input.length).to.equal(1);
+      expect(button.length).to.equal(1);
     });
   });
 });

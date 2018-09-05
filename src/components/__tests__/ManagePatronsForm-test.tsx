@@ -103,7 +103,6 @@ describe("ManagePatronsForm", () => {
 
       errorMessage = wrapper.find(ErrorMessage);
       expect(errorMessage.length).to.equal(1);
-      expect(errorMessage.hasClass("alert-danger")).to.equal(true);
       expect(errorMessage.props().error).to.equal(fetchError);
     });
 
@@ -126,7 +125,6 @@ describe("ManagePatronsForm", () => {
 
       errorMessage = wrapper.find(ErrorMessage);
       expect(errorMessage.length).to.equal(1);
-      expect(errorMessage.hasClass("alert-danger")).to.equal(true);
       expect(errorMessage.props().error).to.equal(fetchError);
       expect(errorMessage.text()).to.equal("Error: No patron identifier provided");
     });
@@ -139,7 +137,6 @@ describe("ManagePatronsForm", () => {
 
       alert = wrapper.find(Alert);
       expect(alert.length).to.equal(1);
-      expect(alert.hasClass("alert-success")).to.equal(true);
       expect(alert.text()).to.equal(`Patron found: ${patron.authorization_identifier}`);
     });
 

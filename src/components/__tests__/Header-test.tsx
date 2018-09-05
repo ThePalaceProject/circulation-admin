@@ -111,7 +111,7 @@ describe("Header", () => {
 
       let patronManagerLink = links.at(3);
       expect(patronManagerLink.prop("to")).to.equal("/admin/web/patrons/nypl");
-      expect(patronManagerLink.children().text()).to.equal("Patron Manager");
+      expect(patronManagerLink.children().text()).to.equal("Patrons");
 
       let settingsLink = links.at(4);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config");
@@ -158,7 +158,7 @@ describe("Header", () => {
         let links = wrapper.find(Link);
         expect(links.length).to.equal(2);
         links.forEach((link) => {
-          expect(link.children().text()).to.not.equal("Patron Manager");
+          expect(link.children().text()).to.not.equal("Patrons");
         });
       });
       it("shows Patron Manager link for library manager", () => {
@@ -166,14 +166,14 @@ describe("Header", () => {
         let links = wrapper.find(Link);
         let patronManagerLink = links.at(3);
         expect(links.length).to.equal(5);
-        expect(patronManagerLink.children().text()).to.equal("Patron Manager");
+        expect(patronManagerLink.children().text()).to.equal("Patrons");
       });
       it("shows Patron Manager link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
         let links = wrapper.find(Link);
         let patronManagerLink = links.at(3);
         expect(links.length).to.equal(5);
-        expect(patronManagerLink.children().text()).to.equal("Patron Manager");
+        expect(patronManagerLink.children().text()).to.equal("Patrons");
       });
     });
   });

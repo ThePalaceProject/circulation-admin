@@ -651,6 +651,6 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   clearPatronData() {
-    return (dispatch) => dispatch(this.load<any>(ActionCreator.CLEAR_PATRON_DATA, null));
+    return (dispatch) => dispatch(this.load<void>(ActionCreator.CLEAR_PATRON_DATA, null));
   }
 }

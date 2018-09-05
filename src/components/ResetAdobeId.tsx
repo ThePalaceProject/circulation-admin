@@ -70,7 +70,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         }
         <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned
           automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit.
-          Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans or holds.</p>
+          Please be sure to inform patrons that resetting their Adobe ID will cause them to lose any existing loans.</p>
         <ManagePatronsForm
           store={this.props.store}
           csrfToken={this.props.csrfToken}
@@ -80,7 +80,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
             <div className="reset-adobe-id">
               <p className="patron-warning">
                 <b>Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
-                   lose any existing loans or holds when the Adobe ID is reset.</b>
+                   lose any existing loans when the Adobe ID is reset.</b>
               </p>
               { responseBody &&
                 <Alert bsStyle="success">
@@ -88,20 +88,25 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
                   <br/>Please instruct the patron to log out and log back into their account.
                 </Alert>
               }
-              <EditableInput
-                type="checkbox"
-                name="resetAdobeId"
-                checked={this.state.checked}
-                label="Patron has been informed about this change"
-                onChange={this.toggleCheckbox}
+              { !responseBody &&
+                <EditableInput
+                  type="checkbox"
+                  name="resetAdobeId"
+                  checked={this.state.checked}
+                  label="Patron has been informed about this change"
+                  onChange={this.toggleCheckbox}
                 />
-              <button
-                className="btn btn-danger"
-                onClick={this.resetAdobeId}
-                disabled={!this.state.checked}
-              >
-                Reset Adobe ID
-              </button>
+              }
+              { !responseBody &&
+                <button
+                  className="btn btn-danger"
+                  onClick={this.resetAdobeId}
+                  disabled={!this.state.checked}
+                  >
+                    Reset Adobe ID
+                </button>
+              }
+
             </div> :
             <p><b>Search for a patron to begin.</b></p>
         }

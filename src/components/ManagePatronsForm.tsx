@@ -57,9 +57,9 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
             elementType="input"
             ref="identifier"
             name="identifier"
-            label="Barcode"
+            label="Identifier"
             className="form-control"
-            placeholder="Enter the patron's barcode">
+            placeholder="Enter the patron's identifier">
           </EditableInput>
           <button
             type="submit"
