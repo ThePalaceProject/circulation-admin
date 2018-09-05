@@ -64,7 +64,7 @@ describe("ManagePatronsTabContainer", () => {
     });
   });
 
-  describe.only("for right library manager", () => {
+  describe("for right library manager", () => {
     beforeEach(() => {
       store = buildStore();
       push = stub();
