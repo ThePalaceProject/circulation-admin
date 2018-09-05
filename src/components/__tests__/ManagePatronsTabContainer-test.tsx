@@ -64,7 +64,7 @@ describe("ManagePatronsTabContainer", () => {
     });
   });
 
-  describe("for right library manager", () => {
+  describe.only("for right library manager", () => {
     beforeEach(() => {
       store = buildStore();
       push = stub();
@@ -88,6 +88,12 @@ describe("ManagePatronsTabContainer", () => {
       let links = wrapper.find("ul.nav-tabs").find("a");
       let linkTexts = links.map(link => link.text());
       expect(linkTexts).to.contain("Reset Adobe ID");
+    });
+
+    it("disables the link for the current tab", () => {
+      let tabItems = wrapper.find("ul.nav-tabs").find("li");
+      expect(tabItems.length).to.equal(1);
+      expect(tabItems.at(0).props().className).to.equal("disabled");
     });
 
     it("shows components", () => {

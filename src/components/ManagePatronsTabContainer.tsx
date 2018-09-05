@@ -50,6 +50,15 @@ export default class ManagePatronsTabContainer extends TabContainer<ManagePatron
     }
   }
 
+  // For now, we only have one item (reset Adobe ID) in this list of tabs.
+  // We disable it to make clear to users that clicking on it isn't
+  // supposed to do anything (they're already at the reset Adobe ID url, so
+  // clicking on the link for it won't accomplish anything).  If/when we
+  // have more items, we won't need to do this.
+  tabClass(name) {
+    return this.currentTab() === name ? "disabled" : null;
+  }
+
   tabDisplayName(name) {
     if (name === "resetAdobeId") {
       return "Reset Adobe ID";
