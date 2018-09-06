@@ -26,7 +26,7 @@ export interface ServiceEditFormState {
 
 /** Form for editing service configuration based on protocol information from the server.
     Used on most tabs on the system configuration page. */
-export default class ServiceEditForm<T extends ServicesData, ServiceEditFormState> extends React.Component<ServiceEditFormProps<T>, any> {
+export default class ServiceEditForm<T extends ServicesData> extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
   constructor(props) {
     super(props);
     let defaultProtocol;
