@@ -26,7 +26,6 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
           editItem={this.props.editItem}
           urlBase={this.props.urlBase}
           listDataKey={this.props.listDataKey}
-          editedIdentifier={this.props.editedIdentifier}
         />
       </div>
     );
