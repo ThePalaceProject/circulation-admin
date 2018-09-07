@@ -38,7 +38,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   static contextTypes = {
     library: React.PropTypes.func,
     router: React.PropTypes.object.isRequired,
-    admin: React.PropTypes.object.isRequired
+    admin: React.PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -55,6 +55,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render(): JSX.Element {
+
+    let isLibraryManager = this.context.library && this.context.admin.isLibraryManager(this.context.library());
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
@@ -80,51 +82,56 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           <Navbar.Toggle />
         </Navbar.Header>
 
-        <Navbar.Collapse>
+        <Navbar.Collapse className="menu">
           { this.context.library && this.context.library() &&
             <Nav>
-              <li>
+              <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/groups"}
                   bookUrl={null}>
                   Catalog
                 </CatalogLink>
               </li>
-              <li>
+              <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/complaints"}
                   bookUrl={null}>
                   Complaints
                 </CatalogLink>
               </li>
-              <li>
+              <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/suppressed"}
                   bookUrl={null}>
                   Hidden Books
                 </CatalogLink>
               </li>
-              <li>
+              <li className="header-link">
                 <Link to={"/admin/web/lists/" + this.context.library()}>Lists</Link>
               </li>
-              { this.context.admin.isLibraryManager(this.context.library()) &&
-                <li>
+              { isLibraryManager &&
+                <li className="header-link">
                   <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
                 </li>
               }
-              <li>
+              <li className="header-link">
                 <Link to={"/admin/web/dashboard/" + this.context.library()}>Dashboard</Link>
               </li>
+              { isLibraryManager &&
+                <li className="header-link">
+                  <Link to={"/admin/web/patrons/" + this.context.library()}>Patrons</Link>
+                </li>
+              }
             </Nav>
           }
           <Nav className="pull-right">
             { (!this.context.library || !this.context.library()) &&
-              <li>
+              <li className="header-link">
                 <Link to="/admin/web/dashboard">Dashboard</Link>
               </li>
             }
             { this.context.admin.isLibraryManagerOfSomeLibrary() &&
-              <li>
+              <li className="header-link">
                 <Link to="/admin/web/config">System Configuration</Link>
               </li>
             }
@@ -207,4 +214,3 @@ export default class HeaderWithStore extends React.Component<void, void> {
     );
   }
 }
-

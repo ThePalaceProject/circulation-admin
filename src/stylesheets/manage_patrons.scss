@@ -1,0 +1,91 @@
+.manage-patrons-page {
+  height: 100%;
+
+  h2 {
+    padding: 1%;
+  }
+
+  .manage-patrons {
+    height: 70%;
+    width: 100%;
+    padding: 1%;
+
+    .manage-patrons-form, .patron-info {
+      display: flex;
+      flex-direction: column;
+      padding: 1% 0;
+      flex-basis: 20%;
+
+      form {
+        .form-group {
+          width: 60%;
+          float: left;
+        }
+        button {
+          margin: 20px;
+          border: 1px solid transparent;
+        }
+      }
+    }
+    .patron-info {
+      flex: 5;
+      ul {
+        display: block;
+        list-style: none;
+        padding: 0 0 1% 0;
+        width: 100%;
+      }
+      .patron-data-list {
+        li {
+          display: block;
+          max-width: none;
+          margin: 0px;
+          border: none;
+
+          label {
+            width: 180px;
+          }
+
+          p {
+            display: inline-block;
+          }
+        }
+      }
+    }
+
+    .tab-container {
+      min-height: 450px;
+      .nav-tabs {
+        min-height: 400px;
+        border-left: 1px solid $light-gray;
+        li {
+          border-bottom: 1px solid $light-gray;
+          border-radius: 0;
+          cursor: pointer;
+          a {
+            border: 0;
+            border-radius: 0;
+          }
+        }
+        .disabled a:focus {
+          outline-color: transparent;
+        }
+        li:not(.disabled):hover {
+          background: $light-gray;
+        }
+      }
+    }
+
+    .tab-content {
+      padding: 0;
+    }
+  }
+}
+
+.patron-actions {
+  padding-bottom: 3%;
+}
+
+.reset-adobe-id .control-label {
+  font-weight: normal;
+}

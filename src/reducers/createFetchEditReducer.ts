@@ -7,7 +7,7 @@ export interface FetchEditState<T> {
   isEditing: boolean;
   fetchError: RequestError | null;
   isLoaded: boolean;
-  editedIdentifier?: string;
+  responseBody?: string;
 }
 
 export interface FetchEditReducer<T> {
@@ -25,7 +25,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
     isEditing: false,
     fetchError: null,
     isLoaded: false,
-    editedIdentifier: null
+    responseBody: null
   };
 
   const fetchEditReducer = (state: FetchEditState<T> = initialState, action): FetchEditState<T> => {
@@ -35,7 +35,8 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
           data: null,
           isLoaded: false,
           isFetching: true,
-          fetchError: null
+          fetchError: null,
+          responseBody: null
         });
 
       case `${fetchPrefix}_${ActionCreator.FAILURE}`:
@@ -59,8 +60,6 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
           if (action.type in extraActions) {
             manipulateDataFunction = extraActions[action.type];
             return manipulateDataFunction(state, action);
-          } else {
-            return state;
           }
         }
 
@@ -70,13 +69,14 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
               return Object.assign({}, state, {
                 isEditing: true,
                 fetchError: null,
-                editedIdentifier: null
+                responseBody: null
               });
 
             case `${editPrefix}_${ActionCreator.SUCCESS}`:
               return Object.assign({}, state, {
                 isEditing: false,
-                fetchError: null
+                fetchError: null,
+                responseBody: null
               });
 
             case `${editPrefix}_${ActionCreator.FAILURE}`:
@@ -87,7 +87,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
 
             case `${editPrefix}_${ActionCreator.LOAD}`:
               return Object.assign({}, state, {
-                editedIdentifier: action.data
+                responseBody: action.data
               });
 
             default:

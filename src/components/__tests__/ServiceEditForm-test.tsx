@@ -772,7 +772,7 @@ describe("ServiceEditForm", () => {
 
       expect(editService.callCount).to.equal(1);
 
-      wrapper.setProps({ editedIdentifier: "5" });
+      wrapper.setProps({ responseBody: "5" });
       // Let the call stack clear so the callback after editItem will run.
       const pause = (): Promise<void> => {
           return new Promise<void>(resolve => setTimeout(resolve, 0));

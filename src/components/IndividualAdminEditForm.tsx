@@ -10,7 +10,7 @@ export interface IndividualAdminEditFormProps {
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
   listDataKey: string;
-  editedIdentifier?: string;
+  responseBody?: string;
 }
 
 export interface IndividualAdminEditFormState {
@@ -228,7 +228,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     } else if (role === "manager") {
       if (this.isSelected(role, library)) {
         // Remove the manager role for this library, and add the librarian role.
-        // If manager-all was selected, remove it and add individual manager 
+        // If manager-all was selected, remove it and add individual manager
         // roles for other libraries and the librarian-all role.
         if (this.isSelected("manager-all")) {
           const roles = [];
@@ -308,8 +308,8 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       }
 
       // If a new admin was created, go to its edit page.
-      if (!this.props.item && this.props.editedIdentifier) {
-        window.location.href = this.props.urlBase + "edit/" + this.props.editedIdentifier;
+      if (!this.props.item && this.props.responseBody) {
+        window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
       }
     });
   }

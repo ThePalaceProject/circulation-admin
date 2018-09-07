@@ -77,6 +77,22 @@ const collections = [
       ]
     }
   },
+  {
+    id: 1,
+    name: "collection 1",
+    protocol: "protocol",
+    libraries: [{ short_name: "library" }],
+    settings: {
+      external_account_id: "nypl",
+    },
+    self_test_results: {
+      exception: "Exception getting self-test results for collection ...",
+      duration: 0,
+      start: "",
+      end: "",
+      results: [],
+    }
+  },
 ];
 
 describe("SelfTests", () => {
@@ -90,7 +106,7 @@ describe("SelfTests", () => {
     );
   });
 
-  it("should render the SelfTests component but no results", () => {
+  it("should render the SelfTests component with empty self_test_results", () => {
     wrapper = shallow(
       <SelfTests item={{} as any} />
     );
@@ -134,6 +150,18 @@ describe("SelfTests", () => {
           item={collections[1]}
         />
       );
+    });
+
+    it("should display the base error message when attempting to run self tests", () => {
+      wrapper = shallow(
+        <SelfTests
+          item={collections[2]}
+        />
+      );
+
+      const description = wrapper.find(".description");
+
+      expect(description.text().trim()).to.equal("Exception getting self-test results for collection ...");
     });
 
     it("should display information about the whole self test result", () => {

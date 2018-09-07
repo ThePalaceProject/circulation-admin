@@ -197,7 +197,7 @@ describe("CustomListEditor", () => {
     getTextStub.restore();
     getEntriesStub.restore();
 
-    wrapper.setProps({ editedIdentifier: "5" });
+    wrapper.setProps({ responseBody: "5" });
     // Let the call stack clear so the callback after editCustomList will run.
     const pause = (): Promise<void> => {
         return new Promise<void>(resolve => setTimeout(resolve, 0));

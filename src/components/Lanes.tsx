@@ -21,7 +21,7 @@ import HiddenIcon from "./icons/HiddenIcon";
 export interface LanesStateProps {
   lanes: LaneData[];
   customLists: CustomListData[];
-  editedIdentifier?: string;
+  responseBody?: string;
   fetchError?: FetchErrorData;
   isFetching: boolean;
 }
@@ -109,7 +109,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
               parent={this.parentOfNewLane()}
               customLists={this.props.customLists}
               editLane={this.editLane}
-              editedIdentifier={this.props.editedIdentifier}
+              responseBody={this.props.responseBody}
               />
           }
 
@@ -329,7 +329,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
 function mapStateToProps(state, ownProps) {
   return {
     lanes: state.editor.lanes && state.editor.lanes.data && state.editor.lanes.data.lanes,
-    editedIdentifier: state.editor.lanes && state.editor.lanes.editedIdentifier,
+    responseBody: state.editor.lanes && state.editor.lanes.responseBody,
     customLists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     fetchError: state.editor.lanes.fetchError || state.editor.laneVisibility.fetchError,
     isFetching: state.editor.lanes.isFetching || state.editor.lanes.isEditing || state.editor.laneVisibility.isFetching || state.editor.customLists.isFetching || state.editor.resetLanes.isFetching
