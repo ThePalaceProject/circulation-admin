@@ -36,7 +36,6 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
   getChildContext() {
     return {
       registerLibrary: (library: LibraryData, registration_stage: string) => {
-        console.log(library, registration_stage);
         if (this.itemToEdit()) {
           const data = new (window as any).FormData();
           data.append("library_short_name", library.short_name);
