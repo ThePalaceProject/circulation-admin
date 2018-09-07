@@ -38,7 +38,7 @@ export class Libraries extends EditableConfigList<LibrariesData, LibraryData> {
 function mapStateToProps(state, ownProps) {
   return {
     data: state.editor.libraries && state.editor.libraries.data,
-    editedIdentifier: state.editor.libraries && state.editor.libraries.editedIdentifier,
+    responseBody: state.editor.libraries && state.editor.libraries.responseBody,
     fetchError: state.editor.libraries.fetchError,
     isFetching: state.editor.libraries.isFetching || state.editor.libraries.isEditing
   };

@@ -106,7 +106,7 @@ describe("SelfTests", () => {
     );
   });
 
-  it("should render the SelfTests component but no results", () => {
+  it("should render the SelfTests component with empty self_test_results", () => {
     wrapper = shallow(
       <SelfTests item={{} as any} />
     );

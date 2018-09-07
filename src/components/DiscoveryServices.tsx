@@ -35,10 +35,11 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
 
   getChildContext() {
     return {
-      registerLibrary: (library: LibraryData) => {
+      registerLibrary: (library: LibraryData, registration_stage: string) => {
         if (this.itemToEdit()) {
           const data = new (window as any).FormData();
           data.append("library_short_name", library.short_name);
+          data.append("registration_stage", registration_stage);
           data.append("integration_id", this.itemToEdit().id);
           this.props.registerLibrary(data).then(() => {
             if (this.props.fetchLibraryRegistrations) {
@@ -68,7 +69,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
-    editedIdentifier: state.editor.discoveryServices && state.editor.discoveryServices.editedIdentifier,
+    responseBody: state.editor.discoveryServices && state.editor.discoveryServices.responseBody,
     fetchError: state.editor.discoveryServices.fetchError || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.fetchError),
     isFetching: state.editor.discoveryServices.isFetching || state.editor.discoveryServices.isEditing || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.isFetching),
     isFetchingLibraryRegistrations: state.editor.discoveryServiceLibraryRegistrations && state.editor.discoveryServiceLibraryRegistrations.isFetching

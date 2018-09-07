@@ -274,6 +274,19 @@ export interface PatronAuthServicesData extends ServicesData {
   patron_auth_services: PatronAuthServiceData[];
 }
 
+export interface PatronData {
+  authorization_expires: string | number;
+  authorization_identifier: string | number;
+  authorization_identifiers: string[];
+  block_reason: string;
+  email_address?: string;
+  external_type: string;
+  fines: string;
+  permanent_id: string;
+  personal_name?: string;
+  username?: string;
+}
+
 export interface SitewideSettingData {
   key: string;
   value: string;
@@ -329,6 +342,7 @@ export interface DiscoveryServicesData extends ServicesWithRegistrationsData {
 
 export interface LibraryDataWithStatus extends LibraryData {
   status: string;
+  stage?: string;
 }
 
 export interface LibraryRegistrationData {

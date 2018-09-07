@@ -10,6 +10,7 @@ import {
   CustomListsData, CustomListDetailsData, LanesData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
   StorageServicesData, LoggingServicesData, SelfTestsData,
+  PatronData
 } from "./interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
@@ -140,6 +141,10 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly GET_SELF_TESTS = "GET_SELF_TESTS";
   static readonly RUN_SELF_TESTS = "RUN_SELF_TESTS";
 
+  static readonly PATRON_LOOKUP = "PATRON_LOOKUP";
+  static readonly CLEAR_PATRON_DATA = "CLEAR_PATRON_DATA";
+  static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
+
   csrfToken: string;
 
   constructor(fetcher?: DataFetcher, csrfToken?: string) {
@@ -150,9 +155,15 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
 
-  postForm(type: string, url: string, data: FormData | null, method?: string, defaultErrorMessage?: string) {
+  postForm(
+    type: string,
+    url: string,
+    data: FormData | null,
+    method?: string,
+    defaultErrorMessage?: string,
+    returnType?: string,
+  ) {
     let err: RequestError;
-
     return (dispatch => {
       return new Promise((resolve, reject: RequestRejector) => {
         dispatch(this.request(type));
@@ -168,7 +179,12 @@ export default class ActionCreator extends BaseActionCreator {
         }).then(response => {
           if (response.status === 200 || response.status === 201) {
             dispatch(this.success(type));
-            if (response.text) {
+            if (response.json && returnType === "JSON") {
+              response.json().then(data => {
+                dispatch(this.load<any>(type, data));
+                resolve(response);
+              });
+            } else if (response.text) {
               response.text().then(text => {
                 dispatch(this.load<string>(type, text));
                 resolve(response);
@@ -622,5 +638,19 @@ export default class ActionCreator extends BaseActionCreator {
 
   runSelfTests(url: string) {
     return this.postForm(ActionCreator.RUN_SELF_TESTS, url, null).bind(this);
+  }
+
+  patronLookup(data: FormData, library: string) {
+    const url = "/" + library + "/admin/manage_patrons";
+    return this.postForm(ActionCreator.PATRON_LOOKUP, url, data, "POST", "", "JSON").bind(this);
+  }
+
+  resetAdobeId(data: FormData, library: string) {
+    const url = "/" + library + "/admin/manage_patrons/reset_adobe_id";
+    return this.postForm(ActionCreator.RESET_ADOBE_ID, url, data).bind(this);
+  }
+
+  clearPatronData() {
+    return (dispatch) => dispatch(this.load<void>(ActionCreator.CLEAR_PATRON_DATA, null));
   }
 }
