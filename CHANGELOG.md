@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.78
+#### Fixed
+- Fixed a bug for new collections that could not correctly fetch self test results.
+
 ### v0.0.77
 #### Added
 - Added the ability for an admin to register a library in either the "testing" or "production" stage with the Library Registry.
