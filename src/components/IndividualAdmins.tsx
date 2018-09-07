@@ -34,7 +34,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
-    editedIdentifier: state.editor.individualAdmins && state.editor.individualAdmins.editedIdentifier,
+    responseBody: state.editor.individualAdmins && state.editor.individualAdmins.responseBody,
     fetchError: state.editor.individualAdmins.fetchError,
     isFetching: state.editor.individualAdmins.isFetching || state.editor.individualAdmins.isEditing
   };

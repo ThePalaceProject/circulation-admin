@@ -68,7 +68,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
-    editedIdentifier: state.editor.discoveryServices && state.editor.discoveryServices.editedIdentifier,
+    responseBody: state.editor.discoveryServices && state.editor.discoveryServices.responseBody,
     fetchError: state.editor.discoveryServices.fetchError || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.fetchError),
     isFetching: state.editor.discoveryServices.isFetching || state.editor.discoveryServices.isEditing || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.isFetching),
     isFetchingLibraryRegistrations: state.editor.discoveryServiceLibraryRegistrations && state.editor.discoveryServiceLibraryRegistrations.isFetching

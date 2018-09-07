@@ -13,7 +13,7 @@ export interface LaneEditorProps extends React.Props<LaneEditor> {
   parent?: LaneData;
   lane?: LaneData;
   customLists: CustomListData[];
-  editedIdentifier?: string;
+  responseBody?: string;
   editLane: (data: FormData) => Promise<void>;
   deleteLane?: (lane: LaneData) => Promise<void>;
   showLane?: (lane: LaneData) => Promise<void>;
@@ -222,8 +222,8 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
     data.append("inherit_parent_restrictions", this.state.inheritParentRestrictions);
     this.props.editLane(data).then(() => {
       // If a new lane was created, go to its edit page.
-      if (!this.props.lane && this.props.editedIdentifier) {
-        window.location.href = "/admin/web/lanes/" + this.props.library + "/edit/" + this.props.editedIdentifier;
+      if (!this.props.lane && this.props.responseBody) {
+        window.location.href = "/admin/web/lanes/" + this.props.library + "/edit/" + this.props.responseBody;
       }
     });
   }

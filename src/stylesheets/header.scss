@@ -3,6 +3,10 @@
   font-size: 1.8em;
 }
 
+.navbar-default .container-fluid {
+  padding-right: 0;
+}
+
 .navbar-brand > img.nypl-logo {
   display: inline;
   height: 25px;
@@ -37,6 +41,22 @@
   }
 }
 
+.menu .header-link a {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.pull-right {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 50%;
+  min-width: 30%;
+}
+
 .navbar-collapse.in {
   overflow-y: visible;
+}
+
+.navbar-collapse {
+  padding: 0;
 }

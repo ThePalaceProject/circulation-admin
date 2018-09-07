@@ -38,13 +38,14 @@ import collection, { CollectionState } from "opds-web-client/lib/reducers/collec
 import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
 import { RegisterLibraryState } from "./createRegisterLibraryReducer";
+import patronManager from "./managePatrons";
 import {
   LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
   PatronAuthServicesData, SitewideSettingsData, LoggingServicesData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
   DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
   CustomListDetailsData, LanesData, RolesData, MediaData, LanguagesData,
-  RightsStatusData
+  RightsStatusData, PatronData
 } from "../interfaces";
 
 
@@ -86,6 +87,7 @@ export interface State {
   languages: FetchEditState<LanguagesData>;
   rightsStatuses: FetchEditState<RightsStatusData>;
   changePassword: FetchEditState<void>;
+  patronManager: FetchEditState<PatronData>;
 }
 
 export default combineReducers<State>({
@@ -125,5 +127,6 @@ export default combineReducers<State>({
   media,
   languages,
   rightsStatuses,
-  changePassword
+  changePassword,
+  patronManager
 });

@@ -11,7 +11,7 @@ export interface EditableConfigListStateProps<T> {
   data?: T;
   fetchError?: FetchErrorData;
   isFetching?: boolean;
-  editedIdentifier?: string;
+  responseBody?: string;
 }
 
 export interface EditableConfigListDispatchProps<T> {
@@ -36,7 +36,7 @@ export interface EditFormProps<T, U> {
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
   listDataKey: string;
-  editedIdentifier?: string;
+  responseBody?: string;
 }
 
 export interface AdditionalContentProps<T, U> {
@@ -137,7 +137,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               editItem={this.editItem}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
-              editedIdentifier={this.props.editedIdentifier}
+              responseBody={this.props.responseBody}
               />
           </div>
         }
@@ -152,7 +152,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               editItem={this.editItem}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
-              editedIdentifier={this.props.editedIdentifier}
+              responseBody={this.props.responseBody}
               />
           </div>
         }
