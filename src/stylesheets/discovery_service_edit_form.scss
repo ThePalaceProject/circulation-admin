@@ -1,6 +1,24 @@
 .service-with-registrations-library {
-  margin: 10px;
-  padding: 5px;
+  display: flex;
+  margin: 5px;
+  padding: 0 0 20px;
+  align-items: center;
+  border-bottom: 1px solid $dark-gray;
+
+  .library-name {
+    width: 150px;
+    margin-right: 25px;
+  }
+
+  .library-registration-info {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+    .current-stage {
+      margin: 15px 0;
+    }
+  }
 
   button {
     margin-right: 10px;
@@ -9,5 +27,9 @@
   span {
     padding: 10px;
     margin: 0px 5px;
+  }
+
+  .form-group {
+    display: inline-block;
   }
 }

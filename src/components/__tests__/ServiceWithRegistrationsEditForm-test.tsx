@@ -2,10 +2,12 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import { DiscoveryServicesData } from "../../interfaces";
 import ServiceWithRegistrationsEditForm from "../ServiceWithRegistrationsEditForm";
+import LibraryRegistration from "../LibraryRegistration";
+import EditableInput from "../EditableInput";
 
 describe("ServiceWithRegistrationsEditForm", () => {
   class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {};
@@ -32,8 +34,8 @@ describe("ServiceWithRegistrationsEditForm", () => {
   let libraryRegistrationsData = [{
     id: 1,
     libraries: [
-      { short_name: "nypl", status: "success" },
-      { short_name: "bpl", status: "failure" }
+      { short_name: "nypl", status: "success", stage: "production" },
+      { short_name: "bpl", status: "failure", stage: "testing" },
     ]
   }];
   let servicesData = {
@@ -47,7 +49,7 @@ describe("ServiceWithRegistrationsEditForm", () => {
     beforeEach(() => {
       editService = stub();
       registerLibrary = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <DiscoveryServiceEditForm
           disabled={false}
           data={servicesData}
@@ -59,83 +61,17 @@ describe("ServiceWithRegistrationsEditForm", () => {
       );
     });
 
-    it("doesn't render libraries in create form", () => {
-      let libraries = wrapper.find(".service-with-registrations-library");
-      expect(libraries.length).to.equal(0);
-    });
+    it("passes all props to the LibraryRegistration component", () => {
+      let libraryRegistration = wrapper.find(LibraryRegistration);
 
-    it("doesn't render libraries in edit form if protocol doesn't support registration", () => {
-      let protocolWithoutRegistration = Object.assign({}, protocolsData[0], { supports_registration: false });
-      let servicesDataWithoutRegistration = {
-        discovery_services: [serviceData],
-        protocols: [protocolWithoutRegistration],
-        allLibraries: allLibraries
-      };
-      wrapper = shallow(
-        <DiscoveryServiceEditForm
-          disabled={false}
-          data={servicesDataWithoutRegistration}
-          item={serviceData}
-          editItem={editService}
-          urlBase="url base"
-          listDataKey="discovery_services"
-          />,
-        { registerLibrary: registerLibrary }
-      );
-
-      let libraries = wrapper.find(".service-with-registrations-library");
-      expect(libraries.length).to.equal(0);
-   });
-
-    it("renders all libraries in edit form, with registration status", () => {
-      wrapper.setProps({ item: serviceData });
-      let libraries = wrapper.find(".service-with-registrations-library");
-      expect(libraries.length).to.equal(3);
-      expect(libraries.at(0).text()).to.contain("New York Public Library");
-      expect(libraries.at(0).text()).to.contain("Registered");
-      expect(libraries.at(1).text()).to.contain("Brooklyn Public Library");
-      expect(libraries.at(1).text()).to.contain("Registration failed");
-      expect(libraries.at(2).text()).to.contain("Queens Public Library");
-      expect(libraries.at(2).text()).to.contain("Not registered");
-    });
-  });
-
-  describe("behavior", () => {
-    beforeEach(() => {
-      editService = stub();
-      registerLibrary = stub();
-      wrapper = shallow(
-        <DiscoveryServiceEditForm
-          disabled={false}
-          data={servicesData}
-          item={serviceData}
-          editItem={editService}
-          urlBase="url base"
-          listDataKey="discovery_services"
-          />,
-        { context: { registerLibrary } }
-      );
-    });
-
-    it("registers a library", () => {
-      let libraries = wrapper.find(".service-with-registrations-library");
-
-      expect(registerLibrary.callCount).to.equal(0);
-
-      let nyplButton = libraries.at(0).find("button");
-      nyplButton.simulate("click");
-
-      expect(registerLibrary.callCount).to.equal(1);
-
-      let bplButton = libraries.at(1).find("button");
-      bplButton.simulate("click");
-
-      expect(registerLibrary.callCount).to.equal(2);
-
-      let qplButton = libraries.at(2).find("button");
-      qplButton.simulate("click");
-
-      expect(registerLibrary.callCount).to.equal(3);
+      expect(libraryRegistration.props().protocol).to.equal("protocol 1");
+      expect(libraryRegistration.props().item).to.equal(undefined);
+      expect(libraryRegistration.props().data).to.equal(servicesData);
+      expect(libraryRegistration.props().disabled).to.equal(false);
+      expect(libraryRegistration.props().editItem).to.equal(editService);
+      expect(libraryRegistration.props().urlBase).to.equal("url base");
+      expect(libraryRegistration.props().listDataKey).to.equal("discovery_services");
+      expect(libraryRegistration.props().editedIdentifier).to.equal(undefined);
     });
   });
 });
