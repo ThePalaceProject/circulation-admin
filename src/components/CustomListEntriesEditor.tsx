@@ -4,7 +4,7 @@ const DragDropContext = dnd.DragDropContext;
 const Droppable = dnd.Droppable;
 const Draggable = dnd.Draggable;
 import { CustomListEntryData } from "../interfaces";
-import { CollectionData } from "opds-web-client/lib/interfaces";
+import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import ApplyIcon from "./icons/ApplyIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
@@ -17,18 +17,22 @@ import {
 } from "@nypl/dgx-svg-icons";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 
+export interface Entry extends BookData {
+  medium?: string;
+}
+
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
-  entries?: CustomListEntryData[];
+  entries?: Entry[];
   searchResults?: CollectionData;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  onUpdate?: (entries: CustomListEntryData[]) => void;
+  onUpdate?: (entries: Entry[]) => void;
   isFetchingMoreSearchResults: boolean;
   opdsFeedUrl?: string;
 }
 
 export interface CustomListEntriesEditorState {
   draggingFrom: string | null;
-  entries: CustomListEntryData[];
+  entries: Entry[];
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -148,7 +152,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   >
                   <p>Drag search results here to add them to the list.</p>
                   { this.state.entries && this.state.entries.map((book, i) => (
-                      <Draggable key={book.identifier_urn} draggableId={book.identifier_urn}>
+                      <Draggable key={book.id} draggableId={book.id}>
                         {(provided, snapshot) => (
                           <li>
                             <div
@@ -162,12 +166,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                                 <div className="title">{ book.title }</div>
                                 <div className="authors">{ book.authors.join(", ") }</div>
                               </div>
-                              {this.getMediumSVG(book.medium)}
+                              {this.getMediumSVG(this.getMedium(book))}
                               {this.getCatalogLink(book)}
                               <div className="links">
                                 <a
                                   href="#"
-                                  onClick={() => { this.delete(book.identifier_urn); }}
+                                  onClick={() => { this.delete(book.id); }}
                                   >Remove from list
                                     <TrashIcon />
                                 </a>
@@ -232,7 +236,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     return svgMediumTypes[medium] || null;
   }
 
-  getEntries(): CustomListEntryData[] {
+  getEntries(): Entry[] {
     return this.state.entries;
   }
 
@@ -247,7 +251,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   searchResultsNotInEntries() {
-    let entryUrns = this.state.entries.map(entry => entry.identifier_urn);
+    let entryUrns = this.state.entries.map(entry => entry.id);
     return this.props.searchResults.books.filter(book => {
       for (const entryUrn of entryUrns) {
         if (entryUrn === book.id) {
@@ -292,7 +296,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         const medium = this.getMedium(result);
         const language = this.getLanguage(result);
         entries.unshift({
-          identifier_urn: result.id,
+          id: result.id,
           title: result.title,
           authors: result.authors,
           url: result.url,
@@ -309,7 +313,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   delete(urn: string) {
     let entries = this.state.entries.slice(0);
-    entries = entries.filter(entry => entry.identifier_urn !== urn);
+    entries = entries.filter(entry => entry.id !== urn);
     this.setState({ draggingFrom: null, entries });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
@@ -323,7 +327,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       const medium = this.getMedium(result);
       const language = this.getLanguage(result);
       entries.push({
-        identifier_urn: result.id,
+        id: result.id,
         title: result.title,
         authors: result.authors,
         url: result.url,

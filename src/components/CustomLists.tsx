@@ -25,7 +25,7 @@ import TrashIcon from "./icons/TrashIcon";
 
 export interface CustomListsStateProps {
   lists: CustomListData[];
-  listDetails?: CustomListDetailsData;
+  listDetails?: CollectionData;
   collections: AdminCollectionData[];
   responseBody?: string;
   searchResults: CollectionData;

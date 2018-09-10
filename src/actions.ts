@@ -581,7 +581,7 @@ export default class ActionCreator extends BaseActionCreator {
 
   fetchCustomListDetails(library: string, id: string) {
     const url = "/" + library + "/admin/custom_list/" + id;
-    return this.fetchJSON<CustomListDetailsData>(ActionCreator.CUSTOM_LIST_DETAILS, url).bind(this);
+    return this.fetchOPDS<CustomListDetailsData>(ActionCreator.CUSTOM_LIST_DETAILS, url).bind(this);
   }
 
   editCustomList(library: string, data: FormData, id?: string) {
