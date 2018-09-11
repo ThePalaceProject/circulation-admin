@@ -13,6 +13,8 @@ import SearchIcon from "./icons/SearchIcon";
 
 export interface List extends CollectionData {
   collections?: AdminCollectionData[];
+  nextPageUrl?: string;
+  previousPageUrl?: string;
 }
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
@@ -25,7 +27,9 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   editCustomList: (data: FormData, listId?: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  loadMoreEntries: (url: string) => Promise<CollectionData>;
   isFetchingMoreSearchResults: boolean;
+  isFetchingMoreCustomListEntries: boolean;
   entryPoints?: string[];
 }
 
@@ -61,8 +65,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   render(): JSX.Element {
-    const listName = this.props.list && this.props.list.title ? this.props.list.title : "";
     const listId = this.props.listId;
+    const listName = this.props.list && this.props.list.title ? this.props.list.title : "";
+    const previousPageUrl = this.props.list && this.props.list.previousPageUrl;
+    const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
     const opdsFeedUrl = `${this.props.library}/lists/${listName}/crawlable`;
     return (
       <div className="custom-list-editor">
@@ -141,9 +147,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           <CustomListEntriesEditor
             searchResults={this.props.searchResults}
             entries={this.props.list && this.props.list.books}
+            nextPageUrl={nextPageUrl}
+            previousPageUrl={previousPageUrl}
             loadMoreSearchResults={this.props.loadMoreSearchResults}
+            loadMoreEntries={this.props.loadMoreEntries}
             onUpdate={this.changeEntries}
             isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+            isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
             ref="listEntries"
             opdsFeedUrl={opdsFeedUrl}
           />

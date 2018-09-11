@@ -26,9 +26,13 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   entries?: Entry[];
   searchResults?: CollectionData;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  loadMoreEntries: (url: string) => Promise<CollectionData>;
   onUpdate?: (entries: Entry[]) => void;
   isFetchingMoreSearchResults: boolean;
+  isFetchingMoreCustomListEntries: boolean;
   opdsFeedUrl?: string;
+  nextPageUrl?: string;
+  previousPageUrl?: string;
 }
 
 export interface CustomListEntriesEditorState {
@@ -51,6 +55,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.addAll = this.addAll.bind(this);
     this.deleteAll = this.deleteAll.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.loadMoreEntries = this.loadMoreEntries.bind(this);
   }
 
   render(): JSX.Element {
@@ -118,7 +123,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               </Droppable>
               { this.props.searchResults && this.props.searchResults.nextPageUrl &&
                 <LoadButton
-                  isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+                  isFetching={this.props.isFetchingMoreSearchResults}
                   loadMore={this.loadMore}
                 />
               }
@@ -181,10 +186,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
             </Droppable>
-            <LoadButton
-              isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-              loadMore={this.loadMore}
-            />
+            { this.props.nextPageUrl &&
+              <LoadButton
+                isFetching={this.props.isFetchingMoreCustomListEntries}
+                loadMore={this.loadMoreEntries}
+              />
+            }
           </div>
         </div>
       </DragDropContext>
@@ -356,6 +363,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     if (this.props.searchResults && !this.props.isFetchingMoreSearchResults) {
       let nextPageUrl = this.props.searchResults.nextPageUrl;
       this.props.loadMoreSearchResults(nextPageUrl);
+    }
+  }
+
+  loadMoreEntries() {
+    if (this.props.entries && !this.props.isFetchingMoreCustomListEntries) {
+      let nextPageUrl = this.props.nextPageUrl;
+      this.props.loadMoreEntries(nextPageUrl);
     }
   }
 }

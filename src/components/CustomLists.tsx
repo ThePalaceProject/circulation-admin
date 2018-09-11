@@ -32,6 +32,7 @@ export interface CustomListsStateProps {
   fetchError?: FetchErrorData;
   isFetching: boolean;
   isFetchingMoreSearchResults: boolean;
+  isFetchingMoreCustomListEntries: boolean;
   libraries?: LibraryData[];
 }
 
@@ -42,6 +43,7 @@ export interface CustomListsDispatchProps {
   deleteCustomList: (listId: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  loadMoreEntries: (url: string) => Promise<CollectionData>;
   fetchCollections: () => Promise<CollectionsData>;
   fetchLibraries: () => void;
 }
@@ -82,6 +84,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   render(): JSX.Element {
     const enabledEntryPoints = this.getEnabledEntryPoints(this.props.libraries);
+    // console.log(this.props.listDetails);
 
     return (
       <div className="custom-lists-container">
@@ -169,9 +172,11 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               editCustomList={this.editCustomList}
               search={this.props.search}
               loadMoreSearchResults={this.props.loadMoreSearchResults}
+              loadMoreEntries={this.props.loadMoreEntries}
               searchResults={this.props.searchResults}
               responseBody={this.props.responseBody}
               isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+              isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
               entryPoints={enabledEntryPoints}
             />
           }
@@ -185,8 +190,10 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               editCustomList={this.editCustomList}
               search={this.props.search}
               loadMoreSearchResults={this.props.loadMoreSearchResults}
+              loadMoreEntries={this.props.loadMoreEntries}
               searchResults={this.props.searchResults}
               isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+              isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
               entryPoints={enabledEntryPoints}
             />
           }
@@ -298,9 +305,11 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 }
 
 function mapStateToProps(state, ownProps) {
+  console.log(state.editor.customListDetails);
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     listDetails: state.editor.customListDetails && state.editor.customListDetails.data,
+    isFetchingMoreCustomListEntries: state.editor.customListDetails && state.editor.customListDetails.isFetching,
     responseBody: state.editor.customLists && state.editor.customLists.responseBody,
     fetchError: state.editor.customLists.fetchError || state.editor.collections.fetchError,
     isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || state.editor.customListDetails.isFetching || state.editor.customListDetails.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,
@@ -321,6 +330,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     deleteCustomList: (listId: string) => dispatch(actions.deleteCustomList(ownProps.library, listId)),
     search: (url: string) => dispatch(actions.fetchCollection(url)),
     loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),
+    loadMoreEntries: (url: string) => dispatch(actions.fetchMoreCustomListEntries(url)),
     fetchCollections: () => dispatch(actions.fetchCollections()),
     fetchLibraries: () => dispatch(actions.fetchLibraries()),
   };
