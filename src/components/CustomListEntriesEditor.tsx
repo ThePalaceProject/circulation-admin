@@ -5,6 +5,7 @@ const Droppable = dnd.Droppable;
 const Draggable = dnd.Draggable;
 import { CustomListEntryData } from "../interfaces";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
+import LoadButton from "./LoadButton";
 import ApplyIcon from "./icons/ApplyIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
@@ -116,16 +117,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               )}
               </Droppable>
               { this.props.searchResults && this.props.searchResults.nextPageUrl &&
-                <button
-                  className="btn btn-default load-more-button"
-                  disabled={this.props.isFetchingMoreSearchResults}
-                  onClick={this.loadMore}
-                  >
-                    { this.props.isFetchingMoreSearchResults ?
-                      <MoreDotsIcon /> :
-                      "Load more"
-                    }
-                </button>
+                <LoadButton
+                  isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+                  loadMore={this.loadMore}
+                />
               }
           </div>
 
@@ -186,6 +181,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
             </Droppable>
+            <LoadButton
+              isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
+              loadMore={this.loadMore}
+            />
           </div>
         </div>
       </DragDropContext>
