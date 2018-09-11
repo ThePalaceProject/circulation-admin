@@ -18,6 +18,7 @@ export interface List extends CollectionData {
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
   list?: List;
+  listId?: string;
   collections?: AdminCollectionData[];
   responseBody?: string;
   searchResults?: CollectionData;
@@ -61,6 +62,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   render(): JSX.Element {
     const listName = this.props.list && this.props.list.title ? this.props.list.title : "";
+    const listId = this.props.listId;
     const opdsFeedUrl = `${this.props.library}/lists/${listName}/crawlable`;
     return (
       <div className="custom-list-editor">
@@ -72,8 +74,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               onUpdate={this.changeName}
               ref="listName"
               />
-            { this.props.list &&
-              <h4>ID-{this.props.list.id}</h4>
+            { listId &&
+              <h4>ID-{listId}</h4>
             }
             { this.props.collections && this.props.collections.length > 0 &&
               <div className="custom-list-filters">
@@ -151,7 +153,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.list && (!nextProps.list || nextProps.list.id !== this.props.list.id)) {
+    if (this.props.list && (!nextProps.list || nextProps.listId !== this.props.listId)) {
       this.setState({
         name: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
@@ -165,7 +167,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         collections: nextProps.list.collections
       });
     }
-    console.log(nextProps);
   }
 
   hasChanges(): boolean {
@@ -240,7 +241,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   save() {
     const data = new (window as any).FormData();
     if (this.props.list) {
-      data.append("id", this.props.list.id);
+      data.append("id", this.props.listId);
     }
     let name = (this.refs["listName"] as TextWithEditMode).getText();
     data.append("name", name);
@@ -248,7 +249,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     data.append("entries", JSON.stringify(entries));
     let collections = this.state.collections.map(collection => collection.id);
     data.append("collections", JSON.stringify(collections));
-    this.props.editCustomList(data, this.props.list && String(this.props.list.id)).then(() => {
+    this.props.editCustomList(data, this.props.listId && String(this.props.listId)).then(() => {
       // If a new list was created, go to the new list's edit page.
       if (!this.props.list && this.props.responseBody) {
         window.location.href = "/admin/web/lists/" + this.props.library + "/edit/" + this.props.responseBody;

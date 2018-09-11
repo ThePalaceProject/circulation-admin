@@ -180,6 +180,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
             <CustomListEditor
               library={this.props.library}
               list={this.props.listDetails}
+              listId={this.props.identifier}
               collections={this.collectionsForLibrary()}
               editCustomList={this.editCustomList}
               search={this.props.search}

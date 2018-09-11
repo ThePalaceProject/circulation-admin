@@ -216,7 +216,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   getMedium(book) {
-    return book.raw["$"]["schema:additionalType"].value;
+    return book.medium || book.raw["$"]["schema:additionalType"].value;
   }
 
   getLanguage(book) {
