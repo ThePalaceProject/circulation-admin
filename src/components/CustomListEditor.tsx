@@ -257,6 +257,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     data.append("name", name);
     let entries = (this.refs["listEntries"] as CustomListEntriesEditor).getEntries();
     data.append("entries", JSON.stringify(entries));
+    let deletedEntries = (this.refs["listEntries"] as CustomListEntriesEditor).getDeleted();
+    data.append("deletedEntries", JSON.stringify(deletedEntries));
     let collections = this.state.collections.map(collection => collection.id);
     data.append("collections", JSON.stringify(collections));
     this.props.editCustomList(data, this.props.listId && String(this.props.listId)).then(() => {

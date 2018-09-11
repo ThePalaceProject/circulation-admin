@@ -38,6 +38,7 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
 export interface CustomListEntriesEditorState {
   draggingFrom: string | null;
   entries: Entry[];
+  deleted: Entry[];
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -46,7 +47,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     super(props);
     this.state = {
       draggingFrom: null,
-      entries: this.props.entries || []
+      entries: this.props.entries || [],
+      deleted: [],
     };
 
     this.reset = this.reset.bind(this);
@@ -200,7 +202,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.entries && nextProps.entries !== this.props.entries) {
-      this.setState({ draggingFrom: null, entries: nextProps.entries || [] });
+      this.setState({
+        draggingFrom: null,
+        entries: nextProps.entries || [],
+        deleted: this.state.deleted,
+      });
     }
   }
 
@@ -246,10 +252,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     return this.state.entries;
   }
 
+  getDeleted(): Entry[] {
+    return this.state.deleted;
+  }
+
   reset() {
     this.setState({
       draggingFrom: null,
-      entries: this.props.entries || []
+      entries: this.props.entries || [],
+      deleted: this.state.deleted,
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(this.props.entries || []);
@@ -274,7 +285,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     const type = initial.type;
     const source = initial.source;
 
-    this.setState({ draggingFrom: source.droppableId, entries: this.state.entries });
+    this.setState({
+      draggingFrom: source.droppableId,
+      entries: this.state.entries,
+      deleted: this.state.deleted,
+    });
   }
 
   onDragEnd(result) {
@@ -289,7 +304,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     else if (source.droppableId === "custom-list-entries" && destination && destination.droppableId === "search-results") {
       this.delete(draggableId);
     } else {
-      this.setState({ draggingFrom: null, entries: this.state.entries });
+      this.setState({
+        draggingFrom: null,
+        entries: this.state.entries,
+        deleted: this.state.deleted,
+      });
     }
 
     document.body.classList.remove("dragging");
@@ -311,7 +330,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         });
       }
     }
-    this.setState({ draggingFrom: null, entries });
+    this.setState({
+      draggingFrom: null,
+      entries,
+      deleted: this.state.deleted,
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
     }
@@ -319,8 +342,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   delete(urn: string) {
     let entries = this.state.entries.slice(0);
+    let deleted = this.state.entries.filter(entry => entry.id === urn);
     entries = entries.filter(entry => entry.id !== urn);
-    this.setState({ draggingFrom: null, entries });
+    this.setState({
+      draggingFrom: null,
+      entries,
+      deleted: this.state.deleted.concat(deleted),
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
     }
@@ -346,14 +374,22 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       entries.push(entry);
     }
 
-    this.setState({ draggingFrom: null, entries });
+    this.setState({
+      draggingFrom: null,
+      entries,
+      deleted: this.state.deleted,
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
     }
   }
 
   deleteAll() {
-    this.setState({ draggingFrom: null, entries: [] });
+    this.setState({
+      draggingFrom: null,
+      entries: [],
+      deleted: this.state.deleted,
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate([]);
     }
