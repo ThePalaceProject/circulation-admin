@@ -84,7 +84,6 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   render(): JSX.Element {
     const enabledEntryPoints = this.getEnabledEntryPoints(this.props.libraries);
-    // console.log(this.props.listDetails);
 
     return (
       <div className="custom-lists-container">
@@ -305,7 +304,6 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 }
 
 function mapStateToProps(state, ownProps) {
-  console.log(state.editor.customListDetails);
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     listDetails: state.editor.customListDetails && state.editor.customListDetails.data,

@@ -32,7 +32,6 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   isFetchingMoreCustomListEntries: boolean;
   opdsFeedUrl?: string;
   nextPageUrl?: string;
-  previousPageUrl?: string;
 }
 
 export interface CustomListEntriesEditorState {

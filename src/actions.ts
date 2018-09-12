@@ -587,7 +587,7 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   fetchMoreCustomListEntries(url: string) {
-    return this.fetchOPDS<CollectionData>(ActionCreator.CUSTOM_LIST_DETAILS_MORE, url);
+    return this.fetchOPDS<CollectionData>(ActionCreator.CUSTOM_LIST_DETAILS_MORE, url).bind(this);
   }
 
   editCustomList(library: string, data: FormData, id?: string) {

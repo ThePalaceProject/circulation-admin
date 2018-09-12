@@ -19,6 +19,7 @@ describe("CustomListEntriesEditor", () => {
   let wrapper;
   let onUpdate;
   let loadMoreSearchResults;
+  let loadMoreEntries;
   let childContextTypes;
   let fullContext;
 
@@ -42,13 +43,17 @@ describe("CustomListEntriesEditor", () => {
   };
 
   let entriesData = [
-    { identifier_urn: "A", title: "entry A", authors: ["author A"], medium: "http://schema.org/EBook", url: "/some/urlA" },
-    { identifier_urn: "B", title: "entry B", authors: ["author B1", "author B2"], medium: "http://bib.schema.org/Audiobook", url: "/some/urlB" }
+    { id: "A", title: "entry A", authors: ["author A"], url: "/some/urlA",
+      raw: { "$": { "schema:additionalType": { "value": "http://schema.org/EBook" }}} },
+    { id: "B", title: "entry B", authors: ["author B1", "author B2"], url: "/some/urlB",
+      raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}} },
   ];
+  let entriesNextPageUrl = "nextpage?after=50";
 
   beforeEach(() => {
     onUpdate = stub();
     loadMoreSearchResults = stub();
+    loadMoreEntries = stub();
 
     childContextTypes = {
       pathFor: React.PropTypes.func.isRequired,
@@ -74,7 +79,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -100,7 +107,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -126,7 +135,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -144,7 +155,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -154,6 +167,8 @@ describe("CustomListEntriesEditor", () => {
 
     expect(audioSVGs.length).to.equal(1);
     expect(bookSVGs.length).to.equal(1);
+
+    searchResultsData.books[2].raw["$"]["schema:additionalType"].value = "http://schema.org/EBook";
   });
 
   it("renders list entries", () => {
@@ -161,7 +176,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -186,7 +203,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         opdsFeedUrl="opdsFeedUrl"
       />,
       { context: fullContext, childContextTypes }
@@ -211,7 +230,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -225,7 +246,8 @@ describe("CustomListEntriesEditor", () => {
 
   it("doesn't include search results that are already in the list", () => {
     let entriesData = [
-      { identifier_urn: "1", title: "result 1", authors: ["author 1"], language: "eng" }
+      { id: "1", title: "result 1", authors: ["author 1"], language: "eng",
+        raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}} }
     ];
 
     let wrapper = mount(
@@ -233,7 +255,9 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -258,7 +282,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -281,7 +307,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -306,7 +334,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -340,7 +370,7 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
     const newEntry = {
-      identifier_urn: "1",
+      id: "1",
       title: "result 1",
       authors: ["author 1"],
       medium: "http://schema.org/EBook",
@@ -356,7 +386,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -399,7 +431,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -445,7 +479,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -461,7 +497,7 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
     const newEntry = {
-      identifier_urn: "1",
+      id: "1",
       title: "result 1",
       authors: ["author 1"],
       medium: "http://schema.org/EBook",
@@ -472,14 +508,16 @@ describe("CustomListEntriesEditor", () => {
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
 
-  it("removes an entry from the list", () => {
+  it("removes an entry from the list and also adds to 'deleted' state", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -496,6 +534,9 @@ describe("CustomListEntriesEditor", () => {
     expect(onUpdate.callCount).to.equal(1);
     const expectedEntries = [entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
+
+    expect(wrapper.state().deleted.length).to.equal(1);
+    expect(wrapper.state().deleted).to.eql([entriesData[0]]);
   });
 
   it("resets", () => {
@@ -504,7 +545,9 @@ describe("CustomListEntriesEditor", () => {
         searchResults={searchResultsData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -531,7 +574,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -559,7 +604,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -574,7 +621,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -600,7 +649,9 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -614,7 +665,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -628,13 +681,15 @@ describe("CustomListEntriesEditor", () => {
     expect(onUpdate.args[0][0].length).to.equal(0);
   });
 
-  it("hides load more button when there's no next link", () => {
+  it("hides load more button when there's no next link for search results", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -648,6 +703,27 @@ describe("CustomListEntriesEditor", () => {
     expect(button.length).to.equal(0);
   });
 
+  it("hides load more button when there's no next link for a list's entries", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+    // no search results at all
+    let button = wrapper.find(".custom-list-entries .load-more-button");
+    expect(button.length).to.equal(0);
+
+    // search results with no next link
+    wrapper.setProps({ entries: entriesData });
+    button = wrapper.find(".custom-list-entries .load-more-button");
+    expect(button.length).to.equal(0);
+  });
+
   it("disables load more button when loading more search results", () => {
     let searchResultsWithNext = Object.assign({}, searchResultsData, {
       nextPageUrl: "next"
@@ -658,7 +734,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -668,6 +746,29 @@ describe("CustomListEntriesEditor", () => {
 
     wrapper.setProps({ isFetchingMoreSearchResults: true });
     button = wrapper.find(".custom-list-search-results .load-more-button");
+    expect(button.length).to.equal(1);
+    expect(button.prop("disabled")).to.equal(true);
+  });
+
+  it("disables load more button when loading more entries for a list", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        nextPageUrl={entriesNextPageUrl}
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+    let button = wrapper.find(".custom-list-entries .load-more-button");
+    expect(button.length).to.equal(1);
+    expect(button.prop("disabled")).to.equal(false);
+
+    wrapper.setProps({ isFetchingMoreCustomListEntries: true });
+    button = wrapper.find(".custom-list-entries .load-more-button");
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).to.equal(true);
   });
@@ -682,7 +783,9 @@ describe("CustomListEntriesEditor", () => {
         entries={entriesData}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -690,5 +793,24 @@ describe("CustomListEntriesEditor", () => {
     let button = wrapper.find(".custom-list-search-results .load-more-button");
     button.simulate("click");
     expect(loadMoreSearchResults.callCount).to.equal(1);
+  });
+
+  it("loads more entries in a list", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        nextPageUrl={entriesNextPageUrl}
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    let button = wrapper.find(".custom-list-entries .load-more-button");
+    button.simulate("click");
+    expect(loadMoreEntries.callCount).to.equal(1);
   });
 });
