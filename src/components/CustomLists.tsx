@@ -84,6 +84,15 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   render(): JSX.Element {
     const enabledEntryPoints = this.getEnabledEntryPoints(this.props.libraries);
+    let entry_count;
+
+    if (this.props.lists) {
+      this.props.lists.forEach(list => {
+        if (list.id === parseInt(this.props.identifier, 10)) {
+          entry_count = list.entry_count;
+        }
+      });
+    }
 
     return (
       <div className="custom-lists-container">
@@ -185,6 +194,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               library={this.props.library}
               list={this.props.listDetails}
               listId={this.props.identifier}
+              entry_count={entry_count}
               collections={this.collectionsForLibrary()}
               editCustomList={this.editCustomList}
               search={this.props.search}

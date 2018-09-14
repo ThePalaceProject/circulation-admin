@@ -48,6 +48,12 @@ describe("CustomListEntriesEditor", () => {
     { id: "B", title: "entry B", authors: ["author B1", "author B2"], url: "/some/urlB",
       raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}} },
   ];
+  let entriesDataExtra = [
+    { id: "C", title: "entry C", authors: ["author C"], url: "/some/urlC",
+      raw: { "$": { "schema:additionalType": { "value": "http://schema.org/EBook" }}} },
+    { id: "D", title: "entry D", authors: ["author D1", "author D2"], url: "/some/urlD",
+      raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}} },
+  ];
   let entriesNextPageUrl = "nextpage?after=50";
 
   beforeEach(() => {
@@ -812,5 +818,38 @@ describe("CustomListEntriesEditor", () => {
     let button = wrapper.find(".custom-list-entries .load-more-button");
     button.simulate("click");
     expect(loadMoreEntries.callCount).to.equal(1);
+  });
+
+  it("should properly display how many books are in the entry list", () => {
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        nextPageUrl={entriesNextPageUrl}
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entry_count={"10"}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    let display = wrapper.find(".custom-list-entries h4");
+
+    expect(display.text()).to.equal("Displaying 1 - 2 of 10 Books");
+
+    wrapper.setState({ entries: [] });
+
+    expect(display.text()).to.equal("No books in this list");
+
+    wrapper.setState({ entries: entriesData.concat(entriesDataExtra) });
+    wrapper.setProps({ entry_count: "20" });
+
+    expect(display.text()).to.equal("Displaying 1 - 4 of 20 Books");
+
+    wrapper.setProps({ entry_count: "1047" });
+
+    expect(display.text()).to.equal("Displaying 1 - 4 of 1047 Books");
   });
 });

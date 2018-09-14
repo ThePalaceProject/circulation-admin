@@ -29,6 +29,7 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   isFetchingMoreSearchResults: boolean;
   isFetchingMoreCustomListEntries: boolean;
   entryPoints?: string[];
+  entry_count?: string;
 }
 
 export interface Entry extends BookData {
@@ -152,6 +153,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
             ref="listEntries"
             opdsFeedUrl={opdsFeedUrl}
+            entry_count={this.props.entry_count}
           />
         </div>
       </div>

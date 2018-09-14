@@ -32,6 +32,7 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   isFetchingMoreCustomListEntries: boolean;
   opdsFeedUrl?: string;
   nextPageUrl?: string;
+  entry_count?: string;
 }
 
 export interface CustomListEntriesEditorState {
@@ -60,13 +61,31 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   render(): JSX.Element {
+    let {
+      entries,
+      draggingFrom,
+    } = this.state;
+    let {
+      entry_count,
+      searchResults,
+      isFetchingMoreSearchResults,
+      isFetchingMoreCustomListEntries,
+      nextPageUrl,
+    } = this.props;
+    let entryListDisplay = "No books in this list";
+
+    if (entries.length) {
+      let totalStr = entries.length >= parseInt(entry_count, 10) ?
+        ` of ${entries.length}` : ` of ${entry_count}`;
+      entryListDisplay = `Displaying 1 - ${entries.length}${totalStr} Books`;
+    }
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="custom-list-drag-and-drop">
           <div className="custom-list-search-results">
             <div className="droppable-header">
               <h4>Search Results</h4>
-              { this.props.searchResults && (this.searchResultsNotInEntries().length > 0) &&
+              { searchResults && (this.searchResultsNotInEntries().length > 0) &&
                 <button
                   className="btn btn-default add-all-button"
                   onClick={this.addAll}
@@ -77,17 +96,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
             </div>
             <Droppable
               droppableId="search-results"
-              isDropDisabled={this.state.draggingFrom !== "custom-list-entries"}
+              isDropDisabled={draggingFrom !== "custom-list-entries"}
             >
               {(provided, snapshot) => (
                 <ul
                   ref={provided.innerRef}
                   className={snapshot.isDraggingOver ? "droppable dragging-over" : "droppable"}
                   >
-                  { this.state.draggingFrom === "custom-list-entries" &&
+                  { draggingFrom === "custom-list-entries" &&
                     <p>Drag books here to remove them from the list.</p>
                   }
-                  { (this.state.draggingFrom !== "custom-list-entries") && this.props.searchResults && this.searchResultsNotInEntries().map((book, i) =>
+                  { (draggingFrom !== "custom-list-entries") && searchResults && this.searchResultsNotInEntries().map((book, i) =>
                     <Draggable key={book.id} draggableId={book.id}>
                       {(provided, snapshot) => (
                         <li>
@@ -122,9 +141,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
               </Droppable>
-              { this.props.searchResults && this.props.searchResults.nextPageUrl &&
+              { searchResults && searchResults.nextPageUrl &&
                 <LoadButton
-                  isFetching={this.props.isFetchingMoreSearchResults}
+                  isFetching={isFetchingMoreSearchResults}
                   loadMore={this.loadMore}
                 />
               }
@@ -132,8 +151,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
           <div className="custom-list-entries">
             <div className="droppable-header">
-              <h4>Books in this List ({ this.state.entries.length })</h4>
-              { (this.state.entries.length > 0) &&
+              <h4>{entryListDisplay}</h4>
+              { (entries.length > 0) &&
                 <button
                   className="btn btn-default delete-all-button"
                   onClick={this.deleteAll}
@@ -144,7 +163,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
             </div>
             <Droppable
               droppableId="custom-list-entries"
-              isDropDisabled={this.state.draggingFrom !== "search-results"}
+              isDropDisabled={draggingFrom !== "search-results"}
               >
               {(provided, snapshot) => (
                 <ul
@@ -152,7 +171,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   className={snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"}
                   >
                   <p>Drag search results here to add them to the list.</p>
-                  { this.state.entries && this.state.entries.map((book, i) => (
+                  { entries && entries.map((book, i) => (
                       <Draggable key={book.id} draggableId={book.id}>
                         {(provided, snapshot) => (
                           <li>
@@ -187,9 +206,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
             </Droppable>
-            { this.props.nextPageUrl &&
+            { nextPageUrl &&
               <LoadButton
-                isFetching={this.props.isFetchingMoreCustomListEntries}
+                isFetching={isFetchingMoreCustomListEntries}
                 loadMore={this.loadMoreEntries}
               />
             }
