@@ -75,7 +75,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     let AdditionalContent = this.AdditionalContent || null;
     return (
       <div className={AdditionalContent ? "has-additional-content" : ""}>
-        <h2>{this.getItemName()}</h2>
+        <h2>{this.getItemType()} configuration</h2>
         { this.props.responseBody && this.props.editOrCreate &&
           <Alert bsStyle="success">{this.successMessage()}</Alert>
         }
@@ -172,14 +172,15 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     return item[this.labelKey];
   }
 
-  getItemName() {
-    return `${this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration`
+  getItemType() {
+    return this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)
   }
 
   successMessage() {
     let verb = this.props.editOrCreate == "edit" ? "edited" : "created";
-    let item = this.getItemName().toLowerCase();
-    return `Successfully ${verb} ${item} ${this.props.responseBody}`;
+    let itemType = this.getItemType().toLowerCase();
+    let name = itemType == "library" ? "" : this.props.responseBody;
+    return `Successfully ${verb} ${itemType} ${name}`;
   }
 
   canCreate() {
