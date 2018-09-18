@@ -38,6 +38,7 @@ export interface CustomListEntriesEditorState {
   draggingFrom: string | null;
   entries: Entry[];
   deleted: Entry[];
+  entryCount?: number;
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -48,6 +49,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       draggingFrom: null,
       entries: this.props.entries || [],
       deleted: [],
+      entryCount: parseInt(this.props.entryCount, 10) || 0,
     };
 
     this.reset = this.reset.bind(this);
@@ -60,12 +62,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   render(): JSX.Element {
+    const TOTALPERFEED = 50;
     let {
       entries,
+      deleted,
       draggingFrom,
+      entryCount,
     } = this.state;
     let {
-      entryCount,
       searchResults,
       isFetchingMoreSearchResults,
       isFetchingMoreCustomListEntries,
@@ -74,8 +78,22 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let entryListDisplay = "No books in this list";
 
     if (entries.length) {
-      let totalStr = entries.length >= parseInt(entryCount, 10) ?
-        ` of ${entries.length}` : ` of ${entryCount}`;
+      let entriesCount;
+      // Simple case where the total is less than 50.
+      if (entryCount <= TOTALPERFEED) {
+        entriesCount = entries.length;
+      } else {
+        // If adding to a list makes the entries total over 50, then we just want to
+        // keep track of new additions.
+        if (entries.length > TOTALPERFEED) {
+          entriesCount = entryCount + (entries.length % TOTALPERFEED);
+        } else {
+          // Otherwise, we want to subtract any deletions.
+          entriesCount = entryCount - (TOTALPERFEED - entries.length);
+        }
+      }
+
+      let totalStr = ` of ${entriesCount}`;
       entryListDisplay = `Displaying 1 - ${entries.length}${totalStr} Books`;
     }
     return (
@@ -167,6 +185,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               {(provided, snapshot) => (
                 <ul
                   ref={provided.innerRef}
+                  id="custom-list-entries-droppable"
                   className={snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"}
                   >
                   <p>Drag search results here to add them to the list.</p>
@@ -222,8 +241,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       this.setState({
         draggingFrom: null,
         entries: nextProps.entries || [],
-        deleted: this.state.deleted,
+        deleted: [],
+        entryCount: parseInt(nextProps.entryCount, 10),
       });
+
+      const droppableList = document.getElementById("custom-list-entries-droppable");
+
+      if (droppableList) {
+        droppableList.scrollTo(0, 0);
+      }
     }
   }
 
@@ -277,7 +303,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.setState({
       draggingFrom: null,
       entries: this.props.entries || [],
-      deleted: this.state.deleted,
+      deleted: [],
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(this.props.entries || []);
@@ -405,7 +431,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.setState({
       draggingFrom: null,
       entries: [],
-      deleted: this.state.deleted,
+      deleted: this.state.entries,
     });
     if (this.props.onUpdate) {
       this.props.onUpdate([]);

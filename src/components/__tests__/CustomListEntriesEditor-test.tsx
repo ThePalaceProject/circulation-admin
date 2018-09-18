@@ -202,6 +202,9 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(0).text()).to.contain("author A");
     expect(entries.at(1).text()).to.contain("entry B");
     expect(entries.at(1).text()).to.contain("author B1, author B2");
+
+    let display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
   });
 
   it("renders a link to view each entry", () => {
@@ -492,6 +495,9 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
+    let display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
+
     let addLink = wrapper.find(".custom-list-search-results .links a");
     addLink.at(0).simulate("click");
 
@@ -512,6 +518,9 @@ describe("CustomListEntriesEditor", () => {
     };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
+
+    display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 3 of 3 Books");
   });
 
   it("removes an entry from the list and also adds to 'deleted' state", () => {
@@ -528,6 +537,9 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
+    let display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
+
     let deleteLink = wrapper.find(".custom-list-entries .links a");
     deleteLink.at(0).simulate("click");
 
@@ -543,6 +555,9 @@ describe("CustomListEntriesEditor", () => {
 
     expect(wrapper.state().deleted.length).to.equal(1);
     expect(wrapper.state().deleted).to.eql([entriesData[0]]);
+
+    display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Books");
   });
 
   it("resets", () => {
@@ -633,6 +648,9 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
+    let display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
+
     let button = wrapper.find(".add-all-button");
     button.simulate("click");
 
@@ -648,6 +666,9 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(4).text()).to.contain("entry B");
     expect(onUpdate.callCount).to.equal(1);
     expect(onUpdate.args[0][0].length).to.equal(5);
+
+    display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 5 of 5 Books");
   });
 
   it("hides delete all button when there are no entries", () => {
@@ -677,6 +698,9 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
+    let display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
+
     let button = wrapper.find(".delete-all-button");
     button.simulate("click");
     let entriesContainer = wrapper.find(".custom-list-entries");
@@ -685,6 +709,9 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.length).to.equal(0);
     expect(onUpdate.callCount).to.equal(1);
     expect(onUpdate.args[0][0].length).to.equal(0);
+
+    display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("No books in this list");
   });
 
   it("hides load more button when there's no next link for search results", () => {
@@ -830,26 +857,22 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
-        entryCount={"10"}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
 
     let display = wrapper.find(".custom-list-entries h4");
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 10 Books");
+    expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
     wrapper.setState({ entries: [] });
 
     expect(display.text()).to.equal("No books in this list");
 
     wrapper.setState({ entries: entriesData.concat(entriesDataExtra) });
-    wrapper.setProps({ entryCount: "20" });
+    wrapper.setProps({ entryCount: "4" });
 
-    expect(display.text()).to.equal("Displaying 1 - 4 of 20 Books");
-
-    wrapper.setProps({ entryCount: "1047" });
-
-    expect(display.text()).to.equal("Displaying 1 - 4 of 1047 Books");
+    expect(display.text()).to.equal("Displaying 1 - 4 of 4 Books");
   });
 });
