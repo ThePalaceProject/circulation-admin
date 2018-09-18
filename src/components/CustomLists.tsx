@@ -8,7 +8,6 @@ import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
 import {
   CustomListData,
-  CustomListDetailsData,
   CustomListsData,
   CollectionsData,
   CollectionData as AdminCollectionData,
@@ -38,7 +37,7 @@ export interface CustomListsStateProps {
 
 export interface CustomListsDispatchProps {
   fetchCustomLists: () => Promise<CustomListsData>;
-  fetchCustomListDetails: (listId: string) => Promise<CustomListDetailsData>;
+  fetchCustomListDetails: (listId: string) => Promise<CollectionData>;
   editCustomList: (data: FormData, listId?: string) => Promise<void>;
   deleteCustomList: (listId: string) => Promise<void>;
   search: (url: string) => Promise<CollectionData>;
@@ -84,12 +83,12 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   render(): JSX.Element {
     const enabledEntryPoints = this.getEnabledEntryPoints(this.props.libraries);
-    let entry_count;
+    let entryCount;
 
     if (this.props.lists) {
       this.props.lists.forEach(list => {
         if (list.id === parseInt(this.props.identifier, 10)) {
-          entry_count = list.entry_count;
+          entryCount = list.entry_count;
         }
       });
     }
@@ -194,7 +193,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               library={this.props.library}
               list={this.props.listDetails}
               listId={this.props.identifier}
-              entry_count={entry_count}
+              entryCount={entryCount}
               collections={this.collectionsForLibrary()}
               editCustomList={this.editCustomList}
               search={this.props.search}

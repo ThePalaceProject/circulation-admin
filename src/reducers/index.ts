@@ -35,6 +35,7 @@ import media from "./media";
 import languages from "./languages";
 import rightsStatuses from "./rightsStatuses";
 import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
+import { CollectionData } from "opds-web-client/lib/interfaces";
 import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
 import { RegisterLibraryState } from "./createRegisterLibraryReducer";
@@ -44,7 +45,7 @@ import {
   PatronAuthServicesData, SitewideSettingsData, LoggingServicesData, MetadataServicesData,
   AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
   DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
-  CustomListDetailsData, LanesData, RolesData, MediaData, LanguagesData,
+  LanesData, RolesData, MediaData, LanguagesData,
   RightsStatusData, PatronData
 } from "../interfaces";
 
@@ -76,7 +77,7 @@ export interface State {
   registerLibraryWithCollection: RegisterLibraryState;
   collectionLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
-  customListDetails: FetchEditState<CustomListDetailsData>;
+  customListDetails: FetchEditState<CollectionData>;
   collection: CollectionState;
   lanes: FetchEditState<LanesData>;
   laneVisibility: FetchEditState<void>;

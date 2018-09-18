@@ -1,4 +1,4 @@
-import { CustomListDetailsData } from "../interfaces";
+import { CollectionData } from "opds-web-client/lib/interfaces";
 import ActionCreator from "../actions";
 import createFetchEditReducer from "./createFetchEditReducer";
 
@@ -26,7 +26,7 @@ const extraActions = {
   [`${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`]: loadCB,
 };
 
-export default createFetchEditReducer<CustomListDetailsData>(
+export default createFetchEditReducer<CollectionData>(
   ActionCreator.CUSTOM_LIST_DETAILS,
   null,
   extraActions,

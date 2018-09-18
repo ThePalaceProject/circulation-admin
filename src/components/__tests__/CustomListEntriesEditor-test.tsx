@@ -830,7 +830,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
-        entry_count={"10"}
+        entryCount={"10"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -844,11 +844,11 @@ describe("CustomListEntriesEditor", () => {
     expect(display.text()).to.equal("No books in this list");
 
     wrapper.setState({ entries: entriesData.concat(entriesDataExtra) });
-    wrapper.setProps({ entry_count: "20" });
+    wrapper.setProps({ entryCount: "20" });
 
     expect(display.text()).to.equal("Displaying 1 - 4 of 20 Books");
 
-    wrapper.setProps({ entry_count: "1047" });
+    wrapper.setProps({ entryCount: "1047" });
 
     expect(display.text()).to.equal("Displaying 1 - 4 of 1047 Books");
   });

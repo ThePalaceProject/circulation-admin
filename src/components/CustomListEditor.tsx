@@ -1,13 +1,9 @@
 import * as React from "react";
-import {
-  CustomListDetailsData,
-  CustomListEntryData,
-  CollectionData as AdminCollectionData,
-} from "../interfaces";
+import { CollectionData as AdminCollectionData } from "../interfaces";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
-import CustomListEntriesEditor from "./CustomListEntriesEditor";
+import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
 
@@ -29,11 +25,7 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   isFetchingMoreSearchResults: boolean;
   isFetchingMoreCustomListEntries: boolean;
   entryPoints?: string[];
-  entry_count?: string;
-}
-
-export interface Entry extends BookData {
-  medium?: string;
+  entryCount?: string;
 }
 
 export interface CustomListEditorState {
@@ -153,7 +145,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
             ref="listEntries"
             opdsFeedUrl={opdsFeedUrl}
-            entry_count={this.props.entry_count}
+            entryCount={this.props.entryCount}
           />
         </div>
       </div>

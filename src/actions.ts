@@ -7,7 +7,7 @@ import {
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
-  CustomListsData, CustomListDetailsData, LanesData,
+  CustomListsData, LanesData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
   StorageServicesData, LoggingServicesData, SelfTestsData,
   PatronData
@@ -583,7 +583,7 @@ export default class ActionCreator extends BaseActionCreator {
 
   fetchCustomListDetails(library: string, id: string) {
     const url = "/" + library + "/admin/custom_list/" + id;
-    return this.fetchOPDS<CustomListDetailsData>(ActionCreator.CUSTOM_LIST_DETAILS, url).bind(this);
+    return this.fetchOPDS<CollectionData>(ActionCreator.CUSTOM_LIST_DETAILS, url).bind(this);
   }
 
   fetchMoreCustomListEntries(url: string) {

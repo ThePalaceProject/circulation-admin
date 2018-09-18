@@ -3,7 +3,6 @@ const dnd = require("react-beautiful-dnd");
 const DragDropContext = dnd.DragDropContext;
 const Droppable = dnd.Droppable;
 const Draggable = dnd.Draggable;
-import { CustomListEntryData } from "../interfaces";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import LoadButton from "./LoadButton";
 import ApplyIcon from "./icons/ApplyIcon";
@@ -32,7 +31,7 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   isFetchingMoreCustomListEntries: boolean;
   opdsFeedUrl?: string;
   nextPageUrl?: string;
-  entry_count?: string;
+  entryCount?: string;
 }
 
 export interface CustomListEntriesEditorState {
@@ -66,7 +65,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       draggingFrom,
     } = this.state;
     let {
-      entry_count,
+      entryCount,
       searchResults,
       isFetchingMoreSearchResults,
       isFetchingMoreCustomListEntries,
@@ -75,8 +74,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let entryListDisplay = "No books in this list";
 
     if (entries.length) {
-      let totalStr = entries.length >= parseInt(entry_count, 10) ?
-        ` of ${entries.length}` : ` of ${entry_count}`;
+      let totalStr = entries.length >= parseInt(entryCount, 10) ?
+        ` of ${entries.length}` : ` of ${entryCount}`;
       entryListDisplay = `Displaying 1 - ${entries.length}${totalStr} Books`;
     }
     return (

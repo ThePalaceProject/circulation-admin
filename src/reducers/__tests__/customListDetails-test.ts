@@ -54,17 +54,24 @@ describe("customListDetails reducer", () => {
     let action = {
       type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_LOAD`,
       data: {
-        books: [4, 5, 6],
-        nextPageUrl: "nextpage?after=100"
+        id: "1",
+        url: "url",
+        books: [{ id: "4", title: "4" }, { id: "5", title: "5" }, { id: "6", title: "6" }],
+        nextPageUrl: "nextpage?after=100",
+        navigationLinks: [],
+        lanes: [],
       }
     };
     let oldState = {
       url: "test url",
       data: {
-        name: "custom list",
-        entries: [],
-        books: [1, 2, 3],
-        nextPageUrl: "nextpage?after=50"
+        id: "1",
+        url: "url",
+        title: "custom list",
+        books: [{ id: "1", title: "1" }, { id: "2", title: "2" }, { id: "3", title: "3" }],
+        nextPageUrl: "nextpage?after=50",
+        navigationLinks: [],
+        lanes: [],
       },
       isFetching: true,
       fetchError: null,
@@ -75,10 +82,16 @@ describe("customListDetails reducer", () => {
 
     let newState = Object.assign({}, oldState, {
       data: {
-        name: "custom list",
-        entries: [],
-        books: [1, 2, 3, 4, 5, 6],
-        nextPageUrl: "nextpage?after=100"
+        id: "1",
+        url: "url",
+        title: "custom list",
+        books: [
+          { id: "1", title: "1" }, { id: "2", title: "2" }, { id: "3", title: "3" },
+          { id: "4", title: "4" }, { id: "5", title: "5" }, { id: "6", title: "6" },
+        ],
+        nextPageUrl: "nextpage?after=100",
+        navigationLinks: [],
+        lanes: [],
       },
       isFetching: false,
       isLoaded: true,
