@@ -6,6 +6,7 @@ import { shallow } from "enzyme";
 
 import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
+import { Alert } from "react-bootstrap";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
 describe("EditableConfigList", () => {
@@ -99,6 +100,22 @@ describe("EditableConfigList", () => {
     wrapper.setProps({ fetchError });
     error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(1);
+  });
+
+  it("shows success message on create", () => {
+    let success = wrapper.find(Alert);
+    expect(success.length).to.equal(0);
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "create"});
+    success = wrapper.find(Alert);
+    expect(success.length).to.equal(1);
+  });
+
+  it("shows success message on edit", () => {
+    let success = wrapper.find(Alert);
+    expect(success.length).to.equal(0);
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "edit"});
+    success = wrapper.find(Alert);
+    expect(success.length).to.equal(1);
   });
 
   it("shows loading indicator", () => {
@@ -238,7 +255,7 @@ describe("EditableConfigList", () => {
     expect(editItem.callCount).to.equal(1);
 
     await pause();
-    expect(fetchData.callCount).to.equal(2);
+    expect(fetchData.callCount).to.equal(1);
   });
 
   it("should not render the AdditionalContent component", () => {

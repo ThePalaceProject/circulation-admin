@@ -7,6 +7,7 @@ export interface SitewideSettingEditFormProps {
   item?: SitewideSettingData;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  goToEdit: (responseBody: string) => void;
   urlBase: string;
   listDataKey: string;
 }

@@ -8,7 +8,7 @@ import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
 import Admin from "../../models/Admin";
 
-describe.only("IndividualAdminEditForm", () => {
+describe("IndividualAdminEditForm", () => {
   let wrapper;
   let editIndividualAdmin;
   let goToEdit;
