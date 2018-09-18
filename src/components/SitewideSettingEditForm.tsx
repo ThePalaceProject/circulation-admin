@@ -115,7 +115,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     this.props.editItem(data).then(() => {
       // If a new setting was created, go to its edit page.
       if (!this.props.item && data.get("key")) {
-        window.location.href = "/admin/web/config/sitewideSettings/edit/" + data.get("key");
+        setTimeout(() => { this.props.goToEdit(data.get("key")); }, 2000);
       }
     });
   }

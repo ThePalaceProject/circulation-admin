@@ -314,8 +314,4 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     });
   }
 
-  goToEdit() {
-    window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
-  }
-
 }
