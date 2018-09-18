@@ -316,7 +316,7 @@ function mapStateToProps(state, ownProps) {
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     listDetails: state.editor.customListDetails && state.editor.customListDetails.data,
-    isFetchingMoreCustomListEntries: state.editor.customListDetails && state.editor.customListDetails.isFetching,
+    isFetchingMoreCustomListEntries: state.editor.customListDetails && state.editor.customListDetails.isFetchingEntries,
     responseBody: state.editor.customLists && state.editor.customLists.responseBody,
     fetchError: state.editor.customLists.fetchError || state.editor.collections.fetchError,
     isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || state.editor.customListDetails.isFetching || state.editor.customListDetails.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,

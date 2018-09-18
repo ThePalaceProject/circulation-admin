@@ -4,7 +4,7 @@ import createFetchEditReducer from "./createFetchEditReducer";
 
 const loadRequest = (state, action) => {
   return Object.assign({}, state, {
-    isFetching: true,
+    isFetchingEntries: true,
     isLoaded: false,
   });
 };
@@ -16,7 +16,7 @@ const loadCB = (state, action) => {
       books: Object.assign([], state.data.books).concat(action.data.books),
       nextPageUrl: action.data.nextPageUrl
     }),
-    isFetching: false,
+    isFetchingEntries: false,
     isLoaded: true,
   });
 };

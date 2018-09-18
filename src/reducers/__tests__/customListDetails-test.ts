@@ -22,7 +22,7 @@ describe("customListDetails reducer", () => {
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetching: true
+      isFetching: true,
     });
     expect(customListDetails(initState, action)).to.deep.equal(newState);
   });
@@ -36,6 +36,7 @@ describe("customListDetails reducer", () => {
       url: "test url",
       data: null,
       isFetching: true,
+      isFetchingEntries: true,
       fetchError: null,
       editError: null,
       isLoaded: true,
@@ -43,7 +44,7 @@ describe("customListDetails reducer", () => {
     };
 
     let newState = Object.assign({}, oldState, {
-      isFetching: true,
+      isFetchingEntries: true,
       isLoaded: false,
     });
 
@@ -73,7 +74,8 @@ describe("customListDetails reducer", () => {
         navigationLinks: [],
         lanes: [],
       },
-      isFetching: true,
+      isFetching: false,
+      isFetchingEntries: true,
       fetchError: null,
       editError: null,
       isLoaded: true,
@@ -94,6 +96,7 @@ describe("customListDetails reducer", () => {
         lanes: [],
       },
       isFetching: false,
+      isFetchingEntries: false,
       isLoaded: true,
     });
 
