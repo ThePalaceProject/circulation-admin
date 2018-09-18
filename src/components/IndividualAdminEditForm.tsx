@@ -8,6 +8,7 @@ export interface IndividualAdminEditFormProps {
   item?: IndividualAdminData;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  goToEdit: (responseBody: string) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -306,11 +307,15 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         window.location.reload();
         return;
       }
-
       // If a new admin was created, go to its edit page.
       if (!this.props.item && this.props.responseBody) {
-        window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
+        setTimeout(() => {this.props.goToEdit(this.props.responseBody)}, 2000);
       }
     });
   }
+
+  goToEdit(){
+    window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
+  }
+
 }

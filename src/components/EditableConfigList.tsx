@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { Alert } from "react-bootstrap";
 import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -17,6 +18,7 @@ export interface EditableConfigListStateProps<T> {
 export interface EditableConfigListDispatchProps<T> {
   fetchData?: () => Promise<T>;
   editItem?: (data: FormData) => Promise<void>;
+  goToEdit?: (responseBody: string) => void;
   deleteItem?: (identifier: string | number) => Promise<void>;
 }
 
@@ -34,6 +36,7 @@ export interface EditFormProps<T, U> {
   data: T;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  goToEdit?: (responseBody: string) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -72,7 +75,10 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     let AdditionalContent = this.AdditionalContent || null;
     return (
       <div className={AdditionalContent ? "has-additional-content" : ""}>
-        <h2>{this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration</h2>
+        <h2>{this.getItemName()}</h2>
+        { this.props.responseBody && this.props.editOrCreate &&
+          <Alert bsStyle="success">{this.successMessage()}</Alert>
+        }
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
         }
@@ -135,6 +141,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               data={this.props.data}
               disabled={this.props.isFetching}
               editItem={this.editItem}
+              goToEdit={this.goToEdit}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -150,6 +157,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               data={this.props.data}
               disabled={this.props.isFetching}
               editItem={this.editItem}
+              goToEdit={this.goToEdit}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -162,6 +170,16 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  getItemName() {
+    return `${this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration`
+  }
+
+  successMessage() {
+    let verb = this.props.editOrCreate == "edit" ? "edited" : "created";
+    let item = this.getItemName().toLowerCase();
+    return `Successfully ${verb} ${item} ${this.props.responseBody}`;
   }
 
   canCreate() {
@@ -180,7 +198,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   async editItem(data: FormData): Promise<void> {
     await this.props.editItem(data);
-    this.props.fetchData();
   }
 
   itemToEdit(): U | null {
@@ -200,6 +217,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       this.props.fetchData();
     }
   }
+
+  goToEdit(responseBody) {
+    window.location.href = this.urlBase + "edit/" + responseBody;
+  }
+
 }
 
 export abstract class EditableConfigList<T, U> extends GenericEditableConfigList<T, U, EditableConfigListProps<T>> {}
