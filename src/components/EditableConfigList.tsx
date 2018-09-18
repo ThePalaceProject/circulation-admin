@@ -173,14 +173,13 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   getItemType() {
-    return this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)
+    return this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1);
   }
 
   successMessage() {
-    let verb = this.props.editOrCreate == "edit" ? "edited" : "created a new";
+    let verb = this.props.editOrCreate === "edit" ? "edited" : "created a new";
     let itemType = this.getItemType().toLowerCase();
-    let name = this.itemToEdit() ? this.label(this.itemToEdit()) : "";
-    return `Successfully ${verb} ${itemType} ${name}`;
+    return `Successfully ${verb} ${itemType}`;
   }
 
   canCreate() {
@@ -199,6 +198,8 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   async editItem(data: FormData): Promise<void> {
     await this.props.editItem(data);
+    // Scrolling to the top lets the user see the success message
+    window.scrollTo(0, 0);
   }
 
   itemToEdit(): U | null {

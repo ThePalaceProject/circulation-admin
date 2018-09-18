@@ -81,14 +81,14 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                   <th></th>
                   <th>
                     <EditableInput
-                      elementType="input"
+                       elementType="input"
                        type="checkbox"
                        disabled={this.isDisabled("manager-all")}
                        name="manager-all"
                        label="Library Manager"
                        checked={this.isSelected("manager-all")}
                        onChange={() => this.handleRoleChange("manager-all")}
-                       />
+                    />
                   </th>
                   <th>
                     <EditableInput
@@ -309,12 +309,12 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       }
       // If a new admin was created, go to its edit page.
       if (!this.props.item && this.props.responseBody) {
-        setTimeout(() => {this.props.goToEdit(this.props.responseBody)}, 2000);
+        setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
       }
     });
   }
 
-  goToEdit(){
+  goToEdit() {
     window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
   }
 

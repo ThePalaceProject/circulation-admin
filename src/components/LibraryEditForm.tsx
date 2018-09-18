@@ -65,11 +65,9 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     event.preventDefault();
     const data = new (window as any).FormData(this.refs["form"] as any);
     this.props.editItem(data).then(() => {
-      // Scrolling to the top lets the user see the success message
-      window.scrollTo(0, 0);
       // If a new library was created, go to the new library's edit page.
       if (!this.props.item && this.props.responseBody) {
-        setTimeout(() => {this.props.goToEdit(this.props.responseBody)}, 2000);
+        setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
       }
     });
   }

@@ -14,6 +14,7 @@ describe("ServiceWithRegistrationsEditForm", () => {
 
   let wrapper;
   let editService;
+  let goToEdit;
   let registerLibrary;
   let serviceData = {
     id: 1,
@@ -48,12 +49,14 @@ describe("ServiceWithRegistrationsEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       editService = stub();
+      goToEdit = stub();
       registerLibrary = stub();
       wrapper = mount(
         <DiscoveryServiceEditForm
           disabled={false}
           data={servicesData}
           editItem={editService}
+          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="discovery_services"
           />,

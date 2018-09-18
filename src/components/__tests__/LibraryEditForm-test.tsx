@@ -11,6 +11,7 @@ import ProtocolFormField from "../ProtocolFormField";
 describe("LibraryEditForm", () => {
   let wrapper;
   let editLibrary;
+  let goToEdit;
   let libraryData = {
     uuid: "uuid",
     name: "name",
@@ -44,11 +45,13 @@ describe("LibraryEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       editLibrary = stub();
+      goToEdit = stub();
       wrapper = shallow(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
           editItem={editLibrary}
+          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="libraries"
           />
@@ -101,11 +104,13 @@ describe("LibraryEditForm", () => {
   describe("behavior", () => {
     beforeEach(() => {
       editLibrary = stub().returns(new Promise<void>(resolve => resolve()));
+      goToEdit = stub();
       wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
           editItem={editLibrary}
+          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="libraries"
         />

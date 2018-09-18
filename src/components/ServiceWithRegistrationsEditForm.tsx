@@ -24,6 +24,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
           data={this.props.data}
           disabled={this.props.disabled}
           editItem={this.props.editItem}
+          goToEdit={this.props.goToEdit}
           urlBase={this.props.urlBase}
           listDataKey={this.props.listDataKey}
         />

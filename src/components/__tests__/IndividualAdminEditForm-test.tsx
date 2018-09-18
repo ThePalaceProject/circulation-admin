@@ -8,9 +8,10 @@ import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
 import Admin from "../../models/Admin";
 
-describe("IndividualAdminEditForm", () => {
+describe.only("IndividualAdminEditForm", () => {
   let wrapper;
   let editIndividualAdmin;
+  let goToEdit;
   let adminData = {
     email: "test@nypl.org",
     password: "password"
@@ -42,11 +43,13 @@ describe("IndividualAdminEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       editIndividualAdmin = stub();
+      goToEdit = stub();
       wrapper = shallow(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}
           editItem={editIndividualAdmin}
+          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="admins"
           />,
@@ -364,11 +367,13 @@ describe("IndividualAdminEditForm", () => {
   describe("behavior", () => {
     beforeEach(() => {
       editIndividualAdmin = stub().returns(new Promise<void>(resolve => resolve()));
+      goToEdit = stub();
       wrapper = mount(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}
           editItem={editIndividualAdmin}
+          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="admins"
           />,
