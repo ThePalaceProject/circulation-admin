@@ -177,9 +177,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   successMessage() {
-    let verb = this.props.editOrCreate == "edit" ? "edited" : "created";
+    let verb = this.props.editOrCreate == "edit" ? "edited" : "created a new";
     let itemType = this.getItemType().toLowerCase();
-    let name = itemType == "library" ? "" : this.props.responseBody;
+    let name = this.itemToEdit() ? this.label(this.itemToEdit()) : "";
     return `Successfully ${verb} ${itemType} ${name}`;
   }
 

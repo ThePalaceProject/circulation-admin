@@ -11,6 +11,7 @@ export interface ServiceEditFormProps<T> {
   item?: ServiceData;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  goToEdit: (responseBody: string) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -425,9 +426,11 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     const data = new (window as any).FormData(this.refs["form"] as any);
     data.append("libraries", JSON.stringify(this.state.libraries));
     this.props.editItem(data).then(() => {
+      // Scrolling to the top lets the user see the success message
+      window.scrollTo(0, 0);
       // If a new service was created, go to its edit page.
       if (!this.props.item && this.props.responseBody) {
-        window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
+        setTimeout(() => {this.props.goToEdit(this.props.responseBody)}, 2000);
       }
     });
   }
