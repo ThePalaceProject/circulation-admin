@@ -32,10 +32,10 @@ describe("CustomListEditor", () => {
       }}
     ],
     navigationLinks: [],
-    collections: [
-      { id: 2, name: "collection 2", protocol: "protocol" }
-    ]
   };
+  let listCollections = [
+    { id: 2, name: "collection 2", protocol: "protocol" }
+  ];
 
   let searchResults = {
     id: "id",
@@ -82,6 +82,7 @@ describe("CustomListEditor", () => {
         library="library"
         list={listData}
         listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
@@ -153,6 +154,7 @@ describe("CustomListEditor", () => {
         library="library"
         list={listData}
         listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
@@ -234,6 +236,8 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
@@ -275,6 +279,8 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
@@ -311,6 +317,8 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
@@ -344,6 +352,8 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
@@ -370,6 +380,8 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
@@ -403,6 +415,8 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
@@ -436,6 +450,8 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}

@@ -7,14 +7,11 @@ import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
 
-export interface List extends CollectionData {
-  collections?: AdminCollectionData[];
-}
-
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
-  list?: List;
+  list?: CollectionData;
   listId?: string | number;
+  listCollections?: AdminCollectionData[];
   collections?: AdminCollectionData[];
   responseBody?: string;
   searchResults?: CollectionData;
@@ -42,7 +39,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.state = {
       name: this.props.list && this.props.list.title,
       entries: (this.props.list && this.props.list.books) || [],
-      collections: (this.props.list && this.props.list.collections) || [],
+      collections: this.props.listCollections || [],
       entryPointSelected: "all",
     };
 
@@ -157,14 +154,14 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       this.setState({
         name: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
-        collections: (nextProps.list && nextProps.list.collections) || []
+        collections: (nextProps.list && nextProps.listCollections) || []
       });
     }
-    else if ((!this.props.list || !this.props.list.collections) && nextProps.list && nextProps.list.collections) {
+    else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
       this.setState({
         name: this.state.name,
         entries: this.state.entries,
-        collections: nextProps.list.collections
+        collections: nextProps.listCollections
       });
     }
   }
@@ -185,10 +182,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       }
     }
     let collectionsChanged = false;
-    if (this.props.list && this.props.list.collections && this.props.list.collections.length !== this.state.collections.length) {
+    if (this.props.listCollections && this.props.listCollections.length !== this.state.collections.length) {
       collectionsChanged = true;
     } else {
-      let propsIds = ((this.props.list && this.props.list.collections) || []).map(collection => collection.id).sort();
+      let propsIds = (this.props.listCollections || []).map(collection => collection.id).sort();
       let stateIds = this.state.collections.map(collection => collection.id).sort();
       for (let i = 0; i < propsIds.length; i++) {
         if (propsIds[i] !== stateIds[i]) {
@@ -265,7 +262,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.setState({
       name: this.state.name,
       entries: this.state.entries,
-      collections: (this.props.list && this.props.list.collections) || [],
+      collections: (this.props.listCollections) || [],
       entryPointSelected: "all",
     });
   }

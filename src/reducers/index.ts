@@ -25,7 +25,7 @@ import discoveryServiceLibraryRegistrations from "./discoveryServiceLibraryRegis
 import registerLibraryWithCollection from "./registerLibraryWithCollection";
 import collectionLibraryRegistrations from "./collectionLibraryRegistrations";
 import customLists from "./customLists";
-import customListDetails from "./customListDetails";
+import customListDetails, { FetchMoreCustomListDetails } from "./customListDetails";
 import lanes from "./lanes";
 import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
@@ -77,7 +77,7 @@ export interface State {
   registerLibraryWithCollection: RegisterLibraryState;
   collectionLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
-  customListDetails: FetchEditState<CollectionData>;
+  customListDetails: FetchMoreCustomListDetails<CollectionData>;
   collection: CollectionState;
   lanes: FetchEditState<LanesData>;
   laneVisibility: FetchEditState<void>;

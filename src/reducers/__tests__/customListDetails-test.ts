@@ -35,7 +35,8 @@ describe("customListDetails reducer", () => {
     let oldState = {
       url: "test url",
       data: null,
-      isFetching: true,
+      isFetching: false,
+      isFetchingMoreEntries: false,
       fetchError: null,
       editError: null,
       isLoaded: true,
@@ -43,6 +44,7 @@ describe("customListDetails reducer", () => {
     };
 
     let newState = Object.assign({}, oldState, {
+      isFetchingMoreEntries: true,
       isLoaded: false,
     });
 
@@ -73,6 +75,7 @@ describe("customListDetails reducer", () => {
         lanes: [],
       },
       isFetching: false,
+      isFetchingMoreEntries: false,
       fetchError: null,
       editError: null,
       isLoaded: true,
@@ -93,6 +96,7 @@ describe("customListDetails reducer", () => {
         lanes: [],
       },
       isFetching: false,
+      isFetchingMoreEntries: false,
       isLoaded: true,
     });
 

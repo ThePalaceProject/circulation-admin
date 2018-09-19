@@ -83,12 +83,14 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
 
   render(): JSX.Element {
     const enabledEntryPoints = this.getEnabledEntryPoints(this.props.libraries);
+    let listCollections = [];
     let entryCount;
 
     if (this.props.lists) {
       this.props.lists.forEach(list => {
         if (list.id === parseInt(this.props.identifier, 10)) {
           entryCount = list.entry_count;
+          listCollections = list.collections;
         }
       });
     }
@@ -193,6 +195,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               library={this.props.library}
               list={this.props.listDetails}
               listId={this.props.identifier}
+              listCollections={listCollections}
               entryCount={entryCount}
               collections={this.collectionsForLibrary()}
               editCustomList={this.editCustomList}
@@ -316,7 +319,7 @@ function mapStateToProps(state, ownProps) {
   return {
     lists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
     listDetails: state.editor.customListDetails && state.editor.customListDetails.data,
-    isFetchingMoreCustomListEntries: state.editor.customListDetails && state.editor.customListDetails.isFetching,
+    isFetchingMoreCustomListEntries: state.editor.customListDetails && state.editor.customListDetails.isFetchingMoreEntries,
     responseBody: state.editor.customLists && state.editor.customLists.responseBody,
     fetchError: state.editor.customLists.fetchError || state.editor.collections.fetchError,
     isFetching: state.editor.customLists.isFetching || state.editor.customLists.isEditing || state.editor.customListDetails.isFetching || state.editor.customListDetails.isEditing || !ownProps.editOrCreate || (state.editor.collection && state.editor.collection.isFetching) || state.editor.collections.isFetching,
