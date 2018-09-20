@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import SaveButton from "./SaveButton";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
@@ -49,6 +50,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.expandLibrary = this.expandLibrary.bind(this);
     this.removeLibrary = this.removeLibrary.bind(this);
     this.save = this.save.bind(this);
+    this.handleData = this.handleData.bind(this);
   }
 
   render(): JSX.Element {
@@ -195,12 +197,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             }
           </div>
         }
-        <button
-          className="btn btn-default"
+        <SaveButton
           disabled={this.props.disabled}
-          type="submit">
-          Submit
-        </button>
+          save={this.save}
+          handleData={this.handleData}
+          form={this.refs["form"]}
+        />
       </form>
     );
   }
@@ -420,11 +422,15 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState(newState);
   }
 
-  save(event) {
-    event.preventDefault();
+  handleData(data) {
+    return data.append("libraries", JSON.stringify(this.state.libraries));
+  }
 
-    const data = new (window as any).FormData(this.refs["form"] as any);
-    data.append("libraries", JSON.stringify(this.state.libraries));
+  save(data) {
+    // event.preventDefault();
+
+    // const data = new (window as any).FormData(this.refs["form"] as any);
+    // data.append("libraries", JSON.stringify(this.state.libraries));
     this.props.editItem(data).then(() => {
       // If a new service was created, go to its edit page.
       if (!this.props.item && this.props.responseBody) {
