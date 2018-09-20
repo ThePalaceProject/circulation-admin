@@ -2,7 +2,7 @@ import * as React from "react";
 
 export interface SaveButtonProps {
   disabled: boolean;
-  save: (data) => void;
+  save: (data: any) => void;
   handleData?: (data) => void;
   form: any;
 }
