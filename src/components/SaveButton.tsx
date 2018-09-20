@@ -28,7 +28,7 @@ export default class SaveButton extends React.Component<SaveButtonProps, void> {
  handleSubmit(event) {
    event.preventDefault();
    let data = new (window as any).FormData(this.props.form as any);
-   data = this.props.handleData && this.props.handleData(data) || data;
+   data = (this.props.handleData && this.props.handleData(data)) || data;
    this.props.save(data);
  }
 }

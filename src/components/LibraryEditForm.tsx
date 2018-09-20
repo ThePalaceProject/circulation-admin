@@ -18,6 +18,10 @@ export interface LibraryEditFormProps {
 /** Form for editing a library's configuration, on the libraries tab of the
     system configuration page. */
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, void> {
+  constructor(props) {
+    super(props);
+    this.save = this.save.bind(this);
+  }
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
@@ -52,21 +56,16 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             />
           )
         }
-        <button
-          className="btn btn-default"
+        <SaveButton
           disabled={this.props.disabled}
-          type="submit">
-          Submit
-        </button>
-      
+          save={this.save}
+          form={this.refs["form"]}
+        />
       </form>
     );
   }
 
-  save(event) {
-    event.preventDefault();
-
-    const data = new (window as any).FormData(this.refs["form"] as any);
+  save(data) {
     this.props.editItem(data).then(() => {
       // If a new library was created, go to the new library's edit page.
       if (!this.props.item && this.props.responseBody) {
