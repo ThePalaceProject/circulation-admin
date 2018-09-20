@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import SaveButton from "./SaveButton";
 import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {
@@ -57,12 +58,14 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           type="submit">
           Submit
         </button>
+      
       </form>
     );
   }
 
   save(event) {
     event.preventDefault();
+
     const data = new (window as any).FormData(this.refs["form"] as any);
     this.props.editItem(data).then(() => {
       // If a new library was created, go to the new library's edit page.

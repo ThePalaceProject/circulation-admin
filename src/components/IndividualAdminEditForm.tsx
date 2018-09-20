@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import SaveButton from "./SaveButton";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 
@@ -40,6 +41,8 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.isSelected = this.isSelected.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
     this.save = this.save.bind(this);
+    this.handleData = this.handleData.bind(this);
+    this.redirect = this.redirect.bind(this);
   }
 
   render(): JSX.Element {
@@ -137,11 +140,12 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             </table>
           </div>
         }
-        <button
-          type="submit"
-          className="btn btn-default"
+        <SaveButton
           disabled={this.props.disabled}
-          >Submit</button>
+          save={this.save}
+          handleData={this.handleData}
+          form={this.refs["form"]}
+        />
       </form>
     );
   }
@@ -291,27 +295,32 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     }
   }
 
-  save(event) {
-    event.preventDefault();
-    const data = new (window as any).FormData(this.refs["form"] as any);
+  handleData(data) {
     let roles = this.state.admin.roles;
     if (this.context && this.context.settingUp) {
       // When setting up the only thing you can do is create a system admin.
       roles = [{ role: "system" }];
     }
     data.append("roles", JSON.stringify(roles));
+  }
+
+  save(data) {
     this.props.editItem(data).then(() => {
-      // If we're setting up an admin for the first time, refresh the page
-      // to go to login.
-      if (this.context.settingUp) {
-        window.location.reload();
-        return;
-      }
-      // If a new admin was created, go to its edit page.
-      if (!this.props.item && this.props.responseBody) {
-        setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
-      }
+      this.redirect();
     });
+  }
+
+  redirect() {
+    // If we're setting up an admin for the first time, refresh the page
+    // to go to login.
+    if (this.context.settingUp) {
+      window.location.reload();
+      return;
+    }
+    // If a new admin was created, go to its edit page.
+    if (!this.props.item && this.props.responseBody) {
+      setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
+    }
   }
 
 }

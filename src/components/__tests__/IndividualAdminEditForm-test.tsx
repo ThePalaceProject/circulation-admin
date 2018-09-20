@@ -512,7 +512,7 @@ describe("IndividualAdminEditForm", () => {
       });
     });
 
-    it("submits data", async () => {
+    it.only("submits data", async () => {
       // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
       // Start on the create page.
       Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
