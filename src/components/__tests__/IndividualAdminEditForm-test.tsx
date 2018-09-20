@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
+import SaveButton from "../SaveButton";
 import Admin from "../../models/Admin";
 
 describe("IndividualAdminEditForm", () => {
@@ -154,6 +155,11 @@ describe("IndividualAdminEditForm", () => {
       expectPasswordEditable(nyplManagerLibrarianAll, nyplManager);
       expectPasswordEditable(nyplManagerLibrarianAll, nyplLibrarian, false);
       expectPasswordEditable(nyplManagerLibrarianAll, nyplManagerLibrarianAll);
+    });
+
+    it("has a save button", () => {
+      let saveButton = wrapper.find("SaveButton");
+      expect(saveButton.length).to.equal(1);
     });
 
     describe("roles", () => {
@@ -512,7 +518,7 @@ describe("IndividualAdminEditForm", () => {
       });
     });
 
-    it.only("submits data", async () => {
+    it("submits data", async () => {
       // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
       // Start on the create page.
       Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });

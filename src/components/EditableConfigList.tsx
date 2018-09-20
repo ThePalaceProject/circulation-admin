@@ -85,7 +85,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         { this.props.isFetching &&
           <LoadingIndicator />
         }
-
         { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] &&
           <div>
             { (!this.limitOne || this.props.data[this.listDataKey].length === 0) && this.canCreate() &&

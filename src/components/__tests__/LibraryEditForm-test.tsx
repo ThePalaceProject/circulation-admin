@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import SaveButton from "../SaveButton";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -98,6 +99,11 @@ describe("LibraryEditForm", () => {
       expect(privacyInput.props().value).to.equal("http://privacy");
       copyrightInput = protocolFormFieldByKey("copyright");
       expect(copyrightInput.props().value).to.equal("http://copyright");
+    });
+
+    it("has a save button", () => {
+      let saveButton = wrapper.find("SaveButton");
+      expect(saveButton.length).to.equal(1);
     });
   });
 

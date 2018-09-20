@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import SaveButton from "../SaveButton";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
@@ -511,6 +512,12 @@ describe("ServiceEditForm", () => {
       expect(options.at(0).props().value).to.equal("none");
       expect(options.at(1).props().value).to.equal("bpl");
     });
+
+    it("has a save button", () => {
+      let saveButton = wrapper.find("SaveButton");
+      expect(saveButton.length).to.equal(1);
+    });
+
   });
 
   describe("behavior", () => {
