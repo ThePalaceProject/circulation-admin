@@ -129,6 +129,11 @@ describe("EditableConfigList", () => {
     expect(loading.length).to.equal(1);
   });
 
+  it("shows thing header", () => {
+    let header = wrapper.find("h2");
+    expect(header.text()).to.equal("Thing configuration");
+  });
+
   it("shows thing list", () => {
     let things = wrapper.find("li");
     expect(things.length).to.equal(1);
@@ -245,6 +250,12 @@ describe("EditableConfigList", () => {
     expect(form.props().item).to.equal(thingData);
     expect(form.props().disabled).to.equal(false);
     expect(form.props().listDataKey).to.equal("things");
+  });
+
+  it("redirects to edit page", () => {
+    Object.defineProperty(window.location, "href", { writable: true });
+    wrapper.instance().goToEdit("newThing");
+    expect(window.location.href).to.equal("/admin/things/edit/newThing");
   });
 
   it("fetches data on mount and passes edit function to form", async () => {
