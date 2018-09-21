@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
@@ -81,7 +81,7 @@ describe("EditableConfigList", () => {
     canCreate = true;
     canDelete = true;
 
-    wrapper = shallow(
+    wrapper = mount(
       <ThingEditableConfigList
         data={thingsData}
         fetchData={fetchData}
@@ -100,6 +100,7 @@ describe("EditableConfigList", () => {
     wrapper.setProps({ fetchError });
     error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(1);
+    expect(error.text()).to.equal("Error: test error");
   });
 
   it("shows success message on create", () => {
@@ -108,6 +109,7 @@ describe("EditableConfigList", () => {
     wrapper.setProps({ responseBody: "itemType", editOrCreate: "create"});
     success = wrapper.find(Alert);
     expect(success.length).to.equal(1);
+    expect(success.text()).to.equal("Successfully created a new thing");
   });
 
   it("shows success message on edit", () => {
@@ -116,6 +118,7 @@ describe("EditableConfigList", () => {
     wrapper.setProps({ responseBody: "itemType", editOrCreate: "edit"});
     success = wrapper.find(Alert);
     expect(success.length).to.equal(1);
+    expect(success.text()).to.equal("Successfully edited this thing");
   });
 
   it("shows loading indicator", () => {

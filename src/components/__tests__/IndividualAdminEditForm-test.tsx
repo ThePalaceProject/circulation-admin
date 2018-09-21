@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, useFakeTimers } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -522,6 +522,7 @@ describe("IndividualAdminEditForm", () => {
       // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
       // Start on the create page.
       Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
+      let saveButton = wrapper.find("SaveButton");
 
       let emailInput = wrapper.find("input[name='email']");
       let emailInputElement = emailInput.get(0);
@@ -536,23 +537,25 @@ describe("IndividualAdminEditForm", () => {
       let managerNyplInput = editableInputByName("manager-nypl");
       managerNyplInput.find("input").simulate("change");
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      saveButton.simulate("click");
 
-      expect(editIndividualAdmin.callCount).to.equal(1);
       let formData = editIndividualAdmin.args[0][0];
       expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
       expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "librarian-all" }, { role: "manager", library: "nypl" }]));
 
       wrapper.setProps({ responseBody: "newEmail" });
+
       // Let the call stack clear so the callback after editItem will run.
       const pause = (): Promise<void> => {
-          return new Promise<void>(resolve => setTimeout(resolve, 0));
+        return new Promise<void>(resolve => setTimeout(resolve, 2000));
       };
       await pause();
+      expect(editIndividualAdmin.callCount).to.equal(1);
+      expect(goToEdit.callCount).to.equal(1);
       expect(window.location.href).to.contain("edit");
       expect(window.location.href).to.contain("newEmail");
+
     });
 
     it("submits system admin when setting up", () => {

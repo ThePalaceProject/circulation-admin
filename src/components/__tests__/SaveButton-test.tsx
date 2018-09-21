@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, spy } from "sinon";
 
 import * as React from "react";
 import { mount } from "enzyme";
@@ -10,8 +10,6 @@ describe("SaveButton", () => {
   let wrapper;
   let save;
   let handleData;
-  let form;
-  let FormData = {testProperty: "testing..."};
 
   beforeEach(() => {
     save = stub();

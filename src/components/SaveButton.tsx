@@ -1,11 +1,17 @@
 import * as React from "react";
 
-export interface SaveButtonProps {
+export interface SaveButtonOwnProps {
   disabled: boolean;
   save: (data: any) => void;
   handleData?: (data) => void;
   form: any;
 }
+
+export interface SaveButtonDispatchProps {
+  handleSubmit?: (data: FormData) => void;
+}
+
+export interface SaveButtonProps extends React.Props<SaveButtonProps>, SaveButtonOwnProps, SaveButtonDispatchProps {}
 
 export default class SaveButton extends React.Component<SaveButtonProps, void> {
 

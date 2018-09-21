@@ -9,7 +9,7 @@ export interface IndividualAdminEditFormProps {
   item?: IndividualAdminData;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
-  goToEdit: (responseBody: string) => void;
+  goToEdit?: (responseBody: string) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -42,7 +42,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.handleRoleChange = this.handleRoleChange.bind(this);
     this.save = this.save.bind(this);
     this.handleData = this.handleData.bind(this);
-    this.redirect = this.redirect.bind(this);
   }
 
   render(): JSX.Element {
@@ -306,21 +305,21 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
 
   save(data) {
     this.props.editItem(data).then(() => {
-      this.redirect();
+        // If we're setting up an admin for the first time, refresh the page
+        // to go to login.
+      if (this.context.settingUp) {
+        window.location.reload();
+        return;
+      }
+
+      // If a new admin was created, go to its edit page.
+      if (!this.props.item && this.props.responseBody) {
+        setTimeout(() => {
+          this.props.goToEdit(this.props.responseBody);
+        }, 2000);
+      }
     });
   }
 
-  redirect() {
-    // If we're setting up an admin for the first time, refresh the page
-    // to go to login.
-    if (this.context.settingUp) {
-      window.location.reload();
-      return;
-    }
-    // If a new admin was created, go to its edit page.
-    if (!this.props.item && this.props.responseBody) {
-      setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
-    }
-  }
 
 }
