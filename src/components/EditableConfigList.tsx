@@ -135,6 +135,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           <div>
             <h3>Create a new {this.itemTypeName}</h3>
             <EditForm
+              ref="edit-form"
               data={this.props.data}
               disabled={this.props.isFetching}
               editItem={this.editItem}
@@ -149,6 +150,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           <div>
             <h3>Edit {this.label(this.itemToEdit())}</h3>
             <EditForm
+              ref="edit-form"
               item={this.itemToEdit()}
               data={this.props.data}
               disabled={this.props.isFetching}
@@ -195,6 +197,31 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     await this.props.editItem(data);
     // Scrolling to the top lets the user see the success message
     window.scrollTo(0, 0);
+    this.clearForm();
+  }
+
+  clearForm() {
+    let form = (this.refs["edit-form"] as any).refs.form;
+    form.reset();
+    for (const el of form.children){
+      if (el.className == "form-group" || (el.children[0] && el.children[0].className =="form-group")) {
+        let input = this.findInputElement(el);
+        if (input) { input.value = ""; }
+      }
+    }
+  }
+
+  findInputElement(el) {
+    let grandchild = el.children[0].children[0];
+    if (grandchild && grandchild.value){
+      return grandchild;
+    }
+    else if (grandchild && grandchild.children[0] && grandchild.children[0].value){
+      return grandchild.children[0];
+    }
+    else {
+      return null;
+    }
   }
 
   itemToEdit(): U | null {
