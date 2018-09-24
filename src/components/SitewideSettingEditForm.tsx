@@ -7,7 +7,6 @@ export interface SitewideSettingEditFormProps {
   item?: SitewideSettingData;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
-  goToEdit: (responseBody: string) => void;
   urlBase: string;
   listDataKey: string;
 }
@@ -114,10 +113,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     event.preventDefault();
     const data = new (window as any).FormData(this.refs["form"] as any);
     this.props.editItem(data).then(() => {
-      // If a new setting was created, go to its edit page.
-      if (!this.props.item && data.get("key")) {
-        setTimeout(() => { this.props.goToEdit(data.get("key")); }, 2000);
-      }
+
     });
   }
 

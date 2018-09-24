@@ -252,12 +252,6 @@ describe("EditableConfigList", () => {
     expect(form.props().listDataKey).to.equal("things");
   });
 
-  it("redirects to edit page", () => {
-    Object.defineProperty(window.location, "href", { writable: true });
-    wrapper.instance().goToEdit("newThing");
-    expect(window.location.href).to.equal("/admin/things/edit/newThing");
-  });
-
   it("fetches data on mount and passes edit function to form", async () => {
     expect(fetchData.callCount).to.equal(1);
 

@@ -10,7 +10,6 @@ import EditableInput from "../EditableInput";
 describe("SitewideSettingEditForm", () => {
   let wrapper;
   let editSitewideSetting;
-  let goToEdit;
   let settingData = {
     key: "test_key",
     value: "value",
@@ -55,13 +54,11 @@ describe("SitewideSettingEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       editSitewideSetting = stub();
-      goToEdit = stub();
       wrapper = shallow(
         <SitewideSettingEditForm
           data={settingsData}
           disabled={false}
           editItem={editSitewideSetting}
-          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="settings"
           />
@@ -78,7 +75,6 @@ describe("SitewideSettingEditForm", () => {
           data={data}
           disabled={false}
           editItem={editSitewideSetting}
-          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="settings"
           />
@@ -138,13 +134,11 @@ describe("SitewideSettingEditForm", () => {
   describe("behavior", () => {
     beforeEach(() => {
       editSitewideSetting = stub().returns(new Promise<void>(resolve => resolve()));
-      goToEdit = stub();
       wrapper = mount(
         <SitewideSettingEditForm
           data={settingsData}
           disabled={false}
           editItem={editSitewideSetting}
-          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="settings"
           />

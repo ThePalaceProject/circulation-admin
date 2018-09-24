@@ -18,7 +18,6 @@ export interface EditableConfigListStateProps<T> {
 export interface EditableConfigListDispatchProps<T> {
   fetchData?: () => Promise<T>;
   editItem?: (data: FormData) => Promise<void>;
-  goToEdit?: (responseBody: string) => void;
   deleteItem?: (identifier: string | number) => Promise<void>;
 }
 
@@ -36,7 +35,6 @@ export interface EditFormProps<T, U> {
   data: T;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
-  goToEdit?: (responseBody: string) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -197,10 +195,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     await this.props.editItem(data);
     // Scrolling to the top lets the user see the success message
     window.scrollTo(0, 0);
-    // if (this.props.fetchData) {
-    //   this.props.fetchData();
-    // }
-    // this.goToEdit(this.props.identifier);
   }
 
   itemToEdit(): U | null {
@@ -219,10 +213,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       await this.props.deleteItem(item[this.identifierKey]);
       this.props.fetchData();
     }
-  }
-
-  goToEdit(responseBody) {
-    window.location.href = this.urlBase + "edit/" + responseBody;
   }
 
 }

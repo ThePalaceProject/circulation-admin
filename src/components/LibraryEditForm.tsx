@@ -66,10 +66,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
   save(data) {
     this.props.editItem(data).then(() => {
-      // If a new library was created, go to the new library's edit page.
-      // if (!this.props.item && this.props.responseBody) {
-      //   setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
-      // }
+
     });
   }
 }
