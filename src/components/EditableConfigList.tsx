@@ -150,7 +150,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           <div>
             <h3>Edit {this.label(this.itemToEdit())}</h3>
             <EditForm
-              ref="edit-form"
               item={this.itemToEdit()}
               data={this.props.data}
               disabled={this.props.isFetching}
