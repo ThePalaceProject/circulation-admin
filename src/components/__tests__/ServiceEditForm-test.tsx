@@ -15,7 +15,7 @@ import { ServicesData } from "../../interfaces";
 describe("ServiceEditForm", () => {
   let TestServiceEditForm: new(props: ServiceEditFormProps<ServicesData>) => React.Component<ServiceEditFormProps<ServicesData>, ServiceEditFormState> = ServiceEditForm;
   let wrapper;
-  let editService;
+  let save;
   let urlBase = "/services";
   let serviceData = {
     id: 2,
@@ -107,12 +107,12 @@ describe("ServiceEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editService = stub();
+      save = stub();
       wrapper = shallow(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -144,7 +144,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -175,7 +175,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -205,7 +205,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesData}
           item={newService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -224,7 +224,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -244,7 +244,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -267,7 +267,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -292,7 +292,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -321,7 +321,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -336,7 +336,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceDataSitewide}
           urlBase={urlBase}
           listDataKey="services"
@@ -355,7 +355,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -373,7 +373,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -396,7 +396,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={newServiceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -416,7 +416,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -431,7 +431,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceDataSitewide}
           urlBase={urlBase}
           listDataKey="services"
@@ -450,7 +450,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -479,7 +479,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -503,12 +503,12 @@ describe("ServiceEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editService = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -579,7 +579,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataWithParent}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -677,7 +677,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -699,7 +699,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -759,8 +759,8 @@ describe("ServiceEditForm", () => {
       let saveButton = wrapper.find("SaveButton");
       saveButton.simulate("click");
 
-      expect(editService.callCount).to.equal(1);
-      let formData = editService.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("id")).to.equal("2");
       expect(formData.get("protocol")).to.equal("protocol 1");
       expect(formData.get("text_setting")).to.equal("text setting");

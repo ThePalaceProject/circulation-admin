@@ -11,7 +11,7 @@ import SaveButton from "../SaveButton";
 
 describe("LibraryEditForm", () => {
   let wrapper;
-  let editLibrary;
+  let save;
   let libraryData = {
     uuid: "uuid",
     name: "name",
@@ -44,12 +44,12 @@ describe("LibraryEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editLibrary = stub();
+      save = stub();
       wrapper = shallow(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
-          editItem={editLibrary}
+          save={save}
           urlBase="url base"
           listDataKey="libraries"
           />
@@ -106,12 +106,12 @@ describe("LibraryEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editLibrary = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
-          editItem={editLibrary}
+          save={save}
           urlBase="url base"
           listDataKey="libraries"
         />
@@ -124,8 +124,8 @@ describe("LibraryEditForm", () => {
       let saveButton = wrapper.find("SaveButton");
       saveButton.simulate("click");
 
-      expect(editLibrary.callCount).to.equal(1);
-      let formData = editLibrary.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("uuid")).to.equal("uuid");
       expect(formData.get("name")).to.equal("name");
       expect(formData.get("short_name")).to.equal("short_name");

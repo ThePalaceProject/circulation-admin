@@ -48,13 +48,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.editLibrary = this.editLibrary.bind(this);
     this.expandLibrary = this.expandLibrary.bind(this);
     this.removeLibrary = this.removeLibrary.bind(this);
-    this.save = this.save.bind(this);
     this.handleData = this.handleData.bind(this);
   }
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.save} className="edit-form">
+      <form ref="form" onSubmit={this.props.save} className="edit-form">
         { this.props.item && this.props.item.id &&
           <input
             type="hidden"

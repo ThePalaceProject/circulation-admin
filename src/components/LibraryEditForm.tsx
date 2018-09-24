@@ -19,11 +19,10 @@ export interface LibraryEditFormProps {
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, void> {
   constructor(props) {
     super(props);
-    this.save = this.save.bind(this);
   }
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.save} className="edit-form">
+      <form ref="form" onSubmit={this.props.save} className="edit-form">
         <input
           type="hidden"
           name="uuid"

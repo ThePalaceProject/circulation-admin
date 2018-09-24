@@ -11,7 +11,7 @@ import Admin from "../../models/Admin";
 
 describe("IndividualAdminEditForm", () => {
   let wrapper;
-  let editIndividualAdmin;
+  let save;
   let adminData = {
     email: "test@nypl.org",
     password: "password"
@@ -42,12 +42,12 @@ describe("IndividualAdminEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editIndividualAdmin = stub();
+      save = stub();
       wrapper = shallow(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}
-          editItem={editIndividualAdmin}
+          save={save}
           urlBase="url base"
           listDataKey="admins"
           />,
@@ -369,12 +369,12 @@ describe("IndividualAdminEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editIndividualAdmin = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}
-          editItem={editIndividualAdmin}
+          save={save}
           urlBase="url base"
           listDataKey="admins"
           />,
@@ -532,11 +532,11 @@ describe("IndividualAdminEditForm", () => {
       let saveButton = wrapper.find("SaveButton");
       saveButton.simulate("click");
 
-      let formData = editIndividualAdmin.args[0][0];
+      let formData = save.args[0][0];
       expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
       expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "librarian-all" }, { role: "manager", library: "nypl" }]));
-      expect(editIndividualAdmin.callCount).to.equal(1);
+      expect(save.callCount).to.equal(1);
 
     });
 
@@ -555,8 +555,8 @@ describe("IndividualAdminEditForm", () => {
       let saveButton = wrapper.find("SaveButton");
       saveButton.simulate("click");
 
-      expect(editIndividualAdmin.callCount).to.equal(1);
-      let formData = editIndividualAdmin.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
       expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "system" }]));
