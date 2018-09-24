@@ -8,7 +8,7 @@ export interface LibraryEditFormProps {
   data: LibrariesData;
   item?: LibraryData;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save: (data: any) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -57,16 +57,10 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         }
         <SaveButton
           disabled={this.props.disabled}
-          save={this.save}
+          save={this.props.save}
           form={this.refs["form"]}
         />
       </form>
     );
-  }
-
-  save(data) {
-    this.props.editItem(data).then(() => {
-
-    });
   }
 }

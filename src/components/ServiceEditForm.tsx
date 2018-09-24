@@ -11,7 +11,7 @@ export interface ServiceEditFormProps<T> {
   data: T;
   item?: ServiceData;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save: (data: any) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -198,7 +198,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         }
         <SaveButton
           disabled={this.props.disabled}
-          save={this.save}
+          save={this.props.save}
           handleData={this.handleData}
           form={this.refs["form"]}
         />
@@ -425,9 +425,4 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     return data.append("libraries", JSON.stringify(this.state.libraries));
   }
 
-  save(data) {
-    this.props.editItem(data).then(() => {
-
-    });
-  }
 }
