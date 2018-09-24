@@ -10,10 +10,12 @@ describe("SaveButton", () => {
   let wrapper;
   let save;
   let handleData;
+  let handleSubmit;
+  let data = {key: "value"};
 
   beforeEach(() => {
-    save = stub();
     handleData = stub();
+    save = stub();
     wrapper = mount(
       <SaveButton
         disabled={false}

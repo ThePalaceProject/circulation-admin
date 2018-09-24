@@ -427,10 +427,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   save(data) {
-    // event.preventDefault();
-
-    // const data = new (window as any).FormData(this.refs["form"] as any);
-    // data.append("libraries", JSON.stringify(this.state.libraries));
     this.props.editItem(data).then(() => {
       // If a new service was created, go to its edit page.
       if (!this.props.item && this.props.responseBody) {

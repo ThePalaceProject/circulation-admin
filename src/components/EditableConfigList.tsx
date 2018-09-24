@@ -140,7 +140,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               data={this.props.data}
               disabled={this.props.isFetching}
               editItem={this.editItem}
-              goToEdit={this.goToEdit}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -156,7 +155,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               data={this.props.data}
               disabled={this.props.isFetching}
               editItem={this.editItem}
-              goToEdit={this.goToEdit}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -199,6 +197,10 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     await this.props.editItem(data);
     // Scrolling to the top lets the user see the success message
     window.scrollTo(0, 0);
+    // if (this.props.fetchData) {
+    //   this.props.fetchData();
+    // }
+    // this.goToEdit(this.props.identifier);
   }
 
   itemToEdit(): U | null {
