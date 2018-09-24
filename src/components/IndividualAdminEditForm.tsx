@@ -8,7 +8,7 @@ export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
   item?: IndividualAdminData;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save: (data: any) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -39,13 +39,13 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     };
     this.isSelected = this.isSelected.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
-    this.save = this.save.bind(this);
+    // this.save = this.save.bind(this);
     this.handleData = this.handleData.bind(this);
   }
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.save} className="edit-form">
+      <form ref="form" onSubmit={this.props.save} className="edit-form">
         <EditableInput
           elementType="input"
           type="text"
@@ -140,7 +140,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         }
         <SaveButton
           disabled={this.props.disabled}
-          save={this.save}
+          save={this.props.save}
           handleData={this.handleData}
           form={this.refs["form"]}
         />
@@ -300,17 +300,23 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       roles = [{ role: "system" }];
     }
     data.append("roles", JSON.stringify(roles));
+    // If we're setting up an admin for the first time, refresh the page
+    // to go to login.
+    if (this.context.settingUp) {
+     window.location.reload();
+     return;
+    }
   }
 
-  save(data) {
-    this.props.editItem(data).then(() => {
-        // If we're setting up an admin for the first time, refresh the page
-        // to go to login.
-      if (this.context.settingUp) {
-        window.location.reload();
-        return;
-      }
-    });
-  }
+  // save(data) {
+  //   this.props.editItem(data).then(() => {
+  //       // If we're setting up an admin for the first time, refresh the page
+  //       // to go to login.
+  //     if (this.context.settingUp) {
+  //       window.location.reload();
+  //       return;
+  //     }
+  //   });
+  // }
 
 }

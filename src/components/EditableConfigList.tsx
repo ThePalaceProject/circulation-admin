@@ -17,7 +17,7 @@ export interface EditableConfigListStateProps<T> {
 
 export interface EditableConfigListDispatchProps<T> {
   fetchData?: () => Promise<T>;
-  editItem?: (data: FormData) => Promise<void>;
+  editItem: (data: FormData) => Promise<void>;
   deleteItem?: (identifier: string | number) => Promise<void>;
 }
 
@@ -34,7 +34,7 @@ export interface EditFormProps<T, U> {
   item?: U;
   data: T;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save?: (data: any) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -65,6 +65,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   constructor(props) {
     super(props);
     this.editItem = this.editItem.bind(this);
+    this.save = this.save.bind(this);
     this.label = this.label.bind(this);
   }
 
@@ -138,7 +139,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               ref="edit-form"
               data={this.props.data}
               disabled={this.props.isFetching}
-              editItem={this.editItem}
+              save={this.save}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -153,7 +154,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               item={this.itemToEdit()}
               data={this.props.data}
               disabled={this.props.isFetching}
-              editItem={this.editItem}
+              save={this.save}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -192,18 +193,23 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     }
   }
 
+  save(data) {
+    this.editItem(data).then(() => {
+      // Scrolling to the top lets the user see the success message
+      window.scrollTo(0, 0);
+      this.refs["edit-form"] && this.clearForm();
+    });
+  }
+
   async editItem(data: FormData): Promise<void> {
     await this.props.editItem(data);
-    // Scrolling to the top lets the user see the success message
-    window.scrollTo(0, 0);
-    this.clearForm();
   }
 
   clearForm() {
     let form = (this.refs["edit-form"] as any).refs.form;
     form.reset();
     for (const el of form.children){
-      if (el.className == "form-group" || (el.children[0] && el.children[0].className =="form-group")) {
+      if (el.className === "form-group" || (el.children[0] && el.children[0].className === "form-group")) {
         let input = this.findInputElement(el);
         if (input) { input.value = ""; }
       }
@@ -212,10 +218,10 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   findInputElement(el) {
     let grandchild = el.children[0].children[0];
-    if (grandchild && grandchild.value){
+    if (grandchild && grandchild.value) {
       return grandchild;
     }
-    else if (grandchild && grandchild.children[0] && grandchild.children[0].value){
+    else if (grandchild && grandchild.children[0] && grandchild.children[0].value) {
       return grandchild.children[0];
     }
     else {
