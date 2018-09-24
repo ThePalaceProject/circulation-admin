@@ -8,7 +8,6 @@ export interface LibraryEditFormProps {
   data: LibrariesData;
   item?: LibraryData;
   disabled: boolean;
-  goToEdit: (responseBody: string) => void;
   editItem: (data: FormData) => Promise<void>;
   urlBase: string;
   listDataKey: string;
@@ -68,9 +67,9 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   save(data) {
     this.props.editItem(data).then(() => {
       // If a new library was created, go to the new library's edit page.
-      if (!this.props.item && this.props.responseBody) {
-        setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
-      }
+      // if (!this.props.item && this.props.responseBody) {
+      //   setTimeout(() => { this.props.goToEdit(this.props.responseBody); }, 2000);
+      // }
     });
   }
 }

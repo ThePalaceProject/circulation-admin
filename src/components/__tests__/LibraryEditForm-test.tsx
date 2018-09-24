@@ -12,7 +12,6 @@ import SaveButton from "../SaveButton";
 describe("LibraryEditForm", () => {
   let wrapper;
   let editLibrary;
-  let goToEdit;
   let libraryData = {
     uuid: "uuid",
     name: "name",
@@ -46,13 +45,11 @@ describe("LibraryEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       editLibrary = stub();
-      goToEdit = stub();
       wrapper = shallow(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
           editItem={editLibrary}
-          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="libraries"
           />
@@ -110,13 +107,11 @@ describe("LibraryEditForm", () => {
   describe("behavior", () => {
     beforeEach(() => {
       editLibrary = stub().returns(new Promise<void>(resolve => resolve()));
-      goToEdit = stub();
       wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
           editItem={editLibrary}
-          goToEdit={goToEdit}
           urlBase="url base"
           listDataKey="libraries"
         />
@@ -126,8 +121,8 @@ describe("LibraryEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
       expect(editLibrary.callCount).to.equal(1);
       let formData = editLibrary.args[0][0];
@@ -136,26 +131,6 @@ describe("LibraryEditForm", () => {
       expect(formData.get("short_name")).to.equal("short_name");
       expect(formData.get("privacy-policy")).to.equal("http://privacy");
       expect(formData.get("copyright")).to.equal("http://copyright");
-    });
-
-    it("navigates to edit form after creating a new library", async () => {
-      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-      // Start on the create page.
-      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
-
-      let form = wrapper.find("form");
-      form.simulate("submit");
-
-      expect(editLibrary.callCount).to.equal(1);
-
-      wrapper.setProps({ responseBody: "5" });
-      // Let the call stack clear so the callback after editItem will run.
-      const pause = (): Promise<void> => {
-          return new Promise<void>(resolve => setTimeout(resolve, 0));
-      };
-      await pause();
-      expect(window.location.href).to.contain("edit");
-      expect(window.location.href).to.contain("5");
     });
   });
 });
