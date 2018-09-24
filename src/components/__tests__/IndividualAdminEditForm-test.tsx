@@ -513,9 +513,8 @@ describe("IndividualAdminEditForm", () => {
       });
     });
 
-    it.only("submits data", () => {
+    it("submits data", () => {
       // Start on the create page.
-      let saveButton = wrapper.find("SaveButton");
 
       let emailInput = wrapper.find("input[name='email']");
       let emailInputElement = emailInput.get(0);
@@ -530,6 +529,7 @@ describe("IndividualAdminEditForm", () => {
       let managerNyplInput = editableInputByName("manager-nypl");
       managerNyplInput.find("input").simulate("change");
 
+      let saveButton = wrapper.find("SaveButton");
       saveButton.simulate("click");
 
       let formData = editIndividualAdmin.args[0][0];
@@ -541,8 +541,6 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("submits system admin when setting up", () => {
-      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
-
       wrapper.setContext({ settingUp: true });
 
       let emailInput = wrapper.find("input[name='email']");
@@ -554,8 +552,8 @@ describe("IndividualAdminEditForm", () => {
       pwInputElement.value = "newPassword";
       pwInput.simulate("change");
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
       expect(editIndividualAdmin.callCount).to.equal(1);
       let formData = editIndividualAdmin.args[0][0];
