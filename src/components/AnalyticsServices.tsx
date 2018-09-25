@@ -32,7 +32,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
-    responseBody: state.editor.analyticsServices && state.editor.analyticsServices.responseBody,
+    responseBody: state.editor.analyticsServices && state.editor.analyticsServices.successMessage,
     fetchError: state.editor.analyticsServices.fetchError,
     isFetching: state.editor.analyticsServices.isFetching || state.editor.analyticsServices.isEditing
   };

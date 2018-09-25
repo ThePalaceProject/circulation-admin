@@ -19,7 +19,7 @@ export class LoggingServices extends EditableConfigList<LoggingServicesData, Log
 function mapStateToProps(state, ownProps) {
   return {
     data: state.editor.loggingServices && state.editor.loggingServices.data,
-    responseBody: state.editor.loggingServices && state.editor.loggingServices.responseBody,
+    responseBody: state.editor.loggingServices && state.editor.loggingServices.successMessage,
     fetchError: state.editor.loggingServices.fetchError,
     isFetching: state.editor.loggingServices.isFetching || state.editor.loggingServices.isEditing
   };

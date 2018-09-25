@@ -13,6 +13,7 @@ export interface EditableConfigListStateProps<T> {
   fetchError?: FetchErrorData;
   isFetching?: boolean;
   responseBody?: string;
+  successMessage?: string;
 }
 
 export interface EditableConfigListDispatchProps<T> {
@@ -204,6 +205,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   async editItem(data: FormData): Promise<void> {
     await this.props.editItem(data);
+    this.props.fetchData();
   }
 
   clearForm() {
