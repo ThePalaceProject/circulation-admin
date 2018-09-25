@@ -259,7 +259,7 @@ describe("EditableConfigList", () => {
     expect(form.props().listDataKey).to.equal("things");
   });
 
-  it("fetches data on mount and passes save function to form", async () => {
+  it("fetches data on mount and passes save function to form", () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
@@ -268,8 +268,14 @@ describe("EditableConfigList", () => {
     expect(editItem.callCount).to.equal(0);
     form.props().save();
     expect(editItem.callCount).to.equal(1);
+  });
+
+  it("fetches data again on save", async() => {
+    wrapper.setProps({ editOrCreate: "create" });
+    let form = wrapper.find(ThingEditForm);
+    form.props().save();
     await pause();
-    expect(fetchData.callCount).to.equal(1);
+    expect(fetchData.callCount).to.equal(2);
   });
 
   it("should not render the AdditionalContent component", () => {

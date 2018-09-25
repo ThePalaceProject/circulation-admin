@@ -45,7 +45,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     fetchData: () => dispatch(actions.fetchIndividualAdmins()),
     editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deleteIndividualAdmin(identifier))
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteIndividualAdmin(identifier)),
   };
 }
 

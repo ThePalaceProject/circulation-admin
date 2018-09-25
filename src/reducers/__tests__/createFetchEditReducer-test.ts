@@ -19,7 +19,8 @@ describe("fetch-edit reducer", () => {
     isEditing: false,
     fetchError: null,
     isLoaded: false,
-    responseBody: null
+    responseBody: null,
+    successMessage: null
   };
 
   let errorState: FetchEditState<TestData> = {
@@ -28,7 +29,8 @@ describe("fetch-edit reducer", () => {
     isEditing: false,
     fetchError: { status: 400, response: "test error", url: "test url" },
     isLoaded: true,
-    responseBody: null
+    responseBody: null,
+    successMessage: null
   };
 
   const manipulateData = (state, action) => {
@@ -161,7 +163,8 @@ describe("fetch-edit reducer", () => {
   it("handles edit load", () => {
     let action = { type: "TEST_EDIT_LOAD", data: "5" };
     let newState = Object.assign({}, initState, {
-      responseBody: "5"
+      responseBody: "5",
+      successMessage: "5"
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
     // fetch only reducer does nothing

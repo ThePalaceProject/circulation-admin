@@ -43,6 +43,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   }
 
   render(): JSX.Element {
+    console.log(this.props.data);
     return (
       <form ref="form" onSubmit={this.props.save} className="edit-form">
         <EditableInput
