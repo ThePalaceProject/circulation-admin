@@ -200,7 +200,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       // Scrolling to the top lets the user see the success message
       window.scrollTo(0, 0);
       this.refs["edit-form"] && this.clearForm();
+
     });
+    setTimeout(() => {
+      this.refs["edit-form"] && this.clearForm();
+    }, 500);
   }
 
   async editItem(data: FormData): Promise<void> {
@@ -214,7 +218,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     for (const el of form.children){
       if (el.className === "form-group" || (el.children[0] && el.children[0].className === "form-group")) {
         let input = this.findInputElement(el);
-        if (input) { input.value = ""; }
+        if (input) {
+          input.value = "";
+        }
       }
     }
   }
