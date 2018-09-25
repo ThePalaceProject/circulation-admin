@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import SaveButton from "./SaveButton";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
 
 export interface SitewideSettingEditFormProps {
@@ -7,6 +8,7 @@ export interface SitewideSettingEditFormProps {
   item?: SitewideSettingData;
   disabled: boolean;
   editItem: (data: FormData) => Promise<void>;
+  save: (data: any) => void;
   urlBase: string;
   listDataKey: string;
 }
@@ -19,7 +21,6 @@ export interface SitewideSettingEditFormState {
 export default class SitewideSettingEditForm extends React.Component<SitewideSettingEditFormProps, SitewideSettingEditFormState> {
   constructor(props) {
     super(props);
-    this.save = this.save.bind(this);
     this.onChange = this.onChange.bind(this);
     this.state = {
       inputKey: this.availableSettings().length ? this.availableSettings()[0].key : "",
@@ -39,7 +40,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     return (
       <div>
         { availableSettings.length > 0 &&
-          <form ref="form" onSubmit={this.save} className="edit-form">
+          <form ref="form" onSubmit={this.props.save} className="edit-form">
             <EditableInput
               elementType="select"
               disabled={this.props.disabled}
@@ -91,11 +92,11 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                 }
               })
             }
-            <button
-              type="submit"
-              className="btn btn-default"
+            <SaveButton
               disabled={this.props.disabled}
-              >Submit</button>
+              save={this.props.save}
+              form={this.refs["form"]}
+            />
           </form>
         }
         { this.availableSettings().length === 0 &&
@@ -107,14 +108,6 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
 
   onChange(inputKey) {
     this.setState({ inputKey });
-  }
-
-  save(event) {
-    event.preventDefault();
-    const data = new (window as any).FormData(this.refs["form"] as any);
-    this.props.editItem(data).then(() => {
-
-    });
   }
 
   availableSettings() {

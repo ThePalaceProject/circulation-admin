@@ -259,7 +259,7 @@ describe("EditableConfigList", () => {
     expect(form.props().listDataKey).to.equal("things");
   });
 
-  it("fetches data on mount and passes edit function to form", async () => {
+  it("fetches data on mount and passes save function to form", async () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
@@ -268,7 +268,6 @@ describe("EditableConfigList", () => {
     expect(editItem.callCount).to.equal(0);
     form.props().save();
     expect(editItem.callCount).to.equal(1);
-
     await pause();
     expect(fetchData.callCount).to.equal(1);
   });

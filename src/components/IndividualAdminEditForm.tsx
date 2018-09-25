@@ -39,7 +39,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     };
     this.isSelected = this.isSelected.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
-    // this.save = this.save.bind(this);
     this.handleData = this.handleData.bind(this);
   }
 
@@ -307,16 +306,5 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
      return;
     }
   }
-
-  // save(data) {
-  //   this.props.editItem(data).then(() => {
-  //       // If we're setting up an admin for the first time, refresh the page
-  //       // to go to login.
-  //     if (this.context.settingUp) {
-  //       window.location.reload();
-  //       return;
-  //     }
-  //   });
-  // }
 
 }
