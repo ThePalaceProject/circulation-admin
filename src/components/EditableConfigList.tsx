@@ -17,8 +17,9 @@ export interface EditableConfigListStateProps<T> {
 
 export interface EditableConfigListDispatchProps<T> {
   fetchData?: () => Promise<T>;
-  editItem: (data: FormData) => Promise<void>;
+  editItem?: (data: FormData) => Promise<void>;
   deleteItem?: (identifier: string | number) => Promise<void>;
+  save?: (data: any) => void;
 }
 
 export interface EditableConfigListOwnProps {

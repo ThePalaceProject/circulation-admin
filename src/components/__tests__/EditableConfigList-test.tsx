@@ -66,6 +66,7 @@ describe("EditableConfigList", () => {
   let wrapper;
   let fetchData;
   let editItem;
+  let save;
   let deleteItem;
   let thingData = { id: 5, label: "label" };
   let thingsData = { things: [thingData] };
@@ -77,6 +78,7 @@ describe("EditableConfigList", () => {
   beforeEach(() => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
+    save = stub();
     deleteItem = stub().returns(new Promise<void>(resolve => resolve()));
     canCreate = true;
     canDelete = true;
@@ -86,6 +88,7 @@ describe("EditableConfigList", () => {
         data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
+        save={save}
         deleteItem={deleteItem}
         csrfToken="token"
         isFetching={false}
@@ -155,6 +158,7 @@ describe("EditableConfigList", () => {
         data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
+        save={save}
         deleteItem={deleteItem}
         csrfToken="token"
         isFetching={false}
@@ -170,6 +174,7 @@ describe("EditableConfigList", () => {
         data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
+        save={save}
         csrfToken="token"
         isFetching={false}
         />
@@ -182,6 +187,7 @@ describe("EditableConfigList", () => {
         data={{ things: [] }}
         fetchData={fetchData}
         editItem={editItem}
+        save={save}
         csrfToken="token"
         isFetching={false}
         />
@@ -198,6 +204,7 @@ describe("EditableConfigList", () => {
         data={thingsData}
         fetchData={fetchData}
         editItem={editItem}
+        save={save}
         deleteItem={deleteItem}
         csrfToken="token"
         isFetching={false}
@@ -259,7 +266,7 @@ describe("EditableConfigList", () => {
     let form = wrapper.find(ThingEditForm);
 
     expect(editItem.callCount).to.equal(0);
-    form.props().editItem();
+    form.props().save();
     expect(editItem.callCount).to.equal(1);
 
     await pause();
