@@ -9,7 +9,7 @@ import EditableInput from "../EditableInput";
 
 describe("SitewideSettingEditForm", () => {
   let wrapper;
-  let editSitewideSetting;
+  let save;
   let settingData = {
     key: "test_key",
     value: "value",
@@ -53,12 +53,12 @@ describe("SitewideSettingEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editSitewideSetting = stub();
+      save = stub();
       wrapper = shallow(
         <SitewideSettingEditForm
           data={settingsData}
           disabled={false}
-          editItem={editSitewideSetting}
+          save={save}
           urlBase="url base"
           listDataKey="settings"
           />
@@ -74,7 +74,7 @@ describe("SitewideSettingEditForm", () => {
         <SitewideSettingEditForm
           data={data}
           disabled={false}
-          editItem={editSitewideSetting}
+          save={save}
           urlBase="url base"
           listDataKey="settings"
           />
@@ -133,12 +133,12 @@ describe("SitewideSettingEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editSitewideSetting = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <SitewideSettingEditForm
           data={settingsData}
           disabled={false}
-          editItem={editSitewideSetting}
+          save={save}
           urlBase="url base"
           listDataKey="settings"
           />
@@ -148,11 +148,11 @@ describe("SitewideSettingEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: settingData });
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
-      expect(editSitewideSetting.callCount).to.equal(1);
-      let formData = editSitewideSetting.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("key")).to.equal("test_key");
       expect(formData.get("value")).to.equal("value");
     });
