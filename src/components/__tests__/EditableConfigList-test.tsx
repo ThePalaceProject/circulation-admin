@@ -145,9 +145,22 @@ describe("EditableConfigList", () => {
     expect(editLink.props().href).to.equal("/admin/things/edit/5");
   });
 
+  it("updates thing list", () => {
+    let newThing = { id: 6, label: "another thing" };
+    let newThingsData = { things: [thingData, newThing] };
+    wrapper.setProps({ data: newThingsData });
+
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(2);
+    expect(things.at(1).text()).to.contain("test another thing");
+    let editLink = things.at(1).find("a");
+    expect(editLink.props().href).to.equal("/admin/things/edit/6");
+  });
+
   it("shows create link", () => {
     let createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
+    expect(createLink.text()).to.equal("Create new thing");
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
 
@@ -249,6 +262,13 @@ describe("EditableConfigList", () => {
     expect(form.props().listDataKey).to.equal("things");
   });
 
+  it("shows correct header on create form", () => {
+    wrapper.setProps({ editOrCreate: "create" });
+    let formHeader = wrapper.find("h3");
+    expect(formHeader.length).to.equal(1);
+    expect(formHeader.text()).to.equal("Create a new thing");
+  });
+
   it("shows edit form", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
     let form = wrapper.find(ThingEditForm);
@@ -257,6 +277,25 @@ describe("EditableConfigList", () => {
     expect(form.props().item).to.equal(thingData);
     expect(form.props().disabled).to.equal(false);
     expect(form.props().listDataKey).to.equal("things");
+  });
+
+  it("shows correct header on edit form", () => {
+    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
+    let formHeader = wrapper.find("h3");
+    expect(formHeader.length).to.equal(1);
+    expect(formHeader.text()).to.equal("Edit test label");
+  });
+
+  it("updates header on edit form", () => {
+    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
+    let formHeader = wrapper.find("h3");
+    expect(formHeader.text()).to.equal("Edit test label");
+
+    let newThingData = { id: 5, label: "new thing!" };
+    let newThingsData = { things: [newThingData] };
+    wrapper.setProps({ data: newThingsData });
+
+    expect(formHeader.text()).to.equal("Edit test new thing!");
   });
 
   it("fetches data on mount and passes save function to form", () => {
