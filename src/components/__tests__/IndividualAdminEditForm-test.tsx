@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub, useFakeTimers } from "sinon";
+import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
