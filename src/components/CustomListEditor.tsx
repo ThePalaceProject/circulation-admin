@@ -62,7 +62,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         <div className="custom-list-editor-header">
           <div>
             <TextWithEditMode
-              text={this.props.list && this.props.list.title}
+              text={listName}
               placeholder="list name"
               onUpdate={this.changeName}
               ref="listName"
@@ -143,6 +143,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             ref="listEntries"
             opdsFeedUrl={opdsFeedUrl}
             entryCount={this.props.entryCount}
+            listId={this.props.listId}
           />
         </div>
       </div>
@@ -150,7 +151,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.list && (!nextProps.list || nextProps.listId !== this.props.listId)) {
+    if (this.props.list && (nextProps.listId !== this.props.listId)) {
       this.setState({
         name: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
