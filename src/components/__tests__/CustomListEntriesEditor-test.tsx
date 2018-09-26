@@ -185,6 +185,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -216,6 +217,7 @@ describe("CustomListEntriesEditor", () => {
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
         opdsFeedUrl="opdsFeedUrl"
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -242,6 +244,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -267,6 +270,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -319,6 +323,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -346,6 +351,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -491,6 +497,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -533,6 +540,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -598,6 +606,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -645,6 +654,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -695,6 +705,7 @@ describe("CustomListEntriesEditor", () => {
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
+        entryCount={"2"}
       />,
       { context: fullContext, childContextTypes }
     );
@@ -871,6 +882,7 @@ describe("CustomListEntriesEditor", () => {
     expect(display.text()).to.equal("No books in this list");
 
     wrapper.setState({ entries: entriesData.concat(entriesDataExtra) });
+    wrapper.setState({ added: entriesDataExtra });
     wrapper.setProps({ entryCount: "4" });
 
     expect(display.text()).to.equal("Displaying 1 - 4 of 4 Books");

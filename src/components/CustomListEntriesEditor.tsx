@@ -436,17 +436,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         language,
       });
     }
+    let added = this.state.added.concat(entries);
 
-    let newEntries = [];
     for (const entry of this.state.entries) {
-      newEntries.push(entry);
+      entries.push(entry);
     }
 
     this.setState({
       draggingFrom: null,
-      entries: this.state.entries.concat(newEntries),
+      entries,
       deleted: this.state.deleted,
-      added: this.state.added.concat(entries),
+      added,
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
