@@ -187,6 +187,30 @@ describe("CustomListEditor", () => {
     getEntriesStub.restore();
   });
 
+  it("shouldn't allow you to save unless the list has a name", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryPoints={entryPoints}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const saveButton = wrapper.find(".save-list");
+    expect(saveButton.props().disabled).to.equal(true);
+
+    wrapper.setState({ name: "list name" });
+
+    expect(saveButton.props().disabled).to.equal(false);
+  });
+
   it("navigates to edit page after a new list is created", async () => {
     // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
     // Start on the create page.
@@ -212,6 +236,7 @@ describe("CustomListEditor", () => {
     ];
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-list");
+    wrapper.setState({ name: "list name" });
     saveButton.simulate("click");
 
     expect(editCustomList.callCount).to.equal(1);

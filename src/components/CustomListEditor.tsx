@@ -104,6 +104,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <button
               className="btn btn-default save-list"
               onClick={this.save}
+              disabled={!(this.state.name)}
               >Save this list</button>
             { this.hasChanges() &&
               <a
