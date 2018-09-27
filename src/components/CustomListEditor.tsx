@@ -104,7 +104,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <button
               className="btn btn-default save-list"
               onClick={this.save}
-              disabled={!(this.state.name)}
+              disabled={!this.state.name && !this.hasChanges()}
               >Save this list</button>
             { this.hasChanges() &&
               <a
@@ -152,7 +152,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.list && (nextProps.listId !== this.props.listId)) {
+    if (nextProps.list && (nextProps.listId !== this.props.listId)) {
       this.setState({
         name: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
@@ -160,10 +160,22 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       });
     }
     else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
+      let name = this.state.name;
+      let entries = this.state.entries;
+      let collections = this.state.collections;
+      if (nextProps.list.title !== name) {
+        name = nextProps.list.title;
+      }
+      if (nextProps.list && nextProps.list.books.length !== this.state.entries) {
+        entries = nextProps.list.books;
+      }
+      if (nextProps.listCollections.length !== this.state.collections.length) {
+        collections = nextProps.listCollections;
+      }
       this.setState({
-        name: this.state.name,
-        entries: this.state.entries,
-        collections: nextProps.listCollections
+        name,
+        entries: entries,
+        collections: collections,
       });
     }
   }

@@ -40,7 +40,6 @@ export interface CustomListEntriesEditorState {
   entries: Entry[];
   deleted: Entry[];
   added: Entry[];
-  entryCount?: number;
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -52,7 +51,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       entries: this.props.entries || [],
       deleted: [],
       added: [],
-      entryCount: parseInt(this.props.entryCount, 10) || 0,
     };
 
     this.reset = this.reset.bind(this);
@@ -70,19 +68,28 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       deleted,
       added,
       draggingFrom,
-      entryCount,
     } = this.state;
     let {
       searchResults,
       isFetchingMoreSearchResults,
       isFetchingMoreCustomListEntries,
       nextPageUrl,
+      entryCount
     } = this.props;
     let entryListDisplay = "No books in this list";
+    let totalEntries = parseInt(entryCount, 10);
+
+    // This is for the case where there can be 55 total entries and the user
+    // clicks on the "Delete all" button. Now there are no visible entries
+    // but there are still 5 more entries in the entire list.
+    if (!entries.length && totalEntries && (totalEntries - deleted.length !== 0)) {
+      let notDisplaying = totalEntries - deleted.length;
+      entryListDisplay = `Currently not displaying any entries of ${notDisplaying} Books in this list`;
+    }
 
     if (entries.length) {
       let currentDisplay = entries.length;
-      let entriesCount = entryCount - deleted.length + added.length;
+      let entriesCount = totalEntries - deleted.length + added.length;
       let totalStr = ` of ${entriesCount}`;
       entryListDisplay = `Displaying 1 - ${currentDisplay}${totalStr} Books`;
     }
@@ -227,15 +234,21 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.entries && nextProps.entries !== this.props.entries) {
-      let deleted = this.state.deleted;
-      let added = this.state.added;
-      // We need to reset the deleted and added entries if we are moving to a new list.
-      if (this.props.listId !== nextProps.listId) {
-        deleted = [];
-        added = [];
-      }
+    let deleted = this.state.deleted;
+    let added = this.state.added;
+    // We need to reset the deleted and added entries if we are moving to a new list.
+    if (this.props.listId !== nextProps.listId) {
+      deleted = [];
+      added = [];
+      this.setState({
+        draggingFrom: null,
+        entries: nextProps.entries,
+        deleted: deleted,
+        added: added,
+      });
+    }
 
+    if (nextProps.entries && nextProps.entries !== this.props.entries) {
       // If there are any deleted entries and the user loads more entries,
       // we want to remove them from the entire combined list.
       if (this.state.deleted.length) {
@@ -259,7 +272,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entries: nextProps.entries,
         deleted: deleted,
         added: added,
-        entryCount: parseInt(nextProps.entryCount, 10) - this.state.deleted.length + this.state.added.length,
       });
 
       const droppableList = document.getElementById("custom-list-entries-droppable");

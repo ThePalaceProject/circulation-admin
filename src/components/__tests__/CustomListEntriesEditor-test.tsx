@@ -877,13 +877,17 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    wrapper.setState({ entries: [] });
+    // Manually deleted both entries, but also need to add it to the deleted array.
+    wrapper.setState({ entries: [], deleted: wrapper.state().entries });
 
     expect(display.text()).to.equal("No books in this list");
 
-    wrapper.setState({ entries: entriesData.concat(entriesDataExtra) });
-    wrapper.setState({ added: entriesDataExtra });
-    wrapper.setProps({ entryCount: "4" });
+    // Adding back entries and clearing the deleted array.
+    wrapper.setState({
+      entries: entriesData.concat(entriesDataExtra),
+      deleted: [],
+      added: entriesDataExtra,
+    });
 
     expect(display.text()).to.equal("Displaying 1 - 4 of 4 Books");
   });
