@@ -264,7 +264,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       // If there are any added entries and the user loads more entries,
       // we want to added them back to the entire combined list.
       if (this.state.added.length) {
-        nextProps.entries.concat(this.state.added);
+        nextProps.entries = nextProps.entries.concat(this.state.added);
       }
 
       this.setState({
