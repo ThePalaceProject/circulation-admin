@@ -97,11 +97,11 @@ describe("CustomListEditor", () => {
     );
   });
 
-  it("shows list name", () => {
-    let name = wrapper.find(TextWithEditMode);
-    expect(name.length).to.equal(1);
-    expect(name.props().text).to.equal("list");
-    expect(name.props().placeholder).to.equal("list name");
+  it("shows list title", () => {
+    let title = wrapper.find(TextWithEditMode);
+    expect(title.length).to.equal(1);
+    expect(title.props().text).to.equal("list");
+    expect(title.props().placeholder).to.equal("list title");
   });
 
   it("shows list id", () => {
@@ -166,7 +166,7 @@ describe("CustomListEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
+    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list title");
     let newEntries = [
       { id: "urn1" }, { id: "urn2" }
     ];
@@ -177,7 +177,7 @@ describe("CustomListEditor", () => {
     expect(editCustomList.callCount).to.equal(1);
     let formData = editCustomList.args[0][0];
     expect(formData.get("id")).to.equal("1");
-    expect(formData.get("name")).to.equal("new list name");
+    expect(formData.get("name")).to.equal("new list title");
     expect(formData.get("entries")).to.equal(JSON.stringify(newEntries));
     expect(formData.get("collections")).to.equal(JSON.stringify([2]));
     let listId = editCustomList.args[0][1];
@@ -187,7 +187,7 @@ describe("CustomListEditor", () => {
     getEntriesStub.restore();
   });
 
-  it("shouldn't allow you to save unless the list has a name", () => {
+  it("shouldn't allow you to save unless the list has a title", () => {
     wrapper = mount(
       <CustomListEditor
         library="library"
@@ -206,7 +206,7 @@ describe("CustomListEditor", () => {
     const saveButton = wrapper.find(".save-list");
     expect(saveButton.props().disabled).to.equal(true);
 
-    wrapper.setState({ name: "list name" });
+    wrapper.setState({ title: "list title" });
 
     expect(saveButton.props().disabled).to.equal(false);
   });
@@ -230,13 +230,13 @@ describe("CustomListEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
+    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list title");
     let newEntries = [
       { id: "urn1" }, { id: "urn2" }
     ];
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-list");
-    wrapper.setState({ name: "list name" });
+    wrapper.setState({ title: "list title" });
     saveButton.simulate("click");
 
     expect(editCustomList.callCount).to.equal(1);
@@ -254,7 +254,7 @@ describe("CustomListEditor", () => {
   });
 
   it("cancels changes", () => {
-    let listNameReset = stub(TextWithEditMode.prototype, "reset");
+    let listTitleReset = stub(TextWithEditMode.prototype, "reset");
     let listEntriesReset = stub(CustomListEntriesEditor.prototype, "reset");
 
     wrapper = mount(
@@ -280,15 +280,15 @@ describe("CustomListEditor", () => {
     let cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
-    (wrapper.instance() as CustomListEditor).changeName("new name");
+    (wrapper.instance() as CustomListEditor).changeTitle("new name");
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
-    expect(listNameReset.callCount).to.equal(1);
+    expect(listTitleReset.callCount).to.equal(1);
     expect(listEntriesReset.callCount).to.equal(1);
 
-    (wrapper.instance() as CustomListEditor).changeName(listData.title);
+    (wrapper.instance() as CustomListEditor).changeTitle(listData.title);
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
@@ -325,7 +325,7 @@ describe("CustomListEditor", () => {
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
-    expect(listNameReset.callCount).to.equal(3);
+    expect(listTitleReset.callCount).to.equal(3);
     expect(listEntriesReset.callCount).to.equal(3);
     cancelButton = wrapper.find(".cancel-changes");
 
@@ -333,7 +333,7 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
-    listNameReset.restore();
+    listTitleReset.restore();
     listEntriesReset.restore();
   });
 

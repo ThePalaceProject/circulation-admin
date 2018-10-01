@@ -26,7 +26,7 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   searchResults?: CollectionData;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
-  onUpdate?: (entries: Entry[]) => void;
+  onUpdate?: (entries: Entry[], deleteAll?: boolean) => void;
   isFetchingMoreSearchResults: boolean;
   isFetchingMoreCustomListEntries: boolean;
   opdsFeedUrl?: string;
@@ -389,11 +389,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     document.body.classList.remove("dragging");
   }
 
-  add(urn: string) {
+  add(id: string) {
     let entries = this.state.entries.slice(0);
     let entry;
     for (const result of this.props.searchResults.books) {
-      if (result.id === urn) {
+      if (result.id === id) {
         const medium = this.getMedium(result);
         const language = this.getLanguage(result);
         entry = {
@@ -418,10 +418,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
   }
 
-  delete(urn: string) {
+  delete(id: string) {
     let entries = this.state.entries.slice(0);
-    let deleted = this.state.entries.filter(entry => entry.id === urn);
-    entries = entries.filter(entry => entry.id !== urn);
+    let deleted = this.state.entries.filter(entry => entry.id === id);
+    entries = entries.filter(entry => entry.id !== id);
     this.setState({
       draggingFrom: null,
       entries,
@@ -473,7 +473,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       added: this.state.added,
     });
     if (this.props.onUpdate) {
-      this.props.onUpdate([]);
+      const deleteAll = true;
+      this.props.onUpdate([], deleteAll);
     }
   }
 

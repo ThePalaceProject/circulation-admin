@@ -26,10 +26,11 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
 }
 
 export interface CustomListEditorState {
-  name: string;
+  title: string;
   entries: Entry[];
   collections?: AdminCollectionData[];
   entryPointSelected?: string;
+  deleteAll?: boolean;
 }
 
 /** Right panel of the lists page for editing a single list. */
@@ -37,13 +38,14 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   constructor(props) {
     super(props);
     this.state = {
-      name: this.props.list && this.props.list.title,
+      title: this.props.list && this.props.list.title,
       entries: (this.props.list && this.props.list.books) || [],
       collections: this.props.listCollections || [],
       entryPointSelected: "all",
+      deleteAll: false,
     };
 
-    this.changeName = this.changeName.bind(this);
+    this.changeTitle = this.changeTitle.bind(this);
     this.changeEntries = this.changeEntries.bind(this);
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
@@ -54,18 +56,18 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   render(): JSX.Element {
     const listId = this.props.listId;
-    const listName = this.props.list && this.props.list.title ? this.props.list.title : "";
+    const listTitle = this.props.list && this.props.list.title ? this.props.list.title : "";
     const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
-    const opdsFeedUrl = `${this.props.library}/lists/${listName}/crawlable`;
+    const opdsFeedUrl = `${this.props.library}/lists/${listTitle}/crawlable`;
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
           <div>
             <TextWithEditMode
-              text={listName}
-              placeholder="list name"
-              onUpdate={this.changeName}
-              ref="listName"
+              text={listTitle}
+              placeholder="list title"
+              onUpdate={this.changeTitle}
+              ref="listTitle"
               />
             { listId &&
               <h4>ID-{listId}</h4>
@@ -104,7 +106,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <button
               className="btn btn-default save-list"
               onClick={this.save}
-              disabled={!this.state.name && !this.hasChanges()}
+              disabled={!this.state.title && !this.hasChanges()}
               >Save this list</button>
             { this.hasChanges() &&
               <a
@@ -154,17 +156,17 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   componentWillReceiveProps(nextProps) {
     if (nextProps.list && (nextProps.listId !== this.props.listId)) {
       this.setState({
-        name: nextProps.list && nextProps.list.title,
+        title: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
         collections: (nextProps.list && nextProps.listCollections) || []
       });
     }
     else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
-      let name = this.state.name;
+      let title = this.state.title;
       let entries = this.state.entries;
       let collections = this.state.collections;
-      if (nextProps.list.title !== name) {
-        name = nextProps.list.title;
+      if (nextProps.list.title !== title) {
+        title = nextProps.list.title;
       }
       if (nextProps.list && nextProps.list.books.length !== this.state.entries) {
         entries = nextProps.list.books;
@@ -173,7 +175,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         collections = nextProps.listCollections;
       }
       this.setState({
-        name,
+        title,
         entries: entries,
         collections: collections,
       });
@@ -181,15 +183,15 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   hasChanges(): boolean {
-    const nameChanged = (this.props.list && this.props.list.title !== this.state.name);
+    const titleChanged = (this.props.list && this.props.list.title !== this.state.title);
     let entriesChanged = false;
     if (this.props.list && this.props.list.books.length !== this.state.entries.length) {
       entriesChanged = true;
     } else {
-      let propsUrns = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
-      let stateUrns = this.state.entries.map(entry => entry.id).sort();
-      for (let i = 0; i < propsUrns.length; i++) {
-        if (propsUrns[i] !== stateUrns[i]) {
+      let propsIds = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
+      let stateIds = this.state.entries.map(entry => entry.id).sort();
+      for (let i = 0; i < propsIds.length; i++) {
+        if (propsIds[i] !== stateIds[i]) {
           entriesChanged = true;
           break;
         }
@@ -208,15 +210,15 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         }
       }
     }
-    return nameChanged || entriesChanged || collectionsChanged;
+    return titleChanged || entriesChanged || collectionsChanged;
   }
 
-  changeName(name: string) {
-    this.setState({ name, entries: this.state.entries, collections: this.state.collections });
+  changeTitle(title: string) {
+    this.setState({ title, entries: this.state.entries, collections: this.state.collections });
   }
 
-  changeEntries(entries: Entry[]) {
-    this.setState({ entries, name: this.state.name, collections: this.state.collections });
+  changeEntries(entries: Entry[], deleteAll: boolean = false) {
+    this.setState({ entries, title: this.state.title, collections: this.state.collections, deleteAll, });
   }
 
   hasCollection(collection: AdminCollectionData) {
@@ -237,12 +239,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       newCollections = this.state.collections.slice(0);
       newCollections.push(collection);
     }
-    this.setState({ name: this.state.name, entries: this.state.entries, collections: newCollections });
+    this.setState({ title: this.state.title, entries: this.state.entries, collections: newCollections });
   }
 
   changeEntryPoint(entryPointSelected: string) {
     this.setState({
-      name: this.state.name,
+      title: this.state.title,
       entries: this.state.entries,
       collections: this.state.collections,
       entryPointSelected,
@@ -254,14 +256,19 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     if (this.props.list) {
       data.append("id", this.props.listId);
     }
-    let name = (this.refs["listName"] as TextWithEditMode).getText();
-    data.append("name", name);
+    let title = (this.refs["listTitle"] as TextWithEditMode).getText();
+    data.append("name", title);
     let entries = (this.refs["listEntries"] as CustomListEntriesEditor).getEntries();
     data.append("entries", JSON.stringify(entries));
     let deletedEntries = (this.refs["listEntries"] as CustomListEntriesEditor).getDeleted();
     data.append("deletedEntries", JSON.stringify(deletedEntries));
     let collections = this.state.collections.map(collection => collection.id);
     data.append("collections", JSON.stringify(collections));
+    let deleteAll = false
+    if (this.state.deleteAll) {
+      deleteAll = true;
+    }
+    data.append("deleteAll", deleteAll);
     this.props.editCustomList(data, this.props.listId && String(this.props.listId)).then(() => {
       // If a new list was created, go to the new list's edit page.
       if (!this.props.list && this.props.responseBody) {
@@ -271,10 +278,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   reset() {
-    (this.refs["listName"] as TextWithEditMode).reset();
+    (this.refs["listTitle"] as TextWithEditMode).reset();
     (this.refs["listEntries"] as CustomListEntriesEditor).reset();
     this.setState({
-      name: this.state.name,
+      title: this.state.title,
       entries: this.state.entries,
       collections: (this.props.listCollections) || [],
       entryPointSelected: "all",
