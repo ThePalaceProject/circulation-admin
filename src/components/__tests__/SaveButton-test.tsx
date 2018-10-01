@@ -25,8 +25,13 @@ describe("SaveButton", () => {
     );
   });
 
-  it("should display 'Submit' text", () => {
-    expect(wrapper.text()).to.contain("Submit");
+  it("should say 'Save' if no text prop has been passed in", () => {
+    expect(wrapper.text()).to.contain("Save");
+  });
+
+  it("should display text from the text prop, if there is one", () => {
+    wrapper.setProps({ text: "some other string" });
+    expect(wrapper.text()).to.contain("some other string");
   });
 
   it("should call save", () => {
@@ -46,7 +51,7 @@ describe("SaveButton", () => {
   });
 
   it("should do nothing if disabled", () => {
-    wrapper.setProps({ disabled: true, handleData: stub() });
+    wrapper.setProps({ disabled: true });
     wrapper.simulate("click");
     expect(save.callCount).to.equal(0);
     expect(handleData.callCount).to.equal(0);

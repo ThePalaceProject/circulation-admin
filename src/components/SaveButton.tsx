@@ -5,6 +5,7 @@ export interface SaveButtonProps {
   save: (data: any) => void;
   handleData?: (data) => void;
   form: any;
+  text?: string;
   handleSubmit?: (data: FormData) => void;
 }
 
@@ -16,14 +17,14 @@ export default class SaveButton extends React.Component<SaveButtonProps, void> {
   }
 
   render(): JSX.Element {
-
+   let text = this.props.text || "Save";
    return (
      <button
        type="submit"
        className="btn btn-default"
        disabled={this.props.disabled}
        onClick={this.handleSubmit}
-    >Submit</button>
+    >{text}</button>
    );
  }
 

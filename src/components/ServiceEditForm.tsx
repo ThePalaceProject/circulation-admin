@@ -199,6 +199,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           disabled={this.props.disabled}
           save={this.props.save}
           handleData={this.handleData}
+          text="Submit"
           form={this.refs["form"]}
         />
       </form>
