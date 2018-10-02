@@ -147,6 +147,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             opdsFeedUrl={opdsFeedUrl}
             entryCount={this.props.entryCount}
             listId={this.props.listId}
+            deleteAll={this.state.deleteAll}
           />
         </div>
       </div>
@@ -160,23 +161,24 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         entries: (nextProps.list && nextProps.list.books) || [],
         collections: (nextProps.list && nextProps.listCollections) || []
       });
-    }
-    else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
+    } else if (nextProps.list && nextProps.list.books.length !== this.state.entries) {
+      this.setState({
+        title: nextProps.list.title,
+        entries: nextProps.list.books,
+        collections: this.state.collections,
+      });
+    } else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
       let title = this.state.title;
-      let entries = this.state.entries;
       let collections = this.state.collections;
       if (nextProps.list.title !== title) {
         title = nextProps.list.title;
-      }
-      if (nextProps.list && nextProps.list.books.length !== this.state.entries) {
-        entries = nextProps.list.books;
       }
       if (nextProps.listCollections.length !== this.state.collections.length) {
         collections = nextProps.listCollections;
       }
       this.setState({
         title,
-        entries: entries,
+        entries: this.state.entries,
         collections: collections,
       });
     }
@@ -264,11 +266,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     data.append("deletedEntries", JSON.stringify(deletedEntries));
     let collections = this.state.collections.map(collection => collection.id);
     data.append("collections", JSON.stringify(collections));
-    let deleteAll = false
+    let deleteAll = false;
     if (this.state.deleteAll) {
       deleteAll = true;
     }
     data.append("deleteAll", deleteAll);
+    (this.refs["listEntries"] as CustomListEntriesEditor).clearState();
+    this.setState({ deleteAll: false, title: this.state.title, entries: this.state.entries });
     this.props.editCustomList(data, this.props.listId && String(this.props.listId)).then(() => {
       // If a new list was created, go to the new list's edit page.
       if (!this.props.list && this.props.responseBody) {

@@ -33,6 +33,7 @@ export interface CustomListEntriesEditorProps extends React.Props<CustomListEntr
   nextPageUrl?: string;
   entryCount?: string;
   listId?: string | number;
+  deleteAll?: boolean;
 }
 
 export interface CustomListEntriesEditorState {
@@ -60,6 +61,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.deleteAll = this.deleteAll.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.loadMoreEntries = this.loadMoreEntries.bind(this);
+    this.clearState = this.clearState.bind(this);
   }
 
   render(): JSX.Element {
@@ -74,25 +76,35 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       isFetchingMoreSearchResults,
       isFetchingMoreCustomListEntries,
       nextPageUrl,
-      entryCount
+      entryCount,
+      deleteAll,
     } = this.props;
     let entryListDisplay = "No books in this list";
     let totalEntries = parseInt(entryCount, 10);
+    let displayTotal;
+    let totalStr;
 
-    // This is for the case where there can be 55 total entries and the user
-    // clicks on the "Delete all" button. Now there are no visible entries
-    // but there are still 5 more entries in the entire list.
-    if (!entries.length && totalEntries && (totalEntries - deleted.length !== 0)) {
-      let notDisplaying = totalEntries - deleted.length;
-      entryListDisplay = `Currently not displaying any entries of ${notDisplaying} Books in this list`;
+    if (totalEntries) {
+      if (!deleteAll && entries.length) {
+        let currentDisplay = entries.length;
+        let entriesCount = totalEntries - deleted.length + added.length;
+        totalStr = ` of ${entriesCount}`;
+        displayTotal = `1 - ${currentDisplay}${totalStr}`;
+
+        entryListDisplay = `Displaying ${displayTotal} Books`;
+      }
+    } else {
+      // check scenario where a new list was created.
+      if (entries.length) {
+        let currentDisplay = !added.length ? entries.length : added.length;
+        let entriesCount = currentDisplay - deleted.length;
+        totalStr = ` of ${entriesCount}`;
+        displayTotal = `1 - ${currentDisplay}${totalStr}`;
+
+        entryListDisplay = `Displaying ${displayTotal} Books`;
+      }
     }
 
-    if (entries.length) {
-      let currentDisplay = entries.length;
-      let entriesCount = totalEntries - deleted.length + added.length;
-      let totalStr = ` of ${entriesCount}`;
-      entryListDisplay = `Displaying 1 - ${currentDisplay}${totalStr} Books`;
-    }
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="custom-list-drag-and-drop">
@@ -433,6 +445,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
   }
 
+  clearState() {
+    this.setState({
+      draggingFrom: null,
+      entries: this.state.entries,
+      deleted: [],
+      added: [],
+    });
+  }
+
   addAll() {
     let entries = [];
 
@@ -469,7 +490,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.setState({
       draggingFrom: null,
       entries: [],
-      deleted: this.state.entries,
+      deleted: [],
       added: this.state.added,
     });
     if (this.props.onUpdate) {
