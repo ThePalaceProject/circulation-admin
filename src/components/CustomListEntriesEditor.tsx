@@ -261,6 +261,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
 
     if (nextProps.entries && nextProps.entries !== this.props.entries) {
+      let newEntries;
       // If there are any deleted entries and the user loads more entries,
       // we want to remove them from the entire combined list.
       if (this.state.deleted.length) {
@@ -272,16 +273,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
           });
         });
       }
+      newEntries = nextProps.entries;
 
       // If there are any added entries and the user loads more entries,
       // we want to added them back to the entire combined list.
       if (this.state.added.length) {
-        nextProps.entries = nextProps.entries.concat(this.state.added);
+        newEntries = this.state.added.concat(nextProps.entries);
       }
 
       this.setState({
         draggingFrom: null,
-        entries: nextProps.entries,
+        entries: newEntries,
         deleted: deleted,
         added: added,
       });
