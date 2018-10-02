@@ -115,6 +115,14 @@ describe("EditableConfigList", () => {
     expect(success.text()).to.equal("Successfully created a new thing");
   });
 
+  it("displays edit link in success message on create", () => {
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "create"});
+    let success = wrapper.find(Alert);
+    let link = success.find("a");
+    expect(link.length).to.equal(1);
+    expect(link.props().href).to.equal("/admin/things/edit/itemType");
+  });
+
   it("shows success message on edit", () => {
     let success = wrapper.find(Alert);
     expect(success.length).to.equal(0);
@@ -122,6 +130,13 @@ describe("EditableConfigList", () => {
     success = wrapper.find(Alert);
     expect(success.length).to.equal(1);
     expect(success.text()).to.equal("Successfully edited this thing");
+  });
+
+  it("does not display edit link in success message on edit", () => {
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "edit"});
+    let success = wrapper.find(Alert);
+    let link = success.find("a");
+    expect(link.length).to.equal(0);
   });
 
   it("shows loading indicator", () => {

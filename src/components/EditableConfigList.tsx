@@ -74,11 +74,14 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   render(): JSX.Element {
     let EditForm = this.EditForm;
     let AdditionalContent = this.AdditionalContent || null;
+
     return (
       <div className={AdditionalContent ? "has-additional-content" : ""}>
         <h2>{this.getItemType()} configuration</h2>
         { this.props.responseBody && this.props.editOrCreate &&
-          <Alert bsStyle="success">{this.successMessage()}</Alert>
+          <Alert bsStyle="success">
+            {this.successMessage()}
+          </Alert>
         }
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
@@ -165,6 +168,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }
       </div>
     );
+
   }
 
   label(item): string {
@@ -175,11 +179,34 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     return this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1);
   }
 
-  successMessage() {
-    let verb = this.props.editOrCreate === "edit" ? "edited this" : "created a new";
+  formatItemType() {
     let itemType = this.getItemType();
-    let formattedItemType = itemType === "CDN" ? itemType : itemType.toLowerCase();
-    return `Successfully ${verb} ${formattedItemType}`;
+    let regexp = /^[A-Z]*$/;
+    let isAllCaps = regexp.test(itemType);
+    let formattedItemType = isAllCaps ? itemType : itemType.toLowerCase();
+    return formattedItemType;
+  }
+
+  successMessage() {
+    let verb;
+    if (this.props.editOrCreate === "create") {
+      verb = "Successfully created ";
+      return (
+        <span>{verb}
+          <a href={this.getLink()}>a new {this.formatItemType()}</a>
+        </span>
+      );
+    }
+    else {
+      verb = "Successfully edited this ";
+      return (
+        <span>{verb}{this.formatItemType()}</span>
+      );
+    }
+  }
+
+  getLink() {
+    return this.urlBase + "edit/" + this.props.responseBody;
   }
 
   canCreate() {
