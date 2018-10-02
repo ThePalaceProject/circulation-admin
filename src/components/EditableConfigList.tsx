@@ -20,7 +20,6 @@ export interface EditableConfigListDispatchProps<T> {
   fetchData?: () => Promise<T>;
   editItem?: (data: FormData) => Promise<void>;
   deleteItem?: (identifier: string | number) => Promise<void>;
-  save?: (data: any) => void;
 }
 
 export interface EditableConfigListOwnProps {
@@ -223,7 +222,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     }
   }
 
-  save(data) {
+  save(data: FormData) {
     this.editItem(data).then(() => {
       // Scrolling to the top lets the user see the success message
       window.scrollTo(0, 0);
