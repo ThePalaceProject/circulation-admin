@@ -306,6 +306,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
      window.location.reload();
      return;
     }
+    return data;
   }
 
 }

@@ -177,8 +177,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   successMessage() {
     let verb = this.props.editOrCreate === "edit" ? "edited this" : "created a new";
-    let itemType = this.getItemType().toLowerCase();
-    return `Successfully ${verb} ${itemType}`;
+    let itemType = this.getItemType();
+    let formattedItemType = itemType === "CDN" ? itemType : itemType.toLowerCase();
+    return `Successfully ${verb} ${formattedItemType}`;
   }
 
   canCreate() {
@@ -201,7 +202,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       window.scrollTo(0, 0);
     });
     setTimeout(() => {
-      this.refs["edit-form"] && this.clearForm();
+      !this.props.fetchError && this.refs["edit-form"] && this.clearForm();
     }, 500);
   }
 
