@@ -6,6 +6,7 @@ import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
+import { handleSubmit } from "../sharedFunctions";
 
 export interface ServiceEditFormProps<T> {
   data: T;
@@ -53,7 +54,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.props.save} className="edit-form">
+      <form ref="form" onSubmit={handleSubmit} className="edit-form">
         { this.props.item && this.props.item.id &&
           <input
             type="hidden"

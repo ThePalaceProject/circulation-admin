@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import SaveButton from "./SaveButton";
+import { handleSubmit } from "../sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 
@@ -44,7 +45,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.props.save} className="edit-form">
+      <form ref="form" onSubmit={handleSubmit} className="edit-form">
         <EditableInput
           elementType="input"
           type="text"

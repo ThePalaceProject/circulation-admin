@@ -2,6 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import SaveButton from "./SaveButton";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
+import { handleSubmit } from "../sharedFunctions";
 
 export interface SitewideSettingEditFormProps {
   data: SitewideSettingsData;
@@ -39,7 +40,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     return (
       <div>
         { availableSettings.length > 0 &&
-          <form ref="form" onSubmit={this.props.save} className="edit-form">
+          <form ref="form" onSubmit={handleSubmit} className="edit-form">
             <EditableInput
               elementType="select"
               disabled={this.props.disabled}

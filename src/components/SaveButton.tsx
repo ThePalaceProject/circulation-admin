@@ -1,4 +1,5 @@
 import * as React from "react";
+import { handleSubmit } from "../sharedFunctions";
 
 export interface SaveButtonProps {
   disabled: boolean;
@@ -12,7 +13,6 @@ export default class SaveButton extends React.Component<SaveButtonProps, void> {
 
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   render(): JSX.Element {
@@ -22,15 +22,9 @@ export default class SaveButton extends React.Component<SaveButtonProps, void> {
        type="submit"
        className="btn btn-default"
        disabled={this.props.disabled}
-       onClick={this.handleSubmit}
+       onClick={handleSubmit.bind(this)}
     >{text}</button>
    );
  }
 
- handleSubmit(event) {
-   event.preventDefault();
-   let data = new (window as any).FormData(this.props.form as any);
-   this.props.handleData && this.props.handleData(data);
-   this.props.save(data);
- }
 }

@@ -2,6 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
+import { handleSubmit } from "../sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {
@@ -22,7 +23,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.props.save} className="edit-form">
+      <form ref="form" onSubmit={handleSubmit} className="edit-form">
         <input
           type="hidden"
           name="uuid"
