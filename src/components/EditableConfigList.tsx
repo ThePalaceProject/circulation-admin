@@ -225,10 +225,19 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.editItem(data).then(() => {
       // Scrolling to the top lets the user see the success message
       window.scrollTo(0, 0);
-      let form = (this.refs["edit-form"] as any).refs.form;
-      setTimeout(() => {
-        !this.props.fetchError && this.refs["edit-form"] && this.clearForm(form);
-      }, 300);
+      if (this.limitOne && this.props.editOrCreate === "create") {
+        // Wait for two seconds so that the user can see the success message,
+        // then go back to the previous page
+        setTimeout(() => {
+          window.location.href = this.urlBase;
+        }, 2000);
+      }
+      else {
+        let form = (this.refs["edit-form"] as any).refs.form;
+        setTimeout(() => {
+          !this.props.fetchError && this.refs["edit-form"] && this.clearForm(form);
+        }, 300);
+      }
     });
   }
 
