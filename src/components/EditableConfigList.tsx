@@ -73,7 +73,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   render(): JSX.Element {
     let EditForm = this.EditForm;
     let AdditionalContent = this.AdditionalContent || null;
-
     return (
       <div className={AdditionalContent ? "has-additional-content" : ""}>
         <h2>{this.getItemType()} configuration</h2>
@@ -226,10 +225,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.editItem(data).then(() => {
       // Scrolling to the top lets the user see the success message
       window.scrollTo(0, 0);
+      let form = (this.refs["edit-form"] as any).refs.form;
+      setTimeout(() => {
+        !this.props.fetchError && this.refs["edit-form"] && this.clearForm(form);
+      }, 300);
     });
-    setTimeout(() => {
-      !this.props.fetchError && this.refs["edit-form"] && this.clearForm();
-    }, 500);
   }
 
   async editItem(data: FormData): Promise<void> {
@@ -237,31 +237,40 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.props.fetchData();
   }
 
-  clearForm() {
-    let form = (this.refs["edit-form"] as any).refs.form;
+ clearForm(form) {
     if (form) {
-      form.reset();
-      for (const el of form.children){
-        if (el.className === "form-group" || (el.children[0] && el.children[0].className === "form-group")) {
-          let input = this.findInputElement(el);
-          if (input) {
+      let inputs = form.elements;
+      for (let i = 0; i < inputs.length; i++) {
+        let input = inputs[i];
+        input.disabled = false;
+        input.value = "";
+        switch (input.type) {
+          case "text":
             input.value = "";
-          }
+            break;
+          case "checkbox":
+            if (input.dataset.is_default !== "true") {
+              input.checked = false;
+            }
+            break;
+          case "select-one":
+            for (let i = 0; i < input.children.length; i++) {
+              if (input.children[i].dataset.is_default === "true") {
+                input.selectedIndex = i;
+                return;
+              }
+            }
+            input.selectedIndex = 0;
+            break;
+          case "file":
+            input.value = "";
+            break;
         }
       }
-    }
-  }
-
-  findInputElement(el) {
-    let grandchild = el.children[0].children[0];
-    if (grandchild && grandchild.value) {
-      return grandchild;
-    }
-    else if (grandchild && grandchild.children[0] && grandchild.children[0].value) {
-      return grandchild.children[0];
-    }
-    else {
-      return null;
+      let removableItems = document.getElementsByClassName("with-remove-button");
+      for (let i = 0; i < removableItems.length; i++) {
+        removableItems[i].parentNode.removeChild(removableItems[i]);
+      }
     }
   }
 

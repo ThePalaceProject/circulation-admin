@@ -4,3 +4,17 @@ export function handleSubmit(event) {
   this.props.handleData && this.props.handleData(data);
   this.props.save(data);
 }
+
+// Identify which HTML option elements are supposed to be selected by default,
+//  so that they stay selected when the form is cleared.  Used by LibraryEditForm
+//  and ServiceEditForm.
+
+export function findDefault(setting) {
+  let defaultOptions = [];
+  setting.options && setting.default && setting.options.map(option => {
+    if (setting.default.indexOf(option.key) >= 0 || setting.default === option.key) {
+      defaultOptions.push(option);
+    }
+  });
+  if (defaultOptions.length > 0) { return defaultOptions; }
+}

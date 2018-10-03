@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
-import { handleSubmit } from "../sharedFunctions";
+import { handleSubmit, findDefault } from "../sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {
@@ -21,6 +21,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   constructor(props) {
     super(props);
   }
+
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={handleSubmit} className="edit-form">
@@ -52,9 +53,11 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             setting={setting}
             disabled={this.props.disabled}
             value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+            default={findDefault(setting)}
             />
           )
         }
+
         <SaveButton
           disabled={this.props.disabled}
           save={this.props.save}

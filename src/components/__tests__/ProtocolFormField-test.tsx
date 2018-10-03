@@ -179,6 +179,7 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders list setting with options", () => {
+    const defaultOptions = ["option2", "option3"];
     const setting = {
       key: "setting",
       label: "label",
@@ -189,16 +190,17 @@ describe("ProtocolFormField", () => {
         { key: "option2", label: "option 2" },
         { key: "option3", label: "option 3" }
       ],
-      default: ["option2", "option3"]
+      default: defaultOptions
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <ProtocolFormField
         setting={setting}
         disabled={false}
+        default={defaultOptions}
         />
     );
 
-    expect(wrapper.find("div").text()).to.contain("label");
+    expect(wrapper.find("div").at(0).text()).to.contain("label");
     let description = wrapper.find(".description");
     expect(description.html()).to.contain("<p>description</p>");
 

@@ -7,6 +7,7 @@ export interface ProtocolFormFieldProps {
   setting: SettingData;
   disabled: boolean;
   value?: string | string[];
+  default?: any;
 }
 
 export interface ProtocolFormFieldState {
@@ -24,6 +25,18 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.randomize = this.randomize.bind(this);
+  }
+
+  isDefault(option) {
+    if (this.props.default) {
+      return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
+    }
+  }
+
+  shouldBeChecked(option) {
+    let isValue = (this.props.value && (this.props.value.indexOf(option.key) !== -1));
+    let isDefault = (!this.props.value && this.isDefault(option));
+    return isValue || isDefault;
   }
 
   render(): JSX.Element {
@@ -80,7 +93,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           ref="element"
           >
           { setting.options && setting.options.map(option =>
-              <option key={option.key} value={option.key}>{option.label}</option>
+              <option key={option.key} value={option.key} data-is_default={this.isDefault(option)}>{option.label}</option>
             )
           }
         </EditableInput>
@@ -100,7 +113,8 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                 disabled={this.props.disabled}
                 name={`${setting.key}_${option.key}`}
                 label={option.label}
-                checked={(this.props.value && (this.props.value.indexOf(option.key) !== -1)) || (!this.props.value && setting.default && setting.default.indexOf(option.key) !== -1)}
+                isDefault={this.isDefault(option)}
+                checked={this.shouldBeChecked(option)}
                 />
             )
           }
