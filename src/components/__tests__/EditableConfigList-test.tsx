@@ -106,7 +106,7 @@ describe("EditableConfigList", () => {
   it("shows success message on create", () => {
     let success = wrapper.find(Alert);
     expect(success.length).to.equal(0);
-    wrapper.setProps({ responseBody: "itemType", editOrCreate: "create"});
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "create" });
     success = wrapper.find(Alert);
     expect(success.length).to.equal(1);
     expect(success.text()).to.equal("Successfully created a new thing");
@@ -134,6 +134,15 @@ describe("EditableConfigList", () => {
     let success = wrapper.find(Alert);
     let link = success.find("a");
     expect(link.length).to.equal(0);
+  });
+
+  it("correctly formats item type name for success message", () => {
+    expect(wrapper.instance().formatItemType()).to.equal("thing");
+    let getItemType = stub(wrapper.instance(), "getItemType").returns("ALLCAPS");
+    expect(wrapper.instance().formatItemType()).to.equal("ALLCAPS");
+    getItemType.returns("someCAPS");
+    expect(wrapper.instance().formatItemType()).to.equal("somecaps");
+    getItemType.restore();
   });
 
   it("shows loading indicator", () => {

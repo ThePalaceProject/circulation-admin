@@ -25,6 +25,8 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.randomize = this.randomize.bind(this);
+    this.isDefault = this.isDefault.bind(this);
+    this.shouldBeChecked = this.shouldBeChecked.bind(this);
   }
 
   isDefault(option) {

@@ -61,6 +61,14 @@ describe("EditableInput", () => {
     expect(option.text()).to.equal("option");
   });
 
+  it("shows default from props", () => {
+    let input = wrapper.find("input");
+    expect(input.prop("data-is_default")).to.equal(undefined);
+    wrapper.setProps({ isDefault: true });
+    input = wrapper.find("input");
+    expect(input.prop("data-is_default")).to.equal(true);
+  });
+
   it("updates state and value when props change", () => {
     wrapper.setProps({ value: "new value", checked: false });
     expect(wrapper.state().value).to.equal("new value");

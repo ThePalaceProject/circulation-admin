@@ -252,13 +252,12 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       for (let i = 0; i < inputs.length; i++) {
         let input = inputs[i];
         input.disabled = false;
-        input.value = "";
         switch (input.type) {
           case "text":
             input.value = "";
             break;
           case "checkbox":
-            if (input.dataset.is_default !== "true") {
+            if (!input.dataset || input.dataset.is_default !== "true") {
               input.checked = false;
             }
             break;

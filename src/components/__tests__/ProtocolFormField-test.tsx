@@ -119,6 +119,44 @@ describe("ProtocolFormField", () => {
     expect(input.prop("value")).to.equal("test");
   });
 
+  it("calculates whether checkbox should be checked by default", () => {
+    const defaultOptions = ["box2"];
+    const setting = {
+      key: "setting",
+      label: "label",
+      description: "<p>description</p>",
+      type: "list",
+      options: [
+        { key: "box1", label: "don't check" },
+        { key: "box2", label: "check" },
+      ]
+    };
+    const wrapper = mount(
+      <ProtocolFormField
+        setting={setting}
+        disabled={false}
+        default={defaultOptions}
+        />
+    );
+
+    expect((wrapper.instance() as ProtocolFormField).shouldBeChecked(setting.options[0])).to.be.false;
+    expect((wrapper.instance() as ProtocolFormField).shouldBeChecked(setting.options[1])).to.be.true;
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(2);
+
+    expect(input.at(0).prop("type")).to.equal("checkbox");
+    expect(input.at(0).prop("checked")).to.be.false;
+
+    expect(input.at(1).prop("type")).to.equal("checkbox");
+    expect(input.at(1).prop("checked")).to.be.true;
+
+    wrapper.setProps({ default: ["box1"]});
+    input = wrapper.find(EditableInput);
+    expect(input.at(0).prop("checked")).to.be.true;
+    expect(input.at(1).prop("checked")).to.be.false;
+  });
+
   it("renders number setting", () => {
     const setting = {
       key: "setting",
