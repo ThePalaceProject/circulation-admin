@@ -12,7 +12,7 @@ export interface ServiceEditFormProps<T> {
   data: T;
   item?: ServiceData;
   disabled: boolean;
-  save: (data: any) => void;
+  save: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;

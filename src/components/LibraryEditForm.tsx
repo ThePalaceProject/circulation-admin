@@ -9,7 +9,7 @@ export interface LibraryEditFormProps {
   data: LibrariesData;
   item?: LibraryData;
   disabled: boolean;
-  save: (data: any) => void;
+  save: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;

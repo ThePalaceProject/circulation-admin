@@ -9,7 +9,7 @@ export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
   item?: IndividualAdminData;
   disabled: boolean;
-  save: (data: any) => void;
+  save: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;

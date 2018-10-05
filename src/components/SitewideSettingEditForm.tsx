@@ -8,7 +8,7 @@ export interface SitewideSettingEditFormProps {
   data: SitewideSettingsData;
   item?: SitewideSettingData;
   disabled: boolean;
-  save?: (data: any) => void;
+  save?: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
 }

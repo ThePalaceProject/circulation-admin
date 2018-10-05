@@ -35,7 +35,7 @@ export interface EditFormProps<T, U> {
   item?: U;
   data: T;
   disabled: boolean;
-  save?: (data: any) => void;
+  save?: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
