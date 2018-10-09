@@ -95,7 +95,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           ref="element"
           >
           { setting.options && setting.options.map(option =>
-              <option key={option.key} value={option.key} data-is_default={this.isDefault(option)}>{option.label}</option>
+              <option key={option.key} value={option.key}>{option.label}</option>
             )
           }
         </EditableInput>
@@ -115,7 +115,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                 disabled={this.props.disabled}
                 name={`${setting.key}_${option.key}`}
                 label={option.label}
-                isDefault={this.isDefault(option)}
                 checked={this.shouldBeChecked(option)}
                 />
             )

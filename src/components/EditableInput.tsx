@@ -5,7 +5,6 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   label?: string;
   description?: string;
   onChange?: (e: any) => any;
-  isDefault?: boolean;
 }
 
 export interface EditableInputState {
@@ -65,7 +64,6 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       list: this.props.list,
       min: this.props.min,
       max: this.props.max,
-      "data-is_default": this.props.isDefault
     }, this.props.children);
   }
 

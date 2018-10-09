@@ -247,7 +247,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
  clearForm(inputs) {
    if (inputs) {
      let keys = Object.keys(inputs);
-     for (let i = 0; i < keys.length; i++){
+     for (let i = 0; i < keys.length; i++) {
        let key = keys[i];
        inputs[key].clear && inputs[key].clear();
        if (inputs[key].props && inputs[key].props.onRemove) {
