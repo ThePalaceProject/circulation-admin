@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.79
+#### Added
+- Added a color picker setting type for configuring background and foreground colors for the web catalog.
+
 ### v0.0.78
 #### Fixed
 - Fixed a bug for new collections that could not correctly fetch self test results.
