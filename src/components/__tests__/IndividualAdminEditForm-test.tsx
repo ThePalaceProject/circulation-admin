@@ -537,7 +537,6 @@ describe("IndividualAdminEditForm", () => {
       expect(formData.get("password")).to.equal("newPassword");
       expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "librarian-all" }, { role: "manager", library: "nypl" }]));
       expect(save.callCount).to.equal(1);
-
     });
 
     it("submits system admin when setting up", () => {

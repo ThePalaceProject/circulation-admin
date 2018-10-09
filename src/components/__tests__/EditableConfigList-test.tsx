@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
+import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
@@ -22,6 +23,19 @@ describe("EditableConfigList", () => {
   class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, void> {
     render(): JSX.Element {
       return <div>Test</div>;
+    }
+  }
+
+  class ThingEditFormWithInputs extends React.Component<EditFormProps<Things, Thing>, void> {
+    render(): JSX.Element {
+      return (<div>
+                <EditableInput
+                  elementType="input"
+                  type="text"
+                  ref="textInput"
+                  value="VALUE"
+                />
+              </div>);
     }
   }
 
@@ -61,6 +75,10 @@ describe("EditableConfigList", () => {
 
   class ThingAdditionalContentEditableConfigList extends ThingEditableConfigList {
     AdditionalContent = AdditionalContent;
+  }
+
+  class ThingListWithInputs extends ThingEditableConfigList {
+    EditForm = ThingEditFormWithInputs;
   }
 
   let wrapper;
@@ -333,6 +351,41 @@ describe("EditableConfigList", () => {
     await pause();
     expect(fetchData.callCount).to.equal(2);
   });
+
+  it("calls clearForm on save", async() => {
+    let clearForm = stub(wrapper.instance(), "clearForm");
+    wrapper.setProps({ editOrCreate: "create" });
+    let form = wrapper.find(ThingEditForm);
+    form.props().save();
+    await pause();
+    expect(clearForm.callCount).to.equal(1);
+    clearForm.restore();
+  });
+
+  it("clears the form", async() => {
+    wrapper = mount(
+      <ThingListWithInputs
+        data={thingsData}
+        editOrCreate="create"
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+        />
+    );
+
+    let form = wrapper.find(ThingEditFormWithInputs);
+    let textInput = form.find("EditableInput");
+    expect(textInput.html()).to.contain("VALUE");
+
+    form.props().save();
+    await pause();
+
+    expect(textInput.html()).not.to.contain("VALUE");
+  });
+
+
 
   it("should not render the AdditionalContent component", () => {
     let additionalContent = wrapper.find(AdditionalContent);
