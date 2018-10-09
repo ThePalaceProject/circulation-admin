@@ -218,4 +218,5 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     }
     this.setState({ listItems: [] });
   }
+
 }

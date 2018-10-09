@@ -46,6 +46,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
               disabled={this.props.disabled}
               readOnly={!!(this.props.item && this.props.item.key)}
               name="key"
+              ref="key"
               label="key"
               value={this.props.item && this.props.item.key}
               onChange={this.onChange}
@@ -61,6 +62,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                 <EditableInput
                   elementType="select"
                   name="value"
+                  ref="value"
                   label="Value"
                   value={this.props.item && this.props.item.value}
                 >
@@ -80,6 +82,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                   type="text"
                   disabled={this.props.disabled}
                   name="value"
+                  ref="value"
                   label="Value"
                   value={this.props.item && this.props.item.value}
                 />

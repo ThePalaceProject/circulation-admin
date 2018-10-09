@@ -233,10 +233,8 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }, 2000);
       }
       else {
-        let form = (this.refs["edit-form"] as any).refs.form;
-        setTimeout(() => {
-          !this.props.fetchError && this.refs["edit-form"] && this.clearForm(form);
-        }, 300);
+        let inputs = (this.refs["edit-form"] as any).refs;
+        !this.props.fetchError && this.refs["edit-form"] && this.clearForm(inputs);
       }
     });
   }
@@ -246,40 +244,17 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.props.fetchData();
   }
 
- clearForm(form) {
-    if (form) {
-      let inputs = form.elements;
-      for (let i = 0; i < inputs.length; i++) {
-        let input = inputs[i];
-        input.disabled = false;
-        switch (input.type) {
-          case "text":
-            input.value = "";
-            break;
-          case "checkbox":
-            if (!input.dataset || input.dataset.is_default !== "true") {
-              input.checked = false;
-            }
-            break;
-          case "select-one":
-            for (let i = 0; i < input.children.length; i++) {
-              if (input.children[i].dataset.is_default === "true") {
-                input.selectedIndex = i;
-                return;
-              }
-            }
-            input.selectedIndex = 0;
-            break;
-          case "file":
-            input.value = "";
-            break;
-        }
-      }
-      let removableItems = document.getElementsByClassName("with-remove-button");
-      for (let i = 0; i < removableItems.length; i++) {
-        removableItems[i].parentNode.removeChild(removableItems[i]);
-      }
-    }
+ clearForm(inputs) {
+   if (inputs) {
+     let keys = Object.keys(inputs);
+     for (let i = 0; i < keys.length; i++){
+       let key = keys[i];
+       inputs[key].clear && inputs[key].clear();
+       if (inputs[key].props && inputs[key].props.onRemove) {
+         inputs[key].props.onRemove();
+       }
+     }
+   }
   }
 
   itemToEdit(): U | null {

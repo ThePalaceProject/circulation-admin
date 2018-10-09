@@ -53,6 +53,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           readOnly={!!(this.props.item && this.props.item.email)}
           name="email"
           label="Email"
+          ref="email"
           value={this.props.item && this.props.item.email}
           />
         { this.canChangePassword() &&
@@ -62,6 +63,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             disabled={this.props.disabled}
             name="password"
             label="Password"
+            ref="password"
             />
         }
         { !this.context.settingUp &&
@@ -72,6 +74,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
               type="checkbox"
               disabled={this.isDisabled("system")}
               name="system"
+              ref="system"
               label="System Admin"
               checked={this.isSelected("system")}
               onChange={() => this.handleRoleChange("system")}
@@ -86,6 +89,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                        type="checkbox"
                        disabled={this.isDisabled("manager-all")}
                        name="manager-all"
+                       ref="manager-all"
                        label="Library Manager"
                        checked={this.isSelected("manager-all")}
                        onChange={() => this.handleRoleChange("manager-all")}
@@ -97,6 +101,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                       type="checkbox"
                       disabled={this.isDisabled("librarian-all")}
                       name="librarian-all"
+                      ref="librarian-all"
                       label="Librarian"
                       checked={this.isSelected("librarian-all")}
                       onChange={() => this.handleRoleChange("librarian-all")}
@@ -116,6 +121,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                         type="checkbox"
                         disabled={this.isDisabled("manager", library.short_name)}
                         name={"manager-" + library.short_name}
+                        ref={"manager-" + library.short_name}
                         label=""
                         checked={this.isSelected("manager", library.short_name)}
                         onChange={() => this.handleRoleChange("manager", library.short_name)}
@@ -127,6 +133,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                         type="checkbox"
                         disabled={this.isDisabled("librarian", library.short_name)}
                         name={"librarian-" + library.short_name}
+                        ref={"librarian-" + library.short_name}
                         label=""
                         checked={this.isSelected("librarian", library.short_name)}
                         onChange={() => this.handleRoleChange("librarian", library.short_name)}

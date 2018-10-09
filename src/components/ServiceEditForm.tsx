@@ -67,6 +67,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           type="text"
           disabled={this.props.disabled}
           name="name"
+          ref="name"
           label="Name"
           value={this.props.item && this.props.item.name}
           />
@@ -106,6 +107,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField
               key={setting.key}
+              ref={setting.key}
               setting={setting}
               disabled={this.props.disabled}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
@@ -120,6 +122,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                   <WithRemoveButton
                     disabled={this.props.disabled}
                     onRemove={() => this.removeLibrary(library)}
+                    ref={library.short_name}
                     >
                     { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0 &&
                       <WithEditButton
