@@ -178,10 +178,10 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   formatItemType() {
-    let itemType = this.getItemType();
-    let regexp = /^[A-Z]*$/;
-    let isAllCaps = regexp.test(itemType);
-    let formattedItemType = isAllCaps ? itemType : itemType.toLowerCase();
+    const itemType = this.getItemType();
+    const regexp = /^[A-Z]*$/;
+    const isAllCaps = regexp.test(itemType);
+    const formattedItemType = isAllCaps ? itemType : itemType.toLowerCase();
     return formattedItemType;
   }
 
@@ -223,13 +223,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   save(data: FormData) {
     this.editItem(data).then(() => {
-      // Scrolling to the top lets the user see the success message
-      window.scrollTo(0, 0);
       if (this.limitOne && this.props.editOrCreate === "create") {
         // Wait for two seconds so that the user can see the success message,
-        // then go back to the previous page
+        // then go to the edit page
         setTimeout(() => {
-          window.location.href = this.urlBase;
+          window.location.href = `${this.urlBase}edit/${this.props.responseBody}`;
         }, 2000);
       }
       else {
@@ -240,6 +238,8 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   async editItem(data: FormData): Promise<void> {
+    // Scrolling to the top lets the user see the success or error message
+    window.scrollTo(0, 0);
     await this.props.editItem(data);
     this.props.fetchData();
   }

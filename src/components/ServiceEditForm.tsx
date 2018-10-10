@@ -262,7 +262,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   allowsParent(): boolean {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return !!protocol.child_settings;
@@ -293,7 +293,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   protocolSettings() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           if (this.state.parentId) {
@@ -308,7 +308,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   protocolDescription() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.description;
@@ -319,7 +319,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   protocolLibrarySettings() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.library_settings || [];
@@ -330,7 +330,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   sitewide() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.sitewide;
