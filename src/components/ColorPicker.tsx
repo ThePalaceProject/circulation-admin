@@ -36,10 +36,6 @@ export default class ColorPicker extends React.Component<ColorPickerProps, Color
     );
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ value: nextProps.value });
-  }
-
   handleChange(color, event) {
     this.setState({ value: color.hex });
   }
