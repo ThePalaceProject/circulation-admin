@@ -30,7 +30,6 @@ export interface CustomListEditorState {
   entries: Entry[];
   collections?: AdminCollectionData[];
   entryPointSelected?: string;
-  deleteAll?: boolean;
 }
 
 /** Right panel of the lists page for editing a single list. */
@@ -42,7 +41,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       entries: (this.props.list && this.props.list.books) || [],
       collections: this.props.listCollections || [],
       entryPointSelected: "all",
-      deleteAll: false,
     };
 
     this.changeTitle = this.changeTitle.bind(this);
@@ -147,7 +145,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             opdsFeedUrl={opdsFeedUrl}
             entryCount={this.props.entryCount}
             listId={this.props.listId}
-            deleteAll={this.state.deleteAll}
           />
         </div>
       </div>
@@ -168,18 +165,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         collections: this.state.collections,
       });
     } else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
-      let title = this.state.title;
-      let collections = this.state.collections;
-      if (nextProps.list.title !== title) {
-        title = nextProps.list.title;
-      }
-      if (nextProps.listCollections.length !== this.state.collections.length) {
-        collections = nextProps.listCollections;
-      }
       this.setState({
-        title,
+        title: this.state.title,
         entries: this.state.entries,
-        collections: collections,
+        collections: nextProps.listCollections,
       });
     }
   }
@@ -219,8 +208,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     this.setState({ title, entries: this.state.entries, collections: this.state.collections });
   }
 
-  changeEntries(entries: Entry[], deleteAll: boolean = false) {
-    this.setState({ entries, title: this.state.title, collections: this.state.collections, deleteAll, });
+  changeEntries(entries: Entry[]) {
+    this.setState({ entries, title: this.state.title, collections: this.state.collections });
   }
 
   hasCollection(collection: AdminCollectionData) {
@@ -266,13 +255,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     data.append("deletedEntries", JSON.stringify(deletedEntries));
     let collections = this.state.collections.map(collection => collection.id);
     data.append("collections", JSON.stringify(collections));
-    let deleteAll = false;
-    if (this.state.deleteAll) {
-      deleteAll = true;
-    }
-    data.append("deleteAll", deleteAll);
     (this.refs["listEntries"] as CustomListEntriesEditor).clearState();
-    this.setState({ deleteAll: false, title: this.state.title, entries: this.state.entries });
+
+    this.setState({ title: this.state.title, entries });
+
     this.props.editCustomList(data, this.props.listId && String(this.props.listId)).then(() => {
       // If a new list was created, go to the new list's edit page.
       if (!this.props.list && this.props.responseBody) {

@@ -142,6 +142,11 @@
     .droppable-header {
       flex: 0 0 auto;
       overflow: hidden;
+
+      > div {
+        display: flex;
+        justify-content: space-between;
+      }
     }
 
     .droppable {
