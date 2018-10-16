@@ -7,7 +7,6 @@ export async function handleSubmit(form) {
   let data = new (window as any).FormData(form.refs.form);
   form.handleData && form.handleData(data);
   await form.props.save(data);
-  !form.props.fetchError && clearForm(form.refs);
 }
 
 // Identify which HTML option elements are supposed to be selected by default,

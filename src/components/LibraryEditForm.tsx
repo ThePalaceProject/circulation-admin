@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
-import { handleSubmit, findDefault } from "../sharedFunctions";
+import { handleSubmit, findDefault, clearForm } from "../sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {
@@ -75,6 +75,12 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   submit(event) {
     event.preventDefault();
     handleSubmit(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.responseBody && !nextProps.fetchError) {
+      clearForm(this.refs);
+    }
   }
 
 }

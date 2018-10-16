@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import SaveButton from "./SaveButton";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
-import { handleSubmit } from "../sharedFunctions";
+import { handleSubmit, clearForm } from "../sharedFunctions";
 
 export interface SitewideSettingEditFormProps {
   data: SitewideSettingsData;
@@ -145,4 +145,11 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     event.preventDefault();
     handleSubmit(this);
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.responseBody && !nextProps.fetchError) {
+      clearForm(this.refs);
+    }
+  }
+
 }

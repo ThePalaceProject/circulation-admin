@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import SaveButton from "./SaveButton";
-import { handleSubmit } from "../sharedFunctions";
+import { handleSubmit, clearForm } from "../sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 
@@ -42,6 +42,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.handleRoleChange = this.handleRoleChange.bind(this);
     this.handleData = this.handleData.bind(this);
     this.submit = this.submit.bind(this);
+    // this.clearForm = this.clearForm.bind(this);
   }
 
   render(): JSX.Element {
@@ -159,6 +160,9 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   componentWillReceiveProps(nextProps) {
     if (nextProps.item && nextProps.item !== this.props.item) {
       this.setState({ admin: new Admin(nextProps.item.roles || []) });
+    }
+    if (nextProps.responseBody && !nextProps.fetchError) {
+      clearForm(this.refs);
     }
   }
 
@@ -320,7 +324,14 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   submit(event) {
     event.preventDefault();
     handleSubmit(this);
+    // this.clearForm();
   }
+
+  // clearForm(err) {
+  //
+  //   alert(err);
+  //
+  // }
 
 
 }

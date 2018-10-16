@@ -6,7 +6,7 @@ import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
-import { handleSubmit } from "../sharedFunctions";
+import { handleSubmit, clearForm } from "../sharedFunctions";
 
 export interface ServiceEditFormProps<T> {
   data: T;
@@ -236,6 +236,11 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     }
     const newState = Object.assign({}, this.state, { protocol, parentId, libraries });
     this.setState(newState);
+
+    if (newProps.responseBody && !newProps.fetchError) {
+      clearForm(this.refs);
+    }
+
   }
 
   availableProtocols(props?): ProtocolData[] {
