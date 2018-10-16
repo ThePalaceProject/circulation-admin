@@ -352,41 +352,6 @@ describe("EditableConfigList", () => {
     expect(fetchData.callCount).to.equal(2);
   });
 
-  it("calls clearForm on save", async() => {
-    let clearForm = stub(wrapper.instance(), "clearForm");
-    wrapper.setProps({ editOrCreate: "create" });
-    let form = wrapper.find(ThingEditForm);
-    form.props().save();
-    await pause();
-    expect(clearForm.callCount).to.equal(1);
-    clearForm.restore();
-  });
-
-  it("clears the form", async() => {
-    wrapper = mount(
-      <ThingListWithInputs
-        data={thingsData}
-        editOrCreate="create"
-        fetchData={fetchData}
-        editItem={editItem}
-        deleteItem={deleteItem}
-        csrfToken="token"
-        isFetching={false}
-        />
-    );
-
-    let form = wrapper.find(ThingEditFormWithInputs);
-    let textInput = form.find("EditableInput");
-    expect(textInput.html()).to.contain("VALUE");
-
-    form.props().save();
-    await pause();
-
-    expect(textInput.html()).not.to.contain("VALUE");
-  });
-
-
-
   it("should not render the AdditionalContent component", () => {
     let additionalContent = wrapper.find(AdditionalContent);
     expect(additionalContent.length).to.equal(0);

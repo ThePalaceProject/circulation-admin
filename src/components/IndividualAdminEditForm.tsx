@@ -41,11 +41,12 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.isSelected = this.isSelected.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
     this.handleData = this.handleData.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={handleSubmit} className="edit-form">
+      <form ref="form" onSubmit={this.submit} className="edit-form">
         <EditableInput
           elementType="input"
           type="text"
@@ -147,10 +148,9 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         }
         <SaveButton
           disabled={this.props.disabled}
-          save={this.props.save}
-          handleData={this.handleData}
+          submit={this.submit}
           text="Submit"
-          form={this.refs["form"]}
+          form={this.refs}
         />
       </form>
     );
@@ -316,5 +316,11 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     }
     return data;
   }
+
+  submit(event) {
+    event.preventDefault();
+    handleSubmit(this);
+  }
+
 
 }

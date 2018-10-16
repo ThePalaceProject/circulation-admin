@@ -13,7 +13,6 @@ export interface EditableConfigListStateProps<T> {
   fetchError?: FetchErrorData;
   isFetching?: boolean;
   responseBody?: string;
-  successMessage?: string;
 }
 
 export interface EditableConfigListDispatchProps<T> {
@@ -230,10 +229,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           window.location.href = `${this.urlBase}edit/${this.props.responseBody}`;
         }, 2000);
       }
-      else {
-        let inputs = (this.refs["edit-form"] as any).refs;
-        !this.props.fetchError && this.refs["edit-form"] && this.clearForm(inputs);
-      }
     });
   }
 
@@ -242,19 +237,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     window.scrollTo(0, 0);
     await this.props.editItem(data);
     this.props.fetchData();
-  }
-
- clearForm(inputs) {
-   if (inputs) {
-     let keys = Object.keys(inputs);
-     for (let i = 0; i < keys.length; i++) {
-       let key = keys[i];
-       inputs[key].clear && inputs[key].clear();
-       if (inputs[key].props && inputs[key].props.onRemove) {
-         inputs[key].props.onRemove();
-       }
-     }
-   }
   }
 
   itemToEdit(): U | null {

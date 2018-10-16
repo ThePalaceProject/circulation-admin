@@ -22,6 +22,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.submit = this.submit.bind(this);
     this.state = {
       inputKey: this.availableSettings().length ? this.availableSettings()[0].key : "",
     };
@@ -97,9 +98,9 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
             }
             <SaveButton
               disabled={this.props.disabled}
-              save={this.props.save}
+              submit={this.submit}
               text="Submit"
-              form={this.refs["form"]}
+              form={this.refs}
             />
           </form>
         }
@@ -138,5 +139,10 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
       return availableSettings;
     }
     return allSettings;
+  }
+
+  submit(event) {
+    event.preventDefault();
+    handleSubmit(this);
   }
 }

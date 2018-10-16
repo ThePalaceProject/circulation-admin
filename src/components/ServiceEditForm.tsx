@@ -50,11 +50,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.expandLibrary = this.expandLibrary.bind(this);
     this.removeLibrary = this.removeLibrary.bind(this);
     this.handleData = this.handleData.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={handleSubmit} className="edit-form">
+      <form ref="form" onSubmit={this.submit} className="edit-form">
         { this.props.item && this.props.item.id &&
           <input
             type="hidden"
@@ -201,10 +202,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         }
         <SaveButton
           disabled={this.props.disabled}
-          save={this.props.save}
-          handleData={this.handleData}
+          submit={this.submit}
           text="Submit"
-          form={this.refs["form"]}
+          form={this.refs}
         />
       </form>
     );
@@ -427,6 +427,11 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   handleData(data) {
     return data.append("libraries", JSON.stringify(this.state.libraries));
+  }
+
+  submit(event) {
+    event.preventDefault();
+    handleSubmit(this);
   }
 
 }

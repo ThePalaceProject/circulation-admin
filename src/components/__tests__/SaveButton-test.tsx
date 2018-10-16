@@ -8,18 +8,18 @@ import SaveButton from "../SaveButton";
 
 describe("SaveButton", () => {
   let wrapper;
-  let save;
+  let submit;
   let handleData;
   let handleSubmit;
   let data = {key: "value"};
 
   beforeEach(() => {
     handleData = stub();
-    save = stub();
+    submit = stub();
     wrapper = mount(
       <SaveButton
         disabled={false}
-        save={save}
+        submit={submit}
         form={undefined}
       />
     );
@@ -34,26 +34,15 @@ describe("SaveButton", () => {
     expect(wrapper.text()).to.contain("some other string");
   });
 
-  it("should call save", () => {
+  it("should call submit", () => {
     wrapper.simulate("click");
-    expect(save.callCount).to.equal(1);
-  });
-
-  it("should not call handleData if the handleData prop was not passed down", () => {
-    wrapper.simulate("click");
-    expect(handleData.callCount).to.equal(0);
-  });
-
-  it("should call handleData if the handleData prop was passed down", () => {
-    wrapper.setProps({ handleData: handleData });
-    wrapper.simulate("click");
-    expect(handleData.callCount).to.equal(1);
+    expect(submit.callCount).to.equal(1);
   });
 
   it("should do nothing if disabled", () => {
     wrapper.setProps({ disabled: true });
     wrapper.simulate("click");
-    expect(save.callCount).to.equal(0);
+    expect(submit.callCount).to.equal(0);
     expect(handleData.callCount).to.equal(0);
   });
 
