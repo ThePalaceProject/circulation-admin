@@ -42,7 +42,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.handleRoleChange = this.handleRoleChange.bind(this);
     this.handleData = this.handleData.bind(this);
     this.submit = this.submit.bind(this);
-    // this.clearForm = this.clearForm.bind(this);
   }
 
   render(): JSX.Element {
@@ -324,14 +323,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   submit(event) {
     event.preventDefault();
     handleSubmit(this);
-    // this.clearForm();
   }
-
-  // clearForm(err) {
-  //
-  //   alert(err);
-  //
-  // }
-
 
 }
