@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, spy } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -753,6 +753,27 @@ describe("ServiceEditForm", () => {
       expect(stateLibraries[0].library_select_setting).to.equal("option3");
     });
 
+    it("calls save when the save button is clicked", () => {
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls save when the form is submitted directly", () => {
+      wrapper.simulate("submit");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls handleData", () => {
+      let handleData = spy(wrapper.instance(), "handleData");
+      wrapper.setProps({ item: serviceData });
+      wrapper.simulate("submit");
+
+      expect(handleData.callCount).to.equal(1);
+
+      handleData.restore();
+    });
+
     it("submits data", () => {
       wrapper.setProps({ item: serviceData });
 
@@ -766,6 +787,40 @@ describe("ServiceEditForm", () => {
       expect(formData.get("text_setting")).to.equal("text setting");
       expect(formData.get("select_setting")).to.equal("option2");
       expect(formData.get("libraries")).to.equal(JSON.stringify(serviceData.libraries));
+    });
+
+    let fillOutFormFields = () => {
+      let nameInput = wrapper.find("input[name='name']");
+      let nameInputElement = nameInput.get(0);
+      nameInputElement.value = "new service";
+      nameInput.simulate("change");
+    };
+
+    it("clears the form", () => {
+      fillOutFormFields();
+      let nameInput = wrapper.find("input[name='name']");
+      expect(nameInput.props().value).to.equal("new service");
+
+      wrapper.simulate("submit");
+      let newProps = {responseBody: "new service", ...wrapper.props()};
+      wrapper.setProps(newProps);
+
+      expect(nameInput.props().value).to.equal("");
+
+    });
+
+    it("doesn't clear the form if there's an error message", () => {
+      fillOutFormFields();
+      let nameInput = wrapper.find("input[name='name']");
+
+      expect(nameInput.props().value).to.equal("new service");
+
+      wrapper.simulate("submit");
+      let newProps = {fetchError: "ERROR", ...wrapper.props()};
+      wrapper.setProps(newProps);
+
+      expect(nameInput.props().value).to.equal("new service");
+
     });
 
   });

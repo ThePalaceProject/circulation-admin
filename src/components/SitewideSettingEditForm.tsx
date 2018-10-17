@@ -41,7 +41,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     return (
       <div>
         { availableSettings.length > 0 &&
-          <form ref="form" onSubmit={handleSubmit} className="edit-form">
+          <form ref="form" onSubmit={this.submit} className="edit-form">
             <EditableInput
               elementType="select"
               disabled={this.props.disabled}

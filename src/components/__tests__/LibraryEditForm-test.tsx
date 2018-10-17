@@ -118,6 +118,17 @@ describe("LibraryEditForm", () => {
       );
     });
 
+    it("calls save when the save button is clicked", () => {
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls save when the form is submitted directly", () => {
+      wrapper.simulate("submit");
+      expect(save.callCount).to.equal(1);
+    });
+
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
@@ -132,5 +143,38 @@ describe("LibraryEditForm", () => {
       expect(formData.get("privacy-policy")).to.equal("http://privacy");
       expect(formData.get("copyright")).to.equal("http://copyright");
     });
+
+    let fillOutFormFields = () => {
+      let nameInput = wrapper.find("input[name='name']");
+      let nameInputElement = nameInput.get(0);
+      nameInputElement.value = "new name";
+      nameInput.simulate("change");
+    };
+
+   it("clears the form", () => {
+     fillOutFormFields();
+     let nameInput = wrapper.find("input[name='name']");
+     expect(nameInput.props().value).to.equal("new name");
+
+     wrapper.simulate("submit");
+     let newProps = {responseBody: "new library", ...wrapper.props()};
+     wrapper.setProps(newProps);
+
+     expect(nameInput.props().value).to.equal("");
+
+   });
+
+   it("doesn't clear the form if there's an error message", () => {
+     fillOutFormFields();
+     let nameInput = wrapper.find("input[name='name']");
+     expect(nameInput.props().value).to.equal("new name");
+
+     wrapper.simulate("submit");
+     let newProps = {fetchError: "ERROR", ...wrapper.props()};
+     wrapper.setProps(newProps);
+
+     expect(nameInput.props().value).to.equal("new name");
+   });
+
   });
 });
