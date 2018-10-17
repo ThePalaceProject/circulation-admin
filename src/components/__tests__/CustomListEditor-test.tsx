@@ -170,6 +170,7 @@ describe("CustomListEditor", () => {
     let newEntries = [
       { id: "urn1" }, { id: "urn2" }
     ];
+    wrapper.setState({title: "new list title" });
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-list");
     saveButton.simulate("click");

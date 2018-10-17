@@ -40,6 +40,7 @@ export interface CustomListEntriesEditorState {
   entries: Entry[];
   deleted: Entry[];
   added: Entry[];
+  total?: number;
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -51,6 +52,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       entries: this.props.entries || [],
       deleted: [],
       added: [],
+      total: this.props.entries ? this.props.entries.length : 0,
     };
 
     this.reset = this.reset.bind(this);
@@ -70,6 +72,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       deleted,
       added,
       draggingFrom,
+      total,
     } = this.state;
     let {
       searchResults,
@@ -84,7 +87,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let entriesCount;
     let currentDisplay;
 
-    if (totalEntries) {
+    if (total) {
       if (entries.length) {
         currentDisplay = entries.length;
         entriesCount = totalEntries - deleted.length + added.length;
@@ -101,9 +104,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       // No existing entries in a list so it's a new list or all entries
       // were recently deleted.
       if (entries && entries.length) {
-        currentDisplay = !added.length ? entries.length : added.length;
-        entriesCount = currentDisplay - deleted.length;
-        displayTotal = `1 - ${currentDisplay} of ${entriesCount}`;
+        displayTotal = `1 - ${entries.length} of ${entries.length}`;
 
         entryListDisplay = `Displaying ${displayTotal} Books`;
       }
@@ -182,7 +183,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
           <div className="custom-list-entries">
             <div className="droppable-header">
               <h4>{entryListDisplay}</h4>
-              { (entries.length > 0) &&
+              { (entries && entries.length > 0) &&
                 <div>
                   <span>Remove all currently visible items from list:
                   </span>
@@ -256,6 +257,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   componentWillReceiveProps(nextProps) {
     let deleted = this.state.deleted;
     let added = this.state.added;
+    let total = this.state.total;
     // We need to reset the deleted and added entries if we are moving to a new list.
     if (this.props.listId !== nextProps.listId) {
       deleted = [];
@@ -265,6 +267,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entries: nextProps.entries,
         deleted: deleted,
         added: added,
+        total: nextProps.entries.length,
       });
     }
 
@@ -294,6 +297,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entries: newEntries,
         deleted: deleted,
         added: added,
+        total: newEntries.length,
       });
 
       const droppableList = document.getElementById("custom-list-entries-droppable");
@@ -343,7 +347,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   getEntries(): Entry[] {
-    return this.state.entries;
+    return this.state.entries || [];
   }
 
   getDeleted(): Entry[] {
@@ -351,22 +355,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   reset() {
-    let entries = [];
-    if (!this.state.deleted.length) {
-      entries = this.props.entries || [];
-    } else if (this.state.added) {
-      entries = this.state.deleted.concat(this.removeAdded());
-    } else {
-      entries = this.state.deleted.concat(this.state.entries);
-    }
     this.setState({
       draggingFrom: null,
-      entries,
+      entries: this.props.entries,
       deleted: [],
       added: [],
+      total: this.props.entries ? this.props.entries.length : 0,
     });
     if (this.props.onUpdate) {
-      this.props.onUpdate(this.state.entries || []);
+      this.props.onUpdate(this.props.entries || []);
     }
   }
 
@@ -383,7 +380,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   searchResultsNotInEntries() {
-    let entryIds = this.state.entries.map(entry => entry.id);
+    let entryIds = this.state.entries && this.state.entries.length ?
+      this.state.entries.map(entry => entry.id) : [];
     return this.props.searchResults.books.filter(book => {
       for (const entryId of entryIds) {
         if (entryId === book.id) {
@@ -449,11 +447,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entries.unshift(entry);
       }
     }
+    let added = this.state.added.filter(entry => entry.id !== id);
+    let deleted = this.state.deleted.filter(entry => entry.id !== id);
     this.setState({
       draggingFrom: null,
       entries,
-      deleted: this.state.deleted,
-      added: this.state.added.concat([entry]),
+      deleted,
+      added: added.concat([entry]),
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
@@ -462,13 +462,15 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   delete(id: string) {
     let entries = this.state.entries.slice(0);
+    let currentlyDeleted = this.state.deleted.filter(entry => entry.id !== id);
     let deleted = this.state.entries.filter(entry => entry.id === id);
+    let added = this.state.added.filter(entry => entry.id !== id);
     entries = entries.filter(entry => entry.id !== id);
     this.setState({
       draggingFrom: null,
       entries,
-      deleted: this.state.deleted.concat(deleted),
-      added: this.state.added,
+      deleted: currentlyDeleted.concat(deleted),
+      added,
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
@@ -481,6 +483,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       entries: this.state.entries,
       deleted: [],
       added: [],
+      total: this.state.entries.length,
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(this.state.entries);
@@ -524,7 +527,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       draggingFrom: null,
       entries: [],
       deleted: this.state.deleted.concat(this.state.entries),
-      added: this.state.added,
+      added: [],
     });
     if (this.props.onUpdate) {
       this.props.onUpdate([]);

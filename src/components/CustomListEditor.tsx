@@ -104,7 +104,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <button
               className="btn btn-default save-list"
               onClick={this.save}
-              disabled={!this.state.title && !this.hasChanges()}
+              disabled={!this.hasChanges()}
               >Save this list</button>
             { this.hasChanges() &&
               <a
@@ -158,11 +158,15 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         entries: (nextProps.list && nextProps.list.books) || [],
         collections: (nextProps.list && nextProps.listCollections) || []
       });
-    } else if (nextProps.list && nextProps.list.books.length !== this.state.entries) {
+    } else if (nextProps.list && nextProps.list.books.length !== this.state.entries.length) {
+      let collections = this.state.collections;
+      if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
+        collections = nextProps.listCollections;
+      }
       this.setState({
         title: nextProps.list.title,
         entries: nextProps.list.books,
-        collections: this.state.collections,
+        collections: collections,
       });
     } else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
       this.setState({
@@ -174,7 +178,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   hasChanges(): boolean {
-    const titleChanged = (this.props.list && this.props.list.title !== this.state.title);
+    const titleChanged = (this.props.list && this.props.list.title !== this.state.title) ||
+      !!(!this.props.list && this.state.title);
     let entriesChanged = false;
     if (this.props.list && this.props.list.books.length !== this.state.entries.length) {
       entriesChanged = true;
@@ -255,11 +260,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     data.append("deletedEntries", JSON.stringify(deletedEntries));
     let collections = this.state.collections.map(collection => collection.id);
     data.append("collections", JSON.stringify(collections));
-    (this.refs["listEntries"] as CustomListEntriesEditor).clearState();
-
-    this.setState({ title: this.state.title, entries });
 
     this.props.editCustomList(data, this.props.listId && String(this.props.listId)).then(() => {
+      (this.refs["listEntries"] as CustomListEntriesEditor).clearState();
+      this.setState({ title: this.state.title, entries });
+
       // If a new list was created, go to the new list's edit page.
       if (!this.props.list && this.props.responseBody) {
         window.location.href = "/admin/web/lists/" + this.props.library + "/edit/" + this.props.responseBody;
