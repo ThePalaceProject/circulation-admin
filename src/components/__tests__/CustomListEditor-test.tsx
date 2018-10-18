@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, useFakeTimers } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -257,6 +257,7 @@ describe("CustomListEditor", () => {
   it("cancels changes", () => {
     let listTitleReset = stub(TextWithEditMode.prototype, "reset");
     let listEntriesReset = stub(CustomListEntriesEditor.prototype, "reset");
+    this.clock = useFakeTimers();
 
     wrapper = mount(
       <CustomListEditor
@@ -285,6 +286,7 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
+    this.clock.tick(200);
 
     expect(listTitleReset.callCount).to.equal(1);
     expect(listEntriesReset.callCount).to.equal(1);
@@ -297,6 +299,7 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
+    this.clock.tick(200);
 
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
@@ -325,6 +328,7 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
+    this.clock.tick(200);
 
     expect(listTitleReset.callCount).to.equal(3);
     expect(listEntriesReset.callCount).to.equal(3);
@@ -336,6 +340,7 @@ describe("CustomListEditor", () => {
 
     listTitleReset.restore();
     listEntriesReset.restore();
+    this.clock.restore();
   });
 
   it("changes selected collections", () => {

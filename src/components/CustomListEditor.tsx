@@ -178,8 +178,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   hasChanges(): boolean {
-    const titleChanged = (this.props.list && this.props.list.title !== this.state.title) ||
-      !!(!this.props.list && this.state.title);
+    let titleChanged = (this.props.list && this.props.list.title !== this.state.title);
+    if (!this.props.list) {
+      titleChanged = !!this.state.title;
+    }
     let entriesChanged = false;
     if (this.props.list && this.props.list.books.length !== this.state.entries.length) {
       entriesChanged = true;
@@ -275,12 +277,14 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   reset() {
     (this.refs["listTitle"] as TextWithEditMode).reset();
     (this.refs["listEntries"] as CustomListEntriesEditor).reset();
-    this.setState({
-      title: this.state.title,
-      entries: this.state.entries,
-      collections: (this.props.listCollections) || [],
-      entryPointSelected: "all",
-    });
+    setTimeout(() => {
+      this.setState({
+        title: (this.refs["listTitle"] as TextWithEditMode).getText(),
+        entries: this.state.entries,
+        collections: (this.props.listCollections) || [],
+        entryPointSelected: "all",
+      });
+    }, 200);
   }
 
   getEntryPointQuery() {
