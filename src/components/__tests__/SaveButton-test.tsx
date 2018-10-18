@@ -9,12 +9,10 @@ import SaveButton from "../SaveButton";
 describe("SaveButton", () => {
   let wrapper;
   let submit;
-  let handleData;
   let handleSubmit;
   let data = {key: "value"};
 
   beforeEach(() => {
-    handleData = stub();
     submit = stub();
     wrapper = mount(
       <SaveButton
@@ -43,7 +41,6 @@ describe("SaveButton", () => {
     wrapper.setProps({ disabled: true });
     wrapper.simulate("click");
     expect(submit.callCount).to.equal(0);
-    expect(handleData.callCount).to.equal(0);
   });
 
 });
