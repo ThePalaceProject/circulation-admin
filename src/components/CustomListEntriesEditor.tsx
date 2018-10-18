@@ -86,7 +86,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let displayTotal;
     let entriesCount;
 
-    console.log(totalVisibleEntries, totalEntriesServer, entries, deleted, added);
     if (totalVisibleEntries && totalEntriesServer) {
       if (entries.length) {
         entriesCount = totalEntriesServer - deleted.length + added.length;
