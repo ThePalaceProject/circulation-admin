@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import SaveButton from "./SaveButton";
-import { handleSubmit, clearForm } from "../sharedFunctions";
+import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 

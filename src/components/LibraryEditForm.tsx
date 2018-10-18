@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
-import { handleSubmit, findDefault, clearForm } from "../sharedFunctions";
+import { handleSubmit, findDefault, clearForm } from "./sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {

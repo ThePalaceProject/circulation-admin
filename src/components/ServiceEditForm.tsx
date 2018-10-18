@@ -6,7 +6,7 @@ import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
-import { handleSubmit, clearForm } from "../sharedFunctions";
+import { handleSubmit, clearForm } from "./sharedFunctions";
 
 export interface ServiceEditFormProps<T> {
   data: T;

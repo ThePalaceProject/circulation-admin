@@ -1,5 +1,4 @@
 import * as React from "react";
-import { handleSubmit } from "../sharedFunctions";
 
 export interface SaveButtonProps {
   disabled: boolean;
