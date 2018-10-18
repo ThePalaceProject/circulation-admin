@@ -311,18 +311,18 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       roles = [{ role: "system" }];
     }
     data.append("roles", JSON.stringify(roles));
-    // If we're setting up an admin for the first time, refresh the page
-    // to go to login.
-    if (this.context.settingUp) {
-     window.location.reload();
-     return;
-    }
     return data;
   }
 
   submit(event) {
     event.preventDefault();
     handleSubmit(this);
+    // If we're setting up an admin for the first time, refresh the page
+    // to go to login.
+    if (this.context.settingUp) {
+     window.location.reload();
+     return;
+    }
   }
 
 }
