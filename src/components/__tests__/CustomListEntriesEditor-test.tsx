@@ -56,6 +56,17 @@ describe("CustomListEntriesEditor", () => {
   ];
   let entriesNextPageUrl = "nextpage?after=50";
 
+  const generateEntries = (num: number, offset: number = 0 ) => {
+    return Array.from(new Array(num), (x, i) => i + offset).map(n => ({
+      id: `${n}`,
+      title: `title-${n}`,
+      url: "",
+      authors: [],
+      language: "eng",
+      raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}},
+    }));
+  };
+
   beforeEach(() => {
     onUpdate = stub();
     loadMoreSearchResults = stub();
@@ -862,6 +873,7 @@ describe("CustomListEntriesEditor", () => {
     let wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        searchResults={searchResultsData}
         nextPageUrl={entriesNextPageUrl}
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -877,18 +889,92 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    // Manually deleted both entries, but also need to add it to the deleted array.
-    wrapper.setState({ entries: [], deleted: wrapper.state().entries });
+    let deleteLink = wrapper.find(".custom-list-entries .links a");
+    deleteLink.at(0).simulate("click");
+
+    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Books");
+
+    deleteLink.at(1).simulate("click");
 
     expect(display.text()).to.equal("No books in this list");
 
-    // Adding back entries and clearing the deleted array.
-    wrapper.setState({
-      entries: entriesData.concat(entriesDataExtra),
-      deleted: [],
-      added: entriesDataExtra,
-    });
+    let addLink = wrapper.find(".custom-list-search-results .links a");
+    addLink.at(0).simulate("click");
 
-    expect(display.text()).to.equal("Displaying 1 - 4 of 4 Books");
+    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Books");
+
+    addLink.at(1).simulate("click");
+    addLink.at(2).simulate("click");
+
+    expect(display.text()).to.equal("Displaying 1 - 3 of 3 Books");
+
+    // Adding more to the entries and search results:
+    let newEntriesData = generateEntries(10);
+    let newSearchResultsData = generateEntries(20, 20);
+    searchResultsData.books = newSearchResultsData;
+    wrapper = mount(
+      <CustomListEntriesEditor
+        entries={newEntriesData}
+        searchResults={searchResultsData}
+        nextPageUrl={entriesNextPageUrl}
+        onUpdate={onUpdate}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryCount={`${newEntriesData.length}`}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    let searchEntries = wrapper.find(".custom-list-search-results li");
+
+    expect(searchEntries.length).to.equal(newSearchResultsData.length);
+
+    display = wrapper.find(".custom-list-entries h4");
+
+    expect(display.text()).to.equal("Displaying 1 - 10 of 10 Books");
+
+    let addAllBtn = wrapper.find(".add-all-button");
+    addAllBtn.simulate("click");
+
+    // All search results were added to the entries.
+    searchEntries = wrapper.find(".custom-list-search-results li");
+    expect(searchEntries.length).to.equal(0);
+    expect(display.text()).to.equal("Displaying 1 - 30 of 30 Books");
+
+    deleteLink = wrapper.find(".custom-list-entries .links a");
+    deleteLink.at(0).simulate("click");
+    deleteLink.at(1).simulate("click");
+    deleteLink.at(2).simulate("click");
+    deleteLink.at(3).simulate("click");
+
+    expect(display.text()).to.equal("Displaying 1 - 26 of 26 Books");
+
+    let deleteAllBtn = wrapper.find(".delete-all-button");
+    deleteAllBtn.simulate("click");
+
+    expect(display.text()).to.equal("No books in this list");
+
+    // All search results should be back in the search results list
+    searchEntries = wrapper.find(".custom-list-search-results li");
+    expect(searchEntries.length).to.equal(newSearchResultsData.length);
+
+    addAllBtn = wrapper.find(".add-all-button");
+    addAllBtn.simulate("click");
+
+    expect(display.text()).to.equal("Displaying 1 - 20 of 20 Books");
+
+    deleteLink = wrapper.find(".custom-list-entries .links a");
+    deleteLink.at(0).simulate("click");
+
+    expect(display.text()).to.equal("Displaying 1 - 19 of 19 Books");
+
+    (wrapper.instance() as CustomListEntriesEditor).reset();
+
+    expect(display.text()).to.equal("Displaying 1 - 10 of 10 Books");
+    // All the search results should be back in the search result list.
+    searchEntries = wrapper.find(".custom-list-search-results li");
+    expect(searchEntries.length).to.equal(newSearchResultsData.length);
   });
 });

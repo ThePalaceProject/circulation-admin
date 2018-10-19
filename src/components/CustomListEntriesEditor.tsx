@@ -63,7 +63,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.loadMore = this.loadMore.bind(this);
     this.loadMoreEntries = this.loadMoreEntries.bind(this);
     this.clearState = this.clearState.bind(this);
-    this.removeAdded = this.removeAdded.bind(this);
   }
 
   render(): JSX.Element {
@@ -366,18 +365,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
   }
 
-  removeAdded() {
-    let addedIds = this.state.added.map(entry => entry.id);
-    return this.state.entries.filter(book => {
-      for (const addedId of addedIds) {
-        if (addedId === book.id) {
-          return false;
-        }
-      }
-      return true;
-    });
-  }
-
   searchResultsNotInEntries() {
     let entryIds = this.state.entries && this.state.entries.length ?
       this.state.entries.map(entry => entry.id) : [];
@@ -446,14 +433,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entries.unshift(entry);
       }
     }
-    let inDeleted = this.state.deleted.filter(entry => entry.id === id);
+
     let added = this.state.added.filter(entry => entry.id !== id);
+    let inDeleted = this.state.deleted.filter(entry => entry.id === id);
     let deleted = this.state.deleted.filter(entry => entry.id !== id);
+    let propEntries = this.props.entries ?
+      this.props.entries.filter(entry => entry.id === id) : [];
     this.setState({
       draggingFrom: null,
       entries,
       deleted,
-      added: inDeleted.length ? added : added.concat([entry]),
+      added: propEntries.length ? added : added.concat([entry]),
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
@@ -465,12 +455,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let deleted = this.state.deleted.filter(entry => entry.id !== id);
     let deletedEntry = this.state.entries.filter(entry => entry.id === id);
     let added = this.state.added.filter(entry => entry.id !== id);
-    let inAdded = this.state.added.filter(entry => entry.id === id);
+    let inAdded = this.props.entries.filter(entry => entry.id === id);
     entries = entries.filter(entry => entry.id !== id);
     this.setState({
       draggingFrom: null,
       entries,
-      deleted: inAdded.length ? deleted : deleted.concat(deletedEntry),
+      deleted: inAdded.length ? deleted.concat(deletedEntry) : deleted,
       added,
     });
     if (this.props.onUpdate) {
@@ -506,16 +496,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         language,
       });
     }
-    let existingEntriesIds = this.state.entries.map(entry => entry.id);
     let existingPropEntriesIds = this.props.entries ?
       this.props.entries.map(entry => entry.id) : [];
     let newEntriesIds = entries.map(entry => entry.id);
     let newlyAdded = entries.filter(book => {
-      for (const newEntriesId of existingEntriesIds) {
-        if (newEntriesId === book.id) {
-          return false;
-        }
-      }
       for (const newEntriesId of existingPropEntriesIds) {
         if (newEntriesId === book.id) {
           return false;
@@ -549,20 +533,22 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   deleteAll() {
-    let entriesId = this.props.entries.map(entry => entry.id);
-    let newlyDeleted = this.state.deleted.filter(book => {
-      for (const deletedId of entriesId) {
-        if (deletedId === book.id) {
-          return false;
+    let entries = this.state.entries.slice(0);
+    let propEntriesId = this.props.entries ?
+      this.props.entries.map(entry => entry.id) : [];
+    let newlyDeleted = entries.filter(book => {
+      for (const propEntryId of propEntriesId) {
+        if (propEntryId === book.id) {
+          return true;
         }
       }
-      return true;
+      return false;
     });
 
     this.setState({
       draggingFrom: null,
       entries: [],
-      deleted: newlyDeleted.concat(this.props.entries),
+      deleted: this.state.deleted.concat(newlyDeleted),
       added: [],
     });
     if (this.props.onUpdate) {

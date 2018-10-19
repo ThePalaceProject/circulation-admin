@@ -292,6 +292,9 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   async editCustomList(data: FormData, listId?: string): Promise<void> {
     await this.props.editCustomList(data, listId);
     this.props.fetchCustomLists();
+    if (listId) {
+      this.props.fetchCustomListDetails(listId);
+    }
   }
 
   async deleteCustomList(list: CustomListData): Promise<void> {
