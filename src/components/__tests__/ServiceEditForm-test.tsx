@@ -45,6 +45,7 @@ describe("ServiceEditForm", () => {
       name: "protocol 1",
       label: "protocol 1 label",
       description: "protocol 1 description",
+      link: "https://protocol1link",
       sitewide: false,
       settings: [
         { key: "text_setting", label: "text label", optional: true },
@@ -135,6 +136,7 @@ describe("ServiceEditForm", () => {
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(false);
       expect(input.props().description).to.equal("protocol 1 description");
+      expect(input.props().link).to.equal("https://protocol1link");
       let children = input.find("option");
       expect(children.length).to.equal(3);
       expect(children.at(0).text()).to.contain("protocol 1 label");
@@ -154,6 +156,7 @@ describe("ServiceEditForm", () => {
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(true);
       expect(input.props().description).to.equal("protocol 1 description");
+      expect(input.props().link).to.equal("https://protocol1link");
       children = input.find("option");
       expect(children.length).to.equal(1);
       expect(children.text()).to.contain("protocol 1 label");
@@ -528,6 +531,7 @@ describe("ServiceEditForm", () => {
 
       let protocolInput = editableInputByName("protocol");
       expect(protocolInput.prop("description")).to.equal("protocol 1 description");
+      expect(protocolInput.prop("link")).to.equal("https://protocol1link");
 
       let select = wrapper.find("select[name='protocol']") as any;
       let selectElement = select.get(0);
@@ -547,6 +551,7 @@ describe("ServiceEditForm", () => {
 
       protocolInput = editableInputByName("protocol");
       expect(protocolInput.prop("description")).to.equal("protocol 2 description");
+      expect(protocolInput.prop("link")).to.be.undefined;
 
       selectElement.value = "protocol 1";
       select.simulate("change");

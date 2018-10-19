@@ -43,6 +43,14 @@ describe("EditableInput", () => {
     expect(description.html()).to.contain("<p>description</p>");
   });
 
+  it("optionally renders a link", () => {
+    wrapper.setProps({ link: "https://link" });
+    let description = wrapper.find(".description");
+    let link = description.find("a");
+    expect(link.props().href).to.equal("https://link");
+    expect(description.html()).to.contain("<p>description</p>");
+  });
+
   it("shows initial value from props", () => {
     expect(wrapper.state().value).to.equal("initial value");
     let input = wrapper.find("input");
