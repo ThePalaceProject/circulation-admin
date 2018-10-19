@@ -178,7 +178,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   hasChanges(): boolean {
-    let titleChanged = (this.props.list && this.props.list.title !== this.state.title);
+    let titleChanged = (this.props.list && this.props.list.title !== this.state.title
+      && this.state.title !== "");
     if (!this.props.list) {
       titleChanged = !!this.state.title;
     }

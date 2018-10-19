@@ -576,7 +576,7 @@ describe("CustomListEntriesEditor", () => {
     expect(wrapper.state().deleted).to.eql([entriesData[0]]);
 
     display = wrapper.find(".custom-list-entries h4");
-    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Books");
+    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
   });
 
   it("resets", () => {
@@ -892,7 +892,7 @@ describe("CustomListEntriesEditor", () => {
     let deleteLink = wrapper.find(".custom-list-entries .links a");
     deleteLink.at(0).simulate("click");
 
-    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Books");
+    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
 
     deleteLink.at(1).simulate("click");
 
@@ -901,7 +901,7 @@ describe("CustomListEntriesEditor", () => {
     let addLink = wrapper.find(".custom-list-search-results .links a");
     addLink.at(0).simulate("click");
 
-    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Books");
+    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
 
     addLink.at(1).simulate("click");
     addLink.at(2).simulate("click");

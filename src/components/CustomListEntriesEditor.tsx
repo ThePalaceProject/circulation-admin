@@ -84,27 +84,30 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let totalEntriesServer = parseInt(entryCount, 10);
     let displayTotal;
     let entriesCount;
+    let booksText;
 
     if (totalVisibleEntries && totalEntriesServer) {
       if (entries.length) {
         entriesCount = totalEntriesServer - deleted.length + added.length;
         displayTotal = `1 - ${entries.length} of ${entriesCount}`;
-        entryListDisplay = `Displaying ${displayTotal} Books`;
+        booksText = entriesCount === 1 ? "Book" : "Books";
+        entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
       } else if (totalEntriesServer - deleted.length !== 0) {
         // The "delete all" button was clicked so there are no books
         // in the visible list, but there could be more on the server.
         entriesCount = totalEntriesServer > deleted.length ?
           totalEntriesServer - deleted.length : 0;
         displayTotal = `0 - 0 of ${entriesCount}`;
-        entryListDisplay = `Displaying ${displayTotal} Books`;
+        booksText = entriesCount === 1 ? "Book" : "Books";
+        entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
       }
     } else {
       // No existing entries in a list so it's a new list or all entries
       // were recently deleted.
       if (entries && entries.length) {
         displayTotal = `1 - ${entries.length} of ${entries.length}`;
-
-        entryListDisplay = `Displaying ${displayTotal} Books`;
+        booksText = entries.length === 1 ? "Book" : "Books";
+        entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
       }
     }
 
