@@ -314,9 +314,9 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     return data;
   }
 
-  submit(event) {
+  async submit(event) {
     event.preventDefault();
-    handleSubmit(this);
+    await handleSubmit(this);
     // If we're setting up an admin for the first time, refresh the page
     // to go to login.
     if (this.context.settingUp) {
