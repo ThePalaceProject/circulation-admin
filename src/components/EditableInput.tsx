@@ -1,10 +1,11 @@
 import * as React from "react";
+import Collapsible from "./Collapsible";
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
   label?: string;
   description?: string;
-  link?: string;
+  instructions?: string;
   onChange?: (e: any) => any;
 }
 
@@ -69,8 +70,8 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   renderDescription() {
-    if (this.props.link) {
-      return <a href={this.props.link} dangerouslySetInnerHTML={{__html: this.props.description}} />;
+    if (this.props.instructions) {
+      return <Collapsible title={this.props.description} body={this.props.instructions}/>;
     }
     else {
       return <span dangerouslySetInnerHTML={{__html: this.props.description}} />;

@@ -4,6 +4,21 @@
 
 .description {
   font-size: 0.8rem;
+  .collapsible {
+    margin-top: 20px;
+    box-shadow: none;
+    .panel-heading {
+      border-bottom: none;
+      font-weight: bold;
+      button {
+        float: right;
+        &:focus {
+          border-color: #46B8DA;
+          box-shadow: none;
+        }
+      }
+    }
+  }
 }
 
 .control-label {
