@@ -10,10 +10,22 @@
     .panel-heading {
       border-bottom: none;
       font-weight: bold;
+      .collapsed, .panel-title a {
+        color: inherit;
+        &:visited {
+          color: #333;
+        }
+        &:focus {
+          outline: none;
+          text-decoration: none;
+        }
+      }
       button {
         float: right;
-        &:focus {
-          border-color: #46B8DA;
+        background: #3A7DFD;
+        border-color: #3A7DFD;
+        &:focus, &:visited {
+          border-color: #3A7DFD;
           box-shadow: none;
         }
       }

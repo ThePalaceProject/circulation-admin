@@ -17,6 +17,7 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
     super(props);
     this.state = { open: false, icon: "chevron-down" };
     this.toggle = this.toggle.bind(this);
+    this.renderHeader = this.renderHeader.bind(this);
   }
 
   toggle() {
@@ -24,16 +25,21 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
     this.setState({ open: !this.state.open, icon });
   }
 
+  renderHeader() {
+    return (
+      <div onClick={this.toggle}>
+        <span>{this.props.title}</span>
+        <Button bsSize="xsmall" bsStyle="primary">
+          <Glyphicon glyph={this.state.icon} />
+        </Button>
+      </div>
+    )
+  }
+
   render() {
     return (
-      <Panel className="collapsible" expanded={this.state.open}>
-        <Panel.Heading>
-          <Panel.Title componentClass="span">{this.props.title}</Panel.Title>
-          <Button bsSize="xsmall" bsStyle="info" onClick={this.toggle}>
-            <Glyphicon glyph={this.state.icon} />
-          </Button>
-        </Panel.Heading>
-        <Panel.Body collapsible dangerouslySetInnerHTML={{__html: this.props.body}}></Panel.Body>
+      <Panel className="collapsible" collapsible={true} header={this.renderHeader()} expanded={this.state.open}>
+        <article dangerouslySetInnerHTML={{__html: this.props.body}}></article>
       </Panel>
     );
   }
