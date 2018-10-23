@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import Collapsible from "../Collapsible";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
@@ -45,7 +46,6 @@ describe("ServiceEditForm", () => {
       name: "protocol 1",
       label: "protocol 1 label",
       description: "protocol 1 description",
-      link: "https://protocol1link",
       sitewide: false,
       settings: [
         { key: "text_setting", label: "text label", optional: true },
@@ -75,6 +75,15 @@ describe("ServiceEditForm", () => {
         { key: "text_setting", label: "text label" },
         { key: "protocol2_setting", label: "protocol2 label" },
       ],
+      library_settings: []
+    },
+    {
+      name: "protocol with instructions",
+      label: "instructions label",
+      description: "click for instructions",
+      instructions: "Instructions!",
+      sitewide: false,
+      settings: [],
       library_settings: []
     },
     parentProtocol
@@ -136,11 +145,11 @@ describe("ServiceEditForm", () => {
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(false);
       expect(input.props().description).to.equal("protocol 1 description");
-      expect(input.props().link).to.equal("https://protocol1link");
       let children = input.find("option");
-      expect(children.length).to.equal(3);
+      expect(children.length).to.equal(4);
       expect(children.at(0).text()).to.contain("protocol 1 label");
       expect(children.at(1).text()).to.contain("protocol 2 label");
+      expect(children.at(2).text()).to.contain("instructions label");
 
       wrapper = shallow(
         <TestServiceEditForm
@@ -156,7 +165,6 @@ describe("ServiceEditForm", () => {
       expect(input.props().value).to.equal("protocol 1");
       expect(input.props().readOnly).to.equal(true);
       expect(input.props().description).to.equal("protocol 1 description");
-      expect(input.props().link).to.equal("https://protocol1link");
       children = input.find("option");
       expect(children.length).to.equal(1);
       expect(children.text()).to.contain("protocol 1 label");
@@ -531,7 +539,6 @@ describe("ServiceEditForm", () => {
 
       let protocolInput = editableInputByName("protocol");
       expect(protocolInput.prop("description")).to.equal("protocol 1 description");
-      expect(protocolInput.prop("link")).to.equal("https://protocol1link");
 
       let select = wrapper.find("select[name='protocol']") as any;
       let selectElement = select.get(0);

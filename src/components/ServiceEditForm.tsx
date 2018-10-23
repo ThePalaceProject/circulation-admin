@@ -78,7 +78,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           value={this.state.protocol}
           ref="protocol"
           onChange={this.handleProtocolChange}
-          description={this.protocolDescription()}
+          description={!this.protocolInstructions() && this.protocolDescription()}
           >
           { this.availableProtocols().map(protocol =>
               <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
