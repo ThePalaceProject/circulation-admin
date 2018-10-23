@@ -204,6 +204,26 @@ describe("ServiceEditForm", () => {
       expect(input.length).to.equal(0);
     });
 
+    it("renders a collapsible component", () => {
+      wrapper = mount(
+        <TestServiceEditForm
+          disabled={false}
+          data={servicesData}
+          editItem={editService}
+          urlBase={urlBase}
+          listDataKey="services"
+          />
+      );
+      wrapper.setState({ protocol: "protocol with instructions" });
+
+      let collapsible = wrapper.find(".collapsible");
+      expect(collapsible.length).to.equal(1);
+      let title = collapsible.find(".panel-title");
+      expect(title.text()).to.equal("click for instructions");
+      let body = collapsible.find(".panel-body");
+      expect(body.text()).to.equal("Instructions!");
+    });
+
     it("doesn't render parent dropdown for protocol with no child settings", () => {
       let input = editableInputByName("parent_id");
       expect(input.length).to.equal(0);

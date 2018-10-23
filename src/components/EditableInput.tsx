@@ -1,5 +1,4 @@
 import * as React from "react";
-import Collapsible from "./Collapsible";
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
