@@ -7,11 +7,12 @@ import {
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
-  CustomListsData, CustomListDetailsData, LanesData,
+  CustomListsData, LanesData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
   StorageServicesData, LoggingServicesData, SelfTestsData,
   PatronData
 } from "./interfaces";
+import { CollectionData } from "opds-web-client/lib/interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
 import BaseActionCreator from "opds-web-client/lib/actions";
@@ -83,6 +84,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly COLLECTION_LIBRARY_REGISTRATIONS = "COLLECTION_LIBRARY_REGISTRATIONS";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
   static readonly CUSTOM_LIST_DETAILS = "CUSTOM_LIST_DETAILS";
+  static readonly CUSTOM_LIST_DETAILS_MORE = "CUSTOM_LIST_DETAILS_MORE";
   static readonly EDIT_CUSTOM_LIST = "EDIT_CUSTOM_LIST";
   static readonly DELETE_CUSTOM_LIST = "DELETE_CUSTOM_LIST";
   static readonly LANES = "LANES";
@@ -581,7 +583,11 @@ export default class ActionCreator extends BaseActionCreator {
 
   fetchCustomListDetails(library: string, id: string) {
     const url = "/" + library + "/admin/custom_list/" + id;
-    return this.fetchJSON<CustomListDetailsData>(ActionCreator.CUSTOM_LIST_DETAILS, url).bind(this);
+    return this.fetchOPDS<CollectionData>(ActionCreator.CUSTOM_LIST_DETAILS, url).bind(this);
+  }
+
+  fetchMoreCustomListEntries(url: string) {
+    return this.fetchOPDS<CollectionData>(ActionCreator.CUSTOM_LIST_DETAILS_MORE, url).bind(this);
   }
 
   editCustomList(library: string, data: FormData, id?: string) {
