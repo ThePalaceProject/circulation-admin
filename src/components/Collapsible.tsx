@@ -33,13 +33,13 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
           <Glyphicon glyph={this.state.icon} />
         </Button>
       </div>
-    )
+    );
   }
 
   render() {
     return (
       <Panel className="collapsible" collapsible={true} header={this.renderHeader()} expanded={this.state.open}>
-        <article dangerouslySetInnerHTML={{__html: this.props.body}}></article>
+        <section dangerouslySetInnerHTML={{__html: this.props.body}}></section>
       </Panel>
     );
   }

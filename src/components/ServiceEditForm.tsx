@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import Collapsible from "./Collapsible";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
@@ -78,7 +79,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           ref="protocol"
           onChange={this.handleProtocolChange}
           description={this.protocolDescription()}
-          instructions={this.protocolInstructions()}
           >
           { this.availableProtocols().map(protocol =>
               <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
@@ -101,6 +101,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               )
             }
           </EditableInput>
+        }
+        { this.props.data && this.protocolInstructions() &&
+          <Collapsible title={this.protocolDescription()} body={this.protocolInstructions()} />
         }
         { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField

@@ -43,14 +43,6 @@ describe("EditableInput", () => {
     expect(description.html()).to.contain("<p>description</p>");
   });
 
-  it.only("optionally renders instructions", () => {
-    wrapper.setProps({ link: "Instructions!" });
-    let description = wrapper.find(".description");
-    let instructions = description.find(".panel-body");
-    expect(instructions.text()).to.equal("Instructions!");
-    expect(description.html()).to.contain("<p>description</p>");
-  });
-
   it("shows initial value from props", () => {
     expect(wrapper.state().value).to.equal("initial value");
     let input = wrapper.find("input");

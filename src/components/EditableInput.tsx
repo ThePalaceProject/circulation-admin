@@ -5,7 +5,6 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
   label?: string;
   description?: string;
-  instructions?: string;
   onChange?: (e: any) => any;
 }
 
@@ -43,7 +42,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
           this.renderElement()
         }
         { this.props.description &&
-          <p className="description">{this.renderDescription()}</p>
+          this.renderDescription()
         }
       </div>
     );
@@ -70,12 +69,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   renderDescription() {
-    if (this.props.instructions) {
-      return <Collapsible title={this.props.description} body={this.props.instructions}/>;
-    }
-    else {
-      return <span dangerouslySetInnerHTML={{__html: this.props.description}} />;
-    }
+    return <p className="description" dangerouslySetInnerHTML={{__html: this.props.description}} />;
   }
 
   componentWillReceiveProps(props) {
