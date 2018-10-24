@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.0.79
+### v0.0.80
 #### Added
 - Added a color picker setting type for configuring background and foreground colors for the web catalog.
+
+### v0.0.79
+#### Updated
+- Updated how the custom lists in the List admin page are being read. They are now OPDS feeds which help the page load faster. There's now a "Load more" button to fetch more entries in an existing custom list.
 
 ### v0.0.78
 #### Fixed

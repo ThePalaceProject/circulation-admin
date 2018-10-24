@@ -777,4 +777,23 @@ describe("actions", () => {
       expect(dispatch.args[0][0].data).to.equal(null);
     });
   });
+
+  describe("fetchMoreCustomListEntries", () => {
+    it("dispatches request and load", async () => {
+      const dispatch = stub();
+      const customListDetailsData = {
+        title: "custom list"
+      };
+      fetcher.testData = customListDetailsData;
+      fetcher.resolve = true;
+
+      const data = await actions.fetchMoreCustomListEntries("url")(dispatch);
+
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`);
+      expect(data).to.eql(customListDetailsData);
+    });
+  });
 });

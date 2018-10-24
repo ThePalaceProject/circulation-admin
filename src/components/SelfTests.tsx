@@ -69,7 +69,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       minutes = ("0" + date.getMinutes()).slice(-2);
       seconds = ("0" + date.getSeconds()).slice(-2);
       startTime = `${hours}:${minutes}:${seconds}`;
-      results = integration.self_test_results.results;
+      results = integration.self_test_results.results || [];
       duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
     }
     const expandResultClass = expand ? "active" : "";
