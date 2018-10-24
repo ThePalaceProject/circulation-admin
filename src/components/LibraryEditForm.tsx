@@ -28,6 +28,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           elementType="input"
           type="text"
           disabled={this.props.disabled}
+          required={true}
           name="name"
           label="Name"
           value={this.props.item && this.props.item.name}
@@ -37,6 +38,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           elementType="input"
           type="text"
           disabled={this.props.disabled}
+          required={true}
           name="short_name"
           label="Short name"
           value={this.props.item && this.props.item.short_name}

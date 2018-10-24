@@ -5,6 +5,7 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   label?: string;
   description?: string;
   onChange?: (e: any) => any;
+  required?: boolean;
 }
 
 export interface EditableInputState {
@@ -31,6 +32,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       <div className="form-group">
         { this.props.label &&
           <label className="control-label">
+            { this.props.required && <span className="required-form-label">* Required</span>}
             { this.props.type !== "checkbox" && this.props.type !== "radio" && this.props.label }
             { this.renderElement() }
             { this.props.type === "checkbox" && this.props.label }
@@ -63,7 +65,8 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       accept: this.props.accept,
       list: this.props.list,
       min: this.props.min,
-      max: this.props.max
+      max: this.props.max,
+      // required: this.props.required,
     }, this.props.children);
   }
 

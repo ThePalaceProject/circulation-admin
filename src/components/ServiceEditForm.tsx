@@ -64,6 +64,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           elementType="input"
           type="text"
           disabled={this.props.disabled}
+          required={true}
           name="name"
           label="Name"
           value={this.props.item && this.props.item.name}

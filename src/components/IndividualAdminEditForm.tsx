@@ -48,6 +48,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           elementType="input"
           type="text"
           disabled={this.props.disabled}
+          required={true}
           readOnly={!!(this.props.item && this.props.item.email)}
           name="email"
           label="Email"
@@ -58,6 +59,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             elementType="input"
             type="text"
             disabled={this.props.disabled}
+            required={true}
             name="password"
             label="Password"
             />

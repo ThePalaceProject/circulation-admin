@@ -8,4 +8,9 @@
 
 .control-label {
   margin-bottom: 0px;
+
+  .required-form-label {
+    float: right;
+    color: $red;
+  }
 }
