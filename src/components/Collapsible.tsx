@@ -8,31 +8,29 @@ export interface CollapsibleProps {
 
 export interface CollapsibleState {
   open: boolean;
-  icon: string;
 }
 
 export default class Collapsible extends React.Component<CollapsibleProps, CollapsibleState> {
 
   constructor(props) {
     super(props);
-    this.state = { open: false, icon: "chevron-down" };
+    this.state = { open: false };
     this.toggle = this.toggle.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
   }
 
-  toggle() {
-    let icon = this.state.icon === "chevron-down" ? "chevron-up" : "chevron-down";
-    this.setState({ open: !this.state.open, icon });
+  toggle(e) {
+    e.preventDefault();
+    this.setState({ open: !this.state.open });
   }
 
   renderHeader() {
+    let icon = this.state.open ? "chevron-up" : "chevron-down";
     return (
-      <div onClick={this.toggle}>
+      <button bsStyle="default" onClick={this.toggle}>
         <span>{this.props.title}</span>
-        <Button bsSize="xsmall" bsStyle="primary">
-          <Glyphicon glyph={this.state.icon} />
-        </Button>
-      </div>
+        <Glyphicon glyph={icon} />
+      </button>
     );
   }
 

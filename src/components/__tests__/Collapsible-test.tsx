@@ -26,7 +26,6 @@ describe("Collapsible", () => {
 
     it("is collapsed by default", () => {
       expect(wrapper.state().open).to.be.false;
-      expect(wrapper.state().icon).to.equal("chevron-down");
 
       let panel = wrapper.find("Panel");
       expect(panel.props().expanded).to.be.false;
@@ -47,7 +46,6 @@ describe("Collapsible", () => {
       expect(button.length).to.equal(1);
       let icon = button.find(".glyphicon");
       expect(icon.length).to.equal(1);
-      expect(icon.props().glyph).to.equal(wrapper.state().icon);
     });
 
     it("renders a collapsible body section with the correct content", () => {
@@ -79,18 +77,15 @@ describe("Collapsible", () => {
 
     it("flips the toggle icon when clicked", () => {
       let icon = wrapper.find(".glyphicon");
-      expect(wrapper.state().icon).to.equal("chevron-down");
       expect(icon.props().glyph).to.equal("chevron-down");
 
       let title = wrapper.find(".panel-title");
       title.simulate("click");
 
-      expect(wrapper.state().icon).to.equal("chevron-up");
       expect(icon.props().glyph).to.equal("chevron-up");
 
       title.simulate("click");
 
-      expect(wrapper.state().icon).to.equal("chevron-down");
       expect(icon.props().glyph).to.equal("chevron-down");
     });
 

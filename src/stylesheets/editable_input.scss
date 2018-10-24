@@ -10,25 +10,25 @@
   margin-top: 20px;
   box-shadow: none;
   .panel-heading {
-    border-bottom: none;
+    border: none;
     font-weight: bold;
+    padding: 0;
+    .panel-title {
+      width: 100%;
+      text-align: left;
+      border: 1px solid $dark-gray;
+      background: $gray;
+      padding: 4px 7px;
+    }
     .collapsed, .panel-title a {
       color: inherit;
-      &:visited {
-        color: #333;
-      }
       &:focus {
         outline: none;
         text-decoration: none;
       }
-    }
-    button {
-      float: right;
-      background: #3A7DFD;
-      border-color: #3A7DFD;
-      &:focus, &:visited {
-        border-color: #3A7DFD;
-        box-shadow: none;
+      .glyphicon {
+        float: right;
+        line-height: inherit;
       }
     }
   }
