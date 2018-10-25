@@ -8,6 +8,7 @@ import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
 import SaveButton from "../SaveButton";
+import Collapsible from "../Collapsible";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
@@ -77,6 +78,15 @@ describe("ServiceEditForm", () => {
       ],
       library_settings: []
     },
+    {
+      name: "protocol with instructions",
+      label: "instructions label",
+      description: "click for instructions",
+      instructions: "Instructions!",
+      sitewide: false,
+      settings: [],
+      library_settings: []
+    },
     parentProtocol
   ];
   let allLibraries = [
@@ -136,9 +146,10 @@ describe("ServiceEditForm", () => {
       expect(input.props().readOnly).to.equal(false);
       expect(input.props().description).to.equal("protocol 1 description");
       let children = input.find("option");
-      expect(children.length).to.equal(3);
+      expect(children.length).to.equal(4);
       expect(children.at(0).text()).to.contain("protocol 1 label");
       expect(children.at(1).text()).to.contain("protocol 2 label");
+      expect(children.at(2).text()).to.contain("instructions label");
 
       wrapper = shallow(
         <TestServiceEditForm
@@ -191,6 +202,26 @@ describe("ServiceEditForm", () => {
 
       input = protocolFormFieldByKey("protocol2_setting");
       expect(input.length).to.equal(0);
+    });
+
+    it("renders a collapsible component", () => {
+      wrapper = mount(
+        <TestServiceEditForm
+          disabled={false}
+          data={servicesData}
+          editItem={editService}
+          urlBase={urlBase}
+          listDataKey="services"
+          />
+      );
+      wrapper.setState({ protocol: "protocol with instructions" });
+
+      let collapsible = wrapper.find(".collapsible");
+      expect(collapsible.length).to.equal(1);
+      let title = collapsible.find(".panel-title");
+      expect(title.text()).to.equal("click for instructions");
+      let body = collapsible.find(".panel-body");
+      expect(body.text()).to.equal("Instructions!");
     });
 
     it("doesn't render parent dropdown for protocol with no child settings", () => {
@@ -553,6 +584,7 @@ describe("ServiceEditForm", () => {
 
       protocolInput = editableInputByName("protocol");
       expect(protocolInput.prop("description")).to.equal("protocol 2 description");
+      expect(protocolInput.prop("link")).to.be.undefined;
 
       selectElement.value = "protocol 1";
       select.simulate("change");

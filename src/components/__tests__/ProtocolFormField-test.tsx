@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
+import ColorPicker from "../ColorPicker";
 
 describe("ProtocolFormField", () => {
   it("renders text setting", () => {
@@ -362,6 +363,33 @@ describe("ProtocolFormField", () => {
     expect(label.text()).to.equal("label");
     let img = wrapper.find("img");
     expect(img.prop("src")).to.equal("image data");
+  });
+
+  it("renders color picker setting", () => {
+    const setting = {
+      key: "setting",
+      label: "label",
+      description: "<p>description</p>",
+      type: "color-picker",
+      default: "#aaaaaa"
+    };
+    const wrapper = shallow(
+      <ProtocolFormField
+        setting={setting}
+        disabled={true}
+        />
+    );
+
+    let picker = wrapper.find(ColorPicker);
+    expect(picker.length).to.equal(1);
+    expect(picker.prop("setting")).to.equal(setting);
+    expect(picker.prop("value")).to.equal("#aaaaaa");
+    let label = wrapper.find("label");
+    expect(label.text()).to.equal("label");
+
+    wrapper.setProps({ value: "#222222" });
+    picker = wrapper.find(ColorPicker);
+    expect(picker.prop("value")).to.equal("#222222");
   });
 
   it("gets value of list setting without options", () => {

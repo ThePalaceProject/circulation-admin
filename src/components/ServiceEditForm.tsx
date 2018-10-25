@@ -2,6 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
+import Collapsible from "./Collapsible";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
@@ -81,7 +82,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           value={this.state.protocol}
           ref="protocol"
           onChange={this.handleProtocolChange}
-          description={this.protocolDescription() }
+          description={!this.protocolInstructions() && this.protocolDescription()}
           >
           { this.availableProtocols().map(protocol =>
               <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
@@ -104,6 +105,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               )
             }
           </EditableInput>
+        }
+        { this.props.data && this.protocolInstructions() &&
+            <div class="form-group">
+              <label class="control-label">Instructions</label>
+              <Collapsible title={this.protocolDescription()} body={this.protocolInstructions()} />
+            </div>
         }
         { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField
@@ -317,6 +324,17 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.description;
+        }
+      }
+    }
+    return "";
+  }
+
+  protocolInstructions() {
+    if (this.state.protocol && this.props.data.protocols) {
+      for (const protocol of this.props.data.protocols) {
+        if (protocol.name === this.state.protocol) {
+          return protocol.instructions;
         }
       }
     }

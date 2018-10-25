@@ -3,8 +3,8 @@ const dnd = require("react-beautiful-dnd");
 const DragDropContext = dnd.DragDropContext;
 const Droppable = dnd.Droppable;
 const Draggable = dnd.Draggable;
-import { CustomListEntryData } from "../interfaces";
-import { CollectionData } from "opds-web-client/lib/interfaces";
+import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
+import LoadButton from "./LoadButton";
 import ApplyIcon from "./icons/ApplyIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
@@ -17,18 +17,30 @@ import {
 } from "@nypl/dgx-svg-icons";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 
+export interface Entry extends BookData {
+  medium?: string;
+}
+
 export interface CustomListEntriesEditorProps extends React.Props<CustomListEntriesEditor> {
-  entries?: CustomListEntryData[];
+  entries?: Entry[];
   searchResults?: CollectionData;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  onUpdate?: (entries: CustomListEntryData[]) => void;
+  loadMoreEntries: (url: string) => Promise<CollectionData>;
+  onUpdate?: (entries: Entry[]) => void;
   isFetchingMoreSearchResults: boolean;
+  isFetchingMoreCustomListEntries: boolean;
   opdsFeedUrl?: string;
+  nextPageUrl?: string;
+  entryCount?: string;
+  listId?: string | number;
 }
 
 export interface CustomListEntriesEditorState {
   draggingFrom: string | null;
-  entries: CustomListEntryData[];
+  entries: Entry[];
+  deleted: Entry[];
+  added: Entry[];
+  totalVisibleEntries?: number;
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -37,7 +49,10 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     super(props);
     this.state = {
       draggingFrom: null,
-      entries: this.props.entries || []
+      entries: this.props.entries || [],
+      deleted: [],
+      added: [],
+      totalVisibleEntries: this.props.entries ? this.props.entries.length : 0,
     };
 
     this.reset = this.reset.bind(this);
@@ -46,16 +61,63 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.addAll = this.addAll.bind(this);
     this.deleteAll = this.deleteAll.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.loadMoreEntries = this.loadMoreEntries.bind(this);
+    this.clearState = this.clearState.bind(this);
   }
 
   render(): JSX.Element {
+    let {
+      entries,
+      deleted,
+      added,
+      draggingFrom,
+      totalVisibleEntries,
+    } = this.state;
+    let {
+      searchResults,
+      isFetchingMoreSearchResults,
+      isFetchingMoreCustomListEntries,
+      nextPageUrl,
+      entryCount,
+    } = this.props;
+    let entryListDisplay = "No books in this list";
+    let totalEntriesServer = parseInt(entryCount, 10);
+    let displayTotal;
+    let entriesCount;
+    let booksText;
+
+    if (totalVisibleEntries && totalEntriesServer) {
+      if (entries.length) {
+        entriesCount = totalEntriesServer - deleted.length + added.length;
+        displayTotal = `1 - ${entries.length} of ${entriesCount}`;
+        booksText = entriesCount === 1 ? "Book" : "Books";
+        entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
+      } else if (totalEntriesServer - deleted.length !== 0) {
+        // The "delete all" button was clicked so there are no books
+        // in the visible list, but there could be more on the server.
+        entriesCount = totalEntriesServer > deleted.length ?
+          totalEntriesServer - deleted.length : 0;
+        displayTotal = `0 - 0 of ${entriesCount}`;
+        booksText = entriesCount === 1 ? "Book" : "Books";
+        entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
+      }
+    } else {
+      // No existing entries in a list so it's a new list or all entries
+      // were recently deleted.
+      if (entries && entries.length) {
+        displayTotal = `1 - ${entries.length} of ${entries.length}`;
+        booksText = entries.length === 1 ? "Book" : "Books";
+        entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
+      }
+    }
+
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="custom-list-drag-and-drop">
           <div className="custom-list-search-results">
             <div className="droppable-header">
               <h4>Search Results</h4>
-              { this.props.searchResults && (this.searchResultsNotInEntries().length > 0) &&
+              { searchResults && (this.searchResultsNotInEntries().length > 0) &&
                 <button
                   className="btn btn-default add-all-button"
                   onClick={this.addAll}
@@ -66,17 +128,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
             </div>
             <Droppable
               droppableId="search-results"
-              isDropDisabled={this.state.draggingFrom !== "custom-list-entries"}
+              isDropDisabled={draggingFrom !== "custom-list-entries"}
             >
               {(provided, snapshot) => (
                 <ul
                   ref={provided.innerRef}
                   className={snapshot.isDraggingOver ? "droppable dragging-over" : "droppable"}
                   >
-                  { this.state.draggingFrom === "custom-list-entries" &&
+                  { draggingFrom === "custom-list-entries" &&
                     <p>Drag books here to remove them from the list.</p>
                   }
-                  { (this.state.draggingFrom !== "custom-list-entries") && this.props.searchResults && this.searchResultsNotInEntries().map((book, i) =>
+                  { (draggingFrom !== "custom-list-entries") && searchResults && this.searchResultsNotInEntries().map((book, i) =>
                     <Draggable key={book.id} draggableId={book.id}>
                       {(provided, snapshot) => (
                         <li>
@@ -111,44 +173,43 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
               </Droppable>
-              { this.props.searchResults && this.props.searchResults.nextPageUrl &&
-                <button
-                  className="btn btn-default load-more-button"
-                  disabled={this.props.isFetchingMoreSearchResults}
-                  onClick={this.loadMore}
-                  >
-                    { this.props.isFetchingMoreSearchResults ?
-                      <MoreDotsIcon /> :
-                      "Load more"
-                    }
-                </button>
+              { searchResults && searchResults.nextPageUrl &&
+                <LoadButton
+                  isFetching={isFetchingMoreSearchResults}
+                  loadMore={this.loadMore}
+                />
               }
           </div>
 
           <div className="custom-list-entries">
             <div className="droppable-header">
-              <h4>Books in this List ({ this.state.entries.length })</h4>
-              { (this.state.entries.length > 0) &&
-                <button
-                  className="btn btn-default delete-all-button"
-                  onClick={this.deleteAll}
-                  >Delete all from list
-                    <TrashIcon />
-                </button>
+              <h4>{entryListDisplay}</h4>
+              { (entries && entries.length > 0) &&
+                <div>
+                  <span>Remove all currently visible items from list:
+                  </span>
+                  <button
+                    className="btn btn-default delete-all-button"
+                    onClick={this.deleteAll}
+                    >Delete
+                      <TrashIcon />
+                  </button>
+                </div>
               }
             </div>
             <Droppable
               droppableId="custom-list-entries"
-              isDropDisabled={this.state.draggingFrom !== "search-results"}
+              isDropDisabled={draggingFrom !== "search-results"}
               >
               {(provided, snapshot) => (
                 <ul
                   ref={provided.innerRef}
+                  id="custom-list-entries-droppable"
                   className={snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"}
                   >
                   <p>Drag search results here to add them to the list.</p>
-                  { this.state.entries && this.state.entries.map((book, i) => (
-                      <Draggable key={book.identifier_urn} draggableId={book.identifier_urn}>
+                  { entries && entries.map((book, i) => (
+                      <Draggable key={book.id} draggableId={book.id}>
                         {(provided, snapshot) => (
                           <li>
                             <div
@@ -162,12 +223,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                                 <div className="title">{ book.title }</div>
                                 <div className="authors">{ book.authors.join(", ") }</div>
                               </div>
-                              {this.getMediumSVG(book.medium)}
+                              {this.getMediumSVG(this.getMedium(book))}
                               {this.getCatalogLink(book)}
                               <div className="links">
                                 <a
                                   href="#"
-                                  onClick={() => { this.delete(book.identifier_urn); }}
+                                  onClick={() => { this.delete(book.id); }}
                                   >Remove from list
                                     <TrashIcon />
                                 </a>
@@ -182,6 +243,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
             </Droppable>
+            { nextPageUrl &&
+              <LoadButton
+                isFetching={isFetchingMoreCustomListEntries}
+                loadMore={this.loadMoreEntries}
+              />
+            }
           </div>
         </div>
       </DragDropContext>
@@ -189,8 +256,56 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   componentWillReceiveProps(nextProps) {
+    let deleted = this.state.deleted;
+    let added = this.state.added;
+    let totalVisibleEntries = this.state.totalVisibleEntries;
+    // We need to reset the deleted and added entries if we are moving to a new list.
+    if (this.props.listId !== nextProps.listId) {
+      deleted = [];
+      added = [];
+      this.setState({
+        draggingFrom: null,
+        entries: nextProps.entries,
+        deleted: deleted,
+        added: added,
+        totalVisibleEntries: nextProps.entries.length,
+      });
+    }
+
     if (nextProps.entries && nextProps.entries !== this.props.entries) {
-      this.setState({ draggingFrom: null, entries: nextProps.entries || [] });
+      let newEntries;
+      // If there are any deleted entries and the user loads more entries,
+      // we want to remove them from the entire combined list.
+      if (this.state.deleted.length) {
+        this.state.deleted.forEach(deleteEntry => {
+          nextProps.entries.forEach((entry, i) => {
+            if (entry.id === deleteEntry.id) {
+              nextProps.entries.splice(i, 1);
+            }
+          });
+        });
+      }
+      newEntries = nextProps.entries;
+
+      // If there are any added entries and the user loads more entries,
+      // we want to added them back to the entire combined list.
+      if (this.state.added.length) {
+        newEntries = this.state.added.concat(nextProps.entries);
+      }
+
+      this.setState({
+        draggingFrom: null,
+        entries: newEntries,
+        deleted: deleted,
+        added: added,
+        totalVisibleEntries: newEntries.length,
+      });
+
+      const droppableList = document.getElementById("custom-list-entries-droppable");
+
+      if (droppableList) {
+        droppableList.scrollTo(0, 0);
+      }
     }
   }
 
@@ -212,7 +327,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   getMedium(book) {
-    return book.raw["$"]["schema:additionalType"].value;
+    return book.medium || book.raw["$"]["schema:additionalType"].value;
   }
 
   getLanguage(book) {
@@ -232,14 +347,21 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     return svgMediumTypes[medium] || null;
   }
 
-  getEntries(): CustomListEntryData[] {
-    return this.state.entries;
+  getEntries(): Entry[] {
+    return this.state.entries || [];
+  }
+
+  getDeleted(): Entry[] {
+    return this.state.deleted;
   }
 
   reset() {
     this.setState({
       draggingFrom: null,
-      entries: this.props.entries || []
+      entries: this.props.entries,
+      deleted: [],
+      added: [],
+      totalVisibleEntries: this.props.entries ? this.props.entries.length : 0,
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(this.props.entries || []);
@@ -247,10 +369,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   searchResultsNotInEntries() {
-    let entryUrns = this.state.entries.map(entry => entry.identifier_urn);
+    let entryIds = this.state.entries && this.state.entries.length ?
+      this.state.entries.map(entry => entry.id) : [];
     return this.props.searchResults.books.filter(book => {
-      for (const entryUrn of entryUrns) {
-        if (entryUrn === book.id) {
+      for (const entryId of entryIds) {
+        if (entryId === book.id) {
           return false;
         }
       }
@@ -264,7 +387,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     const type = initial.type;
     const source = initial.source;
 
-    this.setState({ draggingFrom: source.droppableId, entries: this.state.entries });
+    this.setState({
+      draggingFrom: source.droppableId,
+      entries: this.state.entries,
+      deleted: this.state.deleted,
+      added: this.state.added,
+    });
   }
 
   onDragEnd(result) {
@@ -279,40 +407,80 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     else if (source.droppableId === "custom-list-entries" && destination && destination.droppableId === "search-results") {
       this.delete(draggableId);
     } else {
-      this.setState({ draggingFrom: null, entries: this.state.entries });
+      this.setState({
+        draggingFrom: null,
+        entries: this.state.entries,
+        deleted: this.state.deleted,
+        added: this.state.added,
+      });
     }
 
     document.body.classList.remove("dragging");
   }
 
-  add(urn: string) {
-    let entries = this.state.entries.slice(0);
+  add(id: string) {
+    let entries = this.state.entries ? this.state.entries.slice(0) : [];
+    let entry;
     for (const result of this.props.searchResults.books) {
-      if (result.id === urn) {
+      if (result.id === id) {
         const medium = this.getMedium(result);
         const language = this.getLanguage(result);
-        entries.unshift({
-          identifier_urn: result.id,
+        entry = {
+          id: result.id,
           title: result.title,
           authors: result.authors,
           url: result.url,
           medium,
           language,
-        });
+        };
+        entries.unshift(entry);
       }
     }
-    this.setState({ draggingFrom: null, entries });
+
+    let added = this.state.added.filter(entry => entry.id !== id);
+    let inDeleted = this.state.deleted.filter(entry => entry.id === id);
+    let deleted = this.state.deleted.filter(entry => entry.id !== id);
+    let propEntries = this.props.entries ?
+      this.props.entries.filter(entry => entry.id === id) : [];
+    this.setState({
+      draggingFrom: null,
+      entries,
+      deleted,
+      added: propEntries.length ? added : added.concat([entry]),
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
     }
   }
 
-  delete(urn: string) {
+  delete(id: string) {
     let entries = this.state.entries.slice(0);
-    entries = entries.filter(entry => entry.identifier_urn !== urn);
-    this.setState({ draggingFrom: null, entries });
+    let deleted = this.state.deleted.filter(entry => entry.id !== id);
+    let deletedEntry = this.state.entries.filter(entry => entry.id === id);
+    let added = this.state.added.filter(entry => entry.id !== id);
+    let inAdded = this.props.entries.filter(entry => entry.id === id);
+    entries = entries.filter(entry => entry.id !== id);
+    this.setState({
+      draggingFrom: null,
+      entries,
+      deleted: inAdded.length ? deleted.concat(deletedEntry) : deleted,
+      added,
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
+    }
+  }
+
+  clearState() {
+    this.setState({
+      draggingFrom: null,
+      entries: this.state.entries,
+      deleted: [],
+      added: [],
+      totalVisibleEntries: this.state.entries.length,
+    });
+    if (this.props.onUpdate) {
+      this.props.onUpdate(this.state.entries);
     }
   }
 
@@ -323,7 +491,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       const medium = this.getMedium(result);
       const language = this.getLanguage(result);
       entries.push({
-        identifier_urn: result.id,
+        id: result.id,
         title: result.title,
         authors: result.authors,
         url: result.url,
@@ -331,19 +499,61 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         language,
       });
     }
+    let existingPropEntriesIds = this.props.entries ?
+      this.props.entries.map(entry => entry.id) : [];
+    let newEntriesIds = entries.map(entry => entry.id);
+    let newlyAdded = entries.filter(book => {
+      for (const newEntriesId of existingPropEntriesIds) {
+        if (newEntriesId === book.id) {
+          return false;
+        }
+      }
+      return true;
+    });
+    let deleted = this.state.deleted.filter(book => {
+      for (const newEntriesId of newEntriesIds) {
+        if (newEntriesId === book.id) {
+          return false;
+        }
+      }
+      return true;
+    });
+    let added = this.state.added.concat(newlyAdded);
 
     for (const entry of this.state.entries) {
       entries.push(entry);
     }
 
-    this.setState({ draggingFrom: null, entries });
+    this.setState({
+      draggingFrom: null,
+      entries,
+      deleted,
+      added,
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate(entries);
     }
   }
 
   deleteAll() {
-    this.setState({ draggingFrom: null, entries: [] });
+    let entries = this.state.entries.slice(0);
+    let propEntriesId = this.props.entries ?
+      this.props.entries.map(entry => entry.id) : [];
+    let newlyDeleted = entries.filter(book => {
+      for (const propEntryId of propEntriesId) {
+        if (propEntryId === book.id) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    this.setState({
+      draggingFrom: null,
+      entries: [],
+      deleted: this.state.deleted.concat(newlyDeleted),
+      added: [],
+    });
     if (this.props.onUpdate) {
       this.props.onUpdate([]);
     }
@@ -353,6 +563,13 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     if (this.props.searchResults && !this.props.isFetchingMoreSearchResults) {
       let nextPageUrl = this.props.searchResults.nextPageUrl;
       this.props.loadMoreSearchResults(nextPageUrl);
+    }
+  }
+
+  loadMoreEntries() {
+    if (this.props.entries && !this.props.isFetchingMoreCustomListEntries) {
+      let nextPageUrl = this.props.nextPageUrl;
+      this.props.loadMoreEntries(nextPageUrl);
     }
   }
 }

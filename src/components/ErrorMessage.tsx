@@ -52,7 +52,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
             { errorMessageHeader &&
               <p><b>{errorMessageHeader}</b>&nbsp;</p>
             }
-            {errorMessageText}<br />
+            <span dangerouslySetInnerHTML={{ __html: errorMessageText }} /><br />
             { this.props.tryAgain &&
               <a onClick={this.tryAgain.bind(this)}>Try again</a>
             }
