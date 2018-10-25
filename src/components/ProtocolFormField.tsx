@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
+import ColorPicker from "./ColorPicker";
 import { SettingData } from "../interfaces";
 
 export interface ProtocolFormFieldProps {
@@ -161,6 +162,20 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             name={setting.key}
             description={setting.description}
             accept="image/*"
+            />
+        </div>
+      );
+    } else if (setting.type === "color-picker") {
+      return (
+        <div>
+          <label>{setting.label + (setting.optional ? " (optional)" : "")}</label>
+          { setting.description &&
+            <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
+          }
+          <ColorPicker
+            value={String(this.props.value || setting.default)}
+            setting={setting}
+            ref="element"
             />
         </div>
       );

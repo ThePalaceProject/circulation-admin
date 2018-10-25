@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, useFakeTimers } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -14,20 +14,28 @@ describe("CustomListEditor", () => {
   let editCustomList;
   let search;
   let loadMoreSearchResults;
+  let loadMoreEntries;
   let childContextTypes;
   let fullContext;
 
   let listData = {
-    id: 1,
-    name: "list",
-    entries: [
-      { identifier_urn: "1", title: "title 1", authors: ["author 1"] },
-      { identifier_urn: "2", title: "title 2", authors: ["author 2a", "author 2b"] }
+    id: "1",
+    url: "some url",
+    title: "list",
+    lanes: [],
+    books: [
+      { id: "1", title: "title 1", authors: ["author 1"], raw: {
+        "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } },
+      }},
+      { id: "2", title: "title 2", authors: ["author 2a", "author 2b"], raw: {
+        "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } },
+      }}
     ],
-    collections: [
-      { id: 2, name: "collection 2", protocol: "protocol" }
-    ]
+    navigationLinks: [],
   };
+  let listCollections = [
+    { id: 2, name: "collection 2", protocol: "protocol" }
+  ];
 
   let searchResults = {
     id: "id",
@@ -50,6 +58,7 @@ describe("CustomListEditor", () => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
     loadMoreSearchResults = stub();
+    loadMoreEntries = stub();
     childContextTypes = {
       pathFor: React.PropTypes.func.isRequired,
       router: React.PropTypes.object.isRequired,
@@ -72,23 +81,27 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
     );
   });
 
-  it("shows list name", () => {
-    let name = wrapper.find(TextWithEditMode);
-    expect(name.length).to.equal(1);
-    expect(name.props().text).to.equal("list");
-    expect(name.props().placeholder).to.equal("list name");
+  it("shows list title", () => {
+    let title = wrapper.find(TextWithEditMode);
+    expect(title.length).to.equal(1);
+    expect(title.props().text).to.equal("list");
+    expect(title.props().placeholder).to.equal("list title");
   });
 
   it("shows list id", () => {
@@ -100,10 +113,12 @@ describe("CustomListEditor", () => {
   it("shows entries editor with list entries and search results", () => {
     let entriesEditor = wrapper.find(CustomListEntriesEditor);
     expect(entriesEditor.length).to.equal(1);
-    expect(entriesEditor.props().entries).to.equal(listData.entries);
+    expect(entriesEditor.props().entries).to.equal(listData.books);
     expect(entriesEditor.props().searchResults).to.equal(searchResults);
     expect(entriesEditor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
+    expect(entriesEditor.props().loadMoreEntries).to.equal(loadMoreEntries);
     expect(entriesEditor.props().isFetchingMoreSearchResults).to.equal(false);
+    expect(entriesEditor.props().isFetchingMoreCustomListEntries).to.equal(false);
   });
 
   it("shows collections", () => {
@@ -138,19 +153,24 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
     );
-    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
+    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list title");
     let newEntries = [
-      { identifier_urn: "urn1" }, { identifier_urn: "urn2" }
+      { id: "urn1" }, { id: "urn2" }
     ];
+    wrapper.setState({title: "new list title" });
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-list");
     saveButton.simulate("click");
@@ -158,7 +178,7 @@ describe("CustomListEditor", () => {
     expect(editCustomList.callCount).to.equal(1);
     let formData = editCustomList.args[0][0];
     expect(formData.get("id")).to.equal("1");
-    expect(formData.get("name")).to.equal("new list name");
+    expect(formData.get("name")).to.equal("new list title");
     expect(formData.get("entries")).to.equal(JSON.stringify(newEntries));
     expect(formData.get("collections")).to.equal(JSON.stringify([2]));
     let listId = editCustomList.args[0][1];
@@ -166,6 +186,30 @@ describe("CustomListEditor", () => {
 
     getTextStub.restore();
     getEntriesStub.restore();
+  });
+
+  it("shouldn't allow you to save unless the list has a title", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryPoints={entryPoints}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const saveButton = wrapper.find(".save-list");
+    expect(saveButton.props().disabled).to.equal(true);
+
+    wrapper.setState({ title: "list title" });
+
+    expect(saveButton.props().disabled).to.equal(false);
   });
 
   it("navigates to edit page after a new list is created", async () => {
@@ -180,17 +224,20 @@ describe("CustomListEditor", () => {
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
     );
-    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list name");
+    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new list title");
     let newEntries = [
-      { identifier_urn: "urn1" }, { identifier_urn: "urn2" }
+      { id: "urn1" }, { id: "urn2" }
     ];
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-list");
+    wrapper.setState({ title: "list title" });
     saveButton.simulate("click");
 
     expect(editCustomList.callCount).to.equal(1);
@@ -208,19 +255,24 @@ describe("CustomListEditor", () => {
   });
 
   it("cancels changes", () => {
-    let listNameReset = stub(TextWithEditMode.prototype, "reset");
+    let listTitleReset = stub(TextWithEditMode.prototype, "reset");
     let listEntriesReset = stub(CustomListEntriesEditor.prototype, "reset");
+    this.clock = useFakeTimers();
 
     wrapper = mount(
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
@@ -230,15 +282,16 @@ describe("CustomListEditor", () => {
     let cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
-    (wrapper.instance() as CustomListEditor).changeName("new name");
+    (wrapper.instance() as CustomListEditor).changeTitle("new name");
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
+    this.clock.tick(200);
 
-    expect(listNameReset.callCount).to.equal(1);
+    expect(listTitleReset.callCount).to.equal(1);
     expect(listEntriesReset.callCount).to.equal(1);
 
-    (wrapper.instance() as CustomListEditor).changeName(listData.name);
+    (wrapper.instance() as CustomListEditor).changeTitle(listData.title);
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
@@ -246,6 +299,7 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
+    this.clock.tick(200);
 
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
@@ -254,31 +308,39 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
     );
-    (wrapper.instance() as CustomListEditor).changeEntries([{ identifier_urn: "1234", title: "a", authors: [] }]);
+    (wrapper.instance() as CustomListEditor).changeEntries(
+      [{ id: "1234", title: "a", authors: [] }]
+    );
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
+    this.clock.tick(200);
 
-    expect(listNameReset.callCount).to.equal(3);
+    expect(listTitleReset.callCount).to.equal(3);
     expect(listEntriesReset.callCount).to.equal(3);
     cancelButton = wrapper.find(".cancel-changes");
 
-    (wrapper.instance() as CustomListEditor).changeEntries(listData.entries);
+    (wrapper.instance() as CustomListEditor).changeEntries(listData.books);
     cancelButton = wrapper.find(".cancel-changes");
     expect(cancelButton.length).to.equal(0);
 
-    listNameReset.restore();
+    listTitleReset.restore();
     listEntriesReset.restore();
+    this.clock.restore();
   });
 
   it("changes selected collections", () => {
@@ -286,12 +348,16 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         collections={collections}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
@@ -317,11 +383,15 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
@@ -341,11 +411,15 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         collections={collections}
         entryPoints={entryPoints}
       />,
@@ -372,11 +446,15 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         collections={collections}
         entryPoints={entryPoints}
       />,
@@ -403,18 +481,22 @@ describe("CustomListEditor", () => {
       <CustomListEditor
         library="library"
         list={listData}
+        listId="1"
+        listCollections={listCollections}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         collections={collections}
         entryPoints={entryPoints}
       />,
       { context: fullContext, childContextTypes }
     );
-    const updatedList = { id: 2, name: "updated list", entry_count: 0, collections: [] };
-    const newList = Object.assign({}, updatedList, { entries: [] });
+    const updatedList = { id: 2, name: "updated list", collections: [] };
+    const newList = Object.assign({}, updatedList, { books: [] });
     const radioInput = wrapper.find(".entry-points-selection input") as any;
     const audioInput = radioInput.at(2);
     let textInput = wrapper.find(".form-control") as any;

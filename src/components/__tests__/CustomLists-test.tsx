@@ -20,6 +20,7 @@ describe("CustomLists", () => {
   let deleteCustomList;
   let search;
   let loadMoreSearchResults;
+  let loadMoreEntries;
   let fetchCollections;
   let fetchLibraries;
 
@@ -71,6 +72,7 @@ describe("CustomLists", () => {
     deleteCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
     loadMoreSearchResults = stub();
+    loadMoreEntries = stub();
     fetchCollections = stub();
     fetchLibraries = stub();
 
@@ -83,12 +85,14 @@ describe("CustomLists", () => {
         collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         fetchCustomLists={fetchCustomLists}
         fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
         />,
@@ -149,12 +153,14 @@ describe("CustomLists", () => {
         collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         fetchCustomLists={fetchCustomLists}
         fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
         />,
@@ -172,12 +178,14 @@ describe("CustomLists", () => {
         collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         fetchCustomLists={fetchCustomLists}
         fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
         />,
@@ -198,12 +206,14 @@ describe("CustomLists", () => {
         collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         fetchCustomLists={fetchCustomLists}
         fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
         />,
@@ -289,12 +299,14 @@ describe("CustomLists", () => {
         collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         fetchCustomLists={fetchCustomLists}
         fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
         />,
@@ -413,12 +425,14 @@ describe("CustomLists", () => {
         collections={collections}
         isFetching={false}
         isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
         fetchCustomLists={fetchCustomLists}
         fetchCustomListDetails={fetchCustomListDetails}
         editCustomList={editCustomList}
         deleteCustomList={deleteCustomList}
         search={search}
         loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
       />,

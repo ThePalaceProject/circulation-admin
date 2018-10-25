@@ -355,24 +355,11 @@ export interface LibraryRegistrationsData {
   library_registrations: LibraryRegistrationData[];
 }
 
-export interface CustomListEntryData {
-  identifier_urn: string;
-  title: string;
-  authors: string[];
-  medium?: string;
-  url?: string;
-  language?: string;
-}
-
 export interface CustomListData {
   id?: string | number;
   name: string;
   entry_count?: number;
   collections?: CollectionData[];
-}
-
-export interface CustomListDetailsData extends CustomListData {
-  entries: CustomListEntryData[];
 }
 
 export interface CustomListsData {
