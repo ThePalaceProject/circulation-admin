@@ -184,6 +184,7 @@ export interface ProtocolData {
   name: string;
   label?: string;
   description?: string;
+  instructions?: string;
   sitewide?: boolean;
   supports_registration?: boolean;
   settings: SettingData[];

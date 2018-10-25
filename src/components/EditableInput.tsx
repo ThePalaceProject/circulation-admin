@@ -41,7 +41,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
           this.renderElement()
         }
         { this.props.description &&
-          <span className="description" dangerouslySetInnerHTML={{__html: this.props.description}} />
+          this.renderDescription()
         }
       </div>
     );
@@ -65,6 +65,10 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       min: this.props.min,
       max: this.props.max
     }, this.props.children);
+  }
+
+  renderDescription() {
+    return <p className="description" dangerouslySetInnerHTML={{__html: this.props.description}} />;
   }
 
   componentWillReceiveProps(props) {
