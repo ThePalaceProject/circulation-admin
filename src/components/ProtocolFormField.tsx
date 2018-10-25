@@ -119,7 +119,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     } else if (setting.type === "list") {
       return (
         <div>
-          <label>{`${setting.label} ${setting.required ? "* Required" : ""}`}</label>
+          <label>{setting.label}</label>
           { setting.description &&
             <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
           }
