@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { Alert } from "react-bootstrap";
 import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -33,7 +34,7 @@ export interface EditFormProps<T, U> {
   item?: U;
   data: T;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save?: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -64,6 +65,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   constructor(props) {
     super(props);
     this.editItem = this.editItem.bind(this);
+    this.save = this.save.bind(this);
     this.label = this.label.bind(this);
   }
 
@@ -72,14 +74,18 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     let AdditionalContent = this.AdditionalContent || null;
     return (
       <div className={AdditionalContent ? "has-additional-content" : ""}>
-        <h2>{this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)} configuration</h2>
+        <h2>{this.getItemType()} configuration</h2>
+        { this.props.responseBody && this.props.editOrCreate &&
+          <Alert bsStyle="success">
+            {this.successMessage()}
+          </Alert>
+        }
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
         }
         { this.props.isFetching &&
           <LoadingIndicator />
         }
-
         { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] &&
           <div>
             { (!this.limitOne || this.props.data[this.listDataKey].length === 0) && this.canCreate() &&
@@ -132,9 +138,10 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           <div>
             <h3>Create a new {this.itemTypeName}</h3>
             <EditForm
+              ref="edit-form"
               data={this.props.data}
               disabled={this.props.isFetching}
-              editItem={this.editItem}
+              save={this.save}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -149,7 +156,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               item={this.itemToEdit()}
               data={this.props.data}
               disabled={this.props.isFetching}
-              editItem={this.editItem}
+              save={this.save}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
@@ -158,10 +165,45 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }
       </div>
     );
+
   }
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  getItemType() {
+    return this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1);
+  }
+
+  formatItemType() {
+    const itemType = this.getItemType();
+    const regexp = /^[A-Z]*$/;
+    const isAllCaps = regexp.test(itemType);
+    const formattedItemType = isAllCaps ? itemType : itemType.toLowerCase();
+    return formattedItemType;
+  }
+
+  successMessage() {
+    let verb;
+    if (this.props.editOrCreate === "create") {
+      verb = "Successfully created ";
+      return (
+        <span>{verb}
+          <a href={this.getLink()}>a new {this.formatItemType()}</a>
+        </span>
+      );
+    }
+    else {
+      verb = "Successfully edited this ";
+      return (
+        <span>{verb}{this.formatItemType()}</span>
+      );
+    }
+  }
+
+  getLink() {
+    return this.urlBase + "edit/" + this.props.responseBody;
   }
 
   canCreate() {
@@ -178,7 +220,21 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     }
   }
 
+  save(data: FormData) {
+    this.editItem(data).then(() => {
+      if (this.limitOne && this.props.editOrCreate === "create") {
+        // Wait for two seconds so that the user can see the success message,
+        // then go to the edit page
+        setTimeout(() => {
+          window.location.href = `${this.urlBase}edit/${this.props.responseBody}`;
+        }, 2000);
+      }
+    });
+  }
+
   async editItem(data: FormData): Promise<void> {
+    // Scrolling to the top lets the user see the success or error message
+    window.scrollTo(0, 0);
     await this.props.editItem(data);
     this.props.fetchData();
   }
@@ -200,6 +256,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       this.props.fetchData();
     }
   }
+
 }
 
 export abstract class EditableConfigList<T, U> extends GenericEditableConfigList<T, U, EditableConfigListProps<T>> {}

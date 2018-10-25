@@ -32,7 +32,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
-    responseBody: state.editor.metadataServices && state.editor.metadataServices.responseBody,
+    responseBody: state.editor.metadataServices && state.editor.metadataServices.successMessage,
     fetchError: state.editor.metadataServices.fetchError,
     isFetching: state.editor.metadataServices.isFetching || state.editor.metadataServices.isEditing
   };

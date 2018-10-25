@@ -1,17 +1,19 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import SaveButton from "./SaveButton";
 import Collapsible from "./Collapsible";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
+import { handleSubmit, clearForm } from "./sharedFunctions";
 
 export interface ServiceEditFormProps<T> {
   data: T;
   item?: ServiceData;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -48,12 +50,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.editLibrary = this.editLibrary.bind(this);
     this.expandLibrary = this.expandLibrary.bind(this);
     this.removeLibrary = this.removeLibrary.bind(this);
-    this.save = this.save.bind(this);
+    this.handleData = this.handleData.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.save} className="edit-form">
+      <form ref="form" onSubmit={this.submit} className="edit-form">
         { this.props.item && this.props.item.id &&
           <input
             type="hidden"
@@ -66,6 +69,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           type="text"
           disabled={this.props.disabled}
           name="name"
+          ref="name"
           label="Name"
           value={this.props.item && this.props.item.name}
           />
@@ -111,6 +115,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField
               key={setting.key}
+              ref={setting.key}
               setting={setting}
               disabled={this.props.disabled}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
@@ -125,6 +130,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                   <WithRemoveButton
                     disabled={this.props.disabled}
                     onRemove={() => this.removeLibrary(library)}
+                    ref={library.short_name}
                     >
                     { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0 &&
                       <WithEditButton
@@ -201,12 +207,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             }
           </div>
         }
-        <button
-          className="btn btn-default"
+        <SaveButton
           disabled={this.props.disabled}
-          type="submit">
-          Submit
-        </button>
+          submit={this.submit}
+          text="Submit"
+          form={this.refs}
+        />
       </form>
     );
   }
@@ -237,6 +243,11 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     }
     const newState = Object.assign({}, this.state, { protocol, parentId, libraries });
     this.setState(newState);
+
+    if (newProps.responseBody && !newProps.fetchError) {
+      clearForm(this.refs);
+    }
+
   }
 
   availableProtocols(props?): ProtocolData[] {
@@ -263,7 +274,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   allowsParent(): boolean {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return !!protocol.child_settings;
@@ -294,7 +305,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   protocolSettings() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           if (this.state.parentId) {
@@ -309,7 +320,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   protocolDescription() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.description;
@@ -331,7 +342,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   protocolLibrarySettings() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.library_settings || [];
@@ -342,7 +353,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   sitewide() {
-    if (this.state.protocol && this.props.data.protocols) {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
           return protocol.sitewide;
@@ -437,16 +448,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState(newState);
   }
 
-  save(event) {
-    event.preventDefault();
-
-    const data = new (window as any).FormData(this.refs["form"] as any);
-    data.append("libraries", JSON.stringify(this.state.libraries));
-    this.props.editItem(data).then(() => {
-      // If a new service was created, go to its edit page.
-      if (!this.props.item && this.props.responseBody) {
-        window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
-      }
-    });
+  handleData(data) {
+    return data.append("libraries", JSON.stringify(this.state.libraries));
   }
+
+  submit(event) {
+    event.preventDefault();
+    handleSubmit(this);
+  }
+
 }

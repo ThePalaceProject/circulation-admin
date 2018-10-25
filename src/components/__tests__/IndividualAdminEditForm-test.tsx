@@ -1,16 +1,17 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, spy } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
+import SaveButton from "../SaveButton";
 import Admin from "../../models/Admin";
 
 describe("IndividualAdminEditForm", () => {
   let wrapper;
-  let editIndividualAdmin;
+  let save;
   let adminData = {
     email: "test@nypl.org",
     password: "password"
@@ -41,12 +42,12 @@ describe("IndividualAdminEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editIndividualAdmin = stub();
+      save = stub();
       wrapper = shallow(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}
-          editItem={editIndividualAdmin}
+          save={save}
           urlBase="url base"
           listDataKey="admins"
           />,
@@ -151,6 +152,11 @@ describe("IndividualAdminEditForm", () => {
       expectPasswordEditable(nyplManagerLibrarianAll, nyplManager);
       expectPasswordEditable(nyplManagerLibrarianAll, nyplLibrarian, false);
       expectPasswordEditable(nyplManagerLibrarianAll, nyplManagerLibrarianAll);
+    });
+
+    it("has a save button", () => {
+      let saveButton = wrapper.find("SaveButton");
+      expect(saveButton.length).to.equal(1);
     });
 
     describe("roles", () => {
@@ -363,12 +369,12 @@ describe("IndividualAdminEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editIndividualAdmin = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}
-          editItem={editIndividualAdmin}
+          save={save}
           urlBase="url base"
           listDataKey="admins"
           />,
@@ -507,62 +513,90 @@ describe("IndividualAdminEditForm", () => {
       });
     });
 
-    it("submits data", async () => {
-      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-      // Start on the create page.
-      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
+    it("calls save when the save button is clicked", () => {
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls save when the form is submitted directly", () => {
+      wrapper.simulate("submit");
+      expect(save.callCount).to.equal(1);
+    });
+
+    let fillOutFormFields = () => {
+      // Filling out the form is the preliminary step for the next 5 tests;
+      // might as well write it out just once!
 
       let emailInput = wrapper.find("input[name='email']");
       let emailInputElement = emailInput.get(0);
       emailInputElement.value = "newEmail";
       emailInput.simulate("change");
+
       let pwInput = wrapper.find("input[name='password']");
       let pwInputElement = pwInput.get(0);
       pwInputElement.value = "newPassword";
       pwInput.simulate("change");
+    };
+
+    it("calls handleData", () => {
+      let handleData = spy(wrapper.instance(), "handleData");
+      fillOutFormFields();
+      wrapper.simulate("submit");
+      expect(handleData.args[0][0].get("email")).to.equal("newEmail");
+      expect(handleData.args[0][0].get("password")).to.equal("newPassword");
+      expect(handleData.callCount).to.equal(1);
+      handleData.restore();
+    });
+
+    it("submits data", () => {
+      fillOutFormFields();
       let librarianAllInput = editableInputByName("librarian-all");
       librarianAllInput.find("input").simulate("change");
       let managerNyplInput = editableInputByName("manager-nypl");
       managerNyplInput.find("input").simulate("change");
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
-      expect(editIndividualAdmin.callCount).to.equal(1);
-      let formData = editIndividualAdmin.args[0][0];
+      let formData = save.args[0][0];
       expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
       expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "librarian-all" }, { role: "manager", library: "nypl" }]));
+      expect(save.callCount).to.equal(1);
+    });
 
-      wrapper.setProps({ responseBody: "newEmail" });
-      // Let the call stack clear so the callback after editItem will run.
-      const pause = (): Promise<void> => {
-          return new Promise<void>(resolve => setTimeout(resolve, 0));
-      };
-      await pause();
-      expect(window.location.href).to.contain("edit");
-      expect(window.location.href).to.contain("newEmail");
+    it("clears the form", () => {
+      fillOutFormFields();
+      let emailInput = wrapper.find("input[name='email']");
+      expect(emailInput.props().value).to.contain("newEmail");
+
+      let newProps = {responseBody: "new admin", ...wrapper.props()};
+      wrapper.setProps(newProps);
+
+      expect(emailInput.props().value).not.to.contain("newEmail");
+    });
+
+    it("doesn't clear the form if there's an error message", () => {
+      fillOutFormFields();
+      let emailInput = wrapper.find("input[name='email']");
+      expect(emailInput.props().value).to.contain("newEmail");
+
+      let newProps = {fetchError: "ERROR", ...wrapper.props()};
+      wrapper.setProps(newProps);
+
+      expect(emailInput.props().value).to.contain("newEmail");
     });
 
     it("submits system admin when setting up", () => {
-      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
-
       wrapper.setContext({ settingUp: true });
+      fillOutFormFields();
 
-      let emailInput = wrapper.find("input[name='email']");
-      let emailInputElement = emailInput.get(0);
-      emailInputElement.value = "newEmail";
-      emailInput.simulate("change");
-      let pwInput = wrapper.find("input[name='password']");
-      let pwInputElement = pwInput.get(0);
-      pwInputElement.value = "newPassword";
-      pwInput.simulate("change");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
-
-      expect(editIndividualAdmin.callCount).to.equal(1);
-      let formData = editIndividualAdmin.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
       expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "system" }]));

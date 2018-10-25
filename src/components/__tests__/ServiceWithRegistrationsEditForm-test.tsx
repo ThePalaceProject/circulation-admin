@@ -13,7 +13,7 @@ describe("ServiceWithRegistrationsEditForm", () => {
   class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {};
 
   let wrapper;
-  let editService;
+  let save;
   let registerLibrary;
   let serviceData = {
     id: 1,
@@ -47,13 +47,13 @@ describe("ServiceWithRegistrationsEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editService = stub();
+      save = stub();
       registerLibrary = stub();
       wrapper = mount(
         <DiscoveryServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           urlBase="url base"
           listDataKey="discovery_services"
           />,
@@ -68,7 +68,7 @@ describe("ServiceWithRegistrationsEditForm", () => {
       expect(libraryRegistration.props().item).to.equal(undefined);
       expect(libraryRegistration.props().data).to.equal(servicesData);
       expect(libraryRegistration.props().disabled).to.equal(false);
-      expect(libraryRegistration.props().editItem).to.equal(editService);
+      expect(libraryRegistration.props().save).to.equal(save);
       expect(libraryRegistration.props().urlBase).to.equal("url base");
       expect(libraryRegistration.props().listDataKey).to.equal("discovery_services");
       expect(libraryRegistration.props().editedIdentifier).to.equal(undefined);

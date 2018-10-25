@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, spy } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import SaveButton from "../SaveButton";
 import Collapsible from "../Collapsible";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
@@ -15,7 +16,7 @@ import { ServicesData } from "../../interfaces";
 describe("ServiceEditForm", () => {
   let TestServiceEditForm: new(props: ServiceEditFormProps<ServicesData>) => React.Component<ServiceEditFormProps<ServicesData>, ServiceEditFormState> = ServiceEditForm;
   let wrapper;
-  let editService;
+  let save;
   let urlBase = "/services";
   let serviceData = {
     id: 2,
@@ -116,13 +117,12 @@ describe("ServiceEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editService = stub();
-
+      save = stub();
       wrapper = shallow(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -155,7 +155,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -186,7 +186,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -236,7 +236,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesData}
           item={newService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -255,7 +255,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -275,7 +275,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -298,7 +298,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -323,7 +323,7 @@ describe("ServiceEditForm", () => {
           disabled={false}
           data={servicesDataWithParent}
           item={childService}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -352,7 +352,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -367,7 +367,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceDataSitewide}
           urlBase={urlBase}
           listDataKey="services"
@@ -386,7 +386,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -404,7 +404,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -427,7 +427,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={newServiceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -447,7 +447,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -462,7 +462,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceDataSitewide}
           urlBase={urlBase}
           listDataKey="services"
@@ -481,7 +481,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -510,7 +510,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -524,16 +524,22 @@ describe("ServiceEditForm", () => {
       expect(options.at(0).props().value).to.equal("none");
       expect(options.at(1).props().value).to.equal("bpl");
     });
+
+    it("has a save button", () => {
+      let saveButton = wrapper.find("SaveButton");
+      expect(saveButton.length).to.equal(1);
+    });
+
   });
 
   describe("behavior", () => {
     beforeEach(() => {
-      editService = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -605,7 +611,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesDataWithParent}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
@@ -703,7 +709,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -725,7 +731,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
@@ -779,14 +785,35 @@ describe("ServiceEditForm", () => {
       expect(stateLibraries[0].library_select_setting).to.equal("option3");
     });
 
+    it("calls save when the save button is clicked", () => {
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls save when the form is submitted directly", () => {
+      wrapper.simulate("submit");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls handleData", () => {
+      let handleData = spy(wrapper.instance(), "handleData");
+      wrapper.setProps({ item: serviceData });
+      wrapper.simulate("submit");
+
+      expect(handleData.callCount).to.equal(1);
+
+      handleData.restore();
+    });
+
     it("submits data", () => {
       wrapper.setProps({ item: serviceData });
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
-      expect(editService.callCount).to.equal(1);
-      let formData = editService.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("id")).to.equal("2");
       expect(formData.get("protocol")).to.equal("protocol 1");
       expect(formData.get("text_setting")).to.equal("text setting");
@@ -794,24 +821,39 @@ describe("ServiceEditForm", () => {
       expect(formData.get("libraries")).to.equal(JSON.stringify(serviceData.libraries));
     });
 
-    it("navigates to edit form after creating a new service", async () => {
-      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-      // Start on the create page.
-      Object.defineProperty(window.location, "href", { writable: true, value: "/services/create" });
+    let fillOutFormFields = () => {
+      let nameInput = wrapper.find("input[name='name']");
+      let nameInputElement = nameInput.get(0);
+      nameInputElement.value = "new service";
+      nameInput.simulate("change");
+    };
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+    it("clears the form", () => {
+      fillOutFormFields();
+      let nameInput = wrapper.find("input[name='name']");
+      expect(nameInput.props().value).to.equal("new service");
 
-      expect(editService.callCount).to.equal(1);
+      wrapper.simulate("submit");
+      let newProps = {responseBody: "new service", ...wrapper.props()};
+      wrapper.setProps(newProps);
 
-      wrapper.setProps({ responseBody: "5" });
-      // Let the call stack clear so the callback after editItem will run.
-      const pause = (): Promise<void> => {
-          return new Promise<void>(resolve => setTimeout(resolve, 0));
-      };
-      await pause();
-      expect(window.location.href).to.contain("edit");
-      expect(window.location.href).to.contain("5");
+      expect(nameInput.props().value).to.equal("");
+
     });
+
+    it("doesn't clear the form if there's an error message", () => {
+      fillOutFormFields();
+      let nameInput = wrapper.find("input[name='name']");
+
+      expect(nameInput.props().value).to.equal("new service");
+
+      wrapper.simulate("submit");
+      let newProps = {fetchError: "ERROR", ...wrapper.props()};
+      wrapper.setProps(newProps);
+
+      expect(nameInput.props().value).to.equal("new service");
+
+    });
+
   });
 });

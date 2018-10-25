@@ -24,7 +24,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data,
-    responseBody: state.editor.adminAuthServices && state.editor.adminAuthServices.responseBody,
+    responseBody: state.editor.adminAuthServices && state.editor.adminAuthServices.successMessage,
     fetchError: state.editor.adminAuthServices.fetchError,
     isFetching: state.editor.adminAuthServices.isFetching || state.editor.adminAuthServices.isEditing
   };

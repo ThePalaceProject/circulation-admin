@@ -1,13 +1,15 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import SaveButton from "./SaveButton";
+import { handleSubmit, findDefault, clearForm } from "./sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 
 export interface LibraryEditFormProps {
   data: LibrariesData;
   item?: LibraryData;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -16,9 +18,14 @@ export interface LibraryEditFormProps {
 /** Form for editing a library's configuration, on the libraries tab of the
     system configuration page. */
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, void> {
+  constructor(props) {
+    super(props);
+    this.submit = this.submit.bind(this);
+  }
+
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
+      <form ref="form" onSubmit={this.submit} className="edit-form">
         <input
           type="hidden"
           name="uuid"
@@ -29,6 +36,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           type="text"
           disabled={this.props.disabled}
           name="name"
+          ref="name"
           label="Name"
           value={this.props.item && this.props.item.name}
           description="The human-readable name of this library."
@@ -38,37 +46,41 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           type="text"
           disabled={this.props.disabled}
           name="short_name"
+          ref="short_name"
           label="Short name"
           value={this.props.item && this.props.item.short_name}
           description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
           />
         { this.props.data && this.props.data.settings && this.props.data.settings.map(setting =>
           <ProtocolFormField
+            ref={setting.key}
             setting={setting}
             disabled={this.props.disabled}
             value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+            default={findDefault(setting)}
             />
           )
         }
-        <button
-          className="btn btn-default"
+
+        <SaveButton
           disabled={this.props.disabled}
-          type="submit">
-          Submit
-        </button>
+          submit={this.submit}
+          text="Submit"
+          form={this.refs}
+        />
       </form>
     );
   }
 
-  save(event) {
+  submit(event) {
     event.preventDefault();
-
-    const data = new (window as any).FormData(this.refs["form"] as any);
-    this.props.editItem(data).then(() => {
-      // If a new library was created, go to the new library's edit page.
-      if (!this.props.item && this.props.responseBody) {
-        window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
-      }
-    });
+    handleSubmit(this);
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.responseBody && !nextProps.fetchError) {
+      clearForm(this.refs);
+    }
+  }
+
 }

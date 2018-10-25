@@ -63,7 +63,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       accept: this.props.accept,
       list: this.props.list,
       min: this.props.min,
-      max: this.props.max
+      max: this.props.max,
     }, this.props.children);
   }
 

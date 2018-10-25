@@ -7,10 +7,11 @@ import { shallow, mount } from "enzyme";
 import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import SaveButton from "../SaveButton";
 
 describe("LibraryEditForm", () => {
   let wrapper;
-  let editLibrary;
+  let save;
   let libraryData = {
     uuid: "uuid",
     name: "name",
@@ -43,12 +44,12 @@ describe("LibraryEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editLibrary = stub();
+      save = stub();
       wrapper = shallow(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
-          editItem={editLibrary}
+          save={save}
           urlBase="url base"
           listDataKey="libraries"
           />
@@ -96,30 +97,46 @@ describe("LibraryEditForm", () => {
       copyrightInput = protocolFormFieldByKey("copyright");
       expect(copyrightInput.props().value).to.equal("http://copyright");
     });
+
+    it("has a save button", () => {
+      let saveButton = wrapper.find("SaveButton");
+      expect(saveButton.length).to.equal(1);
+    });
   });
 
   describe("behavior", () => {
     beforeEach(() => {
-      editLibrary = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}
-          editItem={editLibrary}
+          save={save}
           urlBase="url base"
           listDataKey="libraries"
         />
       );
     });
 
+    it("calls save when the save button is clicked", () => {
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls save when the form is submitted directly", () => {
+      wrapper.simulate("submit");
+      expect(save.callCount).to.equal(1);
+    });
+
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
-      expect(editLibrary.callCount).to.equal(1);
-      let formData = editLibrary.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("uuid")).to.equal("uuid");
       expect(formData.get("name")).to.equal("name");
       expect(formData.get("short_name")).to.equal("short_name");
@@ -127,24 +144,37 @@ describe("LibraryEditForm", () => {
       expect(formData.get("copyright")).to.equal("http://copyright");
     });
 
-    it("navigates to edit form after creating a new library", async () => {
-      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-      // Start on the create page.
-      Object.defineProperty(window.location, "href", { writable: true, value: "url base/create" });
+    let fillOutFormFields = () => {
+      let nameInput = wrapper.find("input[name='name']");
+      let nameInputElement = nameInput.get(0);
+      nameInputElement.value = "new name";
+      nameInput.simulate("change");
+    };
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+   it("clears the form", () => {
+     fillOutFormFields();
+     let nameInput = wrapper.find("input[name='name']");
+     expect(nameInput.props().value).to.equal("new name");
 
-      expect(editLibrary.callCount).to.equal(1);
+     wrapper.simulate("submit");
+     let newProps = {responseBody: "new library", ...wrapper.props()};
+     wrapper.setProps(newProps);
 
-      wrapper.setProps({ responseBody: "5" });
-      // Let the call stack clear so the callback after editItem will run.
-      const pause = (): Promise<void> => {
-          return new Promise<void>(resolve => setTimeout(resolve, 0));
-      };
-      await pause();
-      expect(window.location.href).to.contain("edit");
-      expect(window.location.href).to.contain("5");
-    });
+     expect(nameInput.props().value).to.equal("");
+
+   });
+
+   it("doesn't clear the form if there's an error message", () => {
+     fillOutFormFields();
+     let nameInput = wrapper.find("input[name='name']");
+     expect(nameInput.props().value).to.equal("new name");
+
+     wrapper.simulate("submit");
+     let newProps = {fetchError: "ERROR", ...wrapper.props()};
+     wrapper.setProps(newProps);
+
+     expect(nameInput.props().value).to.equal("new name");
+   });
+
   });
 });

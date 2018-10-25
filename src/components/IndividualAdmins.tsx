@@ -34,7 +34,7 @@ function mapStateToProps(state, ownProps) {
   }
   return {
     data: data,
-    responseBody: state.editor.individualAdmins && state.editor.individualAdmins.responseBody,
+    responseBody: state.editor.individualAdmins && state.editor.individualAdmins.successMessage,
     fetchError: state.editor.individualAdmins.fetchError,
     isFetching: state.editor.individualAdmins.isFetching || state.editor.individualAdmins.isEditing
   };
@@ -45,7 +45,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     fetchData: () => dispatch(actions.fetchIndividualAdmins()),
     editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deleteIndividualAdmin(identifier))
+    deleteItem: (identifier: string | number) => dispatch(actions.deleteIndividualAdmin(identifier)),
   };
 }
 

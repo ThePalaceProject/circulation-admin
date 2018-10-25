@@ -9,7 +9,7 @@ import EditableInput from "../EditableInput";
 
 describe("LibraryRegistration", () => {
   let wrapper;
-  let editItem;
+  let save;
   let registerLibrary;
   let protocol = "protocol 1";
   let serviceData = {
@@ -44,13 +44,13 @@ describe("LibraryRegistration", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editItem = stub();
+      save = stub();
       registerLibrary = stub();
       wrapper = shallow(
         <LibraryRegistration
           disabled={false}
           data={servicesData}
-          editItem={editItem}
+          save={save}
           urlBase="url base"
           listDataKey="discovery_services"
           registerLibrary={registerLibrary}
@@ -76,7 +76,7 @@ describe("LibraryRegistration", () => {
           disabled={false}
           data={servicesDataWithoutRegistration}
           item={serviceData}
-          editItem={editItem}
+          save={save}
           urlBase="url base"
           listDataKey="discovery_services"
           registerLibrary={registerLibrary}
@@ -102,14 +102,14 @@ describe("LibraryRegistration", () => {
 
     describe("rendering registration information", () => {
       beforeEach(() => {
-        editItem = stub();
+        save = stub();
         registerLibrary = stub();
         wrapper = shallow(
           <LibraryRegistration
             disabled={false}
             data={servicesData}
             item={serviceData}
-            editItem={editItem}
+            save={save}
             urlBase="url base"
             listDataKey="discovery_services"
             registerLibrary={registerLibrary}
@@ -139,14 +139,14 @@ describe("LibraryRegistration", () => {
         servicesData.allLibraries = allLibrariesWBoston;
         servicesData.libraryRegistrations = libraryRegistrationsDataWBoston;
 
-        editItem = stub();
+        save = stub();
         registerLibrary = stub();
         wrapper = shallow(
           <LibraryRegistration
             disabled={false}
             data={servicesData}
             item={serviceData}
-            editItem={editItem}
+            save={save}
             urlBase="url base"
             listDataKey="discovery_services"
             registerLibrary={registerLibrary}
@@ -204,14 +204,14 @@ describe("LibraryRegistration", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editItem = stub();
+      save = stub();
       registerLibrary = stub();
       wrapper = shallow(
         <LibraryRegistration
           disabled={false}
           data={servicesData}
           item={serviceData}
-          editItem={editItem}
+          save={save}
           urlBase="url base"
           listDataKey="discovery_services"
           registerLibrary={registerLibrary}
@@ -242,14 +242,14 @@ describe("LibraryRegistration", () => {
     });
 
     it("should update the registration stage type in the state from the dropdown", async () => {
-      editItem = stub();
+      save = stub();
       registerLibrary = stub();
       wrapper = mount(
         <LibraryRegistration
           disabled={false}
           data={servicesData}
           item={serviceData}
-          editItem={editItem}
+          save={save}
           urlBase="url base"
           listDataKey="discovery_services"
           registerLibrary={registerLibrary}
@@ -270,14 +270,14 @@ describe("LibraryRegistration", () => {
     });
 
     it("should update the state stage value when using the dropdown per library", () => {
-      editItem = stub();
+      save = stub();
       registerLibrary = stub();
       wrapper = mount(
         <LibraryRegistration
           disabled={false}
           data={servicesData}
           item={serviceData}
-          editItem={editItem}
+          save={save}
           urlBase="url base"
           listDataKey="discovery_services"
           registerLibrary={registerLibrary}

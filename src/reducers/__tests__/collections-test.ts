@@ -11,6 +11,7 @@ describe("collections reducer", () => {
     fetchError: null,
     responseBody: null,
     isLoaded: false,
+    successMessage: null
   };
 
   it("returns initial state for unrecognized action", () => {
