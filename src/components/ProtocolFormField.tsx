@@ -3,11 +3,13 @@ import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
 import { SettingData } from "../interfaces";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ProtocolFormFieldProps {
   setting: SettingData;
   disabled: boolean;
   value?: string | string[];
+  error?: FetchErrorData;
 }
 
 export interface ProtocolFormFieldState {
@@ -41,6 +43,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             required={setting.required}
             description={setting.description}
             value={this.props.value || setting.default}
+            error={this.props.error}
             ref="element"
             />
             { setting.randomizable && !this.props.value &&
@@ -68,6 +71,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           label={setting.label}
           description={setting.description}
           value={this.props.value || setting.default}
+          error={this.props.error}
           ref="element"
           />
       );
@@ -106,6 +110,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                 name={`${setting.key}_${option.key}`}
                 label={option.label}
                 checked={(this.props.value && (this.props.value.indexOf(option.key) !== -1)) || (!this.props.value && setting.default && setting.default.indexOf(option.key) !== -1)}
+                error={this.props.error}
                 />
             )
           }
@@ -130,6 +135,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                   disabled={this.props.disabled}
                   name={setting.key}
                   value={listItem}
+                  error={this.props.error}
                   />
               </WithRemoveButton>
             )
@@ -143,6 +149,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                 disabled={this.props.disabled}
                 name={setting.key}
                 ref="addListItem"
+                error={this.props.error}
                 />
             </span>
             <button
@@ -169,6 +176,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
             name={setting.key}
             description={setting.description}
             accept="image/*"
+            error={this.props.error}
             />
         </div>
       );

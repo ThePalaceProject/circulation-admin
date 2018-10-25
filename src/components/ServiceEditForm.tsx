@@ -5,6 +5,7 @@ import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ServiceEditFormProps<T> {
   data: T;
@@ -14,6 +15,7 @@ export interface ServiceEditFormProps<T> {
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
+  error?: FetchErrorData;
 }
 
 export interface ServiceEditFormState {
@@ -68,6 +70,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           name="name"
           label="Name"
           value={this.props.item && this.props.item.name}
+          error={this.props.error}
           />
         <EditableInput
           elementType="select"
@@ -108,6 +111,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               setting={setting}
               disabled={this.props.disabled}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              error={this.props.error}
               />
           )
         }

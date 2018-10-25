@@ -2,6 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
@@ -11,6 +12,7 @@ export interface IndividualAdminEditFormProps {
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
+  error?: FetchErrorData;
 }
 
 export interface IndividualAdminEditFormState {
@@ -53,6 +55,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           name="email"
           label="Email"
           value={this.props.item && this.props.item.email}
+          error={this.props.error}
           />
         { this.canChangePassword() &&
           <EditableInput
@@ -62,6 +65,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             required={true}
             name="password"
             label="Password"
+            error={this.props.error}
             />
         }
         { !this.context.settingUp &&
