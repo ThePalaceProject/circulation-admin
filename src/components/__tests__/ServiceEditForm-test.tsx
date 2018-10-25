@@ -209,7 +209,7 @@ describe("ServiceEditForm", () => {
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
-          editItem={editService}
+          save={save}
           urlBase={urlBase}
           listDataKey="services"
           />
