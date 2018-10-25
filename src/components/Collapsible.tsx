@@ -25,7 +25,7 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
   }
 
   renderHeader() {
-    let icon = this.state.open ? "chevron-up" : "chevron-down";
+    let icon = this.state.open ? "minus" : "plus";
     return (
       <button bsStyle="default" onClick={this.toggle}>
         <span>{this.props.title}</span>

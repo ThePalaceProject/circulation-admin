@@ -77,16 +77,16 @@ describe("Collapsible", () => {
 
     it("flips the toggle icon when clicked", () => {
       let icon = wrapper.find(".glyphicon");
-      expect(icon.props().glyph).to.equal("chevron-down");
+      expect(icon.props().glyph).to.equal("plus");
 
       let title = wrapper.find(".panel-title");
       title.simulate("click");
 
-      expect(icon.props().glyph).to.equal("chevron-up");
+      expect(icon.props().glyph).to.equal("minus");
 
       title.simulate("click");
 
-      expect(icon.props().glyph).to.equal("chevron-down");
+      expect(icon.props().glyph).to.equal("plus");
     });
 
   });

@@ -103,7 +103,10 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           </EditableInput>
         }
         { this.props.data && this.protocolInstructions() &&
-          <Collapsible title={this.protocolDescription()} body={this.protocolInstructions()} />
+            <div class="form-group">
+              <label class="control-label">Instructions</label>
+              <Collapsible title={this.protocolDescription()} body={this.protocolInstructions()} />
+            </div>
         }
         { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
             <ProtocolFormField

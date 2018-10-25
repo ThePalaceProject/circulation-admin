@@ -7,8 +7,9 @@
 }
 
 .collapsible {
-  margin-top: 20px;
   box-shadow: none;
+  border: 1px solid $blue;
+  border-radius: 0;
   .panel-heading {
     border: none;
     font-weight: bold;
@@ -16,12 +17,12 @@
     .panel-title {
       width: 100%;
       text-align: left;
-      border: 1px solid $dark-gray;
-      background: $gray;
+      background: $blue;
       padding: 4px 7px;
+      border: none;
     }
     .collapsed, .panel-title a {
-      color: inherit;
+      color: white;
       &:focus {
         outline: none;
         text-decoration: none;
