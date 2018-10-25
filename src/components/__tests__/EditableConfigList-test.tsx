@@ -2,10 +2,12 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
+import EditableInput from "../EditableInput";
+import { Alert } from "react-bootstrap";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
 describe("EditableConfigList", () => {
@@ -21,6 +23,19 @@ describe("EditableConfigList", () => {
   class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, void> {
     render(): JSX.Element {
       return <div>Test</div>;
+    }
+  }
+
+  class ThingEditFormWithInputs extends React.Component<EditFormProps<Things, Thing>, void> {
+    render(): JSX.Element {
+      return (<div>
+                <EditableInput
+                  elementType="input"
+                  type="text"
+                  ref="textInput"
+                  value="VALUE"
+                />
+              </div>);
     }
   }
 
@@ -62,6 +77,10 @@ describe("EditableConfigList", () => {
     AdditionalContent = AdditionalContent;
   }
 
+  class ThingListWithInputs extends ThingEditableConfigList {
+    EditForm = ThingEditFormWithInputs;
+  }
+
   let wrapper;
   let fetchData;
   let editItem;
@@ -80,7 +99,7 @@ describe("EditableConfigList", () => {
     canCreate = true;
     canDelete = true;
 
-    wrapper = shallow(
+    wrapper = mount(
       <ThingEditableConfigList
         data={thingsData}
         fetchData={fetchData}
@@ -99,6 +118,49 @@ describe("EditableConfigList", () => {
     wrapper.setProps({ fetchError });
     error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(1);
+    expect(error.text()).to.equal("Error: test error");
+  });
+
+  it("shows success message on create", () => {
+    let success = wrapper.find(Alert);
+    expect(success.length).to.equal(0);
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "create" });
+    success = wrapper.find(Alert);
+    expect(success.length).to.equal(1);
+    expect(success.text()).to.equal("Successfully created a new thing");
+  });
+
+  it("displays edit link in success message on create", () => {
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "create"});
+    let success = wrapper.find(Alert);
+    let link = success.find("a");
+    expect(link.length).to.equal(1);
+    expect(link.props().href).to.equal("/admin/things/edit/itemType");
+  });
+
+  it("shows success message on edit", () => {
+    let success = wrapper.find(Alert);
+    expect(success.length).to.equal(0);
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "edit"});
+    success = wrapper.find(Alert);
+    expect(success.length).to.equal(1);
+    expect(success.text()).to.equal("Successfully edited this thing");
+  });
+
+  it("does not display edit link in success message on edit", () => {
+    wrapper.setProps({ responseBody: "itemType", editOrCreate: "edit"});
+    let success = wrapper.find(Alert);
+    let link = success.find("a");
+    expect(link.length).to.equal(0);
+  });
+
+  it("correctly formats item type name for success message", () => {
+    expect(wrapper.instance().formatItemType()).to.equal("thing");
+    let getItemType = stub(wrapper.instance(), "getItemType").returns("ALLCAPS");
+    expect(wrapper.instance().formatItemType()).to.equal("ALLCAPS");
+    getItemType.returns("someCAPS");
+    expect(wrapper.instance().formatItemType()).to.equal("somecaps");
+    getItemType.restore();
   });
 
   it("shows loading indicator", () => {
@@ -109,6 +171,11 @@ describe("EditableConfigList", () => {
     expect(loading.length).to.equal(1);
   });
 
+  it("shows thing header", () => {
+    let header = wrapper.find("h2");
+    expect(header.text()).to.equal("Thing configuration");
+  });
+
   it("shows thing list", () => {
     let things = wrapper.find("li");
     expect(things.length).to.equal(1);
@@ -117,9 +184,22 @@ describe("EditableConfigList", () => {
     expect(editLink.props().href).to.equal("/admin/things/edit/5");
   });
 
+  it("updates thing list", () => {
+    let newThing = { id: 6, label: "another thing" };
+    let newThingsData = { things: [thingData, newThing] };
+    wrapper.setProps({ data: newThingsData });
+
+    let things = wrapper.find("li");
+    expect(things.length).to.equal(2);
+    expect(things.at(1).text()).to.contain("test another thing");
+    let editLink = things.at(1).find("a");
+    expect(editLink.props().href).to.equal("/admin/things/edit/6");
+  });
+
   it("shows create link", () => {
     let createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
+    expect(createLink.text()).to.equal("Create new thing");
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
 
@@ -217,6 +297,13 @@ describe("EditableConfigList", () => {
     expect(form.props().listDataKey).to.equal("things");
   });
 
+  it("shows correct header on create form", () => {
+    wrapper.setProps({ editOrCreate: "create" });
+    let formHeader = wrapper.find("h3");
+    expect(formHeader.length).to.equal(1);
+    expect(formHeader.text()).to.equal("Create a new thing");
+  });
+
   it("shows edit form", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
     let form = wrapper.find(ThingEditForm);
@@ -227,16 +314,40 @@ describe("EditableConfigList", () => {
     expect(form.props().listDataKey).to.equal("things");
   });
 
-  it("fetches data on mount and passes edit function to form", async () => {
+  it("shows correct header on edit form", () => {
+    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
+    let formHeader = wrapper.find("h3");
+    expect(formHeader.length).to.equal(1);
+    expect(formHeader.text()).to.equal("Edit test label");
+  });
+
+  it("updates header on edit form", () => {
+    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
+    let formHeader = wrapper.find("h3");
+    expect(formHeader.text()).to.equal("Edit test label");
+
+    let newThingData = { id: 5, label: "new thing!" };
+    let newThingsData = { things: [newThingData] };
+    wrapper.setProps({ data: newThingsData });
+
+    expect(formHeader.text()).to.equal("Edit test new thing!");
+  });
+
+  it("fetches data on mount and passes save function to form", () => {
     expect(fetchData.callCount).to.equal(1);
 
     wrapper.setProps({ editOrCreate: "create" });
     let form = wrapper.find(ThingEditForm);
 
     expect(editItem.callCount).to.equal(0);
-    form.props().editItem();
+    form.props().save();
     expect(editItem.callCount).to.equal(1);
+  });
 
+  it("fetches data again on save", async() => {
+    wrapper.setProps({ editOrCreate: "create" });
+    let form = wrapper.find(ThingEditForm);
+    form.props().save();
     await pause();
     expect(fetchData.callCount).to.equal(2);
   });

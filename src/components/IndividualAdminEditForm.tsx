@@ -1,5 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import SaveButton from "./SaveButton";
+import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
@@ -8,7 +10,7 @@ export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
   item?: IndividualAdminData;
   disabled: boolean;
-  editItem: (data: FormData) => Promise<void>;
+  save: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -40,12 +42,13 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     };
     this.isSelected = this.isSelected.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
-    this.save = this.save.bind(this);
+    this.handleData = this.handleData.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.save} className="edit-form">
+      <form ref="form" onSubmit={this.submit} className="edit-form">
         <EditableInput
           elementType="input"
           type="text"
@@ -54,6 +57,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           readOnly={!!(this.props.item && this.props.item.email)}
           name="email"
           label="Email"
+          ref="email"
           value={this.props.item && this.props.item.email}
           error={this.props.error}
           />
@@ -65,6 +69,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             required={true}
             name="password"
             label="Password"
+            ref="password"
             error={this.props.error}
             />
         }
@@ -76,6 +81,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
               type="checkbox"
               disabled={this.isDisabled("system")}
               name="system"
+              ref="system"
               label="System Admin"
               checked={this.isSelected("system")}
               onChange={() => this.handleRoleChange("system")}
@@ -86,14 +92,15 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                   <th></th>
                   <th>
                     <EditableInput
-                      elementType="input"
+                       elementType="input"
                        type="checkbox"
                        disabled={this.isDisabled("manager-all")}
                        name="manager-all"
+                       ref="manager-all"
                        label="Library Manager"
                        checked={this.isSelected("manager-all")}
                        onChange={() => this.handleRoleChange("manager-all")}
-                       />
+                    />
                   </th>
                   <th>
                     <EditableInput
@@ -101,6 +108,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                       type="checkbox"
                       disabled={this.isDisabled("librarian-all")}
                       name="librarian-all"
+                      ref="librarian-all"
                       label="Librarian"
                       checked={this.isSelected("librarian-all")}
                       onChange={() => this.handleRoleChange("librarian-all")}
@@ -120,6 +128,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                         type="checkbox"
                         disabled={this.isDisabled("manager", library.short_name)}
                         name={"manager-" + library.short_name}
+                        ref={"manager-" + library.short_name}
                         label=""
                         checked={this.isSelected("manager", library.short_name)}
                         onChange={() => this.handleRoleChange("manager", library.short_name)}
@@ -131,6 +140,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                         type="checkbox"
                         disabled={this.isDisabled("librarian", library.short_name)}
                         name={"librarian-" + library.short_name}
+                        ref={"librarian-" + library.short_name}
                         label=""
                         checked={this.isSelected("librarian", library.short_name)}
                         onChange={() => this.handleRoleChange("librarian", library.short_name)}
@@ -142,11 +152,12 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             </table>
           </div>
         }
-        <button
-          type="submit"
-          className="btn btn-default"
+        <SaveButton
           disabled={this.props.disabled}
-          >Submit</button>
+          submit={this.submit}
+          text="Submit"
+          form={this.refs}
+        />
       </form>
     );
   }
@@ -154,6 +165,9 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   componentWillReceiveProps(nextProps) {
     if (nextProps.item && nextProps.item !== this.props.item) {
       this.setState({ admin: new Admin(nextProps.item.roles || []) });
+    }
+    if (nextProps.responseBody && !nextProps.fetchError) {
+      clearForm(this.refs);
     }
   }
 
@@ -296,27 +310,25 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     }
   }
 
-  save(event) {
-    event.preventDefault();
-    const data = new (window as any).FormData(this.refs["form"] as any);
+  handleData(data) {
     let roles = this.state.admin.roles;
     if (this.context && this.context.settingUp) {
       // When setting up the only thing you can do is create a system admin.
       roles = [{ role: "system" }];
     }
     data.append("roles", JSON.stringify(roles));
-    this.props.editItem(data).then(() => {
-      // If we're setting up an admin for the first time, refresh the page
-      // to go to login.
-      if (this.context.settingUp) {
-        window.location.reload();
-        return;
-      }
-
-      // If a new admin was created, go to its edit page.
-      if (!this.props.item && this.props.responseBody) {
-        window.location.href = this.props.urlBase + "edit/" + this.props.responseBody;
-      }
-    });
+    return data;
   }
+
+  async submit(event) {
+    event.preventDefault();
+    await handleSubmit(this);
+    // If we're setting up an admin for the first time, refresh the page
+    // to go to login.
+    if (this.context.settingUp) {
+     window.location.reload();
+     return;
+    }
+  }
+
 }

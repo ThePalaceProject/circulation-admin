@@ -9,6 +9,7 @@ export interface ProtocolFormFieldProps {
   setting: SettingData;
   disabled: boolean;
   value?: string | string[];
+  default?: any;
   error?: FetchErrorData;
 }
 
@@ -27,6 +28,20 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.randomize = this.randomize.bind(this);
+    this.isDefault = this.isDefault.bind(this);
+    this.shouldBeChecked = this.shouldBeChecked.bind(this);
+  }
+
+  isDefault(option) {
+    if (this.props.default) {
+      return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
+    }
+  }
+
+  shouldBeChecked(option) {
+    let isValue = (this.props.value && (this.props.value.indexOf(option.key) !== -1));
+    let isDefault = (!this.props.value && this.isDefault(option));
+    return isValue || isDefault;
   }
 
   render(): JSX.Element {
@@ -109,8 +124,8 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                 disabled={this.props.disabled}
                 name={`${setting.key}_${option.key}`}
                 label={option.label}
-                checked={(this.props.value && (this.props.value.indexOf(option.key) !== -1)) || (!this.props.value && setting.default && setting.default.indexOf(option.key) !== -1)}
                 error={this.props.error}
+                checked={this.shouldBeChecked(option)}
                 />
             )
           }
@@ -232,4 +247,5 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     }
     this.setState({ listItems: [] });
   }
+
 }

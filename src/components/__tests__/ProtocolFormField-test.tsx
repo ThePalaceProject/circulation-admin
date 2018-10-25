@@ -120,6 +120,44 @@ describe("ProtocolFormField", () => {
     expect(input.prop("value")).to.equal("test");
   });
 
+  it("calculates whether checkbox should be checked by default", () => {
+    const defaultOptions = ["box2"];
+    const setting = {
+      key: "setting",
+      label: "label",
+      description: "<p>description</p>",
+      type: "list",
+      options: [
+        { key: "box1", label: "don't check" },
+        { key: "box2", label: "check" },
+      ]
+    };
+    const wrapper = mount(
+      <ProtocolFormField
+        setting={setting}
+        disabled={false}
+        default={defaultOptions}
+        />
+    );
+
+    expect((wrapper.instance() as ProtocolFormField).shouldBeChecked(setting.options[0])).to.be.false;
+    expect((wrapper.instance() as ProtocolFormField).shouldBeChecked(setting.options[1])).to.be.true;
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(2);
+
+    expect(input.at(0).prop("type")).to.equal("checkbox");
+    expect(input.at(0).prop("checked")).to.be.false;
+
+    expect(input.at(1).prop("type")).to.equal("checkbox");
+    expect(input.at(1).prop("checked")).to.be.true;
+
+    wrapper.setProps({ default: ["box1"]});
+    input = wrapper.find(EditableInput);
+    expect(input.at(0).prop("checked")).to.be.true;
+    expect(input.at(1).prop("checked")).to.be.false;
+  });
+
   it("renders number setting", () => {
     const setting = {
       key: "setting",
@@ -180,6 +218,7 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders list setting with options", () => {
+    const defaultOptions = ["option2", "option3"];
     const setting = {
       key: "setting",
       label: "label",
@@ -190,16 +229,17 @@ describe("ProtocolFormField", () => {
         { key: "option2", label: "option 2" },
         { key: "option3", label: "option 3" }
       ],
-      default: ["option2", "option3"]
+      default: defaultOptions
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <ProtocolFormField
         setting={setting}
         disabled={false}
+        default={defaultOptions}
         />
     );
 
-    expect(wrapper.find("div").text()).to.contain("label");
+    expect(wrapper.find("div").at(0).text()).to.contain("label");
     let description = wrapper.find(".description");
     expect(description.html()).to.contain("<p>description</p>");
 

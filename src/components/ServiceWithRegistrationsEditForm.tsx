@@ -23,7 +23,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
           item={this.props.item}
           data={this.props.data}
           disabled={this.props.disabled}
-          editItem={this.props.editItem}
+          save={this.props.save}
           urlBase={this.props.urlBase}
           listDataKey={this.props.listDataKey}
         />

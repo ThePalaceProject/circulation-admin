@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.0.81
+#### Added
+- Added success messages to configuration forms.
+#### Updated
+- Moved long configuration instructions into a collapsible panel component, making
+the configuration forms easier to read.
+
 ### v0.0.80
 #### Added
 - Added a color picker setting type for configuring background and foreground colors for the web catalog.

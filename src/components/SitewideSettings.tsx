@@ -28,7 +28,7 @@ export class SitewideSettings extends EditableConfigList<SitewideSettingsData, S
 function mapStateToProps(state, ownProps) {
   return {
     data: state.editor.sitewideSettings && state.editor.sitewideSettings.data,
-    responseBody: state.editor.sitewideSettings && state.editor.sitewideSettings.responseBody,
+    responseBody: state.editor.sitewideSettings && state.editor.sitewideSettings.successMessage,
     fetchError: state.editor.sitewideSettings.fetchError,
     isFetching: state.editor.sitewideSettings.isFetching || state.editor.sitewideSettings.isEditing
   };

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { stub, spy } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -9,7 +9,7 @@ import EditableInput from "../EditableInput";
 
 describe("SitewideSettingEditForm", () => {
   let wrapper;
-  let editSitewideSetting;
+  let save;
   let settingData = {
     key: "test_key",
     value: "value",
@@ -53,12 +53,12 @@ describe("SitewideSettingEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      editSitewideSetting = stub();
+      save = stub();
       wrapper = shallow(
         <SitewideSettingEditForm
           data={settingsData}
           disabled={false}
-          editItem={editSitewideSetting}
+          save={save}
           urlBase="url base"
           listDataKey="settings"
           />
@@ -74,7 +74,7 @@ describe("SitewideSettingEditForm", () => {
         <SitewideSettingEditForm
           data={data}
           disabled={false}
-          editItem={editSitewideSetting}
+          save={save}
           urlBase="url base"
           listDataKey="settings"
           />
@@ -133,28 +133,81 @@ describe("SitewideSettingEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      editSitewideSetting = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(new Promise<void>(resolve => resolve()));
       wrapper = mount(
         <SitewideSettingEditForm
           data={settingsData}
           disabled={false}
-          editItem={editSitewideSetting}
+          save={save}
           urlBase="url base"
           listDataKey="settings"
           />
       );
     });
 
+    it("calls save when the save button is clicked", () => {
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
+      expect(save.callCount).to.equal(1);
+    });
+
+    it("calls save when the form is submitted directly", () => {
+      let form = wrapper.find("form");
+      form.simulate("submit");
+      expect(save.callCount).to.equal(1);
+    });
+
     it("submits data", () => {
       wrapper.setProps({ item: settingData });
 
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let saveButton = wrapper.find("SaveButton");
+      saveButton.simulate("click");
 
-      expect(editSitewideSetting.callCount).to.equal(1);
-      let formData = editSitewideSetting.args[0][0];
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
       expect(formData.get("key")).to.equal("test_key");
       expect(formData.get("value")).to.equal("value");
+    });
+
+    let fillOutFormFields = () => {
+      wrapper.setProps({ item: settingData });
+      let input = wrapper.find("input[name='value']");
+      let inputElement = input.get(0);
+      inputElement.value = "new setting";
+      input.simulate("change");
+    };
+
+    it("clears the form", () => {
+      fillOutFormFields();
+      let select = wrapper.find("select[name='key']");
+      expect(select.props().value).to.equal("test_key");
+
+      let input = wrapper.find("input[name='value']");
+      expect(input.props().value).to.equal("new setting");
+
+      wrapper.find("form").simulate("submit");
+      let newProps = {responseBody: "new setting", ...wrapper.props()};
+      wrapper.setProps(newProps);
+
+      expect(input.props().value).to.equal("");
+      expect(select.props().value).to.equal("");
+
+    });
+
+    it("doesn't clear the form if there's an error message", () => {
+      fillOutFormFields();
+      let select = wrapper.find("select[name='key']");
+      expect(select.props().value).to.equal("test_key");
+
+      let input = wrapper.find("input[name='value']");
+      expect(input.props().value).to.equal("new setting");
+
+      wrapper.find("form").simulate("submit");
+      let newProps = {fetchError: "ERROR", ...wrapper.props()};
+      wrapper.setProps(newProps);
+
+      expect(input.props().value).to.equal("new setting");
+      expect(select.props().value).to.equal("test_key");
     });
 
     it("should switch between rendering a select and input value options", () => {
