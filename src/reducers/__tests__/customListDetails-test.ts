@@ -10,6 +10,7 @@ describe("customListDetails reducer", () => {
     isEditing: false,
     fetchError: null,
     responseBody: null,
+    successMessage: null,
     isLoaded: false,
   };
 
