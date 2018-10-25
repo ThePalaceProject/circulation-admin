@@ -8,7 +8,7 @@
 
 .collapsible {
   box-shadow: none;
-  border: 1px solid $blue;
+  border: 1px solid $linkcolor;
   border-radius: 0;
   .panel-heading {
     border: none;
@@ -17,7 +17,7 @@
     .panel-title {
       width: 100%;
       text-align: left;
-      background: $blue;
+      background: $linkcolor;
       padding: 4px 7px;
       border: none;
     }
