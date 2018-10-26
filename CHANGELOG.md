@@ -1,6 +1,11 @@
 ## Changelog
 
+### v0.0.82
+#### Fixed
+- Fixed a bug involving submitting forms.
+
 ### v0.0.81
+#### Note: this version contains a bug.  Please upgrade directly to v0.0.82.
 #### Added
 - Added success messages to configuration forms.
 #### Updated
