@@ -59,8 +59,10 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
             name="identifier"
             label="Identifier"
             className="form-control"
-            placeholder="Enter the patron's identifier">
-          </EditableInput>
+            placeholder="Enter the patron's identifier"
+            required={true}
+            error={fetchError}
+          />
           <button
             type="submit"
             className="btn btn-default"

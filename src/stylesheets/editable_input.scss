@@ -38,6 +38,9 @@
   background: $white;
 
   input[type=text],
+  input:not([type=select]),
+  input:not([type=checkbox]),
+  input:not([type=radio]),
   textarea {
     background-color: $red-error;
     border: 1px $red-dark solid;

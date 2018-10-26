@@ -38,6 +38,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           name="title"
           label="Title"
           value={this.props.title}
+          optionalText={false}
           />
         <EditableInput
           elementType="input"
@@ -46,6 +47,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           name="subtitle"
           label="Subtitle"
           value={this.props.subtitle}
+          optionalText={false}
           />
         <div className="form-group">
           <label>Authors and Contributors</label>
@@ -73,6 +75,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
                     disabled={this.props.disabled}
                     name="contributor-name"
                     value={contributor.name}
+                    optionalText={false}
                     />
                 </span>
               </WithRemoveButton>
@@ -97,6 +100,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
               disabled={this.props.disabled}
               name="contributor-name"
               ref="addContributorName"
+              optionalText={false}
               />
             <button
               type="button"
@@ -116,6 +120,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
               name="series"
               placeholder="Name"
               value={this.props.series}
+              optionalText={false}
               />
             <span>&nbsp;&nbsp;</span>
             <EditableInput
@@ -125,6 +130,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
               name="series_position"
               placeholder="#"
               value={this.props.seriesPosition !== undefined && this.props.seriesPosition !== null && String(this.props.seriesPosition)}
+              optionalText={false}
               />
           </div>
         </div>
@@ -154,6 +160,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           name="publisher"
           label="Publisher"
           value={this.props.publisher}
+          optionalText={false}
           />
         <EditableInput
           elementType="input"
@@ -162,6 +169,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           name="imprint"
           label="Imprint"
           value={this.props.imprint}
+          optionalText={false}
           />
         <EditableInput
           elementType="input"
@@ -170,6 +178,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           name="issued"
           label="Publication Date"
           value={this.props.issued}
+          optionalText={false}
           />
         <EditableInput
           elementType="input"
@@ -180,6 +189,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           min={1}
           max={5}
           value={this.props.rating && String(Math.round(this.props.rating))}
+          optionalText={false}
           />
         <EditableInput
           elementType="textarea"
@@ -187,6 +197,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           name="summary"
           label="Summary"
           value={this.props.summary}
+          optionalText={false}
           />
         <button
           className="btn btn-default"
