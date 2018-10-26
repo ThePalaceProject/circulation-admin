@@ -227,7 +227,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
 
   clear() {
     const element = (this.refs["element"] as any);
-    if (element) {
+    if (element && element.clear) {
       element.clear();
     }
     this.setState({ listItems: [] });
