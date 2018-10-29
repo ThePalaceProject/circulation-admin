@@ -40,9 +40,9 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       this.props.type === "radio" ||
       this.props.elementType === "select");
     const optionalText = (this.props.optionalText && !this.props.required && !checkboxOrRadioOrSelect)
-      ? "(Optional)" : "";
+      ? "(Optional) " : "";
     const descriptionText = this.props.description ? this.props.description : "";
-    const description = `${optionalText} ${descriptionText}`;
+    const description = `${optionalText}${descriptionText}`;
     const errorClass = (this.props.error && this.props.error.status >= 400 &&
       !this.state.value && this.props.required) ?
       "field-error" : "";

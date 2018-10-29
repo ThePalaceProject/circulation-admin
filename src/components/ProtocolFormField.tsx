@@ -196,12 +196,11 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         </div>
       );
     } else if (setting.type === "color-picker") {
-      let colorPickerDescription = `(Optional) ${setting.description}`;
       return (
         <div>
           <label>{setting.label}</label>
           { setting.description &&
-            <span className="description" dangerouslySetInnerHTML={{__html: colorPickerDescription}} />
+            <span className="description" dangerouslySetInnerHTML={{__html: setting.description }} />
           }
           <ColorPicker
             value={String(this.props.value || setting.default)}
