@@ -20,6 +20,7 @@ describe("LibraryRegistration", () => {
     name: protocol,
     label: "protocol 1 label",
     supports_registration: true,
+    supports_staging: true,
     settings: [],
     library_settings: []
   }];
@@ -86,7 +87,7 @@ describe("LibraryRegistration", () => {
 
       let libraries = wrapper.find(".service-with-registrations-library");
       expect(libraries.length).to.equal(0);
-   });
+    });
 
     it("renders all libraries in edit form, with registration status", () => {
       wrapper.setProps({ item: serviceData });
@@ -117,6 +118,62 @@ describe("LibraryRegistration", () => {
           />
         );
       });
+
+      it("should not render the staging dropdown if it is not supported", () => {
+        servicesData.protocols[0].supports_staging = false;
+
+        wrapper = shallow(
+          <LibraryRegistration
+            disabled={false}
+            data={servicesData}
+            item={serviceData}
+            save={save}
+            urlBase="url base"
+            listDataKey="discovery_services"
+            registerLibrary={registerLibrary}
+            protocol={protocol}
+          />
+        );
+
+        let libraryRegistrationInfo = wrapper.find(".library-registration-info");
+        let nypl = libraryRegistrationInfo.at(0);
+        let bpl = libraryRegistrationInfo.at(1);
+        let qpl = libraryRegistrationInfo.at(2);
+
+        let nyplCurrentStage = nypl.find(".current-stage");
+        let bplCurrentStage = bpl.find(".current-stage");
+        let qplCurrentStage = qpl.find(".current-stage");
+        let nyplEditableInput = nypl.find(EditableInput);
+        let bplEditableInput = bpl.find(EditableInput);
+        let qplEditableInput = qpl.find(EditableInput);
+
+        // The dropdown to update the current staging level should not be rendered
+        expect(nyplCurrentStage.length).to.equal(0);
+        expect(bplCurrentStage.length).to.equal(0);
+        expect(qplCurrentStage.length).to.equal(0);
+        expect(nyplEditableInput.length).to.equal(0);
+        expect(bplEditableInput.length).to.equal(0);
+        expect(qplEditableInput.length).to.equal(0);
+
+        // Registration status and button should still appear
+        let nyplRegistrationStatus = nypl.find(".registration-status span");
+        let bplRegistrationStatus = bpl.find(".registration-status span");
+        let qplRegistrationStatus = bpl.find(".registration-status span");
+        let nyplRegistrationStatusBtn = nypl.find(".registration-status button");
+        let bplRegistrationStatusBtn = bpl.find(".registration-status button");
+        let qplRegistrationStatusBtn = bpl.find(".registration-status button");
+
+        expect(nyplRegistrationStatus.text()).to.equal("Registered");
+        expect(bplRegistrationStatus.text()).to.equal("Registration failed");
+        expect(qplRegistrationStatus.text()).to.equal("Registration failed");
+
+        expect(nyplRegistrationStatusBtn.length).to.equal(1);
+        expect(bplRegistrationStatusBtn.length).to.equal(1);
+        expect(qplRegistrationStatusBtn.length).to.equal(1);
+
+        servicesData.protocols[0].supports_staging = true;
+      });
+
       it("should render the current registration stage", () => {
         // Adding an additional library to display the currect stage when
         // they are in the "testing" stage and their registration was

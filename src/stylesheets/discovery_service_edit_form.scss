@@ -1,6 +1,6 @@
 .service-with-registrations-library {
   display: flex;
-  margin: 5px;
+  margin: 15px 0 5px;
   padding: 0 0 20px;
   align-items: center;
   border-bottom: 1px solid $dark-gray;
@@ -16,7 +16,7 @@
     flex-direction: column;
 
     .current-stage {
-      margin: 15px 0;
+      margin: 0 0 15px
     }
   }
 
