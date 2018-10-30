@@ -47,7 +47,7 @@ describe("ProtocolFormField", () => {
       label: "label",
       optional: true
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <ProtocolFormField
         setting={setting}
         disabled={false}
@@ -55,11 +55,12 @@ describe("ProtocolFormField", () => {
     );
 
     let input = wrapper.find(EditableInput);
+    let description = wrapper.find(".description");
     expect(input.length).to.equal(1);
     expect(input.prop("disabled")).to.equal(false);
     expect(input.prop("name")).to.equal("setting");
-    expect(input.prop("label")).to.equal("label (optional)");
-    expect(input.prop("value")).to.be.undefined;
+    expect(input.prop("label")).to.equal("label");
+    expect(description.text()).to.equal("(Optional) ");
   });
 
   it("renders randomizable setting", () => {
@@ -241,7 +242,9 @@ describe("ProtocolFormField", () => {
 
     expect(wrapper.find("div").at(0).text()).to.contain("label");
     let description = wrapper.find(".description");
-    expect(description.html()).to.contain("<p>description</p>");
+    expect(description.at(0).html()).to.equal("<span class=\"description\"><p>description</p></span>");
+    // There are three inputs but only one description.
+    expect(description.length).to.equal(1);
 
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(3);
@@ -288,7 +291,7 @@ describe("ProtocolFormField", () => {
     let button = wrapper.find("button");
     expect(button.length).to.equal(1);
     let description = wrapper.find(".description");
-    expect(description.html()).to.contain("<p>description</p>");
+    expect(description.at(0).html()).to.contain("<p>description</p>");
 
     wrapper = mount(
       <ProtocolFormField

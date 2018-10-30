@@ -82,6 +82,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                   elementType="input"
                   type="text"
                   disabled={this.props.disabled}
+                  required={settingToRender && settingToRender.required}
                   name="value"
                   ref="value"
                   label="Value"

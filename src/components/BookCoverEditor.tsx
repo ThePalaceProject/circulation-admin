@@ -83,6 +83,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
                   label="URL for cover image"
                   onChange={this.preview}
                   ref="cover_url"
+                  optionalText={false}
                   />
                 <EditableInput
                   elementType="input"
@@ -93,6 +94,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
                   accept="image/*"
                   onChange={this.preview}
                   ref="cover_file"
+                  optionalText={false}
                   />
                 <EditableInput
                   elementType="select"
@@ -155,6 +157,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
                     disabled={this.props.isFetching}
                     name="rights_explanation"
                     label="Explanation of rights"
+                    optionalText={false}
                     />
                 </form>
               }

@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.84
+#### Added
+- Updated the form input field labels to explicitly state if an input is required rather than optional. The optional text is now in a field's description. If there are any required fields left blank, they will have an error styling until they are updated. A submitted form with errors will also scroll to the top and focus to the error message so admins know what to fix.
+
 ### v0.0.83
 #### Fixed
 - Checking a flag to see if a setting configuration that supports library registration also supports a staging selection. If the configuration supports staging, the admin can choose between selecting a testing or production stage.

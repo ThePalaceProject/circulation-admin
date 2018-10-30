@@ -38,6 +38,7 @@ export interface EditFormProps<T, U> {
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
+  error?: FetchErrorData;
 }
 
 export interface AdditionalContentProps<T, U> {
@@ -145,6 +146,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
+              error={this.props.fetchError}
               />
           </div>
         }
@@ -160,6 +162,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
+              error={this.props.fetchError}
               />
           </div>
         }

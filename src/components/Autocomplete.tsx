@@ -22,6 +22,7 @@ export default class Autocomplete extends React.Component<AutocompleteProps, voi
           label={this.props.label}
           value={this.props.value}
           ref="input"
+          optionalText={false}
           />
         <datalist
           id={this.props.name + "-autocomplete-list"}

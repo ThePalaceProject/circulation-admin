@@ -1,8 +1,10 @@
-// Some NYPL specific colors:
+// Some NYPL specific colors: https://nypl.github.io/design-toolkit/sections/color.html.
 $green-tint: #F3F7E6;
 $green-bright: #008918;
 $red: #D0343A;
 $red-dark: #97272C;
+// field error bg
 $red-error: tint($red, 80%);
+$red-tint: tint($red, 30%);
 $light-gray: #D7D4D0;
 $dark-gray: #080807;

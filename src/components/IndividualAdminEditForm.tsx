@@ -4,6 +4,7 @@ import SaveButton from "./SaveButton";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
@@ -13,6 +14,7 @@ export interface IndividualAdminEditFormProps {
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
+  error?: FetchErrorData;
 }
 
 export interface IndividualAdminEditFormState {
@@ -51,20 +53,24 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           elementType="input"
           type="text"
           disabled={this.props.disabled}
+          required={true}
           readOnly={!!(this.props.item && this.props.item.email)}
           name="email"
           label="Email"
           ref="email"
           value={this.props.item && this.props.item.email}
+          error={this.props.error}
           />
         { this.canChangePassword() &&
           <EditableInput
             elementType="input"
             type="text"
             disabled={this.props.disabled}
+            required={true}
             name="password"
             label="Password"
             ref="password"
+            error={this.props.error}
             />
         }
         { !this.context.settingUp &&

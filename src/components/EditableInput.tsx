@@ -1,10 +1,14 @@
 import * as React from "react";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
   label?: string;
   description?: string;
   onChange?: (e: any) => any;
+  required?: boolean;
+  error?: FetchErrorData;
+  optionalText?: boolean;
 }
 
 export interface EditableInputState {
@@ -17,6 +21,10 @@ export interface EditableInputState {
     This component keeps an updated value in its state. This also handles rendering an optional
     label and description for the input. */
 export default class EditableInput extends React.Component<EditableInputProps, EditableInputState> {
+  static defaultProps = {
+    optionalText: true,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -27,22 +35,30 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   render() {
+    const checkboxOrRadioOrSelect = !!(
+      this.props.type === "checkbox" ||
+      this.props.type === "radio" ||
+      this.props.elementType === "select");
+    const optionalText = (this.props.optionalText && !this.props.required && !checkboxOrRadioOrSelect)
+      ? "(Optional) " : "";
+    const descriptionText = this.props.description ? this.props.description : "";
+    const description = `${optionalText}${descriptionText}`;
+    const errorClass = (this.props.error && this.props.error.status >= 400 &&
+      !this.state.value && this.props.required) ?
+      "field-error" : "";
     return (
-      <div className="form-group">
+      <div className={`form-group ${errorClass}`}>
         { this.props.label &&
           <label className="control-label">
             { this.props.type !== "checkbox" && this.props.type !== "radio" && this.props.label }
+            { this.props.required && <span className="required-field">Required</span>}
             { this.renderElement() }
             { this.props.type === "checkbox" && this.props.label }
             { this.props.type === "radio" && " " + this.props.label }
           </label>
         }
-        { !this.props.label &&
-          this.renderElement()
-        }
-        { this.props.description &&
-          this.renderDescription()
-        }
+        {!this.props.label && this.renderElement()}
+        {description.trim() && this.renderDescription(description)}
       </div>
     );
   }
@@ -67,8 +83,8 @@ export default class EditableInput extends React.Component<EditableInputProps, E
     }, this.props.children);
   }
 
-  renderDescription() {
-    return <p className="description" dangerouslySetInnerHTML={{__html: this.props.description}} />;
+  renderDescription(description: string) {
+    return <p className="description" dangerouslySetInnerHTML={{__html: description}} />;
   }
 
   componentWillReceiveProps(props) {

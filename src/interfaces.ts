@@ -174,7 +174,7 @@ export interface SettingData {
   label: string;
   description?: string;
   default?: string | string[];
-  optional?: boolean;
+  required?: boolean;
   randomizable?: boolean;
   type?: string;
   options?: SettingData[];

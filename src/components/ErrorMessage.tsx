@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { Alert } from "react-bootstrap";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -11,13 +12,13 @@ export interface ErrorMessageProps {
     response from the server. */
 export default class ErrorMessage extends React.Component<ErrorMessageProps, void> {
   render(): JSX.Element {
-
     let status = this.props.error.status;
     let errorMessageHeader;
     let errorMessageText;
+    let alertElement;
 
     if (status === 401) {
-      return (
+      alertElement = (
         <Alert bsStyle="danger">
           <h4>You have been logged out.<br />
             <a target="_blank" href="/admin/sign_in_again">Log in again</a><br />
@@ -46,7 +47,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
       if (!errorMessageText) {
         errorMessageText = `Error: ${response}`;
       }
-      return (
+      alertElement = (
         <Alert bsStyle="danger">
           <h4>
             { errorMessageHeader &&
@@ -59,6 +60,18 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, voi
           </h4>
         </Alert>
       );
+    }
+
+    return (
+      <div tabIndex={0} ref="errorMessage">
+        {alertElement}
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    if (this.refs["errorMessage"]) {
+      ReactDOM.findDOMNode<HTMLDivElement>(this.refs["errorMessage"]).focus();
     }
   }
 

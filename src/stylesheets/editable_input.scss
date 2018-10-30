@@ -34,7 +34,36 @@
     }
   }
 }
+.field-error {
+  background: $white;
+
+  input[type=text],
+  input:not([type=select]),
+  input:not([type=checkbox]),
+  input:not([type=radio]),
+  textarea {
+    background-color: $red-error;
+    border: 1px $red-dark solid;
+    box-shadow: none;
+
+    &:focus {
+      background-color: lighten($red-error, 5%);
+      outline-color: $red-dark;;
+    }
+  }
+
+  .description {
+    background: $white;
+    color: $red;
+  }
+}
 
 .control-label {
   margin-bottom: 0px;
+
+  .required-field {
+    color: $red-dark;
+    margin-left: 5px;
+    font-size: 0.9rem;
+  }
 }
