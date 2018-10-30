@@ -24,7 +24,9 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
   }
 
   render() {
-    if (this.props.item && this.protocolSupportsRegistration() && this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.length > 0) {
+    const supportsStaging = this.protocolSupportsType("supports_staging");
+    if (this.props.item && this.protocolSupportsType("supports_registration") &&
+      this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.length > 0) {
       return (
         <div>
           <h2>Register libraries</h2>
@@ -38,28 +40,30 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
                 <div className="service-with-registrations-library" key={library.short_name}>
                   <div className="library-name">{ library.name }</div>
                   <div className="library-registration-info">
-                    <div className="current-stage">
-                      { (currentRegistryStage && libraryRegistrationStatus !== "failure") ?
-                        <span>Current Stage: {currentRegistryStage}</span> :
-                        <span>No current stage</span>
-                      }
-                      { currentRegistryStage !== "production" &&
-                        <EditableInput
-                          elementType="select"
-                          name="registration_stage"
-                          label="Stage"
-                          value={currentRegistryStage || "testing"}
-                          ref={`stage-${library.short_name}`}
-                          onChange={() => this.updateRegistrationStage(library)}
-                        >
-                          <option value="testing">Testing</option>
-                          <option value="production">Production</option>
-                        </EditableInput>
-                      }
-                    </div>
+                    { supportsStaging &&
+                      (<div className="current-stage">
+                        { (currentRegistryStage && libraryRegistrationStatus !== "failure") ?
+                          <span>Current Stage: {currentRegistryStage}</span> :
+                          <span>No current stage</span>
+                        }
+                        { currentRegistryStage !== "production" &&
+                          <EditableInput
+                            elementType="select"
+                            name="registration_stage"
+                            label="Stage"
+                            value={currentRegistryStage || "testing"}
+                            ref={`stage-${library.short_name}`}
+                            onChange={() => this.updateRegistrationStage(library)}
+                          >
+                            <option value="testing">Testing</option>
+                            <option value="production">Production</option>
+                          </EditableInput>
+                        }
+                      </div>)
+                    }
 
                     { libraryRegistrationStatus === "success" &&
-                      <div>
+                      <div className="registration-status">
                         <span className="bg-success">
                           Registered
                         </span>
@@ -67,7 +71,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
                       </div>
                     }
                     { libraryRegistrationStatus === "failure" &&
-                      <div>
+                      <div className="registration-status">
                         <span className="bg-danger">
                           Registration failed
                         </span>
@@ -75,7 +79,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
                       </div>
                     }
                     { libraryRegistrationStatus === null &&
-                      <div>
+                      <div className="registration-status">
                         <span className="bg-warning">
                           Not registered
                         </span>
@@ -137,11 +141,11 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
     return libraryInfo && libraryInfo[prop];
   }
 
-  protocolSupportsRegistration(): boolean {
+  protocolSupportsType(prop: string): boolean {
     if (this.state.protocol && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
-          return !!protocol.supports_registration;
+          return !!protocol[prop];
         }
       }
     }
