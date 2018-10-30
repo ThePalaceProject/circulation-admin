@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.83
+#### Fixed
+- Checking a flag to see if a setting configuration that supports library registration also supports a staging selection. If the configuration supports staging, the admin can choose between selecting a testing or production stage.
+
 ### v0.0.82
 #### Fixed
 - Fixed a bug involving submitting forms.
