@@ -187,6 +187,7 @@ export interface ProtocolData {
   instructions?: string;
   sitewide?: boolean;
   supports_registration?: boolean;
+  supports_staging?: boolean;
   settings: SettingData[];
   child_settings?: SettingData[];
   library_settings?: SettingData[];
