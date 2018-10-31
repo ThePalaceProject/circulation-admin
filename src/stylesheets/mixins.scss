@@ -9,3 +9,31 @@ $white: #FFF !default;
 @function tint($color, $percentage) {
   @return mix($white, $color, $percentage);
 }
+
+.visuallyHidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+
+  &:focus,
+  &:active {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+  }
+}
+
+.displayVisuallyHidden {
+  position: relative;
+  left: 0;
+  height: auto;
+  width: 100%;
+}

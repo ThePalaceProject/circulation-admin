@@ -61,12 +61,15 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
           <div>
-            <TextWithEditMode
-              text={listTitle}
-              placeholder="list title"
-              onUpdate={this.changeTitle}
-              ref="listTitle"
-              />
+            <fieldset>
+              <legend className="visuallyHidden">List name</legend>
+              <TextWithEditMode
+                text={listTitle}
+                placeholder="list title"
+                onUpdate={this.changeTitle}
+                ref="listTitle"
+                />
+            </fieldset>
             { listId &&
               <h4>ID-{listId}</h4>
             }
@@ -87,16 +90,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                     )
                   }
                 </div>
-                {
-                  this.props.entryPoints.length ? (
-                    <div className="entry-points">
-                      <span>Select the entry point to search for:</span>
-                      <div className="entry-points-selection">
-                        {this.getEntryPointsElms(this.props.entryPoints)}
-                      </div>
-                    </div>
-                  ) : null
-                }
               </div>
             }
           </div>
@@ -118,18 +111,30 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           </span>
         </div>
         <div className="custom-list-editor-body">
-          <h4>Search for titles</h4>
           <form className="form-inline" onSubmit={this.search}>
-            <input
-              className="form-control"
-              ref="searchTerms"
-              type="text"
-              />&nbsp;
-            <button
-              className="btn btn-default"
-              type="submit">Search
-                <SearchIcon />
-            </button>
+            <fieldset>
+              <legend><h4>Search for titles</h4></legend>
+              {
+                this.props.entryPoints.length ? (
+                  <div className="entry-points">
+                    <span>Select the entry point to search for:</span>
+                    <div className="entry-points-selection">
+                      {this.getEntryPointsElms(this.props.entryPoints)}
+                    </div>
+                  </div>
+                ) : null
+              }
+              <input
+                className="form-control"
+                ref="searchTerms"
+                type="text"
+                />&nbsp;
+              <button
+                className="btn btn-default"
+                type="submit">Search
+                  <SearchIcon />
+              </button>
+            </fieldset>
           </form>
 
           <CustomListEntriesEditor

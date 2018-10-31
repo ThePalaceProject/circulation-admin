@@ -113,22 +113,25 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
               >Create New List</Link>
             { this.props.lists && this.props.lists.length > 0 &&
               <div>
-                <EditableInput
-                  type="radio"
-                  label="Sort A-Z"
-                  name="sort"
-                  onChange={this.changeSort}
-                  checked={this.state.sort === "asc"}
-                  disabled={false}
-                  />
-                <EditableInput
-                  type="radio"
-                  label="Sort Z-A"
-                  name="sort"
-                  onChange={this.changeSort}
-                  checked={this.state.sort === "desc"}
-                  disabled={false}
-                  />
+                <fieldset>
+                  <legend className="visuallyHidden">Select list sort type</legend>
+                  <EditableInput
+                    type="radio"
+                    label="Sort A-Z"
+                    name="sort"
+                    onChange={this.changeSort}
+                    checked={this.state.sort === "asc"}
+                    disabled={false}
+                    />
+                  <EditableInput
+                    type="radio"
+                    label="Sort Z-A"
+                    name="sort"
+                    onChange={this.changeSort}
+                    checked={this.state.sort === "desc"}
+                    disabled={false}
+                    />
+                </fieldset>
                 <ul>
                   { this.sortedLists().map(list => {
                       const active = (String(list.id) === this.props.identifier);

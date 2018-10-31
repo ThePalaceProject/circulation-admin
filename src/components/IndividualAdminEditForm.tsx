@@ -49,33 +49,36 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          required={true}
-          readOnly={!!(this.props.item && this.props.item.email)}
-          name="email"
-          label="Email"
-          ref="email"
-          value={this.props.item && this.props.item.email}
-          error={this.props.error}
-          />
-        { this.canChangePassword() &&
+        <fieldset>
+          <legend className="visuallyHidden">Admin information</legend>
           <EditableInput
             elementType="input"
             type="text"
             disabled={this.props.disabled}
             required={true}
-            name="password"
-            label="Password"
-            ref="password"
+            readOnly={!!(this.props.item && this.props.item.email)}
+            name="email"
+            label="Email"
+            ref="email"
+            value={this.props.item && this.props.item.email}
             error={this.props.error}
             />
-        }
+          { this.canChangePassword() &&
+            <EditableInput
+              elementType="input"
+              type="text"
+              disabled={this.props.disabled}
+              required={true}
+              name="password"
+              label="Password"
+              ref="password"
+              error={this.props.error}
+              />
+          }
+        </fieldset>
         { !this.context.settingUp &&
-          <div>
-            <h4>Roles</h4>
+          <fieldset>
+            <legend><h4>Roles</h4></legend>
             <EditableInput
               elementType="input"
               type="checkbox"
@@ -150,7 +153,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                 ) }
               </tbody>
             </table>
-          </div>
+          </fieldset>
         }
         <SaveButton
           disabled={this.props.disabled}

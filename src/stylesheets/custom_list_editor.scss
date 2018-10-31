@@ -45,18 +45,6 @@
       }
     }
 
-    .entry-points {
-      display: block;
-      margin: 0;
-      padding-top: 15px;
-      width: 100%;
-
-      .form-group {
-        display: inline-block;
-        margin: 5px 20px 0 2px;
-      }
-    }
-
     a {
       margin-left: 5px;
       font-size: 0.7em;
@@ -100,9 +88,25 @@
   }
 
   .custom-list-editor-body {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+
+    .entry-points {
+      display: block;
+      margin: 0 0 10px;
+      width: 100%;
+
+      .form-group {
+        display: inline-block;
+        margin: 5px 20px 0 2px;
+
+        input {
+          width: auto;
+        }
+      }
+    }
   }
 
   .custom-list-drag-and-drop {

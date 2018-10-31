@@ -75,40 +75,42 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
               <h3>Change cover:</h3>
               <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
               <form ref="cover">
-                <EditableInput
-                  elementType="input"
-                  type="text"
-                  disabled={this.props.isFetching}
-                  name="cover_url"
-                  label="URL for cover image"
-                  onChange={this.preview}
-                  ref="cover_url"
-                  optionalText={false}
-                  />
-                <EditableInput
-                  elementType="input"
-                  type="file"
-                  disabled={this.props.isFetching}
-                  name="cover_file"
-                  label="Or upload cover image"
-                  accept="image/*"
-                  onChange={this.preview}
-                  ref="cover_file"
-                  optionalText={false}
-                  />
-                <EditableInput
-                  elementType="select"
-                  disabled={this.props.isFetching}
-                  name="title_position"
-                  label="Title and Author Position"
-                  onChange={this.preview}
-                  value="none"
-                  >
-                  <option value="none">None</option>
-                  <option value="top">Top</option>
-                  <option value="center">Center</option>
-                  <option value="bottom">Bottom</option>
-                </EditableInput>
+                <fieldset>
+                  <EditableInput
+                    elementType="input"
+                    type="text"
+                    disabled={this.props.isFetching}
+                    name="cover_url"
+                    label="URL for cover image"
+                    onChange={this.preview}
+                    ref="cover_url"
+                    optionalText={false}
+                    />
+                  <EditableInput
+                    elementType="input"
+                    type="file"
+                    disabled={this.props.isFetching}
+                    name="cover_file"
+                    label="Or upload cover image"
+                    accept="image/*"
+                    onChange={this.preview}
+                    ref="cover_file"
+                    optionalText={false}
+                    />
+                  <EditableInput
+                    elementType="select"
+                    disabled={this.props.isFetching}
+                    name="title_position"
+                    label="Title and Author Position"
+                    onChange={this.preview}
+                    value="none"
+                    >
+                    <option value="none">None</option>
+                    <option value="top">Top</option>
+                    <option value="center">Center</option>
+                    <option value="bottom">Bottom</option>
+                  </EditableInput>
+                </fieldset>
               </form>
               { this.props.previewFetchError &&
                 <ErrorMessage error={this.props.previewFetchError} />
@@ -131,34 +133,36 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
               }
               { this.props.rightsStatuses &&
                 <form ref="rights">
-                  <h4>Rights:</h4>
-                  <EditableInput
-                    elementType="select"
-                    disabled={this.props.isFetching}
-                    name="rights_status"
-                    label="License"
-                    >
-                    { Object.keys(this.props.rightsStatuses).map(uri => {
-                          let status = this.props.rightsStatuses[uri];
-                          if (status.allows_derivatives) {
-                            return (
-                              <option value={uri} key={uri}>{status.name}</option>
-                            );
+                  <fieldset>
+                    <legend><h4>Rights:</h4></legend>
+                    <EditableInput
+                      elementType="select"
+                      disabled={this.props.isFetching}
+                      name="rights_status"
+                      label="License"
+                      >
+                      { Object.keys(this.props.rightsStatuses).map(uri => {
+                            let status = this.props.rightsStatuses[uri];
+                            if (status.allows_derivatives) {
+                              return (
+                                <option value={uri} key={uri}>{status.name}</option>
+                              );
+                            }
+                            return null;
                           }
-                          return null;
-                        }
-                      )
-                    }
-                    <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
-                    <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
-                  </EditableInput>
-                  <EditableInput
-                    elementType="textarea"
-                    disabled={this.props.isFetching}
-                    name="rights_explanation"
-                    label="Explanation of rights"
-                    optionalText={false}
+                        )
+                      }
+                      <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
+                      <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
+                    </EditableInput>
+                    <EditableInput
+                      elementType="textarea"
+                      disabled={this.props.isFetching}
+                      name="rights_explanation"
+                      label="Explanation of rights"
+                      optionalText={false}
                     />
+                  </fieldset>
                 </form>
               }
               <button

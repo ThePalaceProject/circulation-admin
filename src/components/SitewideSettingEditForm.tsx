@@ -42,61 +42,64 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
       <div>
         { availableSettings.length > 0 &&
           <form ref="form" onSubmit={this.submit} className="edit-form">
-            <EditableInput
-              elementType="select"
-              disabled={this.props.disabled}
-              readOnly={!!(this.props.item && this.props.item.key)}
-              name="key"
-              ref="key"
-              label="key"
-              value={this.props.item && this.props.item.key}
-              onChange={this.onChange}
-            >
+            <fieldset>
+              <legend className="visuallyHidden">Select key value pair for sitewide setting</legend>
+              <EditableInput
+                elementType="select"
+                disabled={this.props.disabled}
+                readOnly={!!(this.props.item && this.props.item.key)}
+                name="key"
+                ref="key"
+                label="key"
+                value={this.props.item && this.props.item.key}
+                onChange={this.onChange}
+              >
+                {
+                  availableSettings.map(setting =>
+                    <option key={setting.key} value={setting.key}>{setting.label}</option>
+                  )
+                }
+              </EditableInput>
               {
-                availableSettings.map(setting =>
-                  <option key={setting.key} value={setting.key}>{setting.label}</option>
+                selectType ? (
+                  <EditableInput
+                    elementType="select"
+                    name="value"
+                    ref="value"
+                    label="Value"
+                    value={this.props.item && this.props.item.value}
+                  >
+                    {
+                      availableSettings.map(setting => {
+                        if (setting.key === inputKey) {
+                          return setting.options.map(s => {
+                            return <option key={s.key} value={s.key}>{s.label}</option>;
+                          });
+                        }
+                      })
+                    }
+                  </EditableInput>
+                ) : (
+                  <EditableInput
+                    elementType="input"
+                    type="text"
+                    disabled={this.props.disabled}
+                    required={settingToRender && settingToRender.required}
+                    name="value"
+                    ref="value"
+                    label="Value"
+                    value={this.props.item && this.props.item.value}
+                  />
                 )
               }
-            </EditableInput>
-            {
-              selectType ? (
-                <EditableInput
-                  elementType="select"
-                  name="value"
-                  ref="value"
-                  label="Value"
-                  value={this.props.item && this.props.item.value}
-                >
-                  {
-                    availableSettings.map(setting => {
-                      if (setting.key === inputKey) {
-                        return setting.options.map(s => {
-                          return <option key={s.key} value={s.key}>{s.label}</option>;
-                        });
-                      }
-                    })
+              {
+                availableSettings.map(setting => {
+                  if (setting.key === inputKey && setting.description) {
+                    return <p className="description" dangerouslySetInnerHTML={{__html: setting.description}} />;
                   }
-                </EditableInput>
-              ) : (
-                <EditableInput
-                  elementType="input"
-                  type="text"
-                  disabled={this.props.disabled}
-                  required={settingToRender && settingToRender.required}
-                  name="value"
-                  ref="value"
-                  label="Value"
-                  value={this.props.item && this.props.item.value}
-                />
-              )
-            }
-            {
-              availableSettings.map(setting => {
-                if (setting.key === inputKey && setting.description) {
-                  return <p className="description" dangerouslySetInnerHTML={{__html: setting.description}} />;
-                }
-              })
-            }
+                })
+              }
+            </fieldset>
             <SaveButton
               disabled={this.props.disabled}
               submit={this.submit}
