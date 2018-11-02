@@ -50,7 +50,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
         <fieldset>
-          <legend className="visuallyHidden">Admin information</legend>
+          <legend><h4>Required admin information</h4></legend>
           <EditableInput
             elementType="input"
             type="text"

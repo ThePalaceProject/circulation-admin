@@ -26,11 +26,11 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   render(): JSX.Element {
-    let f = [];
+    let requiredFields = [];
+    let nonRequiredFields = [];
     if (this.props.data && this.props.data.settings) {
-      const notfiltered = this.props.data.settings.filter(setting => !setting.required);
-      const filtered = this.props.data.settings.filter(setting => setting.required);
-      f = filtered.concat(notfiltered);
+      nonRequiredFields = this.props.data.settings.filter(setting => !setting.required);
+      requiredFields = this.props.data.settings.filter(setting => setting.required);
     }
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
@@ -39,41 +39,58 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           name="uuid"
           value={this.props.item && this.props.item.uuid}
           />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          required={true}
-          name="name"
-          ref="name"
-          label="Name"
-          value={this.props.item && this.props.item.name}
-          description="The human-readable name of this library."
-          error={this.props.error}
-          />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          required={true}
-          name="short_name"
-          ref="short_name"
-          label="Short name"
-          value={this.props.item && this.props.item.short_name}
-          description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
-          error={this.props.error}
-          />
-        { this.props.data && this.props.data.settings && f.map(setting =>
-          <ProtocolFormField
-            ref={setting.key}
-            setting={setting}
+        <fieldset>
+          <legend><h4>Required Fields</h4></legend>
+          <EditableInput
+            elementType="input"
+            type="text"
             disabled={this.props.disabled}
-            value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-            default={findDefault(setting)}
+            required={true}
+            name="name"
+            ref="name"
+            label="Name"
+            value={this.props.item && this.props.item.name}
+            description="The human-readable name of this library."
             error={this.props.error}
             />
-          )
-        }
+          <EditableInput
+            elementType="input"
+            type="text"
+            disabled={this.props.disabled}
+            required={true}
+            name="short_name"
+            ref="short_name"
+            label="Short name"
+            value={this.props.item && this.props.item.short_name}
+            description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
+            error={this.props.error}
+            />
+          { requiredFields.map(setting =>
+            <ProtocolFormField
+              ref={setting.key}
+              setting={setting}
+              disabled={this.props.disabled}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              default={findDefault(setting)}
+              error={this.props.error}
+              />
+            )
+          }
+        </fieldset>
+        <fieldset>
+          <legend><h4>Additional Fields</h4></legend>
+          { nonRequiredFields.map(setting =>
+            <ProtocolFormField
+              ref={setting.key}
+              setting={setting}
+              disabled={this.props.disabled}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              default={findDefault(setting)}
+              error={this.props.error}
+              />
+            )
+          }
+        </fieldset>
 
         <SaveButton
           disabled={this.props.disabled}
