@@ -313,13 +313,20 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   protocolSettings() {
     if (this.state.protocol && this.props.data && this.props.data.protocols) {
+      console.log(this.props.data.protocols);
       for (const protocol of this.props.data.protocols) {
         if (protocol.name === this.state.protocol) {
+          let p = [];
           if (this.state.parentId) {
-            return protocol.child_settings;
+            p = protocol.child_settings;
           } else {
-            return protocol.settings;
+            p = protocol.settings;
           }
+          let f = [];
+          const notfiltered = p.filter(setting => !setting.required);
+          const filtered = p.filter(setting => setting.required);
+          f = filtered.concat(notfiltered);
+          return f;
         }
       }
     }

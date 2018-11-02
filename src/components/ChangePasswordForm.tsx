@@ -40,6 +40,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
   render(): JSX.Element {
     return (
       <div className="change-password-form">
+        <h2>Change Password</h2>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
         }
@@ -54,7 +55,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
         }
         <form ref="form" onSubmit={this.save}>
           <fieldset>
-            <legend><h2>Change Password</h2></legend>
+            <legend className="visuallyHidden">Change admin's password</legend>
             <EditableInput
               elementType="input"
               type="password"

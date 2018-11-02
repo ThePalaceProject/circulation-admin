@@ -37,7 +37,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       <div className="complaint-form">
         <form onSubmit={this.post} className="form-inline">
           <fieldset>
-            <legend><h3>Add Complaint</h3></legend>
+            <legend>Add Complaint</legend>
             { this.state.errors.map((error, i) =>
               <div className="complaint-form-error" key={i}>{error}</div>
             ) }

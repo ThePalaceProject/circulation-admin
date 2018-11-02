@@ -43,14 +43,14 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
         { availableSettings.length > 0 &&
           <form ref="form" onSubmit={this.submit} className="edit-form">
             <fieldset>
-              <legend className="visuallyHidden">Select key value pair for sitewide setting</legend>
+              <legend className="visuallyHidden">Enter or edit a value for the selected sitewide setting key</legend>
               <EditableInput
                 elementType="select"
                 disabled={this.props.disabled}
                 readOnly={!!(this.props.item && this.props.item.key)}
                 name="key"
                 ref="key"
-                label="key"
+                label="Key"
                 value={this.props.item && this.props.item.key}
                 onChange={this.onChange}
               >

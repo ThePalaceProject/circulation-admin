@@ -157,6 +157,7 @@ export interface LibraryData {
 export interface LibrarySettingField {
   key: string;
   label: string;
+  required?: boolean;
 }
 
 export interface LibrariesData {
@@ -293,6 +294,7 @@ export interface SitewideSettingData {
   key: string;
   value: string;
   description?: string;
+  required?: boolean;
 }
 
 export interface SitewideSettingsData {
