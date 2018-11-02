@@ -26,12 +26,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   render(): JSX.Element {
-    let f = [];
-    if (this.props.data && this.props.data.settings) {
-      const notfiltered = this.props.data.settings.filter(setting => !setting.required);
-      const filtered = this.props.data.settings.filter(setting => setting.required);
-      f = filtered.concat(notfiltered);
-    }
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
         <input
