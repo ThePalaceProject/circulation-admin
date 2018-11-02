@@ -57,6 +57,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   render(): JSX.Element {
+    const { requiredFields, nonRequiredFields } = this.protocolSettings();
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
         { this.props.item && this.props.item.id &&
@@ -66,66 +67,94 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             value={String(this.props.item.id)}
             />
         }
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          required={true}
-          name="name"
-          ref="name"
-          label="Name"
-          value={this.props.item && this.props.item.name}
-          error={this.props.error}
-          />
-        <EditableInput
-          elementType="select"
-          disabled={this.props.disabled}
-          readOnly={!!(this.props.item && this.props.item.protocol)}
-          name="protocol"
-          label="Protocol"
-          value={this.state.protocol}
-          ref="protocol"
-          onChange={this.handleProtocolChange}
-          description={!this.protocolInstructions() && this.protocolDescription()}
-          >
-          { this.availableProtocols().map(protocol =>
-              <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
-            )
-          }
-        </EditableInput>
-        { this.props.data && this.allowsParent() && (this.availableParents().length > 0) &&
-          <EditableInput
-            elementType="select"
-            disabled={this.props.disabled}
-            name="parent_id"
-            label="Parent"
-            value={this.state.parentId}
-            ref="parent"
-            onChange={this.handleParentChange}
-            >
-            <option value="">None</option>
-            { this.availableParents().map(parent =>
-                <option key={parent.id} value={parent.id}>{parent.name || parent.id}</option>
-              )
-            }
-          </EditableInput>
-        }
-        { this.props.data && this.protocolInstructions() &&
-            <div class="form-group">
-              <label class="control-label">Instructions</label>
-              <Collapsible title={this.protocolDescription()} body={this.protocolInstructions()} />
-            </div>
-        }
-        { this.props.data && this.props.data.protocols && this.protocolSettings() && this.protocolSettings().map(setting =>
-            <ProtocolFormField
-              key={setting.key}
-              ref={setting.key}
-              setting={setting}
+        <Collapsible title="Required Fields" elementType="a" collapsible={false} body={
+          <fieldset>
+            <legend className="visuallyHidden"><h4>Required Fields</h4></legend>
+            <EditableInput
+              elementType="input"
+              type="text"
               disabled={this.props.disabled}
-              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              required={true}
+              name="name"
+              ref="name"
+              label="Name"
+              value={this.props.item && this.props.item.name}
               error={this.props.error}
               />
-          )
+            <EditableInput
+              elementType="select"
+              disabled={this.props.disabled}
+              readOnly={!!(this.props.item && this.props.item.protocol)}
+              name="protocol"
+              label="Protocol"
+              value={this.state.protocol}
+              ref="protocol"
+              onChange={this.handleProtocolChange}
+              description={!this.protocolInstructions() && this.protocolDescription()}
+              >
+              { this.availableProtocols().map(protocol =>
+                  <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
+                )
+              }
+            </EditableInput>
+            { this.props.data && this.allowsParent() && (this.availableParents().length > 0) &&
+              <EditableInput
+                elementType="select"
+                disabled={this.props.disabled}
+                name="parent_id"
+                label="Parent"
+                value={this.state.parentId}
+                ref="parent"
+                onChange={this.handleParentChange}
+                >
+                <option value="">None</option>
+                { this.availableParents().map(parent =>
+                    <option key={parent.id} value={parent.id}>{parent.name || parent.id}</option>
+                  )
+                }
+              </EditableInput>
+            }
+            { this.props.data && this.protocolInstructions() &&
+                <div class="form-group">
+                  <label class="control-label">Instructions</label>
+                  <Collapsible
+                    title={this.protocolDescription()}
+                    collapsible={true}
+                    elementType="button"
+                    text={this.protocolInstructions()}
+                  />
+                </div>
+            }
+            { requiredFields.map(setting =>
+                <ProtocolFormField
+                  key={setting.key}
+                  ref={setting.key}
+                  setting={setting}
+                  disabled={this.props.disabled}
+                  value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+                  error={this.props.error}
+                  />
+              )
+            }
+          </fieldset>}
+        />
+        { (nonRequiredFields.length > 0) && (
+          <Collapsible title="Optional Fields" elementType="a" collapsible={true} body={
+            <fieldset>
+              <legend className="visuallyHidden">Additional Fields</legend>
+              { nonRequiredFields.map(setting =>
+                  <ProtocolFormField
+                    key={setting.key}
+                    ref={setting.key}
+                    setting={setting}
+                    disabled={this.props.disabled}
+                    value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+                    error={this.props.error}
+                    />
+                )
+              }
+            </fieldset>}
+          />)
         }
         { (!this.sitewide() || this.protocolLibrarySettings().length > 0) &&
           <fieldset>
@@ -312,25 +341,27 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   protocolSettings() {
+    let requiredFields = [];
+    let nonRequiredFields = [];
     if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
         console.log(protocol);
         if (protocol.name === this.state.protocol) {
-          let p = [];
+          let settings = [];
           if (this.state.parentId) {
-            p = protocol.child_settings;
+            settings = protocol.child_settings;
           } else {
-            p = protocol.settings;
+            settings = protocol.settings;
           }
-          let f = [];
-          const notfiltered = p.filter(setting => !setting.required);
-          const filtered = p.filter(setting => setting.required);
-          f = filtered.concat(notfiltered);
-          return f;
+          nonRequiredFields = settings.filter(setting => !setting.required);
+          requiredFields = settings.filter(setting => setting.required);
         }
       }
     }
-    return [];
+    return {
+      requiredFields,
+      nonRequiredFields,
+    };
   }
 
   protocolDescription() {
