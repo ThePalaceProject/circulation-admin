@@ -57,7 +57,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
           error={this.props.error}
           />
-        { this.props.data && this.props.data.settings && f.map(setting =>
+        { this.props.data && this.props.data.settings && this.props.data.settings.map(setting =>
           <ProtocolFormField
             ref={setting.key}
             setting={setting}
