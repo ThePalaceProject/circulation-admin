@@ -41,7 +41,7 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
         <span>{this.props.title}</span>
         {this.props.collapsible ? <Glyphicon glyph={icon} /> : null}
       </span>);
-    return React.createElement("div", {
+    return React.createElement(elementType || "div", {
       className: shouldBeButton ? "collapsible" : "",
       bsStyle: "default",
       onClick: this.toggle,
@@ -60,7 +60,12 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
     }
 
     return (
-      <Panel className={className} collapsible={this.props.collapsible} header={this.renderHeader()} expanded={this.state.open}>
+      <Panel
+        className={className}
+        collapsible={this.props.collapsible}
+        header={this.renderHeader()}
+        expanded={this.state.open}
+      >
         {section}
       </Panel>
     );

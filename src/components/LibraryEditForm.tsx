@@ -4,6 +4,7 @@ import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
 import { handleSubmit, findDefault, clearForm } from "./sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
+import Collapsible from "./Collapsible";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface LibraryEditFormProps {
@@ -39,58 +40,62 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           name="uuid"
           value={this.props.item && this.props.item.uuid}
           />
-        <fieldset>
-          <legend><h4>Required Fields</h4></legend>
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            required={true}
-            name="name"
-            ref="name"
-            label="Name"
-            value={this.props.item && this.props.item.name}
-            description="The human-readable name of this library."
-            error={this.props.error}
-            />
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            required={true}
-            name="short_name"
-            ref="short_name"
-            label="Short name"
-            value={this.props.item && this.props.item.short_name}
-            description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
-            error={this.props.error}
-            />
-          { requiredFields.map(setting =>
-            <ProtocolFormField
-              ref={setting.key}
-              setting={setting}
+        <Collapsible title="Required Fields" collapsible={false} body={
+          <fieldset>
+            <legend className="visuallyHidden">Required Fields</legend>
+            <EditableInput
+              elementType="input"
+              type="text"
               disabled={this.props.disabled}
-              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-              default={findDefault(setting)}
+              required={true}
+              name="name"
+              ref="name"
+              label="Name"
+              value={this.props.item && this.props.item.name}
+              description="The human-readable name of this library."
               error={this.props.error}
               />
-            )
-          }
-        </fieldset>
-        <fieldset>
-          <legend><h4>Additional Fields</h4></legend>
-          { nonRequiredFields.map(setting =>
-            <ProtocolFormField
-              ref={setting.key}
-              setting={setting}
+            <EditableInput
+              elementType="input"
+              type="text"
               disabled={this.props.disabled}
-              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-              default={findDefault(setting)}
+              required={true}
+              name="short_name"
+              ref="short_name"
+              label="Short name"
+              value={this.props.item && this.props.item.short_name}
+              description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
               error={this.props.error}
               />
-            )
-          }
-        </fieldset>
+            { requiredFields.map(setting =>
+              <ProtocolFormField
+                ref={setting.key}
+                setting={setting}
+                disabled={this.props.disabled}
+                value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+                default={findDefault(setting)}
+                error={this.props.error}
+                />
+              )
+            }
+          </fieldset>}
+        />
+        <Collapsible title="Optional Fields" collapsible={true} body={
+          <fieldset>
+            <legend className="visuallyHidden">Additional Fields</legend>
+            { nonRequiredFields.map(setting =>
+              <ProtocolFormField
+                ref={setting.key}
+                setting={setting}
+                disabled={this.props.disabled}
+                value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+                default={findDefault(setting)}
+                error={this.props.error}
+                />
+              )
+            }
+          </fieldset>}
+        />
 
         <SaveButton
           disabled={this.props.disabled}

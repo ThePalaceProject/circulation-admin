@@ -34,6 +34,16 @@
     }
   }
 }
+
+.panel-title {
+  a {
+    display: block;
+  }
+  .glyphicon {
+    float: right;
+    line-height: inherit;
+  }
+}
 .field-error {
   background: $white;
 

@@ -11,7 +11,7 @@ describe("Collapsible", () => {
   let wrapper;
   beforeEach(() => {
     wrapper = mount(
-      <Collapsible title="TITLE!" body="INSTRUCTIONS!">
+      <Collapsible title="TITLE!" text="INSTRUCTIONS!">
       </Collapsible>
     );
   });
