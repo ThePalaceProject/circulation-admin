@@ -70,7 +70,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
               elementType="input"
               type="text"
               disabled={this.props.disabled}
-              required={true}
               name="password"
               label="Password"
               ref="password"
