@@ -43,7 +43,7 @@ describe("IndividualAdminEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       save = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
           disabled={false}

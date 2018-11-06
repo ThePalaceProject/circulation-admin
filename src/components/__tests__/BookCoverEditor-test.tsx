@@ -46,7 +46,7 @@ describe("BookCoverEditor", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      wrapper = shallow(
+      wrapper = mount(
         <BookCoverEditor
           bookAdminUrl="/admin/book"
           rightsStatuses={rightsStatuses}
@@ -94,7 +94,7 @@ describe("BookCoverEditor", () => {
       let input = editableInputByName("title_position");
       expect(input.props().elementType).to.equal("select");
       expect(input.props().label).to.equal("Title and Author Position");
-      let options = input.children();
+      let options = input.find("option");
       expect(options.length).to.equal(4);
       expect(options.at(0).props().value).to.equal("none");
       expect(options.at(1).props().value).to.equal("top");
@@ -129,7 +129,7 @@ describe("BookCoverEditor", () => {
       expect(rightsStatusInput.props().elementType).to.equal("select");
       expect(rightsStatusInput.props().label).to.equal("License");
 
-      let children = rightsStatusInput.children();
+      let children = rightsStatusInput.find("option");
       expect(children.length).to.equal(3);
       expect(children.at(0).props().value).to.equal("http://creativecommons.org/licenses/by/4.0/");
       expect(children.at(0).text()).to.equal("Creative Commons Attribution (CC BY)");

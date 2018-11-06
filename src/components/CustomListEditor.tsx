@@ -6,6 +6,7 @@ import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
+import Collapsible from "./Collapsible";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
@@ -112,29 +113,35 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         </div>
         <div className="custom-list-editor-body">
           <form className="form-inline" onSubmit={this.search}>
-            <fieldset>
-              <legend><h4>Search for titles</h4></legend>
-              {
-                this.props.entryPoints.length ? (
-                  <div className="entry-points">
-                    <span>Select the entry point to search for:</span>
-                    <div className="entry-points-selection">
-                      {this.getEntryPointsElms(this.props.entryPoints)}
-                    </div>
-                  </div>
-                ) : null
+            <Collapsible
+              title="Search"
+              collapsible={false}
+              body={
+                <fieldset>
+                  <legend><h4>Search for titles</h4></legend>
+                  {
+                    this.props.entryPoints.length ? (
+                      <div className="entry-points">
+                        <span>Select the entry point to search for:</span>
+                        <div className="entry-points-selection">
+                          {this.getEntryPointsElms(this.props.entryPoints)}
+                        </div>
+                      </div>
+                    ) : null
+                  }
+                  <input
+                    className="form-control"
+                    ref="searchTerms"
+                    type="text"
+                    />&nbsp;
+                  <button
+                    className="btn btn-default"
+                    type="submit">Search
+                      <SearchIcon />
+                  </button>
+                </fieldset>
               }
-              <input
-                className="form-control"
-                ref="searchTerms"
-                type="text"
-                />&nbsp;
-              <button
-                className="btn btn-default"
-                type="submit">Search
-                  <SearchIcon />
-              </button>
-            </fieldset>
+            />
           </form>
 
           <CustomListEntriesEditor

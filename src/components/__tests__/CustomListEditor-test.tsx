@@ -77,7 +77,7 @@ describe("CustomListEditor", () => {
       }
     });
 
-    wrapper = shallow(
+    wrapper = mount(
       <CustomListEditor
         library="library"
         list={listData}

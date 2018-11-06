@@ -9,6 +9,7 @@ import EditableInput from "./EditableInput";
 import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import Collapsible from "./Collapsible";
 
 export interface BookCoverEditorStateProps {
   bookAdminUrl?: string;
@@ -45,6 +46,105 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
     this.refresh = this.refresh.bind(this);
     this.preview = this.preview.bind(this);
     this.save = this.save.bind(this);
+    this.renderForm = this.renderForm.bind(this);
+  }
+
+  renderForm() {
+    return (
+      <div>
+        <form ref="cover">
+          <fieldset>
+            <EditableInput
+              elementType="input"
+              type="text"
+              disabled={this.props.isFetching}
+              name="cover_url"
+              label="URL for cover image"
+              onChange={this.preview}
+              ref="cover_url"
+              optionalText={false}
+              />
+            <EditableInput
+              elementType="input"
+              type="file"
+              disabled={this.props.isFetching}
+              name="cover_file"
+              label="Or upload cover image"
+              accept="image/*"
+              onChange={this.preview}
+              ref="cover_file"
+              optionalText={false}
+              />
+            <EditableInput
+              elementType="select"
+              disabled={this.props.isFetching}
+              name="title_position"
+              label="Title and Author Position"
+              onChange={this.preview}
+              value="none"
+              >
+              <option value="none">None</option>
+              <option value="top">Top</option>
+              <option value="center">Center</option>
+              <option value="bottom">Bottom</option>
+            </EditableInput>
+          </fieldset>
+        </form>
+        { this.props.previewFetchError &&
+          <ErrorMessage error={this.props.previewFetchError} />
+        }
+        { this.props.isFetchingPreview &&
+          <h5 className="cover-fetching-preview-container">
+            Updating Preview&nbsp;
+            <i className="fa fa-spinner fa-spin"></i>
+          </h5>
+        }
+        { this.props.preview &&
+          <div>
+            <h4>Preview:</h4>
+            <img
+              src={this.props.preview}
+              className="book-cover preview-cover"
+              alt="Preview of new cover"
+              />
+          </div>
+        }
+        { this.props.rightsStatuses &&
+          <form ref="rights">
+            <fieldset>
+              <legend><h4>Rights:</h4></legend>
+              <EditableInput
+                elementType="select"
+                disabled={this.props.isFetching}
+                name="rights_status"
+                label="License"
+                >
+                { Object.keys(this.props.rightsStatuses).map(uri => {
+                      let status = this.props.rightsStatuses[uri];
+                      if (status.allows_derivatives) {
+                        return (
+                          <option value={uri} key={uri}>{status.name}</option>
+                        );
+                      }
+                      return null;
+                    }
+                  )
+                }
+                <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
+                <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
+              </EditableInput>
+              <EditableInput
+                elementType="textarea"
+                disabled={this.props.isFetching}
+                name="rights_explanation"
+                label="Explanation of rights"
+                optionalText={false}
+              />
+            </fieldset>
+          </form>
+        }
+      </div>
+    );
   }
 
   render(): JSX.Element {
@@ -74,97 +174,11 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
             <div>
               <h3>Change cover:</h3>
               <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
-              <form ref="cover">
-                <fieldset>
-                  <EditableInput
-                    elementType="input"
-                    type="text"
-                    disabled={this.props.isFetching}
-                    name="cover_url"
-                    label="URL for cover image"
-                    onChange={this.preview}
-                    ref="cover_url"
-                    optionalText={false}
-                    />
-                  <EditableInput
-                    elementType="input"
-                    type="file"
-                    disabled={this.props.isFetching}
-                    name="cover_file"
-                    label="Or upload cover image"
-                    accept="image/*"
-                    onChange={this.preview}
-                    ref="cover_file"
-                    optionalText={false}
-                    />
-                  <EditableInput
-                    elementType="select"
-                    disabled={this.props.isFetching}
-                    name="title_position"
-                    label="Title and Author Position"
-                    onChange={this.preview}
-                    value="none"
-                    >
-                    <option value="none">None</option>
-                    <option value="top">Top</option>
-                    <option value="center">Center</option>
-                    <option value="bottom">Bottom</option>
-                  </EditableInput>
-                </fieldset>
-              </form>
-              { this.props.previewFetchError &&
-                <ErrorMessage error={this.props.previewFetchError} />
-              }
-              { this.props.isFetchingPreview &&
-                <h5 className="cover-fetching-preview-container">
-                  Updating Preview&nbsp;
-                  <i className="fa fa-spinner fa-spin"></i>
-                </h5>
-              }
-              { this.props.preview &&
-                <div>
-                  <h4>Preview:</h4>
-                  <img
-                    src={this.props.preview}
-                    className="book-cover preview-cover"
-                    alt="Preview of new cover"
-                    />
-                </div>
-              }
-              { this.props.rightsStatuses &&
-                <form ref="rights">
-                  <fieldset>
-                    <legend><h4>Rights:</h4></legend>
-                    <EditableInput
-                      elementType="select"
-                      disabled={this.props.isFetching}
-                      name="rights_status"
-                      label="License"
-                      >
-                      { Object.keys(this.props.rightsStatuses).map(uri => {
-                            let status = this.props.rightsStatuses[uri];
-                            if (status.allows_derivatives) {
-                              return (
-                                <option value={uri} key={uri}>{status.name}</option>
-                              );
-                            }
-                            return null;
-                          }
-                        )
-                      }
-                      <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
-                      <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
-                    </EditableInput>
-                    <EditableInput
-                      elementType="textarea"
-                      disabled={this.props.isFetching}
-                      name="rights_explanation"
-                      label="Explanation of rights"
-                      optionalText={false}
-                    />
-                  </fieldset>
-                </form>
-              }
+              <Collapsible
+                title="Required Fields"
+                collapsible={false}
+                body={this.renderForm()}
+              />
               <button
                 className="btn btn-default"
                 type="submit"

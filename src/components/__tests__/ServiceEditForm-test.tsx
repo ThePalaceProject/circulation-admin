@@ -118,7 +118,7 @@ describe("ServiceEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       save = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
@@ -151,7 +151,7 @@ describe("ServiceEditForm", () => {
       expect(children.at(1).text()).to.contain("protocol 2 label");
       expect(children.at(2).text()).to.contain("instructions label");
 
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
@@ -182,7 +182,7 @@ describe("ServiceEditForm", () => {
       input = protocolFormFieldByKey("protocol2_setting");
       expect(input.length).to.equal(0);
 
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
@@ -217,10 +217,10 @@ describe("ServiceEditForm", () => {
       wrapper.setState({ protocol: "protocol with instructions" });
 
       let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.length).to.equal(1);
-      let title = collapsible.find(".panel-title");
+      expect(collapsible.length).to.equal(3);
+      let title = collapsible.at(1).find(".panel-title");
       expect(title.text()).to.equal("click for instructions");
-      let body = collapsible.find(".panel-body");
+      let body = collapsible.at(1).find(".panel-body");
       expect(body.text()).to.equal("Instructions!");
     });
 
@@ -231,7 +231,7 @@ describe("ServiceEditForm", () => {
 
     it("doesn't render parent dropdown when there are no available parents", () => {
       const newService = Object.assign({}, serviceData, { protocol: "protocol 3" });
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
@@ -250,7 +250,7 @@ describe("ServiceEditForm", () => {
       const parentService = Object.assign({}, serviceData, { protocol: "protocol 3", name: "Parent" });
       const childService = Object.assign({}, serviceData, { protocol: "protocol 3", id: 3, name: "Child" });
       let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService, childService] });
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesDataWithParent}
@@ -270,7 +270,7 @@ describe("ServiceEditForm", () => {
       expect(children.at(1).text()).to.contain("Parent");
 
       childService.parent_id = parentService.id;
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesDataWithParent}
@@ -293,7 +293,7 @@ describe("ServiceEditForm", () => {
       const parentService = Object.assign({}, serviceData, { protocol: "protocol 3", name: "Parent" });
       const childService = Object.assign({}, serviceData, { protocol: "protocol 3", id: 3, name: "Child" });
       let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService, childService] });
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesDataWithParent}
@@ -318,7 +318,7 @@ describe("ServiceEditForm", () => {
       expect(input.props().value).to.equal("parent setting");
 
       childService.parent_id = parentService.id;
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesDataWithParent}
@@ -348,7 +348,7 @@ describe("ServiceEditForm", () => {
         protocols: [servicesData.protocols[1]]
       });
 
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
@@ -363,7 +363,7 @@ describe("ServiceEditForm", () => {
       let serviceDataSitewide = Object.assign({}, servicesData, {
         libraries: []
       });
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesDataSitewide}
@@ -423,7 +423,7 @@ describe("ServiceEditForm", () => {
 
       let newServiceData = Object.assign({}, serviceData, { protocol: "protocol 3" });
 
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}
@@ -506,7 +506,7 @@ describe("ServiceEditForm", () => {
       input = protocolFormFieldByKey("library_select_setting");
       expect(input.length).to.equal(0);
 
-      wrapper = shallow(
+      wrapper = mount(
         <TestServiceEditForm
           disabled={false}
           data={servicesData}

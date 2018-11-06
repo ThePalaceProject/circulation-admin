@@ -54,6 +54,192 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.removeLibrary = this.removeLibrary.bind(this);
     this.handleData = this.handleData.bind(this);
     this.submit = this.submit.bind(this);
+    this.renderRequiredFields = this.renderRequiredFields.bind(this);
+    this.renderOptionalFields = this.renderOptionalFields.bind(this);
+    this.renderLibrariesForm = this.renderLibrariesForm.bind(this);
+  }
+
+  renderRequiredFields(requiredFields) {
+    return (
+      <fieldset>
+        <legend className="visuallyHidden"><h4>Required Fields</h4></legend>
+        <EditableInput
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          required={true}
+          name="name"
+          ref="name"
+          label="Name"
+          value={this.props.item && this.props.item.name}
+          error={this.props.error}
+          />
+        <EditableInput
+          elementType="select"
+          disabled={this.props.disabled}
+          readOnly={!!(this.props.item && this.props.item.protocol)}
+          name="protocol"
+          label="Protocol"
+          value={this.state.protocol}
+          ref="protocol"
+          onChange={this.handleProtocolChange}
+          description={!this.protocolInstructions() && this.protocolDescription()}
+          >
+          { this.availableProtocols().map(protocol =>
+              <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
+            )
+          }
+        </EditableInput>
+        { this.props.data && this.allowsParent() && (this.availableParents().length > 0) &&
+          <EditableInput
+            elementType="select"
+            disabled={this.props.disabled}
+            name="parent_id"
+            label="Parent"
+            value={this.state.parentId}
+            ref="parent"
+            onChange={this.handleParentChange}
+            >
+            <option value="">None</option>
+            { this.availableParents().map(parent =>
+                <option key={parent.id} value={parent.id}>{parent.name || parent.id}</option>
+              )
+            }
+          </EditableInput>
+        }
+        { this.props.data && this.protocolInstructions() &&
+            <div class="form-group">
+              <label class="control-label">Instructions</label>
+              <Collapsible
+                title={this.protocolDescription()}
+                collapsible={true}
+                type="instruction"
+                text={this.protocolInstructions()}
+              />
+            </div>
+        }
+        { requiredFields.map(setting =>
+            <ProtocolFormField
+              key={setting.key}
+              ref={setting.key}
+              setting={setting}
+              disabled={this.props.disabled}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              error={this.props.error}
+              />
+          )
+        }
+      </fieldset>
+    );
+  }
+
+  renderOptionalFields(optionalFields) {
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Additional Fields</legend>
+        { optionalFields.map(setting =>
+            <ProtocolFormField
+              key={setting.key}
+              ref={setting.key}
+              setting={setting}
+              disabled={this.props.disabled}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              error={this.props.error}
+              />
+          )
+        }
+      </fieldset>
+    );
+  }
+
+  renderLibrariesForm() {
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Libraries</legend>
+        <div className="form-group">
+          { this.state.libraries.map(library =>
+              <div key={library.short_name}>
+                <WithRemoveButton
+                  disabled={this.props.disabled}
+                  onRemove={() => this.removeLibrary(library)}
+                  ref={library.short_name}
+                  >
+                  { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0 &&
+                    <WithEditButton
+                      disabled={this.props.disabled}
+                      onEdit={() => this.expandLibrary(library)}
+                      >
+                      {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
+                    </WithEditButton>
+                  }
+                  { !(this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0) &&
+                    this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name
+                  }
+                </WithRemoveButton>
+                { this.isExpanded(library) &&
+                  <div className="edit-library-settings">
+                    { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
+                      <ProtocolFormField
+                        key={setting.key}
+                        setting={setting}
+                        disabled={this.props.disabled}
+                        value={library[setting.key]}
+                        ref={library.short_name + "_" + setting.key}
+                        />
+                      )
+                    }
+                    <button
+                      type="button"
+                      className="btn btn-default edit-library"
+                      disabled={this.props.disabled}
+                      onClick={() => this.editLibrary(library)}
+                      >Save</button>
+                  </div>
+                }
+              </div>
+            )
+          }
+        </div>
+        { (this.availableLibraries().length > 0) &&
+            <div className="form-group">
+              <EditableInput
+                elementType="select"
+                disabled={this.props.disabled}
+                name="add-library"
+                label="Add Library"
+                ref="addLibrary"
+                value={this.state.selectedLibrary}
+                onChange={this.selectLibrary}
+                >
+                <option value="none">Select a library</option>
+                { this.availableLibraries().map(library =>
+                    <option key={library.short_name} value={library.short_name}>{library.name}</option>
+                  )
+                }
+              </EditableInput>
+              { this.state.selectedLibrary &&
+                <div>
+                  { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
+                      <ProtocolFormField
+                        key={setting.key}
+                        setting={setting}
+                        disabled={this.props.disabled}
+                        ref={setting.key}
+                        />
+                    )
+                  }
+                  <button
+                    type="button"
+                    className="btn btn-default add-library"
+                    disabled={this.props.disabled}
+                    onClick={this.addLibrary}
+                    >Add Library</button>
+                </div>
+              }
+            </div>
+        }
+      </fieldset>
+    );
   }
 
   render(): JSX.Element {
@@ -67,182 +253,23 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             value={String(this.props.item.id)}
             />
         }
-        <Collapsible title="Required Fields" collapsible={false} body={
-          <fieldset>
-            <legend className="visuallyHidden"><h4>Required Fields</h4></legend>
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              required={true}
-              name="name"
-              ref="name"
-              label="Name"
-              value={this.props.item && this.props.item.name}
-              error={this.props.error}
-              />
-            <EditableInput
-              elementType="select"
-              disabled={this.props.disabled}
-              readOnly={!!(this.props.item && this.props.item.protocol)}
-              name="protocol"
-              label="Protocol"
-              value={this.state.protocol}
-              ref="protocol"
-              onChange={this.handleProtocolChange}
-              description={!this.protocolInstructions() && this.protocolDescription()}
-              >
-              { this.availableProtocols().map(protocol =>
-                  <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
-                )
-              }
-            </EditableInput>
-            { this.props.data && this.allowsParent() && (this.availableParents().length > 0) &&
-              <EditableInput
-                elementType="select"
-                disabled={this.props.disabled}
-                name="parent_id"
-                label="Parent"
-                value={this.state.parentId}
-                ref="parent"
-                onChange={this.handleParentChange}
-                >
-                <option value="">None</option>
-                { this.availableParents().map(parent =>
-                    <option key={parent.id} value={parent.id}>{parent.name || parent.id}</option>
-                  )
-                }
-              </EditableInput>
-            }
-            { this.props.data && this.protocolInstructions() &&
-                <div class="form-group">
-                  <label class="control-label">Instructions</label>
-                  <Collapsible
-                    title={this.protocolDescription()}
-                    collapsible={true}
-                    elementType="button"
-                    text={this.protocolInstructions()}
-                  />
-                </div>
-            }
-            { requiredFields.map(setting =>
-                <ProtocolFormField
-                  key={setting.key}
-                  ref={setting.key}
-                  setting={setting}
-                  disabled={this.props.disabled}
-                  value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-                  error={this.props.error}
-                  />
-              )
-            }
-          </fieldset>}
+        <Collapsible
+          title="Required Fields"
+          collapsible={false}
+          body={this.renderRequiredFields(requiredFields)}
         />
         { (nonRequiredFields.length > 0) && (
-          <Collapsible title="Optional Fields" collapsible={true} body={
-            <fieldset>
-              <legend className="visuallyHidden">Additional Fields</legend>
-              { nonRequiredFields.map(setting =>
-                  <ProtocolFormField
-                    key={setting.key}
-                    ref={setting.key}
-                    setting={setting}
-                    disabled={this.props.disabled}
-                    value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-                    error={this.props.error}
-                    />
-                )
-              }
-            </fieldset>}
+          <Collapsible
+            title="Optional Fields"
+            collapsible={true}
+            body={this.renderOptionalFields(nonRequiredFields)}
           />)
         }
         { (!this.sitewide() || this.protocolLibrarySettings().length > 0) &&
-          <Collapsible title="Libraries" collapsible={true} body={
-            <fieldset>
-              <legend className="visuallyHidden">Libraries</legend>
-              <div className="form-group">
-                { this.state.libraries.map(library =>
-                    <div key={library.short_name}>
-                      <WithRemoveButton
-                        disabled={this.props.disabled}
-                        onRemove={() => this.removeLibrary(library)}
-                        ref={library.short_name}
-                        >
-                        { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0 &&
-                          <WithEditButton
-                            disabled={this.props.disabled}
-                            onEdit={() => this.expandLibrary(library)}
-                            >
-                            {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
-                          </WithEditButton>
-                        }
-                        { !(this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0) &&
-                          this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name
-                        }
-                      </WithRemoveButton>
-                      { this.isExpanded(library) &&
-                        <div className="edit-library-settings">
-                          { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
-                            <ProtocolFormField
-                              key={setting.key}
-                              setting={setting}
-                              disabled={this.props.disabled}
-                              value={library[setting.key]}
-                              ref={library.short_name + "_" + setting.key}
-                              />
-                            )
-                          }
-                          <button
-                            type="button"
-                            className="btn btn-default edit-library"
-                            disabled={this.props.disabled}
-                            onClick={() => this.editLibrary(library)}
-                            >Save</button>
-                        </div>
-                      }
-                    </div>
-                  )
-                }
-              </div>
-              { (this.availableLibraries().length > 0) &&
-                  <div className="form-group">
-                    <EditableInput
-                      elementType="select"
-                      disabled={this.props.disabled}
-                      name="add-library"
-                      label="Add Library"
-                      ref="addLibrary"
-                      value={this.state.selectedLibrary}
-                      onChange={this.selectLibrary}
-                      >
-                      <option value="none">Select a library</option>
-                      { this.availableLibraries().map(library =>
-                          <option key={library.short_name} value={library.short_name}>{library.name}</option>
-                        )
-                      }
-                    </EditableInput>
-                    { this.state.selectedLibrary &&
-                      <div>
-                        { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
-                            <ProtocolFormField
-                              key={setting.key}
-                              setting={setting}
-                              disabled={this.props.disabled}
-                              ref={setting.key}
-                              />
-                          )
-                        }
-                        <button
-                          type="button"
-                          className="btn btn-default add-library"
-                          disabled={this.props.disabled}
-                          onClick={this.addLibrary}
-                          >Add Library</button>
-                      </div>
-                    }
-                  </div>
-              }
-            </fieldset>}
+          <Collapsible
+            title="Libraries"
+            collapsible={true}
+            body={this.renderLibrariesForm()}
           />
         }
         <SaveButton
@@ -347,7 +374,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     let nonRequiredFields = [];
     if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
-        console.log(protocol);
         if (protocol.name === this.state.protocol) {
           let settings = [];
           if (this.state.parentId) {

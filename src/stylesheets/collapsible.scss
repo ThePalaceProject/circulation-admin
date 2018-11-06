@@ -1,0 +1,38 @@
+.instruction {
+  box-shadow: none;
+  border: 1px solid $linkcolor;
+  border-radius: 0;
+  .panel-heading {
+    border: none;
+    font-weight: bold;
+    padding: 0;
+    .panel-title {
+      width: 100%;
+      text-align: left;
+      background: $linkcolor;
+      padding: 5px 7px;
+      border: none;
+    }
+    .collapsed, .panel-title a {
+      color: white;
+      &:focus {
+        outline: none;
+        text-decoration: none;
+      }
+      .glyphicon {
+        float: right;
+        line-height: inherit;
+      }
+    }
+  }
+}
+
+.panel-title {
+  a {
+    display: block;
+  }
+  .glyphicon {
+    float: right;
+    line-height: inherit;
+  }
+}

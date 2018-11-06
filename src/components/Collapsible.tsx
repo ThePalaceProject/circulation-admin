@@ -3,10 +3,10 @@ import { Panel, Button, Glyphicon } from "react-bootstrap";
 
 export interface CollapsibleProps {
   title: string;
+  collapsible: boolean;
   text?: string;
-  elementType?: string;
+  type?: string;
   body?: JSX.Element;
-  collapsible?: boolean;
 }
 
 export interface CollapsibleState {
@@ -20,6 +20,7 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
     this.state = { open: false };
     this.toggle = this.toggle.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
+    this.renderSection = this.renderSection.bind(this);
   }
 
   toggle(e) {
@@ -29,44 +30,41 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
 
   renderHeader() {
     let icon = this.state.open ? "minus" : "plus";
-    // return (
-    //   <button bsStyle="default" onClick={this.toggle}>
-    //     <span>{this.props.title}</span>
-    //     <Glyphicon glyph={icon} />
-    //   </button>
-    // );
-    const { elementType, text, body } = this.props;
-    const shouldBeButton = elementType === "button";
-    const content = (<span>
-        <span>{this.props.title}</span>
-        {this.props.collapsible ? <Glyphicon glyph={icon} /> : null}
-      </span>);
-    return React.createElement(elementType || "div", {
-      className: shouldBeButton ? "collapsible" : "",
+    const { type, collapsible, title } = this.props;
+    let element = "div";
+    if (type === "instruction") {
+      element = "button";
+    }
+    const content = (<div>
+        <span>{title}</span>
+        {collapsible ? <Glyphicon glyph={icon} /> : null}
+      </div>);
+    return React.createElement(element, {
       bsStyle: "default",
-      onClick: this.toggle,
+      onClick: collapsible ? this.toggle : null,
     }, content );
   }
 
-  render() {
-    const { elementType, body, text } = this.props;
-    let section;
-    let className = "";
-    if (elementType === "button") {
-      className = "collapsible";
-      section = <section dangerouslySetInnerHTML={{ __html: text }} />;
+  renderSection() {
+    const { body, text, type } = this.props;
+    if (text && type === "instruction") {
+      return <section dangerouslySetInnerHTML={{ __html: text }} />;
     } else if (body) {
-      section = <section>{body}</section>;
+      return <section>{body}</section>;
     }
+    return null;
+  }
 
+  render() {
+    const className = this.props.type === "instruction" ? "instruction" : "";
     return (
       <Panel
-        className={className}
+        className={`collapsible ${className}`}
         collapsible={this.props.collapsible}
         header={this.renderHeader()}
         expanded={this.state.open}
       >
-        {section}
+        {this.renderSection()}
       </Panel>
     );
   }
