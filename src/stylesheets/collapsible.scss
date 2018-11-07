@@ -1,3 +1,29 @@
+.collapsible {
+  a {
+    color: #000;
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  .panel-heading {
+    &:hover {
+      background-color: $medium-gray;
+    }
+  }
+  .panel-title {
+    a {
+      display: block;
+    }
+    .glyphicon {
+      float: right;
+      line-height: inherit;
+      color: $linkcolor;
+    }
+  }
+}
+
 .instruction {
   box-shadow: none;
   border: 1px solid $linkcolor;
@@ -22,17 +48,8 @@
       .glyphicon {
         float: right;
         line-height: inherit;
+        color: #fff;
       }
     }
-  }
-}
-
-.panel-title {
-  a {
-    display: block;
-  }
-  .glyphicon {
-    float: right;
-    line-height: inherit;
   }
 }
