@@ -182,7 +182,8 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   formatItemType() {
     const itemType = this.getItemType();
     const regexp = /^[A-Z]*$/;
-    const isAllCaps = regexp.test(itemType);
+    // If the item's name started out in all caps--e.g. "CDN"--don't lowercase it.
+    const isAllCaps = regexp.test(itemType.split(" service")[0]);
     const formattedItemType = isAllCaps ? itemType : itemType.toLowerCase();
     return formattedItemType;
   }

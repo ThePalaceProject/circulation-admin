@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.0.85
+#### Fixed
+- Fixed a bug involving registering libraries with a discovery service: once a
+library is in the production state, the drop-down menu should not be displayed,
+i.e. the admin should not be able to change it back to the testing state.
+- Fixed the display of success messages on the CDN service form.
+#### Added
+- The library registration form now provides links to edit the libraries.
+
 ### v0.0.84
 #### Added
 - Updated the form input field labels to explicitly state if an input is required rather than optional. The optional text is now in a field's description. If there are any required fields left blank, they will have an error styling until they are updated. A submitted form with errors will also scroll to the top and focus to the error message so admins know what to fix.
