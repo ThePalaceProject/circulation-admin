@@ -33,9 +33,9 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
     registerLibrary: React.PropTypes.func
   };
 
-  getChildContext() {
+  getChildContext () {
     return {
-      registerLibrary: (library: LibraryData, registration_stage: string) => {
+        registerLibrary: (library: LibraryData, registration_stage: string) => {
         if (this.itemToEdit()) {
           const data = new (window as any).FormData();
           data.append("library_short_name", library.short_name);
@@ -57,6 +57,7 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
       this.props.fetchLibraryRegistrations();
     }
   }
+
 }
 
 function mapStateToProps(state, ownProps) {

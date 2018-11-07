@@ -36,6 +36,8 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
               const registration_stage =
                 (this.state.registration_stage && this.state.registration_stage[library.short_name]) || "testing";
 
+              let stage = currentRegistryStage === "production" ? "production" : registration_stage;
+
               return (
                 <div className="service-with-registrations-library" key={library.short_name}>
                   <div className="library-name">{ library.name }</div>
@@ -67,7 +69,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
                         <span className="bg-success">
                           Registered
                         </span>
-                        {this.registerButton("Update registration", library, registration_stage)}
+                        {this.registerButton("Update registration", library, stage)}
                       </div>
                     }
                     { libraryRegistrationStatus === "failure" &&
@@ -75,7 +77,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
                         <span className="bg-danger">
                           Registration failed
                         </span>
-                        {this.registerButton("Retry registration", library, registration_stage)}
+                        {this.registerButton("Retry registration", library, stage)}
                       </div>
                     }
                     { libraryRegistrationStatus === null &&
@@ -83,7 +85,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
                         <span className="bg-warning">
                           Not registered
                         </span>
-                        {this.registerButton("Register", library, registration_stage)}
+                        {this.registerButton("Register", library, stage)}
                       </div>
                     }
                   </div>
@@ -97,13 +99,13 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
     return null;
   }
 
-  registerButton(label, library, registration_stage) {
+  registerButton(label, library, stage) {
     return (
       <button
         type="button"
         className="btn btn-default"
         disabled={this.props.disabled}
-        onClick={() => this.props.registerLibrary(library, registration_stage)}
+        onClick={() => this.props.registerLibrary(library, stage)}
       >
         {label}
       </button>
@@ -112,7 +114,6 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
 
   updateRegistrationStage(library) {
     const registration_stage = (this.refs[`stage-${library.short_name}`] as any).getValue();
-
     this.setState({
       registration_stage: Object.assign(
         {}, this.state.registration_stage, { [library.short_name]: registration_stage }
