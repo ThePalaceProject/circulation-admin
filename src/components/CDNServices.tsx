@@ -24,7 +24,7 @@ function mapStateToProps(state, ownProps) {
   const data = Object.assign({}, state.editor.cdnServices && state.editor.cdnServices.data || {});
   return {
     data: data,
-    responseBody: state.editor.cdnServices && state.editor.cdnServices.responseBody,
+    responseBody: state.editor.cdnServices && state.editor.cdnServices.successMessage,
     fetchError: state.editor.cdnServices.fetchError,
     isFetching: state.editor.cdnServices.isFetching || state.editor.cdnServices.isEditing
   };
