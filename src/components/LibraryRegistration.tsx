@@ -114,6 +114,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
 
   updateRegistrationStage(library) {
     const registration_stage = (this.refs[`stage-${library.short_name}`] as any).getValue();
+
     this.setState({
       registration_stage: Object.assign(
         {}, this.state.registration_stage, { [library.short_name]: registration_stage }
