@@ -42,6 +42,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           />
         <Collapsible
           title="Required Fields"
+          openByDefault={true}
           body={
             <fieldset>
               <legend className="visuallyHidden">Required Fields</legend>

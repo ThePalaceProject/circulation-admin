@@ -165,6 +165,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       <form ref="form" onSubmit={this.submit} className="edit-form">
         <Collapsible
           title="Admin Information"
+          openByDefault={true}
           body={this.renderForm()}
         />
         <SaveButton
