@@ -5,6 +5,8 @@
 - Fixed a bug involving registering libraries with a discovery service: once a
 library is in the production state, the drop-down menu should not be displayed,
 i.e. the admin should not be able to change it back to the testing state.
+#### Added
+- The library registration form now provides links to edit the libraries.
 
 ### v0.0.84
 #### Added
