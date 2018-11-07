@@ -115,7 +115,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           <form className="form-inline" onSubmit={this.search}>
             <Collapsible
               title="Search"
-              collapsible={false}
+              openByDefault={true}
               body={
                 <fieldset>
                   <legend><h4>Search for titles</h4></legend>

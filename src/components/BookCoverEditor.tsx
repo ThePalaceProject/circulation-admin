@@ -46,14 +46,15 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
     this.refresh = this.refresh.bind(this);
     this.preview = this.preview.bind(this);
     this.save = this.save.bind(this);
-    this.renderForm = this.renderForm.bind(this);
+    this.renderCoverForm = this.renderCoverForm.bind(this);
   }
 
-  renderForm() {
+  renderCoverForm() {
     return (
       <div>
         <form ref="cover">
           <fieldset>
+            <legend className="visuallyHidden">Cover Metadata</legend>
             <EditableInput
               elementType="input"
               type="text"
@@ -109,40 +110,6 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
               />
           </div>
         }
-        { this.props.rightsStatuses &&
-          <form ref="rights">
-            <fieldset>
-              <legend><h4>Rights:</h4></legend>
-              <EditableInput
-                elementType="select"
-                disabled={this.props.isFetching}
-                name="rights_status"
-                label="License"
-                >
-                { Object.keys(this.props.rightsStatuses).map(uri => {
-                      let status = this.props.rightsStatuses[uri];
-                      if (status.allows_derivatives) {
-                        return (
-                          <option value={uri} key={uri}>{status.name}</option>
-                        );
-                      }
-                      return null;
-                    }
-                  )
-                }
-                <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
-                <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
-              </EditableInput>
-              <EditableInput
-                elementType="textarea"
-                disabled={this.props.isFetching}
-                name="rights_explanation"
-                label="Explanation of rights"
-                optionalText={false}
-              />
-            </fieldset>
-          </form>
-        }
       </div>
     );
   }
@@ -175,10 +142,50 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
               <h3>Change cover:</h3>
               <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
               <Collapsible
-                title="Required Fields"
-                collapsible={false}
-                body={this.renderForm()}
+                title="Cover Metadata"
+                openByDefault={true}
+                body={this.renderCoverForm()}
               />
+              { this.props.rightsStatuses &&
+                <Collapsible
+                  title="Rights"
+                  openByDefault={true}
+                  body={
+                    <form ref="rights">
+                      <fieldset>
+                        <legend className="visuallyHidden">Rights:</legend>
+                        <EditableInput
+                          elementType="select"
+                          disabled={this.props.isFetching}
+                          name="rights_status"
+                          label="License"
+                          >
+                          { Object.keys(this.props.rightsStatuses).map(uri => {
+                                let status = this.props.rightsStatuses[uri];
+                                if (status.allows_derivatives) {
+                                  return (
+                                    <option value={uri} key={uri}>{status.name}</option>
+                                  );
+                                }
+                                return null;
+                              }
+                            )
+                          }
+                          <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
+                          <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
+                        </EditableInput>
+                        <EditableInput
+                          elementType="textarea"
+                          disabled={this.props.isFetching}
+                          name="rights_explanation"
+                          label="Explanation of rights"
+                          optionalText={false}
+                        />
+                      </fieldset>
+                    </form>
+                  }
+                />
+              }
               <button
                 className="btn btn-default"
                 type="submit"

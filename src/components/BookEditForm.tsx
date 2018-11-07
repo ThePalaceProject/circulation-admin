@@ -3,7 +3,6 @@ import EditableInput from "./EditableInput";
 import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
 import Autocomplete from "./Autocomplete";
-import Collapsible from "./Collapsible";
 
 export interface BookEditFormProps extends BookData {
   roles: RolesData;
@@ -209,11 +208,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
-        <Collapsible
-          title="Required Fields"
-          collapsible={false}
-          body={this.renderForm()}
-        />
+        {this.renderForm()}
         <button
           className="btn btn-default"
           disabled={this.props.disabled}

@@ -42,7 +42,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           />
         <Collapsible
           title="Required Fields"
-          collapsible={false}
           body={
             <fieldset>
               <legend className="visuallyHidden">Required Fields</legend>
@@ -87,7 +86,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         />
         <Collapsible
           title="Optional Fields"
-          collapsible={true}
           body={
             <fieldset>
               <legend className="visuallyHidden">Additional Fields</legend>

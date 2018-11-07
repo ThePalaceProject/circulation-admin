@@ -112,7 +112,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               <label class="control-label">Instructions</label>
               <Collapsible
                 title={this.protocolDescription()}
-                collapsible={true}
                 type="instruction"
                 text={this.protocolInstructions()}
               />
@@ -255,20 +254,18 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         }
         <Collapsible
           title="Required Fields"
-          collapsible={false}
+          openByDefault={true}
           body={this.renderRequiredFields(requiredFields)}
         />
         { (nonRequiredFields.length > 0) && (
           <Collapsible
             title="Optional Fields"
-            collapsible={true}
             body={this.renderOptionalFields(nonRequiredFields)}
           />)
         }
         { (!this.sitewide() || this.protocolLibrarySettings().length > 0) &&
           <Collapsible
             title="Libraries"
-            collapsible={true}
             body={this.renderLibrariesForm()}
           />
         }
