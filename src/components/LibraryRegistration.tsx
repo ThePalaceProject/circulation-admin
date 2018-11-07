@@ -40,7 +40,11 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
 
               return (
                 <div className="service-with-registrations-library" key={library.short_name}>
-                  <div className="library-name">{ library.name }</div>
+                  <div className="library-name">
+                    <a href={this.getLibraryEditLink(library)}>
+                      {library.name}
+                    </a>
+                  </div>
                   <div className="library-registration-info">
                     { supportsStaging &&
                       (<div className="current-stage">
@@ -141,6 +145,10 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
   getLibraryProp(library, prop): string | null {
     const libraryInfo = this.getLibraryInfo(library);
     return libraryInfo && libraryInfo[prop];
+  }
+
+  getLibraryEditLink(library) {
+    return "/admin/web/config/libraries/edit/" + library.uuid;
   }
 
   protocolSupportsType(prop: string): boolean {
