@@ -6,20 +6,28 @@
       color: #000;
     }
   }
-
   .panel-heading {
-    &:hover {
-      background-color: $medium-gray;
-    }
-  }
-  .panel-title {
-    a {
-      display: block;
-    }
-    .glyphicon {
-      float: right;
-      line-height: inherit;
-      color: $linkcolor;
+    border: none;
+    padding: 0;
+    background-color: #f5f5f5;
+
+    .panel-title {
+      width: 100%;
+      text-align: left;
+      background: #f5f5f5;
+      padding: 7px 9px;
+      border: none;
+      &:hover {
+        background-color: $medium-gray;
+      }
+      a {
+        display: block;
+      }
+      .glyphicon {
+        float: right;
+        line-height: inherit;
+        color: $linkcolor;
+      }
     }
   }
 }
@@ -29,17 +37,14 @@
   border: 1px solid $linkcolor;
   border-radius: 0;
   .panel-heading {
-    border: none;
     font-weight: bold;
-    padding: 0;
     .panel-title {
-      width: 100%;
-      text-align: left;
       background: $linkcolor;
-      padding: 5px 7px;
-      border: none;
+      &:hover {
+        background: $linkcolor;
+      }
     }
-    .collapsed, .panel-title a {
+    .panel-title a {
       color: white;
       &:focus {
         outline: none;
@@ -48,7 +53,7 @@
       .glyphicon {
         float: right;
         line-height: inherit;
-        color: $WHITE;
+        color: $white;
       }
     }
   }

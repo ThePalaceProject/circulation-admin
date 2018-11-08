@@ -35,16 +35,6 @@
       color: lighten($pagetextcolor, 40%);
     }
 
-    .collections {
-      width: 100%;
-
-      .form-group {
-        float: left;
-        margin-right: 15px;
-        margin-bottom: 2px;
-      }
-    }
-
     a {
       margin-left: 5px;
       font-size: 0.7em;
@@ -92,6 +82,16 @@
     flex-direction: column;
     flex-grow: 1;
     margin-top: 10px;
+
+    .collections {
+      width: 100%;
+
+      .form-group {
+        float: left;
+        margin-right: 15px;
+        margin-bottom: 2px;
+      }
+    }
 
     .entry-points {
       display: block;

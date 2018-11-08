@@ -52,9 +52,10 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
   renderCoverForm() {
     return (
       <div>
+        <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
         <form ref="cover">
           <fieldset>
-            <legend className="visuallyHidden">Cover Metadata</legend>
+            <legend className="visuallyHidden">Cover Image</legend>
             <EditableInput
               elementType="input"
               type="text"
@@ -140,7 +141,6 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
             </div>
             <div>
               <h3>Change cover:</h3>
-              <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
               <Collapsible
                 title="Cover Metadata"
                 openByDefault={true}
