@@ -164,12 +164,14 @@ describe("BookCoverEditor", () => {
     });
 
     it("shows save button", () => {
-      let save = wrapper.find("button");
-      expect(save.length).to.equal(1);
+      let buttons = wrapper.find("button");
+      // Counting the two buttons that are coming from the Collapsible component:
+      expect(buttons.length).to.equal(3);
+      let save = buttons.at(2);
       expect(save.props().disabled).to.be.ok;
 
       wrapper.setProps({ preview: "image data" });
-      save = wrapper.find("button");
+      save = wrapper.find("button").at(2);
       expect(save.props().disabled).not.to.be.ok;
     });
   });
@@ -273,7 +275,7 @@ describe("BookCoverEditor", () => {
       let rightsExplanation = editableInputByName("rights_explanation");
       rightsExplanation.get(0).setState({ value: "explanation" });
 
-      let saveButton = wrapper.find("button");
+      let saveButton = wrapper.find("button").at(2);
       saveButton.simulate("click");
 
       expect(editCover.callCount).to.equal(1);
