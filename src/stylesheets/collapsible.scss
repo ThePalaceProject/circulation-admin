@@ -1,5 +1,3 @@
-$panel-heading-color: #F5F5F5;
-
 .collapsible {
   a {
     color: #000;
@@ -11,12 +9,12 @@ $panel-heading-color: #F5F5F5;
   .panel-heading {
     border: none;
     padding: 0;
-    background-color: $panel-heading-color;
+    background-color: $gray;
 
     .panel-title {
       width: 100%;
       text-align: left;
-      background: $panel-heading-color;
+      background: $gray;
       padding: 7px 9px;
       border: none;
       &:hover {
@@ -29,6 +27,13 @@ $panel-heading-color: #F5F5F5;
         float: right;
         line-height: inherit;
         color: $linkcolor;
+      }
+    }
+  }
+  &.staticPanel {
+    .panel-title {
+      &:hover {
+        background-color: transparent;
       }
     }
   }

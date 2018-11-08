@@ -218,9 +218,9 @@ describe("ServiceEditForm", () => {
 
       let collapsible = wrapper.find(".collapsible");
       expect(collapsible.length).to.equal(3);
-      let title = collapsible.at(1).find(".panel-title");
+      let title = collapsible.at(0).find(".panel-title");
       expect(title.text()).to.equal("click for instructions");
-      let body = collapsible.at(1).find(".panel-body");
+      let body = collapsible.at(0).find(".panel-body");
       expect(body.text()).to.equal("Instructions!");
     });
 

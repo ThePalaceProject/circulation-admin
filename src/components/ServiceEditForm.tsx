@@ -107,16 +107,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             }
           </EditableInput>
         }
-        { this.props.data && this.protocolInstructions() &&
-            <div class="form-group">
-              <label class="control-label">Instructions</label>
-              <Collapsible
-                title={this.protocolDescription()}
-                type="instruction"
-                text={this.protocolInstructions()}
-              />
-            </div>
-        }
         { requiredFields.map(setting =>
             <ProtocolFormField
               key={setting.key}
@@ -243,6 +233,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   render(): JSX.Element {
     const { requiredFields, nonRequiredFields } = this.protocolSettings();
+    const showLibrariesForm = (!this.sitewide() || this.protocolLibrarySettings().length > 0);
+    const hasNonRequiredFields = nonRequiredFields.length > 0;
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
         { this.props.item && this.props.item.id &&
@@ -252,18 +244,29 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             value={String(this.props.item.id)}
             />
         }
+        { this.props.data && this.protocolInstructions() &&
+            <div class="form-group">
+              <label class="control-label">Instructions</label>
+              <Collapsible
+                title={this.protocolDescription()}
+                type="instruction"
+                text={this.protocolInstructions()}
+              />
+            </div>
+        }
         <Collapsible
           title="Required Fields"
           openByDefault={true}
+          collapsible={hasNonRequiredFields || showLibrariesForm}
           body={this.renderRequiredFields(requiredFields)}
         />
-        { (nonRequiredFields.length > 0) && (
+        { hasNonRequiredFields && (
           <Collapsible
             title="Optional Fields"
             body={this.renderOptionalFields(nonRequiredFields)}
           />)
         }
-        { (!this.sitewide() || this.protocolLibrarySettings().length > 0) &&
+        { (showLibrariesForm) &&
           <Collapsible
             title="Libraries"
             body={this.renderLibrariesForm()}

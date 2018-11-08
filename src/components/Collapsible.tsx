@@ -7,6 +7,7 @@ export interface CollapsibleProps {
   type?: string;
   body?: JSX.Element;
   openByDefault?: boolean;
+  collapsible?: boolean;
 }
 
 export interface CollapsibleState {
@@ -14,6 +15,10 @@ export interface CollapsibleState {
 }
 
 export default class Collapsible extends React.Component<CollapsibleProps, CollapsibleState> {
+  static defaultProps = {
+    collapsible: true,
+  };
+
   constructor(props) {
     super(props);
     this.state = { open: this.props.openByDefault || false };
@@ -29,15 +34,22 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
 
   renderHeader() {
     let icon = this.state.open ? "minus" : "plus";
-    const { title } = this.props;
+    const { collapsible, title } = this.props;
     const content = (
       <div>
         <span>{title}</span>
-        <Glyphicon glyph={icon} />
+        { collapsible ? <Glyphicon glyph={icon} /> : null}
       </div>
     );
+    let element = "div";
+    if (collapsible) {
+      element = "button";
+    }
 
-    return (<button bsStyle="default" onClick={this.toggle}>{content}</button>);
+    return React.createElement(element, {
+      bsStyle: "default",
+      onClick: this.toggle,
+    }, content );
   }
 
   renderSection() {
@@ -52,10 +64,11 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
 
   render() {
     const className = this.props.type === "instruction" ? "instruction" : "";
+    const staticPanel = !this.props.collapsible ? "staticPanel" : "";
     return (
       <Panel
-        className={`collapsible ${className}`}
-        collapsible={true}
+        className={`collapsible ${className} ${staticPanel}`}
+        collapsible={this.props.collapsible}
         header={this.renderHeader()}
         expanded={this.state.open}
       >
