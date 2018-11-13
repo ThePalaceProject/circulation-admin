@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.86
+#### Fixed
+- Fixed a bug which prevented forms containing collapsible elements from being submitted on enter.
+
 ### v0.0.85
 #### Fixed
 - Fixed a bug involving registering libraries with a discovery service: once a
