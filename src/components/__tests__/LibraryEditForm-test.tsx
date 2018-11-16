@@ -45,7 +45,7 @@ describe("LibraryEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       save = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
           disabled={false}

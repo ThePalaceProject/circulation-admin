@@ -26,182 +26,189 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     };
     this.addContributor = this.addContributor.bind(this);
     this.removeContributor = this.removeContributor.bind(this);
+    this.renderForm = this.renderForm.bind(this);
+  }
+
+  renderForm() {
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Edit Book Metadata</legend>
+        <EditableInput
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          name="title"
+          label="Title"
+          value={this.props.title}
+          optionalText={false}
+          />
+        <EditableInput
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          name="subtitle"
+          label="Subtitle"
+          value={this.props.subtitle}
+          optionalText={false}
+          />
+        <div className="form-group">
+          <label>Authors and Contributors</label>
+          { this.state.contributors.map(contributor =>
+              <WithRemoveButton
+                key={contributor.name + contributor.role}
+                disabled={this.props.disabled}
+                onRemove={() => this.removeContributor(contributor)}
+                >
+                <span className="contributor-form">
+                  <EditableInput
+                    elementType="select"
+                    disabled={this.props.disabled}
+                    name="contributor-role"
+                    value={this.getContributorRole(contributor)}
+                    >
+                    { this.props.roles && Object.values(this.props.roles).map(role =>
+                        <option value={role} key={role}>{role}</option>
+                      )
+                    }
+                  </EditableInput>
+                  <EditableInput
+                    elementType="input"
+                    type="text"
+                    disabled={this.props.disabled}
+                    name="contributor-name"
+                    value={contributor.name}
+                    optionalText={false}
+                    />
+                </span>
+              </WithRemoveButton>
+            )
+          }
+          <span className="contributor-form">
+            <EditableInput
+              elementType="select"
+              disabled={this.props.disabled}
+              name="contributor-role"
+              value="Author"
+              ref="addContributorRole"
+              >
+              { this.props.roles && Object.values(this.props.roles).map(role =>
+                  <option value={role} key={role}>{role}</option>
+                )
+              }
+            </EditableInput>
+            <EditableInput
+              elementType="input"
+              type="text"
+              disabled={this.props.disabled}
+              name="contributor-name"
+              ref="addContributorName"
+              optionalText={false}
+              />
+            <button
+              type="button"
+              className="btn btn-default add-contributor"
+              disabled={this.props.disabled}
+              onClick={this.addContributor}
+              >Add</button>
+          </span>
+        </div>
+        <div className="form-group">
+          <label>Series</label>
+          <div className="form-inline">
+            <EditableInput
+              elementType="input"
+              type="text"
+              disabled={this.props.disabled}
+              name="series"
+              placeholder="Name"
+              value={this.props.series}
+              optionalText={false}
+              />
+            <span>&nbsp;&nbsp;</span>
+            <EditableInput
+              elementType="input"
+              type="text"
+              disabled={this.props.disabled}
+              name="series_position"
+              placeholder="#"
+              value={this.props.seriesPosition !== undefined && this.props.seriesPosition !== null && String(this.props.seriesPosition)}
+              optionalText={false}
+              />
+          </div>
+        </div>
+        <EditableInput
+          elementType="select"
+          disabled={this.props.disabled}
+          name="medium"
+          label="Medium"
+          value={this.getMedium(this.props.medium)}
+          >
+          { this.props.media && Object.values(this.props.media).map(medium =>
+              <option value={medium} key={medium}>{medium}</option>
+            )
+          }
+        </EditableInput>
+        <Autocomplete
+          autocompleteValues={this.uniqueLanguageNames()}
+          disabled={this.props.disabled}
+          name="language"
+          label="Language"
+          value={this.props.languages && this.props.languages[this.props.language] && this.props.languages[this.props.language][0]}
+          />
+        <EditableInput
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          name="publisher"
+          label="Publisher"
+          value={this.props.publisher}
+          optionalText={false}
+          />
+        <EditableInput
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          name="imprint"
+          label="Imprint"
+          value={this.props.imprint}
+          optionalText={false}
+          />
+        <EditableInput
+          elementType="input"
+          type="date"
+          disabled={this.props.disabled}
+          name="issued"
+          label="Publication Date"
+          value={this.props.issued}
+          optionalText={false}
+          />
+        <EditableInput
+          elementType="input"
+          type="number"
+          disabled={this.props.disabled}
+          name="rating"
+          label="Rating (1-5, higher is better)"
+          min={1}
+          max={5}
+          value={this.props.rating && String(Math.round(this.props.rating))}
+          optionalText={false}
+          />
+        <EditableInput
+          elementType="textarea"
+          disabled={this.props.disabled}
+          name="summary"
+          label="Summary"
+          value={this.props.summary}
+          optionalText={false}
+          />
+      </fieldset>
+    );
   }
 
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
-        <fieldset>
-          <legend className="visuallyHidden">Edit Book Metadata</legend>
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            name="title"
-            label="Title"
-            value={this.props.title}
-            optionalText={false}
-            />
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            name="subtitle"
-            label="Subtitle"
-            value={this.props.subtitle}
-            optionalText={false}
-            />
-          <div className="form-group">
-            <label>Authors and Contributors</label>
-            { this.state.contributors.map(contributor =>
-                <WithRemoveButton
-                  key={contributor.name + contributor.role}
-                  disabled={this.props.disabled}
-                  onRemove={() => this.removeContributor(contributor)}
-                  >
-                  <span className="contributor-form">
-                    <EditableInput
-                      elementType="select"
-                      disabled={this.props.disabled}
-                      name="contributor-role"
-                      value={this.getContributorRole(contributor)}
-                      >
-                      { this.props.roles && Object.values(this.props.roles).map(role =>
-                          <option value={role} key={role}>{role}</option>
-                        )
-                      }
-                    </EditableInput>
-                    <EditableInput
-                      elementType="input"
-                      type="text"
-                      disabled={this.props.disabled}
-                      name="contributor-name"
-                      value={contributor.name}
-                      optionalText={false}
-                      />
-                  </span>
-                </WithRemoveButton>
-              )
-            }
-            <span className="contributor-form">
-              <EditableInput
-                elementType="select"
-                disabled={this.props.disabled}
-                name="contributor-role"
-                value="Author"
-                ref="addContributorRole"
-                >
-                { this.props.roles && Object.values(this.props.roles).map(role =>
-                    <option value={role} key={role}>{role}</option>
-                  )
-                }
-              </EditableInput>
-              <EditableInput
-                elementType="input"
-                type="text"
-                disabled={this.props.disabled}
-                name="contributor-name"
-                ref="addContributorName"
-                optionalText={false}
-                />
-              <button
-                type="button"
-                className="btn btn-default add-contributor"
-                disabled={this.props.disabled}
-                onClick={this.addContributor}
-                >Add</button>
-            </span>
-          </div>
-          <div className="form-group">
-            <label>Series</label>
-            <div className="form-inline">
-              <EditableInput
-                elementType="input"
-                type="text"
-                disabled={this.props.disabled}
-                name="series"
-                placeholder="Name"
-                value={this.props.series}
-                optionalText={false}
-                />
-              <span>&nbsp;&nbsp;</span>
-              <EditableInput
-                elementType="input"
-                type="text"
-                disabled={this.props.disabled}
-                name="series_position"
-                placeholder="#"
-                value={this.props.seriesPosition !== undefined && this.props.seriesPosition !== null && String(this.props.seriesPosition)}
-                optionalText={false}
-                />
-            </div>
-          </div>
-          <EditableInput
-            elementType="select"
-            disabled={this.props.disabled}
-            name="medium"
-            label="Medium"
-            value={this.getMedium(this.props.medium)}
-            >
-            { this.props.media && Object.values(this.props.media).map(medium =>
-                <option value={medium} key={medium}>{medium}</option>
-              )
-            }
-          </EditableInput>
-          <Autocomplete
-            autocompleteValues={this.uniqueLanguageNames()}
-            disabled={this.props.disabled}
-            name="language"
-            label="Language"
-            value={this.props.languages && this.props.languages[this.props.language] && this.props.languages[this.props.language][0]}
-            />
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            name="publisher"
-            label="Publisher"
-            value={this.props.publisher}
-            optionalText={false}
-            />
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            name="imprint"
-            label="Imprint"
-            value={this.props.imprint}
-            optionalText={false}
-            />
-          <EditableInput
-            elementType="input"
-            type="date"
-            disabled={this.props.disabled}
-            name="issued"
-            label="Publication Date"
-            value={this.props.issued}
-            optionalText={false}
-            />
-          <EditableInput
-            elementType="input"
-            type="number"
-            disabled={this.props.disabled}
-            name="rating"
-            label="Rating (1-5, higher is better)"
-            min={1}
-            max={5}
-            value={this.props.rating && String(Math.round(this.props.rating))}
-            optionalText={false}
-            />
-          <EditableInput
-            elementType="textarea"
-            disabled={this.props.disabled}
-            name="summary"
-            label="Summary"
-            value={this.props.summary}
-            optionalText={false}
-            />
-        </fieldset>
+        {this.renderForm()}
         <button
           className="btn btn-default"
           disabled={this.props.disabled}

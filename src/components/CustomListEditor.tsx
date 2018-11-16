@@ -6,6 +6,7 @@ import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
+import Collapsible from "./Collapsible";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
@@ -73,25 +74,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             { listId &&
               <h4>ID-{listId}</h4>
             }
-            { this.props.collections && this.props.collections.length > 0 &&
-              <div className="custom-list-filters">
-                <span>Automatically add new books from these collections to this list:</span>
-                <div className="collections">
-                  { this.props.collections.map(collection =>
-                      <EditableInput
-                        key={collection.id}
-                        type="checkbox"
-                        name="collection"
-                        checked={this.hasCollection(collection)}
-                        label={collection.name}
-                        value={String(collection.id)}
-                        onChange={() => {this.changeCollection(collection);}}
-                        />
-                    )
-                  }
-                </div>
-              </div>
-            }
           </div>
           <span>
             <button
@@ -111,30 +93,60 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           </span>
         </div>
         <div className="custom-list-editor-body">
-          <form className="form-inline" onSubmit={this.search}>
-            <fieldset>
-              <legend><h4>Search for titles</h4></legend>
-              {
-                this.props.entryPoints.length ? (
-                  <div className="entry-points">
-                    <span>Select the entry point to search for:</span>
-                    <div className="entry-points-selection">
-                      {this.getEntryPointsElms(this.props.entryPoints)}
-                    </div>
+          { this.props.collections && this.props.collections.length > 0 &&
+            <div className="custom-list-filters">
+              <Collapsible
+                title="Add from collections"
+                body={
+                  <div className="collections">
+                    <div>Automatically add new books from these collections to this list:</div>
+                    { this.props.collections.map(collection =>
+                        <EditableInput
+                          key={collection.id}
+                          type="checkbox"
+                          name="collection"
+                          checked={this.hasCollection(collection)}
+                          label={collection.name}
+                          value={String(collection.id)}
+                          onChange={() => {this.changeCollection(collection);}}
+                          />
+                      )
+                    }
                   </div>
-                ) : null
+                }
+              />
+            </div>
+          }
+          <form className="form-inline" onSubmit={this.search}>
+            <Collapsible
+              title="Search for titles"
+              openByDefault={true}
+              body={
+                <fieldset>
+                  <legend className="visuallyHidden">Search for titles</legend>
+                  {
+                    this.props.entryPoints.length ? (
+                      <div className="entry-points">
+                        <span>Select the entry point to search for:</span>
+                        <div className="entry-points-selection">
+                          {this.getEntryPointsElms(this.props.entryPoints)}
+                        </div>
+                      </div>
+                    ) : null
+                  }
+                  <input
+                    className="form-control"
+                    ref="searchTerms"
+                    type="text"
+                    />&nbsp;
+                  <button
+                    className="btn btn-default"
+                    type="submit">Search
+                      <SearchIcon />
+                  </button>
+                </fieldset>
               }
-              <input
-                className="form-control"
-                ref="searchTerms"
-                type="text"
-                />&nbsp;
-              <button
-                className="btn btn-default"
-                type="submit">Search
-                  <SearchIcon />
-              </button>
-            </fieldset>
+            />
           </form>
 
           <CustomListEntriesEditor

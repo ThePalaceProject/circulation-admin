@@ -46,7 +46,7 @@ describe("BookCoverEditor", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      wrapper = shallow(
+      wrapper = mount(
         <BookCoverEditor
           bookAdminUrl="/admin/book"
           rightsStatuses={rightsStatuses}
@@ -94,7 +94,7 @@ describe("BookCoverEditor", () => {
       let input = editableInputByName("title_position");
       expect(input.props().elementType).to.equal("select");
       expect(input.props().label).to.equal("Title and Author Position");
-      let options = input.children();
+      let options = input.find("option");
       expect(options.length).to.equal(4);
       expect(options.at(0).props().value).to.equal("none");
       expect(options.at(1).props().value).to.equal("top");
@@ -129,7 +129,7 @@ describe("BookCoverEditor", () => {
       expect(rightsStatusInput.props().elementType).to.equal("select");
       expect(rightsStatusInput.props().label).to.equal("License");
 
-      let children = rightsStatusInput.children();
+      let children = rightsStatusInput.find("option");
       expect(children.length).to.equal(3);
       expect(children.at(0).props().value).to.equal("http://creativecommons.org/licenses/by/4.0/");
       expect(children.at(0).text()).to.equal("Creative Commons Attribution (CC BY)");
@@ -164,12 +164,14 @@ describe("BookCoverEditor", () => {
     });
 
     it("shows save button", () => {
-      let save = wrapper.find("button");
-      expect(save.length).to.equal(1);
+      let buttons = wrapper.find("button");
+      // Counting the two buttons that are coming from the Collapsible component:
+      expect(buttons.length).to.equal(3);
+      let save = buttons.at(2);
       expect(save.props().disabled).to.be.ok;
 
       wrapper.setProps({ preview: "image data" });
-      save = wrapper.find("button");
+      save = wrapper.find("button").at(2);
       expect(save.props().disabled).not.to.be.ok;
     });
   });
@@ -273,7 +275,7 @@ describe("BookCoverEditor", () => {
       let rightsExplanation = editableInputByName("rights_explanation");
       rightsExplanation.get(0).setState({ value: "explanation" });
 
-      let saveButton = wrapper.find("button");
+      let saveButton = wrapper.find("button").at(2);
       saveButton.simulate("click");
 
       expect(editCover.callCount).to.equal(1);

@@ -4,6 +4,7 @@ import SaveButton from "./SaveButton";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
+import Collapsible from "./Collapsible";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface IndividualAdminEditFormProps {
@@ -44,116 +45,137 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.handleRoleChange = this.handleRoleChange.bind(this);
     this.handleData = this.handleData.bind(this);
     this.submit = this.submit.bind(this);
+    this.renderForm = this.renderForm.bind(this);
+    this.renderRoleForm = this.renderRoleForm.bind(this);
   }
 
-  render(): JSX.Element {
+  renderForm() {
     return (
-      <form ref="form" onSubmit={this.submit} className="edit-form">
-        <fieldset>
-          <legend className="visuallyHidden">Admin information</legend>
+      <fieldset>
+        <legend className="visuallyHidden">Admin information</legend>
+        <EditableInput
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          required={true}
+          readOnly={!!(this.props.item && this.props.item.email)}
+          name="email"
+          label="Email"
+          ref="email"
+          value={this.props.item && this.props.item.email}
+          error={this.props.error}
+          />
+        { this.canChangePassword() &&
           <EditableInput
             elementType="input"
             type="text"
             disabled={this.props.disabled}
-            required={true}
-            readOnly={!!(this.props.item && this.props.item.email)}
-            name="email"
-            label="Email"
-            ref="email"
-            value={this.props.item && this.props.item.email}
+            name="password"
+            label="Password"
+            ref="password"
             error={this.props.error}
             />
-          { this.canChangePassword() &&
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              required={true}
-              name="password"
-              label="Password"
-              ref="password"
-              error={this.props.error}
-              />
-          }
-        </fieldset>
-        { !this.context.settingUp &&
-          <fieldset>
-            <legend><h4>Roles</h4></legend>
-            <EditableInput
-              elementType="input"
-              type="checkbox"
-              disabled={this.isDisabled("system")}
-              name="system"
-              ref="system"
-              label="System Admin"
-              checked={this.isSelected("system")}
-              onChange={() => this.handleRoleChange("system")}
-              />
-            <table className="library-admin-roles">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>
-                    <EditableInput
-                       elementType="input"
-                       type="checkbox"
-                       disabled={this.isDisabled("manager-all")}
-                       name="manager-all"
-                       ref="manager-all"
-                       label="Library Manager"
-                       checked={this.isSelected("manager-all")}
-                       onChange={() => this.handleRoleChange("manager-all")}
+        }
+      </fieldset>
+    );
+  }
+
+  renderRoleForm() {
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Roles</legend>
+        <EditableInput
+          elementType="input"
+          type="checkbox"
+          disabled={this.isDisabled("system")}
+          name="system"
+          ref="system"
+          label="System Admin"
+          checked={this.isSelected("system")}
+          onChange={() => this.handleRoleChange("system")}
+          />
+        <table className="library-admin-roles">
+          <thead>
+            <tr>
+              <th></th>
+              <th>
+                <EditableInput
+                   elementType="input"
+                   type="checkbox"
+                   disabled={this.isDisabled("manager-all")}
+                   name="manager-all"
+                   ref="manager-all"
+                   label="Library Manager"
+                   checked={this.isSelected("manager-all")}
+                   onChange={() => this.handleRoleChange("manager-all")}
+                />
+              </th>
+              <th>
+                <EditableInput
+                  elementType="input"
+                  type="checkbox"
+                  disabled={this.isDisabled("librarian-all")}
+                  name="librarian-all"
+                  ref="librarian-all"
+                  label="Librarian"
+                  checked={this.isSelected("librarian-all")}
+                  onChange={() => this.handleRoleChange("librarian-all")}
+                  />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            { this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.map(library =>
+              <tr key={library.short_name}>
+                <td>
+                  {library.name}
+                </td>
+                <td>
+                  <EditableInput
+                    elementType="input"
+                    type="checkbox"
+                    disabled={this.isDisabled("manager", library.short_name)}
+                    name={"manager-" + library.short_name}
+                    ref={"manager-" + library.short_name}
+                    label=""
+                    checked={this.isSelected("manager", library.short_name)}
+                    onChange={() => this.handleRoleChange("manager", library.short_name)}
                     />
-                  </th>
-                  <th>
-                    <EditableInput
-                      elementType="input"
-                      type="checkbox"
-                      disabled={this.isDisabled("librarian-all")}
-                      name="librarian-all"
-                      ref="librarian-all"
-                      label="Librarian"
-                      checked={this.isSelected("librarian-all")}
-                      onChange={() => this.handleRoleChange("librarian-all")}
-                      />
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                { this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.map(library =>
-                  <tr key={library.short_name}>
-                    <td>
-                      {library.name}
-                    </td>
-                    <td>
-                      <EditableInput
-                        elementType="input"
-                        type="checkbox"
-                        disabled={this.isDisabled("manager", library.short_name)}
-                        name={"manager-" + library.short_name}
-                        ref={"manager-" + library.short_name}
-                        label=""
-                        checked={this.isSelected("manager", library.short_name)}
-                        onChange={() => this.handleRoleChange("manager", library.short_name)}
-                        />
-                    </td>
-                    <td>
-                      <EditableInput
-                        elementType="input"
-                        type="checkbox"
-                        disabled={this.isDisabled("librarian", library.short_name)}
-                        name={"librarian-" + library.short_name}
-                        ref={"librarian-" + library.short_name}
-                        label=""
-                        checked={this.isSelected("librarian", library.short_name)}
-                        onChange={() => this.handleRoleChange("librarian", library.short_name)}
-                        />
-                    </td>
-                  </tr>
-                ) }
-              </tbody>
-            </table>
-          </fieldset>
+                </td>
+                <td>
+                  <EditableInput
+                    elementType="input"
+                    type="checkbox"
+                    disabled={this.isDisabled("librarian", library.short_name)}
+                    name={"librarian-" + library.short_name}
+                    ref={"librarian-" + library.short_name}
+                    label=""
+                    checked={this.isSelected("librarian", library.short_name)}
+                    onChange={() => this.handleRoleChange("librarian", library.short_name)}
+                    />
+                </td>
+              </tr>
+            ) }
+          </tbody>
+        </table>
+      </fieldset>
+    );
+  };
+
+  render(): JSX.Element {
+    return (
+      <form ref="form" onSubmit={this.submit} className="edit-form">
+        <Collapsible
+          title="Admin Information"
+          openByDefault={true}
+          body={this.renderForm()}
+        />
+        { !this.context.settingUp &&
+          <Collapsible
+            title="Admin Roles"
+            openByDefault={true}
+            body={this.renderRoleForm()}
+          />
         }
         <SaveButton
           disabled={this.props.disabled}
