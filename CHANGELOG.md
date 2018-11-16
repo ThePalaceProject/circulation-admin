@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.0.87
+#### Added
+- Visually grouped related fields in order to make forms more readable.
+- 
+
 ### v0.0.86
 #### Fixed
 - Fixed a bug which prevented forms containing collapsible elements from being submitted on enter.
