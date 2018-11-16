@@ -2,8 +2,7 @@
 
 ### v0.0.87
 #### Added
-- Visually grouped related fields in order to make forms more readable.
-- 
+- Grouped related fields together in order to make forms more readable.
 
 ### v0.0.86
 #### Fixed
