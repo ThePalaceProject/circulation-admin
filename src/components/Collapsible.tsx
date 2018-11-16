@@ -34,12 +34,11 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
 
   renderHeader() {
     let icon = this.state.open ? "minus" : "plus";
-    const { collapsible, title } = this.props;
-    const content = (
-      <div>
-        <span>{title}</span>
-        { collapsible ? <Glyphicon glyph={icon} /> : null}
-      </div>
+    return (
+      <button type="button" bsStyle="default" onClick={this.toggle}>
+        <span>{this.props.title}</span>
+        <Glyphicon glyph={icon} />
+      </button>
     );
     let element = "div";
     if (collapsible) {

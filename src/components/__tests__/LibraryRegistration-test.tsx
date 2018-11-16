@@ -25,9 +25,9 @@ describe("LibraryRegistration", () => {
     library_settings: []
   }];
   let allLibraries = [
-    { "short_name": "nypl", name: "New York Public Library" },
-    { "short_name": "bpl", name: "Brooklyn Public Library" },
-    { "short_name": "qpl", name: "Queens Public Library" }
+    { "short_name": "nypl", name: "New York Public Library", uuid: "1" },
+    { "short_name": "bpl", name: "Brooklyn Public Library", uuid: "2" },
+    { "short_name": "qpl", name: "Queens Public Library", uuid: "3" }
   ];
   let libraryRegistrationsData = [{
     id: 1,
@@ -99,6 +99,20 @@ describe("LibraryRegistration", () => {
       expect(libraries.at(1).text()).to.contain("Registration failed");
       expect(libraries.at(2).text()).to.contain("Queens Public Library");
       expect(libraries.at(2).text()).to.contain("Not registered");
+    });
+
+    it("provides links to the libraries' edit forms", () => {
+      wrapper.setProps({ item: serviceData });
+      let libraries = wrapper.find(".service-with-registrations-library");
+      expect(libraries.length).to.equal(3);
+
+      let link1 = libraries.at(0).find("a");
+      let link2 = libraries.at(1).find("a");
+      let link3 = libraries.at(2).find("a");
+
+      expect(link1.props().href).to.equal("/admin/web/config/libraries/edit/1");
+      expect(link2.props().href).to.equal("/admin/web/config/libraries/edit/2");
+      expect(link3.props().href).to.equal("/admin/web/config/libraries/edit/3");
     });
 
     describe("rendering registration information", () => {
@@ -188,10 +202,10 @@ describe("LibraryRegistration", () => {
           ]
         }];
         let allLibrariesWBoston = [
-          { "short_name": "nypl", name: "New York Public Library" },
-          { "short_name": "bpl", name: "Brooklyn Public Library" },
-          { "short_name": "qpl", name: "Queens Public Library" },
-          { "short_name": "boston", name: "Boston Public Library" }
+          { "short_name": "nypl", name: "New York Public Library", uuid: "1" },
+          { "short_name": "bpl", name: "Brooklyn Public Library", uuid: "2" },
+          { "short_name": "qpl", name: "Queens Public Library", uuid: "3" },
+          { "short_name": "boston", name: "Boston Public Library", uuid: "4" }
         ];
         servicesData.allLibraries = allLibrariesWBoston;
         servicesData.libraryRegistrations = libraryRegistrationsDataWBoston;

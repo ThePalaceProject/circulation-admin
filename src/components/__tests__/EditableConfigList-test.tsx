@@ -156,8 +156,8 @@ describe("EditableConfigList", () => {
 
   it("correctly formats item type name for success message", () => {
     expect(wrapper.instance().formatItemType()).to.equal("thing");
-    let getItemType = stub(wrapper.instance(), "getItemType").returns("ALLCAPS");
-    expect(wrapper.instance().formatItemType()).to.equal("ALLCAPS");
+    let getItemType = stub(wrapper.instance(), "getItemType").returns("ALLCAPS service");
+    expect(wrapper.instance().formatItemType()).to.equal("ALLCAPS service");
     getItemType.returns("someCAPS");
     expect(wrapper.instance().formatItemType()).to.equal("somecaps");
     getItemType.restore();
