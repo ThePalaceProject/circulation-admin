@@ -3,7 +3,11 @@ import { Panel, Button, Glyphicon } from "react-bootstrap";
 
 export interface CollapsibleProps {
   title: string;
-  body: string;
+  text?: string;
+  type?: string;
+  body?: JSX.Element;
+  openByDefault?: boolean;
+  collapsible?: boolean;
 }
 
 export interface CollapsibleState {
@@ -11,12 +15,16 @@ export interface CollapsibleState {
 }
 
 export default class Collapsible extends React.Component<CollapsibleProps, CollapsibleState> {
+  static defaultProps = {
+    collapsible: true,
+  };
 
   constructor(props) {
     super(props);
-    this.state = { open: false };
+    this.state = { open: this.props.openByDefault || false };
     this.toggle = this.toggle.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
+    this.renderSection = this.renderSection.bind(this);
   }
 
   toggle(e) {
@@ -32,12 +40,38 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
         <Glyphicon glyph={icon} />
       </button>
     );
+    let element = "div";
+    if (collapsible) {
+      element = "button";
+    }
+
+    return React.createElement(element, {
+      bsStyle: "default",
+      onClick: this.toggle,
+    }, content );
+  }
+
+  renderSection() {
+    const { body, text, type } = this.props;
+    if (text && type === "instruction") {
+      return <section dangerouslySetInnerHTML={{ __html: text }} />;
+    } else if (body) {
+      return <section>{body}</section>;
+    }
+    return null;
   }
 
   render() {
+    const className = this.props.type === "instruction" ? "instruction" : "";
+    const staticPanel = !this.props.collapsible ? "staticPanel" : "";
     return (
-      <Panel className="collapsible" collapsible={true} header={this.renderHeader()} expanded={this.state.open}>
-        <section dangerouslySetInnerHTML={{__html: this.props.body}}></section>
+      <Panel
+        className={`collapsible ${className} ${staticPanel}`}
+        collapsible={this.props.collapsible}
+        header={this.renderHeader()}
+        expanded={this.state.open}
+      >
+        {this.renderSection()}
       </Panel>
     );
   }

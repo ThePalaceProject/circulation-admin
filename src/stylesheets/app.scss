@@ -4,6 +4,7 @@
 
 @import "mixins";
 @import "colors";
+@import "global";
 
 @import "admin_auth_service_edit_form";
 @import "book_details_container";
@@ -14,6 +15,7 @@
 @import "classifications";
 @import "classifications_form";
 @import "classifications_table";
+@import "collapsible";
 @import "collection_edit_form";
 @import "color_picker";
 @import "complaint_form";

@@ -26,11 +26,13 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     };
     this.addContributor = this.addContributor.bind(this);
     this.removeContributor = this.removeContributor.bind(this);
+    this.renderForm = this.renderForm.bind(this);
   }
 
-  render(): JSX.Element {
+  renderForm() {
     return (
-      <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
+      <fieldset>
+        <legend className="visuallyHidden">Edit Book Metadata</legend>
         <EditableInput
           elementType="input"
           type="text"
@@ -199,6 +201,14 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           value={this.props.summary}
           optionalText={false}
           />
+      </fieldset>
+    );
+  }
+
+  render(): JSX.Element {
+    return (
+      <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
+        {this.renderForm()}
         <button
           className="btn btn-default"
           disabled={this.props.disabled}

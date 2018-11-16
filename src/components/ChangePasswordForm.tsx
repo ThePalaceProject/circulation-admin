@@ -54,22 +54,27 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
           <Alert bsStyle="success">Password changed successfully.</Alert>
         }
         <form ref="form" onSubmit={this.save}>
-          <EditableInput
-            elementType="input"
-            type="password"
-            disabled={this.props.isFetching}
-            name="password"
-            label="New Password"
-            ref="password"
-            />
-          <EditableInput
-            elementType="input"
-            type="password"
-            disabled={this.props.isFetching}
-            name="confirm_password"
-            label="Confirm New Password"
-            ref="confirm"
-            />
+          <fieldset>
+            <legend className="visuallyHidden">Change admin's password</legend>
+            <EditableInput
+              elementType="input"
+              type="password"
+              disabled={this.props.isFetching}
+              name="password"
+              label="New Password"
+              ref="password"
+              required={true}
+              />
+            <EditableInput
+              elementType="input"
+              type="password"
+              disabled={this.props.isFetching}
+              name="confirm_password"
+              label="Confirm New Password"
+              ref="confirm"
+              required={true}
+              />
+          </fieldset>
           <button
             type="submit"
             className="btn btn-default"

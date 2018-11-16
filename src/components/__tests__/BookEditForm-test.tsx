@@ -62,7 +62,7 @@ describe("BookEditForm", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      wrapper = shallow(
+      wrapper = mount(
         <BookEditForm
           {...bookData}
           roles={roles}
@@ -342,7 +342,7 @@ describe("BookEditForm", () => {
   });
 
   it("disables all inputs", () => {
-    wrapper = shallow(
+    wrapper = mount(
       <BookEditForm
         {...bookData}
         roles={roles}

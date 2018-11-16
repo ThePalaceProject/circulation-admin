@@ -1,0 +1,67 @@
+.collapsible {
+  a {
+    color: #000;
+
+    &:hover {
+      color: #000;
+    }
+  }
+  .panel-heading {
+    border: none;
+    padding: 0;
+    background-color: $gray;
+
+    .panel-title {
+      width: 100%;
+      text-align: left;
+      background: $gray;
+      padding: 7px 9px;
+      border: none;
+      &:hover {
+        background-color: $medium-gray;
+      }
+      a {
+        display: block;
+      }
+      .glyphicon {
+        float: right;
+        line-height: inherit;
+        color: $linkcolor;
+      }
+    }
+  }
+  &.staticPanel {
+    .panel-title {
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+.instruction {
+  box-shadow: none;
+  border: 1px solid $linkcolor;
+  border-radius: 0;
+  .panel-heading {
+    font-weight: bold;
+    .panel-title {
+      background: $linkcolor;
+      &:hover {
+        background: $linkcolor;
+      }
+    }
+    .panel-title a {
+      color: white;
+      &:focus {
+        outline: none;
+        text-decoration: none;
+      }
+      .glyphicon {
+        float: right;
+        line-height: inherit;
+        color: $white;
+      }
+    }
+  }
+}

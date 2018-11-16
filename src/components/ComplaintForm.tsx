@@ -35,20 +35,22 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
 
     return (
       <div className="complaint-form">
-        <h3>Add Complaint</h3>
-        { this.state.errors.map((error, i) =>
-          <div className="complaint-form-error" key={i}>{error}</div>
-        ) }
         <form onSubmit={this.post} className="form-inline">
-          <EditableInput
-            elementType="select"
-            ref="type"
-            name="type"
-            placeholder=""
-            disabled={this.props.disabled}>
-            <option value="">complaint type</option>
-            { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
-          </EditableInput> &nbsp;
+          <fieldset>
+            <legend>Add Complaint</legend>
+            { this.state.errors.map((error, i) =>
+              <div className="complaint-form-error" key={i}>{error}</div>
+            ) }
+            <EditableInput
+              elementType="select"
+              ref="type"
+              name="type"
+              placeholder=""
+              disabled={this.props.disabled}>
+              <option value="">complaint type</option>
+              { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
+            </EditableInput> &nbsp;
+          </fieldset>
           <input className="btn btn-default" type="submit" value="Submit" disabled={this.props.disabled} />
         </form>
       </div>

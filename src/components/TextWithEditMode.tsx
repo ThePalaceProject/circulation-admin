@@ -37,6 +37,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               type="text"
               placeholder={this.props.placeholder}
               value={this.state.text}
+              optionalText={false}
               ref="text"
               />
             <a
