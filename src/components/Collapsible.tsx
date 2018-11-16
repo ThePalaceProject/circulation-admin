@@ -40,15 +40,6 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
         <Glyphicon glyph={icon} />
       </button>
     );
-    let element = "div";
-    if (collapsible) {
-      element = "button";
-    }
-
-    return React.createElement(element, {
-      bsStyle: "default",
-      onClick: this.toggle,
-    }, content );
   }
 
   renderSection() {
