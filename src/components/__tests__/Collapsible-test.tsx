@@ -127,7 +127,7 @@ describe("Collapsible", () => {
       expect(wrapper.props().text).to.equal(undefined);
       expect(section.props().dangerouslySetInnerHTML).to.equal(undefined);
       expect(section.html()).to.equal(
-        "<section><div><!-- react-text: 11 -->Form here <!-- /react-text --><label>Test label</label><input type=\"text\"></div></section>"
+        "<section><div><!-- react-text: 12 -->Form here <!-- /react-text --><label>Test label</label><input type=\"text\"></div></section>"
       );
     });
   });
