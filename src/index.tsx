@@ -44,7 +44,7 @@ interface ConfigurationSettings {
 class CirculationWeb {
   constructor(config: ConfigurationSettings) {
     let div = document.createElement("div");
-    div.id = "opds-catalog";
+    div.id = config.settingUp ? "welcome-page" : "opds-catalog";
     document.getElementsByTagName("body")[0].appendChild(div);
 
     let catalogEditorPath = "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
@@ -56,7 +56,7 @@ class CirculationWeb {
         <ContextProvider {...config}>
           <SetupPage />
         </ContextProvider>,
-        document.getElementById("opds-catalog")
+        document.getElementById("welcome-page")
       );
     } else {
       ReactDOM.render(
