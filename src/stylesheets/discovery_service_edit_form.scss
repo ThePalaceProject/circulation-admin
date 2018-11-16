@@ -16,7 +16,13 @@
     flex-direction: column;
 
     .current-stage {
-      margin: 0 0 15px
+      margin: 0 0 15px;
+    }
+
+    .registration-status {
+      .bg-success {
+        padding-top: 6px;
+      }
     }
   }
 

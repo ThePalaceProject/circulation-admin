@@ -796,6 +796,15 @@ describe("ServiceEditForm", () => {
       expect(save.callCount).to.equal(1);
     });
 
+    it("calls save on submit even if there is a collapsible panel", () => {
+      wrapper.setState({ protocol: "protocol with instructions" });
+      let collapsible = wrapper.find(".collapsible");
+      expect(collapsible.length).to.equal(3);
+
+      wrapper.simulate("submit");
+      expect(save.callCount).to.equal(1);
+    });
+
     it("calls handleData", () => {
       let handleData = spy(wrapper.instance(), "handleData");
       wrapper.setProps({ item: serviceData });
