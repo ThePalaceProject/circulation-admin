@@ -799,7 +799,7 @@ describe("ServiceEditForm", () => {
     it("calls save on submit even if there is a collapsible panel", () => {
       wrapper.setState({ protocol: "protocol with instructions" });
       let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.length).to.equal(1);
+      expect(collapsible.length).to.equal(3);
 
       wrapper.simulate("submit");
       expect(save.callCount).to.equal(1);
