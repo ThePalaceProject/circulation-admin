@@ -27,7 +27,7 @@ describe("WelcomePage", () => {
     expect(jumbotron.length).to.equal(1);
     let title = jumbotron.find("h2");
     expect(title.length).to.equal(1);
-    expect(title.text()).to.equal("Welcome to the admin interface!");
+    expect(title.text()).to.equal("Welcome to the Circulation Admin Interface!");
   });
 
   it("shows a link to the library form", () => {

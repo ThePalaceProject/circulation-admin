@@ -9,7 +9,7 @@ export default class WelcomePage extends React.Component<void, void> {
       <div className="welcome-page">
         <Header />
         <Jumbotron>
-          <h2>Welcome to the admin interface!</h2>
+          <h2>Welcome to the Circulation Admin Interface!</h2>
           <hr></hr>
           <p>
               You don't have any libraries yet.  To get started, go to the System Configuration section and
