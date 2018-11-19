@@ -41,14 +41,13 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
         { collapsible ? <Glyphicon glyph={icon} /> : null}
       </div>
     );
-    let element = "div";
-    if (collapsible) {
-      element = "button";
-    }
+
+    let [ element, type ] = collapsible ? ["button", "button"] : ["div", null];
 
     return React.createElement(element, {
       bsStyle: "default",
       onClick: this.toggle,
+      type: type
     }, content );
   }
 

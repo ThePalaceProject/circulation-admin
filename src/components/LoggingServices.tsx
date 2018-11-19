@@ -10,7 +10,7 @@ import ServiceEditForm from "./ServiceEditForm";
 export class LoggingServices extends EditableConfigList<LoggingServicesData, LoggingServiceData> {
   EditForm = ServiceEditForm;
   listDataKey = "logging_services";
-  itemTypeName = "logging services";
+  itemTypeName = "logging service";
   urlBase = "/admin/web/config/logging/";
   identifierKey = "id";
   labelKey = "protocol";
