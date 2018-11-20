@@ -7,6 +7,7 @@ import * as jsdom from "jsdom";
 import CatalogPage from "../CatalogPage";
 import OPDSCatalog from "opds-web-client/lib/components/OPDSCatalog";
 import Header from "../Header";
+import WelcomePage from "../WelcomePage";
 import BookDetailsContainer from "../BookDetailsContainer";
 
 describe("CatalogPage", () => {
@@ -42,13 +43,13 @@ describe("CatalogPage", () => {
     expect(pageTitleTemplate("Collection", null)).to.equal("Circulation Manager - Collection");
   });
 
-  it("only renders header when there's no library", () => {
+  it("renders welcome page when there's no library", () => {
     let newParams = Object.assign({}, params, { collectionUrl: null, bookUrl: null, tab: null });
     wrapper.setProps({ params: newParams });
     let catalog = wrapper.find(OPDSCatalog);
     expect(catalog.length).to.equal(0);
-    let header = wrapper.find(Header);
-    expect(header.length).to.equal(1);
+    let welcomePage = wrapper.find(WelcomePage);
+    expect(welcomePage.length).to.equal(1);
   });
 
   it("includes tab in child context", () => {
