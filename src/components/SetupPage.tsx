@@ -6,7 +6,6 @@ import { State } from "../reducers/index";
 export interface SetupPageContext {
   editorStore: Store<State>;
   csrfToken: string;
-  settingUp: boolean;
 }
 
 /** Page that's displayed the first time the admin interface is opened when
@@ -21,7 +20,6 @@ export default class SetupPage extends React.Component<void, void> {
   static contextTypes: React.ValidationMap<SetupPageContext> = {
     editorStore: React.PropTypes.object.isRequired,
     csrfToken: React.PropTypes.string.isRequired,
-    settingUp: React.PropTypes.bool.isRequired,
   };
 
   render(): JSX.Element {
@@ -29,7 +27,7 @@ export default class SetupPage extends React.Component<void, void> {
       <IndividualAdmins
         store={this.context.editorStore}
         csrfToken={this.context.csrfToken}
-        settingUp={this.context.settingUp}
+        settingUp={true}
         editOrCreate="create"
         />
     );
