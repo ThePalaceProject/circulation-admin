@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.89
+#### Updated
+- Updated the opds-web-client package and passing down a prop to use all languages when doing submitting a search term.
+
 ### v0.0.88
 #### Added
 - Added a welcome message for admins who have no libraries yet.
