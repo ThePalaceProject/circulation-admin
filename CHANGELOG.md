@@ -3,6 +3,8 @@
 ### v0.0.88
 #### Added
 - Added a welcome message for admins who have no libraries yet.
+#### Updated
+- Improved the appearance and behavior of the sign-up form.
 
 ### v0.0.87
 #### Added

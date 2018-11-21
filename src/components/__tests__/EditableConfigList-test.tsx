@@ -176,6 +176,12 @@ describe("EditableConfigList", () => {
     expect(header.text()).to.equal("Thing configuration");
   });
 
+  it("shows welcome message on setup", () => {
+    wrapper.setProps({ settingUp: true });
+    let header = wrapper.find("h2");
+    expect(header.text()).to.equal("Welcome!");
+  });
+
   it("shows thing list", () => {
     let things = wrapper.find("li");
     expect(things.length).to.equal(1);
@@ -283,6 +289,12 @@ describe("EditableConfigList", () => {
     expect(deleteItem.args[0][0]).to.equal(5);
 
     confirmStub.restore();
+  });
+
+  it("shows setup message on setup", () => {
+    wrapper.setProps({ settingUp: true, editOrCreate: "create" });
+    let formHeader = wrapper.find("h3");
+    expect(formHeader.text()).to.equal("Set up your system admin account");
   });
 
   it("shows create form", () => {

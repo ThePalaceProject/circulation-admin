@@ -73,6 +73,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             name="password"
             label="Password"
             ref="password"
+            required={this.context.settingUp}
             error={this.props.error}
             />
         }
@@ -168,6 +169,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         <Collapsible
           title="Admin Information"
           openByDefault={true}
+          collapsible={!this.context.settingUp}
           body={this.renderForm()}
         />
         { !this.context.settingUp &&
@@ -348,12 +350,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   async submit(event) {
     event.preventDefault();
     await handleSubmit(this);
-    // If we're setting up an admin for the first time, refresh the page
-    // to go to login.
-    if (this.context.settingUp) {
-     window.location.reload();
-     return;
-    }
   }
 
 }

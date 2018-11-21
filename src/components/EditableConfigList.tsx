@@ -26,6 +26,7 @@ export interface EditableConfigListOwnProps {
   csrfToken: string;
   editOrCreate?: string;
   identifier?: string;
+  settingUp?: boolean;
 }
 
 export interface EditableConfigListProps<T> extends EditableConfigListStateProps<T>, EditableConfigListDispatchProps<T>, EditableConfigListOwnProps {}
@@ -73,9 +74,19 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   render(): JSX.Element {
     let EditForm = this.EditForm;
     let AdditionalContent = this.AdditionalContent || null;
+    let headers = this.getHeaders();
+
+    let className = "";
+    if (AdditionalContent) {
+      className = "has-additional-content";
+    }
+    else if (this.props.settingUp) {
+      className = "set-up";
+    }
+
     return (
-      <div className={AdditionalContent ? "has-additional-content" : ""}>
-        <h2>{this.getItemType()} configuration</h2>
+      <div className={className}>
+        <h2>{headers["h2"]}</h2>
         { this.props.responseBody && this.props.editOrCreate &&
           <Alert bsStyle="success">
             {this.successMessage()}
@@ -137,7 +148,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }
         { (this.props.editOrCreate === "create") &&
           <div>
-            <h3>Create a new {this.itemTypeName}</h3>
+            <h3>{headers["h3"]}</h3>
             <EditForm
               ref="edit-form"
               data={this.props.data}
@@ -173,6 +184,12 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  getHeaders() {
+    let h2 = this.props.settingUp ? "Welcome!" : `${this.getItemType()} configuration`;
+    let h3 = this.props.settingUp ? "Set up your system admin account" : `Create a new ${this.itemTypeName}`;
+    return { h2, h3 };
   }
 
   getItemType() {
@@ -226,7 +243,13 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   save(data: FormData) {
     this.editItem(data).then(() => {
-      if (this.limitOne && this.props.editOrCreate === "create") {
+      // If we're setting up an admin for the first time, refresh the page
+      // to go to login.
+      if (this.props.settingUp) {
+       window.location.reload();
+       return;
+      }
+      else if (this.limitOne && this.props.editOrCreate === "create") {
         // Wait for two seconds so that the user can see the success message,
         // then go to the edit page
         setTimeout(() => {
