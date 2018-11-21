@@ -10,6 +10,7 @@ import Header from "./Header";
 import { BookLink } from "../interfaces";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 import EntryPointsContainer from "./EntryPointsContainer";
+import WelcomePage from "./WelcomePage";
 
 export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
@@ -50,6 +51,11 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
     return null;
   }
 
+  hasLibrary(): boolean {
+    let library = this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl);
+    return !!(library);
+  }
+
   expandCollectionUrl(url: string): string {
     return url ?
       document.location.origin + "/" + url :
@@ -66,9 +72,10 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
   }
 
   render(): JSX.Element {
-    if (!this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl)) {
+
+    if (!this.hasLibrary()) {
       return (
-        <Header />
+        <WelcomePage />
       );
     }
 

@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.88
+#### Added
+- Added a welcome message for admins who have no libraries yet.
+
 ### v0.0.87
 #### Added
 - Grouped related fields together in order to make forms more readable.

@@ -1,0 +1,19 @@
+.welcome-page {
+  .jumbotron {
+    width: 90%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: $gray;
+    border-radius: 4px;
+    h2 {
+      text-align: center;
+      color: $dark;
+    }
+    hr {
+      color: $dark;
+    }
+    p {
+      font-weight: 300;
+    }
+  }
+}
