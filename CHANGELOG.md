@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.89
+#### Updated
+- Styling for active header nav link.
+
 ### v0.0.88
 #### Added
 - Added a welcome message for admins who have no libraries yet.

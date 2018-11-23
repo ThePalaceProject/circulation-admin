@@ -37,7 +37,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
   static contextTypes = {
     library: React.PropTypes.func,
-    router: React.PropTypes.object.isRequired,
+    router: React.PropTypes.shape({
+      getCurrentLocation: React.PropTypes.func.isRequired,
+    }),
     admin: React.PropTypes.object.isRequired,
   };
 
@@ -55,8 +57,15 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render(): JSX.Element {
-
     let isLibraryManager = this.context.library && this.context.admin.isLibraryManager(this.context.library());
+    console.log(this.context.router);
+    let links = ["maincatalog", "complaints", "suppressed", "lists", "lanes", "dashboard", "patrons", "config", "account"];
+    let linkIndex = 0;
+    links.forEach((link, index) => {
+      if (this.context.router.getCurrentLocation().pathname.indexOf(link) !== -1){
+        linkIndex = index;
+      }
+    });
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
@@ -88,38 +97,56 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/groups"}
-                  bookUrl={null}>
+                  bookUrl={null}
+                  activeClassName="active-link"
+                >
                   Catalog
                 </CatalogLink>
               </li>
               <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/complaints"}
-                  bookUrl={null}>
+                  bookUrl={null}
+                  activeClassName="active-link"
+                >
                   Complaints
                 </CatalogLink>
               </li>
               <li className="header-link">
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/suppressed"}
-                  bookUrl={null}>
+                  bookUrl={null}
+                  activeClassName="active-link"
+                >
                   Hidden Books
                 </CatalogLink>
               </li>
               <li className="header-link">
-                <Link to={"/admin/web/lists/" + this.context.library()}>Lists</Link>
+                <Link
+                  to={"/admin/web/lists/" + this.context.library()}
+                  className={linkIndex === 3 ? "active-link" : ""}
+                >Lists</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
-                  <Link to={"/admin/web/lanes/" + this.context.library()}>Lanes</Link>
+                  <Link
+                    to={"/admin/web/lanes/" + this.context.library()}
+                    className={linkIndex === 4 ? "active-link" : ""}
+                  >Lanes</Link>
                 </li>
               }
               <li className="header-link">
-                <Link to={"/admin/web/dashboard/" + this.context.library()}>Dashboard</Link>
+                <Link
+                  to={"/admin/web/dashboard/" + this.context.library()}
+                  className={linkIndex === 5 && this.context.library() ? "active-link" : ""}
+                >Dashboard</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
-                  <Link to={"/admin/web/patrons/" + this.context.library()}>Patrons</Link>
+                  <Link
+                    to={"/admin/web/patrons/" + this.context.library()}
+                    className={linkIndex === 6 ? "active-link" : ""}
+                  >Patrons</Link>
                 </li>
               }
             </Nav>
@@ -127,12 +154,17 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           <Nav className="pull-right">
             { (!this.context.library || !this.context.library()) &&
               <li className="header-link">
-                <Link to="/admin/web/dashboard">Dashboard</Link>
+                <Link to="/admin/web/dashboard"
+                  className={linkIndex === 5 ? "active-link" : ""}
+                >Dashboard</Link>
               </li>
             }
             { this.context.admin.isLibraryManagerOfSomeLibrary() &&
               <li className="header-link">
-                <Link to="/admin/web/config">System Configuration</Link>
+                <Link
+                  to="/admin/web/config"
+                  className={linkIndex === 7 ? "active-link" : ""}
+                >System Configuration</Link>
               </li>
             }
             { this.context.admin.email &&
@@ -147,7 +179,12 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   >{ this.context.admin.email } &#9660;</a>
                 { this.state.showAccountDropdown &&
                   <ul className="dropdown-menu">
-                    <li><Link to="/admin/web/account">Change password</Link></li>
+                    <li>
+                      <Link
+                        to="/admin/web/account"
+                        className={linkIndex === 8 ? "active-link" : ""}
+                      >Change password</Link>
+                    </li>
                     <li><a href="/admin/sign_out">Sign out</a></li>
                   </ul>
                 }
