@@ -15,6 +15,7 @@ describe("IndividualAdmins", () => {
       <IndividualAdmins
         settingUp={true}
         editOrCreate="create"
+        csrfToken="token"
       />,
       { context: { settingUp: true},
         childContextTypes: { settingUp: React.PropTypes.bool.isRequired }

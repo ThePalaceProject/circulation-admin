@@ -347,9 +347,9 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     return data;
   }
 
-  async submit(event) {
+  submit(event) {
     event.preventDefault();
-    await handleSubmit(this);
+    handleSubmit(this);
   }
 
 }

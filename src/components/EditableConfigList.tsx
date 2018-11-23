@@ -23,7 +23,7 @@ export interface EditableConfigListDispatchProps<T> {
 
 export interface EditableConfigListOwnProps {
   store?: Store<State>;
-  csrfToken?: string;
+  csrfToken: string;
   editOrCreate?: string;
   identifier?: string;
   settingUp?: boolean;
