@@ -23,7 +23,29 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
   };
 
   canDelete(item) {
-    return this.context.admin.isSystemAdmin();
+    return this.context.admin && this.context.admin.isSystemAdmin();
+  }
+
+  getHeaders() {
+    let h2 = this.props.settingUp ? "Welcome!" : "Individual admin configuration";
+    let h3 = this.props.settingUp ? "Set up your system admin account" : "Create a new individual admin";
+    return { h2, h3 };
+  }
+
+  getClassName() {
+    let className = this.props.settingUp ? "set-up" : "";
+    return className;
+  }
+
+  save(data: FormData) {
+    this.editItem(data).then(() => {
+      // If we're setting up an admin for the first time, refresh the page
+      // to go to login.
+      if (this.props.settingUp) {
+       window.location.reload();
+       return;
+     }
+    });
   }
 }
 

@@ -199,7 +199,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   }
 
   canChangePassword() {
-    if (!this.props.item || !this.props.item.roles) {
+    if (this.context.settingUp || !this.props.item || !this.props.item.roles) {
       return true;
     }
     if (this.props.item.roles.length === 0) {

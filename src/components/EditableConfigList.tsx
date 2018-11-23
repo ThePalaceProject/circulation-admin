@@ -23,7 +23,7 @@ export interface EditableConfigListDispatchProps<T> {
 
 export interface EditableConfigListOwnProps {
   store?: Store<State>;
-  csrfToken: string;
+  csrfToken?: string;
   editOrCreate?: string;
   identifier?: string;
   settingUp?: boolean;
@@ -76,16 +76,8 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     let AdditionalContent = this.AdditionalContent || null;
     let headers = this.getHeaders();
 
-    let className = "";
-    if (AdditionalContent) {
-      className = "has-additional-content";
-    }
-    else if (this.props.settingUp) {
-      className = "set-up";
-    }
-
     return (
-      <div className={className}>
+      <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
         { this.props.responseBody && this.props.editOrCreate &&
           <Alert bsStyle="success">
@@ -187,9 +179,14 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   getHeaders() {
-    let h2 = this.props.settingUp ? "Welcome!" : `${this.getItemType()} configuration`;
-    let h3 = this.props.settingUp ? "Set up your system admin account" : `Create a new ${this.itemTypeName}`;
+    let h2 = `${this.getItemType()} configuration`;
+    let h3 = `Create a new ${this.itemTypeName}`;
     return { h2, h3 };
+  }
+
+  getClassName() {
+    let className = this.AdditionalContent ? "has-additional-content" : "";
+    return className;
   }
 
   getItemType() {
@@ -243,13 +240,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   save(data: FormData) {
     this.editItem(data).then(() => {
-      // If we're setting up an admin for the first time, refresh the page
-      // to go to login.
-      if (this.props.settingUp) {
-       window.location.reload();
-       return;
-      }
-      else if (this.limitOne && this.props.editOrCreate === "create") {
+      if (this.limitOne && this.props.editOrCreate === "create") {
         // Wait for two seconds so that the user can see the success message,
         // then go to the edit page
         setTimeout(() => {
