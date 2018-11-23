@@ -111,11 +111,16 @@ describe("EditableConfigList", () => {
     );
   });
 
-  it("shows error message", () => {
+  it("shows error message only if the form is displayed", () => {
     let error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(0);
+
     let fetchError = { status: 400, response: "test error", url: "test url" };
     wrapper.setProps({ fetchError });
+    error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(0);
+
+    wrapper.setProps({ editOrCreate: "create" });
     error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(1);
     expect(error.text()).to.equal("Error: test error");
