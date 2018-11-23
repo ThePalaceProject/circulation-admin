@@ -60,7 +60,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
   render(): JSX.Element {
     let isLibraryManager = this.context.library && this.context.admin.isLibraryManager(this.context.library());
-    console.log(this.context.router);
     let links = ["maincatalog", "complaints", "suppressed", "lists", "lanes", "dashboard", "patrons", "config", "account"];
     let linkIndex = 0;
     links.forEach((link, index) => {
