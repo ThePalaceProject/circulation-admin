@@ -30,16 +30,18 @@ export interface HeaderState {
   showAccountDropdown: boolean;
 }
 
+export interface HeaderRouter extends Router {
+  getCurrentLocation?: Function;
+}
+
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, HeaderState> {
-  context: { library: () => string, router: Router, admin: Admin };
+  context: { library: () => string, router: HeaderRouter, admin: Admin };
 
   static contextTypes = {
     library: React.PropTypes.func,
-    router: React.PropTypes.shape({
-      getCurrentLocation: React.PropTypes.func.isRequired,
-    }),
+    router: React.PropTypes.object.isRequired,
     admin: React.PropTypes.object.isRequired,
   };
 
@@ -62,7 +64,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let links = ["maincatalog", "complaints", "suppressed", "lists", "lanes", "dashboard", "patrons", "config", "account"];
     let linkIndex = 0;
     links.forEach((link, index) => {
-      if (this.context.router.getCurrentLocation().pathname.indexOf(link) !== -1){
+      if (this.context.router &&
+        this.context.router.getCurrentLocation() &&
+        this.context.router.getCurrentLocation().pathname.indexOf(link) !== -1) {
         linkIndex = index;
       }
     });
