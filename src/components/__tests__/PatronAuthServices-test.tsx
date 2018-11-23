@@ -20,7 +20,8 @@ describe("PatronAuthServices", () => {
       libraries: [{
         short_name: "nypl",
         test_library_setting: "test library setting"
-      }]
+      }],
+      name: "nypl protocol",
     }],
     protocols: [{
       name: "test protocol",
@@ -54,7 +55,7 @@ describe("PatronAuthServices", () => {
   it("shows patron auth service list", () => {
     let patronAuthService = wrapper.find("li");
     expect(patronAuthService.length).to.equal(1);
-    expect(patronAuthService.at(0).text()).to.contain("test protocol label");
+    expect(patronAuthService.at(0).text()).to.contain("nypl protocol - test protocol label");
     let editLink = patronAuthService.at(0).find("a");
     expect(editLink.props().href).to.equal("/admin/web/config/patronAuth/edit/2");
   });
