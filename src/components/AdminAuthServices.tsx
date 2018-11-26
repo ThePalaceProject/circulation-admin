@@ -22,10 +22,13 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
+  // fetchError = an error involving loading the list of admin auth services; formError = an error upon
+  // submission of the create/edit form.
   return {
     data,
     responseBody: state.editor.adminAuthServices && state.editor.adminAuthServices.successMessage,
     fetchError: state.editor.adminAuthServices.fetchError,
+    formError: state.editor.adminAuthServices.formError,
     isFetching: state.editor.adminAuthServices.isFetching || state.editor.adminAuthServices.isEditing
   };
 }

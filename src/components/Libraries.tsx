@@ -36,10 +36,13 @@ export class Libraries extends EditableConfigList<LibrariesData, LibraryData> {
 }
 
 function mapStateToProps(state, ownProps) {
+  // fetchError = an error involving loading the list of libraries; formError = an error upon submission of the
+  // create/edit form.
   return {
     data: state.editor.libraries && state.editor.libraries.data,
     responseBody: state.editor.libraries && state.editor.libraries.successMessage,
     fetchError: state.editor.libraries.fetchError,
+    formError: state.editor.libraries.formError,
     isFetching: state.editor.libraries.isFetching || state.editor.libraries.isEditing
   };
 }

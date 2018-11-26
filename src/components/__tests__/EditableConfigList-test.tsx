@@ -111,14 +111,41 @@ describe("EditableConfigList", () => {
     );
   });
 
-  it("shows error message", () => {
+  it("shows an error message if there's a problem loading the list", () => {
     let error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(0);
-    let fetchError = { status: 400, response: "test error", url: "test url" };
+
+    let fetchError = { status: 404, response: "test load error", url: "test url" };
     wrapper.setProps({ fetchError });
+
     error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(1);
-    expect(error.text()).to.equal("Error: test error");
+    expect(error.text()).to.equal("Error: test load error");
+
+    // Hide the error message when the user goes to the form
+    wrapper.setProps({ editOrCreate: "create" });
+    error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(0);
+  });
+
+  it("shows form submission error message only if the form is displayed", () => {
+    let error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(0);
+
+    let formError = { status: 400, response: "test submission error", url: "test url" };
+    wrapper.setProps({ formError });
+    error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(0);
+
+    wrapper.setProps({ editOrCreate: "create" });
+    error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(1);
+    expect(error.text()).to.equal("Error: test submission error");
+
+    // Hide the error message when the user goes back to the list
+    wrapper.setProps({ editOrCreate: "" });
+    error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(0);
   });
 
   it("shows success message on create", () => {

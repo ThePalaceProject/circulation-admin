@@ -67,10 +67,13 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.discoveryServiceLibraryRegistrations && state.editor.discoveryServiceLibraryRegistrations.data) {
     data.libraryRegistrations = state.editor.discoveryServiceLibraryRegistrations.data.library_registrations;
   }
+  // fetchError = an error involving loading the list of discovery services; formError = an error upon
+  // submission of the create/edit form (including upon submitting a change to a library's registration).
   return {
     data: data,
     responseBody: state.editor.discoveryServices && state.editor.discoveryServices.successMessage,
-    fetchError: state.editor.discoveryServices.fetchError || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.fetchError),
+    fetchError: state.editor.discoveryServices.fetchError,
+    formError: state.editor.discoveryServices.formError || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.fetchError),
     isFetching: state.editor.discoveryServices.isFetching || state.editor.discoveryServices.isEditing || (state.editor.registerLibraryWithDiscoveryService && state.editor.registerLibraryWithDiscoveryService.isFetching),
     isFetchingLibraryRegistrations: state.editor.discoveryServiceLibraryRegistrations && state.editor.discoveryServiceLibraryRegistrations.isFetching
   };

@@ -18,6 +18,7 @@ describe("fetch-edit reducer", () => {
     isFetching: false,
     isEditing: false,
     fetchError: null,
+    formError: null,
     isLoaded: false,
     responseBody: null,
     successMessage: null
@@ -28,6 +29,7 @@ describe("fetch-edit reducer", () => {
     isFetching: false,
     isEditing: false,
     fetchError: { status: 400, response: "test error", url: "test url" },
+    formError: null,
     isLoaded: true,
     responseBody: null,
     successMessage: null
@@ -139,7 +141,7 @@ describe("fetch-edit reducer", () => {
       isEditing: true
     });
     let newState = Object.assign({}, oldState, {
-      fetchError: "test error",
+      formError: "test error",
       isEditing: false
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);

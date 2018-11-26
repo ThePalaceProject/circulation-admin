@@ -11,6 +11,7 @@ import TrashIcon from "./icons/TrashIcon";
 export interface EditableConfigListStateProps<T> {
   data?: T;
   fetchError?: FetchErrorData;
+  formError?: FetchErrorData;
   isFetching?: boolean;
   responseBody?: string;
 }
@@ -84,8 +85,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             {this.successMessage()}
           </Alert>
         }
-        { this.props.fetchError &&
+        { this.props.fetchError && !this.props.editOrCreate &&
           <ErrorMessage error={this.props.fetchError} />
+        }
+        { this.props.formError && this.props.editOrCreate &&
+          <ErrorMessage error={this.props.formError} />
         }
         { this.props.isFetching &&
           <LoadingIndicator />

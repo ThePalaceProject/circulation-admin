@@ -22,10 +22,13 @@ export class CDNServices extends EditableConfigList<CDNServicesData, CDNServiceD
 
 function mapStateToProps(state, ownProps) {
   const data = Object.assign({}, state.editor.cdnServices && state.editor.cdnServices.data || {});
+  // fetchError = an error involving loading the list of CDN services; formError = an error upon
+  // submission of the create/edit form.
   return {
     data: data,
     responseBody: state.editor.cdnServices && state.editor.cdnServices.successMessage,
     fetchError: state.editor.cdnServices.fetchError,
+    formError: state.editor.cdnServices.formError,
     isFetching: state.editor.cdnServices.isFetching || state.editor.cdnServices.isEditing
   };
 }

@@ -26,10 +26,13 @@ export class SitewideSettings extends EditableConfigList<SitewideSettingsData, S
 }
 
 function mapStateToProps(state, ownProps) {
+  // fetchError = an error involving loading the list of sitewide settings; formError = an error upon submission of the
+  // create/edit form.
   return {
     data: state.editor.sitewideSettings && state.editor.sitewideSettings.data,
     responseBody: state.editor.sitewideSettings && state.editor.sitewideSettings.successMessage,
     fetchError: state.editor.sitewideSettings.fetchError,
+    formError: state.editor.sitewideSettings.formError,
     isFetching: state.editor.sitewideSettings.isFetching || state.editor.sitewideSettings.isEditing
   };
 }
