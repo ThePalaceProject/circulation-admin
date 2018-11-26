@@ -19,7 +19,7 @@ export class PatronAuthServices extends EditableConfigList<PatronAuthServicesDat
   label(item): string {
     for (const protocol of this.props.data.protocols) {
       if (protocol.name === item.protocol) {
-        return protocol.label;
+        return `${item.name}: ${protocol.label}`;
       }
     }
     return item.protocol;

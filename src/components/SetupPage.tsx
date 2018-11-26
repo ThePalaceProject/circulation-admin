@@ -19,7 +19,7 @@ export default class SetupPage extends React.Component<void, void> {
 
   static contextTypes: React.ValidationMap<SetupPageContext> = {
     editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired
+    csrfToken: React.PropTypes.string.isRequired,
   };
 
   render(): JSX.Element {
@@ -27,6 +27,7 @@ export default class SetupPage extends React.Component<void, void> {
       <IndividualAdmins
         store={this.context.editorStore}
         csrfToken={this.context.csrfToken}
+        settingUp={true}
         editOrCreate="create"
         />
     );
