@@ -11,6 +11,7 @@ import TrashIcon from "./icons/TrashIcon";
 export interface EditableConfigListStateProps<T> {
   data?: T;
   fetchError?: FetchErrorData;
+  formError?: FetchErrorData;
   isFetching?: boolean;
   responseBody?: string;
 }
@@ -39,6 +40,7 @@ export interface EditFormProps<T, U> {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  setFormError?: any;
 }
 
 export interface AdditionalContentProps<T, U> {
@@ -73,7 +75,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   render(): JSX.Element {
     let EditForm = this.EditForm;
     let AdditionalContent = this.AdditionalContent || null;
-    console.log(this.props.editOrCreate);
     return (
       <div className={AdditionalContent ? "has-additional-content" : ""}>
         <h2>{this.getItemType()} configuration</h2>
@@ -82,8 +83,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             {this.successMessage()}
           </Alert>
         }
-        { this.props.fetchError && this.props.editOrCreate &&
+        { this.props.fetchError && !this.props.editOrCreate &&
           <ErrorMessage error={this.props.fetchError} />
+        }
+        { this.props.formError && this.props.editOrCreate &&
+          <ErrorMessage error={this.props.formError} />
         }
         { this.props.isFetching &&
           <LoadingIndicator />

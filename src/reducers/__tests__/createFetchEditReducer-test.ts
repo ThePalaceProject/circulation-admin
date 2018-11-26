@@ -139,7 +139,7 @@ describe("fetch-edit reducer", () => {
       isEditing: true
     });
     let newState = Object.assign({}, oldState, {
-      fetchError: "test error",
+      formError: "test error",
       isEditing: false
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);

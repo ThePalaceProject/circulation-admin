@@ -70,10 +70,12 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.data) {
     data.libraryRegistrations = state.editor.collectionLibraryRegistrations.data.library_registrations;
   }
+  // fetchError = an error involving loading the list of collections; formError = an error upon
+  // submission of the create/edit form (including upon submitting a change to a library's registration).
   return {
     data: data,
     responseBody: state.editor.collections && state.editor.collections.successMessage,
-    fetchError: state.editor.collections.fetchError || (state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.fetchError) || (state.editor.registerLibraryWithCollection && state.editor.registerLibraryWithCollection.fetchError),
+    formError: state.editor.collections.formError || (state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.fetchError) || (state.editor.registerLibraryWithCollection && state.editor.registerLibraryWithCollection.fetchError),
     isFetching: state.editor.collections.isFetching || state.editor.collections.isEditing,
     isFetchingLibraryRegistrations: state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.isFetching
   };

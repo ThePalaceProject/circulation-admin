@@ -19,10 +19,13 @@ export class SearchServices extends EditableConfigList<SearchServicesData, Searc
 
 function mapStateToProps(state, ownProps) {
   const data = Object.assign({}, state.editor.searchServices && state.editor.searchServices.data || {});
+  // fetchError = an error involving loading the list of search services; formError = an error upon
+  // submission of the create/edit form.
   return {
     data: data,
     responseBody: state.editor.searchServices && state.editor.searchServices.successMessage,
     fetchError: state.editor.searchServices.fetchError,
+    formError: state.editor.searchServices.formError,
     isFetching: state.editor.searchServices.isFetching || state.editor.searchServices.isEditing
   };
 }

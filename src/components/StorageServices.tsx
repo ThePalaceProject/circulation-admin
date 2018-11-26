@@ -17,10 +17,13 @@ export class StorageServices extends EditableConfigList<StorageServicesData, Sto
 
 function mapStateToProps(state, ownProps) {
   const data = Object.assign({}, state.editor.storageServices && state.editor.storageServices.data || {});
+  // fetchError = an error involving loading the list of storage services; formError = an error upon
+  // submission of the create/edit form.
   return {
     data: data,
     responseBody: state.editor.storageServices && state.editor.storageServices.successMessage,
     fetchError: state.editor.storageServices.fetchError,
+    formError: state.editor.storageServices.formError,
     isFetching: state.editor.storageServices.isFetching || state.editor.storageServices.isEditing
   };
 }

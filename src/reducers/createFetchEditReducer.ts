@@ -86,7 +86,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
             case `${editPrefix}_${ActionCreator.FAILURE}`:
               return Object.assign({}, state, {
                 isEditing: false,
-                fetchError: action.error
+                formError: action.error
               });
 
             case `${editPrefix}_${ActionCreator.LOAD}`:
