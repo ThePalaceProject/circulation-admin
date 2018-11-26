@@ -41,7 +41,6 @@ export interface EditFormProps<T, U> {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
-  setFormError?: any;
 }
 
 export interface AdditionalContentProps<T, U> {
