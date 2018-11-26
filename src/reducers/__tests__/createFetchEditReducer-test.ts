@@ -18,6 +18,7 @@ describe("fetch-edit reducer", () => {
     isFetching: false,
     isEditing: false,
     fetchError: null,
+    formError: null,
     isLoaded: false,
     responseBody: null,
     successMessage: null
@@ -28,6 +29,7 @@ describe("fetch-edit reducer", () => {
     isFetching: false,
     isEditing: false,
     fetchError: { status: 400, response: "test error", url: "test url" },
+    formError: null,
     isLoaded: true,
     responseBody: null,
     successMessage: null

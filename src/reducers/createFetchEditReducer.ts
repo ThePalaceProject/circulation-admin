@@ -6,6 +6,7 @@ export interface FetchEditState<T> {
   isFetching: boolean;
   isEditing: boolean;
   fetchError: RequestError | null;
+  formError?: RequestError | null;
   isLoaded: boolean;
   responseBody?: string;
   successMessage?: string;
@@ -25,6 +26,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
     isFetching: false,
     isEditing: false,
     fetchError: null,
+    formError: null,
     isLoaded: false,
     responseBody: null,
     successMessage: null
@@ -38,12 +40,14 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
           isLoaded: false,
           isFetching: true,
           fetchError: null,
+          formError: null,
           responseBody: null
         });
 
       case `${fetchPrefix}_${ActionCreator.FAILURE}`:
         return Object.assign({}, state, {
           fetchError: action.error,
+          formError: null,
           isFetching: false,
           isLoaded: true
         });
@@ -71,6 +75,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
               return Object.assign({}, state, {
                 isEditing: true,
                 fetchError: null,
+                formError: null,
                 responseBody: null,
                 successMessage: null
               });
@@ -79,6 +84,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
               return Object.assign({}, state, {
                 isEditing: false,
                 fetchError: null,
+                formError: null,
                 responseBody: null,
                 successMessage: null
               });
@@ -92,7 +98,8 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
             case `${editPrefix}_${ActionCreator.LOAD}`:
               return Object.assign({}, state, {
                 responseBody: action.data,
-                successMessage: action.data
+                successMessage: action.data,
+                formError: null
               });
 
             default:
