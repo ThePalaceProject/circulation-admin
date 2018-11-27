@@ -123,13 +123,15 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
               <div>This lane's parent is currently hidden. <HiddenIcon /></div>
             }
             </h4>
-            <EditableInput
-              type="checkbox"
-              name="inherit_parent_restrictions"
-              checked={this.state.inheritParentRestrictions}
-              label="Inherit restrictions from parent lane"
-              onChange={this.changeInheritParentRestrictions}
-              />
+            { this.props.parent &&
+              <EditableInput
+                type="checkbox"
+                name="inherit_parent_restrictions"
+                checked={this.state.inheritParentRestrictions}
+                label="Inherit restrictions from parent lane"
+                onChange={this.changeInheritParentRestrictions}
+                />
+            }
           </div>
         </div>
         <div className="lane-editor-body">

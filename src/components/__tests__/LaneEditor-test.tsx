@@ -105,7 +105,22 @@ describe("LaneEditor", () => {
     expect(parentInfo.text()).to.contain("sublane of lane");
   });
 
-  it("shows and changes inherit parent restrictions setting", () => {
+  it("doesn't show the inherit parent restrictions setting on a new lane", () => {
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(0);
+  });
+
+  it("shows and changes inherit parent restrictions setting on a child lane", () => {
+    wrapper = mount(
+      <LaneEditor
+        library="library"
+        lane={laneData}
+        parent={laneData}
+        customLists={customListsData}
+        editLane={editLane}
+        />
+    );
+
     let input = wrapper.find(EditableInput);
     expect(input.props().checked).to.be.true;
     expect(input.props().label).to.contain("restrictions");
