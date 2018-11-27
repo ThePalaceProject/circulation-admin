@@ -23,6 +23,7 @@ export interface LanesStateProps {
   customLists: CustomListData[];
   responseBody?: string;
   formError?: FetchErrorData;
+  fetchError?: FetchErrorData;
   isFetching: boolean;
 }
 
@@ -75,10 +76,11 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   render(): JSX.Element {
+    const errorMessage = this.props.formError || this.props.fetchError;
     return (
       <div className="lanes-container">
-        { this.props.formError &&
-          <ErrorMessage error={this.props.formError} />
+        { errorMessage &&
+          <ErrorMessage error={errorMessage} />
         }
         { this.props.isFetching &&
           <LoadingIndicator />
@@ -329,6 +331,7 @@ function mapStateToProps(state, ownProps) {
     lanes: state.editor.lanes && state.editor.lanes.data && state.editor.lanes.data.lanes,
     responseBody: state.editor.lanes && state.editor.lanes.successMessage,
     customLists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
+    fetchError: state.editor.lanes.fetchError || state.editor.laneVisibility.fetchError,
     formError: state.editor.lanes.formError || state.editor.laneVisibility.formError,
     isFetching: state.editor.lanes.isFetching || state.editor.lanes.isEditing || state.editor.laneVisibility.isFetching || state.editor.customLists.isFetching || state.editor.resetLanes.isFetching
   };
