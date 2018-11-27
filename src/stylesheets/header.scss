@@ -1,4 +1,6 @@
 .navbar-default {
+  padding: 3px 0;
+
   .navbar-brand {
     color: $pagecolorlight;
     font-size: 1.8em;
@@ -14,63 +16,75 @@
   .container-fluid {
     padding-right: 0;
   }
-}
 
-.navbar-header {
-  .form-group {
-    display: inline-block;
-    margin-top: 7px;
-    margin-bottom: 9px;
-  }
+  .navbar-header {
+    .form-group {
+      display: inline-block;
+      margin-top: 7px;
+      margin-bottom: 9px;
+    }
 
-  .form-control {
-    display: inline-block;
-    width: auto;
-  }
-}
-
-.navbar-nav .dropdown-menu {
-  display: block;
-  background-color: $dark;
-  left: auto;
-  right: 0;
-
-  a {
-    background-color: $dark;
-    color: $pagecolorlight;
-
-    &:hover, &:visited, &:active, &:focus {
-      background-color: $pagecolorlight;
-      color: $dark;
+    .form-control {
+      display: inline-block;
+      width: auto;
     }
   }
-}
 
-.menu .header-link a {
-  padding-left: 5px;
-  padding-right: 5px;
-}
 
-.pull-right {
-  display: flex;
-  justify-content: flex-end;
-  max-width: 50%;
-  min-width: 30%;
-}
+  .navbar-nav {
+    margin-left: 3px;
 
-.navbar-collapse {
-  padding: 0;
+    .dropdown-menu {
+      display: block;
+      background-color: $dark;
+      left: auto;
+      right: 0;
 
-  &.in {
-    overflow-y: visible;
+      a {
+        background-color: $dark;
+        color: $pagecolorlight;
+
+        &:hover, &:visited, &:active, &:focus {
+          background-color: $pagecolorlight;
+          color: $dark;
+        }
+      }
+    }
   }
-}
 
-.nav {
-  .header-link {
-    .active-link, .active-link:hover, .active-link:focus {
-      color: $dark-gray;
-      background: $white;
+  .menu .header-link a {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .pull-right {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 50%;
+    min-width: 30%;
+  }
+
+  .navbar-collapse {
+    padding: 0;
+
+    &.in {
+      overflow-y: visible;
+    }
+  }
+
+  .nav {
+    .header-link {
+      a {
+        text-decoration: none;
+
+        &.active-link,
+        &:hover,
+        &:focus {
+          background-color: $blue;
+          border-radius: 2px;
+          transition: background-color 0.3s ease-in;
+        }
+      }
     }
   }
 }
