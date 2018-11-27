@@ -73,7 +73,7 @@ describe("Lanes", () => {
     let error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(0);
 
-    wrapper.setProps({ fetchError: { status: 500, response: "Error", url: "url" } });
+    wrapper.setProps({ formError: { status: 500, response: "Error", url: "url" } });
     error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(1);
   });

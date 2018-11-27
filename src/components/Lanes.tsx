@@ -22,7 +22,7 @@ export interface LanesStateProps {
   lanes: LaneData[];
   customLists: CustomListData[];
   responseBody?: string;
-  fetchError?: FetchErrorData;
+  formError?: FetchErrorData;
   isFetching: boolean;
 }
 
@@ -62,6 +62,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     this.hideLane = this.hideLane.bind(this);
     this.showLane = this.showLane.bind(this);
     this.resetLanes = this.resetLanes.bind(this);
+    this.toggle = this.toggle.bind(this);
 
     const expanded: { [key: string]: boolean } = {};
     for (const topLevelLane of this.props.lanes || []) {
@@ -76,8 +77,8 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   render(): JSX.Element {
     return (
       <div className="lanes-container">
-        { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} />
+        { this.props.formError &&
+          <ErrorMessage error={this.props.formError} />
         }
         { this.props.isFetching &&
           <LoadingIndicator />
@@ -150,16 +151,19 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     return (
       <ul>
         { lanes.map(lane =>
-            <li className={(String(lane.id) === this.props.identifier) ? "active" : ""}>
+            <li
+              key={lane.display_name.replace(" ", "").trim()}
+              className={(String(lane.id) === this.props.identifier) ? "active" : ""}
+            >
               <div>
                 <span>
                   { this.isExpanded(lane) &&
-                    <div className="collapse-button" onClick={() => { this.collapse(lane); }}>
+                    <div className="collapse-button" onClick={() => { this.toggle(lane); }}>
                       <PyramidIcon />
                     </div>
                   }
                   { !this.isExpanded(lane) &&
-                    <div className="expand-button" onClick={() => { this.expand(lane); }}>
+                    <div className="expand-button" onClick={() => { this.toggle(lane); }}>
                       <PyramidIcon />
                     </div>
                   }
@@ -217,15 +221,9 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     return !!this.state.expanded[lane.id];
   }
 
-  collapse(lane) {
+  toggle(lane) {
     const expanded = Object.assign({}, this.state.expanded);
-    expanded[lane.id] = false;
-    this.setState({ expanded });
-  }
-
-  expand(lane) {
-    const expanded = Object.assign({}, this.state.expanded);
-    expanded[lane.id] = true;
+    expanded[lane.id] = !expanded[lane.id];
     this.setState({ expanded });
   }
 
@@ -329,9 +327,9 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
 function mapStateToProps(state, ownProps) {
   return {
     lanes: state.editor.lanes && state.editor.lanes.data && state.editor.lanes.data.lanes,
-    responseBody: state.editor.lanes && state.editor.lanes.responseBody,
+    responseBody: state.editor.lanes && state.editor.lanes.successMessage,
     customLists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
-    fetchError: state.editor.lanes.fetchError || state.editor.laneVisibility.fetchError,
+    formError: state.editor.lanes.formError || state.editor.laneVisibility.formError,
     isFetching: state.editor.lanes.isFetching || state.editor.lanes.isEditing || state.editor.laneVisibility.isFetching || state.editor.customLists.isFetching || state.editor.resetLanes.isFetching
   };
 }
