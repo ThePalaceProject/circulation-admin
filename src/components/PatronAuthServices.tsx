@@ -19,7 +19,7 @@ export class PatronAuthServices extends EditableConfigList<PatronAuthServicesDat
   label(item): string {
     for (const protocol of this.props.data.protocols) {
       if (protocol.name === item.protocol) {
-        return protocol.label;
+        return `${item.name}: ${protocol.label}`;
       }
     }
     return item.protocol;
@@ -31,10 +31,13 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
+  // fetchError = an error involving loading the list of patron auth services; formError = an error upon submission
+  // of the create/edit form.
   return {
     data: data,
     responseBody: state.editor.patronAuthServices && state.editor.patronAuthServices.successMessage,
     fetchError: state.editor.patronAuthServices.fetchError,
+    formError: state.editor.patronAuthServices.formError,
     isFetching: state.editor.patronAuthServices.isFetching || state.editor.patronAuthServices.isEditing
   };
 }

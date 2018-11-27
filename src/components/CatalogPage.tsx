@@ -100,6 +100,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
         pageTitleTemplate={pageTitleTemplate}
         computeBreadcrumbs={computeBreadcrumbs}
         CollectionContainer={EntryPointsContainer}
+        allLanguageSearch={true}
       />
     );
   }

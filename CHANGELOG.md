@@ -1,12 +1,22 @@
 ## Changelog
 
-### v0.0.89
+### v0.0.91
 #### Updated
 - Styling for active header nav link.
+
+### v0.0.90
+#### Fixed
+- Only showing the "Inherit restrictions from parent lane" setting on the Lane config page when creating child lanes and not a new parent lane.
+
+### v0.0.89
+#### Updated
+- Updated the opds-web-client package and passing down a prop to use all languages when doing submitting a search term.
 
 ### v0.0.88
 #### Added
 - Added a welcome message for admins who have no libraries yet.
+#### Updated
+- Improved the appearance and behavior of the sign-up form.
 
 ### v0.0.87
 #### Added

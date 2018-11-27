@@ -23,7 +23,29 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
   };
 
   canDelete(item) {
-    return this.context.admin.isSystemAdmin();
+    return this.context.admin && this.context.admin.isSystemAdmin();
+  }
+
+  getHeaders() {
+    let h2 = this.props.settingUp ? "Welcome!" : "Individual admin configuration";
+    let h3 = this.props.settingUp ? "Set up your system admin account" : "Create a new individual admin";
+    return { h2, h3 };
+  }
+
+  getClassName() {
+    let className = this.props.settingUp ? "set-up" : "";
+    return className;
+  }
+
+  save(data: FormData) {
+    this.editItem(data).then(() => {
+      // If we're setting up an admin for the first time, refresh the page
+      // to go to login.
+      if (this.props.settingUp) {
+       window.location.reload();
+       return;
+     }
+    });
   }
 }
 
@@ -32,10 +54,13 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
+  // fetchError = an error involving loading the list of individual admins; formError = an error upon submission of the 
+  // create/edit form.
   return {
     data: data,
     responseBody: state.editor.individualAdmins && state.editor.individualAdmins.successMessage,
     fetchError: state.editor.individualAdmins.fetchError,
+    formError: state.editor.individualAdmins.formError,
     isFetching: state.editor.individualAdmins.isFetching || state.editor.individualAdmins.isEditing
   };
 }

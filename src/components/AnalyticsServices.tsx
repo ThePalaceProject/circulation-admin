@@ -30,10 +30,13 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
+  // fetchError = an error involving loading the list of analytics services; formError = an error upon submission of the
+  // create/edit form.
   return {
     data: data,
     responseBody: state.editor.analyticsServices && state.editor.analyticsServices.successMessage,
     fetchError: state.editor.analyticsServices.fetchError,
+    formError: state.editor.analyticsServices.formError,
     isFetching: state.editor.analyticsServices.isFetching || state.editor.analyticsServices.isEditing
   };
 }

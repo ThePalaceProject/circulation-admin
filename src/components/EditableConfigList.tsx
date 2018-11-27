@@ -11,6 +11,7 @@ import TrashIcon from "./icons/TrashIcon";
 export interface EditableConfigListStateProps<T> {
   data?: T;
   fetchError?: FetchErrorData;
+  formError?: FetchErrorData;
   isFetching?: boolean;
   responseBody?: string;
 }
@@ -26,6 +27,7 @@ export interface EditableConfigListOwnProps {
   csrfToken: string;
   editOrCreate?: string;
   identifier?: string;
+  settingUp?: boolean;
 }
 
 export interface EditableConfigListProps<T> extends EditableConfigListStateProps<T>, EditableConfigListDispatchProps<T>, EditableConfigListOwnProps {}
@@ -73,16 +75,21 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   render(): JSX.Element {
     let EditForm = this.EditForm;
     let AdditionalContent = this.AdditionalContent || null;
+    let headers = this.getHeaders();
+
     return (
-      <div className={AdditionalContent ? "has-additional-content" : ""}>
-        <h2>{this.getItemType()} configuration</h2>
+      <div className={this.getClassName()}>
+        <h2>{headers["h2"]}</h2>
         { this.props.responseBody && this.props.editOrCreate &&
           <Alert bsStyle="success">
             {this.successMessage()}
           </Alert>
         }
-        { this.props.fetchError &&
+        { this.props.fetchError && !this.props.editOrCreate &&
           <ErrorMessage error={this.props.fetchError} />
+        }
+        { this.props.formError && this.props.editOrCreate &&
+          <ErrorMessage error={this.props.formError} />
         }
         { this.props.isFetching &&
           <LoadingIndicator />
@@ -137,7 +144,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }
         { (this.props.editOrCreate === "create") &&
           <div>
-            <h3>Create a new {this.itemTypeName}</h3>
+            <h3>{headers["h3"]}</h3>
             <EditForm
               ref="edit-form"
               data={this.props.data}
@@ -173,6 +180,17 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  getHeaders() {
+    let h2 = `${this.getItemType()} configuration`;
+    let h3 = `Create a new ${this.itemTypeName}`;
+    return { h2, h3 };
+  }
+
+  getClassName() {
+    let className = this.AdditionalContent ? "has-additional-content" : "";
+    return className;
   }
 
   getItemType() {
