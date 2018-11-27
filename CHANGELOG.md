@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.90
+#### Fixed
+- Only showing the "Inherit restrictions from parent lane" setting on the Lane config page when creating child lanes and not a new parent lane.
+
 ### v0.0.89
 #### Updated
 - Updated the opds-web-client package and passing down a prop to use all languages when doing submitting a search term.
