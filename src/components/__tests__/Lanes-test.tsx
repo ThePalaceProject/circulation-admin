@@ -69,7 +69,16 @@ describe("Lanes", () => {
     );
   });
 
-  it("renders error message", () => {
+  it("renders error message from a bad form submission", () => {
+    let error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(0);
+
+    wrapper.setProps({ formError: { status: 500, response: "Error", url: "url" } });
+    error = wrapper.find(ErrorMessage);
+    expect(error.length).to.equal(1);
+  });
+
+  it("renders error message from loading error", () => {
     let error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(0);
 

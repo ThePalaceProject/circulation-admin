@@ -7,6 +7,8 @@
 ### v0.0.90
 #### Fixed
 - Only showing the "Inherit restrictions from parent lane" setting on the Lane config page when creating child lanes and not a new parent lane.
+- Fixing the redirect to the edit Lane form when successfully creating a new Lane.
+- Fixing the display message for errors when unsuccessfully creating a new Lane.
 
 ### v0.0.89
 #### Updated
