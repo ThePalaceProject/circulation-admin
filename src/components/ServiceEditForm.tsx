@@ -245,8 +245,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             />
         }
         { this.props.data && this.protocolInstructions() &&
-            <div class="form-group">
-              <label class="control-label">Instructions</label>
+            <div className="form-group">
+              <label className="control-label">Instructions</label>
               <Collapsible
                 title={this.protocolDescription()}
                 type="instruction"

@@ -10,6 +10,7 @@ import AnalyticsServices from "./AnalyticsServices";
 import CDNServices from "./CDNServices";
 import SearchServices from "./SearchServices";
 import StorageServices from "./StorageServices";
+import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
 import LoggingServices from "./LoggingServices";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
@@ -135,6 +136,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
           identifier={this.props.identifier}
           />
       );
+      tabs["catalogServices"] = (
+        <CatalogServices
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
+      );
       tabs["discovery"] = (
         <DiscoveryServices
           store={this.props.store}
@@ -165,6 +174,8 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
       return "Sitewide Settings";
     } else if (name === "cdn") {
       return "CDN";
+    } else if (name === "catalogServices") {
+      return "External Catalogs";
     } else {
       return super.tabDisplayName(name);
     }
