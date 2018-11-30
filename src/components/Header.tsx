@@ -59,13 +59,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render(): JSX.Element {
-    let isLibraryManager = this.context.library && this.context.admin.isLibraryManager(this.context.library());
+    const getCurrentLocation = this.context.router && this.context.router.getCurrentLocation();
+    let isLibraryManager =
+      this.context.library && this.context.admin.isLibraryManager(this.context.library());
     let links = ["maincatalog", "complaints", "suppressed", "lists", "lanes", "dashboard", "patrons", "config", "account"];
     let linkIndex = 0;
     links.forEach((link, index) => {
-      if (this.context.router &&
-        this.context.router.getCurrentLocation() &&
-        this.context.router.getCurrentLocation().pathname.indexOf(link) !== -1) {
+      if (getCurrentLocation && getCurrentLocation.pathname.indexOf(link) !== -1) {
         linkIndex = index;
       }
     });
