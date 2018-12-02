@@ -35,123 +35,64 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     admin: React.PropTypes.object.isRequired
   };
 
+  LIBRARY_MANAGER_TABS = ["libraries", "individualAdmins"];
+  SYSTEM_ADMIN_TABS = ["collections", "adminAuth", "patronAuth", "sitewideSettings",
+                       "logging", "metadata", "analytics", "cdn", "search", "storage",
+                       "catalogServices", "discovery"];
+
+  COMPONENT_CLASSES = {
+    libraries: Libraries,
+    individualAdmins: IndividualAdmins,
+    collections: Collections,
+    adminAuth: AdminAuthServices,
+    patronAuth: PatronAuthServices,
+    sitewideSettings: SitewideSettings,
+    logging: LoggingServices,
+    metadata: MetadataServices,
+    analytics: AnalyticsServices,
+    cdn: CDNServices,
+    search: SearchServices,
+    storage: StorageServices,
+    catalogServices: CatalogServices,
+    discovery: DiscoveryServices
+  };
+
+  DISPLAY_NAMES = {
+    adminAuth: "Admin Authentication",
+    individualAdmins: "Admins",
+    patronAuth: "Patron Authentication",
+    sitewideSettings: "Sitewide Settings",
+    cdn: "CDN",
+    catalogServices: "External Catalogs"
+  };
+
   tabs() {
     const tabs = {};
     if (this.context.admin.isLibraryManagerOfSomeLibrary()) {
-      tabs["libraries"] = (
-        <Libraries
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["individualAdmins"] = (
-        <IndividualAdmins
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
+      for (let tab of this.LIBRARY_MANAGER_TABS) {
+        let ComponentClass = this.COMPONENT_CLASSES[tab];
+        tabs[tab] = (
+          <ComponentClass
+            store={this.props.store}
+            csrfToken={this.props.csrfToken}
+            editOrCreate={this.props.editOrCreate}
+            identifier={this.props.identifier}
+            />
+        );
+      }
     }
     if (this.context.admin.isSystemAdmin()) {
-      tabs["collections"] = (
-        <Collections
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["adminAuth"] = (
-        <AdminAuthServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["patronAuth"] = (
-        <PatronAuthServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["sitewideSettings"] = (
-        <SitewideSettings
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["logging"] = (
-        <LoggingServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["metadata"] = (
-        <MetadataServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["analytics"] = (
-        <AnalyticsServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["cdn"] = (
-        <CDNServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["search"] = (
-        <SearchServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["storage"] = (
-        <StorageServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["catalogServices"] = (
-        <CatalogServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
-      tabs["discovery"] = (
-        <DiscoveryServices
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
-          />
-      );
+      for (let tab of this.SYSTEM_ADMIN_TABS) {
+        let ComponentClass = this.COMPONENT_CLASSES[tab];
+        tabs[tab] = (
+          <ComponentClass
+            store={this.props.store}
+            csrfToken={this.props.csrfToken}
+            editOrCreate={this.props.editOrCreate}
+            identifier={this.props.identifier}
+            />
+        );
+      }
     }
     return tabs;
   }
@@ -164,18 +105,8 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
   }
 
   tabDisplayName(name) {
-    if (name === "adminAuth") {
-      return "Admin Authentication";
-    } else if (name === "individualAdmins") {
-      return "Admins";
-    } else if (name === "patronAuth") {
-      return "Patron Authentication";
-    } else if (name === "sitewideSettings") {
-      return "Sitewide Settings";
-    } else if (name === "cdn") {
-      return "CDN";
-    } else if (name === "catalogServices") {
-      return "External Catalogs";
+    if (this.DISPLAY_NAMES[name]) {
+      return this.DISPLAY_NAMES[name];
     } else {
       return super.tabDisplayName(name);
     }
