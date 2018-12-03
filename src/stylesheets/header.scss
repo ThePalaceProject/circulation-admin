@@ -80,8 +80,8 @@
         &.active-link,
         &:hover,
         &:focus {
-          color: $light-gray;
-          background-color: $dark-gray;
+          color: $dark-gray;
+          background-color: $light-gray;
           border-radius: 2px;
           transition: background-color 0.3s ease-in;
         }
