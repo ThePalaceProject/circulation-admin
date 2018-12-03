@@ -59,16 +59,12 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render(): JSX.Element {
-    const getCurrentLocation = this.context.router && this.context.router.getCurrentLocation();
+    const currentPathname = (this.context.router &&
+      this.context.router.getCurrentLocation() &&
+      this.context.router.getCurrentLocation().pathname) || "";
     let isLibraryManager =
       this.context.library && this.context.admin.isLibraryManager(this.context.library());
-    let links = ["maincatalog", "complaints", "suppressed", "lists", "lanes", "dashboard", "patrons", "config", "account"];
-    let linkIndex = 0;
-    links.forEach((link, index) => {
-      if (getCurrentLocation && getCurrentLocation.pathname.indexOf(link) !== -1) {
-        linkIndex = index;
-      }
-    });
+
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
@@ -127,28 +123,28 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li className="header-link">
                 <Link
                   to={"/admin/web/lists/" + this.context.library()}
-                  className={linkIndex === 3 ? "active-link" : ""}
+                  className={currentPathname.indexOf("lists") !== -1 ? "active-link" : ""}
                 >Lists</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
                   <Link
                     to={"/admin/web/lanes/" + this.context.library()}
-                    className={linkIndex === 4 ? "active-link" : ""}
+                    className={currentPathname.indexOf("lanes") !== -1 ? "active-link" : ""}
                   >Lanes</Link>
                 </li>
               }
               <li className="header-link">
                 <Link
                   to={"/admin/web/dashboard/" + this.context.library()}
-                  className={linkIndex === 5 && this.context.library() ? "active-link" : ""}
+                  className={(currentPathname.indexOf("dashboard") !== -1) && this.context.library() ? "active-link" : ""}
                 >Dashboard</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
                   <Link
                     to={"/admin/web/patrons/" + this.context.library()}
-                    className={linkIndex === 6 ? "active-link" : ""}
+                    className={currentPathname.indexOf("patrons") !== -1 ? "active-link" : ""}
                   >Patrons</Link>
                 </li>
               }
@@ -158,7 +154,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             { (!this.context.library || !this.context.library()) &&
               <li className="header-link">
                 <Link to="/admin/web/dashboard"
-                  className={linkIndex === 5 ? "active-link" : ""}
+                  className={currentPathname.indexOf("dashboard") !== -1 ? "active-link" : ""}
                 >Dashboard</Link>
               </li>
             }
@@ -166,7 +162,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li className="header-link">
                 <Link
                   to="/admin/web/config"
-                  className={linkIndex === 7 ? "active-link" : ""}
+                  className={currentPathname.indexOf("config") !== -1 ? "active-link" : ""}
                 >System Configuration</Link>
               </li>
             }
@@ -185,7 +181,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     <li>
                       <Link
                         to="/admin/web/account"
-                        className={linkIndex === 8 ? "active-link" : ""}
+                        className={currentPathname.indexOf("account") !== -1 ? "active-link" : ""}
                       >Change password</Link>
                     </li>
                     <li><a href="/admin/sign_out">Sign out</a></li>
