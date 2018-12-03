@@ -29,7 +29,7 @@
 
     .dropdown-menu {
       display: block;
-      background-color: $dark;
+      background-color: $dark-gray;
       left: auto;
       right: 0;
 
@@ -73,7 +73,8 @@
         &.active-link,
         &:hover,
         &:focus {
-          background-color: $blue;
+          color: $light-gray;
+          background-color: $dark-gray;
           border-radius: 2px;
           transition: background-color 0.3s ease-in;
         }
