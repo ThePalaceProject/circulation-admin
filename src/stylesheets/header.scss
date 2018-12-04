@@ -1,67 +1,101 @@
-.navbar-default .navbar-brand {
-  color: $pagecolorlight;
-  font-size: 1.8em;
-}
+.navbar-default {
+  padding: 3px 0;
 
-.navbar-default .container-fluid {
-  padding-right: 0;
-}
+  .navbar-brand {
+    color: $pagecolorlight;
+    font-size: 1.8em;
+  }
 
-.navbar-header .form-group {
-  display: inline-block;
-  margin-top: 7px;
-}
+  .container-fluid {
+    padding-right: 0;
+  }
 
-.navbar-header .form-control {
-  display: inline-block;
-  width: auto;
-}
+  .navbar-header {
+    .form-group {
+      display: inline-block;
+      margin-top: 7px;
+      margin-bottom: 9px;
+    }
 
-.navbar-nav {
-  .dropdown {
-    > a:focus {
-      @include basic-focus;
+    .form-control {
+      display: inline-block;
+      width: auto;
+    }
+  }
+
+  .navbar-nav {
+    margin-left: 3px;
+
+    .dropdown {
+      > a:focus {
+        @include basic-focus;
+        outline-color: $white;
+      }
+    }
+
+    .dropdown-menu {
+      display: block;
+      background-color: $dark-gray;
+      left: auto;
+      right: 0;
+
+      a {
+        background-color: $dark;
+        color: $pagecolorlight;
+
+        &:focus {
+          @include basic-focus;
+          outline-color: $white;
+        }
+
+        &:hover, &:active, &:focus {
+          color: $dark-gray;
+          background-color: $light-gray;
+          border-radius: 2px;
+          transition: background-color 0.3s ease-in;
+        }
+      }
+    }
+  }
+
+  .menu .header-link a {
+    padding-left: 5px;
+    padding-right: 5px;
+
+    &:focus {
       outline-color: $white;
     }
   }
 
-  .dropdown-menu {
-    display: block;
-    background-color: $dark;
-    left: auto;
-    right: 0;
+  .pull-right {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 50%;
+    min-width: 30%;
+  }
 
-    a {
-      background-color: $dark;
-      color: $pagecolorlight;
+  .navbar-collapse {
+    padding: 0;
 
-      &:hover, &:active, &:focus {
-        @include basic-focus;
+    &.in {
+      overflow-y: visible;
+    }
+  }
+
+  .nav {
+    .header-link {
+      a {
+        text-decoration: none;
+
+        &.active-link,
+        &:hover,
+        &:focus {
+          color: $dark-gray;
+          background-color: $light-gray;
+          border-radius: 2px;
+          transition: background-color 0.3s ease-in;
+        }
       }
     }
   }
-}
-
-.menu .header-link a {
-  padding-left: 5px;
-  padding-right: 5px;
-
-  &:focus {
-    outline-color: $white;
-  }
-}
-
-.pull-right {
-  display: flex;
-  justify-content: flex-end;
-  max-width: 50%;
-  min-width: 30%;
-}
-
-.navbar-collapse.in {
-  overflow-y: visible;
-}
-
-.navbar-collapse {
-  padding: 0;
 }

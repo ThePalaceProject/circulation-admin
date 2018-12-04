@@ -2,7 +2,8 @@
 
 ### v0.0.92
 #### Updated
-- Updating the opds-web-client package to 0.1.27 and updating the header focus ring color.
+- Styling for active header nav link.
+- Updating the opds-web-client package to 0.1.27 for global element focus color and updating the header focus ring color to white.
 
 ### v0.0.90
 #### Fixed
