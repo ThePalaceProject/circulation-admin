@@ -26,6 +26,49 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     this.submit = this.submit.bind(this);
   }
 
+  renderForms(nonRequiredFields) {
+    const OPTIONAL_FIELDS = {
+      "Loans, Holds, & Searches": ["allow_holds", "enabled_entry_points", "featured_lane_size", "minimum_featured_quality", "facets_enabled_available", "facets_enabled_order", "facets_enabled_collection", "facets_default_available", "facets_default_order", "facets_default_collection", "loan_limit", "hold_limit", "max_outstanding_fines"],
+      "Patron Support": ["help-web", "help-uri", "copyright_designated_agent_email_address", "configuration_contact_email_address", "register"],
+      "Interface Customization": ["color_scheme", "web-background-color", "web-foreground-color", "web-header-links", "web-header-labels", "logo"],
+      "Collection Languages": ["large_collections", "small_collections", "tiny_collections"],
+      "Additional Information": ["library_description", "focus_area", "service_area", "terms-of-service", "privacy-policy", "copyright", "about", "license"]
+    };
+    let forms = [];
+    let categories = Object.keys(OPTIONAL_FIELDS);
+    categories.map((category) => {
+      let fields = nonRequiredFields.filter(setting => OPTIONAL_FIELDS[category].indexOf(setting.key) >= 0);
+      let form = (
+        <Collapsible
+          title={`${category} (Optional)`}
+          body={this.renderFieldset(fields)}
+        />
+      );
+      forms.push(form);
+    });
+    return forms;
+  }
+
+  renderFieldset(fields) {
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Additional Fields</legend>
+        { fields.map(setting =>
+          <ProtocolFormField
+            key={setting.key}
+            ref={setting.key}
+            setting={setting}
+            disabled={this.props.disabled}
+            value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+            default={findDefault(setting)}
+            error={this.props.error}
+            />
+          )
+        }
+      </fieldset>
+    );
+  }
+
   render(): JSX.Element {
     let requiredFields = [];
     let nonRequiredFields = [];
@@ -33,6 +76,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       nonRequiredFields = this.props.data.settings.filter(setting => !setting.required);
       requiredFields = this.props.data.settings.filter(setting => setting.required);
     }
+
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
         <input
@@ -85,26 +129,8 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             </fieldset>
           }
         />
-        <Collapsible
-          title="Optional Fields"
-          body={
-            <fieldset>
-              <legend className="visuallyHidden">Additional Fields</legend>
-              { nonRequiredFields.map(setting =>
-                <ProtocolFormField
-                  key={setting.key}
-                  ref={setting.key}
-                  setting={setting}
-                  disabled={this.props.disabled}
-                  value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-                  default={findDefault(setting)}
-                  error={this.props.error}
-                  />
-                )
-              }
-            </fieldset>
-          }
-        />
+
+        { this.renderForms(nonRequiredFields) }
 
         <SaveButton
           disabled={this.props.disabled}

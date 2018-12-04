@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
+import Collapsible from "../Collapsible";
 import ProtocolFormField from "../ProtocolFormField";
 import SaveButton from "../SaveButton";
 
@@ -96,6 +97,23 @@ describe("LibraryEditForm", () => {
       expect(privacyInput.props().value).to.equal("http://privacy");
       copyrightInput = protocolFormFieldByKey("copyright");
       expect(copyrightInput.props().value).to.equal("http://copyright");
+    });
+
+    it("subdivides fields", () => {
+      let collapsible = wrapper.find(".collapsible");
+      expect(collapsible.length).to.equal(6);
+
+      let required = collapsible.at(0).find(".panel-heading");
+      expect(required.text()).to.equal("Required Fields");
+
+      let optional = collapsible.slice(1, collapsible.length);
+      optional.map((form) => {
+        let title = form.find(".panel-heading").text();
+        expect(title).to.contain("(Optional)");
+      });
+
+      let additionalInfo = collapsible.filterWhere(form => form.find(".panel-heading").text() === "Additional Information (Optional)");
+      expect(additionalInfo.find(ProtocolFormField).length).to.equal(2);
     });
 
     it("has a save button", () => {
