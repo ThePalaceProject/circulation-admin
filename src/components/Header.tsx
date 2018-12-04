@@ -97,7 +97,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/groups"}
                   bookUrl={null}
-                  activeClassName="active-link"
+                  className={currentPathname.indexOf("/admin/web/collection") !== -1 ? "active-link" : ""}
                 >
                   Catalog
                 </CatalogLink>
@@ -106,7 +106,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/complaints"}
                   bookUrl={null}
-                  activeClassName="active-link"
+                  className={currentPathname.indexOf("/admin/complaints") !== -1 ? "active-link" : ""}
                 >
                   Complaints
                 </CatalogLink>
@@ -115,7 +115,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 <CatalogLink
                   collectionUrl={"/" + this.context.library() + "/admin/suppressed"}
                   bookUrl={null}
-                  activeClassName="active-link"
+                  className={currentPathname.indexOf("/admin/suppressed") !== -1 ? "active-link" : ""}
                 >
                   Hidden Books
                 </CatalogLink>
@@ -123,28 +123,28 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li className="header-link">
                 <Link
                   to={"/admin/web/lists/" + this.context.library()}
-                  className={currentPathname.indexOf("lists") !== -1 ? "active-link" : ""}
+                  className={currentPathname.indexOf("/admin/web/lists") !== -1 ? "active-link" : ""}
                 >Lists</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
                   <Link
                     to={"/admin/web/lanes/" + this.context.library()}
-                    className={currentPathname.indexOf("lanes") !== -1 ? "active-link" : ""}
+                    className={currentPathname.indexOf("/admin/web/lanes") !== -1 ? "active-link" : ""}
                   >Lanes</Link>
                 </li>
               }
               <li className="header-link">
                 <Link
                   to={"/admin/web/dashboard/" + this.context.library()}
-                  className={(currentPathname.indexOf("dashboard") !== -1) && this.context.library() ? "active-link" : ""}
+                  className={(currentPathname.indexOf("/admin/web/dashboard") !== -1) && this.context.library() ? "active-link" : ""}
                 >Dashboard</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
                   <Link
                     to={"/admin/web/patrons/" + this.context.library()}
-                    className={currentPathname.indexOf("patrons") !== -1 ? "active-link" : ""}
+                    className={currentPathname.indexOf("/admin/web/patrons") !== -1 ? "active-link" : ""}
                   >Patrons</Link>
                 </li>
               }
@@ -154,7 +154,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             { (!this.context.library || !this.context.library()) &&
               <li className="header-link">
                 <Link to="/admin/web/dashboard"
-                  className={currentPathname.indexOf("dashboard") !== -1 ? "active-link" : ""}
+                  className={currentPathname.indexOf("/admin/web/dashboard") !== -1 ? "active-link" : ""}
                 >Dashboard</Link>
               </li>
             }
@@ -162,7 +162,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <li className="header-link">
                 <Link
                   to="/admin/web/config"
-                  className={currentPathname.indexOf("config") !== -1 ? "active-link" : ""}
+                  className={currentPathname.indexOf("/admin/web/config") !== -1 ? "active-link" : ""}
                 >System Configuration</Link>
               </li>
             }
@@ -181,7 +181,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     <li>
                       <Link
                         to="/admin/web/account"
-                        className={currentPathname.indexOf("account") !== -1 ? "active-link" : ""}
+                        className={currentPathname.indexOf("/admin/web/account") !== -1 ? "active-link" : ""}
                       >Change password</Link>
                     </li>
                     <li><a href="/admin/sign_out">Sign out</a></li>
