@@ -10,10 +10,3 @@ $light-gray: #D7D4D0;
 $medium-gray: #DDD;
 $dark-gray: #080807;
 $white: #FFF;
-
-.compact-info {
-  box-shadow: 1px 1px 1px 1px darken($focus-color, 10%);
-  outline-color: $focus-color;
-  outline-style: solid;
-  outline-width: 3px;
-}

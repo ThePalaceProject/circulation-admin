@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.92
+#### Updated
+- Updating the opds-web-client package to 0.1.27 and updating the header focus ring color.
+
 ### v0.0.90
 #### Fixed
 - Only showing the "Inherit restrictions from parent lane" setting on the Lane config page when creating child lanes and not a new parent lane.

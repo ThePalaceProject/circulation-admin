@@ -7,13 +7,6 @@
   padding-right: 0;
 }
 
-.navbar-brand > img.nypl-logo {
-  display: inline;
-  height: 25px;
-  margin-right: 10px;
-  margin-top: -5px;
-}
-
 .navbar-header .form-group {
   display: inline-block;
   margin-top: 7px;
@@ -24,19 +17,27 @@
   width: auto;
 }
 
-.navbar-nav .dropdown-menu {
-  display: block;
-  background-color: $dark;
-  left: auto;
-  right: 0;
+.navbar-nav {
+  .dropdown {
+    > a:focus {
+      @include basic-focus;
+      outline-color: $white;
+    }
+  }
 
-  a {
+  .dropdown-menu {
+    display: block;
     background-color: $dark;
-    color: $pagecolorlight;
+    left: auto;
+    right: 0;
 
-    &:hover, &:visited, &:active, &:focus {
-      background-color: $pagecolorlight;
-      color: $dark;
+    a {
+      background-color: $dark;
+      color: $pagecolorlight;
+
+      &:hover, &:active, &:focus {
+        @include basic-focus;
+      }
     }
   }
 }
@@ -44,6 +45,10 @@
 .menu .header-link a {
   padding-left: 5px;
   padding-right: 5px;
+
+  &:focus {
+    outline-color: $white;
+  }
 }
 
 .pull-right {
