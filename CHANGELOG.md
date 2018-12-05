@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.93
+#### Updated
+- Further subdivided library form for increased readability.
+
 ### v0.0.92
 #### Updated
 - Styling for active header nav link.
