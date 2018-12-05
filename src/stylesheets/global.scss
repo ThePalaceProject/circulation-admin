@@ -18,3 +18,9 @@
     width: auto;
   }
 }
+
+.form-control {
+  &:focus {
+    @include basic-focus;
+  }
+}
