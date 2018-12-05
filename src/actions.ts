@@ -9,8 +9,8 @@ import {
   DiscoveryServicesData, LibraryRegistrationsData,
   CustomListsData, LanesData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
-  StorageServicesData, LoggingServicesData, SelfTestsData,
-  PatronData
+  StorageServicesData, LoggingServicesData, CatalogServicesData,
+  SelfTestsData, PatronData
 } from "./interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -75,6 +75,9 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly STORAGE_SERVICES = "STORAGE_SERVICES";
   static readonly EDIT_STORAGE_SERVICE = "EDIT_STORAGE_SERVICE";
   static readonly DELETE_STORAGE_SERVICE = "DELETE_STORAGE_SERVICE";
+  static readonly CATALOG_SERVICES = "CATALOG_SERVICES";
+  static readonly EDIT_CATALOG_SERVICE = "EDIT_CATALOG_SERVICE";
+  static readonly DELETE_CATALOG_SERVICE = "DELETE_CATALOG_SERVICE";
   static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
   static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
   static readonly DELETE_DISCOVERY_SERVICE = "DELETE_DISCOVERY_SERVICE";
@@ -539,6 +542,21 @@ export default class ActionCreator extends BaseActionCreator {
   deleteStorageService(identifier: string | number) {
     const url = "/admin/storage_service/" + identifier;
     return this.postForm(ActionCreator.DELETE_STORAGE_SERVICE, url, null, "DELETE").bind(this);
+  }
+
+  fetchCatalogServices() {
+    const url = "/admin/catalog_services";
+    return this.fetchJSON<CatalogServicesData>(ActionCreator.CATALOG_SERVICES, url).bind(this);
+  }
+
+  editCatalogService(data: FormData) {
+    const url = "/admin/catalog_services";
+    return this.postForm(ActionCreator.EDIT_CATALOG_SERVICE, url, data).bind(this);
+  }
+
+  deleteCatalogService(identifier: string | number) {
+    const url = "/admin/catalog_service/" + identifier;
+    return this.postForm(ActionCreator.DELETE_CATALOG_SERVICE, url, null, "DELETE").bind(this);
   }
 
   fetchDiscoveryServices() {

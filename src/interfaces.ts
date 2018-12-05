@@ -338,6 +338,12 @@ export interface StorageServicesData extends ServicesData {
   storage_services: StorageServiceData[];
 }
 
+export interface CatalogServiceData extends ServiceData {}
+
+export interface CatalogServicesData extends ServicesData {
+  catalog_services: CatalogServiceData[];
+}
+
 export interface DiscoveryServiceData extends ServiceData {}
 
 export interface DiscoveryServicesData extends ServicesWithRegistrationsData {

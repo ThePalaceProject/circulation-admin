@@ -1,8 +1,17 @@
 ## Changelog
 
-### v0.0.91
+### v0.0.93
 #### Updated
 - Further subdivided library form for increased readability.
+
+### v0.0.92
+#### Updated
+- Styling for active header nav link.
+- Updating the opds-web-client package to 0.1.27 for global element focus color and updating the header focus ring color to white.
+
+### v0.0.91
+#### Added
+Added a system configuration tab for external catalogs.
 
 ### v0.0.90
 #### Fixed

@@ -72,7 +72,6 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
   }
 
   render(): JSX.Element {
-
     if (!this.hasLibrary()) {
       return (
         <WelcomePage />
