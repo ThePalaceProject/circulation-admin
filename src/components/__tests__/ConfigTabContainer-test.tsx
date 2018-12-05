@@ -17,6 +17,7 @@ import AnalyticsServices from "../AnalyticsServices";
 import CDNServices from "../CDNServices";
 import SearchServices from "../SearchServices";
 import StorageServices from "../StorageServices";
+import CatalogServices from "../CatalogServices";
 import DiscoveryServices from "../DiscoveryServices";
 import { mockRouterContext } from "./routing";
 import Admin from "../../models/Admin";
@@ -60,6 +61,7 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Sitewide Settings");
       expect(linkTexts).to.contain("Metadata");
       expect(linkTexts).to.contain("CDN");
+      expect(linkTexts).to.contain("External Catalogs");
     });
 
     it("shows components", () => {
@@ -67,7 +69,8 @@ describe("ConfigTabContainer", () => {
         Libraries, IndividualAdmins, Collections,
         AdminAuthServices, PatronAuthServices, SitewideSettings,
         MetadataServices, AnalyticsServices, CDNServices,
-        SearchServices, StorageServices, DiscoveryServices
+        SearchServices, StorageServices, CatalogServices,
+        DiscoveryServices
       ];
       for (const componentClass of componentClasses) {
         const component = wrapper.find(componentClass);
@@ -114,6 +117,7 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).not.to.contain("Sitewide Settings");
       expect(linkTexts).not.to.contain("Metadata");
       expect(linkTexts).not.to.contain("CDN");
+      expect(linkTexts).not.to.contain("External Catalogs");
     });
 
     it("shows components", () => {
@@ -130,7 +134,8 @@ describe("ConfigTabContainer", () => {
       const hiddenComponentClasses = [
         Collections, AdminAuthServices, PatronAuthServices, SitewideSettings,
         MetadataServices, AnalyticsServices, CDNServices,
-        SearchServices, StorageServices, DiscoveryServices
+        SearchServices, StorageServices, CatalogServices,
+        DiscoveryServices
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);
@@ -167,7 +172,8 @@ describe("ConfigTabContainer", () => {
         Libraries, IndividualAdmins, Collections,
         AdminAuthServices, PatronAuthServices, SitewideSettings,
         MetadataServices, AnalyticsServices, CDNServices,
-        SearchServices, StorageServices, DiscoveryServices
+        SearchServices, StorageServices, CatalogServices,
+        DiscoveryServices
       ];
       for (const componentClass of componentClasses) {
         const component = wrapper.find(componentClass);
