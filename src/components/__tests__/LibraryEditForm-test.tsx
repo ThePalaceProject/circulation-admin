@@ -23,8 +23,8 @@ describe("LibraryEditForm", () => {
     }
   };
   let settingFields = [
-    { key: "privacy-policy", label: "Privacy Policy" },
-    { key: "copyright", label: "Copyright" }
+    { key: "privacy-policy", label: "Privacy Policy", category: "Links" },
+    { key: "copyright", label: "Copyright", category: "Links" }
   ];
 
   let editableInputByName = (name) => {
@@ -101,7 +101,7 @@ describe("LibraryEditForm", () => {
 
     it("subdivides fields", () => {
       let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.length).to.equal(6);
+      expect(collapsible.length).to.equal(2);
 
       let required = collapsible.at(0).find(".panel-heading");
       expect(required.text()).to.equal("Required Fields");
@@ -112,8 +112,8 @@ describe("LibraryEditForm", () => {
         expect(title).to.contain("(Optional)");
       });
 
-      let additionalInfo = collapsible.filterWhere(form => form.find(".panel-heading").text() === "Additional Information (Optional)");
-      expect(additionalInfo.find(ProtocolFormField).length).to.equal(2);
+      let links = collapsible.filterWhere(form => form.find(".panel-heading").text() === "Links (Optional)");
+      expect(links.find(ProtocolFormField).length).to.equal(2);
     });
 
     it("has a save button", () => {
