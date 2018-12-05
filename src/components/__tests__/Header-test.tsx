@@ -210,7 +210,8 @@ describe("Header", () => {
           go: stub(),
           goBack: stub(),
           goForward: stub(),
-          setRouteLeaveHook: stub()
+          setRouteLeaveHook: stub(),
+          getCurrentLocation: stub(),
         },
         admin: libraryManager
       });
