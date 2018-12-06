@@ -3,6 +3,7 @@
 ### v0.0.93
 #### Updated
 - Further subdivided library form for increased readability.
+- Made copy about resetting Adobe IDs more accurate.
 
 ### v0.0.92
 #### Updated
