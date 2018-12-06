@@ -88,7 +88,7 @@ describe("ResetAdobeId", () => {
 
     it("should display a warning message before the submission button", () => {
       const patronWarning = wrapper.find(".patron-warning");
-      expect(patronWarning.text()).to.equal("Patron User Name will lose any existing loans when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal("Patron User Name will lose access to any existing loans when the Adobe ID is reset.");
     });
 
     it("should have a submission button with a .btn-danger class", () => {
@@ -223,7 +223,7 @@ describe("ResetAdobeId", () => {
     it("should update the warning message if a new patron was searched and found", () => {
       wrapper.setProps({ patron: patrons[1] });
       const patronWarning = wrapper.find(".patron-warning");
-      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose any existing loans when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose access to any existing loans when the Adobe ID is reset.");
     });
 
     it("should restore the checkbox and the reset button if a new patron was searched and found", () => {
