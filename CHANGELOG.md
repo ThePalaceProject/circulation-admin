@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.94
+#### Updated
+- Implemented a custom number validator for better error handling.
+
 ### v0.0.93
 #### Updated
 - Further subdivided library form for increased readability.

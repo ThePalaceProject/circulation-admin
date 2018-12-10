@@ -153,7 +153,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
-              error={this.props.fetchError}
+              error={this.props.formError}
               />
           </div>
         }
@@ -169,7 +169,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
-              error={this.props.fetchError}
+              error={this.props.formError}
               />
           </div>
         }

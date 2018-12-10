@@ -175,7 +175,7 @@ describe("ProtocolFormField", () => {
 
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
-    expect(input.prop("type")).to.equal("number");
+    expect(input.prop("validation")).to.equal("number");
     expect(input.prop("disabled")).to.equal(true);
     expect(input.prop("name")).to.equal("setting");
     expect(input.prop("label")).to.equal("label");
