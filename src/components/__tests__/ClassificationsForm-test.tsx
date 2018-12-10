@@ -26,7 +26,7 @@ describe("ClassificationsForm", () => {
     return inputs.filterWhere(input => input.props().value === value);
   };
 
-  describe.only("rendering without classification values", () => {
+  describe("rendering without classification values", () => {
     let confirmStub;
     beforeEach(() => {
       bookData = {
