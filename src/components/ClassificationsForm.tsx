@@ -20,7 +20,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   constructor(props) {
     super(props);
     this.state = {
-      audience: props.book ? props.book.audience : "None",
+      audience: props.book && props.book.audience ? props.book.audience : "None",
       fiction: props.book ? props.book.fiction : null,
       genres: [],
       error: null,
@@ -112,7 +112,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                       name="fiction"
                       value="none"
                       label="None"
-                      ref="nofiction"
+                      ref="noFictionSelected"
                       checked={true}
                       onChange={this.handleFictionChange}
                       clientError={this.state.error && this.state.error["fiction"]}
@@ -125,7 +125,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                     value="fiction"
                     label="Fiction"
                     ref="fiction"
-                    checked={this.state.fiction}
+                    checked={this.state.fiction !== undefined && this.state.fiction}
                     onChange={this.handleFictionChange}
                     clientError={this.state.error && this.state.error["fiction"]}
                     />
@@ -136,7 +136,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                     value="nonfiction"
                     label="Nonfiction"
                     ref="nonfiction"
-                    checked={this.state.fiction && !this.state.fiction}
+                    checked={this.state.fiction !== undefined && !this.state.fiction}
                     onChange={this.handleFictionChange}
                     clientError={this.state.error && this.state.error["fiction"]}
                     />
@@ -306,7 +306,7 @@ export default class ClassificationsForm extends React.Component<Classifications
     } = this.state;
     let data = new (window as any).FormData();
     let error = {};
-    if (audience === "None") {
+    if (!audience || audience === "None") {
       error["audience"] = "No Audience classification selected.";
     }
     if (fiction === undefined) {
