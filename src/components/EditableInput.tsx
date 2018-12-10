@@ -9,6 +9,7 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   required?: boolean;
   error?: FetchErrorData;
   optionalText?: boolean;
+  clientError?: boolean;
 }
 
 export interface EditableInputState {
@@ -43,7 +44,8 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       ? "(Optional) " : "";
     const descriptionText = this.props.description ? this.props.description : "";
     const description = `${optionalText}${descriptionText}`;
-    const errorClass = (this.props.error && this.props.error.status >= 400 &&
+    const errorClass = this.props.clientError ||
+      (this.props.error && this.props.error.status >= 400 &&
       !this.state.value && this.props.required) ?
       "field-error" : "";
     return (
@@ -54,7 +56,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
             { this.props.required && <span className="required-field">Required</span>}
             { this.renderElement() }
             { this.props.type === "checkbox" && this.props.label }
-            { this.props.type === "radio" && " " + this.props.label }
+            { this.props.type === "radio" && <span>{this.props.label}</span> }
           </label>
         }
         {!this.props.label && this.renderElement()}

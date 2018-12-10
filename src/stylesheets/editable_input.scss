@@ -1,5 +1,14 @@
-.control-label input[type="checkbox"] {
-  margin-right: 5px;
+.control-label {
+  input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  span {
+    margin-left: 5px;
+  }
+  .required-field {
+    color: $red-dark;
+    font-size: 0.9rem;
+  }
 }
 
 .description {
@@ -10,9 +19,9 @@
   background: $white;
 
   input[type=text],
-  input:not([type=select]),
+  select,
   input:not([type=checkbox]),
-  input:not([type=radio]),
+  input[type=radio] + span,
   textarea {
     background-color: $red-error;
     border: 1px $red-dark solid;
@@ -27,15 +36,5 @@
   .description {
     background: $white;
     color: $red;
-  }
-}
-
-.control-label {
-  margin-bottom: 0px;
-
-  .required-field {
-    color: $red-dark;
-    margin-left: 5px;
-    font-size: 0.9rem;
   }
 }

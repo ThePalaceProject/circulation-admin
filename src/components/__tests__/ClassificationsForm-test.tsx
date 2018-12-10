@@ -10,7 +10,7 @@ import WithRemoveButton from "../WithRemoveButton";
 import GenreForm from "../GenreForm";
 import genreData from "./genreData";
 
-describe("ClassificationsForm", () => {
+describe.only("ClassificationsForm", () => {
   let wrapper;
   let instance;
   let bookData;
@@ -36,7 +36,7 @@ describe("ClassificationsForm", () => {
         categories: ["Space Opera"]
       };
       editClassifications = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <ClassificationsForm
           book={bookData}
           genreTree={genreData}
@@ -51,8 +51,8 @@ describe("ClassificationsForm", () => {
       expect(select.props().label).to.equal("Audience");
       expect(select.props().value).to.equal("Young Adult");
 
-      let options = select.children();
-      expect(options.length).to.equal(4);
+      let options = select.find("select").children();
+      expect(options.length).to.equal(5);
     });
 
     it("shows editable inputs with min and max target age", () => {
@@ -163,7 +163,7 @@ describe("ClassificationsForm", () => {
       expect(maxAgeInput.length).to.equal(1);
     });
 
-    it("changes both fiction status radio buttons", () => {
+    it.only("changes both fiction status radio buttons", () => {
       let fictionInput = wrapper.find("input[value='fiction']");
       let nonfictionInput = wrapper.find("input[value='nonfiction']");
       expect(fictionInput.length).to.equal(1);
@@ -171,12 +171,13 @@ describe("ClassificationsForm", () => {
 
       let fictionElement = fictionInput.get(0);
       let nonfictionElement = nonfictionInput.get(0);
-
+      console.log(fictionElement.checked);
       expect((fictionElement as any).checked).to.equal(true);
       expect((nonfictionElement as any).checked).to.equal(false);
 
       (nonfictionElement as any).checked = true;
       nonfictionInput.simulate("change");
+      console.log(fictionElement.checked);
 
       // change to nonfiction should prompt user and clear fiction genre
       expect(confirmStub.callCount).to.be.above(0);
@@ -187,6 +188,7 @@ describe("ClassificationsForm", () => {
 
       (fictionElement as any).checked = true;
       fictionInput.simulate("change");
+      console.log(fictionElement.checked);
 
       expect((fictionElement as any).checked).to.equal(true);
       expect((nonfictionElement as any).checked).to.equal(false);
