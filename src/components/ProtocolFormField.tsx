@@ -78,7 +78,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       return (
         <EditableInput
           elementType="input"
-          type="number"
+          validation="number"
           required={setting.required}
           step={1}
           disabled={this.props.disabled}
@@ -247,5 +247,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     }
     this.setState({ listItems: [] });
   }
+
 
 }

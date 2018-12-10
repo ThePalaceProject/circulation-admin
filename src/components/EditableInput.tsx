@@ -9,6 +9,7 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   required?: boolean;
   error?: FetchErrorData;
   optionalText?: boolean;
+  validation?: string;
 }
 
 export interface EditableInputState {
@@ -73,6 +74,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       ref: "element",
       value: this.state.value,
       checked: this.state.checked,
+      onKeyPress: this.props.validation && this.props.validation === "number" && this.validateNumber,
       onChange: this.handleChange,
       style: this.props.style,
       placeholder: this.props.placeholder,
@@ -114,6 +116,13 @@ export default class EditableInput extends React.Component<EditableInputProps, E
         value = this.getValue();
       }
       this.setState({ value, checked });
+    }
+  }
+
+  validateNumber(e) {
+    const validChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "Enter"];
+    if (validChars.indexOf(e.key) < 0) {
+      e.preventDefault();
     }
   }
 
