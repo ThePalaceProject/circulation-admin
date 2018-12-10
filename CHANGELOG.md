@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.0.95
+#### Fixed
+- Displayed initial empty audience and fiction classification values of a book if it didn't have any values. That way, an admin would know that they need to enter values instead of saving and thinking that the book had the correct values.
+#### Updated
+- Styling on the ClassificationsForm tab for an individual book.
+
 ### v0.0.94
 #### Updated
 - Implemented a custom number validator for better error handling.
