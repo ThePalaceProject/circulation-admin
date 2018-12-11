@@ -7,13 +7,18 @@
     width: 50px;
   }
 
-  .fiction-radio-input {
+  .fiction-radio-input,
+  .genre-group-form {
     label {
       margin-right: 10px;
     }
 
     p {
       font-weight: bold;
+    }
+
+    .add-genre-form-title{
+      margin-top: 15px;
     }
   }
 }

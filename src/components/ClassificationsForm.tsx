@@ -37,7 +37,7 @@ export default class ClassificationsForm extends React.Component<Classifications
 
     return (
       <fieldset className="classifications-form">
-        <legend className="visuallyHidden">Classifications</legend>
+        <legend className="visuallyHidden">Classifications and Genres</legend>
 
         { this.state.error &&
           <Alert bsStyle="danger">
@@ -48,7 +48,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         }
 
         <Collapsible
-          title="Audience Classification"
+          title="Classifications"
           collapsible={false}
           body={
             <div>
@@ -62,7 +62,9 @@ export default class ClassificationsForm extends React.Component<Classifications
                 onChange={this.handleAudienceChange}
                 clientError={this.state.error && this.state.error["audience"]}
               >
-                <option value="None">---------</option>
+                { (!this.state.audience || this.state.audience === "None") &&
+                  <option value="None">None</option>
+                }
                 <option value="Children">Children</option>
                 <option value="Young Adult">Young Adult</option>
                 <option value="Adult">Adult</option>
@@ -71,7 +73,7 @@ export default class ClassificationsForm extends React.Component<Classifications
 
               { this.shouldShowTargetAge() &&
                 <div className="form-group target-age">
-                  <label>Target Age Range</label>
+                  <p>Target Age Range</p>
                   <div className="form-inline">
                     <EditableInput
                       elementType="input"
@@ -93,15 +95,6 @@ export default class ClassificationsForm extends React.Component<Classifications
                   </div>
                 </div>
               }
-            </div>
-          }
-        />
-
-        <Collapsible
-          title="Fiction Classification"
-          collapsible={false}
-          body={
-            <div>
               <div className="form-group fiction-radio-input">
                 <p>Fiction Classification</p>
                 <div className="form-inline">
@@ -142,29 +135,32 @@ export default class ClassificationsForm extends React.Component<Classifications
                     />
                   </div>
               </div>
-
-              <div className="form-group">
-                <label>Genres</label>
-                { this.state.genres.sort().map(category =>
-                  <WithRemoveButton
-                    key={category}
-                    disabled={this.props.disabled}
-                    onRemove={() => this.removeGenre(category)}
-                    >
-                    {this.fullGenre(category)}
-                  </WithRemoveButton>
-                ) }
-              </div>
-
-              <div>
-                <label>Add Genre</label>
-                <GenreForm
+            </div>
+          }
+        />
+        <Collapsible
+          title="Genre"
+          collapsible={false}
+          body={
+            <div className="form-group genre-group-form">
+              <p>Genres</p>
+              { this.state.genres.sort().map(category =>
+                <WithRemoveButton
+                  key={category}
                   disabled={this.props.disabled}
-                  genreOptions={genreOptions}
-                  bookGenres={this.state.genres}
-                  addGenre={this.addGenre}
-                  />
-              </div>
+                  onRemove={() => this.removeGenre(category)}
+                  >
+                  {this.fullGenre(category)}
+                </WithRemoveButton>
+              ) }
+
+              <p className="add-genre-form-title">Add Genre</p>
+              <GenreForm
+                disabled={this.props.disabled}
+                genreOptions={genreOptions}
+                bookGenres={this.state.genres}
+                addGenre={this.addGenre}
+                />
             </div>
           }
         />

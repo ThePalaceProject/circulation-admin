@@ -178,7 +178,8 @@ describe("ClassificationsForm", () => {
       expect(select.props().value).to.equal("Young Adult");
 
       let options = select.find("select").children();
-      expect(options.length).to.equal(5);
+      // The "None" select Audience value should not be rendered.
+      expect(options.length).to.equal(4);
     });
 
     it("shows editable inputs with min and max target age", () => {
