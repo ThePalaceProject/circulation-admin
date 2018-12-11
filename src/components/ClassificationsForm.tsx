@@ -135,32 +135,26 @@ export default class ClassificationsForm extends React.Component<Classifications
                     />
                   </div>
               </div>
-            </div>
-          }
-        />
-        <Collapsible
-          title="Genre"
-          collapsible={false}
-          body={
-            <div className="form-group genre-group-form">
-              <p>Genres</p>
-              { this.state.genres.sort().map(category =>
-                <WithRemoveButton
-                  key={category}
-                  disabled={this.props.disabled}
-                  onRemove={() => this.removeGenre(category)}
-                  >
-                  {this.fullGenre(category)}
-                </WithRemoveButton>
-              ) }
+              <div className="form-group genre-group-form">
+                <p>Genres</p>
+                { this.state.genres.sort().map(category =>
+                  <WithRemoveButton
+                    key={category}
+                    disabled={this.props.disabled}
+                    onRemove={() => this.removeGenre(category)}
+                    >
+                    {this.fullGenre(category)}
+                  </WithRemoveButton>
+                ) }
 
-              <p className="add-genre-form-title">Add Genre</p>
-              <GenreForm
-                disabled={this.props.disabled}
-                genreOptions={genreOptions}
-                bookGenres={this.state.genres}
-                addGenre={this.addGenre}
-                />
+                <p className="add-genre-form-title">Add Genre</p>
+                <GenreForm
+                  disabled={this.props.disabled}
+                  genreOptions={genreOptions}
+                  bookGenres={this.state.genres}
+                  addGenre={this.addGenre}
+                  />
+              </div>
             </div>
           }
         />
