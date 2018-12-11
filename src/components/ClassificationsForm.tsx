@@ -37,7 +37,7 @@ export default class ClassificationsForm extends React.Component<Classifications
 
     return (
       <fieldset className="classifications-form">
-        <legend className="visuallyHidden">Classifications and Genres</legend>
+        <legend className="visuallyHidden">Classifications</legend>
 
         { this.state.error &&
           <Alert bsStyle="danger">
