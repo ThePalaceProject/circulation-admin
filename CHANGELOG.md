@@ -5,6 +5,9 @@
 - Documentation for the repo.
 
 ### v0.0.94
+#### Deprecated
+- There's been an issue found in this version of the npm package and we recommend not to use this version.
+
 #### Updated
 - Implemented a custom number validator for better error handling.
 

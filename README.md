@@ -5,33 +5,40 @@ Web front-end for the Circulation Manager administrative interface.
 
 [![Build Status](https://travis-ci.org/NYPL-Simplified/circulation-web.svg?branch=master)](https://travis-ci.org/NYPL-Simplified/circulation-web)
 
+## Library Simplified Documentation
+
+To see screenshots, read in-depth documentation, and find out more about the project, check out the [Confluence](https://confluence.nypl.org/display/SIM/) site hosted by The New York Public Library.
+
 ## Setup
 
 This package is meant to be used with the Library Simplified [Circulation Manager](https://github.com/NYPL-Simplified/circulation).
+
+#### Use npm version
+
+Suggested local setup:
+1. `/[path to project folder]/circulation`
+
+To use the published version with your circulation manager, run `npm install` from `api/admin` in the `circulation` local installed repository.
+
+#### Use local development version
 
 Suggested local setup:
 1. `/[path to project folder]/circulation`
 2. `/[path to project folder]/circulation-web`
 
-#### Use npm version
+If you're working on the administrative interface and want to test local changes, you can link your local clone of this repository to your local circulation manager. These steps will allow you to work on the front-end administrative interface and see updates while developing.
 
-To use the published version with your circulation manager, run `npm install` from `api/admin` in the `circulation` local installed repository (1. above).
-
-#### Use local development version
-
-If you're working on the admin interface and want to test local changes, you can link your local clone of this repository to your local circulation manager. Run `npm link` in this repository (2. above), then run `npm link simplified-circulation-web` from `api/admin` in the circulation manager (1. above).
-
-These steps will allow you to work on the front-end admin interface and see updates while developing.
-
-In order to make changes:
-1. link the local clone repository to local circulation manager,
-2. run the `circulation` manager using `python app.py`,
-3. run the `circulation-web` interface using `npm run dev`
+1. Run `npm link` in this `circulation-web` repository,
+2. run `npm link simplified-circulation-web` from `api/admin` in the `circulation` repository,
+2. run the circulation manager using `python app.py` at the root in the `circulation` repository,
+3. run the web interface using `npm run dev` at the root of this `circulation-web` repository,
 4. visit `localhost:6500/admin/`
+
+Webpack will take care of compiling and updating any new changes made locally for development. Just refresh the page to see updates without having to restart either the `circulation` or `circulation-web` servers.
 
 ## Web Catalog
 
-The Circulation Manager admin interface relies on the [OPDS Web Catalog](https://github.com/NYPL-Simplified/opds-web-client) as its base React component and application. For more information, please check out the repository.
+The Circulation Manager administrative interface relies on the [OPDS Web Catalog](https://github.com/NYPL-Simplified/opds-web-client) as its base React component and application. For more information, please check out the repository.
 
 ## Publishing
 
@@ -45,7 +52,7 @@ Like the codebase, all the unit tests are written in Typescript. Tests are writt
 
 To run the tests, perform `npm test`.
 
-We use Travis CI for continuous integration and require pull requests tests for a new feature or bug fix to pass on Travis CI.
+We use Travis CI for continuous integration and require pull requests and tests for a new feature or bug fix to pass on Travis CI.
 
 ## License
 
