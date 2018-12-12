@@ -15,16 +15,16 @@ This package is meant to be used with the Library Simplified [Circulation Manage
 
 #### Use npm version
 
-Suggested local setup:
-1. `/[path to project folder]/circulation`
+Suggested local folder setup:
+- `/[path to project folder]/circulation`
 
 To use the published version with your circulation manager, run `npm install` from `api/admin` in the `circulation` local installed repository.
 
 #### Use local development version
 
-Suggested local setup:
-1. `/[path to project folder]/circulation`
-2. `/[path to project folder]/circulation-web`
+Suggested local folder setup:
+- `/[path to project folder]/circulation`
+- `/[path to project folder]/circulation-web`
 
 If you're working on the administrative interface and want to test local changes, you can link your local clone of this repository to your local circulation manager. These steps will allow you to work on the front-end administrative interface and see updates while developing.
 
@@ -52,7 +52,7 @@ Like the codebase, all the unit tests are written in Typescript. Tests are writt
 
 To run the tests, perform `npm test`.
 
-We use Travis CI for continuous integration and require pull requests and tests for a new feature or bug fix to pass on Travis CI.
+We use Travis CI for continuous integration. Any pull requests submitted must have tests and those tests must pass on Travis CI.
 
 ## License
 

@@ -4,7 +4,7 @@
 #### Updated
 - Documentation for the repo.
 
-### v0.0.94
+### v0.0.94 - Do not use
 #### Deprecated
 - There's been an issue found in this version of the npm package and we recommend not to use this version.
 
