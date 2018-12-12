@@ -1,12 +1,19 @@
 ## Changelog
 
-### v0.0.95
+### v0.0.96
 #### Fixed
 - Displayed initial empty audience and fiction classification values of a book if it didn't have any values. That way, an admin would know that they need to enter values instead of saving and thinking that the book had the correct values.
 #### Updated
 - Styling on the ClassificationsForm tab for an individual book.
 
+### v0.0.95
+#### Updated
+- Documentation for the repo.
+
 ### v0.0.94
+#### Note: this version contains an npm bug. Please upgrade to v0.0.95.
+- There's been an issue found in this version of the npm package and we recommend not to use this version.
+
 #### Updated
 - Implemented a custom number validator for better error handling.
 
