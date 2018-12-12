@@ -4,8 +4,8 @@
 #### Updated
 - Documentation for the repo.
 
-### v0.0.94 - Do not use
-#### Deprecated
+### v0.0.94
+#### Note: this version contains an npm bug. Please upgrade to v0.0.95.
 - There's been an issue found in this version of the npm package and we recommend not to use this version.
 
 #### Updated
