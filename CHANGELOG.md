@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.95
+#### Updated
+- Documentation for the repo.
+
 ### v0.0.94
 #### Updated
 - Implemented a custom number validator for better error handling.
