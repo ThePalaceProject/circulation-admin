@@ -21,7 +21,7 @@ export default class ClassificationsForm extends React.Component<Classifications
     super(props);
     this.state = {
       audience: props.book && props.book.audience ? props.book.audience : "None",
-      fiction: props.book ? props.book.fiction : null,
+      fiction: props.book ? props.book.fiction : undefined,
       genres: [],
       error: null,
     };
@@ -33,16 +33,24 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   render(): JSX.Element {
+    const {
+      audience,
+      fiction,
+      error,
+      genres
+    } = this.state;
     let genreOptions = this.genreOptions();
+    const hasAudienceError = (audience === "None") || (error && error["audience"]);
+    const hasFictionError = (fiction === undefined) || (error && error["fiction"]);
 
     return (
       <fieldset className="classifications-form">
         <legend className="visuallyHidden">Classifications</legend>
 
-        { this.state.error &&
-          <Alert bsStyle="danger">
-            { Object.keys(this.state.error).map(error => {
-              return (<p>{this.state.error[error]}</p>);
+        { error &&
+          <Alert bsStyle="danger" ref="errorMessage" tabIndex={-1}>
+            { Object.keys(error).map(err => {
+              return (<p>{error[err]}</p>);
             })}
           </Alert>
         }
@@ -60,9 +68,9 @@ export default class ClassificationsForm extends React.Component<Classifications
                 ref="audience"
                 value={this.props.book.audience || "None"}
                 onChange={this.handleAudienceChange}
-                clientError={this.state.error && this.state.error["audience"]}
+                clientError={hasAudienceError}
               >
-                { (!this.state.audience || this.state.audience === "None") &&
+                { (!audience || audience === "None") &&
                   <option value="None">None</option>
                 }
                 <option value="Children">Children</option>
@@ -98,7 +106,7 @@ export default class ClassificationsForm extends React.Component<Classifications
               <div className="form-group fiction-radio-input">
                 <p>Fiction Classification</p>
                 <div className="form-inline">
-                  { this.state.fiction === undefined &&
+                  { fiction === undefined &&
                     <EditableInput
                       type="radio"
                       disabled={this.props.disabled}
@@ -108,7 +116,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                       ref="noFictionSelected"
                       checked={true}
                       onChange={this.handleFictionChange}
-                      clientError={this.state.error && this.state.error["fiction"]}
+                      clientError={hasFictionError}
                     />
                   }
                   <EditableInput
@@ -118,9 +126,9 @@ export default class ClassificationsForm extends React.Component<Classifications
                     value="fiction"
                     label="Fiction"
                     ref="fiction"
-                    checked={this.state.fiction !== undefined && this.state.fiction}
+                    checked={fiction !== undefined && fiction}
                     onChange={this.handleFictionChange}
-                    clientError={this.state.error && this.state.error["fiction"]}
+                    clientError={hasFictionError}
                     />
                   <EditableInput
                     type="radio"
@@ -129,15 +137,15 @@ export default class ClassificationsForm extends React.Component<Classifications
                     value="nonfiction"
                     label="Nonfiction"
                     ref="nonfiction"
-                    checked={this.state.fiction !== undefined && !this.state.fiction}
+                    checked={fiction !== undefined && !fiction}
                     onChange={this.handleFictionChange}
-                    clientError={this.state.error && this.state.error["fiction"]}
+                    clientError={hasFictionError}
                     />
                   </div>
               </div>
               <div className="form-group genre-group-form">
                 <p>Genres</p>
-                { this.state.genres.sort().map(category =>
+                { genres.sort().map(category =>
                   <WithRemoveButton
                     key={category}
                     disabled={this.props.disabled}
@@ -151,7 +159,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                 <GenreForm
                   disabled={this.props.disabled}
                   genreOptions={genreOptions}
-                  bookGenres={this.state.genres}
+                  bookGenres={genres}
                   addGenre={this.addGenre}
                   />
               </div>
@@ -303,8 +311,12 @@ export default class ClassificationsForm extends React.Component<Classifications
       error["fiction"] = "No Fiction classification selected.";
     }
     if (error["audience"] || error["fiction"]) {
-      window.scrollTo(0, 0);
       this.setState({ error });
+      setTimeout(() => {
+        if (this.refs["errorMessage"]) {
+          ReactDOM.findDOMNode<HTMLDivElement>(this.refs["errorMessage"]).focus();
+        }
+      }, 500);
       return;
     }
 

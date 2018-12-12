@@ -97,19 +97,18 @@ describe("ClassificationsForm", () => {
         expect(editClassifications.callCount).to.equal(0);
       });
 
-    it("should render error messages without an audience or a fiction classification",
-      () => {
-        let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+    it("should render error messages without an audience or a fiction classification", () => {
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
 
-        button.simulate("click");
-        let alert = wrapper.find(".alert-danger");
+      button.simulate("click");
+      let alert = wrapper.find(".alert-danger");
 
-        expect(editClassifications.callCount).to.equal(0);
-        expect(alert.length).to.equal(1);
-        expect(alert.text()).to.equal(
-          "No Audience classification selected.No Fiction classification selected."
-        );
-      });
+      expect(editClassifications.callCount).to.equal(0);
+      expect(alert.length).to.equal(1);
+      expect(alert.text()).to.equal(
+        "No Audience classification selected.No Fiction classification selected."
+      );
+    });
 
     it("should not allow you to submit if you didn't select an audience", () => {
       let button = wrapper.find("button").findWhere(button => button.text() === "Save");
