@@ -176,8 +176,8 @@ export default class ClassificationsForm extends React.Component<Classifications
 
   componentWillMount() {
     if (this.props.book) {
-      this.setState({ audience: this.props.book.audience });
-      this.setState({ fiction: this.props.book.fiction });
+      this.setState({ audience: this.props.book.audience || "None" });
+      this.setState({ fiction: this.props.book.fiction  });
       this.setState({ genres: this.bookGenres(this.props.book) });
     }
   }

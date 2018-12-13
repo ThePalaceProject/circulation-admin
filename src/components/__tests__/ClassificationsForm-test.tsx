@@ -87,12 +87,12 @@ describe("ClassificationsForm", () => {
       expect(nonfictionRadio.props().name).to.equal("fiction");
     });
 
-    it("should not allow you to submit if you didn't select an audience or a fiction classification",
+    it.only("should not allow you to submit if you didn't select an audience or a fiction classification",
       () => {
         let button = wrapper.find("button").findWhere(button => button.text() === "Save");
         button.simulate("click");
 
-        expect(wrapper.state().audience).to.equal(undefined);
+        expect(wrapper.state().audience).to.equal("None");
         expect(wrapper.state().fiction).to.equal(undefined);
         expect(editClassifications.callCount).to.equal(0);
       });
