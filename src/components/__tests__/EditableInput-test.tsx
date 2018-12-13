@@ -25,6 +25,12 @@ describe("EditableInput", () => {
     );
   });
 
+  it("should not show the error display style", () => {
+    let fieldError = wrapper.find(".field-error");
+
+    expect(fieldError.length).to.equal(0);
+  });
+
   it("shows label from props", () => {
     let label = wrapper.find("label");
     expect(label.text()).to.contain("label");
@@ -35,7 +41,7 @@ describe("EditableInput", () => {
 
     wrapper.setProps({ "type": "radio" });
     label = wrapper.find("label");
-    expect(label.text()).to.contain(" label");
+    expect(label.text()).to.contain("label");
   });
 
   it("shows description from props", () => {
@@ -176,5 +182,38 @@ describe("EditableInput", () => {
     let inputElement = wrapper.find("input").get(0) as any;
     expect(inputElement.value).to.equal("");
     expect(inputElement.checked).to.equal(false);
+  });
+
+  it("shows as an error field style with client or server error", () => {
+    wrapper = mount(
+      <EditableInput
+        elementType="input"
+        type="text"
+        label="label"
+        name="name"
+        disabled={false}
+        value="initial value"
+        clientError={true}
+      />
+    );
+
+    let fieldError = wrapper.find(".field-error");
+
+    expect(fieldError.length).to.equal(1);
+
+    wrapper = mount(
+      <EditableInput
+        elementType="input"
+        type="text"
+        label="label"
+        name="name"
+        disabled={false}
+        error={{ status: 400, response: "", url: "" }}
+        required={true}
+      />
+    );
+
+    fieldError = wrapper.find(".field-error");
+    expect(fieldError.length).to.equal(1);
   });
 });

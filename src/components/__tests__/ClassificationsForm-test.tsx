@@ -26,6 +26,131 @@ describe("ClassificationsForm", () => {
     return inputs.filterWhere(input => input.props().value === value);
   };
 
+  describe("rendering without classification values", () => {
+    let confirmStub;
+    beforeEach(() => {
+      bookData = {
+        title: "title",
+        audience: undefined,
+        targetAgeRange: ["12", "16"],
+        fiction: undefined,
+        categories: ["Space Opera"]
+      };
+      editClassifications = stub();
+      confirmStub = stub(window, "confirm").returns(true);
+      wrapper = mount(
+        <ClassificationsForm
+          book={bookData}
+          genreTree={genreData}
+          editClassifications={editClassifications}
+          />
+      );
+      instance = wrapper.instance();
+    });
+
+    afterEach(() => {
+      confirmStub.restore();
+    });
+
+    it("should have no values displayed for the audience or fiction classifications", () => {
+      let select = editableInputByName("audience");
+      expect(select.props().label).to.equal("Audience");
+      expect(select.props().value).to.equal("None");
+
+      let options = select.find("select").children();
+      expect(options.length).to.equal(5);
+
+      // This only gets rendered without an initial fiction classification:
+      let noFictionSelectedRadio = wrapper
+        .find(EditableInput)
+        .filterWhere(input => input.props().value === "none");
+      let fictionRadio = wrapper
+        .find(EditableInput)
+        .filterWhere(input => input.props().value === "fiction");
+      let nonfictionRadio = wrapper
+        .find(EditableInput)
+        .filterWhere(input => input.props().value === "nonfiction");
+
+      expect(noFictionSelectedRadio.props().type).to.equal("radio");
+      expect(noFictionSelectedRadio.props().label).to.equal("None");
+      expect(noFictionSelectedRadio.props().checked).to.equal(true);
+      expect(noFictionSelectedRadio.props().name).to.equal("fiction");
+
+      expect(fictionRadio.props().type).to.equal("radio");
+      expect(fictionRadio.props().label).to.equal("Fiction");
+      expect(fictionRadio.props().checked).to.equal(false);
+      expect(fictionRadio.props().name).to.equal("fiction");
+
+      expect(nonfictionRadio.props().type).to.equal("radio");
+      expect(nonfictionRadio.props().label).to.equal("Nonfiction");
+      expect(nonfictionRadio.props().checked).to.equal(false);
+      expect(nonfictionRadio.props().name).to.equal("fiction");
+    });
+
+    it("should not allow you to submit if you didn't select an audience or a fiction classification",
+      () => {
+        let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+        button.simulate("click");
+
+        expect(wrapper.state().audience).to.equal("None");
+        expect(wrapper.state().fiction).to.equal(undefined);
+        expect(editClassifications.callCount).to.equal(0);
+      });
+
+    it("should render error messages without an audience or a fiction classification", () => {
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+
+      button.simulate("click");
+      let alert = wrapper.find(".alert-danger");
+
+      expect(editClassifications.callCount).to.equal(0);
+      expect(alert.length).to.equal(1);
+      expect(alert.text()).to.equal(
+        "No Audience classification selected.No Fiction classification selected."
+      );
+    });
+
+    it("should not allow you to submit if you didn't select an audience", () => {
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+      let alert;
+      wrapper.setState({ fiction: true });
+
+      button.simulate("click");
+      alert = wrapper.find(".alert-danger");
+      expect(editClassifications.callCount).to.equal(0);
+      expect(alert.length).to.equal(1);
+
+      let select = wrapper.find("select[name='audience']") as any;
+      let selectElement = select.get(0);
+      selectElement.value = "Adult";
+      select.simulate("change");
+      button.simulate("click");
+
+      alert = wrapper.find(".alert-danger");
+      expect(editClassifications.callCount).to.equal(1);
+      // The alert message should go away.
+      expect(alert.length).to.equal(0);
+    });
+
+    it("should not allow you to submit if you didn't select a fiction classification", () => {
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+      wrapper.setState({ audience: "Adult" });
+
+      button.simulate("click");
+      expect(editClassifications.callCount).to.equal(0);
+
+      let nonfictionInput = wrapper.find("input[value='nonfiction']");
+      let nonfictionElement = nonfictionInput.get(0);
+      expect((nonfictionElement as any).checked).to.equal(false);
+
+      (nonfictionElement as any).checked = true;
+      nonfictionInput.simulate("change");
+      button.simulate("click");
+
+      expect(editClassifications.callCount).to.equal(1);
+    });
+  });
+
   describe("rendering", () => {
     beforeEach(() => {
       bookData = {
@@ -36,7 +161,7 @@ describe("ClassificationsForm", () => {
         categories: ["Space Opera"]
       };
       editClassifications = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <ClassificationsForm
           book={bookData}
           genreTree={genreData}
@@ -51,7 +176,8 @@ describe("ClassificationsForm", () => {
       expect(select.props().label).to.equal("Audience");
       expect(select.props().value).to.equal("Young Adult");
 
-      let options = select.children();
+      let options = select.find("select").children();
+      // The "None" select Audience value should not be rendered.
       expect(options.length).to.equal(4);
     });
 
@@ -171,7 +297,6 @@ describe("ClassificationsForm", () => {
 
       let fictionElement = fictionInput.get(0);
       let nonfictionElement = nonfictionInput.get(0);
-
       expect((fictionElement as any).checked).to.equal(true);
       expect((nonfictionElement as any).checked).to.equal(false);
 
