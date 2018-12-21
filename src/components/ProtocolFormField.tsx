@@ -90,6 +90,21 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
           ref="element"
           />
       );
+    } else if (setting.type === "textarea") {
+      return (
+        <EditableInput
+          elementType="textarea"
+          type="text"
+          disabled={this.props.disabled}
+          name={setting.key}
+          label={setting.label}
+          required={setting.required}
+          description={setting.description}
+          value={this.props.value || setting.default}
+          error={this.props.error}
+          ref="element"
+          />
+      );
     } else if (setting.type === "select") {
       return (
         <EditableInput
