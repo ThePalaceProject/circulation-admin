@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.97
+#### Added
+- Made it possible for server-side configurations to specify that certain fields should be rendered as textarea elements.
+
 ### v0.0.96
 #### Fixed
 - Displayed initial empty audience and fiction classification values of a book if it didn't have any values. That way, an admin would know that they need to enter values instead of saving and thinking that the book had the correct values.

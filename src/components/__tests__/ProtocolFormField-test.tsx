@@ -218,6 +218,41 @@ describe("ProtocolFormField", () => {
     expect(children.at(1).text()).to.contain("option 2");
   });
 
+  it("renders textarea setting", () => {
+    const setting = {
+      key: "setting",
+      label: "label",
+      type: "textarea",
+      description: "<p>Textarea</p>"
+    };
+    const wrapper = mount(
+      <ProtocolFormField
+        setting={setting}
+        disabled={false}
+        />
+    );
+
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    let inputElement = input.find("textarea").at(0) as any;
+    expect(inputElement.length).to.equal(1);
+    expect(inputElement.text()).to.equal("");
+    expect(input.prop("type")).to.equal("text");
+    expect(input.prop("disabled")).to.equal(false);
+    expect(input.prop("name")).to.equal("setting");
+    expect(input.prop("label")).to.equal("label");
+    expect(input.prop("description")).to.equal("<p>Textarea</p>");
+    expect(input.prop("value")).to.be.undefined;
+
+    wrapper.setProps({ value: "test" });
+    input = wrapper.find(EditableInput);
+    expect(input.prop("value")).to.equal("test");
+    expect(inputElement.text()).to.equal("test");
+
+    (wrapper.instance() as ProtocolFormField).clear();
+    expect(inputElement.text()).to.equal("");
+  });
+
   it("renders list setting with options", () => {
     const defaultOptions = ["option2", "option3"];
     const setting = {
