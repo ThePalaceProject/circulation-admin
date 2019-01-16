@@ -477,7 +477,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       lanesToUpdate = lanes;
     }
 
-    lanesToUpdate = lanesToUpdate.slice(0, oldIndex).concat(lanesToUpdate.slice(oldIndex + 1, lanes.length));
+    lanesToUpdate = lanesToUpdate.slice(0, oldIndex).concat(lanesToUpdate.slice(oldIndex + 1, lanesToUpdate.length));
     lanesToUpdate.splice(newIndex, 0, draggedLane);
 
     if (parent) {
