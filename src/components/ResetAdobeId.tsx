@@ -68,9 +68,12 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { (fetchError && patronExists) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
-        <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned
-          automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit.
-          Please be sure to inform patrons that resetting their Adobe ID will automatically revoke their access to any existing loans.</p>
+        <ul>
+          A patron's Adobe ID should be reset under the following conditions:
+          <li>&bull; When trying to sign in, they receive an error that says "Too many device activations" or "Device Activations Reached".</li>
+          <li>&bull; When trying to download a book, they receive an error message similar to "Too many activations".</li>
+        </ul>
+        <p>Instruct the patron to sign out on their device before proceeding.</p>
         <ManagePatronsForm
           store={this.props.store}
           csrfToken={this.props.csrfToken}
@@ -79,8 +82,11 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { patron ?
             <div className="reset-adobe-id">
               <p className="patron-warning">
-                <b>Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
-                   lose access to any existing loans when the Adobe ID is reset.</b>
+                <b>
+                  IMPORTANT: Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)}
+                  will lose access to any existing loans. Loans will still appear in the patron's book list until they expire,
+                  but the patron will be unable to read or return them.
+                </b>
               </p>
               { responseBody &&
                 <Alert bsStyle="success">
@@ -88,7 +94,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
                   <br/>Please instruct the patron to log out and log back into their account.
                 </Alert>
               }
-              { !responseBody &&
+               !responseBody &&
                 <EditableInput
                   type="checkbox"
                   name="resetAdobeId"
