@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.98
+#### Added
+- Made it possible to change the order of lanes (within the same parent lane) by dragging and dropping on the lanes page.
+
 ### v0.0.97
 #### Added
 - Made it possible for server-side configurations to specify that certain fields should be rendered as textarea elements.

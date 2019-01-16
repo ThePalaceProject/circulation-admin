@@ -103,6 +103,18 @@ describe("fetch-edit reducer", () => {
     expect(fetchOnlyReducer(oldState, action)).to.deep.equal(newState);
   });
 
+  it("handles success", () => {
+    let action = { type: "TEST_FETCH_SUCCESS", data: testData };
+    let oldState = Object.assign({}, initState, {
+      isFetching: true
+    });
+    let newState = Object.assign({}, initState, {
+      isFetching: false
+    });
+    expect(reducer(oldState, action)).to.deep.equal(newState);
+    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(newState);
+  });
+
   it("handles load", () => {
     let action = { type: "TEST_FETCH_LOAD", data: testData };
     let newState = Object.assign({}, initState, {

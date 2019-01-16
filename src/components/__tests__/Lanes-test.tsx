@@ -3,6 +3,10 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
+const dnd = require("react-beautiful-dnd");
+const DragDropContext = dnd.DragDropContext;
+const Droppable = dnd.Droppable;
+const Draggable = dnd.Draggable;
 
 import { Lanes } from "../Lanes";
 import ErrorMessage from "../ErrorMessage";
@@ -21,6 +25,7 @@ describe("Lanes", () => {
   let showLane;
   let hideLane;
   let resetLanes;
+  let changeLaneOrder;
 
   let customListsData = [
     { id: 1, name: "list 1", entries: [] },
@@ -42,6 +47,36 @@ describe("Lanes", () => {
       custom_list_ids: [], inherit_parent_restrictions: false }
   ];
 
+  const mountWrapper = () => {
+    wrapper = mount(
+      <Lanes
+        csrfToken="token"
+        library="library"
+        lanes={lanesData}
+        customLists={customListsData}
+        isFetching={false}
+        fetchLanes={fetchLanes}
+        fetchCustomLists={fetchCustomLists}
+        editLane={editLane}
+        deleteLane={deleteLane}
+        showLane={showLane}
+        hideLane={hideLane}
+        resetLanes={resetLanes}
+        changeLaneOrder={changeLaneOrder}
+        />
+    );
+  };
+
+  const getTopLevelLanes = () => {
+    let sidebar = wrapper.find(".lanes-sidebar");
+    let topLevelLanes = sidebar.children(DragDropContext).children(Draggable).children("div");
+    return topLevelLanes;
+  };
+
+  const getDroppableById = (id) => {
+    return wrapper.find(Droppable).filterWhere(node => node.props().droppableId === id);
+  };
+
   beforeEach(() => {
     fetchLanes = stub();
     fetchCustomLists = stub();
@@ -50,6 +85,7 @@ describe("Lanes", () => {
     showLane = stub().returns(new Promise<void>(resolve => resolve()));
     hideLane = stub().returns(new Promise<void>(resolve => resolve()));
     resetLanes = stub().returns(new Promise<void>(resolve => resolve()));
+    changeLaneOrder = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = shallow(
       <Lanes
@@ -65,6 +101,7 @@ describe("Lanes", () => {
         showLane={showLane}
         hideLane={hideLane}
         resetLanes={resetLanes}
+        changeLaneOrder={changeLaneOrder}
         />
     );
   });
@@ -97,18 +134,33 @@ describe("Lanes", () => {
   });
 
   it("renders create top-level lane link", () => {
-    let create = wrapper.find(".lanes-sidebar > .create-lane");
+    let create = wrapper.find(".lanes-sidebar > div > .create-lane");
     expect(create.length).to.equal(1);
     expect(create.props().to).to.equal("/admin/web/lanes/library/create");
   });
 
   it("renders reset link", () => {
-    let reset = wrapper.find(".lanes-sidebar > .reset-lanes");
+    let reset = wrapper.find(".lanes-sidebar .reset-lanes");
     expect(reset.length).to.equal(1);
     expect(reset.props().to).to.equal("/admin/web/lanes/library/reset");
   });
 
+  it("renders save and reset order if order has changed", () => {
+    let save = wrapper.find(".lanes-sidebar .save-order");
+    expect(save.length).to.equal(0);
+    let reset = wrapper.find(".lanes-sidebar .cancel-order-changes");
+    expect(reset.length).to.equal(0);
+
+    wrapper.setState({ orderChanged: true });
+    save = wrapper.find(".lanes-sidebar .save-order");
+    expect(save.length).to.equal(1);
+    reset = wrapper.find(".lanes-sidebar .cancel-order-changes");
+    expect(reset.length).to.equal(1);
+  });
+
   it("renders and expands and collapses lanes and sublanes", () => {
+    mountWrapper();
+
     const expectExpanded = (lane) => {
       let collapse = lane.find("> div > span > .collapse-button");
       expect(collapse.length).to.equal(1);
@@ -125,7 +177,7 @@ describe("Lanes", () => {
       return expand;
     };
 
-    let topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    let topLevelLanes = getTopLevelLanes();
     expect(topLevelLanes.length).to.equal(2);
     let lane1 = topLevelLanes.at(0);
     let lane4 = topLevelLanes.at(1);
@@ -139,27 +191,27 @@ describe("Lanes", () => {
     expectExpanded(lane4);
 
     // lane 1 has one sublane which is collapsed
-    let sublane2 = lane1.find("> ul > li");
+    let sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(sublane2.text()).to.contain("sublane 2");
     expect(sublane2.text()).to.contain("(3)");
     expect(sublane2.length).to.equal(1);
     let sublane2Expand = expectCollapsed(sublane2);
 
     // lane 4 has no sublanes
-    let lane4Sublanes = lane4.find("> ul > li");
+    let lane4Sublanes = lane4.children(Droppable).children(Draggable).children("div");
     expect(lane4Sublanes.length).to.equal(0);
 
     // sublane 2 has a sublane, but it's not shown since sublane 2 is collapsed.
-    let sublane3 = sublane2.find("> ul > li");
+    let sublane3 = sublane2.children(Droppable).children(Draggable).children("div");
     expect(sublane3.length).to.equal(0);
 
     // if we expand sublane 2, we can see sublane 3 below it.
     sublane2Expand.simulate("click");
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
-    sublane2 = lane1.find("> ul > li");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     let sublane2Collapse = expectExpanded(sublane2);
-    sublane3 = sublane2.find("> ul > li");
+    sublane3 = sublane2.children(Droppable).children(Draggable).children("div");
     expect(sublane3.length).to.equal(1);
     expect(sublane3.text()).to.contain("sublane 3");
     expect(sublane3.text()).to.contain("(2)");
@@ -167,121 +219,125 @@ describe("Lanes", () => {
 
     // if we collapse sublane 2, sublane 3 is hidden again.
     sublane2Collapse.simulate("click");
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
-    sublane2 = lane1.find("> ul > li");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expectCollapsed(sublane2);
-    sublane3 = sublane2.find("> ul > li");
+    sublane3 = sublane2.children(Droppable).children(Draggable).children("div");
     expect(sublane3.length).to.equal(0);
 
     // if we collapse lane 1, sublane 2 is hidden.
     let lane1Collapse = expectExpanded(lane1);
     lane1Collapse.simulate("click");
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
     let lane1Expand = expectCollapsed(lane1);
-    sublane2 = lane1.find("> ul > li");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(sublane2.length).to.equal(0);
 
     // if we expand lane 1, sublane 2 is shown again.
     lane1Expand.simulate("click");
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
     expectExpanded(lane1);
-    sublane2 = lane1.find("> ul > li");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(sublane2.length).to.equal(1);
   });
 
   it("renders active lane", () => {
-    let topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    mountWrapper();
+    let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0);
     let lane4 = topLevelLanes.at(1);
-    let sublane2 = lane1.find("> ul > li");
+    let sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(lane1.props().className).not.to.contain("active");
     expect(lane4.props().className).not.to.contain("active");
     expect(sublane2.props().className).not.to.contain("active");
 
     wrapper.setProps({ identifier: "1" });
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
     lane4 = topLevelLanes.at(1);
-    sublane2 = lane1.find("> ul > li");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(lane1.props().className).to.contain("active");
     expect(lane4.props().className).not.to.contain("active");
     expect(sublane2.props().className).not.to.contain("active");
 
     wrapper.setProps({ identifier: "2" });
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
     lane4 = topLevelLanes.at(1);
-    sublane2 = lane1.find("> ul > li");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(lane1.props().className).not.to.contain("active");
     expect(lane4.props().className).not.to.contain("active");
     expect(sublane2.props().className).to.contain("active");
   });
 
   it("renders create sublane link", () => {
-    let topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    mountWrapper();
+    let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0);
-    let lane1CreateSublane = lane1.find("> .lane-buttons .create-lane");
+    let lane1CreateSublane = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
     expect(lane1CreateSublane.length).to.equal(1);
     expect(lane1CreateSublane.props().to).to.equal("/admin/web/lanes/library/create/1");
     let lane4 = topLevelLanes.at(1);
-    let lane4CreateSublane = lane4.find("> .lane-buttons .create-lane");
+    let lane4CreateSublane = lane4.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
     expect(lane4CreateSublane.length).to.equal(1);
     expect(lane4CreateSublane.props().to).to.equal("/admin/web/lanes/library/create/4");
 
     // sublane 2 is collapsed so its create sublane button isn't shown
-    let sublane2 = lane1.find("> ul > li");
-    let sublane2CreateSublane = sublane2.find("> .lane-buttons .create-lane");
+    let sublane2 = lane1.children(Droppable).children(Draggable).children("div");
+    let sublane2CreateSublane = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
     expect(sublane2CreateSublane.length).to.equal(0);
     let sublane2Expand = sublane2.find("> div > span > .expand-button");
     sublane2Expand.simulate("click");
 
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
-    sublane2 = lane1.find("> ul > li");
-    sublane2CreateSublane = sublane2.find("> .lane-buttons .create-lane");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
+    sublane2CreateSublane = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
     expect(sublane2CreateSublane.length).to.equal(1);
     expect(sublane2CreateSublane.props().to).to.equal("/admin/web/lanes/library/create/2");
   });
 
   it("renders edit link", () => {
-    let topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    mountWrapper();
+    let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0);
-    let lane1Edit = lane1.find("> .lane-buttons .edit-lane");
+    let lane1Edit = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(lane1Edit.length).to.equal(1);
     expect(lane1Edit.props().to).to.equal("/admin/web/lanes/library/edit/1");
 
     // lane 4 wasn't created from lists, so it's not editable
     let lane4 = topLevelLanes.at(1);
-    let lane4Edit = lane4.find("> .lane-buttons .edit-lane");
+    let lane4Edit = lane4.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(lane4Edit.length).to.equal(0);
 
     // sublane 2 is collapsed so its edit button isn't shown
-    let sublane2 = lane1.find("> ul > li");
-    let sublane2Edit = sublane2.find("> .lane-buttons .edit-lane");
+    let sublane2 = lane1.children(Droppable).children(Draggable).children("div");
+    let sublane2Edit = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(sublane2Edit.length).to.equal(0);
     let sublane2Expand = sublane2.find("> div > span > .expand-button");
     sublane2Expand.simulate("click");
 
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
-    sublane2 = lane1.find("> ul > li");
-    sublane2Edit = sublane2.find("> .lane-buttons .edit-lane");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
+    sublane2Edit = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(sublane2Edit.length).to.equal(1);
     expect(sublane2Edit.props().to).to.equal("/admin/web/lanes/library/edit/2");
   });
 
   it("shows a lane", () => {
-    let topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    mountWrapper();
+    let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0);
 
     // lane 1 is already visible, so it has no show link
     let lane1Show = lane1.find("> div > .show-lane");
     expect(lane1Show.length).to.equal(0);
 
-    let sublane2 = lane1.find("> ul > li");
+    let sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(sublane2.text()).to.contain("Hidden");
     let sublane2Show = sublane2.find("> div > .show-lane");
     expect(sublane2Show.length).to.equal(1);
@@ -293,10 +349,10 @@ describe("Lanes", () => {
     let sublane2Expand = sublane2.find("> div > span > .expand-button");
     sublane2Expand.simulate("click");
 
-    topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
-    sublane2 = lane1.find("> ul > li");
-    let sublane3 = sublane2.find("> ul > li");
+    sublane2 = lane1.children(Droppable).children(Draggable).children("div");
+    let sublane3 = sublane2.children(Droppable).children(Draggable).children("div");
 
     // sublane 3 has a hidden parent, so it can't be shown.
     expect(sublane3.text()).to.contain("Hidden");
@@ -305,13 +361,14 @@ describe("Lanes", () => {
   });
 
   it("hides a lane", () => {
-    let topLevelLanes = wrapper.find(".lanes-sidebar > ul > li");
+    mountWrapper();
+    let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0);
     expect(lane1.text()).to.contain("Visible");
     let lane1Hide = lane1.find("> div > .hide-lane");
     expect(lane1Hide.length).to.equal(1);
 
-    let sublane2 = lane1.find("> ul > li");
+    let sublane2 = lane1.children(Droppable).children(Draggable).children("div");
     expect(sublane2.text()).to.contain("Hidden");
     let sublane2Hide = sublane2.find("> div > .hide-lane");
     expect(sublane2Hide.length).to.equal(0);
@@ -373,9 +430,9 @@ describe("Lanes", () => {
     editor = wrapper.find(LaneEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
-    expect(editor.props().lane).to.equal(sublaneData);
-    expect(editor.props().parent).to.equal(lanesData[0]);
-    expect(editor.props().customLists).to.equal(customListsData);
+    expect(editor.props().lane).to.deep.equal(sublaneData);
+    expect(editor.props().parent).to.deep.equal(lanesData[0]);
+    expect(editor.props().customLists).to.deep.equal(customListsData);
     expect(editor.props().editLane).to.be.ok;
     expect(editor.props().deleteLane).to.be.ok;
     expect(editor.props().hideLane).to.be.ok;
@@ -393,23 +450,8 @@ describe("Lanes", () => {
   });
 
   it("resets lanes", () => {
-    wrapper = mount(
-      <Lanes
-        csrfToken="token"
-        library="library"
-        editOrCreate="reset"
-        lanes={lanesData}
-        customLists={customListsData}
-        isFetching={false}
-        fetchLanes={fetchLanes}
-        fetchCustomLists={fetchCustomLists}
-        editLane={editLane}
-        deleteLane={deleteLane}
-        showLane={showLane}
-        hideLane={hideLane}
-        resetLanes={resetLanes}
-        />
-    );
+    mountWrapper();
+    wrapper.setProps({ editOrCreate: "reset" });
 
     // mock typing in the 'RESET' confirmation input box
     let editableInputStub = stub(EditableInput.prototype, "getValue").returns("DO NOT RESET");
@@ -424,5 +466,141 @@ describe("Lanes", () => {
     expect(fetchLanes.callCount).to.equal(2);
 
     editableInputStub.restore();
+  });
+
+  it("prevents dragging a lane out of its parent", () => {
+    mountWrapper();
+
+    // simulate starting a drag of lane1
+    (wrapper.instance() as Lanes).onDragStart({
+      draggableId: "1",
+      source: {
+        droppableId: "top"
+      }
+    });
+
+    // dropping should be disabled everywhere except the top-level lane
+    let topDroppable = getDroppableById("top");
+    expect(topDroppable.props().isDropDisabled).to.be.false;
+    let lane1Droppable = getDroppableById("1");
+    expect(lane1Droppable.props().isDropDisabled).to.be.true;
+
+    // sublane 2 is collapsed so it isn't droppable
+    let topLevelLanes = getTopLevelLanes();
+    let lane1 = topLevelLanes.at(0);
+    let sublane2 = lane1.children(Droppable).children(Draggable).children("div");
+    let sublane2Expand = sublane2.find("> div > span > .expand-button");
+    sublane2Expand.simulate("click");
+    let sublane2Droppable = getDroppableById("2");
+    expect(sublane2Droppable.props().isDropDisabled).to.be.true;
+
+    // now simulate dragging sublane 2
+    (wrapper.instance() as Lanes).onDragStart({
+      draggableId: "2",
+      source: {
+        droppableId: "1"
+      }
+    });
+
+    expect(topDroppable.props().isDropDisabled).to.be.true;
+    expect(lane1Droppable.props().isDropDisabled).to.be.false;
+    expect(sublane2Droppable.props().isDropDisabled).to.be.true;
+  });
+
+  it("drags a top-level lane", () => {
+    mountWrapper();
+
+    // simulate starting a drag of lane1
+    (wrapper.instance() as Lanes).onDragStart({
+      draggableId: "1",
+      source: {
+        droppableId: "top"
+      }
+    });
+
+    // simulate dropping below lane 4
+    (wrapper.instance() as Lanes).onDragEnd({
+      draggableId: "1",
+      source: {
+        droppableId: "top",
+        index: 0
+      },
+      destination: {
+        droppableId: "top",
+        index: 1
+      }
+    });
+
+    let topLevelLanes = getTopLevelLanes();
+    let lane4 = topLevelLanes.at(0);
+    let lane1 = topLevelLanes.at(1);
+    expect(lane1.text()).to.contain("lane 1");
+    expect(lane1.text()).to.contain("(5)");
+    expect(lane4.text()).to.contain("lane 4");
+    expect(lane4.text()).to.contain("(1)");
+  });
+
+  it("drags a sublane", () => {
+    let newSublaneData: LaneData = {
+      id: 5, display_name: "sublane 5", visible: true, count: 6, sublanes: [],
+      custom_list_ids: [2], inherit_parent_restrictions: false
+    };
+    lanesData = [
+      { id: 1, display_name: "lane 1", visible: true, count: 5,
+        sublanes: [sublaneData, newSublaneData], custom_list_ids: [1], inherit_parent_restrictions: true },
+      { id: 4, display_name: "lane 4", visible: true, count: 1, sublanes: [],
+        custom_list_ids: [], inherit_parent_restrictions: false }
+    ];
+    mountWrapper();
+
+    // simulate starting a drag of sublane 5
+    (wrapper.instance() as Lanes).onDragStart({
+      draggableId: "5",
+      source: {
+        droppableId: "1"
+      }
+    });
+
+    // simulate dropping above sublane 2
+    (wrapper.instance() as Lanes).onDragEnd({
+      draggableId: "5",
+      source: {
+        droppableId: "1",
+        index: 1
+      },
+      destination: {
+        droppableId: "1",
+        index: 0
+      }
+    });
+
+    let topLevelLanes = getTopLevelLanes();
+    let lane1 = topLevelLanes.at(0);
+    let sublanes = lane1.children(Droppable).children(Draggable).children("div");
+    let sublane5 = sublanes.at(0);
+    let sublane2 = sublanes.at(1);
+    expect(sublane2.text()).to.contain("sublane 2");
+    expect(sublane5.text()).to.contain("sublane 5");
+  });
+
+  it("saves lane order changes", () => {
+    mountWrapper();
+    wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
+
+    let saveOrderButton = wrapper.find(".save-order");
+    saveOrderButton.simulate("click");
+    expect(changeLaneOrder.callCount).to.equal(1);
+    expect(changeLaneOrder.args[0][0]).to.deep.equal([lanesData[1], lanesData[0]]);
+    expect(fetchLanes.callCount).to.equal(2);
+  });
+
+  it("resets lane order changes", () => {
+    mountWrapper();
+    wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
+
+    let cancelOrderChangesButton = wrapper.find(".cancel-order-changes");
+    cancelOrderChangesButton.simulate("click");
+    expect(wrapper.state().orderChanged).to.equal(false);
+    expect(wrapper.state().lanes).to.deep.equal(lanesData);
   });
 });

@@ -30,6 +30,7 @@ import customListDetails, { FetchMoreCustomListDetails } from "./customListDetai
 import lanes from "./lanes";
 import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
+import laneOrder from "./laneOrder";
 import selfTests from "./selfTests";
 import roles from "./roles";
 import media from "./media";
@@ -84,6 +85,7 @@ export interface State {
   lanes: FetchEditState<LanesData>;
   laneVisibility: FetchEditState<void>;
   resetLanes: FetchEditState<void>;
+  laneOrder: FetchEditState<void>;
   selfTests: FetchEditState<void>;
   roles: FetchEditState<RolesData>;
   media: FetchEditState<MediaData>;
@@ -126,6 +128,7 @@ export default combineReducers<State>({
   lanes,
   laneVisibility,
   resetLanes,
+  laneOrder,
   selfTests,
   roles,
   media,

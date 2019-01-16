@@ -40,24 +40,38 @@
         border-bottom: none;
       }
 
-      &.active {
+      .active {
         background-color: $pagecolorlight;
       }
 
-      > div {
+      .lane-info {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         margin-bottom: 5px;
+        cursor: grab;
+        cursor: -webkit-grab;
+      }
 
-        &.lane-buttons {
+      .lane-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+
+        > a {
           align-self: flex-end;
         }
       }
 
-      > a {
-        align-self: flex-end;
+      .dragging {
+        border: 1px solid $pagetextcolor;
+        background-color: $pagecolorlight;
       }
+    }
+
+    &.dragging-over {
+      border: 1px solid red;
     }
   }
 
@@ -100,7 +114,16 @@
     }
   }
 
-  .lanes-sidebar a.btn {
+  .lanes-sidebar .save-order {
+    margin-top: 5px;
+    margin-right: 5px;
+  }
+
+  .lanes-sidebar .cancel-order-changes {
+    font-size: 0.7em;
+  }
+
+  .lanes-sidebar .btn {
     display: inline-block;
     font-size: 0.9em;
     color: $invertedlinkcolor;
