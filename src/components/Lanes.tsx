@@ -455,7 +455,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       source
     } = result;
 
-    if (destination.droppableId !== source.droppableId) {
+    if (!destination || !source || (destination.droppableId !== source.droppableId)) {
       return;
     }
 
