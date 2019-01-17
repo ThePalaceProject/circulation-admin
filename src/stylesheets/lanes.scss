@@ -79,6 +79,7 @@
   }
 
   .lanes-sidebar > ul {
+    clear: both;
     padding-left: 0px;
     margin-top: 10px;
     border-top: 4px solid $gray;
@@ -118,11 +119,13 @@
   }
 
   .lanes-sidebar .save-order {
+    float: left;
     margin-top: 5px;
     margin-right: 5px;
   }
 
   .lanes-sidebar .cancel-order-changes {
+    display: inline-block;
     font-size: 0.7em;
   }
 
