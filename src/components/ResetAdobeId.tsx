@@ -68,12 +68,8 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { (fetchError && patronExists) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
-        <ul>
-          A patron's Adobe ID should be reset under the following conditions:
-          <li>&bull; When trying to sign in, they receive an error that says "Too many device activations" or "Device Activations Reached".</li>
-          <li>&bull; When trying to download a book, they receive an error message similar to "Too many activations".</li>
-        </ul>
-        <p>Instruct the patron to sign out on their device before proceeding.</p>
+        <p>You should reset a patron's Adobe ID only if the patron is receiving an error message similar to "Too many devices have been registered".</p>
+        <p>Instruct the patron to sign out on their device before you reset their Adobe ID.</p>
         <ManagePatronsForm
           store={this.props.store}
           csrfToken={this.props.csrfToken}
@@ -83,18 +79,18 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
             <div className="reset-adobe-id">
               <p className="patron-warning">
                 <b>
-                  IMPORTANT: Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)}
-                  will lose access to any existing loans. Loans will still appear in the patron's book list until they expire,
-                  but the patron will be unable to read or return them.
+                  IMPORTANT: Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
+                  lose access to any existing loans. Loans will still appear in the patron's book list until they expire, but the patron
+                  will be unable to read or return them.
                 </b>
               </p>
               { responseBody &&
                 <Alert bsStyle="success">
                   {responseBody}
-                  <br/>Please instruct the patron to log out and log back into their account.
+                  <br/>Please instruct the patron to sign back into their account.
                 </Alert>
               }
-               !responseBody &&
+              { !responseBody &&
                 <EditableInput
                   type="checkbox"
                   name="resetAdobeId"
