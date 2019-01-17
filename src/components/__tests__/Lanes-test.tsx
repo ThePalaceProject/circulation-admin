@@ -134,12 +134,26 @@ describe("Lanes", () => {
     let create = wrapper.find(".lanes-sidebar > div > .create-lane");
     expect(create.length).to.equal(1);
     expect(create.props().to).to.equal("/admin/web/lanes/library/create");
+
+    // the link is disabled if there are lane order changes
+    wrapper.setState({ orderChanged: true });
+    create = wrapper.find(".lanes-sidebar > div > .create-lane");
+    expect(create.length).to.equal(1);
+    expect(create.props().to).to.be.null;
+    expect(create.props().className).to.contain("disabled");
   });
 
   it("renders reset link", () => {
     let reset = wrapper.find(".lanes-sidebar .reset-lanes");
     expect(reset.length).to.equal(1);
     expect(reset.props().to).to.equal("/admin/web/lanes/library/reset");
+
+    // the link is disabled if there are lane order changes
+    wrapper.setState({ orderChanged: true });
+    reset = wrapper.find(".lanes-sidebar > div > .reset-lanes");
+    expect(reset.length).to.equal(1);
+    expect(reset.props().to).to.be.null;
+    expect(reset.props().className).to.contain("disabled");
   });
 
   it("renders save and reset order if order has changed", () => {
@@ -297,6 +311,28 @@ describe("Lanes", () => {
     sublane2CreateSublane = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
     expect(sublane2CreateSublane.length).to.equal(1);
     expect(sublane2CreateSublane.props().to).to.equal("/admin/web/lanes/library/create/2");
+
+    // the links are disabled if there are lane order changes.
+    wrapper.setState({ orderChanged: true });
+
+    topLevelLanes = getTopLevelLanes();
+    lane1 = topLevelLanes.at(0);
+    lane1CreateSublane = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    expect(lane1CreateSublane.length).to.equal(1);
+    expect(lane1CreateSublane.props().to).to.be.null;
+    expect(lane1CreateSublane.props().className).to.contain("disabled");
+
+    lane4 = topLevelLanes.at(1);
+    lane4CreateSublane = lane4.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    expect(lane4CreateSublane.length).to.equal(1);
+    expect(lane4CreateSublane.props().to).to.be.null;
+    expect(lane4CreateSublane.props().className).to.contain("disabled");
+
+    sublane2 = lane1.find("> ul > li > div");
+    sublane2CreateSublane = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    expect(sublane2CreateSublane.length).to.equal(1);
+    expect(sublane2CreateSublane.props().to).to.be.null;
+    expect(sublane2CreateSublane.props().className).to.contain("disabled");
   });
 
   it("renders edit link", () => {
@@ -325,6 +361,22 @@ describe("Lanes", () => {
     sublane2Edit = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(sublane2Edit.length).to.equal(1);
     expect(sublane2Edit.props().to).to.equal("/admin/web/lanes/library/edit/2");
+
+    // the links are disabled if there are lane order changes.
+    wrapper.setState({ orderChanged: true });
+
+    topLevelLanes = getTopLevelLanes();
+    lane1 = topLevelLanes.at(0);
+    lane1Edit = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    expect(lane1Edit.length).to.equal(1);
+    expect(lane1Edit.props().to).to.be.null;
+    expect(lane1Edit.props().className).to.contain("disabled");
+
+    sublane2 = lane1.find("> ul > li > div");
+    sublane2Edit = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    expect(sublane2Edit.length).to.equal(1);
+    expect(sublane2Edit.props().to).to.be.null;
+    expect(sublane2Edit.props().className).to.contain("disabled");
   });
 
   it("shows a lane", () => {
@@ -357,6 +409,16 @@ describe("Lanes", () => {
     expect(sublane3.text()).to.contain("Hidden");
     let sublane3Show = sublane3.find("> div > .show-lane");
     expect(sublane3Show.length).to.equal(0);
+
+    // if lane order has changed, no lanes can be shown
+    wrapper.setState({ orderChanged: true });
+
+    topLevelLanes = getTopLevelLanes();
+    lane1 = topLevelLanes.at(0);
+    sublane2 = lane1.find("> ul > li > div");
+    expect(sublane2.text()).to.contain("Hidden");
+    sublane2Show = sublane2.find("> div > .show-lane");
+    expect(sublane2Show.length).to.equal(0);
   });
 
   it("hides a lane", () => {
@@ -375,6 +437,15 @@ describe("Lanes", () => {
     lane1Hide.simulate("click");
     expect(hideLane.callCount).to.equal(1);
     expect(hideLane.args[0][0]).to.equal("1");
+
+    // if lane order has changed, no lanes can be hidden
+    wrapper.setState({ orderChanged: true });
+
+    topLevelLanes = getTopLevelLanes();
+    lane1 = topLevelLanes.at(0);
+    expect(lane1.text()).to.contain("Visible");
+    lane1Hide = lane1.find("> div > .hide-lane");
+    expect(lane1Hide.length).to.equal(0);
   });
 
   it("edits a lane", () => {

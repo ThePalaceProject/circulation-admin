@@ -116,15 +116,15 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
             <h2>Lane Manager</h2>
             <div>
               <Link
-                className="create-lane btn btn-default"
-                to={"/admin/web/lanes/" + this.props.library + "/create"}
+                className={"create-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/create")}
                 >
                   Create Top-Level Lane
                   <AddIcon />
               </Link>
               <Link
-                className="reset-lanes btn"
-                to={"/admin/web/lanes/" + this.props.library + "/reset"}
+                className={"reset-lanes btn" + (this.state.orderChanged ? " disabled" : "")}
+                to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/reset")}
                 >
                   Reset all lanes
                   <ResetIcon />
@@ -255,14 +255,17 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
               }
               { lane.display_name + " (" + lane.count + ")" }
             </span>
-            { lane.visible &&
+            { lane.visible && !this.state.orderChanged &&
               <a
                 className="hide-lane"
                 href="#"
                 onClick={() => { this.hideLane(lane); }}
                 >Visible <VisibleIcon /></a>
             }
-            { !lane.visible &&
+            { lane.visible && this.state.orderChanged &&
+              <span>Visible <VisibleIcon /></span>
+            }
+            { !lane.visible && !this.state.orderChanged &&
               (!parent || (parent && parent.visible)) &&
               <a
                 className="show-lane"
@@ -271,7 +274,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
                 >Hidden <HiddenIcon /></a>
             }
             { !lane.visible &&
-              (parent && !parent.visible) &&
+              (this.state.orderChanged || (parent && !parent.visible)) &&
               <span>Hidden <HiddenIcon /></span>
             }
           </div>
@@ -279,16 +282,16 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
             <div className="lane-buttons">
               { lane.custom_list_ids && lane.custom_list_ids.length > 0 &&
                 <Link
-                  className="edit-lane btn btn-default"
-                  to={"/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
+                  className={"edit-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                  to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
                   >
                   Edit Lane
                   <PencilIcon />
                 </Link>
               }
               <Link
-                className="create-lane btn btn-default"
-                to={"/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
+                className={"create-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
                 >
                   Create Sublane
                   <AddIcon />
