@@ -49,8 +49,11 @@
         flex-direction: row;
         justify-content: space-between;
         margin-bottom: 5px;
-        cursor: grab;
-        cursor: -webkit-grab;
+
+        &.draggable {
+          cursor: grab;
+          cursor: -webkit-grab;
+        }
       }
 
       .lane-buttons {

@@ -202,92 +202,106 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     const draggingLane = this.findLaneForIdentifier(this.state.lanes, this.state.draggableId);
     const disabled = this.isDropDisabled(draggingLane, parent);
 
-    return (
-      <Droppable
-        droppableId={parent ? String(parent.id) : "top"}
-        isDropDisabled={disabled}
-        >
-        {(provided, snapshot) => (
-          <ul
-            ref={provided.innerRef}
-            className={(snapshot.isDraggingOver && !disabled) ? "droppable dragging-over" : "droppable"}
-            >
-            { lanes.map(lane =>
-                <Draggable draggableId={String(lane.id)} key={lane.id}>
-                {(provided, snapshot) => (
-                    <li>
-                      <div
-                        className={(snapshot.isDragging ? "dragging " : " ") + ((String(lane.id) === this.props.identifier) ? "active" : "")}
-                        ref={provided.innerRef}
-                        style={provided.draggableStyle}
-                        {...provided.dragHandleProps}
-                        >
-                        <div className="lane-info">
-                          <span>
-                            <GrabIcon />
-                            { this.isExpanded(lane) &&
-                              <div className="collapse-button" onClick={() => { this.toggle(lane); }}>
-                                <PyramidIcon />
-                              </div>
-                            }
-                            { !this.isExpanded(lane) &&
-                              <div className="expand-button" onClick={() => { this.toggle(lane); }}>
-                                <PyramidIcon />
-                              </div>
-                            }
-                            { lane.display_name + " (" + lane.count + ")" }
-                          </span>
-                          { lane.visible &&
-                            <a
-                              className="hide-lane"
-                              href="#"
-                              onClick={() => { this.hideLane(lane); }}
-                              >Visible <VisibleIcon /></a>
-                          }
-                          { !lane.visible &&
-                            (!parent || (parent && parent.visible)) &&
-                            <a
-                              className="show-lane"
-                              href="#"
-                              onClick={() => { this.showLane(lane); }}
-                              >Hidden <HiddenIcon /></a>
-                          }
-                          { !lane.visible &&
-                            (parent && !parent.visible) &&
-                            <span>Hidden <HiddenIcon /></span>
-                          }
-                        </div>
-                        { this.isExpanded(lane) &&
-                          <div className="lane-buttons">
-                            { lane.custom_list_ids && lane.custom_list_ids.length > 0 &&
-                              <Link
-                                className="edit-lane btn btn-default"
-                                to={"/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
-                                >
-                                Edit Lane
-                                <PencilIcon />
-                              </Link>
-                            }
-                            <Link
-                              className="create-lane btn btn-default"
-                              to={"/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
-                              >
-                                Create Sublane
-                                <AddIcon />
-                            </Link>
-                          </div>
-                        }
-                        { this.isExpanded(lane) && lane.sublanes && lane.sublanes.length > 0 && this.renderLanes(lane.sublanes, lane) }
-                      </div>
-                      { provided.placeholder }
-                    </li>
-                  )}
-                </Draggable>
+    if (lanes.length > 1) {
+      return (
+        <Droppable
+          droppableId={parent ? String(parent.id) : "top"}
+          isDropDisabled={disabled}
+          >
+          {(provided, snapshot) => (
+            <ul
+              ref={provided.innerRef}
+              className={(snapshot.isDraggingOver && !disabled) ? "droppable dragging-over" : "droppable"}
+              >
+              { lanes.map(lane =>
+                  <Draggable draggableId={String(lane.id)} key={lane.id}>
+                    {(provided, snapshot) => this.renderLane(lane, parent, provided, snapshot) }
+                  </Draggable>
               )}
               { provided.placeholder }
-          </ul>
-        )}
-      </Droppable>
+            </ul>
+          )}
+        </Droppable>
+      );
+    }
+    if (lanes.length === 1) {
+      return (
+        <ul>
+          { this.renderLane(lanes[0], parent) }
+        </ul>
+      );
+    }
+    return null;
+  }
+
+  renderLane(lane: LaneData, parent: LaneData | null, provided?, snapshot?) {
+    return (
+      <li>
+        <div
+          className={(snapshot && snapshot.isDragging ? "dragging " : " ") + ((String(lane.id) === this.props.identifier) ? "active" : "")}
+          ref={provided && provided.innerRef}
+          style={provided && provided.draggableStyle}
+          {...(provided ? provided.dragHandleProps : {})}
+          >
+          <div className={"lane-info" + (provided ? " draggable" : "")}>
+            <span>
+              { snapshot && <GrabIcon /> }
+              { this.isExpanded(lane) &&
+                <div className="collapse-button" onClick={() => { this.toggle(lane); }}>
+                  <PyramidIcon />
+                </div>
+              }
+              { !this.isExpanded(lane) &&
+                <div className="expand-button" onClick={() => { this.toggle(lane); }}>
+                  <PyramidIcon />
+                </div>
+              }
+              { lane.display_name + " (" + lane.count + ")" }
+            </span>
+            { lane.visible &&
+              <a
+                className="hide-lane"
+                href="#"
+                onClick={() => { this.hideLane(lane); }}
+                >Visible <VisibleIcon /></a>
+            }
+            { !lane.visible &&
+              (!parent || (parent && parent.visible)) &&
+              <a
+                className="show-lane"
+                href="#"
+                onClick={() => { this.showLane(lane); }}
+                >Hidden <HiddenIcon /></a>
+            }
+            { !lane.visible &&
+              (parent && !parent.visible) &&
+              <span>Hidden <HiddenIcon /></span>
+            }
+          </div>
+          { this.isExpanded(lane) &&
+            <div className="lane-buttons">
+              { lane.custom_list_ids && lane.custom_list_ids.length > 0 &&
+                <Link
+                  className="edit-lane btn btn-default"
+                  to={"/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
+                  >
+                  Edit Lane
+                  <PencilIcon />
+                </Link>
+              }
+              <Link
+                className="create-lane btn btn-default"
+                to={"/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
+                >
+                  Create Sublane
+                  <AddIcon />
+              </Link>
+            </div>
+          }
+          { this.isExpanded(lane) && lane.sublanes && lane.sublanes.length > 0 && this.renderLanes(lane.sublanes, lane) }
+        </div>
+        { provided && provided.placeholder }
+      </li>
     );
   }
 
