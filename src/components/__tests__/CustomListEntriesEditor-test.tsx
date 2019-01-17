@@ -4,9 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-const dnd = require("react-beautiful-dnd");
-const Droppable = dnd.Droppable;
-const Draggable = dnd.Draggable;
+import { Droppable, Draggable } from "react-beautiful-dnd";
 
 import CustomListEntriesEditor from "../CustomListEntriesEditor";
 
