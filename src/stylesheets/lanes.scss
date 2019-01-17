@@ -118,15 +118,20 @@
     }
   }
 
-  .lanes-sidebar .save-order {
-    float: left;
-    margin-top: 5px;
-    margin-right: 5px;
-  }
+  .order-change-info {
+    .save-order {
+      margin-right: 5px;
+    }
 
-  .lanes-sidebar .cancel-order-changes {
-    display: inline-block;
-    font-size: 0.7em;
+    .cancel-order-changes {
+      display: inline-block;
+      font-size: 0.7em;
+    }
+
+    svg {
+      margin-left: 5px;
+      fill: $linkcolor;
+    }
   }
 
   .lanes-sidebar .btn {

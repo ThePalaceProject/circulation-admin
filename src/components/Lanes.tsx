@@ -130,29 +130,33 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
                   <ResetIcon />
               </Link>
             </div>
-            { this.state.orderChanged &&
-              <div>
-                <button
-                  className="save-order btn btn-default"
-                  onClick={this.saveOrder}
-                  >
-                  Save Order Changes
-                </button>
-                <a
-                  href="#"
-                  className="cancel-order-changes"
-                  onClick={this.resetOrder}
-                  >Cancel
-                    <XCloseIcon />
-                </a>
-              </div>
-            }
             <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
               { this.state.lanes && this.state.lanes.length > 0 && this.renderLanes(this.state.lanes, null) }
             </DragDropContext>
           </div>
 
-          { this.props.editOrCreate === "create" &&
+          { this.state.orderChanged &&
+            <div className="order-change-info">
+              <h2>Change Lane Order</h2>
+              <button
+                className="save-order btn btn-default"
+                onClick={this.saveOrder}
+                >
+                Save Order Changes
+              </button>
+              <a
+                href="#"
+                className="cancel-order-changes"
+                onClick={this.resetOrder}
+                >Cancel
+                  <XCloseIcon />
+              </a>
+              <hr />
+              <p>Save or cancel your changes to the lane order before making additional changes.</p>
+            </div>
+          }
+
+          { !this.state.orderChanged && this.props.editOrCreate === "create" &&
             <LaneEditor
               library={this.props.library}
               parent={this.parentOfNewLane()}
@@ -162,7 +166,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
               />
           }
 
-          { this.laneToEdit() &&
+          { !this.state.orderChanged && this.laneToEdit() &&
             <LaneEditor
               library={this.props.library}
               lane={this.laneToEdit()}
@@ -175,7 +179,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
               />
           }
 
-          { this.props.editOrCreate === "reset" &&
+          { !this.state.orderChanged && this.props.editOrCreate === "reset" &&
             <div className="reset">
               <h2>Reset all lanes</h2>
               <p>This will delete all lanes for the library and automatically generate new lanes based on the library's language configuration or the languages in the library's collection.</p>

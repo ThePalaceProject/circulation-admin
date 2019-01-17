@@ -156,19 +156,6 @@ describe("Lanes", () => {
     expect(reset.props().className).to.contain("disabled");
   });
 
-  it("renders save and reset order if order has changed", () => {
-    let save = wrapper.find(".lanes-sidebar .save-order");
-    expect(save.length).to.equal(0);
-    let reset = wrapper.find(".lanes-sidebar .cancel-order-changes");
-    expect(reset.length).to.equal(0);
-
-    wrapper.setState({ orderChanged: true });
-    save = wrapper.find(".lanes-sidebar .save-order");
-    expect(save.length).to.equal(1);
-    reset = wrapper.find(".lanes-sidebar .cancel-order-changes");
-    expect(reset.length).to.equal(1);
-  });
-
   it("renders and expands and collapses lanes and sublanes", () => {
     mountWrapper();
 
@@ -469,6 +456,20 @@ describe("Lanes", () => {
     expect(fetchLanes.callCount).to.equal(1);
 
     confirmStub.restore();
+  });
+
+  it("renders save and reset order if order has changed", () => {
+    let orderInfo = wrapper.find(".order-change-info");
+    expect(orderInfo.length).to.equal(0);
+
+    wrapper.setState({ orderChanged: true });
+    orderInfo = wrapper.find(".order-change-info");
+    expect(orderInfo.length).to.equal(1);
+
+    let save = orderInfo.find(".save-order");
+    expect(save.length).to.equal(1);
+    let reset = orderInfo.find(".cancel-order-changes");
+    expect(reset.length).to.equal(1);
   });
 
   it("renders create form", () => {
