@@ -248,16 +248,9 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           <div className={"lane-info" + (provided ? " draggable" : "")}>
             <span>
               { snapshot && <GrabIcon /> }
-              { this.isExpanded(lane) &&
-                <div className="collapse-button" onClick={() => { this.toggle(lane); }}>
-                  <PyramidIcon />
-                </div>
-              }
-              { !this.isExpanded(lane) &&
-                <div className="expand-button" onClick={() => { this.toggle(lane); }}>
-                  <PyramidIcon />
-                </div>
-              }
+              <div className={this.isExpanded(lane) ? "collapse-button" :  "expand-button"} onClick={() => { this.toggle(lane); }}>
+                <PyramidIcon />
+              </div>
               { lane.display_name + " (" + lane.count + ")" }
             </span>
             { lane.visible && !this.state.orderChanged &&
