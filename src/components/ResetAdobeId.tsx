@@ -68,9 +68,8 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { (fetchError && patronExists) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
-        <p>This feature allows you to delete the existing Adobe ID for an individual patron; a new Adobe ID will be assigned
-          automatically when the patron logs in again. This step is necessary when patrons reach their device installation limit.
-          Please be sure to inform patrons that resetting their Adobe ID will automatically revoke their access to any existing loans.</p>
+        <p>You should reset a patron's Adobe ID only if the patron is receiving an error message similar to "Too many devices have been registered".</p>
+        <p>Instruct the patron to sign out on their device before you reset their Adobe ID.</p>
         <ManagePatronsForm
           store={this.props.store}
           csrfToken={this.props.csrfToken}
@@ -79,13 +78,16 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         { patron ?
             <div className="reset-adobe-id">
               <p className="patron-warning">
-                <b>Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
-                   lose access to any existing loans when the Adobe ID is reset.</b>
+                <b>
+                  IMPORTANT: Patron {patron && (patron.username || patron.personal_name || patron.authorization_identifier)} will
+                  lose access to any existing loans. Loans will still appear in the patron's book list until they expire, but the patron
+                  will be unable to read or return them.
+                </b>
               </p>
               { responseBody &&
                 <Alert bsStyle="success">
                   {responseBody}
-                  <br/>Please instruct the patron to log out and log back into their account.
+                  <br/>Please instruct the patron to sign back into their account.
                 </Alert>
               }
               { !responseBody &&

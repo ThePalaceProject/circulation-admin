@@ -1,5 +1,9 @@
 ## Changelog
 
+###v0.0.98
+#### Updated
+- Further clarified wording about resetting Adobe IDs.
+
 ### v0.0.97
 #### Added
 - Made it possible for server-side configurations to specify that certain fields should be rendered as textarea elements.

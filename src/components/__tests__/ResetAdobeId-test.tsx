@@ -68,7 +68,7 @@ describe("ResetAdobeId", () => {
     });
 
     it("should display message to search for patron to begin", () => {
-      let instructions = wrapper.find("p").at(1);
+      let instructions = wrapper.find("p").at(2);
       expect(instructions.text()).to.equal("Search for a patron to begin.");
     });
   });
@@ -88,7 +88,9 @@ describe("ResetAdobeId", () => {
 
     it("should display a warning message before the submission button", () => {
       const patronWarning = wrapper.find(".patron-warning");
-      expect(patronWarning.text()).to.equal("Patron User Name will lose access to any existing loans when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal(
+        "IMPORTANT: Patron User Name will lose access to any existing loans. Loans will still appear in the patron's book list until they expire, but the patron will be unable to read or return them."
+      );
     });
 
     it("should have a submission button with a .btn-danger class", () => {
@@ -174,7 +176,7 @@ describe("ResetAdobeId", () => {
       expect(wrapper.props().responseBody).to.equal("Adobe ID for patron has been reset.");
       expect(alert.length).to.equal(1);
       expect(alert.hasClass("alert-success")).to.equal(true);
-      expect(alert.text()).to.equal("Adobe ID for patron has been reset.Please instruct the patron to log out and log back into their account.");
+      expect(alert.text()).to.equal("Adobe ID for patron has been reset.Please instruct the patron to sign back into their account.");
     });
 
     it("should hide the checkbox and the reset button if the reset is successful", () => {
@@ -223,7 +225,9 @@ describe("ResetAdobeId", () => {
     it("should update the warning message if a new patron was searched and found", () => {
       wrapper.setProps({ patron: patrons[1] });
       const patronWarning = wrapper.find(".patron-warning");
-      expect(patronWarning.text()).to.equal("Patron Personal Name2 will lose access to any existing loans when the Adobe ID is reset.");
+      expect(patronWarning.text()).to.equal(
+        "IMPORTANT: Patron Personal Name2 will lose access to any existing loans. Loans will still appear in the patron's book list until they expire, but the patron will be unable to read or return them."
+      );
     });
 
     it("should restore the checkbox and the reset button if a new patron was searched and found", () => {
