@@ -475,6 +475,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     const newIndex = destination.index;
 
     if (oldIndex === newIndex) {
+      // The lane was dropped back to its original position.
       return;
     }
 
@@ -482,6 +483,8 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     const draggedLane = this.findLaneForIdentifier(lanes, draggableId);
     const parent = this.findParentOfLane(draggedLane, lanes);
 
+    // If the lane has a parent, we'll update its position within its parents'
+    // sublanes. Otherwise, we'll update its position at the top-level.
     let lanesToUpdate;
     if (parent) {
       lanesToUpdate = parent.sublanes;
@@ -489,9 +492,12 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       lanesToUpdate = lanes;
     }
 
+    // Remove the lane from its old position.
     lanesToUpdate = lanesToUpdate.slice(0, oldIndex).concat(lanesToUpdate.slice(oldIndex + 1, lanesToUpdate.length));
+    // Put it back in its new position.
     lanesToUpdate.splice(newIndex, 0, draggedLane);
 
+    // Actually update the lanes.
     if (parent) {
       parent.sublanes = lanesToUpdate;
     } else {
