@@ -1,8 +1,5 @@
 import * as React from "react";
-const dnd = require("react-beautiful-dnd");
-const DragDropContext = dnd.DragDropContext;
-const Droppable = dnd.Droppable;
-const Draggable = dnd.Draggable;
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CustomListData } from "../interfaces";
 import AddIcon from "./icons/AddIcon";
 import TrashIcon from "./icons/TrashIcon";
