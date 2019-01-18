@@ -12,6 +12,7 @@ import LaneEditor from "./LaneEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
+import SaveButton from "./SaveButton";
 import AddIcon from "./icons/AddIcon";
 import GrabIcon from "./icons/GrabIcon";
 import PencilIcon from "./icons/PencilIcon";
@@ -138,12 +139,12 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           { this.state.orderChanged &&
             <div className="order-change-info">
               <h2>Change Lane Order</h2>
-              <button
-                className="save-order btn btn-default"
-                onClick={this.saveOrder}
+              <SaveButton
+                submit={this.saveOrder}
+                disabled={this.props.isFetching}
+                text="Save Order Changes"
                 >
-                Save Order Changes
-              </button>
+              </SaveButton>
               <a
                 href="#"
                 className="cancel-order-changes"

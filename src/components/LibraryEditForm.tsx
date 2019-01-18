@@ -139,7 +139,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           disabled={this.props.disabled}
           submit={this.submit}
           text="Submit"
-          form={this.refs}
         />
       </form>
     );

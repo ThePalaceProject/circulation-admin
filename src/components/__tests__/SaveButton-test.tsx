@@ -18,7 +18,6 @@ describe("SaveButton", () => {
       <SaveButton
         disabled={false}
         submit={submit}
-        form={undefined}
       />
     );
   });

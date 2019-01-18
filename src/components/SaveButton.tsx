@@ -3,7 +3,6 @@ import * as React from "react";
 export interface SaveButtonProps {
   disabled: boolean;
   submit?: any;
-  form: any;
   text?: string;
 }
 

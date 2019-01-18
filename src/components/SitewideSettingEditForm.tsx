@@ -104,7 +104,6 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
               disabled={this.props.disabled}
               submit={this.submit}
               text="Submit"
-              form={this.refs}
             />
           </form>
         }
