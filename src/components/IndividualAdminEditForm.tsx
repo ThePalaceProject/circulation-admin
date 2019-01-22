@@ -183,7 +183,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           disabled={this.props.disabled}
           submit={this.submit}
           text="Submit"
-          form={this.refs}
         />
       </form>
     );

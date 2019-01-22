@@ -40,28 +40,46 @@
         border-bottom: none;
       }
 
-      &.active {
+      .active {
         background-color: $pagecolorlight;
       }
 
-      > div {
+      .lane-info {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         margin-bottom: 5px;
 
-        &.lane-buttons {
+        &.draggable {
+          cursor: grab;
+          cursor: -webkit-grab;
+        }
+      }
+
+      .lane-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+
+        > a {
           align-self: flex-end;
         }
       }
 
-      > a {
-        align-self: flex-end;
+      .dragging {
+        border: 1px solid $pagetextcolor;
+        background-color: $pagecolorlight;
       }
+    }
+
+    &.dragging-over {
+      border: 1px solid red;
     }
   }
 
   .lanes-sidebar > ul {
+    clear: both;
     padding-left: 0px;
     margin-top: 10px;
     border-top: 4px solid $gray;
@@ -100,7 +118,26 @@
     }
   }
 
-  .lanes-sidebar a.btn {
+  .order-change-info {
+    margin: 7px;
+    padding-top: 14px;
+
+    .btn {
+      margin-right: 5px;
+    }
+
+    .cancel-order-changes {
+      display: inline-block;
+      font-size: 0.7em;
+    }
+
+    svg {
+      margin-left: 5px;
+      fill: $linkcolor;
+    }
+  }
+
+  .lanes-sidebar .btn {
     display: inline-block;
     font-size: 0.9em;
     color: $invertedlinkcolor;

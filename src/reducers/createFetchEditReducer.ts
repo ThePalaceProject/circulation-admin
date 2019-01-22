@@ -52,6 +52,13 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
           isLoaded: true
         });
 
+      case `${fetchPrefix}_${ActionCreator.SUCCESS}`:
+        return Object.assign({}, state, {
+          fetchError: null,
+          formError: null,
+          isFetching: false
+        });
+
       case `${fetchPrefix}_${ActionCreator.LOAD}`:
         return Object.assign({}, state, {
           data: action.data,

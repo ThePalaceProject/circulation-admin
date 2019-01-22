@@ -1,4 +1,5 @@
 import * as React from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import { Link } from "react-router";
@@ -11,12 +12,15 @@ import LaneEditor from "./LaneEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
+import SaveButton from "./SaveButton";
 import AddIcon from "./icons/AddIcon";
+import GrabIcon from "./icons/GrabIcon";
 import PencilIcon from "./icons/PencilIcon";
 import PyramidIcon from "./icons/PyramidIcon";
 import ResetIcon from "./icons/ResetIcon";
 import VisibleIcon from "./icons/VisibleIcon";
 import HiddenIcon from "./icons/HiddenIcon";
+import XCloseIcon from "./icons/XCloseIcon";
 
 export interface LanesStateProps {
   lanes: LaneData[];
@@ -35,6 +39,7 @@ export interface LanesDispatchProps {
   showLane: (laneIdentifier: string) => Promise<void>;
   hideLane: (laneIdentifier: string) => Promise<void>;
   resetLanes: () => Promise<void>;
+  changeLaneOrder: (lanes: LaneData[]) => Promise<void>;
 }
 
 export interface LanesOwnProps {
@@ -51,6 +56,10 @@ export interface LanesState {
   expanded: {
     [key: string]: boolean;
   };
+  draggableId: string | null;
+  draggingFrom: string | null;
+  lanes: LaneData[];
+  orderChanged: boolean;
 }
 
 /** Body of the lanes page, with all a library's lanes shown in a left sidebar and
@@ -64,6 +73,10 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     this.showLane = this.showLane.bind(this);
     this.resetLanes = this.resetLanes.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.resetOrder = this.resetOrder.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.saveOrder = this.saveOrder.bind(this);
 
     const expanded: { [key: string]: boolean } = {};
     for (const topLevelLane of this.props.lanes || []) {
@@ -71,8 +84,21 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     }
 
     this.state = {
-      expanded: expanded
+      expanded: expanded,
+      draggableId: null,
+      draggingFrom: null,
+      lanes: this.copyLanes(this.props.lanes || []),
+      orderChanged: false
     };
+  }
+
+  private copyLanes(lanes: LaneData[]): LaneData[] {
+    const copy = (lane) => {
+      return Object.assign({}, lane, {
+        sublanes: lane.sublanes.map(copy)
+      });
+    };
+    return lanes.map(copy);
   }
 
   render(): JSX.Element {
@@ -89,24 +115,49 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         <div className="lanes">
           <div className="lanes-sidebar">
             <h2>Lane Manager</h2>
-            <Link
-              className="create-lane btn btn-default"
-              to={"/admin/web/lanes/" + this.props.library + "/create"}
-              >
-                Create Top-Level Lane
-                <AddIcon />
-            </Link>
-            <Link
-              className="reset-lanes btn"
-              to={"/admin/web/lanes/" + this.props.library + "/reset"}
-              >
-                Reset all lanes
-                <ResetIcon />
-            </Link>
-            { this.props.lanes && this.props.lanes.length > 0 && this.renderLanes(this.props.lanes, null) }
+            <div>
+              <Link
+                className={"create-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/create")}
+                >
+                  Create Top-Level Lane
+                  <AddIcon />
+              </Link>
+              <Link
+                className={"reset-lanes btn" + (this.state.orderChanged ? " disabled" : "")}
+                to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/reset")}
+                >
+                  Reset all lanes
+                  <ResetIcon />
+              </Link>
+            </div>
+            <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
+              { this.state.lanes && this.state.lanes.length > 0 && this.renderLanes(this.state.lanes, null) }
+            </DragDropContext>
           </div>
 
-          { this.props.editOrCreate === "create" &&
+          { this.state.orderChanged &&
+            <div className="order-change-info">
+              <h2>Change Lane Order</h2>
+              <SaveButton
+                submit={this.saveOrder}
+                disabled={this.props.isFetching}
+                text="Save Order Changes"
+                >
+              </SaveButton>
+              <a
+                href="#"
+                className="cancel-order-changes"
+                onClick={this.resetOrder}
+                >Cancel
+                  <XCloseIcon />
+              </a>
+              <hr />
+              <p>Save or cancel your changes to the lane order before making additional changes.</p>
+            </div>
+          }
+
+          { !this.state.orderChanged && this.props.editOrCreate === "create" &&
             <LaneEditor
               library={this.props.library}
               parent={this.parentOfNewLane()}
@@ -116,7 +167,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
               />
           }
 
-          { this.laneToEdit() &&
+          { !this.state.orderChanged && this.laneToEdit() &&
             <LaneEditor
               library={this.props.library}
               lane={this.laneToEdit()}
@@ -129,7 +180,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
               />
           }
 
-          { this.props.editOrCreate === "reset" &&
+          { !this.state.orderChanged && this.props.editOrCreate === "reset" &&
             <div className="reset">
               <h2>Reset all lanes</h2>
               <p>This will delete all lanes for the library and automatically generate new lanes based on the library's language configuration or the languages in the library's collection.</p>
@@ -150,72 +201,105 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   renderLanes(lanes: LaneData[], parent: LaneData | null): JSX.Element {
+    const draggingLane = this.findLaneForIdentifier(this.state.lanes, this.state.draggableId);
+    const disabled = this.isDropDisabled(draggingLane, parent);
+
+    if (lanes.length > 1) {
+      return (
+        <Droppable
+          droppableId={parent ? String(parent.id) : "top"}
+          isDropDisabled={disabled}
+          >
+          {(provided, snapshot) => (
+            <ul
+              ref={provided.innerRef}
+              className={(snapshot.isDraggingOver && !disabled) ? "droppable dragging-over" : "droppable"}
+              >
+              { lanes.map(lane =>
+                  <Draggable draggableId={String(lane.id)} key={lane.id}>
+                    {(provided, snapshot) => this.renderLane(lane, parent, provided, snapshot) }
+                  </Draggable>
+              )}
+              { provided.placeholder }
+            </ul>
+          )}
+        </Droppable>
+      );
+    }
+    if (lanes.length === 1) {
+      return (
+        <ul>
+          { this.renderLane(lanes[0], parent) }
+        </ul>
+      );
+    }
+    return null;
+  }
+
+  renderLane(lane: LaneData, parent: LaneData | null, provided?, snapshot?) {
     return (
-      <ul>
-        { lanes.map(lane =>
-            <li
-              key={lane.display_name.replace(" ", "").trim()}
-              className={(String(lane.id) === this.props.identifier) ? "active" : ""}
-            >
-              <div>
-                <span>
-                  { this.isExpanded(lane) &&
-                    <div className="collapse-button" onClick={() => { this.toggle(lane); }}>
-                      <PyramidIcon />
-                    </div>
-                  }
-                  { !this.isExpanded(lane) &&
-                    <div className="expand-button" onClick={() => { this.toggle(lane); }}>
-                      <PyramidIcon />
-                    </div>
-                  }
-                  { lane.display_name + " (" + lane.count + ")" }
-                </span>
-                { lane.visible &&
-                  <a
-                    className="hide-lane"
-                    href="#"
-                    onClick={() => { this.hideLane(lane); }}
-                    >Visible <VisibleIcon /></a>
-                }
-                { !lane.visible &&
-                  (!parent || (parent && parent.visible)) &&
-                  <a
-                    className="show-lane"
-                    href="#"
-                    onClick={() => { this.showLane(lane); }}
-                    >Hidden <HiddenIcon /></a>
-                }
-                { !lane.visible &&
-                  (parent && !parent.visible) &&
-                  <span>Hidden <HiddenIcon /></span>
-                }
+      <li>
+        <div
+          className={(snapshot && snapshot.isDragging ? "dragging " : " ") + ((String(lane.id) === this.props.identifier) ? "active" : "")}
+          ref={provided && provided.innerRef}
+          style={provided && provided.draggableStyle}
+          {...(provided ? provided.dragHandleProps : {})}
+          >
+          <div className={"lane-info" + (provided ? " draggable" : "")}>
+            <span>
+              { snapshot && <GrabIcon /> }
+              <div className={this.isExpanded(lane) ? "collapse-button" :  "expand-button"} onClick={() => { this.toggle(lane); }}>
+                <PyramidIcon />
               </div>
-              { this.isExpanded(lane) &&
-                <div className="lane-buttons">
-                  { lane.custom_list_ids && lane.custom_list_ids.length > 0 &&
-                    <Link
-                      className="edit-lane btn btn-default"
-                      to={"/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
-                      >
-                      Edit Lane
-                      <PencilIcon />
-                    </Link>
-                  }
-                  <Link
-                    className="create-lane btn btn-default"
-                    to={"/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
-                    >
-                      Create Sublane
-                      <AddIcon />
-                  </Link>
-                </div>
+              { lane.display_name + " (" + lane.count + ")" }
+            </span>
+            { lane.visible && !this.state.orderChanged &&
+              <a
+                className="hide-lane"
+                href="#"
+                onClick={() => { this.hideLane(lane); }}
+                >Visible <VisibleIcon /></a>
+            }
+            { lane.visible && this.state.orderChanged &&
+              <span>Visible <VisibleIcon /></span>
+            }
+            { !lane.visible && !this.state.orderChanged &&
+              (!parent || (parent && parent.visible)) &&
+              <a
+                className="show-lane"
+                href="#"
+                onClick={() => { this.showLane(lane); }}
+                >Hidden <HiddenIcon /></a>
+            }
+            { !lane.visible &&
+              (this.state.orderChanged || (parent && !parent.visible)) &&
+              <span>Hidden <HiddenIcon /></span>
+            }
+          </div>
+          { this.isExpanded(lane) &&
+            <div className="lane-buttons">
+              { lane.custom_list_ids && lane.custom_list_ids.length > 0 &&
+                <Link
+                  className={"edit-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                  to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
+                  >
+                  Edit Lane
+                  <PencilIcon />
+                </Link>
               }
-              { this.isExpanded(lane) && lane.sublanes && lane.sublanes.length > 0 && this.renderLanes(lane.sublanes, lane) }
-            </li>
-          )
-        }
-      </ul>
+              <Link
+                className={"create-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
+                >
+                  Create Sublane
+                  <AddIcon />
+              </Link>
+            </div>
+          }
+          { this.isExpanded(lane) && lane.sublanes && lane.sublanes.length > 0 && this.renderLanes(lane.sublanes, lane) }
+        </div>
+        { provided && provided.placeholder }
+      </li>
     );
   }
 
@@ -226,7 +310,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   toggle(lane) {
     const expanded = Object.assign({}, this.state.expanded);
     expanded[lane.id] = !expanded[lane.id];
-    this.setState({ expanded });
+    this.setState({ ...this.state, expanded });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -235,7 +319,14 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       for (const topLevelLane of nextProps.lanes || []) {
         expanded[topLevelLane.id] = true;
       }
-      this.setState({ expanded });
+      const lanes = this.copyLanes(nextProps.lanes);
+      this.setState({
+        expanded,
+        lanes,
+        draggingFrom: null,
+        draggableId: null,
+        orderChanged: false
+      });
     }
   }
 
@@ -246,6 +337,15 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     if (this.props.fetchCustomLists) {
       this.props.fetchCustomLists();
     }
+  }
+
+  resetOrder() {
+    this.setState({ ...this.state, lanes: this.props.lanes, orderChanged: false });
+  }
+
+  async saveOrder() {
+    await this.props.changeLaneOrder(this.state.lanes);
+    this.props.fetchLanes();
   }
 
   async editLane(data: FormData): Promise<void> {
@@ -280,7 +380,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
 
   private findLaneForIdentifier(lanes, identifier): LaneData | null {
     for (const lane of lanes) {
-      if (String(lane.id) === identifier) {
+      if (String(lane.id) === String(identifier)) {
         return lane;
       }
       const sublaneMatch = this.findLaneForIdentifier(lane.sublanes, identifier);
@@ -307,7 +407,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
 
   findParentOfLane(lane: LaneData, lanes?: LaneData[]): LaneData {
     if (!lanes) {
-      lanes = this.props.lanes || [];
+      lanes = this.state.lanes || [];
     }
 
     for (const possibleParent of lanes) {
@@ -324,6 +424,94 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     }
     return null;
   }
+
+  isDropDisabled(draggingLane: LaneData | null, toLane: LaneData | null) {
+    if (!draggingLane) {
+      return false;
+    }
+
+    // You can only drag a lane within its parent. It would be nice
+    // to change the parent by dragging, but it's difficult because
+    // dragging a child can cause the parent to move and mess up
+    // the positioning of the dragging child.
+
+    const draggingParent = this.findParentOfLane(draggingLane);
+    if (draggingParent && toLane === null) {
+      return true;
+    }
+    if (!draggingParent && toLane !== null) {
+      return true;
+    }
+    if (draggingParent && toLane && (draggingParent.id !== toLane.id)) {
+      return true;
+    }
+    return false;
+  }
+
+  onDragStart(initial) {
+    document.body.classList.add("dragging");
+    const draggableId = initial.draggableId;
+    const source = initial.source;
+    this.setState({
+      ...this.state,
+      draggableId,
+      draggingFrom: source.droppableId
+    });
+  }
+
+  onDragEnd(result) {
+    document.body.classList.remove("dragging");
+    const {
+      draggableId,
+      destination,
+      source
+    } = result;
+
+    if (!destination || !source || (destination.droppableId !== source.droppableId)) {
+      return;
+    }
+
+    const oldIndex = source.index;
+    const newIndex = destination.index;
+
+    if (oldIndex === newIndex) {
+      // The lane was dropped back to its original position.
+      return;
+    }
+
+    let lanes = this.state.lanes;
+    const draggedLane = this.findLaneForIdentifier(lanes, draggableId);
+    const parent = this.findParentOfLane(draggedLane, lanes);
+
+    // If the lane has a parent, we'll update its position within its parents'
+    // sublanes. Otherwise, we'll update its position at the top-level.
+    let lanesToUpdate;
+    if (parent) {
+      lanesToUpdate = parent.sublanes;
+    } else {
+      lanesToUpdate = lanes;
+    }
+
+    // Remove the lane from its old position.
+    lanesToUpdate = lanesToUpdate.slice(0, oldIndex).concat(lanesToUpdate.slice(oldIndex + 1, lanesToUpdate.length));
+    // Put it back in its new position.
+    lanesToUpdate.splice(newIndex, 0, draggedLane);
+
+    // Actually update the lanes.
+    if (parent) {
+      parent.sublanes = lanesToUpdate;
+    } else {
+      lanes = lanesToUpdate;
+    }
+
+    this.setState({
+      ...this.state,
+      draggableId: null,
+      draggingFrom: null,
+      lanes,
+      orderChanged: true
+    });
+  }
 }
 
 function mapStateToProps(state, ownProps) {
@@ -331,9 +519,9 @@ function mapStateToProps(state, ownProps) {
     lanes: state.editor.lanes && state.editor.lanes.data && state.editor.lanes.data.lanes,
     responseBody: state.editor.lanes && state.editor.lanes.successMessage,
     customLists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
-    fetchError: state.editor.lanes.fetchError || state.editor.laneVisibility.fetchError,
+    fetchError: state.editor.lanes.fetchError || state.editor.laneVisibility.fetchError || state.editor.laneOrder.fetchError,
     formError: state.editor.lanes.formError || state.editor.laneVisibility.formError,
-    isFetching: state.editor.lanes.isFetching || state.editor.lanes.isEditing || state.editor.laneVisibility.isFetching || state.editor.customLists.isFetching || state.editor.resetLanes.isFetching
+    isFetching: state.editor.lanes.isFetching || state.editor.lanes.isEditing || state.editor.laneVisibility.isFetching || state.editor.customLists.isFetching || state.editor.resetLanes.isFetching || state.editor.laneOrder.isFetching
   };
 }
 
@@ -347,7 +535,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     deleteLane: (identifier: string) => dispatch(actions.deleteLane(ownProps.library, identifier)),
     showLane: (identifier: string) => dispatch(actions.showLane(ownProps.library, identifier)),
     hideLane: (identifier: string) => dispatch(actions.hideLane(ownProps.library, identifier)),
-    resetLanes: () => dispatch(actions.resetLanes(ownProps.library))
+    resetLanes: () => dispatch(actions.resetLanes(ownProps.library)),
+    changeLaneOrder: (lanes: LaneData[]) => dispatch(actions.changeLaneOrder(ownProps.library, lanes))
   };
 }
 

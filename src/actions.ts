@@ -7,7 +7,7 @@ import {
   MetadataServicesData, AnalyticsServicesData,
   CDNServicesData, SearchServicesData,
   DiscoveryServicesData, LibraryRegistrationsData,
-  CustomListsData, LanesData,
+  CustomListsData, LanesData, LaneData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
   StorageServicesData, LoggingServicesData, CatalogServicesData,
   SelfTestsData, PatronData
@@ -95,6 +95,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly DELETE_LANE = "DELETE_LANE";
   static readonly CHANGE_LANE_VISIBILITY = "CHANGE_LANE_VISIBILITY";
   static readonly RESET_LANES = "RESET_LANES";
+  static readonly CHANGE_LANE_ORDER = "CHANGE_LANE_ORDER";
 
   static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
   static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
@@ -649,6 +650,11 @@ export default class ActionCreator extends BaseActionCreator {
   resetLanes(library: string) {
     const url = "/" + library + "/admin/lanes/reset";
     return this.postForm(ActionCreator.RESET_LANES, url, null).bind(this);
+  }
+
+  changeLaneOrder(library: string, lanes: LaneData[]) {
+    const url = "/" + library + "/admin/lanes/change_order";
+    return this.postJSON<LaneData[]>(ActionCreator.CHANGE_LANE_ORDER, url, lanes).bind(this);
   }
 
   changePassword(data: FormData) {

@@ -1,8 +1,5 @@
 import * as React from "react";
-const dnd = require("react-beautiful-dnd");
-const DragDropContext = dnd.DragDropContext;
-const Droppable = dnd.Droppable;
-const Draggable = dnd.Draggable;
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import LoadButton from "./LoadButton";
 import ApplyIcon from "./icons/ApplyIcon";

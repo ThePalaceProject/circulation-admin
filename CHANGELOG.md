@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.0.99
+#### Added
+- Made it possible to change the order of lanes (within the same parent lane) by dragging and dropping on the lanes page.
+
 ###v0.0.98
 #### Updated
 - Further clarified wording about resetting Adobe IDs.
