@@ -4,7 +4,7 @@ import { TabContainer, TabContainerProps, TabContainerContext } from "./TabConta
 
 export interface DiagnosticsServiceTabsProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
-  content: {[index:string]: JSX.Element};
+  content: { [index: string]: JSX.Element };
 }
 
 export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServiceTabsProps> {

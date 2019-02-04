@@ -28,18 +28,18 @@ export default class DiagnosticsServiceType extends React.Component<DiagnosticsS
 
   renderServices(services: Array<DiagnosticsServiceData>): JSX.Element {
     if (!services) {
-      return <span>There are currently no {this.props.type} services.</span>
+      return <span>There are currently no {this.props.type} services.</span>;
     }
     let serviceTabContent = {};
     Object.keys(services).map(serviceName => {
-      serviceTabContent[serviceName] = this.renderCollections(services[serviceName])
+      serviceTabContent[serviceName] = this.renderCollections(services[serviceName]);
     });
     let serviceList =
       <DiagnosticsServiceTabs
         content={serviceTabContent}
         tab={this.state.tab}
         goToTab={this.goToTab}
-      />
+      />;
 
     return <div className="config services">{serviceList}</div>;
   }
