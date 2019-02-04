@@ -10,7 +10,7 @@ import {
   CustomListsData, LanesData, LaneData,
   RolesData, MediaData, LanguagesData, RightsStatusData,
   StorageServicesData, LoggingServicesData, CatalogServicesData,
-  SelfTestsData, PatronData
+  SelfTestsData, PatronData, DiagnosticsData
 } from "./interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -150,6 +150,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly PATRON_LOOKUP = "PATRON_LOOKUP";
   static readonly CLEAR_PATRON_DATA = "CLEAR_PATRON_DATA";
   static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
+
+  static readonly DIAGNOSTICS = "DIAGNOSTICS";
 
   csrfToken: string;
 
@@ -682,6 +684,11 @@ export default class ActionCreator extends BaseActionCreator {
 
   clearPatronData() {
     return (dispatch) => dispatch(this.load<void>(ActionCreator.CLEAR_PATRON_DATA, null));
+  }
+
+  fetchDiagnostics() {
+    const url = "/admin/diagnostics";
+    return this.fetchJSON<DiagnosticsData>(ActionCreator.DIAGNOSTICS, url).bind(this);
   }
 
 }

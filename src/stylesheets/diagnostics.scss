@@ -1,0 +1,13 @@
+.diagnostics-page {
+  .tab-content {
+    .services {
+      padding: 0;
+      .collapsible {
+        width: 100%;
+        .list-group-item {
+          padding: 0;
+        }
+      }
+    }
+  }
+}

@@ -145,6 +145,30 @@ export interface StatsData {
   [key: string]: LibraryStatsData;
 }
 
+export interface DiagnosticsData {
+  monitor?: Array<DiagnosticsServiceData>;
+  script?: Array<DiagnosticsServiceData>;
+  coverage_provider?: Array<DiagnosticsServiceData>;
+}
+
+export interface DiagnosticsServiceData {
+  [key: string]: Array<DiagnosticsCollectionData>;
+}
+
+export interface DiagnosticsCollectionData {
+  [key: string]: Array<TimestampData>;
+}
+
+export interface TimestampData {
+  achievements?: Array<string>;
+  collection_name: string;
+  duration: string;
+  exception?: string;
+  id: string;
+  service: string;
+  start: string;
+}
+
 export interface LibraryData {
   uuid?: string;
   name?: string;

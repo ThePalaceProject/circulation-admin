@@ -64,9 +64,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       this.context.router.getCurrentLocation().pathname) || "";
     let isLibraryManager =
       this.context.library && this.context.admin.isLibraryManager(this.context.library());
-    let isSystemAdmin =
-      this.context.library && this.context.admin.isSystemAdmin();
-
+    let isSystemAdmin = this.context.admin.isSystemAdmin();
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
@@ -80,9 +78,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               value={this.context.library && this.context.library()}
               onChange={this.changeLibrary}
               >
-              { (!this.context.library || !this.context.library()) &&
                 <option>Select a library</option>
-              }
               { this.props.libraries.map(library =>
                   <option key={library.short_name} value={library.short_name}>{library.name || library.short_name}</option>
                 )
@@ -150,12 +146,14 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   >Patrons</Link>
                 </li>
               }
-              { isSystemAdmin &&
+              {
+                isSystemAdmin &&
                 <li className="header-link">
-                <Link
-                to={"/admin/web/diagnostics"}
-                className={currentPathname.indexOf("/admin/web/diagnostics") !== -1 ? "active-link" : ""}
-                >Diagnostics</Link>
+                  <Link
+                    to={"/admin/web/diagnostics"}
+                    className={currentPathname.indexOf("/admin/web/diagnostics") !== -1 ? "active-link" : ""}
+                    >Diagnostics
+                  </Link>
                 </li>
               }
             </Nav>
@@ -166,6 +164,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 <Link to="/admin/web/dashboard"
                   className={currentPathname.indexOf("/admin/web/dashboard") !== -1 ? "active-link" : ""}
                 >Dashboard</Link>
+              </li>
+            }
+            { isSystemAdmin && (!this.context.library || !this.context.library()) &&
+              <li className="header-link">
+                <Link to={"/admin/web/diagnostics"}
+                className={currentPathname.indexOf("/admin/web/diagnostics") !== -1 ? "active-link" : ""}
+                >Diagnostics</Link>
               </li>
             }
             { this.context.admin.isLibraryManagerOfSomeLibrary() &&
