@@ -28,7 +28,7 @@ export default class DiagnosticsServiceType extends React.Component<DiagnosticsS
 
   renderServices(services: Array<DiagnosticsServiceData>): JSX.Element {
     if (!services) {
-      return <p>no services</p>
+      return <span>There are currently no {this.props.type} services.</span>
     }
     let serviceTabContent = {};
     Object.keys(services).map(serviceName => {
@@ -44,18 +44,15 @@ export default class DiagnosticsServiceType extends React.Component<DiagnosticsS
     return <div className="config services">{serviceList}</div>;
   }
 
-  renderCollections(service: Array<DiagnosticsCollectionData>): JSX.Element {
+  renderCollections(service: Array<DiagnosticsCollectionData>) {
     let collections = Object.keys(service).map(collectionName =>
-      <li className="list-group-item">
-        <Collapsible
-          title={collectionName}
-          openByDefault={true}
-          collapsible={false}
-          body={this.renderTimestamps(service[collectionName])}
-        />
-      </li>
+      <Collapsible
+        title={collectionName}
+        openByDefault={true}
+        body={this.renderTimestamps(service[collectionName])}
+      />
     );
-    return <ul className="list-group">{collections}</ul>;
+    return collections;
   }
 
   renderTimestamps(collection: Array<TimestampData>): JSX.Element {

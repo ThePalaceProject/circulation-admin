@@ -40,15 +40,16 @@
           }
           .collapsible {
             width: 100%;
-            border: none;
-            .list-group-item {
-              padding: 0;
+            .panel-title {
+              padding: 10px 15px;
             }
             .panel-success {
               .panel-title {
                 background: $green-tint;
               }
-              .panel-danger {
+            }
+            .panel-danger {
+              .panel-title {
                 background: $red-tint;
               }
             }

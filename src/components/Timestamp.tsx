@@ -29,8 +29,7 @@ export default class Timestamp extends React.Component<TimestampProps, void> {
         title={this.props.timestamp.start}
         style={this.props.timestamp.exception ? "danger" : "success"}
         body={body}
-        openByDefault={true}
-        collapsible={false}
+        openByDefault={false}
       />
     );
   }
