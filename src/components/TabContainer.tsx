@@ -4,8 +4,8 @@ import { Navigate, PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
-  store: Store<State>;
-  csrfToken: string;
+  store?: Store<State>;
+  csrfToken?: string;
   tab: string;
 }
 

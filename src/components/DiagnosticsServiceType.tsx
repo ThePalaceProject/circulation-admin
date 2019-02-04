@@ -1,6 +1,7 @@
 import * as React from "react";
 import { DiagnosticsServiceData, DiagnosticsCollectionData, TimestampData } from "../interfaces";
 import Collapsible from "./Collapsible";
+import DiagnosticsServiceTabs from "./DiagnosticsServiceTabs";
 import Timestamp from "./Timestamp";
 
 export interface DiagnosticsServiceTypeProps {
@@ -8,23 +9,39 @@ export interface DiagnosticsServiceTypeProps {
   type: string;
 }
 
-export default class DiagnosticsServiceType extends React.Component<DiagnosticsServiceTypeProps, void> {
+export interface DiagnosticsServiceTypeState {
+  tab: string;
+}
+
+export default class DiagnosticsServiceType extends React.Component<DiagnosticsServiceTypeProps, DiagnosticsServiceTypeState> {
+
+  constructor(props) {
+    super(props);
+    let tab = this.props.services ? Object.keys(this.props.services)[0] : "";
+    this.state = { tab };
+    this.goToTab = this.goToTab.bind(this);
+  }
+
+  goToTab(tab: string) {
+    this.setState({ tab });
+  }
 
   renderServices(services: Array<DiagnosticsServiceData>): JSX.Element {
-    let serviceList = services ?
-      Object.keys(services).map(serviceName =>
-        <li>
-          <Collapsible
-            title={serviceName}
-            body={this.renderCollections(services[serviceName])}
-            openByDefault={true}
-            collapsible={false}
-          />
-        </li>
-      ) :
-      <p>no services</p>;
+    if (!services) {
+      return <p>no services</p>
+    }
+    let serviceTabContent = {};
+    Object.keys(services).map(serviceName => {
+      serviceTabContent[serviceName] = this.renderCollections(services[serviceName])
+    });
+    let serviceList =
+      <DiagnosticsServiceTabs
+        content={serviceTabContent}
+        tab={this.state.tab}
+        goToTab={this.goToTab}
+      />
 
-    return <ul className="services">{serviceList}</ul>;
+    return <div className="config services">{serviceList}</div>;
   }
 
   renderCollections(service: Array<DiagnosticsCollectionData>): JSX.Element {

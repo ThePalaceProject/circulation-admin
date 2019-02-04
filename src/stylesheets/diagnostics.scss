@@ -1,11 +1,58 @@
 .diagnostics-page {
-  .tab-content {
-    .services {
-      padding: 0;
-      .collapsible {
-        width: 100%;
-        .list-group-item {
-          padding: 0;
+  height: 100%;
+  .body {
+    min-height: 80%;
+    .tab-container {
+      min-height: 600px;
+      .tab-content {
+        padding: 2em 0;
+        .config {
+          width: 100%;
+          .tab-container {
+            .nav-tabs {
+              border-bottom: 1px solid $medium-gray;
+              border-right: 1px solid $medium-gray;
+              border-top: none;
+              li {
+                border-color: $medium-gray;
+                a {
+                  border: none;
+                }
+                &.active {
+                  border-bottom: 1px solid $medium-gray;
+                }
+              }
+            }
+            .tab-content {
+              padding: 0;
+              min-width: 70%;
+              height: 100%;
+              border: 1px solid $medium-gray;
+              .list-group {
+                padding: 0;
+                .list-group-item {
+                  margin: 0;
+                  padding: 0;
+                  min-width: 100%;
+                }
+              }
+            }
+          }
+          .collapsible {
+            width: 100%;
+            border: none;
+            .list-group-item {
+              padding: 0;
+            }
+            .panel-success {
+              .panel-title {
+                background: $green-tint;
+              }
+              .panel-danger {
+                background: $red-tint;
+              }
+            }
+          }
         }
       }
     }
