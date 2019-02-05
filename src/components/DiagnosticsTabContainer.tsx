@@ -2,11 +2,8 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { DiagnosticsData } from "../interfaces";
 import { State } from "../reducers/index";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import ErrorMessage from "./ErrorMessage";
 import DiagnosticsServiceType from "./DiagnosticsServiceType";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 
@@ -54,12 +51,9 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
   tabs() {
     let tabs = {};
     if (this.props.diagnostics) {
-      tabs = {
-        coverage_provider: <DiagnosticsServiceType type="coverage_provider" services={this.props.diagnostics["coverage_provider"]} />,
-        monitor: <DiagnosticsServiceType type="monitor" services={this.props.diagnostics["monitor"]} />,
-        script: <DiagnosticsServiceType type="script" services={this.props.diagnostics["script"]} />,
-        other: <DiagnosticsServiceType type="other" services={this.props.diagnostics["other"]} />
-      };
+      ["coverage_provider", "monitor", "script", "other"].map((serviceType) => {
+        tabs[serviceType] = <DiagnosticsServiceType type={serviceType} services={this.props.diagnostics[serviceType]} />;
+      });
     }
     return tabs;
   }

@@ -9,7 +9,7 @@ export interface TimestampProps {
 export default class Timestamp extends React.Component<TimestampProps, void> {
   render(): JSX.Element {
     let exception = <li><section className="well">{this.props.timestamp.exception}</section></li>;
-    let achievements = <li><section className="well">{JSON.stringify(this.props.timestamp.achievements)}</section></li>;
+    let achievements = <li>{JSON.stringify(this.props.timestamp.achievements)}</li>;
 
     let body = (
       <ul>
@@ -22,6 +22,7 @@ export default class Timestamp extends React.Component<TimestampProps, void> {
         }
       </ul>
     );
+
     return (
       <Collapsible
         title={this.props.timestamp.start}

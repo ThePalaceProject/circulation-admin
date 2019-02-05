@@ -1,8 +1,6 @@
 import * as React from "react";
-import { DiagnosticsServiceData, DiagnosticsCollectionData, TimestampData } from "../interfaces";
-import Collapsible from "./Collapsible";
+import { DiagnosticsServiceData } from "../interfaces";
 import DiagnosticsServiceTabs from "./DiagnosticsServiceTabs";
-import Timestamp from "./Timestamp";
 
 export interface DiagnosticsServiceTypeProps {
   services: Array<DiagnosticsServiceData>;

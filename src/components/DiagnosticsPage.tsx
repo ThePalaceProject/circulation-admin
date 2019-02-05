@@ -2,8 +2,6 @@ import * as React from "react";
 import { Store } from "redux";
 import Header from "./Header";
 import { State } from "../reducers/index";
-import ActionCreator from "../actions";
-import { connect } from "react-redux";
 import DiagnosticsTabContainer from "./DiagnosticsTabContainer";
 
 
