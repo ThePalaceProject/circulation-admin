@@ -21,16 +21,27 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
     let tabs = {};
     let serviceNames = Object.keys(this.props.content);
     serviceNames.map((serviceName) => {
-      tabs[serviceName] = this.renderCollections(this.props.content[serviceName]);
+        tabs[serviceName] = this.renderCollections(this.props.content[serviceName]);
     });
     return tabs;
+  }
+
+  tabDisplayName(name) {
+    let timestampArray = (Object.values(this.props.content[name]) as any).flat();
+    let hasException = timestampArray.some((ts) => ts.exception);
+
+    if (hasException) {
+      return <span>{name}<span className="badge">!</span></span>;
+    } else {
+      return super.tabDisplayName(name);
+    }
   }
 
   renderCollections(collections: Array<DiagnosticsCollectionData>) {
     return Object.keys(collections).map((collectionName) =>
       <Collapsible
         title={collectionName}
-        openByDefault={true}
+        openByDefault={collections[collectionName].some((ts) => ts.exception)}
         body={this.renderTimestamps(collections[collectionName])}
       />
     );

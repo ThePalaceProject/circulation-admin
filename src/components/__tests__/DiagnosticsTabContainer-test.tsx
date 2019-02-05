@@ -29,7 +29,7 @@ describe("DiagnosticsTabContainer", () => {
   beforeEach(() => {
     goToTab = stub();
     wrapper = mount(
-      <DiagnosticsTabContainer goToTab={goToTab} tab="content_provider" store={buildStore()} fetchDiagnostics={fetchDiagnostics} diagnostics={{"coverage_provider": []}}/>
+      <DiagnosticsTabContainer goToTab={goToTab} tab="coverage_provider" store={buildStore()} fetchDiagnostics={fetchDiagnostics} diagnostics={{"coverage_provider": []}}/>
     );
   });
 
@@ -47,7 +47,7 @@ describe("DiagnosticsTabContainer", () => {
     let tabs = nav.find("li");
     expect(tabs.length).to.equal(4);
 
-    expect(tabs.at(0).text()).to.equal("Content Providers");
+    expect(tabs.at(0).text()).to.equal("Coverage Providers");
     expect(tabs.at(1).text()).to.equal("Monitors");
     expect(tabs.at(2).text()).to.equal("Scripts");
     expect(tabs.at(3).text()).to.equal("Other");
@@ -64,7 +64,7 @@ describe("DiagnosticsTabContainer", () => {
 
   it("switches tabs", () => {
     wrapper = shallow(
-      <DiagnosticsTabContainer goToTab={goToTab} tab="content_provider" store={buildStore()} fetchDiagnostics={fetchDiagnostics} diagnostics={diagnostics} />
+      <DiagnosticsTabContainer goToTab={goToTab} tab="coverage_provider" store={buildStore()} fetchDiagnostics={fetchDiagnostics} diagnostics={diagnostics} />
     );
 
     let tabs = wrapper.find("ul.nav-tabs").find("a");

@@ -26,7 +26,7 @@ export default class DiagnosticsPage extends React.Component<void, DiagnosticsPa
 
   constructor(props) {
     super(props);
-    this.state = { tab: "content_provider" };
+    this.state = { tab: "coverage_provider" };
     this.goToTab = this.goToTab.bind(this);
   }
 

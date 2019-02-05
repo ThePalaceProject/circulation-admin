@@ -8,28 +8,26 @@ export interface TimestampProps {
 
 export default class Timestamp extends React.Component<TimestampProps, void> {
   render(): JSX.Element {
+    let exception = <li><section className="well">{this.props.timestamp.exception}</section></li>;
+    let achievements = <li><section className="well">{JSON.stringify(this.props.timestamp.achievements)}</section></li>;
+
     let body = (
-      <dl>
+      <ul>
+        <li>Duration: {this.props.timestamp.duration} seconds</li>
         {
-          this.props.timestamp.achievements &&
-          <dt>Achievements</dt> &&
-          <dd>{JSON.stringify(this.props.timestamp.achievements)}</dd>
+          this.props.timestamp.achievements && achievements
         }
-        <dt>Duration</dt>
-        <dd>{this.props.timestamp.duration} seconds</dd>
         {
-          this.props.timestamp.exception &&
-          <dt>Exception</dt> &&
-          <dd>{this.props.timestamp.exception}</dd>
+          this.props.timestamp.exception && exception
         }
-      </dl>
+      </ul>
     );
     return (
       <Collapsible
         title={this.props.timestamp.start}
         style={this.props.timestamp.exception ? "danger" : "success"}
         body={body}
-        openByDefault={false}
+        openByDefault={!!this.props.timestamp.exception}
       />
     );
   }

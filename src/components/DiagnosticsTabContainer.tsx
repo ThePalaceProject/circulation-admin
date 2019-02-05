@@ -28,7 +28,7 @@ export interface DiagnosticsTabContainerProps extends DiagnosticsTabContainerDis
 export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContainerProps> {
 
   DISPLAY_NAMES = {
-    content_provider: "Content Providers",
+    coverage_provider: "Coverage Providers",
     monitor: "Monitors",
     script: "Scripts",
     other: "Other"
@@ -55,7 +55,7 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
     let tabs = {};
     if (this.props.diagnostics) {
       tabs = {
-        content_provider: <DiagnosticsServiceType type="content_provider" services={this.props.diagnostics["content_provider"]} />,
+        coverage_provider: <DiagnosticsServiceType type="coverage_provider" services={this.props.diagnostics["coverage_provider"]} />,
         monitor: <DiagnosticsServiceType type="monitor" services={this.props.diagnostics["monitor"]} />,
         script: <DiagnosticsServiceType type="script" services={this.props.diagnostics["script"]} />,
         other: <DiagnosticsServiceType type="other" services={this.props.diagnostics["other"]} />

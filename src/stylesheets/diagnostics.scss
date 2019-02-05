@@ -27,13 +27,19 @@
               padding: 0;
               min-width: 70%;
               height: 100%;
-              border: 1px solid $medium-gray;
-              .list-group {
+              .collapsible {
+                margin-bottom: .5em;
+                border-color: $medium-gray;
+              }
+              ul {
                 padding: 0;
-                .list-group-item {
-                  margin: 0;
+                li {
                   padding: 0;
                   min-width: 100%;
+                  border: none;
+                  .tab-content {
+                    border: none;
+                  }
                 }
               }
             }
@@ -58,4 +64,11 @@
       }
     }
   }
+
+  .badge {
+    display: block;
+    float: right;
+    background: $red;
+  }
+
 }
