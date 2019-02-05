@@ -149,6 +149,7 @@ export interface DiagnosticsData {
   monitor?: Array<DiagnosticsServiceData>;
   script?: Array<DiagnosticsServiceData>;
   coverage_provider?: Array<DiagnosticsServiceData>;
+  other?: Array<DiagnosticsServiceData>;
 }
 
 export interface DiagnosticsServiceData {
