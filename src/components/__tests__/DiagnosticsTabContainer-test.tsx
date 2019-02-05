@@ -20,9 +20,7 @@ describe("DiagnosticsTabContainer", () => {
     collection_name: "collection1"
   };
 
-  let collection1 = {"collection1": [ts1]};
-  let test_service = { "test_service": [collection1]};
-  let diagnostics = { "monitor": [test_service] };
+  let diagnostics = { "monitor": [{ "test_service_1": [{ "collection1": [ts1] }] }] };
 
   let fetchDiagnostics = stub();
 
@@ -34,7 +32,7 @@ describe("DiagnosticsTabContainer", () => {
   });
 
   it("renders a tab container", () => {
-    expect(wrapper.find(".tab-container").length).to.equal(1);
+    expect(wrapper.find(".tab-container").length).to.equal(2);
   });
 
   it("calls fetchDiagnostics on mount", () => {

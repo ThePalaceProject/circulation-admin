@@ -27,7 +27,7 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
   }
 
   tabDisplayName(name) {
-    let timestampArray = (Object.values(this.props.content[name]) as any).flat();
+    let timestampArray = [].concat(...Object.values(this.props.content[name]));
     let hasException = timestampArray.some((ts) => ts.exception);
 
     if (hasException) {
