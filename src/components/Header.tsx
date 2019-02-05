@@ -78,7 +78,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               value={this.context.library && this.context.library()}
               onChange={this.changeLibrary}
               >
+              { (!this.context.library || !this.context.library()) &&
                 <option>Select a library</option>
+              }
               { this.props.libraries.map(library =>
                   <option key={library.short_name} value={library.short_name}>{library.name || library.short_name}</option>
                 )

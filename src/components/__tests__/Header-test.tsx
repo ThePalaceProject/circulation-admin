@@ -47,7 +47,7 @@ describe("Header", () => {
       expect(select.props().elementType).to.equal("select");
       expect(select.props().value).to.equal("nypl");
       let options = select.children();
-      expect(options.length).to.equal(3);
+      expect(options.length).to.equal(2);
       expect(options.at(0).text()).to.equal("NYPL");
       expect(options.at(0).props().value).to.equal("nypl");
       expect(options.at(1).text()).to.equal("bpl");
