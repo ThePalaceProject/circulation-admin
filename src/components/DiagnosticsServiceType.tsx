@@ -26,43 +26,15 @@ export default class DiagnosticsServiceType extends React.Component<DiagnosticsS
     this.setState({ tab });
   }
 
-  renderServices(services: Array<DiagnosticsServiceData>): JSX.Element {
-    if (!services) {
-      return <span>There are currently no {this.props.type} services.</span>;
-    }
-    let serviceTabContent = {};
-    Object.keys(services).map(serviceName => {
-      serviceTabContent[serviceName] = this.renderCollections(services[serviceName]);
-    });
-    let serviceList =
+  render(): JSX.Element {
+    let serviceTabs = this.props.services ?
       <DiagnosticsServiceTabs
-        content={serviceTabContent}
+        content={this.props.services}
         tab={this.state.tab}
         goToTab={this.goToTab}
-      />;
+      /> :
+      <span>There are currently no {this.props.type} services.</span>;
 
-    return <div className="config services">{serviceList}</div>;
-  }
-
-  renderCollections(service: Array<DiagnosticsCollectionData>) {
-    let collections = Object.keys(service).map(collectionName =>
-      <Collapsible
-        title={collectionName}
-        openByDefault={true}
-        body={this.renderTimestamps(service[collectionName])}
-      />
-    );
-    return collections;
-  }
-
-  renderTimestamps(collection: Array<TimestampData>): JSX.Element {
-    let timestamps = collection.map(timestamp =>
-      <Timestamp timestamp={timestamp} />
-    );
-    return <ul>{timestamps}</ul>;
-  }
-
-  render(): JSX.Element {
-    return this.renderServices(this.props.services);
+    return <div className="config services">{serviceTabs}</div>;
   }
 }

@@ -1,10 +1,14 @@
 import * as React from "react";
-import { DiagnosticsData } from "../interfaces";
+import { DiagnosticsServiceData, DiagnosticsCollectionData, TimestampData } from "../interfaces";
+import Panel from "react-bootstrap";
+
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
+import Collapsible from "./Collapsible";
+import Timestamp from "./Timestamp";
 
 export interface DiagnosticsServiceTabsProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
-  content: { [index: string]: JSX.Element };
+  content: DiagnosticsServiceData[];
 }
 
 export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServiceTabsProps> {
@@ -15,6 +19,28 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
   }
 
   tabs() {
-    return this.props.content;
+    let tabs = {};
+    let serviceNames = Object.keys(this.props.content);
+    serviceNames.map((serviceName) => {
+      tabs[serviceName] = this.renderCollections(this.props.content[serviceName]);
+    });
+    return tabs;
+  }
+
+  renderCollections(collections: Array<DiagnosticsCollectionData>): Array<Panel> {
+    return Object.keys(collections).map((collectionName) =>
+      <Collapsible
+        title={collectionName}
+        openByDefault={true}
+        body={this.renderTimestamps(collections[collectionName])}
+      />
+    );
+  }
+
+  renderTimestamps(timestamps: Array<TimestampData>): JSX.Element {
+    let tsList = timestamps.map(timestamp =>
+      <li><Timestamp timestamp={timestamp} /></li>
+    );
+    return <ul>{tsList}</ul>;
   }
 }
