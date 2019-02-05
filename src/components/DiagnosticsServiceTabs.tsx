@@ -1,6 +1,5 @@
 import * as React from "react";
 import { DiagnosticsServiceData, DiagnosticsCollectionData, TimestampData } from "../interfaces";
-import Panel from "react-bootstrap";
 
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 import Collapsible from "./Collapsible";
@@ -27,7 +26,7 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
     return tabs;
   }
 
-  renderCollections(collections: Array<DiagnosticsCollectionData>): Array<Panel> {
+  renderCollections(collections: Array<DiagnosticsCollectionData>) {
     return Object.keys(collections).map((collectionName) =>
       <Collapsible
         title={collectionName}

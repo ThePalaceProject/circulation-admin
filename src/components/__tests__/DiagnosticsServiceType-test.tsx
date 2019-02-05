@@ -1,13 +1,11 @@
 import { expect } from "chai";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
-import { stub, spy } from "sinon";
-import buildStore from "../../store";
+import { mount } from "enzyme";
 
 import DiagnosticsServiceType from "../DiagnosticsServiceType";
 
-describe.only("DiagnosticsServiceType", () => {
+describe("DiagnosticsServiceType", () => {
   let wrapper;
   let services;
 
