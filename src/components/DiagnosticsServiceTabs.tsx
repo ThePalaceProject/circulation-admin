@@ -29,13 +29,9 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
   tabDisplayName(name) {
     let timestampArray = [].concat(...Object.values(this.props.content[name]));
     let hasException = timestampArray.some((ts) => ts.exception);
-    let capitalizedName = super.tabDisplayName(name);
+    let badge = hasException ? <span className="badge danger">!</span> : <span className="badge">{timestampArray.length}</span>;
 
-    if (hasException) {
-      return <span>{capitalizedName}<span className="badge">!</span></span>;
-    } else {
-      return capitalizedName;
-    }
+    return <span>{super.tabDisplayName(name)}{badge}</span>;
   }
 
   renderCollections(collections: Array<DiagnosticsCollectionData>) {

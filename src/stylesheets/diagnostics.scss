@@ -7,6 +7,20 @@
     }
     .tab-container {
       min-height: 600px;
+      .nav-tabs {
+        border-bottom: 1px solid $dark;
+        li {
+          &.active {
+            a,
+            a:hover,
+            a:focus,
+            a:visited {
+              border: 1px solid $dark;
+              border-bottom-color: transparent;
+            }
+          }
+        }
+      }
       .tab-content {
         padding: 2em 0;
         .config {
@@ -23,6 +37,9 @@
                 }
                 &.active {
                   border-bottom: 1px solid $medium-gray;
+                  a {
+                    border: 1px solid $dark;
+                  }
                 }
               }
             }
@@ -71,7 +88,10 @@
   .badge {
     display: block;
     float: right;
-    background: $red;
+    background: $green-bright;
+    &.danger {
+      background: $red;
+    }
   }
 
   pre {

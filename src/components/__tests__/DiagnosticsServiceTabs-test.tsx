@@ -49,12 +49,15 @@ describe("DiagnosticsServiceTabs", () => {
       expect(tabs.at(1).text()).to.contain("Test_service_2");
     });
 
-    it("displays a badge if the service contains a timestamp with an exception", () => {
+    it("displays a badge", () => {
       let tabWithoutException = wrapper.find(".nav-tabs").find("a").at(0);
-      expect(tabWithoutException.find(".badge").length).to.equal(0);
+      expect(tabWithoutException.find(".danger").length).to.equal(0);
+      let badge = tabWithoutException.find(".badge");
+      expect(badge.length).to.equal(1);
+      expect(badge.text()).to.equal("1");
 
       let tabWithException = wrapper.find(".nav-tabs").find("a").at(1);
-      let badge = tabWithException.find(".badge");
+      badge = tabWithException.find(".badge.danger");
       expect(badge.length).to.equal(1);
       expect(badge.text()).to.equal("!");
     });
