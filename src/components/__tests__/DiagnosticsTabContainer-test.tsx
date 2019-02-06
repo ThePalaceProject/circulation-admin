@@ -7,6 +7,7 @@ import buildStore from "../../store";
 
 import { DiagnosticsTabContainer } from "../DiagnosticsTabContainer";
 import DiagnosticsServiceType from "../DiagnosticsServiceType";
+import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
 describe("DiagnosticsTabContainer", () => {
   let wrapper;
@@ -34,6 +35,7 @@ describe("DiagnosticsTabContainer", () => {
         store={buildStore()}
         fetchDiagnostics={fetchDiagnostics}
         diagnostics={{"coverage_provider": []}}
+        isLoaded={true}
       />
     );
   });
@@ -94,14 +96,21 @@ describe("DiagnosticsTabContainer", () => {
       expect(fetchDiagnostics.called).to.be.true;
     });
 
+    it("shows the loading indicator", () => {
+      expect(wrapper.find(LoadingIndicator).length).to.equal(0);
+      wrapper.setProps({ isLoaded: false });
+      expect(wrapper.find(LoadingIndicator).length).to.equal(4);
+    });
+
     it("calls goToTab", () => {
       wrapper = shallow(
         <DiagnosticsTabContainer
-        goToTab={goToTab}
-        tab="coverage_provider"
-        store={buildStore()}
-        fetchDiagnostics={fetchDiagnostics}
-        diagnostics={diagnostics}
+          goToTab={goToTab}
+          tab="coverage_provider"
+          store={buildStore()}
+          fetchDiagnostics={fetchDiagnostics}
+          diagnostics={diagnostics}
+          isLoaded={true}
         />
       );
 

@@ -5,6 +5,7 @@ import ActionCreator from "../actions";
 import { DiagnosticsData } from "../interfaces";
 import { State } from "../reducers/index";
 import DiagnosticsServiceType from "./DiagnosticsServiceType";
+import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 
 export interface DiagnosticsTabContainerDispatchProps {
@@ -18,6 +19,7 @@ export interface DiagnosticsTabContainerOwnProps extends TabContainerProps {
 
 export interface DiagnosticsTabContainerStateProps {
   diagnostics?: DiagnosticsData;
+  isLoaded?: boolean;
 }
 
 export interface DiagnosticsTabContainerProps extends DiagnosticsTabContainerDispatchProps, DiagnosticsTabContainerStateProps, DiagnosticsTabContainerOwnProps {};
@@ -50,9 +52,16 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
 
   tabs() {
     let tabs = {};
-    if (this.props.diagnostics) {
-      ["coverage_provider", "monitor", "script", "other"].map((serviceType) => {
+    let serviceTypes = ["coverage_provider", "monitor", "script", "other"];
+
+    if (this.props.isLoaded && this.props.diagnostics) {
+      serviceTypes.map((serviceType) => {
         tabs[serviceType] = <DiagnosticsServiceType type={serviceType} services={this.props.diagnostics[serviceType]} />;
+      });
+    }
+    else if (!this.props.isLoaded) {
+      serviceTypes.map((serviceType) => {
+        tabs[serviceType] = <LoadingIndicator />;
       });
     }
     return tabs;
@@ -61,7 +70,8 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
 
 function mapStateToProps(state, ownProps: DiagnosticsTabContainerOwnProps) {
   return {
-    diagnostics: state.editor.diagnostics && state.editor.diagnostics.data
+    diagnostics: state.editor.diagnostics && state.editor.diagnostics.data,
+    isLoaded: state.editor.diagnostics.isLoaded
   };
 }
 
