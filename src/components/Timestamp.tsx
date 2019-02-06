@@ -8,17 +8,19 @@ export interface TimestampProps {
 
 export default class Timestamp extends React.Component<TimestampProps, void> {
   render(): JSX.Element {
-    let exception = <li><section className="well">{this.props.timestamp.exception}</section></li>;
-    let achievements = <li>{JSON.stringify(this.props.timestamp.achievements)}</li>;
+    let exception = <section className="well exception"><pre>{this.props.timestamp.exception}</pre></section>;
+    let achievements = <section className="well"><pre>{this.props.timestamp.achievements}</pre></section>;
 
     let body = (
       <ul>
         <li>Duration: {this.props.timestamp.duration} seconds</li>
         {
-          this.props.timestamp.achievements && achievements
+          this.props.timestamp.achievements &&
+          <li>{achievements}</li>
         }
         {
-          this.props.timestamp.exception && exception
+          this.props.timestamp.exception &&
+          <li>{exception}</li>
         }
       </ul>
     );

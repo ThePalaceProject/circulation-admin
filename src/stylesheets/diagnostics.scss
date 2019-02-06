@@ -74,4 +74,14 @@
     background: $red;
   }
 
+  pre {
+    border: none;
+    background: inherit;
+  }
+  .exception {
+    border-color: $red-tint;
+    background: $red-error;
+    box-shadow: inset 0 .5px .5px $red-tint;
+  }
+
 }

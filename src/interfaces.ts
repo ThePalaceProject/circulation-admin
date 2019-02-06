@@ -161,7 +161,7 @@ export interface DiagnosticsCollectionData {
 }
 
 export interface TimestampData {
-  achievements?: Array<string>;
+  achievements?: string;
   collection_name: string;
   duration: string;
   exception?: string;
