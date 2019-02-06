@@ -29,11 +29,12 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
   tabDisplayName(name) {
     let timestampArray = [].concat(...Object.values(this.props.content[name]));
     let hasException = timestampArray.some((ts) => ts.exception);
+    let capitalizedName = super.tabDisplayName(name);
 
     if (hasException) {
-      return <span>{name}<span className="badge">!</span></span>;
+      return <span>{capitalizedName}<span className="badge">!</span></span>;
     } else {
-      return super.tabDisplayName(name);
+      return capitalizedName;
     }
   }
 
