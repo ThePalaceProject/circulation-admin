@@ -25,6 +25,7 @@ export default class Timestamp extends React.Component<TimestampProps, void> {
       </ul>
     );
 
+    // If the timestamp has an exception, it should start out expanded.
     return (
       <Collapsible
         title={this.props.timestamp.start}

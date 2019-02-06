@@ -56,6 +56,7 @@ describe("DiagnosticsServiceTabs", () => {
       expect(badge.length).to.equal(1);
       expect(badge.text()).to.equal("1");
 
+      // Because test_service_2 contains a timestamp with an exception, it should display a warning.
       let tabWithException = wrapper.find(".nav-tabs").find("a").at(1);
       badge = tabWithException.find(".badge.danger");
       expect(badge.length).to.equal(1);

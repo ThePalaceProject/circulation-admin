@@ -38,7 +38,12 @@ export default class DiagnosticsPage extends React.Component<void, DiagnosticsPa
         <Header />
         <div className="body">
           <h1>Diagnostics</h1>
-          <DiagnosticsTabContainer store={this.context.editorStore} csrfToken={this.context.csrfToken} tab={this.state.tab} goToTab={this.goToTab}/>
+          <DiagnosticsTabContainer
+            store={this.context.editorStore}
+            csrfToken={this.context.csrfToken}
+            tab={this.state.tab}
+            goToTab={this.goToTab}
+          />
         </div>
       </div>
     );

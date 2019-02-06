@@ -27,14 +27,16 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
   }
 
   tabDisplayName(name) {
+    // Get a flattened array of all the timestamps associated with this service.
     let timestampArray = [].concat(...Object.values(this.props.content[name]));
     let hasException = timestampArray.some((ts) => ts.exception);
+    // If any of the timestamps has an exception, display a warning.  Otherwise, display the number of timestamps.
     let badge = hasException ? <span className="badge danger">!</span> : <span className="badge">{timestampArray.length}</span>;
-
     return <span>{super.tabDisplayName(name)}{badge}</span>;
   }
 
   renderCollections(collections: Array<DiagnosticsCollectionData>) {
+    // If the collection has any timestamps with exceptions, it should start out expanded.
     return Object.keys(collections).map((collectionName) =>
       <Collapsible
         title={collectionName}

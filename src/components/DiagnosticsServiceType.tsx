@@ -15,6 +15,7 @@ export default class DiagnosticsServiceType extends React.Component<DiagnosticsS
 
   constructor(props) {
     super(props);
+    // Start out with the first tab selected.
     let tab = this.props.services ? Object.keys(this.props.services)[0] : "";
     this.state = { tab };
     this.goToTab = this.goToTab.bind(this);

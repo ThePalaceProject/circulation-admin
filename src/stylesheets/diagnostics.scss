@@ -64,20 +64,22 @@
               }
             }
           }
-          .collapsible {
+          .collapsible.panel {
             width: 100%;
             .panel-title {
               padding: 10px 15px;
             }
-            .panel-success {
+            &.panel-success {
               .panel-title {
                 background: $green-tint;
               }
+              border-color: $green-tint;
             }
-            .panel-danger {
+            &.panel-danger {
               .panel-title {
                 background: $red-tint;
               }
+              border-color: $red-tint;
             }
           }
         }
