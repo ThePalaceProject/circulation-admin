@@ -8,6 +8,7 @@ import buildStore from "../../store";
 import { DiagnosticsTabContainer } from "../DiagnosticsTabContainer";
 import DiagnosticsServiceType from "../DiagnosticsServiceType";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import ErrorMessage from "../ErrorMessage";
 
 describe("DiagnosticsTabContainer", () => {
   let wrapper;
@@ -100,6 +101,17 @@ describe("DiagnosticsTabContainer", () => {
       expect(wrapper.find(LoadingIndicator).length).to.equal(0);
       wrapper.setProps({ isLoaded: false });
       expect(wrapper.find(LoadingIndicator).length).to.equal(4);
+    });
+
+    it("shows an error message", () => {
+      let error = wrapper.find(ErrorMessage);
+      expect(error.length).to.equal(0);
+
+      let fetchError = { status: 401, response: "error fetching diagnostics" };
+      wrapper.setProps({ fetchError });
+
+      error = wrapper.find(ErrorMessage);
+      expect(error.length).to.equal(4);
     });
 
     it("calls goToTab", () => {
