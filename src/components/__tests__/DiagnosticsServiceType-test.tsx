@@ -4,6 +4,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import DiagnosticsServiceType from "../DiagnosticsServiceType";
+import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
 
 describe("DiagnosticsServiceType", () => {
   let wrapper;
@@ -34,22 +35,31 @@ describe("DiagnosticsServiceType", () => {
 
   it("renders service tabs", () => {
     expect(wrapper.hasClass("config")).to.be.true;
+    expect(wrapper.hasClass("services")).to.be.true;
 
-    let tabContainer = wrapper.find(".tab-container");
-    expect(tabContainer.length).to.equal(1);
-
-    let nav = tabContainer.find(".nav-tabs");
-    expect(nav.length).to.equal(1);
-
-    let tabs = nav.find("a");
-    expect(tabs.length).to.equal(2);
-    expect(tabs.at(0).text()).to.equal("Test_service_1");
-    expect(tabs.at(1).text()).to.equal("Test_service_2");
+    let tabs = wrapper.find("DiagnosticsServiceTabs");
+    expect(tabs.length).to.equal(1);
+    expect(tabs.prop("tab")).to.equal(wrapper.state()["tab"]);
+    expect(tabs.prop("content")).to.equal(wrapper.prop("services"));
   });
 
-  it("defaults to displaying the first tab", () => {
-    let tabLis = wrapper.find("li");
-    expect(tabLis.at(0).hasClass("active")).to.be.true;
-    expect(tabLis.at(1).hasClass("active")).to.be.false;
+  it("switches tabs", () => {
+    expect(wrapper.state()["tab"]).to.equal("test_service_1");
+
+    wrapper.instance().goToTab("test_service_2");
+
+    expect(wrapper.state()["tab"]).to.equal("test_service_2");
+    expect(wrapper.find("DiagnosticsServiceTabs").prop("tab")).to.equal("test_service_2");
   });
+
+  it("displays a message if there are no services", () => {
+    wrapper.setProps({ services: null });
+
+    expect(wrapper.find("DiagnosticsServiceTabs").length).to.equal(0);
+
+    let message = wrapper.find("span");
+    expect(message.length).to.equal(1);
+    expect(message.text()).to.equal("There are currently no monitor services.");
+  });
+
 });
