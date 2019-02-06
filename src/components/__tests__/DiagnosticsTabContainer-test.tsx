@@ -6,6 +6,7 @@ import { stub } from "sinon";
 import buildStore from "../../store";
 
 import { DiagnosticsTabContainer } from "../DiagnosticsTabContainer";
+import DiagnosticsServiceType from "../DiagnosticsServiceType";
 
 describe("DiagnosticsTabContainer", () => {
   let wrapper;
@@ -67,11 +68,24 @@ describe("DiagnosticsTabContainer", () => {
 
     it("renders tab content", () => {
       wrapper.setProps({ diagnostics });
+      let serviceTypes = wrapper.find(DiagnosticsServiceType);
+      expect(serviceTypes.length).to.equal(4);
 
-      let tabContent = wrapper.find(".tab-content").at(0);
-      let serviceNav = tabContent.find(".tab-container");
-      expect(serviceNav.length).to.equal(1);
-      expect(serviceNav.html()).to.contain("test_service");
+      let cpContent = serviceTypes.at(0);
+      expect(cpContent.prop("type")).to.equal("coverage_provider");
+      expect(cpContent.prop("services")).to.be.undefined;
+
+      let monitorContent = serviceTypes.at(1);
+      expect(monitorContent.prop("type")).to.equal("monitor");
+      expect(monitorContent.prop("services")).to.equal(wrapper.prop("diagnostics")["monitor"]);
+
+      let scriptContent = serviceTypes.at(2);
+      expect(scriptContent.prop("type")).to.equal("script");
+      expect(scriptContent.prop("services")).to.be.undefined;
+
+      let otherContent = serviceTypes.at(3);
+      expect(otherContent.prop("type")).to.equal("other");
+      expect(otherContent.prop("services")).to.be.undefined;
     });
   });
 
