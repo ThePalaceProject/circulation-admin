@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.00
+#### Added
+- Created a Diagnostics page so that admins can view the output of scripts.
+
 ### v0.0.99
 #### Added
 - Made it possible to change the order of lanes (within the same parent lane) by dragging and dropping on the lanes page.
