@@ -5,6 +5,8 @@ import { shallow, mount } from "enzyme";
 import { stub, spy } from "sinon";
 
 import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
+import Collapsible from "../Collapsible";
+import Timestamp from "../Timestamp";
 
 describe("DiagnosticsServiceTabs", () => {
   let wrapper;
@@ -66,23 +68,31 @@ describe("DiagnosticsServiceTabs", () => {
   });
 
   describe("content", () => {
-    it("renders a list of timestamps, organized by collection", () => {
+    it("renders collections", () => {
       let tabContent = wrapper.find(".tab-content");
       expect(tabContent.length).to.equal(1);
 
-      let collection1 = tabContent.find(".collapsible").at(0);
-      expect(collection1.find(".panel-title").at(0).text()).to.equal("collection1");
-      let timestampList1 = collection1.find("ul");
-      let timestamps1 = timestampList1.find(".collapsible");
-      expect(timestamps1.length).to.equal(1);
-      expect(timestamps1.text()).to.contain("start_time_string_1");
+      let collapsibles = tabContent.find("Collapsible");
 
-      let collection2 = tabContent.find(".collapsible").at(2);
-      expect(collection2.find(".panel-title").at(0).text()).to.equal("collection2");
-      let timestampList2 = collection2.find("ul");
-      let timestamps2 = timestampList2.find(".collapsible");
-      expect(timestamps2.length).to.equal(1);
-      expect(timestamps2.text()).to.contain("start_time_string_2");
+      let collection1 = collapsibles.at(0);
+      expect(collection1.prop("title")).to.equal("collection1");
+      expect(collection1.prop("openByDefault")).to.be.false;
+
+      let collection2 = collapsibles.at(2);
+      expect(collection2.prop("title")).to.equal("collection2");
+      // Because collection2 contains a timestamp with an exception, it should start out expanded.
+      expect(collection2.prop("openByDefault")).to.be.true;
+    });
+
+    it("renders timestamps", () => {
+      let timestamps = wrapper.find("Timestamp");
+      expect(timestamps.length).to.equal(2);
+
+      let timestamp1 = timestamps.at(0);
+      expect(timestamp1.prop("timestamp")).to.equal(ts1);
+
+      let timestamp2 = timestamps.at(1);
+      expect(timestamp2.prop("timestamp")).to.equal(ts2);
     });
   });
 
