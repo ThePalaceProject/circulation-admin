@@ -146,18 +146,18 @@ export interface StatsData {
 }
 
 export interface DiagnosticsData {
-  monitor?: Array<DiagnosticsServiceData>;
-  script?: Array<DiagnosticsServiceData>;
-  coverage_provider?: Array<DiagnosticsServiceData>;
-  other?: Array<DiagnosticsServiceData>;
+  monitor?: DiagnosticsServiceData[];
+  script?: DiagnosticsServiceData[];
+  coverage_provider?: DiagnosticsServiceData[];
+  other?: DiagnosticsServiceData[];
 }
 
 export interface DiagnosticsServiceData {
-  [key: string]: Array<DiagnosticsCollectionData>;
+  [key: string]: DiagnosticsCollectionData[];
 }
 
 export interface DiagnosticsCollectionData {
-  [key: string]: Array<TimestampData>;
+  [key: string]: TimestampData[];
 }
 
 export interface TimestampData {

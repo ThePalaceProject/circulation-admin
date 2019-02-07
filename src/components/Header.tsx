@@ -148,16 +148,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   >Patrons</Link>
                 </li>
               }
-              {
-                isSystemAdmin &&
-                <li className="header-link">
-                  <Link
-                    to={"/admin/web/diagnostics"}
-                    className={currentPathname.indexOf("/admin/web/diagnostics") !== -1 ? "active-link" : ""}
-                    >Diagnostics
-                  </Link>
-                </li>
-              }
             </Nav>
           }
           <Nav className="pull-right">
@@ -168,7 +158,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 >Dashboard</Link>
               </li>
             }
-            { isSystemAdmin && (!this.context.library || !this.context.library()) &&
+            { isSystemAdmin &&
               <li className="header-link">
                 <Link to={"/admin/web/diagnostics"}
                 className={currentPathname.indexOf("/admin/web/diagnostics") !== -1 ? "active-link" : ""}

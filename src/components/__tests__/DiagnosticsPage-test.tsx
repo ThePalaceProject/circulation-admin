@@ -26,7 +26,7 @@ describe("DiagnosticsPage", () => {
   });
 
   it("renders a heading", () => {
-    let heading = wrapper.find("h1");
+    let heading = wrapper.find("h2");
     expect(heading.length).to.equal(1);
     expect(heading.text()).to.equal("Diagnostics");
   });

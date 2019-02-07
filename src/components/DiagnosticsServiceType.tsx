@@ -32,7 +32,7 @@ export default class DiagnosticsServiceType extends React.Component<DiagnosticsS
         tab={this.state.tab}
         goToTab={this.goToTab}
       /> :
-      <span>There are currently no {this.props.type} services.</span>;
+      <span>There are currently no {this.props.type.split("_").join(" ")} services.</span>;
 
     return <div className="config services">{serviceTabs}</div>;
   }

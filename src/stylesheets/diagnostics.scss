@@ -1,109 +1,108 @@
 .diagnostics-page {
-  height: 100%;
-  .body {
-    min-height: 80%;
-    h1  {
-      margin: 20px 15px;
-    }
-    .tab-container {
-      min-height: 600px;
-      .nav-tabs {
-        border-bottom: 1px solid $dark;
-        li {
-          &.active {
-            a,
-            a:hover,
-            a:focus,
-            a:visited {
-              border: 1px solid $dark;
-              border-bottom-color: transparent;
-            }
-          }
+  h2  {
+    margin: 20px 15px;
+  }
+  // Service Type tabs
+  .body > .tab-container > .nav-tabs {
+    border-bottom: 1px solid $dark;
+    li {
+      &.active {
+        a,
+        a:hover,
+        a:focus,
+        a:visited {
+          border: 1px solid $dark;
+          border-bottom-color: transparent;
         }
       }
-      .tab-content {
-        padding: 2em 0;
-        .config {
-          width: 100%;
-          .tab-container {
-            .nav-tabs {
-              border-bottom: 1px solid $medium-gray;
-              border-right: 1px solid $medium-gray;
-              border-top: none;
-              li {
-                border-color: $medium-gray;
-                a {
-                  border: none;
-                }
-                &.active {
-                  border-bottom: 1px solid $medium-gray;
-                  a {
-                    border: 1px solid $dark;
-                  }
-                }
-              }
-            }
-            .tab-content {
-              padding: 0;
-              min-width: 70%;
-              height: 100%;
-              .collapsible {
-                margin-bottom: .5em;
-                border-color: $medium-gray;
-              }
-              ul {
-                padding: 0;
-                li {
-                  padding: 0;
-                  min-width: 100%;
-                  border: none;
-                  .tab-content {
-                    border: none;
-                  }
-                }
-              }
-            }
-          }
+    }
+  }
+  .body > .tab-container > .tab-content {
+    padding: 2em 0;
+  }
+
+  // Service Tabs
+
+  // List of services
+  .config .nav-tabs {
+    border-bottom: 1px solid $medium-gray;
+    border-right: 1px solid $medium-gray;
+    border-top: none;
+    li {
+      border-color: $medium-gray;
+      a {
+        border: none;
+      }
+      &.active {
+        border-bottom: 1px solid $medium-gray;
+        a {
+          border: 1px solid $dark;
+        }
+      }
+    }
+  }
+
+  // List of collections
+  .config .tab-content {
+    padding: 0;
+    min-width: 70%;
+    height: 100%;
+    .collapsible {
+      margin-bottom: .5em;
+      border-color: $medium-gray;
+      .panel-title {
+        padding: 10px 15px;
+      }
+      .timestamps {
+        padding: 0;
+        // Individual timestamp
+        & > li {
+          padding: 0;
+          min-width: 100%;
+          border: none;
           .collapsible.panel {
             width: 100%;
-            .panel-title {
-              padding: 10px 15px;
-            }
-            &.panel-success {
-              .panel-title {
-                background: $green-tint;
-              }
-              border-color: $green-tint;
-            }
-            &.panel-danger {
-              .panel-title {
-                background: $red-tint;
-              }
-              border-color: $red-tint;
+            li {
+              border: none;
             }
           }
         }
       }
     }
   }
+}
 
-  .badge {
-    display: block;
-    float: right;
-    background: $green-bright;
-    &.danger {
-      background: $red;
-    }
-  }
 
-  pre {
-    border: none;
-    background: inherit;
+.timestamps .collapsible.panel.panel-success {
+  .panel-title {
+    background: $green-tint;
   }
-  .exception {
-    border-color: $red-tint;
-    background: $red-error;
-    box-shadow: inset 0 .5px .5px $red-tint;
-  }
+  border-color: $green-tint;
+}
 
+.timestamps .collapsible.panel.panel-danger {
+  .panel-title {
+    background: $red-tint;
+  }
+  border-color: $red-tint;
+}
+
+.diagnostics-page .badge {
+  display: block;
+  float: right;
+  background: $green-bright;
+  &.danger {
+    background: $red;
+  }
+}
+
+.exception {
+  border-color: $red-tint;
+  background: $red-error;
+  box-shadow: inset 0 .5px .5px $red-tint;
+}
+
+pre {
+  border: none;
+  background: inherit;
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DiagnosticsServiceData, DiagnosticsCollectionData, TimestampData } from "../interfaces";
 
-import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
+import { TabContainer, TabContainerProps } from "./TabContainer";
 import Collapsible from "./Collapsible";
 import Timestamp from "./Timestamp";
 
@@ -20,7 +20,7 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
   tabs() {
     let tabs = {};
     let serviceNames = Object.keys(this.props.content);
-    serviceNames.map((serviceName) => {
+    serviceNames.forEach((serviceName) => {
         tabs[serviceName] = this.renderCollections(this.props.content[serviceName]);
     });
     return tabs;
@@ -50,6 +50,6 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
     let tsList = timestamps.map(timestamp =>
       <li><Timestamp timestamp={timestamp} /></li>
     );
-    return <ul>{tsList}</ul>;
+    return <ul className="timestamps">{tsList}</ul>;
   }
 }

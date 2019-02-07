@@ -37,7 +37,7 @@ export default class DiagnosticsPage extends React.Component<void, DiagnosticsPa
       <div className="diagnostics-page">
         <Header />
         <div className="body">
-          <h1>Diagnostics</h1>
+          <h2>Diagnostics</h2>
           <DiagnosticsTabContainer
             store={this.context.editorStore}
             csrfToken={this.context.csrfToken}

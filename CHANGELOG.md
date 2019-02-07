@@ -1,8 +1,8 @@
 ## Changelog
 
-### v0.1.00
+### v0.1.0
 #### Added
-- Created a Diagnostics page so that admins can view the output of scripts.
+- Created a Diagnostics page so that admins can view the output of log scripts which the server has been running behind the scenes.
 
 ### v0.0.99
 #### Added

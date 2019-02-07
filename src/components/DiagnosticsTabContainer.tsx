@@ -8,7 +8,7 @@ import DiagnosticsServiceType from "./DiagnosticsServiceType";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
-import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
+import { TabContainer, TabContainerProps } from "./TabContainer";
 
 export interface DiagnosticsTabContainerDispatchProps {
   fetchDiagnostics: () => Promise<any>;
@@ -57,8 +57,8 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
     let tabs = {};
     let serviceTypes = ["coverage_provider", "monitor", "script", "other"];
 
-    serviceTypes.map((serviceType) => {
-      let component = <div></div>;
+    serviceTypes.forEach((serviceType) => {
+      let component = null;
       if (this.props.fetchError) {
         component = <ErrorMessage error={this.props.fetchError} />;
       }
