@@ -16,21 +16,21 @@ export default class ToolTip extends React.Component <ToolTipProps, ToolTipState
     this.state = {
       show: false
     };
-    this.show = this.show.bind(this);
-    this.hide = this.hide.bind(this);
+    this.showToolTip = this.showToolTip.bind(this);
+    this.hideToolTip = this.hideToolTip.bind(this);
   }
 
-  show() {
+  showToolTip() {
     this.setState({ show: true });
   }
 
-  hide() {
+  hideToolTip() {
     this.setState({ show: false });
   }
 
   render(): JSX.Element {
     return(
-      <section className="tool-tip-container" onMouseEnter={this.show} onMouseLeave={this.hide}>
+      <section className="tool-tip-container" onMouseEnter={this.showToolTip} onMouseLeave={this.hideToolTip}>
         { this.props.trigger }
         <span className={`tool-tip ${this.state.show ? "" : "hide"}`}>{this.props.text}</span>
       </section>

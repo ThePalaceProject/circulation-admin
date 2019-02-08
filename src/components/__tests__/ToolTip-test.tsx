@@ -34,31 +34,31 @@ describe("ToolTip", () => {
   });
 
   it("shows the tooltip on mouseEnter", () => {
-    let spyShow = spy(wrapper.instance(), "show");
-    wrapper.setProps({ show: spyShow });
+    let spyShowToolTip = spy(wrapper.instance(), "showToolTip");
+    wrapper.setProps({ show: spyShowToolTip });
 
     wrapper.simulate("mouseEnter");
 
-    expect(spyShow.callCount).to.equal(1);
+    expect(spyShowToolTip.callCount).to.equal(1);
     expect(wrapper.find(".tool-tip").hasClass("hide")).to.be.false;
     expect(wrapper.state()["show"]).to.be.true;
 
-    spyShow.restore();
+    spyShowToolTip.restore();
   });
 
   it("hides the tooltip on mouseLeave", () => {
     wrapper.setState({ show: true });
     expect(wrapper.find(".tool-tip").hasClass("hide")).to.be.false;
 
-    let spyHide = spy(wrapper.instance(), "hide");
-    wrapper.setProps({ hide: spyHide });
+    let spyHideToolTip = spy(wrapper.instance(), "hideToolTip");
+    wrapper.setProps({ hide: spyHideToolTip });
 
     wrapper.simulate("mouseLeave");
 
-    expect(spyHide.callCount).to.equal(1);
+    expect(spyHideToolTip.callCount).to.equal(1);
     expect(wrapper.find(".tool-tip").hasClass("hide")).to.be.true;
     expect(wrapper.state()["show"]).to.be.false;
 
-    spyHide.restore();
+    spyHideToolTip.restore();
   });
 });

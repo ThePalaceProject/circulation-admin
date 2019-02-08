@@ -106,22 +106,23 @@ describe("DiagnosticsServiceTabs", () => {
     });
   });
 
-  it("switches tabs", () => {
-    wrapper = shallow(
-      <DiagnosticsServiceTabs goToTab={goToTab} content={content} tab="test_service_1" />
-    );
+  describe("behavior", () => {
+    it("switches tabs", () => {
+      wrapper = shallow(
+        <DiagnosticsServiceTabs goToTab={goToTab} content={content} tab="test_service_1" />
+      );
 
-    let spyHandleSelect = spy(wrapper.instance(), "handleSelect");
-    wrapper.setProps({ handleSelect: spyHandleSelect });
+      let spyHandleSelect = spy(wrapper.instance(), "handleSelect");
+      wrapper.setProps({ handleSelect: spyHandleSelect });
 
-    let tab2 = wrapper.find(".nav-tabs").find("li").at(1);
-    tab2.find("a").simulate("click", { currentTarget: { dataset: { tabkey: "test_service_2" } } });
+      let tab2 = wrapper.find(".nav-tabs").find("li").at(1);
+      tab2.find("a").simulate("click", { currentTarget: { dataset: { tabkey: "test_service_2" } } });
 
-    expect(spyHandleSelect.callCount).to.equal(1);
-    expect(goToTab.callCount).to.equal(1);
-    expect(goToTab.args[0][0]).to.equal("test_service_2");
+      expect(spyHandleSelect.callCount).to.equal(1);
+      expect(goToTab.callCount).to.equal(1);
+      expect(goToTab.args[0][0]).to.equal("test_service_2");
 
-    spyHandleSelect.restore();
+      spyHandleSelect.restore();
+    });
   });
-
 });
