@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 
 import DiagnosticsPage from "../DiagnosticsPage";
 import DiagnosticsTabContainer from "../DiagnosticsTabContainer";
