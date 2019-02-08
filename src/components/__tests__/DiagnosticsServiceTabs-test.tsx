@@ -7,6 +7,7 @@ import { stub, spy } from "sinon";
 import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
 import Collapsible from "../Collapsible";
 import Timestamp from "../Timestamp";
+import ToolTip from "../ToolTip";
 
 describe("DiagnosticsServiceTabs", () => {
   let wrapper;
@@ -55,12 +56,17 @@ describe("DiagnosticsServiceTabs", () => {
       let badge = tabWithoutException.find(".badge");
       expect(badge.length).to.equal(1);
       expect(badge.text()).to.equal("1");
+      let toolTip = badge.parent().find(".tool-tip");
+      expect(toolTip.length).to.equal(1);
+      expect(toolTip.text()).to.equal("Total number of timestamps for this service");
 
       // Because test_service_2 contains a timestamp with an exception, it should display a warning.
       let tabWithException = wrapper.find(".nav-tabs").find("a").at(1);
       badge = tabWithException.find(".badge.danger");
       expect(badge.length).to.equal(1);
       expect(badge.text()).to.equal("!");
+      toolTip = badge.parent().find(".tool-tip");
+      expect(toolTip.length).to.equal(0);
     });
 
     it("defaults to showing the first tab", () => {

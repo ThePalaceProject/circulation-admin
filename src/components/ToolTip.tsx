@@ -29,7 +29,6 @@ export default class ToolTip extends React.Component <ToolTipProps, ToolTipState
   }
 
   render(): JSX.Element {
-    console.log(this.state);
     return(
       <section className="tool-tip-container" onMouseEnter={this.show} onMouseLeave={this.hide}>
         { this.props.trigger }
