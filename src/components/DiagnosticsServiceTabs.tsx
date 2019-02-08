@@ -4,6 +4,7 @@ import { DiagnosticsServiceData, DiagnosticsCollectionData, TimestampData } from
 import { TabContainer, TabContainerProps } from "./TabContainer";
 import Collapsible from "./Collapsible";
 import Timestamp from "./Timestamp";
+import ToolTip from "./ToolTip";
 
 export interface DiagnosticsServiceTabsProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
@@ -31,7 +32,10 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
     let timestampArray = [].concat(...Object.values(this.props.content[name]));
     let hasException = timestampArray.some((ts) => ts.exception);
     // If any of the timestamps has an exception, display a warning.  Otherwise, display the number of timestamps.
-    let badge = hasException ? <span className="badge danger">!</span> : <span className="badge">{timestampArray.length}</span>;
+    let badge = hasException ?
+        <span className="badge danger">!</span> :
+        <ToolTip trigger={<span className="badge">{timestampArray.length}</span>} text="Total number of timestamps for this service"/>;
+
     return <span>{super.tabDisplayName(name)}{badge}</span>;
   }
 
