@@ -3,28 +3,26 @@
     margin: 20px 15px;
   }
   // Service Type tabs
-  .body > .tab-container > .nav-tabs {
-    border-bottom: 1px solid $dark;
-    li {
-      &.active {
-        a,
-        a:hover,
-        a:focus,
-        a:visited {
-          border: 1px solid $dark;
-          border-bottom-color: transparent;
+  .service-types {
+    .nav-tabs {
+      border-bottom: 1px solid $dark;
+      margin-bottom: 2em;
+      li {
+        &.active {
+          a,
+          a:hover,
+          a:focus,
+          a:visited {
+            border: 1px solid $dark;
+            border-bottom-color: transparent;
+          }
         }
       }
     }
   }
-  .body > .tab-container > .tab-content {
-    padding: 2em 0;
-  }
-
-  // Service Tabs
 
   // List of services
-  .config .nav-tabs {
+  .services .nav-tabs {
     border-bottom: 1px solid $medium-gray;
     border-right: 1px solid $medium-gray;
     border-top: none;
@@ -43,99 +41,57 @@
   }
 
   // List of collections
-  .config .tab-content {
+  .services .tab-content {
     padding: 0;
     min-width: 70%;
     height: 100%;
+    // Individual collection
     .collapsible {
       margin-bottom: .5em;
-      border-color: $medium-gray;
+      &:not(.panel-success){
+        &:not(.panel-danger) {
+          border-color: $medium-gray;
+        }
+      }
       .panel-title {
         padding: 10px 15px;
       }
       .timestamps {
         padding: 0;
-        // Individual timestamp
-        & > li {
+        .timestamp-holder {
           padding: 0;
           min-width: 100%;
           border: none;
-          .collapsible.panel {
-            width: 100%;
-            li {
-              border: none;
-            }
-          }
         }
       }
     }
   }
-}
 
-
-.timestamps .collapsible.panel.panel-success {
-  .panel-title {
-    background: $green-tint;
+  // Individual timestamp
+  .timestamp-holder .collapsible.panel {
+    width: 100%;
+    li {
+      border: none;
+    }
+    // Timestamp info inside panel body
+    .exception {
+      border-color: $red-tint;
+      background: $red-error;
+      box-shadow: inset 0 .5px .5px $red-tint;
+    }
+    pre {
+      border: none;
+      background: inherit;
+    }
   }
-  border-color: $green-tint;
-}
 
-.timestamps .collapsible.panel.panel-danger {
-  .panel-title {
-    background: $red-tint;
-  }
-  border-color: $red-tint;
-}
-
-.diagnostics-page .badge {
-  display: block;
-  float: right;
-  background: $green-bright;
-  &.danger {
-    background: $red;
-  }
-}
-
-.exception {
-  border-color: $red-tint;
-  background: $red-error;
-  box-shadow: inset 0 .5px .5px $red-tint;
-}
-
-pre {
-  border: none;
-  background: inherit;
-}
-
-.tool-tip-container {
-  display: inline-block;
-  float: right;
-  position: relative;
-  .tool-tip {
+  .badge {
     display: block;
-    position: absolute;
-    height: 35px;
-    font-size: 14px;
-    top: -10px;
-    left: 150%;
-    z-index: 1;
-    width: 300px;
-    padding: 8px 0;
-    text-align: center;
-    vertical-align: middle;
-    border-radius: 4px;
-    color: white;
-    background: $dark-gray;
-    opacity: .75;
+    float: right;
+    background: $green-bright;
+    &.danger {
+      background: $red;
+    }
   }
-  .tool-tip::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 100%;
-    margin-top: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent $dark-gray transparent transparent;
-  }
+
 }

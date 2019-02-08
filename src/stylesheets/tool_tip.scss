@@ -1,0 +1,32 @@
+.tool-tip-container {
+  display: inline-block;
+  float: right;
+  position: relative;
+  .tool-tip {
+    display: block;
+    position: absolute;
+    height: 35px;
+    font-size: 14px;
+    top: -10px;
+    left: 150%;
+    z-index: 1;
+    width: 300px;
+    padding: 8px 0;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 4px;
+    color: white;
+    background: $dark-gray;
+    opacity: .75;
+  }
+  .tool-tip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent $dark-gray transparent transparent;
+  }
+}
