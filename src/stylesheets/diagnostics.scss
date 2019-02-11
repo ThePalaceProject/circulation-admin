@@ -30,6 +30,11 @@
       border-color: $medium-gray;
       a {
         border: none;
+        .service-name {
+          display: inline-block;
+          max-width: 85%;
+          margin: 0;
+        }
       }
       &.active {
         border-bottom: 1px solid $medium-gray;
@@ -70,6 +75,7 @@
   // Individual timestamp
   .timestamp-holder .collapsible.panel {
     width: 100%;
+    pointer-events: none;
     li {
       border: none;
     }

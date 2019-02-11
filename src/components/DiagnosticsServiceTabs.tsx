@@ -36,7 +36,7 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
         <span className="badge danger">!</span> :
         <ToolTip trigger={<span className="badge">{timestampArray.length}</span>} text="Total number of timestamps for this service"/>;
 
-    return <span>{super.tabDisplayName(name)}{badge}</span>;
+    return <section><span className="service-name">{super.tabDisplayName(name)}</span>{badge}</section>;
   }
 
   renderCollections(collections: Array<DiagnosticsCollectionData>) {

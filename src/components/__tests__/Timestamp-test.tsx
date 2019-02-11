@@ -26,6 +26,7 @@ describe("Timestamp", () => {
       let collapsible = wrapper.find(".collapsible");
       expect(collapsible.length).to.equal(1);
       expect(collapsible.prop("bsStyle")).to.equal("success");
+      expect(collapsible.prop("collapsible")).to.be.false;
     });
 
     it("renders the start time", () => {
