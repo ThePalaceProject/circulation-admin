@@ -121,7 +121,6 @@ describe("Header", () => {
       // no selected library
       wrapper.setContext({ admin: libraryManager });
       links = wrapper.find(Link);
-
       dashboardLink = links.at(0);
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
 
@@ -172,8 +171,32 @@ describe("Header", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
         let links = wrapper.find(Link);
         let patronManagerLink = links.at(3);
-        expect(links.length).to.equal(5);
+        expect(links.length).to.equal(6);
         expect(patronManagerLink.children().text()).to.equal("Patrons");
+      });
+    });
+    describe("diagnostics display", () => {
+      it("does not show Diagnostics link for librarian", () => {
+        wrapper.setContext({ library: () => "nypl", admin: librarian });
+        let links = wrapper.find(Link);
+        expect(links.length).to.equal(2);
+        links.forEach(link => {
+          expect(link.children().text()).to.not.equal("Diagnostics");
+        });
+      });
+      it("does not show Diagnostics link for library manager", () => {
+        wrapper.setContext({ library: () => "nypl", admin: libraryManager });
+        let links = wrapper.find(Link);
+        expect(links.length).to.equal(5);
+        links.forEach(link => {
+          expect(link.children().text()).to.not.equal("Diagnostics");
+        });
+      });
+      it("shows Diagnostics link for system admin", () => {
+        wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
+        let links = wrapper.find(Link);
+        expect(links.length).to.equal(6);
+        expect(links.at(4).children().text()).to.equal("Diagnostics");
       });
     });
   });

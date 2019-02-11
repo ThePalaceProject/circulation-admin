@@ -4,9 +4,10 @@ import { Navigate, PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
-  store: Store<State>;
-  csrfToken: string;
+  store?: Store<State>;
+  csrfToken?: string;
   tab: string;
+  class?: string;
 }
 
 export interface TabContainerContext {
@@ -37,8 +38,9 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
   };
 
   render(): JSX.Element {
+    let className = this.props.class ? `tab-container ${this.props.class}` : "tab-container";
     return (
-      <div className="tab-container">
+      <div className={className}>
         <ul className="nav nav-tabs">
           { Object.keys(this.tabs()).map(name =>
             <li key={name} role="presentation" className={this.tabClass(name)}>

@@ -64,7 +64,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       this.context.router.getCurrentLocation().pathname) || "";
     let isLibraryManager =
       this.context.library && this.context.admin.isLibraryManager(this.context.library());
-
+    let isSystemAdmin = this.context.admin.isSystemAdmin();
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
@@ -156,6 +156,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 <Link to="/admin/web/dashboard"
                   className={currentPathname.indexOf("/admin/web/dashboard") !== -1 ? "active-link" : ""}
                 >Dashboard</Link>
+              </li>
+            }
+            { isSystemAdmin &&
+              <li className="header-link">
+                <Link to={"/admin/web/diagnostics"}
+                className={currentPathname.indexOf("/admin/web/diagnostics") !== -1 ? "active-link" : ""}
+                >Diagnostics</Link>
               </li>
             }
             { this.context.admin.isLibraryManagerOfSomeLibrary() &&

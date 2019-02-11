@@ -5,6 +5,7 @@ export interface CollapsibleProps {
   title: string;
   text?: string;
   type?: string;
+  style?: string;
   body?: JSX.Element;
   openByDefault?: boolean;
   collapsible?: boolean;
@@ -63,10 +64,12 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
 
   render() {
     const className = this.props.type === "instruction" ? "instruction" : "";
+    const style = this.props.style ? this.props.style : "";
     const staticPanel = !this.props.collapsible ? "staticPanel" : "";
     return (
       <Panel
         className={`collapsible ${className} ${staticPanel}`}
+        bsStyle={style}
         collapsible={this.props.collapsible}
         header={this.renderHeader()}
         expanded={this.state.open}

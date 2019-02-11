@@ -1,0 +1,98 @@
+.diagnostics-page {
+  h2  {
+    margin: 20px 15px;
+  }
+  // Service Type tabs
+  .service-types {
+    .nav-tabs {
+      border-bottom: 1px solid $dark;
+      margin-bottom: 2em;
+      li {
+        &.active {
+          a,
+          a:hover,
+          a:focus,
+          a:visited {
+            border: 1px solid $dark;
+            border-bottom-color: transparent;
+          }
+        }
+      }
+    }
+  }
+
+  // List of services
+  .services .nav-tabs {
+    border-bottom: 1px solid $medium-gray;
+    border-right: 1px solid $medium-gray;
+    border-top: none;
+    li {
+      border-color: $medium-gray;
+      a {
+        border: none;
+      }
+      &.active {
+        border-bottom: 1px solid $medium-gray;
+        a {
+          border: 1px solid $dark;
+        }
+      }
+    }
+  }
+
+  // List of collections
+  .services .tab-content {
+    padding: 0;
+    min-width: 70%;
+    height: 100%;
+    // Individual collection
+    .collapsible {
+      margin-bottom: .5em;
+      &:not(.panel-success){
+        &:not(.panel-danger) {
+          border-color: $medium-gray;
+        }
+      }
+      .panel-title {
+        padding: 10px 15px;
+      }
+      .timestamps {
+        padding: 0;
+        .timestamp-holder {
+          padding: 0;
+          min-width: 100%;
+          border: none;
+        }
+      }
+    }
+  }
+
+  // Individual timestamp
+  .timestamp-holder .collapsible.panel {
+    width: 100%;
+    li {
+      border: none;
+    }
+    // Timestamp info inside panel body
+    .exception {
+      border-color: $red-tint;
+      background: $red-error;
+      box-shadow: inset 0 .5px .5px $red-tint;
+    }
+    pre {
+      border: none;
+      background: inherit;
+    }
+  }
+
+  .badge {
+    display: block;
+    float: right;
+    margin-top: 2px;
+    background: $green-bright;
+    &.danger {
+      background: $red;
+    }
+  }
+
+}

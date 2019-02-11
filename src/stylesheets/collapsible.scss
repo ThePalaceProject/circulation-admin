@@ -30,6 +30,18 @@
       }
     }
   }
+  &.panel-success {
+    border-color: $green-tint;
+    .panel-title {
+      background: $green-tint;
+    }
+  }
+  &.panel-danger {
+    border-color: $red-tint;
+    .panel-title {
+      background: $red-tint;
+    }
+  }
   &.staticPanel {
     .panel-title {
       &:hover {

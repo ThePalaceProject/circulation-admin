@@ -7,6 +7,7 @@ import bookCover from "./bookCover";
 import customListsForBook from "./customListsForBook";
 import circulationEvents, { CirculationEventsState } from "./circulationEvents";
 import stats, { StatsState } from "./stats";
+import diagnostics from "./diagnostics";
 import libraries from "./libraries";
 import collections from "./collections";
 import adminAuthServices from "./adminAuthServices";
@@ -48,7 +49,7 @@ import {
   AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
   CatalogServicesData, DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
   LanesData, RolesData, MediaData, LanguagesData,
-  RightsStatusData, PatronData
+  RightsStatusData, PatronData, DiagnosticsData
 } from "../interfaces";
 
 
@@ -61,6 +62,7 @@ export interface State {
   customListsForBook: FetchEditState<CustomListsData>;
   circulationEvents: CirculationEventsState;
   stats: StatsState;
+  diagnostics: FetchEditState<DiagnosticsData>;
   libraries: FetchEditState<LibrariesData>;
   collections: FetchEditState<CollectionsData>;
   adminAuthServices: FetchEditState<AdminAuthServicesData>;
@@ -104,6 +106,7 @@ export default combineReducers<State>({
   customListsForBook,
   circulationEvents,
   stats,
+  diagnostics,
   libraries,
   collections,
   adminAuthServices,

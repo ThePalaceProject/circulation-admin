@@ -493,6 +493,29 @@ describe("actions", () => {
     });
   });
 
+  describe("fetchDiagnostics", () => {
+    it("dispatches request, load, and success", async () => {
+      const dispatch = stub();
+      const diagnosticsData = "diagnostics";
+      fetcher.testData = {
+        ok: true,
+        status: 200,
+        json: () => new Promise<any>((resolve, reject) => {
+          resolve(diagnosticsData);
+        })
+      };
+      fetcher.resolve = true;
+
+      const data = await actions.fetchDiagnostics()(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.DIAGNOSTICS}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[0][0].url).to.equal("/admin/diagnostics");
+      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.DIAGNOSTICS}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.DIAGNOSTICS}_${ActionCreator.LOAD}`);
+      expect(data).to.deep.equal(diagnosticsData);
+    });
+  });
+
   describe("fetchLibraries", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();
