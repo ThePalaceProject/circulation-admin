@@ -16,12 +16,8 @@ export class MetadataServices extends EditableConfigList<MetadataServicesData, M
   labelKey = "protocol";
 
   label(item): string {
-    for (const protocol of this.props.data.protocols) {
-      if (protocol.name === item.protocol) {
-        return protocol.label;
-      }
-    }
-    return item.protocol;
+    let label = item.name ? item.name : item.protocol;
+    return label;
   }
 }
 
@@ -30,7 +26,7 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
-  // fetchError = an error involving loading the list of metadata services; formError = an error upon submission of the 
+  // fetchError = an error involving loading the list of metadata services; formError = an error upon submission of the
   // create/edit form.
   return {
     data: data,
