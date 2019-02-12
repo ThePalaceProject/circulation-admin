@@ -102,13 +102,14 @@ describe("SelfTests", () => {
     wrapper = shallow(
       <SelfTests
         item={collections[0]}
+        type="collection"
       />
     );
   });
 
   it("should render the SelfTests component with empty self_test_results", () => {
     wrapper = shallow(
-      <SelfTests item={{} as any} />
+      <SelfTests item={{} as any} type="collection" />
     );
     expect(wrapper.hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
@@ -147,7 +148,7 @@ describe("SelfTests", () => {
     beforeEach(() => {
       wrapper = shallow(
         <SelfTests
-          item={collections[1]}
+          item={collections[1]} type="collection"
         />
       );
     });
@@ -155,7 +156,7 @@ describe("SelfTests", () => {
     it("should display the base error message when attempting to run self tests", () => {
       wrapper = shallow(
         <SelfTests
-          item={collections[2]}
+          item={collections[2]} type="collection"
         />
       );
 
@@ -204,6 +205,7 @@ describe("SelfTests", () => {
       wrapper = mount(
         <SelfTests
           item={collections[0]}
+          type="collection"
           runSelfTests={runSelfTests}
           getSelfTests={getSelfTests}
         />
@@ -231,6 +233,7 @@ describe("SelfTests", () => {
       wrapper = mount(
         <SelfTests
           item={collections[0]}
+          type="collection"
           runSelfTests={runSelfTests}
           getSelfTests={getSelfTests}
         />

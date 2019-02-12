@@ -47,6 +47,7 @@ export interface AdditionalContentProps<T, U> {
   store?: Store<State>;
   csrfToken?: string;
   item?: U;
+  type?: string;
 }
 
 /** Shows a list of configuration services of a particular type and allows creating a new
@@ -131,6 +132,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                     {
                       AdditionalContent &&
                       <AdditionalContent
+                        type={this.itemTypeName}
                         item={item}
                         store={this.props.store}
                         csrfToken={this.props.csrfToken}

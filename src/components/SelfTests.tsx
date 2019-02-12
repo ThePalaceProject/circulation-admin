@@ -26,6 +26,7 @@ export interface SelfTestsDispatchProps {
 
 export interface SelfTestsOwnProps {
   store?: Store<State>;
+  type: string;
 }
 
 export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsStateProps, SelfTestsDispatchProps, SelfTestsOwnProps {}
@@ -188,7 +189,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   const integrationId = ownProps.item.id;
-  const url = `/admin/collection_self_tests/${integrationId}`;
+  const url = `/admin/${ownProps.type.replace(" ", "_")}_self_tests/${integrationId}`;
 
   return {
     getSelfTests: () => dispatch(actions.getSelfTests(url)),
