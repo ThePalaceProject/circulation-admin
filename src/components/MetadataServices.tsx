@@ -16,7 +16,7 @@ export class MetadataServices extends EditableConfigList<MetadataServicesData, M
   labelKey = "protocol";
 
   label(item): string {
-    let label = item.name ? item.name : item.protocol;
+    let label = item.name ? `${item.name}: ${item.protocol}` : item.protocol;
     return label;
   }
 }
