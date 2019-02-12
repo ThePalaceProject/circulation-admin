@@ -31,15 +31,17 @@
     }
   }
   &.panel-success {
-    border-color: $green-tint;
+    border-color: transparentize($green-bright, .4);
     .panel-title {
-      background: $green-tint;
+      background-color: transparentize($green-bright, .4);
+      color: #000;
     }
   }
   &.panel-danger {
     border-color: $red-tint;
     .panel-title {
-      background: $red-tint;
+      background-color: $red-tint;
+      color: #000;
     }
   }
   &.staticPanel {
