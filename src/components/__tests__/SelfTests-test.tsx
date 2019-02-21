@@ -10,7 +10,6 @@ import {
   XIcon,
 } from "@nypl/dgx-svg-icons";
 
-
 // SelfTests can take more than just a collection (an integration can have
 // self tests), but just testing collection data right now.
 const collections = [
@@ -141,6 +140,31 @@ describe("SelfTests", () => {
       expect(selfTestResults.hasClass("success")).to.equal(true);
       expect(selfTestResults.find("h4").text()).to.equal("Initial setup.");
       expect(selfTestResults.find("p").text()).to.equal("success: true");
+    });
+
+    it("should display a numbered list of results", () => {
+
+      const service = {
+        protocol: "protocol",
+        self_test_results: {
+          duration: 0,
+          start: "",
+          end: "",
+          results: [{
+            ...collections[0].self_test_results.results[0],
+            ...{ result: ["a", "b", "c"] }
+          }]
+        }
+      };
+
+      wrapper = shallow(
+        <SelfTests item={service} type="search" />
+      );
+
+      let list = wrapper.find("ol");
+      expect(list.length).to.equal(1);
+      expect(list.hasClass("result-description")).to.be.true;
+      expect(list.find("li").length).to.equal(3);
     });
   });
 

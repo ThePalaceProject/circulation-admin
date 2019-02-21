@@ -10,8 +10,8 @@ const loadCB = (state, action) => {
   }
 
   data.collections.forEach(collection => {
-    if (collection.id === action.data.collection.id) {
-      collection.self_test_results = action.data.collection.self_test_results;
+    if (collection.id === action.data.self_test_results.id) {
+      collection.self_test_results = action.data.self_test_results.self_test_results;
     }
   });
 

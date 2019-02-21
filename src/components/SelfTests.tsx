@@ -48,6 +48,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     };
     this.toggleView = this.toggleView.bind(this);
     this.runSelfTests = this.runSelfTests.bind(this);
+    this.renderResults = this.renderResults.bind(this);
   }
 
   render() {
@@ -73,6 +74,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       results = integration.self_test_results.results || [];
       duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
     }
+
     const expandResultClass = expand ? "active" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
     const findFailures = (result) => !result.success;
@@ -120,7 +122,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
                         <h4>{result.name}</h4>
                         {
                           result.result ?
-                            <p className="result-description">result: {result.result}</p>
+                            this.renderResults(result.result)
                             : null
                         }
                         <p className="success-description">
@@ -142,6 +144,16 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         </div>
       </div>
     );
+  }
+
+  renderResults(result) {
+    if (Array.isArray(result)) {
+      let resultList = result.map(item => <li>{item}</li>);
+      return <ol className="result-description">{resultList}</ol>;
+    }
+    else {
+      return <p className="result-description">result: {result.result}</p>;
+    }
   }
 
   toggleView() {

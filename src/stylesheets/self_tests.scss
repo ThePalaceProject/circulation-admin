@@ -45,12 +45,21 @@
             display: flex;
           }
 
+
           ul {
             width: 100%;
             padding-left: 0;
 
             li {
               display: block;
+            }
+          }
+
+          ol.result-description {
+            list-style-position: inside;
+            padding-left: 10px;
+            li {
+              display: list-item;
             }
           }
 
