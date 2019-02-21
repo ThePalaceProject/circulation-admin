@@ -1,7 +1,11 @@
 ## Changelog
 
+### v0.1.2
+#### Added
+- Added self-tests for the ElasticSearch integration.
+
 ### v0.1.1
-##### Updated
+#### Updated
 - Improved appearance and readability of Diagnostics page.
 
 ### v0.1.0
@@ -12,7 +16,7 @@
 #### Added
 - Made it possible to change the order of lanes (within the same parent lane) by dragging and dropping on the lanes page.
 
-###v0.0.98
+### v0.0.98
 #### Updated
 - Further clarified wording about resetting Adobe IDs.
 
