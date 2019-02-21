@@ -148,7 +148,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
 
   renderResults(result) {
     if (Array.isArray(result)) {
-      let resultList = result.map(item => <li>{item}</li>);
+      let resultList = result.map((item, idx) => <li key={idx}>{item}</li>);
       return <ol className="result-description">{resultList}</ol>;
     }
     else {
