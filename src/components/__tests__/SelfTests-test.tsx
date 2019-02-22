@@ -112,6 +112,7 @@ describe("SelfTests", () => {
     );
     expect(wrapper.hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
+    expect(wrapper.find("p").text()).to.equal("No self test results found.");
   });
 
   it("should render the SelfTests component with results", () => {

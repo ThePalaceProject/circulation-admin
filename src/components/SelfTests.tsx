@@ -81,7 +81,8 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
     const isFetching = !!(this.props.isFetching && this.state.runTests);
-    const testDescription = integration.self_test_results ?
+
+    const testDescription = integration.self_test_results && integration.self_test_results.start ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
     const failedSelfTest = selfTestException ? selfTestException : "";
