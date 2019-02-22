@@ -6,7 +6,7 @@ import ActionCreator from "../actions";
 import { ServiceData, SelfTestsData } from "../interfaces";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
-
+import Collapsible from "./Collapsible";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 
 import {
@@ -123,7 +123,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
                         <h4>{result.name}</h4>
                         {
                           result.result ?
-                            this.renderResults(result.result)
+                            this.renderResults(result.result, colorResultClass)
                             : null
                         }
                         <p className="success-description">
@@ -147,13 +147,21 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     );
   }
 
-  renderResults(result) {
+  renderResults(result, colorResultClass) {
+    let body;
     if (Array.isArray(result)) {
       let resultList = result.map((item, idx) => <li key={idx}>{item}</li>);
-      return <ol className="result-description">{resultList}</ol>;
+      body = <ol className="result-description">{resultList}</ol>;
     } else {
-      return <p className="result-description">result: {result.result}</p>;
+      body = <p className="result-description">{result}</p>;
     }
+    return (
+      <Collapsible
+        title={"Results"}
+        body={body}
+        style={colorResultClass}
+      />
+    );
   }
 
   toggleView() {

@@ -94,6 +94,19 @@ const collections = [
   },
 ];
 
+const service = {
+  protocol: "protocol",
+  self_test_results: {
+    duration: 0,
+    start: "",
+    end: "",
+    results: [{
+      ...collections[0].self_test_results.results[0],
+      ...{ result: ["a", "b", "c"] }
+    }]
+  }
+};
+
 describe("SelfTests", () => {
   let wrapper;
 
@@ -138,27 +151,28 @@ describe("SelfTests", () => {
       const selfTestResults = list.find("li");
 
       expect(selfTestResults.length).to.equal(1);
-      expect(selfTestResults.hasClass("success")).to.equal(true);
+      expect(selfTestResults.hasClass("success")).to.be.true;
       expect(selfTestResults.find("h4").text()).to.equal("Initial setup.");
       expect(selfTestResults.find("p").text()).to.equal("success: true");
     });
 
+    it("should display a collapsible if there is result information", () => {
+      let collapsible = wrapper.find(".collapsible");
+      expect(collapsible.length).to.equal(0);
+
+      wrapper = mount(
+        <SelfTests item={service} type="search" />
+      );
+
+      collapsible = wrapper.find(".collapsible");
+      expect(collapsible.length).to.equal(1);
+      expect(collapsible.hasClass("panel-success")).to.be.true;
+      expect(collapsible.find(".panel-title").text()).to.equal("Results");
+    });
+
     it("should display a numbered list of results", () => {
 
-      const service = {
-        protocol: "protocol",
-        self_test_results: {
-          duration: 0,
-          start: "",
-          end: "",
-          results: [{
-            ...collections[0].self_test_results.results[0],
-            ...{ result: ["a", "b", "c"] }
-          }]
-        }
-      };
-
-      wrapper = shallow(
+      wrapper = mount(
         <SelfTests item={service} type="search" />
       );
 

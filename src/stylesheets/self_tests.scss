@@ -11,6 +11,17 @@
         flex-grow: 1;
         width: 100%;
 
+        .collapsible {
+          .glyphicon {
+            color: $white;
+          }
+          &:hover {
+            .glyphicon {
+              color: $dark-gray;
+            }
+          }
+        }
+
         svg {
           height: 30px;
           width: 30px;
