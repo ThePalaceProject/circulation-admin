@@ -150,8 +150,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     if (Array.isArray(result)) {
       let resultList = result.map((item, idx) => <li key={idx}>{item}</li>);
       return <ol className="result-description">{resultList}</ol>;
-    }
-    else {
+    } else {
       return <p className="result-description">result: {result.result}</p>;
     }
   }
