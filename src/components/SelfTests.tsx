@@ -155,11 +155,15 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     } else {
       body = <p className="result-description">{result}</p>;
     }
+
+    let title = result.length ? "Results" : "The test ran successfully, but no results were found";
+    let style = result.length ? colorResultClass : "warning";
     return (
       <Collapsible
-        title={"Results"}
+        title={title}
         body={body}
-        style={colorResultClass}
+        collapsible={!!result.length}
+        style={style}
       />
     );
   }

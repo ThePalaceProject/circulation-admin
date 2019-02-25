@@ -106,6 +106,18 @@ const service = {
     }]
   }
 };
+const serviceWithoutResults = {
+  protocol: "protocol",
+  self_test_results: {
+    duration: 0,
+    start: "",
+    end: "",
+    results: [{
+      ...collections[0].self_test_results.results[0],
+      ...{ result: [] }
+    }]
+  }
+};
 
 describe("SelfTests", () => {
   let wrapper;
@@ -168,6 +180,16 @@ describe("SelfTests", () => {
       expect(collapsible.length).to.equal(1);
       expect(collapsible.hasClass("panel-success")).to.be.true;
       expect(collapsible.find(".panel-title").text()).to.equal("Results");
+    });
+
+    it("should notify the user if no results were found", () => {
+      wrapper = mount(
+        <SelfTests item={serviceWithoutResults} type="search" />
+      );
+
+      let collapsible = wrapper.find(".collapsible");
+      expect(collapsible.hasClass("panel-warning")).to.be.true;
+      expect(collapsible.find(".panel-title").text()).to.equal("The test ran successfully, but no results were found");
     });
 
     it("should display a numbered list of results", () => {

@@ -44,6 +44,12 @@
       color: #000;
     }
   }
+  &.panel-warning {
+    .panel-title {
+      background-color: #FAEBCC;
+      color: #000;
+    }
+  }
   &.staticPanel {
     .panel-title {
       &:hover {
