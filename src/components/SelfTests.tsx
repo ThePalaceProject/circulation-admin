@@ -6,7 +6,7 @@ import ActionCreator from "../actions";
 import { ServiceData, SelfTestsData } from "../interfaces";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
-import Collapsible from "./Collapsible";
+import SelfTestResult from "./SelfTestResult";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 
 import {
@@ -48,7 +48,6 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     };
     this.toggleView = this.toggleView.bind(this);
     this.runSelfTests = this.runSelfTests.bind(this);
-    this.renderResults = this.renderResults.bind(this);
   }
 
   render() {
@@ -85,7 +84,18 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const testDescription = integration.self_test_results && integration.self_test_results.start ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
+
     const failedSelfTest = selfTestException ? selfTestException : "";
+
+    const button =  (<button
+                      onClick={(e) => this.runSelfTests(e)}
+                      className="btn btn-default runSelfTests"
+                      disabled={this.props.isFetching}
+                    >
+                      Run tests
+                    </button>);
+
+    let resultList = integration.self_test_results ? results.map(result => <SelfTestResult result={result} isFetching={isFetching} />) : null;
 
     return (
       <div className="integration-selftests">
@@ -99,72 +109,16 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
           {isFetching &&
             <span>Running new self tests</span>
           }
-          <button
-            onClick={(e) => this.runSelfTests(e)}
-            className="btn btn-default runSelfTests"
-            disabled={this.props.isFetching}
-          >
-            Run tests
-          </button>
-
+          { button }
           {
             this.state.error &&
               <ErrorMessage error={this.state.error} />
           }
-
           {
-            integration.self_test_results &&
-              <ul>
-                {
-                  results.map(result => {
-                    const colorResultClass = result.success ? "success" : "failure";
-                    return (
-                      <li className={isFetching ? "loading-self-test" : colorResultClass} key={result.name}>
-                        <h4>{result.name}</h4>
-                        {
-                          result.result ?
-                            this.renderResults(result.result, colorResultClass)
-                            : null
-                        }
-                        <p className="success-description">
-                          success: {`${result.success}`}
-                        </p>
-                        {
-                          !result.success && (
-                            <p className="exception-description">
-                              exception: {result.exception.message}
-                            </p>
-                          )
-                        }
-                      </li>
-                    );
-                  })
-                }
-              </ul>
+            resultList && <ul>{resultList}</ul>
           }
         </div>
       </div>
-    );
-  }
-
-  renderResults(result, colorResultClass) {
-    let body;
-    if (Array.isArray(result)) {
-      let resultList = result.map((item, idx) => <li key={idx}>{item}</li>);
-      body = <ol className="result-description">{resultList}</ol>;
-    } else {
-      body = <p className="result-description">{result}</p>;
-    }
-
-    let title = result.length ? "Results" : "The test ran successfully, but no results were found";
-    let style = result.length ? colorResultClass : "warning";
-    return (
-      <Collapsible
-        title={title}
-        body={body}
-        collapsible={!!result.length}
-        style={style}
-      />
     );
   }
 

@@ -94,36 +94,11 @@ const collections = [
   },
 ];
 
-const service = {
-  protocol: "protocol",
-  self_test_results: {
-    duration: 0,
-    start: "",
-    end: "",
-    results: [{
-      ...collections[0].self_test_results.results[0],
-      ...{ result: ["a", "b", "c"] }
-    }]
-  }
-};
-const serviceWithoutResults = {
-  protocol: "protocol",
-  self_test_results: {
-    duration: 0,
-    start: "",
-    end: "",
-    results: [{
-      ...collections[0].self_test_results.results[0],
-      ...{ result: [] }
-    }]
-  }
-};
-
 describe("SelfTests", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(
+    wrapper = mount(
       <SelfTests
         item={collections[0]}
         type="collection"
@@ -161,53 +136,16 @@ describe("SelfTests", () => {
     it("should display detail information for each self test result for the collection", () => {
       const list = wrapper.find("ul");
       const selfTestResults = list.find("li");
-
       expect(selfTestResults.length).to.equal(1);
       expect(selfTestResults.hasClass("success")).to.be.true;
       expect(selfTestResults.find("h4").text()).to.equal("Initial setup.");
       expect(selfTestResults.find("p").text()).to.equal("success: true");
     });
-
-    it("should display a collapsible if there is result information", () => {
-      let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.length).to.equal(0);
-
-      wrapper = mount(
-        <SelfTests item={service} type="search" />
-      );
-
-      collapsible = wrapper.find(".collapsible");
-      expect(collapsible.length).to.equal(1);
-      expect(collapsible.hasClass("panel-success")).to.be.true;
-      expect(collapsible.find(".panel-title").text()).to.equal("Results");
-    });
-
-    it("should notify the user if no results were found", () => {
-      wrapper = mount(
-        <SelfTests item={serviceWithoutResults} type="search" />
-      );
-
-      let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.hasClass("panel-warning")).to.be.true;
-      expect(collapsible.find(".panel-title").text()).to.equal("The test ran successfully, but no results were found");
-    });
-
-    it("should display a numbered list of results", () => {
-
-      wrapper = mount(
-        <SelfTests item={service} type="search" />
-      );
-
-      let list = wrapper.find("ol");
-      expect(list.length).to.equal(1);
-      expect(list.hasClass("result-description")).to.be.true;
-      expect(list.find("li").length).to.equal(3);
-    });
   });
 
   describe("Unsuccessful self tests", () => {
     beforeEach(() => {
-      wrapper = shallow(
+      wrapper = mount(
         <SelfTests
           item={collections[1]} type="collection"
         />
