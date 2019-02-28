@@ -7,6 +7,7 @@
 ### v0.1.1
 #### Updated
 - Improved appearance and readability of Diagnostics page.
+- Listed Metadata Services by individual name rather than by protocol.
 
 ### v0.1.0
 #### Added
