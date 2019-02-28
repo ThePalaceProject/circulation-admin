@@ -44,22 +44,24 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
   }
 
   renderResult(result, colorResultClass) {
-    let list = Array.isArray(result);
+    let isList = Array.isArray(result);
 
-    let content = list ?
+    let content = isList ?
       <ol>{result.map((item, idx) => <li key={idx}>{item}</li>)}</ol> :
       result;
 
     let body = <pre className="result-description">{content}</pre>;
 
-    // If the result is a list, or is more than one line long (in which case it's probably a stringified JSON object),
-    // display it in a collapsible panel.
-    let collapsible = (list || result.split("\n").length > 1);
-    return (collapsible && this.renderCollapsible(result, body, colorResultClass, list)) || body;
+    // If the result is a list, or is more than one line long, display it in a collapsible panel. (So far, the most likely
+    // way to have a multi-line result is if it's from a search service test that returns a prettified JSON object,
+    // but future tests might return normal strings which happen to be very long.)
+
+    let collapsible = (isList || result.split("\n").length > 1);
+    return (collapsible && this.renderCollapsible(result, body, colorResultClass, isList)) || body;
   }
 
-  renderCollapsible(result, body, colorResultClass, list) {
-    let title = list ? `Results (${result.length})` : "Results";
+  renderCollapsible(result, body, colorResultClass, isList) {
+    let title = isList ? `Results (${result.length})` : "Results";
 
     return <Collapsible
       title={title}
