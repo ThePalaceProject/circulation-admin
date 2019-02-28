@@ -167,8 +167,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   const integrationId = ownProps.item.id;
-  const url = `/admin/${ownProps.type.replace(" ", "_")}_self_tests/${integrationId}`;
-  debugger
+  const url = `/admin/${ownProps.type.replace(/ /g, "_")}_self_tests/${integrationId}`;
+
   return {
     getSelfTests: () => dispatch(actions.getSelfTests(url)),
     runSelfTests: () => dispatch(actions.runSelfTests(url))
