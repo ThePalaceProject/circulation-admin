@@ -11,6 +11,20 @@
         flex-grow: 1;
         width: 100%;
 
+        .collapsible {
+          .glyphicon {
+            color: $white;
+          }
+          &:hover {
+            .glyphicon {
+              color: $dark-gray;
+            }
+          }
+        }
+        pre {
+          white-space: pre-wrap;
+        }
+
         svg {
           height: 30px;
           width: 30px;
@@ -45,12 +59,21 @@
             display: flex;
           }
 
+
           ul {
             width: 100%;
             padding-left: 0;
 
             li {
               display: block;
+            }
+          }
+
+          ol {
+            list-style-position: inside;
+            padding-left: 10px;
+            li {
+              display: list-item;
             }
           }
 
@@ -89,5 +112,13 @@
       border: 0.0625rem $red-dark solid;
       color: #000;
     }
+  }
+
+  .warning {
+    display: block;
+    background: tint($yellow, 50%);
+    border: 1px solid $yellow;
+    padding: 7px 9px;
+    border-radius: 3px;
   }
 }

@@ -6,7 +6,7 @@ import ActionCreator from "../actions";
 import { ServiceData, SelfTestsData } from "../interfaces";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
-
+import SelfTestResult from "./SelfTestResult";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 
 import {
@@ -26,6 +26,7 @@ export interface SelfTestsDispatchProps {
 
 export interface SelfTestsOwnProps {
   store?: Store<State>;
+  type: string;
 }
 
 export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsStateProps, SelfTestsDispatchProps, SelfTestsOwnProps {}
@@ -72,16 +73,29 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       results = integration.self_test_results.results || [];
       duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
     }
+
     const expandResultClass = expand ? "active" : "";
     const resultsLabel = expand ? "Collapse" : "Expand";
     const findFailures = (result) => !result.success;
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
     const isFetching = !!(this.props.isFetching && this.state.runTests);
-    const testDescription = integration.self_test_results ?
+
+    const testDescription = integration.self_test_results && integration.self_test_results.start ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
+
     const failedSelfTest = selfTestException ? selfTestException : "";
+
+    const button =  (<button
+                      onClick={(e) => this.runSelfTests(e)}
+                      className="btn btn-default runSelfTests"
+                      disabled={this.props.isFetching}
+                    >
+                      Run tests
+                    </button>);
+
+    let resultList = integration.self_test_results ? results.map(result => <SelfTestResult result={result} isFetching={isFetching} />) : null;
 
     return (
       <div className="integration-selftests">
@@ -95,48 +109,13 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
           {isFetching &&
             <span>Running new self tests</span>
           }
-          <button
-            onClick={(e) => this.runSelfTests(e)}
-            className="btn btn-default runSelfTests"
-            disabled={this.props.isFetching}
-          >
-            Run tests
-          </button>
-
+          { button }
           {
             this.state.error &&
               <ErrorMessage error={this.state.error} />
           }
-
           {
-            integration.self_test_results &&
-              <ul>
-                {
-                  results.map(result => {
-                    const colorResultClass = result.success ? "success" : "failure";
-                    return (
-                      <li className={isFetching ? "loading-self-test" : colorResultClass} key={result.name}>
-                        <h4>{result.name}</h4>
-                        {
-                          result.result ?
-                            <p className="result-description">result: {result.result}</p>
-                            : null
-                        }
-                        <p className="success-description">
-                          success: {`${result.success}`}
-                        </p>
-                        {
-                          !result.success && (
-                            <p className="exception-description">
-                              exception: {result.exception.message}
-                            </p>
-                          )
-                        }
-                      </li>
-                    );
-                  })
-                }
-              </ul>
+            resultList && <ul>{resultList}</ul>
           }
         </div>
       </div>
@@ -188,7 +167,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   const integrationId = ownProps.item.id;
-  const url = `/admin/collection_self_tests/${integrationId}`;
+  const url = `/admin/${ownProps.type.replace(" ", "_")}_self_tests/${integrationId}`;
 
   return {
     getSelfTests: () => dispatch(actions.getSelfTests(url)),

@@ -230,7 +230,7 @@ export interface SelfTestsResult {
   end: string;
   exception?: SelfTestsException;
   name: string;
-  result?: string;
+  result?: string | string[];
   start: string;
   success: boolean;
 }

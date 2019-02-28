@@ -54,7 +54,7 @@ describe("collections reducer", () => {
     };
     let action = {
       type: `${ActionCreator.GET_SELF_TESTS}_LOAD`,
-      data: { collection: { id: 1, self_test_results: selfTestData, protocol: "" } }
+      data: { self_test_results: { id: 1, self_test_results: selfTestData, protocol: "" } }
     };
     let oldState = {
       url: "test url",
