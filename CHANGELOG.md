@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.3
+#### Added
+- Added self-tests for patron authentication integrations.
+
 ### v0.1.2
 #### Added
 - Added self-tests for the ElasticSearch integration.
