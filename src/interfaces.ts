@@ -241,6 +241,7 @@ export interface SelfTestsData {
   end: string;
   results: SelfTestsResult[];
   exception?: string;
+  disabled?: boolean;
 }
 
 export interface ServiceData {

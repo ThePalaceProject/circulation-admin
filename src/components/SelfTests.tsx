@@ -86,20 +86,28 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
 
-    if (this.props.type === "patron authentication service" && !this.props.item.libraries.length) {
-      disableToggleView = true;
-      testDescription = "You must associate this service with at least one library before you can run self tests for it.";
-    }
-
     const failedSelfTest = selfTestException ? selfTestException : "";
+    const disableToggle = integration.self_test_results && integration.self_test_results.disabled;
 
-    const button =  (<button
-                      onClick={(e) => this.runSelfTests(e)}
-                      className="btn btn-default runSelfTests"
-                      disabled={this.props.isFetching}
-                    >
-                      Run tests
-                    </button>);
+    const toggleButton = (
+      <button
+        onClick={this.toggleView}
+        disabled={disableToggle}
+        className="btn btn-default"
+      >
+        {resultsLabel} Results
+      </button>
+    );
+
+    const runButton = (
+      <button
+        onClick={(e) => this.runSelfTests(e)}
+        className="btn btn-default runSelfTests"
+        disabled={this.props.isFetching}
+      >
+        Run tests
+      </button>
+    );
 
     let resultList = integration.self_test_results ? results.map(result => <SelfTestResult result={result} isFetching={isFetching} />) : null;
 
@@ -108,14 +116,14 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         <div>
           {results.length ? resultIcon : null}
           <p className="description">{failedSelfTest ? failedSelfTest : testDescription}</p>
-          <button onClick={this.toggleView} disabled={disableToggleView} className="btn btn-default">{resultsLabel} Results</button>
+          { toggleButton }
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h4>Self Test Results</h4>
           {isFetching &&
             <span>Running new self tests</span>
           }
-          { button }
+          { runButton }
           {
             this.state.error &&
               <ErrorMessage error={this.state.error} />
