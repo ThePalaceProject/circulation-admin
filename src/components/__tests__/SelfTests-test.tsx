@@ -120,6 +120,20 @@ describe("SelfTests", () => {
     expect(wrapper.find("ul").length).to.equal(1);
   });
 
+  it("should not render the interface for a patron auth service without libraries", () => {
+    const auth = {
+      name: "patron auth",
+      protocol: "protocol",
+      libraries: []
+    };
+    wrapper.setProps({ item: auth, type: "patron authentication service" });
+
+    let description = wrapper.find(".description");
+    expect(description.text()).to.equal("You must associate this service with at least one library before you can run self tests for it.");
+    let button = wrapper.find("button").at(0);
+    expect(button.prop("disabled")).to.be.true;
+  });
+
   describe("Successful self tests", () => {
     it("should display information about the whole self test result", () => {
       const passSVGIcon = wrapper.find(CheckSoloIcon);

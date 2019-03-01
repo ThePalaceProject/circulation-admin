@@ -62,6 +62,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     let startTime;
     let results = [];
     let duration;
+    let disableToggleView = false;
 
     if (integration.self_test_results && !selfTestException) {
       date = new Date(integration.self_test_results.start);
@@ -81,9 +82,14 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
     const isFetching = !!(this.props.isFetching && this.state.runTests);
 
-    const testDescription = integration.self_test_results && integration.self_test_results.start ?
+    let testDescription = integration.self_test_results && integration.self_test_results.start ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
+
+    if (this.props.type === "patron authentication service" && !this.props.item.libraries.length) {
+      disableToggleView = true;
+      testDescription = "You must associate this service with at least one library before you can run self tests for it.";
+    }
 
     const failedSelfTest = selfTestException ? selfTestException : "";
 
@@ -102,7 +108,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         <div>
           {results.length ? resultIcon : null}
           <p className="description">{failedSelfTest ? failedSelfTest : testDescription}</p>
-          <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
+          <button onClick={this.toggleView} disabled={disableToggleView} className="btn btn-default">{resultsLabel} Results</button>
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h4>Self Test Results</h4>
