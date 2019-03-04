@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.4
+#### Added
+- Require admins to agree to the terms and conditions before registering or updating a library with a discovery service.
+
 ### v0.1.3
 #### Added
 - Added self-tests for patron authentication integrations.

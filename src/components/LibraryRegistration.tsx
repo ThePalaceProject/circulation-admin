@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ServiceEditFormProps } from "./ServiceEditForm";
 import EditableInput from "./EditableInput";
+import LibraryRegistrationForm from "./LibraryRegistrationForm";
 import { ServicesWithRegistrationsData, LibraryDataWithStatus } from "../interfaces";
 
 export interface LibraryRegistrationState {
@@ -31,7 +32,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
         <div>
           <h2>Register libraries</h2>
           { this.props.data.allLibraries.map(library => {
-              const libraryRegistrationStatus = this.getLibraryProp(library, "status");
+              const libraryRegistrationStatus = this.getLibraryProp(library, "status") || "warning";
               const currentRegistryStage = this.getLibraryProp(library, "stage");
               const registration_stage =
                 (this.state.registration_stage && this.state.registration_stage[library.short_name]) || "testing";
@@ -67,31 +68,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
                         }
                       </div>)
                     }
-
-                    { libraryRegistrationStatus === "success" &&
-                      <div className="registration-status">
-                        <span className="bg-success">
-                          Registered
-                        </span>
-                        {this.registerButton("Update registration", library, stage)}
-                      </div>
-                    }
-                    { libraryRegistrationStatus === "failure" &&
-                      <div className="registration-status">
-                        <span className="bg-danger">
-                          Registration failed
-                        </span>
-                        {this.registerButton("Retry registration", library, stage)}
-                      </div>
-                    }
-                    { libraryRegistrationStatus === null &&
-                      <div className="registration-status">
-                        <span className="bg-warning">
-                          Not registered
-                        </span>
-                        {this.registerButton("Register", library, stage)}
-                      </div>
-                    }
+                    { this.libraryRegistrationForm(library, libraryRegistrationStatus, stage) }
                   </div>
                 </div>);
               }
@@ -103,17 +80,14 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
     return null;
   }
 
-  registerButton(label, library, stage) {
-    return (
-      <button
-        type="button"
-        className="btn btn-default"
-        disabled={this.props.disabled}
-        onClick={() => this.props.registerLibrary(library, stage)}
-      >
-        {label}
-      </button>
-    );
+  libraryRegistrationForm(library, status, stage) {
+    return <LibraryRegistrationForm
+      library={library}
+      registerLibrary={this.props.registerLibrary}
+      status={status}
+      stage={stage}
+      disabled={this.props.disabled}
+    />;
   }
 
   updateRegistrationStage(library) {
