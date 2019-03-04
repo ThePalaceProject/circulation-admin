@@ -62,6 +62,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     let startTime;
     let results = [];
     let duration;
+    let disableToggleView = false;
 
     if (integration.self_test_results && !selfTestException) {
       date = new Date(integration.self_test_results.start);
@@ -81,19 +82,32 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
     const isFetching = !!(this.props.isFetching && this.state.runTests);
 
-    const testDescription = integration.self_test_results && integration.self_test_results.start ?
+    let testDescription = integration.self_test_results && integration.self_test_results.start ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
 
     const failedSelfTest = selfTestException ? selfTestException : "";
+    const disableToggle = integration.self_test_results && integration.self_test_results.disabled;
 
-    const button =  (<button
-                      onClick={(e) => this.runSelfTests(e)}
-                      className="btn btn-default runSelfTests"
-                      disabled={this.props.isFetching}
-                    >
-                      Run tests
-                    </button>);
+    const toggleButton = (
+      <button
+        onClick={this.toggleView}
+        disabled={disableToggle}
+        className="btn btn-default"
+      >
+        {resultsLabel} Results
+      </button>
+    );
+
+    const runButton = (
+      <button
+        onClick={(e) => this.runSelfTests(e)}
+        className="btn btn-default runSelfTests"
+        disabled={this.props.isFetching}
+      >
+        Run tests
+      </button>
+    );
 
     let resultList = integration.self_test_results ? results.map(result => <SelfTestResult result={result} isFetching={isFetching} />) : null;
 
@@ -102,14 +116,14 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         <div>
           {results.length ? resultIcon : null}
           <p className="description">{failedSelfTest ? failedSelfTest : testDescription}</p>
-          <button onClick={this.toggleView} className="btn btn-default">{resultsLabel} Results</button>
+          { toggleButton }
         </div>
         <div className={`results collapse ${expandResultClass}`}>
           <h4>Self Test Results</h4>
           {isFetching &&
             <span>Running new self tests</span>
           }
-          { button }
+          { runButton }
           {
             this.state.error &&
               <ErrorMessage error={this.state.error} />
@@ -167,7 +181,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   let fetcher = new DataFetcher();
   let actions = new ActionCreator(fetcher, ownProps.csrfToken);
   const integrationId = ownProps.item.id;
-  const url = `/admin/${ownProps.type.replace(" ", "_")}_self_tests/${integrationId}`;
+  const url = `/admin/${ownProps.type.replace(/ /g, "_")}_self_tests/${integrationId}`;
 
   return {
     getSelfTests: () => dispatch(actions.getSelfTests(url)),

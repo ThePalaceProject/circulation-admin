@@ -4,7 +4,7 @@ import ActionCreator from "../actions";
 
 const loadCB = (state, action) => {
   const data = JSON.parse(JSON.stringify(state.data));
-  let dataType = data["search_services"] ? "search_services" : "collections";
+  let dataType = Object.keys(data)[0];
 
   if (!data[dataType].length) {
     return {};
