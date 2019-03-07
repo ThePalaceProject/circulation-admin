@@ -116,21 +116,21 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
 
   registrationStageDropdown(library: LibraryData, currentRegistryStage: string): JSX.Element | null {
     if (currentRegistryStage === "production") {
-      return (
-        <EditableInput
-          elementType="select"
-          name="registration_stage"
-          label="Stage"
-          value={currentRegistryStage || "testing"}
-          ref={`stage-${library.short_name}`}
-          onChange={() => this.updateRegistrationStage(library)}
-        >
-          <option value="testing">Testing</option>
-          <option value="production">Production</option>
-        </EditableInput>
-      );
+      return null;
     }
-    return null;
+    return (
+      <EditableInput
+        elementType="select"
+        name="registration_stage"
+        label="Stage"
+        value={currentRegistryStage || "testing"}
+        ref={`stage-${library.short_name}`}
+        onChange={() => this.updateRegistrationStage(library)}
+      >
+        <option value="testing">Testing</option>
+        <option value="production">Production</option>
+      </EditableInput>
+    );
   }
 
   libraryRegistrationForm(library: LibraryData, status: string): JSX.Element {
