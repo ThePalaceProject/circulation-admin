@@ -1,31 +1,32 @@
 import * as React from "react";
-import { ServicesWithRegistrationsData, LibraryDataWithStatus } from "../interfaces";
+import { LibraryData } from "../interfaces";
 import EditableInput from "./EditableInput";
+import SaveButton from "./SaveButton";
 
 export interface LibraryRegistrationFormState {
   checked: boolean;
 }
 
 export interface LibraryRegistrationFormProps {
-  library: LibraryDataWithStatus;
-  registerLibrary: (library, registration_stage) => void;
-  status: string;
+  library: LibraryData;
+  register: (library) => void;
+  checked: boolean;
+  buttonText: string;
   disabled: boolean;
-  stage: string;
 }
 
 export default class LibraryRegistrationForm extends React.Component<LibraryRegistrationFormProps, LibraryRegistrationFormState> {
+
   constructor(props) {
     super(props);
-    this.state = { checked: (this.props.status === "success") };
+    this.state = { checked: this.props.checked };
     this.toggleChecked = this.toggleChecked.bind(this);
-    this.registerButton = this.registerButton.bind(this);
   }
 
-  checkbox(library) {
+  checkbox(library: LibraryData, termsLink: string): JSX.Element {
     return (
-      <section>
-        <label>I have read and agree to the <a href="#">terms and conditions</a></label>
+      <section className="registration-checkbox">
+        <label>I have read and agree to the <a href={termsLink}>terms and conditions</a></label>
         <EditableInput
           elementType="input"
           type="checkbox"
@@ -37,46 +38,25 @@ export default class LibraryRegistrationForm extends React.Component<LibraryRegi
     );
   }
 
-  toggleChecked() {
-    this.setState({...this.state, ...{ checked: !this.state.checked }});
+  toggleChecked(): void {
+    this.setState({ checked: !this.state.checked });
   }
 
-  registerButton(label, library, stage) {
-    return (
-      <button
-        type="button"
-        className="btn btn-default"
-        disabled={this.props.disabled || !this.state.checked}
-        onClick={() => this.props.registerLibrary(library, stage)}
-      >
-        {label}
-      </button>
-    );
+  componentWillReceiveProps(nextProps): void {
+    this.setState({ checked: nextProps.checked });
   }
 
-  render() {
-    const text = {
-      "success": {
-        message: "Registered",
-        buttonText: "Update registration"
-      },
-      "warning": {
-        message: "Not registered",
-        buttonText: "Register"
-      },
-      "danger": {
-        message: "Registration failed",
-        buttonText: "Retry registration"
-      }
-    };
+  render(): JSX.Element {
+    const termsLink = !!this.props.library.settings &&
+                      !!this.props.library.settings["terms-of-service"] &&
+                      (this.props.library.settings["terms-of-service"] as string);
+
+    let disabled = this.props.disabled || (termsLink && !this.state.checked);
 
     return (
       <form className="registration-status">
-        <span className={`bg-${this.props.status}`}>
-          {text[this.props.status].message}
-        </span>
-        {this.checkbox(this.props.library)}
-        {this.registerButton(text[this.props.status].buttonText, this.props.library, this.props.stage)}
+        {termsLink && this.checkbox(this.props.library, termsLink)}
+        <SaveButton disabled={disabled} submit={() => this.props.register(this.props.library)} text={this.props.buttonText} />
       </form>
     );
   }
