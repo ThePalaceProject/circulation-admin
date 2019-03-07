@@ -25,8 +25,9 @@ describe("LibraryEditForm", () => {
   let settingFields = [
     { key: "privacy-policy", label: "Privacy Policy", category: "Links" },
     { key: "copyright", label: "Copyright", category: "Links" },
-    { key: "logo", label: "Logo", category: "Client Interface Customization"},
-    { key: "large_collection_languages", label: "Languages", category: "Languages" }
+    { key: "logo", label: "Logo", category: "Client Interface Customization" },
+    { key: "large_collection_languages", label: "Languages", category: "Languages" },
+    { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" }
   ];
 
   let editableInputByName = (name) => {
@@ -45,6 +46,14 @@ describe("LibraryEditForm", () => {
     return [];
   };
 
+  let collapsibleByName = (name: string) => {
+    let collapsibles = wrapper.find(Collapsible);
+    if (collapsibles.length >= 1) {
+      return collapsibles.filterWhere(collapsible => collapsible.find(".panel-heading").text().startsWith(name));
+    }
+    return [];
+  };
+
   describe("rendering", () => {
     beforeEach(() => {
       save = stub();
@@ -55,7 +64,7 @@ describe("LibraryEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="libraries"
-          />
+        />
       );
     });
 
@@ -103,23 +112,26 @@ describe("LibraryEditForm", () => {
 
     it("subdivides fields", () => {
       let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.length).to.equal(4);
+      expect(collapsible.length).to.equal(5);
 
-      let required = collapsible.at(0).find(".panel-heading");
-      expect(required.text()).to.equal("Required Fields");
+      let basic = collapsible.at(0).find(".panel-heading");
+      expect(basic.text()).to.equal("Basic Information");
 
-      let optional = collapsible.slice(1, collapsible.length);
-      optional.map((form) => {
+      let other = collapsible.slice(1, collapsible.length);
+      other.map((form) => {
         let title = form.find(".panel-heading").text();
         expect(title).to.contain("(Optional)");
       });
 
-      let links = collapsible.filterWhere(form => form.find(".panel-heading").text() === "Links (Optional)");
-      expect(links.find(ProtocolFormField).length).to.equal(2);
-      let languages = collapsible.filterWhere(form => form.find(".panel-heading").text() === "Languages (Optional)");
-      expect(languages.find(ProtocolFormField).length).to.equal(1);
-      let customization = collapsible.filterWhere(form => form.find(".panel-heading").text() === "Client Interface Customization (Optional)");
-      expect(customization.find(ProtocolFormField).length).to.equal(1);
+      expect(collapsibleByName("Links").find(ProtocolFormField).length).to.equal(2);
+      expect(collapsibleByName("Languages").find(ProtocolFormField).length).to.equal(1);
+      expect(collapsibleByName("Client Interface Customization").find(ProtocolFormField).length).to.equal(1);
+
+      let geographic = collapsibleByName("Geographic Areas");
+      expect(geographic.find(ProtocolFormField).length).to.equal(1);
+      expect(geographic.find(".add-list-item").length).to.equal(2);
+      expect(geographic.find(".add-list-item").at(0).type()).to.equal("span");
+      expect(geographic.find(".add-list-item").at(1).type()).to.equal("button");
     });
 
     it("has a save button", () => {

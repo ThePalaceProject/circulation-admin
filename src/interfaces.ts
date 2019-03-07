@@ -183,6 +183,7 @@ export interface LibrarySettingField {
   key: string;
   label: string;
   required?: boolean;
+  category?: string;
 }
 
 export interface LibrariesData {
