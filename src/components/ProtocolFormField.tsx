@@ -32,18 +32,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     this.shouldBeChecked = this.shouldBeChecked.bind(this);
   }
 
-  isDefault(option) {
-    if (this.props.default) {
-      return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
-    }
-  }
-
-  shouldBeChecked(option) {
-    let isValue = (this.props.value && (this.props.value.indexOf(option.key) !== -1));
-    let isDefault = (!this.props.value && this.isDefault(option));
-    return isValue || isDefault;
-  }
-
   render(): JSX.Element {
     const setting = this.props.setting;
     if (setting.type === "text" || setting.type === undefined) {
@@ -225,6 +213,18 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         </div>
       );
     }
+  }
+
+  isDefault(option) {
+    if (this.props.default) {
+      return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
+    }
+  }
+
+  shouldBeChecked(option) {
+    let isValue = (this.props.value && (this.props.value.indexOf(option.key) !== -1));
+    let isDefault = (!this.props.value && this.isDefault(option));
+    return isValue || isDefault;
   }
 
   getValue() {

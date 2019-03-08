@@ -49,6 +49,40 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.renderRoleForm = this.renderRoleForm.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.item && nextProps.item !== this.props.item) {
+      this.setState({ admin: new Admin(nextProps.item.roles || []) });
+    }
+    if (nextProps.responseBody && !nextProps.fetchError) {
+      clearForm(this.refs);
+    }
+  }
+
+  render(): JSX.Element {
+    return (
+      <form ref="form" onSubmit={this.submit} className="edit-form">
+        <Collapsible
+          title="Admin Information"
+          openByDefault={true}
+          collapsible={!this.context.settingUp}
+          body={this.renderForm()}
+        />
+        { !this.context.settingUp &&
+          <Collapsible
+            title="Admin Roles"
+            openByDefault={true}
+            body={this.renderRoleForm()}
+          />
+        }
+        <SaveButton
+          disabled={this.props.disabled}
+          submit={this.submit}
+          text="Submit"
+        />
+      </form>
+    );
+  }
+
   renderForm() {
     return (
       <fieldset>
@@ -162,40 +196,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       </fieldset>
     );
   };
-
-  render(): JSX.Element {
-    return (
-      <form ref="form" onSubmit={this.submit} className="edit-form">
-        <Collapsible
-          title="Admin Information"
-          openByDefault={true}
-          collapsible={!this.context.settingUp}
-          body={this.renderForm()}
-        />
-        { !this.context.settingUp &&
-          <Collapsible
-            title="Admin Roles"
-            openByDefault={true}
-            body={this.renderRoleForm()}
-          />
-        }
-        <SaveButton
-          disabled={this.props.disabled}
-          submit={this.submit}
-          text="Submit"
-        />
-      </form>
-    );
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.item && nextProps.item !== this.props.item) {
-      this.setState({ admin: new Admin(nextProps.item.roles || []) });
-    }
-    if (nextProps.responseBody && !nextProps.fetchError) {
-      clearForm(this.refs);
-    }
-  }
 
   canChangePassword() {
     if (this.context.settingUp || !this.props.item || !this.props.item.roles) {

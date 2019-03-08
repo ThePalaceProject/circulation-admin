@@ -41,19 +41,6 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
   }
 
-  async resetAdobeId(e) {
-    e.preventDefault();
-    const data = new (window as any).FormData();
-    data.append("identifier", this.props.patron.authorization_identifier);
-
-    await this.props.resetAdobeId(data, this.props.library);
-    this.setState({ checked: false });
-  }
-
-  toggleCheckbox() {
-    this.setState({ checked: !this.state.checked });
-  }
-
   render() {
     const {
       patron,
@@ -114,6 +101,19 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
         }
       </div>
     );
+  }
+
+  async resetAdobeId(e) {
+    e.preventDefault();
+    const data = new (window as any).FormData();
+    data.append("identifier", this.props.patron.authorization_identifier);
+
+    await this.props.resetAdobeId(data, this.props.library);
+    this.setState({ checked: false });
+  }
+
+  toggleCheckbox() {
+    this.setState({ checked: !this.state.checked });
   }
 }
 

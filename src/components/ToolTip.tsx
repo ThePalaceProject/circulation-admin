@@ -20,14 +20,6 @@ export default class ToolTip extends React.Component <ToolTipProps, ToolTipState
     this.hideToolTip = this.hideToolTip.bind(this);
   }
 
-  showToolTip() {
-    this.setState({ show: true });
-  }
-
-  hideToolTip() {
-    this.setState({ show: false });
-  }
-
   render(): JSX.Element {
     return(
       <div className="tool-tip-container" onMouseEnter={this.showToolTip} onMouseLeave={this.hideToolTip}>
@@ -37,5 +29,13 @@ export default class ToolTip extends React.Component <ToolTipProps, ToolTipState
         </span>
       </div>
     );
+  }
+
+  showToolTip() {
+    this.setState({ show: true });
+  }
+
+  hideToolTip() {
+    this.setState({ show: false });
   }
 }

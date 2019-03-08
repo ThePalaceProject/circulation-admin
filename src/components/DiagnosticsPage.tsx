@@ -28,8 +28,8 @@ export default class DiagnosticsPage extends React.Component<void, DiagnosticsPa
     this.goToTab = this.goToTab.bind(this);
   }
 
-  goToTab(tab: string) {
-    this.setState({ tab });
+  componentWillMount() {
+    document.title = "Circulation Manager - Diagnostics";
   }
 
   render(): JSX.Element {
@@ -50,7 +50,8 @@ export default class DiagnosticsPage extends React.Component<void, DiagnosticsPa
     );
   }
 
-  componentWillMount() {
-    document.title = "Circulation Manager - Diagnostics";
+  goToTab(tab: string) {
+    this.setState({ tab });
   }
+
 }
