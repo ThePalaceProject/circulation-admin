@@ -59,6 +59,89 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.renderLibrariesForm = this.renderLibrariesForm.bind(this);
   }
 
+  componentWillReceiveProps(newProps) {
+    let protocol = this.state.protocol;
+    let parentId = this.state.parentId;
+    let libraries = this.state.libraries;
+    if (newProps.item && newProps.item.protocol) {
+      if (!this.props.item || !this.props.item.protocol || (this.props.item.protocol !== newProps.item.protocol)) {
+        protocol = newProps.item.protocol;
+      }
+    }
+    if (!protocol && this.availableProtocols(newProps).length > 0) {
+        protocol = this.availableProtocols(newProps)[0].name;
+    }
+
+    if (newProps.item && newProps.item.parent_id) {
+      if (!this.props.item || !this.props.item.parent_id || (this.props.item.parent_id !== newProps.item.parent_id)) {
+        parentId = newProps.item.parent_id;
+      }
+    }
+
+    if (newProps.item && newProps.item.libraries) {
+      if (!this.props.item || !this.props.item.libraries || (this.props.item.libraries !== newProps.item.libraries)) {
+        libraries = newProps.item.libraries;
+      }
+    }
+    const newState = Object.assign({}, this.state, { protocol, parentId, libraries });
+    this.setState(newState);
+
+    if (newProps.responseBody && !newProps.fetchError) {
+      clearForm(this.refs);
+    }
+
+  }
+
+  render(): JSX.Element {
+    const { requiredFields, nonRequiredFields } = this.protocolSettings();
+    const showLibrariesForm = (!this.sitewide() || this.protocolLibrarySettings().length > 0);
+    const hasNonRequiredFields = nonRequiredFields.length > 0;
+    return (
+      <form ref="form" onSubmit={this.submit} className="edit-form">
+        { this.props.item && this.props.item.id &&
+          <input
+            type="hidden"
+            name="id"
+            value={String(this.props.item.id)}
+            />
+        }
+        { this.props.data && this.protocolInstructions() &&
+            <div className="form-group">
+              <label className="control-label">Instructions</label>
+              <Collapsible
+                title={this.protocolDescription()}
+                type="instruction"
+                text={this.protocolInstructions()}
+              />
+            </div>
+        }
+        <Collapsible
+          title="Required Fields"
+          openByDefault={true}
+          collapsible={hasNonRequiredFields || showLibrariesForm}
+          body={this.renderRequiredFields(requiredFields)}
+        />
+        { hasNonRequiredFields && (
+          <Collapsible
+            title="Optional Fields"
+            body={this.renderOptionalFields(nonRequiredFields)}
+          />)
+        }
+        { (showLibrariesForm) &&
+          <Collapsible
+            title="Libraries"
+            body={this.renderLibrariesForm()}
+          />
+        }
+        <SaveButton
+          disabled={this.props.disabled}
+          submit={this.submit}
+          text="Submit"
+        />
+      </form>
+    );
+  }
+
   renderRequiredFields(requiredFields) {
     return (
       <fieldset>
@@ -231,88 +314,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     );
   }
 
-  render(): JSX.Element {
-    const { requiredFields, nonRequiredFields } = this.protocolSettings();
-    const showLibrariesForm = (!this.sitewide() || this.protocolLibrarySettings().length > 0);
-    const hasNonRequiredFields = nonRequiredFields.length > 0;
-    return (
-      <form ref="form" onSubmit={this.submit} className="edit-form">
-        { this.props.item && this.props.item.id &&
-          <input
-            type="hidden"
-            name="id"
-            value={String(this.props.item.id)}
-            />
-        }
-        { this.props.data && this.protocolInstructions() &&
-            <div className="form-group">
-              <label className="control-label">Instructions</label>
-              <Collapsible
-                title={this.protocolDescription()}
-                type="instruction"
-                text={this.protocolInstructions()}
-              />
-            </div>
-        }
-        <Collapsible
-          title="Required Fields"
-          openByDefault={true}
-          collapsible={hasNonRequiredFields || showLibrariesForm}
-          body={this.renderRequiredFields(requiredFields)}
-        />
-        { hasNonRequiredFields && (
-          <Collapsible
-            title="Optional Fields"
-            body={this.renderOptionalFields(nonRequiredFields)}
-          />)
-        }
-        { (showLibrariesForm) &&
-          <Collapsible
-            title="Libraries"
-            body={this.renderLibrariesForm()}
-          />
-        }
-        <SaveButton
-          disabled={this.props.disabled}
-          submit={this.submit}
-          text="Submit"
-        />
-      </form>
-    );
-  }
 
-  componentWillReceiveProps(newProps) {
-    let protocol = this.state.protocol;
-    let parentId = this.state.parentId;
-    let libraries = this.state.libraries;
-    if (newProps.item && newProps.item.protocol) {
-      if (!this.props.item || !this.props.item.protocol || (this.props.item.protocol !== newProps.item.protocol)) {
-        protocol = newProps.item.protocol;
-      }
-    }
-    if (!protocol && this.availableProtocols(newProps).length > 0) {
-        protocol = this.availableProtocols(newProps)[0].name;
-    }
-
-    if (newProps.item && newProps.item.parent_id) {
-      if (!this.props.item || !this.props.item.parent_id || (this.props.item.parent_id !== newProps.item.parent_id)) {
-        parentId = newProps.item.parent_id;
-      }
-    }
-
-    if (newProps.item && newProps.item.libraries) {
-      if (!this.props.item || !this.props.item.libraries || (this.props.item.libraries !== newProps.item.libraries)) {
-        libraries = newProps.item.libraries;
-      }
-    }
-    const newState = Object.assign({}, this.state, { protocol, parentId, libraries });
-    this.setState(newState);
-
-    if (newProps.responseBody && !newProps.fetchError) {
-      clearForm(this.refs);
-    }
-
-  }
 
   availableProtocols(props?): ProtocolData[] {
     props = props || this.props;

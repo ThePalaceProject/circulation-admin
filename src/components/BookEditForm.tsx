@@ -29,6 +29,20 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     this.renderForm = this.renderForm.bind(this);
   }
 
+  render(): JSX.Element {
+    return (
+      <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
+        {this.renderForm()}
+        <button
+          className="btn btn-default"
+          disabled={this.props.disabled}
+          type="submit">
+          Submit
+        </button>
+      </form>
+    );
+  }
+
   renderForm() {
     return (
       <fieldset>
@@ -202,20 +216,6 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           optionalText={false}
           />
       </fieldset>
-    );
-  }
-
-  render(): JSX.Element {
-    return (
-      <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
-        {this.renderForm()}
-        <button
-          className="btn btn-default"
-          disabled={this.props.disabled}
-          type="submit">
-          Submit
-        </button>
-      </form>
     );
   }
 

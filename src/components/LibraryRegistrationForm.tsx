@@ -23,6 +23,25 @@ export default class LibraryRegistrationForm extends React.Component<LibraryRegi
     this.toggleChecked = this.toggleChecked.bind(this);
   }
 
+  componentWillReceiveProps(nextProps): void {
+    this.setState({ checked: nextProps.checked });
+  }
+
+  render(): JSX.Element {
+    const termsLink = !!this.props.library.settings &&
+                      !!this.props.library.settings["terms-of-service"] &&
+                      (this.props.library.settings["terms-of-service"] as string);
+
+    let disabled = this.props.disabled || (termsLink && !this.state.checked);
+
+    return (
+      <form className="registration-status">
+        {termsLink && this.checkbox(this.props.library, termsLink)}
+        <SaveButton disabled={disabled} submit={() => this.props.register(this.props.library)} text={this.props.buttonText} />
+      </form>
+    );
+  }
+
   checkbox(library: LibraryData, termsLink: string): JSX.Element {
     return (
       <section className="registration-checkbox">
@@ -42,22 +61,4 @@ export default class LibraryRegistrationForm extends React.Component<LibraryRegi
     this.setState({ checked: !this.state.checked });
   }
 
-  componentWillReceiveProps(nextProps): void {
-    this.setState({ checked: nextProps.checked });
-  }
-
-  render(): JSX.Element {
-    const termsLink = !!this.props.library.settings &&
-                      !!this.props.library.settings["terms-of-service"] &&
-                      (this.props.library.settings["terms-of-service"] as string);
-
-    let disabled = this.props.disabled || (termsLink && !this.state.checked);
-
-    return (
-      <form className="registration-status">
-        {termsLink && this.checkbox(this.props.library, termsLink)}
-        <SaveButton disabled={disabled} submit={() => this.props.register(this.props.library)} text={this.props.buttonText} />
-      </form>
-    );
-  }
 }
