@@ -1,8 +1,11 @@
 ## Changelog
 
+### v0.1.5
+- Improved the process for specifying a library's service and focus areas.
+
 ### v0.1.4
 #### Added
-- Require admins to agree to the terms and conditions before registering or updating a library with a discovery service.
+- Required admins to agree to the terms and conditions before registering or updating a library with a discovery service.
 
 ### v0.1.3
 #### Added
