@@ -5,6 +5,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import LibraryRegistration from "../LibraryRegistration";
+import LibraryRegistrationForm from "../LibraryRegistrationForm";
 import EditableInput from "../EditableInput";
 
 describe("LibraryRegistration", () => {
@@ -72,7 +73,7 @@ describe("LibraryRegistration", () => {
         protocols: [protocolWithoutRegistration],
         allLibraries: allLibraries
       };
-      wrapper = shallow(
+      wrapper = mount(
         <LibraryRegistration
           disabled={false}
           data={servicesDataWithoutRegistration}
@@ -94,11 +95,11 @@ describe("LibraryRegistration", () => {
       let libraries = wrapper.find(".service-with-registrations-library");
       expect(libraries.length).to.equal(3);
       expect(libraries.at(0).text()).to.contain("New York Public Library");
-      expect(libraries.at(0).text()).to.contain("Registered");
+      expect(libraries.at(0).html()).to.contain("Registered");
       expect(libraries.at(1).text()).to.contain("Brooklyn Public Library");
-      expect(libraries.at(1).text()).to.contain("Registration failed");
+      expect(libraries.at(1).html()).to.contain("Registration failed");
       expect(libraries.at(2).text()).to.contain("Queens Public Library");
-      expect(libraries.at(2).text()).to.contain("Not registered");
+      expect(libraries.at(2).html()).to.contain("Not registered");
     });
 
     it("provides links to the libraries' edit forms", () => {
@@ -136,7 +137,7 @@ describe("LibraryRegistration", () => {
       it("should not render the staging dropdown if it is not supported", () => {
         servicesData.protocols[0].supports_staging = false;
 
-        wrapper = shallow(
+        wrapper = mount(
           <LibraryRegistration
             disabled={false}
             data={servicesData}
@@ -170,20 +171,28 @@ describe("LibraryRegistration", () => {
         expect(qplEditableInput.length).to.equal(0);
 
         // Registration status and button should still appear
-        let nyplRegistrationStatus = nypl.find(".registration-status span");
-        let bplRegistrationStatus = bpl.find(".registration-status span");
-        let qplRegistrationStatus = bpl.find(".registration-status span");
-        let nyplRegistrationStatusBtn = nypl.find(".registration-status button");
-        let bplRegistrationStatusBtn = bpl.find(".registration-status button");
-        let qplRegistrationStatusBtn = bpl.find(".registration-status button");
+        let nyplRegistrationStatus = nypl.find("span");
+        let bplRegistrationStatus = bpl.find("span");
+        let qplRegistrationStatus = bpl.find("span");
+
+        let nyplRegistrationStatusBtn = nypl.find("button");
+        let bplRegistrationStatusBtn = bpl.find("button");
+        let qplRegistrationStatusBtn = bpl.find("button");
 
         expect(nyplRegistrationStatus.text()).to.equal("Registered");
+        expect(nyplRegistrationStatus.prop("className")).to.equal("bg-success");
         expect(bplRegistrationStatus.text()).to.equal("Registration failed");
+        expect(bplRegistrationStatus.prop("className")).to.equal("bg-failure");
         expect(qplRegistrationStatus.text()).to.equal("Registration failed");
+        expect(qplRegistrationStatus.prop("className")).to.equal("bg-failure");
+
 
         expect(nyplRegistrationStatusBtn.length).to.equal(1);
+        expect(nyplRegistrationStatusBtn.text()).to.equal("Update registration");
         expect(bplRegistrationStatusBtn.length).to.equal(1);
+        expect(bplRegistrationStatusBtn.text()).to.equal("Retry registration");
         expect(qplRegistrationStatusBtn.length).to.equal(1);
+        expect(qplRegistrationStatusBtn.text()).to.equal("Retry registration");
 
         servicesData.protocols[0].supports_staging = true;
       });
@@ -212,7 +221,7 @@ describe("LibraryRegistration", () => {
 
         save = stub();
         registerLibrary = stub();
-        wrapper = shallow(
+        wrapper = mount(
           <LibraryRegistration
             disabled={false}
             data={servicesData}
@@ -270,6 +279,25 @@ describe("LibraryRegistration", () => {
         expect(bplEditableInput.length).to.equal(1);
         expect(qplEditableInput.length).to.equal(1);
       });
+
+      it("should render a form", () => {
+        let forms = wrapper.find(LibraryRegistrationForm);
+
+        let nyplForm = forms.at(0);
+        expect(nyplForm.prop("library").name).to.equal(allLibraries[0].name);
+        expect(nyplForm.prop("checked")).to.be.true;
+        expect(nyplForm.prop("buttonText")).to.equal("Update registration");
+
+        let bplForm = forms.at(1);
+        expect(bplForm.prop("library").name).to.equal(allLibraries[1].name);
+        expect(bplForm.prop("checked")).to.be.false;
+        expect(bplForm.prop("buttonText")).to.equal("Retry registration");
+
+        let qplForm = forms.at(2);
+        expect(qplForm.prop("library").name).to.equal(allLibraries[2].name);
+        expect(qplForm.prop("checked")).to.be.false;
+        expect(qplForm.prop("buttonText")).to.equal("Register");
+      });
     });
   });
 
@@ -277,7 +305,7 @@ describe("LibraryRegistration", () => {
     beforeEach(() => {
       save = stub();
       registerLibrary = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <LibraryRegistration
           disabled={false}
           data={servicesData}
@@ -293,9 +321,7 @@ describe("LibraryRegistration", () => {
 
     it("registers a library", () => {
       let libraries = wrapper.find(".service-with-registrations-library");
-
       expect(registerLibrary.callCount).to.equal(0);
-
       let nyplButton = libraries.at(0).find("button");
       nyplButton.simulate("click");
 

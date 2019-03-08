@@ -28,6 +28,23 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
     this.renderSection = this.renderSection.bind(this);
   }
 
+  render() {
+    const className = this.props.type === "instruction" ? "instruction" : "";
+    const style = this.props.style ? this.props.style : "";
+    const staticPanel = !this.props.collapsible ? "staticPanel" : "";
+    return (
+      <Panel
+        className={`collapsible ${className} ${staticPanel}`}
+        bsStyle={style}
+        collapsible={this.props.collapsible}
+        header={this.renderHeader()}
+        expanded={this.state.open}
+      >
+        {this.renderSection()}
+      </Panel>
+    );
+  }
+
   toggle(e) {
     e.preventDefault();
     this.setState({ open: !this.state.open });
@@ -60,22 +77,5 @@ export default class Collapsible extends React.Component<CollapsibleProps, Colla
       return <section>{body}</section>;
     }
     return null;
-  }
-
-  render() {
-    const className = this.props.type === "instruction" ? "instruction" : "";
-    const style = this.props.style ? this.props.style : "";
-    const staticPanel = !this.props.collapsible ? "staticPanel" : "";
-    return (
-      <Panel
-        className={`collapsible ${className} ${staticPanel}`}
-        bsStyle={style}
-        collapsible={this.props.collapsible}
-        header={this.renderHeader()}
-        expanded={this.state.open}
-      >
-        {this.renderSection()}
-      </Panel>
-    );
   }
 }

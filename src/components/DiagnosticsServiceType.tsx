@@ -21,19 +21,19 @@ export default class DiagnosticsServiceType extends React.Component<DiagnosticsS
     this.goToTab = this.goToTab.bind(this);
   }
 
-  goToTab(tab: string) {
-    this.setState({ tab });
-  }
-
   render(): JSX.Element {
     let serviceTabs = this.props.services ?
-      <DiagnosticsServiceTabs
-        content={this.props.services}
-        tab={this.state.tab}
-        goToTab={this.goToTab}
-      /> :
-      <span>There are currently no {this.props.type.split("_").join(" ")} services.</span>;
+    <DiagnosticsServiceTabs
+    content={this.props.services}
+    tab={this.state.tab}
+    goToTab={this.goToTab}
+    /> :
+    <span>There are currently no {this.props.type.split("_").join(" ")} services.</span>;
 
     return <div className="config services">{serviceTabs}</div>;
+  }
+
+  goToTab(tab: string) {
+    this.setState({ tab });
   }
 }

@@ -49,70 +49,13 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
     this.renderCoverForm = this.renderCoverForm.bind(this);
   }
 
-  renderCoverForm() {
-    return (
-      <div>
-        <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
-        <form ref="cover">
-          <fieldset>
-            <legend className="visuallyHidden">Cover Image</legend>
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.isFetching}
-              name="cover_url"
-              label="URL for cover image"
-              onChange={this.preview}
-              ref="cover_url"
-              optionalText={false}
-              />
-            <EditableInput
-              elementType="input"
-              type="file"
-              disabled={this.props.isFetching}
-              name="cover_file"
-              label="Or upload cover image"
-              accept="image/*"
-              onChange={this.preview}
-              ref="cover_file"
-              optionalText={false}
-              />
-            <EditableInput
-              elementType="select"
-              disabled={this.props.isFetching}
-              name="title_position"
-              label="Title and Author Position"
-              onChange={this.preview}
-              value="none"
-              >
-              <option value="none">None</option>
-              <option value="top">Top</option>
-              <option value="center">Center</option>
-              <option value="bottom">Bottom</option>
-            </EditableInput>
-          </fieldset>
-        </form>
-        { this.props.previewFetchError &&
-          <ErrorMessage error={this.props.previewFetchError} />
-        }
-        { this.props.isFetchingPreview &&
-          <h5 className="cover-fetching-preview-container">
-            Updating Preview&nbsp;
-            <i className="fa fa-spinner fa-spin"></i>
-          </h5>
-        }
-        { this.props.preview &&
-          <div>
-            <h4>Preview:</h4>
-            <img
-              src={this.props.preview}
-              className="book-cover preview-cover"
-              alt="Preview of new cover"
-              />
-          </div>
-        }
-      </div>
-    );
+  componentWillMount() {
+    if (this.props.clearPreview) {
+      this.props.clearPreview();
+    }
+    if (this.props.fetchRightsStatuses) {
+      this.props.fetchRightsStatuses();
+    }
   }
 
   render(): JSX.Element {
@@ -204,13 +147,70 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
     );
   }
 
-  componentWillMount() {
-    if (this.props.clearPreview) {
-      this.props.clearPreview();
-    }
-    if (this.props.fetchRightsStatuses) {
-      this.props.fetchRightsStatuses();
-    }
+  renderCoverForm() {
+    return (
+      <div>
+        <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
+        <form ref="cover">
+          <fieldset>
+            <legend className="visuallyHidden">Cover Image</legend>
+            <EditableInput
+              elementType="input"
+              type="text"
+              disabled={this.props.isFetching}
+              name="cover_url"
+              label="URL for cover image"
+              onChange={this.preview}
+              ref="cover_url"
+              optionalText={false}
+              />
+            <EditableInput
+              elementType="input"
+              type="file"
+              disabled={this.props.isFetching}
+              name="cover_file"
+              label="Or upload cover image"
+              accept="image/*"
+              onChange={this.preview}
+              ref="cover_file"
+              optionalText={false}
+              />
+            <EditableInput
+              elementType="select"
+              disabled={this.props.isFetching}
+              name="title_position"
+              label="Title and Author Position"
+              onChange={this.preview}
+              value="none"
+              >
+              <option value="none">None</option>
+              <option value="top">Top</option>
+              <option value="center">Center</option>
+              <option value="bottom">Bottom</option>
+            </EditableInput>
+          </fieldset>
+        </form>
+        { this.props.previewFetchError &&
+          <ErrorMessage error={this.props.previewFetchError} />
+        }
+        { this.props.isFetchingPreview &&
+          <h5 className="cover-fetching-preview-container">
+            Updating Preview&nbsp;
+            <i className="fa fa-spinner fa-spin"></i>
+          </h5>
+        }
+        { this.props.preview &&
+          <div>
+            <h4>Preview:</h4>
+            <img
+              src={this.props.preview}
+              className="book-cover preview-cover"
+              alt="Preview of new cover"
+              />
+          </div>
+        }
+      </div>
+    );
   }
 
   previewUrl() {

@@ -36,12 +36,6 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
     this.submit = this.submit.bind(this);
   }
 
-  async submit(e) {
-    e.preventDefault();
-    const data = new (window as any).FormData(this.refs["form"] as any);
-    await this.props.patronLookup(data, this.props.library);
-  }
-
   componentWillUnmount() {
     this.props.clearPatronData();
   }
@@ -79,6 +73,12 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, v
         }
       </div>
     );
+  }
+
+  async submit(e) {
+    e.preventDefault();
+    const data = new (window as any).FormData(this.refs["form"] as any);
+    await this.props.patronLookup(data, this.props.library);
   }
 }
 

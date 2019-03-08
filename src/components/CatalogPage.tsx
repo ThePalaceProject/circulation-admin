@@ -35,6 +35,39 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
     };
   }
 
+  render(): JSX.Element {
+    if (!this.hasLibrary()) {
+      return (
+        <WelcomePage />
+      );
+    }
+
+    let { collectionUrl, bookUrl } = this.props.params;
+
+    collectionUrl =
+      this.expandCollectionUrl(collectionUrl) ||
+      null;
+    bookUrl = this.expandBookUrl(bookUrl) || null;
+
+    let pageTitleTemplate = (collectionTitle, bookTitle) => {
+      let details = bookTitle || collectionTitle;
+      return "Circulation Manager" + (details ? " - " + details : "");
+    };
+
+    return (
+      <OPDSCatalog
+        collectionUrl={collectionUrl}
+        bookUrl={bookUrl}
+        BookDetailsContainer={BookDetailsContainer}
+        Header={Header}
+        pageTitleTemplate={pageTitleTemplate}
+        computeBreadcrumbs={computeBreadcrumbs}
+        CollectionContainer={EntryPointsContainer}
+        allLanguageSearch={true}
+      />
+    );
+  }
+
   getLibrary(collectionUrl, bookUrl): string {
     if (collectionUrl) {
       let urlParts = collectionUrl.split("/");
@@ -69,38 +102,5 @@ export default class CatalogPage extends React.Component<CatalogPageProps, void>
     } else {
       return url;
     }
-  }
-
-  render(): JSX.Element {
-    if (!this.hasLibrary()) {
-      return (
-        <WelcomePage />
-      );
-    }
-
-    let { collectionUrl, bookUrl } = this.props.params;
-
-    collectionUrl =
-      this.expandCollectionUrl(collectionUrl) ||
-      null;
-    bookUrl = this.expandBookUrl(bookUrl) || null;
-
-    let pageTitleTemplate = (collectionTitle, bookTitle) => {
-      let details = bookTitle || collectionTitle;
-      return "Circulation Manager" + (details ? " - " + details : "");
-    };
-
-    return (
-      <OPDSCatalog
-        collectionUrl={collectionUrl}
-        bookUrl={bookUrl}
-        BookDetailsContainer={BookDetailsContainer}
-        Header={Header}
-        pageTitleTemplate={pageTitleTemplate}
-        computeBreadcrumbs={computeBreadcrumbs}
-        CollectionContainer={EntryPointsContainer}
-        allLanguageSearch={true}
-      />
-    );
   }
 }

@@ -26,47 +26,10 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     this.submit = this.submit.bind(this);
   }
 
-  separateCategories(otherFields) {
-    let categories = {};
-    otherFields.forEach((setting) => {
-      categories[setting.category] = categories[setting.category] ? categories[setting.category].concat(setting) : [setting];
-    });
-    return categories;
-  }
-
-  renderForms(categories) {
-    let forms = [];
-    let categoryNames = Object.keys(categories);
-    categoryNames.forEach((name) => {
-      let form = (
-        <Collapsible
-          title={`${name} (Optional)`}
-          body={this.renderFieldset(categories[name])}
-        />
-      );
-      forms.push(form);
-    });
-    return forms;
-  }
-
-  renderFieldset(fields) {
-    return (
-      <fieldset>
-        <legend className="visuallyHidden">Additional Fields</legend>
-        { fields.map(setting =>
-          <ProtocolFormField
-            key={setting.key}
-            ref={setting.key}
-            setting={setting}
-            disabled={this.props.disabled}
-            value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-            default={findDefault(setting)}
-            error={this.props.error}
-            />
-          )
-        }
-      </fieldset>
-    );
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.responseBody && !nextProps.fetchError) {
+      clearForm(this.refs);
+    }
   }
 
   render(): JSX.Element {
@@ -144,15 +107,52 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     );
   }
 
+  separateCategories(nonRequiredFields) {
+    let categories = {};
+    nonRequiredFields.forEach((setting) => {
+      categories[setting.category] = categories[setting.category] ? categories[setting.category].concat(setting) : [setting];
+    });
+    return categories;
+  }
+
+  renderForms(categories) {
+    let forms = [];
+    let categoryNames = Object.keys(categories);
+    categoryNames.forEach((name) => {
+      let form = (
+        <Collapsible
+          title={`${name} (Optional)`}
+          body={this.renderFieldset(categories[name])}
+        />
+      );
+      forms.push(form);
+    });
+    return forms;
+  }
+
+  renderFieldset(fields) {
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Additional Fields</legend>
+        { fields.map(setting =>
+          <ProtocolFormField
+            key={setting.key}
+            ref={setting.key}
+            setting={setting}
+            disabled={this.props.disabled}
+            value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+            default={findDefault(setting)}
+            error={this.props.error}
+            />
+          )
+        }
+      </fieldset>
+    );
+  }
+
   submit(event) {
     event.preventDefault();
     handleSubmit(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.responseBody && !nextProps.fetchError) {
-      clearForm(this.refs);
-    }
   }
 
 }
