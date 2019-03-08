@@ -90,15 +90,4 @@
       background: inherit;
     }
   }
-
-  .badge {
-    display: block;
-    float: right;
-    margin-top: 2px;
-    background: $green-bright;
-    &.danger {
-      background: $red;
-    }
-  }
-
 }

@@ -7,6 +7,7 @@ export interface ToolTipState {
 export interface ToolTipProps {
   trigger: JSX.Element;
   text: string;
+  direction?: string;
 }
 
 export default class ToolTip extends React.Component <ToolTipProps, ToolTipState> {
@@ -24,8 +25,10 @@ export default class ToolTip extends React.Component <ToolTipProps, ToolTipState
     return(
       <div className="tool-tip-container" onMouseEnter={this.showToolTip} onMouseLeave={this.hideToolTip}>
         { this.props.trigger }
-        <span className={`tool-tip ${this.state.show ? "" : "hide"}`}>
-          {this.props.text}
+        <span
+          className={`tool-tip ${this.state.show ? "" : "hide"} ${this.props.direction ? this.props.direction : ""}`}
+          dangerouslySetInnerHTML={{__html: this.props.text}}
+        >
         </span>
       </div>
     );

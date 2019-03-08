@@ -2,6 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
+import ToolTip from "./ToolTip";
 import { SettingData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -137,7 +138,10 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     } else if (setting.type === "list") {
       return (
         <div>
-          <label>{setting.label}</label>
+          <label>
+            {setting.label}
+            {setting.instructions && <ToolTip trigger={<span className="badge">?</span>} text={setting.instructions} direction="vertical" />}
+          </label>
           { setting.description &&
             <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
           }
