@@ -205,6 +205,7 @@ export interface SettingData {
   randomizable?: boolean;
   type?: string;
   options?: SettingData[];
+  instructions?: string;
 }
 
 export interface ProtocolData {
