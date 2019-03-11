@@ -182,9 +182,9 @@ describe("LibraryRegistration", () => {
         expect(nyplRegistrationStatus.text()).to.equal("Registered");
         expect(nyplRegistrationStatus.prop("className")).to.equal("bg-success");
         expect(bplRegistrationStatus.text()).to.equal("Registration failed");
-        expect(bplRegistrationStatus.prop("className")).to.equal("bg-failure");
+        expect(bplRegistrationStatus.prop("className")).to.equal("bg-danger");
         expect(qplRegistrationStatus.text()).to.equal("Registration failed");
-        expect(qplRegistrationStatus.prop("className")).to.equal("bg-failure");
+        expect(qplRegistrationStatus.prop("className")).to.equal("bg-danger");
 
 
         expect(nyplRegistrationStatusBtn.length).to.equal(1);

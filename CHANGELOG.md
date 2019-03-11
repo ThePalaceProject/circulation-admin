@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.5
+#### Fixed
+- Fixed minor bug affecting the display for libraries for which registration has failed.
+
 ### v0.1.4
 #### Added
 - Require admins to agree to the terms and conditions before registering or updating a library with a discovery service.
