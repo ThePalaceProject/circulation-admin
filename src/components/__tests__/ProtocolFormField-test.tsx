@@ -300,7 +300,6 @@ describe("ProtocolFormField", () => {
 
     input = wrapper.find(EditableInput);
     expect(input.length).to.equal(3);
-
     expect(input.at(0).prop("checked")).to.be.ok;
     expect(input.at(1).prop("checked")).not.to.be.ok;
     expect(input.at(2).prop("checked")).to.be.ok;
@@ -375,7 +374,7 @@ describe("ProtocolFormField", () => {
       description: "<p>description</p>",
       type: "image"
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <ProtocolFormField
         setting={setting}
         disabled={true}
@@ -387,7 +386,7 @@ describe("ProtocolFormField", () => {
     expect(input.prop("type")).to.equal("file");
     expect(input.prop("disabled")).to.equal(true);
     expect(input.prop("name")).to.equal("setting");
-    expect(input.prop("label")).to.be.undefined;
+    expect(input.prop("label")).to.equal("label");
     expect(input.prop("description")).to.equal("<p>description</p>");
     expect(input.prop("value")).to.be.undefined;
     expect(input.prop("accept")).to.equal("image/*");
@@ -445,6 +444,27 @@ describe("ProtocolFormField", () => {
         />
     );
     expect((wrapper.instance() as ProtocolFormField).getValue()).to.deep.equal(["item 1", "item 2"]);
+  });
+
+  it("optionally gets extra content", () => {
+    const setting = {
+      key: "setting",
+      label: "label",
+      type: "list",
+      format: "geographic"
+    };
+    const value = [{ "item name": "Extra content!" }];
+    let wrapper = mount(
+      <ProtocolFormField
+        setting={setting}
+        value={value}
+        disabled={false}
+      />
+    );
+    expect(wrapper.find(".with-add-on").length).to.equal(1);
+    expect(wrapper.find(".tool-tip-container").length).to.equal(1);
+    expect(wrapper.text()).to.include("Extra content!");
+    expect(wrapper.find("input").at(0).prop("value")).to.equal("item name");
   });
 
   it("gets value of text setting", () => {

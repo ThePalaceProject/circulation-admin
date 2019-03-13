@@ -4,6 +4,7 @@ export interface SaveButtonProps {
   disabled: boolean;
   submit?: any;
   text?: string;
+  type?: string;
 }
 
 export default class SaveButton extends React.Component<SaveButtonProps, void> {
@@ -14,9 +15,10 @@ export default class SaveButton extends React.Component<SaveButtonProps, void> {
 
   render(): JSX.Element {
    let text = this.props.text || "Save";
+   let type = this.props.type || "submit";
    return (
      <button
-       type="submit"
+       type={type}
        className="btn btn-default"
        disabled={this.props.disabled}
        onClick={this.props.submit}
