@@ -4,6 +4,7 @@ import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
 import ToolTip from "./ToolTip";
 import SaveButton from "./SaveButton";
+import InputList from "./InputList";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
 import { SettingData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
@@ -16,20 +17,11 @@ export interface ProtocolFormFieldProps {
   error?: FetchErrorData;
 }
 
-export interface ProtocolFormFieldState {
-  listItems?: string [];
-}
-
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
-export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, ProtocolFormFieldState> {
+export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, void> {
   constructor(props) {
     super(props);
-    this.state = {
-      listItems: (props.value as string[]) || []
-    };
-    this.addListItem = this.addListItem.bind(this);
-    this.removeListItem = this.removeListItem.bind(this);
     this.randomize = this.randomize.bind(this);
     this.isDefault = this.isDefault.bind(this);
     this.shouldBeChecked = this.shouldBeChecked.bind(this);
@@ -85,14 +77,14 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       key: setting.key,
       elementType: elementType,
       type: "text",
-      disabled: this.props.disabled,
+      disabled: this.props && this.props.disabled,
       name: setting.key,
       label: setting.label,
       required: setting.required,
       description: setting.description,
-      value: this.props.value || setting.default,
-      error: this.props.error,
-      ref: "element",
+      value: (this.props && this.props.value) || setting.default,
+      error: this.props && this.props.error,
+      ref: "element"
     };
 
     let props = extraProps[setting.type] ? {...basicProps, ...extraProps[setting.type]} : basicProps;
@@ -128,34 +120,15 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
 
   renderListSetting(setting): JSX.Element {
     return (
-      <div>
-        { this.labelAndDescription(setting) }
-        { this.state.listItems && this.state.listItems.map((listItem) => {
-              let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
-              return (
-                <WithRemoveButton
-                  key={value}
-                  disabled={this.props.disabled}
-                  onRemove={() => this.removeListItem(listItem)}
-                >
-                  {this.createEditableInput(setting, {type: "text", description: null, value: value, name: setting.key, label: null, extraContent: this.toolTip(listItem, setting.format)})}
-                </WithRemoveButton>
-              );
-            }
-          )
-        }
-        <div>
-          <span className="add-list-item">
-            { this.createEditableInput(setting, {value: null, ref: "addListItem", label: null, description: null})}
-          </span>
-          <button
-            type="button"
-            className="btn btn-default add-list-item"
-            disabled={this.props.disabled}
-            onClick={this.addListItem}
-            >Add</button>
-        </div>
-      </div>
+      <InputList
+        ref="element"
+        setting={setting}
+        createEditableInput={this.createEditableInput}
+        labelAndDescription={this.labelAndDescription}
+        disabled={this.props.disabled}
+        toolTip={this.toolTip}
+        value={this.props.value}
+      />
     );
   }
 
@@ -216,21 +189,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   getValue() {
-    if (this.props.setting.type === "list" && !this.props.setting.options) {
-      return this.state.listItems;
-    } else {
-      return (this.refs["element"] as any).getValue();
-    }
-  }
-
-  removeListItem(listItem: string) {
-    this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
-  }
-
-  addListItem() {
-    const listItem = (this.refs["addListItem"] as any).getValue();
-    this.setState({ listItems: this.state.listItems.concat(listItem) });
-    (this.refs["addListItem"] as any).clear();
+    return (this.refs["element"] as any).getValue();
   }
 
   randomize() {
@@ -248,6 +207,5 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     if (element && element.clear) {
       element.clear();
     }
-    this.setState({ listItems: [] });
   }
 }
