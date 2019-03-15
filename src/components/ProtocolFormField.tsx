@@ -119,6 +119,8 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   renderListSetting(setting): JSX.Element {
+    // Flatten an object in which the values are arrays
+    let value = Array.isArray(this.props.value) ? this.props.value : (this.props.value && [].concat.apply([], Object.values(this.props.value)));
     return (
       <InputList
         ref="element"
@@ -127,7 +129,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         labelAndDescription={this.labelAndDescription}
         disabled={this.props.disabled}
         toolTip={this.toolTip}
-        value={this.props.value}
+        value={value}
       />
     );
   }
