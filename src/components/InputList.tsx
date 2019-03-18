@@ -9,7 +9,6 @@ export interface InputListProps {
   labelAndDescription: (SettingData) => JSX.Element[];
   setting: SettingData;
   disabled: boolean;
-  // renderToolTip: (item: {} | string, format: string) => JSX.Element;
   value: Array<string | {}>;
 }
 
