@@ -7,12 +7,12 @@ export interface InputListProps {
   labelAndDescription: (SettingData) => JSX.Element[];
   setting: SettingData;
   disabled: boolean;
-  toolTip: (item: any, format: string) => JSX.Element;
-  value: any;
+  renderToolTip: (item: {} | string, format: string) => JSX.Element;
+  value: Array<string | {}>;
 }
 
 export interface InputListState {
-  listItems: string[];
+  listItems: Array<string | {}>;
 }
 
 export default class InputList extends React.Component<InputListProps, InputListState> {
@@ -43,13 +43,27 @@ export default class InputList extends React.Component<InputListProps, InputList
               disabled={this.props.disabled}
               onRemove={() => this.removeListItem(listItem)}
             >
-              {this.props.createEditableInput(setting, {type: "text", description: null, disabled: this.props.disabled, value: value, name: setting.key, label: null, extraContent: this.props.toolTip(listItem, setting.format)})}
+              {this.props.createEditableInput(setting, {
+                type: "text",
+                description: null,
+                disabled: this.props.disabled,
+                value: value,
+                name: setting.key,
+                label: null,
+                extraContent: this.props.renderToolTip(listItem, setting.format)
+              })}
             </WithRemoveButton>
           );
         })}
         <div>
           <span className="add-list-item">
-            { this.props.createEditableInput(setting, {value: null, disabled: this.props.disabled, ref: "addListItem", label: null, description: null})}
+            { this.props.createEditableInput(setting, {
+              value: null,
+              disabled: this.props.disabled,
+              ref: "addListItem",
+              label: null,
+              description: null
+            })}
           </span>
           <button
             type="button"
@@ -62,7 +76,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
-  removeListItem(listItem: string) {
+  removeListItem(listItem: string | {}) {
     this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
   }
 

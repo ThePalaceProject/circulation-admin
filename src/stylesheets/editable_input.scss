@@ -13,6 +13,23 @@
 
 .description {
   font-size: 0.8rem;
+  &.well {
+    margin-top: 10px;
+  }
+  ol {
+    list-style: disc;
+    padding: 0 10px;
+    text-align: left;
+    li {
+      display: list-item;
+      padding-top: 8px;
+      border-bottom: 1px solid $dark-gray;
+      i {
+        display: inline-block;
+        float: right;
+      }
+    }
+  }
 }
 
 .field-error {

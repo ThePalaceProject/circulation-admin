@@ -12,7 +12,7 @@ import { FetchErrorData } from "opds-web-client/lib/interfaces";
 export interface ProtocolFormFieldProps {
   setting: SettingData;
   disabled: boolean;
-  value?: string | any[];
+  value?: string | string[] | {}[] | Array<string | {}>;
   default?: any;
   error?: FetchErrorData;
 }
@@ -94,14 +94,14 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     return React.createElement(EditableInput, props, children);
   }
 
-  renderSelectSetting(setting): JSX.Element {
+  renderSelectSetting(setting: SettingData): JSX.Element {
     let children = setting.options && setting.options.map(option =>
       <option key={option.key} value={option.key}>{option.label}</option>
     );
     return this.createEditableInput(setting, null, children);
   }
 
-  renderListSettingWithOptions(setting): JSX.Element {
+  renderListSettingWithOptions(setting: SettingData): JSX.Element {
     return (
       <div>
         { this.labelAndDescription(setting) }
@@ -118,9 +118,11 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     );
   }
 
-  renderListSetting(setting): JSX.Element {
+  renderListSetting(setting: SettingData): JSX.Element {
     // Flatten an object in which the values are arrays
-    let value = Array.isArray(this.props.value) ? this.props.value : (this.props.value && [].concat.apply([], Object.values(this.props.value)));
+    let value = Array.isArray(this.props.value) ?
+      this.props.value :
+      (this.props.value && [].concat.apply([], Object.values(this.props.value)));
     return (
       <InputList
         ref="element"
@@ -128,13 +130,13 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         createEditableInput={this.createEditableInput}
         labelAndDescription={this.labelAndDescription}
         disabled={this.props.disabled}
-        toolTip={this.toolTip}
+        renderToolTip={this.renderToolTip}
         value={value}
       />
     );
   }
 
-  renderColorPickerSetting(setting): JSX.Element {
+  renderColorPickerSetting(setting: SettingData): JSX.Element {
     return (
       <div>
         { this.labelAndDescription(setting) }
@@ -151,21 +153,21 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     let label = (
       <label key={setting.label}>
         {setting.label}
-        {setting.instructions && <ToolTip trigger={<span className="badge">?</span>} text={setting.instructions} direction="vertical" />}
       </label>
     );
-
     let description = setting.description && (
       <span key={setting.description} className="description" dangerouslySetInnerHTML={{__html: setting.description }} />
     );
-    return [label, description];
+    let instructions = setting.instructions && (
+      <div className="well description" dangerouslySetInnerHTML={{__html: setting.instructions }}></div>
+    );
+    return [label, description, instructions];
   }
 
-  toolTip(item, format) {
+  renderToolTip(item: {} | string, format: string) {
     const icons = {
       "geographic": <LocatorIcon />
     };
-
     if (typeof(item) === "object") {
       return (
         <span className="input-group-addon">
@@ -183,9 +185,13 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   shouldBeChecked(option) {
+    let isArray = this.props.value && Array.isArray(this.props.value);
+    let isAllStrings = isArray && (this.props.value as any).every(x => typeof(x) === "string");
+    let hasKey = isArray && (this.props.value as any).includes(option.key);
+
     let isValue = this.props.value &&
-      (typeof(this.props.value) === "string" || (Array.isArray(this.props.value) && this.props.value.every(x => typeof(x) === "string"))) &&
-      (this.props.value === option.key || Array.isArray(this.props.value) && this.props.value.includes(option.key));
+      (typeof(this.props.value) === "string" || isAllStrings) &&
+      (this.props.value === option.key || hasKey);
     let isDefault = (!this.props.value && this.isDefault(option));
     return isValue || isDefault;
   }

@@ -261,15 +261,10 @@ describe("ProtocolFormField", () => {
     let instructionsSetting = {...setting, ...{instructions: "<ul><li>Step 1</li></ul>", type: "list"}};
     wrapper.setProps({ setting: instructionsSetting });
 
-    let toolTip = wrapper.find(".tool-tip-container");
-    expect(toolTip.length).to.equal(1);
-    let trigger = toolTip.find(".badge");
-    expect(trigger.length).to.equal(1);
-    expect(trigger.text()).to.equal("?");
-    let text = toolTip.find(".tool-tip");
-    expect(text.length).to.equal(1);
-    expect(text.hasClass("vertical")).to.be.true;
-    expect(text.text()).to.equal("Step 1");
+    let instructions = wrapper.find(".well");
+    expect(instructions.length).to.equal(1);
+    expect(instructions.hasClass("description")).to.be.true;
+    expect(instructions.text()).to.equal("Step 1");
   });
 
   it("gets value of text setting", () => {

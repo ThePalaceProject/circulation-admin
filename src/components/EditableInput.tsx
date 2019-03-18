@@ -61,10 +61,10 @@ export default class EditableInput extends React.Component<EditableInputProps, E
             { this.props.type === "radio" && <span>{this.props.label}</span> }
           </label>
         }
-        <section className={this.props.extraContent ? "with-add-on" : ""}>
+        <div className={this.props.extraContent ? "with-add-on" : ""}>
           { this.props.extraContent }
           {!this.props.label && this.renderElement()}
-        </section>
+        </div>
         {description.trim() && this.renderDescription(description)}
       </div>
     );
