@@ -2,7 +2,7 @@ import * as React from "react";
 import WithRemoveButton from "./WithRemoveButton";
 import { SettingData } from "../interfaces";
 import ToolTip from "./ToolTip";
-import { LocatorIcon } from "@nypl/dgx-svg-icons";
+import { LocatorIcon, SearchIcon } from "@nypl/dgx-svg-icons";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
@@ -79,7 +79,8 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   renderToolTip(item: {} | string, format: string) {
     const icons = {
-      "geographic": <LocatorIcon />
+      "geographic": <LocatorIcon />,
+      "language-code": <SearchIcon />
     };
     if (typeof(item) === "object") {
       return (

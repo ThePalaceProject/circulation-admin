@@ -84,7 +84,7 @@ describe("InputList", () => {
     expect(addListItem.parent().find("button").text()).to.equal("Add");
   });
 
-  it("optionally renders a tooltip with extra content", () => {
+  it("optionally renders a geographic tooltip with extra content", () => {
     let valueWithObject = [{"Thing 3": "extra information!"}];
     let geographicSetting = {...setting, ...{format: "geographic"}};
     let spyToolTip = spy(wrapper.instance(), "renderToolTip");
@@ -105,6 +105,29 @@ describe("InputList", () => {
     expect(withAddOn.find("input").length).to.equal(1);
     expect(withAddOn.find("input").prop("value")).to.equal("Thing 3");
     expect(spyToolTip.args[0]).to.eql([valueWithObject[0], "geographic"]);
+  });
+
+  it("optionally renders a language code tooltip with extra content", () => {
+    let valueWithObject = [{"abc": "A language"}];
+    let languageSetting = {...setting, ...{format: "language-code"}};
+    let spyToolTip = spy(wrapper.instance(), "renderToolTip");
+
+    wrapper.setProps({ setting: languageSetting, value: valueWithObject });
+
+    let withAddOn = wrapper.find(".with-add-on");
+    expect(withAddOn.length).to.equal(1);
+
+    let addOn = withAddOn.find(".input-group-addon");
+    expect(addOn.length).to.equal(1);
+    let toolTipElement = addOn.find(ToolTip);
+    expect(toolTipElement.length).to.equal(1);
+    expect(toolTipElement.find("svg").hasClass("searchIcon")).to.be.true;
+    expect(toolTipElement.find(".tool-tip").hasClass("point-right")).to.be.true;
+    expect(toolTipElement.find(".tool-tip").text()).to.equal("A language");
+
+    expect(withAddOn.find("input").length).to.equal(1);
+    expect(withAddOn.find("input").prop("value")).to.equal("abc");
+    expect(spyToolTip.args[0]).to.eql([valueWithObject[0], "language-code"]);
   });
 
   it("removes an item", () => {
