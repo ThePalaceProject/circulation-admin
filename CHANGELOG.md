@@ -1,7 +1,12 @@
 ## Changelog
 
-### v0.1.5
+### v0.1.6
+#### Updated
 - Improved the process for specifying a library's service and focus areas.
+
+### v0.1.5
+#### Fixed
+- Fixed minor bug affecting the display for libraries for which registration has failed.
 
 ### v0.1.4
 #### Added

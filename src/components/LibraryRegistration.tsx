@@ -95,8 +95,9 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
   }
 
   statusSpan(status: string): JSX.Element {
+    let className = status === "failure" ? "bg-danger" : `bg-${status}`;
     return (
-      <span className={`bg-${status}`}>{this.MESSAGES[status].statusText}</span>
+      <span className={className}>{this.MESSAGES[status].statusText}</span>
     );
   }
 
