@@ -21,19 +21,16 @@ describe("InputList", () => {
   let parent;
   let createEditableInput;
   let labelAndDescription;
-  let renderToolTip;
 
   beforeEach(() => {
     parent = mount(<ProtocolFormField setting={setting} disabled={false} />);
     createEditableInput = spy(parent.instance(), "createEditableInput");
     labelAndDescription = spy(parent.instance(), "labelAndDescription");
-    renderToolTip = spy(parent.instance(), "renderToolTip");
 
     wrapper = mount(
       <InputList
         createEditableInput={createEditableInput}
         labelAndDescription={labelAndDescription}
-        renderToolTip={renderToolTip}
         value={value}
         setting={setting}
         disabled={false}
@@ -90,6 +87,7 @@ describe("InputList", () => {
   it("optionally renders a tooltip with extra content", () => {
     let valueWithObject = [{"Thing 3": "extra information!"}];
     let geographicSetting = {...setting, ...{format: "geographic"}};
+    let spyToolTip = spy(wrapper.instance(), "renderToolTip");
 
     wrapper.setProps({ setting: geographicSetting, value: valueWithObject });
 
@@ -106,7 +104,7 @@ describe("InputList", () => {
 
     expect(withAddOn.find("input").length).to.equal(1);
     expect(withAddOn.find("input").prop("value")).to.equal("Thing 3");
-    expect(renderToolTip.args[2]).to.eql([valueWithObject[0], "geographic"]);
+    expect(spyToolTip.args[0]).to.eql([valueWithObject[0], "geographic"]);
   });
 
   it("removes an item", () => {

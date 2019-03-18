@@ -1,13 +1,15 @@
 import * as React from "react";
 import WithRemoveButton from "./WithRemoveButton";
 import { SettingData } from "../interfaces";
+import ToolTip from "./ToolTip";
+import { LocatorIcon } from "@nypl/dgx-svg-icons";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
   labelAndDescription: (SettingData) => JSX.Element[];
   setting: SettingData;
   disabled: boolean;
-  renderToolTip: (item: {} | string, format: string) => JSX.Element;
+  // renderToolTip: (item: {} | string, format: string) => JSX.Element;
   value: Array<string | {}>;
 }
 
@@ -50,7 +52,7 @@ export default class InputList extends React.Component<InputListProps, InputList
                 value: value,
                 name: setting.key,
                 label: null,
-                extraContent: this.props.renderToolTip(listItem, setting.format)
+                extraContent: this.renderToolTip(listItem, setting.format)
               })}
             </WithRemoveButton>
           );
@@ -74,6 +76,20 @@ export default class InputList extends React.Component<InputListProps, InputList
         </div>
       </div>
     );
+  }
+
+  renderToolTip(item: {} | string, format: string) {
+    const icons = {
+      "geographic": <LocatorIcon />
+    };
+    if (typeof(item) === "object") {
+      return (
+        <span className="input-group-addon">
+          <ToolTip trigger={icons[format]} direction="point-right" text={Object.values(item)[0]}/>
+        </span>
+      );
+    }
+    return null;
   }
 
   removeListItem(listItem: string | {}) {

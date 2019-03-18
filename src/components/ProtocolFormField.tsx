@@ -2,10 +2,8 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
-import ToolTip from "./ToolTip";
 import SaveButton from "./SaveButton";
 import InputList from "./InputList";
-import { LocatorIcon } from "@nypl/dgx-svg-icons";
 import { SettingData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -130,7 +128,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         createEditableInput={this.createEditableInput}
         labelAndDescription={this.labelAndDescription}
         disabled={this.props.disabled}
-        renderToolTip={this.renderToolTip}
         value={value}
       />
     );
@@ -162,20 +159,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       <div className="well description" dangerouslySetInnerHTML={{__html: setting.instructions }}></div>
     );
     return [label, description, instructions];
-  }
-
-  renderToolTip(item: {} | string, format: string) {
-    const icons = {
-      "geographic": <LocatorIcon />
-    };
-    if (typeof(item) === "object") {
-      return (
-        <span className="input-group-addon">
-          <ToolTip trigger={icons[format]} direction="point-right" text={Object.values(item)[0]}/>
-        </span>
-      );
-    }
-    return null;
   }
 
   isDefault(option) {
