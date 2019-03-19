@@ -1,6 +1,9 @@
 .edit-form {
   label {
     width: 100%;
+    .form-control {
+      font-weight: normal;
+    }
   }
 
   input[name=series] {
