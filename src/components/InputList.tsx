@@ -97,7 +97,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   addListItem() {
     const listItem = (this.refs["addListItem"] as any).getValue();
-    this.setState({ listItems: this.state.listItems.concat(listItem) });
+    listItem.length && this.setState({ listItems: this.state.listItems.concat(listItem) });
     (this.refs["addListItem"] as any).clear();
   }
 
