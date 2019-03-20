@@ -18,6 +18,32 @@
     color: white;
     background: $dark-gray;
     opacity: .75;
+
+    &.vertical {
+      height: auto;
+      min-width: 500px;
+      left: 0;
+      top: 28px;
+    }
+
+    &.point-right {
+      left: -975%;
+    }
+
+    ol {
+      list-style: disc;
+      padding: 5px 20px 0 30px;
+      text-align: left;
+      li {
+        display: list-item;
+        padding-top: 8px;
+        border-bottom: 1px solid white;
+        i {
+          display: inline-block;
+          float: right;
+        }
+      }
+    }
   }
   .tool-tip::after {
     content: "";
@@ -28,5 +54,14 @@
     border-width: 5px;
     border-style: solid;
     border-color: transparent $dark-gray transparent transparent;
+  }
+  .tool-tip.vertical::after {
+    border-color: transparent transparent $dark-gray transparent;
+    top: -5px;
+    left: 5px;
+  }
+  .tool-tip.point-right::after {
+    border-color: transparent transparent transparent $dark-gray;
+    left: 100%;
   }
 }

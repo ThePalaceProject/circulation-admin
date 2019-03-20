@@ -33,15 +33,15 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   render(): JSX.Element {
-    let requiredFields = [];
-    let nonRequiredFields = [];
+    let basicInfo = [];
+    let otherFields = [];
 
     if (this.props.data && this.props.data.settings) {
-      nonRequiredFields = this.props.data.settings.filter(setting => !setting.required);
-      requiredFields = this.props.data.settings.filter(setting => setting.required);
+      basicInfo = this.props.data.settings.filter(setting => (setting.required || setting.category === "Basic Information"));
+      otherFields = this.props.data.settings.filter(setting => !(new Set(basicInfo).has(setting)));
     }
 
-    let categories = this.separateCategories(nonRequiredFields);
+    let categories = this.separateCategories(otherFields);
 
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
@@ -51,11 +51,11 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           value={this.props.item && this.props.item.uuid}
           />
         <Collapsible
-          title="Required Fields"
+          title="Basic Information"
           openByDefault={true}
           body={
             <fieldset>
-              <legend className="visuallyHidden">Required Fields</legend>
+              <legend className="visuallyHidden">Basic Information</legend>
               <EditableInput
                 elementType="input"
                 type="text"
@@ -80,7 +80,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
                 description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
                 error={this.props.error}
                 />
-              { requiredFields.map(setting =>
+              { basicInfo.map(setting =>
                 <ProtocolFormField
                   key={setting.key}
                   ref={setting.key}

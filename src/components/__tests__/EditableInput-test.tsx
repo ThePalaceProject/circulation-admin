@@ -62,6 +62,17 @@ describe("EditableInput", () => {
     expect(input.prop("checked")).to.equal(true);
   });
 
+  it("optionally shows extra content", () => {
+    let extra = wrapper.find(".with-add-on");
+    expect(extra.length).to.equal(0);
+
+    wrapper.setProps({ extraContent: <span>Extra content!</span> });
+
+    extra = wrapper.find(".with-add-on");
+    expect(extra.length).to.equal(1);
+    expect(extra.text()).to.equal("Extra content!");
+  });
+
   it("shows children from props", () => {
     let option = wrapper.find("option");
     expect(option.text()).to.equal("option");

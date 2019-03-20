@@ -1,12 +1,16 @@
 ## Changelog
 
+### v0.1.6
+#### Updated
+- Improved the process for specifying a library's service and focus areas.
+
 ### v0.1.5
 #### Fixed
 - Fixed minor bug affecting the display for libraries for which registration has failed.
 
 ### v0.1.4
 #### Added
-- Require admins to agree to the terms and conditions before registering or updating a library with a discovery service.
+- Required admins to agree to the terms and conditions before registering or updating a library with a discovery service.
 
 ### v0.1.3
 #### Added

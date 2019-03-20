@@ -1,6 +1,9 @@
 .edit-form {
   label {
     width: 100%;
+    .form-control {
+      font-weight: normal;
+    }
   }
 
   input[name=series] {
@@ -19,7 +22,7 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    align-items: baseline;
+    align-items: flex-start;
   }
 
   .contributor-form {

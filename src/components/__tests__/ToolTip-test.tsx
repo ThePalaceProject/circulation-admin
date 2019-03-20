@@ -25,7 +25,8 @@ describe("ToolTip", () => {
   it("renders the tooltip", () => {
     let tooltip = wrapper.find(".tool-tip");
     expect(tooltip.length).to.equal(1);
-    expect(tooltip.text()).to.equal("ToolTip Content");
+    expect(tooltip.prop("dangerouslySetInnerHTML")["__html"]).to.equal("ToolTip Content");
+    expect(tooltip.html()).to.include("ToolTip Content");
   });
 
   it("initially hides the tooltip", () => {

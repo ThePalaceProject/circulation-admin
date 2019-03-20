@@ -183,6 +183,7 @@ export interface LibrarySettingField {
   key: string;
   label: string;
   required?: boolean;
+  category?: string;
 }
 
 export interface LibrariesData {
@@ -199,11 +200,13 @@ export interface SettingData {
   key: string;
   label: string;
   description?: string;
-  default?: string | string[];
+  default?: string | string[] | Object[];
   required?: boolean;
   randomizable?: boolean;
   type?: string;
   options?: SettingData[];
+  instructions?: string;
+  format?: string;
 }
 
 export interface ProtocolData {

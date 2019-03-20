@@ -2,31 +2,24 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
+import SaveButton from "./SaveButton";
+import InputList from "./InputList";
 import { SettingData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ProtocolFormFieldProps {
   setting: SettingData;
   disabled: boolean;
-  value?: string | string[];
+  value?: string | string[] | {}[] | Array<string | {}>;
   default?: any;
   error?: FetchErrorData;
 }
 
-export interface ProtocolFormFieldState {
-  listItems?: string [];
-}
-
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
-export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, ProtocolFormFieldState> {
+export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, void> {
   constructor(props) {
     super(props);
-    this.state = {
-      listItems: (props.value as string[]) || []
-    };
-    this.addListItem = this.addListItem.bind(this);
-    this.removeListItem = this.removeListItem.bind(this);
     this.randomize = this.randomize.bind(this);
     this.isDefault = this.isDefault.bind(this);
     this.shouldBeChecked = this.shouldBeChecked.bind(this);
@@ -34,185 +27,138 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
 
   render(): JSX.Element {
     const setting = this.props.setting;
-    if (setting.type === "text" || setting.type === undefined) {
-      return (
-        <div className={setting.randomizable ? "randomizable" : ""}>
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            name={setting.key}
-            label={setting.label}
-            required={setting.required}
-            description={setting.description}
-            value={this.props.value || setting.default}
-            error={this.props.error}
-            ref="element"
-            />
-            { setting.randomizable && !this.props.value &&
-              <div className="text-right">
-                <button
-                  className="btn btn-default"
-                  disabled={this.props.disabled}
-                  onClick={this.randomize}
-                  type="button">
-                  Set to random value
-                </button>
-              </div>
-            }
-        </div>
-      );
-    } else if (setting.type === "number") {
-      return (
-        <EditableInput
-          elementType="input"
-          validation="number"
-          required={setting.required}
-          step={1}
-          disabled={this.props.disabled}
-          name={setting.key}
-          label={setting.label}
-          description={setting.description}
-          value={this.props.value || setting.default}
-          error={this.props.error}
-          ref="element"
-          />
-      );
-    } else if (setting.type === "textarea") {
-      return (
-        <EditableInput
-          elementType="textarea"
-          type="text"
-          disabled={this.props.disabled}
-          name={setting.key}
-          label={setting.label}
-          required={setting.required}
-          description={setting.description}
-          value={this.props.value || setting.default}
-          error={this.props.error}
-          ref="element"
-          />
-      );
-    } else if (setting.type === "select") {
-      return (
-        <EditableInput
-          elementType="select"
-          disabled={this.props.disabled}
-          name={setting.key}
-          required={setting.required}
-          label={setting.label}
-          description={setting.description}
-          value={this.props.value || setting.default}
-          ref="element"
-          >
-          { setting.options && setting.options.map(option =>
-              <option key={option.key} value={option.key}>{option.label}</option>
-            )
-          }
-        </EditableInput>
-      );
+    if (setting.type === "select") {
+      return this.renderSelectSetting(setting);
     } else if (setting.type === "list" && setting.options) {
-      return (
-        <div>
-          <label>{setting.label}</label>
-          { setting.description &&
-            <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
-          }
-          { setting.options.map(option =>
-              <EditableInput
-                key={option.key}
-                elementType="input"
-                type="checkbox"
-                required={setting.required}
-                disabled={this.props.disabled}
-                name={`${setting.key}_${option.key}`}
-                label={option.label}
-                error={this.props.error}
-                checked={this.shouldBeChecked(option)}
-                />
-            )
-          }
-        </div>
-      );
+        return this.renderListSettingWithOptions(setting);
     } else if (setting.type === "list") {
-      return (
-        <div>
-          <label>{setting.label}</label>
-          { setting.description &&
-            <span className="description" dangerouslySetInnerHTML={{__html: setting.description}} />
-          }
-          { this.state.listItems && this.state.listItems.map(listItem =>
-              <WithRemoveButton
-                disabled={this.props.disabled}
-                onRemove={() => this.removeListItem(listItem)}
-                >
-                <EditableInput
-                  elementType="input"
-                  type="text"
-                  required={setting.required}
-                  disabled={this.props.disabled}
-                  name={setting.key}
-                  value={listItem}
-                  error={this.props.error}
-                  />
-              </WithRemoveButton>
-            )
-          }
-          <div>
-            <span className="add-list-item">
-              <EditableInput
-                elementType="input"
-                type="text"
-                required={setting.required}
-                disabled={this.props.disabled}
-                name={setting.key}
-                ref="addListItem"
-                error={this.props.error}
-                />
-            </span>
-            <button
-              type="button"
-              className="btn btn-default add-list-item"
-              disabled={this.props.disabled}
-              onClick={this.addListItem}
-              >Add</button>
-          </div>
-        </div>
-      );
-    } else if (setting.type === "image") {
-      return (
-        <div>
-          <label>{setting.label}</label>
-          { this.props.value &&
-            <img src={String(this.props.value)} />
-          }
-          <EditableInput
-            elementType="input"
-            type="file"
-            disabled={this.props.disabled}
-            required={setting.required}
-            name={setting.key}
-            description={setting.description}
-            accept="image/*"
-            error={this.props.error}
-            />
-        </div>
-      );
+        return this.renderListSetting(setting);
     } else if (setting.type === "color-picker") {
-      return (
-        <div>
-          <label>{setting.label}</label>
-          { setting.description &&
-            <span className="description" dangerouslySetInnerHTML={{__html: setting.description }} />
-          }
-          <ColorPicker
-            value={String(this.props.value || setting.default)}
-            setting={setting}
-            ref="element"
-            />
-        </div>
-      );
+        return this.renderColorPickerSetting(setting);
+    } else {
+        return this.renderSetting(setting);
     }
+  }
+
+  renderSetting(setting: SettingData, customProps = null): JSX.Element {
+    return (
+      <div className={setting.randomizable ? "randomizable" : ""}>
+        {this.props.value && setting.type === "image" && <img src={String(this.props.value)} />}
+        {
+          this.createEditableInput(setting)
+        }
+        { setting.randomizable && !this.props.value &&
+          <div className="text-right">
+            <SaveButton disabled={this.props.disabled} submit={this.randomize} text={"Set to random value"} type="button" />
+          </div>
+        }
+      </div>
+    );
+  }
+
+  createEditableInput(setting: SettingData, customProps = null, children = null): JSX.Element {
+    let elementType = setting.type && ["text", "textarea", "select"].includes(setting.type) ? setting.type : "input";
+
+    const extraProps = {
+      "image": {
+        accept: "image/*",
+        type: "file",
+        value: undefined
+      },
+      "number": {
+        validation: "number",
+        step: 1
+      }
+    };
+
+    const basicProps = {
+      key: setting.key,
+      elementType: elementType,
+      type: "text",
+      disabled: this.props && this.props.disabled,
+      name: setting.key,
+      label: setting.label,
+      required: setting.required,
+      description: setting.description,
+      value: (this.props && this.props.value) || setting.default,
+      error: this.props && this.props.error,
+      ref: "element"
+    };
+
+    let props = extraProps[setting.type] ? {...basicProps, ...extraProps[setting.type]} : basicProps;
+    if (customProps) {
+      props = {...props, ...customProps};
+    }
+    return React.createElement(EditableInput, props, children);
+  }
+
+  renderSelectSetting(setting: SettingData): JSX.Element {
+    let children = setting.options && setting.options.map(option =>
+      <option key={option.key} value={option.key}>{option.label}</option>
+    );
+    return this.createEditableInput(setting, null, children);
+  }
+
+  renderListSettingWithOptions(setting: SettingData): JSX.Element {
+    return (
+      <div>
+        { this.labelAndDescription(setting) }
+        { setting.options.map((option) => {
+            return this.createEditableInput(option, {
+                type: "checkbox",
+                required: setting.required,
+                name: `${setting.key}_${option.key}`,
+                checked: this.shouldBeChecked(option)
+              });
+            })
+        }
+      </div>
+    );
+  }
+
+  renderListSetting(setting: SettingData): JSX.Element {
+    // Flatten an object in which the values are arrays
+    let value = Array.isArray(this.props.value) ?
+      this.props.value :
+      (this.props.value && [].concat.apply([], Object.values(this.props.value)));
+    return (
+      <InputList
+        ref="element"
+        setting={setting}
+        createEditableInput={this.createEditableInput}
+        labelAndDescription={this.labelAndDescription}
+        disabled={this.props.disabled}
+        value={value}
+      />
+    );
+  }
+
+  renderColorPickerSetting(setting: SettingData): JSX.Element {
+    return (
+      <div>
+        { this.labelAndDescription(setting) }
+        <ColorPicker
+          value={String(this.props.value || setting.default)}
+          setting={setting}
+          ref="element"
+        />
+      </div>
+    );
+  }
+
+  labelAndDescription(setting: SettingData): JSX.Element[] {
+    let label = (
+      <label key={setting.label}>
+        {setting.label}
+      </label>
+    );
+    let description = setting.description && (
+      <span key={setting.description} className="description" dangerouslySetInnerHTML={{__html: setting.description }} />
+    );
+    let instructions = setting.instructions && (
+      <div className="well description" dangerouslySetInnerHTML={{__html: setting.instructions }}></div>
+    );
+    return [label, description, instructions];
   }
 
   isDefault(option) {
@@ -222,27 +168,19 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   shouldBeChecked(option) {
-    let isValue = (this.props.value && (this.props.value.indexOf(option.key) !== -1));
+    let isArray = this.props.value && Array.isArray(this.props.value);
+    let isAllStrings = isArray && (this.props.value as any).every(x => typeof(x) === "string");
+    let hasKey = isArray && (this.props.value as any).includes(option.key);
+
+    let isValue = this.props.value &&
+      (typeof(this.props.value) === "string" || isAllStrings) &&
+      (this.props.value === option.key || hasKey);
     let isDefault = (!this.props.value && this.isDefault(option));
     return isValue || isDefault;
   }
 
   getValue() {
-    if (this.props.setting.type === "list" && !this.props.setting.options) {
-      return this.state.listItems;
-    } else {
-      return (this.refs["element"] as any).getValue();
-    }
-  }
-
-  removeListItem(listItem: string) {
-    this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
-  }
-
-  addListItem() {
-    const listItem = (this.refs["addListItem"] as any).getValue();
-    this.setState({ listItems: this.state.listItems.concat(listItem) });
-    (this.refs["addListItem"] as any).clear();
+    return (this.refs["element"] as any).getValue();
   }
 
   randomize() {
@@ -260,8 +198,5 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     if (element && element.clear) {
       element.clear();
     }
-    this.setState({ listItems: [] });
   }
-
-
 }
