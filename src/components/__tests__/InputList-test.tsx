@@ -2,6 +2,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 import { spy, stub } from "sinon";
+import buildStore from "../../store";
 
 import InputList from "../InputList";
 import ProtocolFormField from "../ProtocolFormField";
@@ -11,6 +12,8 @@ import ToolTip from "../ToolTip";
 
 describe("InputList", () => {
   let wrapper;
+  let store;
+  let context;
   let value = ["Thing 1", "Thing 2"];
   let setting = {
     key: "setting",
@@ -23,6 +26,8 @@ describe("InputList", () => {
   let labelAndDescription;
 
   beforeEach(() => {
+    store = buildStore();
+    context = { editorStore: store, csrfToken: "token" };
     parent = mount(<ProtocolFormField setting={setting} disabled={false} />);
     createEditableInput = spy(parent.instance(), "createEditableInput");
     labelAndDescription = spy(parent.instance(), "labelAndDescription");
@@ -35,7 +40,7 @@ describe("InputList", () => {
         setting={setting}
         disabled={false}
       />
-    );
+    , { context });
   });
 
   it("renders a label and description", () => {
@@ -107,27 +112,14 @@ describe("InputList", () => {
     expect(spyToolTip.args[0]).to.eql([valueWithObject[0], "geographic"]);
   });
 
-  it("optionally renders a language code tooltip with extra content", () => {
-    let valueWithObject = [{"abc": "A language"}];
+  it("renders an autocomplete field for languages", () => {
+    let valueWithObject = ["abc"];
     let languageSetting = {...setting, ...{format: "language-code"}};
-    let spyToolTip = spy(wrapper.instance(), "renderToolTip");
-
     wrapper.setProps({ setting: languageSetting, value: valueWithObject });
-
-    let withAddOn = wrapper.find(".with-add-on");
-    expect(withAddOn.length).to.equal(1);
-
-    let addOn = withAddOn.find(".input-group-addon");
-    expect(addOn.length).to.equal(1);
-    let toolTipElement = addOn.find(ToolTip);
-    expect(toolTipElement.length).to.equal(1);
-    expect(toolTipElement.find("svg").hasClass("searchIcon")).to.be.true;
-    expect(toolTipElement.find(".tool-tip").hasClass("point-right")).to.be.true;
-    expect(toolTipElement.find(".tool-tip").text()).to.equal("A language");
-
-    expect(withAddOn.find("input").length).to.equal(1);
-    expect(withAddOn.find("input").prop("value")).to.equal("abc");
-    expect(spyToolTip.args[0]).to.eql([valueWithObject[0], "language-code"]);
+    let autocomplete = wrapper.find("[list='setting-autocomplete-list']");
+    expect(autocomplete.length).to.equal(2);
+    expect(autocomplete.at(0).prop("value")).to.equal("abc");
+    expect(autocomplete.at(1).prop("value")).to.equal("");
   });
 
   it("removes an item", () => {
@@ -139,7 +131,7 @@ describe("InputList", () => {
     expect(removables.length).to.equal(1);
   });
 
-  it("adds an item", () => {
+  it("adds a regular item", () => {
     let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
 
@@ -156,8 +148,26 @@ describe("InputList", () => {
     expect(blankInput.prop("value")).to.equal("");
   });
 
+  it("adds an autocompleted item", () => {
+    let languageSetting = {...setting, ...{format: "language-code"}};
+    wrapper.setProps({ setting: languageSetting, value: ["abc"] });
+
+    let removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(1);
+    let autocomplete = wrapper.find("[list='setting-autocomplete-list']").at(1);
+    autocomplete.get(0).value = "Another language";
+    autocomplete.simulate("change");
+    let addButton = wrapper.find("button.add-list-item");
+    addButton.simulate("click");
+
+    removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(2);
+    autocomplete = wrapper.find("[list='setting-autocomplete-list']").at(2);
+    expect(autocomplete.prop("value")).to.equal("");
+  });
+
   it("gets the value", () => {
-      expect((wrapper.instance() as InputList).getValue()).to.eql(value);
+    expect((wrapper.instance() as InputList).getValue()).to.eql(value);
   });
 
   it("clears all the items", () => {

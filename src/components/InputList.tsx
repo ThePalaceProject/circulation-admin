@@ -1,8 +1,12 @@
 import * as React from "react";
 import WithRemoveButton from "./WithRemoveButton";
+import LanguageField from "./LanguageField";
 import { SettingData } from "../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon, SearchIcon } from "@nypl/dgx-svg-icons";
+import { Store } from "redux";
+import { connect } from "react-redux";
+import { State } from "../reducers/index";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
@@ -16,7 +20,20 @@ export interface InputListState {
   listItems: Array<string | {}>;
 }
 
+export interface InputListContext {
+  editorStore: Store<State>;
+  csrfToken: string;
+}
+
 export default class InputList extends React.Component<InputListProps, InputListState> {
+
+  context: InputListContext;
+
+  static contextTypes: React.ValidationMap<InputListContext> = {
+    editorStore: React.PropTypes.object.isRequired,
+    csrfToken: React.PropTypes.string.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -44,27 +61,44 @@ export default class InputList extends React.Component<InputListProps, InputList
               disabled={this.props.disabled}
               onRemove={() => this.removeListItem(listItem)}
             >
-              {this.props.createEditableInput(setting, {
-                type: "text",
-                description: null,
-                disabled: this.props.disabled,
-                value: value,
-                name: setting.key,
-                label: null,
-                extraContent: this.renderToolTip(listItem, setting.format)
-              })}
+              {
+                this.props.setting.format === "language-code" ?
+                  <LanguageField
+                    store={this.context.editorStore}
+                    disabled={this.props.disabled}
+                    value={value}
+                    name={setting.key}
+                  /> :
+                  this.props.createEditableInput(setting, {
+                  type: "text",
+                  description: null,
+                  disabled: this.props.disabled,
+                  value: value,
+                  name: setting.key,
+                  label: null,
+                  extraContent: this.renderToolTip(listItem, setting.format)
+                })
+              }
             </WithRemoveButton>
           );
         })}
         <div>
           <span className="add-list-item">
-            { this.props.createEditableInput(setting, {
-              value: null,
-              disabled: this.props.disabled,
-              ref: "addListItem",
-              label: null,
-              description: null
-            })}
+            { this.props.setting.format === "language-code" ?
+                <LanguageField
+                  store={this.context.editorStore}
+                  disabled={this.props.disabled}
+                  ref="addListItem"
+                  name={setting.key}
+                /> :
+              this.props.createEditableInput(setting, {
+                value: null,
+                disabled: this.props.disabled,
+                ref: "addListItem",
+                label: null,
+                description: null
+              })
+            }
           </span>
           <button
             type="button"
@@ -97,9 +131,13 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   addListItem() {
-    const listItem = (this.refs["addListItem"] as any).getValue();
+    let ref = this.props.setting.format === "language-code" ?
+      (this.refs["addListItem"] as any).getWrappedInstance().refs["autocomplete"] :
+      (this.refs["addListItem"] as any);
+
+    const listItem = ref.getValue();
     this.setState({ listItems: this.state.listItems.concat(listItem) });
-    (this.refs["addListItem"] as any).clear();
+    ref.clear();
   }
 
   getValue() {

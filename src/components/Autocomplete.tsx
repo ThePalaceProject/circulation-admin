@@ -5,7 +5,7 @@ export interface AutocompleteProps {
   autocompleteValues: string[];
   disabled: boolean;
   name: string;
-  label: string;
+  label?: string;
   value?: string;
 }
 
@@ -38,5 +38,9 @@ export default class Autocomplete extends React.Component<AutocompleteProps, voi
 
   getValue() {
     return (this.refs["input"] as any).getValue();
+  }
+
+  clear() {
+    (this.refs["input"] as any).setState({ value: "" });
   }
 }
