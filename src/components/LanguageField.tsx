@@ -8,10 +8,11 @@ import ActionCreator from "../actions";
 import { LanguagesData } from "../interfaces";
 
 export interface LanguageFieldOwnProps {
+  name: string;
   value?: string;
   disabled?: boolean;
-  store?: Store<State>;
-  name?: string;
+  label?: string;
+  store: Store<State>;
 }
 
 export interface LanguageFieldDispatchProps {
@@ -31,12 +32,14 @@ export class LanguageField extends React.Component<LanguageFieldProps, void> {
   }
 
   render() {
+    let value = (this.props.languages && this.props.languages[this.props.value] && this.props.languages[this.props.value][0]) || this.props.value;
     return (
       <Autocomplete
         autocompleteValues={this.uniqueLanguageNames()}
         disabled={this.props.disabled}
         name={this.props.name || "language"}
-        value={this.props.value}
+        value={value}
+        label={this.props.label}
         ref="autocomplete"
       />
     );

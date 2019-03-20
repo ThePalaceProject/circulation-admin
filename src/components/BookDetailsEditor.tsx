@@ -7,7 +7,7 @@ import editorAdapter from "../editorAdapter";
 import ButtonForm from "./ButtonForm";
 import BookEditForm from "./BookEditForm";
 import ErrorMessage from "./ErrorMessage";
-import { BookData, RolesData, MediaData, LanguagesData } from "../interfaces";
+import { BookData, RolesData, MediaData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 
@@ -15,7 +15,6 @@ export interface BookDetailsEditorStateProps {
   bookData?: BookData;
   roles?: RolesData;
   media?: MediaData;
-  languages?: LanguagesData;
   bookAdminUrl?: string;
   fetchError?: FetchErrorData;
   editError?: FetchErrorData;
@@ -26,7 +25,6 @@ export interface BookDetailsEditorDispatchProps {
   fetchBook: (url: string) => void;
   fetchRoles: () => void;
   fetchMedia: () => void;
-  fetchLanguages: () => void;
   editBook: (url: string, data: FormData | null) => Promise<any>;
 }
 
@@ -100,9 +98,9 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, v
             { this.props.bookData.editLink &&
               <BookEditForm
                 {...this.props.bookData}
+                store={this.props.store}
                 roles={this.props.roles}
                 media={this.props.media}
-                languages={this.props.languages}
                 disabled={this.props.isFetching}
                 editBook={this.props.editBook}
                 refresh={this.refresh} />
@@ -122,7 +120,6 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, v
       this.props.fetchBook(bookAdminUrl);
       this.props.fetchRoles();
       this.props.fetchMedia();
-      this.props.fetchLanguages();
     }
   }
 
@@ -161,7 +158,6 @@ function mapStateToProps(state, ownProps) {
     bookData: state.editor.book.data || ownProps.bookData,
     roles: state.editor.roles.data,
     media: state.editor.media.data,
-    languages: state.editor.languages.data,
     isFetching: state.editor.book.isFetching || state.editor.roles.isFetching || state.editor.media.isFetching || state.editor.languages.isFetching,
     fetchError: state.editor.book.fetchError || state.editor.roles.fetchError || state.editor.media.fetchError || state.editor.languages.fetchError,
     editError: state.editor.book.editError
@@ -175,8 +171,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     editBook: (url, data) => dispatch(actions.editBook(url, data)),
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
     fetchRoles: () => dispatch(actions.fetchRoles()),
-    fetchMedia: () => dispatch(actions.fetchMedia()),
-    fetchLanguages: () => dispatch(actions.fetchLanguages())
+    fetchMedia: () => dispatch(actions.fetchMedia())
   };
 }
 

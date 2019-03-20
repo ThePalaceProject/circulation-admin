@@ -12,7 +12,6 @@ import ErrorMessage from "../ErrorMessage";
 describe("BookDetailsEditor", () => {
   let fetchBook;
   let fetchRoles;
-  let fetchLanguages;
   let fetchMedia;
   let editBook;
   let dispatchProps;
@@ -20,11 +19,10 @@ describe("BookDetailsEditor", () => {
   beforeEach(() => {
     fetchBook = stub();
     fetchRoles = stub();
-    fetchLanguages = stub();
     fetchMedia = stub();
     editBook = stub();
     dispatchProps = {
-      fetchBook, fetchRoles, fetchLanguages, fetchMedia, editBook
+      fetchBook, fetchRoles, fetchMedia, editBook
     };
   });
 
@@ -41,7 +39,6 @@ describe("BookDetailsEditor", () => {
     expect(fetchBook.callCount).to.equal(1);
     expect(fetchBook.args[0][0]).to.equal("admin/works/1234");
     expect(fetchRoles.callCount).to.equal(1);
-    expect(fetchLanguages.callCount).to.equal(1);
     expect(fetchMedia.callCount).to.equal(1);
   });
 
@@ -185,10 +182,6 @@ describe("BookDetailsEditor", () => {
       "aut": "Author",
       "nar": "Narrator"
     };
-    let languages = {
-      "eng": ["English"],
-      "spa": ["Spanish"]
-    };
     let media = {
       "http://schema.org/AudioObject": "Audio",
       "http://schema.org/Book": "Book"
@@ -203,16 +196,14 @@ describe("BookDetailsEditor", () => {
         csrfToken="token"
         {...dispatchProps}
         roles={roles}
-        languages={languages}
         media={media}
-        />
+      />
     );
 
     let editForm = wrapper.find(BookEditForm);
     expect(editForm.length).to.equal(1);
     expect(editForm.prop("title")).to.equal("title");
     expect(editForm.prop("roles")).to.equal(roles);
-    expect(editForm.prop("languages")).to.equal(languages);
     expect(editForm.prop("media")).to.equal(media);
   });
 });
