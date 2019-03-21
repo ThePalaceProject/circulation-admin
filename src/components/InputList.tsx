@@ -22,7 +22,6 @@ export interface InputListState {
 
 export interface InputListContext {
   editorStore: Store<State>;
-  csrfToken: string;
 }
 
 export default class InputList extends React.Component<InputListProps, InputListState> {
