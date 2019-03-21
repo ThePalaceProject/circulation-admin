@@ -27,7 +27,7 @@ describe("InputList", () => {
 
   beforeEach(() => {
     store = buildStore();
-    context = { editorStore: store, csrfToken: "token" };
+    context = { editorStore: store };
     parent = mount(<ProtocolFormField setting={setting} disabled={false} />);
     createEditableInput = spy(parent.instance(), "createEditableInput");
     labelAndDescription = spy(parent.instance(), "labelAndDescription");

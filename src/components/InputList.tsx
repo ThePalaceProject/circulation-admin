@@ -30,8 +30,7 @@ export default class InputList extends React.Component<InputListProps, InputList
   context: InputListContext;
 
   static contextTypes: React.ValidationMap<InputListContext> = {
-    editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired
+    editorStore: React.PropTypes.object.isRequired
   };
 
   constructor(props) {
