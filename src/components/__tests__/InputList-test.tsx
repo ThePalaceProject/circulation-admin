@@ -155,6 +155,7 @@ describe("InputList", () => {
     addButton.simulate("click");
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(3);
+    expect(addButton.prop("disabled")).to.be.true;
   });
 
   it("gets the value", () => {

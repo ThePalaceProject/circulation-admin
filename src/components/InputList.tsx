@@ -95,8 +95,9 @@ export default class InputList extends React.Component<InputListProps, InputList
     return null;
   }
 
-  updateNewItem(text: string) {
-    this.setState({...this.state, ...{ newItem: text }});
+  updateNewItem() {
+    let item = (this.refs["addListItem"] as any).getValue();
+    this.setState({...this.state, ...{ newItem: item }});
   }
 
   removeListItem(listItem: string | {}) {
@@ -105,7 +106,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   addListItem() {
     const listItem = (this.refs["addListItem"] as any).getValue();
-    listItem.length && this.setState({ listItems: this.state.listItems.concat(listItem) });
+    listItem.length && this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
     (this.refs["addListItem"] as any).clear();
   }
 
