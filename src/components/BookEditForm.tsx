@@ -2,7 +2,6 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { BookData, ContributorData, RolesData, MediaData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
-import Autocomplete from "./Autocomplete";
 import LanguageField from "./LanguageField";
 import { Store } from "redux";
 import { State } from "../reducers/index";

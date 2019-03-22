@@ -3,7 +3,7 @@ import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
 import { SettingData } from "../interfaces";
 import ToolTip from "./ToolTip";
-import { LocatorIcon, SearchIcon } from "@nypl/dgx-svg-icons";
+import { LocatorIcon } from "@nypl/dgx-svg-icons";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
@@ -111,8 +111,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   renderToolTip(item: {} | string, format: string) {
     const icons = {
-      "geographic": <LocatorIcon />,
-      "language-code": <SearchIcon />
+      "geographic": <LocatorIcon />
     };
     if (typeof(item) === "object") {
       return (

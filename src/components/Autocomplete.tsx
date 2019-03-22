@@ -5,7 +5,7 @@ export interface AutocompleteProps {
   autocompleteValues: string[];
   disabled: boolean;
   name: string;
-  label?: string;
+  label: string;
   value?: string;
 }
 
