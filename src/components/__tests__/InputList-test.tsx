@@ -121,7 +121,7 @@ describe("InputList", () => {
     expect(removables.length).to.equal(2);
 
     let blankInput = wrapper.find("span.add-list-item input");
-    blankInput.value = "Another thing...";
+    blankInput.get(0).value = "Another thing...";
     blankInput.simulate("change");
     let addButton = wrapper.find("button.add-list-item");
     addButton.simulate("click");
@@ -131,6 +131,31 @@ describe("InputList", () => {
 
     blankInput = wrapper.find("span.add-list-item input");
     expect(blankInput.prop("value")).to.equal("");
+  });
+
+  it("does not add an empty input item", () => {
+    let removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(2);
+    expect(wrapper.state()["newItem"]).to.equal("");
+
+    let empty = wrapper.find("span.add-list-item input");
+    let addButton = wrapper.find("button.add-list-item");
+    expect(addButton.prop("disabled")).to.be.true;
+    addButton.simulate("click");
+    removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(2);
+
+    empty = wrapper.find("span.add-list-item input");
+    empty.get(0).value = "something new";
+    empty.simulate("change");
+    addButton = wrapper.find("button.add-list-item");
+    expect(wrapper.state()["newItem"]).to.equal("something new");
+
+    expect(addButton.prop("disabled")).to.be.false;
+    addButton.simulate("click");
+    removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(3);
+    expect(addButton.prop("disabled")).to.be.true;
   });
 
   it("gets the value", () => {

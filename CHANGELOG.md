@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.7
+#### Updated
+- Improved the UI for adding multiple inputs in a form.
+
 ### v0.1.6
 #### Updated
 - Improved the process for specifying a library's service and focus areas.
