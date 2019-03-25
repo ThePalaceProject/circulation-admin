@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.8
+#### Updated
+- Implemented a language autocomplete field in order to make it easier to set the languages for a library
+
 ### v0.1.7
 #### Updated
 - Improved the UI for adding multiple inputs in a form.

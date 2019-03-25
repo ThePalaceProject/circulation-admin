@@ -8,6 +8,7 @@ export interface LanguageFieldProps {
   disabled?: boolean;
   label?: string;
   languages?: LanguagesData;
+  onChange?: () => void;
 }
 
 export default class LanguageField extends React.Component<LanguageFieldProps, void> {
@@ -22,6 +23,7 @@ export default class LanguageField extends React.Component<LanguageFieldProps, v
         value={value}
         label={this.props.label}
         ref="autocomplete"
+        onChange={this.props.onChange}
       />
     );
   }

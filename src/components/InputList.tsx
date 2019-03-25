@@ -79,10 +79,12 @@ export default class InputList extends React.Component<InputListProps, InputList
                   ref="addListItem"
                   name={setting.key}
                   languages={this.props.additionalData}
+                  onChange={this.updateNewItem}
                 /> :
               this.props.createEditableInput(setting, {
                 value: null,
                 disabled: this.props.disabled,
+                onChange: this.updateNewItem,
                 ref: "addListItem",
                 label: null,
                 description: null
@@ -115,8 +117,11 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   updateNewItem() {
-    let item = (this.refs["addListItem"] as any).getValue();
-    this.setState({...this.state, ...{ newItem: item }});
+    let ref = this.props.setting.format === "language-code" ?
+      (this.refs["addListItem"] as any).refs["autocomplete"] :
+      (this.refs["addListItem"] as any);
+
+    this.setState({...this.state, ...{ newItem: ref.getValue() }});
   }
 
   removeListItem(listItem: string | {}) {
@@ -129,7 +134,7 @@ export default class InputList extends React.Component<InputListProps, InputList
       (this.refs["addListItem"] as any);
 
     const listItem = ref.getValue();
-    this.setState({ listItems: this.state.listItems.concat(listItem) });
+    this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
     ref.clear();
   }
 
