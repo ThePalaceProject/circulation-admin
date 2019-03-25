@@ -16,6 +16,7 @@ export interface InputListProps {
 
 export interface InputListState {
   listItems: Array<string | {}>;
+  newItem?: string;
 }
 
 export default class InputList extends React.Component<InputListProps, InputListState> {
@@ -23,8 +24,10 @@ export default class InputList extends React.Component<InputListProps, InputList
   constructor(props) {
     super(props);
     this.state = {
-      listItems: (props.value as string[] || [])
+      listItems: (props.value as string[] || []),
+      newItem: ""
     };
+    this.updateNewItem = this.updateNewItem.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.clear = this.clear.bind(this);
@@ -89,7 +92,7 @@ export default class InputList extends React.Component<InputListProps, InputList
           <button
             type="button"
             className="btn btn-default add-list-item"
-            disabled={this.props.disabled}
+            disabled={this.props.disabled || !this.state.newItem.length}
             onClick={this.addListItem}
             >Add</button>
         </div>
@@ -109,6 +112,11 @@ export default class InputList extends React.Component<InputListProps, InputList
       );
     }
     return null;
+  }
+
+  updateNewItem() {
+    let item = (this.refs["addListItem"] as any).getValue();
+    this.setState({...this.state, ...{ newItem: item }});
   }
 
   removeListItem(listItem: string | {}) {
