@@ -13,6 +13,7 @@ describe("BookDetailsEditor", () => {
   let fetchBook;
   let fetchRoles;
   let fetchMedia;
+  let fetchLanguages;
   let editBook;
   let dispatchProps;
 
@@ -20,9 +21,10 @@ describe("BookDetailsEditor", () => {
     fetchBook = stub();
     fetchRoles = stub();
     fetchMedia = stub();
+    fetchLanguages = stub();
     editBook = stub();
     dispatchProps = {
-      fetchBook, fetchRoles, fetchMedia, editBook
+      fetchBook, fetchRoles, fetchMedia, fetchLanguages, editBook
     };
   });
 
@@ -40,6 +42,7 @@ describe("BookDetailsEditor", () => {
     expect(fetchBook.args[0][0]).to.equal("admin/works/1234");
     expect(fetchRoles.callCount).to.equal(1);
     expect(fetchMedia.callCount).to.equal(1);
+    expect(fetchLanguages.callCount).to.equal(1);
   });
 
   it("loads admin book url when given a new book url", () => {
@@ -186,6 +189,10 @@ describe("BookDetailsEditor", () => {
       "http://schema.org/AudioObject": "Audio",
       "http://schema.org/Book": "Book"
     };
+    let languages = {
+      "eng": ["English"],
+      "spa": ["Spanish", "Castilian"]
+    };
     let editLink = {
       href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
     };
@@ -197,6 +204,7 @@ describe("BookDetailsEditor", () => {
         {...dispatchProps}
         roles={roles}
         media={media}
+        languages={languages}
       />
     );
 
@@ -205,5 +213,6 @@ describe("BookDetailsEditor", () => {
     expect(editForm.prop("title")).to.equal("title");
     expect(editForm.prop("roles")).to.equal(roles);
     expect(editForm.prop("media")).to.equal(media);
+    expect(editForm.prop("languages")).to.equal(languages);
   });
 });

@@ -4,9 +4,6 @@ import LanguageField from "./LanguageField";
 import { SettingData } from "../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
-import { Store } from "redux";
-import { connect } from "react-redux";
-import { State } from "../reducers/index";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
@@ -14,23 +11,14 @@ export interface InputListProps {
   setting: SettingData;
   disabled: boolean;
   value: Array<string | {}>;
+  additionalData?: any;
 }
 
 export interface InputListState {
   listItems: Array<string | {}>;
 }
 
-export interface InputListContext {
-  editorStore: Store<State>;
-}
-
 export default class InputList extends React.Component<InputListProps, InputListState> {
-
-  context: InputListContext;
-
-  static contextTypes: React.ValidationMap<InputListContext> = {
-    editorStore: React.PropTypes.object.isRequired
-  };
 
   constructor(props) {
     super(props);
@@ -62,10 +50,10 @@ export default class InputList extends React.Component<InputListProps, InputList
               {
                 this.props.setting.format === "language-code" ?
                   <LanguageField
-                    store={this.context.editorStore}
                     disabled={this.props.disabled}
                     value={value}
                     name={setting.key}
+                    languages={this.props.additionalData}
                   /> :
                   this.props.createEditableInput(setting, {
                   type: "text",
@@ -84,10 +72,10 @@ export default class InputList extends React.Component<InputListProps, InputList
           <span className="add-list-item">
             { this.props.setting.format === "language-code" ?
                 <LanguageField
-                  store={this.context.editorStore}
                   disabled={this.props.disabled}
                   ref="addListItem"
                   name={setting.key}
+                  languages={this.props.additionalData}
                 /> :
               this.props.createEditableInput(setting, {
                 value: null,
@@ -129,7 +117,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   addListItem() {
     let ref = this.props.setting.format === "language-code" ?
-      (this.refs["addListItem"] as any).getWrappedInstance().refs["autocomplete"] :
+      (this.refs["addListItem"] as any).refs["autocomplete"] :
       (this.refs["addListItem"] as any);
 
     const listItem = ref.getValue();

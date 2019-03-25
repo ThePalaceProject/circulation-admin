@@ -1,18 +1,16 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { BookData, ContributorData, RolesData, MediaData } from "../interfaces";
+import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
-import { Store } from "redux";
-import { State } from "../reducers/index";
 
 export interface BookEditFormProps extends BookData {
   roles: RolesData;
   media: MediaData;
+  languages: LanguagesData;
   disabled: boolean;
   refresh: () => any;
   editBook: (url: string, data: FormData) => Promise<any>;
-  store?: Store<State>;
 }
 
 export interface BookEditFormState {
@@ -165,8 +163,8 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           }
         </EditableInput>
         <LanguageField
-          store={this.props.store}
           disabled={this.props.disabled}
+          languages={this.props.languages}
           name="language"
           label="Language"
           value={this.props.language}

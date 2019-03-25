@@ -9,6 +9,7 @@ import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
 import ToolTip from "../ToolTip";
+import LanguageField from "../LanguageField";
 
 describe("InputList", () => {
   let wrapper;
@@ -115,11 +116,21 @@ describe("InputList", () => {
   it("renders an autocomplete field for languages", () => {
     let valueWithObject = ["abc"];
     let languageSetting = {...setting, ...{format: "language-code"}};
-    wrapper.setProps({ setting: languageSetting, value: valueWithObject });
-    let autocomplete = wrapper.find("[list='setting-autocomplete-list']");
-    expect(autocomplete.length).to.equal(2);
-    expect(autocomplete.at(0).prop("value")).to.equal("abc");
-    expect(autocomplete.at(1).prop("value")).to.equal("");
+    let languages = {
+      "eng": ["English"],
+      "spa": ["Spanish", "Castilian"]
+    };
+    wrapper.setProps({ setting: languageSetting, value: valueWithObject, additionalData: languages });
+    let languageField = wrapper.find(LanguageField);
+    expect(languageField.length).to.equal(2);
+
+    expect(languageField.at(0).prop("value")).to.equal("abc");
+    expect(languageField.at(0).prop("name")).to.equal("setting");
+    expect(languageField.at(0).prop("languages")).to.equal(languages);
+
+    expect(languageField.at(1).prop("value")).to.be.undefined;
+    expect(languageField.at(1).prop("name")).to.equal("setting");
+    expect(languageField.at(1).prop("languages")).to.equal(languages);
   });
 
   it("removes an item", () => {

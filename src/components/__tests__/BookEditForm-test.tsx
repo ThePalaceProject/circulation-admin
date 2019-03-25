@@ -8,8 +8,7 @@ import BookEditForm from "../BookEditForm";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
 import LanguageField from "../LanguageField";
-import { BookData, RolesData, MediaData } from "../../interfaces";
-import buildStore from "../../store";
+import { BookData, RolesData, MediaData, LanguagesData } from "../../interfaces";
 
 describe("BookEditForm", () => {
   let roles: RolesData = {
@@ -20,6 +19,11 @@ describe("BookEditForm", () => {
   let media: MediaData = {
     "http://schema.org/AudioObject": "Audio",
     "http://schema.org/Book": "Book"
+  };
+
+  let languages: LanguagesData = {
+    "eng": ["English"],
+    "spa": ["Spanish", "Castilian"]
   };
 
   let bookData: BookData = {
@@ -47,7 +51,6 @@ describe("BookEditForm", () => {
   };
 
   let wrapper;
-  let store;
   let editableInputByName = (name) => {
     let inputs = wrapper.find(EditableInput);
     return inputs.filterWhere(input => input.props().name === name);
@@ -64,10 +67,10 @@ describe("BookEditForm", () => {
           {...bookData}
           roles={roles}
           media={media}
+          languages={languages}
           disabled={false}
           refresh={stub()}
           editBook={stub()}
-          store={buildStore()}
         />
       );
     });
@@ -140,6 +143,7 @@ describe("BookEditForm", () => {
       expect(languageField.prop("name")).to.equal("language");
       expect(languageField.prop("label")).to.equal("Language");
       expect(languageField.prop("value")).to.equal("eng");
+      expect(languageField.prop("languages")).to.equal(wrapper.prop("languages"));
 
       wrapper.setProps({ language: "fre" });
       languageField = wrapper.find(LanguageField);
@@ -164,7 +168,7 @@ describe("BookEditForm", () => {
       expect(input.props().value).to.equal("2017-04-03");
     });
 
-    it("shows editbale input with rating", () => {
+    it("shows editable input with rating", () => {
       let input = editableInputByName("rating");
       expect(input.props().label).to.contain("Rating");
       expect(input.props().value).to.equal("4");
@@ -184,10 +188,10 @@ describe("BookEditForm", () => {
         {...bookData}
         roles={roles}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={stub()}
         editBook={editBook}
-        store={buildStore()}
       />
     );
 
@@ -219,10 +223,10 @@ describe("BookEditForm", () => {
         {...bookData}
         roles={roles}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={stub()}
         editBook={editBook}
-        store={buildStore()}
       />
     );
 
@@ -289,10 +293,10 @@ describe("BookEditForm", () => {
         {...bookData}
         roles={roles}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={stub()}
         editBook={editBook}
-        store={buildStore()}
       />
     );
 
@@ -313,7 +317,7 @@ describe("BookEditForm", () => {
     expect(editBook.args[0][1].get("series").value).to.equal(bookData.series);
     expect(editBook.args[0][1].get("series_position").value).to.equal(String(bookData.seriesPosition));
     expect(editBook.args[0][1].get("medium").value).to.equal("Audio");
-    expect(editBook.args[0][1].get("language").value).to.equal("eng");
+    expect(editBook.args[0][1].get("language").value).to.equal("English");
     expect(editBook.args[0][1].get("publisher").value).to.equal(bookData.publisher);
     expect(editBook.args[0][1].get("imprint").value).to.equal(bookData.imprint);
     expect(editBook.args[0][1].get("issued").value).to.equal(bookData.issued);
@@ -330,10 +334,10 @@ describe("BookEditForm", () => {
         {...bookData}
         roles={roles}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={done}
         editBook={editBook}
-        store={buildStore()}
       />
     );
 
@@ -347,10 +351,10 @@ describe("BookEditForm", () => {
         {...bookData}
         roles={roles}
         media={media}
+        languages={languages}
         disabled={true}
         refresh={stub()}
         editBook={stub()}
-        store={buildStore()}
       />
     );
     let inputs = wrapper.find(EditableInput);
