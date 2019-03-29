@@ -7,8 +7,8 @@ import { shallow, mount } from "enzyme";
 import BookEditForm from "../BookEditForm";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
-import Autocomplete from "../Autocomplete";
-import { BookData, RolesData, LanguagesData, MediaData } from "../../interfaces";
+import LanguageField from "../LanguageField";
+import { BookData, RolesData, MediaData, LanguagesData } from "../../interfaces";
 
 describe("BookEditForm", () => {
   let roles: RolesData = {
@@ -16,14 +16,14 @@ describe("BookEditForm", () => {
     "nar": "Narrator"
   };
 
-  let languages: LanguagesData = {
-    "eng": ["English"],
-    "spa": ["Spanish"]
-  };
-
   let media: MediaData = {
     "http://schema.org/AudioObject": "Audio",
     "http://schema.org/Book": "Book"
+  };
+
+  let languages: LanguagesData = {
+    "eng": ["English"],
+    "spa": ["Spanish", "Castilian"]
   };
 
   let bookData: BookData = {
@@ -66,12 +66,12 @@ describe("BookEditForm", () => {
         <BookEditForm
           {...bookData}
           roles={roles}
-          languages={languages}
           media={media}
+          languages={languages}
           disabled={false}
           refresh={stub()}
           editBook={stub()}
-          />
+        />
       );
     });
 
@@ -138,12 +138,16 @@ describe("BookEditForm", () => {
       expect(input.props().value).to.equal("Audio");
     });
 
-    it("shows autocomplete with language", () => {
-      let autocomplete = wrapper.find(Autocomplete);
-      expect(autocomplete.props().name).to.equal("language");
-      expect(autocomplete.props().label).to.equal("Language");
-      expect(autocomplete.props().autocompleteValues).to.deep.equal(["English", "Spanish"]);
-      expect(autocomplete.props().value).to.equal("English");
+    it("shows a language field", () => {
+      let languageField = wrapper.find(LanguageField);
+      expect(languageField.prop("name")).to.equal("language");
+      expect(languageField.prop("label")).to.equal("Language");
+      expect(languageField.prop("value")).to.equal("eng");
+      expect(languageField.prop("languages")).to.equal(wrapper.prop("languages"));
+
+      wrapper.setProps({ language: "fre" });
+      languageField = wrapper.find(LanguageField);
+      expect(languageField.prop("value")).to.equal("fre");
     });
 
     it("shows editable input with publisher", () => {
@@ -164,7 +168,7 @@ describe("BookEditForm", () => {
       expect(input.props().value).to.equal("2017-04-03");
     });
 
-    it("shows editbale input with rating", () => {
+    it("shows editable input with rating", () => {
       let input = editableInputByName("rating");
       expect(input.props().label).to.contain("Rating");
       expect(input.props().value).to.equal("4");
@@ -183,12 +187,12 @@ describe("BookEditForm", () => {
       <BookEditForm
         {...bookData}
         roles={roles}
-        languages={languages}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={stub()}
         editBook={editBook}
-        />
+      />
     );
 
     let removables = wrapper.find(WithRemoveButton);
@@ -218,12 +222,12 @@ describe("BookEditForm", () => {
       <BookEditForm
         {...bookData}
         roles={roles}
-        languages={languages}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={stub()}
         editBook={editBook}
-        />
+      />
     );
 
     let contributorNames = editableInputByName("contributor-name");
@@ -288,12 +292,12 @@ describe("BookEditForm", () => {
       <BookEditForm
         {...bookData}
         roles={roles}
-        languages={languages}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={stub()}
         editBook={editBook}
-        />
+      />
     );
 
     let form = wrapper.find("form");
@@ -329,12 +333,12 @@ describe("BookEditForm", () => {
       <BookEditForm
         {...bookData}
         roles={roles}
-        languages={languages}
         media={media}
+        languages={languages}
         disabled={false}
         refresh={done}
         editBook={editBook}
-        />
+      />
     );
 
     let form = wrapper.find("form");
@@ -346,18 +350,18 @@ describe("BookEditForm", () => {
       <BookEditForm
         {...bookData}
         roles={roles}
-        languages={languages}
         media={media}
+        languages={languages}
         disabled={true}
         refresh={stub()}
         editBook={stub()}
-        />
+      />
     );
     let inputs = wrapper.find(EditableInput);
     inputs.forEach(input => {
       expect(input.prop("disabled")).to.equal(true);
     });
-    let autocomplete = wrapper.find(Autocomplete);
-    expect(autocomplete.prop("disabled")).to.equal(true);
+    let languageField = wrapper.find(LanguageField);
+    expect(languageField.prop("disabled")).to.equal(true);
   });
 });

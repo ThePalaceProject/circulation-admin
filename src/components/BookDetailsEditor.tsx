@@ -50,6 +50,23 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, v
     this.refresh = this.refresh.bind(this);
   }
 
+  componentWillMount() {
+    if (this.props.bookUrl) {
+      let bookAdminUrl = this.props.bookUrl.replace("works", "admin/works");
+      this.props.fetchBook(bookAdminUrl);
+      this.props.fetchRoles();
+      this.props.fetchMedia();
+      this.props.fetchLanguages();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.bookUrl && nextProps.bookUrl !== this.props.bookUrl) {
+      let bookAdminUrl = nextProps.bookUrl.replace("works", "admin/works");
+      this.props.fetchBook(bookAdminUrl);
+    }
+  }
+
   render(): JSX.Element {
     return (
       <div>
@@ -116,22 +133,6 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, v
     );
   }
 
-  componentWillMount() {
-    if (this.props.bookUrl) {
-      let bookAdminUrl = this.props.bookUrl.replace("works", "admin/works");
-      this.props.fetchBook(bookAdminUrl);
-      this.props.fetchRoles();
-      this.props.fetchMedia();
-      this.props.fetchLanguages();
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.bookUrl && nextProps.bookUrl !== this.props.bookUrl) {
-      let bookAdminUrl = nextProps.bookUrl.replace("works", "admin/works");
-      this.props.fetchBook(bookAdminUrl);
-    }
-  }
 
   hide() {
     return this.editBook(this.props.bookData.hideLink.href);
