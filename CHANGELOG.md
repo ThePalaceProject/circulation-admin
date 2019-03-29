@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.8
+#### Updated
+- Replaced the Collapsible component with a reusable Panel component.
+
 ### v0.1.7
 #### Updated
 - Improved the UI for adding multiple inputs in a form.
