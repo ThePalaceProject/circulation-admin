@@ -2,7 +2,7 @@ import * as React from "react";
 import { DiagnosticsServiceData, DiagnosticsCollectionData, TimestampData } from "../interfaces";
 
 import { TabContainer, TabContainerProps } from "./TabContainer";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import Timestamp from "./Timestamp";
 import ToolTip from "./ToolTip";
 
@@ -42,8 +42,8 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
   renderCollections(collections: Array<DiagnosticsCollectionData>) {
     // If the collection has any timestamps with exceptions, it should start out expanded.
     return Object.keys(collections).map((collectionName) =>
-      <Collapsible
-        title={collectionName}
+      <Panel
+        headerText={collectionName}
         openByDefault={collections[collectionName].some((ts) => ts.exception)}
         body={this.renderTimestamps(collections[collectionName])}
       />

@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
@@ -108,28 +108,28 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         { this.props.data && this.protocolInstructions() &&
             <div className="form-group">
               <label className="control-label">Instructions</label>
-              <Collapsible
-                title={this.protocolDescription()}
-                type="instruction"
+              <Panel
+                headerText={this.protocolDescription()}
+                style="instruction"
                 text={this.protocolInstructions()}
               />
             </div>
         }
-        <Collapsible
-          title="Required Fields"
+        <Panel
+          headerText="Required Fields"
           openByDefault={true}
           collapsible={hasNonRequiredFields || showLibrariesForm}
           body={this.renderRequiredFields(requiredFields)}
         />
         { hasNonRequiredFields && (
-          <Collapsible
-            title="Optional Fields"
+          <Panel
+            headerText="Optional Fields"
             body={this.renderOptionalFields(nonRequiredFields)}
           />)
         }
         { (showLibrariesForm) &&
-          <Collapsible
-            title="Libraries"
+          <Panel
+            headerText="Libraries"
             body={this.renderLibrariesForm()}
           />
         }

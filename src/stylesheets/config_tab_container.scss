@@ -32,7 +32,7 @@ $dangercolor: #D9534F;
       ul {
         padding-left: 10px;
 
-        li {
+        li:not(.panel) {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -61,7 +61,7 @@ $dangercolor: #D9534F;
           margin-left: 5px;
           fill: $pagecolor;
         }
-    
+
         &:hover, &:focus {
           color: $pagetextcolor;
           svg {

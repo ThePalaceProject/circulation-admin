@@ -4,7 +4,7 @@ import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import { Alert } from "react-bootstrap";
 
 export interface ClassificationsFormProps {
@@ -55,8 +55,8 @@ export default class ClassificationsForm extends React.Component<Classifications
           </Alert>
         }
 
-        <Collapsible
-          title="Classifications"
+        <Panel
+          headerText="Classifications"
           collapsible={false}
           body={
             <div>

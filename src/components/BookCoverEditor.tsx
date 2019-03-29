@@ -9,7 +9,8 @@ import EditableInput from "./EditableInput";
 import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
+
 
 export interface BookCoverEditorStateProps {
   bookAdminUrl?: string;
@@ -84,14 +85,14 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
             </div>
             <div>
               <h3>Change cover:</h3>
-              <Collapsible
-                title="Cover Metadata"
+              <Panel
+                headerText="Cover Metadata"
                 openByDefault={true}
                 body={this.renderCoverForm()}
               />
               { this.props.rightsStatuses &&
-                <Collapsible
-                  title="Rights"
+                <Panel
+                  headerText="Rights"
                   openByDefault={true}
                   body={
                     <form ref="rights">

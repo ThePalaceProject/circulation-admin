@@ -4,7 +4,7 @@ import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
 import { handleSubmit, findDefault, clearForm } from "./sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface LibraryEditFormProps {
@@ -50,8 +50,8 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           name="uuid"
           value={this.props.item && this.props.item.uuid}
           />
-        <Collapsible
-          title="Basic Information"
+        <Panel
+          headerText="Basic Information"
           openByDefault={true}
           body={
             <fieldset>
@@ -120,8 +120,8 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
       let form = (
-        <Collapsible
-          title={`${name} (Optional)`}
+        <Panel
+          headerText={`${name} (Optional)`}
           body={this.renderFieldset(categories[name])}
         />
       );

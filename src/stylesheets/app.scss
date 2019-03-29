@@ -1,6 +1,7 @@
-@import "../../node_modules/bootstrap/dist/css/bootstrap.css";
-@import "../../node_modules/font-awesome/css/font-awesome.min.css";
-@import "../../node_modules/opds-web-client/lib/stylesheets/app.scss";
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.min.css";
+@import "~opds-web-client/lib/stylesheets/app.scss";
+@import "~library-simplified-reusable-components/dist/reusable-components.css";
 
 @import "mixins";
 @import "colors";
@@ -16,7 +17,6 @@
 @import "classifications";
 @import "classifications_form";
 @import "classifications_table";
-@import "collapsible";
 @import "collection_edit_form";
 @import "color_picker";
 @import "complaint_form";

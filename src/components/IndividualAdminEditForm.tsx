@@ -4,7 +4,8 @@ import SaveButton from "./SaveButton";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
+
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface IndividualAdminEditFormProps {
@@ -61,17 +62,17 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   render(): JSX.Element {
     return (
       <form ref="form" onSubmit={this.submit} className="edit-form">
-        <Collapsible
-          title="Admin Information"
+        <Panel
+          headerText="Admin Information"
+          body={this.renderForm()}
           openByDefault={true}
           collapsible={!this.context.settingUp}
-          body={this.renderForm()}
         />
         { !this.context.settingUp &&
-          <Collapsible
-            title="Admin Roles"
-            openByDefault={true}
+          <Panel
+            headerText="Admin Roles"
             body={this.renderRoleForm()}
+            openByDefault={true}
           />
         }
         <SaveButton

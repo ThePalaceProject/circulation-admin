@@ -165,7 +165,7 @@ describe("BookCoverEditor", () => {
 
     it("shows save button", () => {
       let buttons = wrapper.find("button");
-      // Counting the two buttons that are coming from the Collapsible component:
+      // Counting the two buttons that are coming from the Panel component:
       expect(buttons.length).to.equal(3);
       let save = buttons.at(2);
       expect(save.props().disabled).to.be.ok;
