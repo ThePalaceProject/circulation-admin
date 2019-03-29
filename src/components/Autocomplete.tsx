@@ -7,6 +7,7 @@ export interface AutocompleteProps {
   name: string;
   label: string;
   value?: string;
+  onChange?: () => void;
 }
 
 export default class Autocomplete extends React.Component<AutocompleteProps, void> {
@@ -23,7 +24,8 @@ export default class Autocomplete extends React.Component<AutocompleteProps, voi
           value={this.props.value}
           ref="input"
           optionalText={false}
-          />
+          onChange={this.props.onChange}
+        />
         <datalist
           id={this.props.name + "-autocomplete-list"}
           >
@@ -38,5 +40,9 @@ export default class Autocomplete extends React.Component<AutocompleteProps, voi
 
   getValue() {
     return (this.refs["input"] as any).getValue();
+  }
+
+  clear() {
+    (this.refs["input"] as any).setState({ value: "" });
   }
 }

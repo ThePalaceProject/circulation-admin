@@ -13,6 +13,7 @@ export interface ProtocolFormFieldProps {
   value?: string | string[] | {}[] | Array<string | {}>;
   default?: any;
   error?: FetchErrorData;
+  additionalData?: any;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -129,6 +130,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         labelAndDescription={this.labelAndDescription}
         disabled={this.props.disabled}
         value={value}
+        additionalData={this.props.additionalData}
       />
     );
   }

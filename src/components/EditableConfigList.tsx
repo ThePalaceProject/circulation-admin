@@ -14,6 +14,7 @@ export interface EditableConfigListStateProps<T> {
   formError?: FetchErrorData;
   isFetching?: boolean;
   responseBody?: string;
+  additionalData?: any;
 }
 
 export interface EditableConfigListDispatchProps<T> {
@@ -35,6 +36,7 @@ export interface EditableConfigListProps<T> extends EditableConfigListStateProps
 export interface EditFormProps<T, U> {
   item?: U;
   data: T;
+  additionalData?: any;
   disabled: boolean;
   save?: (data: FormData) => void;
   urlBase: string;
@@ -150,6 +152,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             <EditForm
               ref="edit-form"
               data={this.props.data}
+              additionalData={this.props.additionalData}
               disabled={this.props.isFetching}
               save={this.save}
               urlBase={this.urlBase}
@@ -166,6 +169,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             <EditForm
               item={this.itemToEdit()}
               data={this.props.data}
+              additionalData={this.props.additionalData}
               disabled={this.props.isFetching}
               save={this.save}
               urlBase={this.urlBase}
