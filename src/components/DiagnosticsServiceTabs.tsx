@@ -45,7 +45,7 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
       <Panel
         headerText={collectionName}
         openByDefault={collections[collectionName].some((ts) => ts.exception)}
-        body={this.renderTimestamps(collections[collectionName])}
+        content={this.renderTimestamps(collections[collectionName])}
       />
     );
   }

@@ -97,7 +97,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <div className="custom-list-filters">
               <Panel
                 headerText="Add from collections"
-                body={
+                content={
                   <div className="collections">
                     <div>Automatically add new books from these collections to this list:</div>
                     { this.props.collections.map(collection =>
@@ -121,7 +121,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <Panel
               headerText="Search for titles"
               openByDefault={true}
-              body={
+              content={
                 <fieldset>
                   <legend className="visuallyHidden">Search for titles</legend>
                   {

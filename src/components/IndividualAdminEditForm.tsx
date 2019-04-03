@@ -64,14 +64,14 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       <form ref="form" onSubmit={this.submit} className="edit-form">
         <Panel
           headerText="Admin Information"
-          body={this.renderForm()}
+          content={this.renderForm()}
           openByDefault={true}
           collapsible={!this.context.settingUp}
         />
         { !this.context.settingUp &&
           <Panel
             headerText="Admin Roles"
-            body={this.renderRoleForm()}
+            content={this.renderRoleForm()}
             openByDefault={true}
           />
         }

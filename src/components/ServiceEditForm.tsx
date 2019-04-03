@@ -111,7 +111,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               <Panel
                 headerText={this.protocolDescription()}
                 style="instruction"
-                text={this.protocolInstructions()}
+                content={this.protocolInstructions()}
               />
             </div>
         }
@@ -119,18 +119,18 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           headerText="Required Fields"
           openByDefault={true}
           collapsible={hasNonRequiredFields || showLibrariesForm}
-          body={this.renderRequiredFields(requiredFields)}
+          content={this.renderRequiredFields(requiredFields)}
         />
         { hasNonRequiredFields && (
           <Panel
             headerText="Optional Fields"
-            body={this.renderOptionalFields(nonRequiredFields)}
+            content={this.renderOptionalFields(nonRequiredFields)}
           />)
         }
         { (showLibrariesForm) &&
           <Panel
             headerText="Libraries"
-            body={this.renderLibrariesForm()}
+            content={this.renderLibrariesForm()}
           />
         }
         <SaveButton

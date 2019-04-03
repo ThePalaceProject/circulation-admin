@@ -11,7 +11,7 @@ export default class Timestamp extends React.Component<TimestampProps, void> {
     let exception = <section className="well exception"><pre>{this.props.timestamp.exception}</pre></section>;
     let achievements = <section className="well"><pre>{this.props.timestamp.achievements}</pre></section>;
 
-    let body = (
+    let content = (
       <ul>
         <li>Duration: {this.props.timestamp.duration} seconds</li>
         {
@@ -30,7 +30,7 @@ export default class Timestamp extends React.Component<TimestampProps, void> {
       <Panel
         headerText={this.props.timestamp.start}
         style={this.props.timestamp.exception ? "danger" : "success"}
-        body={body}
+        content={content}
         collapsible={false}
       />
     );

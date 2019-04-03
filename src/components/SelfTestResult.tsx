@@ -65,7 +65,7 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
 
     return <Panel
       headerText={title}
-      body={body}
+      content={body}
       style={colorResultClass}
     />;
   }

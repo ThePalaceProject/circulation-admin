@@ -58,7 +58,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         <Panel
           headerText="Classifications"
           collapsible={false}
-          body={
+          content={
             <div>
               <EditableInput
                 elementType="select"
