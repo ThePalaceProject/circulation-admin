@@ -2,15 +2,19 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 import { spy, stub } from "sinon";
+import buildStore from "../../store";
 
 import InputList from "../InputList";
 import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
 import ToolTip from "../ToolTip";
+import LanguageField from "../LanguageField";
 
 describe("InputList", () => {
   let wrapper;
+  let store;
+  let context;
   let value = ["Thing 1", "Thing 2"];
   let setting = {
     key: "setting",
@@ -23,6 +27,8 @@ describe("InputList", () => {
   let labelAndDescription;
 
   beforeEach(() => {
+    store = buildStore();
+    context = { editorStore: store };
     parent = mount(<ProtocolFormField setting={setting} disabled={false} />);
     createEditableInput = spy(parent.instance(), "createEditableInput");
     labelAndDescription = spy(parent.instance(), "labelAndDescription");
@@ -35,7 +41,7 @@ describe("InputList", () => {
         setting={setting}
         disabled={false}
       />
-    );
+    , { context });
   });
 
   it("renders a label and description", () => {
@@ -84,7 +90,7 @@ describe("InputList", () => {
     expect(addListItem.parent().find("button").text()).to.equal("Add");
   });
 
-  it("optionally renders a tooltip with extra content", () => {
+  it("optionally renders a geographic tooltip with extra content", () => {
     let valueWithObject = [{"Thing 3": "extra information!"}];
     let geographicSetting = {...setting, ...{format: "geographic"}};
     let spyToolTip = spy(wrapper.instance(), "renderToolTip");
@@ -107,6 +113,26 @@ describe("InputList", () => {
     expect(spyToolTip.args[0]).to.eql([valueWithObject[0], "geographic"]);
   });
 
+  it("renders an autocomplete field for languages", () => {
+    let valueWithObject = ["abc"];
+    let languageSetting = {...setting, ...{format: "language-code"}};
+    let languages = {
+      "eng": ["English"],
+      "spa": ["Spanish", "Castilian"]
+    };
+    wrapper.setProps({ setting: languageSetting, value: valueWithObject, additionalData: languages });
+    let languageField = wrapper.find(LanguageField);
+    expect(languageField.length).to.equal(2);
+
+    expect(languageField.at(0).prop("value")).to.equal("abc");
+    expect(languageField.at(0).prop("name")).to.equal("setting");
+    expect(languageField.at(0).prop("languages")).to.equal(languages);
+
+    expect(languageField.at(1).prop("value")).to.be.undefined;
+    expect(languageField.at(1).prop("name")).to.equal("setting");
+    expect(languageField.at(1).prop("languages")).to.equal(languages);
+  });
+
   it("removes an item", () => {
     let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
@@ -116,7 +142,7 @@ describe("InputList", () => {
     expect(removables.length).to.equal(1);
   });
 
-  it("adds an item", () => {
+  it("adds a regular item", () => {
     let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
 
@@ -131,6 +157,24 @@ describe("InputList", () => {
 
     blankInput = wrapper.find("span.add-list-item input");
     expect(blankInput.prop("value")).to.equal("");
+  });
+
+  it("adds an autocompleted item", () => {
+    let languageSetting = {...setting, ...{format: "language-code"}};
+    wrapper.setProps({ setting: languageSetting, value: ["abc"] });
+
+    let removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(1);
+    let autocomplete = wrapper.find("[list='setting-autocomplete-list']").at(1);
+    autocomplete.get(0).value = "Another language";
+    autocomplete.simulate("change");
+    let addButton = wrapper.find("button.add-list-item");
+    addButton.simulate("click");
+
+    removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(2);
+    autocomplete = wrapper.find("[list='setting-autocomplete-list']").at(2);
+    expect(autocomplete.prop("value")).to.equal("");
   });
 
   it("does not add an empty input item", () => {
@@ -159,7 +203,7 @@ describe("InputList", () => {
   });
 
   it("gets the value", () => {
-      expect((wrapper.instance() as InputList).getValue()).to.eql(value);
+    expect((wrapper.instance() as InputList).getValue()).to.eql(value);
   });
 
   it("clears all the items", () => {

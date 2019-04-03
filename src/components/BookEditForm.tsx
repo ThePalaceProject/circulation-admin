@@ -2,12 +2,12 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
-import Autocomplete from "./Autocomplete";
+import LanguageField from "./LanguageField";
 
 export interface BookEditFormProps extends BookData {
   roles: RolesData;
-  languages: LanguagesData;
   media: MediaData;
+  languages: LanguagesData;
   disabled: boolean;
   refresh: () => any;
   editBook: (url: string, data: FormData) => Promise<any>;
@@ -162,13 +162,13 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
             )
           }
         </EditableInput>
-        <Autocomplete
-          autocompleteValues={this.uniqueLanguageNames()}
+        <LanguageField
           disabled={this.props.disabled}
+          languages={this.props.languages}
           name="language"
           label="Language"
-          value={this.props.languages && this.props.languages[this.props.language] && this.props.languages[this.props.language][0]}
-          />
+          value={this.props.language}
+        />
         <EditableInput
           elementType="input"
           type="text"
@@ -217,18 +217,6 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           />
       </fieldset>
     );
-  }
-
-  uniqueLanguageNames() {
-    const languageNames = [];
-    for (let nameList of Object.values(this.props.languages || {})) {
-      for (let name of nameList) {
-        if (languageNames.indexOf(name) === -1) {
-          languageNames.push(name);
-        }
-      }
-    }
-    return languageNames;
   }
 
   getMedium(additionalTypeOrMedium) {

@@ -10,6 +10,7 @@ import { FetchErrorData } from "opds-web-client/lib/interfaces";
 export interface LibraryEditFormProps {
   data: LibrariesData;
   item?: LibraryData;
+  additionalData?: any;
   disabled: boolean;
   save: (data: FormData) => void;
   urlBase: string;
@@ -139,6 +140,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             key={setting.key}
             ref={setting.key}
             setting={setting}
+            additionalData={this.props.additionalData}
             disabled={this.props.disabled}
             value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
             default={findDefault(setting)}
