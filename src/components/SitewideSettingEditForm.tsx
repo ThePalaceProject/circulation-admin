@@ -1,6 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import SaveButton from "./SaveButton";
+import { Button } from "library-simplified-reusable-components";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 
@@ -100,10 +100,10 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                 })
               }
             </fieldset>
-            <SaveButton
+            <Button
               disabled={this.props.disabled}
-              submit={this.submit}
-              text="Submit"
+              callback={this.submit}
+              content="Submit"
             />
           </form>
         }
