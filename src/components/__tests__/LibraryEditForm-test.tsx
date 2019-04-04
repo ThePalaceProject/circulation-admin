@@ -8,9 +8,9 @@ import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
 import { Panel } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
-import SaveButton from "../SaveButton";
+import { Button } from "library-simplified-reusable-components";
 
-describe("LibraryEditForm", () => {
+describe.only("LibraryEditForm", () => {
   let wrapper;
   let save;
   let libraryData = {
@@ -135,7 +135,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("has a save button", () => {
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       expect(saveButton.length).to.equal(1);
     });
   });
@@ -155,7 +155,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -168,7 +168,7 @@ describe("LibraryEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);

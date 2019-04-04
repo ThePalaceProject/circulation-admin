@@ -1,10 +1,10 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import SaveButton from "./SaveButton";
 import { handleSubmit, findDefault, clearForm } from "./sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 import { Panel } from "library-simplified-reusable-components";
+import { Button } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface LibraryEditFormProps {
@@ -99,10 +99,10 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
         { this.renderForms(categories) }
 
-        <SaveButton
+        <Button
           disabled={this.props.disabled}
-          submit={this.submit}
-          text="Submit"
+          callback={this.submit}
+          content="Submit"
         />
       </form>
     );
