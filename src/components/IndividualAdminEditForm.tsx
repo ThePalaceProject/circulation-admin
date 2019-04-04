@@ -78,7 +78,6 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         <Button
           disabled={this.props.disabled}
           callback={this.submit}
-          content="Submit"
         />
       </form>
     );

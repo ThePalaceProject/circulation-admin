@@ -102,7 +102,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         <Button
           disabled={this.props.disabled}
           callback={this.submit}
-          content="Submit"
         />
       </form>
     );

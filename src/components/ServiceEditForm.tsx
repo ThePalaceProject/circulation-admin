@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import SaveButton from "./SaveButton";
+import { Button } from "library-simplified-reusable-components";
 import { Panel } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
@@ -133,10 +133,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             content={this.renderLibrariesForm()}
           />
         }
-        <SaveButton
+        <Button
           disabled={this.props.disabled}
-          submit={this.submit}
-          text="Submit"
+          callback={this.submit}
         />
       </form>
     );
