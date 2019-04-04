@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.2.0
+### v0.1.10
 #### Fixed
 - Fixed a styling bug affecting the display of exceptions on the Diagnostics page.
 
