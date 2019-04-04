@@ -53,7 +53,7 @@ $dangercolor: #D9534F;
         }
       }
 
-      a.btn-default, button.btn-default, a.btn-danger, button.btn-danger {
+      a.btn-default, button.btn-default:not(.btn), a.btn-danger, button.btn-danger {
         color: $pagecolor;
         svg {
           height: 0.7em;

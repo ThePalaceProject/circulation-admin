@@ -10,7 +10,7 @@ import { Panel } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
 import { Button } from "library-simplified-reusable-components";
 
-describe.only("LibraryEditForm", () => {
+describe("LibraryEditForm", () => {
   let wrapper;
   let save;
   let libraryData = {

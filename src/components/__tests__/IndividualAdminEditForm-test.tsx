@@ -6,8 +6,8 @@ import { shallow, mount } from "enzyme";
 
 import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
-import SaveButton from "../SaveButton";
 import Admin from "../../models/Admin";
+import { Button } from "library-simplified-reusable-components";
 
 describe("IndividualAdminEditForm", () => {
   let wrapper;
@@ -155,7 +155,7 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("has a save button", () => {
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       expect(saveButton.length).to.equal(1);
     });
 
@@ -527,7 +527,7 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -569,7 +569,7 @@ describe("IndividualAdminEditForm", () => {
       let managerNyplInput = editableInputByName("manager-nypl");
       managerNyplInput.find("input").simulate("change");
 
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
       let formData = save.args[0][0];
@@ -605,7 +605,7 @@ describe("IndividualAdminEditForm", () => {
       wrapper.setContext({ settingUp: true });
       fillOutFormFields();
 
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);
