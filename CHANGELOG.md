@@ -1,12 +1,16 @@
 ## Changelog
 
+### v0.2.0
+#### Fixed
+- Fixed a styling bug affecting the display of exceptions on the Diagnostics page.
+
 ### v0.1.9
 #### Updated
 - Replaced the Collapsible component with a reusable Panel component.
 
 ### v0.1.8
 #### Updated
-- Implemented a language autocomplete field in order to make it easier to set the languages for a library
+- Implemented a language autocomplete field in order to make it easier to set the languages for a library.
 
 ### v0.1.7
 #### Updated
