@@ -60,6 +60,15 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
       this.props.fetchLibraryRegistrations();
     }
   }
+
+  async delete(item: CollectionData): Promise<void> {
+    const deleteInfo = 'Setting this collection for deletion will make it' +
+      ' uneditable until it is fully deleted in the background.';
+    if (window.confirm(`Set "${this.label(item)}" for deletion? ${deleteInfo}`)) {
+      await this.props.deleteItem(item[this.identifierKey]);
+      this.props.fetchData();
+    }
+  }
 }
 
 function mapStateToProps(state, ownProps) {
@@ -81,6 +90,7 @@ function mapStateToProps(state, ownProps) {
     isFetchingLibraryRegistrations: state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.isFetching
   };
 }
+
 
 function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);

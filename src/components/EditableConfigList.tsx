@@ -79,6 +79,12 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     let EditForm = this.EditForm;
     let AdditionalContent = this.AdditionalContent || null;
     let headers = this.getHeaders();
+    
+    if (this.listDataKey === "collections" && this.props.data["collections"]) {
+      const collections = this.props.data["collections"];
+      console.log(collections);
+      collections[0].marked_for_deletion = true;
+    }
 
     return (
       <div className={this.getClassName()}>
@@ -108,19 +114,28 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
                   <li key={index}>
-                    <a
-                      className="btn btn-default edit-item"
-                      href={this.urlBase + "edit/" + item[this.identifierKey]}
-                    >
-                      <span>
-                        Edit
-                        <PencilIcon />
-                      </span>
-                    </a>
+                    {!item.marked_for_deletion &&
+                      <a
+                        className="btn btn-default edit-item"
+                        href={this.urlBase + "edit/" + item[this.identifierKey]}
+                        disabled={item.marked_for_deletion}
+                      >
+                        <span>
+                          Edit
+                          <PencilIcon />
+                        </span>
+                      </a>
+                    }
                     <h4>
                       {this.label(item)}
                     </h4>
-                    { this.canDelete(item) &&
+                    {item.marked_for_deletion &&
+                     <div>
+                      This collection has been marked for deletion and cannot be edited.<br />
+                      The collection will be deleted shortly.
+                     </div>
+                    }
+                    { !item.marked_for_deletion && this.canDelete(item) &&
                       <button
                         className="btn btn-danger delete-item"
                         onClick={() => this.delete(item) }
@@ -132,6 +147,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
                       </button>
                     }
                     {
+                      !item.marked_for_deletion &&
                       AdditionalContent &&
                       <AdditionalContent
                         type={this.itemTypeName}
