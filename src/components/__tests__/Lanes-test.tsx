@@ -11,7 +11,7 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import LaneEditor from "../LaneEditor";
 import { Link } from "react-router";
 import EditableInput from "../EditableInput";
-import SaveButton from "../SaveButton";
+import { Button } from "library-simplified-reusable-components";
 import { LaneData } from "../../interfaces";
 
 describe("Lanes", () => {
@@ -467,7 +467,7 @@ describe("Lanes", () => {
     orderInfo = wrapper.find(".order-change-info");
     expect(orderInfo.length).to.equal(1);
 
-    let save = orderInfo.find(SaveButton);
+    let save = orderInfo.find(Button);
     expect(save.length).to.equal(1);
     let reset = orderInfo.find(".cancel-order-changes");
     expect(reset.length).to.equal(1);
@@ -674,7 +674,7 @@ describe("Lanes", () => {
     mountWrapper();
     wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
 
-    let saveOrderButton = wrapper.find(SaveButton);
+    let saveOrderButton = wrapper.find(Button);
     saveOrderButton.simulate("click");
     expect(changeLaneOrder.callCount).to.equal(1);
     expect(changeLaneOrder.args[0][0]).to.deep.equal([lanesData[1], lanesData[0]]);
