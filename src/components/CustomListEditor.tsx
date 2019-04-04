@@ -6,7 +6,7 @@ import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
@@ -95,9 +95,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         <div className="custom-list-editor-body">
           { this.props.collections && this.props.collections.length > 0 &&
             <div className="custom-list-filters">
-              <Collapsible
-                title="Add from collections"
-                body={
+              <Panel
+                headerText="Add from collections"
+                content={
                   <div className="collections">
                     <div>Automatically add new books from these collections to this list:</div>
                     { this.props.collections.map(collection =>
@@ -118,10 +118,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             </div>
           }
           <form className="form-inline" onSubmit={this.search}>
-            <Collapsible
-              title="Search for titles"
+            <Panel
+              headerText="Search for titles"
               openByDefault={true}
-              body={
+              content={
                 <fieldset>
                   <legend className="visuallyHidden">Search for titles</legend>
                   {

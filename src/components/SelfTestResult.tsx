@@ -1,5 +1,5 @@
 import * as React from "react";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import { SelfTestsResult } from "../interfaces";
 
 export interface SelfTestResultProps {
@@ -63,9 +63,9 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
   renderCollapsible(result, body, colorResultClass, isList) {
     let title = isList ? `Results (${result.length})` : "Results";
 
-    return <Collapsible
-      title={title}
-      body={body}
+    return <Panel
+      headerText={title}
+      content={body}
       style={colorResultClass}
     />;
   }

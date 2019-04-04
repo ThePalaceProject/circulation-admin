@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TimestampData } from "../interfaces";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 
 export interface TimestampProps {
   timestamp: TimestampData;
@@ -11,7 +11,7 @@ export default class Timestamp extends React.Component<TimestampProps, void> {
     let exception = <section className="well exception"><pre>{this.props.timestamp.exception}</pre></section>;
     let achievements = <section className="well"><pre>{this.props.timestamp.achievements}</pre></section>;
 
-    let body = (
+    let content = (
       <ul>
         <li>Duration: {this.props.timestamp.duration} seconds</li>
         {
@@ -27,10 +27,10 @@ export default class Timestamp extends React.Component<TimestampProps, void> {
 
     // If the timestamp has an exception, it should start out expanded.
     return (
-      <Collapsible
-        title={this.props.timestamp.start}
+      <Panel
+        headerText={this.props.timestamp.start}
         style={this.props.timestamp.exception ? "danger" : "success"}
-        body={body}
+        content={content}
         collapsible={false}
       />
     );

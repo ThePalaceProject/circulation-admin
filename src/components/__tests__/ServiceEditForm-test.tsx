@@ -8,7 +8,6 @@ import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
 import SaveButton from "../SaveButton";
-import Collapsible from "../Collapsible";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
@@ -216,7 +215,7 @@ describe("ServiceEditForm", () => {
       );
       wrapper.setState({ protocol: "protocol with instructions" });
 
-      let collapsible = wrapper.find(".collapsible");
+      let collapsible = wrapper.find(".panel");
       expect(collapsible.length).to.equal(3);
       let title = collapsible.at(0).find(".panel-title");
       expect(title.text()).to.equal("click for instructions");
@@ -798,7 +797,7 @@ describe("ServiceEditForm", () => {
 
     it("calls save on submit even if there is a collapsible panel", () => {
       wrapper.setState({ protocol: "protocol with instructions" });
-      let collapsible = wrapper.find(".collapsible");
+      let collapsible = wrapper.find(".panel");
       expect(collapsible.length).to.equal(3);
 
       wrapper.simulate("submit");
