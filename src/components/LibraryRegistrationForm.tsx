@@ -1,7 +1,7 @@
 import * as React from "react";
 import { LibraryData } from "../interfaces";
 import EditableInput from "./EditableInput";
-import SaveButton from "./SaveButton";
+import { Button } from "library-simplified-reusable-components";
 
 export interface LibraryRegistrationFormState {
   checked: boolean;
@@ -37,7 +37,7 @@ export default class LibraryRegistrationForm extends React.Component<LibraryRegi
     return (
       <form className="registration-status">
         {termsLink && this.checkbox(this.props.library, termsLink)}
-        <SaveButton disabled={disabled} submit={() => this.props.register(this.props.library)} text={this.props.buttonText} />
+        <Button disabled={disabled} callback={() => this.props.register(this.props.library)} content={this.props.buttonText} />
       </form>
     );
   }

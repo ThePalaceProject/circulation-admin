@@ -5,6 +5,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import LibraryRegistrationForm from "../LibraryRegistrationForm";
+import { Button } from "library-simplified-reusable-components";
 
 describe("LibraryRegistrationForm", () => {
   let wrapper;
@@ -70,26 +71,26 @@ describe("LibraryRegistrationForm", () => {
 
   it("disables the button if there is a checkbox and it is unchecked", () => {
     expect(wrapper.state()["checked"]).to.be.true;
-    let button = wrapper.find("button");
+    let button = wrapper.find(Button);
     expect(button.prop("disabled")).to.be.false;
 
     wrapper.setState({ checked: false });
-    button = wrapper.find("button");
+    button = wrapper.find(Button);
     expect(button.prop("disabled")).to.be.true;
   });
 
   it("disables the button if the disabled prop is set to true, regardless of the checkbox", () => {
     expect(wrapper.state()["checked"]).to.be.true;
     wrapper.setProps({ disabled: true });
-    let button = wrapper.find("button");
+    let button = wrapper.find(Button);
     expect(button.prop("disabled")).to.be.true;
 
     wrapper.setProps({ library: libraryNoLink });
-    button = wrapper.find("button");
+    button = wrapper.find(Button);
     expect(button.prop("disabled")).to.be.true;
 
     wrapper.setProps({ disabled: false });
-    button = wrapper.find("button");
+    button = wrapper.find(Button);
     expect(button.prop("disabled")).to.be.false;
   });
 
