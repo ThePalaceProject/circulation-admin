@@ -678,7 +678,7 @@ describe("ServiceEditForm", () => {
       librarySelectSettingInput.get(0).value = "option4";
       librarySelectSettingInput.simulate("change");
 
-      let addButton = wrapper.find("button.add-library");
+      let addButton = wrapper.find("button").findWhere(el => el.text() === "Add Library");
       addButton.simulate("click");
 
       library = wrapper.find(WithRemoveButton);

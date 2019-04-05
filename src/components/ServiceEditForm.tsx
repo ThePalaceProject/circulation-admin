@@ -259,12 +259,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                         />
                       )
                     }
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-default edit-library"
+                      className="edit-library"
                       disabled={this.props.disabled}
-                      onClick={() => this.editLibrary(library)}
-                      >Save</button>
+                      callback={() => this.editLibrary(library)}
+                      content="Save"
+                    />
                   </div>
                 }
               </div>
@@ -299,12 +300,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                         />
                     )
                   }
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-default add-library"
                     disabled={this.props.disabled}
-                    onClick={this.addLibrary}
-                    >Add Library</button>
+                    callback={this.addLibrary}
+                    content="Add Library"
+                  />
                 </div>
               }
             </div>

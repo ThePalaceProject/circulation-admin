@@ -10,6 +10,7 @@ import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 import { Panel } from "library-simplified-reusable-components";
+import { Button } from "library-simplified-reusable-components";
 
 
 export interface BookCoverEditorStateProps {
@@ -130,12 +131,11 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
                   }
                 />
               }
-              <button
-                className="btn btn-default"
-                type="submit"
-                onClick={this.save}
+              <Button
+                callback={this.save}
                 disabled={this.props.isFetching || !this.props.preview}
-                >Save this cover</button>
+                content="Save this cover"
+              />
             </div>
           </div>
         }
