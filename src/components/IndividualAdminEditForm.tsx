@@ -3,8 +3,7 @@ import EditableInput from "./EditableInput";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
-import { Panel } from "library-simplified-reusable-components";
-import { Button } from "library-simplified-reusable-components";
+import { Panel, Button } from "library-simplified-reusable-components";
 
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 

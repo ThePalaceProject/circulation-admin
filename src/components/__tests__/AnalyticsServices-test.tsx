@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { AnalyticsServices } from "../AnalyticsServices";
 
@@ -37,7 +37,7 @@ describe("AnalyticsServices", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
-    wrapper = shallow(
+    wrapper = mount(
       <AnalyticsServices
         data={data}
         fetchData={fetchData}

@@ -9,9 +9,7 @@ import EditableInput from "./EditableInput";
 import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
-import { Panel } from "library-simplified-reusable-components";
-import { Button } from "library-simplified-reusable-components";
-
+import { Panel, Button } from "library-simplified-reusable-components";
 
 export interface BookCoverEditorStateProps {
   bookAdminUrl?: string;

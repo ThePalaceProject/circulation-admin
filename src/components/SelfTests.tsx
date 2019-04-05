@@ -8,6 +8,7 @@ import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import SelfTestResult from "./SelfTestResult";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
+import { Button } from "library-simplified-reusable-components";
 
 import {
   CheckSoloIcon,
@@ -90,23 +91,19 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     const disableToggle = integration.self_test_results && integration.self_test_results.disabled;
 
     const toggleButton = (
-      <button
-        onClick={this.toggleView}
+      <Button
+        callback={this.toggleView}
         disabled={disableToggle}
-        className="btn btn-default"
-      >
-        {resultsLabel} Results
-      </button>
+        content={`${resultsLabel} Results`}
+      />
     );
 
     const runButton = (
-      <button
-        onClick={(e) => this.runSelfTests(e)}
-        className="btn btn-default runSelfTests"
+      <Button
+        callback={(e) => this.runSelfTests(e)}
         disabled={this.props.isFetching}
-      >
-        Run tests
-      </button>
+        content="Run tests"
+      />
     );
 
     let resultList = integration.self_test_results ? results.map(result => <SelfTestResult result={result} isFetching={isFetching} />) : null;
