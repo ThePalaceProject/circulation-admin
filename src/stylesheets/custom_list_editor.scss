@@ -64,17 +64,6 @@
     input {
       width: 50%;
     }
-
-    button {
-      svg {
-        margin-left: 10px;
-        fill: $invertedlinkcolor;
-      }
-
-      &:hover svg {
-        fill: $linkcolor;
-      }
-    }
   }
 
   .custom-list-editor-body {

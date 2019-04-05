@@ -21,6 +21,7 @@ import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
+import { Button } from "library-simplified-reusable-components";
 
 export interface CustomListsStateProps {
   lists: CustomListData[];
@@ -107,10 +108,10 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
         <div className="custom-lists">
           <div className="custom-lists-sidebar">
             <h2>List Manager</h2>
-            <Link
-              className="btn btn-default create-button"
-              to={"/admin/web/lists/" + this.props.library + "/create"}
-              >Create New List</Link>
+            <Button
+              href={"/admin/web/lists/" + this.props.library + "/create"}
+              content="Create New List"
+            />
             { this.props.lists && this.props.lists.length > 0 &&
               <div>
                 <fieldset>
@@ -139,34 +140,28 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
                         <li key={list.id} className={active ? "active" : "" }>
                           <div>
                             <div>{ list.name }</div>
+                            <div>Books in list: { list.entry_count }</div>
                             <div>ID-{ list.id }</div>
                           </div>
                           <div>
-                            <div>Books in list: { list.entry_count }</div>
-                            <div>
-                              { active &&
-                                <button
-                                  className="btn btn-default disabled"
-                                  disabled={true}
-                                  >Editing</button>
-                              }
-                              { !active &&
-                                <Link
-                                  className="btn btn-default"
-                                  to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
-                                  >Edit List
-                                    <PencilIcon />
-                                </Link>
-                              }
-                              { this.context.admin.isLibraryManager(this.props.library) &&
-                                <button
-                                  className="btn btn-default"
-                                  onClick={() => this.deleteCustomList(list)}
-                                  >Delete List
-                                    <TrashIcon />
-                                </button>
-                              }
-                            </div>
+                            { active &&
+                              <Button
+                                disabled={true}
+                                content="Editing"
+                              />
+                            }
+                            { !active &&
+                              <Button
+                                href={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
+                                content={<span>Edit<PencilIcon /></span>}
+                              />
+                            }
+                            { this.context.admin.isLibraryManager(this.props.library) &&
+                              <Button
+                                callback={() => this.deleteCustomList(list)}
+                                content={<span>Delete<TrashIcon /></span>}
+                              />
+                            }
                           </div>
                         </li>
                       );

@@ -795,7 +795,7 @@ describe("CustomListEntriesEditor", () => {
     );
     let button = wrapper.find(".custom-list-search-results .load-more-button");
     expect(button.length).to.equal(1);
-    expect(button.prop("disabled")).to.equal(false);
+    expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setProps({ isFetchingMoreSearchResults: true });
     button = wrapper.find(".custom-list-search-results .load-more-button");
@@ -818,7 +818,7 @@ describe("CustomListEntriesEditor", () => {
     );
     let button = wrapper.find(".custom-list-entries .load-more-button");
     expect(button.length).to.equal(1);
-    expect(button.prop("disabled")).to.equal(false);
+    expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setProps({ isFetchingMoreCustomListEntries: true });
     button = wrapper.find(".custom-list-entries .load-more-button");

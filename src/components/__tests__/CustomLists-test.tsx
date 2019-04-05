@@ -76,7 +76,7 @@ describe("CustomLists", () => {
     fetchCollections = stub();
     fetchLibraries = stub();
 
-    wrapper = shallow(
+    wrapper = mount(
       <CustomLists
         csrfToken="token"
         library="library"
@@ -119,12 +119,12 @@ describe("CustomLists", () => {
   });
 
   it("renders create link", () => {
-    let create = wrapper.find(".create-button");
+    let create = wrapper.find("a").findWhere(el => el.text() === "Create New List");
     expect(create.length).to.equal(1);
-    expect(create.props().to).to.equal("/admin/web/lists/library/create");
+    expect(create.prop("href")).to.equal("/admin/web/lists/library/create");
   });
 
-  it("renders lists", () => {
+  it.only("renders lists", () => {
     let lists = wrapper.find("li");
     expect(lists.length).to.equal(2);
     let listAHeader = lists.at(0).childAt(0);

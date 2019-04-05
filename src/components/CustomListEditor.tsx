@@ -6,7 +6,7 @@ import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
-import { Panel } from "library-simplified-reusable-components";
+import { Button, Panel } from "library-simplified-reusable-components";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
@@ -139,11 +139,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                     ref="searchTerms"
                     type="text"
                     />&nbsp;
-                  <button
-                    className="btn btn-default"
-                    type="submit">Search
-                      <SearchIcon />
-                  </button>
+                  <Button
+                    content={<span>Search<SearchIcon /></span>}
+                    callback={this.search}
+                  />
                 </fieldset>
               }
             />
