@@ -118,27 +118,6 @@ describe("CustomLists", () => {
     expect(loading.length).to.equal(1);
   });
 
-  it("renders create link", () => {
-    let create = wrapper.find("a").findWhere(el => el.text() === "Create New List");
-    expect(create.length).to.equal(1);
-    expect(create.prop("href")).to.equal("/admin/web/lists/library/create");
-  });
-
-  it.only("renders lists", () => {
-    let lists = wrapper.find("li");
-    expect(lists.length).to.equal(2);
-    let listAHeader = lists.at(0).childAt(0);
-    let listZHeader = lists.at(1).childAt(0);
-    let listADetails = lists.at(0).childAt(1);
-    let listZDetails = lists.at(1).childAt(1);
-    expect(listAHeader.text()).to.contain("a list");
-    expect(listAHeader.text()).to.contain("1");
-    expect(listZHeader.text()).to.contain("z list");
-    expect(listZHeader.text()).to.contain("2");
-    expect(listADetails.text()).to.contain("Books in list: 0");
-    expect(listZDetails.text()).to.contain("Books in list: 1");
-  });
-
   it("navigates to create or edit page on initial load", () => {
     // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
     // Start on the lists page, without edit or create.

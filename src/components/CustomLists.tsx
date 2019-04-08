@@ -22,6 +22,7 @@ import EditableInput from "./EditableInput";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
 import { Button } from "library-simplified-reusable-components";
+import CustomListsSidebar from "./CustomListsSidebar";
 
 export interface CustomListsStateProps {
   lists: CustomListData[];
@@ -104,110 +105,44 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
         { this.props.isFetching &&
           <LoadingIndicator />
         }
-
         <div className="custom-lists">
-          <div className="custom-lists-sidebar">
-            <h2>List Manager</h2>
-            <Button
-              href={"/admin/web/lists/" + this.props.library + "/create"}
-              content="Create New List"
-            />
-            { this.props.lists && this.props.lists.length > 0 &&
-              <div>
-                <fieldset>
-                  <legend className="visuallyHidden">Select list sort type</legend>
-                  <EditableInput
-                    type="radio"
-                    label="Sort A-Z"
-                    name="sort"
-                    onChange={this.changeSort}
-                    checked={this.state.sort === "asc"}
-                    disabled={false}
-                    />
-                  <EditableInput
-                    type="radio"
-                    label="Sort Z-A"
-                    name="sort"
-                    onChange={this.changeSort}
-                    checked={this.state.sort === "desc"}
-                    disabled={false}
-                    />
-                </fieldset>
-                <ul>
-                  { this.sortedLists().map(list => {
-                      const active = (String(list.id) === this.props.identifier);
-                      return (
-                        <li key={list.id} className={active ? "active" : "" }>
-                          <div>
-                            <div>{ list.name }</div>
-                            <div>Books in list: { list.entry_count }</div>
-                            <div>ID-{ list.id }</div>
-                          </div>
-                          <div>
-                            { active &&
-                              <Button
-                                disabled={true}
-                                content="Editing"
-                              />
-                            }
-                            { !active &&
-                              <Button
-                                href={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
-                                content={<span>Edit<PencilIcon /></span>}
-                              />
-                            }
-                            { this.context.admin.isLibraryManager(this.props.library) &&
-                              <Button
-                                callback={() => this.deleteCustomList(list)}
-                                content={<span>Delete<TrashIcon /></span>}
-                              />
-                            }
-                          </div>
-                        </li>
-                      );
-                    })
-                  }
-                </ul>
-              </div>
-            }
-          </div>
-
-          { this.props.editOrCreate === "create" &&
-            <CustomListEditor
-              library={this.props.library}
-              collections={this.collectionsForLibrary()}
-              editCustomList={this.editCustomList}
-              search={this.props.search}
-              loadMoreSearchResults={this.props.loadMoreSearchResults}
-              loadMoreEntries={this.props.loadMoreEntries}
-              searchResults={this.props.searchResults}
-              responseBody={this.props.responseBody}
-              isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-              isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
-              entryPoints={enabledEntryPoints}
-            />
-          }
-
-          { this.props.editOrCreate === "edit" &&
-            <CustomListEditor
-              library={this.props.library}
-              list={this.props.listDetails}
-              listId={this.props.identifier}
-              listCollections={listCollections}
-              entryCount={entryCount}
-              collections={this.collectionsForLibrary()}
-              editCustomList={this.editCustomList}
-              search={this.props.search}
-              loadMoreSearchResults={this.props.loadMoreSearchResults}
-              loadMoreEntries={this.props.loadMoreEntries}
-              searchResults={this.props.searchResults}
-              isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-              isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
-              entryPoints={enabledEntryPoints}
-            />
-          }
+          <CustomListsSidebar
+            lists={this.sortedLists()}
+            library={this.props.library}
+            identifier={this.props.identifier}
+            isLibraryManager={this.context.admin.isLibraryManager(this.props.library)}
+            deleteCustomList={this.deleteCustomList}
+            changeSort={this.changeSort}
+            sortOrder={this.state.sort}
+          />
+          { this.makeEditor(entryCount, listCollections) }
         </div>
       </div>
+    );
+  }
+
+  makeEditor(entryCount, listCollections): JSX.Element {
+    let editorProps = {
+      collections: this.collectionsForLibrary(),
+      editCustomList: this.editCustomList,
+      entryPoints: this.getEnabledEntryPoints(this.props.libraries),
+      isFetchingMoreCustomListEntries: this.props.isFetchingMoreCustomListEntries,
+      isFetchingMoreSearchResults: this.props.isFetchingMoreSearchResults,
+      library: this.props.library,
+      loadMoreEntries: this.props.loadMoreEntries,
+      loadMoreSearchResults: this.props.loadMoreSearchResults,
+      search: this.props.search,
+      searchResults: this.props.searchResults
+    };
+    let extraProps = this.props.editOrCreate === "create" ?
+      { responseBody: this.props.responseBody } :
+      { entryCount: entryCount,
+        list: this.props.listDetails,
+        listCollections: listCollections,
+        listId: this.props.identifier
+      };
+    return(
+      <CustomListEditor {...{...editorProps, ...extraProps}} />
     );
   }
 
