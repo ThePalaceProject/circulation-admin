@@ -86,7 +86,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     const headers = this.getHeaders();
     const listAllData = !this.props.isFetching && !this.props.editOrCreate &&
       this.props.data && this.props.data[this.listDataKey];
-    const createANewItem = listAllData &&
+    const canCreateANewItem = listAllData &&
       (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
       this.canCreate();
     let EditForm = this.EditForm;
@@ -111,7 +111,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }
         { listAllData &&
           <div>
-            { createANewItem &&
+            { canCreateANewItem &&
               <a
                 className="btn btn-default create-item"
                 href={this.urlBase + "create"}
@@ -169,7 +169,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         <a
           className="btn btn-default edit-item"
           href={this.urlBase + "edit/" + item[this.identifierKey]}
-          disabled={item.marked_for_deletion}
         >
           <span>
             Edit

@@ -68,9 +68,8 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
         <li className="deleted-collection" key={index}>
           <TrashIcon />
           <h4>{this.label(item)}</h4>
-          <p>This collection has been marked for deletion and cannot be edited. Deletion
-            of this collection will run in the background and will be removed from this
-            list once completed.
+          <p>This collection cannot be edited and is currently being deleted.
+            The deletion process is gradual and this collection will be removed once it is complete.
           </p>
         </li>
       );
@@ -79,8 +78,9 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
   }
 
   async delete(item: CollectionData): Promise<void> {
-    const deleteInfo = "Marking this collection for deletion will make it " +
-      "uneditable until it is fully deleted in the background.";
+    const deleteInfo = "This action cannot be undone. Deletion will not happen " +
+      "automatically but gradually. Until the collection is completely deleted, " +
+      "it will remain in the list and will be uneditable.";
     if (window.confirm(`Set "${this.label(item)}" for deletion? ${deleteInfo}`)) {
       await this.props.deleteItem(item[this.identifierKey]);
       this.props.fetchData();

@@ -85,9 +85,8 @@ describe("Collections", () => {
       // The second collection is marked for deletion.
       expect(deletedCollection.find("h4").text()).to.equal("Enki");
       expect(deletedCollection.find("p").text()).to.equal(
-        "This collection has been marked for deletion and cannot be edited. " +
-        "Deletion of this collection will run in the background and will be " +
-        "removed from this list once completed."
+        "This collection cannot be edited and is currently being deleted. " +
+        "The deletion process is gradual and this collection will be removed once it is complete."
       );
     });
 
