@@ -46,7 +46,7 @@ export class Libraries extends GenericEditableConfigList<LibrariesData, LibraryD
     return this.context.admin.isSystemAdmin();
   }
 
-  canDelete(item) {
+  canDelete() {
     return this.context.admin.isSystemAdmin();
   }
 }

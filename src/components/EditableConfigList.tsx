@@ -73,18 +73,24 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.editItem = this.editItem.bind(this);
     this.save = this.save.bind(this);
     this.label = this.label.bind(this);
+    this.renderLi = this.renderLi.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.fetchData) {
+      this.props.fetchData();
+    }
   }
 
   render(): JSX.Element {
+    const headers = this.getHeaders();
+    const listAllData = !this.props.isFetching && !this.props.editOrCreate &&
+      this.props.data && this.props.data[this.listDataKey];
+    const createANewItem = listAllData &&
+      (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
+      this.canCreate();
     let EditForm = this.EditForm;
-    let AdditionalContent = this.AdditionalContent || null;
-    let headers = this.getHeaders();
-    
-    if (this.listDataKey === "collections" && this.props.data["collections"]) {
-      const collections = this.props.data["collections"];
-      console.log(collections);
-      collections[0].marked_for_deletion = true;
-    }
+    let itemToEdit = this.itemToEdit();
 
     return (
       <div className={this.getClassName()}>
@@ -103,61 +109,18 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         { this.props.isFetching &&
           <LoadingIndicator />
         }
-        { !this.props.isFetching && !this.props.editOrCreate && this.props.data && this.props.data[this.listDataKey] &&
+        { listAllData &&
           <div>
-            { (!this.limitOne || this.props.data[this.listDataKey].length === 0) && this.canCreate() &&
+            { createANewItem &&
               <a
                 className="btn btn-default create-item"
                 href={this.urlBase + "create"}
-                >Create new {this.itemTypeName}</a>
+                >Create new {this.itemTypeName}
+              </a>
             }
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
-                  <li key={index}>
-                    {!item.marked_for_deletion &&
-                      <a
-                        className="btn btn-default edit-item"
-                        href={this.urlBase + "edit/" + item[this.identifierKey]}
-                        disabled={item.marked_for_deletion}
-                      >
-                        <span>
-                          Edit
-                          <PencilIcon />
-                        </span>
-                      </a>
-                    }
-                    <h4>
-                      {this.label(item)}
-                    </h4>
-                    {item.marked_for_deletion &&
-                     <div>
-                      This collection has been marked for deletion and cannot be edited.<br />
-                      The collection will be deleted shortly.
-                     </div>
-                    }
-                    { !item.marked_for_deletion && this.canDelete(item) &&
-                      <button
-                        className="btn btn-danger delete-item"
-                        onClick={() => this.delete(item) }
-                      >
-                        <span>
-                          Delete
-                          <TrashIcon />
-                        </span>
-                      </button>
-                    }
-                    {
-                      !item.marked_for_deletion &&
-                      AdditionalContent &&
-                      <AdditionalContent
-                        type={this.itemTypeName}
-                        item={item}
-                        store={this.props.store}
-                        csrfToken={this.props.csrfToken}
-                      />
-                    }
-                  </li>
-                )
+                  this.renderLi(item, index))
               }
             </ul>
           </div>
@@ -179,11 +142,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           </div>
         }
 
-        { this.itemToEdit() &&
+        { itemToEdit &&
           <div>
-            <h3>Edit {this.label(this.itemToEdit())}</h3>
+            <h3>Edit {this.label(itemToEdit)}</h3>
             <EditForm
-              item={this.itemToEdit()}
+              item={itemToEdit}
               data={this.props.data}
               additionalData={this.props.additionalData}
               disabled={this.props.isFetching}
@@ -197,7 +160,47 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }
       </div>
     );
+  }
 
+  renderLi(item, index): JSX.Element {
+    let AdditionalContent = this.AdditionalContent || null;
+    return (
+      <li key={index}>
+        <a
+          className="btn btn-default edit-item"
+          href={this.urlBase + "edit/" + item[this.identifierKey]}
+          disabled={item.marked_for_deletion}
+        >
+          <span>
+            Edit
+            <PencilIcon />
+          </span>
+        </a>
+
+        <h4>{this.label(item)}</h4>
+
+        {this.canDelete() &&
+          <button
+            className="btn btn-danger delete-item"
+            onClick={() => this.delete(item) }
+          >
+            <span>
+              Delete
+              <TrashIcon />
+            </span>
+          </button>
+        }
+        {
+          AdditionalContent &&
+          <AdditionalContent
+            type={this.itemTypeName}
+            item={item}
+            store={this.props.store}
+            csrfToken={this.props.csrfToken}
+          />
+        }
+      </li>
+    );
   }
 
   label(item): string {
@@ -237,8 +240,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           <a href={this.getLink()}>a new {this.formatItemType()}</a>
         </span>
       );
-    }
-    else {
+    } else {
       verb = "Successfully edited this ";
       return (
         <span>{verb}{this.formatItemType()}</span>
@@ -247,21 +249,15 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   getLink() {
-    return this.urlBase + "edit/" + this.props.responseBody;
+    return `${this.urlBase}edit/${this.props.responseBody}`;
   }
 
   canCreate() {
     return true;
   }
 
-  canDelete(item) {
+  canDelete() {
     return true;
-  }
-
-  componentWillMount() {
-    if (this.props.fetchData) {
-      this.props.fetchData();
-    }
   }
 
   save(data: FormData) {
@@ -300,7 +296,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       this.props.fetchData();
     }
   }
-
 }
 
 export abstract class EditableConfigList<T, U> extends GenericEditableConfigList<T, U, EditableConfigListProps<T>> {}

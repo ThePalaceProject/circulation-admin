@@ -5,6 +5,7 @@ import ActionCreator from "../actions";
 import { CollectionsData, CollectionData, LibraryData, LibraryRegistrationsData, ServiceData } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import SelfTests from "./SelfTests";
+import TrashIcon from "./icons/TrashIcon";
 
 export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {
   isFetchingLibraryRegistrations?: boolean;
@@ -61,9 +62,25 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
     }
   }
 
+  renderLi(item, index): JSX.Element {
+    if (item.marked_for_deletion) {
+      return (
+        <li className="deleted-collection" key={index}>
+          <TrashIcon />
+          <h4>{this.label(item)}</h4>
+          <p>This collection has been marked for deletion and cannot be edited. Deletion
+            of this collection will run in the background and will be removed from this
+            list once completed.
+          </p>
+        </li>
+      );
+    };
+    return super.renderLi(item, index);
+  }
+
   async delete(item: CollectionData): Promise<void> {
-    const deleteInfo = 'Setting this collection for deletion will make it' +
-      ' uneditable until it is fully deleted in the background.';
+    const deleteInfo = "Marking this collection for deletion will make it " +
+      "uneditable until it is fully deleted in the background.";
     if (window.confirm(`Set "${this.label(item)}" for deletion? ${deleteInfo}`)) {
       await this.props.deleteItem(item[this.identifierKey]);
       this.props.fetchData();
