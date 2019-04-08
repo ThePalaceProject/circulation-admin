@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.1.9
+### v0.1.10
 #### Updated
 - Displaying a different UI for deleted collections. When marked for deletion, a collection will be deleted in the background and this information needs to be conveyed in the UI.
+
+### v0.1.9
+#### Updated
+- Replaced the Collapsible component with a reusable Panel component.
 
 ### v0.1.8
 #### Updated

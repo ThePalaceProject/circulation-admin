@@ -4,6 +4,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import Timestamp from "../Timestamp";
+import { Panel } from "library-simplified-reusable-components";
 
 describe("Timestamp", () => {
   let wrapper;
@@ -22,11 +23,11 @@ describe("Timestamp", () => {
       );
     });
 
-    it("renders a collapsible", () => {
-      let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.length).to.equal(1);
-      expect(collapsible.prop("bsStyle")).to.equal("success");
-      expect(collapsible.prop("collapsible")).to.be.false;
+    it("renders a panel", () => {
+      let panel = wrapper.find(Panel);
+      expect(panel.length).to.equal(1);
+      expect(panel.prop("style")).to.equal("success");
+      expect(panel.prop("collapsible")).to.be.false;
     });
 
     it("renders the start time", () => {
@@ -67,8 +68,8 @@ describe("Timestamp", () => {
     });
 
     it("determines style based on whether there is an exception", () => {
-      let collapsible = wrapper.find(".collapsible");
-      expect(collapsible.prop("bsStyle")).to.equal("danger");
+      let panel = wrapper.find(Panel);
+      expect(panel.prop("style")).to.equal("danger");
     });
 
     it("renders an exception", () => {

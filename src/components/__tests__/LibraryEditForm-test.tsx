@@ -6,7 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
-import Collapsible from "../Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
 import SaveButton from "../SaveButton";
 
@@ -47,7 +47,7 @@ describe("LibraryEditForm", () => {
   };
 
   let collapsibleByName = (name: string) => {
-    let collapsibles = wrapper.find(Collapsible);
+    let collapsibles = wrapper.find(Panel);
     if (collapsibles.length >= 1) {
       return collapsibles.filterWhere(collapsible => collapsible.find(".panel-heading").text().startsWith(name));
     }
@@ -111,11 +111,11 @@ describe("LibraryEditForm", () => {
     });
 
     it("subdivides fields", () => {
-      let collapsible = wrapper.find(".collapsible");
+      let collapsible = wrapper.find(".panel");
       expect(collapsible.length).to.equal(5);
 
       let basic = collapsible.at(0).find(".panel-heading");
-      expect(basic.text()).to.equal("Basic Information");
+      expect(basic.text()).to.contain("Basic Information");
 
       let other = collapsible.slice(1, collapsible.length);
       other.map((form) => {

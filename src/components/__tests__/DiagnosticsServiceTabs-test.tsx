@@ -5,7 +5,7 @@ import { shallow, mount } from "enzyme";
 import { stub, spy } from "sinon";
 
 import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
-import Collapsible from "../Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import Timestamp from "../Timestamp";
 import ToolTip from "../ToolTip";
 
@@ -82,14 +82,14 @@ describe("DiagnosticsServiceTabs", () => {
       let tabContent = wrapper.find(".tab-content");
       expect(tabContent.length).to.equal(1);
 
-      let collapsibles = tabContent.find("Collapsible");
+      let collapsibles = tabContent.find(Panel);
 
       let collection1 = collapsibles.at(0);
-      expect(collection1.prop("title")).to.equal("collection1");
+      expect(collection1.prop("headerText")).to.equal("collection1");
       expect(collection1.prop("openByDefault")).to.be.false;
 
       let collection2 = collapsibles.at(2);
-      expect(collection2.prop("title")).to.equal("collection2");
+      expect(collection2.prop("headerText")).to.equal("collection2");
       // Because collection2 contains a timestamp with an exception, it should start out expanded.
       expect(collection2.prop("openByDefault")).to.be.true;
     });

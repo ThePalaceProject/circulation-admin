@@ -11,21 +11,11 @@
         flex-grow: 1;
         width: 100%;
 
-        .collapsible {
-          .glyphicon {
-            color: $white;
-          }
-          &:hover {
-            .glyphicon {
-              color: $dark-gray;
-            }
-          }
-        }
         pre {
           white-space: pre-wrap;
         }
 
-        svg {
+        svg:not(.icon) {
           height: 30px;
           width: 30px;
           align-self: center;

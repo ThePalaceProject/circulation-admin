@@ -47,7 +47,7 @@ describe("SelfTestResult", () => {
     const longStringResult = { ...stringResult, ...{ result: "abc \n def" }};
     wrapper.setProps({ result: longStringResult });
 
-    let collapsible = wrapper.find(".collapsible");
+    let collapsible = wrapper.find(".panel");
     expect(collapsible.length).to.equal(1);
     expect(collapsible.hasClass("panel-success")).to.be.true;
     expect(collapsible.find("span").at(0).text()).to.equal("Results");
@@ -59,7 +59,7 @@ describe("SelfTestResult", () => {
     const arrayResult = { ...stringResult, ...{ result: ["Thing 1", "Thing 2"] }};
     wrapper.setProps({ result: arrayResult });
 
-    let collapsible = wrapper.find(".collapsible");
+    let collapsible = wrapper.find(".panel");
     expect(collapsible.length).to.equal(1);
     expect(collapsible.hasClass("panel-success")).to.be.true;
     expect(collapsible.find("span").at(0).text()).to.equal("Results (2)");

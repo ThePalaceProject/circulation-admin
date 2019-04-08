@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import SaveButton from "./SaveButton";
-import Collapsible from "./Collapsible";
+import { Panel } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
@@ -108,29 +108,29 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         { this.props.data && this.protocolInstructions() &&
             <div className="form-group">
               <label className="control-label">Instructions</label>
-              <Collapsible
-                title={this.protocolDescription()}
-                type="instruction"
-                text={this.protocolInstructions()}
+              <Panel
+                headerText={this.protocolDescription()}
+                style="instruction"
+                content={this.protocolInstructions()}
               />
             </div>
         }
-        <Collapsible
-          title="Required Fields"
+        <Panel
+          headerText="Required Fields"
           openByDefault={true}
           collapsible={hasNonRequiredFields || showLibrariesForm}
-          body={this.renderRequiredFields(requiredFields)}
+          content={this.renderRequiredFields(requiredFields)}
         />
         { hasNonRequiredFields && (
-          <Collapsible
-            title="Optional Fields"
-            body={this.renderOptionalFields(nonRequiredFields)}
+          <Panel
+            headerText="Optional Fields"
+            content={this.renderOptionalFields(nonRequiredFields)}
           />)
         }
         { (showLibrariesForm) &&
-          <Collapsible
-            title="Libraries"
-            body={this.renderLibrariesForm()}
+          <Panel
+            headerText="Libraries"
+            content={this.renderLibrariesForm()}
           />
         }
         <SaveButton
