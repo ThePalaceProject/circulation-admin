@@ -84,9 +84,13 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   render(): JSX.Element {
     const headers = this.getHeaders();
-    const listAllData = !this.props.isFetching && !this.props.editOrCreate &&
+    // If not in edit or create mode and there is data, display the list.
+    const canListAllData = !this.props.isFetching && !this.props.editOrCreate &&
       this.props.data && this.props.data[this.listDataKey];
-    const canCreateANewItem = listAllData &&
+    // If it's in list mode then allow a new item to be created only if it is
+    // not limited to one item per service and there already isn't one. The
+    // `canCreate` method can be overridden with other rules by other services.
+    const canCreateANewItem = canListAllData &&
       (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
       this.canCreate();
     let EditForm = this.EditForm;
@@ -109,7 +113,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         { this.props.isFetching &&
           <LoadingIndicator />
         }
-        { listAllData &&
+        { canListAllData &&
           <div>
             { canCreateANewItem &&
               <a
@@ -251,10 +255,23 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     return `${this.urlBase}edit/${this.props.responseBody}`;
   }
 
+  /**
+   * canCreate
+   * Does this service have the ability to create a new item? The default is
+   * true but the logic can be overridden by other classes
+   * that inherit GenericEditableConfigList. For example, a class would only
+   * want to create a new item if the admin is a system admin.
+   */
   canCreate() {
     return true;
   }
 
+  /**
+   * canDelete
+   * Does this service have the ability to delete an item? The default is
+   * true but the logic can be overridden by other classes
+   * that inherit GenericEditableConfigList.
+   */
   canDelete() {
     return true;
   }
