@@ -134,27 +134,27 @@ describe("Lanes", () => {
   it("renders create top-level lane link", () => {
     let create = wrapper.find(".lanes-sidebar > div > .create-lane");
     expect(create.length).to.equal(1);
-    expect(create.props().to).to.equal("/admin/web/lanes/library/create");
+    expect(create.prop("href")).to.equal("/admin/web/lanes/library/create");
 
     // the link is disabled if there are lane order changes
     wrapper.setState({ orderChanged: true });
     create = wrapper.find(".lanes-sidebar > div > .create-lane");
     expect(create.length).to.equal(1);
-    expect(create.props().to).to.be.null;
-    expect(create.props().className).to.contain("disabled");
+    expect(create.prop("href")).to.be.null;
+    expect(create.prop("disabled")).to.be.true;
   });
 
   it("renders reset link", () => {
     let reset = wrapper.find(".lanes-sidebar .reset-lanes");
     expect(reset.length).to.equal(1);
-    expect(reset.props().to).to.equal("/admin/web/lanes/library/reset");
+    expect(reset.prop("href")).to.equal("/admin/web/lanes/library/reset");
 
     // the link is disabled if there are lane order changes
     wrapper.setState({ orderChanged: true });
     reset = wrapper.find(".lanes-sidebar > div > .reset-lanes");
     expect(reset.length).to.equal(1);
-    expect(reset.props().to).to.be.null;
-    expect(reset.props().className).to.contain("disabled");
+    expect(reset.prop("href")).to.be.null;
+    expect(reset.prop("disabled")).to.be.true;
   });
 
   it("renders and expands and collapses lanes and sublanes", () => {
@@ -278,17 +278,17 @@ describe("Lanes", () => {
     mountWrapper();
     let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0);
-    let lane1CreateSublane = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    let lane1CreateSublane = lane1.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("create-lane"));
     expect(lane1CreateSublane.length).to.equal(1);
-    expect(lane1CreateSublane.props().to).to.equal("/admin/web/lanes/library/create/1");
+    expect(lane1CreateSublane.prop("href")).to.equal("/admin/web/lanes/library/create/1");
     let lane4 = topLevelLanes.at(1);
-    let lane4CreateSublane = lane4.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    let lane4CreateSublane = lane4.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("create-lane"));
     expect(lane4CreateSublane.length).to.equal(1);
-    expect(lane4CreateSublane.props().to).to.equal("/admin/web/lanes/library/create/4");
+    expect(lane4CreateSublane.prop("href")).to.equal("/admin/web/lanes/library/create/4");
 
     // sublane 2 is collapsed so its create sublane button isn't shown
     let sublane2 = lane1.find("> ul > li > div");
-    let sublane2CreateSublane = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    let sublane2CreateSublane = sublane2.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("create-lane"));
     expect(sublane2CreateSublane.length).to.equal(0);
     let sublane2Expand = sublane2.find("> div > span > .expand-button");
     sublane2Expand.simulate("click");
@@ -296,49 +296,49 @@ describe("Lanes", () => {
     topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
     sublane2 = lane1.find("> ul > li > div");
-    sublane2CreateSublane = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    sublane2CreateSublane = sublane2.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("create-lane"));
     expect(sublane2CreateSublane.length).to.equal(1);
-    expect(sublane2CreateSublane.props().to).to.equal("/admin/web/lanes/library/create/2");
+    expect(sublane2CreateSublane.prop("href")).to.equal("/admin/web/lanes/library/create/2");
 
     // the links are disabled if there are lane order changes.
     wrapper.setState({ orderChanged: true });
 
     topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
-    lane1CreateSublane = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    lane1CreateSublane = lane1.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("create-lane"));
     expect(lane1CreateSublane.length).to.equal(1);
-    expect(lane1CreateSublane.props().to).to.be.null;
-    expect(lane1CreateSublane.props().className).to.contain("disabled");
+    expect(lane1CreateSublane.prop("href")).to.be.null;
+    expect(lane1CreateSublane.prop("disabled")).to.be.true;
 
     lane4 = topLevelLanes.at(1);
-    lane4CreateSublane = lane4.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    lane4CreateSublane = lane4.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("create-lane"));
     expect(lane4CreateSublane.length).to.equal(1);
-    expect(lane4CreateSublane.props().to).to.be.null;
-    expect(lane4CreateSublane.props().className).to.contain("disabled");
+    expect(lane4CreateSublane.prop("href")).to.be.null;
+    expect(lane4CreateSublane.prop("disabled")).to.be.true;
 
     sublane2 = lane1.find("> ul > li > div");
-    sublane2CreateSublane = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("create-lane"));
+    sublane2CreateSublane = sublane2.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("create-lane"));
     expect(sublane2CreateSublane.length).to.equal(1);
-    expect(sublane2CreateSublane.props().to).to.be.null;
-    expect(sublane2CreateSublane.props().className).to.contain("disabled");
+    expect(sublane2CreateSublane.prop("href")).to.be.null;
+    expect(sublane2CreateSublane.prop("disabled")).to.be.true;
   });
 
   it("renders edit link", () => {
     mountWrapper();
     let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0);
-    let lane1Edit = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    let lane1Edit = lane1.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(lane1Edit.length).to.equal(1);
-    expect(lane1Edit.props().to).to.equal("/admin/web/lanes/library/edit/1");
+    expect(lane1Edit.prop("href")).to.equal("/admin/web/lanes/library/edit/1");
 
     // lane 4 wasn't created from lists, so it's not editable
     let lane4 = topLevelLanes.at(1);
-    let lane4Edit = lane4.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    let lane4Edit = lane4.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(lane4Edit.length).to.equal(0);
 
     // sublane 2 is collapsed so its edit button isn't shown
     let sublane2 = lane1.find("> ul > li > div");
-    let sublane2Edit = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    let sublane2Edit = sublane2.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(sublane2Edit.length).to.equal(0);
     let sublane2Expand = sublane2.find("> div > span > .expand-button");
     sublane2Expand.simulate("click");
@@ -346,25 +346,25 @@ describe("Lanes", () => {
     topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
     sublane2 = lane1.find("> ul > li > div");
-    sublane2Edit = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    sublane2Edit = sublane2.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(sublane2Edit.length).to.equal(1);
-    expect(sublane2Edit.props().to).to.equal("/admin/web/lanes/library/edit/2");
+    expect(sublane2Edit.prop("href")).to.equal("/admin/web/lanes/library/edit/2");
 
     // the links are disabled if there are lane order changes.
     wrapper.setState({ orderChanged: true });
 
     topLevelLanes = getTopLevelLanes();
     lane1 = topLevelLanes.at(0);
-    lane1Edit = lane1.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    lane1Edit = lane1.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(lane1Edit.length).to.equal(1);
-    expect(lane1Edit.props().to).to.be.null;
-    expect(lane1Edit.props().className).to.contain("disabled");
+    expect(lane1Edit.prop("href")).to.be.null;
+    expect(lane1Edit.prop("disabled")).to.be.true;
 
     sublane2 = lane1.find("> ul > li > div");
-    sublane2Edit = sublane2.children(".lane-buttons").children(Link).filterWhere(node => node.props().className.includes("edit-lane"));
+    sublane2Edit = sublane2.children(".lane-buttons").children(Button).filterWhere(node => node.props().className.includes("edit-lane"));
     expect(sublane2Edit.length).to.equal(1);
-    expect(sublane2Edit.props().to).to.be.null;
-    expect(sublane2Edit.props().className).to.contain("disabled");
+    expect(sublane2Edit.prop("href")).to.be.null;
+    expect(sublane2Edit.prop("disabled")).to.be.true;
   });
 
   it("shows a lane", () => {
@@ -460,6 +460,7 @@ describe("Lanes", () => {
   });
 
   it("renders save and reset order if order has changed", () => {
+    mountWrapper();
     let orderInfo = wrapper.find(".order-change-info");
     expect(orderInfo.length).to.equal(0);
 
@@ -467,7 +468,7 @@ describe("Lanes", () => {
     orderInfo = wrapper.find(".order-change-info");
     expect(orderInfo.length).to.equal(1);
 
-    let save = orderInfo.find(Button);
+    let save = orderInfo.find("button").findWhere(el => el.text() === "Save Order Changes");
     expect(save.length).to.equal(1);
     let reset = orderInfo.find(".cancel-order-changes");
     expect(reset.length).to.equal(1);
@@ -674,7 +675,7 @@ describe("Lanes", () => {
     mountWrapper();
     wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
 
-    let saveOrderButton = wrapper.find(Button);
+    let saveOrderButton = wrapper.find("button").findWhere(el => el.text() === "Save Order Changes");
     saveOrderButton.simulate("click");
     expect(changeLaneOrder.callCount).to.equal(1);
     expect(changeLaneOrder.args[0][0]).to.deep.equal([lanesData[1], lanesData[0]]);

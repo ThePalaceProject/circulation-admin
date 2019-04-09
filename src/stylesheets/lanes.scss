@@ -100,24 +100,6 @@
     transform: rotate(90deg);
   }
 
-  .lanes-sidebar a {
-    &:not(disabled) {
-      cursor: pointer;
-    }
-
-    svg {
-      margin-left: 5px;
-      fill: $linkcolor;
-    }
-
-    &:hover, &:focus, &:active {
-      color: $linkhovercolor;
-      svg {
-        fill: $linkhovercolor;
-      }
-    }
-  }
-
   .order-change-info {
     margin: 7px;
     padding-top: 14px;
@@ -137,58 +119,16 @@
     }
   }
 
-  .lanes-sidebar .btn {
+  .lanes-sidebar .btn, .reset-button {
     display: inline-block;
-    font-size: 0.9em;
-    color: $invertedlinkcolor;
-    margin-left: 5px;
-
+    &:not(.inverted) {
+      color: $invertedlinkcolor;
+    }
     svg {
-      fill: $invertedlinkcolor;
-    }
-
-    &:hover, &:focus, &:active {
-      color: $linkcolor;
-      svg {
-        fill: $linkcolor;
-      }
-    }
-  }
-
-  .lanes-sidebar a.btn.reset-lanes {
-    float: right;
-    font-weight: bold;
-    color: $linkcolor;
-    border: 1px solid $linkcolor;
-    border-radius: 0px;
-    svg {
-      fill: $linkcolor;
-    }
-
-    &:hover, &:focus, &:active {
-      color: $linkhovercolor;
-      svg {
-        fill: $linkhovercolor;
-      }
-    }
-  }
-
-  .reset {
-    margin: 10px;
-    max-width: 500px;
-
-    .btn {
-      svg {
-        margin-left: 5px;
-        fill: $invertedlinkcolor;
-      }
-
-      &:hover, &:focus, &:active {
-        color: $linkcolor;
-        svg {
-          fill: $linkcolor;
-        }
-      }
+      height: .7em;
+      margin-left: .5em;
+      float: unset;
+      vertical-align: unset;
     }
   }
 }
