@@ -22,7 +22,7 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
     admin: React.PropTypes.object.isRequired
   };
 
-  canDelete(item) {
+  canDelete() {
     return this.context.admin && this.context.admin.isSystemAdmin();
   }
 

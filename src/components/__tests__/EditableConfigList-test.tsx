@@ -64,7 +64,7 @@ describe("EditableConfigList", () => {
       return canCreate;
     }
 
-    canDelete(item) {
+    canDelete() {
       return canDelete;
     }
   }
@@ -75,10 +75,6 @@ describe("EditableConfigList", () => {
 
   class ThingAdditionalContentEditableConfigList extends ThingEditableConfigList {
     AdditionalContent = AdditionalContent;
-  }
-
-  class ThingListWithInputs extends ThingEditableConfigList {
-    EditForm = ThingEditFormWithInputs;
   }
 
   let wrapper;

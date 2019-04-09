@@ -1,6 +1,8 @@
 ## Changelog
 
 ### v0.1.10
+#### Updated
+- Displaying a different UI for deleted collections. When marked for deletion, a collection will be deleted in the background and this information needs to be conveyed in the UI.
 #### Fixed
 - Fixed a styling bug affecting the display of exceptions on the Diagnostics page.
 
