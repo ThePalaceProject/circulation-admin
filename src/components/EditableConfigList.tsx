@@ -87,12 +87,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     // If not in edit or create mode and there is data, display the list.
     const canListAllData = !this.props.isFetching && !this.props.editOrCreate &&
       this.props.data && this.props.data[this.listDataKey];
-    // If it's in list mode then allow a new item to be created only if it is
-    // not limited to one item per service and there already isn't one. The
-    // `canCreate` method can be overridden with other rules by other services.
-    const canCreateANewItem = canListAllData &&
-      (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
-      this.canCreate();
     let EditForm = this.EditForm;
     let itemToEdit = this.itemToEdit();
 
@@ -115,12 +109,13 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         }
         { canListAllData &&
           <div>
-            { canCreateANewItem &&
-              <a
-                className="btn btn-default create-item"
-                href={this.urlBase + "create"}
-                >Create new {this.itemTypeName}
-              </a>
+            { (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
+              this.canCreate() &&
+                <a
+                  className="btn btn-default create-item"
+                  href={this.urlBase + "create"}
+                  >Create new {this.itemTypeName}
+                </a>
             }
             <ul>
               { this.props.data[this.listDataKey].map((item, index) =>
