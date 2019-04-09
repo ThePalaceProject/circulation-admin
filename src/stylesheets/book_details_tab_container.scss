@@ -5,4 +5,10 @@
   button.btn {
     margin: 1em 0;
   }
+  .form-inline {
+    display: flex;
+    .btn {
+      margin-right: .5em;
+    }
+  }
 }

@@ -2,11 +2,12 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import { BookDetailsEditor } from "../BookDetailsEditor";
-import ButtonForm from "../ButtonForm";
+import { Button } from "library-simplified-reusable-components";
 import BookEditForm from "../BookEditForm";
+import ButtonForm from "../ButtonForm";
 import ErrorMessage from "../ErrorMessage";
 
 describe("BookDetailsEditor", () => {
@@ -91,9 +92,9 @@ describe("BookDetailsEditor", () => {
     );
     let hide = (wrapper.instance() as any).hide;
 
-    let form = wrapper.find(ButtonForm);
-    expect(form.prop("label")).to.equal("Hide");
-    expect(form.prop("onClick")).to.equal(hide);
+    let hideButton = wrapper.find(Button);
+    expect(hideButton.prop("content")).to.equal("Hide");
+    expect(hideButton.prop("callback")).to.equal(hide);
   });
 
   it("shows button form for restore link", () => {
@@ -110,9 +111,9 @@ describe("BookDetailsEditor", () => {
     );
     let restore = (wrapper.instance() as any).restore;
 
-    let form = wrapper.find(ButtonForm);
-    expect(form.prop("label")).to.equal("Restore");
-    expect(form.prop("onClick")).to.equal(restore);
+    let restoreButton = wrapper.find(Button);
+    expect(restoreButton.prop("content")).to.equal("Restore");
+    expect(restoreButton.prop("callback")).to.equal(restore);
   });
 
   it("shows button form for refresh link", () => {
@@ -129,9 +130,9 @@ describe("BookDetailsEditor", () => {
     );
     let refresh = (wrapper.instance() as any).refreshMetadata;
 
-    let form = wrapper.find(ButtonForm);
-    expect(form.prop("label")).to.equal("Refresh Metadata");
-    expect(form.prop("onClick")).to.equal(refresh);
+    let refreshButton = wrapper.find(Button);
+    expect(refreshButton.prop("content")).to.equal("Refresh Metadata");
+    expect(refreshButton.prop("callback")).to.equal(refresh);
   });
 
   it("shows fetch error message", () => {
