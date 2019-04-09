@@ -1,12 +1,16 @@
 ## Changelog
 
+### v0.1.10
+#### Updated
+- Displaying a different UI for deleted collections. When marked for deletion, a collection will be deleted in the background and this information needs to be conveyed in the UI.
+
 ### v0.1.9
 #### Updated
 - Replaced the Collapsible component with a reusable Panel component.
 
 ### v0.1.8
 #### Updated
-- Implemented a language autocomplete field in order to make it easier to set the languages for a library
+- Implemented a language autocomplete field in order to make it easier to set the languages for a library.
 
 ### v0.1.7
 #### Updated
