@@ -115,7 +115,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
             changeSort={this.changeSort}
             sortOrder={this.state.sort}
           />
-          { this.makeEditor(entryCount, listCollections) }
+          { this.props.editOrCreate && this.makeEditor(entryCount, listCollections) }
         </div>
       </div>
     );

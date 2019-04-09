@@ -265,7 +265,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entries: nextProps.entries,
         deleted: deleted,
         added: added,
-        totalVisibleEntries: nextProps.entries.length,
+        totalVisibleEntries: nextProps.entries && nextProps.entries.length,
       });
     }
 

@@ -5,6 +5,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import { CatalogServices } from "../CatalogServices";
+import { Button } from "library-simplified-reusable-components";
 
 describe("CatalogServices", () => {
   let wrapper;
@@ -56,7 +57,7 @@ describe("CatalogServices", () => {
     let catalogService = wrapper.find("li");
     expect(catalogService.length).to.equal(1);
     expect(catalogService.at(0).text()).to.contain("nypl catalog: test protocol label");
-    let editLink = catalogService.at(0).find("a");
+    let editLink = catalogService.at(0).find(Button).at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/catalogServices/edit/2");
   });
 });

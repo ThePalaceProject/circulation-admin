@@ -46,6 +46,7 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
           [["A-Z", "asc"], ["Z-A", "desc"]].map((order) => {
             let isChecked = this.props.sortOrder === order[1];
             return (<EditableInput
+              key={order[1]}
               type="radio"
               label={`Sort ${order[0]}`}
               name="sort"

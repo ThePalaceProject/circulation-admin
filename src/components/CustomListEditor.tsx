@@ -174,7 +174,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         entries: (nextProps.list && nextProps.list.books) || [],
         collections: (nextProps.list && nextProps.listCollections) || []
       });
-    } else if (nextProps.list && nextProps.list.books.length !== this.state.entries.length) {
+    } else if (nextProps.list && nextProps.list.books && nextProps.list.books.length !== this.state.entries.length) {
       let collections = this.state.collections;
       if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
         collections = nextProps.listCollections;
@@ -199,10 +199,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     if (!this.props.list) {
       titleChanged = !!this.state.title;
     }
-    let entriesChanged = false;
-    if (this.props.list && this.props.list.books.length !== this.state.entries.length) {
-      entriesChanged = true;
-    } else {
+    let entriesChanged =
+      this.props.list && this.props.list.books &&
+      (this.props.list.books.length !== this.state.entries.length);
+
+    if (!entriesChanged) {
       let propsIds = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
       let stateIds = this.state.entries.map(entry => entry.id).sort();
       for (let i = 0; i < propsIds.length; i++) {

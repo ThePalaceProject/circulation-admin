@@ -8,6 +8,8 @@ import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../Ed
 import ErrorMessage from "../ErrorMessage";
 import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
+import { Button } from "library-simplified-reusable-components";
+import { Link } from "react-router";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
 describe("EditableConfigList", () => {
@@ -207,7 +209,7 @@ describe("EditableConfigList", () => {
     let things = wrapper.find("li");
     expect(things.length).to.equal(1);
     expect(things.at(0).text()).to.contain("test label");
-    let editLink = things.at(0).find("a");
+    let editLink = things.at(0).find(Button).at(0);
     expect(editLink.props().href).to.equal("/admin/things/edit/5");
   });
 
@@ -219,13 +221,12 @@ describe("EditableConfigList", () => {
     let things = wrapper.find("li");
     expect(things.length).to.equal(2);
     expect(things.at(1).text()).to.contain("test another thing");
-    let editLink = things.at(1).find("a");
+    let editLink = things.at(1).find(Button).at(0);
     expect(editLink.props().href).to.equal("/admin/things/edit/6");
   });
 
   it("shows create link", () => {
-    let createLink = wrapper.find("a.btn").findWhere(el => el.text().includes("Create new"));
-    expect(createLink.length).to.equal(1);
+    let createLink = wrapper.find(Button).at(0);
     expect(createLink.text()).to.equal("Create new thing");
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
@@ -256,7 +257,7 @@ describe("EditableConfigList", () => {
         isFetching={false}
       />
     );
-    let createLink = wrapper.find("a.btn").findWhere(el => el.text().contains("Create new"));
+    let createLink = wrapper.find("Link").findWhere(el => el.text().includes("Create new"));
     expect(createLink.length).to.equal(0);
 
     wrapper = mount(
@@ -268,9 +269,10 @@ describe("EditableConfigList", () => {
         isFetching={false}
         />
     );
-    createLink = wrapper.find("a.btn").findWhere(el => el.text().includes("Create new"));
+    createLink = wrapper.find("Button").at(0).find("Link");
     expect(createLink.length).to.equal(1);
-    expect(createLink.prop("href")).to.equal("/admin/things/create");
+    expect(createLink.text()).to.equal("Create new thing");
+    expect(createLink.prop("to")).to.equal("/admin/things/create");
   });
 
   it("hides delete button if canDelete returns false", () => {

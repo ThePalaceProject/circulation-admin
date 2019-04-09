@@ -5,6 +5,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import { MetadataServices } from "../MetadataServices";
+import { Button } from "library-simplified-reusable-components";
 
 describe("MetadataServices", () => {
   let wrapper;
@@ -54,7 +55,7 @@ describe("MetadataServices", () => {
     let metadataService = wrapper.find("li");
     expect(metadataService.length).to.equal(1);
     expect(metadataService.at(0).text()).to.contain("sample name: test protocol");
-    let editLink = metadataService.at(0).find("a");
+    let editLink = metadataService.at(0).find(Button).at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/metadata/edit/2");
   });
 });
