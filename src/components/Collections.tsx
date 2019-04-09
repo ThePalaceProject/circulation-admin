@@ -79,7 +79,7 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
 
   async delete(item: CollectionData): Promise<void> {
     const deleteInfo = "This action cannot be undone. Deletion will not happen " +
-      "automatically but gradually. Until the collection is completely deleted, " +
+      "immediately but gradually. Until the collection is completely deleted, " +
       "it will remain in the list and will be uneditable.";
     if (window.confirm(`Set "${this.label(item)}" for deletion? ${deleteInfo}`)) {
       await this.props.deleteItem(item[this.identifierKey]);
