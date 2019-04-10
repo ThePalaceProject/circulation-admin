@@ -13,3 +13,19 @@
     cursor: pointer;
   }
 }
+
+.tab-container {
+  li.deleted-collection {
+    background: $red-error;
+    padding: 20px 0;
+
+    svg {
+      width: 75px;
+      height: 20px;
+    }
+
+    p {
+      padding: 10px 15px 0;
+    }
+  }
+}

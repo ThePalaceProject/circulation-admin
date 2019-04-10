@@ -5,6 +5,7 @@ import ActionCreator from "../actions";
 import { CollectionsData, CollectionData, LibraryData, LibraryRegistrationsData, ServiceData } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import SelfTests from "./SelfTests";
+import TrashIcon from "./icons/TrashIcon";
 
 export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {
   isFetchingLibraryRegistrations?: boolean;
@@ -60,6 +61,31 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
       this.props.fetchLibraryRegistrations();
     }
   }
+
+  renderLi(item, index): JSX.Element {
+    if (item.marked_for_deletion) {
+      return (
+        <li className="deleted-collection" key={index}>
+          <TrashIcon />
+          <h4>{this.label(item)}</h4>
+          <p>This collection cannot be edited and is currently being deleted.
+            The deletion process is gradual and this collection will be removed once it is complete.
+          </p>
+        </li>
+      );
+    };
+    return super.renderLi(item, index);
+  }
+
+  async delete(item: CollectionData): Promise<void> {
+    const deleteInfo = "This action cannot be undone. Deletion will not happen " +
+      "immediately but gradually. Until the collection is completely deleted, " +
+      "it will remain in the list and will be uneditable.";
+    if (window.confirm(`Set "${this.label(item)}" for deletion? ${deleteInfo}`)) {
+      await this.props.deleteItem(item[this.identifierKey]);
+      this.props.fetchData();
+    }
+  }
 }
 
 function mapStateToProps(state, ownProps) {
@@ -81,6 +107,7 @@ function mapStateToProps(state, ownProps) {
     isFetchingLibraryRegistrations: state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.isFetching
   };
 }
+
 
 function mapDispatchToProps(dispatch, ownProps) {
   let actions = new ActionCreator(null, ownProps.csrfToken);
