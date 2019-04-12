@@ -179,15 +179,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         <h4>{this.label(item)}</h4>
 
         {this.canDelete() &&
-          <button
-            className="btn btn-danger delete-item"
-            onClick={() => this.delete(item) }
-          >
-            <span>
-              Delete
-              <TrashIcon />
-            </span>
-          </button>
+          <Button
+            className="btn-danger delete-item"
+            callback={() => this.delete(item) }
+            content={<span>Delete<TrashIcon /></span>}
+          />
         }
         {
           AdditionalContent &&

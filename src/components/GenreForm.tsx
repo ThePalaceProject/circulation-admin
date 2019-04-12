@@ -1,5 +1,6 @@
 import * as React from "react";
 import { GenreData } from "../interfaces";
+import { Button } from "library-simplified-reusable-components";
 
 export interface GenreFormProps {
   genreOptions: GenreData[];
@@ -76,12 +77,10 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
           }
 
           { this.state.genre &&
-            <button
-              className="btn btn-default"
-              type="submit"
-              onClick={this.addGenre}>
-              Add
-            </button>
+            <Button
+              callback={this.addGenre}
+              content="Add"
+            />
           }
         </div>
       </div>

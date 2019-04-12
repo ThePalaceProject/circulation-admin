@@ -4,7 +4,7 @@ import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../interfaces";
-import { Panel } from "library-simplified-reusable-components";
+import { Button, Panel } from "library-simplified-reusable-components";
 import { Alert } from "react-bootstrap";
 
 export interface ClassificationsFormProps {
@@ -166,10 +166,7 @@ export default class ClassificationsForm extends React.Component<Classifications
             </div>
           }
         />
-        <button
-          className="btn btn-default"
-          onClick={this.submit}>Save
-        </button>
+        <Button callback={this.submit} content="Save" />
       </fieldset>
     );
   }

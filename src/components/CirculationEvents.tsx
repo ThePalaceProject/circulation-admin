@@ -9,6 +9,7 @@ import CirculationEventsDownloadForm from "./CirculationEventsDownloadForm";
 import { CirculationEventData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import { Button } from "library-simplified-reusable-components";
 
 export interface CirculationEventsStateProps {
   events?: CirculationEventData[];
@@ -57,11 +58,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
         <h3>Circulation Events</h3>
 
         { this.context.showCircEventsDownload &&
-            <button
-              className="btn btn-default"
-              onClick={this.showDownloadForm}>
-              Download CSV
-            </button>
+            <Button callback={this.showDownloadForm} content="Download CSV" />
         }
 
         <CirculationEventsDownloadForm
