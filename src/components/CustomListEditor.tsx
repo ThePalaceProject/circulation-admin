@@ -61,7 +61,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
-          <div>
+          <div className="edit-custom-list-title">
             <fieldset>
               <legend className="visuallyHidden">List name</legend>
               <TextWithEditMode
@@ -75,22 +75,20 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               <h4>ID-{listId}</h4>
             }
           </div>
-          <span>
-            <button
-              className="btn btn-default save-list"
-              onClick={this.save}
+          <div className="save-or-cancel-list">
+            <Button
+              callback={this.save}
               disabled={!this.hasChanges()}
-              >Save this list</button>
+              content="Save this list"
+            />
             { this.hasChanges() &&
-              <a
-                href="#"
-                className="cancel-changes"
-                onClick={this.reset}
-                >Cancel changes
-                  <XCloseIcon />
-              </a>
+              <Button
+                className="inverted"
+                callback={this.reset}
+                content={<span>Cancel Changes <XCloseIcon /></span>}
+              />
             }
-          </span>
+          </div>
         </div>
         <div className="custom-list-editor-body">
           { this.props.collections && this.props.collections.length > 0 &&

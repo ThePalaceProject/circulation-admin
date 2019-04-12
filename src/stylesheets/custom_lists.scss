@@ -10,7 +10,9 @@
     padding-bottom: 10px;
     .btn {
       margin: .5em 0;
-      color: white;
+      &:not(.inverted) {
+        color: white;
+      }
       svg {
         float: unset;
         vertical-align: unset;

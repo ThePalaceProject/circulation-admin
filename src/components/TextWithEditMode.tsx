@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import PencilIcon from "./icons/PencilIcon";
+import { Button } from "library-simplified-reusable-components";
 
 export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
   text?: string;
@@ -40,21 +41,21 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               optionalText={false}
               ref="text"
               />
-            <a
-              href="#"
-              onClick={this.updateText}
-              >Save {this.props.placeholder}</a>
+            <Button
+              className="inverted"
+              callback={this.updateText}
+              content={`Save ${this.props.placeholder}`}
+            />
           </h3>
         }
         { !this.state.editMode &&
           <h3>
             { this.state.text }
-            <a
-              href="#"
-              onClick={this.startEditMode}
-              >Edit {this.props.placeholder}
-                <PencilIcon />
-            </a>
+            <Button
+              callback={this.startEditMode}
+              className="inverted"
+              content={<span>Edit {this.props.placeholder} <PencilIcon /></span>}
+            />
           </h3>
         }
       </div>

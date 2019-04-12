@@ -4,6 +4,8 @@ import TrashIcon from "./icons/TrashIcon";
 import { Button } from "library-simplified-reusable-components";
 import { CustomListData, LibraryData } from "../interfaces";
 import EditableInput from "./EditableInput";
+import { Link } from "react-router";
+// import { Link } from "react-router-dom";
 
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
@@ -21,10 +23,6 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
     return(
       <div className="custom-lists-sidebar">
         <h2>List Manager</h2>
-        <Button
-          href={"/admin/web/lists/" + this.props.library + "/create"}
-          content="Create New List"
-        />
         {
           this.props.lists && this.props.lists.length > 0 &&
           <div>
@@ -69,14 +67,18 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
           <p>ID-{ list.id }</p>
         </div>
         <div className = "custom-list-buttons">
-          { this.props.identifier === list.id ?
+          {
+            this.props.identifier === list.id ?
               <Button disabled={true} content="Editing" /> :
-              <Button
-                href={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
-                content={<span>Edit<PencilIcon /></span>}
-              />
+              <Link
+                to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
+                className="btn btn-default"
+              >
+                <span>Edit<PencilIcon /></span>
+              </ Link>
           }
-          { this.props.isLibraryManager &&
+          {
+            this.props.isLibraryManager &&
               <Button
                 callback={() => this.props.deleteCustomList(list)}
                 content={<span>Delete<TrashIcon /></span>}
