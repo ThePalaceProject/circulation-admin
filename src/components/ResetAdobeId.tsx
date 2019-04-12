@@ -8,6 +8,7 @@ import { PatronData } from "../interfaces";
 import { Alert } from "react-bootstrap";
 import ManagePatronsForm from "./ManagePatronsForm";
 import EditableInput from "./EditableInput";
+import { Button } from "library-simplified-reusable-components";
 
 export interface ResetAdobeIdStateProps {
   fetchError?: FetchErrorData;
@@ -87,13 +88,12 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
                 />
               }
               { !responseBody &&
-                <button
-                  className="btn btn-danger"
-                  onClick={this.resetAdobeId}
+                <Button
+                  className="btn-danger"
+                  callback={this.resetAdobeId}
                   disabled={!this.state.checked}
-                  >
-                    Reset Adobe ID
-                </button>
+                  content="Reset Adobe ID"
+                />
               }
 
             </div> :
