@@ -116,18 +116,18 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           <div className="lanes-sidebar">
             <h2>Lane Manager</h2>
             <div>
-              <Button
-                className="create-lane"
-                disabled={this.state.orderChanged}
-                href={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/create")}
-                content={<span>Create Top-Level Lane <AddIcon /></span>}
-              />
-              <Button
-                className="reset-lanes inverted"
-                disabled={this.state.orderChanged}
-                href={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/reset")}
-                content={<span>Reset all lanes<ResetIcon /></span>}
-              />
+              <Link
+                className="btn create-lane"
+                to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/create")}
+              >
+                <span>Create Top-Level Lane <AddIcon /></span>
+              </Link>
+              <Link
+                className={"btn reset-lanes inverted " + (this.state.orderChanged ? "disabled" : "")}
+                to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/reset")}
+              >
+                <span>Reset all lanes<ResetIcon /></span>
+              </Link>
             </div>
             <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
               { this.state.lanes && this.state.lanes.length > 0 && this.renderLanes(this.state.lanes, null) }
@@ -275,19 +275,19 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           { this.isExpanded(lane) &&
             <div className="lane-buttons">
               { lane.custom_list_ids && lane.custom_list_ids.length > 0 &&
-                <Button
-                  className="edit-lane"
-                  disabled={this.state.orderChanged}
-                  href={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
-                  content={<span>Edit Lane <PencilIcon /></span>}
-                />
+                <Link
+                  className={"btn edit-lane " + (this.state.orderChanged ? "disabled" : "")}
+                  to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
+                >
+                  <span>Edit Lane <PencilIcon /></span>
+                </Link>
               }
-              <Button
-                className="create-lane"
-                disabled={this.state.orderChanged}
-                href={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
-                content={<span>Create Sublane <AddIcon /></span>}
-              />
+              <Link
+                className={"btn create-lane " + (this.state.orderChanged ? "disabled" : "")}
+                to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
+              >
+                <span>Create Sublane <AddIcon /></span>
+              </Link>
             </div>
           }
           { this.isExpanded(lane) && lane.sublanes && lane.sublanes.length > 0 && this.renderLanes(lane.sublanes, lane) }
