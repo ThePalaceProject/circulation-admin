@@ -5,11 +5,18 @@
     "target": "es5",
     "outDir": "lib",
     "rootDir": "src",
-    "jsx": "react"
+    "jsx": "react",
+    "lib": ["es2015", "es2017", "dom"],
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "lib",
     "node_modules",
     "typings"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "node_modules/@types"
   ]
 }

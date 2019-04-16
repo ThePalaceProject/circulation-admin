@@ -52,7 +52,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200, text: responseText });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.postForm(type, url, formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
@@ -78,7 +78,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200, text: responseText });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.postForm(type, url, formData, "POST", "", "JSON")(dispatch);
       expect(dispatch.callCount).to.equal(3);
@@ -103,7 +103,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200, text: responseText });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.postForm(type, url, formData, "DELETE")(dispatch);
       expect(dispatch.callCount).to.equal(3);
@@ -122,7 +122,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>(resolve => {
         resolve({ status: 500, json: () => jsonResponse });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -147,7 +147,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>(resolve => {
         resolve({ status: 500, json: () => nonJsonResponse });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       try {
         await actions.postForm(type, url, formData, "POST", "Default error")(dispatch);
@@ -171,7 +171,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         reject({ message: "test error" });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -201,7 +201,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -224,7 +224,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>(resolve => {
         resolve({ status: 500, json: () => jsonResponse });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -248,7 +248,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         reject({ message: "test error" });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -295,7 +295,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.editBook(editBookUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -343,7 +343,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 201 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.postComplaint(postComplaintUrl, data)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -365,7 +365,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -411,7 +411,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
         update({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.editClassifications(editClassificationsUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -548,7 +548,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
         update({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.editLibrary(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -593,7 +593,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
         update({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.editCollection(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -638,7 +638,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
         update({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.editAdminAuthService(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -683,7 +683,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
         update({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.editIndividualAdmin(formData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -727,7 +727,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((update, reject) => {
         update({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       await actions.runSelfTests(`${collectionSelfTestURL}/1`)(dispatch);
       expect(dispatch.callCount).to.equal(2);
@@ -754,7 +754,7 @@ describe("actions", () => {
           json: responseText,
         });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
 
       const data = await actions.patronLookup(formData, "nypl")(dispatch);
       expect(dispatch.callCount).to.equal(3);
@@ -776,7 +776,7 @@ describe("actions", () => {
       const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
         resolve({ status: 200 });
       }));
-      fetch = fetchMock;
+      let fetch = fetchMock;
       const data = await actions.resetAdobeId(formData, "nypl")(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.REQUEST}`);

@@ -64,7 +64,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
         <CirculationEventsDownloadForm
           show={this.state.showDownloadForm}
           hide={this.hideDownloadForm}
-          />
+        />
 
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />

@@ -16,7 +16,7 @@ export interface EntryPointsTabsProps {
 }
 
 /** This component renders a library's entrypoints as linked tabs. */
-export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, void> {
+export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, {}> {
   context: EntryPointsTabsContext;
 
   constructor(props) {

@@ -18,7 +18,7 @@ export interface ProtocolFormFieldProps {
 
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
-export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, void> {
+export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, {}> {
   constructor(props) {
     super(props);
     this.randomize = this.randomize.bind(this);

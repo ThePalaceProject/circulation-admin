@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class AddIcon extends React.Component<void, void> {
+export default class AddIcon extends React.Component<{}, {}> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="48.01772" height="48.01658" viewBox="0 0 48.01772 48.01658" aria-hidden="true">

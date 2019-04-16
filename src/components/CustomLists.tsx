@@ -106,19 +106,26 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
           <LoadingIndicator />
         }
         <div className="custom-lists">
-          <CustomListsSidebar
-            lists={this.sortedLists()}
-            library={this.props.library}
-            identifier={this.props.identifier}
-            isLibraryManager={this.context.admin.isLibraryManager(this.props.library)}
-            deleteCustomList={this.deleteCustomList}
-            changeSort={this.changeSort}
-            sortOrder={this.state.sort}
-          />
+          { this.makeSidebar() }
           { this.props.editOrCreate && this.makeEditor(entryCount, listCollections) }
         </div>
       </div>
     );
+  }
+
+  makeSidebar(): JSX.Element {
+    let sidebar = (
+      <CustomListsSidebar
+        lists={this.sortedLists()}
+        library={this.props.library}
+        identifier={this.props.identifier}
+        isLibraryManager={this.context.admin.isLibraryManager(this.props.library)}
+        deleteCustomList={this.deleteCustomList}
+        changeSort={this.changeSort}
+        sortOrder={this.state.sort}
+      />
+    );
+    return sidebar;
   }
 
   makeEditor(entryCount, listCollections): JSX.Element {

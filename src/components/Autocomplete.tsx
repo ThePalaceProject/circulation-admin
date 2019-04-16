@@ -10,7 +10,7 @@ export interface AutocompleteProps {
   onChange?: () => void;
 }
 
-export default class Autocomplete extends React.Component<AutocompleteProps, void> {
+export default class Autocomplete extends React.Component<AutocompleteProps, {}> {
   render(): JSX.Element {
     return (
       <div>

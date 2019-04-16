@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class SearchIcon extends React.Component<void, void> {
+export default class SearchIcon extends React.Component<{}, {}> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="59.56494" height="61.59668" viewBox="0 0 59.56494 61.59668" aria-hidden="true">
