@@ -5,7 +5,6 @@ import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { PatronData } from "../interfaces";
-import ButtonForm from "./ButtonForm";
 import { Button } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import ErrorMessage from "./ErrorMessage";
