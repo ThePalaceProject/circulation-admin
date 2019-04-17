@@ -5,14 +5,14 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { mount } from "enzyme";
 
-import CirculationWeb from "../index";
+const CirculationWeb = require("../index");
 import SetupPage from "../components/SetupPage";
 import { Router } from "react-router";
 
 describe("CirculationWeb", () => {
   it("renders Setup", () => {
     const renderSpy = spy(ReactDOM, "render");
-    new CirculationWeb({ settingUp: true, csrfToken: "", showCircEventsDownload: false });
+    new CirculationWeb({ settingUp: true });
     expect(renderSpy.callCount).to.equal(1);
     const component = renderSpy.args[0][0];
     const wrapper = mount(component);
@@ -23,7 +23,7 @@ describe("CirculationWeb", () => {
 
   it("renders Router", () => {
     const renderSpy = spy(ReactDOM, "render");
-    new CirculationWeb({ settingUp: true, csrfToken: "", showCircEventsDownload: false });
+    new CirculationWeb({});
     expect(renderSpy.callCount).to.equal(1);
     const component = renderSpy.args[0][0];
     const wrapper = mount(component);
