@@ -9,7 +9,6 @@ import { Lanes } from "../Lanes";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import LaneEditor from "../LaneEditor";
-import { Link } from "react-router-dom";
 import EditableInput from "../EditableInput";
 import { Button } from "library-simplified-reusable-components";
 import { LaneData } from "../../interfaces";
