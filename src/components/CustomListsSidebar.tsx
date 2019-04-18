@@ -42,11 +42,12 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
   }
 
   renderSortButtons(): JSX.Element {
+    let sortOrders = [["A-Z", "asc"], ["Z-A", "desc"]];
     return(
       <fieldset>
         <legend className="visuallyHidden">Select list sort type</legend>
         {
-          [["A-Z", "asc"], ["Z-A", "desc"]].map((order) => {
+          sortOrders.map((order) => {
             let isChecked = this.props.sortOrder === order[1];
             return (<EditableInput
               key={order[1]}

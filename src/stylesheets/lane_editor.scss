@@ -22,6 +22,12 @@
 
     span {
       margin: 15px 0px;
+      svg {
+        height: 1em;
+        width: 1em;
+        float: unset;
+        vertical-align: unset;
+      }
     }
 
     h3 {
@@ -43,47 +49,15 @@
     a {
       margin-left: 5px;
       font-size: 0.7em;
-      color: $linkcolor;
 
       svg {
         margin-left: 5px;
-        fill: $linkcolor;
       }
 
       &.cancel-changes svg {
         height: 1.5em;
         width: 1.5em;
         margin-bottom: -3px;
-      }
-
-      &:hover {
-        color: $linkhovercolor;
-        svg {
-          fill: $linkhovercolor;
-        }
-      }
-    }
-
-    .btn {
-      margin-left: 5px;
-      color: $invertedlinkcolor;
-
-      svg {
-        margin-left: 5px;
-        fill: $invertedlinkcolor;
-      }
-
-      &.cancel-changes svg {
-        height: 1.5em;
-        width: 1.5em;
-        margin-bottom: -3px;
-      }
-
-      &:hover {
-        color: $linkcolor;
-        svg {
-          fill: $linkcolor;
-        }
       }
     }
   }
@@ -109,19 +83,6 @@
 
     h4 {
       display: inline-block;
-    }
-
-    button {
-      float: right;
-
-      svg {
-        margin-left: 5px;
-        fill: $invertedlinkcolor;
-      }
-
-      &:hover svg {
-        fill: $linkcolor;
-      }
     }
 
     .droppable-header {
@@ -171,13 +132,10 @@
           font-size: 0.7em;
 
           svg {
-            margin-right: 0px;
-            margin-left: 5px;
-            fill: $linkcolor;
-          }
-
-          &:hover svg {
-            fill: $linkhovercolor;
+            margin: 0 0 0 5px;
+            float: unset;
+            vertical-align: unset;
+            height: 1em;
           }
         }
 

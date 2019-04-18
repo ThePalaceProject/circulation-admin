@@ -25,6 +25,9 @@
   }
 }
 
-.btn.btn-default {
+.btn:not(.inverted), .btn.btn-default, .btn.btn-danger {
+  color: $white;
+}
+.btn.inverted:hover {
   color: $white;
 }

@@ -99,15 +99,6 @@
     button {
       float: right;
 
-      svg {
-        margin-left: 5px;
-        fill: $invertedlinkcolor;
-      }
-
-      &:hover svg {
-        fill: $linkcolor;
-      }
-
       &.load-more-button {
         margin-bottom: 50px;
       }
@@ -178,11 +169,6 @@
           svg {
             margin-right: 0px;
             margin-left: 5px;
-            fill: $linkcolor;
-          }
-
-          &:hover svg {
-            fill: $linkhovercolor;
           }
         }
 

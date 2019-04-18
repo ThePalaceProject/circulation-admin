@@ -68,6 +68,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
                             </div>
                             <div className="links">
                               <a
+                                className="btn inverted"
                                 href="#"
                                 onClick={() => { this.add(list.id); }}
                                 >Add to lane
@@ -118,6 +119,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
                             </div>
                             <div className="links">
                               <a
+                                className="btn btn-danger"
                                 href="#"
                                 onClick={() => { this.remove(list.id); }}
                                 >Remove from lane

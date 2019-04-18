@@ -105,14 +105,14 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
           <LoadingIndicator />
         }
         <div className="custom-lists">
-          { this.makeSidebar() }
-          { this.props.editOrCreate && this.makeEditor(entryCount, listCollections) }
+          { this.renderSidebar() }
+          { this.props.editOrCreate && this.renderEditor(entryCount, listCollections) }
         </div>
       </div>
     );
   }
 
-  makeSidebar(): JSX.Element {
+  renderSidebar(): JSX.Element {
     let sidebar = (
       <CustomListsSidebar
         lists={this.sortedLists()}
@@ -127,7 +127,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     return sidebar;
   }
 
-  makeEditor(entryCount, listCollections): JSX.Element {
+  renderEditor(entryCount, listCollections): JSX.Element {
     let editorProps = {
       collections: this.collectionsForLibrary(),
       editCustomList: this.editCustomList,
