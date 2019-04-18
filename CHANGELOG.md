@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.1.11
+#### Fixed
+- `package-lock.json` was not insynced with the latest build and caused installing and running test issues.
+#### Updated
+- Removed `nightwatch` temporarily and updated `reusable-components` to v1.3.0. `nightwatch` brought in `@types` which caused the tests to fail because of compilation issues. Should be brought in soon when other repos have webpack and Typescript updated.
+
 ### v0.1.10
 #### Updated
 - Displaying a different UI for deleted collections. When marked for deletion, a collection will be deleted in the background and this information needs to be conveyed in the UI.
