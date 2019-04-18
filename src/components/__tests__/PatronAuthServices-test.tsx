@@ -3,7 +3,6 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow } from "enzyme";
-import { Button } from "library-simplified-reusable-components";
 
 import { PatronAuthServices } from "../PatronAuthServices";
 
@@ -57,7 +56,7 @@ describe("PatronAuthServices", () => {
     let patronAuthService = wrapper.find("li");
     expect(patronAuthService.length).to.equal(1);
     expect(patronAuthService.at(0).text()).to.contain("nypl protocol: test protocol label");
-    let editLink = patronAuthService.at(0).find(Button).at(0);
+    let editLink = patronAuthService.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/patronAuth/edit/2");
   });
 });

@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
 import { mount } from "enzyme";
 
 import { AnalyticsServices } from "../AnalyticsServices";
@@ -53,7 +52,7 @@ describe("AnalyticsServices", () => {
     let service = wrapper.find("li");
     expect(service.length).to.equal(1);
     expect(service.at(0).text()).to.contain("test protocol label");
-    let editLink = service.at(0).find(Button).at(0);
+    let editLink = service.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/analytics/edit/2");
   });
 });

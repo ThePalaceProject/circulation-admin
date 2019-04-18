@@ -5,7 +5,6 @@ import { Button } from "library-simplified-reusable-components";
 import { CustomListData, LibraryData } from "../interfaces";
 import EditableInput from "./EditableInput";
 import { Link } from "react-router";
-// import { Link } from "react-router-dom";
 
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
@@ -23,6 +22,12 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
     return(
       <div className="custom-lists-sidebar">
         <h2>List Manager</h2>
+        <Link
+          className="btn btn-default create-button"
+          to={"/admin/web/lists/" + this.props.library + "/create"}>
+            Create New List
+        </Link>
+
         {
           this.props.lists && this.props.lists.length > 0 &&
           <div>

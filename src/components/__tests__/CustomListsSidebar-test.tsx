@@ -36,9 +36,9 @@ describe("CustomListsSidebar", () => {
   it("renders a sidebar with a header and a create button", () => {
     expect(wrapper.hasClass("custom-lists-sidebar")).to.be.true;
     expect(wrapper.find("h2").text()).to.equal("List Manager");
-    let createButton = wrapper.find(Button).at(0);
+    let createButton = wrapper.find(Link).at(0);
     expect(createButton.text()).to.equal("Create New List");
-    expect(createButton.prop("href")).to.equal("/admin/web/lists/library_name/create");
+    expect(createButton.prop("to")).to.equal("/admin/web/lists/library_name/create");
   });
 
   it("renders sort buttons", () => {
@@ -68,10 +68,10 @@ describe("CustomListsSidebar", () => {
     expect(firstListInfo.find("p").at(2).text()).to.equal("ID-1");
 
     let firstListButtons = firstList.find(".custom-list-buttons");
-    let firstListEdit = firstListButtons.find(Button).at(0);
-    let firstListDelete = firstListButtons.find(Button).at(1);
+    let firstListEdit = firstListButtons.find(Link).at(0);
+    let firstListDelete = firstListButtons.find(Button).at(0);
     expect(firstListEdit.text()).to.contain("Edit");
-    expect(firstListEdit.prop("href")).to.equal("/admin/web/lists/library_name/edit/1");
+    expect(firstListEdit.prop("to")).to.equal("/admin/web/lists/library_name/edit/1");
     expect(firstListDelete.text()).to.contain("Delete");
     firstListDelete.simulate("click");
     expect(deleteCustomList.callCount).to.equal(1);
@@ -82,21 +82,21 @@ describe("CustomListsSidebar", () => {
     expect(secondListInfo.find("p").at(2).text()).to.equal("ID-2");
 
     let secondListButtons = secondList.find(".custom-list-buttons");
-    let secondListEdit = secondListButtons.find(Button).at(0);
-    let secondListDelete = secondListButtons.find(Button).at(1);
+    let secondListEdit = secondListButtons.find(Link).at(0);
+    let secondListDelete = secondListButtons.find(Button).at(0);
     expect(secondListEdit.text()).to.contain("Edit");
-    expect(secondListEdit.prop("href")).to.equal("/admin/web/lists/library_name/edit/2");
+    expect(secondListEdit.prop("to")).to.equal("/admin/web/lists/library_name/edit/2");
     expect(secondListDelete.text()).to.contain("Delete");
     secondListDelete.simulate("click");
     expect(deleteCustomList.callCount).to.equal(2);
   });
 
   it("disables the edit button if the list is already being edited", () => {
-    let firstListEdit = wrapper.find(".custom-list-buttons").at(0).find("Link");
+    let firstListEdit = wrapper.find(".custom-list-buttons").at(0).find(Link);
     expect(firstListEdit.hasClass("disabled")).to.be.false;
     expect(firstListEdit.text()).to.equal("EditPencil Icon");
     wrapper.setProps({ identifier: 1 });
-    firstListEdit = wrapper.find(".custom-list-buttons").at(0).find("Link");
+    firstListEdit = wrapper.find(".custom-list-buttons").at(0).find(Button).at(0);
     expect(firstListEdit.text()).to.equal("Editing");
     expect(firstListEdit.hasClass("disabled")).to.be.true;
   });

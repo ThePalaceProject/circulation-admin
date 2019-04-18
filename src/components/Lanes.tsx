@@ -117,7 +117,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
             <h2>Lane Manager</h2>
             <div>
               <Link
-                className="btn create-lane"
+                className={"btn create-lane " + (this.state.orderChanged ? "disabled" : "")}
                 to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/create")}
               >
                 <span>Create Top-Level Lane <AddIcon /></span>

@@ -5,7 +5,6 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import { LoggingServices } from "../LoggingServices";
-import { Button } from "library-simplified-reusable-components";
 
 describe("LoggingServices", () => {
   let wrapper;
@@ -93,7 +92,7 @@ describe("LoggingServices", () => {
     let loggingService = wrapper.find("li");
     expect(loggingService.length).to.equal(1);
     expect(loggingService.at(0).text()).to.contain("EditPencil IconlogglyDeleteTrash Icon");
-    let editLink = loggingService.at(0).find(Button).at(0);
+    let editLink = loggingService.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/logging/edit/1");
   });
 });

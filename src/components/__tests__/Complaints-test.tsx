@@ -68,7 +68,7 @@ describe("Complaints", () => {
       expect(buttons.length).to.equal(Object.keys(complaintsData).length);
       buttons.forEach(button => {
         expect(button.props().disabled).not.to.be.ok;
-        expect(button.props().label).to.equal("Resolve");
+        expect(button.prop("content")).to.equal("Resolve");
       });
     });
 

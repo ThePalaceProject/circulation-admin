@@ -135,8 +135,9 @@ describe("LibraryEditForm", () => {
     });
 
     it("has a save button", () => {
-      let saveButton = wrapper.find(Button);
-      expect(saveButton.length).to.equal(1);
+      let saveButton = wrapper.find(Button).at(1);
+      expect(saveButton.text()).to.equal("Submit");
+      expect(saveButton.prop("callback")).to.equal(wrapper.instance().submit);
     });
   });
 
@@ -155,7 +156,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find(Button);
+      let saveButton = wrapper.find(Button).at(1);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -168,7 +169,7 @@ describe("LibraryEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
-      let saveButton = wrapper.find(Button);
+      let saveButton = wrapper.find(Button).at(1);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);

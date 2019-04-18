@@ -5,7 +5,6 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import { CDNServices } from "../CDNServices";
-import { Button } from "library-simplified-reusable-components";
 
 describe("CDNServices", () => {
   let wrapper;
@@ -51,7 +50,7 @@ describe("CDNServices", () => {
     let service = wrapper.find("li");
     expect(service.length).to.equal(1);
     expect(service.at(0).text()).to.contain("test url");
-    let editLink = service.at(0).find(Button).at(0);
+    let editLink = service.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/cdn/edit/2");
   });
 });
