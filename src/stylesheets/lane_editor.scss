@@ -5,6 +5,10 @@
   margin-left: 20px;
   margin-right: 10px;
 
+  .btn {
+    display: inline-block;
+  }
+
   .lane-editor-header {
     display: flex;
     flex-direction: column;
@@ -30,14 +34,7 @@
       }
     }
 
-    h3 {
-      display: inline-block;
-      hyphens: auto;
 
-      .form-group {
-        display: inline-block;
-      }
-    }
 
     h4 {
       color: lighten($pagetextcolor, 40%);
@@ -91,7 +88,7 @@
     }
 
     .droppable {
-      border: 1px solid $pagecolorlight;
+      border: 1px solid $medium-gray;
       padding: 10px;
       flex: 1;
       overflow-y: scroll;
@@ -105,12 +102,13 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        border: 1px solid $pagecolorlight;
+        align-items: center;
+        border: 1px solid $medium-gray;
         padding: 10px;
         cursor: grab;
         cursor: -webkit-grab;
 
-        &.dragging {
+        &:hover, &.dragging {
           border: 1px solid $pagetextcolor;
           background-color: $pagecolorlight;
         }
@@ -129,13 +127,13 @@
         }
 
         a {
-          font-size: 0.7em;
+          font-size: .8em;
 
           svg {
             margin: 0 0 0 5px;
             float: unset;
             vertical-align: unset;
-            height: 1em;
+            height: .8em;
           }
         }
 
@@ -146,6 +144,26 @@
         .list-count {
           font-size: 0.7em;
         }
+      }
+    }
+  }
+}
+
+.save-or-edit {
+  width: 60%;
+  > div {
+    width: 100%;
+    h3 {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      hyphens: auto;
+      .form-group {
+        display: inline-block;
+        margin: 0;
+      }
+      .btn {
+        margin-left: 40px;
       }
     }
   }

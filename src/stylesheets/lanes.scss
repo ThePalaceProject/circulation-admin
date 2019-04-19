@@ -61,6 +61,7 @@
         flex-direction: row;
         justify-content: flex-end;
         align-self: flex-end;
+        padding-bottom: 10px;
 
         > a {
           align-self: flex-end;
@@ -83,6 +84,14 @@
     padding-left: 0px;
     margin-top: 10px;
     border-top: 4px solid $gray;
+  }
+
+  .lanes-sidebar > div {
+    display: flex;
+    justify-content: space-between;
+    .btn {
+      margin-left: 0;
+    }
   }
 
   .collapse-button, .expand-button {
@@ -112,6 +121,7 @@
 
   .lanes-sidebar .btn, .reset-button {
     display: inline-block;
+    margin-right: 0;
     &:not(.inverted) {
       color: $invertedlinkcolor;
     }

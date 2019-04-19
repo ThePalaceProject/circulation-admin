@@ -62,7 +62,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
           <div className="edit-custom-list-title">
-            <fieldset>
+            <fieldset className="save-or-edit">
               <legend className="visuallyHidden">List name</legend>
               <TextWithEditMode
                 text={listTitle}

@@ -51,7 +51,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
       <div className="lane-editor">
         <div className="lane-editor-header">
           <div>
-            <div>
+            <div className="save-or-edit">
               <TextWithEditMode
                 text={this.props.lane && this.props.lane.display_name}
                 placeholder="name"

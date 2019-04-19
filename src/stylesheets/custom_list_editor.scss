@@ -11,6 +11,10 @@
     flex: 0 0 auto;
     border-bottom: 1px solid $medium-gray;
 
+    .edit-custom-list-title {
+      width: 100%;
+    }
+
     > div {
       display: flex;
       flex-direction: column;
