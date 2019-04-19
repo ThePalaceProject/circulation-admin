@@ -141,7 +141,7 @@ describe("LaneEditor", () => {
   it("deletes lane", () => {
     let deleteButton = wrapper.find(".delete-lane");
     expect(deleteButton.length).to.equal(1);
-    deleteButton.simulate("click");
+    wrapper.instance().delete();
 
     expect(deleteLane.callCount).to.equal(1);
     expect(deleteLane.args[0][0]).to.deep.equal(laneData);
@@ -161,7 +161,7 @@ describe("LaneEditor", () => {
     showButton = wrapper.find(".show-lane");
     expect(showButton.length).to.equal(1);
 
-    showButton.simulate("click");
+    wrapper.instance().show();
     expect(showLane.callCount).to.equal(1);
     expect(showLane.args[0][0]).to.deep.equal(hiddenLane);
 
@@ -175,7 +175,7 @@ describe("LaneEditor", () => {
     let hideButton = wrapper.find(".hide-lane");
     expect(hideButton.length).to.equal(1);
 
-    hideButton.simulate("click");
+    wrapper.instance().hide();
     expect(hideLane.callCount).to.equal(1);
     expect(hideLane.args[0][0]).to.deep.equal(laneData);
 

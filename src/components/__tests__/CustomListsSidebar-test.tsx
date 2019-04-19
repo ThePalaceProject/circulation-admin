@@ -98,7 +98,7 @@ describe("CustomListsSidebar", () => {
     wrapper.setProps({ identifier: 1 });
     firstListEdit = wrapper.find(".custom-list-buttons").at(0).find(Button).at(0);
     expect(firstListEdit.text()).to.equal("Editing");
-    expect(firstListEdit.hasClass("disabled")).to.be.true;
+    expect(firstListEdit.prop("disabled")).to.be.true;
   });
 
   it("displays the delete button only to library managers", () => {
