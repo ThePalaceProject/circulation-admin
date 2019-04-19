@@ -28,9 +28,9 @@
 .btn:not(.inverted), .btn.btn-default, .btn.btn-danger {
   color: $white;
   &:hover {
-    color: $white !important;
+    color: $white;
   }
 }
 .btn.inverted:hover {
-  color: $white !important;
+  color: $white;
 }

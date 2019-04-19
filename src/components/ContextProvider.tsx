@@ -18,7 +18,7 @@ export interface ContextProviderProps extends React.Props<any> {
 
 /** Provides a redux store, configuration options, and a function to create URLs
     as context to admin interface pages. */
-export default class ContextProvider extends React.Component<ContextProviderProps, {}> {
+export default class ContextProvider extends React.Component<ContextProviderProps, void> {
   store: Store<State>;
   admin: Admin;
   pathFor: PathFor;
