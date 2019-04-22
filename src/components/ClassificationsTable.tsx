@@ -7,7 +7,7 @@ export interface ClassificationsTableProps {
 
 /** Shows a table of a book's current classifications on the classifications tab of the
     book detail page. */
-export default class ClassificationsTable extends React.Component<ClassificationsTableProps, {}> {
+export default class ClassificationsTable extends React.Component<ClassificationsTableProps, void> {
   render(): JSX.Element {
     return (
       <div className="classifications-table">

@@ -7,7 +7,7 @@ export interface WithRemoveButtonProps {
 }
 
 /** When wrapped around an element, renders a remove button next to the element. */
-export default class WithRemoveButton extends React.Component<WithRemoveButtonProps, {}> {
+export default class WithRemoveButton extends React.Component<WithRemoveButtonProps, void> {
   render(): JSX.Element {
     return (
       <div className="with-remove-button">

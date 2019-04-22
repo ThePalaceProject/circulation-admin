@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class TrashIcon extends React.Component<{}, {}> {
+export default class TrashIcon extends React.Component<void, void> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="58" viewBox="0 0 44 58" aria-hidden="true">

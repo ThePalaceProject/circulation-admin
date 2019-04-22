@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class HiddenIcon extends React.Component<{}, {}> {
+export default class HiddenIcon extends React.Component<void, void> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="68" height="57.88234" viewBox="0 0 68 57.88234" aria-hidden="true">

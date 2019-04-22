@@ -17,7 +17,7 @@ export interface CustomListsSidebarProps {
 }
 
 
-export default class CustomListsSidebar extends React.Component<CustomListsSidebarProps, {}> {
+export default class CustomListsSidebar extends React.Component<CustomListsSidebarProps, void> {
   render(): JSX.Element {
     return(
       <div className="custom-lists-sidebar">

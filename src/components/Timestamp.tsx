@@ -6,7 +6,7 @@ export interface TimestampProps {
   timestamp: TimestampData;
 }
 
-export default class Timestamp extends React.Component<TimestampProps, {}> {
+export default class Timestamp extends React.Component<TimestampProps, void> {
   render(): JSX.Element {
     let exception = <section className="well exception"><pre>{this.props.timestamp.exception}</pre></section>;
     let achievements = <section className="well"><pre>{this.props.timestamp.achievements}</pre></section>;

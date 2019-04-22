@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class ApplyIcon extends React.Component<{}, {}> {
+export default class ApplyIcon extends React.Component<void, void> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="41.66739" height="49.79988" viewBox="0 0 41.66739 49.79988" aria-hidden="true">

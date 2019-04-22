@@ -242,7 +242,7 @@ const ConnectedHeader = connect<HeaderStateProps, HeaderDispatchProps, HeaderOwn
 
 /** HeaderWithStore is a wrapper component to pass the store as a prop to the
     ConnectedHeader, since it's not in the regular place in the context. */
-export default class HeaderWithStore extends React.Component<{}, {}> {
+export default class HeaderWithStore extends React.Component<void, void> {
   context: { editorStore: Store<State> };
 
   static contextTypes = {

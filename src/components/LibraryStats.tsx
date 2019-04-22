@@ -12,7 +12,7 @@ export interface LibraryStatsProps {
 
 /** Displays statistics about patrons, licenses, and collections from the server,
     for a single library or all libraries the admin has access to. */
-export default class LibraryStats extends React.Component<LibraryStatsProps, {}> {
+export default class LibraryStats extends React.Component<LibraryStatsProps, void> {
   render(): JSX.Element {
     const collectionCounts = this.props.stats && this.props.stats.collections && Object.keys(this.props.stats.collections).map(collection => {
       const data = this.props.stats.collections[collection];

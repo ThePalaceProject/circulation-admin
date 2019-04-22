@@ -5,7 +5,7 @@ export interface PatronInfoProps {
   patron: PatronData;
 }
 
-export default class PatronInfo extends React.Component<PatronInfoProps, {}> {
+export default class PatronInfo extends React.Component<PatronInfoProps, void> {
   constructor(props) {
     super(props);
   }

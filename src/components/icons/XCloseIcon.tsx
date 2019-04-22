@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class XCloseIcon extends React.Component<{}, {}> {
+export default class XCloseIcon extends React.Component<void, void> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="96.14319" height="96.14197" viewBox="0 0 96.14319 96.14197" aria-hidden="true">

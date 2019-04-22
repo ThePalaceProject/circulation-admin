@@ -17,7 +17,7 @@ export interface DashboardPageContext {
 
 /** Page that shows high-level statistics about patrons and collections
     and a list of the most recent circulation events. */
-export default class DashboardPage extends React.Component<DashboardPageProps, {}> {
+export default class DashboardPage extends React.Component<DashboardPageProps, void> {
   context: DashboardPageContext;
 
   static contextTypes: React.ValidationMap<DashboardPageContext> = {

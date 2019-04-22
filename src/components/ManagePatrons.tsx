@@ -18,7 +18,7 @@ export interface ManagePatronsContext {
   csrfToken: string;
 }
 
-export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
+export class ManagePatrons extends React.Component<ManagePatronsProps, void> {
   context: ManagePatronsContext;
 
   static contextTypes: React.ValidationMap<ManagePatronsContext> = {
@@ -26,7 +26,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
     csrfToken: React.PropTypes.string.isRequired,
   };
 
-  static childContextTypes: React.ValidationMap<{}> = {
+  static childContextTypes: React.ValidationMap<void> = {
     library: React.PropTypes.func
   };
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import Header from "./Header";
 import { Jumbotron } from "react-bootstrap";
 
-export default class WelcomePage extends React.Component<{}, {}> {
+export default class WelcomePage extends React.Component<void, void> {
 
   render(): JSX.Element {
     return(

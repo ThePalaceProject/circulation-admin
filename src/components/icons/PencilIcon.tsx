@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class PencilIcon extends React.Component<{}, {}> {
+export default class PencilIcon extends React.Component<void, void> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="57.375" height="57.28257" viewBox="0 0 57.375 57.28257" aria-hidden="true">

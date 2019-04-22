@@ -11,7 +11,7 @@ export interface LanguageFieldProps {
   onChange?: () => void;
 }
 
-export default class LanguageField extends React.Component<LanguageFieldProps, {}> {
+export default class LanguageField extends React.Component<LanguageFieldProps, void> {
 
   render() {
     let value = (this.props.languages && this.props.languages[this.props.value] && this.props.languages[this.props.value][0]) || this.props.value;
