@@ -119,6 +119,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <Panel
               headerText="Search for titles"
               openByDefault={true}
+              onEnter={this.search}
               content={
                 <fieldset>
                   <legend className="visuallyHidden">Search for titles</legend>
