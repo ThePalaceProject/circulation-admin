@@ -12,7 +12,7 @@ import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Button } from "library-simplified-reusable-components";
 import { CirculationEventData } from "../../interfaces";
 
-describe("CirculationEvents", () => {
+describe.only("CirculationEvents", () => {
   let eventsData: CirculationEventData[] = [
     {
       id: 1,
@@ -160,11 +160,18 @@ describe("CirculationEvents", () => {
     });
 
     it("shows download form when download button is clicked", () => {
+      wrapper = mount(
+        <CirculationEvents
+          events={[]}
+          fetchCirculationEvents={fetchCirculationEvents}
+        />,
+        { context }
+      );
       let button = wrapper.find(Button);
       expect(button.length).to.equal(1);
       expect(button.prop("content")).to.equal("Download CSV");
       expect(wrapper.state("showDownloadForm")).to.equal(false);
-      wrapper.instance().showDownloadForm();
+      button.simulate("click");
       expect(wrapper.state("showDownloadForm")).to.equal(true);
       let form = wrapper.find(CirculationEventsDownloadForm);
       expect(form.prop("show")).to.equal(true);
