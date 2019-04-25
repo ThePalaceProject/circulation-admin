@@ -34,7 +34,7 @@ describe("TextWithEditMode", () => {
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
     expect(input.prop("placeholder")).to.equal("editable thing");
-    expect(input.prop("value")).to.be.undefined;
+    expect(input.prop("value")).to.equal("");
     let button = wrapper.find(Button);
     expect(button.text()).to.contain("Save editable thing");
   });

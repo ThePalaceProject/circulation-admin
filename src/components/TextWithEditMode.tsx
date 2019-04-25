@@ -11,7 +11,7 @@ export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
 
 export interface TextWithEditModeState {
   editMode: boolean;
-  text: string | null;
+  text: string;
 }
 
 /** Renders text with a link to switch to edit mode and show an editable input instead.
@@ -20,7 +20,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
   constructor(props) {
     super(props);
     this.state = {
-      text: this.props.text,
+      text: this.props.text || "",
       editMode: !this.props.text
     };
 
@@ -42,7 +42,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               ref="text"
               />
             <Button
-              className="inverted"
+              className="inverted inline"
               callback={this.updateText}
               content={`Save ${this.props.placeholder}`}
             />
@@ -53,7 +53,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
             { this.state.text }
             <Button
               callback={this.startEditMode}
-              className="inverted"
+              className="inverted inline"
               content={<span>Edit {this.props.placeholder} <PencilIcon /></span>}
             />
           </h3>
@@ -63,7 +63,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.text && nextProps.text !== this.props.text) {
+    if (nextProps.text !== this.props.text) {
       this.setState({ text: nextProps.text, editMode: !nextProps.text });
     }
   }

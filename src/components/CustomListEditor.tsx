@@ -4,7 +4,6 @@ import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
-import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
 import { Button, Panel } from "library-simplified-reusable-components";
 
@@ -85,7 +84,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               <Button
                 className="inverted"
                 callback={this.reset}
-                content={<span>Cancel Changes <XCloseIcon /></span>}
+                content="Cancel Changes"
               />
             }
           </div>
@@ -140,6 +139,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                   <Button
                     content={<span>Search<SearchIcon /></span>}
                     callback={this.search}
+                    className="inline"
                   />
                 </fieldset>
               }
@@ -166,7 +166,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.list && (nextProps.listId !== this.props.listId)) {
+    if (!nextProps.list) {
+      this.setState({ title: "", entries: [], collections: [] });
+    }
+    else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
       this.setState({
         title: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],

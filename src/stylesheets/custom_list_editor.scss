@@ -18,8 +18,11 @@
     > div {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       height: 100%;
+    }
+
+    .save-or-cancel-list {
+      padding-top: 20px;
     }
 
     .custom-list-filters {

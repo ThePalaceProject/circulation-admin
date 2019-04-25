@@ -65,8 +65,9 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
   }
 
   renderListInfo(list: CustomListData): JSX.Element {
+    let isActive = this.props.identifier && this.props.identifier.toString() === list.id.toString();
     return (
-      <li key={list.id} className={this.props.identifier === list.id ? "active" : "" }>
+      <li key={list.id} className={isActive ? "active" : "" }>
         <div className="custom-list-info">
           <p>{ list.name }</p>
           <p>Books in list: { list.entry_count }</p>
@@ -74,7 +75,7 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
         </div>
         <div className = "custom-list-buttons">
           {
-            this.props.identifier === list.id ?
+            isActive ?
               <Button disabled={true} content="Editing" /> :
               <Link
                 to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
