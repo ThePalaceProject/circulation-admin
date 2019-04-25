@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
 
 import GenreForm from "../GenreForm";
@@ -103,8 +103,15 @@ describe("GenreForm", () => {
     });
 
     it("adds genre", () => {
+      wrapper = mount(
+        <GenreForm
+          genreOptions={genreOptions}
+          bookGenres={bookGenres}
+          addGenre={addGenre}
+          />
+      );
       wrapper.setState({ genre: "Science Fiction", subgenre: "Space Opera" });
-      wrapper.instance().addGenre();
+      wrapper.find(Button).simulate("click");
 
       expect(addGenre.callCount).to.equal(1);
       expect(addGenre.args[0][0]).to.equal("Space Opera");

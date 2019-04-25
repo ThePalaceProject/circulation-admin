@@ -3,7 +3,7 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-
+import { Button } from "library-simplified-reusable-components";
 import LaneEditor from "../LaneEditor";
 import TextWithEditMode from "../TextWithEditMode";
 import EditableInput from "../EditableInput";
@@ -139,9 +139,19 @@ describe("LaneEditor", () => {
   });
 
   it("deletes lane", () => {
-    let deleteButton = wrapper.find(".delete-lane");
-    expect(deleteButton.length).to.equal(1);
-    wrapper.instance().delete();
+    wrapper = mount(
+      <LaneEditor
+        library="library"
+        lane={laneData}
+        parent={laneData}
+        customLists={customListsData}
+        editLane={editLane}
+        deleteLane={deleteLane}
+        />
+    );
+    let deleteButton = wrapper.find(Button).at(1);
+    expect(deleteButton.hasClass("delete-lane")).to.be.true;
+    deleteButton.simulate("click");
 
     expect(deleteLane.callCount).to.equal(1);
     expect(deleteLane.args[0][0]).to.deep.equal(laneData);
@@ -153,15 +163,27 @@ describe("LaneEditor", () => {
   });
 
   it("shows lane", () => {
-    let showButton = wrapper.find(".show-lane");
-    expect(showButton.length).to.equal(0);
+    wrapper = mount(
+      <LaneEditor
+        library="library"
+        lane={laneData}
+        customLists={customListsData}
+        editLane={editLane}
+        deleteLane={deleteLane}
+        showLane={showLane}
+        hideLane={hideLane}
+      />
+    );
+    let showButton = wrapper.find(Button).at(2);
+    expect(showButton.hasClass("show-lane")).to.be.false;
 
     let hiddenLane = Object.assign({}, laneData, { visible: false });
     wrapper.setProps({ lane: hiddenLane });
-    showButton = wrapper.find(".show-lane");
-    expect(showButton.length).to.equal(1);
+    showButton = wrapper.find(Button).at(2);
+    expect(showButton.hasClass("show-lane")).to.be.true;
 
-    wrapper.instance().show();
+    showButton.simulate("click");
+
     expect(showLane.callCount).to.equal(1);
     expect(showLane.args[0][0]).to.deep.equal(hiddenLane);
 
@@ -172,10 +194,22 @@ describe("LaneEditor", () => {
   });
 
   it("hides lane", () => {
-    let hideButton = wrapper.find(".hide-lane");
-    expect(hideButton.length).to.equal(1);
+    wrapper = mount(
+      <LaneEditor
+        library="library"
+        lane={laneData}
+        customLists={customListsData}
+        editLane={editLane}
+        deleteLane={deleteLane}
+        showLane={showLane}
+        hideLane={hideLane}
+      />
+    );
 
-    wrapper.instance().hide();
+    let hideButton = wrapper.find(Button).at(2);
+    expect(hideButton.hasClass("hide-lane")).to.be.true;
+
+    hideButton.simulate("click");
     expect(hideLane.callCount).to.equal(1);
     expect(hideLane.args[0][0]).to.deep.equal(laneData);
 
