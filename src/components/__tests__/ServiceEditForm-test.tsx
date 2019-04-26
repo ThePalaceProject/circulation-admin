@@ -13,7 +13,8 @@ import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
 
 describe("ServiceEditForm", () => {
-  let TestServiceEditForm: new(props: ServiceEditFormProps<ServicesData>) => React.Component<ServiceEditFormProps<ServicesData>, ServiceEditFormState> = ServiceEditForm;
+  let TestServiceEditForm: new(props: ServiceEditFormProps<ServicesData>) =>
+    React.Component<ServiceEditFormProps<ServicesData>, ServiceEditFormState> = ServiceEditForm;
   let wrapper;
   let save;
   let urlBase = "/services";
@@ -268,7 +269,7 @@ describe("ServiceEditForm", () => {
       expect(children.at(0).text()).to.contain("None");
       expect(children.at(1).text()).to.contain("Parent");
 
-      childService.parent_id = parentService.id;
+      childService["parent_id"] = parentService.id;
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -290,7 +291,8 @@ describe("ServiceEditForm", () => {
 
     it("renders protocol fields for child", () => {
       const parentService = Object.assign({}, serviceData, { protocol: "protocol 3", name: "Parent" });
-      const childService = Object.assign({}, serviceData, { protocol: "protocol 3", id: 3, name: "Child" });
+      const childService = Object.assign({}, serviceData,
+        { protocol: "protocol 3", id: 3, name: "Child" });
       let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService, childService] });
       wrapper = mount(
         <TestServiceEditForm
@@ -316,7 +318,7 @@ describe("ServiceEditForm", () => {
       input = protocolFormFieldByKey("parent_setting");
       expect(input.props().value).to.equal("parent setting");
 
-      childService.parent_id = parentService.id;
+      childService["parent_id"] = parentService.id;
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -360,7 +362,8 @@ describe("ServiceEditForm", () => {
       expect(library.length).to.equal(0);
 
       let serviceDataSitewide = Object.assign({}, servicesData, {
-        libraries: []
+        libraries: [],
+        protocol: ""
       });
       wrapper = mount(
         <TestServiceEditForm
@@ -370,7 +373,7 @@ describe("ServiceEditForm", () => {
           item={serviceDataSitewide}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
@@ -455,7 +458,8 @@ describe("ServiceEditForm", () => {
       expect(select.length).to.equal(0);
 
       let serviceDataSitewide = Object.assign({}, servicesData, {
-        libraries: []
+        libraries: [],
+        protocol: "",
       });
       wrapper = shallow(
         <TestServiceEditForm

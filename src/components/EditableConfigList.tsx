@@ -58,7 +58,7 @@ export interface AdditionalContentProps<T, U> {
 
     GenericEditableConfigList allows subclasses to define additional props. Subclasses of
     EditableConfigList cannot change the props and do not have to specify a type for them. */
-export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, void> {
+export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, {}> {
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;

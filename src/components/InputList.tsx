@@ -109,7 +109,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     if (typeof(item) === "object") {
       return (
         <span className="input-group-addon">
-          <ToolTip trigger={icons[format]} direction="point-right" text={Object.values(item)[0]}/>
+          <ToolTip trigger={icons[format]} direction="point-right" text={Object.values(item)[0].toString()}/>
         </span>
       );
     }

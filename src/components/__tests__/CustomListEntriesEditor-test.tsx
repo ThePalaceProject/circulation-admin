@@ -12,6 +12,7 @@ import {
   AudioHeadphoneIcon,
   BookIcon,
 } from "@nypl/dgx-svg-icons";
+import * as PropTypes from "prop-types";
 
 describe("CustomListEntriesEditor", () => {
   let wrapper;
@@ -71,8 +72,8 @@ describe("CustomListEntriesEditor", () => {
     loadMoreEntries = stub();
 
     childContextTypes = {
-      pathFor: React.PropTypes.func.isRequired,
-      router: React.PropTypes.object.isRequired,
+      pathFor: PropTypes.func.isRequired,
+      router: PropTypes.object.isRequired,
     };
     fullContext = Object.assign({}, {
       pathFor: stub().returns("url"),

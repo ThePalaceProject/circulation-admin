@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class GrabIcon extends React.Component<void, void> {
+export default class GrabIcon extends React.Component<{}, {}> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="47.31985" height="29.64547" viewBox="0 0 47.31985 29.64547" aria-hidden="true">

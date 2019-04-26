@@ -283,7 +283,7 @@ describe("BookEditForm", () => {
       }
     }
 
-    let formDataStub = stub(window, "FormData", MockFormData);
+    let formDataStub = stub(window, "FormData").callsFake(MockFormData);
 
     let editBook = stub().returns(new Promise((resolve, reject) => {
       resolve();
@@ -302,27 +302,27 @@ describe("BookEditForm", () => {
 
     let form = wrapper.find("form");
     form.simulate("submit");
-    formDataStub.restore();
 
     expect(editBook.callCount).to.equal(1);
     expect(editBook.args[0][0]).to.equal("href");
-    expect(editBook.args[0][1].get("title").value).to.equal(bookData.title);
-    expect(editBook.args[0][1].get("subtitle").value).to.equal(bookData.subtitle);
+    expect(editBook.args[0][1].data["title"]).to.equal(bookData.title);
+    expect(editBook.args[0][1].data["subtitle"]).to.equal(bookData.subtitle);
 
     // The last contributor field is the empty one for adding a new contributor.
     // If the user had filled it in without clicking "Add", it would still be submitted.
-    expect(editBook.args[0][1].get("contributor-name").value).to.deep.equal(["An Author", "A Narrator", "Another Narrator", ""]);
-    expect(editBook.args[0][1].get("contributor-role").value).to.deep.equal(["Author", "Narrator", "Narrator", "Author"]);
+    expect(editBook.args[0][1].data["contributor-name"]).to.deep.equal(["An Author", "A Narrator", "Another Narrator", ""]);
+    expect(editBook.args[0][1].data["contributor-role"]).to.deep.equal(["Author", "Narrator", "Narrator", "Author"]);
 
-    expect(editBook.args[0][1].get("series").value).to.equal(bookData.series);
-    expect(editBook.args[0][1].get("series_position").value).to.equal(String(bookData.seriesPosition));
-    expect(editBook.args[0][1].get("medium").value).to.equal("Audio");
-    expect(editBook.args[0][1].get("language").value).to.equal("English");
-    expect(editBook.args[0][1].get("publisher").value).to.equal(bookData.publisher);
-    expect(editBook.args[0][1].get("imprint").value).to.equal(bookData.imprint);
-    expect(editBook.args[0][1].get("issued").value).to.equal(bookData.issued);
-    expect(editBook.args[0][1].get("rating").value).to.equal("4");
-    expect(editBook.args[0][1].get("summary").value).to.equal(bookData.summary);
+    expect(editBook.args[0][1].data["series"]).to.equal(bookData.series);
+    expect(editBook.args[0][1].data["series_position"]).to.equal(String(bookData.seriesPosition));
+    expect(editBook.args[0][1].data["medium"]).to.equal("Audio");
+    expect(editBook.args[0][1].data["language"]).to.equal("English");
+    expect(editBook.args[0][1].data["publisher"]).to.equal(bookData.publisher);
+    expect(editBook.args[0][1].data["imprint"]).to.equal(bookData.imprint);
+    expect(editBook.args[0][1].data["issued"]).to.equal(bookData.issued);
+    expect(editBook.args[0][1].data["rating"]).to.equal("4");
+    expect(editBook.args[0][1].data["summary"]).to.equal(bookData.summary);
+    formDataStub.restore();
   });
 
   it("refreshes book after editing", (done) => {

@@ -41,7 +41,7 @@ export interface ClassificationsProps extends ClassificationsStateProps, Classif
 
 /** Tab on the book details page with a table of a book's current classifications and
     a form for editing them. */
-export class Classifications extends React.Component<ClassificationsProps, void> {
+export class Classifications extends React.Component<ClassificationsProps, {}> {
   constructor(props) {
     super(props);
     this.refresh = this.refresh.bind(this);

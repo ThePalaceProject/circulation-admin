@@ -1,6 +1,7 @@
 import * as React from "react";
 import { GenericEditableConfigList, EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
+import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import { DiscoveryServicesData, DiscoveryServiceData, LibraryData, LibraryRegistrationsData } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
@@ -30,7 +31,7 @@ export class DiscoveryServices extends GenericEditableConfigList<DiscoveryServic
   labelKey = "name";
 
   static childContextTypes: React.ValidationMap<any> = {
-    registerLibrary: React.PropTypes.func
+    registerLibrary: PropTypes.func
   };
 
   getChildContext() {

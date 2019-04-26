@@ -1,6 +1,6 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "description": "Web Front-end for Library Simplified Circulation Manager Admin Interface",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
   "author": "NYPL",
   "license": "Apache-2.0",
   "scripts": {
-    "prepublish": "typings install && npm run prod",
+    "prepublish": "npm run prod",
     "lint": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && sass-lint -c .sass-lint.yml -v -q",
     "test": "npm run lint && tsc && cp -r src/stylesheets lib && mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js",
     "test-file": "npm run lint && tsc && cp -r src/stylesheets lib && mocha --require lib/testHelper.js",
@@ -29,6 +29,7 @@
     "numeral": "^2.0.6",
     "opds-feed-parser": "0.0.14",
     "opds-web-client": "0.1.27",
+    "prop-types": "^15.7.2",
     "qs": "^6.2.0",
     "react": "^15.4.0",
     "react-beautiful-dnd": "^2.3.1",
@@ -43,25 +44,28 @@
     "request": "^2.85.0"
   },
   "devDependencies": {
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.13.0",
+    "@types/react": "16.4.7",
     "chai": "^3.5.0",
     "css-loader": "^0.24.0",
     "enzyme": "^2.3.0",
     "extract-text-webpack-plugin": "^1.0.1",
+    "fetch-mock": "^7.3.1",
     "file-loader": "^0.8.5",
     "jsdom": "^9.5.0",
     "json-loader": "^0.5.4",
     "mocha": "^5.2.0",
-    "node-sass": "^3.13.1",
+    "node-sass": "4.11.0",
     "react-addons-test-utils": "^15.3.0",
     "sass-lint": "^1.9.1",
     "sass-loader": "^4.0.0",
     "selenium-standalone": "6.1.0",
-    "sinon": "^1.17.4",
+    "sinon": "7.3.0",
     "style-loader": "^0.13.1",
-    "ts-loader": "^0.8.2",
+    "ts-loader": "2.0.0",
     "tslint": "^3.10.2",
-    "typescript": "2.1.6",
-    "typings": "^1.0.4",
+    "typescript": "2.7.2",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
   }

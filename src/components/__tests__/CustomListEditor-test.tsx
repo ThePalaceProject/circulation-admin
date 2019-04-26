@@ -2,12 +2,13 @@ import { expect } from "chai";
 import { stub, useFakeTimers } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import CustomListEditor from "../CustomListEditor";
 import TextWithEditMode from "../TextWithEditMode";
 import EditableInput from "../EditableInput";
 import CustomListEntriesEditor from "../CustomListEntriesEditor";
+import * as PropTypes from "prop-types";
 
 describe("CustomListEditor", () => {
   let wrapper;
@@ -60,8 +61,8 @@ describe("CustomListEditor", () => {
     loadMoreSearchResults = stub();
     loadMoreEntries = stub();
     childContextTypes = {
-      pathFor: React.PropTypes.func.isRequired,
-      router: React.PropTypes.object.isRequired,
+      pathFor: PropTypes.func.isRequired,
+      router: PropTypes.object.isRequired,
     };
     fullContext = Object.assign({}, {
       pathFor: stub().returns("url"),

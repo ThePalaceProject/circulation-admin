@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class ResetIcon extends React.Component<void, void> {
+export default class ResetIcon extends React.Component<{}, {}> {
   render(): JSX.Element {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="40.84054" viewBox="0 0 48 40.84054" aria-hidden="true">

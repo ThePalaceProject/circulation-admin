@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import { Navigate, PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 
@@ -33,8 +34,8 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
   }
 
   static contextTypes: React.ValidationMap<TabContainerContext> = {
-    router: React.PropTypes.object.isRequired,
-    pathFor: React.PropTypes.func.isRequired
+    router: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired
   };
 
   render(): JSX.Element {

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { stub } from "sinon";
-
+import * as PropTypes from "prop-types";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
@@ -219,9 +219,9 @@ describe("Header", () => {
         { short_name: "bpl" }
       ];
       let childContextTypes = {
-        router: React.PropTypes.object.isRequired,
-        pathFor: React.PropTypes.func.isRequired,
-        admin: React.PropTypes.object.isRequired
+        router: PropTypes.object.isRequired,
+        pathFor: PropTypes.func.isRequired,
+        admin: PropTypes.object.isRequired
       };
       let fullContext = Object.assign({}, context, {
         pathFor: stub().returns("url"),

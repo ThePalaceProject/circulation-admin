@@ -1,10 +1,8 @@
 import { expect } from "chai";
-import { stub } from "sinon";
-
+import * as PropTypes from "prop-types";
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import { IndividualAdmins } from "../IndividualAdmins";
-import Admin from "../../models/Admin";
 
 
 describe("IndividualAdmins", () => {
@@ -18,7 +16,7 @@ describe("IndividualAdmins", () => {
         csrfToken="token"
       />,
       { context: { settingUp: true},
-        childContextTypes: { settingUp: React.PropTypes.bool.isRequired }
+        childContextTypes: { settingUp: PropTypes.bool.isRequired }
       }
     );
   });

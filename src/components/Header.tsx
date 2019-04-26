@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
@@ -40,9 +41,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   context: { library: () => string, router: HeaderRouter, admin: Admin };
 
   static contextTypes = {
-    library: React.PropTypes.func,
-    router: React.PropTypes.object.isRequired,
-    admin: React.PropTypes.object.isRequired,
+    library: PropTypes.func,
+    router: PropTypes.object.isRequired,
+    admin: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -242,11 +243,11 @@ const ConnectedHeader = connect<HeaderStateProps, HeaderDispatchProps, HeaderOwn
 
 /** HeaderWithStore is a wrapper component to pass the store as a prop to the
     ConnectedHeader, since it's not in the regular place in the context. */
-export default class HeaderWithStore extends React.Component<void, void> {
+export default class HeaderWithStore extends React.Component<{}, {}> {
   context: { editorStore: Store<State> };
 
   static contextTypes = {
-    editorStore: React.PropTypes.object.isRequired
+    editorStore: PropTypes.object.isRequired
   };
 
   render(): JSX.Element {

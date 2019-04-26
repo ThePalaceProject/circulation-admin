@@ -20,13 +20,13 @@ describe("EditableConfigList", () => {
     things: Thing[];
   }
 
-  class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, void> {
+  class ThingEditForm extends React.Component<EditFormProps<Things, Thing>, {}> {
     render(): JSX.Element {
       return <div>Test</div>;
     }
   }
 
-  class ThingEditFormWithInputs extends React.Component<EditFormProps<Things, Thing>, void> {
+  class ThingEditFormWithInputs extends React.Component<EditFormProps<Things, Thing>, {}> {
     render(): JSX.Element {
       return (<div>
                 <EditableInput
@@ -39,7 +39,7 @@ describe("EditableConfigList", () => {
     }
   }
 
-  class AdditionalContent extends React.Component<AdditionalContentProps<Things, Thing>, void> {
+  class AdditionalContent extends React.Component<AdditionalContentProps<Things, Thing>, {}> {
     render(): JSX.Element {
       return <div>Test Additional Content</div>;
     }
