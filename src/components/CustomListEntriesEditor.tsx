@@ -151,8 +151,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="authors">{ book.authors.join(", ") }</div>
                             </div>
                             {this.getMediumSVG(this.getMedium(book))}
-                            {this.getCatalogLink(book)}
                             <div className="links">
+                              {this.getCatalogLink(book)}
                               <Button
                                 callback={() => { this.add(book.id); }}
                                 content={<span>Add to list<AddIcon /></span>}

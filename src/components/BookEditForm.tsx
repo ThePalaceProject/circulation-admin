@@ -34,10 +34,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
         {this.renderForm()}
-        <Button
-          disabled={this.props.disabled}
-          callback={this.save.bind(this)}
-        />
+        <Button disabled={this.props.disabled} />
       </form>
     );
   }
@@ -254,7 +251,6 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
 
   save(event) {
     event.preventDefault();
-
     let data = new (window as any).FormData(this.refs["form"] as any);
     this.props.editBook(this.props.editLink.href, data).then(response => {
       this.props.refresh();
