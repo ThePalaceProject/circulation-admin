@@ -1,7 +1,6 @@
 var webpack = require("webpack");
 var path = require("path");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var config = {
   entry: {
@@ -52,9 +51,6 @@ var config = {
   resolve: {
     extensions: ["", ".js", ".ts", ".tsx", ".scss"],
     root: path.resolve(__dirname, "node_modules")
-  },
-  optimization: {
-    minimizer: [new UglifyJsPlugin()]
   }
 };
 
