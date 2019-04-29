@@ -88,11 +88,13 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, void>
                 headerText="Cover Metadata"
                 openByDefault={true}
                 content={this.renderCoverForm()}
+                onEnter={this.save}
               />
               { this.props.rightsStatuses &&
                 <Panel
                   headerText="Rights"
                   openByDefault={true}
+                  onEnter={this.save}
                   content={
                     <form ref="rights">
                       <fieldset>

@@ -58,6 +58,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         <Panel
           headerText="Classifications"
           collapsible={false}
+          onEnter={this.submit}
           content={
             <div>
               <EditableInput

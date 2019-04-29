@@ -110,6 +110,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               <Panel
                 headerText={this.protocolDescription()}
                 style="instruction"
+                onEnter={this.submit}
                 content={this.protocolInstructions()}
               />
             </div>
