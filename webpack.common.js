@@ -2,6 +2,7 @@ const path = require("path");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -23,16 +24,12 @@ module.exports = {
     // Extract separate css file.
     new MiniCssExtractPlugin({ filename: "circulation-web.css" })
   ],
+  optimization: {
+    minimizer: [new UglifyJsPlugin()],
+  },
 
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        exclude: [/node_modules/],
-        loaders: [
-          'ts-loader'
-        ]
-      },
       {
         test: /\.scss$/,
         use: [
@@ -42,12 +39,19 @@ module.exports = {
         ]
       },
       {
+        test: /\.tsx?$/,
+        exclude: [/node_modules/],
+        loaders: [
+          'ts-loader'
+        ]
+      },
+      {
         test: /\.(ttf|woff|eot|svg|png|woff2|gif|jpg)(\?[\s\S]+)?$/,
         loader: 'url-loader?limit=100000'
       }
     ]
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".json", ".scss"]
+    extensions: [".ts", ".tsx", ".js", ".scss"]
   }
 };

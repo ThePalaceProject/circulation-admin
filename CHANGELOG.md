@@ -2,7 +2,7 @@
 
 ### v0.2.0
 #### Updated
-- Updated `typings` to `@types`, updated Typescript, and updated unit tests with fetch-mock. These updates are needed to import the updated `opds-web-client` package.
+- Updated `typings` to `@types`, updated Typescript, updated Webpack, and updated unit tests with fetch-mock. These updates are needed to import the updated `opds-web-client` package.
 
 ### v0.1.11
 #### Fixed
