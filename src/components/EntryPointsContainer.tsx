@@ -5,7 +5,7 @@ import Collection from "opds-web-client/lib/components/Collection";
 
 /** Wrapper for `EntryPointsTabs`. This component is passed into the
     OPDSCatalog from opds-web-client. */
-export default class EntryPointsContainer extends React.Component<CollectionContainerProps, void> {
+export default class EntryPointsContainer extends React.Component<CollectionContainerProps, {}> {
   render(): JSX.Element {
     const child = React.Children.only(this.props.children);
     const collectionCopy = JSON.parse(JSON.stringify(child.props.collection));

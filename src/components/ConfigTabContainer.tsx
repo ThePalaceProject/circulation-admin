@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
 import Libraries from "./Libraries";
 import Collections from "./Collections";
 import AdminAuthServices from "./AdminAuthServices";
@@ -30,9 +31,9 @@ export interface ConfigTabContainerContext extends TabContainerContext {
 export default class ConfigTabContainer extends TabContainer<ConfigTabContainerProps> {
   context: ConfigTabContainerContext;
   static contextTypes: React.ValidationMap<ConfigTabContainerContext> = {
-    router: React.PropTypes.object.isRequired,
-    pathFor: React.PropTypes.func.isRequired,
-    admin: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired,
+    admin: PropTypes.object.isRequired
   };
 
   LIBRARY_MANAGER_TABS = ["libraries", "individualAdmins"];

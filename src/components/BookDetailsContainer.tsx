@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
+
 import BookDetailsTabContainer from "./BookDetailsTabContainer";
 import BookDetails from "./BookDetails";
 import { BookDetailsContainerProps } from "opds-web-client/lib/components/Root";
-import { Navigate } from "../interfaces";
 import { State } from "../reducers/index";
 
 export interface BookDetailsContainerContext {
@@ -16,14 +17,14 @@ export interface BookDetailsContainerContext {
 /** Wrapper for `BookDetailsTabContainer` that extracts parameters from its context
     and converts them into props. This component is passed into the OPDSCatalog from
     opds-web-client to replace the body of the book details page. */
-export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, void> {
+export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, {}> {
   context: BookDetailsContainerContext;
 
   static contextTypes = {
-    csrfToken: React.PropTypes.string.isRequired,
-    tab: React.PropTypes.string,
-    editorStore: React.PropTypes.object.isRequired,
-    library: React.PropTypes.func.isRequired
+    csrfToken: PropTypes.string.isRequired,
+    tab: PropTypes.string,
+    editorStore: PropTypes.object.isRequired,
+    library: PropTypes.func.isRequired
   };
 
   render(): JSX.Element {

@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { stub } from "sinon";
+const fetchMock =  require("fetch-mock");
 
 import ActionCreator from "../actions";
 
@@ -38,6 +39,10 @@ const fetcher = new MockDataFetcher() as any;
 const actions = new ActionCreator(fetcher, "token");
 
 describe("actions", () => {
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
   describe("postForm", () => {
     const type = "TEST";
     const url = "http://example.com/test";
@@ -46,83 +51,70 @@ describe("actions", () => {
 
     it("dispatches request, success, and load", async () => {
       const dispatch = stub();
-      const responseText = stub().returns(new Promise<string>((resolve) => {
-        resolve("response");
-      }));
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200, text: responseText });
-      }));
-      fetch = fetchMock;
+      const responseText = "response";
+      fetchMock
+        .mock(url, responseText);
+      let fetchArgs = fetchMock.calls();
 
       await actions.postForm(type, url, formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
       expect(dispatch.args[2][0].type).to.equal(`${type}_${ActionCreator.LOAD}`);
-      expect(dispatch.args[2][0].data).to.equal("response");
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(url);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(dispatch.args[2][0].data).to.equal(responseText);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(url);
+      expect(fetchArgs[0][1].method).to.equal("POST");
       const expectedHeaders = new Headers();
       expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchArgs[0][1].headers).to.deep.equal(expectedHeaders);
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
 
     it("postForm with JSON response dispatches request, success, and load", async () => {
       const dispatch = stub();
-      const textResponse = "{\"id\": \"test\", \"name\": \"test\"}";
-      const responseText = stub().returns(new Promise<any>((resolve) => {
-        resolve(textResponse);
-      }));
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200, text: responseText });
-      }));
-      fetch = fetchMock;
+      const responseText = "{\"id\": \"test\", \"name\": \"test\"}";
+      fetchMock
+        .mock(url, responseText);
+      let fetchArgs = fetchMock.calls();
 
       await actions.postForm(type, url, formData, "POST", "", "JSON")(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
       expect(dispatch.args[2][0].type).to.equal(`${type}_${ActionCreator.LOAD}`);
-      expect(dispatch.args[2][0].data).to.equal(textResponse);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(url);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(dispatch.args[2][0].data).to.deep.equal(JSON.parse(responseText));
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(url);
+      expect(fetchArgs[0][1].method).to.equal("POST");
       const expectedHeaders = new Headers();
       expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchArgs[0][1].headers).to.deep.equal(expectedHeaders);
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
 
     it("dispatches a DELETE request", async () => {
       const dispatch = stub();
-      const responseText = stub().returns(new Promise<string>((resolve) => {
-        resolve("response");
-      }));
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200, text: responseText });
-      }));
-      fetch = fetchMock;
+      const responseText = "response";
+      fetchMock
+        .mock(url, responseText);
+      let fetchArgs = fetchMock.calls();
 
       await actions.postForm(type, url, formData, "DELETE")(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(url);
-      expect(fetchMock.args[0][1].method).to.equal("DELETE");
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(url);
+      expect(fetchArgs[0][1].method).to.equal("DELETE");
       const expectedHeaders = new Headers();
       expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchArgs[0][1].headers).to.deep.equal(expectedHeaders);
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
 
     it("dispatches failure on bad response", async () => {
       const dispatch = stub();
-      const jsonResponse = new Promise(resolve => resolve({ detail: "problem detail" }));
-      const fetchMock = stub().returns(new Promise<any>(resolve => {
-        resolve({ status: 500, json: () => jsonResponse });
-      }));
-      fetch = fetchMock;
+      fetchMock
+        .mock(url, { status: 500, body: { detail: "problem detail" }});
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -132,7 +124,7 @@ describe("actions", () => {
         expect(dispatch.callCount).to.equal(2);
         expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
         expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
-        expect(fetchMock.callCount).to.equal(1);
+        expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: 500,
           response: "problem detail",
@@ -143,11 +135,8 @@ describe("actions", () => {
 
     it("dispatches failure on non-JSON response", async () => {
       const dispatch = stub();
-      const nonJsonResponse = new Promise(() => { throw "Not JSON"; });
-      const fetchMock = stub().returns(new Promise<any>(resolve => {
-        resolve({ status: 500, json: () => nonJsonResponse });
-      }));
-      fetch = fetchMock;
+      fetchMock
+        .mock(url, { status: 500, body: "Not JSON" });
 
       try {
         await actions.postForm(type, url, formData, "POST", "Default error")(dispatch);
@@ -157,7 +146,7 @@ describe("actions", () => {
         expect(dispatch.callCount).to.equal(2);
         expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
         expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
-        expect(fetchMock.callCount).to.equal(1);
+        expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: 500,
           response: "Default error",
@@ -168,10 +157,8 @@ describe("actions", () => {
 
     it("dispatches failure on no response", async () => {
       const dispatch = stub();
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        reject({ message: "test error" });
-      }));
-      fetch = fetchMock;
+      fetchMock
+        .mock(url, () => { throw { message: "test error" }; });
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -181,7 +168,7 @@ describe("actions", () => {
         expect(dispatch.callCount).to.equal(2);
         expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
         expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
-        expect(fetchMock.callCount).to.equal(1);
+        expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: null,
           response: "test error",
@@ -198,33 +185,29 @@ describe("actions", () => {
 
     it("dispatches request and success", async () => {
       const dispatch = stub();
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200 });
-      }));
-      fetch = fetchMock;
+      fetchMock
+        .mock(url, 200);
+      let fetchArgs = fetchMock.calls();
 
       await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(url);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(url);
+      expect(fetchArgs[0][1].method).to.equal("POST");
       const expectedHeaders = new Headers();
       expectedHeaders.append("Accept", "application/json");
       expectedHeaders.append("Content-Type", "application/json");
       expectedHeaders.append("X-CSRF-Token", "token");
-      expect(fetchMock.args[0][1].headers).to.deep.equal(expectedHeaders);
-      expect(fetchMock.args[0][1].body).to.equal(JSON.stringify(jsonData));
+      expect(fetchArgs[0][1].headers).to.deep.equal(expectedHeaders);
+      expect(fetchArgs[0][1].body).to.equal(JSON.stringify(jsonData));
     });
 
     it("dispatches failure on bad response", async () => {
       const dispatch = stub();
-      const jsonResponse = new Promise(resolve => resolve({ detail: "problem detail" }));
-      const fetchMock = stub().returns(new Promise<any>(resolve => {
-        resolve({ status: 500, json: () => jsonResponse });
-      }));
-      fetch = fetchMock;
+      fetchMock
+        .mock(url, { status: 500, body: { detail: "problem detail" }});
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -234,7 +217,7 @@ describe("actions", () => {
         expect(dispatch.callCount).to.equal(2);
         expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
         expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
-        expect(fetchMock.callCount).to.equal(1);
+        expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: 500,
           response: "problem detail",
@@ -245,10 +228,8 @@ describe("actions", () => {
 
     it("dispatches failure on no response", async () => {
       const dispatch = stub();
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        reject({ message: "test error" });
-      }));
-      fetch = fetchMock;
+      fetchMock
+        .mock(url, () => { throw { message: "test error" }; });
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -258,7 +239,7 @@ describe("actions", () => {
         expect(dispatch.callCount).to.equal(2);
         expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
         expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
-        expect(fetchMock.callCount).to.equal(1);
+        expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: null,
           response: "test error",
@@ -292,19 +273,18 @@ describe("actions", () => {
       const dispatch = stub();
       const formData = new (window as any).FormData();
       formData.append("title", "title");
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200 });
-      }));
-      fetch = fetchMock;
+
+      fetchMock.mock(editBookUrl, "done");
+      let fetchArgs = fetchMock.calls();
 
       await actions.editBook(editBookUrl, formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_BOOK_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_BOOK_SUCCESS);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(editBookUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(editBookUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -340,19 +320,18 @@ describe("actions", () => {
       const data = {
         type: "test type"
       };
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 201 });
-      }));
-      fetch = fetchMock;
+
+      fetchMock.mock(postComplaintUrl, 201);
+      let fetchArgs = fetchMock.calls();
 
       await actions.postComplaint(postComplaintUrl, data)(dispatch);
       expect(dispatch.callCount).to.equal(2);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.POST_COMPLAINT_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.POST_COMPLAINT_SUCCESS);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(postComplaintUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(JSON.stringify(data));
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(postComplaintUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(JSON.stringify(data));
     });
   });
 
@@ -362,19 +341,18 @@ describe("actions", () => {
       const dispatch = stub();
       const formData = new (window as any).FormData();
       formData.append("type", "test type");
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200 });
-      }));
-      fetch = fetchMock;
+
+      fetchMock.mock(resolveComplaintsUrl, "server response");
+      let fetchArgs = fetchMock.calls();
 
       await actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_SUCCESS);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(resolveComplaintsUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(resolveComplaintsUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -408,19 +386,17 @@ describe("actions", () => {
       const newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
       newGenreTree.forEach(genre => formData.append("genres", genre));
 
-      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
-        update({ status: 200 });
-      }));
-      fetch = fetchMock;
+      fetchMock.mock(editClassificationsUrl, "server response");
+      let fetchArgs = fetchMock.calls();
 
       await actions.editClassifications(editClassificationsUrl, formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_SUCCESS);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(editClassificationsUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(editClassificationsUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -545,19 +521,17 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("name", "new name");
 
-      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
-        update({ status: 200 });
-      }));
-      fetch = fetchMock;
+      fetchMock.mock(editLibraryUrl, "server response");
+      let fetchArgs = fetchMock.calls();
 
       await actions.editLibrary(formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(editLibraryUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(editLibraryUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -590,19 +564,17 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("name", "new name");
 
-      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
-        update({ status: 200 });
-      }));
-      fetch = fetchMock;
+      fetchMock.mock(editCollectionUrl, "server response");
+      let fetchArgs = fetchMock.calls();
 
       await actions.editCollection(formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(editCollectionUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(editCollectionUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -635,19 +607,17 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("name", "new name");
 
-      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
-        update({ status: 200 });
-      }));
-      fetch = fetchMock;
+      fetchMock.mock(editAdminAuthServiceUrl, "server response");
+      let fetchArgs = fetchMock.calls();
 
       await actions.editAdminAuthService(formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(editAdminAuthServiceUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(editAdminAuthServiceUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -680,19 +650,17 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("email", "email");
 
-      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
-        update({ status: 200 });
-      }));
-      fetch = fetchMock;
+      fetchMock.mock(editIndividualAdminUrl, "server response");
+      let fetchArgs = fetchMock.calls();
 
       await actions.editIndividualAdmin(formData)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(editIndividualAdminUrl);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(editIndividualAdminUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -721,51 +689,44 @@ describe("actions", () => {
 
   describe("runSelfTests", () => {
     it("dispatches request and success", async () => {
-      const collectionSelfTestURL = "/admin/collection_self_tests";
+      const collectionUrl = "/admin/collection_self_tests/";
+      const collectionSelfTestURL = `${collectionUrl}/1`;
       const dispatch = stub();
 
-      const fetchMock = stub().returns(new Promise<any>((update, reject) => {
-        update({ status: 200 });
-      }));
-      fetch = fetchMock;
+      fetchMock.mock(collectionSelfTestURL, "server response");
+      let fetchArgs = fetchMock.calls();
 
-      await actions.runSelfTests(`${collectionSelfTestURL}/1`)(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      await actions.runSelfTests(collectionSelfTestURL)(dispatch);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal(`${collectionSelfTestURL}/1`);
-      expect(fetchMock.args[0][1].method).to.equal("POST");
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(collectionSelfTestURL);
+      expect(fetchArgs[0][1].method).to.equal("POST");
     });
   });
 
   describe("patronLookup", () => {
-    it("dispatches request and success", async () => {
+    it("dispatches request, success, and load", async () => {
       const formData = new (window as any).FormData();
       formData.append("test", "test");
       const dispatch = stub();
-      const response = { "id": "test", "name": "test" };
-      const responseText = stub().returns(new Promise<any>((resolve) => {
-        resolve(response);
-      }));
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({
-          status: 200,
-          json: responseText,
-        });
-      }));
-      fetch = fetchMock;
+      const response = "{\"id\": \"test\", \"name\": \"test\"}";
+
+      fetchMock
+        .mock("/nypl/admin/manage_patrons", response);
+      let fetchArgs = fetchMock.calls();
 
       const data = await actions.patronLookup(formData, "nypl")(dispatch);
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.SUCCESS}`);
       expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.LOAD}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal("/nypl/admin/manage_patrons");
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
-      expect(data.json).to.eql(responseText);
+      expect(dispatch.args[2][0].data).to.deep.equal(JSON.parse(response));
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal("/nypl/admin/manage_patrons");
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
 
@@ -773,18 +734,18 @@ describe("actions", () => {
     it("dispatches request and success", async () => {
       const formData = new (window as any).FormData();
       const dispatch = stub();
-      const fetchMock = stub().returns(new Promise<any>((resolve, reject) => {
-        resolve({ status: 200 });
-      }));
-      fetch = fetchMock;
+
+      fetchMock.mock("/nypl/admin/manage_patrons/reset_adobe_id", "server response");
+      let fetchArgs = fetchMock.calls();
+
       const data = await actions.resetAdobeId(formData, "nypl")(dispatch);
-      expect(dispatch.callCount).to.equal(2);
+      expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.REQUEST}`);
       expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.SUCCESS}`);
-      expect(fetchMock.callCount).to.equal(1);
-      expect(fetchMock.args[0][0]).to.equal("/nypl/admin/manage_patrons/reset_adobe_id");
-      expect(fetchMock.args[0][1].method).to.equal("POST");
-      expect(fetchMock.args[0][1].body).to.equal(formData);
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal("/nypl/admin/manage_patrons/reset_adobe_id");
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
       expect(data.status).to.equal(200);
     });
   });

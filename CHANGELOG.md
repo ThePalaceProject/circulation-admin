@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.0
+#### Updated
+- Updated `typings` to `@types`, updated Typescript, updated Webpack, and updated unit tests with fetch-mock. These updates are needed to import the updated `opds-web-client` package.
+
 ### v0.1.12
 #### Updated
 - Updated `reusable-components` to v1.3.1, bringing in the reusable Button component.

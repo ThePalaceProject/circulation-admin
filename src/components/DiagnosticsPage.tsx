@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import Header from "./Header";
 import { State } from "../reducers/index";
 import DiagnosticsTabContainer from "./DiagnosticsTabContainer";
@@ -14,12 +15,12 @@ export interface DiagnosticsPageState {
   tab: string;
 }
 
-export default class DiagnosticsPage extends React.Component<void, DiagnosticsPageState> {
+export default class DiagnosticsPage extends React.Component<{}, DiagnosticsPageState> {
   context: DiagnosticsPageContext;
 
   static contextTypes: React.ValidationMap<DiagnosticsPageContext> = {
-    editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired
+    editorStore: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired
   };
 
   constructor(props) {

@@ -34,7 +34,7 @@ export interface ComplaintsProps extends ComplaintsStateProps, ComplaintsDispatc
 
 /** Tab on the book details page that shows existing complaints and lets an admin resolve
     complaints or add new complaints. */
-export class Complaints extends React.Component<ComplaintsProps, void> {
+export class Complaints extends React.Component<ComplaintsProps, {}> {
   constructor(props) {
     super(props);
     this.resolve = this.resolve.bind(this);

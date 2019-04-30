@@ -40,7 +40,7 @@ export interface BookDetailsEditorOwnProps {
 export interface BookDetailsEditorProps extends React.Props<BookDetailsEditor>, BookDetailsEditorStateProps, BookDetailsEditorDispatchProps, BookDetailsEditorOwnProps {}
 
 /** Tab for editing a book's metadata on the book details page. */
-export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, void> {
+export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {}> {
   constructor(props) {
     super(props);
     this.editBook = this.editBook.bind(this);

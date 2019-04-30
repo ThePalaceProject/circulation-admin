@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
 import ServiceEditForm from "./ServiceEditForm";
 import { ServicesWithRegistrationsData } from "../interfaces";
 import LibraryRegistration from "./LibraryRegistration";
@@ -10,7 +11,7 @@ export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegi
   context: { registerLibrary: (library, registration_stage) => void };
 
   static contextTypes = {
-    registerLibrary: React.PropTypes.func
+    registerLibrary: PropTypes.func
   };
 
   render(): JSX.Element {

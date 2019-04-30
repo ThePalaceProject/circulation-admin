@@ -4,13 +4,14 @@
     "module": "commonjs",
     "target": "es5",
     "outDir": "lib",
+    "lib": ["es2017", "dom"],
     "rootDir": "src",
+    "types": ["mocha", "node"],
     "jsx": "react"
   },
   "exclude": [
     "lib",
     "node_modules",
-    "typings/main.d.ts",
-    "typings/main"
+    "tests"
   ]
 }

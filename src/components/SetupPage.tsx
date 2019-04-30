@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import IndividualAdmins from "./IndividualAdmins";
 import { State } from "../reducers/index";
 
@@ -14,12 +15,12 @@ export interface SetupPageContext {
     The page only allows setting up admin authentication. Once that's done, the
     page will automatically refresh so the admin can log in, and after that the
     full interface will show. */
-export default class SetupPage extends React.Component<void, void> {
+export default class SetupPage extends React.Component<{}, {}> {
   context: SetupPageContext;
 
   static contextTypes: React.ValidationMap<SetupPageContext> = {
-    editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired,
+    editorStore: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired,
   };
 
   render(): JSX.Element {

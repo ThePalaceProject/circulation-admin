@@ -30,7 +30,7 @@ export interface ManagePatronsFormOwnProps {
 export interface ManagePatronsFormProps extends ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps {}
 
 
-export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, void> {
+export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {}> {
   constructor(props) {
     super(props);
     this.submit = this.submit.bind(this);
