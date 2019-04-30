@@ -1,8 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import SaveButton from "./SaveButton";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel, Button } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
@@ -111,6 +110,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               <Panel
                 headerText={this.protocolDescription()}
                 style="instruction"
+                onEnter={this.submit}
                 content={this.protocolInstructions()}
               />
             </div>
@@ -133,10 +133,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             content={this.renderLibrariesForm()}
           />
         }
-        <SaveButton
+        <Button
           disabled={this.props.disabled}
-          submit={this.submit}
-          text="Submit"
+          callback={this.submit}
         />
       </form>
     );
@@ -260,12 +259,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                         />
                       )
                     }
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-default edit-library"
+                      className="edit-library"
                       disabled={this.props.disabled}
-                      onClick={() => this.editLibrary(library)}
-                      >Save</button>
+                      callback={() => this.editLibrary(library)}
+                      content="Save"
+                    />
                   </div>
                 }
               </div>
@@ -300,12 +300,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                         />
                     )
                   }
-                  <button
+                  <Button
                     type="button"
-                    className="btn btn-default add-library"
                     disabled={this.props.disabled}
-                    onClick={this.addLibrary}
-                    >Add Library</button>
+                    callback={this.addLibrary}
+                    content="Add Library"
+                  />
                 </div>
               }
             </div>

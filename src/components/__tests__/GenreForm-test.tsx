@@ -2,7 +2,8 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
+import { Button } from "library-simplified-reusable-components";
 
 import GenreForm from "../GenreForm";
 import genreData from "./genreData";
@@ -93,18 +94,24 @@ describe("GenreForm", () => {
     });
 
     it("shows add button only if genre is selected", () => {
-      let button = wrapper.find("button");
+      let button = wrapper.find(Button);
       expect(button.length).to.equal(0);
 
       wrapper.setState({ genre: "Women's Fiction" });
-      button = wrapper.find("button");
+      button = wrapper.find(Button);
       expect(button.length).to.equal(1);
     });
 
     it("adds genre", () => {
+      wrapper = mount(
+        <GenreForm
+          genreOptions={genreOptions}
+          bookGenres={bookGenres}
+          addGenre={addGenre}
+          />
+      );
       wrapper.setState({ genre: "Science Fiction", subgenre: "Space Opera" });
-      let button = wrapper.find("button");
-      button.simulate("click");
+      wrapper.find(Button).simulate("click");
 
       expect(addGenre.callCount).to.equal(1);
       expect(addGenre.args[0][0]).to.equal("Space Opera");

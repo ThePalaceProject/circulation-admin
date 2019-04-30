@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import PencilIcon from "./icons/PencilIcon";
+import { Button } from "library-simplified-reusable-components";
 
 export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
   text?: string;
@@ -10,7 +11,7 @@ export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
 
 export interface TextWithEditModeState {
   editMode: boolean;
-  text: string | null;
+  text: string;
 }
 
 /** Renders text with a link to switch to edit mode and show an editable input instead.
@@ -19,7 +20,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
   constructor(props) {
     super(props);
     this.state = {
-      text: this.props.text,
+      text: this.props.text || "",
       editMode: !this.props.text
     };
 
@@ -40,21 +41,21 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               optionalText={false}
               ref="text"
               />
-            <a
-              href="#"
-              onClick={this.updateText}
-              >Save {this.props.placeholder}</a>
+            <Button
+              className="inverted inline"
+              callback={this.updateText}
+              content={`Save ${this.props.placeholder}`}
+            />
           </h3>
         }
         { !this.state.editMode &&
           <h3>
             { this.state.text }
-            <a
-              href="#"
-              onClick={this.startEditMode}
-              >Edit {this.props.placeholder}
-                <PencilIcon />
-            </a>
+            <Button
+              callback={this.startEditMode}
+              className="inverted inline"
+              content={<span>Edit {this.props.placeholder} <PencilIcon /></span>}
+            />
           </h3>
         }
       </div>
@@ -62,7 +63,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.text && nextProps.text !== this.props.text) {
+    if (nextProps.text !== this.props.text) {
       this.setState({ text: nextProps.text, editMode: !nextProps.text });
     }
   }

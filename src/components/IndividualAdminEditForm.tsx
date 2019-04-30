@@ -1,10 +1,9 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import SaveButton from "./SaveButton";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel, Button } from "library-simplified-reusable-components";
 
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -67,18 +66,19 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           content={this.renderForm()}
           openByDefault={true}
           collapsible={!this.context.settingUp}
+          onEnter={this.submit}
         />
         { !this.context.settingUp &&
           <Panel
             headerText="Admin Roles"
             content={this.renderRoleForm()}
             openByDefault={true}
+            onEnter={this.submit}
           />
         }
-        <SaveButton
+        <Button
           disabled={this.props.disabled}
-          submit={this.submit}
-          text="Submit"
+          callback={this.submit}
         />
       </form>
     );

@@ -11,6 +11,7 @@ import {
 } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import { Button } from "library-simplified-reusable-components";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
@@ -91,10 +92,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
               value=""
               ref="addList"
               />
-            <button
-              className="btn btn-default"
-              onClick={this.addList}
-              >Add</button>
+            <Button callback={this.addList} content="Add" />
           </div>
         }
       </div>

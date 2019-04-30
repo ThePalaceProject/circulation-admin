@@ -5,7 +5,7 @@ import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
-import ButtonForm from "./ButtonForm";
+import { Button } from "library-simplified-reusable-components";
 import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
@@ -80,13 +80,12 @@ export class Complaints extends React.Component<ComplaintsProps, void> {
                   <td className="complaint-type">{this.readableComplaintType(type)}</td>
                   <td className="complaint-count">{this.props.complaints[type]}</td>
                   <td className="complaint-resolve">
-                    <ButtonForm
+                    <Button
                       className="btn-sm"
-                      type="submit"
-                      label="Resolve"
+                      content="Resolve"
                       disabled={this.props.isFetching}
-                      onClick={() => this.resolve(type)}
-                      />
+                      callback={() => this.resolve(type)}
+                    />
                   </td>
                 </tr>
               ) }

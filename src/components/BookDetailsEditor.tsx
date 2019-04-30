@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
-import ButtonForm from "./ButtonForm";
 import BookEditForm from "./BookEditForm";
 import ErrorMessage from "./ErrorMessage";
 import { BookData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import { Button } from "library-simplified-reusable-components";
 
 export interface BookDetailsEditorStateProps {
   bookData?: BookData;
@@ -91,25 +91,25 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, v
             { (this.props.bookData.hideLink || this.props.bookData.restoreLink || this.props.bookData.refreshLink) &&
               <div className="form-group form-inline">
                 { this.props.bookData.hideLink &&
-                  <ButtonForm
+                  <Button
                     disabled={this.props.isFetching}
-                    label="Hide"
-                    onClick={this.hide}
-                    />
+                    content="Hide"
+                    callback={this.hide}
+                  />
                 }
                 { this.props.bookData.restoreLink &&
-                  <ButtonForm
+                  <Button
                     disabled={this.props.isFetching}
-                    label="Restore"
-                    onClick={this.restore}
-                    />
+                    content="Restore"
+                    callback={this.restore}
+                  />
                 }
                 { this.props.bookData.refreshLink &&
-                  <ButtonForm
+                  <Button
                     disabled={this.props.isFetching}
-                    label="Refresh Metadata"
-                    onClick={this.refreshMetadata}
-                    />
+                    content="Refresh Metadata"
+                    callback={this.refreshMetadata}
+                  />
                 }
               </div>
             }

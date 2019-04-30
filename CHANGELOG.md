@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.1.12
+#### Updated
+- Updated `reusable-components` to v1.3.1, bringing in the reusable Button component.
+- Implemented the new Panel customization option from v1.3.2 of `reusable-components`.
+
 ### v0.1.11
 #### Fixed
 - `package-lock.json` was not insynced with the latest build and caused installing and running test issues.

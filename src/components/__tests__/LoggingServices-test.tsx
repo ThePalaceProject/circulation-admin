@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { LoggingServices } from "../LoggingServices";
 
@@ -77,7 +77,7 @@ describe("LoggingServices", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
-    wrapper = shallow(
+    wrapper = mount(
       <LoggingServices
         data={data}
         fetchData={fetchData}
@@ -91,8 +91,8 @@ describe("LoggingServices", () => {
   it("shows logging service list", () => {
     let loggingService = wrapper.find("li");
     expect(loggingService.length).to.equal(1);
-    expect(loggingService.at(0).text()).to.contain("Edit<PencilIcon />logglyDelete<TrashIcon />");
-    let editLink = loggingService.at(0).find("a");
+    expect(loggingService.at(0).text()).to.contain("EditPencil IconlogglyDeleteTrash Icon");
+    let editLink = loggingService.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/logging/edit/1");
   });
 });

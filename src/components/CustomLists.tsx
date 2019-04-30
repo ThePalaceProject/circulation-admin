@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
-import { Link } from "react-router";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -21,6 +20,8 @@ import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
+import { Button } from "library-simplified-reusable-components";
+import CustomListsSidebar from "./CustomListsSidebar";
 
 export interface CustomListsStateProps {
   lists: CustomListData[];
@@ -103,116 +104,51 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
         { this.props.isFetching &&
           <LoadingIndicator />
         }
-
         <div className="custom-lists">
-          <div className="custom-lists-sidebar">
-            <h2>List Manager</h2>
-            <Link
-              className="btn btn-default create-button"
-              to={"/admin/web/lists/" + this.props.library + "/create"}
-              >Create New List</Link>
-            { this.props.lists && this.props.lists.length > 0 &&
-              <div>
-                <fieldset>
-                  <legend className="visuallyHidden">Select list sort type</legend>
-                  <EditableInput
-                    type="radio"
-                    label="Sort A-Z"
-                    name="sort"
-                    onChange={this.changeSort}
-                    checked={this.state.sort === "asc"}
-                    disabled={false}
-                    />
-                  <EditableInput
-                    type="radio"
-                    label="Sort Z-A"
-                    name="sort"
-                    onChange={this.changeSort}
-                    checked={this.state.sort === "desc"}
-                    disabled={false}
-                    />
-                </fieldset>
-                <ul>
-                  { this.sortedLists().map(list => {
-                      const active = (String(list.id) === this.props.identifier);
-                      return (
-                        <li key={list.id} className={active ? "active" : "" }>
-                          <div>
-                            <div>{ list.name }</div>
-                            <div>ID-{ list.id }</div>
-                          </div>
-                          <div>
-                            <div>Books in list: { list.entry_count }</div>
-                            <div>
-                              { active &&
-                                <button
-                                  className="btn btn-default disabled"
-                                  disabled={true}
-                                  >Editing</button>
-                              }
-                              { !active &&
-                                <Link
-                                  className="btn btn-default"
-                                  to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
-                                  >Edit List
-                                    <PencilIcon />
-                                </Link>
-                              }
-                              { this.context.admin.isLibraryManager(this.props.library) &&
-                                <button
-                                  className="btn btn-default"
-                                  onClick={() => this.deleteCustomList(list)}
-                                  >Delete List
-                                    <TrashIcon />
-                                </button>
-                              }
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })
-                  }
-                </ul>
-              </div>
-            }
-          </div>
-
-          { this.props.editOrCreate === "create" &&
-            <CustomListEditor
-              library={this.props.library}
-              collections={this.collectionsForLibrary()}
-              editCustomList={this.editCustomList}
-              search={this.props.search}
-              loadMoreSearchResults={this.props.loadMoreSearchResults}
-              loadMoreEntries={this.props.loadMoreEntries}
-              searchResults={this.props.searchResults}
-              responseBody={this.props.responseBody}
-              isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-              isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
-              entryPoints={enabledEntryPoints}
-            />
-          }
-
-          { this.props.editOrCreate === "edit" &&
-            <CustomListEditor
-              library={this.props.library}
-              list={this.props.listDetails}
-              listId={this.props.identifier}
-              listCollections={listCollections}
-              entryCount={entryCount}
-              collections={this.collectionsForLibrary()}
-              editCustomList={this.editCustomList}
-              search={this.props.search}
-              loadMoreSearchResults={this.props.loadMoreSearchResults}
-              loadMoreEntries={this.props.loadMoreEntries}
-              searchResults={this.props.searchResults}
-              isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-              isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
-              entryPoints={enabledEntryPoints}
-            />
-          }
+          { this.renderSidebar() }
+          { this.props.editOrCreate && this.renderEditor(entryCount, listCollections) }
         </div>
       </div>
+    );
+  }
+
+  renderSidebar(): JSX.Element {
+    let sidebar = (
+      <CustomListsSidebar
+        lists={this.sortedLists()}
+        library={this.props.library}
+        identifier={this.props.identifier}
+        isLibraryManager={this.context.admin.isLibraryManager(this.props.library)}
+        deleteCustomList={this.deleteCustomList}
+        changeSort={this.changeSort}
+        sortOrder={this.state.sort}
+      />
+    );
+    return sidebar;
+  }
+
+  renderEditor(entryCount, listCollections): JSX.Element {
+    let editorProps = {
+      collections: this.collectionsForLibrary(),
+      editCustomList: this.editCustomList,
+      entryPoints: this.getEnabledEntryPoints(this.props.libraries),
+      isFetchingMoreCustomListEntries: this.props.isFetchingMoreCustomListEntries,
+      isFetchingMoreSearchResults: this.props.isFetchingMoreSearchResults,
+      library: this.props.library,
+      loadMoreEntries: this.props.loadMoreEntries,
+      loadMoreSearchResults: this.props.loadMoreSearchResults,
+      search: this.props.search,
+      searchResults: this.props.searchResults
+    };
+    let extraProps = this.props.editOrCreate === "create" ?
+      { responseBody: this.props.responseBody } :
+      { entryCount: entryCount,
+        list: this.props.listDetails,
+        listCollections: listCollections,
+        listId: this.props.identifier
+      };
+    return(
+      <CustomListEditor {...{...editorProps, ...extraProps}} />
     );
   }
 

@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import { Button } from "library-simplified-reusable-components";
 import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
@@ -33,12 +34,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     return (
       <form ref="form" onSubmit={this.save.bind(this)} className="edit-form">
         {this.renderForm()}
-        <button
-          className="btn btn-default"
-          disabled={this.props.disabled}
-          type="submit">
-          Submit
-        </button>
+        <Button disabled={this.props.disabled} />
       </form>
     );
   }
@@ -118,12 +114,13 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
               ref="addContributorName"
               optionalText={false}
               />
-            <button
+            <Button
               type="button"
-              className="btn btn-default add-contributor"
+              className="add-contributor"
               disabled={this.props.disabled}
-              onClick={this.addContributor}
-              >Add</button>
+              callback={this.addContributor}
+              content="Add"
+            />
           </span>
         </div>
         <div className="form-group">
@@ -254,7 +251,6 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
 
   save(event) {
     event.preventDefault();
-
     let data = new (window as any).FormData(this.refs["form"] as any);
     this.props.editBook(this.props.editLink.href, data).then(response => {
       this.props.refresh();

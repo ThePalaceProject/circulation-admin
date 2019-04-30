@@ -12,7 +12,7 @@ import LaneEditor from "./LaneEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
-import SaveButton from "./SaveButton";
+import { Button } from "library-simplified-reusable-components";
 import AddIcon from "./icons/AddIcon";
 import GrabIcon from "./icons/GrabIcon";
 import PencilIcon from "./icons/PencilIcon";
@@ -117,18 +117,16 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
             <h2>Lane Manager</h2>
             <div>
               <Link
-                className={"create-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                className={"btn create-lane " + (this.state.orderChanged ? "disabled" : "")}
                 to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/create")}
-                >
-                  Create Top-Level Lane
-                  <AddIcon />
+              >
+                <span>Create Top-Level Lane <AddIcon /></span>
               </Link>
               <Link
-                className={"reset-lanes btn" + (this.state.orderChanged ? " disabled" : "")}
+                className={"btn reset-lanes inverted " + (this.state.orderChanged ? "disabled" : "")}
                 to={this.state.orderChanged ? null : ("/admin/web/lanes/" + this.props.library + "/reset")}
-                >
-                  Reset all lanes
-                  <ResetIcon />
+              >
+                <span>Reset all lanes<ResetIcon /></span>
               </Link>
             </div>
             <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
@@ -139,19 +137,16 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           { this.state.orderChanged &&
             <div className="order-change-info">
               <h2>Change Lane Order</h2>
-              <SaveButton
-                submit={this.saveOrder}
+              <Button
+                callback={this.saveOrder}
                 disabled={this.props.isFetching}
-                text="Save Order Changes"
-                >
-              </SaveButton>
-              <a
-                href="#"
-                className="cancel-order-changes"
-                onClick={this.resetOrder}
-                >Cancel
-                  <XCloseIcon />
-              </a>
+                content="Save Order Changes"
+              />
+              <Button
+                className="cancel-order-changes inverted"
+                callback={this.resetOrder}
+                content={<span>Cancel <XCloseIcon /></span>}
+              />
               <hr />
               <p>Save or cancel your changes to the lane order before making additional changes.</p>
             </div>
@@ -189,10 +184,11 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
               <p>This cannot be undone.</p>
               <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
               <EditableInput type="text" ref="reset" />
-              <button
-                className="btn btn-default reset-button"
-                onClick={this.resetLanes}
-                >Reset <ResetIcon /></button>
+              <Button
+                className="reset-button"
+                callback={this.resetLanes}
+                content={<span>Reset <ResetIcon/></span>}
+              />
             </div>
           }
         </div>
@@ -280,19 +276,17 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
             <div className="lane-buttons">
               { lane.custom_list_ids && lane.custom_list_ids.length > 0 &&
                 <Link
-                  className={"edit-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                  className={"btn edit-lane " + (this.state.orderChanged ? "disabled" : "")}
                   to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/edit/" + lane.id }
-                  >
-                  Edit Lane
-                  <PencilIcon />
+                >
+                  <span>Edit Lane <PencilIcon /></span>
                 </Link>
               }
               <Link
-                className={"create-lane btn btn-default" + (this.state.orderChanged ? " disabled" : "")}
+                className={"btn create-lane " + (this.state.orderChanged ? "disabled" : "")}
                 to={this.state.orderChanged ? null : "/admin/web/lanes/" + this.props.library + "/create/" + lane.id }
-                >
-                  Create Sublane
-                  <AddIcon />
+              >
+                <span>Create Sublane <AddIcon /></span>
               </Link>
             </div>
           }

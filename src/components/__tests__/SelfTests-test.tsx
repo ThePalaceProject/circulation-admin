@@ -212,7 +212,7 @@ describe("SelfTests", () => {
     });
 
     it("should run new self tests", async () => {
-      const runSelfTestsBtn = wrapper.find(".runSelfTests");
+      const runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests");
 
       expect(runSelfTests.callCount).to.equal(0);
 
@@ -237,7 +237,7 @@ describe("SelfTests", () => {
           getSelfTests={getSelfTests}
         />
       );
-      const runSelfTestsBtn = wrapper.find(".runSelfTests");
+      const runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests");
       let alert = wrapper.find(".alert");
 
       expect(runSelfTests.callCount).to.equal(0);

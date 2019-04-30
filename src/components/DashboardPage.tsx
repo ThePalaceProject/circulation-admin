@@ -24,7 +24,7 @@ export default class DashboardPage extends React.Component<DashboardPageProps, v
     editorStore: React.PropTypes.object.isRequired
   };
 
-  static childContextTypes: React.ValidationMap<void> = {
+  static childContextTypes: React.ValidationMap<{}> = {
     library: React.PropTypes.func
   };
 

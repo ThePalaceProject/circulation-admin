@@ -4,9 +4,8 @@ import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
-import XCloseIcon from "./icons/XCloseIcon";
 import SearchIcon from "./icons/SearchIcon";
-import { Panel } from "library-simplified-reusable-components";
+import { Button, Panel } from "library-simplified-reusable-components";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
@@ -61,8 +60,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
-          <div>
-            <fieldset>
+          <div className="edit-custom-list-title">
+            <fieldset className="save-or-edit">
               <legend className="visuallyHidden">List name</legend>
               <TextWithEditMode
                 text={listTitle}
@@ -75,22 +74,20 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               <h4>ID-{listId}</h4>
             }
           </div>
-          <span>
-            <button
-              className="btn btn-default save-list"
-              onClick={this.save}
+          <div className="save-or-cancel-list">
+            <Button
+              callback={this.save}
               disabled={!this.hasChanges()}
-              >Save this list</button>
+              content="Save this list"
+            />
             { this.hasChanges() &&
-              <a
-                href="#"
-                className="cancel-changes"
-                onClick={this.reset}
-                >Cancel changes
-                  <XCloseIcon />
-              </a>
+              <Button
+                className="inverted"
+                callback={this.reset}
+                content="Cancel Changes"
+              />
             }
-          </span>
+          </div>
         </div>
         <div className="custom-list-editor-body">
           { this.props.collections && this.props.collections.length > 0 &&
@@ -121,6 +118,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <Panel
               headerText="Search for titles"
               openByDefault={true}
+              onEnter={this.search}
               content={
                 <fieldset>
                   <legend className="visuallyHidden">Search for titles</legend>
@@ -139,11 +137,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                     ref="searchTerms"
                     type="text"
                     />&nbsp;
-                  <button
-                    className="btn btn-default"
-                    type="submit">Search
-                      <SearchIcon />
-                  </button>
+                  <Button
+                    content={<span>Search<SearchIcon /></span>}
+                    callback={this.search}
+                    className="inline"
+                  />
                 </fieldset>
               }
             />
@@ -169,13 +167,16 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.list && (nextProps.listId !== this.props.listId)) {
+    if (!nextProps.list) {
+      this.setState({ title: "", entries: [], collections: [] });
+    }
+    else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
       this.setState({
         title: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
         collections: (nextProps.list && nextProps.listCollections) || []
       });
-    } else if (nextProps.list && nextProps.list.books.length !== this.state.entries.length) {
+    } else if (nextProps.list && nextProps.list.books && nextProps.list.books.length !== this.state.entries.length) {
       let collections = this.state.collections;
       if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
         collections = nextProps.listCollections;
@@ -200,10 +201,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     if (!this.props.list) {
       titleChanged = !!this.state.title;
     }
-    let entriesChanged = false;
-    if (this.props.list && this.props.list.books.length !== this.state.entries.length) {
-      entriesChanged = true;
-    } else {
+    let entriesChanged =
+      this.props.list && this.props.list.books &&
+      (this.props.list.books.length !== this.state.entries.length);
+
+    if (!entriesChanged) {
       let propsIds = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
       let stateIds = this.state.entries.map(entry => entry.id).sort();
       for (let i = 0; i < propsIds.length; i++) {

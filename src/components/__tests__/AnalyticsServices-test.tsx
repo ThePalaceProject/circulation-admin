@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { AnalyticsServices } from "../AnalyticsServices";
 
@@ -37,7 +37,7 @@ describe("AnalyticsServices", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
-    wrapper = shallow(
+    wrapper = mount(
       <AnalyticsServices
         data={data}
         fetchData={fetchData}
@@ -52,7 +52,7 @@ describe("AnalyticsServices", () => {
     let service = wrapper.find("li");
     expect(service.length).to.equal(1);
     expect(service.at(0).text()).to.contain("test protocol label");
-    let editLink = service.at(0).find("a");
+    let editLink = service.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/analytics/edit/2");
   });
 });

@@ -7,10 +7,22 @@
   .custom-list-editor-header {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     flex: 0 0 auto;
+    border-bottom: 1px solid $medium-gray;
+
+    .edit-custom-list-title {
+      width: 100%;
+    }
 
     > div {
-      width: 50%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .save-or-cancel-list {
+      padding-top: 20px;
     }
 
     .custom-list-filters {
@@ -34,46 +46,11 @@
     h4 {
       color: lighten($pagetextcolor, 40%);
     }
-
-    a {
-      margin-left: 5px;
-      font-size: 0.7em;
-      color: $linkcolor;
-
-      svg {
-        margin-left: 5px;
-        fill: $linkcolor;
-      }
-
-      &.cancel-changes svg {
-        height: 1.5em;
-        width: 1.5em;
-        margin-bottom: -3px;
-      }
-
-      &:hover {
-        color: $linkhovercolor;
-        svg {
-          fill: $linkhovercolor;
-        }
-      }
-    }
   }
 
   .form-inline {
     input {
       width: 50%;
-    }
-
-    button {
-      svg {
-        margin-left: 10px;
-        fill: $invertedlinkcolor;
-      }
-
-      &:hover svg {
-        fill: $linkcolor;
-      }
     }
   }
 
@@ -129,15 +106,6 @@
     button {
       float: right;
 
-      svg {
-        margin-left: 5px;
-        fill: $invertedlinkcolor;
-      }
-
-      &:hover svg {
-        fill: $linkcolor;
-      }
-
       &.load-more-button {
         margin-bottom: 50px;
       }
@@ -184,6 +152,9 @@
 
           &.links {
             text-align: right;
+            .btn {
+              width: 100%;
+            }
           }
         }
 
@@ -203,16 +174,9 @@
         }
 
         a {
-          font-size: 0.7em;
-
           svg {
             margin-right: 0px;
             margin-left: 5px;
-            fill: $linkcolor;
-          }
-
-          &:hover svg {
-            fill: $linkhovercolor;
           }
         }
 

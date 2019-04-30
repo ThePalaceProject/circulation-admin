@@ -7,6 +7,7 @@ import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
 import ColorPicker from "../ColorPicker";
+import { Button } from "library-simplified-reusable-components";
 
 describe("ProtocolFormField", () => {
   let setting = {
@@ -63,7 +64,7 @@ describe("ProtocolFormField", () => {
     expect(input.prop("disabled")).to.equal(false);
     expect(input.prop("name")).to.equal("setting");
     expect(input.prop("value")).to.be.undefined;
-    let button = wrapper.find("button");
+    let button = wrapper.find(Button);
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).to.equal(false);
     expect(button.text()).to.contain("random");

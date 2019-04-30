@@ -6,6 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import SitewideSettingEditForm from "../SitewideSettingEditForm";
 import EditableInput from "../EditableInput";
+import { Button } from "library-simplified-reusable-components";
 
 describe("SitewideSettingEditForm", () => {
   let wrapper;
@@ -146,7 +147,7 @@ describe("SitewideSettingEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -160,7 +161,7 @@ describe("SitewideSettingEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: settingData });
 
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);

@@ -4,8 +4,8 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Complaints } from "../Complaints";
+import { Button } from "library-simplified-reusable-components";
 import ErrorMessage from "../ErrorMessage";
-import ButtonForm from "../ButtonForm";
 import ComplaintForm from "../ComplaintForm";
 
 describe("Complaints", () => {
@@ -64,11 +64,11 @@ describe("Complaints", () => {
     });
 
     it("shows resolve button for each complaint type", () => {
-      let buttons = wrapper.find(ButtonForm);
+      let buttons = wrapper.find(Button);
       expect(buttons.length).to.equal(Object.keys(complaintsData).length);
       buttons.forEach(button => {
         expect(button.props().disabled).not.to.be.ok;
-        expect(button.props().label).to.equal("Resolve");
+        expect(button.prop("content")).to.equal("Resolve");
       });
     });
 
@@ -148,7 +148,7 @@ describe("Complaints", () => {
       instance.resolve = stub();
 
       let resolveUrl = (wrapper.instance() as any).resolveComplaintsUrl();
-      let input = wrapper.find(ButtonForm);
+      let input = wrapper.find(Button);
       input.simulate("click");
 
       expect(instance.resolve.callCount).to.equal(1);
