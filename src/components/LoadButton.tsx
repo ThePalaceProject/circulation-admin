@@ -1,5 +1,6 @@
 import * as React from "react";
 import MoreDotsIcon from "./icons/MoreDotsIcon";
+import { Button } from "library-simplified-reusable-components";
 
 export interface LoadButtonProps {
   isFetching: boolean;
@@ -9,16 +10,12 @@ export interface LoadButtonProps {
 export default class LoadButton extends React.Component<LoadButtonProps, {}> {
   render(): JSX.Element {
     return (
-      <button
-        className="btn btn-default load-more-button"
+      <Button
+        className="load-more-button"
         disabled={this.props.isFetching}
-        onClick={this.props.loadMore}
-        >
-          { this.props.isFetching ?
-            <MoreDotsIcon /> :
-            "Load more"
-          }
-      </button>
+        callback={this.props.loadMore}
+        content={this.props.isFetching ? <MoreDotsIcon /> : "Load more"}
+      />
     );
   }
 }

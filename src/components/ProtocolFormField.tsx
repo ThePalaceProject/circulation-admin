@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
-import SaveButton from "./SaveButton";
+import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
 import { SettingData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
@@ -50,7 +50,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         }
         { setting.randomizable && !this.props.value &&
           <div className="text-right">
-            <SaveButton disabled={this.props.disabled} submit={this.randomize} text={"Set to random value"} type="button" />
+            <Button disabled={this.props.disabled} callback={this.randomize} content={"Set to random value"} type="button" />
           </div>
         }
       </div>

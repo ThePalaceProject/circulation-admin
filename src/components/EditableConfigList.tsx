@@ -3,6 +3,7 @@ import { Store } from "redux";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { Alert } from "react-bootstrap";
 import { State } from "../reducers/index";
+import { Button } from "library-simplified-reusable-components";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import PencilIcon from "./icons/PencilIcon";
@@ -178,15 +179,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
         <h4>{this.label(item)}</h4>
 
         {this.canDelete() &&
-          <button
-            className="btn btn-danger delete-item"
-            onClick={() => this.delete(item) }
-          >
-            <span>
-              Delete
-              <TrashIcon />
-            </span>
-          </button>
+          <Button
+            className="btn-danger delete-item"
+            callback={() => this.delete(item) }
+            content={<span>Delete<TrashIcon /></span>}
+          />
         }
         {
           AdditionalContent &&

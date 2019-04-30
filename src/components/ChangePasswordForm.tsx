@@ -8,6 +8,7 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import { Alert } from "react-bootstrap";
+import { Button } from "library-simplified-reusable-components";
 
 export interface ChangePasswordFormStateProps {
   fetchError?: FetchErrorData;
@@ -75,11 +76,10 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
               required={true}
               />
           </fieldset>
-          <button
-            type="submit"
-            className="btn btn-default"
+          <Button
+            callback={this.save}
             disabled={this.props.isFetching}
-            >Submit</button>
+          />
         </form>
       </div>
     );

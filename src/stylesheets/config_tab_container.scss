@@ -46,32 +46,24 @@ $dangercolor: #D9534F;
             margin-right: 20px;
             flex-grow: 1;
           }
-
-          .btn-default {
-            margin-right: 10px;
-          }
         }
       }
 
-      a.btn-default, button.btn-default, a.btn-danger, button.btn-danger {
+      a.btn-default, button.btn-default:not(.btn), a.btn-danger, button.btn-danger {
+        display: unset;
+        margin: 12px 12px 12px 0;
         color: $pagecolor;
         svg {
           height: 0.7em;
           width: 0.7em;
           margin-left: 5px;
           fill: $pagecolor;
-        }
-
-        &:hover, &:focus {
-          color: $pagetextcolor;
-          svg {
-            fill: $pagetextcolor;
-          }
+          float: unset;
+          vertical-align: unset;
         }
       }
 
       a.btn-danger, button.btn-danger {
-        border-radius: 0;
         &:hover {
           background-color: white;
           border-color: $dangercolor;

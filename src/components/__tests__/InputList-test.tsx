@@ -194,8 +194,7 @@ describe("InputList", () => {
     empty.simulate("change");
     addButton = wrapper.find("button.add-list-item");
     expect(wrapper.state()["newItem"]).to.equal("something new");
-
-    expect(addButton.prop("disabled")).to.be.false;
+    expect(addButton.prop("disabled")).not.to.be.true;
     addButton.simulate("click");
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(3);

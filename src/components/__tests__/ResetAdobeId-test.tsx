@@ -9,6 +9,7 @@ import buildStore from "../../store";
 import { ResetAdobeId } from "../ResetAdobeId";
 import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
+import { Button } from "library-simplified-reusable-components";
 
 let patrons = [
   {
@@ -124,7 +125,7 @@ describe("ResetAdobeId", () => {
 
     it("should enable the submit button when the checkbox is checked", () => {
       const input = wrapper.find(".reset-adobe-id input");
-      const button = wrapper.find(".reset-adobe-id button");
+      const button = wrapper.find(".reset-adobe-id").find(Button);
 
       expect(wrapper.state().checked).to.equal(false);
 
@@ -137,7 +138,7 @@ describe("ResetAdobeId", () => {
 
     it("should disable the submit button when the checkbox is unchecked", () => {
       const input = wrapper.find(".reset-adobe-id input");
-      const button = wrapper.find(".reset-adobe-id button");
+      const button = wrapper.find(".reset-adobe-id").find(Button);
       expect(button.props().disabled).to.equal(true);
 
       wrapper.setState({ checked: true });

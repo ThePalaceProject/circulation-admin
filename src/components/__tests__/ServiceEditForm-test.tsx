@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
-import SaveButton from "../SaveButton";
+import { Button } from "library-simplified-reusable-components";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
@@ -529,7 +529,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("has a save button", () => {
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       expect(saveButton.length).to.equal(1);
     });
 
@@ -682,7 +682,7 @@ describe("ServiceEditForm", () => {
       librarySelectSettingInput.get(0).value = "option4";
       librarySelectSettingInput.simulate("change");
 
-      let addButton = wrapper.find("button.add-library");
+      let addButton = wrapper.find("button").findWhere(el => el.text() === "Add Library");
       addButton.simulate("click");
 
       library = wrapper.find(WithRemoveButton);
@@ -789,7 +789,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -821,7 +821,7 @@ describe("ServiceEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: serviceData });
 
-      let saveButton = wrapper.find("SaveButton");
+      let saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);

@@ -2,13 +2,14 @@ import { expect } from "chai";
 import { stub, spy, useFakeTimers } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import { CirculationEvents } from "../CirculationEvents";
 import CirculationEventsDownloadForm from "../CirculationEventsDownloadForm";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import { Button } from "library-simplified-reusable-components";
 import { CirculationEventData } from "../../interfaces";
 
 describe("CirculationEvents", () => {
@@ -157,16 +158,26 @@ describe("CirculationEvents", () => {
         expect(fetchAndQueueSpy.callCount).to.equal(2);
       });
     });
-
-    it("shows download form when download button is clicked", () => {
-      let button = wrapper.find("button")
-        .filterWhere(button => button.text() === "Download CSV");
+    it("shows download form when download button is clicked", async () => {
+      wrapper = mount(
+        <CirculationEvents
+          events={[]}
+          fetchCirculationEvents={fetchCirculationEvents}
+          wait={0}
+        />,
+        { context }
+      );
+      let fakeTimer = useFakeTimers();
+      await wrapper.instance().fetchAndQueue();
+      let button = wrapper.find(Button);
       expect(button.length).to.equal(1);
+      expect(button.prop("content")).to.equal("Download CSV");
       expect(wrapper.state("showDownloadForm")).to.equal(false);
       button.simulate("click");
       expect(wrapper.state("showDownloadForm")).to.equal(true);
       let form = wrapper.find(CirculationEventsDownloadForm);
       expect(form.prop("show")).to.equal(true);
+      fakeTimer.restore();
     });
 
     it("hides download form", () => {

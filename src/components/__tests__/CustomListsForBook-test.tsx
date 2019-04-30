@@ -3,6 +3,7 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
+import { Button } from "library-simplified-reusable-components";
 import { CustomListsForBook } from "../CustomListsForBook";
 import ErrorMessage from "../ErrorMessage";
 import WithRemoveButton from "../WithRemoveButton";
@@ -79,9 +80,9 @@ describe("CustomListsForBook", () => {
       let availableLists = autocomplete.props().autocompleteValues;
       expect(availableLists).to.deep.equal(["list 1", "list 3"]);
 
-      let button = wrapper.find("button");
+      let button = wrapper.find(Button);
       expect(button.length).to.equal(1);
-      expect(button.text()).to.contain("Add");
+      expect(button.prop("content")).to.equal("Add");
     });
 
     it("disables while fetching", () => {

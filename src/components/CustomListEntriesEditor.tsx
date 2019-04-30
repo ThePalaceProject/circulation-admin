@@ -8,6 +8,7 @@ import GrabIcon from "./icons/GrabIcon";
 import AddIcon from "./icons/AddIcon";
 import XCloseIcon from "./icons/XCloseIcon";
 import MoreDotsIcon from "./icons/MoreDotsIcon";
+import { Button } from "library-simplified-reusable-components";
 import {
   AudioHeadphoneIcon,
   BookIcon,
@@ -115,12 +116,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
             <div className="droppable-header">
               <h4>Search Results</h4>
               { searchResults && (this.searchResultsNotInEntries().length > 0) &&
-                <button
-                  className="btn btn-default add-all-button"
-                  onClick={this.addAll}
-                  >Add all to list
-                    <ApplyIcon />
-                </button>
+                <Button
+                  className="add-all-button"
+                  callback={this.addAll}
+                  content={<span>Add all to list<ApplyIcon /></span>}
+                />
               }
             </div>
             <Droppable
@@ -151,14 +151,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="authors">{ book.authors.join(", ") }</div>
                             </div>
                             {this.getMediumSVG(this.getMedium(book))}
-                            {this.getCatalogLink(book)}
                             <div className="links">
-                              <a
-                                href="#"
-                                onClick={() => { this.add(book.id); }}
-                                >Add to list
-                                  <AddIcon />
-                              </a>
+                              {this.getCatalogLink(book)}
+                              <Button
+                                callback={() => { this.add(book.id); }}
+                                content={<span>Add to list<AddIcon /></span>}
+                              />
                             </div>
                           </div>
                           { provided.placeholder }
@@ -185,12 +183,11 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 <div>
                   <span>Remove all currently visible items from list:
                   </span>
-                  <button
-                    className="btn btn-default delete-all-button"
-                    onClick={this.deleteAll}
-                    >Delete
-                      <TrashIcon />
-                  </button>
+                  <Button
+                    className="btn-danger delete-all-button"
+                    callback={this.deleteAll}
+                    content={<span>Delete<TrashIcon /></span>}
+                  />
                 </div>
               }
             </div>
@@ -221,14 +218,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                                 <div className="authors">{ book.authors.join(", ") }</div>
                               </div>
                               {this.getMediumSVG(this.getMedium(book))}
-                              {this.getCatalogLink(book)}
                               <div className="links">
-                                <a
-                                  href="#"
-                                  onClick={() => { this.delete(book.id); }}
-                                  >Remove from list
-                                    <TrashIcon />
-                                </a>
+                                {this.getCatalogLink(book)}
+                                <Button
+                                  callback={() => { this.delete(book.id); }}
+                                  content={<span>Remove from list<TrashIcon /></span>}
+                                />
                               </div>
                             </div>
                             { provided.placeholder }
@@ -265,7 +260,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entries: nextProps.entries,
         deleted: deleted,
         added: added,
-        totalVisibleEntries: nextProps.entries.length,
+        totalVisibleEntries: nextProps.entries && nextProps.entries.length,
       });
     }
 
@@ -317,6 +312,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         bookUrl={book.url}
         title={book.title}
         target="_blank"
+        className="btn inverted"
       >
         View details
       </CatalogLink>
@@ -474,7 +470,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       entries: this.state.entries,
       deleted: [],
       added: [],
-      totalVisibleEntries: this.state.entries.length,
+      totalVisibleEntries: this.state.entries ? this.state.entries.length : 0,
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(this.state.entries);

@@ -8,6 +8,22 @@
     position: relative;
     overflow-y: hidden;
     padding-bottom: 10px;
+    .btn {
+      margin: .5em 0;
+      &:not(.inverted) {
+        color: white;
+      }
+      &.inline {
+        display: inline-block;
+        margin-left: 6px;
+      }
+      svg {
+        float: unset;
+        vertical-align: unset;
+        height: .9em;
+        margin-left: .5em;
+      }
+    }
   }
 
   .custom-lists {
@@ -24,14 +40,6 @@
     margin: 7px;
     overflow-y: scroll;
 
-    a.btn, a.btn-default {
-      color: $invertedlinkcolor;
-
-      &:hover {
-        color: $linkcolor;
-      }
-    }
-
     .form-group {
       display: inline-block;
       margin-top: 15px;
@@ -41,59 +49,35 @@
 
     ul {
       list-style-type: none;
-      padding-left: 0px;
+      padding: 0;
     }
 
     li {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       justify-content: space-between;
       font-size: 0.9em;
+      color: $pagetextcolor;
       border: 1px solid $pagecolorlight;
       border-bottom-color: $pagetextcolor;
-      color: $pagetextcolor;
-
       &.active {
-        background-color: $pagecolorlight;
+        background-color: darken($pagecolorlight, 5%);
+        border-color: $pagetextcolor;
       }
-
-      > div {
+      div {
         display: flex;
-        flex-direction: column;
         justify-content: space-between;
-        overflow: hidden;
+        width: 100%;
         padding: 5px;
 
         &:nth-child(1) {
-          width: 150px;
+          flex-direction: column;
           hyphens: auto;
         }
 
         &:nth-child(2) {
-          width: 120px;
-        }
-      }
-
-      a, button {
-        display: block;
-        width: 100%;
-        font-size: 0.9em;
-        margin: 5px 0px;
-        color: $invertedlinkcolor;
-
-        &:not(.disabled) {
-          cursor: pointer;
-        }
-
-        svg {
-          margin-left: 5px;
-          fill: $invertedlinkcolor;
-        }
-
-        &:hover {
-          color: $linkcolor;
-          svg {
-            fill: $linkcolor;
+          .btn {
+            width: 49%;
           }
         }
       }

@@ -9,8 +9,7 @@ import EditableInput from "./EditableInput";
 import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
-import { Panel } from "library-simplified-reusable-components";
-
+import { Panel, Button } from "library-simplified-reusable-components";
 
 export interface BookCoverEditorStateProps {
   bookAdminUrl?: string;
@@ -89,11 +88,13 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 headerText="Cover Metadata"
                 openByDefault={true}
                 content={this.renderCoverForm()}
+                onEnter={this.save}
               />
               { this.props.rightsStatuses &&
                 <Panel
                   headerText="Rights"
                   openByDefault={true}
+                  onEnter={this.save}
                   content={
                     <form ref="rights">
                       <fieldset>
@@ -130,12 +131,11 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                   }
                 />
               }
-              <button
-                className="btn btn-default"
-                type="submit"
-                onClick={this.save}
+              <Button
+                callback={this.save}
                 disabled={this.props.isFetching || !this.props.preview}
-                >Save this cover</button>
+                content="Save this cover"
+              />
             </div>
           </div>
         }

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { stub } from "sinon";
-
+import { Button } from "library-simplified-reusable-components";
 import * as React from "react";
 import { shallow } from "enzyme";
 
@@ -23,9 +23,9 @@ describe("CirculationEventsDownloadForm", () => {
   });
 
   it("shows download and close buttons", () => {
-    let buttons = wrapper.find("button");
+    let buttons = wrapper.find(Button);
     expect(buttons.length).to.equal(2);
-    expect(buttons.at(0).text()).to.equal("Download");
-    expect(buttons.at(1).text()).to.equal("Close");
+    expect(buttons.at(0).prop("content")).to.equal("Download");
+    expect(buttons.at(1).prop("content")).to.equal("Close");
   });
 });

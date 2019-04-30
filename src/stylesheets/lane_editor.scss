@@ -5,6 +5,11 @@
   margin-left: 20px;
   margin-right: 10px;
 
+  .btn {
+    display: inline-block;
+    white-space: normal;
+  }
+
   .lane-editor-header {
     display: flex;
     flex-direction: column;
@@ -14,7 +19,7 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      
+
       &.lane-details {
         flex-direction: column;
       }
@@ -22,16 +27,15 @@
 
     span {
       margin: 15px 0px;
-    }
-
-    h3 {
-      display: inline-block;
-      hyphens: auto;
-
-      .form-group {
-        display: inline-block;
+      svg {
+        height: 1em;
+        width: 1em;
+        float: unset;
+        vertical-align: unset;
       }
     }
+
+
 
     h4 {
       color: lighten($pagetextcolor, 40%);
@@ -43,47 +47,15 @@
     a {
       margin-left: 5px;
       font-size: 0.7em;
-      color: $linkcolor;
 
       svg {
         margin-left: 5px;
-        fill: $linkcolor;
       }
 
       &.cancel-changes svg {
         height: 1.5em;
         width: 1.5em;
         margin-bottom: -3px;
-      }
-
-      &:hover {
-        color: $linkhovercolor;
-        svg {
-          fill: $linkhovercolor;
-        }
-      }
-    }
-
-    .btn {
-      margin-left: 5px;
-      color: $invertedlinkcolor;
-
-      svg {
-        margin-left: 5px;
-        fill: $invertedlinkcolor;
-      }
-
-      &.cancel-changes svg {
-        height: 1.5em;
-        width: 1.5em;
-        margin-bottom: -3px;
-      }
-
-      &:hover {
-        color: $linkcolor;
-        svg {
-          fill: $linkcolor;
-        }
       }
     }
   }
@@ -111,26 +83,13 @@
       display: inline-block;
     }
 
-    button {
-      float: right;
-
-      svg {
-        margin-left: 5px;
-        fill: $invertedlinkcolor;
-      }
-
-      &:hover svg {
-        fill: $linkcolor;
-      }
-    }
-
     .droppable-header {
       flex: 0 0 auto;
       overflow: hidden;
     }
 
     .droppable {
-      border: 1px solid $pagecolorlight;
+      border: 1px solid $medium-gray;
       padding: 10px;
       flex: 1;
       overflow-y: scroll;
@@ -144,12 +103,13 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        border: 1px solid $pagecolorlight;
+        align-items: center;
+        border: 1px solid $medium-gray;
         padding: 10px;
         cursor: grab;
         cursor: -webkit-grab;
 
-        &.dragging {
+        &:hover, &.dragging {
           border: 1px solid $pagetextcolor;
           background-color: $pagecolorlight;
         }
@@ -159,7 +119,7 @@
 
           &.links {
             text-align: right;
-          }          
+          }
         }
 
         svg {
@@ -168,16 +128,13 @@
         }
 
         a {
-          font-size: 0.7em;
+          font-size: .8em;
 
           svg {
-            margin-right: 0px;
-            margin-left: 5px;
-            fill: $linkcolor;
-          }
-
-          &:hover svg {
-            fill: $linkhovercolor;
+            margin: 0 0 0 5px;
+            float: unset;
+            vertical-align: unset;
+            height: .8em;
           }
         }
 
@@ -188,6 +145,26 @@
         .list-count {
           font-size: 0.7em;
         }
+      }
+    }
+  }
+}
+
+.save-or-edit {
+  width: 60%;
+  > div {
+    width: 100%;
+    h3 {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      hyphens: auto;
+      .form-group {
+        display: inline-block;
+        margin: 0;
+      }
+      .btn {
+        margin-left: 40px;
       }
     }
   }

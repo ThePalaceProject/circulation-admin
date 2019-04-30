@@ -3,7 +3,7 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-
+import { Button } from "library-simplified-reusable-components";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
 import CustomListEntriesEditor from "../CustomListEntriesEditor";
@@ -515,7 +515,7 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let addLink = wrapper.find(".custom-list-search-results .links a");
+    let addLink = wrapper.find(".custom-list-search-results .links").find(Button);
     addLink.at(0).simulate("click");
 
     // the item has been added to entries at the beginning of the list
@@ -558,7 +558,7 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let deleteLink = wrapper.find(".custom-list-entries .links a");
+    let deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
     deleteLink.at(0).simulate("click");
 
     // the item has been removed from entries
@@ -796,7 +796,7 @@ describe("CustomListEntriesEditor", () => {
     );
     let button = wrapper.find(".custom-list-search-results .load-more-button");
     expect(button.length).to.equal(1);
-    expect(button.prop("disabled")).to.equal(false);
+    expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setProps({ isFetchingMoreSearchResults: true });
     button = wrapper.find(".custom-list-search-results .load-more-button");
@@ -819,7 +819,7 @@ describe("CustomListEntriesEditor", () => {
     );
     let button = wrapper.find(".custom-list-entries .load-more-button");
     expect(button.length).to.equal(1);
-    expect(button.prop("disabled")).to.equal(false);
+    expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setProps({ isFetchingMoreCustomListEntries: true });
     button = wrapper.find(".custom-list-entries .load-more-button");
@@ -888,7 +888,7 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let deleteLink = wrapper.find(".custom-list-entries .links a");
+    let deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
     deleteLink.at(0).simulate("click");
 
     expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
@@ -897,7 +897,7 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("No books in this list");
 
-    let addLink = wrapper.find(".custom-list-search-results .links a");
+    let addLink = wrapper.find(".custom-list-search-results .links").find(Button);
     addLink.at(0).simulate("click");
 
     expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
@@ -942,7 +942,7 @@ describe("CustomListEntriesEditor", () => {
     expect(searchEntries.length).to.equal(0);
     expect(display.text()).to.equal("Displaying 1 - 30 of 30 Books");
 
-    deleteLink = wrapper.find(".custom-list-entries .links a");
+    deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
     deleteLink.at(0).simulate("click");
     deleteLink.at(1).simulate("click");
     deleteLink.at(2).simulate("click");
@@ -964,7 +964,7 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("Displaying 1 - 20 of 20 Books");
 
-    deleteLink = wrapper.find(".custom-list-entries .links a");
+    deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
     deleteLink.at(0).simulate("click");
 
     expect(display.text()).to.equal("Displaying 1 - 19 of 19 Books");

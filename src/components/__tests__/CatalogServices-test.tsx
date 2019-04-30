@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { CatalogServices } from "../CatalogServices";
 
@@ -41,7 +41,7 @@ describe("CatalogServices", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
-    wrapper = shallow(
+    wrapper = mount(
       <CatalogServices
         data={data}
         fetchData={fetchData}
@@ -56,7 +56,7 @@ describe("CatalogServices", () => {
     let catalogService = wrapper.find("li");
     expect(catalogService.length).to.equal(1);
     expect(catalogService.at(0).text()).to.contain("nypl catalog: test protocol label");
-    let editLink = catalogService.at(0).find("a");
+    let editLink = catalogService.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/catalogServices/edit/2");
   });
 });

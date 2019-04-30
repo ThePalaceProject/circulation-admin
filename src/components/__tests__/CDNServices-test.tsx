@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { CDNServices } from "../CDNServices";
 
@@ -35,7 +35,7 @@ describe("CDNServices", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
-    wrapper = shallow(
+    wrapper = mount(
       <CDNServices
         data={data}
         fetchData={fetchData}
@@ -50,7 +50,7 @@ describe("CDNServices", () => {
     let service = wrapper.find("li");
     expect(service.length).to.equal(1);
     expect(service.at(0).text()).to.contain("test url");
-    let editLink = service.at(0).find("a");
+    let editLink = service.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/cdn/edit/2");
   });
 });

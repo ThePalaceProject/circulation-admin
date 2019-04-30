@@ -1,5 +1,6 @@
 import * as React from "react";
 import { LaneData, CustomListData } from "../interfaces";
+import { Button } from "library-simplified-reusable-components";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
 import LaneCustomListsEditor from "./LaneCustomListsEditor";
@@ -50,7 +51,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
       <div className="lane-editor">
         <div className="lane-editor-header">
           <div>
-            <div>
+            <div className="save-or-edit">
               <TextWithEditMode
                 text={this.props.lane && this.props.lane.display_name}
                 placeholder="name"
@@ -63,35 +64,32 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
             </div>
             <span>
               { this.props.lane && this.props.deleteLane &&
-                <button
-                  className="btn btn-default delete-lane"
-                  onClick={this.delete}
-                  >
-                    Delete lane
-                    <TrashIcon />
-                </button>
+                <Button
+                  className="btn-danger delete-lane"
+                  callback={this.delete}
+                  content={<span>Delete lane <TrashIcon /></span>}
+                />
               }
               { this.props.lane && this.props.lane.visible && this.props.hideLane &&
-                <button
-                  className="btn btn-default hide-lane"
-                  onClick={this.hide}
-                  >
-                    Hide lane
-                </button>
+                <Button
+                  className="hide-lane"
+                  callback={this.hide}
+                  content="Hide lane"
+                />
               }
               { this.props.lane && !this.props.lane.visible && this.props.showLane &&
                 (!this.props.parent || (this.props.parent && this.props.parent.visible)) &&
-                <button
-                  className="btn btn-default show-lane"
-                  onClick={this.show}
-                  >
-                    Show lane
-                </button>
+                <Button
+                  className="show-lane"
+                  callback={this.show}
+                  content="Show lane"
+                />
               }
-              <button
-                className="btn btn-default save-lane"
-                onClick={this.save}
-                >Save lane</button>
+              <Button
+                className="save-lane"
+                callback={this.save}
+                content="Save lane"
+              />
               { this.hasChanges() &&
                 <a
                   href="#"

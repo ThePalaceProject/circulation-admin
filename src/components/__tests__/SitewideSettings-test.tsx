@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { SitewideSettings } from "../SitewideSettings";
 
@@ -27,7 +27,7 @@ describe("SitewideSettings", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
-    wrapper = shallow(
+    wrapper = mount(
       <SitewideSettings
         data={data}
         fetchData={fetchData}
@@ -42,7 +42,7 @@ describe("SitewideSettings", () => {
     let sitewideSetting = wrapper.find("li");
     expect(sitewideSetting.length).to.equal(1);
     expect(sitewideSetting.at(0).text()).to.contain("test label");
-    let editLink = sitewideSetting.at(0).find("a");
+    let editLink = sitewideSetting.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/sitewideSettings/edit/test key");
   });
 });

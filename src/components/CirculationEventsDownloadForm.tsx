@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Modal } from "react-bootstrap";
+import { Button } from "library-simplified-reusable-components";
 import * as qs from "qs";
 
 export interface CirculationEventsDownloadFormProps extends React.Props<CirculationEventsDownloadForm> {
@@ -35,12 +36,10 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
               ref="date"
               defaultValue={today} />
           </div>
-          <button className="btn btn-primary" onClick={this.download}>
-            Download
-          </button>
+          <Button callback={this.download} content="Download" />
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-default" onClick={this.props.hide}>Close</button>
+          <Button className="inverted" callback={this.props.hide} content="Close" />
         </Modal.Footer>
       </Modal>
     );

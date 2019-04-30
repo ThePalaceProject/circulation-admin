@@ -8,6 +8,8 @@ import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../Ed
 import ErrorMessage from "../ErrorMessage";
 import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
+import { Button } from "library-simplified-reusable-components";
+import { Link } from "react-router";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
 describe("EditableConfigList", () => {
@@ -203,8 +205,8 @@ describe("EditableConfigList", () => {
     let things = wrapper.find("li");
     expect(things.length).to.equal(1);
     expect(things.at(0).text()).to.contain("test label");
-    let editLink = things.at(0).find("a");
-    expect(editLink.props().href).to.equal("/admin/things/edit/5");
+    let editLink = things.at(0).find(".edit-item").at(0);
+    expect(editLink.prop("href")).to.equal("/admin/things/edit/5");
   });
 
   it("updates thing list", () => {
@@ -215,13 +217,12 @@ describe("EditableConfigList", () => {
     let things = wrapper.find("li");
     expect(things.length).to.equal(2);
     expect(things.at(1).text()).to.contain("test another thing");
-    let editLink = things.at(1).find("a");
+    let editLink = things.at(1).find(".edit-item").at(0);
     expect(editLink.props().href).to.equal("/admin/things/edit/6");
   });
 
   it("shows create link", () => {
-    let createLink = wrapper.find(".create-item");
-    expect(createLink.length).to.equal(1);
+    let createLink = wrapper.find(".create-item").at(0);
     expect(createLink.text()).to.equal("Create new thing");
     expect(createLink.props().href).to.equal("/admin/things/create");
   });
@@ -236,7 +237,7 @@ describe("EditableConfigList", () => {
         deleteItem={deleteItem}
         csrfToken="token"
         isFetching={false}
-        />
+      />
     );
     let createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(0);
@@ -250,12 +251,12 @@ describe("EditableConfigList", () => {
         editItem={editItem}
         csrfToken="token"
         isFetching={false}
-        />
+      />
     );
-    let createLink = wrapper.find(".create-item");
+    let createLink = wrapper.find(".create-item").findWhere(el => el.text().includes("Create new"));
     expect(createLink.length).to.equal(0);
 
-    wrapper = shallow(
+    wrapper = mount(
       <OneThingEditableConfigList
         data={{ things: [] }}
         fetchData={fetchData}
@@ -266,6 +267,7 @@ describe("EditableConfigList", () => {
     );
     createLink = wrapper.find(".create-item");
     expect(createLink.length).to.equal(1);
+    expect(createLink.text()).to.equal("Create new thing");
     expect(createLink.prop("href")).to.equal("/admin/things/create");
   });
 

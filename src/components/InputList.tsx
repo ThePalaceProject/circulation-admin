@@ -4,6 +4,7 @@ import LanguageField from "./LanguageField";
 import { SettingData } from "../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
+import { Button } from "library-simplified-reusable-components";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
@@ -91,12 +92,13 @@ export default class InputList extends React.Component<InputListProps, InputList
               })
             }
           </span>
-          <button
+          <Button
             type="button"
-            className="btn btn-default add-list-item"
+            className="add-list-item"
             disabled={this.props.disabled || !this.state.newItem.length}
-            onClick={this.addListItem}
-            >Add</button>
+            callback={this.addListItem}
+            content="Add"
+          />
         </div>
       </div>
     );
