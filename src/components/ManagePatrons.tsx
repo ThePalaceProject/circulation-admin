@@ -27,7 +27,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
     csrfToken: PropTypes.string.isRequired,
   };
 
-  static childContextTypes: React.ValidationMap<any> = {
+  static childContextTypes: React.ValidationMap<{library: () => string}> = {
     library: PropTypes.func
   };
 
