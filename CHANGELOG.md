@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.1
+#### Updated
+- Improved the performance of the custom lists tab by only fetching the full list of custom lists if they have not already been fetched.
+
 ### v0.2.0
 #### Updated
 - Updated `typings` to `@types`, updated Typescript, updated Webpack, and updated unit tests with fetch-mock. These updates are needed to import the updated `opds-web-client` package.

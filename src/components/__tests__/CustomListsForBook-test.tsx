@@ -97,9 +97,27 @@ describe("CustomListsForBook", () => {
   describe("behavior", () => {
     it("fetches lists on mount", () => {
       expect(refreshCatalog.callCount).to.equal(0);
-      expect(fetchAllCustomLists.callCount).to.equal(1);
       expect(fetchCustomListsForBook.callCount).to.equal(1);
       expect(fetchCustomListsForBook.args[0][0]).to.equal("admin/works/book url/lists");
+
+      // It only fetches all custom lists if they have not already been fetched.
+      expect(fetchAllCustomLists.callCount).to.equal(0);
+
+      // Remount without a value for allCustomLists, and it fetches them.
+      wrapper = mount(
+        <CustomListsForBook
+          csrfToken="token"
+          book={bookData}
+          bookUrl="works/book url"
+          library="library"
+          customListsForBook={customListsForBook}
+          fetchAllCustomLists={fetchAllCustomLists}
+          fetchCustomListsForBook={fetchCustomListsForBook}
+          editCustomListsForBook={editCustomListsForBook}
+          refreshCatalog={refreshCatalog}
+          />
+      );
+      expect(fetchAllCustomLists.callCount).to.equal(1);
     });
 
     it("adds a list", () => {
