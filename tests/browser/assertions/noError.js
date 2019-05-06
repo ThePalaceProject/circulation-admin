@@ -8,11 +8,12 @@
  * ```
  *
  * @method noError
- * @param {string} [message] Optional log message to display in the output. If missing, one is displayed by default.
- * @api assertions
+ * @param {string} [message] Optional log message to display in the output.
+ *  If missing, one is displayed by default.
+ * @api assertion
  */
 
- var util = require('util');
+ const util = require('util');
 
  exports.assertion = function(msg) {
    this.message = msg || util.format('Testing if no error is present.');
@@ -23,7 +24,7 @@
    };
 
    this.value = function(result) {
-     var value = null;
+     let value = null;
      if (result.value.length !== 0) {
        value = 'present';
      }
