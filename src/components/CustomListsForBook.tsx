@@ -145,7 +145,9 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
   componentWillMount() {
     if (this.props.bookUrl) {
       this.props.fetchCustomListsForBook(this.listsUrl());
-      this.props.fetchAllCustomLists();
+      if (!this.props.allCustomLists) {
+        this.props.fetchAllCustomLists();
+      }
     }
   }
 
