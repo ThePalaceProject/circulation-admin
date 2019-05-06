@@ -3,6 +3,8 @@
 ### v0.2.1
 #### Updated
 - Improved the performance of the custom lists tab by only fetching the full list of custom lists if they have not already been fetched.
+#### Fixed
+- Reintroduced Nightwatch and updated tests.
 
 ### v0.2.0
 #### Updated
