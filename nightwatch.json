@@ -33,8 +33,6 @@
         "assertions/*.js",
         "commands/*.js",
         "pages/*.js",
-        "signInFailure.js",
-        "navigate.js",
         "globals.js"
       ],
       "end_session_on_fail": false,

@@ -35,3 +35,4 @@
      return this.api.elements(this.client.locateStrategy, ".error", callback);
    };
  };
+ 

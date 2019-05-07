@@ -58,9 +58,7 @@ We use Travis CI for continuous integration. Any pull requests submitted must ha
 ### Nightwatch
 There are end-to-end tests that run on Nightwatch. This selenium-based test runner allows us to include integration tests for logging into the admin and clicking through different pages.
 
-To set up credentials for the tests to use, create a copy of `/tests/browser/globals.js.sample` as `/tests/browser/globals.js` and update the variables.
-
-To run them, run `npm run test-browser` which will perform tests in headless versions of Chrome and Firefox. To run them individually, run `npm run test-chrome` and `npm run test-firefox` to run tests in Chrome and Firefox, respectively.
+To set up credentials and run the tests, check out the [README](/tests/README.md) in `/tests/.
 
 ## License
 

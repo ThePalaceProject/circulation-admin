@@ -7,7 +7,7 @@ module.exports = {
   /**
    * Before any tests run, log in with the correct credentials.
    */
-  before: function(browser, done) {
+  before: (browser, done) => {
     const { username, password } = browser.globals;
     catalogPage = browser.page.catalog();
     bookPage = browser.page.book();
@@ -16,7 +16,7 @@ module.exports = {
     browser
       .resizeWindow(1200, 900)
       .signIn(username, password)
-      .perform(function() {
+      .perform(() => {
         done();
       });
   },
@@ -90,10 +90,12 @@ module.exports = {
       genreInputSelector,
       coverInputSelector,
       complaintInputSelector,
+      listInputSelector,
       editTabSelector,
       classificationsTabSelector,
       coverTabSelector,
-      complaintsTabSelector
+      complaintsTabSelector,
+      listsTabSelector
     } = bookPage.elements;
 
     browser
@@ -133,7 +135,14 @@ module.exports = {
             .waitForElementPresent(complaintInputSelector, 5000)
             .verify.urlContains("tab/complaints")
             .verify.titleContains(bookTitle)
+
+            // go to the list tab
+            .click(listsTabSelector)
+            .waitForElementPresent(listInputSelector, 5000)
+            .verify.urlContains("tab/list")
             
+            // go back to the complaints tab
+            .back()
             // go back to the cover tab
             .back()
             // go back to the classifications tab
@@ -303,7 +312,7 @@ module.exports = {
   /**
    * Correctly end the selenium server and tests
    */
-  after: function(browser) {
+  after: (browser) => {
     browser.end();
   }
 };
