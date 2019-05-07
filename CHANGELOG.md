@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.2.2
+#### Updated
+- Improved Nightwatch tests with Page Objects.
+#### Fixed
+- Alignment of the global search button and the layout for the complaints tab for a book, including updating an input to a Button component.
+
 ### v0.2.1
 #### Updated
 - Improved the performance of the custom lists tab by only fetching the full list of custom lists if they have not already been fetched.
