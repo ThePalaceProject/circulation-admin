@@ -52,7 +52,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
               { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
             </EditableInput> &nbsp;
           </fieldset>
-          <Button callback={() => {}} />
+          <Button callback={() => {}} disabled={this.props.disabled} />
         </form>
       </div>
     );

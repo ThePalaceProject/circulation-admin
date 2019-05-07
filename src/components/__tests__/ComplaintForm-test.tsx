@@ -3,6 +3,7 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
+import { Button } from "library-simplified-reusable-components";
 
 import ComplaintForm from "../ComplaintForm";
 import EditableInput from "../EditableInput";
@@ -51,7 +52,7 @@ describe("ComplaintForm", () => {
     });
 
     it("shows a submit button", () => {
-      let button = wrapper.find("input[type='submit']");
+      let button = wrapper.find(Button);
       expect(button.length).to.equal(1);
     });
 
@@ -64,7 +65,7 @@ describe("ComplaintForm", () => {
           refreshComplaints={stub()}
           />
       );
-      let button = wrapper.find("input[type='submit']");
+      let button = wrapper.find(Button);
       expect(button.prop("disabled")).to.equal(true);
       let select = wrapper.find(EditableInput);
       expect(select.prop("disabled")).to.equal(true);
