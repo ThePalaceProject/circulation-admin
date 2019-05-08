@@ -253,11 +253,7 @@ module.exports = {
       firstBookSelector,
       secondBookSelector
     } = catalogPage.elements;
-    const {
-      bookTitleSelector,
-      classificationsTabSelector,
-      genreSecondOptionSelector
-    } = bookPage.elements;
+    const { bookTitleSelector } = bookPage.elements;
     const { nthBreadcrumbSelector } = catalogPage;
 
     browser
@@ -271,37 +267,20 @@ module.exports = {
         let firstTitle = result.value;
 
         this
-          // go to the classifications tab
-          .click(classificationsTabSelector)
+          // go back to the catalog
+          .click(nthBreadcrumbSelector(1))
           .waitForElementNotPresent(loadingSelector, 5000)
-          .waitForElementPresent(genreSecondOptionSelector, 5000)
-          .getText(genreSecondOptionSelector, function(result) {
-            let firstGenre = result.value;
+          .waitForElementPresent(secondBookSelector, 5000)
 
-            this
-              // go back to the catalog
-              .click(nthBreadcrumbSelector(1))
-              .waitForElementNotPresent(loadingSelector, 5000)
-              .waitForElementPresent(secondBookSelector, 5000)
+          // go to the second book
+          .click(secondBookSelector)
+          .waitForElementNotPresent(loadingSelector, 5000)
+          .waitForElementPresent(bookTitleSelector, 50000)
 
-              // go to the second book
-              .click(secondBookSelector)
-              .waitForElementNotPresent(loadingSelector, 5000)
-              .waitForElementPresent(bookTitleSelector, 50000)
-
-              // making sure that we are on a new book
-              .getText(bookTitleSelector, function(result) {
-                let secondTitle = result.value;
-                this.assert.notEqual(firstTitle, secondTitle);
-                this
-                  .click(classificationsTabSelector)
-                  .waitForElementNotPresent(loadingSelector, 5000)
-                  .waitForElementPresent(genreSecondOptionSelector, 5000)
-                  .getText(genreSecondOptionSelector, function(result) {
-                    let secondGenre = result.value;
-                    this.assert.notEqual(firstGenre, secondGenre);
-                  });
-              });
+          // making sure that we are on a new book
+          .getText(bookTitleSelector, function(result) {
+            let secondTitle = result.value;
+            this.assert.notEqual(firstTitle, secondTitle);
           });
       });
   },
