@@ -262,9 +262,6 @@ module.exports = {
 
     browser
       .goHome()
-      .click(laneSelector)
-      .waitForElementNotPresent(loadingSelector, 5000)
-      .waitForElementPresent(nthBreadcrumbSelector(2), 5000)
 
       // go to the first book
       .click(firstBookSelector)
