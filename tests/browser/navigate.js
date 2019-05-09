@@ -247,7 +247,7 @@ module.exports = {
       });
   },
 
-  "navigate to two different book classifications tabs": function(browser) {
+  "navigate to two different book detail pages": function(browser) {
     const {
       laneSelector,
       firstBookSelector,
