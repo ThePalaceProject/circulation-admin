@@ -15,6 +15,8 @@ describe("LaneEditor", () => {
   let deleteLane;
   let showLane;
   let hideLane;
+  let findParent;
+  let toggleLaneVisibility;
 
   let customListsData = [
     { id: 1, name: "list 1", entries: [] },
@@ -41,8 +43,9 @@ describe("LaneEditor", () => {
   beforeEach(() => {
     editLane = stub().returns(new Promise<void>(resolve => resolve()));
     deleteLane = stub().returns(new Promise<void>(resolve => resolve()));
-    showLane = stub().returns(new Promise<void>(resolve => resolve()));
     hideLane = stub().returns(new Promise<void>(resolve => resolve()));
+    findParent = stub().returns(laneData);
+    toggleLaneVisibility = stub();
     wrapper = shallow(
       <LaneEditor
         library="library"
@@ -50,9 +53,9 @@ describe("LaneEditor", () => {
         customLists={customListsData}
         editLane={editLane}
         deleteLane={deleteLane}
-        showLane={showLane}
-        hideLane={hideLane}
-        />
+        findParent={findParent}
+        toggleLaneVisibility={toggleLaneVisibility}
+      />
     );
   });
 
@@ -84,7 +87,7 @@ describe("LaneEditor", () => {
     expect(visibility.text()).not.to.contain("visible");
     expect(visibility.text()).to.contain("hidden");
 
-    wrapper.setProps({ parent: hiddenLane });
+    wrapper.setProps({ findParent: stub().returns(hiddenLane) });
     h4 = wrapper.find(".lane-editor-header h4");
     expect(h4.length).to.be.at.least(2);
     visibility = h4.at(1);
@@ -94,18 +97,19 @@ describe("LaneEditor", () => {
   });
 
   it("shows parent of new lane", () => {
-    wrapper.setProps({ lane: null });
+    wrapper.setProps({ lane: null, findParent: stub().returns(null) });
     let parentInfo = wrapper.find(".lane-editor-header h4");
     expect(parentInfo.length).to.equal(1);
     expect(parentInfo.text()).to.contain("top-level lane");
 
-    wrapper.setProps({ parent: laneData });
+    wrapper.setProps({ findParent: stub().returns(laneData) });
     parentInfo = wrapper.find(".lane-editor-header h4");
     expect(parentInfo.length).to.equal(1);
     expect(parentInfo.text()).to.contain("sublane of lane");
   });
 
   it("doesn't show the inherit parent restrictions setting on a new lane", () => {
+    wrapper.setProps({ findParent: stub().returns(null) });
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
   });
@@ -115,10 +119,11 @@ describe("LaneEditor", () => {
       <LaneEditor
         library="library"
         lane={laneData}
-        parent={laneData}
+        findParent={findParent}
         customLists={customListsData}
         editLane={editLane}
-        />
+        toggleLaneVisibility={toggleLaneVisibility}
+      />
     );
 
     let input = wrapper.find(EditableInput);
@@ -143,11 +148,12 @@ describe("LaneEditor", () => {
       <LaneEditor
         library="library"
         lane={laneData}
-        parent={laneData}
+        findParent={findParent}
         customLists={customListsData}
         editLane={editLane}
         deleteLane={deleteLane}
-        />
+        toggleLaneVisibility={toggleLaneVisibility}
+      />
     );
     let deleteButton = wrapper.find(Button).at(1);
     expect(deleteButton.hasClass("delete-lane")).to.be.true;
@@ -170,10 +176,13 @@ describe("LaneEditor", () => {
         customLists={customListsData}
         editLane={editLane}
         deleteLane={deleteLane}
-        showLane={showLane}
-        hideLane={hideLane}
+        findParent={findParent}
+        toggleLaneVisibility={toggleLaneVisibility}
       />
     );
+    let toggle = stub().returns(() => wrapper.setProps({lane: {...laneData, ...{visible: !laneData.visible}}}));
+    wrapper.setProps({ toggleLaneVisibility: toggle });
+
     let showButton = wrapper.find(Button).at(2);
     expect(showButton.hasClass("show-lane")).to.be.false;
 
@@ -184,11 +193,11 @@ describe("LaneEditor", () => {
 
     showButton.simulate("click");
 
-    expect(showLane.callCount).to.equal(1);
-    expect(showLane.args[0][0]).to.deep.equal(hiddenLane);
+    expect(toggle.callCount).to.equal(1);
+    expect(toggle.args[0][0]).to.deep.equal(hiddenLane);
 
     let hiddenParent = Object.assign({}, hiddenLane, { id : 5, display_name: "parent" });
-    wrapper.setProps({ parent: hiddenParent });
+    wrapper.setProps({ findParent: stub().returns(hiddenParent) });
     showButton = wrapper.find(".show-lane");
     expect(showButton.length).to.equal(0);
   });
@@ -201,20 +210,22 @@ describe("LaneEditor", () => {
         customLists={customListsData}
         editLane={editLane}
         deleteLane={deleteLane}
-        showLane={showLane}
-        hideLane={hideLane}
+        findParent={findParent}
+        toggleLaneVisibility={toggleLaneVisibility}
       />
     );
+    let toggle = stub().returns(() => wrapper.setProps({lane: {...laneData, ...{visible: !laneData.visible}}}));
+    wrapper.setProps({ toggleLaneVisibility: toggle });
 
     let hideButton = wrapper.find(Button).at(2);
     expect(hideButton.hasClass("hide-lane")).to.be.true;
 
     hideButton.simulate("click");
-    expect(hideLane.callCount).to.equal(1);
-    expect(hideLane.args[0][0]).to.deep.equal(laneData);
+    expect(toggle.callCount).to.equal(1);
+    expect(toggle.args[0][0]).to.deep.equal(laneData);
 
     let hiddenLane = Object.assign({}, laneData, { visible: false });
-    wrapper.setProps({ lane: hiddenLane });
+    wrapper.setProps({ findParent: stub().returns(hiddenLane) });
     hideButton = wrapper.find(".hide-lane");
     expect(hideButton.length).to.equal(0);
   });
@@ -224,10 +235,11 @@ describe("LaneEditor", () => {
       <LaneEditor
         library="library"
         lane={laneData}
-        parent={laneData}
+        findParent={findParent}
         customLists={customListsData}
         editLane={editLane}
-        />
+        toggleLaneVisibility={toggleLaneVisibility}
+      />
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new lane name");
     let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
@@ -258,7 +270,9 @@ describe("LaneEditor", () => {
         library="library"
         customLists={customListsData}
         editLane={editLane}
-        />
+        findParent={findParent}
+        toggleLaneVisibility={toggleLaneVisibility}
+      />
     );
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new lane name");
     let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
@@ -289,7 +303,9 @@ describe("LaneEditor", () => {
         lane={laneData}
         customLists={customListsData}
         editLane={editLane}
-        />
+        findParent={findParent}
+        toggleLaneVisibility={toggleLaneVisibility}
+      />
     );
 
     // the cancel button isn't shown when there are no changes.

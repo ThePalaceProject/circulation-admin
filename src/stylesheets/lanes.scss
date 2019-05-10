@@ -34,7 +34,7 @@
       display: flex;
       flex-direction: column;
       margin-bottom: 5px;
-      border-bottom: 1px solid $gray;
+      border-bottom: 1px solid $dark-gray;
 
       &:last-child {
         border-bottom: none;
@@ -53,6 +53,22 @@
         &.draggable {
           cursor: grab;
           cursor: -webkit-grab;
+        }
+      }
+
+      .btn.show-lane, .btn.hide-lane {
+        background-color: transparent;
+        color: $pagetextcolor;
+        font-weight: normal;
+        padding: 0;
+        margin: 0;
+        svg {
+          fill: $pagetextcolor;
+          height: .7em;
+          width: .7em;
+        }
+        &:hover {
+          border-color: transparent;
         }
       }
 
@@ -119,9 +135,8 @@
     }
   }
 
-  .lanes-sidebar .btn, .reset-button {
+  .lanes-sidebar .btn, .reset-button, .cancel-button {
     display: inline-block;
-    margin-right: 0;
     &:not(.inverted) {
       color: $invertedlinkcolor;
     }
