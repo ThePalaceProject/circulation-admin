@@ -52,6 +52,7 @@ export interface LanesState {
   draggingFrom: string | null;
   lanes: LaneData[];
   orderChanged: boolean;
+  canReset: boolean;
 }
 
 /** Body of the lanes page, with all a library's lanes shown in a left sidebar and
@@ -73,12 +74,14 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     this.findParentOfLane = this.findParentOfLane.bind(this);
     this.parentOfNewLane = this.parentOfNewLane.bind(this);
     this.toggleLaneVisibility = this.toggleLaneVisibility.bind(this);
+    this.checkReset = this.checkReset.bind(this);
 
     this.state = {
       draggableId: null,
       draggingFrom: null,
       lanes: this.copyLanes(this.props.lanes || []),
-      orderChanged: false
+      orderChanged: false,
+      canReset: false
     };
   }
 
@@ -127,9 +130,9 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         content="Save Order Changes"
       />
       <Button
-        className="cancel-order-changes inverted"
+        className="inverted"
         callback={this.resetOrder}
-        content={<span>Cancel <XCloseIcon /></span>}
+        content="Cancel"
       />
       <hr />
       <p>Save or cancel your changes to the lane order before making additional changes.</p>
@@ -157,8 +160,13 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     return React.createElement(LaneEditor, {...props, ...extraProps[editOrCreate]});
   }
 
+  checkReset() {
+    let inputValue = this.refs["reset"] && (this.refs["reset"] as EditableInput).getValue();
+    this.setState({...this.state, canReset: (inputValue === "RESET")});
+  }
+
   renderReset(): JSX.Element {
-    return (
+      return (
       <div className="reset">
         <h2>Reset all lanes</h2>
         <p>This will delete all lanes for the library and automatically generate new lanes based on the library's language configuration or the languages in the library's collection.</p>
@@ -166,16 +174,17 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         <hr />
         <p>This cannot be undone.</p>
         <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
-        <EditableInput type="text" ref="reset" required={true}/>
+        <EditableInput type="text" ref="reset" required={true} onChange={this.checkReset}/>
         <Button
           className="reset-button btn-danger"
           callback={this.resetLanes}
+          disabled={!this.state.canReset}
           content={<span>Reset <ResetIcon/></span>}
         />
         <Link
           className="btn inverted cancel-button"
           to={`/admin/web/lanes/${this.props.library}/`}
-        ><span>Cancel <XCloseIcon /></span></Link>
+        >Cancel</Link>
       </div>
     );
   }
@@ -229,8 +238,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   async resetLanes() {
-    let resetInput = this.refs["reset"] as EditableInput;
-    if (resetInput.getValue() === "RESET") {
+    if (this.state.canReset) {
       await this.props.resetLanes();
       this.props.fetchLanes();
     }
