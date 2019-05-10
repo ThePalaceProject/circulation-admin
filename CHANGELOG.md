@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.13
+#### Updated
+- Refactored the Lanes code, and added a button to cancel resetting the lanes.
+
 ### v0.1.12
 #### Updated
 - Updated `reusable-components` to v1.3.1, bringing in the reusable Button component.
