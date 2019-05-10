@@ -56,21 +56,21 @@
         }
       }
 
-      .btn.show-lane, .btn.hide-lane {
-        background-color: transparent;
-        color: $pagetextcolor;
-        font-weight: normal;
-        padding: 0;
-        margin: 0;
-        svg {
-          fill: $pagetextcolor;
-          height: .7em;
-          width: .7em;
-        }
-        &:hover {
-          border-color: transparent;
-        }
-      }
+      // .btn.show-lane, .btn.hide-lane {
+      //   background-color: transparent;
+      //   color: $pagetextcolor;
+      //   font-weight: normal;
+      //   padding: 0;
+      //   margin: 0;
+      //   svg {
+      //     fill: $pagetextcolor;
+      //     height: .7em;
+      //     width: .7em;
+      //   }
+      //   &:hover {
+      //     border-color: transparent;
+      //   }
+      // }
 
       .lane-buttons {
         display: flex;
@@ -137,9 +137,6 @@
 
   .lanes-sidebar .btn, .reset-button, .cancel-button {
     display: inline-block;
-    &:not(.inverted) {
-      color: $invertedlinkcolor;
-    }
     svg {
       height: .7em;
       margin-left: .5em;

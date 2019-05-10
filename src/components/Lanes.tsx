@@ -168,7 +168,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
         <EditableInput type="text" ref="reset" required={true}/>
         <Button
-          className="reset-button btn-danger"
+          className="reset-button left-align btn-danger"
           callback={this.resetLanes}
           content={<span>Reset <ResetIcon/></span>}
         />
