@@ -132,94 +132,6 @@ describe("Lanes", () => {
     expect(loading.length).to.equal(1);
   });
 
-  // it("renders and expands and collapses lanes and sublanes", () => {
-  //   mountWrapper();
-  //
-  //   const expectExpanded = (lane) => {
-  //     let collapse = lane.find("> div > span > .collapse-button");
-  //     expect(collapse.length).to.equal(1);
-  //     let expand = lane.find("> div > span > .expand-button");
-  //     expect(expand.length).to.equal(0);
-  //     return collapse;
-  //   };
-  //
-  //   const expectCollapsed = (lane) => {
-  //     let collapse = lane.find("> div > span > .collapse-button");
-  //     expect(collapse.length).to.equal(0);
-  //     let expand = lane.find("> div > span > .expand-button");
-  //     expect(expand.length).to.equal(1);
-  //     return expand;
-  //   };
-  //
-  //   let topLevelLanes = getTopLevelLanes();
-  //   expect(topLevelLanes.length).to.equal(2);
-  //   let lane1 = topLevelLanes.at(0);
-  //   let lane4 = topLevelLanes.at(1);
-  //   expect(lane1.text()).to.contain("lane 1");
-  //   expect(lane1.text()).to.contain("(5)");
-  //   expect(lane4.text()).to.contain("lane 4");
-  //   expect(lane4.text()).to.contain("(1)");
-  //
-  //   // both top-level lanes are expanded to start.
-  //   expectExpanded(lane1);
-  //   expectExpanded(lane4);
-  //
-  //   // lane 1 has one sublane which is collapsed
-  //   let sublane2 = lane1.find("> ul > li > div");
-  //   expect(sublane2.text()).to.contain("sublane 2");
-  //   expect(sublane2.text()).to.contain("(3)");
-  //   expect(sublane2.length).to.equal(1);
-  //   let sublane2Expand = expectCollapsed(sublane2);
-  //
-  //   // lane 4 has no sublanes
-  //   let lane4Sublanes = lane4.find("> ul > li > div");
-  //   let lane4Draggables = lane4.children(Droppable).children(Draggable).children("div");
-  //   expect(lane4Sublanes.length).to.equal(0);
-  //   expect(lane4Draggables.length).to.equal(0);
-  //
-  //   // sublane 2 has a sublane, but it's not shown since sublane 2 is collapsed.
-  //   let sublane3 = sublane2.find("> ul > li > div");
-  //   expect(sublane3.length).to.equal(0);
-  //
-  //   // if we expand sublane 2, we can see sublane 3 below it.
-  //   sublane2Expand.simulate("click");
-  //   topLevelLanes = getTopLevelLanes();
-  //   lane1 = topLevelLanes.at(0);
-  //   sublane2 = lane1.find("> ul > li > div");
-  //   let sublane2Collapse = expectExpanded(sublane2);
-  //   sublane3 = sublane2.find("> ul > li > div");
-  //   expect(sublane3.length).to.equal(1);
-  //   expect(sublane3.text()).to.contain("sublane 3");
-  //   expect(sublane3.text()).to.contain("(2)");
-  //   expectCollapsed(sublane3);
-  //
-  //   // if we collapse sublane 2, sublane 3 is hidden again.
-  //   sublane2Collapse.simulate("click");
-  //   topLevelLanes = getTopLevelLanes();
-  //   lane1 = topLevelLanes.at(0);
-  //   sublane2 = lane1.find("> ul > li > div");
-  //   expectCollapsed(sublane2);
-  //   sublane3 = sublane2.find("> ul > li > div");
-  //   expect(sublane3.length).to.equal(0);
-  //
-  //   // if we collapse lane 1, sublane 2 is hidden.
-  //   let lane1Collapse = expectExpanded(lane1);
-  //   lane1Collapse.simulate("click");
-  //   topLevelLanes = getTopLevelLanes();
-  //   lane1 = topLevelLanes.at(0);
-  //   let lane1Expand = expectCollapsed(lane1);
-  //   sublane2 = lane1.find("> ul > li > div");
-  //   expect(sublane2.length).to.equal(0);
-  //
-  //   // if we expand lane 1, sublane 2 is shown again.
-  //   lane1Expand.simulate("click");
-  //   topLevelLanes = getTopLevelLanes();
-  //   lane1 = topLevelLanes.at(0);
-  //   expectExpanded(lane1);
-  //   sublane2 = lane1.find("> ul > li > div");
-  //   expect(sublane2.length).to.equal(1);
-  // });
-
   it("edits a lane", () => {
     const testData = new (window as any).FormData();
     (wrapper.instance() as Lanes).editLane(testData);
@@ -254,7 +166,7 @@ describe("Lanes", () => {
 
     let save = orderInfo.find("button").findWhere(el => el.text() === "Save Order Changes");
     expect(save.length).to.equal(1);
-    let reset = orderInfo.find(".cancel-order-changes");
+    let reset = orderInfo.find("button").findWhere(el => el.text() === "Cancel");
     expect(reset.length).to.equal(1);
   });
 
@@ -317,6 +229,7 @@ describe("Lanes", () => {
     expect(resetLanes.callCount).to.equal(0);
 
     editableInputStub.returns("RESET");
+    wrapper.setState({ canReset: true });
     resetButton.simulate("click");
     expect(resetLanes.callCount).to.equal(1);
     expect(fetchLanes.callCount).to.equal(2);
@@ -469,7 +382,7 @@ describe("Lanes", () => {
     mountWrapper();
     wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
 
-    let cancelOrderChangesButton = wrapper.find(".cancel-order-changes");
+    let cancelOrderChangesButton = wrapper.find("button").findWhere(el => el.text() === "Cancel");
     cancelOrderChangesButton.simulate("click");
     expect(wrapper.state().orderChanged).to.equal(false);
     expect(wrapper.state().lanes).to.deep.equal(lanesData);
