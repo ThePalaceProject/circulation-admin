@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
 import EditableInput from "./EditableInput";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
@@ -32,8 +33,8 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   context: IndividualAdminEditFormContext;
 
   static contextTypes: React.ValidationMap<IndividualAdminEditFormContext> = {
-    settingUp: React.PropTypes.bool.isRequired,
-    admin: React.PropTypes.object.isRequired
+    settingUp: PropTypes.bool.isRequired,
+    admin: PropTypes.object.isRequired
   };
 
   constructor(props) {

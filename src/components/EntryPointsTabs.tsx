@@ -1,6 +1,7 @@
 import * as React from "react";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { FacetData } from "opds-web-client/lib/interfaces";
+import * as PropTypes from "prop-types";
 import { PathFor } from "../interfaces";
 import {
   AudioHeadphoneIcon,
@@ -16,7 +17,7 @@ export interface EntryPointsTabsProps {
 }
 
 /** This component renders a library's entrypoints as linked tabs. */
-export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, void> {
+export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, {}> {
   context: EntryPointsTabsContext;
 
   constructor(props) {
@@ -24,8 +25,8 @@ export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, void>
   }
 
   static contextTypes: React.ValidationMap<EntryPointsTabsContext> = {
-    router: React.PropTypes.object.isRequired,
-    pathFor: React.PropTypes.func.isRequired
+    router: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired
   };
 
   render(): JSX.Element {

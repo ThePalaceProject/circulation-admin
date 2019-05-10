@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import Header from "./Header";
 import CustomLists from "./CustomLists";
 import { State } from "../reducers/index";
@@ -22,12 +23,12 @@ export default class CustomListPage extends React.Component<CustomListPageProps,
   context: CustomListPageContext;
 
   static contextTypes: React.ValidationMap<CustomListPageContext> = {
-    editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired
+    editorStore: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired
   };
 
   static childContextTypes: React.ValidationMap<any> = {
-    library: React.PropTypes.func
+    library: PropTypes.func
   };
 
   getChildContext() {

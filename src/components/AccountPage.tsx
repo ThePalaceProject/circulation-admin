@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { State } from "../reducers/index";
 import Header from "./Header";
@@ -10,12 +11,12 @@ export interface AccountPageContext {
 }
 
 /** Page for configuring account settings. */
-export default class AccountPage extends React.Component<void, void> {
+export default class AccountPage extends React.Component<{}, {}> {
   context: AccountPageContext;
 
   static contextTypes: React.ValidationMap<AccountPageContext> = {
-    editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired,
+    editorStore: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired,
   };
 
 

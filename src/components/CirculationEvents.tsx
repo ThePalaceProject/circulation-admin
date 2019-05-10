@@ -5,6 +5,7 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import * as PropTypes from "prop-types";
 import CirculationEventsDownloadForm from "./CirculationEventsDownloadForm";
 import { CirculationEventData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
@@ -49,7 +50,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
   }
 
   static contextTypes: React.ValidationMap<any> = {
-    showCircEventsDownload: React.PropTypes.bool
+    showCircEventsDownload: PropTypes.bool
   };
 
   render(): JSX.Element {

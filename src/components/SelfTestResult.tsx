@@ -7,7 +7,7 @@ export interface SelfTestResultProps {
   isFetching: boolean;
 }
 
-export default class SelfTestResult extends React.Component<SelfTestResultProps, void> {
+export default class SelfTestResult extends React.Component<SelfTestResultProps, {}> {
   constructor(props) {
     super(props);
     this.renderResult = this.renderResult.bind(this);

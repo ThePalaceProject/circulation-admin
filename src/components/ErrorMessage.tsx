@@ -10,7 +10,7 @@ export interface ErrorMessageProps {
 
 /** Shows a bootstrap error message at the top of the page when there's a bad
     response from the server. */
-export default class ErrorMessage extends React.Component<ErrorMessageProps, void> {
+export default class ErrorMessage extends React.Component<ErrorMessageProps, {}> {
   render(): JSX.Element {
     let status = this.props.error.status;
     let errorMessageHeader;

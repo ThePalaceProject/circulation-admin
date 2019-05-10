@@ -40,7 +40,7 @@ export interface BookCoverEditorOwnProps {
 export interface BookCoverEditorProps extends BookCoverEditorStateProps, BookCoverEditorDispatchProps, BookCoverEditorOwnProps {};
 
 /** Tab on the book details page for uploading a new book cover. */
-export class BookCoverEditor extends React.Component<BookCoverEditorProps, void> {
+export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   constructor(props) {
     super(props);
     this.refresh = this.refresh.bind(this);

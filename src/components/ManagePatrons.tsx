@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
+import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import ManagePatronsForm from "./ManagePatronsForm";
 import Header from "./Header";
@@ -18,16 +19,16 @@ export interface ManagePatronsContext {
   csrfToken: string;
 }
 
-export class ManagePatrons extends React.Component<ManagePatronsProps, void> {
+export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
   context: ManagePatronsContext;
 
   static contextTypes: React.ValidationMap<ManagePatronsContext> = {
-    editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired,
+    editorStore: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired,
   };
 
-  static childContextTypes: React.ValidationMap<void> = {
-    library: React.PropTypes.func
+  static childContextTypes: React.ValidationMap<{library: () => string}> = {
+    library: PropTypes.func
   };
 
   getChildContext() {

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import buildStore from "../store";
 import { PathFor } from "../interfaces";
 import { State } from "../reducers/index";
@@ -18,7 +19,7 @@ export interface ContextProviderProps extends React.Props<any> {
 
 /** Provides a redux store, configuration options, and a function to create URLs
     as context to admin interface pages. */
-export default class ContextProvider extends React.Component<ContextProviderProps, void> {
+export default class ContextProvider extends React.Component<ContextProviderProps, {}> {
   store: Store<State>;
   admin: Admin;
   pathFor: PathFor;
@@ -63,12 +64,12 @@ export default class ContextProvider extends React.Component<ContextProviderProp
   }
 
   static childContextTypes: React.ValidationMap<any> = {
-    editorStore: React.PropTypes.object.isRequired,
-    pathFor: React.PropTypes.func.isRequired,
-    csrfToken: React.PropTypes.string.isRequired,
-    showCircEventsDownload: React.PropTypes.bool.isRequired,
-    settingUp: React.PropTypes.bool.isRequired,
-    admin: React.PropTypes.object.isRequired
+    editorStore: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired,
+    csrfToken: PropTypes.string.isRequired,
+    showCircEventsDownload: PropTypes.bool.isRequired,
+    settingUp: PropTypes.bool.isRequired,
+    admin: PropTypes.object.isRequired
   };
 
   getChildContext() {

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
+import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -68,7 +69,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   context: { admin: Admin };
 
   static contextTypes = {
-    admin: React.PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired
   };
 
   constructor(props) {

@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
 import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
@@ -19,7 +20,7 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
 
   context: { admin: Admin };
   static contextTypes = {
-    admin: React.PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired
   };
 
   canDelete() {

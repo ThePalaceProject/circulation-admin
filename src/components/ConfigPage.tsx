@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
+import * as PropTypes from "prop-types";
 import Header from "./Header";
 import ConfigTabContainer from "./ConfigTabContainer";
 import { State } from "../reducers/index";
@@ -19,12 +20,12 @@ export interface ConfigPageContext {
 
 /** System configuration page. Extracts parameters from its context
     and passes them to `ConfigTabContainer` as props. */
-export default class ConfigPage extends React.Component<ConfigPageProps, void> {
+export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
   context: ConfigPageContext;
 
   static contextTypes: React.ValidationMap<ConfigPageContext> = {
-    editorStore: React.PropTypes.object.isRequired,
-    csrfToken: React.PropTypes.string.isRequired
+    editorStore: PropTypes.object.isRequired,
+    csrfToken: PropTypes.string.isRequired
   };
 
   render(): JSX.Element {

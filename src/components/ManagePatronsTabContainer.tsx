@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
+import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
@@ -23,9 +24,9 @@ export interface ManagePatronsTabContainerContext extends TabContainerContext {
 export default class ManagePatronsTabContainer extends TabContainer<ManagePatronsTabContainerProps> {
   context: ManagePatronsTabContainerContext;
   static contextTypes: React.ValidationMap<ManagePatronsTabContainerContext> = {
-    router: React.PropTypes.object.isRequired,
-    pathFor: React.PropTypes.func.isRequired,
-    admin: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired,
+    admin: PropTypes.object.isRequired
   };
 
   tabs() {

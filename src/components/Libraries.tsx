@@ -1,6 +1,7 @@
 import * as React from "react";
 import { GenericEditableConfigList, EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
+import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import { LibrariesData, LibraryData, LanguagesData } from "../interfaces";
 import Admin from "../models/Admin";
@@ -30,7 +31,7 @@ export class Libraries extends GenericEditableConfigList<LibrariesData, LibraryD
 
   context: { admin: Admin };
   static contextTypes = {
-    admin: React.PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired
   };
 
   componentWillMount() {

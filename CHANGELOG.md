@@ -1,8 +1,18 @@
 ## Changelog
 
-### v0.1.13
+### v0.2.2
 #### Updated
 - Refactored the Lanes code, and added a button to cancel resetting the lanes.
+
+### v0.2.1
+#### Updated
+- Improved the performance of the custom lists tab by only fetching the full list of custom lists if they have not already been fetched.
+#### Fixed
+- Reintroduced Nightwatch and updated tests.
+
+### v0.2.0
+#### Updated
+- Updated `typings` to `@types`, updated Typescript, updated Webpack, and updated unit tests with fetch-mock. These updates are needed to import the updated `opds-web-client` package.
 
 ### v0.1.12
 #### Updated

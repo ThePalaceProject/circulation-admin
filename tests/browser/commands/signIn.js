@@ -1,13 +1,11 @@
 exports.command = function() {
   return this
     .url(this.globals.homeUrl)
-    .waitForElementVisible("input#Email", 1000)
-    .setValue("input#Email", this.globals.username)
-    .click("input#next")
-    .waitForElementVisible("input#Passwd", 1000)
-    .setValue("input#Passwd", this.globals.password)
-    .click("input#signIn")
-    .waitForElementVisible("button#submit_approve_access:enabled", 10000)
-    .click("button#submit_approve_access")
+    .waitForElementVisible("input[type=text]", 1000)
+    .setValue("input[type=text]", this.globals.username)
+    .click("input[type=password]")
+    .waitForElementVisible("input[type=password]", 1000)
+    .setValue("[type=password]", this.globals.password)
+    .click("button[type=submit]")
     .waitForElementVisible("nav", 10000);
 };
