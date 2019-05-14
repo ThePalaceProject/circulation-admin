@@ -1,11 +1,18 @@
-exports.command = function() {
-  return this
-    .url(this.globals.homeUrl)
-    .waitForElementVisible("input[type=text]", 1000)
-    .setValue("input[type=text]", this.globals.username)
-    .click("input[type=password]")
-    .waitForElementVisible("input[type=password]", 1000)
-    .setValue("[type=password]", this.globals.password)
-    .click("button[type=submit]")
-    .waitForElementVisible("nav", 10000);
+/**
+ * @method signIn
+ * @param {string} username The login form username.
+ * @param {string} password The login form password.
+ * @api command
+ * @description This custom command uses the `login` page object to
+ *  fill out the form.
+ */
+exports.command = function(username, password) {
+  const login = this.page.login();
+
+  return login
+    .navigate()
+    .waitForElementVisible("@username", 1000)
+    .setValue("@username", username)
+    .setValue("@password", password)
+    .click("@submit")
 };

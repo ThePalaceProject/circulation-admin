@@ -4,6 +4,7 @@
   "custom_assertions_path": "tests/browser/assertions",
   "custom_commands_path": "tests/browser/commands",
   "globals_path": "tests/browser/globals.js",
+  "page_objects_path": "tests/browser/pages",
 
   "selenium": {
     "start_process": true,
@@ -31,6 +32,7 @@
       "exclude": [
         "assertions/*.js",
         "commands/*.js",
+        "pages/*.js",
         "globals.js"
       ],
       "end_session_on_fail": false,
