@@ -147,6 +147,14 @@
       vertical-align: unset;
     }
   }
+
+  .reset {
+    padding: 16px;
+    margin: 6px;
+    input {
+      width: 30%;
+    }
+  }
 }
 
 .compact-info:focus {

@@ -14,8 +14,7 @@ import Lane from "./Lane";
 export interface LanesSidebarProps {
   orderChanged: boolean;
   library?: string;
-  onDragStart: (initial: any) => void;
-  onDragEnd: (initial: any) => void;
+  drag: (newState: any) => void;
   lanes: LaneData[] | null;
   findLaneForIdentifier?: (lanes: LaneData[], identifier: string) => LaneData | null;
   findParentOfLane?: (lane: LaneData, lanes?: LaneData[]) => LaneData;
@@ -30,6 +29,8 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
     this.isDropDisabled = this.isDropDisabled.bind(this);
     this.renderLanes = this.renderLanes.bind(this);
     this.renderLane = this.renderLane.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   render(): JSX.Element {
@@ -42,7 +43,7 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
       </div>
       {
         this.props.lanes &&
-        <DragDropContext onDragStart={this.props.onDragStart} onDragEnd={this.props.onDragEnd}>
+        <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         { this.renderLanes(this.props.lanes, null) }
         </DragDropContext>
       }
@@ -52,18 +53,17 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
   renderLink(createOrReset: string): JSX.Element {
     let linkBase = `/admin/web/lanes/${this.props.library}/`;
     let content = {
-      "create": ["Create Top-Level Lane", <AddIcon />],
-      "reset": ["Reset All Lanes", <ResetIcon />]
+      "create": ["Create Top-Level Lane", <AddIcon />, null],
+      "reset": ["Reset All Lanes", <ResetIcon />, "inverted"]
     };
-    // let text = createOrReset === "create" ? "Create Top-Level Lane" : "Reset All Lanes";
-    // let icon = createOrReset === "create" ? <AddIcon /> : <ResetIcon />;
+    let [text, icon, className] = content[createOrReset];
     let disabled = this.props.orderChanged ? "disabled" : "";
     return (
       <Link
-        className={`btn ${createOrReset}-lane ${disabled} ${createOrReset === "reset" ? "inverted" : ""}`}
+        className={`btn ${createOrReset}-lane ${disabled} ${className}`}
         to={this.props.orderChanged ? null : linkBase + createOrReset}
       >
-        <span>{content[createOrReset]}</span>
+        <span>{text} {icon}</span>
       </Link>
     );
   }
@@ -115,9 +115,63 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
         toggleLaneVisibility={this.props.toggleLaneVisibility}
         parent={parent}
         library={this.props.library}
-        renderSublanes={this.renderLanes}
+        renderLanes={this.renderLanes}
       />
     );
+  }
+
+  onDragStart(initial) {
+    document.body.classList.add("dragging");
+    const draggableId = initial.draggableId;
+    const draggingFrom = initial.source.droppableId;
+    this.props.drag({ draggableId, draggingFrom });
+  }
+
+  onDragEnd(result) {
+    document.body.classList.remove("dragging");
+    const {
+      draggableId,
+      destination,
+      source
+    } = result;
+
+    if (!destination || !source || (destination.droppableId !== source.droppableId)) {
+      return;
+    }
+
+    const oldIndex = source.index;
+    const newIndex = destination.index;
+
+    if (oldIndex === newIndex) {
+      // The lane was dropped back to its original position.
+      return;
+    }
+
+    let lanes = this.props.lanes;
+    const draggedLane = this.props.findLaneForIdentifier(lanes, draggableId);
+    const parent = this.props.findParentOfLane(draggedLane, lanes);
+    // If the lane has a parent, we'll update its position within its parents'
+    // sublanes. Otherwise, we'll update its position at the top-level.
+    let lanesToUpdate;
+    if (parent) {
+      lanesToUpdate = parent.sublanes;
+    } else {
+      lanesToUpdate = lanes;
+    }
+
+    // Remove the lane from its old position.
+    lanesToUpdate = lanesToUpdate.slice(0, oldIndex).concat(lanesToUpdate.slice(oldIndex + 1, lanesToUpdate.length));
+    // Put it back in its new position.
+    lanesToUpdate.splice(newIndex, 0, draggedLane);
+
+    // Actually update the lanes.
+    if (parent) {
+      parent.sublanes = lanesToUpdate;
+    } else {
+      lanes = lanesToUpdate;
+    }
+
+    this.props.drag({ draggableId: null, draggingFrom: null, lanes, orderChanged: true });
   }
 
   isDropDisabled(draggingLane: LaneData | null, toLane: LaneData | null) {

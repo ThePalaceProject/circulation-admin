@@ -8,7 +8,7 @@ import { Link } from "react-router";
 
 describe("Lane", () => {
   let wrapper;
-  let renderSublanes;
+  let renderLanes;
   let toggleLaneVisibility;
   let subsublaneData: LaneData = {
     id: 3, display_name: "subsublane 1", visible: false, count: 2, sublanes: [],
@@ -23,7 +23,7 @@ describe("Lane", () => {
     sublanes: [sublaneData], custom_list_ids: [1], inherit_parent_restrictions: true
   };
   beforeEach(() => {
-    renderSublanes = stub();
+    renderLanes = stub();
     toggleLaneVisibility = stub();
     wrapper = mount(
       <Lane
@@ -31,7 +31,7 @@ describe("Lane", () => {
         active={false}
         library="test_library"
         orderChanged={false}
-        renderSublanes={renderSublanes}
+        renderLanes={renderLanes}
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );

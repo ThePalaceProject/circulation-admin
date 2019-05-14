@@ -86,7 +86,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
             </span>
           </div>
           <div className="lane-details">
-            <h3>{this.renderInfo(parent)}</h3>
+            {this.renderInfo(parent)}
             { parent &&
               <EditableInput
                 type="checkbox"

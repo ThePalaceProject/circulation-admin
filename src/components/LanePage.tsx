@@ -42,7 +42,7 @@ export default class LanePage extends React.Component<LanePageProps, LanePageCon
         <Header />
         <Lanes
           library={this.props.params.library}
-          editOrCreate={this.props.params.editOrCreate || "create"}
+          editOrCreate={this.props.params.editOrCreate}
           identifier={this.props.params.identifier}
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}

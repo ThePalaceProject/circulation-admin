@@ -73,34 +73,34 @@ describe("LaneEditor", () => {
   });
 
   it("shows visibility status", () => {
-    let h3 = wrapper.find(".lane-details h3");
-    expect(h3.length).to.equal(1);
-    expect(h3.text()).to.contain("visible");
-    expect(h3.text()).not.to.contain("hidden");
+    let info = wrapper.find(".lane-details");
+    expect(info.length).to.equal(1);
+    expect(info.text()).to.contain("visible");
+    expect(info.text()).not.to.contain("hidden");
 
     let hiddenLane = Object.assign({}, laneData, { visible: false });
     wrapper.setProps({ lane: hiddenLane });
-    h3 = wrapper.find(".lane-details h3");
-    expect(h3.length).to.equal(1);
-    expect(h3.text()).not.to.contain("visible");
-    expect(h3.text()).to.contain("hidden");
+    info = wrapper.find(".lane-details");
+    expect(info.length).to.equal(1);
+    expect(info.text()).not.to.contain("visible");
+    expect(info.text()).to.contain("hidden");
 
     wrapper.setProps({ findParentOfLane: stub().returns(hiddenLane) });
-    h3 = wrapper.find(".lane-editor-header h3");
-    expect(h3.length).to.equal(1);
-    expect(h3.text()).not.to.contain("visible");
-    expect(h3.text()).to.contain("hidden");
-    expect(h3.text()).to.contain("parent");
+    info = wrapper.find(".lane-editor-header");
+    expect(info.length).to.equal(1);
+    expect(info.text()).not.to.contain("visible");
+    expect(info.text()).to.contain("hidden");
+    expect(info.text()).to.contain("parent");
   });
 
   it("shows parent of new lane", () => {
     wrapper.setProps({ lane: null, findParentOfLane: stub().returns(null) });
-    let parentInfo = wrapper.find(".lane-details h3");
+    let parentInfo = wrapper.find(".lane-details");
     expect(parentInfo.length).to.equal(1);
     expect(parentInfo.text()).to.contain("top-level lane");
 
     wrapper.setProps({ findParentOfLane: stub().returns(laneData) });
-    parentInfo = wrapper.find(".lane-details h3");
+    parentInfo = wrapper.find(".lane-details");
     expect(parentInfo.length).to.equal(1);
     expect(parentInfo.text()).to.contain("sublane of lane");
   });

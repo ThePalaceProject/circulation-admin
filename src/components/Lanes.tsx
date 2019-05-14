@@ -58,14 +58,17 @@ export interface LanesState {
 /** Body of the lanes page, with all a library's lanes shown in a left sidebar and
     a lane editor on the right. */
 export class Lanes extends React.Component<LanesProps, LanesState> {
+  static defaultProps = {
+    editOrCreate: "create"
+  };
+
   constructor(props) {
     super(props);
     this.editLane = this.editLane.bind(this);
     this.deleteLane = this.deleteLane.bind(this);
     this.resetLanes = this.resetLanes.bind(this);
     this.resetOrder = this.resetOrder.bind(this);
-    this.onDragStart = this.onDragStart.bind(this);
-    this.onDragEnd = this.onDragEnd.bind(this);
+    this.drag = this.drag.bind(this);
     this.saveOrder = this.saveOrder.bind(this);
     this.orderChanged = this.orderChanged.bind(this);
     this.findLaneForIdentifier = this.findLaneForIdentifier.bind(this);
@@ -102,8 +105,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           <LanesSidebar
             orderChanged={this.state.orderChanged}
             library={this.props.library}
-            onDragStart={this.onDragStart}
-            onDragEnd={this.onDragEnd}
+            drag={this.drag}
             lanes={ this.state.lanes && this.state.lanes.length > 0 && this.state.lanes }
             findLaneForIdentifier={this.findLaneForIdentifier}
             findParentOfLane={this.findParentOfLane}
@@ -122,7 +124,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     } else if (this.props.editOrCreate === "reset") {
       return this.renderReset();
     } else if (this.props.editOrCreate) {
-      return this.renderEditor();
+      return this.renderEditor(this.props.editOrCreate);
     }
   }
 
@@ -144,7 +146,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     </div>);
   }
 
-  renderEditor(): JSX.Element {
+  renderEditor(editOrCreate: string): JSX.Element {
     let props = {
       library: this.props.library,
       customLists: this.props.customLists,
@@ -162,7 +164,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         toggleLaneVisibility: this.toggleLaneVisibility
       }
     };
-    return React.createElement(LaneEditor, {...props, ...extraProps[this.props.editOrCreate]});
+    return React.createElement(LaneEditor, {...props, ...extraProps[editOrCreate]});
   }
 
   checkReset() {
@@ -243,10 +245,8 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   async resetLanes() {
-    if (this.state.canReset) {
-      await this.props.resetLanes();
-      this.props.fetchLanes();
-    }
+    await this.props.resetLanes();
+    this.props.fetchLanes();
   }
 
   private findLaneForIdentifier(lanes, identifier): LaneData | null {
@@ -300,68 +300,10 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     return null;
   }
 
-  onDragStart(initial) {
-    document.body.classList.add("dragging");
-    const draggableId = initial.draggableId;
-    const source = initial.source;
-    this.setState({
-      ...this.state,
-      draggableId,
-      draggingFrom: source.droppableId
-    });
-  }
-
-  onDragEnd(result) {
-    document.body.classList.remove("dragging");
-    const {
-      draggableId,
-      destination,
-      source
-    } = result;
-
-    if (!destination || !source || (destination.droppableId !== source.droppableId)) {
-      return;
-    }
-
-    const oldIndex = source.index;
-    const newIndex = destination.index;
-
-    if (oldIndex === newIndex) {
-      // The lane was dropped back to its original position.
-      return;
-    }
-
-    let lanes = this.state.lanes;
-    const draggedLane = this.findLaneForIdentifier(lanes, draggableId);
-    const parent = this.findParentOfLane(draggedLane, lanes);
-    // If the lane has a parent, we'll update its position within its parents'
-    // sublanes. Otherwise, we'll update its position at the top-level.
-    let lanesToUpdate;
-    if (parent) {
-      lanesToUpdate = parent.sublanes;
-    } else {
-      lanesToUpdate = lanes;
-    }
-
-    // Remove the lane from its old position.
-    lanesToUpdate = lanesToUpdate.slice(0, oldIndex).concat(lanesToUpdate.slice(oldIndex + 1, lanesToUpdate.length));
-    // Put it back in its new position.
-    lanesToUpdate.splice(newIndex, 0, draggedLane);
-
-    // Actually update the lanes.
-    if (parent) {
-      parent.sublanes = lanesToUpdate;
-    } else {
-      lanes = lanesToUpdate;
-    }
-
-    this.setState({
-      ...this.state,
-      draggableId: null,
-      draggingFrom: null,
-      lanes,
-      orderChanged: true
-    });
+  drag(newState) {
+    // console.log(newState);
+    this.setState({...this.state, ...newState});
+    // console.log(this.state);
   }
 }
 

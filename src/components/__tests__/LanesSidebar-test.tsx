@@ -11,8 +11,7 @@ import { Link } from "react-router";
 
 describe("LanesSidebar", () => {
   let wrapper;
-  let onDragStart;
-  let onDragEnd;
+  let drag;
   let findLaneForIdentifier;
   let subsublaneData: LaneData = {
     id: 3, display_name: "SubSublane 1", visible: false, count: 2, sublanes: [],
@@ -32,14 +31,12 @@ describe("LanesSidebar", () => {
     return wrapper.children(DragDropContext).children(Draggable).children("div");
   };
   beforeEach(() => {
-    onDragStart = stub();
-    onDragEnd = stub();
+    drag = stub();
     findLaneForIdentifier = stub();
     wrapper = mount(
       <LanesSidebar
         orderChanged={false}
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
+        drag={drag}
         lanes={lanesData}
         library={"library"}
         findLaneForIdentifier={findLaneForIdentifier}
