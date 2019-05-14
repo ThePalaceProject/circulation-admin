@@ -123,13 +123,14 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       <h2>Change Lane Order</h2>
       <Button
         callback={this.saveOrder}
+        className="left-align inline"
         disabled={this.props.isFetching}
         content="Save Order Changes"
       />
       <Button
-        className="cancel-order-changes inverted"
+        className="inverted inline"
         callback={this.resetOrder}
-        content={<span>Cancel <XCloseIcon /></span>}
+        content={"Cancel"}
       />
       <hr />
       <p>Save or cancel your changes to the lane order before making additional changes.</p>
