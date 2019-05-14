@@ -4,7 +4,9 @@
 To set up credentials for the tests to use, create a copy of `/tests/browser/globals.js.sample` as `/tests/browser/globals.js` and update the variables.
 
 ### Running Tests
-To run them, run `npm run test-browser` which will perform tests in headless versions of Chrome and Firefox. To run them individually, run `npm run test-chrome` and `npm run test-firefox` to run tests in Chrome and Firefox, respectively.
+Note: There are currently known bugs between Selenium and the Firefox test browser. The Nightwatch tests will currently not work when running `npm run test-firefox`. We recommend to only run tests in Chrome at the moment.
+
+Run `npm run test-chrome` and `npm run test-firefox` to run tests in Chrome and Firefox, respectively. To run the tests on headless browsers of Chrome and Firefox together, run `npm run test-browser`.
 
 ### File Structure
 Custom Nightwatch assertions can be found in `/tests/browser/assertions`. These extend the already available `.assert` and `.verify` assertions for any specific app related tests.
