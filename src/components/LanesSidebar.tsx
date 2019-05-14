@@ -17,16 +17,16 @@ export interface LanesSidebarProps {
   onDragStart: (initial: any) => void;
   onDragEnd: (initial: any) => void;
   lanes: LaneData[] | null;
-  laneForID?: any;
-  findParent?: any;
-  identifier?: any;
+  findLaneForIdentifier?: (lanes: LaneData[], identifier: string) => LaneData | null;
+  findParentOfLane?: (lane: LaneData, lanes?: LaneData[]) => LaneData;
+  identifier?: string;
   toggleLaneVisibility?: (lane: LaneData, shouldBeVisible: boolean) => Promise<void>;
 }
 
 export default class LanesSidebar extends React.Component<LanesSidebarProps, {}> {
   constructor(props: LanesSidebarProps) {
     super(props);
-    this.renderButton = this.renderButton.bind(this);
+    this.renderLink = this.renderLink.bind(this);
     this.isDropDisabled = this.isDropDisabled.bind(this);
     this.renderLanes = this.renderLanes.bind(this);
     this.renderLane = this.renderLane.bind(this);
@@ -37,32 +37,39 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
     return (<div className="lanes-sidebar">
       <h2>Lane Manager</h2>
       <div>
-        { this.renderButton("create") }
-        { this.renderButton("reset") }
+        { this.renderLink("create") }
+        { this.renderLink("reset") }
       </div>
-      <DragDropContext onDragStart={this.props.onDragStart} onDragEnd={this.props.onDragEnd}>
-        { this.props.lanes && this.renderLanes(this.props.lanes, null) }
-      </DragDropContext>
+      {
+        this.props.lanes &&
+        <DragDropContext onDragStart={this.props.onDragStart} onDragEnd={this.props.onDragEnd}>
+        { this.renderLanes(this.props.lanes, null) }
+        </DragDropContext>
+      }
     </div>);
   }
 
-  renderButton(createOrReset: string): JSX.Element {
+  renderLink(createOrReset: string): JSX.Element {
     let linkBase = `/admin/web/lanes/${this.props.library}/`;
-    let text = createOrReset === "create" ? "Create Top-Level Lane" : "Reset All Lanes";
-    let icon = createOrReset === "create" ? <AddIcon /> : <ResetIcon />;
+    let content = {
+      "create": ["Create Top-Level Lane", <AddIcon />],
+      "reset": ["Reset All Lanes", <ResetIcon />]
+    };
+    // let text = createOrReset === "create" ? "Create Top-Level Lane" : "Reset All Lanes";
+    // let icon = createOrReset === "create" ? <AddIcon /> : <ResetIcon />;
     let disabled = this.props.orderChanged ? "disabled" : "";
     return (
       <Link
         className={`btn ${createOrReset}-lane ${disabled} ${createOrReset === "reset" ? "inverted" : ""}`}
         to={this.props.orderChanged ? null : linkBase + createOrReset}
       >
-        <span>{text} {icon}</span>
+        <span>{content[createOrReset]}</span>
       </Link>
     );
   }
 
   renderLanes(lanes: LaneData[], parent: LaneData | null): JSX.Element {
-    const draggingLane = this.props.laneForID(null, null);
+    const draggingLane = this.props.findLaneForIdentifier(null, null);
     const disabled = this.isDropDisabled(draggingLane, parent);
 
     if (lanes.length > 1) {
@@ -123,7 +130,7 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
     // dragging a child can cause the parent to move and mess up
     // the positioning of the dragging child.
 
-    const draggingParent = this.props.findParent(draggingLane);
+    const draggingParent = this.props.findParentOfLane(draggingLane);
     if (draggingParent && toLane === null) {
       return true;
     }

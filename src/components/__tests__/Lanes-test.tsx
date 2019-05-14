@@ -178,7 +178,7 @@ describe("Lanes", () => {
     editor = wrapper.find(LaneEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
-    expect(editor.props().findParent()).to.equal(null);
+    expect(editor.props().findParentOfLane()).to.equal(null);
     expect(editor.props().customLists).to.equal(customListsData);
     expect(editor.props().editLane).to.be.ok;
 
@@ -186,7 +186,7 @@ describe("Lanes", () => {
     editor = wrapper.find(LaneEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
-    expect(editor.props().findParent()).to.equal(sublaneData);
+    expect(editor.props().findParentOfLane()).to.equal(sublaneData);
     expect(editor.props().customLists).to.equal(customListsData);
     expect(editor.props().editLane).to.be.ok;
   });
@@ -200,7 +200,7 @@ describe("Lanes", () => {
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
     expect(editor.props().lane).to.deep.equal(sublaneData);
-    expect(editor.props().findParent(editor.props().lane)).to.deep.equal(lanesData[0]);
+    expect(editor.props().findParentOfLane(editor.props().lane)).to.deep.equal(lanesData[0]);
     expect(editor.props().customLists).to.deep.equal(customListsData);
     expect(editor.props().editLane).to.be.ok;
     expect(editor.props().deleteLane).to.be.ok;

@@ -13,7 +13,7 @@ describe("LanesSidebar", () => {
   let wrapper;
   let onDragStart;
   let onDragEnd;
-  let laneForID;
+  let findLaneForIdentifier;
   let subsublaneData: LaneData = {
     id: 3, display_name: "SubSublane 1", visible: false, count: 2, sublanes: [],
     custom_list_ids: [2], inherit_parent_restrictions: false
@@ -34,7 +34,7 @@ describe("LanesSidebar", () => {
   beforeEach(() => {
     onDragStart = stub();
     onDragEnd = stub();
-    laneForID = stub();
+    findLaneForIdentifier = stub();
     wrapper = mount(
       <LanesSidebar
         orderChanged={false}
@@ -42,7 +42,7 @@ describe("LanesSidebar", () => {
         onDragEnd={onDragEnd}
         lanes={lanesData}
         library={"library"}
-        laneForID={laneForID}
+        findLaneForIdentifier={findLaneForIdentifier}
       />);
   });
   it("renders create top-level lane link", () => {

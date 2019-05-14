@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Store } from "redux";
 import { connect } from "react-redux";
@@ -15,7 +16,6 @@ import EditableInput from "./EditableInput";
 import { Button } from "library-simplified-reusable-components";
 import ResetIcon from "./icons/ResetIcon";
 import XCloseIcon from "./icons/XCloseIcon";
-import { Link } from "react-router";
 
 export interface LanesStateProps {
   lanes: LaneData[];
@@ -68,8 +68,6 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     this.onDragEnd = this.onDragEnd.bind(this);
     this.saveOrder = this.saveOrder.bind(this);
     this.orderChanged = this.orderChanged.bind(this);
-    this.renderEditor = this.renderEditor.bind(this);
-    this.renderReset = this.renderReset.bind(this);
     this.findLaneForIdentifier = this.findLaneForIdentifier.bind(this);
     this.findParentOfLane = this.findParentOfLane.bind(this);
     this.parentOfNewLane = this.parentOfNewLane.bind(this);
@@ -107,18 +105,25 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
             onDragStart={this.onDragStart}
             onDragEnd={this.onDragEnd}
             lanes={ this.state.lanes && this.state.lanes.length > 0 && this.state.lanes }
-            laneForID={this.findLaneForIdentifier}
-            findParent={this.findParentOfLane}
+            findLaneForIdentifier={this.findLaneForIdentifier}
+            findParentOfLane={this.findParentOfLane}
             identifier={this.props.identifier}
             toggleLaneVisibility={this.toggleLaneVisibility}
           />
-          { this.state.orderChanged && this.orderChanged() }
-          { !this.state.orderChanged && this.props.editOrCreate === "create" && this.renderEditor("create") }
-          { !this.state.orderChanged && this.laneToEdit() && this.renderEditor("edit") }
-          { !this.state.orderChanged && this.props.editOrCreate === "reset" && this.renderReset() }
-        </div>
+          { this.renderMainContent() }
+          </div>
       </div>
     );
+  }
+
+  renderMainContent(): JSX.Element {
+    if (this.state.orderChanged) {
+      return this.orderChanged();
+    } else if (this.props.editOrCreate === "reset") {
+      return this.renderReset();
+    } else if (this.props.editOrCreate) {
+      return this.renderEditor();
+    }
   }
 
   orderChanged(): JSX.Element {
@@ -139,7 +144,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     </div>);
   }
 
-  renderEditor(editOrCreate: string): JSX.Element {
+  renderEditor(): JSX.Element {
     let props = {
       library: this.props.library,
       customLists: this.props.customLists,
@@ -147,17 +152,17 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     };
     let extraProps = {
       "create": {
-        findParent: this.parentOfNewLane,
+        findParentOfLane: this.parentOfNewLane,
         responseBody: this.props.responseBody
       },
       "edit": {
         lane: this.laneToEdit(),
-        findParent: this.findParentOfLane,
+        findParentOfLane: this.findParentOfLane,
         deleteLane: this.deleteLane,
         toggleLaneVisibility: this.toggleLaneVisibility
       }
     };
-    return React.createElement(LaneEditor, {...props, ...extraProps[editOrCreate]});
+    return React.createElement(LaneEditor, {...props, ...extraProps[this.props.editOrCreate]});
   }
 
   checkReset() {
@@ -167,25 +172,25 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
 
   renderReset(): JSX.Element {
       return (
-      <div className="reset">
-        <h2>Reset all lanes</h2>
-        <p>This will delete all lanes for the library and automatically generate new lanes based on the library's language configuration or the languages in the library's collection.</p>
-        <p>Any lanes based on lists will be removed and will need to be created again (the lists will be preserved.)</p>
-        <hr />
-        <p>This cannot be undone.</p>
-        <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
-        <EditableInput type="text" ref="reset" required={true} onChange={this.checkReset}/>
-        <Button
-          className="reset-button btn-danger"
-          callback={this.resetLanes}
-          disabled={!this.state.canReset}
-          content={<span>Reset <ResetIcon/></span>}
-        />
-        <Link
-          className="btn inverted cancel-button"
-          to={`/admin/web/lanes/${this.props.library}/`}
-        >Cancel</Link>
-      </div>
+        <div className="reset">
+          <h2>Reset all lanes</h2>
+          <p>This will delete all lanes for the library and automatically generate new lanes based on the library's language configuration or the languages in the library's collection.</p>
+          <p>Any lanes based on lists will be removed and will need to be created again (the lists will be preserved.)</p>
+          <hr />
+          <p>This cannot be undone.</p>
+          <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
+          <EditableInput type="text" ref="reset" required={true} onChange={this.checkReset}/>
+          <Button
+            className="reset-button btn-danger"
+            callback={this.resetLanes}
+            disabled={!this.state.canReset}
+            content={<span>Reset <ResetIcon/></span>}
+          />
+          <Link
+            className="btn inverted cancel-button"
+            to={`/admin/web/lanes/${this.props.library}/`}
+          >Cancel</Link>
+        </div>
     );
   }
 
@@ -282,7 +287,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       lanes = this.state.lanes || [];
     }
     for (const possibleParent of lanes) {
-      if (possibleParent.sublanes.map(child => child["id"]).includes(lane.id)) {
+      if (possibleParent.sublanes.find(child => child["id"] === lane.id)) {
         return possibleParent;
       }
       else {

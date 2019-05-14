@@ -17,7 +17,7 @@ export interface LaneEditorProps extends React.Props<LaneEditor> {
   editLane: (data: FormData) => Promise<void>;
   deleteLane?: (lane: LaneData) => Promise<void>;
   toggleLaneVisibility: (lane: LaneData, shouldBeVisible: boolean) => Promise<void>;
-  findParent: (lane: LaneData) => LaneData | null;
+  findParentOfLane: (lane: LaneData) => LaneData | null;
 }
 
 export interface LaneEditorState {
@@ -46,7 +46,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   render(): JSX.Element {
-    let parent = this.props.findParent(this.props.lane);
+    let parent = this.props.findParentOfLane(this.props.lane);
     return (
       <div className="lane-editor">
         <div className="lane-editor-header">
@@ -86,7 +86,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
             </span>
           </div>
           <div className="lane-details">
-            <h4>{this.renderInfo(parent)}</h4>
+            <h3>{this.renderInfo(parent)}</h3>
             { parent &&
               <EditableInput
                 type="checkbox"
@@ -111,22 +111,19 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   renderInfo(parent?: LaneData): JSX.Element {
-    let isVisible = (lane: LaneData) => { return lane.visible; };
+    let isVisible = (lane: LaneData) => lane.visible;
 
     if (this.props.lane) {
       let visibility;
       if (isVisible(this.props.lane)) {
         visibility = <div>This lane is currently visible. <VisibleIcon /></div>;
-      }
-      else if (parent && !isVisible(parent)) {
+      } else if (parent && !isVisible(parent)) {
         visibility = <div>This lane's parent is currently hidden. <HiddenIcon /></div>;
-      }
-      else {
+      } else {
         visibility = <div>This lane is currently hidden. <HiddenIcon /></div>;
       }
       return visibility;
-    }
-    else {
+    } else {
       let laneLevel = parent ? `sublane of ${parent.display_name}` : "top-level lane";
       return <div>New {laneLevel}</div>;
     }
@@ -184,7 +181,10 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   visibilityToggle() {
-    let parent = this.props.findParent(this.props.lane);
+    // The lane's visibility cannot be changed if it has a hidden parent.  In all other cases--i.e.
+    // if 1) the lane does not have a parent or 2) the lane has a parent which is visible--we render
+    // the hide/show button.
+    let parent = this.props.findParentOfLane(this.props.lane);
     let canToggle = this.props.lane && (!parent || (parent && parent.visible));
     if (canToggle) {
       return (<Button
@@ -196,7 +196,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   save() {
-    let parent = this.props.findParent(this.props.lane);
+    let parent = this.props.findParentOfLane(this.props.lane);
     const data = new (window as any).FormData();
     if (this.props.lane) {
       data.append("id", this.props.lane.id);
