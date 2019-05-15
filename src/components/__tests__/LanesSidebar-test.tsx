@@ -13,6 +13,7 @@ describe("LanesSidebar", () => {
   let wrapper;
   let drag;
   let findLaneForIdentifier;
+  let findParentOfLane;
   let subsublaneData: LaneData = {
     id: 3, display_name: "SubSublane 1", visible: false, count: 2, sublanes: [],
     custom_list_ids: [2], inherit_parent_restrictions: false
@@ -21,18 +22,21 @@ describe("LanesSidebar", () => {
     id: 2, display_name: "Sublane 1", visible: false, count: 3, sublanes: [subsublaneData],
     custom_list_ids: [2], inherit_parent_restrictions: false
   };
-  let lanesData: LaneData[] = [
-    { id: 1, display_name: "Top Lane 1", visible: true, count: 5,
-      sublanes: [sublaneData], custom_list_ids: [1], inherit_parent_restrictions: true },
-    { id: 4, display_name: "Top Lane 2", visible: true, count: 1, sublanes: [],
-      custom_list_ids: [], inherit_parent_restrictions: false }
-  ];
+  let lanesData: LaneData[];
+
   const getTopLevelLanes = () => {
     return wrapper.children(DragDropContext).children(Draggable).children("div");
   };
   beforeEach(() => {
+    lanesData = [
+      { id: 1, display_name: "Top Lane 1", visible: true, count: 5,
+      sublanes: [sublaneData], custom_list_ids: [1], inherit_parent_restrictions: true },
+      { id: 4, display_name: "Top Lane 2", visible: true, count: 1, sublanes: [],
+      custom_list_ids: [], inherit_parent_restrictions: false }
+    ];
     drag = stub();
-    findLaneForIdentifier = stub();
+    findLaneForIdentifier = stub().returns(lanesData[1]);
+    findParentOfLane = stub().returns(null);
     wrapper = mount(
       <LanesSidebar
         orderChanged={false}
@@ -40,6 +44,7 @@ describe("LanesSidebar", () => {
         lanes={lanesData}
         library={"library"}
         findLaneForIdentifier={findLaneForIdentifier}
+        findParentOfLane={findParentOfLane}
       />);
   });
   it("renders create top-level lane link", () => {
@@ -94,6 +99,50 @@ describe("LanesSidebar", () => {
     expect(topLane1.hasClass("active")).to.be.false;
     expect(topLane2.hasClass("active")).to.be.false;
     expect(subLane1.hasClass("active")).to.be.true;
+  });
+
+  it("drags and drops a top-level lane", () => {
+    let topLevelLanes = getTopLevelLanes();
+    let dragTopLane2 = { draggableId: "4", source: { index: 1, droppableId: "top" }};
+    // pick up Top Lane 2
+    wrapper.instance().onDragStart(dragTopLane2);
+    expect(drag.callCount).to.equal(1);
+    expect(drag.args[0][0]).to.eql({ draggableId: "4", draggingFrom: "top" });
+    // drop it before Top Lane 1
+    wrapper.instance().onDragEnd({...dragTopLane2,  ...{destination: { droppableId: "top", index: 0 }}});
+    expect(drag.callCount).to.equal(2);
+    expect(drag.args[1][0]).to.eql({
+      draggableId: null,
+      draggingFrom: null,
+      lanes: [lanesData[1], lanesData[0]],
+      orderChanged: true
+    });
+  });
+
+  it("drags and drops a sublane", () => {
+    let newSublane: LaneData = {
+      id: 5, display_name: "Sublane 2", visible: true, count: 0, inherit_parent_restrictions: false, sublanes: [], custom_list_ids: []
+    };
+    findLaneForIdentifier.returns(newSublane);
+    findParentOfLane.returns(lanesData[0]);
+    lanesData[0].sublanes = [sublaneData, newSublane];
+    let dragNewSublane = { draggableId: "5", source: { index: 1, droppableId: "1" }};
+    // pick up Sublane 2
+    wrapper.instance().onDragStart(dragNewSublane);
+    expect(drag.callCount).to.equal(1);
+    expect(drag.args[0][0]).to.eql({ draggableId: "5", draggingFrom: "1" });
+    // drop it before Sublane 1
+    wrapper.instance().onDragEnd({...dragNewSublane,  ...{destination: { droppableId: "1", index: 0 }}});
+    expect(drag.callCount).to.equal(2);
+    expect(drag.args[1][0].draggableId).to.be.null;
+    expect(drag.args[1][0].draggingFrom).to.be.null;
+    expect(drag.args[1][0].orderChanged).to.be.true;
+    expect(drag.args[1][0].lanes[0].sublanes).to.eql([newSublane, sublaneData]);
+  });
+
+  it("drops a lane back into its original position", () => {
+    wrapper.instance().onDragEnd({ draggableId: "1", source: { index: 0, droppableId: "top" }, destination: { index: 0, droppableId: "top" }});
+    expect(drag.callCount).to.equal(0);
   });
 
   it("renders and expands and collapses lanes and sublanes", () => {
