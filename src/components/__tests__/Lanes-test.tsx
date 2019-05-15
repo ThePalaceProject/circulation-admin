@@ -166,19 +166,16 @@ describe("Lanes", () => {
 
     let save = orderInfo.find("button").findWhere(el => el.text() === "Save Order Changes");
     expect(save.length).to.equal(1);
-    let reset = orderInfo.find(".cancel-order-changes");
+    let reset = orderInfo.find("button").findWhere(el => el.text() === "Cancel");
     expect(reset.length).to.equal(1);
   });
 
-  it("renders create form", () => {
+  it("renders create form by default", () => {
+    expect(wrapper.instance().props.editOrCreate).to.equal("create");
     let editor = wrapper.find(LaneEditor);
-    expect(editor.length).to.equal(0);
-
-    wrapper.setProps({ editOrCreate: "create" });
-    editor = wrapper.find(LaneEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
-    expect(editor.props().findParent()).to.equal(null);
+    expect(editor.props().findParentOfLane()).to.equal(null);
     expect(editor.props().customLists).to.equal(customListsData);
     expect(editor.props().editLane).to.be.ok;
 
@@ -186,21 +183,18 @@ describe("Lanes", () => {
     editor = wrapper.find(LaneEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
-    expect(editor.props().findParent()).to.equal(sublaneData);
+    expect(editor.props().findParentOfLane()).to.equal(sublaneData);
     expect(editor.props().customLists).to.equal(customListsData);
     expect(editor.props().editLane).to.be.ok;
   });
 
   it("renders edit form", () => {
-    let editor = wrapper.find(LaneEditor);
-    expect(editor.length).to.equal(0);
-
     wrapper.setProps({ editOrCreate: "edit", identifier: "2" });
-    editor = wrapper.find(LaneEditor);
+    let editor = wrapper.find(LaneEditor);
     expect(editor.length).to.equal(1);
     expect(editor.props().library).to.equal("library");
     expect(editor.props().lane).to.deep.equal(sublaneData);
-    expect(editor.props().findParent(editor.props().lane)).to.deep.equal(lanesData[0]);
+    expect(editor.props().findParentOfLane(editor.props().lane)).to.deep.equal(lanesData[0]);
     expect(editor.props().customLists).to.deep.equal(customListsData);
     expect(editor.props().editLane).to.be.ok;
     expect(editor.props().deleteLane).to.be.ok;
@@ -229,11 +223,25 @@ describe("Lanes", () => {
     expect(resetLanes.callCount).to.equal(0);
 
     editableInputStub.returns("RESET");
+    wrapper.setState({ canReset: true });
     resetButton.simulate("click");
     expect(resetLanes.callCount).to.equal(1);
     expect(fetchLanes.callCount).to.equal(2);
 
     editableInputStub.restore();
+  });
+
+  it("updates the state to determine whether the lanes can be reset", () => {
+    mountWrapper();
+    wrapper.setProps({ editOrCreate: "reset" });
+    expect(wrapper.state()["canReset"]).to.be.false;
+    let button = wrapper.find(".reset button");
+    expect(button.prop("disabled")).to.be.true;
+    let input = wrapper.find(".reset input");
+    input.get(0).value = "RESET";
+    input.simulate("change");
+    expect(wrapper.state()["canReset"]).to.be.true;
+    expect(button.prop("disabled")).not.to.be.true;
   });
 
   it("prevents dragging a lane out of its parent", () => {
@@ -255,7 +263,7 @@ describe("Lanes", () => {
     mountWrapper();
 
     // simulate starting a drag of lane1
-    (wrapper.instance() as Lanes).onDragStart({
+    (wrapper.instance() as Lanes).drag({
       draggableId: "1",
       source: {
         droppableId: "top"
@@ -278,7 +286,7 @@ describe("Lanes", () => {
     expect(sublane2Droppable.props().isDropDisabled).to.be.true;
 
     // now simulate dragging sublane 2
-    (wrapper.instance() as Lanes).onDragStart({
+    (wrapper.instance() as Lanes).drag({
       draggableId: "2",
       source: {
         droppableId: "1"
@@ -292,26 +300,18 @@ describe("Lanes", () => {
 
   it("drags a top-level lane", () => {
     mountWrapper();
-
     // simulate starting a drag of lane1
-    (wrapper.instance() as Lanes).onDragStart({
+    (wrapper.instance() as Lanes).drag({
       draggableId: "1",
-      source: {
-        droppableId: "top"
-      }
+      droppableId: "top"
     });
 
     // simulate dropping below lane 4
-    (wrapper.instance() as Lanes).onDragEnd({
-      draggableId: "1",
-      source: {
-        droppableId: "top",
-        index: 0
-      },
-      destination: {
-        droppableId: "top",
-        index: 1
-      }
+    (wrapper.instance() as Lanes).drag({
+      draggableId: null,
+      droppableId: null,
+      lanes: [lanesData[1], lanesData[0]],
+      orderChanged: true
     });
 
     let topLevelLanes = getTopLevelLanes();
@@ -334,27 +334,21 @@ describe("Lanes", () => {
       { id: 4, display_name: "lane 4", visible: true, count: 1, sublanes: [],
         custom_list_ids: [], inherit_parent_restrictions: false }
     ];
+    let rearrangedLane = {...lanesData[1], ...{sublanes: [newSublaneData, sublaneData]}};
     mountWrapper();
 
     // simulate starting a drag of sublane 5
-    (wrapper.instance() as Lanes).onDragStart({
+    (wrapper.instance() as Lanes).drag({
       draggableId: "5",
-      source: {
-        droppableId: "1"
-      }
+      droppableId: "1"
     });
 
     // simulate dropping above sublane 2
-    (wrapper.instance() as Lanes).onDragEnd({
-      draggableId: "5",
-      source: {
-        droppableId: "1",
-        index: 1
-      },
-      destination: {
-        droppableId: "1",
-        index: 0
-      }
+    (wrapper.instance() as Lanes).drag({
+      draggableId: null,
+      droppableId: null,
+      orderChanged: true,
+      lanes: [rearrangedLane, lanesData[1]]
     });
 
     let topLevelLanes = getTopLevelLanes();
@@ -381,7 +375,7 @@ describe("Lanes", () => {
     mountWrapper();
     wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
 
-    let cancelOrderChangesButton = wrapper.find(".cancel-order-changes");
+    let cancelOrderChangesButton = wrapper.find("button").findWhere(el => el.text() === "Cancel");
     cancelOrderChangesButton.simulate("click");
     expect(wrapper.state().orderChanged).to.equal(false);
     expect(wrapper.state().lanes).to.deep.equal(lanesData);

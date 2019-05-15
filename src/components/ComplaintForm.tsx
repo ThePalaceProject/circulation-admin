@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
+import { Button } from "library-simplified-reusable-components";
 
 export interface ComplaintFormProps {
   disabled?: boolean;
@@ -35,7 +36,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
 
     return (
       <div className="complaint-form">
-        <form onSubmit={this.post} className="form-inline">
+        <form onSubmit={this.post}>
           <fieldset>
             <legend>Add Complaint</legend>
             { this.state.errors.map((error, i) =>
@@ -51,7 +52,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
               { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
             </EditableInput> &nbsp;
           </fieldset>
-          <input className="btn btn-default" type="submit" value="Submit" disabled={this.props.disabled} />
+          <Button callback={() => {}} disabled={this.props.disabled} />
         </form>
       </div>
     );

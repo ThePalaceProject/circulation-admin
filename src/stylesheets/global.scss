@@ -34,3 +34,11 @@
 .btn.inverted:hover {
   color: $white;
 }
+
+.breadcrumbs-or-search-wrapper {
+  .search {
+    button {
+      margin-top: 0;
+    }
+  }
+}

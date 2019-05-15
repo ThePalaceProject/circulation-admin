@@ -18,7 +18,7 @@ export interface LaneProps {
   toggleLaneVisibility: (lane: LaneData, shouldBeVisible: boolean) => Promise<void>;
   parent?: LaneData;
   library: string;
-  renderSublanes: (lanes: LaneData[], parent: LaneData | null) => JSX.Element;
+  renderLanes: (lanes: LaneData[], parent: LaneData | null) => JSX.Element;
 }
 
 export interface LaneState {
@@ -27,6 +27,7 @@ export interface LaneState {
 }
 
 export default class Lane extends React.Component<LaneProps, LaneState> {
+  // Individual list elements appearing in the sidebar on the Lane Manager page
   constructor(props: LaneProps) {
     super(props);
     // Top-level lanes start out expanded.
@@ -35,28 +36,28 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
     this.toggleVisible = this.toggleVisible.bind(this);
     this.renderVisibilityToggle = this.renderVisibilityToggle.bind(this);
     this.renderButton = this.renderButton.bind(this);
-    this.renderSublanes = this.renderSublanes.bind(this);
   }
 
   render(): JSX.Element {
-    let hasSublanes = this.props.lane.sublanes && !!this.props.lane.sublanes.length;
-    let hasCustomLists = this.props.lane.custom_list_ids && !!this.props.lane.custom_list_ids.length;
+    let {lane, active, snapshot, provided, orderChanged, toggleLaneVisibility, parent, library, renderLanes} = this.props;
+    let hasSublanes = lane.sublanes && !!lane.sublanes.length;
+    let hasCustomLists = lane.custom_list_ids && !!lane.custom_list_ids.length;
 
     return (
-      <li key={this.props.lane.id}>
+      <li key={lane.id}>
         <div
-          className={(this.props.snapshot && this.props.snapshot.isDragging ? "dragging " : " ") + (this.props.active ? "active" : "")}
-          ref={this.props.provided && this.props.provided.innerRef}
-          style={this.props.provided && this.props.provided.draggableStyle}
-          {...(this.props.provided ? this.props.provided.dragHandleProps : {})}
+          className={(snapshot && snapshot.isDragging ? "dragging " : " ") + (active ? "active" : "")}
+          ref={provided && provided.innerRef}
+          style={provided && provided.draggableStyle}
+          {...(provided ? provided.dragHandleProps : {})}
         >
-          <div className={"lane-info" + (this.props.provided ? " draggable" : "")}>
+          <div className={"lane-info" + (provided ? " draggable" : "")}>
             <span>
-              { this.props.snapshot && <GrabIcon /> }
+              { snapshot && <GrabIcon /> }
               <div className={this.state.expanded ? "collapse-button" :  "expand-button"} onClick={this.toggleExpanded}>
                 <PyramidIcon />
               </div>
-              { this.props.lane.display_name + " (" + this.props.lane.count + ")" }
+              { lane.display_name + " (" + lane.count + ")" }
             </span>
             { this.renderVisibilityToggle() }
           </div>
@@ -66,9 +67,9 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
           { this.renderButton("create") }
           </div>
         }
-        { this.state.expanded && hasSublanes && this.props.renderSublanes(this.props.lane.sublanes, this.props.lane) }
+        { this.state.expanded && hasSublanes && renderLanes(lane.sublanes, lane) }
         </div>
-        { this.props.provided && this.props.provided.placeholder }
+        { provided && provided.placeholder }
       </li>
     );
   }
@@ -103,15 +104,6 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
       >{content}</Link>
     );
     return button;
-  }
-
-  renderSublanes(): JSX.Element {
-    let sublanes = [];
-    this.props.lane.sublanes.map((sublane) => {
-      let el = React.createElement(Lane, Object.assign({}, this.props, {lane: sublane, parent: this.props.lane}));
-      sublanes.push(el);
-    });
-    return <ul className="droppable">{sublanes}</ul>;
   }
 
   toggleExpanded(): void {
