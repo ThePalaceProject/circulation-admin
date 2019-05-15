@@ -1,8 +1,14 @@
 ## Changelog
 
-### v0.2.2
+### v0.2.3
 #### Updated
 - Refactored the Lanes code, and added a button to cancel resetting the lanes.
+
+### v0.2.2
+#### Updated
+- Improved Nightwatch tests with Page Objects.
+#### Fixed
+- Alignment of the global search button and the layout for the complaints tab for a book, including updating an input to a Button component.
 
 ### v0.2.1
 #### Updated
