@@ -8,21 +8,11 @@
     position: relative;
     overflow-y: hidden;
     padding-bottom: 10px;
-    .btn {
-      margin: .5em 0;
-      &:not(.inverted) {
-        color: white;
-      }
-      &.inline {
-        display: inline-block;
-        margin-left: 6px;
-      }
-      svg {
-        float: unset;
-        vertical-align: unset;
-        height: .9em;
-        margin-left: .5em;
-      }
+    svg {
+      float: unset;
+      vertical-align: unset;
+      height: .9em;
+      margin-left: .5em;
     }
   }
 
@@ -77,7 +67,7 @@
 
         &:nth-child(2) {
           .btn {
-            width: 49%;
+            width: 50%;
           }
         }
       }

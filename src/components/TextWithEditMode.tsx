@@ -53,7 +53,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
             { this.state.text }
             <Button
               callback={this.startEditMode}
-              className="inverted inline"
+              className="inverted inline small"
               content={<span>Edit {this.props.placeholder} <PencilIcon /></span>}
             />
           </h3>

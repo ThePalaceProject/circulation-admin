@@ -184,7 +184,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   <span>Remove all currently visible items from list:
                   </span>
                   <Button
-                    className="btn-danger delete-all-button"
+                    className="btn-danger delete-all-button top-align"
                     callback={this.deleteAll}
                     content={<span>Delete<TrashIcon /></span>}
                   />
@@ -221,6 +221,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               <div className="links">
                                 {this.getCatalogLink(book)}
                                 <Button
+                                  className="small right-align"
                                   callback={() => { this.delete(book.id); }}
                                   content={<span>Remove from list<TrashIcon /></span>}
                                 />
@@ -312,7 +313,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         bookUrl={book.url}
         title={book.title}
         target="_blank"
-        className="btn inverted"
+        className="btn inverted left-align small"
       >
         View details
       </CatalogLink>
