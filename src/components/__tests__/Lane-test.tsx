@@ -38,14 +38,8 @@ describe("Lane", () => {
   });
 
   it("renders create sublane link", () => {
-    // If the lane isn't expanded, the create link isn't shown.
-    wrapper.setState({ expanded: false });
+    // The lane starts out expanded by default, so the create link is already showing.
     let createSublane = wrapper.find(Link).filterWhere((el) => el.find("a").hasClass("create-lane"));
-    expect(createSublane.length).to.equal(0);
-
-    wrapper.setState({ expanded: true });
-
-    createSublane = wrapper.find(Link).filterWhere((el) => el.find("a").hasClass("create-lane"));
     expect(createSublane.length).to.equal(1);
     expect(createSublane.prop("to")).to.equal("/admin/web/lanes/test_library/create/1");
     expect(createSublane.hasClass("disabled")).to.be.false;
@@ -56,16 +50,16 @@ describe("Lane", () => {
     expect(createSublane.length).to.equal(1);
     expect(createSublane.prop("to")).to.be.null;
     expect(createSublane.hasClass("disabled")).to.be.true;
+
+    // If the lane isn't expanded, the create link isn't shown.
+    wrapper.setState({ expanded: false });
+    createSublane = wrapper.find(Link).filterWhere((el) => el.find("a").hasClass("create-lane"));
+    expect(createSublane.length).to.equal(0);
   });
 
   it("renders edit link", () => {
-    wrapper.setState({ expanded: false });
+    // The lane starts out expanded by default, so the edit link is already showing.
     let editSublane = wrapper.find(Link).filterWhere((el) => el.find("a").hasClass("edit-lane"));
-    expect(editSublane.length).to.equal(0);
-
-    wrapper.setState({ expanded: true });
-
-    editSublane = wrapper.find(Link).filterWhere((el) => el.find("a").hasClass("edit-lane"));
     expect(editSublane.length).to.equal(1);
     expect(editSublane.prop("to")).to.equal("/admin/web/lanes/test_library/edit/1");
     expect(editSublane.hasClass("disabled")).to.be.false;
@@ -82,6 +76,11 @@ describe("Lane", () => {
     expect(editSublane.length).to.equal(1);
     expect(editSublane.prop("to")).to.be.null;
     expect(editSublane.hasClass("disabled")).to.be.true;
+
+    // If the lane isn't expanded, the edit link isn't shown.
+    wrapper.setState({ expanded: false });
+    editSublane = wrapper.find(Link).filterWhere((el) => el.find("a").hasClass("edit-lane"));
+    expect(editSublane.length).to.equal(0);
   });
 
   it("shows a lane", () => {
@@ -107,7 +106,7 @@ describe("Lane", () => {
     showButton.simulate("click");
     expect(wrapper.state()["visible"]).to.be.false;
 
-    // If lane order has changed, no lanes can be shown
+    // If lane order has changed, all of the show buttons are disabled.
     wrapper.setProps({ parent: null, orderChanged: true });
     wrapper.setState({ visible: false });
     showButton = wrapper.find(".show-lane");
@@ -125,7 +124,7 @@ describe("Lane", () => {
     hideButton.simulate("click");
     expect(wrapper.state()["visible"]).to.be.false;
 
-    // If lane order has changed, no lanes can be hidden
+    // If lane order has changed, all of the hide buttons are disabled.
     wrapper.setProps({ orderChanged: true });
     wrapper.setState({ visible: true });
     hideButton = wrapper.find(".hide-lane");

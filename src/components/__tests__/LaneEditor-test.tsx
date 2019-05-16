@@ -86,7 +86,7 @@ describe("LaneEditor", () => {
     expect(info.text()).to.contain("hidden");
 
     wrapper.setProps({ findParentOfLane: stub().returns(hiddenLane) });
-    info = wrapper.find(".lane-editor-header");
+    info = wrapper.find(".lane-details");
     expect(info.length).to.equal(1);
     expect(info.text()).not.to.contain("visible");
     expect(info.text()).to.contain("hidden");

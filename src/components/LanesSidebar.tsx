@@ -14,7 +14,12 @@ import Lane from "./Lane";
 export interface LanesSidebarProps {
   orderChanged: boolean;
   library?: string;
-  drag: (newState: any) => void;
+  drag: (newState: {
+    "draggableId"?: string,
+    "draggingFrom"?: string,
+    "lanes"?: LaneData[],
+    "orderChanged"?: boolean
+  }) => void;
   lanes: LaneData[] | null;
   findLaneForIdentifier?: (lanes: LaneData[], identifier: string) => LaneData | null;
   findParentOfLane?: (lane: LaneData, lanes?: LaneData[]) => LaneData;

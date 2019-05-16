@@ -228,4 +228,111 @@ describe("LanesSidebar", () => {
     subLane1 = topLane1.find(Lane).at(0);
     expect(subLane1.length).to.equal(1);
   });
+
+  it("renders draggable sublanes only if there's more than one", () => {
+    // lane structure:
+    //        top
+    //       /   \
+    //      1     4
+    //     / \
+    //    2   5
+    //   /   / \
+    //  3   6   7
+    //      |
+    //      8
+    //
+    // top, 1, and 5 are the only lanes with draggable sublanes.
+    // 1, 2, 4, 5, 6, and 7 should be draggable.
+    let sublaneData: LaneData = {
+      id: 2, display_name: "sublane 2", visible: false, count: 3, sublanes: [subsublaneData],
+      custom_list_ids: [2], inherit_parent_restrictions: false
+    };
+
+    let sublane8Data: LaneData = {
+      id: 8, display_name: "sublane 8", visible: true, count: 6, sublanes: [],
+      custom_list_ids: [2], inherit_parent_restrictions: false
+    };
+    let sublane6Data: LaneData = {
+      id: 6, display_name: "sublane 6", visible: true, count: 6, sublanes: [sublane8Data],
+      custom_list_ids: [2], inherit_parent_restrictions: false
+    };
+    let sublane7Data: LaneData = {
+      id: 7, display_name: "sublane 7", visible: true, count: 6, sublanes: [],
+      custom_list_ids: [2], inherit_parent_restrictions: false
+    };
+    let sublane5Data: LaneData = {
+      id: 5, display_name: "sublane 5", visible: true, count: 6, sublanes: [sublane6Data, sublane7Data],
+      custom_list_ids: [2], inherit_parent_restrictions: false
+    };
+    lanesData = [
+      { id: 1, display_name: "lane 1", visible: true, count: 5,
+        sublanes: [sublaneData, sublane5Data], custom_list_ids: [1], inherit_parent_restrictions: true },
+      { id: 4, display_name: "lane 4", visible: true, count: 1, sublanes: [],
+        custom_list_ids: [], inherit_parent_restrictions: false }
+    ];
+
+    let allChildren = (lane) => {
+      return lane.find(Lane).find(".lane-info");
+    };
+    let draggableChildren = (lane) => {
+      return lane.children(Droppable).children(Draggable).children("div");
+    };
+    let expand = (lane) => {
+      lane.find(".expand-button").at(0).props().onClick();
+    };
+    let isDraggable = (lane) => {
+      return lane.find(".lane-info").at(0).hasClass("draggable");
+    };
+
+    wrapper.setProps({ lanes: lanesData });
+
+    let lane1 = getTopLevelLanes().at(0);
+    expect(isDraggable(lane1)).to.be.true;
+    // Lane 1 has two children (Sublane 2 and Sublane 5), which are draggable.
+    let lane1Children = draggableChildren(lane1);
+    expect(lane1Children.length).to.equal(2);
+    expect(allChildren(lane1).length).to.equal(2);
+
+    let sublane2 = lane1Children.at(0);
+    expect(isDraggable(sublane2)).to.be.true;
+    expand(sublane2);
+    expect(sublane2.text()).to.contain("sublane 2");
+    // Sublane 2 has a child (Sublane 3).
+    expect(allChildren(sublane2).length).to.equal(1);
+    // But because it's the only one, it's not draggable.
+    expect(draggableChildren(sublane2).length).to.equal(0);
+
+    let sublane5 = lane1Children.at(1);
+    expect(isDraggable(sublane5)).to.be.true;
+    expand(sublane5);
+    expect(sublane5.text()).to.contain("sublane 5");
+    // Sublane 5 has two children (Sublane 6 and Sublane 7).
+    expect(allChildren(sublane5).length).to.equal(2);
+    // Both of them are draggable.
+    let sublane5Children = draggableChildren(sublane5);
+    expect(sublane5Children.length).to.equal(2);
+
+    let sublane6 = sublane5Children.at(0);
+    expect(isDraggable(sublane6)).to.be.true;
+    expand(sublane6);
+    expect(sublane6.text()).to.contain("sublane 6");
+    // Sublane 6 has a child (Sublane 8).
+    expect(allChildren(sublane6).length).to.equal(1);
+    // But it's the only one, so it's not draggable.
+    expect(draggableChildren(sublane6).length).to.equal(0);
+
+    let sublane7 = sublane5Children.at(1);
+    expect(isDraggable(sublane7)).to.be.true;
+    expand(sublane7);
+    expect(sublane7.text()).to.contain("sublane 7");
+    // Sublane 7 doesn't have children.
+    expect(allChildren(sublane7).length).to.equal(0);
+    expect(draggableChildren(sublane7).length).to.equal(0);
+
+    let lane4 = getTopLevelLanes().at(1);
+    expect(isDraggable(lane4)).to.be.true;
+    // Lane 4 doesn't have children.
+    expect(allChildren(lane4).length).to.equal(0);
+    expect(draggableChildren(lane4).length).to.equal(0);
+  });
 });
