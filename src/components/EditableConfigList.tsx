@@ -167,7 +167,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     return (
       <li key={index}>
         <a
-          className="btn btn-default edit-item"
+          className="btn small edit-item"
           href={this.urlBase + "edit/" + item[this.identifierKey]}
         >
           <span>
@@ -180,7 +180,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
         {this.canDelete() &&
           <Button
-            className="btn-danger delete-item"
+            className="btn-danger delete-item small"
             callback={() => this.delete(item) }
             content={<span>Delete<TrashIcon /></span>}
           />
