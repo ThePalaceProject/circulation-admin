@@ -130,13 +130,11 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.lane && (!nextProps.lane || nextProps.lane.id !== this.props.lane.id) ) {
-      this.setState({
-        name: nextProps.lane && nextProps.lane.display_name,
-        customListIds: nextProps.lane && nextProps.lane.custom_list_ids || [],
-        inheritParentRestrictions: nextProps.lane && nextProps.lane.inherit_parent_restrictions
-      });
-    }
+    this.setState({
+      name: nextProps.lane && nextProps.lane.display_name,
+      customListIds: nextProps.lane && nextProps.lane.custom_list_ids || [],
+      inheritParentRestrictions: nextProps.lane && nextProps.lane.inherit_parent_restrictions
+    });
   }
 
   hasChanges(): boolean {
