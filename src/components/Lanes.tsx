@@ -72,8 +72,8 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     this.saveOrder = this.saveOrder.bind(this);
     this.orderChanged = this.orderChanged.bind(this);
     this.findLaneForIdentifier = this.findLaneForIdentifier.bind(this);
+    this.getLane = this.getLane.bind(this);
     this.findParentOfLane = this.findParentOfLane.bind(this);
-    this.parentOfNewLane = this.parentOfNewLane.bind(this);
     this.toggleLaneVisibility = this.toggleLaneVisibility.bind(this);
     this.checkReset = this.checkReset.bind(this);
 
@@ -135,9 +135,10 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         callback={this.saveOrder}
         disabled={this.props.isFetching}
         content="Save Order Changes"
+        className="save-lane-order-changes"
       />
       <Button
-        className="inverted"
+        className="inverted cancel-lane-order-changes"
         callback={this.resetOrder}
         content="Cancel"
       />
@@ -154,11 +155,11 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     };
     let extraProps = {
       "create": {
-        findParentOfLane: this.parentOfNewLane,
+        findParentOfLane: this.getLane,
         responseBody: this.props.responseBody
       },
       "edit": {
-        lane: this.laneToEdit(),
+        lane: this.getLane(),
         findParentOfLane: this.findParentOfLane,
         deleteLane: this.deleteLane,
         toggleLaneVisibility: this.toggleLaneVisibility
@@ -268,15 +269,8 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     return null;
   }
 
-  laneToEdit(): LaneData | null {
-    if (this.props.editOrCreate === "edit" && this.props.lanes) {
-      return this.findLaneForIdentifier(this.props.lanes, this.props.identifier);
-    }
-    return null;
-  }
-
-  parentOfNewLane(): LaneData | null {
-    if (this.props.editOrCreate === "create" && this.props.lanes) {
+  getLane(): LaneData | null {
+    if (this.props.lanes) {
       return this.findLaneForIdentifier(this.props.lanes, this.props.identifier);
     }
     return null;
@@ -287,23 +281,20 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       lanes = this.state.lanes || [];
     }
     for (const possibleParent of lanes) {
-      if (possibleParent.sublanes.find(child => child["id"] === lane.id)) {
+      if (lane && possibleParent.sublanes.find(child => child["id"] === lane.id)) {
         return possibleParent;
       }
-      else {
-        let sublaneParent = this.findParentOfLane(lane, possibleParent.sublanes);
-        if (sublaneParent) {
-          return sublaneParent;
-        }
+      // If we didn't find the parent in this level of lanes, then go one level down and look again.
+      let sublaneParent = this.findParentOfLane(lane, possibleParent.sublanes);
+      if (sublaneParent) {
+        return sublaneParent;
       }
     }
     return null;
   }
 
   drag(newState) {
-    // console.log(newState);
     this.setState({...this.state, ...newState});
-    // console.log(this.state);
   }
 }
 

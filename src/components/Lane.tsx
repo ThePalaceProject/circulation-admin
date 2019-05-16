@@ -26,8 +26,8 @@ export interface LaneState {
   visible: boolean;
 }
 
+// Individual list elements appearing in the sidebar on the Lane Manager page
 export default class Lane extends React.Component<LaneProps, LaneState> {
-  // Individual list elements appearing in the sidebar on the Lane Manager page
   constructor(props: LaneProps) {
     super(props);
     // Top-level lanes start out expanded.
