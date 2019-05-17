@@ -89,7 +89,7 @@ describe("ClassificationsForm", () => {
 
     it("should not allow you to submit if you didn't select an audience or a fiction classification",
       () => {
-        let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+        let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
         button.simulate("click");
 
         expect(wrapper.state().audience).to.equal("None");

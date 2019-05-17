@@ -167,7 +167,7 @@ export default class ClassificationsForm extends React.Component<Classifications
             </div>
           }
         />
-        <Button callback={this.submit} content="Save" />
+        <Button callback={this.submit} content="Save" className="classification-save-btn" />
       </fieldset>
     );
   }
