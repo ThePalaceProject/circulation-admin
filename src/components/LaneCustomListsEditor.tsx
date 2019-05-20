@@ -147,7 +147,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
     const lists = [];
     for (const list of this.props.allCustomLists || []) {
       let found = false;
-      for (const listId of this.state.customListIds) {
+      for (const listId of this.getCustomListIds()) {
         if (list.id === listId) {
           found = true;
           break;
@@ -163,7 +163,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   listsInLane(): CustomListData[] {
     const lists = [];
     for (const list of this.props.allCustomLists || []) {
-      for (const listId of this.state.customListIds) {
+      for (const listId of this.getCustomListIds()) {
         if (list.id === listId) {
           lists.push(list);
         }
@@ -173,7 +173,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   }
 
   add(listId) {
-    const customListIds = this.state.customListIds.slice(0);
+    const customListIds = this.getCustomListIds();
     customListIds.push(parseInt(String(listId), 10));
     this.setState({ draggingFrom: null, customListIds });
     if (this.props.onUpdate) {
@@ -182,7 +182,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   }
 
   remove(listId) {
-    let customListIds = this.state.customListIds.slice(0);
+    let customListIds = this.getCustomListIds();
     customListIds = customListIds.filter(id => id !== listId);
     this.setState({ draggingFrom: null, customListIds });
     if (this.props.onUpdate) {
@@ -190,18 +190,21 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
     }
   }
 
-  reset() {
+  reset(ids: number[]) {
+    console.log(this.props.customListIds);
     this.setState({
       draggingFrom: null,
-      customListIds: this.props.customListIds || []
+      customListIds: ids
     });
     if (this.props.onUpdate) {
-      this.props.onUpdate(this.props.customListIds || []);
+      this.props.onUpdate(ids);
     }
   }
 
   getCustomListIds(): number[] {
-    return this.state.customListIds;
+    let ids = this.state.customListIds.slice(0).concat(this.props.customListIds || []);
+    let uniqueIds = ids.filter((id, idx) => ids.indexOf(id) === idx);
+    return uniqueIds;
   }
 
   onDragStart(initial) {
