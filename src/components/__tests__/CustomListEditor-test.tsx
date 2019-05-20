@@ -399,7 +399,7 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
     let input = wrapper.find(".form-control") as any;
-    input.get(0).value = "test";
+    input.getDOMNode().value = "test";
 
     let searchForm = wrapper.find("form");
     searchForm.simulate("submit");
@@ -428,7 +428,7 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
     let textInput = wrapper.find(".form-control") as any;
-    textInput.get(0).value = "harry potter";
+    textInput.getDOMNode().value = "harry potter";
     let radioInput = wrapper.find(".entry-points-selection input") as any;
     const bookInput = radioInput.at(1);
     let searchForm = wrapper.find("form");
@@ -463,7 +463,7 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
     let textInput = wrapper.find(".form-control") as any;
-    textInput.get(0).value = "oliver twist";
+    textInput.getDOMNode().value = "oliver twist";
     let radioInput = wrapper.find(".entry-points-selection input") as any;
     const audioInput = radioInput.at(2);
     let searchForm = wrapper.find("form");
@@ -503,19 +503,19 @@ describe("CustomListEditor", () => {
     const audioInput = radioInput.at(2);
     let textInput = wrapper.find(".form-control") as any;
 
-    textInput.get(0).value = "oliver twist";
+    textInput.getDOMNode().value = "oliver twist";
     audioInput.checked = true;
     audioInput.simulate("change");
 
     expect(wrapper.props().list).to.deep.equal(listData);
-    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(textInput.getDOMNode().value).to.equal("oliver twist");
     expect(wrapper.state("entryPointSelected")).to.equal("Audio");
 
     // Update the component with a new list.
     wrapper.setProps({ identifier: "2", list: newList });
 
     expect(wrapper.props().list).to.deep.equal(newList);
-    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(textInput.getDOMNode().value).to.equal("oliver twist");
     expect(wrapper.state("entryPointSelected")).to.equal("Audio");
   });
 });

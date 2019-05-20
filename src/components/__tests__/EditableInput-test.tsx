@@ -99,7 +99,7 @@ describe("EditableInput", () => {
         />
     );
     let input = wrapper.find("input");
-    let inputElement = input.get(0) as any;
+    let inputElement = input.getDOMNode();
     inputElement.value = "new value";
     input.simulate("change");
     expect(wrapper.state().value).to.equal("new value");
@@ -116,7 +116,7 @@ describe("EditableInput", () => {
         />
     );
     input = wrapper.find("input");
-    inputElement = input.get(0) as any;
+    inputElement = input.getDOMNode();
     inputElement.checked = false;
     input.simulate("change");
     expect(wrapper.state().checked).to.equal(false);
@@ -133,7 +133,7 @@ describe("EditableInput", () => {
         />
     );
     input = wrapper.find("input");
-    inputElement = input.get(0) as any;
+    inputElement = input.getDOMNode();
     inputElement.checked = false;
     input.simulate("change");
     expect(wrapper.state().checked).to.equal(false);
@@ -169,7 +169,7 @@ describe("EditableInput", () => {
     );
 
     let input = wrapper.find("input");
-    let inputElement = input.get(0) as any;
+    let inputElement = input.getDOMNode();
     inputElement.value = "new value";
     input.simulate("change");
     expect(onChange.callCount).to.equal(1);
@@ -190,7 +190,7 @@ describe("EditableInput", () => {
     (wrapper.instance() as EditableInput).clear();
     expect(wrapper.state("value")).to.equal("");
     expect(wrapper.state("checked")).to.equal(false);
-    let inputElement = wrapper.find("input").get(0) as any;
+    let inputElement = wrapper.find("input").getDOMNode();
     expect(inputElement.value).to.equal("");
     expect(inputElement.checked).to.equal(false);
   });

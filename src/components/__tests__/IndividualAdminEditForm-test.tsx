@@ -542,12 +542,12 @@ describe("IndividualAdminEditForm", () => {
       // might as well write it out just once!
 
       let emailInput = wrapper.find("input[name='email']");
-      let emailInputElement = emailInput.get(0);
+      let emailInputElement = emailInput.getDOMNode();
       emailInputElement.value = "newEmail";
       emailInput.simulate("change");
 
       let pwInput = wrapper.find("input[name='password']");
-      let pwInputElement = pwInput.get(0);
+      let pwInputElement = pwInput.getDOMNode();
       pwInputElement.value = "newPassword";
       pwInput.simulate("change");
     };

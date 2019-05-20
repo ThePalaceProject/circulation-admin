@@ -98,7 +98,7 @@ describe("ClassificationsForm", () => {
       });
 
     it("should render error messages without an audience or a fiction classification", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
 
       button.simulate("click");
       let alert = wrapper.find(".alert-danger");
@@ -111,7 +111,7 @@ describe("ClassificationsForm", () => {
     });
 
     it("should not allow you to submit if you didn't select an audience", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
       let alert;
       wrapper.setState({ fiction: true });
 
@@ -121,7 +121,7 @@ describe("ClassificationsForm", () => {
       expect(alert.length).to.equal(1);
 
       let select = wrapper.find("select[name='audience']") as any;
-      let selectElement = select.get(0);
+      let selectElement = select.getDOMNode();
       selectElement.value = "Adult";
       select.simulate("change");
       button.simulate("click");
@@ -133,14 +133,14 @@ describe("ClassificationsForm", () => {
     });
 
     it("should not allow you to submit if you didn't select a fiction classification", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
       wrapper.setState({ audience: "Adult" });
 
       button.simulate("click");
       expect(editClassifications.callCount).to.equal(0);
 
       let nonfictionInput = wrapper.find("input[value='nonfiction']");
-      let nonfictionElement = nonfictionInput.get(0);
+      let nonfictionElement = nonfictionInput.getDOMNode();
       expect((nonfictionElement as any).checked).to.equal(false);
 
       (nonfictionElement as any).checked = true;
@@ -273,7 +273,7 @@ describe("ClassificationsForm", () => {
       expect(maxAgeInput.length).to.equal(1);
 
       let select = wrapper.find("select[name='audience']") as any;
-      let selectElement = select.get(0);
+      let selectElement = select.getDOMNode();
       selectElement.value = "Adult";
       select.simulate("change");
       minAgeInput = editableInputByName("target_age_min");
@@ -295,8 +295,8 @@ describe("ClassificationsForm", () => {
       expect(fictionInput.length).to.equal(1);
       expect(nonfictionInput.length).to.equal(1);
 
-      let fictionElement = fictionInput.get(0);
-      let nonfictionElement = nonfictionInput.get(0);
+      let fictionElement = fictionInput.getDOMNode();
+      let nonfictionElement = nonfictionInput.getDOMNode();
       expect((fictionElement as any).checked).to.equal(true);
       expect((nonfictionElement as any).checked).to.equal(false);
 
@@ -343,7 +343,7 @@ describe("ClassificationsForm", () => {
     });
 
     it("submits data when submit button is clicked", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save");
+      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
       button.simulate("click");
 
       let formData = new (window as any).FormData();

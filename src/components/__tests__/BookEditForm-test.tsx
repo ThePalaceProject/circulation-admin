@@ -239,8 +239,8 @@ describe("BookEditForm", () => {
     let addContributorRole = contributorRoles.at(3);
     let addButton = wrapper.find("button.add-contributor");
 
-    addContributorName.get(0).setState({ value: "New Author" });
-    addContributorRole.get(0).setState({ value: "Author" });
+    addContributorName.at(0).setState({ value: "New Author" });
+    addContributorRole.at(0).setState({ value: "Author" });
     addButton.simulate("click");
 
     contributorNames = editableInputByName("contributor-name");
