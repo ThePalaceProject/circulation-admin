@@ -5,7 +5,6 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
-
 import LaneCustomListsEditor from "../LaneCustomListsEditor";
 
 describe("LaneCustomListsEditor", () => {
@@ -225,7 +224,7 @@ describe("LaneCustomListsEditor", () => {
     expect(message.length).to.equal(0);
   });
 
-  it.only("drags from current lists to available lists", () => {
+  it("drags from current lists to available lists", () => {
     let wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
@@ -256,15 +255,17 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "available-lists"
       }
     });
+    wrapper.setProps({ customListIds: onUpdate.args[0][0] });
 
     // the dropped item has been removed from the current lists
     let currentContainer = wrapper.find(".current-lists");
     droppable = currentContainer.find(Droppable);
     let lists = droppable.find(Draggable);
+
     expect(lists.length).to.equal(1);
-    // expect(lists.at(0).text()).to.contain("list 2");
-    // expect(onUpdate.callCount).to.equal(1);
-    // expect(onUpdate.args[0][0]).to.deep.equal([2]);
+    expect(lists.at(0).text()).to.contain("list 2");
+    expect(onUpdate.callCount).to.equal(1);
+    expect(onUpdate.args[0][0]).to.deep.equal([2]);
   });
 
   it("adds a list to the lane", () => {
@@ -301,7 +302,7 @@ describe("LaneCustomListsEditor", () => {
 
     let deleteLink = wrapper.find(".current-lists .links a");
     deleteLink.at(0).simulate("click");
-
+    wrapper.setProps({customListIds: onUpdate.args[0][0]});
     // this list has been removed from the current lists
     let currentContainer = wrapper.find(".current-lists");
     let droppable = currentContainer.find(Droppable);
@@ -332,9 +333,11 @@ describe("LaneCustomListsEditor", () => {
       }
     });
 
+    wrapper.setProps({customListIds: onUpdate.args[0][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(2);
     expect(onUpdate.callCount).to.equal(1);
-    (wrapper.instance() as LaneCustomListsEditor).reset();
+    (wrapper.instance() as LaneCustomListsEditor).reset([1]);
+    wrapper.setProps({customListIds: onUpdate.args[1][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(1);
     expect(onUpdate.callCount).to.equal(2);
 
@@ -349,9 +352,11 @@ describe("LaneCustomListsEditor", () => {
       }
     });
 
+    wrapper.setProps({customListIds: onUpdate.args[2][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(0);
     expect(onUpdate.callCount).to.equal(3);
-    (wrapper.instance() as LaneCustomListsEditor).reset();
+    (wrapper.instance() as LaneCustomListsEditor).reset([1]);
+    wrapper.setProps({customListIds: onUpdate.args[3][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(1);
     expect(onUpdate.callCount).to.equal(4);
   });
