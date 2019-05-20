@@ -13,7 +13,6 @@ export interface LaneCustomListsEditorProps extends React.Props<LaneCustomListsE
 
 export interface LaneCustomListsEditorState {
   draggingFrom: string | null;
-  customListIds: number[];
 }
 
 /** Drag and drop interface for adding custom lists to a lane. */
@@ -22,8 +21,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   constructor(props) {
     super(props);
     this.state = {
-      draggingFrom: null,
-      customListIds: this.props.customListIds || []
+      draggingFrom: null
     };
 
     this.onDragStart = this.onDragStart.bind(this);
@@ -175,7 +173,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   add(listId) {
     const customListIds = this.getCustomListIds();
     customListIds.push(parseInt(String(listId), 10));
-    this.setState({ draggingFrom: null, customListIds });
+    this.setState({ draggingFrom: null });
     if (this.props.onUpdate) {
       this.props.onUpdate(customListIds);
     }
@@ -184,7 +182,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   remove(listId) {
     let customListIds = this.getCustomListIds();
     customListIds = customListIds.filter(id => id !== listId);
-    this.setState({ draggingFrom: null, customListIds });
+    this.setState({ draggingFrom: null });
     if (this.props.onUpdate) {
       this.props.onUpdate(customListIds);
     }
@@ -193,8 +191,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   reset(ids: number[]) {
     console.log(this.props.customListIds);
     this.setState({
-      draggingFrom: null,
-      customListIds: ids
+      draggingFrom: null
     });
     if (this.props.onUpdate) {
       this.props.onUpdate(ids);
@@ -202,15 +199,13 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   }
 
   getCustomListIds(): number[] {
-    let ids = this.state.customListIds.slice(0).concat(this.props.customListIds || []);
-    let uniqueIds = ids.filter((id, idx) => ids.indexOf(id) === idx);
-    return uniqueIds;
+    return this.props.customListIds || [];
   }
 
   onDragStart(initial) {
     document.body.classList.add("dragging");
     const source = initial.source;
-    this.setState({ draggingFrom: source.droppableId, customListIds: this.state.customListIds });
+    this.setState({ draggingFrom: source.droppableId });
   }
 
   onDragEnd(result) {
@@ -223,7 +218,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
     } else if (source.droppableId === "current-lists" && destination && destination.droppableId === "available-lists") {
       this.remove(draggableId);
     } else {
-      this.setState({ draggingFrom: null, customListIds: this.state.customListIds });
+      this.setState({ draggingFrom: null });
     }
 
     document.body.classList.remove("dragging");
