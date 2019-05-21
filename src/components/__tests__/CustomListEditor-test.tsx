@@ -206,10 +206,11 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    const saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
+    let saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
     expect(saveButton.props().disabled).to.equal(true);
 
     wrapper.setState({ title: "list title" });
+    saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
 
     expect(saveButton.props().disabled).to.equal(false);
   });
@@ -285,6 +286,8 @@ describe("CustomListEditor", () => {
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as CustomListEditor).changeTitle("new name");
+    wrapper.update();
+
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
@@ -294,14 +297,18 @@ describe("CustomListEditor", () => {
     expect(listEntriesReset.callCount).to.equal(1);
 
     (wrapper.instance() as CustomListEditor).changeTitle(listData.title);
+    wrapper.update();
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as CustomListEditor).changeCollection(collections[0]);
+    wrapper.update();
+
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
     this.clock.tick(200);
+    wrapper.update();
 
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(0);
@@ -327,6 +334,8 @@ describe("CustomListEditor", () => {
     (wrapper.instance() as CustomListEditor).changeEntries(
       [{ id: "1234", title: "a", authors: [] }]
     );
+    wrapper.update();
+
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
@@ -337,6 +346,8 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
 
     (wrapper.instance() as CustomListEditor).changeEntries(listData.books);
+    wrapper.update();
+
     let buttons = wrapper.find(".save-or-cancel-list").find(Button);
     expect(buttons.length).to.equal(1);
 
@@ -370,11 +381,13 @@ describe("CustomListEditor", () => {
     expect(inputs.at(1).props().checked).to.equal(true);
 
     inputs.at(0).props().onChange();
+    wrapper.update();
     inputs = wrapper.find(EditableInput);
     expect(inputs.at(0).props().checked).to.equal(true);
     expect(inputs.at(1).props().checked).to.equal(true);
 
     inputs.at(1).props().onChange();
+    wrapper.update();
     inputs = wrapper.find(EditableInput);
     expect(inputs.at(0).props().checked).to.equal(true);
     expect(inputs.at(1).props().checked).to.equal(false);

@@ -326,7 +326,10 @@ describe("ClassificationsForm", () => {
       expect(newGenres[0]).not.to.contain("Erotica");
 
       instance.validateAudience = stub().returns(true);
+      expect(instance.validateAudience.callCount).to.equal(0);
+
       instance.addGenre("Folklore");
+      wrapper.update();
 
       expect(instance.validateAudience.callCount).to.equal(1);
       newGenres = wrapper.find(WithRemoveButton).map(name => name.text());
@@ -337,6 +340,7 @@ describe("ClassificationsForm", () => {
       let button = wrapper.find(WithRemoveButton);
       let onRemove = button.props().onRemove;
       onRemove();
+      wrapper.update();
 
       let newGenres = wrapper.find(WithRemoveButton);
       expect(newGenres.length).to.equal(0);

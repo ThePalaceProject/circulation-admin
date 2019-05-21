@@ -181,7 +181,7 @@ describe("BookEditForm", () => {
     });
   });
 
-  it("removes a contributor", () => {
+  it("removes a contributor", async () => {
     let editBook = stub();
     wrapper = mount(
       <BookEditForm
@@ -199,7 +199,9 @@ describe("BookEditForm", () => {
     expect(removables.length).to.equal(3);
     let firstNarrator = removables.at(1);
     let onRemove = firstNarrator.prop("onRemove");
+
     onRemove();
+    wrapper.update();
 
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
