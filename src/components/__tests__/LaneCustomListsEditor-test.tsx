@@ -333,10 +333,13 @@ describe("LaneCustomListsEditor", () => {
       }
     });
 
+    // Set customListIds to the new array of list IDs for this lane ([1, 2]), which got passed to
+    // onUpdate when we added list 2 to the current lists
     wrapper.setProps({customListIds: onUpdate.args[0][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(2);
     expect(onUpdate.callCount).to.equal(1);
     (wrapper.instance() as LaneCustomListsEditor).reset([1]);
+    // Calling reset passes the original array of list IDs ([1]) to onUpdate
     wrapper.setProps({customListIds: onUpdate.args[1][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(1);
     expect(onUpdate.callCount).to.equal(2);
@@ -352,10 +355,13 @@ describe("LaneCustomListsEditor", () => {
       }
     });
 
+    // Set customListIds to the new array of list IDs for this lane ([]), which got passed to
+    // onUpdate when we removed list 1 from the current lists
     wrapper.setProps({customListIds: onUpdate.args[2][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(0);
     expect(onUpdate.callCount).to.equal(3);
     (wrapper.instance() as LaneCustomListsEditor).reset([1]);
+    // Calling reset passes the original array of list IDs ([1]) to onUpdate
     wrapper.setProps({customListIds: onUpdate.args[3][0]});
     expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(1);
     expect(onUpdate.callCount).to.equal(4);

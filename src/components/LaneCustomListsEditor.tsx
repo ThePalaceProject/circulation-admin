@@ -189,7 +189,6 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
   }
 
   reset(ids: number[]) {
-    console.log(this.props.customListIds);
     this.setState({
       draggingFrom: null
     });
