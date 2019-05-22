@@ -1,6 +1,6 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Web Front-end for Library Simplified Circulation Manager Admin Interface",
   "repository": {
     "type": "git",
@@ -9,6 +9,10 @@
   "main": "dist/circulation-web.js",
   "author": "NYPL",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.0.0"
+  },
   "scripts": {
     "prepublish": "npm run prod",
     "lint": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && sass-lint -c .sass-lint.yml -v -q",
