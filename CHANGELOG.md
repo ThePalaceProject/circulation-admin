@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.3
+#### Updated
+- Specified the node and npm version in package.json.
+
 ### v0.2.2
 #### Updated
 - Improved Nightwatch tests with Page Objects.
