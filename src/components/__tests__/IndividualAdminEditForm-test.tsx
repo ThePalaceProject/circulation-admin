@@ -587,6 +587,7 @@ describe("IndividualAdminEditForm", () => {
       let newProps = {responseBody: "new admin", ...wrapper.props()};
       wrapper.setProps(newProps);
 
+      emailInput = wrapper.find("input[name='email']");
       expect(emailInput.props().value).not.to.contain("newEmail");
     });
 

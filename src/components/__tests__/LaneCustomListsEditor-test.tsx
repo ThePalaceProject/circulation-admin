@@ -161,6 +161,7 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "available-lists"
       }
     });
+    wrapper.update();
 
     let currentContainer = wrapper.find(".current-lists");
     let droppable = currentContainer.find(Droppable);
@@ -176,7 +177,10 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "current-lists"
       }
     });
+    wrapper.update();
 
+    currentContainer = wrapper.find(".current-lists");
+    droppable = currentContainer.find(Droppable);
     // The dropped item has been added to the current lists.
     let lists = droppable.find(Draggable);
     expect(lists.length).to.equal(2);
@@ -201,6 +205,7 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "current-lists"
       }
     });
+    wrapper.update();
 
     let availableContainer = wrapper.find(".available-lists");
     let droppable = availableContainer.find(Droppable);
@@ -217,6 +222,7 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "current-lists"
       }
     });
+    wrapper.update();
 
     availableContainer = wrapper.find(".available-lists");
     droppable = availableContainer.find(Droppable);
@@ -241,6 +247,7 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "current-lists"
       }
     });
+    wrapper.update();
 
     let availableContainer = wrapper.find(".available-lists");
     let droppable = availableContainer.find(Droppable);
@@ -256,6 +263,7 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "available-lists"
       }
     });
+    wrapper.update();
 
     // the dropped item has been removed from the current lists
     let currentContainer = wrapper.find(".current-lists");

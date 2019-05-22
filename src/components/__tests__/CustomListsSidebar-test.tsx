@@ -34,7 +34,7 @@ describe("CustomListsSidebar", () => {
   });
 
   it("renders a sidebar with a header and a create button", () => {
-    expect(wrapper.hasClass("custom-lists-sidebar")).to.be.true;
+    expect(wrapper.render().hasClass("custom-lists-sidebar")).to.be.true;
     expect(wrapper.find("h2").text()).to.equal("List Manager");
     let createButton = wrapper.find(Link).at(0);
     expect(createButton.text()).to.equal("Create New List");
@@ -51,6 +51,9 @@ describe("CustomListsSidebar", () => {
     expect(desc.find("input").prop("checked")).to.be.false;
 
     wrapper.setProps({ sortOrder: "desc" });
+    sortButtons = wrapper.find("fieldset");
+    asc = sortButtons.find(".form-group").at(0);
+    desc = sortButtons.find(".form-group").at(1);
 
     expect(desc.find("input").prop("checked")).to.be.true;
     expect(asc.find("input").prop("checked")).to.be.false;

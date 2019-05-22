@@ -205,6 +205,10 @@ describe("CustomLists", () => {
     expect(descendingButton.prop("checked")).to.equal(false);
 
     descendingButton.find("input").simulate("change");
+    radioButtons = wrapper.find(EditableInput);
+    ascendingButton = radioButtons.at(0);
+    descendingButton = radioButtons.at(1);
+
     expect(ascendingButton.prop("checked")).to.equal(false);
     expect(descendingButton.prop("checked")).to.equal(true);
     let sortedLists = wrapper.find("li");
@@ -215,6 +219,10 @@ describe("CustomLists", () => {
     expect(secondLink.text()).to.contain("a list");
 
     descendingButton.find("input").simulate("change");
+    radioButtons = wrapper.find(EditableInput);
+    ascendingButton = radioButtons.at(0);
+    descendingButton = radioButtons.at(1);
+
     expect(ascendingButton.prop("checked")).to.equal(true);
     expect(descendingButton.prop("checked")).to.equal(false);
     sortedLists = wrapper.find("li");

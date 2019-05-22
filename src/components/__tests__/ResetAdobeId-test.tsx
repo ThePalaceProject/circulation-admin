@@ -55,7 +55,7 @@ describe("ResetAdobeId", () => {
     });
 
     it("has .patron-actions class", () => {
-      expect(wrapper.hasClass("patron-actions")).to.equal(true);
+      expect(wrapper.render().hasClass("patron-actions")).to.equal(true);
     });
 
     it("has a header", () => {
@@ -125,12 +125,13 @@ describe("ResetAdobeId", () => {
 
     it("should enable the submit button when the checkbox is checked", () => {
       const input = wrapper.find(".reset-adobe-id input");
-      const button = wrapper.find(".reset-adobe-id").find(Button);
+      let button = wrapper.find(".reset-adobe-id").find(Button);
 
       expect(wrapper.state().checked).to.equal(false);
 
       input.simulate("change");
-      wrapper.update();
+      // wrapper.update();
+      button = wrapper.find(".reset-adobe-id").find(Button);
 
       expect(wrapper.state().checked).to.equal(true);
       expect(button.props().disabled).to.equal(false);
@@ -138,14 +139,15 @@ describe("ResetAdobeId", () => {
 
     it("should disable the submit button when the checkbox is unchecked", () => {
       const input = wrapper.find(".reset-adobe-id input");
-      const button = wrapper.find(".reset-adobe-id").find(Button);
+      let button = wrapper.find(".reset-adobe-id").find(Button);
       expect(button.props().disabled).to.equal(true);
 
       wrapper.setState({ checked: true });
+      button = wrapper.find(".reset-adobe-id").find(Button);
       expect(button.props().disabled).to.equal(false);
 
       input.simulate("change");
-      wrapper.update();
+      button = wrapper.find(".reset-adobe-id").find(Button);
       expect(button.props().disabled).to.equal(true);
     });
 
@@ -176,7 +178,7 @@ describe("ResetAdobeId", () => {
       alert = wrapper.find(Alert);
       expect(wrapper.props().responseBody).to.equal("Adobe ID for patron has been reset.");
       expect(alert.length).to.equal(1);
-      expect(alert.hasClass("alert-success")).to.equal(true);
+      expect(alert.render().hasClass("alert-success")).to.equal(true);
       expect(alert.text()).to.equal("Adobe ID for patron has been reset.Please instruct the patron to sign back into their account.");
     });
 
@@ -219,7 +221,7 @@ describe("ResetAdobeId", () => {
       alert = wrapper.find(Alert);
       expect(wrapper.props().fetchError).to.eql(fetchError);
       expect(alert.length).to.equal(1);
-      expect(alert.hasClass("alert-danger")).to.equal(true);
+      expect(alert.render().hasClass("alert-danger")).to.equal(true);
       expect(alert.text()).to.equal("Error: failed to reset Adobe ID for patron 1234");
     });
 

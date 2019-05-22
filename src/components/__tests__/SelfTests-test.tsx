@@ -110,13 +110,13 @@ describe("SelfTests", () => {
     wrapper = shallow(
       <SelfTests item={{} as any} type="collection" />
     );
-    expect(wrapper.hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
     expect(wrapper.find("p").text()).to.equal("No self test results found.");
   });
 
   it("should render the SelfTests component with results", () => {
-    expect(wrapper.hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(1);
   });
 
@@ -182,12 +182,12 @@ describe("SelfTests", () => {
 
       expect(selfTestResults.length).to.equal(2);
 
-      expect(list.childAt(0).hasClass("success")).to.equal(true);
+      expect(list.childAt(0).render().hasClass("success")).to.equal(true);
       expect(list.childAt(0).find("h4").text()).to.equal("Initial setup.");
       expect(list.childAt(0).find(".success-description").text()).to.equal("success: true");
       expect(list.childAt(0).find(".exception-description").length).to.equal(0);
 
-      expect(list.childAt(1).hasClass("failure")).to.equal(true);
+      expect(list.childAt(1).render().hasClass("failure")).to.equal(true);
       expect(list.childAt(1).find("h4").text()).to.equal("Acquiring test patron credentials.");
       expect(list.childAt(1).find(".success-description").text()).to.equal("success: false");
       expect(list.childAt(1).find(".exception-description").text()).to.equal("exception: Collection is not associated with any libraries.");
@@ -212,7 +212,7 @@ describe("SelfTests", () => {
     });
 
     it("should run new self tests", async () => {
-      const runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests");
+      const runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests").at(0);
 
       expect(runSelfTests.callCount).to.equal(0);
 
@@ -237,7 +237,7 @@ describe("SelfTests", () => {
           getSelfTests={getSelfTests}
         />
       );
-      const runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests");
+      let runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests").at(0);
       let alert = wrapper.find(".alert");
 
       expect(runSelfTests.callCount).to.equal(0);
@@ -245,13 +245,15 @@ describe("SelfTests", () => {
       expect(alert.length).to.equal(0);
 
       runSelfTestsBtn.simulate("click");
-
-      expect(runSelfTests.callCount).to.equal(1);
+      // wrapper.update();
 
       const pause = (): Promise<void> => {
-        return new Promise<void>(resolve => setTimeout(resolve, 0));
+        return new Promise<void>(resolve => setTimeout(resolve, 10));
       };
       await pause();
+
+      expect(runSelfTests.callCount).to.equal(1);
+      expect(wrapper.state("error")).to.eq(error);
 
       alert = wrapper.find(".alert");
       expect(alert.length).to.equal(1);

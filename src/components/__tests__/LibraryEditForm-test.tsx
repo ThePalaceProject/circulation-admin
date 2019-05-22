@@ -183,7 +183,7 @@ describe("LibraryEditForm", () => {
 
     let fillOutFormFields = () => {
       let nameInput = wrapper.find("input[name='name']");
-      let nameInputElement = nameInput.get(0);
+      let nameInputElement = nameInput.getDOMNode();
       nameInputElement.value = "new name";
       nameInput.simulate("change");
     };

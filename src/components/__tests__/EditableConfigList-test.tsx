@@ -295,7 +295,7 @@ describe("EditableConfigList", () => {
 
     let things = wrapper.find("li");
     expect(things.length).to.equal(1);
-    let deleteButton = things.at(0).find(".delete-item");
+    let deleteButton = things.at(0).find(".delete-item").hostNodes();
     expect(deleteButton.length).to.equal(1);
     deleteButton.simulate("click");
 

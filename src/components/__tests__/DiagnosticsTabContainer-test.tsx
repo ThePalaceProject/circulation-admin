@@ -43,7 +43,7 @@ describe("DiagnosticsTabContainer", () => {
 
   describe("rendering", () => {
     it("renders a tab container", () => {
-      expect(wrapper.hasClass("tab-container")).to.be.true;
+      expect(wrapper.render().hasClass("tab-container")).to.be.true;
     });
 
     it("renders tabs and defaults to showing the Coverage Providers tab", () => {

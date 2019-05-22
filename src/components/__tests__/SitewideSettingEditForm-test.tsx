@@ -173,23 +173,27 @@ describe("SitewideSettingEditForm", () => {
     let fillOutFormFields = () => {
       wrapper.setProps({ item: settingData });
       let input = wrapper.find("input[name='value']");
-      let inputElement = input.get(0);
+      // Fixed message - Cannot add property value, object is not extensible
+      let inputElement = input.getDOMNode();
       inputElement.value = "new setting";
       input.simulate("change");
+      wrapper.update();
     };
 
     it("clears the form", () => {
       fillOutFormFields();
       let select = wrapper.find("select[name='key']");
-      expect(select.props().value).to.equal("test_key");
-
       let input = wrapper.find("input[name='value']");
+
+      expect(select.props().value).to.equal("test_key");
       expect(input.props().value).to.equal("new setting");
 
       wrapper.find("form").simulate("submit");
-      let newProps = {responseBody: "new setting", ...wrapper.props()};
+      let newProps = { responseBody: "new setting", ...wrapper.props() };
       wrapper.setProps(newProps);
 
+      input = wrapper.find("input[name='value']");
+      select = wrapper.find("select[name='key']");
       expect(input.props().value).to.equal("");
       expect(select.props().value).to.equal("");
 
@@ -198,15 +202,17 @@ describe("SitewideSettingEditForm", () => {
     it("doesn't clear the form if there's an error message", () => {
       fillOutFormFields();
       let select = wrapper.find("select[name='key']");
-      expect(select.props().value).to.equal("test_key");
-
       let input = wrapper.find("input[name='value']");
+
+      expect(select.props().value).to.equal("test_key");
       expect(input.props().value).to.equal("new setting");
 
       wrapper.find("form").simulate("submit");
-      let newProps = {fetchError: "ERROR", ...wrapper.props()};
+      let newProps = { fetchError: "ERROR", ...wrapper.props() };
       wrapper.setProps(newProps);
 
+      input = wrapper.find("input[name='value']");
+      select = wrapper.find("select[name='key']");
       expect(input.props().value).to.equal("new setting");
       expect(select.props().value).to.equal("test_key");
     });
