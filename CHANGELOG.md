@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.2.3
+### v0.2.4
 #### Updated
 - Refactored the Lanes code, and added a button to cancel resetting the lanes.
+
+### v0.2.3
+#### Updated
+- Specified the node and npm version in package.json.
 
 ### v0.2.2
 #### Updated
