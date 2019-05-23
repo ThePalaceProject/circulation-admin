@@ -89,7 +89,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
               }
               { !responseBody &&
                 <Button
-                  className="btn-danger"
+                  className="danger"
                   callback={this.resetAdobeId}
                   disabled={!this.state.checked}
                   content="Reset Adobe ID"

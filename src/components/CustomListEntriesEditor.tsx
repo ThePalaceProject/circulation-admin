@@ -184,7 +184,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   <span>Remove all currently visible items from list:
                   </span>
                   <Button
-                    className="btn-danger delete-all-button top-align"
+                    className="danger delete-all-button top-align"
                     callback={this.deleteAll}
                     content={<span>Delete<TrashIcon /></span>}
                   />
