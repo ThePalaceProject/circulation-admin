@@ -15,10 +15,21 @@
     flex-direction: column;
     flex: 0 0 auto;
 
+    .lane-buttons {
+      margin-top: 20px;
+    }
+
     > div {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+
+      svg {
+        height: 1em;
+        width: 1em;
+        float: unset;
+        vertical-align: unset;
+      }
 
       &.lane-details {
         flex-direction: column;
@@ -27,12 +38,6 @@
 
     > div > span {
       margin: 15px 0px;
-      svg {
-        height: 1em;
-        width: 1em;
-        float: unset;
-        vertical-align: unset;
-      }
     }
 
 
