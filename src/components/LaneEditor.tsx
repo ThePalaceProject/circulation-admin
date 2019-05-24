@@ -101,7 +101,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
         <div className="lane-editor-body">
           <LaneCustomListsEditor
             allCustomLists={this.props.customLists}
-            customListIds={this.props.lane && this.props.lane.custom_list_ids}
+            customListIds={this.state.customListIds}
             onUpdate={this.changeCustomLists}
             ref="laneCustomLists"
             />
@@ -217,7 +217,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
 
   reset() {
     (this.refs["laneName"] as TextWithEditMode).reset();
-    (this.refs["laneCustomLists"] as LaneCustomListsEditor).reset();
+    (this.refs["laneCustomLists"] as LaneCustomListsEditor).reset(this.props.lane.custom_list_ids);
     let inheritParentRestrictions = this.props.lane && this.props.lane.inherit_parent_restrictions;
     this.setState(Object.assign({}, this.state, { inheritParentRestrictions }));
   }
