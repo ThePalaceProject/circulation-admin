@@ -129,9 +129,10 @@ describe("LibraryEditForm", () => {
 
       let geographic = collapsibleByName("Geographic Areas");
       expect(geographic.find(ProtocolFormField).length).to.equal(1);
-      expect(geographic.find(".add-list-item").length).to.equal(2);
-      expect(geographic.find(".add-list-item").at(0).type()).to.equal("span");
-      expect(geographic.find(".add-list-item").at(1).type()).to.equal("button");
+      let addListItems = geographic.find(".add-list-item").hostNodes();
+      expect(addListItems.length).to.equal(2);
+      expect(addListItems.at(0).type()).to.equal("span");
+      expect(addListItems.at(1).type()).to.equal("button");
     });
 
     it("has a save button", () => {
@@ -188,30 +189,31 @@ describe("LibraryEditForm", () => {
       nameInput.simulate("change");
     };
 
-   it("clears the form", () => {
-     fillOutFormFields();
-     let nameInput = wrapper.find("input[name='name']");
-     expect(nameInput.props().value).to.equal("new name");
+    it("clears the form", () => {
+      fillOutFormFields();
+      let nameInput = wrapper.find("input[name='name']");
+      expect(nameInput.props().value).to.equal("new name");
 
-     wrapper.simulate("submit");
-     let newProps = {responseBody: "new library", ...wrapper.props()};
-     wrapper.setProps(newProps);
+      wrapper.simulate("submit");
+      let newProps = { responseBody: "new library", ...wrapper.props() };
+      wrapper.setProps(newProps);
 
-     expect(nameInput.props().value).to.equal("");
+      nameInput = wrapper.find("input[name='name']");
+      expect(nameInput.props().value).to.equal("");
+    });
 
-   });
+    it("doesn't clear the form if there's an error message", () => {
+      fillOutFormFields();
+      let nameInput = wrapper.find("input[name='name']");
+      expect(nameInput.props().value).to.equal("new name");
 
-   it("doesn't clear the form if there's an error message", () => {
-     fillOutFormFields();
-     let nameInput = wrapper.find("input[name='name']");
-     expect(nameInput.props().value).to.equal("new name");
+      wrapper.simulate("submit");
+      let newProps = { fetchError: "ERROR", ...wrapper.props() };
+      wrapper.setProps(newProps);
 
-     wrapper.simulate("submit");
-     let newProps = {fetchError: "ERROR", ...wrapper.props()};
-     wrapper.setProps(newProps);
-
-     expect(nameInput.props().value).to.equal("new name");
-   });
+      nameInput = wrapper.find("input[name='name']");
+      expect(nameInput.props().value).to.equal("new name");
+    });
 
   });
 });

@@ -245,7 +245,7 @@ describe("SelfTests", () => {
       expect(alert.length).to.equal(0);
 
       runSelfTestsBtn.simulate("click");
-      // wrapper.update();
+      wrapper.update();
 
       const pause = (): Promise<void> => {
         return new Promise<void>(resolve => setTimeout(resolve, 10));
@@ -255,9 +255,8 @@ describe("SelfTests", () => {
       expect(runSelfTests.callCount).to.equal(1);
       expect(wrapper.state("error")).to.eq(error);
 
-      alert = wrapper.find(".alert");
+      alert = wrapper.render().find(".alert");
       expect(alert.length).to.equal(1);
-      expect(wrapper.state("error")).to.equal(error);
     });
   });
 });

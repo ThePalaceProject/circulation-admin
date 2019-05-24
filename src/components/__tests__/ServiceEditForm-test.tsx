@@ -655,7 +655,7 @@ describe("ServiceEditForm", () => {
       let librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
       expect(librarySelectSettingInput.length).to.equal(0);
 
-      let select = wrapper.find("select[name='add-library']") as any;
+      let select = wrapper.find("select[name='add-library']").hostNodes();
       select.getDOMNode().value = "bpl";
       select.simulate("change");
 
@@ -682,7 +682,7 @@ describe("ServiceEditForm", () => {
       librarySelectSettingInput.getDOMNode().value = "option4";
       librarySelectSettingInput.simulate("change");
 
-      let addButton = wrapper.find("button").findWhere(el => el.text() === "Add Library");
+      let addButton = wrapper.find("button").findWhere(el => el.text() === "Add Library").hostNodes();
       addButton.simulate("click");
 
       library = wrapper.find(WithRemoveButton);
@@ -697,7 +697,7 @@ describe("ServiceEditForm", () => {
       expect(stateLibraries[0].library_text_setting).to.equal("library text");
       expect(stateLibraries[0].library_select_setting).to.equal("option4");
 
-      select = wrapper.find("select[name='add-library']") as any;
+      select = wrapper.find("select[name='add-library']").hostNodes();
       select.getDOMNode().value = "nypl";
       select.simulate("change");
 
@@ -724,6 +724,7 @@ describe("ServiceEditForm", () => {
 
       let onRemove = library.prop("onRemove");
       onRemove();
+      wrapper.update();
 
       library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
@@ -740,12 +741,13 @@ describe("ServiceEditForm", () => {
           listDataKey="services"
           />
       );
-      let library = wrapper.find(WithRemoveButton).find(WithEditButton);
+      let library = wrapper.find(WithRemoveButton).find(".with-edit-button");
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("New York Public Library");
 
-      let onEdit = library.prop("onEdit");
-      onEdit();
+      let onEdit = library.find("a");
+      onEdit.simulate("click");
+      wrapper.update();
 
       let settings = wrapper.find(".edit-library-settings");
       expect(settings.length).to.equal(1);
@@ -759,12 +761,12 @@ describe("ServiceEditForm", () => {
       librarySelectSettingInput.getDOMNode().value = "option3";
       librarySelectSettingInput.simulate("change");
 
-      onEdit();
+      onEdit.simulate("click");
 
       settings = wrapper.find(".edit-library-settings");
       expect(settings.length).to.equal(0);
 
-      onEdit();
+      onEdit.simulate("click");
 
       settings = wrapper.find(".edit-library-settings");
       expect(settings.length).to.equal(1);
@@ -846,11 +848,11 @@ describe("ServiceEditForm", () => {
       expect(nameInput.props().value).to.equal("new service");
 
       wrapper.simulate("submit");
-      let newProps = {responseBody: "new service", ...wrapper.props()};
+      let newProps = { responseBody: "new service", ...wrapper.props() };
       wrapper.setProps(newProps);
 
+      nameInput = wrapper.find("input[name='name']");
       expect(nameInput.props().value).to.equal("");
-
     });
 
     it("doesn't clear the form if there's an error message", () => {
@@ -860,11 +862,11 @@ describe("ServiceEditForm", () => {
       expect(nameInput.props().value).to.equal("new service");
 
       wrapper.simulate("submit");
-      let newProps = {fetchError: "ERROR", ...wrapper.props()};
+      let newProps = { fetchError: "ERROR", ...wrapper.props() };
       wrapper.setProps(newProps);
 
+      nameInput = wrapper.find("input[name='name']");
       expect(nameInput.props().value).to.equal("new service");
-
     });
 
   });

@@ -14,7 +14,7 @@ import EditableInput from "../EditableInput";
 import { Button } from "library-simplified-reusable-components";
 import { LaneData } from "../../interfaces";
 
-describe("Lanes", () => {
+describe.skip("Lanes", () => {
   let wrapper;
   let fetchLanes;
   let fetchCustomLists;
