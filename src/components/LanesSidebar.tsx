@@ -63,9 +63,10 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
     };
     let [text, icon, className] = content[createOrReset];
     let disabled = this.props.orderChanged ? "disabled" : "";
+    let style = createOrReset === "create" ? "left-align" : "right-align inverted";
     return (
       <Link
-        className={`btn ${createOrReset}-lane ${disabled} ${className}`}
+        className={`btn ${style} ${createOrReset}-lane ${disabled}`}
         to={this.props.orderChanged ? null : linkBase + createOrReset}
       >
         <span>{text} {icon}</span>

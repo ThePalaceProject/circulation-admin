@@ -36,7 +36,7 @@
     }
   }
 
-  button.btn {
+  button.btn:not(.add-list-item) {
     margin: 1em 0;
   }
 }

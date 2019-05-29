@@ -62,10 +62,10 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
                 <h4>ID-{this.props.lane.id}</h4>
               }
             </div>
-            <span>
+            <span className="lane-buttons">
               { this.props.lane && this.props.deleteLane &&
                 <Button
-                  className="btn-danger delete-lane"
+                  className="danger delete-lane"
                   callback={this.delete}
                   content={<span>Delete lane <TrashIcon /></span>}
                 />

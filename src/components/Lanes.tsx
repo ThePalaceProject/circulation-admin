@@ -133,14 +133,14 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       <h2>Change Lane Order</h2>
       <Button
         callback={this.saveOrder}
+        className="left-align inline save-lane-order-changes"
         disabled={this.props.isFetching}
         content="Save Order Changes"
-        className="save-lane-order-changes"
       />
       <Button
-        className="inverted cancel-lane-order-changes"
+        className="inverted inline cancel-lane-order-changes"
         callback={this.resetOrder}
-        content="Cancel"
+        content={"Cancel"}
       />
       <hr />
       <p>Save or cancel your changes to the lane order before making additional changes.</p>
@@ -184,7 +184,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
           <EditableInput type="text" ref="reset" required={true} onChange={this.checkReset}/>
           <Button
-            className="reset-button btn-danger"
+            className="reset-button left-align danger"
             callback={this.resetLanes}
             disabled={!this.state.canReset}
             content={<span>Reset <ResetIcon/></span>}

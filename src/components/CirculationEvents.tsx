@@ -59,7 +59,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
         <h3>Circulation Events</h3>
 
         { this.context.showCircEventsDownload &&
-            <Button callback={this.showDownloadForm} content="Download CSV" />
+            <Button callback={this.showDownloadForm} content="Download CSV" className="left-align"/>
         }
 
         <CirculationEventsDownloadForm
