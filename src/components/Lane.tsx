@@ -46,7 +46,11 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
     return (
       <li key={lane.id}>
         <div
-          className={(snapshot && snapshot.isDragging ? "dragging " : " ") + (active ? "active" : "")}
+          className={
+            "lane-parent" +
+            (snapshot && snapshot.isDragging ? "dragging " : " ") +
+            (active ? "active" : "")
+          }
           ref={provided && provided.innerRef}
           style={provided && provided.draggableStyle}
           {...(provided ? provided.dragHandleProps : {})}
@@ -61,13 +65,13 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
             </span>
             { this.renderVisibilityToggle() }
           </div>
-        { this.state.expanded &&
-          <div className="lane-buttons">
-          { hasCustomLists && this.renderButton("edit") }
-          { this.renderButton("create") }
-          </div>
-        }
-        { this.state.expanded && hasSublanes && renderLanes(lane.sublanes, lane) }
+          { this.state.expanded &&
+            <div className="lane-buttons">
+            { hasCustomLists && this.renderButton("edit") }
+            { this.renderButton("create") }
+            </div>
+          }
+          { this.state.expanded && hasSublanes && renderLanes(lane.sublanes, lane) }
         </div>
         { provided && provided.placeholder }
       </li>

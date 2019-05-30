@@ -243,6 +243,8 @@ describe("LaneEditor", () => {
     let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
     (wrapper.instance() as LaneEditor).changeInheritParentRestrictions();
 
+    // .hostNodes() retrieves only the DOM node instead of the DOM node
+    // and the React class component.
     let saveButton = wrapper.find(".save-lane").hostNodes();
     saveButton.simulate("click");
 
@@ -307,12 +309,12 @@ describe("LaneEditor", () => {
     );
 
     // the cancel button isn't shown when there are no changes.
-    let cancelButton = wrapper.find(".cancel-changes");
+    let cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as LaneEditor).changeName("new name");
     wrapper.update();
-    cancelButton = wrapper.find(".cancel-changes");
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
@@ -321,12 +323,12 @@ describe("LaneEditor", () => {
 
     (wrapper.instance() as LaneEditor).changeName(laneData.display_name);
     wrapper.update();
-    cancelButton = wrapper.find(".cancel-changes");
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as LaneEditor).changeCustomLists([1, 2]);
     wrapper.update();
-    cancelButton = wrapper.find(".cancel-changes");
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
@@ -335,18 +337,18 @@ describe("LaneEditor", () => {
 
     (wrapper.instance() as LaneEditor).changeCustomLists(laneData.custom_list_ids);
     wrapper.update();
-    cancelButton = wrapper.find(".cancel-changes");
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as LaneEditor).changeInheritParentRestrictions();
     wrapper.update();
-    cancelButton = wrapper.find(".cancel-changes");
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
     expect(nameResetStub.callCount).to.equal(3);
     expect(customListsResetStub.callCount).to.equal(3);
-    cancelButton = wrapper.find(".cancel-changes");
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     nameResetStub.restore();
