@@ -68,7 +68,6 @@ describe("Lanes", () => {
 
   const getTopLevelLanes = () => {
     const sidebar = wrapper.find(".lanes-sidebar");
-    // let topLevelLanes = sidebar.children(DragDropContext).children(Draggable).children("div");
     const topLevelLanes = sidebar.find("ul.droppable").at(0).children();
     return topLevelLanes;
   };
@@ -365,7 +364,6 @@ describe("Lanes", () => {
 
     let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0).find(".lane-parent").at(0);
-    // let sublanes = lane1.children(Droppable).children(Draggable).children("div");
     let sublanes = lane1.find("li .lane-parent");
     let sublane5 = sublanes.at(0);
     let sublane2 = sublanes.at(1);

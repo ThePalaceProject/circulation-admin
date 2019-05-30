@@ -248,7 +248,7 @@ describe("SelfTests", () => {
       wrapper.update();
 
       const pause = (): Promise<void> => {
-        return new Promise<void>(resolve => setTimeout(resolve, 10));
+        return new Promise<void>(resolve => setTimeout(resolve, 0));
       };
       await pause();
 

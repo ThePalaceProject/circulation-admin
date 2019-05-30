@@ -181,7 +181,7 @@ describe("BookEditForm", () => {
     });
   });
 
-  it("removes a contributor", async () => {
+  it("removes a contributor", () => {
     let editBook = stub();
     wrapper = mount(
       <BookEditForm
