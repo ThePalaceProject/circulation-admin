@@ -94,9 +94,9 @@ describe("ResetAdobeId", () => {
       );
     });
 
-    it("should have a submission button with a .btn-danger class", () => {
+    it("should have a submission button with a .danger class", () => {
       const button = wrapper.find(".reset-adobe-id button");
-      expect(button.hasClass("btn-danger")).to.equal(true);
+      expect(button.hasClass("danger")).to.equal(true);
     });
 
   });

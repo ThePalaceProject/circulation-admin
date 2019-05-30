@@ -30,10 +30,6 @@
       flex-direction: column;
     }
 
-    span {
-      margin: 15px 0px 5px;
-    }
-
     h3 {
       display: inline-block;
       hyphens: auto;
@@ -191,6 +187,11 @@
         .draggable-item-icon {
           height: 3rem;
           margin: -10px 0 0 0;
+        }
+
+        .btn > span > svg {
+          flex-basis: unset;
+          margin: unset;
         }
       }
     }

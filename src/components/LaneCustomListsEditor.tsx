@@ -117,7 +117,7 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
                             </div>
                             <div className="links">
                               <a
-                                className="btn btn-danger"
+                                className="btn danger"
                                 href="#"
                                 onClick={() => { this.remove(list.id); }}
                                 >Remove from lane

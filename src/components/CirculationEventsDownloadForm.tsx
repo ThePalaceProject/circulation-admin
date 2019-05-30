@@ -36,10 +36,10 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
               ref="date"
               defaultValue={today} />
           </div>
-          <Button callback={this.download} content="Download" />
+          <Button callback={this.download} content="Download" className="left-align"/>
         </Modal.Body>
         <Modal.Footer>
-          <Button className="inverted" callback={this.props.hide} content="Close" />
+          <Button className="inverted left-align" callback={this.props.hide} content="Close" />
         </Modal.Footer>
       </Modal>
     );

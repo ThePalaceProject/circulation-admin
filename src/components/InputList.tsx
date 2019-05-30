@@ -94,7 +94,7 @@ export default class InputList extends React.Component<InputListProps, InputList
           </span>
           <Button
             type="button"
-            className="add-list-item"
+            className="add-list-item inline small bottom-align"
             disabled={this.props.disabled || !this.state.newItem.length}
             callback={this.addListItem}
             content="Add"

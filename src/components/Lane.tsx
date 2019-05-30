@@ -94,7 +94,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
     let canToggle = !this.props.orderChanged && !parentHidden;
     let className = this.state.visible ? "hide-lane" : "show-lane";
     let buttonContent = this.state.visible ? <span>Visible<VisibleIcon/></span> : <span>Hidden<HiddenIcon/></span>;
-    return <Button className={className} disabled={!canToggle} callback={this.toggleVisible} content={buttonContent} />;
+    return <Button className={"small transparent top-align bottom-align " + className} disabled={!canToggle} callback={this.toggleVisible} content={buttonContent} />;
   }
 
   renderButton(editOrCreate: string): JSX.Element {
@@ -103,7 +103,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
 
     let button = (
       <Link
-        className={`btn ${editOrCreate}-lane ` + (this.props.orderChanged ? "disabled" : "")}
+        className={`btn small right-align ${editOrCreate}-lane ` + (this.props.orderChanged ? "disabled" : "")}
         to={link}
       >{content}</Link>
     );
