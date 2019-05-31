@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.6
+#### Fixed
+- Fixed a bug involving loading a book cover preview from a URL.
+
 ### v0.2.5
 #### Updated
 - Implemented new styling options for the reusable Button component.
