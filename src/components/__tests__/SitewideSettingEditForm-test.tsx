@@ -177,7 +177,6 @@ describe("SitewideSettingEditForm", () => {
       let inputElement = input.getDOMNode();
       inputElement.value = "new setting";
       input.simulate("change");
-      wrapper.update();
     };
 
     it("clears the form", () => {

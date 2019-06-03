@@ -23,8 +23,20 @@ describe("LanesSidebar", () => {
     custom_list_ids: [2], inherit_parent_restrictions: false
   };
   let lanesData: LaneData[];
+
+  // Returns all the list item elements from the first list in the DOM
+  // that is a droppable list.
   const getTopLevelLanes = () => {
     return wrapper.find("ul.droppable").at(0).children();
+  };
+  // Returns all the children lanes (including grandchildren) from the given parent lane.
+  let allChildren = (lane) => {
+    return lane.find("li .lane-parent");
+  };
+  // Returns all the draggable children lanes
+  // (including grandchildren) from the given parent lane.
+  let draggableChildren = (lane) => {
+    return lane.find("li .lane-parent .draggable");
   };
 
   beforeEach(() => {
@@ -74,9 +86,15 @@ describe("LanesSidebar", () => {
 
   it("renders active lane", () => {
     let topLevelLanes = getTopLevelLanes();
-    // The first div in each li is the main DOM element to test
+    // The first div in each li is the main DOM element to test.
+    // Using the `div` for testing because that's the main DOM element
+    // that contains the interactive classes.
     let topLane1 = topLevelLanes.at(0).find("div").at(0);
     let topLane2 = topLevelLanes.at(1).find("div").at(0);
+    // This does the same as above but it's for a sublane,
+    // so the sublane of the parent lane.
+    // This now replaces `.find(Lane).find("> div"); as the second
+    // query now returns a parsing error (can't start a selector with `>`).
     let subLane1 = topLane1.find("li > div");
 
     expect(topLane1.render().hasClass("active")).to.be.false;
@@ -122,7 +140,12 @@ describe("LanesSidebar", () => {
 
   it("drags and drops a sublane", () => {
     let newSublane: LaneData = {
-      id: 5, display_name: "Sublane 2", visible: true, count: 0, inherit_parent_restrictions: false, sublanes: [], custom_list_ids: []
+      id: 5,
+      display_name: "Sublane 2",
+      visible: true,
+      count: 0,
+      inherit_parent_restrictions: false,
+      sublanes: [], custom_list_ids: []
     };
     findLaneForIdentifier.returns(newSublane);
     findParentOfLane.returns(lanesData[0]);
@@ -133,7 +156,10 @@ describe("LanesSidebar", () => {
     expect(drag.callCount).to.equal(1);
     expect(drag.args[0][0]).to.eql({ draggableId: "5", draggingFrom: "1" });
     // drop it before Sublane 1
-    wrapper.instance().onDragEnd({...dragNewSublane,  ...{destination: { droppableId: "1", index: 0 }}});
+    wrapper.instance().onDragEnd({
+      ...dragNewSublane,
+      ...{ destination: { droppableId: "1", index: 0 } }
+    });
     expect(drag.callCount).to.equal(2);
     expect(drag.args[1][0].draggableId).to.be.null;
     expect(drag.args[1][0].draggingFrom).to.be.null;
@@ -142,7 +168,11 @@ describe("LanesSidebar", () => {
   });
 
   it("drops a lane back into its original position", () => {
-    wrapper.instance().onDragEnd({ draggableId: "1", source: { index: 0, droppableId: "top" }, destination: { index: 0, droppableId: "top" }});
+    wrapper.instance().onDragEnd({
+      draggableId: "1",
+      source: { index: 0, droppableId: "top" },
+      destination: { index: 0, droppableId: "top" }
+    });
     expect(drag.callCount).to.equal(0);
   });
 
@@ -184,8 +214,10 @@ describe("LanesSidebar", () => {
     let subLane1Expand = expectCollapsed(subLane1);
 
     // top lane 2 has no sublanes
-    let topLane2Sublanes = topLane2.find("li > div");
-    let topLane2Draggables = topLane2.find(Droppable).find(Draggable);
+    // let topLane2Sublanes = topLane2.find("li > div");
+    // let topLane2Draggables = topLane2.find(Droppable).find(Draggable);
+    let topLane2Sublanes = allChildren(topLane2);
+    let topLane2Draggables = draggableChildren(topLane2);
     expect(topLane2Sublanes.length).to.equal(0);
     expect(topLane2Draggables.length).to.equal(0);
 
@@ -273,12 +305,6 @@ describe("LanesSidebar", () => {
         custom_list_ids: [], inherit_parent_restrictions: false }
     ];
 
-    let allChildren = (lane) => {
-      return lane.find("li .lane-parent");
-    };
-    let draggableChildren = (lane) => {
-      return lane.find("li .lane-parent .draggable");
-    };
     let expand = (lane) => {
       lane.find(".expand-button").at(0).props().onClick();
     };

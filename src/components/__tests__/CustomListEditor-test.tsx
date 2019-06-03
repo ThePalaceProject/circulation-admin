@@ -302,6 +302,7 @@ describe("CustomListEditor", () => {
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as CustomListEditor).changeCollection(collections[0]);
+    // This is needed because we are testing the cancelButton again.
     wrapper.update();
 
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);

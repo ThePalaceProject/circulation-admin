@@ -747,7 +747,6 @@ describe("ServiceEditForm", () => {
 
       let onEdit = library.find("a");
       onEdit.simulate("click");
-      wrapper.update();
 
       let settings = wrapper.find(".edit-library-settings");
       expect(settings.length).to.equal(1);

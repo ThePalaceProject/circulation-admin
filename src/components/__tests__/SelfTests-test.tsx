@@ -245,7 +245,6 @@ describe("SelfTests", () => {
       expect(alert.length).to.equal(0);
 
       runSelfTestsBtn.simulate("click");
-      wrapper.update();
 
       const pause = (): Promise<void> => {
         return new Promise<void>(resolve => setTimeout(resolve, 0));

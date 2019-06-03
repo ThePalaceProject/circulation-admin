@@ -130,7 +130,6 @@ describe("ResetAdobeId", () => {
       expect(wrapper.state().checked).to.equal(false);
 
       input.simulate("change");
-      // wrapper.update();
       button = wrapper.find(".reset-adobe-id").find(Button);
 
       expect(wrapper.state().checked).to.equal(true);
