@@ -173,7 +173,9 @@ describe("SitewideSettingEditForm", () => {
     let fillOutFormFields = () => {
       wrapper.setProps({ item: settingData });
       let input = wrapper.find("input[name='value']");
-      // Fixed message - Cannot add property value, object is not extensible
+      // For input elements, use `getDOMNode`. The previous API method,
+      // .get(0), outputs the following error message:
+      // Cannot add property value, object is not extensible
       let inputElement = input.getDOMNode();
       inputElement.value = "new setting";
       input.simulate("change");
