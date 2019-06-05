@@ -52,7 +52,9 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
 
   renderTimestamps(timestamps: Array<TimestampData>): JSX.Element {
     let tsList = timestamps.map(timestamp =>
-      <li className="timestamp-holder"><Timestamp timestamp={timestamp} /></li>
+      <li className="timestamp-holder" key={timestamp.toString()}>
+        <Timestamp timestamp={timestamp} />
+      </li>
     );
     return <ul className="timestamps">{tsList}</ul>;
   }

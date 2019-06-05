@@ -97,6 +97,7 @@ describe("TextWithEditMode", () => {
       <TextWithEditMode placeholder="editable thing" />
     );
     expect((wrapper.instance() as TextWithEditMode).getText()).to.equal("new value");
+    wrapper.update();
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
 
@@ -117,6 +118,7 @@ describe("TextWithEditMode", () => {
     expect(onUpdate.callCount).to.equal(1);
 
     (wrapper.instance() as TextWithEditMode).reset();
+    wrapper.update();
     expect(wrapper.text()).not.to.contain("new value");
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
@@ -139,6 +141,7 @@ describe("TextWithEditMode", () => {
     expect(onUpdate.callCount).to.equal(3);
 
     (wrapper.instance() as TextWithEditMode).reset();
+    wrapper.update();
     expect(wrapper.text()).not.to.contain("new value");
     expect(wrapper.text()).to.contain("test");
     expect(onUpdate.callCount).to.equal(4);

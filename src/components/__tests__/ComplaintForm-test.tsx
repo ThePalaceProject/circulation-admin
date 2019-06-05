@@ -92,7 +92,7 @@ describe("ComplaintForm", () => {
 
     it("posts complaints", () => {
       let form = wrapper.find("form");
-      let select = wrapper.find("select").get(0);
+      let select = wrapper.find("select").getDOMNode();
       select.value = "bad-description";
       form.simulate("submit");
       expect(postComplaint.callCount).to.equal(1);
@@ -110,7 +110,7 @@ describe("ComplaintForm", () => {
           />
       );
       let form = wrapper.find("form");
-      let select = wrapper.find("select").get(0);
+      let select = wrapper.find("select").getDOMNode();
       (select as any).value = "bad-description";
       form.simulate("submit");
     });
@@ -118,7 +118,7 @@ describe("ComplaintForm", () => {
     it("clears form after post", (done) => {
       wrapper.instance().clear = done;
       let form = wrapper.find("form");
-      let select = wrapper.find("select").get(0);
+      let select = wrapper.find("select").getDOMNode();
       (select as any).value = "bad-description";
       form.simulate("submit");
     });
@@ -145,16 +145,16 @@ describe("ComplaintForm", () => {
       );
       (wrapper.instance() as ComplaintForm).showPostError = done;
       let form = wrapper.find("form");
-      let select = wrapper.find("select").get(0);
+      let select = wrapper.find("select").getDOMNode();
       (select as any).value = "bad-description";
       form.simulate("submit");
     });
 
     it("clears complaint type", () => {
-      let select = wrapper.find("select").get(0);
+      let select = wrapper.find("select").getDOMNode();
       (select as any).value = "bad-description";
       wrapper.instance().clear();
-      select = wrapper.find("select").get(0);
+      select = wrapper.find("select").getDOMNode();
       expect(select.value).to.equal("");
     });
 

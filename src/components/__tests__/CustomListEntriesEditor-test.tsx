@@ -373,6 +373,7 @@ describe("CustomListEntriesEditor", () => {
         droppableId: "search-results"
       }
     });
+    wrapper.update();
 
     let entriesContainer = wrapper.find(".custom-list-entries");
     let droppable = entriesContainer.find(Droppable);
@@ -388,9 +389,13 @@ describe("CustomListEntriesEditor", () => {
         droppableId: "custom-list-entries"
       }
     });
+    wrapper.update();
 
     // the dropped item has been added to entries at the beginning of the list
+    entriesContainer = wrapper.find(".custom-list-entries");
+    droppable = entriesContainer.find(Droppable);
     let entries = droppable.find(Draggable);
+
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
@@ -425,6 +430,7 @@ describe("CustomListEntriesEditor", () => {
         droppableId: "custom-list-entries"
       }
     });
+    wrapper.update();
 
     let resultsContainer = wrapper.find(".custom-list-search-results");
     let droppable = resultsContainer.find(Droppable);
@@ -441,6 +447,7 @@ describe("CustomListEntriesEditor", () => {
         droppableId: "custom-list-entries"
       }
     });
+    wrapper.update();
 
     resultsContainer = wrapper.find(".custom-list-search-results");
     droppable = resultsContainer.find(Droppable);
@@ -470,6 +477,7 @@ describe("CustomListEntriesEditor", () => {
         droppableId: "custom-list-entries"
       }
     });
+    wrapper.update();
 
     let resultsContainer = wrapper.find(".custom-list-search-results");
     let droppable = resultsContainer.find(Droppable);
@@ -485,6 +493,7 @@ describe("CustomListEntriesEditor", () => {
         droppableId: "search-results"
       }
     });
+    wrapper.update();
 
     // the dropped item has been removed from entries
     let entriesContainer = wrapper.find(".custom-list-entries");
@@ -671,7 +680,7 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let button = wrapper.find(".add-all-button");
+    let button = wrapper.find(".add-all-button").at(0);
     button.simulate("click");
 
     let entriesContainer = wrapper.find(".custom-list-entries");
@@ -722,7 +731,7 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let button = wrapper.find(".delete-all-button");
+    let button = wrapper.find(".delete-all-button").at(0);
     button.simulate("click");
     let entriesContainer = wrapper.find(".custom-list-entries");
     let droppable = entriesContainer.find(Droppable);
@@ -794,12 +803,13 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let button = wrapper.find(".custom-list-search-results .load-more-button");
+    let button = wrapper.find(".custom-list-search-results .load-more-button").hostNodes();
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setProps({ isFetchingMoreSearchResults: true });
-    button = wrapper.find(".custom-list-search-results .load-more-button");
+
+    button = wrapper.find(".custom-list-search-results .load-more-button").hostNodes();
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).to.equal(true);
   });
@@ -817,12 +827,13 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let button = wrapper.find(".custom-list-entries .load-more-button");
+    let button = wrapper.find(".custom-list-entries .load-more-button").hostNodes();
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setProps({ isFetchingMoreCustomListEntries: true });
-    button = wrapper.find(".custom-list-entries .load-more-button");
+
+    button = wrapper.find(".custom-list-entries .load-more-button").hostNodes();
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).to.equal(true);
   });
@@ -844,7 +855,7 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let button = wrapper.find(".custom-list-search-results .load-more-button");
+    let button = wrapper.find(".custom-list-search-results .load-more-button").at(0);
     button.simulate("click");
     expect(loadMoreSearchResults.callCount).to.equal(1);
   });
@@ -863,7 +874,7 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let button = wrapper.find(".custom-list-entries .load-more-button");
+    let button = wrapper.find(".custom-list-entries .load-more-button").at(0);
     button.simulate("click");
     expect(loadMoreEntries.callCount).to.equal(1);
   });
@@ -934,7 +945,7 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("Displaying 1 - 10 of 10 Books");
 
-    let addAllBtn = wrapper.find(".add-all-button");
+    let addAllBtn = wrapper.find(".add-all-button").at(0);
     addAllBtn.simulate("click");
 
     // All search results were added to the entries.
@@ -950,7 +961,7 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("Displaying 1 - 26 of 26 Books");
 
-    let deleteAllBtn = wrapper.find(".delete-all-button");
+    let deleteAllBtn = wrapper.find(".delete-all-button").at(0);
     deleteAllBtn.simulate("click");
 
     expect(display.text()).to.equal("No books in this list");
@@ -959,7 +970,7 @@ describe("CustomListEntriesEditor", () => {
     searchEntries = wrapper.find(".custom-list-search-results li");
     expect(searchEntries.length).to.equal(newSearchResultsData.length);
 
-    addAllBtn = wrapper.find(".add-all-button");
+    addAllBtn = wrapper.find(".add-all-button").at(0);
     addAllBtn.simulate("click");
 
     expect(display.text()).to.equal("Displaying 1 - 20 of 20 Books");
@@ -970,6 +981,7 @@ describe("CustomListEntriesEditor", () => {
     expect(display.text()).to.equal("Displaying 1 - 19 of 19 Books");
 
     (wrapper.instance() as CustomListEntriesEditor).reset();
+    wrapper.update();
 
     expect(display.text()).to.equal("Displaying 1 - 10 of 10 Books");
     // All the search results should be back in the search result list.

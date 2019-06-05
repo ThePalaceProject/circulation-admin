@@ -34,8 +34,8 @@ describe("DiagnosticsServiceType", () => {
   });
 
   it("renders service tabs", () => {
-    expect(wrapper.hasClass("config")).to.be.true;
-    expect(wrapper.hasClass("services")).to.be.true;
+    expect(wrapper.render().hasClass("config")).to.be.true;
+    expect(wrapper.render().hasClass("services")).to.be.true;
 
     let tabs = wrapper.find("DiagnosticsServiceTabs");
     expect(tabs.length).to.equal(1);
@@ -47,6 +47,7 @@ describe("DiagnosticsServiceType", () => {
     expect(wrapper.state()["tab"]).to.equal("test_service_1");
 
     wrapper.instance().goToTab("test_service_2");
+    wrapper.update();
 
     expect(wrapper.state()["tab"]).to.equal("test_service_2");
     expect(wrapper.find("DiagnosticsServiceTabs").prop("tab")).to.equal("test_service_2");

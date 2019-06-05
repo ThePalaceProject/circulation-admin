@@ -87,10 +87,10 @@ describe("ChangePasswordForm", () => {
     );
     let passwordInput = wrapper.find("input[name='password']");
     let confirmInput = wrapper.find("input[name='confirm_password']");
-    let passwordInputElement = passwordInput.get(0);
+    let passwordInputElement = passwordInput.getDOMNode();
     passwordInputElement.value = "newPassword";
     passwordInput.simulate("change");
-    let confirmInputElement = confirmInput.get(0);
+    let confirmInputElement = confirmInput.getDOMNode();
     confirmInputElement.value = "somethingElse";
     confirmInput.simulate("change");
 
@@ -111,10 +111,10 @@ describe("ChangePasswordForm", () => {
     );
     let passwordInput = wrapper.find("input[name='password']");
     let confirmInput = wrapper.find("input[name='confirm_password']");
-    let passwordInputElement = passwordInput.get(0);
+    let passwordInputElement = passwordInput.getDOMNode();
     passwordInputElement.value = "newPassword";
     passwordInput.simulate("change");
-    let confirmInputElement = confirmInput.get(0);
+    let confirmInputElement = confirmInput.getDOMNode();
     confirmInputElement.value = "newPassword";
     confirmInput.simulate("change");
 

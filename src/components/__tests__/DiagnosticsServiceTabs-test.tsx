@@ -51,21 +51,22 @@ describe("DiagnosticsServiceTabs", () => {
     });
 
     it("displays a badge", () => {
-      let tabWithoutException = wrapper.find(".nav-tabs").find("a").at(0);
+      let tabWithoutException = wrapper.find(".nav-tabs a").at(0);
       expect(tabWithoutException.find(".danger").length).to.equal(0);
       let badge = tabWithoutException.find(".badge");
       expect(badge.length).to.equal(1);
       expect(badge.text()).to.equal("1");
-      let toolTip = badge.parent().find(".tool-tip");
+      let toolTip = tabWithoutException.find(".tool-tip");
       expect(toolTip.length).to.equal(1);
       expect(toolTip.text()).to.equal("Total number of timestamps for this service");
 
-      // Because test_service_2 contains a timestamp with an exception, it should display a warning.
-      let tabWithException = wrapper.find(".nav-tabs").find("a").at(1);
+      // Because test_service_2 contains a timestamp with an exception,
+      // it should display a warning.
+      let tabWithException = wrapper.find(".nav-tabs a").at(1);
       badge = tabWithException.find(".badge.danger");
       expect(badge.length).to.equal(1);
       expect(badge.text()).to.equal("!");
-      toolTip = badge.parent().find(".tool-tip");
+      toolTip = tabWithException.find(".tool-tip");
       expect(toolTip.length).to.equal(0);
     });
 

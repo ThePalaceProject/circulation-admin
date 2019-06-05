@@ -2,6 +2,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 import { spy, stub } from "sinon";
+import { Button } from "library-simplified-reusable-components";
 import buildStore from "../../store";
 
 import InputList from "../InputList";
@@ -83,11 +84,12 @@ describe("InputList", () => {
   });
 
   it("renders a button for adding a list item", () => {
-    let addListItem = wrapper.find("span.add-list-item");
+    let addListItemContainer = wrapper.find(".add-list-item-container");
+    let addListItem = addListItemContainer.find("span.add-list-item");
     expect(addListItem.length).to.equal(1);
     expect(addListItem.find("input").prop("value")).to.equal("");
-    expect(addListItem.parent().find(WithRemoveButton).length).to.equal(0);
-    expect(addListItem.parent().find("button").text()).to.equal("Add");
+    expect(addListItemContainer.find(WithRemoveButton).length).to.equal(0);
+    expect(addListItemContainer.find("button.add-list-item").text()).to.equal("Add");
   });
 
   it("optionally renders a geographic tooltip with extra content", () => {
@@ -147,7 +149,7 @@ describe("InputList", () => {
     expect(removables.length).to.equal(2);
 
     let blankInput = wrapper.find("span.add-list-item input");
-    blankInput.get(0).value = "Another thing...";
+    blankInput.getDOMNode().value = "Another thing...";
     blankInput.simulate("change");
     let addButton = wrapper.find("button.add-list-item");
     addButton.simulate("click");
@@ -160,20 +162,20 @@ describe("InputList", () => {
   });
 
   it("adds an autocompleted item", () => {
-    let languageSetting = {...setting, ...{format: "language-code"}};
+    let languageSetting = { ...setting, format: "language-code" };
     wrapper.setProps({ setting: languageSetting, value: ["abc"] });
 
     let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(1);
-    let autocomplete = wrapper.find("[list='setting-autocomplete-list']").at(1);
-    autocomplete.get(0).value = "Another language";
+    let autocomplete = wrapper.find("input[list='setting-autocomplete-list']").at(1);
+    autocomplete.getDOMNode().value = "Another language";
     autocomplete.simulate("change");
     let addButton = wrapper.find("button.add-list-item");
     addButton.simulate("click");
 
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
-    autocomplete = wrapper.find("[list='setting-autocomplete-list']").at(2);
+    autocomplete = wrapper.find("input[list='setting-autocomplete-list']").at(2);
     expect(autocomplete.prop("value")).to.equal("");
   });
 
@@ -182,21 +184,22 @@ describe("InputList", () => {
     expect(removables.length).to.equal(2);
     expect(wrapper.state()["newItem"]).to.equal("");
 
-    let empty = wrapper.find("span.add-list-item input");
     let addButton = wrapper.find("button.add-list-item");
     expect(addButton.prop("disabled")).to.be.true;
     addButton.simulate("click");
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
 
-    empty = wrapper.find("span.add-list-item input");
-    empty.get(0).value = "something new";
+    let empty = wrapper.find("span.add-list-item input");
+    empty.getDOMNode().value = "something new";
     empty.simulate("change");
     addButton = wrapper.find("button.add-list-item");
     expect(wrapper.state()["newItem"]).to.equal("something new");
     expect(addButton.prop("disabled")).not.to.be.true;
     addButton.simulate("click");
+
     removables = wrapper.find(WithRemoveButton);
+    addButton = wrapper.find("button.add-list-item");
     expect(removables.length).to.equal(3);
     expect(addButton.prop("disabled")).to.be.true;
   });
@@ -210,6 +213,7 @@ describe("InputList", () => {
     expect(removables.length).to.equal(2);
 
     (wrapper.instance() as InputList).clear();
+    wrapper.update();
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(0);
   });

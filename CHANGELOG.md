@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.0
+#### Updated
+- Using React 16 and Enzyme 3.9.
+
 ### v0.2.5
 #### Updated
 - Implemented new styling options for the reusable Button component.

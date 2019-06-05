@@ -221,7 +221,7 @@ describe("BookCoverEditor", () => {
       expect(clearPreview.callCount).to.equal(1);
 
       let coverUrl = editableInputByName("cover_url");
-      coverUrl.get(0).setState({ value: "http://example.com" });
+      coverUrl.at(0).setState({ value: "http://example.com" });
       coverUrl.props().onChange();
 
       expect(fetchPreview.callCount).to.equal(1);
@@ -231,7 +231,7 @@ describe("BookCoverEditor", () => {
       expect(formData.get("title_position")).to.equal("none");
 
       let titlePosition = editableInputByName("title_position");
-      titlePosition.get(0).setState({ value: "center" });
+      titlePosition.at(0).setState({ value: "center" });
       titlePosition.props().onChange();
 
       expect(fetchPreview.callCount).to.equal(2);
@@ -241,13 +241,13 @@ describe("BookCoverEditor", () => {
       expect(formData.get("cover_file")).to.equal("");
       expect(formData.get("title_position")).to.equal("center");
 
-      coverUrl.get(0).setState({ value: "" });
+      coverUrl.at(0).setState({ value: "" });
       coverUrl.props().onChange();
       expect(fetchPreview.callCount).to.equal(2);
       expect(clearPreview.callCount).to.equal(2);
 
       let coverFile = editableInputByName("cover_file");
-      coverFile.get(0).setState({ value: "c://file.png" });
+      coverFile.at(0).setState({ value: "c://file.png" });
       coverFile.props().onChange();
 
       expect(fetchPreview.callCount).to.equal(3);
@@ -264,16 +264,16 @@ describe("BookCoverEditor", () => {
       wrapper.setProps({ preview: "image data" });
 
       let coverUrl = editableInputByName("cover_url");
-      coverUrl.get(0).setState({ value: "http://example.com" });
+      coverUrl.at(0).setState({ value: "http://example.com" });
 
       let titlePosition = editableInputByName("title_position");
-      titlePosition.get(0).setState({ value: "center" });
+      titlePosition.at(0).setState({ value: "center" });
 
       let rightsStatus = editableInputByName("rights_status");
-      rightsStatus.get(0).setState({ value: "http://creativecommons.org/licenses/by/4.0/" });
+      rightsStatus.at(0).setState({ value: "http://creativecommons.org/licenses/by/4.0/" });
 
       let rightsExplanation = editableInputByName("rights_explanation");
-      rightsExplanation.get(0).setState({ value: "explanation" });
+      rightsExplanation.at(0).setState({ value: "explanation" });
 
       let saveButton = wrapper.find("button").at(2);
       saveButton.simulate("click");

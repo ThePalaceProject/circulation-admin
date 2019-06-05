@@ -245,7 +245,7 @@ describe("Header", () => {
         { context: fullContext, childContextTypes }
       );
       let select = wrapper.find("select") as any;
-      let selectElement = select.get(0);
+      let selectElement = select.getDOMNode();
       selectElement.value = "bpl";
       select.simulate("change");
 
