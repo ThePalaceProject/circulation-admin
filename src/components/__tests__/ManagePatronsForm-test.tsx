@@ -45,7 +45,7 @@ describe("ManagePatronsForm", () => {
     });
 
     it("has .manage-patrons-form class", () => {
-      expect(wrapper.hasClass("manage-patrons-form")).to.equal(true);
+      expect(wrapper.render().hasClass("manage-patrons-form")).to.equal(true);
     });
 
     it("shows EditableInput", () => {

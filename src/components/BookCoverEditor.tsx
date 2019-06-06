@@ -216,7 +216,8 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     return this.props.bookAdminUrl + "/preview_book_cover";
   }
 
-  preview() {
+  preview(e) {
+    e.preventDefault();
     const coverForm = (this.refs["cover"] as any);
     const formData = new (window as any).FormData(coverForm);
     const file = (this.refs["cover_file"] as any).getValue();

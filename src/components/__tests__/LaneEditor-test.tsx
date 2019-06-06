@@ -129,6 +129,7 @@ describe("LaneEditor", () => {
 
     let onChange = input.props().onChange;
     onChange();
+    wrapper.update();
     input = wrapper.find(EditableInput);
     expect(input.props().checked).to.be.false;
   });
@@ -242,7 +243,9 @@ describe("LaneEditor", () => {
     let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
     (wrapper.instance() as LaneEditor).changeInheritParentRestrictions();
 
-    let saveButton = wrapper.find(".save-lane");
+    // .hostNodes() retrieves only the DOM node instead of the DOM node
+    // and the React class component.
+    let saveButton = wrapper.find(".save-lane").hostNodes();
     saveButton.simulate("click");
 
     expect(editLane.callCount).to.equal(1);
@@ -274,7 +277,7 @@ describe("LaneEditor", () => {
     let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new lane name");
     let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
 
-    let saveButton = wrapper.find(".save-lane");
+    let saveButton = wrapper.find(".save-lane").hostNodes();
     saveButton.simulate("click");
     expect(editLane.callCount).to.equal(1);
     getTextStub.restore();
@@ -306,11 +309,12 @@ describe("LaneEditor", () => {
     );
 
     // the cancel button isn't shown when there are no changes.
-    let cancelButton = wrapper.find(".cancel-changes");
+    let cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as LaneEditor).changeName("new name");
-    cancelButton = wrapper.find(".cancel-changes");
+    wrapper.update();
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
@@ -318,11 +322,13 @@ describe("LaneEditor", () => {
     expect(customListsResetStub.callCount).to.equal(1);
 
     (wrapper.instance() as LaneEditor).changeName(laneData.display_name);
-    cancelButton = wrapper.find(".cancel-changes");
+    wrapper.update();
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as LaneEditor).changeCustomLists([1, 2]);
-    cancelButton = wrapper.find(".cancel-changes");
+    wrapper.update();
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
@@ -330,17 +336,19 @@ describe("LaneEditor", () => {
     expect(customListsResetStub.callCount).to.equal(2);
 
     (wrapper.instance() as LaneEditor).changeCustomLists(laneData.custom_list_ids);
-    cancelButton = wrapper.find(".cancel-changes");
+    wrapper.update();
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as LaneEditor).changeInheritParentRestrictions();
-    cancelButton = wrapper.find(".cancel-changes");
+    wrapper.update();
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
 
     expect(nameResetStub.callCount).to.equal(3);
     expect(customListsResetStub.callCount).to.equal(3);
-    cancelButton = wrapper.find(".cancel-changes");
+    cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);
 
     nameResetStub.restore();

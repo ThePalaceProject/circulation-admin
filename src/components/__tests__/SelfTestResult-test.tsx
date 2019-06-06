@@ -23,7 +23,7 @@ describe("SelfTestResult", () => {
     );
   });
   it("displays a result with a string", () => {
-    expect(wrapper.hasClass("success")).to.be.true;
+    expect(wrapper.render().hasClass("success")).to.be.true;
 
     let testName = wrapper.find("h4");
     expect(testName.length).to.equal(1);
@@ -90,7 +90,7 @@ describe("SelfTestResult", () => {
     const exceptionResult = { ...stringResult, ...{ success: false, exception: exception }};
     wrapper.setProps({ result: exceptionResult });
 
-    expect(wrapper.hasClass("failure")).to.be.true;
+    expect(wrapper.render().hasClass("failure")).to.be.true;
     expect(wrapper.find(".success-description").text()).to.equal("success: false");
     let testException = wrapper.find(".exception-description");
     expect(testException.length).to.equal(1);

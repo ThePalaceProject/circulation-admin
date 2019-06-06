@@ -67,8 +67,8 @@ describe("Lanes", () => {
   };
 
   const getTopLevelLanes = () => {
-    let sidebar = wrapper.find(".lanes-sidebar");
-    let topLevelLanes = sidebar.children(DragDropContext).children(Draggable).children("div");
+    const sidebar = wrapper.find(".lanes-sidebar");
+    const topLevelLanes = sidebar.find("ul.droppable").at(0).children();
     return topLevelLanes;
   };
 
@@ -164,9 +164,9 @@ describe("Lanes", () => {
     orderInfo = wrapper.find(".order-change-info");
     expect(orderInfo.length).to.equal(1);
 
-    let save = orderInfo.find(".save-lane-order-changes");
+    let save = orderInfo.find(".save-lane-order-changes").hostNodes();
     expect(save.length).to.equal(1);
-    let reset = orderInfo.find(".cancel-lane-order-changes");
+    let reset = orderInfo.find(".cancel-lane-order-changes").hostNodes();
     expect(reset.length).to.equal(1);
   });
 
@@ -218,7 +218,7 @@ describe("Lanes", () => {
     // mock typing in the 'RESET' confirmation input box
     let editableInputStub = stub(EditableInput.prototype, "getValue").returns("DO NOT RESET");
 
-    let resetButton = wrapper.find(".reset-button");
+    let resetButton = wrapper.find(".reset-button").hostNodes();
     resetButton.simulate("click");
     expect(resetLanes.callCount).to.equal(0);
 
@@ -238,8 +238,10 @@ describe("Lanes", () => {
     let button = wrapper.find(".reset button");
     expect(button.prop("disabled")).to.be.true;
     let input = wrapper.find(".reset input");
-    input.get(0).value = "RESET";
+    input.getDOMNode().value = "RESET";
     input.simulate("change");
+
+    button = wrapper.find(".reset button");
     expect(wrapper.state()["canReset"]).to.be.true;
     expect(button.prop("disabled")).not.to.be.true;
   });
@@ -269,6 +271,7 @@ describe("Lanes", () => {
         droppableId: "top"
       }
     });
+    wrapper.update();
 
     // dropping should be disabled everywhere except the top-level lane
     let topDroppable = getDroppableById("top");
@@ -278,9 +281,9 @@ describe("Lanes", () => {
 
     // sublane 2 is collapsed so it isn't droppable
     let topLevelLanes = getTopLevelLanes();
-    let lane1 = topLevelLanes.at(0);
-    let sublane2 = lane1.children(Droppable).children(Draggable).children("div").at(0);
-    let sublane2Expand = sublane2.find("> div > span > .expand-button");
+    let lane1 = topLevelLanes.at(0).find(".lane-parent").at(0);
+    let sublane2 = lane1.find("li .lane-parent").at(0);
+    let sublane2Expand = sublane2.find(".expand-button");
     sublane2Expand.simulate("click");
     let sublane2Droppable = getDroppableById("2");
     expect(sublane2Droppable.props().isDropDisabled).to.be.true;
@@ -292,7 +295,11 @@ describe("Lanes", () => {
         droppableId: "1"
       }
     });
+    wrapper.update();
 
+    topDroppable = getDroppableById("top");
+    lane1Droppable = getDroppableById("1");
+    sublane2Droppable = getDroppableById("2");
     expect(topDroppable.props().isDropDisabled).to.be.true;
     expect(lane1Droppable.props().isDropDisabled).to.be.false;
     expect(sublane2Droppable.props().isDropDisabled).to.be.true;
@@ -305,6 +312,7 @@ describe("Lanes", () => {
       draggableId: "1",
       droppableId: "top"
     });
+    wrapper.update();
 
     // simulate dropping below lane 4
     (wrapper.instance() as Lanes).drag({
@@ -313,6 +321,7 @@ describe("Lanes", () => {
       lanes: [lanesData[1], lanesData[0]],
       orderChanged: true
     });
+    wrapper.update();
 
     let topLevelLanes = getTopLevelLanes();
     let lane4 = topLevelLanes.at(0);
@@ -342,6 +351,7 @@ describe("Lanes", () => {
       draggableId: "5",
       droppableId: "1"
     });
+    wrapper.update();
 
     // simulate dropping above sublane 2
     (wrapper.instance() as Lanes).drag({
@@ -350,10 +360,11 @@ describe("Lanes", () => {
       orderChanged: true,
       lanes: [rearrangedLane, lanesData[1]]
     });
+    wrapper.update();
 
     let topLevelLanes = getTopLevelLanes();
-    let lane1 = topLevelLanes.at(0);
-    let sublanes = lane1.children(Droppable).children(Draggable).children("div");
+    let lane1 = topLevelLanes.at(0).find(".lane-parent").at(0);
+    let sublanes = lane1.find("li .lane-parent");
     let sublane5 = sublanes.at(0);
     let sublane2 = sublanes.at(1);
     expect(sublane2.text()).to.contain("sublane 2");
@@ -364,7 +375,7 @@ describe("Lanes", () => {
     mountWrapper();
     wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
 
-    let saveOrderButton = wrapper.find(".order-change-info .save-lane-order-changes");
+    let saveOrderButton = wrapper.find(".order-change-info .save-lane-order-changes").hostNodes();
     saveOrderButton.simulate("click");
     expect(changeLaneOrder.callCount).to.equal(1);
     expect(changeLaneOrder.args[0][0]).to.deep.equal([lanesData[1], lanesData[0]]);
@@ -375,7 +386,7 @@ describe("Lanes", () => {
     mountWrapper();
     wrapper.setState({ orderChanged: true, lanes: [lanesData[1], lanesData[0]] });
 
-    let cancelOrderChangesButton = wrapper.find(".order-change-info .cancel-lane-order-changes");
+    let cancelOrderChangesButton = wrapper.find(".order-change-info .cancel-lane-order-changes").hostNodes();
     cancelOrderChangesButton.simulate("click");
     expect(wrapper.state().orderChanged).to.equal(false);
     expect(wrapper.state().lanes).to.deep.equal(lanesData);

@@ -206,10 +206,11 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    const saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
+    let saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
     expect(saveButton.props().disabled).to.equal(true);
 
     wrapper.setState({ title: "list title" });
+    saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
 
     expect(saveButton.props().disabled).to.equal(false);
   });
@@ -285,6 +286,8 @@ describe("CustomListEditor", () => {
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as CustomListEditor).changeTitle("new name");
+    wrapper.update();
+
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
@@ -294,14 +297,19 @@ describe("CustomListEditor", () => {
     expect(listEntriesReset.callCount).to.equal(1);
 
     (wrapper.instance() as CustomListEditor).changeTitle(listData.title);
+    wrapper.update();
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(0);
 
     (wrapper.instance() as CustomListEditor).changeCollection(collections[0]);
+    // This is needed because we are testing the cancelButton again.
+    wrapper.update();
+
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
     this.clock.tick(200);
+    wrapper.update();
 
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(0);
@@ -327,6 +335,8 @@ describe("CustomListEditor", () => {
     (wrapper.instance() as CustomListEditor).changeEntries(
       [{ id: "1234", title: "a", authors: [] }]
     );
+    wrapper.update();
+
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
     expect(cancelButton.length).to.equal(1);
     cancelButton.simulate("click");
@@ -337,6 +347,8 @@ describe("CustomListEditor", () => {
     cancelButton = wrapper.find(".save-or-cancel-list").find(Button).at(1);
 
     (wrapper.instance() as CustomListEditor).changeEntries(listData.books);
+    wrapper.update();
+
     let buttons = wrapper.find(".save-or-cancel-list").find(Button);
     expect(buttons.length).to.equal(1);
 
@@ -370,11 +382,13 @@ describe("CustomListEditor", () => {
     expect(inputs.at(1).props().checked).to.equal(true);
 
     inputs.at(0).props().onChange();
+    wrapper.update();
     inputs = wrapper.find(EditableInput);
     expect(inputs.at(0).props().checked).to.equal(true);
     expect(inputs.at(1).props().checked).to.equal(true);
 
     inputs.at(1).props().onChange();
+    wrapper.update();
     inputs = wrapper.find(EditableInput);
     expect(inputs.at(0).props().checked).to.equal(true);
     expect(inputs.at(1).props().checked).to.equal(false);
@@ -399,7 +413,7 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
     let input = wrapper.find(".form-control") as any;
-    input.get(0).value = "test";
+    input.getDOMNode().value = "test";
 
     let searchForm = wrapper.find("form");
     searchForm.simulate("submit");
@@ -428,7 +442,7 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
     let textInput = wrapper.find(".form-control") as any;
-    textInput.get(0).value = "harry potter";
+    textInput.getDOMNode().value = "harry potter";
     let radioInput = wrapper.find(".entry-points-selection input") as any;
     const bookInput = radioInput.at(1);
     let searchForm = wrapper.find("form");
@@ -463,7 +477,7 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
     let textInput = wrapper.find(".form-control") as any;
-    textInput.get(0).value = "oliver twist";
+    textInput.getDOMNode().value = "oliver twist";
     let radioInput = wrapper.find(".entry-points-selection input") as any;
     const audioInput = radioInput.at(2);
     let searchForm = wrapper.find("form");
@@ -503,19 +517,19 @@ describe("CustomListEditor", () => {
     const audioInput = radioInput.at(2);
     let textInput = wrapper.find(".form-control") as any;
 
-    textInput.get(0).value = "oliver twist";
+    textInput.getDOMNode().value = "oliver twist";
     audioInput.checked = true;
     audioInput.simulate("change");
 
     expect(wrapper.props().list).to.deep.equal(listData);
-    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(textInput.getDOMNode().value).to.equal("oliver twist");
     expect(wrapper.state("entryPointSelected")).to.equal("Audio");
 
     // Update the component with a new list.
     wrapper.setProps({ identifier: "2", list: newList });
 
     expect(wrapper.props().list).to.deep.equal(newList);
-    expect(textInput.get(0).value).to.equal("oliver twist");
+    expect(textInput.getDOMNode().value).to.equal("oliver twist");
     expect(wrapper.state("entryPointSelected")).to.equal("Audio");
   });
 });

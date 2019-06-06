@@ -72,7 +72,7 @@ export default class InputList extends React.Component<InputListProps, InputList
             </WithRemoveButton>
           );
         })}
-        <div>
+        <div className="add-list-item-container">
           <span className="add-list-item">
             { this.props.setting.format === "language-code" ?
                 <LanguageField

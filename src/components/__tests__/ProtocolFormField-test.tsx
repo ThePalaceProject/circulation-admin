@@ -35,7 +35,7 @@ describe("ProtocolFormField", () => {
     input = wrapper.find(EditableInput);
     expect(input.prop("disabled")).to.equal(true);
     expect(input.prop("value")).to.equal("test");
-    let inputElement = input.find("input").get(0) as any;
+    let inputElement = input.find("input").getDOMNode();
     expect(inputElement.value).to.equal("test");
 
     (wrapper.instance() as ProtocolFormField).clear();

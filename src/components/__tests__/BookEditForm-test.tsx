@@ -199,7 +199,9 @@ describe("BookEditForm", () => {
     expect(removables.length).to.equal(3);
     let firstNarrator = removables.at(1);
     let onRemove = firstNarrator.prop("onRemove");
+
     onRemove();
+    wrapper.update();
 
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
@@ -239,8 +241,8 @@ describe("BookEditForm", () => {
     let addContributorRole = contributorRoles.at(3);
     let addButton = wrapper.find("button.add-contributor");
 
-    addContributorName.get(0).setState({ value: "New Author" });
-    addContributorRole.get(0).setState({ value: "Author" });
+    addContributorName.at(0).setState({ value: "New Author" });
+    addContributorRole.at(0).setState({ value: "Author" });
     addButton.simulate("click");
 
     contributorNames = editableInputByName("contributor-name");

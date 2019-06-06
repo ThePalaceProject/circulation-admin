@@ -85,11 +85,11 @@ describe("Lane", () => {
 
   it("shows a lane", () => {
     // The lane is already showing.
-    let showButton = wrapper.find(".show-lane");
+    let showButton = wrapper.find(".show-lane").hostNodes();
     expect(showButton.length).to.equal(0);
 
     wrapper.setState({ visible: false });
-    showButton = wrapper.find(".show-lane");
+    showButton = wrapper.find(".show-lane").hostNodes();
     expect(showButton.length).to.equal(1);
     expect(showButton.text()).to.contain("Hidden");
     expect(showButton.find("svg title").text()).to.equal("Hidden Icon");
@@ -99,7 +99,7 @@ describe("Lane", () => {
     // If the lane has a hidden parent, it can't be shown.
     wrapper.setProps({ parent: { visible: false }});
     wrapper.setState({ expanded: true, visible: false });
-    showButton = wrapper.find(".show-lane");
+    showButton = wrapper.find(".show-lane").hostNodes();
     expect(showButton.length).to.equal(1);
     expect(showButton.prop("disabled")).to.be.true;
     // Clicking the show button doesn't do anything; it's disabled.
@@ -109,7 +109,7 @@ describe("Lane", () => {
     // If lane order has changed, all of the show buttons are disabled.
     wrapper.setProps({ parent: null, orderChanged: true });
     wrapper.setState({ visible: false });
-    showButton = wrapper.find(".show-lane");
+    showButton = wrapper.find(".show-lane").hostNodes();
     expect(showButton.length).to.equal(1);
     expect(showButton.prop("disabled")).to.be.true;
     // Clicking the show button doesn't do anything; it's disabled.
@@ -117,7 +117,7 @@ describe("Lane", () => {
     expect(wrapper.state()["visible"]).to.be.false;
   });
   it("hides a lane", () => {
-    let hideButton = wrapper.find(".hide-lane");
+    let hideButton = wrapper.find(".hide-lane").hostNodes();
     expect(hideButton.length).to.equal(1);
     expect(hideButton.text()).to.contain("Visible");
     expect(hideButton.find("svg title").text()).to.equal("Visible Icon");
@@ -127,7 +127,7 @@ describe("Lane", () => {
     // If lane order has changed, all of the hide buttons are disabled.
     wrapper.setProps({ orderChanged: true });
     wrapper.setState({ visible: true });
-    hideButton = wrapper.find(".hide-lane");
+    hideButton = wrapper.find(".hide-lane").hostNodes();
     expect(hideButton.length).to.equal(1);
     expect(hideButton.prop("disabled")).to.be.true;
     // Clicking the hide button doesn't do anything; it's disabled.

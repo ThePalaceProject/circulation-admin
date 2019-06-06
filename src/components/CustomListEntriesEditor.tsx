@@ -168,12 +168,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </ul>
               )}
               </Droppable>
-              { searchResults && searchResults.nextPageUrl &&
-                <LoadButton
-                  isFetching={isFetchingMoreSearchResults}
-                  loadMore={this.loadMore}
-                />
-              }
+            { searchResults && searchResults.nextPageUrl &&
+              <LoadButton
+                isFetching={isFetchingMoreSearchResults}
+                loadMore={this.loadMore}
+              />
+            }
           </div>
 
           <div className="custom-list-entries">

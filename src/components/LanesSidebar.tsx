@@ -58,7 +58,7 @@ export default class LanesSidebar extends React.Component<LanesSidebarProps, {}>
   renderLink(createOrReset: string): JSX.Element {
     let linkBase = `/admin/web/lanes/${this.props.library}/`;
     let content = {
-      "create": ["Create Top-Level Lane", <AddIcon />, null],
+      "create": ["Create Top-Level Lane", <AddIcon />, ""],
       "reset": ["Reset All Lanes", <ResetIcon />, "inverted"]
     };
     let [text, icon, className] = content[createOrReset];

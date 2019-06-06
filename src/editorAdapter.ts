@@ -50,13 +50,6 @@ export default function adapter(data: OPDSEntry): BookData {
 
   let categories = data.categories.map(category => category.label);
 
-  let subtitle;
-  try {
-    subtitle = data.unparsed["schema:alternativeHeadline"][0]["_"];
-  } catch (e) {
-    subtitle = null;
-  };
-
   let medium;
   try {
     medium = data.unparsed["$"]["schema:additionalType"]["value"];
@@ -102,7 +95,7 @@ export default function adapter(data: OPDSEntry): BookData {
     title: data.title,
     authors: authors,
     contributors: data.contributors,
-    subtitle: subtitle,
+    subtitle: data.subtitle,
     summary: data.summary.content,
     audience: audience && audience.term,
     targetAgeRange: targetAgeRange,

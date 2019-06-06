@@ -385,10 +385,10 @@ describe("LibraryRegistration", () => {
       let libraryRegistrationInfo = wrapper.find(".library-registration-info");
       let bpl = libraryRegistrationInfo.at(1);
       let bplSelect = bpl.find("select");
-      let bplSelectElement = bplSelect.get(0);
+      let bplSelectElement = bplSelect.getDOMNode();
       let qpl = libraryRegistrationInfo.at(2);
       let qplSelect = qpl.find("select");
-      let qplSelectElement = qplSelect.get(0);
+      let qplSelectElement = qplSelect.getDOMNode();
 
       expect(wrapper.state().registration_stage).to.eql({});
 
