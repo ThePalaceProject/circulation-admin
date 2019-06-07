@@ -166,12 +166,12 @@ describe("BookCoverEditor", () => {
     it("shows save button", () => {
       let buttons = wrapper.find("button");
       // Counting the two buttons that are coming from the Panel component:
-      expect(buttons.length).to.equal(3);
-      let save = buttons.at(2);
+      expect(buttons.length).to.equal(4);
+      let save = buttons.at(3);
       expect(save.props().disabled).to.be.ok;
 
       wrapper.setProps({ preview: "image data" });
-      save = wrapper.find("button").at(2);
+      save = wrapper.find("button").at(3);
       expect(save.props().disabled).not.to.be.ok;
     });
   });
@@ -220,9 +220,10 @@ describe("BookCoverEditor", () => {
       expect(fetchPreview.callCount).to.equal(0);
       expect(clearPreview.callCount).to.equal(1);
 
+      let previewButton = wrapper.find("button").at(1);
       let coverUrl = editableInputByName("cover_url");
-      coverUrl.at(0).setState({ value: "http://example.com" });
-      coverUrl.props().onChange();
+      coverUrl.setState({ value: "http://example.com" });
+      previewButton.simulate("click");
 
       expect(fetchPreview.callCount).to.equal(1);
       expect(fetchPreview.args[0][0]).to.equal("/admin/book/preview_book_cover");
@@ -231,8 +232,8 @@ describe("BookCoverEditor", () => {
       expect(formData.get("title_position")).to.equal("none");
 
       let titlePosition = editableInputByName("title_position");
-      titlePosition.at(0).setState({ value: "center" });
-      titlePosition.props().onChange();
+      titlePosition.setState({ value: "center" });
+      previewButton.simulate("click");
 
       expect(fetchPreview.callCount).to.equal(2);
       expect(fetchPreview.args[1][0]).to.equal("/admin/book/preview_book_cover");
@@ -240,15 +241,15 @@ describe("BookCoverEditor", () => {
       expect(formData.get("cover_url")).to.equal("http://example.com");
       expect(formData.get("cover_file")).to.equal("");
       expect(formData.get("title_position")).to.equal("center");
+      coverUrl.setState({ value: "" });
+      previewButton.simulate("click");
 
-      coverUrl.at(0).setState({ value: "" });
-      coverUrl.props().onChange();
       expect(fetchPreview.callCount).to.equal(2);
       expect(clearPreview.callCount).to.equal(2);
 
       let coverFile = editableInputByName("cover_file");
-      coverFile.at(0).setState({ value: "c://file.png" });
-      coverFile.props().onChange();
+      coverFile.setState({ value: "c://file.png" });
+      previewButton.simulate("click");
 
       expect(fetchPreview.callCount).to.equal(3);
       expect(fetchPreview.args[2][0]).to.equal("/admin/book/preview_book_cover");
@@ -275,7 +276,7 @@ describe("BookCoverEditor", () => {
       let rightsExplanation = editableInputByName("rights_explanation");
       rightsExplanation.at(0).setState({ value: "explanation" });
 
-      let saveButton = wrapper.find("button").at(2);
+      let saveButton = wrapper.find("button").at(3);
       saveButton.simulate("click");
 
       expect(editCover.callCount).to.equal(1);

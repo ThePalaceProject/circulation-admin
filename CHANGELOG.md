@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.1
+#### Fixed
+- Fixed a bug involving loading a book cover preview from a URL.
+
 ### v0.3.0
 #### Updated
 - Using React 16 and Enzyme 3.9.
