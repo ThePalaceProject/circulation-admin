@@ -238,7 +238,10 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   }
 
   async deleteCustomList(list: CustomListData): Promise<void> {
-    if (window.confirm("Delete list \"" + list.name + "\"?")) {
+    const descriptionText = "Deleting this list can affect any custom lanes. If a \
+      lane only contains this list, then that lane will also be deleted.";
+    const confirmationText = `Delete list "${list.name}"? ${descriptionText}`;
+    if (window.confirm(confirmationText)) {
       await this.props.deleteCustomList(String(list.id));
       this.props.fetchCustomLists();
     }

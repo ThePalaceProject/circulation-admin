@@ -76,7 +76,7 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
         <div className = "custom-list-buttons">
           {
             isActive ?
-              <Button disabled={true} content="Editing" className="left-align small"/> :
+              <Button disabled={true} content="Editing" className="left-align small" /> :
               <Link
                 to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
                 className="btn left-align small"
@@ -89,7 +89,7 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
               <Button
                 callback={() => this.props.deleteCustomList(list)}
                 content={<span>Delete<TrashIcon /></span>}
-                className="right-align small"
+                className="right-align small danger"
               />
           }
         </div>
