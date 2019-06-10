@@ -11,6 +11,7 @@ import EditableInput from "../EditableInput";
 import CustomListEditor from "../CustomListEditor";
 import { Link } from "react-router";
 import Admin from "../../models/Admin";
+import { LaneData } from "../../interfaces";
 
 describe("CustomLists", () => {
   let wrapper;
@@ -23,6 +24,7 @@ describe("CustomLists", () => {
   let loadMoreEntries;
   let fetchCollections;
   let fetchLibraries;
+  let fetchLanes;
 
   let listsData = [
     { id: 1, name: "a list", entry_count: 0, collections: [] },
@@ -62,6 +64,21 @@ describe("CustomLists", () => {
     },
   ];
 
+  const lane1: LaneData = {
+    id: 1, display_name: "lane 1", visible: false, count: 1, sublanes: [],
+    custom_list_ids: [2], inherit_parent_restrictions: false
+  };
+  const lane2: LaneData = {
+    id: 2, display_name: "lane 2", visible: false, count: 1, sublanes: [],
+    custom_list_ids: [2], inherit_parent_restrictions: false
+  };
+  const lane3: LaneData = {
+    id: 3, display_name: "lane 2", visible: false, count: 1, sublanes: [],
+    custom_list_ids: [], inherit_parent_restrictions: false
+  };
+  const allLanes = [lane1, lane2, lane3];
+  const lanesToDelete = [lane1, lane2];
+
   const libraryManager = new Admin([{ "role": "manager", "library": "library" }]);
   const librarian = new Admin([{ "role": "librarian", "library": "library" }]);
 
@@ -75,6 +92,7 @@ describe("CustomLists", () => {
     loadMoreEntries = stub();
     fetchCollections = stub();
     fetchLibraries = stub();
+    fetchLanes = stub().returns(new Promise<void>(resolve => resolve()));
 
     wrapper = mount(
       <CustomLists
@@ -95,7 +113,8 @@ describe("CustomLists", () => {
         loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
-        />,
+        fetchLanes={fetchLanes}
+      />,
       { context: { admin: libraryManager }}
     );
   });
@@ -142,7 +161,8 @@ describe("CustomLists", () => {
         loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
-        />,
+        fetchLanes={fetchLanes}
+      />,
       { context: { admin: libraryManager }}
     );
     wrapper.setProps({ lists: [] });
@@ -167,7 +187,8 @@ describe("CustomLists", () => {
         loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
-        />,
+        fetchLanes={fetchLanes}
+      />,
       { context: { admin: libraryManager }}
     );
     wrapper.setProps({ lists: listsData });
@@ -195,7 +216,8 @@ describe("CustomLists", () => {
         loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
-        />,
+        fetchLanes={fetchLanes}
+      />,
       { context: { admin: libraryManager }}
     );
     let radioButtons = wrapper.find(EditableInput);
@@ -253,7 +275,8 @@ describe("CustomLists", () => {
         loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
-        />,
+        fetchLanes={fetchLanes}
+      />,
       { context: { admin: librarian }}
     );
     let lists = wrapper.find("li");
@@ -276,20 +299,68 @@ describe("CustomLists", () => {
     expect(listZDeleteButton.length).to.equal(0);
   });
 
-  it("deletes a list", () => {
+  it("fetches lanes to be deleted", async () => {
+    let deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(listsData[1].id);
+    // There are no lanes so fetch them.
+    expect(fetchLanes.callCount).to.equal(1);
+
+    // But now manually setting the lanes so the fetchLanes
+    // call count should still remain at 1.
+    wrapper.setProps({ lanes: allLanes });
+
+    deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(listsData[1].id);
+
+    expect(fetchLanes.callCount).to.equal(1);
+    expect(deletedLanes.length).to.equal(2);
+    expect(deletedLanes[0]).to.equal(lane1);
+    expect(deletedLanes[1]).to.equal(lane2);
+  });
+
+  it("outputs a list of lanes that will be deleted when a list is deleted", () => {
+    let prompt = (wrapper.instance() as CustomLists).deletedLaneNames(lanesToDelete);
+    expect(prompt).to.equal("Deleting this list will delete the following lanes:\n" +
+      "\nLane name: lane 1\nLane name: lane 2");
+  });
+
+  it("deletes a list", async () => {
     let confirmStub = stub(window, "confirm").returns(false);
+    let getDeletedLanes = stub((wrapper.instance() as CustomLists), "getDeletedLanes")
+      .returns(new Promise<void>(resolve => resolve()));
 
     let lists = wrapper.find("li");
     let deleteButton = lists.at(0).find("button");
-    deleteButton.simulate("click");
+    await deleteButton.simulate("click");
 
     expect(deleteCustomList.callCount).to.equal(0);
 
     confirmStub.returns(true);
-    deleteButton.simulate("click");
+    await deleteButton.simulate("click");
 
     expect(deleteCustomList.callCount).to.equal(1);
     expect(deleteCustomList.args[0][0]).to.equal("1");
+
+    confirmStub.restore();
+    getDeletedLanes.restore();
+  });
+
+  it("deletes a list and warns of lanes that will be deleted", async () => {
+    wrapper.setProps({ lanes: allLanes });
+
+    let confirmStub = stub(window, "confirm").returns(true);
+    let lists = wrapper.find("li");
+    // Delete the first list
+    let deleteButton = lists.at(0).find("button");
+    await deleteButton.simulate("click");
+
+    expect(confirmStub.args[0][0]).to.equal("Delete list \"a list\"? ");
+
+    // Delete the second list
+    deleteButton = lists.at(1).find("button");
+    await deleteButton.simulate("click");
+
+    expect(confirmStub.args[1][0]).to.equal("Delete list \"z list\"? " +
+      "Deleting this list will delete the following lanes:\n" +
+      "\nLane name: lane 1\nLane name: lane 2");
 
     confirmStub.restore();
   });
@@ -383,6 +454,7 @@ describe("CustomLists", () => {
         loadMoreEntries={loadMoreEntries}
         fetchCollections={fetchCollections}
         fetchLibraries={fetchLibraries}
+        fetchLanes={fetchLanes}
       />,
       { context: { admin: librarian }}
     );
