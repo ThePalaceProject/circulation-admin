@@ -83,23 +83,30 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
   }
 
   toggleVisible(): void {
-    let change: boolean = !this.state.visible;
+    const change: boolean = !this.state.visible;
     this.props.toggleLaneVisibility(this.props.lane, change);
     this.setState({ expanded: this.state.expanded, visible: change });
   }
 
   renderVisibilityToggle(): JSX.Element {
     // If the lane order is currently being changed, or if this lane has a parent which is hidden, disable the toggle.
-    let parentHidden = this.props.parent && !this.props.parent.visible;
-    let canToggle = !this.props.orderChanged && !parentHidden;
-    let className = this.state.visible ? "hide-lane" : "show-lane";
-    let buttonContent = this.state.visible ? <span>Visible<VisibleIcon/></span> : <span>Hidden<HiddenIcon/></span>;
-    return <Button className={"small transparent top-align bottom-align " + className} disabled={!canToggle} callback={this.toggleVisible} content={buttonContent} />;
+    const parentHidden = this.props.parent && !this.props.parent.visible;
+    const canToggle = !this.props.orderChanged && !parentHidden;
+    const className = this.state.visible ? "hide-lane" : "show-lane";
+    const buttonContent = this.state.visible ? <span>Visible<VisibleIcon/></span> : <span>Hidden<HiddenIcon/></span>;
+    return <Button
+      className={"small transparent top-align bottom-align " + className}
+      disabled={!canToggle}
+      callback={this.toggleVisible}
+      content={buttonContent}
+    />;
   }
 
   renderButton(editOrCreate: string): JSX.Element {
-    let link = this.props.orderChanged ? null : `/admin/web/lanes/${this.props.library}/${editOrCreate}/${this.props.lane.id}`;
-    let content = editOrCreate === "create" ? <span>Create Sublane<AddIcon /></span> : <span>Edit Lane<PencilIcon /></span>;
+    const link = this.props.orderChanged ?
+      null : `/admin/web/lanes/${this.props.library}/${editOrCreate}/${this.props.lane.id}`;
+    const content = editOrCreate === "create" ?
+      <span>Create Sublane<AddIcon /></span> : <span>Edit Lane<PencilIcon /></span>;
 
     let button = (
       <Link

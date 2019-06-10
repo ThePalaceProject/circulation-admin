@@ -155,6 +155,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                               {this.getCatalogLink(book)}
                               <Button
                                 callback={() => { this.add(book.id); }}
+                                className="right-align"
                                 content={<span>Add to list<AddIcon /></span>}
                               />
                             </div>
@@ -313,7 +314,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         bookUrl={book.url}
         title={book.title}
         target="_blank"
-        className="btn inverted left-align small"
+        className="btn inverted left-align small top-align"
       >
         View details
       </CatalogLink>
@@ -365,14 +366,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   searchResultsNotInEntries() {
     let entryIds = this.state.entries && this.state.entries.length ?
       this.state.entries.map(entry => entry.id) : [];
-    return this.props.searchResults.books.filter(book => {
-      for (const entryId of entryIds) {
-        if (entryId === book.id) {
-          return false;
+    return this.props.searchResults.books && this.props.searchResults.books.length ?
+      this.props.searchResults.books.filter(book => {
+        for (const entryId of entryIds) {
+          if (entryId === book.id) {
+            return false;
+          }
         }
-      }
-      return true;
-    });
+        return true;
+      }) :
+      []
+    ;
   }
 
   onDragStart(initial) {
@@ -452,7 +456,8 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let deleted = this.state.deleted.filter(entry => entry.id !== id);
     let deletedEntry = this.state.entries.filter(entry => entry.id === id);
     let added = this.state.added.filter(entry => entry.id !== id);
-    let inAdded = this.props.entries.filter(entry => entry.id === id);
+    let inAdded = this.props.entries && this.props.entries.length ?
+      this.props.entries.filter(entry => entry.id === id) : [];
     entries = entries.filter(entry => entry.id !== id);
     this.setState({
       draggingFrom: null,

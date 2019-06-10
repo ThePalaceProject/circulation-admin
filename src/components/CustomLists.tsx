@@ -12,6 +12,8 @@ import {
   CollectionsData,
   CollectionData as AdminCollectionData,
   LibraryData,
+  LaneData,
+  LanesData,
 } from "../interfaces";
 import Admin from "../models/Admin";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
@@ -35,9 +37,11 @@ export interface CustomListsStateProps {
   isFetchingMoreSearchResults: boolean;
   isFetchingMoreCustomListEntries: boolean;
   libraries?: LibraryData[];
+  lanes?: LaneData[];
 }
 
 export interface CustomListsDispatchProps {
+  fetchLanes: () => Promise<LanesData>;
   fetchCustomLists: () => Promise<CustomListsData>;
   fetchCustomListDetails: (listId: string) => Promise<CollectionData>;
   editCustomList: (data: FormData, listId?: string) => Promise<void>;
@@ -238,10 +242,56 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   }
 
   async deleteCustomList(list: CustomListData): Promise<void> {
-    if (window.confirm("Delete list \"" + list.name + "\"?")) {
+    let lanes = await this.getDeletedLanes(list.id);
+    let deletedLanesText = "";
+    if (lanes && lanes.length) {
+      deletedLanesText = this.deletedLaneNames(lanes);
+    }
+
+    const confirmationText = `Delete list "${list.name}"? ${deletedLanesText}`;
+    if (window.confirm(confirmationText)) {
       await this.props.deleteCustomList(String(list.id));
       this.props.fetchCustomLists();
     }
+  }
+
+  /**
+   * getDeletedLanes
+   * For any list id, fetch all the lanes where this list is the _only_ custom
+   * list in that lane. The server will deal with deleting those lanes. Only fetch
+   * the lanes data here since they are not needed for the page until a list 
+   * is going to be deleted.
+   * @param {string | number} listId The id of the list to get associated lanes.
+   */
+  async getDeletedLanes(listId: string | number): Promise<LaneData[]> {
+    let deletedLanes = [];
+    let lanes = this.props.lanes;
+    if (!lanes) {
+      await this.props.fetchLanes();
+      lanes = this.props.lanes;
+    }
+
+    if (lanes && lanes.length) {
+      lanes.forEach(lane => {
+        const customListId = lane.custom_list_ids;
+        if (customListId.length === 1 && customListId[0] === listId) {
+          deletedLanes.push(lane);
+        }
+      });
+    }
+    return deletedLanes;
+  }
+
+  /**
+   * deletedLaneNames
+   * Display text that lists what lanes will be deleted. Currently used
+   * to warn users when a list is deleted that those lanes will be deleted.
+   * @param {LaneData[]} lanes Array of lanes that will be deleted.
+   */
+  deletedLaneNames(lanes: LaneData[]): string {
+    let deleteText = "Deleting this list will delete the following lanes:\n";
+    lanes.forEach(lane => deleteText += `\nLane name: ${lane.display_name}`);
+    return deleteText;
   }
 
   collectionsForLibrary(): AdminCollectionData[] {
@@ -270,6 +320,7 @@ function mapStateToProps(state, ownProps) {
     isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage,
     collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections,
     libraries: state.editor.libraries.data && state.editor.libraries.data.libraries,
+    lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
   };
 }
 
@@ -286,6 +337,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     loadMoreEntries: (url: string) => dispatch(actions.fetchMoreCustomListEntries(url)),
     fetchCollections: () => dispatch(actions.fetchCollections()),
     fetchLibraries: () => dispatch(actions.fetchLibraries()),
+    fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
   };
 }
 
