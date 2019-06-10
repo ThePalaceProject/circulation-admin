@@ -255,6 +255,14 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     }
   }
 
+  /**
+   * getDeletedLanes
+   * For any list id, fetch all the lanes where this list is the _only_ custom
+   * list in that lane. The server will deal with deleting those lanes. Only fetch
+   * the lanes data here since they are not needed for the page until a list 
+   * is going to be deleted.
+   * @param {string | number} listId The id of the list to get associated lanes.
+   */
   async getDeletedLanes(listId: string | number): Promise<LaneData[]> {
     let deletedLanes = [];
     let lanes = this.props.lanes;
@@ -274,6 +282,12 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     return deletedLanes;
   }
 
+  /**
+   * deletedLaneNames
+   * Display text that lists what lanes will be deleted. Currently used
+   * to warn users when a list is deleted that those lanes will be deleted.
+   * @param {LaneData[]} lanes Array of lanes that will be deleted.
+   */
   deletedLaneNames(lanes: LaneData[]): string {
     let deleteText = "Deleting this list will delete the following lanes:\n";
     lanes.forEach(lane => deleteText += `\nLane name: ${lane.display_name}`);
