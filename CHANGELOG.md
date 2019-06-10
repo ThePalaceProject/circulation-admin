@@ -1,9 +1,13 @@
 ## Changelog
 
-### v0.3.1
+### v0.3.2
 #### Fixed
 - Deleting a list now also deletes any lanes which contained only that list. Previously, there was no functionality in place to edit or remove any custom lanes when its custom list was deleted.
 - Minor styling and bug fixes on the custom list page.
+
+### v0.3.1
+#### Fixed
+- Fixed a bug involving loading a book cover preview from a URL.
 
 ### v0.3.0
 #### Updated

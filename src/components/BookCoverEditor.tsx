@@ -161,7 +161,6 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
               disabled={this.props.isFetching}
               name="cover_url"
               label="URL for cover image"
-              onChange={this.preview}
               ref="cover_url"
               optionalText={false}
               />
@@ -172,7 +171,6 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
               name="cover_file"
               label="Or upload cover image"
               accept="image/*"
-              onChange={this.preview}
               ref="cover_file"
               optionalText={false}
               />
@@ -181,7 +179,6 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
               disabled={this.props.isFetching}
               name="title_position"
               label="Title and Author Position"
-              onChange={this.preview}
               value="none"
               >
               <option value="none">None</option>
@@ -189,6 +186,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
               <option value="center">Center</option>
               <option value="bottom">Bottom</option>
             </EditableInput>
+            <Button callback={this.preview} content="Preview" />
           </fieldset>
         </form>
         { this.props.previewFetchError &&
@@ -218,7 +216,8 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     return this.props.bookAdminUrl + "/preview_book_cover";
   }
 
-  preview() {
+  preview(e) {
+    e.preventDefault();
     const coverForm = (this.refs["cover"] as any);
     const formData = new (window as any).FormData(coverForm);
     const file = (this.refs["cover_file"] as any).getValue();
