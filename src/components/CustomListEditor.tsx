@@ -57,6 +57,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     const listTitle = this.props.list && this.props.list.title ? this.props.list.title : "";
     const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
     const opdsFeedUrl = `${this.props.library}/lists/${listTitle}/crawlable`;
+    const hasChanges = this.hasChanges();
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -77,10 +78,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           <div className="save-or-cancel-list">
             <Button
               callback={this.save}
-              disabled={!this.hasChanges()}
+              disabled={!hasChanges}
               content="Save this list"
             />
-            { this.hasChanges() &&
+            { hasChanges &&
               <Button
                 className="inverted"
                 callback={this.reset}
@@ -168,9 +169,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.list) {
-      this.setState({ title: "", entries: [], collections: [] });
-    }
-    else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
+      // If there's no list then a new one is being created, but there could already
+      // be a list title in the state.
+      this.setState({ title: this.state.title || "", entries: [], collections: [] });
+    } else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
+      // Update the state with the next list to edit.
       this.setState({
         title: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
