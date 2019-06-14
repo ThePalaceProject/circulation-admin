@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
 import Admin from "../../models/Admin";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form, Panel } from "library-simplified-reusable-components";
 
 describe("IndividualAdminEditForm", () => {
   let wrapper;
@@ -533,7 +533,7 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("calls save when the form is submitted directly", () => {
-      wrapper.simulate("submit");
+      wrapper.find(Form).props().onSubmit();
       expect(save.callCount).to.equal(1);
     });
 
@@ -555,7 +555,9 @@ describe("IndividualAdminEditForm", () => {
     it("calls handleData", () => {
       let handleData = spy(wrapper.instance(), "handleData");
       fillOutFormFields();
-      wrapper.simulate("submit");
+
+      wrapper.find(Form).find(Button).simulate("click");
+
       expect(handleData.args[0][0].get("email")).to.equal("newEmail");
       expect(handleData.args[0][0].get("password")).to.equal("newPassword");
       expect(handleData.callCount).to.equal(1);

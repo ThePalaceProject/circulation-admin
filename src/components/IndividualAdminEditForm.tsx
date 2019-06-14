@@ -4,7 +4,7 @@ import EditableInput from "./EditableInput";
 import { handleSubmit, clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
-import { Panel, Button } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "library-simplified-reusable-components";
 
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -61,27 +61,27 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
 
   render(): JSX.Element {
     return (
-      <form ref="form" onSubmit={this.submit} className="edit-form">
-        <Panel
-          headerText="Admin Information"
-          content={this.renderForm()}
-          openByDefault={true}
-          collapsible={!this.context.settingUp}
-          onEnter={this.submit}
-        />
-        { !this.context.settingUp &&
+      <Form
+        onSubmit={this.submit}
+        className="no-border edit-form"
+        disableButton={this.props.disabled}
+        content = {[
+          <Panel
+            headerText="Admin Information"
+            content={this.renderForm()}
+            openByDefault={true}
+            collapsible={!this.context.settingUp}
+            onEnter={this.submit}
+          />,
+          !this.context.settingUp &&
           <Panel
             headerText="Admin Roles"
             content={this.renderRoleForm()}
             openByDefault={true}
             onEnter={this.submit}
           />
-        }
-        <Button
-          disabled={this.props.disabled}
-          callback={this.submit}
-        />
-      </form>
+        ]}
+      />
     );
   }
 
@@ -344,13 +344,13 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       // When setting up the only thing you can do is create a system admin.
       roles = [{ role: "system" }];
     }
-    data.append("roles", JSON.stringify(roles));
+    data && data.append("roles", JSON.stringify(roles));
     return data;
   }
 
-  submit(event) {
-    event.preventDefault();
-    handleSubmit(this);
+  async submit(data) {
+    let modifiedData = this.handleData(data);
+    await this.props.save(modifiedData);
   }
 
 }
