@@ -9,6 +9,8 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../ErrorMessage";
 import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
+import { Form } from "library-simplified-reusable-components";
+
 
 describe("ChangePasswordForm", () => {
   let wrapper;
@@ -16,19 +18,18 @@ describe("ChangePasswordForm", () => {
 
   beforeEach(() => {
     changePassword = stub().returns(new Promise<void>(resolve => resolve()));
-    wrapper = shallow(
+    wrapper = mount(
       <ChangePasswordForm
         isFetching={false}
         csrfToken="token"
         changePassword={changePassword}
-        />
+      />
     );
   });
 
   it("shows ErrorMessage on request error", () => {
     let error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(0);
-
     let fetchError = {
       status: 500,
       response: "response",
@@ -49,23 +50,24 @@ describe("ChangePasswordForm", () => {
   });
 
   it("shows validation error", () => {
-    let error = wrapper.find(Alert);
+    let error = wrapper.find(".alert-danger");
     expect(error.length).to.equal(0);
 
     wrapper.setState({ success: false, error: "Error!" });
-    error = wrapper.find(Alert);
+    error = wrapper.find(".alert-danger");
     expect(error.length).to.equal(1);
-    expect(error.prop("bsStyle")).to.equal("danger");
+    expect(error.text()).to.equal("Error!");
   });
 
   it("shows success message", () => {
-    let success = wrapper.find(Alert);
+    let success = wrapper.find(".alert-success");
     expect(success.length).to.equal(0);
 
     wrapper.setState({ success: true, error: null });
-    success = wrapper.find(Alert);
+    success = wrapper.find(".alert-success");
     expect(success.length).to.equal(1);
-    expect(success.prop("bsStyle")).to.equal("success");
+    console.log(success.text());
+    expect(success.text()).to.equal("Password changed successfully");
   });
 
   it("shows password inputs", () => {
@@ -83,19 +85,13 @@ describe("ChangePasswordForm", () => {
         isFetching={false}
         csrfToken="token"
         changePassword={changePassword}
-        />
+      />
     );
-    let passwordInput = wrapper.find("input[name='password']");
-    let confirmInput = wrapper.find("input[name='confirm_password']");
-    let passwordInputElement = passwordInput.getDOMNode();
-    passwordInputElement.value = "newPassword";
-    passwordInput.simulate("change");
-    let confirmInputElement = confirmInput.getDOMNode();
-    confirmInputElement.value = "somethingElse";
-    confirmInput.simulate("change");
+    const formData = new (window as any).FormData();
+    formData.append("password", "newPassword");
+    formData.append("confirm_password", "somethingElse");
 
-    let form = wrapper.find("form");
-    form.simulate("submit");
+    wrapper.instance().save(formData);
 
     expect(changePassword.callCount).to.equal(0);
     expect(wrapper.instance().state.error).to.contain("Passwords do not match");
@@ -107,23 +103,16 @@ describe("ChangePasswordForm", () => {
         isFetching={false}
         csrfToken="token"
         changePassword={changePassword}
-        />
+      />
     );
-    let passwordInput = wrapper.find("input[name='password']");
-    let confirmInput = wrapper.find("input[name='confirm_password']");
-    let passwordInputElement = passwordInput.getDOMNode();
-    passwordInputElement.value = "newPassword";
-    passwordInput.simulate("change");
-    let confirmInputElement = confirmInput.getDOMNode();
-    confirmInputElement.value = "newPassword";
-    confirmInput.simulate("change");
-
-    let form = wrapper.find("form");
-    form.simulate("submit");
+    const formData = new (window as any).FormData();
+    formData.append("password", "newPassword");
+    formData.append("confirm_password", "newPassword");
+    wrapper.instance().save(formData);
 
     expect(changePassword.callCount).to.equal(1);
-    let formData = changePassword.args[0][0];
-    expect(formData.get("password")).to.equal("newPassword");
+    let calledWith = changePassword.args[0][0];
+    expect(calledWith.get("password")).to.equal("newPassword");
 
     // Let the call stack clear so the callback after editItem will run.
     const pause = (): Promise<void> => {

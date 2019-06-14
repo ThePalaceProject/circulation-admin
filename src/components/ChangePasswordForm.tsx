@@ -7,8 +7,7 @@ import ActionCreator from "../actions";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
-import { Alert } from "react-bootstrap";
-import { Button } from "library-simplified-reusable-components";
+import { Form } from "library-simplified-reusable-components";
 
 export interface ChangePasswordFormStateProps {
   fetchError?: FetchErrorData;
@@ -39,60 +38,48 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
   }
 
   render(): JSX.Element {
+    let formContent = (
+      <fieldset>
+        <legend className="visuallyHidden">Change admin's password</legend>
+        <EditableInput
+          elementType="input"
+          type="password"
+          disabled={this.props.isFetching}
+          name="password"
+          label="New Password"
+          ref="password"
+          required={true}
+        />
+        <EditableInput
+          elementType="input"
+          type="password"
+          disabled={this.props.isFetching}
+          name="confirm_password"
+          label="Confirm New Password"
+          ref="confirm"
+          required={true}
+        />
+      </fieldset>
+    );
+
     return (
-      <div className="change-password-form">
-        <h2>Change Password</h2>
-        { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} />
-        }
-        { this.state.error &&
-          <Alert bsStyle="danger">{ this.state.error }</Alert>
-        }
-        { this.props.isFetching &&
-          <LoadingIndicator />
-        }
-        { this.state.success &&
-          <Alert bsStyle="success">Password changed successfully.</Alert>
-        }
-        <form ref="form" onSubmit={this.save}>
-          <fieldset>
-            <legend className="visuallyHidden">Change admin's password</legend>
-            <EditableInput
-              elementType="input"
-              type="password"
-              disabled={this.props.isFetching}
-              name="password"
-              label="New Password"
-              ref="password"
-              required={true}
-              />
-            <EditableInput
-              elementType="input"
-              type="password"
-              disabled={this.props.isFetching}
-              name="confirm_password"
-              label="Confirm New Password"
-              ref="confirm"
-              required={true}
-              />
-          </fieldset>
-          <Button
-            callback={this.save}
-            disabled={this.props.isFetching}
-          />
-        </form>
-      </div>
+        <Form
+          title="Change Password"
+          onSubmit={this.save}
+          content={formContent}
+          disableButton={this.props.isFetching}
+          className="change-password-form"
+          successText={this.state.success && "Password changed successfully"}
+          errorText={(this.props.fetchError && <ErrorMessage error={this.props.fetchError} />) || this.state.error}
+          loadingText={this.props.isFetching && <LoadingIndicator />}
+        ></Form>
     );
   }
 
-  save(event) {
-    event.preventDefault();
-    let password = (this.refs["password"] as any).getValue();
-    let confirm = (this.refs["confirm"] as any).getValue();
-    if (password !== confirm) {
+  save(data: FormData) {
+    if (data.get("password") !== data.get("confirm_password")) {
       this.setState({ success: false, error: "Passwords do not match." });
     } else {
-      const data = new (window as any).FormData(this.refs["form"] as any);
       this.props.changePassword(data).then(() => {
         this.setState({ success: true, error: null });
       });
