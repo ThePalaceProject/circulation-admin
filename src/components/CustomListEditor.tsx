@@ -236,7 +236,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       }
     }
 
-    return (this.state.title !== "") && (titleChanged || entriesChanged || collectionsChanged);
+    return !!(this.state.title && this.state.title !== "") && (titleChanged || entriesChanged || collectionsChanged);
   }
 
   changeTitle(title: string) {
