@@ -1,9 +1,9 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { handleSubmit, findDefault, clearForm } from "./sharedFunctions";
+import { findDefault, clearForm } from "./sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
-import { Panel, Button } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface LibraryEditFormProps {
@@ -43,68 +43,63 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
     let categories = this.separateCategories(otherFields);
 
-    return (
-      <form ref="form" onSubmit={this.submit} className="edit-form">
-        <input
-          type="hidden"
-          name="uuid"
-          value={this.props.item && this.props.item.uuid}
+    let basicInfoPanel = (
+      <Panel
+        headerText="Basic Information"
+        openByDefault={true}
+        onEnter={this.submit}
+        content={
+          <fieldset>
+          <legend className="visuallyHidden">Basic Information</legend>
+          <EditableInput
+            elementType="input"
+            type="text"
+            disabled={this.props.disabled}
+            required={true}
+            name="name"
+            ref="name"
+            label="Name"
+            value={this.props.item && this.props.item.name}
+            description="The human-readable name of this library."
+            error={this.props.error}
           />
-        <Panel
-          headerText="Basic Information"
-          openByDefault={true}
-          onEnter={this.submit}
-          content={
-            <fieldset>
-              <legend className="visuallyHidden">Basic Information</legend>
-              <EditableInput
-                elementType="input"
-                type="text"
-                disabled={this.props.disabled}
-                required={true}
-                name="name"
-                ref="name"
-                label="Name"
-                value={this.props.item && this.props.item.name}
-                description="The human-readable name of this library."
-                error={this.props.error}
-                />
-              <EditableInput
-                elementType="input"
-                type="text"
-                disabled={this.props.disabled}
-                required={true}
-                name="short_name"
-                ref="short_name"
-                label="Short name"
-                value={this.props.item && this.props.item.short_name}
-                description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
-                error={this.props.error}
-                />
-              { basicInfo.map(setting =>
-                <ProtocolFormField
-                  key={setting.key}
-                  ref={setting.key}
-                  setting={setting}
-                  disabled={this.props.disabled}
-                  value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-                  default={findDefault(setting)}
-                  error={this.props.error}
-                  />
-                )
-              }
-            </fieldset>
-          }
-        />
+          <EditableInput
+            elementType="input"
+            type="text"
+            disabled={this.props.disabled}
+            required={true}
+            name="short_name"
+            ref="short_name"
+            label="Short name"
+            value={this.props.item && this.props.item.short_name}
+            description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
+            error={this.props.error}
+          />
+          { basicInfo.map(setting =>
+            <ProtocolFormField
+              key={setting.key}
+              ref={setting.key}
+              setting={setting}
+              disabled={this.props.disabled}
+              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              default={findDefault(setting)}
+              error={this.props.error}
+            />
+          )
+        }
+        </fieldset>
+      }
+    />);
 
-        { this.renderForms(categories) }
-
-        <Button
-          disabled={this.props.disabled}
-          callback={this.submit}
-        />
-      </form>
-    );
+    return (
+      <Form
+        hiddenName="uuid"
+        hiddenValue={this.props.item && this.props.item.uuid}
+        className="no-border edit-form"
+        disableButton={this.props.disabled}
+        onSubmit={this.submit}
+        content={[basicInfoPanel, this.renderForms(categories)]}
+      />);
   }
 
   separateCategories(nonRequiredFields) {
@@ -152,9 +147,8 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     );
   }
 
-  submit(event) {
-    event.preventDefault();
-    handleSubmit(this);
+  submit(data) {
+    this.props.save(data);
   }
 
 }

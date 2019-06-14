@@ -6,9 +6,8 @@ import { shallow, mount } from "enzyme";
 
 import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
-import { Button } from "library-simplified-reusable-components";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -136,9 +135,10 @@ describe("LibraryEditForm", () => {
     });
 
     it("has a save button", () => {
-      let saveButton = wrapper.find(Button).at(1);
+      let form = wrapper.find(Form);
+      let saveButton = form.find(Button).at(1);
       expect(saveButton.text()).to.equal("Submit");
-      expect(saveButton.prop("callback")).to.equal(wrapper.instance().submit);
+      expect(form.prop("onSubmit")).to.equal(wrapper.instance().submit);
     });
   });
 
@@ -163,7 +163,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("calls save when the form is submitted directly", () => {
-      wrapper.simulate("submit");
+      wrapper.find(Form).prop("onSubmit")();
       expect(save.callCount).to.equal(1);
     });
 
