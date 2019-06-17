@@ -243,7 +243,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       }
     }
 
-    return (titleChanged || entriesChanged || collectionsChanged);
+    return titleChanged || entriesChanged || collectionsChanged;
   }
 
   changeTitle(title: string) {
