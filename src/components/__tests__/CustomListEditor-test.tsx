@@ -212,6 +212,7 @@ describe("CustomListEditor", () => {
     wrapper.setState({ title: "list title" });
     saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
 
+    // console.log(wrapper.state());
     expect(saveButton.props().disabled).to.equal(false);
   });
 
@@ -586,8 +587,7 @@ describe("CustomListEditor", () => {
         [{ id: "1234", title: "a", authors: [] }]
       );
       hasChanges = (wrapper.instance() as CustomListEditor).hasChanges();
-      // There are entries but the title hasn't been updated.
-      expect(hasChanges).to.equal(false);
+      expect(hasChanges).to.equal(true);
 
       // Now add a title
       wrapper.setState({ title: "Updated title" });

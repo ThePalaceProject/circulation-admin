@@ -58,6 +58,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
     const opdsFeedUrl = `${this.props.library}/lists/${listTitle}/crawlable`;
     const hasChanges = this.hasChanges();
+    // The "save this list" button should be disabled if there are no changes
+    // or if the list's title is empty.
+    const disableSave = this.isTitleEmpty() || !hasChanges;
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -78,7 +81,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           <div className="save-or-cancel-list">
             <Button
               callback={this.save}
-              disabled={!hasChanges}
+              disabled={disableSave}
               content="Save this list"
             />
             { hasChanges &&
@@ -201,12 +204,16 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }
   }
 
+  isTitleEmpty(): boolean {
+    return this.state.title === "";
+  }
+
   hasChanges(): boolean {
     let titleChanged = (this.props.list && this.props.list.title !== this.state.title);
     let entriesChanged = this.props.list && !!this.props.list.books &&
       (this.props.list.books.length !== this.state.entries.length);
-    // If the current list is new then this.props.list will be undefined, but the
-    // state for the entries and the title can be populated so there's a need to check.
+    // If the current list is new then this.props.list will be undefined, but
+    // the state for the entries or title can be populated so there's a need to check.
     if (!this.props.list) {
       titleChanged = this.state.title && this.state.title !== "";
       entriesChanged = this.state.entries.length > 0;
@@ -236,7 +243,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       }
     }
 
-    return !!(this.state.title && this.state.title !== "") && (titleChanged || entriesChanged || collectionsChanged);
+    return (titleChanged || entriesChanged || collectionsChanged);
   }
 
   changeTitle(title: string) {
