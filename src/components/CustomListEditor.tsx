@@ -57,6 +57,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     const listTitle = this.props.list && this.props.list.title ? this.props.list.title : "";
     const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
     const opdsFeedUrl = `${this.props.library}/lists/${listTitle}/crawlable`;
+    const hasChanges = this.hasChanges();
+    // The "save this list" button should be disabled if there are no changes
+    // or if the list's title is empty.
+    const disableSave = this.isTitleEmpty() || !hasChanges;
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -77,10 +81,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           <div className="save-or-cancel-list">
             <Button
               callback={this.save}
-              disabled={!this.hasChanges()}
+              disabled={disableSave}
               content="Save this list"
             />
-            { this.hasChanges() &&
+            { hasChanges &&
               <Button
                 className="inverted"
                 callback={this.reset}
@@ -167,10 +171,14 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.list) {
+    // Note: This gets called after performing a search, at which point the
+    // state of the component can already have updates that need to be taken
+    // into account.
+    if (!nextProps.list && !this.props.list) {
+      // This is no current or previous list, so this is a new list.
       this.setState({ title: "", entries: [], collections: [] });
-    }
-    else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
+    } else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
+      // Update the state with the next list to edit.
       this.setState({
         title: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
@@ -181,8 +189,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
         collections = nextProps.listCollections;
       }
+      let title = this.state.title ? this.state.title : nextProps.list.title;
       this.setState({
-        title: nextProps.list.title,
+        title,
         entries: nextProps.list.books,
         collections: collections,
       });
@@ -195,15 +204,20 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }
   }
 
+  isTitleEmpty(): boolean {
+    return this.state.title === "";
+  }
+
   hasChanges(): boolean {
-    let titleChanged = (this.props.list && this.props.list.title !== this.state.title
-      && this.state.title !== "");
-    if (!this.props.list) {
-      titleChanged = !!this.state.title;
-    }
-    let entriesChanged =
-      this.props.list && this.props.list.books &&
+    let titleChanged = (this.props.list && this.props.list.title !== this.state.title);
+    let entriesChanged = this.props.list && !!this.props.list.books &&
       (this.props.list.books.length !== this.state.entries.length);
+    // If the current list is new then this.props.list will be undefined, but
+    // the state for the entries or title can be populated so there's a need to check.
+    if (!this.props.list) {
+      titleChanged = this.state.title && this.state.title !== "";
+      entriesChanged = this.state.entries.length > 0;
+    }
 
     if (!entriesChanged) {
       let propsIds = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
@@ -228,6 +242,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         }
       }
     }
+
     return titleChanged || entriesChanged || collectionsChanged;
   }
 
