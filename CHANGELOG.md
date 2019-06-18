@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.3.3
+#### Fixed
+- Fixed a bug where new lists were unable to save even when new entries were added to them.
+- Fixed a bug where saving a newly created list did not redirect to its edit page.
+
 ### v0.3.2
 #### Fixed
 - Deleting a list now also deletes any lanes which contained only that list. Previously, there was no functionality in place to edit or remove any custom lanes when all their custom lists had been deleted.

@@ -532,4 +532,67 @@ describe("CustomListEditor", () => {
     expect(textInput.getDOMNode().value).to.equal("oliver twist");
     expect(wrapper.state("entryPointSelected")).to.equal("Audio");
   });
+
+  describe("hasChanges", () => {
+    it("should update correctly", () => {
+      wrapper = mount(
+        <CustomListEditor
+          library="library"
+          searchResults={searchResults}
+          editCustomList={editCustomList}
+          search={search}
+          loadMoreSearchResults={loadMoreSearchResults}
+          loadMoreEntries={loadMoreEntries}
+          isFetchingMoreSearchResults={false}
+          isFetchingMoreCustomListEntries={false}
+          entryPoints={entryPoints}
+        />,
+        { context: fullContext, childContextTypes }
+      );
+
+      let hasChanges = (wrapper.instance() as CustomListEditor).hasChanges();
+
+      expect(hasChanges).to.equal(false);
+
+      // A new list with a new title
+      wrapper.setState({ title: "Updated title" });
+      hasChanges = (wrapper.instance() as CustomListEditor).hasChanges();
+
+      expect(hasChanges).to.equal(true);
+
+      // We decided to add an entry
+      (wrapper.instance() as CustomListEditor).changeEntries(
+        [{ id: "1234", title: "a", authors: [] }]
+      );
+      hasChanges = (wrapper.instance() as CustomListEditor).hasChanges();
+      expect(hasChanges).to.equal(true);
+
+      wrapper = mount(
+        <CustomListEditor
+          library="library"
+          searchResults={searchResults}
+          editCustomList={editCustomList}
+          search={search}
+          loadMoreSearchResults={loadMoreSearchResults}
+          loadMoreEntries={loadMoreEntries}
+          isFetchingMoreSearchResults={false}
+          isFetchingMoreCustomListEntries={false}
+          entryPoints={entryPoints}
+        />,
+        { context: fullContext, childContextTypes }
+      );
+
+      (wrapper.instance() as CustomListEditor).changeEntries(
+        [{ id: "1234", title: "a", authors: [] }]
+      );
+      hasChanges = (wrapper.instance() as CustomListEditor).hasChanges();
+      expect(hasChanges).to.equal(true);
+
+      // Now add a title
+      wrapper.setState({ title: "Updated title" });
+      hasChanges = (wrapper.instance() as CustomListEditor).hasChanges();
+
+      expect(hasChanges).to.equal(true);
+    });
+  });
 });
