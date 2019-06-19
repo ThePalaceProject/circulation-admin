@@ -5,7 +5,7 @@ import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import SearchIcon from "./icons/SearchIcon";
-import { Button, Panel } from "library-simplified-reusable-components";
+import { Button, Panel, Form } from "library-simplified-reusable-components";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   library: string;
@@ -61,6 +61,36 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
     const disableSave = this.isTitleEmpty() || !hasChanges;
+
+    const searchForm = (
+      <Form
+        onSubmit={this.search}
+        className="form-inline"
+        content={
+          <fieldset>
+            <legend className="visuallyHidden">Search for titles</legend>
+            {
+              this.props.entryPoints.length ? (
+                <div className="entry-points">
+                  <span>Select the entry point to search for:</span>
+                  <div className="entry-points-selection">
+                    {this.getEntryPointsElms(this.props.entryPoints)}
+                  </div>
+                </div>
+              ) : null
+            }
+            <input
+              className="form-control"
+              ref="searchTerms"
+              type="text"
+            />
+          </fieldset>
+        }
+        buttonClass="bottom-align inline"
+        buttonContent={<span>Search<SearchIcon /></span>}
+      />
+    );
+
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -118,38 +148,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               />
             </div>
           }
-          <form className="form-inline" onSubmit={this.search}>
-            <Panel
-              headerText="Search for titles"
-              openByDefault={true}
-              onEnter={this.search}
-              content={
-                <fieldset>
-                  <legend className="visuallyHidden">Search for titles</legend>
-                  {
-                    this.props.entryPoints.length ? (
-                      <div className="entry-points">
-                        <span>Select the entry point to search for:</span>
-                        <div className="entry-points-selection">
-                          {this.getEntryPointsElms(this.props.entryPoints)}
-                        </div>
-                      </div>
-                    ) : null
-                  }
-                  <input
-                    className="form-control"
-                    ref="searchTerms"
-                    type="text"
-                    />&nbsp;
-                  <Button
-                    content={<span>Search<SearchIcon /></span>}
-                    callback={this.search}
-                    className="inline"
-                  />
-                </fieldset>
-              }
-            />
-          </form>
+          <Panel
+            headerText="Search for titles"
+            openByDefault={true}
+            onEnter={this.search}
+            content={searchForm}
+          />
 
           <CustomListEntriesEditor
             searchResults={this.props.searchResults}
@@ -363,8 +367,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     return entryPointsElms;
   };
 
-  search(event) {
-    event.preventDefault();
+  search(data) {
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
     const entryPointQuery = this.getEntryPointQuery();
     const url = "/" + this.props.library + "/search?q=" + searchTerms + entryPointQuery;
