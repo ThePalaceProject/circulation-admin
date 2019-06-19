@@ -90,7 +90,7 @@ describe("ManagePatronsForm", () => {
     it("calls patronLookup on dispatch", async () => {
       const form = wrapper.find("form");
       expect(patronLookup.callCount).to.equal(0);
-      form.simulate("submit");
+      form.find("button").simulate("click");
       expect(patronLookup.callCount).to.equal(1);
     });
 
