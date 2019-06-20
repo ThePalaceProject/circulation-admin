@@ -3,17 +3,17 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 
 import ComplaintForm from "../ComplaintForm";
 import EditableInput from "../EditableInput";
 
-describe("ComplaintForm", () => {
+describe.only("ComplaintForm", () => {
   describe("rendering", () => {
     let wrapper;
 
     beforeEach(() => {
-      wrapper = shallow(
+      wrapper = mount(
         <ComplaintForm
           disabled={false}
           complaintUrl="complaint url"
@@ -27,7 +27,7 @@ describe("ComplaintForm", () => {
       let select = wrapper.find(EditableInput);
       expect(select.length).to.equal(1);
       expect(select.prop("disabled")).to.equal(false);
-      let option = select.childAt(0);
+      let option = select.find("option").at(0);
       expect(option.text()).to.equal("complaint type");
     });
 
@@ -57,14 +57,7 @@ describe("ComplaintForm", () => {
     });
 
     it("disables", () => {
-      wrapper = shallow(
-        <ComplaintForm
-          disabled={true}
-          complaintUrl="complaint url"
-          postComplaint={stub()}
-          refreshComplaints={stub()}
-          />
-      );
+      wrapper.setProps({ disabled: true });
       let button = wrapper.find(Button);
       expect(button.prop("disabled")).to.equal(true);
       let select = wrapper.find(EditableInput);
@@ -86,47 +79,41 @@ describe("ComplaintForm", () => {
           complaintUrl="complaint url"
           postComplaint={postComplaint}
           refreshComplaints={stub()}
-          />
+        />
       );
     });
 
     it("posts complaints", () => {
-      let form = wrapper.find("form");
+      let form = wrapper.find(Form);
       let select = wrapper.find("select").getDOMNode();
       select.value = "bad-description";
-      form.simulate("submit");
+      form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
       expect(postComplaint.callCount).to.equal(1);
       expect(postComplaint.args[0][0]).to.equal("complaint url");
       expect(postComplaint.args[0][1].type).to.equal("http://librarysimplified.org/terms/problem/bad-description");
     });
 
     it("refreshes complaints after post", (done) => {
-      wrapper = mount(
-        <ComplaintForm
-          disabled={false}
-          complaintUrl="complaint url"
-          postComplaint={postComplaint}
-          refreshComplaints={done}
-          />
-      );
-      let form = wrapper.find("form");
+      wrapper.setProps({ refreshComplaints: done });
+      let form = wrapper.find(Form);
       let select = wrapper.find("select").getDOMNode();
       (select as any).value = "bad-description";
-      form.simulate("submit");
+      form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
     });
 
     it("clears form after post", (done) => {
       wrapper.instance().clear = done;
-      let form = wrapper.find("form");
+      let form = wrapper.find(Form);
       let select = wrapper.find("select").getDOMNode();
       (select as any).value = "bad-description";
-      form.simulate("submit");
+      form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
     });
 
     it("displays error if no type is selected", () => {
-      let form = wrapper.find("form");
-      form.simulate("submit");
-      let errors = wrapper.find(".complaint-form-error");
+      let form = wrapper.find(Form);
+      form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
+      wrapper.update();
+      let errors = wrapper.find(".alert-danger");
       expect(errors.length).to.equal(1);
       expect(errors.at(0).text()).to.equal("You must select a complaint type!");
     });
@@ -135,19 +122,12 @@ describe("ComplaintForm", () => {
       postComplaint = stub().returns(new Promise((resolve, reject) => {
         reject();
       }));
-      wrapper = mount(
-        <ComplaintForm
-          disabled={false}
-          complaintUrl="complaint url"
-          postComplaint={postComplaint}
-          refreshComplaints={stub()}
-          />
-      );
+      wrapper.setProps({ postComplaint });
       (wrapper.instance() as ComplaintForm).showPostError = done;
-      let form = wrapper.find("form");
+      let form = wrapper.find(Form);
       let select = wrapper.find("select").getDOMNode();
       (select as any).value = "bad-description";
-      form.simulate("submit");
+      form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
     });
 
     it("clears complaint type", () => {
@@ -161,7 +141,7 @@ describe("ComplaintForm", () => {
     it("shows post error", () => {
       wrapper.setState({ errors: ["test error"] });
       wrapper.update();
-      let errors = wrapper.find(".complaint-form-error");
+      let errors = wrapper.find(".alert-danger");
       expect(errors.length).to.equal(1);
       expect(errors.at(0).text()).to.equal("test error");
     });
