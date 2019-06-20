@@ -8,6 +8,7 @@ import BookEditForm from "../BookEditForm";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
 import LanguageField from "../LanguageField";
+import { Form } from "library-simplified-reusable-components";
 import { BookData, RolesData, MediaData, LanguagesData } from "../../interfaces";
 
 describe("BookEditForm", () => {
@@ -263,29 +264,6 @@ describe("BookEditForm", () => {
   });
 
   it("calls editBook on submit", () => {
-    class MockFormData {
-      data: any;
-      constructor(form) {
-        this.data = {};
-        let elements = form.elements;
-        for (let i = 0; i < elements.length; i++) {
-          let element = elements[i];
-          if (!this.data[element.name]) {
-            this.data[element.name] = element.value;
-          } else if (typeof this.data[element.name] === "string") {
-            this.data[element.name] = [this.data[element.name], element.value];
-          } else {
-            this.data[element.name].push(element.value);
-          }
-        }
-      }
-
-      get(key) {
-        return { value: this.data[key] };
-      }
-    }
-
-    let formDataStub = stub(window, "FormData").callsFake(MockFormData);
 
     let editBook = stub().returns(new Promise((resolve, reject) => {
       resolve();
@@ -302,29 +280,29 @@ describe("BookEditForm", () => {
       />
     );
 
-    let form = wrapper.find("form");
-    form.simulate("submit");
+    let form = wrapper.find(Form);
+    form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
 
     expect(editBook.callCount).to.equal(1);
     expect(editBook.args[0][0]).to.equal("href");
-    expect(editBook.args[0][1].data["title"]).to.equal(bookData.title);
-    expect(editBook.args[0][1].data["subtitle"]).to.equal(bookData.subtitle);
+    expect(editBook.args[0][1].get("title")).to.equal(bookData.title);
+    expect(editBook.args[0][1].get("subtitle")).to.equal(bookData.subtitle);
 
     // The last contributor field is the empty one for adding a new contributor.
     // If the user had filled it in without clicking "Add", it would still be submitted.
-    expect(editBook.args[0][1].data["contributor-name"]).to.deep.equal(["An Author", "A Narrator", "Another Narrator", ""]);
-    expect(editBook.args[0][1].data["contributor-role"]).to.deep.equal(["Author", "Narrator", "Narrator", "Author"]);
 
-    expect(editBook.args[0][1].data["series"]).to.equal(bookData.series);
-    expect(editBook.args[0][1].data["series_position"]).to.equal(String(bookData.seriesPosition));
-    expect(editBook.args[0][1].data["medium"]).to.equal("Audio");
-    expect(editBook.args[0][1].data["language"]).to.equal("English");
-    expect(editBook.args[0][1].data["publisher"]).to.equal(bookData.publisher);
-    expect(editBook.args[0][1].data["imprint"]).to.equal(bookData.imprint);
-    expect(editBook.args[0][1].data["issued"]).to.equal(bookData.issued);
-    expect(editBook.args[0][1].data["rating"]).to.equal("4");
-    expect(editBook.args[0][1].data["summary"]).to.equal(bookData.summary);
-    formDataStub.restore();
+    expect(editBook.args[0][1].getAll("contributor-name")).to.deep.equal(["An Author", "A Narrator", "Another Narrator", ""]);
+    expect(editBook.args[0][1].getAll("contributor-role")).to.deep.equal(["Author", "Narrator", "Narrator", "Author"]);
+
+    expect(editBook.args[0][1].get("series")).to.equal(bookData.series);
+    expect(editBook.args[0][1].get("series_position")).to.equal(String(bookData.seriesPosition));
+    expect(editBook.args[0][1].get("medium")).to.equal("Audio");
+    expect(editBook.args[0][1].get("language")).to.equal("English");
+    expect(editBook.args[0][1].get("publisher")).to.equal(bookData.publisher);
+    expect(editBook.args[0][1].get("imprint")).to.equal(bookData.imprint);
+    expect(editBook.args[0][1].get("issued")).to.equal(bookData.issued);
+    expect(editBook.args[0][1].get("rating")).to.equal("4");
+    expect(editBook.args[0][1].get("summary")).to.equal(bookData.summary);
   });
 
   it("refreshes book after editing", (done) => {
@@ -343,8 +321,8 @@ describe("BookEditForm", () => {
       />
     );
 
-    let form = wrapper.find("form");
-    form.simulate("submit");
+    let form = wrapper.find(Form);
+    form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
   });
 
   it("disables all inputs", () => {
