@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.4
+#### Updated
+- Updated opds-web-client to the latest version, which improves the headings on the book details page.
+
 ### v0.3.3
 #### Fixed
 - Fixed a bug where new lists were unable to save even when new entries were added to them.
