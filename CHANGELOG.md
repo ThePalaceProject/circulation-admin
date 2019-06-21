@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.2.4
+### v0.3.4
 #### Updated
 - Updated opds-web-client to the latest version, which improves the headings on the book details page.
 
