@@ -49,6 +49,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {
         <Form
           onSubmit={this.submit}
           className="no-border edit-form"
+          buttonClass="top-align"
           content={
             <EditableInput
               elementType="input"
@@ -62,7 +63,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {
             />
           }
           errorText={(fetchError && !patronExists) && <ErrorMessage error={fetchError} />}
-          successText={(!fetchError && patronExists) && <Alert bsStyle="success">Patron found: {patron.authorization_identifier}</Alert>}
+          successText={(!fetchError && patronExists) && `Patron found: ${patron.authorization_identifier}`}
         />
         { (!fetchError && patronExists) && <PatronInfo patron={patron} /> }
       </div>

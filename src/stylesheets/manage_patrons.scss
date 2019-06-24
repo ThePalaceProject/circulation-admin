@@ -15,19 +15,18 @@
       flex-direction: column;
       padding: 1% 0;
       flex-basis: 20%;
-
+    }
+    .patron-info {
+      button {
+        margin: 0 20px 20px 0;
+      }
+      flex: 5;
       form {
-        button {
-          margin: 0 20px 20px 0;
-        }
         div.alert {
           margin-bottom: 0;
           padding: 0;
         }
       }
-    }
-    .patron-info {
-      flex: 5;
       ul {
         display: block;
         list-style: none;
