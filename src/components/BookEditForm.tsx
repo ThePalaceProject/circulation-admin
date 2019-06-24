@@ -34,7 +34,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     return (
       <Form
         onSubmit={this.save.bind(this)}
-        className="no-border edit-form"
+        className="edit-form"
         content={this.renderForm()}
         disableButton={this.props.disabled}
       />

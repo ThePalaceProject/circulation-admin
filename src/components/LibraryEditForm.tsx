@@ -95,7 +95,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       <Form
         hiddenName="uuid"
         hiddenValue={this.props.item && this.props.item.uuid}
-        className="no-border edit-form"
+        className="edit-form"
         disableButton={this.props.disabled}
         onSubmit={this.submit}
         content={[basicInfoPanel, this.renderForms(categories)]}

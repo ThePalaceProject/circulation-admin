@@ -68,7 +68,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
           onSubmit={this.save}
           content={formContent}
           disableButton={this.props.isFetching}
-          className="change-password-form"
+          className="border change-password-form"
           successText={this.state.success && "Password changed successfully"}
           errorText={(this.props.fetchError && <ErrorMessage error={this.props.fetchError} />) || this.state.error}
           loadingText={this.props.isFetching && <LoadingIndicator />}

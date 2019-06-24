@@ -84,7 +84,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
             </div>
             <Form
               ref="parent-form"
-              className="cover-edit-form no-border"
+              className="cover-edit-form"
               onSubmit={this.save}
               disableButton={this.props.isFetching || !this.props.preview}
               buttonContent="Save this cover"
@@ -119,7 +119,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
         <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
         <Form
           ref="image-form"
-          className="no-border"
+          className="edit-form"
           onSubmit={this.preview}
           buttonContent="Preview"
           buttonClass="top-align"
@@ -203,7 +203,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
       <Form
         ref="rights-form"
         onSubmit={this.save}
-        className="no-border"
+        className="edit-form"
         withoutButton={true}
         content={
           <fieldset>

@@ -38,7 +38,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       <div className="complaint-form">
         <Form
           onSubmit={this.post}
-          className="no-border"
+          className="edit-form"
           disableButton={this.props.disabled}
           errorText={
             !!this.state.errors.length && this.state.errors.map((error, i) =>

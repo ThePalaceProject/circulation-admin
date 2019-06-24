@@ -63,7 +63,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     return (
       <Form
         onSubmit={this.submit}
-        className="no-border edit-form"
+        className="edit-form"
         disableButton={this.props.disabled}
         content = {[
           <Panel
