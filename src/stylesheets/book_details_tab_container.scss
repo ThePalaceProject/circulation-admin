@@ -11,4 +11,17 @@
       margin-right: .5em;
     }
   }
+
+  .cover-edit-form {
+    form {
+      width: 100%;
+      height: auto;
+      .alert h4 {
+        margin-bottom: 0;
+      }
+      button.btn.top-align {
+        margin: unset;
+      }
+    }
+  }
 }

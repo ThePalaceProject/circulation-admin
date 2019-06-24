@@ -9,7 +9,7 @@ import EditableInput from "./EditableInput";
 import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
-import { Panel, Button } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "library-simplified-reusable-components";
 
 export interface BookCoverEditorStateProps {
   bookAdminUrl?: string;
@@ -82,68 +82,33 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 alt="Current book cover"
                 />
             </div>
-            <div>
-              <h3>Change cover:</h3>
-              <Panel
-                headerText="Cover Metadata"
-                openByDefault={true}
-                content={this.renderCoverForm()}
-                onEnter={this.save}
-              />
-              { this.props.rightsStatuses &&
+            <Form
+              ref="parent-form"
+              className="cover-edit-form no-border"
+              onSubmit={this.save}
+              disableButton={this.props.isFetching || !this.props.preview}
+              buttonContent="Save this cover"
+              errorText={this.props.fetchError && <ErrorMessage error={this.props.fetchError} />}
+              content={[
+                <h3>Change cover:</h3>,
                 <Panel
-                  headerText="Rights"
+                  headerText="Cover Metadata"
                   openByDefault={true}
+                  content={this.renderCoverForm()}
                   onEnter={this.save}
-                  content={
-                    <form ref="rights">
-                      <fieldset>
-                        <legend className="visuallyHidden">Rights:</legend>
-                        <EditableInput
-                          elementType="select"
-                          disabled={this.props.isFetching}
-                          name="rights_status"
-                          label="License"
-                          >
-                          { Object.keys(this.props.rightsStatuses).map(uri => {
-                                let status = this.props.rightsStatuses[uri];
-                                if (status.allows_derivatives) {
-                                  return (
-                                    <option value={uri} key={uri}>{status.name}</option>
-                                  );
-                                }
-                                return null;
-                              }
-                            )
-                          }
-                          <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
-                          <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
-                        </EditableInput>
-                        <EditableInput
-                          elementType="textarea"
-                          disabled={this.props.isFetching}
-                          name="rights_explanation"
-                          label="Explanation of rights"
-                          optionalText={false}
-                        />
-                      </fieldset>
-                    </form>
-                  }
-                />
+                />,
+                (this.props.rightsStatuses &&
+                  <Panel
+                    headerText="Rights"
+                    openByDefault={true}
+                    onEnter={this.save}
+                    content={this.renderRightsForm()}
+                  />
+                )]
               }
-              <Button
-                callback={this.save}
-                disabled={this.props.isFetching || !this.props.preview}
-                content="Save this cover"
-              />
-            </div>
+            />
           </div>
         }
-
-        { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} />
-        }
-
       </div>
     );
   }
@@ -152,46 +117,52 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     return (
       <div>
         <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
-        <form ref="cover">
-          <fieldset>
-            <legend className="visuallyHidden">Cover Image</legend>
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.isFetching}
-              name="cover_url"
-              label="URL for cover image"
-              ref="cover_url"
-              optionalText={false}
+        <Form
+          ref="image-form"
+          className="no-border"
+          onSubmit={this.preview}
+          buttonContent="Preview"
+          buttonClass="top-align"
+          errorText={ this.props.previewFetchError &&
+            <ErrorMessage error={this.props.previewFetchError} />
+          }
+          content={
+            <fieldset>
+              <legend className="visuallyHidden">Cover Image</legend>
+              <EditableInput
+                elementType="input"
+                type="text"
+                disabled={this.props.isFetching}
+                name="cover_url"
+                label="URL for cover image"
+                ref="cover_url"
+                optionalText={false}
               />
-            <EditableInput
-              elementType="input"
-              type="file"
-              disabled={this.props.isFetching}
-              name="cover_file"
-              label="Or upload cover image"
-              accept="image/*"
-              ref="cover_file"
-              optionalText={false}
+              <EditableInput
+                elementType="input"
+                type="file"
+                disabled={this.props.isFetching}
+                name="cover_file"
+                label="Or upload cover image"
+                accept="image/*"
+                ref="cover_file"
+                optionalText={false}
               />
-            <EditableInput
-              elementType="select"
-              disabled={this.props.isFetching}
-              name="title_position"
-              label="Title and Author Position"
-              value="none"
+              <EditableInput
+                elementType="select"
+                disabled={this.props.isFetching}
+                name="title_position"
+                label="Title and Author Position"
+                value="none"
               >
-              <option value="none">None</option>
-              <option value="top">Top</option>
-              <option value="center">Center</option>
-              <option value="bottom">Bottom</option>
-            </EditableInput>
-            <Button callback={this.preview} content="Preview" />
-          </fieldset>
-        </form>
-        { this.props.previewFetchError &&
-          <ErrorMessage error={this.props.previewFetchError} />
-        }
+                <option value="none">None</option>
+                <option value="top">Top</option>
+                <option value="center">Center</option>
+                <option value="bottom">Bottom</option>
+              </EditableInput>
+            </fieldset>
+          }
+        />
         { this.props.isFetchingPreview &&
           <h5 className="cover-fetching-preview-container">
             Updating Preview&nbsp;
@@ -216,18 +187,56 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     return this.props.bookAdminUrl + "/preview_book_cover";
   }
 
-  preview(e) {
-    e.preventDefault();
-    const coverForm = (this.refs["cover"] as any);
-    const formData = new (window as any).FormData(coverForm);
+  preview(data) {
     const file = (this.refs["cover_file"] as any).getValue();
     const url = (this.refs["cover_url"] as any).getValue();
     if (!file && !url && this.props.clearPreview) {
       this.props.clearPreview();
     }
     if ((file || url) && this.props.fetchPreview) {
-      this.props.fetchPreview(this.previewUrl(), formData);
+      this.props.fetchPreview(this.previewUrl(), data);
     }
+  }
+
+  renderRightsForm() {
+    return (
+      <Form
+        ref="rights-form"
+        onSubmit={this.save}
+        className="no-border"
+        withoutButton={true}
+        content={
+          <fieldset>
+            <legend className="visuallyHidden">Rights:</legend>
+            <EditableInput
+              elementType="select"
+              disabled={this.props.isFetching}
+              name="rights_status"
+              label="License"
+            >
+              { Object.keys(this.props.rightsStatuses).map(uri => {
+                let status = this.props.rightsStatuses[uri];
+                if (status.allows_derivatives) {
+                  return (
+                    <option value={uri} key={uri}>{status.name}</option>
+                  );
+                }
+                return null;
+              }
+            )}
+              <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
+              <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
+          </EditableInput>
+          <EditableInput
+            elementType="textarea"
+            disabled={this.props.isFetching}
+            name="rights_explanation"
+            label="Explanation of rights"
+            optionalText={false}
+          />
+        </fieldset>
+      }
+    />);
   }
 
   refresh() {
@@ -235,18 +244,22 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     this.props.refreshCatalog();
   }
 
-  save () {
+  save(data) {
     const editUrl = this.props.book && this.props.book.changeCoverLink && this.props.book.changeCoverLink.href;
-    const coverForm = (this.refs["cover"] as any);
-    const formData = new (window as any).FormData(coverForm);
-    const coverFile = (this.refs["cover_file"] as any).getValue();
-    const coverUrl = (this.refs["cover_url"] as any).getValue();
-    const rightsForm = (this.refs["rights"] as any);
+
+    const imageForm = (this.refs["image-form"] as any).formRef.current;
+    const imageFormData = new (window as any).FormData(imageForm);
+    data.append("cover_file", imageFormData.get("cover_file"));
+    data.append("cover_url", imageFormData.get("cover_url"));
+    data.append("title_position", imageFormData.get("title_position"));
+
+    const rightsForm = (this.refs["rights-form"] as any).formRef.current;
     const rightsFormData = new (window as any).FormData(rightsForm);
-    formData.append("rights_status", rightsFormData.get("rights_status"));
-    formData.append("rights_explanation", rightsFormData.get("rights_explanation"));
+    data.append("rights_status", rightsFormData.get("rights_status"));
+    data.append("rights_explanation", rightsFormData.get("rights_explanation"));
+
     if (editUrl && this.props.preview && this.props.editCover) {
-      this.props.editCover(editUrl, formData).then(this.refresh);
+      this.props.editCover(editUrl, data).then(this.refresh);
     }
   }
 }

@@ -8,7 +8,7 @@ import { Button, Form } from "library-simplified-reusable-components";
 import ComplaintForm from "../ComplaintForm";
 import EditableInput from "../EditableInput";
 
-describe.only("ComplaintForm", () => {
+describe("ComplaintForm", () => {
   describe("rendering", () => {
     let wrapper;
 
@@ -19,7 +19,7 @@ describe.only("ComplaintForm", () => {
           complaintUrl="complaint url"
           postComplaint={stub()}
           refreshComplaints={stub()}
-          />
+        />
       );
     });
 
