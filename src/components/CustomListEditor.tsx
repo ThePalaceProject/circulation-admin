@@ -367,7 +367,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     return entryPointsElms;
   };
 
-  search(data) {
+  search() {
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
     const entryPointQuery = this.getEntryPointQuery();
     const url = "/" + this.props.library + "/search?q=" + searchTerms + entryPointQuery;

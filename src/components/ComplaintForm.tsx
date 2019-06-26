@@ -64,8 +64,8 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
     );
   }
 
-  post(data) {
-    let value = data.get("type");
+  post(complaint) {
+    let value = complaint.get("type");
 
     if (value) {
       this.setState({ errors: [] });
@@ -74,7 +74,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       return;
     }
 
-    data = {
+    let data = {
       type: "http://librarysimplified.org/terms/problem/" + value
     };
 

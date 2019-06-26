@@ -187,7 +187,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     return this.props.bookAdminUrl + "/preview_book_cover";
   }
 
-  preview(data) {
+  preview(data: FormData) {
     const file = (this.refs["cover_file"] as any).getValue();
     const url = (this.refs["cover_url"] as any).getValue();
     if (!file && !url && this.props.clearPreview) {
@@ -244,7 +244,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     this.props.refreshCatalog();
   }
 
-  save(data) {
+  save(data: FormData) {
     const editUrl = this.props.book && this.props.book.changeCoverLink && this.props.book.changeCoverLink.href;
 
     const imageForm = (this.refs["image-form"] as any).formRef.current;

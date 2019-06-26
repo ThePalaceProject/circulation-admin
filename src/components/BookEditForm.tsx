@@ -251,7 +251,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     (this.refs["addContributorRole"] as any).clear();
   }
 
-  save(data) {
+  save(data: FormData) {
     this.props.editBook(this.props.editLink.href, data).then(response => {
       this.props.refresh();
     });

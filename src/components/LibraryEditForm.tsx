@@ -47,7 +47,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       <Panel
         headerText="Basic Information"
         openByDefault={true}
-        onEnter={this.submit}
         content={
           <fieldset>
           <legend className="visuallyHidden">Basic Information</legend>
@@ -147,7 +146,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     );
   }
 
-  submit(data) {
+  submit(data: FormData) {
     this.props.save(data);
   }
 

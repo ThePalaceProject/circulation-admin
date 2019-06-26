@@ -66,7 +66,6 @@ describe("ChangePasswordForm", () => {
     wrapper.setState({ success: true, error: null });
     success = wrapper.find(".alert-success");
     expect(success.length).to.equal(1);
-    console.log(success.text());
     expect(success.text()).to.equal("Password changed successfully");
   });
 

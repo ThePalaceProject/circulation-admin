@@ -6,7 +6,7 @@ import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
-import { handleSubmit, clearForm } from "./sharedFunctions";
+import { clearForm } from "./sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ServiceEditFormProps<T> {
@@ -525,7 +525,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState(newState);
   }
 
-  handleData(data) {
+  handleData(data: FormData) {
     data && data.append("libraries", JSON.stringify(this.state.libraries));
     return data;
   }

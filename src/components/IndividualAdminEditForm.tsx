@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import EditableInput from "./EditableInput";
-import { handleSubmit, clearForm } from "./sharedFunctions";
+import { clearForm } from "./sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
@@ -338,7 +338,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     }
   }
 
-  handleData(data) {
+  handleData(data: FormData) {
     let roles = this.state.admin.roles;
     if (this.context && this.context.settingUp) {
       // When setting up the only thing you can do is create a system admin.
@@ -348,7 +348,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     return data;
   }
 
-  async submit(data) {
+  async submit(data: FormData) {
     let modifiedData = this.handleData(data);
     await this.props.save(modifiedData);
   }

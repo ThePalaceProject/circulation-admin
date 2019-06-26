@@ -70,7 +70,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {
     );
   }
 
-  async submit(data) {
+  async submit(data: FormData) {
     await this.props.patronLookup(data, this.props.library);
   }
 }
