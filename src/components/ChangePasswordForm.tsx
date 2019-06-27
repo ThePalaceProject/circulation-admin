@@ -79,8 +79,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
   save(data: FormData) {
     if (!(data.get("password") && data.get("confirm_password"))) {
       this.setState({ success: false, error: "Fields cannot be blank." });
-    }
-    else if (data.get("password") !== data.get("confirm_password")) {
+    } else if (data.get("password") !== data.get("confirm_password")) {
       this.setState({ success: false, error: "Passwords do not match." });
     } else {
       this.props.changePassword(data).then(() => {
