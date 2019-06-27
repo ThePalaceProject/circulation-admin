@@ -78,6 +78,17 @@ describe("ChangePasswordForm", () => {
     expect(inputs.at(1).prop("type")).to.equal("password");
   });
 
+  it("does not submit a blank or partially blank form", () => {
+    const formData = new (window as any).FormData();
+    wrapper.instance().save(formData);
+    expect(changePassword.callCount).to.equal(0);
+    expect(wrapper.instance().state.error).to.contain("Fields cannot be blank.");
+    formData.append("password", "newPassword");
+    wrapper.instance().save(formData);
+    expect(changePassword.callCount).to.equal(0);
+    expect(wrapper.instance().state.error).to.contain("Fields cannot be blank.");
+  });
+
   it("checks if passwords match", () => {
     wrapper = mount(
       <ChangePasswordForm
