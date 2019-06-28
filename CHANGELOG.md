@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.3.4
+### v0.3.5
 #### Updated
 - Integrated the Form component from the [https://github.com/NYPL-Simplified/reusable-components](library-simplified-reusable-components) package.
+
+### v0.3.4
+#### Updated
+- Updated opds-web-client to the latest version, which improves the headings on the book details page.
 
 ### v0.3.3
 #### Fixed
