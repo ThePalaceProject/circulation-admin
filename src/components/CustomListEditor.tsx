@@ -67,7 +67,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         onSubmit={this.search}
         className="form-inline"
         content={
-          <fieldset>
+          <fieldset key="search">
             <legend className="visuallyHidden">Search for titles</legend>
             {
               this.props.entryPoints.length ? (

@@ -39,7 +39,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
 
   render(): JSX.Element {
     let formContent = (
-      <fieldset>
+      <fieldset key="change-password">
         <legend className="visuallyHidden">Change admin's password</legend>
         <EditableInput
           elementType="input"
@@ -63,16 +63,19 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
     );
 
     return (
-        <Form
-          title="Change Password"
-          onSubmit={this.save}
-          content={formContent}
-          disableButton={this.props.isFetching}
-          className="border change-password-form"
-          successText={this.state.success && "Password changed successfully"}
-          errorText={(this.props.fetchError && <ErrorMessage error={this.props.fetchError} />) || this.state.error}
-          loadingText={this.props.isFetching && <LoadingIndicator />}
-        ></Form>
+        <div className="change-password-form">
+          <h2>Change Password</h2>
+          <Form
+            onSubmit={this.save}
+            content={formContent}
+            disableButton={this.props.isFetching}
+            buttonClass="left-align"
+            className="border change-password-form"
+            successText={this.state.success && "Password changed successfully"}
+            errorText={(this.props.fetchError && <ErrorMessage error={this.props.fetchError} />) || this.state.error}
+            loadingText={this.props.isFetching && <LoadingIndicator />}
+          ></Form>
+        </div>
     );
   }
 

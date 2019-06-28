@@ -46,7 +46,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
             className="no-border edit-form"
             disableButton={this.props.disabled}
             content={
-              <fieldset>
+              <fieldset key="sitewide-setting">
                 <legend className="visuallyHidden">Enter or edit a value for the selected sitewide setting key</legend>
                 <EditableInput
                   elementType="select"

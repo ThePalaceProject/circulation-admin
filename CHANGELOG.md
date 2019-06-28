@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.4
+#### Updated
+- Integrated the Form component from the [https://github.com/NYPL-Simplified/reusable-components](library-simplified-reusable-components) package.
+
 ### v0.3.3
 #### Fixed
 - Fixed a bug where new lists were unable to save even when new entries were added to them.

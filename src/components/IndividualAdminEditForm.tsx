@@ -68,6 +68,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         content = {[
           <Panel
             headerText="Admin Information"
+            key="info"
             content={this.renderForm()}
             openByDefault={true}
             collapsible={!this.context.settingUp}
@@ -76,6 +77,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           !this.context.settingUp &&
           <Panel
             headerText="Admin Roles"
+            key="roles"
             content={this.renderRoleForm()}
             openByDefault={true}
             onEnter={this.submit}

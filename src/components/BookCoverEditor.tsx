@@ -82,32 +82,33 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 alt="Current book cover"
                 />
             </div>
-            <Form
-              ref="parent-form"
-              className="cover-edit-form"
-              onSubmit={this.save}
-              disableButton={this.props.isFetching || !this.props.preview}
-              buttonContent="Save this cover"
-              errorText={this.props.fetchError && <ErrorMessage error={this.props.fetchError} />}
-              content={[
-                <h3>Change cover:</h3>,
-                <Panel
-                  headerText="Cover Metadata"
-                  openByDefault={true}
-                  content={this.renderCoverForm()}
-                  onEnter={this.save}
-                />,
-                (this.props.rightsStatuses &&
+            <div ref="parent-form" className="cover-edit-form">
+              <h3>Change cover:</h3>
+              <Panel
+                headerText="Cover Metadata"
+                openByDefault={true}
+                content={this.renderCoverForm()}
+                onEnter={this.save}
+              />
+              {
+                this.props.rightsStatuses &&
                   <Panel
                     headerText="Rights"
                     openByDefault={true}
                     onEnter={this.save}
                     content={this.renderRightsForm()}
                   />
-                )]
               }
-            />
-          </div>
+              <Button
+                content="Save this cover"
+                disabled={this.props.isFetching || !this.props.preview}
+                callback={this.save}
+              />
+            </div>
+        { this.props.fetchError &&
+          <ErrorMessage error={this.props.fetchError} />
+        }
+        </div>
         }
       </div>
     );
@@ -127,7 +128,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
             <ErrorMessage error={this.props.previewFetchError} />
           }
           content={
-            <fieldset>
+            <fieldset key="cover-image">
               <legend className="visuallyHidden">Cover Image</legend>
               <EditableInput
                 elementType="input"
@@ -206,7 +207,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
         className="edit-form"
         withoutButton={true}
         content={
-          <fieldset>
+          <fieldset key="rights">
             <legend className="visuallyHidden">Rights:</legend>
             <EditableInput
               elementType="select"
@@ -244,16 +245,18 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     this.props.refreshCatalog();
   }
 
-  save(data: FormData) {
+  save() {
+    const data = new (window as any).FormData();
+
     const editUrl = this.props.book && this.props.book.changeCoverLink && this.props.book.changeCoverLink.href;
 
-    const imageForm = (this.refs["image-form"] as any).formRef.current;
+    const imageForm = (this.refs["image-form"] as HTMLFormElement).formRef.current;
     const imageFormData = new (window as any).FormData(imageForm);
     data.append("cover_file", imageFormData.get("cover_file"));
     data.append("cover_url", imageFormData.get("cover_url"));
     data.append("title_position", imageFormData.get("title_position"));
 
-    const rightsForm = (this.refs["rights-form"] as any).formRef.current;
+    const rightsForm = (this.refs["rights-form"] as HTMLFormElement).formRef.current;
     const rightsFormData = new (window as any).FormData(rightsForm);
     data.append("rights_status", rightsFormData.get("rights_status"));
     data.append("rights_explanation", rightsFormData.get("rights_explanation"));

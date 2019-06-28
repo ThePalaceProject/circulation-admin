@@ -37,6 +37,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
     return (
       <div className="complaint-form">
         <Form
+          key="complaints"
           onSubmit={this.post}
           className="edit-form"
           disableButton={this.props.disabled}
@@ -46,7 +47,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
             )
           }
           content={
-            <fieldset>
+            <fieldset key="add-complaint">
               <legend>Add Complaint</legend>
               <EditableInput
                 elementType="select"

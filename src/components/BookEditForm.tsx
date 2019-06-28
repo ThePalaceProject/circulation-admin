@@ -43,7 +43,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
 
   renderForm() {
     return (
-      <fieldset>
+      <fieldset key="book-info">
         <legend className="visuallyHidden">Edit Book Metadata</legend>
         <EditableInput
           elementType="input"

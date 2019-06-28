@@ -98,7 +98,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     const hasInstructions = this.props.data && this.protocolInstructions();
 
     let instructions = hasInstructions && (
-      <div className="form-group">
+      <div className="form-group" key="instructions">
         <label className="control-label">Instructions</label>
         <Panel
           headerText={this.protocolDescription()}
@@ -111,6 +111,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
     let requiredFieldsPanel = (
       <Panel
+        key="required"
         headerText="Required Fields"
         openByDefault={true}
         collapsible={hasNonRequiredFields || showLibrariesForm}
@@ -120,6 +121,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
     let optionalFieldsPanel = hasNonRequiredFields && (
       <Panel
+        key="optional"
         headerText="Optional Fields"
         content={this.renderOptionalFields(nonRequiredFields)}
       />
@@ -127,6 +129,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
     let librariesForm = showLibrariesForm && (
       <Panel
+        key="libraries"
         headerText="Libraries"
         content={this.renderLibrariesForm()}
       />
