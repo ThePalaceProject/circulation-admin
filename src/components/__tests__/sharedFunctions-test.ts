@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { handleSubmit, findDefault, clearForm } from "../sharedFunctions";
+import { findDefault, clearForm } from "../sharedFunctions";
 
 
 describe("findDefault", () => {

@@ -82,7 +82,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 alt="Current book cover"
                 />
             </div>
-            <div ref="parent-form" className="cover-edit-form">
+            <div ref="form-container" className="cover-edit-form">
               <h3>Change cover:</h3>
               <Panel
                 headerText="Cover Metadata"
