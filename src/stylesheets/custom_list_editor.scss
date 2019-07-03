@@ -45,17 +45,22 @@
   }
 
   .form-inline {
-    input {
-      width: 50%;
+    display: flex;
+    fieldset {
+      width: 60%;
+      input {
+        width: 100%;
+      }
+    }
+    button {
+      align-self: flex-end;
     }
   }
 
   .custom-list-editor-body {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     margin-top: 10px;
-
     .collections {
       width: 100%;
 
@@ -64,6 +69,11 @@
         margin-right: 15px;
         margin-bottom: 2px;
       }
+    }
+
+    form {
+      margin: 0;
+      padding: 0;
     }
 
     .entry-points {

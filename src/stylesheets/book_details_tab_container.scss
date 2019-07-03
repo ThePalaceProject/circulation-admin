@@ -1,4 +1,4 @@
-.tab-content {
+.book-details-wrapper .tab-content {
   .details {
     padding-top: 2em;
   }
@@ -7,8 +7,23 @@
   }
   .form-inline {
     display: flex;
-    .btn {
+    button.btn {
       margin-right: .5em;
+    }
+  }
+
+  .cover-edit-form {
+    margin: 0;
+    padding: 0;
+    form {
+      width: 100%;
+      height: auto;
+      .alert h4 {
+        margin-bottom: 0;
+      }
+      button.btn.top-align {
+        margin: unset;
+      }
     }
   }
 }

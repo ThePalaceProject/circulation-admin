@@ -90,7 +90,7 @@ describe("ManagePatronsForm", () => {
     it("calls patronLookup on dispatch", async () => {
       const form = wrapper.find("form");
       expect(patronLookup.callCount).to.equal(0);
-      form.simulate("submit");
+      form.find("button").simulate("click");
       expect(patronLookup.callCount).to.equal(1);
     });
 
@@ -130,12 +130,13 @@ describe("ManagePatronsForm", () => {
     });
 
     it("should display a success alert message when a patron is found", () => {
-      let alert = wrapper.find(Alert);
+      let alert = wrapper.find(".alert-success");
       expect(alert.length).to.equal(0);
 
       wrapper.setProps({ patron });
 
-      alert = wrapper.find(Alert);
+      alert = wrapper.find(".alert-success");
+
       expect(alert.length).to.equal(1);
       expect(alert.text()).to.equal(`Patron found: ${patron.authorization_identifier}`);
     });

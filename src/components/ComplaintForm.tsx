@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 
 export interface ComplaintFormProps {
   disabled?: boolean;
@@ -36,32 +36,37 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
 
     return (
       <div className="complaint-form">
-        <form onSubmit={this.post}>
-          <fieldset>
-            <legend>Add Complaint</legend>
-            { this.state.errors.map((error, i) =>
-              <div className="complaint-form-error" key={i}>{error}</div>
-            ) }
-            <EditableInput
-              elementType="select"
-              ref="type"
-              name="type"
-              placeholder=""
-              disabled={this.props.disabled}>
-              <option value="">complaint type</option>
-              { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
-            </EditableInput> &nbsp;
-          </fieldset>
-          <Button callback={() => {}} disabled={this.props.disabled} />
-        </form>
+        <Form
+          key="complaints"
+          onSubmit={this.post}
+          className="edit-form"
+          disableButton={this.props.disabled}
+          errorText={
+            !!this.state.errors.length && this.state.errors.map((error, i) =>
+              <div key={i}>{error}</div>
+            )
+          }
+          content={
+            <fieldset key="add-complaint">
+              <legend>Add Complaint</legend>
+              <EditableInput
+                elementType="select"
+                ref="type"
+                name="type"
+                placeholder=""
+                disabled={this.props.disabled}>
+                <option value="">complaint type</option>
+                { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
+              </EditableInput>
+            </fieldset>
+          }
+        />
       </div>
     );
   }
 
-  post(event) {
-    event.preventDefault();
-
-    let value = (this.refs["type"] as EditableInput).getValue();
+  post(complaint) {
+    let value = complaint.get("type");
 
     if (value) {
       this.setState({ errors: [] });

@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
@@ -796,7 +796,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("calls save when the form is submitted directly", () => {
-      wrapper.simulate("submit");
+      wrapper.find(Form).props().onSubmit();
       expect(save.callCount).to.equal(1);
     });
 
@@ -805,14 +805,14 @@ describe("ServiceEditForm", () => {
       let collapsible = wrapper.find(".panel");
       expect(collapsible.length).to.equal(3);
 
-      wrapper.simulate("submit");
+      wrapper.find(Form).props().onSubmit();
       expect(save.callCount).to.equal(1);
     });
 
     it("calls handleData", () => {
       let handleData = spy(wrapper.instance(), "handleData");
       wrapper.setProps({ item: serviceData });
-      wrapper.simulate("submit");
+      wrapper.find(Button).simulate("click");
 
       expect(handleData.callCount).to.equal(1);
 

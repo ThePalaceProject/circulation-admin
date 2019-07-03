@@ -1,8 +1,8 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
-import { handleSubmit, clearForm } from "./sharedFunctions";
+import { clearForm } from "./sharedFunctions";
 
 export interface SitewideSettingEditFormProps {
   data: SitewideSettingsData;
@@ -41,70 +41,71 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     return (
       <div>
         { availableSettings.length > 0 &&
-          <form ref="form" onSubmit={this.submit} className="edit-form">
-            <fieldset>
-              <legend className="visuallyHidden">Enter or edit a value for the selected sitewide setting key</legend>
-              <EditableInput
-                elementType="select"
-                disabled={this.props.disabled}
-                readOnly={!!(this.props.item && this.props.item.key)}
-                name="key"
-                ref="key"
-                label="Key"
-                value={this.props.item && this.props.item.key}
-                onChange={this.onChange}
-              >
+          <Form
+            onSubmit={this.submit}
+            className="no-border edit-form"
+            disableButton={this.props.disabled}
+            content={
+              <fieldset key="sitewide-setting">
+                <legend className="visuallyHidden">Enter or edit a value for the selected sitewide setting key</legend>
+                <EditableInput
+                  elementType="select"
+                  disabled={this.props.disabled}
+                  readOnly={!!(this.props.item && this.props.item.key)}
+                  name="key"
+                  ref="key"
+                  label="Key"
+                  value={this.props.item && this.props.item.key}
+                  onChange={this.onChange}
+                >
+                  {
+                    availableSettings.map(setting =>
+                      <option key={setting.key} value={setting.key}>{setting.label}</option>
+                    )
+                  }
+                </EditableInput>
                 {
-                  availableSettings.map(setting =>
-                    <option key={setting.key} value={setting.key}>{setting.label}</option>
+                  selectType ? (
+                    <EditableInput
+                      elementType="select"
+                      name="value"
+                      ref="value"
+                      label="Value"
+                      value={this.props.item && this.props.item.value}
+                    >
+                      {
+                        availableSettings.map(setting => {
+                          if (setting.key === inputKey) {
+                            return setting.options.map(s => {
+                              return <option key={s.key} value={s.key}>{s.label}</option>;
+                            });
+                          }
+                        })
+                      }
+                    </EditableInput>
+                  ) : (
+                    <EditableInput
+                      elementType="input"
+                      type="text"
+                      disabled={this.props.disabled}
+                      required={settingToRender && settingToRender.required}
+                      name="value"
+                      ref="value"
+                      label="Value"
+                      value={this.props.item && this.props.item.value}
+                    />
                   )
                 }
-              </EditableInput>
-              {
-                selectType ? (
-                  <EditableInput
-                    elementType="select"
-                    name="value"
-                    ref="value"
-                    label="Value"
-                    value={this.props.item && this.props.item.value}
-                  >
-                    {
-                      availableSettings.map(setting => {
-                        if (setting.key === inputKey) {
-                          return setting.options.map(s => {
-                            return <option key={s.key} value={s.key}>{s.label}</option>;
-                          });
-                        }
-                      })
+                {
+                  availableSettings.map(setting => {
+                    if (setting.key === inputKey && setting.description) {
+                      return <p className="description" dangerouslySetInnerHTML={{__html: setting.description}} />;
                     }
-                  </EditableInput>
-                ) : (
-                  <EditableInput
-                    elementType="input"
-                    type="text"
-                    disabled={this.props.disabled}
-                    required={settingToRender && settingToRender.required}
-                    name="value"
-                    ref="value"
-                    label="Value"
-                    value={this.props.item && this.props.item.value}
-                  />
-                )
-              }
-              {
-                availableSettings.map(setting => {
-                  if (setting.key === inputKey && setting.description) {
-                    return <p className="description" dangerouslySetInnerHTML={{__html: setting.description}} />;
-                  }
-                })
-              }
-            </fieldset>
-            <Button
-              disabled={this.props.disabled}
-              callback={this.submit}
-            />
-          </form>
+                  })
+                }
+              </fieldset>
+            }
+          />
         }
         { this.availableSettings().length === 0 &&
           <p>All sitewide settings have already been created.</p>
@@ -143,9 +144,8 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     return allSettings;
   }
 
-  submit(event) {
-    event.preventDefault();
-    handleSubmit(this);
+  async submit(data: FormData) {
+    await this.props.save(data);
   }
 
   componentWillReceiveProps(nextProps) {

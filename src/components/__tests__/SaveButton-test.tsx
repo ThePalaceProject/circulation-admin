@@ -9,7 +9,6 @@ import SaveButton from "../SaveButton";
 describe("SaveButton", () => {
   let wrapper;
   let submit;
-  let handleSubmit;
   let data = {key: "value"};
 
   beforeEach(() => {

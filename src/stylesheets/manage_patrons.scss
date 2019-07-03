@@ -10,29 +10,23 @@
     width: 100%;
     padding: 1%;
 
-    .edit-form {
-      display: flex;
-    }
-
     .manage-patrons-form, .patron-info {
       display: flex;
       flex-direction: column;
       padding: 1% 0;
       flex-basis: 20%;
-
-      form {
-        .form-group {
-          width: 60%;
-          float: left;
-        }
-        button {
-          margin: 20px;
-          border: 1px solid transparent;
-        }
-      }
     }
     .patron-info {
+      button {
+        margin: 0 20px 20px 0;
+      }
       flex: 5;
+      form {
+        div.alert {
+          margin-bottom: 0;
+          padding: 0;
+        }
+      }
       ul {
         display: block;
         list-style: none;

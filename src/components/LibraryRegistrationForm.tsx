@@ -1,7 +1,7 @@
 import * as React from "react";
 import { LibraryData } from "../interfaces";
 import EditableInput from "./EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 
 export interface LibraryRegistrationFormState {
   checked: boolean;
@@ -35,10 +35,13 @@ export default class LibraryRegistrationForm extends React.Component<LibraryRegi
     let disabled = this.props.disabled || (termsLink && !this.state.checked);
 
     return (
-      <form className="registration-status">
-        {termsLink && this.checkbox(this.props.library, termsLink)}
-        <Button disabled={disabled} callback={() => this.props.register(this.props.library)} content={this.props.buttonText} />
-      </form>
+      <Form
+        className="inline registration-status"
+        content={termsLink && this.checkbox(this.props.library, termsLink)}
+        disableButton={disabled}
+        onSubmit={() => this.props.register(this.props.library)}
+        buttonContent={this.props.buttonText}
+      />
     );
   }
 

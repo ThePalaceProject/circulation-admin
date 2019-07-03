@@ -6,7 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import SitewideSettingEditForm from "../SitewideSettingEditForm";
 import EditableInput from "../EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 
 describe("SitewideSettingEditForm", () => {
   let wrapper;
@@ -55,7 +55,7 @@ describe("SitewideSettingEditForm", () => {
   describe("rendering", () => {
     beforeEach(() => {
       save = stub();
-      wrapper = shallow(
+      wrapper = mount(
         <SitewideSettingEditForm
           data={settingsData}
           disabled={false}
@@ -115,9 +115,7 @@ describe("SitewideSettingEditForm", () => {
 
     it("should render a description", () => {
       wrapper.setProps({ item: settingDataWithDescription });
-      const description = wrapper.find(".description");
-
-      expect(description.length).to.equal(1);
+      const description = wrapper.find(Form).find(".description").at(1);
       expect(description.prop("dangerouslySetInnerHTML")).to.eql({ __html: "some description" });
     });
 
@@ -153,8 +151,8 @@ describe("SitewideSettingEditForm", () => {
     });
 
     it("calls save when the form is submitted directly", () => {
-      let form = wrapper.find("form");
-      form.simulate("submit");
+      let form = wrapper.find(Form);
+      form.prop("onSubmit")();
       expect(save.callCount).to.equal(1);
     });
 

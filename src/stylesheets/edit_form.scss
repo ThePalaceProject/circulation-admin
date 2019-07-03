@@ -1,4 +1,6 @@
 .edit-form {
+  margin: 0;
+  padding: 0;
   label {
     width: 100%;
     .form-control {
@@ -36,7 +38,7 @@
     }
   }
 
-  button.btn:not(.add-list-item) {
-    margin: 1em 0;
+  > .btn {
+    margin-left: 0;
   }
 }

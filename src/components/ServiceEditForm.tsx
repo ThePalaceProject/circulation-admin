@@ -1,12 +1,12 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { Panel, Button } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
 import { EditFormProps } from "./EditableConfigList";
-import { handleSubmit, clearForm } from "./sharedFunctions";
+import { clearForm } from "./sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ServiceEditFormProps<T> {
@@ -95,49 +95,55 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     const { requiredFields, nonRequiredFields } = this.protocolSettings();
     const showLibrariesForm = (!this.sitewide() || this.protocolLibrarySettings().length > 0);
     const hasNonRequiredFields = nonRequiredFields.length > 0;
-    return (
-      <form ref="form" onSubmit={this.submit} className="edit-form">
-        { this.props.item && this.props.item.id &&
-          <input
-            type="hidden"
-            name="id"
-            value={String(this.props.item.id)}
-            />
-        }
-        { this.props.data && this.protocolInstructions() &&
-            <div className="form-group">
-              <label className="control-label">Instructions</label>
-              <Panel
-                headerText={this.protocolDescription()}
-                style="instruction"
-                onEnter={this.submit}
-                content={this.protocolInstructions()}
-              />
-            </div>
-        }
+    const hasInstructions = this.props.data && this.protocolInstructions();
+
+    let instructions = hasInstructions && (
+      <div className="form-group" key="instructions">
+        <label className="control-label">Instructions</label>
         <Panel
-          headerText="Required Fields"
-          openByDefault={true}
-          collapsible={hasNonRequiredFields || showLibrariesForm}
-          content={this.renderRequiredFields(requiredFields)}
+          headerText={this.protocolDescription()}
+          style="instruction"
+          onEnter={this.submit}
+          content={this.protocolInstructions()}
         />
-        { hasNonRequiredFields && (
-          <Panel
-            headerText="Optional Fields"
-            content={this.renderOptionalFields(nonRequiredFields)}
-          />)
-        }
-        { (showLibrariesForm) &&
-          <Panel
-            headerText="Libraries"
-            content={this.renderLibrariesForm()}
-          />
-        }
-        <Button
-          disabled={this.props.disabled}
-          callback={this.submit}
-        />
-      </form>
+      </div>
+    );
+
+    let requiredFieldsPanel = (
+      <Panel
+        key="required"
+        headerText="Required Fields"
+        openByDefault={true}
+        collapsible={hasNonRequiredFields || showLibrariesForm}
+        content={this.renderRequiredFields(requiredFields)}
+      />
+    );
+
+    let optionalFieldsPanel = hasNonRequiredFields && (
+      <Panel
+        key="optional"
+        headerText="Optional Fields"
+        content={this.renderOptionalFields(nonRequiredFields)}
+      />
+    );
+
+    let librariesForm = showLibrariesForm && (
+      <Panel
+        key="libraries"
+        headerText="Libraries"
+        content={this.renderLibrariesForm()}
+      />
+    );
+
+    return (
+      <Form
+        onSubmit={this.submit}
+        className="no-border edit-form"
+        hiddenName={this.props.item && this.props.item.id && "id"}
+        hiddenValue={this.props.item && this.props.item.id && String(this.props.item.id)}
+        disableButton={this.props.disabled}
+        content={[instructions, requiredFieldsPanel, optionalFieldsPanel, librariesForm]}
+      />
     );
   }
 
@@ -522,13 +528,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState(newState);
   }
 
-  handleData(data) {
-    return data.append("libraries", JSON.stringify(this.state.libraries));
+  handleData(data: FormData) {
+    data && data.append("libraries", JSON.stringify(this.state.libraries));
+    return data;
   }
 
-  submit(event) {
-    event.preventDefault();
-    handleSubmit(this);
+  async submit(data: FormData) {
+    let modifiedData = this.handleData(data);
+    await this.props.save(modifiedData);
   }
-
 }

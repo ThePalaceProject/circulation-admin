@@ -7,14 +7,16 @@
   }
 }
 
-span.add-list-item {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.btn.add-list-item {
-  vertical-align: top;
-  margin: unset;
+.add-list-item-container {
+  span.add-list-item {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  .btn.add-list-item {
+    vertical-align: top;
+    margin: unset;
+  }
 }
 
 span.input-group-addon {
