@@ -81,7 +81,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
                   <td className="complaint-count">{this.props.complaints[type]}</td>
                   <td className="complaint-resolve">
                     <Button
-                      className="btn-sm"
+                      className="btn-sm top-align"
                       content="Resolve"
                       disabled={this.props.isFetching}
                       callback={() => this.resolve(type)}

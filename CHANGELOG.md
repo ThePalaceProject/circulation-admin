@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.6
+#### Fixed
+- Fixed a minor button styling bug in the Complaints tab.
+
 ### v0.3.5
 #### Updated
 - Integrated the Form component from the [https://github.com/NYPL-Simplified/reusable-components](library-simplified-reusable-components) package.

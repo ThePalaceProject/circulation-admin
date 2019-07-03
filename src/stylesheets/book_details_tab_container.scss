@@ -2,13 +2,16 @@
   .details {
     padding-top: 2em;
   }
-  button.btn:not(.add-list-item) {
-    margin: 1em 0;
+
+  .edit-form, .classifications-form, .cover-edit-form {
+      button.btn:not(.add-list-item) {
+        margin: 1em 0;
+      }
   }
   .form-inline {
     display: flex;
     button.btn {
-      margin-right: .5em;
+      margin: 0 .5em 0 0;
     }
   }
 
