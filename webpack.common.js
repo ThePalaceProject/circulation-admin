@@ -26,9 +26,8 @@ module.exports = {
     new MiniCssExtractPlugin({ filename: "circulation-web.css" })
   ],
   optimization: {
-    minimizer: [new TerserPlugin()],
+    minimizer: [new TerserPlugin({ terserOptions: { compress: false }})]
   },
-
   module: {
     rules: [
       {
