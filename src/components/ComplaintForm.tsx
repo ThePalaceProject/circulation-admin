@@ -34,6 +34,12 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       "wrong-genre"
     ];
 
+    let formatType = (x) => {
+      let [firstWord, ...rest] = x.split("-");
+      firstWord = firstWord.substr(0, 1).toUpperCase() + firstWord.substr(1);
+      return [firstWord, ...rest].join(" ");
+    };
+
     return (
       <div className="complaint-form">
         <Form
@@ -55,8 +61,8 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
                 name="type"
                 placeholder=""
                 disabled={this.props.disabled}>
-                <option value="">complaint type</option>
-                { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
+                <option value="">Complaint type</option>
+                { complaintTypes.map(type => <option key={type} value={type}>{formatType(type)}</option>) }
               </EditableInput>
             </fieldset>
           }

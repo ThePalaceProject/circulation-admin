@@ -124,7 +124,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
   readableComplaintType(type: string) {
     let match = type.match(/\/terms\/problem\/(.+)$/);
     if (match) {
-      return match[1].replace("-", " ");
+      return match[1].substr(0, 1).toUpperCase() + match[1].substr(1).replace(/-/g, " ");
     } else {
       return type;
     }
