@@ -77,6 +77,11 @@ describe("formatString", () => {
     expect(result).to.equal("This!is!a!sentence.");
   });
 
+  it("replaces multiple characters", () => {
+    let result = formatString("need-to-replace!multiple-characters", ["-", "!", " "]);
+    expect(result).to.equal("Need to replace multiple characters");
+  });
+
   it("defaults to replacing characters with a space", () => {
     let result = formatString(stringToFormat, ["-"]);
     expect(result).to.equal("This is a sentence.");
