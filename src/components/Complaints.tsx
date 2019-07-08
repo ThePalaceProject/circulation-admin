@@ -9,6 +9,7 @@ import { Button } from "library-simplified-reusable-components";
 import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import { formatString } from "./sharedFunctions";
 
 export interface ComplaintsStateProps {
   complaints?: any;
@@ -124,7 +125,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
   readableComplaintType(type: string) {
     let match = type.match(/\/terms\/problem\/(.+)$/);
     if (match) {
-      return match[1].substr(0, 1).toUpperCase() + match[1].substr(1).replace(/-/g, " ");
+      return formatString(match[1], ["-"]);
     } else {
       return type;
     }

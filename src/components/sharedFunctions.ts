@@ -27,3 +27,14 @@ export function clearForm(refs) {
     }
   }
 }
+
+export function formatString(word: string, replacement?: string[], capitalize = true) {
+  if (capitalize) {
+    word = word.substr(0, 1).toUpperCase() + word.substr(1);
+  }
+  if (replacement) {
+    let replaceWith = replacement.length > 1 ? replacement[1] : " ";
+    word = word.replace(new RegExp(replacement[0], "g"), replaceWith);
+  }
+  return word;
+}
