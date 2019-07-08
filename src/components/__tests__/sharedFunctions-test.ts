@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { findDefault, clearForm } from "../sharedFunctions";
+import { findDefault, clearForm, formatString } from "../sharedFunctions";
 
 
 describe("findDefault", () => {
@@ -53,4 +53,37 @@ describe("findDefault", () => {
     expect(result[1].label).to.equal("This one too");
   });
 
+});
+
+describe("formatString", () => {
+  let stringToFormat = "this-is-a-sentence.";
+  it("capitalizes the first letter of a string by default", () => {
+    let result = formatString(stringToFormat);
+    expect(result).to.equal("This-is-a-sentence.");
+  });
+
+  it("can be prevented from capitalizing", () => {
+    let result = formatString(stringToFormat, null, false);
+    expect(result).to.equal("this-is-a-sentence.");
+  });
+
+  it("replaces characters", () => {
+    let result = formatString(stringToFormat, ["-", " "], false);
+    expect(result).to.equal("this is a sentence.");
+  });
+
+  it("replaces characters and capitalizes", () => {
+    let result = formatString(stringToFormat, ["-", "!"]);
+    expect(result).to.equal("This!is!a!sentence.");
+  });
+
+  it("replaces multiple characters", () => {
+    let result = formatString("need-to-replace!multiple-characters", ["-", "!", " "]);
+    expect(result).to.equal("Need to replace multiple characters");
+  });
+
+  it("defaults to replacing characters with a space", () => {
+    let result = formatString(stringToFormat, ["-"]);
+    expect(result).to.equal("This is a sentence.");
+  });
 });
