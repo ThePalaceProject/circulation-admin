@@ -3,6 +3,7 @@
 ### v0.3.6
 #### Fixed
 - Fixed a minor button styling bug in the Complaints tab.
+- Improved formatting of complaint type names.
 
 ### v0.3.5
 #### Updated

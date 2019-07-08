@@ -28,7 +28,7 @@ describe("ComplaintForm", () => {
       expect(select.length).to.equal(1);
       expect(select.prop("disabled")).to.equal(false);
       let option = select.find("option").at(0);
-      expect(option.text()).to.equal("complaint type");
+      expect(option.text()).to.equal("Complaint type");
     });
 
     it("shows complaint type options", () => {
@@ -48,6 +48,26 @@ describe("ComplaintForm", () => {
         "wrong-medium",
         "wrong-age-range",
         "wrong-genre"
+      ]);
+    });
+
+    it("formats complaint type options", () => {
+      let options = wrapper.find("option");
+      let types = options.map(option => option.text());
+      expect(types).to.eql([
+        "Complaint type",
+        "Cannot issue loan",
+        "Cannot render",
+        "Wrong title",
+        "Wrong author",
+        "Wrong audience",
+        "Cannot fulfill loan",
+        "Bad description",
+        "Cannot return",
+        "Bad cover image",
+        "Wrong medium",
+        "Wrong age range",
+        "Wrong genre"
       ]);
     });
 
