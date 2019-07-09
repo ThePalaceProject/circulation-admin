@@ -4,6 +4,7 @@
 #### Fixed
 - Fixed a minor button styling bug in the Complaints tab.
 - Improved formatting of complaint type names.
+- Updated the the opds-feed-parser and opds-web-client.
 
 ### v0.3.5
 #### Updated
