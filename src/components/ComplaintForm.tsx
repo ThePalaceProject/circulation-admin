@@ -2,6 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
 import { Button, Form } from "library-simplified-reusable-components";
+import { formatString } from "./sharedFunctions";
 
 export interface ComplaintFormProps {
   disabled?: boolean;
@@ -55,8 +56,8 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
                 name="type"
                 placeholder=""
                 disabled={this.props.disabled}>
-                <option value="">complaint type</option>
-                { complaintTypes.map(type => <option key={type} value={type}>{type}</option>) }
+                <option value="">Complaint type</option>
+                { complaintTypes.map(type => <option key={type} value={type}>{formatString(type, ["-"])}</option>) }
               </EditableInput>
             </fieldset>
           }

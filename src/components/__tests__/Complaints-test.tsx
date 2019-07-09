@@ -60,7 +60,7 @@ describe("Complaints", () => {
 
     it("shows simplified complaint types", () => {
       let types = wrapper.find(".complaint-type").map(type => type.text());
-      expect(types).to.deep.equal(["test type", "other type", "last type"]);
+      expect(types).to.deep.equal(["Test type", "Other type", "Last type"]);
     });
 
     it("shows resolve button for each complaint type", () => {
