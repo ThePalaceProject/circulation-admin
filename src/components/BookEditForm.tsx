@@ -1,5 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import EditorField from "./EditorField";
 import { Button, Form } from "library-simplified-reusable-components";
 import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
@@ -206,14 +207,10 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           value={this.props.rating && String(Math.round(this.props.rating))}
           optionalText={false}
           />
-        <EditableInput
-          elementType="textarea"
-          disabled={this.props.disabled}
-          name="summary"
-          label="Summary"
-          value={this.props.summary}
-          optionalText={false}
-          />
+        <div className="editor form-group">
+          <label className="control-label">Summary</label>
+          <EditorField ref="summary" summary={this.props.summary} disabled={this.props.disabled}/>
+        </div>
       </fieldset>
     );
   }
@@ -252,6 +249,8 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
   }
 
   save(data: FormData) {
+    const summary = (this.refs["summary"] as any).getValue();
+    data.append("summary", summary);
     this.props.editBook(this.props.editLink.href, data).then(response => {
       this.props.refresh();
     });

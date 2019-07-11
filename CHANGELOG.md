@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.7
+#### Added
+- Added a basic WYSIWYG editor to the summary field in the book details form.
+
 ### v0.3.6
 #### Fixed
 - Fixed a minor button styling bug in the Complaints tab.
