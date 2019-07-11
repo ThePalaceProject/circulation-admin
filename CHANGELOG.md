@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.7
+##### Updated
+- Updated Redux to v4, Typescript to v2.9, and the necessary type changes in the code.
+
 ### v0.3.6
 #### Fixed
 - Fixed a minor button styling bug in the Complaints tab.
