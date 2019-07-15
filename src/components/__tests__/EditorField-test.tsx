@@ -11,37 +11,37 @@ describe("EditorField", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(<EditorField summary="This is a summary." disabled={false} />);
+    wrapper = mount(<EditorField content="This is a summary." disabled={false} />);
   });
 
   it("renders buttons", () => {
-    let spyChangeStyle = spy(wrapper.instance(), "changeStyle");
+    let stubChangeStyle = stub(wrapper.instance(), "changeStyle");
     let buttons = wrapper.find("button");
     expect(buttons.length).to.equal(3);
-    expect(spyChangeStyle.callCount).to.equal(0);
+    expect(stubChangeStyle.callCount).to.equal(0);
 
     let bold = buttons.at(0);
-    expect(bold.text()).to.equal("B");
+    expect(bold.text()).to.equal("Bold");
     expect(bold.find("b").length).to.equal(1);
     bold.simulate("click");
-    expect(spyChangeStyle.callCount).to.equal(1);
-    expect(spyChangeStyle.args[0][1]).to.equal("BOLD");
+    expect(stubChangeStyle.callCount).to.equal(1);
+    expect(stubChangeStyle.args[0][1]).to.equal("BOLD");
 
     let italic = buttons.at(1);
-    expect(italic.text()).to.equal("I");
+    expect(italic.text()).to.equal("Italic");
     expect(italic.find("i").length).to.equal(1);
     italic.simulate("click");
-    expect(spyChangeStyle.callCount).to.equal(2);
-    expect(spyChangeStyle.args[1][1]).to.equal("ITALIC");
+    expect(stubChangeStyle.callCount).to.equal(2);
+    expect(stubChangeStyle.args[1][1]).to.equal("ITALIC");
 
     let underline = buttons.at(2);
-    expect(underline.text()).to.equal("U");
+    expect(underline.text()).to.equal("Underline");
     expect(underline.find("u").length).to.equal(1);
     underline.simulate("click");
-    expect(spyChangeStyle.callCount).to.equal(3);
-    expect(spyChangeStyle.args[2][1]).to.equal("UNDERLINE");
+    expect(stubChangeStyle.callCount).to.equal(3);
+    expect(stubChangeStyle.args[2][1]).to.equal("UNDERLINE");
 
-    spyChangeStyle.restore();
+    stubChangeStyle.restore();
   });
 
   it("gets the current value", () => {

@@ -137,7 +137,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-let connectOptions = { withRef: true, pure: true };
+let connectOptions = { pure: true };
 const ConnectedBookDetailsTabContainer = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps,

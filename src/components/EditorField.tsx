@@ -8,7 +8,7 @@ interface EditorFieldState {
 }
 
 interface EditorFieldProps {
-  summary: string;
+  content: string;
   disabled: boolean;
 }
 
@@ -17,16 +17,15 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     super(props);
     let blocksFromHTML;
     try {
-      blocksFromHTML = convertFromHTML(JSON.parse(props.summary));
+      blocksFromHTML = convertFromHTML(JSON.parse(props.content));
+    } catch {
+      blocksFromHTML = convertFromHTML(props.content);
     }
-    catch {
-      blocksFromHTML = convertFromHTML(props.summary);
-    }
-    const state = ContentState.createFromBlockArray(
+    const contentState = ContentState.createFromBlockArray(
       blocksFromHTML.contentBlocks,
       blocksFromHTML.entityMap,
     );
-    this.state = {editorState: EditorState.createWithContent(state, compositeDecorator)};
+    this.state = {editorState: EditorState.createWithContent(contentState, compositeDecorator)};
 
     this.onChange = this.onChange.bind(this);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
@@ -49,13 +48,13 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
   }
 
   renderButton(style: string): JSX.Element {
-    let content = React.createElement(style[0].toLowerCase(), null, style[0]);
-    let isActive = this.state.editorState.getSelection().getHasFocus() && this.state.editorState.getCurrentInlineStyle().has(style);
+    let buttonContent = React.createElement(style[0].toLowerCase(), null, style);
+    let isActive = this.state.editorState.getSelection().getHasFocus() && this.state.editorState.getCurrentInlineStyle().has(style.toUpperCase());
     return (
       <Button
         key={style}
-        callback={(e) => {this.changeStyle(e, style);}}
-        content={content}
+        callback={(e) => {this.changeStyle(e, style.toUpperCase());}}
+        content={buttonContent}
         className={`inline squared${isActive ? " active" : ""}`}
         disabled={this.props.disabled}
       />
@@ -64,7 +63,11 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
 
   changeStyle(e, style: string) {
     e.preventDefault();
-    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, style));
+    const editorStateFocused = EditorState.forceSelection(
+      this.state.editorState,
+      this.state.editorState.getSelection()
+    );
+    this.onChange(RichUtils.toggleInlineStyle(editorStateFocused, style));
   }
 
   getValue() {
@@ -72,9 +75,10 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
   }
 
   render() {
+    const styles = ["Bold", "Italic", "Underline"];
     return (
       <div className="editor-field">
-        { ["BOLD", "ITALIC", "UNDERLINE"].map(style => this.renderButton(style)) }
+        <ul>{ styles.map(style => this.renderButton(style)) }</ul>
         <Editor editorState={this.state.editorState} onChange={this.onChange} handleKeyCommand={this.handleKeyCommand} readOnly={this.props.disabled} />
       </div>
     );

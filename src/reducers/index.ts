@@ -49,7 +49,7 @@ import {
   AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
   CatalogServicesData, DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
   LanesData, RolesData, MediaData, LanguagesData,
-  RightsStatusData, PatronData, DiagnosticsData
+  RightsStatusData, PatronData, DiagnosticsData, ServiceData
 } from "../interfaces";
 
 
@@ -88,7 +88,7 @@ export interface State {
   laneVisibility: FetchEditState<void>;
   resetLanes: FetchEditState<void>;
   laneOrder: FetchEditState<void>;
-  selfTests: FetchEditState<void>;
+  selfTests: FetchEditState<ServiceData>;
   roles: FetchEditState<RolesData>;
   media: FetchEditState<MediaData>;
   languages: FetchEditState<LanguagesData>;

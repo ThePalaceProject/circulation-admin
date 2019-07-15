@@ -15,14 +15,18 @@
     .DraftEditor-root {
       padding: 6px 12px;
     }
-    button.btn.inline {
+    ul {
+      padding: 0;
       margin: 0 0 1em 0;
+    }
+    button.btn.inline {
+      margin: 0;
       border-top: none;
       border-left: none;
       background: white;
       border-color: #403D37;
       color: #403D37;
-      width: 36px;
+      font-weight: unset;
       transition: color 0, background 0;
       &:hover, &.active {
         background: #403D37;

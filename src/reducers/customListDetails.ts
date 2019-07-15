@@ -27,7 +27,7 @@ const extraActions = {
 };
 
 export interface FetchMoreCustomListDetails<T> extends FetchEditState<T> {
-  isFetchingMoreEntries: boolean;
+  isFetchingMoreEntries?: boolean;
 }
 
 export default createFetchEditReducer<CollectionData>(
