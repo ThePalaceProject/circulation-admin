@@ -104,6 +104,7 @@
     flex-basis: 47%;
     margin-top: 15px;
     margin-right: 20px;
+    height: 100%;
 
     h4 {
       display: inline-block;
@@ -130,9 +131,9 @@
     .droppable {
       border: 1px solid $pagecolorlight;
       padding: 10px;
-      flex: 1;
       overflow-y: scroll;
       margin-bottom: 15px;
+      height: 500px;
 
       &.dragging-over {
         border-color: $pagetextcolor;
