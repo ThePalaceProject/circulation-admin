@@ -23,21 +23,21 @@ describe("EditorField", () => {
     let bold = buttons.at(0);
     expect(bold.text()).to.equal("Bold");
     expect(bold.find("b").length).to.equal(1);
-    bold.simulate("click");
+    bold.simulate("mouseDown");
     expect(stubChangeStyle.callCount).to.equal(1);
     expect(stubChangeStyle.args[0][1]).to.equal("BOLD");
 
     let italic = buttons.at(1);
     expect(italic.text()).to.equal("Italic");
     expect(italic.find("i").length).to.equal(1);
-    italic.simulate("click");
+    italic.simulate("mouseDown");
     expect(stubChangeStyle.callCount).to.equal(2);
     expect(stubChangeStyle.args[1][1]).to.equal("ITALIC");
 
     let underline = buttons.at(2);
     expect(underline.text()).to.equal("Underline");
     expect(underline.find("u").length).to.equal(1);
-    underline.simulate("click");
+    underline.simulate("mouseDown");
     expect(stubChangeStyle.callCount).to.equal(3);
     expect(stubChangeStyle.args[2][1]).to.equal("UNDERLINE");
 

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Editor, EditorState, ContentState, RichUtils, convertFromHTML, compositeDecorator } from "draft-js";
 import { convertToHTML } from "draft-convert";
-import { Button } from "library-simplified-reusable-components";
 
 interface EditorFieldState {
   editorState: EditorState;
@@ -25,7 +24,7 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
       blocksFromHTML.contentBlocks,
       blocksFromHTML.entityMap,
     );
-    this.state = {editorState: EditorState.createWithContent(contentState, compositeDecorator)};
+    this.state = { editorState: EditorState.createWithContent(contentState, compositeDecorator) };
 
     this.onChange = this.onChange.bind(this);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
@@ -51,23 +50,19 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     let buttonContent = React.createElement(style[0].toLowerCase(), null, style);
     let isActive = this.state.editorState.getSelection().getHasFocus() && this.state.editorState.getCurrentInlineStyle().has(style.toUpperCase());
     return (
-      <Button
+      <button
         key={style}
-        callback={(e) => {this.changeStyle(e, style.toUpperCase());}}
-        content={buttonContent}
-        className={`inline squared${isActive ? " active" : ""}`}
+        onMouseDown={(e) => {this.changeStyle(e, style.toUpperCase());}}
+        className={`btn inline squared${isActive ? " active" : ""}`}
         disabled={this.props.disabled}
-      />
+        type="button"
+      >{buttonContent}</button>
     );
   }
 
   changeStyle(e, style: string) {
     e.preventDefault();
-    const editorStateFocused = EditorState.forceSelection(
-      this.state.editorState,
-      this.state.editorState.getSelection()
-    );
-    this.onChange(RichUtils.toggleInlineStyle(editorStateFocused, style));
+    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, style));
   }
 
   getValue() {

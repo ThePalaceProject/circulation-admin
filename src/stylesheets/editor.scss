@@ -28,10 +28,14 @@
       color: #403D37;
       font-weight: unset;
       transition: color 0, background 0;
-      &:hover, &.active {
-        background: #403D37;
-        color: white;
-      }
+    }
+    button.btn.inline:hover {
+      background: $blue;
+      color: white;
+    }
+    button.btn.inline.active {
+      background: #403D37;
+      color: white;
     }
   }
 }
