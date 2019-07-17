@@ -11,7 +11,7 @@
     margin-bottom: 0;
   }
   .editor-field {
-    border: 1px solid #403D37;
+    border: 1px solid $dark;
     .DraftEditor-root {
       padding: 6px 12px;
     }
@@ -24,18 +24,18 @@
       border-top: none;
       border-left: none;
       background: white;
-      border-color: #403D37;
-      color: #403D37;
+      border-color: $dark;
+      color: $dark;
       font-weight: unset;
       transition: color 0, background 0;
-    }
-    button.btn.inline:hover {
-      background: $blue;
-      color: white;
-    }
-    button.btn.inline.active {
-      background: #403D37;
-      color: white;
+      &.active {
+        background: $dark;
+        color: $white;
+      }
+      &:hover {
+        background: $blue;
+        color: $white;
+      }
     }
   }
 }

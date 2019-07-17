@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Editor, EditorState, ContentState, RichUtils, convertFromHTML, compositeDecorator } from "draft-js";
 import { convertToHTML } from "draft-convert";
+import { Button } from "library-simplified-reusable-components";
 
 interface EditorFieldState {
   editorState: EditorState;
@@ -50,13 +51,15 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     let buttonContent = React.createElement(style[0].toLowerCase(), null, style);
     let isActive = this.state.editorState.getSelection().getHasFocus() && this.state.editorState.getCurrentInlineStyle().has(style.toUpperCase());
     return (
-      <button
+      <Button
+        content={buttonContent}
+        mouseDown={true}
         key={style}
-        onMouseDown={(e) => {this.changeStyle(e, style.toUpperCase());}}
+        callback={(e) => {this.changeStyle(e, style.toUpperCase());}}
         className={`btn inline squared${isActive ? " active" : ""}`}
         disabled={this.props.disabled}
         type="button"
-      >{buttonContent}</button>
+      />
     );
   }
 
