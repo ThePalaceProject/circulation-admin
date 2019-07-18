@@ -52,7 +52,9 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
                 key={genre.name}
                 value={genre.name}
                 disabled={this.bookHasGenre(genre.name)}
-                onClick={this.handleGenreSelect}>
+                onClick={this.handleGenreSelect}
+                aria-selected={genre.name === this.state.genre}
+              >
                 {genre.name + (genre.subgenres.length > 0 ? " >" : "")}
               </option>
             ) }
@@ -69,7 +71,9 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
                   key={genre}
                   value={genre}
                   disabled={this.bookHasGenre(genre)}
-                  onClick={this.handleSubgenreSelect}>
+                  onClick={this.handleSubgenreSelect}
+                  aria-selected={genre === this.state.subgenre}
+                >
                   {genre}
                 </option>
               ) }
@@ -78,6 +82,7 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
 
           { this.state.genre &&
             <Button
+              className="top-align"
               callback={this.addGenre}
               content="Add"
             />

@@ -174,7 +174,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           description={!this.protocolInstructions() && this.protocolDescription()}
           >
           { this.availableProtocols().map(protocol =>
-              <option key={protocol.name} value={protocol.name}>{protocol.label || protocol.name}</option>
+              <option key={protocol.name} value={protocol.name} aria-selected={this.state.protocol === protocol.name}>
+                {protocol.label || protocol.name}
+              </option>
             )
           }
         </EditableInput>
@@ -187,10 +189,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             value={this.state.parentId}
             ref="parent"
             onChange={this.handleParentChange}
-            >
-            <option value="">None</option>
+          >
+            <option value="" aria-selected={this.state.parentId === ""}>None</option>
             { this.availableParents().map(parent =>
-                <option key={parent.id} value={parent.id}>{parent.name || parent.id}</option>
+                <option key={parent.id} value={parent.id} aria-selected={this.state.parentId === parent.id}>
+                  {parent.name || parent.id}
+                </option>
               )
             }
           </EditableInput>
@@ -289,9 +293,15 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                 value={this.state.selectedLibrary}
                 onChange={this.selectLibrary}
                 >
-                <option value="none">Select a library</option>
+                <option value="none" aria-selected={this.state.selectedLibrary === "none"}>Select a library</option>
                 { this.availableLibraries().map(library =>
-                    <option key={library.short_name} value={library.short_name}>{library.name}</option>
+                    <option
+                      key={library.short_name}
+                      value={library.short_name}
+                      aria-selected={this.state.selectedLibrary === "library.short_name"}
+                    >
+                      {library.name}
+                    </option>
                   )
                 }
               </EditableInput>

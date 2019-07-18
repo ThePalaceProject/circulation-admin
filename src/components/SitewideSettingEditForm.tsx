@@ -60,7 +60,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                 >
                   {
                     availableSettings.map(setting =>
-                      <option key={setting.key} value={setting.key}>{setting.label}</option>
+                      <option key={setting.key} value={setting.key} aria-selected={false}>{setting.label}</option>
                     )
                   }
                 </EditableInput>
@@ -77,7 +77,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                         availableSettings.map(setting => {
                           if (setting.key === inputKey) {
                             return setting.options.map(s => {
-                              return <option key={s.key} value={s.key}>{s.label}</option>;
+                              return <option key={s.key} value={s.key} aria-selected={false}>{s.label}</option>;
                             });
                           }
                         })

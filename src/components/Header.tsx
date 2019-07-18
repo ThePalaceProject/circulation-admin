@@ -63,8 +63,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     const currentPathname = (this.context.router &&
       this.context.router.getCurrentLocation() &&
       this.context.router.getCurrentLocation().pathname) || "";
-    let isLibraryManager =
-      this.context.library && this.context.admin.isLibraryManager(this.context.library());
+      let currentLibrary = this.context.library && this.context.library();
+    let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
     return (
       <Navbar fluid={true}>
@@ -76,14 +76,20 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <EditableInput
               elementType="select"
               ref="library"
-              value={this.context.library && this.context.library()}
+              value={currentLibrary}
               onChange={this.changeLibrary}
               >
-              { (!this.context.library || !this.context.library()) &&
-                <option>Select a library</option>
+              { (!this.context.library || !currentLibrary) &&
+                <option aria-selected={false}>Select a library</option>
               }
               { this.props.libraries.map(library =>
-                  <option key={library.short_name} value={library.short_name}>{library.name || library.short_name}</option>
+                  <option
+                    key={library.short_name}
+                    value={library.short_name}
+                    aria-selected={currentLibrary === library.short_name}
+                  >
+                    {library.name || library.short_name}
+                  </option>
                 )
               }
             </EditableInput>
@@ -92,11 +98,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         </Navbar.Header>
 
         <Navbar.Collapse className="menu">
-          { this.context.library && this.context.library() &&
+          { currentLibrary &&
             <Nav>
               <li className="header-link">
                 <CatalogLink
-                  collectionUrl={"/" + this.context.library() + "/groups"}
+                  collectionUrl={"/" + currentLibrary + "/groups"}
                   bookUrl={null}
                   className={currentPathname.indexOf("/admin/web/collection") !== -1 ? "active-link" : ""}
                 >
@@ -105,7 +111,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               </li>
               <li className="header-link">
                 <CatalogLink
-                  collectionUrl={"/" + this.context.library() + "/admin/complaints"}
+                  collectionUrl={"/" + currentLibrary + "/admin/complaints"}
                   bookUrl={null}
                   className={currentPathname.indexOf("/admin/complaints") !== -1 ? "active-link" : ""}
                 >
@@ -114,7 +120,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               </li>
               <li className="header-link">
                 <CatalogLink
-                  collectionUrl={"/" + this.context.library() + "/admin/suppressed"}
+                  collectionUrl={"/" + currentLibrary + "/admin/suppressed"}
                   bookUrl={null}
                   className={currentPathname.indexOf("/admin/suppressed") !== -1 ? "active-link" : ""}
                 >
@@ -123,28 +129,28 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               </li>
               <li className="header-link">
                 <Link
-                  to={"/admin/web/lists/" + this.context.library()}
+                  to={"/admin/web/lists/" + currentLibrary}
                   className={currentPathname.indexOf("/admin/web/lists") !== -1 ? "active-link" : ""}
                 >Lists</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
                   <Link
-                    to={"/admin/web/lanes/" + this.context.library()}
+                    to={"/admin/web/lanes/" + currentLibrary}
                     className={currentPathname.indexOf("/admin/web/lanes") !== -1 ? "active-link" : ""}
                   >Lanes</Link>
                 </li>
               }
               <li className="header-link">
                 <Link
-                  to={"/admin/web/dashboard/" + this.context.library()}
-                  className={(currentPathname.indexOf("/admin/web/dashboard") !== -1) && this.context.library() ? "active-link" : ""}
+                  to={"/admin/web/dashboard/" + currentLibrary}
+                  className={(currentPathname.indexOf("/admin/web/dashboard") !== -1) && currentLibrary ? "active-link" : ""}
                 >Dashboard</Link>
               </li>
               { isLibraryManager &&
                 <li className="header-link">
                   <Link
-                    to={"/admin/web/patrons/" + this.context.library()}
+                    to={"/admin/web/patrons/" + currentLibrary}
                     className={currentPathname.indexOf("/admin/web/patrons") !== -1 ? "active-link" : ""}
                   >Patrons</Link>
                 </li>
@@ -152,7 +158,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             </Nav>
           }
           <Nav className="pull-right">
-            { (!this.context.library || !this.context.library()) &&
+            { (!this.context.library || !currentLibrary) &&
               <li className="header-link">
                 <Link to="/admin/web/dashboard"
                   className={currentPathname.indexOf("/admin/web/dashboard") !== -1 ? "active-link" : ""}
@@ -177,7 +183,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             { this.context.admin.email &&
               <li className="dropdown">
                 <a
-                  href="#"
                   className="account-dropdown-toggle"
                   role="button"
                   aria-haspopup="true"

@@ -20,7 +20,7 @@ describe("EditableInput", () => {
         disabled={false}
         checked={true}
         value="initial value">
-        <option>option</option>
+        <option aria-selected={false}>option</option>
       </EditableInput>
     );
   });

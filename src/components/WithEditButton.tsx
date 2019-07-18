@@ -17,10 +17,12 @@ export default class WithEditButton extends React.Component<WithEditButtonProps,
         <i
           className="fa fa-pencil-square-o edit"
           aria-hidden="true"
+          role="button"
           onClick={() => !this.props.disabled && this.props.onEdit()}
           ></i>
         <a
           className="sr-only"
+          role="button"
           onClick={() => !this.props.disabled && this.props.onEdit()}
           >edit</a>
       </div>
