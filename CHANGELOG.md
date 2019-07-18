@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.3.8
+#### Added
+- Added a basic WYSIWYG editor to the summary field in the book details form.
+#### Fixed
+- Enabled scrolling through search results in the custom list editor.
+
 ### v0.3.7
 ##### Updated
 - Updated Redux to v4, Typescript to v2.9, and the necessary type changes in the code.
