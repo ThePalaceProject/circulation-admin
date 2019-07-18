@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.8
+#### Added
+- Added `tslint-react-a11y` extension for tslint to fix accessibility issues in the React components.
+
 ### v0.3.7
 ##### Updated
 - Updated Redux to v4, Typescript to v2.9, and the necessary type changes in the code.

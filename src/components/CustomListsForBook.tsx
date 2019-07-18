@@ -92,7 +92,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
               value=""
               ref="addList"
               />
-            <Button callback={this.addList} content="Add" />
+            <Button className="left-align" callback={this.addList} content="Add" />
           </div>
         }
       </div>

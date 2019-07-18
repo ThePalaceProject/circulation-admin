@@ -100,6 +100,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                   />
               }
               <Button
+                className="left-align"
                 content="Save this cover"
                 disabled={this.props.isFetching || !this.props.preview}
                 callback={this.save}
@@ -115,6 +116,8 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   renderCoverForm() {
+    let titlePositionRef = this.refs["title_position"] as any;
+    let titlePositionValue = titlePositionRef && titlePositionRef.getValue();
     return (
       <div>
         <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
@@ -155,11 +158,12 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 name="title_position"
                 label="Title and Author Position"
                 value="none"
+                ref="title_position"
               >
-                <option value="none">None</option>
-                <option value="top">Top</option>
-                <option value="center">Center</option>
-                <option value="bottom">Bottom</option>
+                <option value="none" aria-selected={titlePositionValue === "none"}>None</option>
+                <option value="top" aria-selected={titlePositionValue === "top"}>Top</option>
+                <option value="center" aria-selected={titlePositionValue === "center"}>Center</option>
+                <option value="bottom" aria-selected={titlePositionValue === "bottom"}>Bottom</option>
               </EditableInput>
             </fieldset>
           }
@@ -200,6 +204,10 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   renderRightsForm() {
+    const copyrightUri = "http://librarysimplified.org/terms/rights-status/in-copyright";
+    const otherUri = "http://librarysimplified.org/terms/rights-status/unknown";
+    let rightStatusRef = this.refs["rights_status"] as any;
+    let rightStatusValue = rightStatusRef && rightStatusRef.getValue();
     return (
       <Form
         ref="rights-form"
@@ -213,20 +221,21 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
               elementType="select"
               disabled={this.props.isFetching}
               name="rights_status"
+              ref="rights_status"
               label="License"
             >
               { Object.keys(this.props.rightsStatuses).map(uri => {
                 let status = this.props.rightsStatuses[uri];
                 if (status.allows_derivatives) {
                   return (
-                    <option value={uri} key={uri}>{status.name}</option>
+                    <option value={uri} key={uri} aria-selected={rightStatusValue === uri}>{status.name}</option>
                   );
                 }
                 return null;
               }
             )}
-              <option value="http://librarysimplified.org/terms/rights-status/in-copyright">In Copyright</option>
-              <option value="http://librarysimplified.org/terms/rights-status/unknown">Other</option>
+              <option value={copyrightUri} aria-selected={rightStatusValue === copyrightUri}>In Copyright</option>
+              <option value={otherUri} aria-selected={rightStatusValue === otherUri}>Other</option>
           </EditableInput>
           <EditableInput
             elementType="textarea"

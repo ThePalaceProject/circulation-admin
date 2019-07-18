@@ -72,12 +72,12 @@ export default class ClassificationsForm extends React.Component<Classifications
                 clientError={hasAudienceError}
               >
                 { (!audience || audience === "None") &&
-                  <option value="None">None</option>
+                  <option value="None" aria-selected={audience === "None"}>None</option>
                 }
-                <option value="Children">Children</option>
-                <option value="Young Adult">Young Adult</option>
-                <option value="Adult">Adult</option>
-                <option value="Adults Only">Adults Only</option>
+                <option value="Children" aria-selected={audience === "Children"}>Children</option>
+                <option value="Young Adult" aria-selected={audience === "Young Adult"}>Young Adult</option>
+                <option value="Adult" aria-selected={audience === "Adult"}>Adult</option>
+                <option value="Adults Only" aria-selected={audience === "Adults Only"}>Adults Only</option>
               </EditableInput>
 
               { this.shouldShowTargetAge() &&
@@ -167,7 +167,7 @@ export default class ClassificationsForm extends React.Component<Classifications
             </div>
           }
         />
-        <Button callback={this.submit} content="Save" />
+        <Button className="left-align" callback={this.submit} content="Save" />
       </fieldset>
     );
   }

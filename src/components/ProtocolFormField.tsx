@@ -44,7 +44,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   renderSetting(setting: SettingData, customProps = null): JSX.Element {
     return (
       <div className={setting.randomizable ? "randomizable" : ""}>
-        {this.props.value && setting.type === "image" && <img src={String(this.props.value)} />}
+        {this.props.value && setting.type === "image" && <img src={String(this.props.value)} alt="" role="presentation" />}
         {
           this.createEditableInput(setting)
         }
@@ -95,7 +95,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
 
   renderSelectSetting(setting: SettingData): JSX.Element {
     let children = setting.options && setting.options.map(option =>
-      <option key={option.key} value={option.key}>{option.label}</option>
+      <option key={option.key} value={option.key} aria-selected={false}>{option.label}</option>
     );
     return this.createEditableInput(setting, null, children);
   }

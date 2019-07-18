@@ -55,7 +55,7 @@ function mapStateToProps(state, ownProps) {
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
-  // fetchError = an error involving loading the list of individual admins; formError = an error upon submission of the 
+  // fetchError = an error involving loading the list of individual admins; formError = an error upon submission of the
   // create/edit form.
   return {
     data: data,

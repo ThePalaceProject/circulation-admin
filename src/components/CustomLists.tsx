@@ -259,7 +259,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
    * getDeletedLanes
    * For any list id, fetch all the lanes where this list is the _only_ custom
    * list in that lane. The server will deal with deleting those lanes. Only fetch
-   * the lanes data here since they are not needed for the page until a list 
+   * the lanes data here since they are not needed for the page until a list
    * is going to be deleted.
    * @param {string | number} listId The id of the list to get associated lanes.
    */

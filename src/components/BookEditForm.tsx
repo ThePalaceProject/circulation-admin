@@ -42,6 +42,9 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
   }
 
   renderForm() {
+    const newRoleRef = this.refs["addContributorRole"] as any;
+    const newRoleValue = newRoleRef && newRoleRef.getValue();
+    const mediumValue = this.getMedium(this.props.medium);
     return (
       <fieldset key="book-info">
         <legend className="visuallyHidden">Edit Book Metadata</legend>
@@ -65,35 +68,38 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           />
         <div className="form-group">
           <label>Authors and Contributors</label>
-          { this.state.contributors.map(contributor =>
-              <WithRemoveButton
-                key={contributor.name + contributor.role}
-                disabled={this.props.disabled}
-                onRemove={() => this.removeContributor(contributor)}
-                >
-                <span className="contributor-form">
-                  <EditableInput
-                    elementType="select"
-                    disabled={this.props.disabled}
-                    name="contributor-role"
-                    value={this.getContributorRole(contributor)}
-                    >
-                    { this.props.roles && Object.values(this.props.roles).map(role =>
-                        <option value={role} key={role}>{role}</option>
-                      )
-                    }
-                  </EditableInput>
-                  <EditableInput
-                    elementType="input"
-                    type="text"
-                    disabled={this.props.disabled}
-                    name="contributor-name"
-                    value={contributor.name}
-                    optionalText={false}
-                    />
-                </span>
-              </WithRemoveButton>
-            )
+          { this.state.contributors.map(contributor => {
+              const contributorRole = this.getContributorRole(contributor);
+              return (
+                <WithRemoveButton
+                  key={contributor.name + contributor.role}
+                  disabled={this.props.disabled}
+                  onRemove={() => this.removeContributor(contributor)}
+                  >
+                  <span className="contributor-form">
+                    <EditableInput
+                      elementType="select"
+                      disabled={this.props.disabled}
+                      name="contributor-role"
+                      value={contributorRole}
+                      >
+                      { this.props.roles && Object.values(this.props.roles).map(role =>
+                          <option value={role} key={role} aria-selected={contributorRole === role}>{role}</option>
+                        )
+                      }
+                    </EditableInput>
+                    <EditableInput
+                      elementType="input"
+                      type="text"
+                      disabled={this.props.disabled}
+                      name="contributor-name"
+                      value={contributor.name}
+                      optionalText={false}
+                      />
+                  </span>
+                </WithRemoveButton>)
+              ;
+            })
           }
           <span className="contributor-form">
             <EditableInput
@@ -104,7 +110,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
               ref="addContributorRole"
               >
               { this.props.roles && Object.values(this.props.roles).map(role =>
-                  <option value={role} key={role}>{role}</option>
+                 <option value={role} key={role} aria-selected={newRoleValue === role}>{role}</option>
                 )
               }
             </EditableInput>
@@ -154,10 +160,10 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           disabled={this.props.disabled}
           name="medium"
           label="Medium"
-          value={this.getMedium(this.props.medium)}
+          value={mediumValue}
           >
           { this.props.media && Object.values(this.props.media).map(medium =>
-              <option value={medium} key={medium}>{medium}</option>
+              <option value={medium} key={medium} aria-selected={mediumValue === medium}>{medium}</option>
             )
           }
         </EditableInput>

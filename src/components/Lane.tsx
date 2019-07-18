@@ -58,7 +58,11 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
           <div className={"lane-info" + (provided ? " draggable" : "")}>
             <span>
               { snapshot && <GrabIcon /> }
-              <div className={this.state.expanded ? "collapse-button" :  "expand-button"} onClick={this.toggleExpanded}>
+              <div
+                className={this.state.expanded ? "collapse-button" :  "expand-button"}
+                onClick={this.toggleExpanded}
+                role="button"
+              >
                 <PyramidIcon />
               </div>
               { lane.display_name + " (" + lane.count + ")" }

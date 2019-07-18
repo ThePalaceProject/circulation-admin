@@ -130,8 +130,8 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
         ref={`stage-${library.short_name}`}
         onChange={() => this.updateRegistrationStage(library)}
       >
-        <option value="testing">Testing</option>
-        <option value="production">Production</option>
+        <option value="testing" aria-selected={currentRegistryStage === "testing"}>Testing</option>
+        <option value="production" aria-selected={currentRegistryStage === "production"}>Production</option>
       </EditableInput>
     );
   }

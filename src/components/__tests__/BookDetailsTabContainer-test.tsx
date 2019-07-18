@@ -31,7 +31,7 @@ describe("BookDetailsTabContainer", () => {
         csrfToken="token"
         refreshCatalog={stub()}
         store={store}
-        library={(a,b) => "library"}
+        library={(a, b) => "library"}
         >
         <div className="bookDetails">Moby Dick</div>
       </BookDetailsTabContainer>,
