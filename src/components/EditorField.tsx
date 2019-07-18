@@ -55,7 +55,7 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
         content={buttonContent}
         mouseDown={true}
         key={style}
-        callback={(e) => {this.changeStyle(e, style.toUpperCase());}}
+        callback={(e) => { this.changeStyle(e, style.toUpperCase()); }}
         className={`btn inline squared${isActive ? " active" : ""}`}
         disabled={this.props.disabled}
         type="button"
