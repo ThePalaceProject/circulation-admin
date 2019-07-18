@@ -2,7 +2,10 @@
 
 ### v0.3.8
 #### Added
+- Added a basic WYSIWYG editor to the summary field in the book details form.
 - Added `tslint-react-a11y` extension for tslint to fix accessibility issues in the React components.
+#### Fixed
+- Enabled scrolling through search results in the custom list editor.
 
 ### v0.3.7
 ##### Updated

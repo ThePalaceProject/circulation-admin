@@ -176,9 +176,9 @@ describe("BookEditForm", () => {
     });
 
     it("shows editable textarea with summary", () => {
-      let textarea = editableInputByName("summary");
-      expect(textarea.prop("label")).to.equal("Summary");
-      expect(textarea.prop("value")).to.equal("summary");
+      let editor = wrapper.find(".editor");
+      expect(editor.find("label").text()).to.equal("Summary");
+      expect(editor.find(".DraftEditor-root").text()).to.equal("summary");
     });
   });
 
@@ -302,7 +302,7 @@ describe("BookEditForm", () => {
     expect(editBook.args[0][1].get("imprint")).to.equal(bookData.imprint);
     expect(editBook.args[0][1].get("issued")).to.equal(bookData.issued);
     expect(editBook.args[0][1].get("rating")).to.equal("4");
-    expect(editBook.args[0][1].get("summary")).to.equal(bookData.summary);
+    expect(editBook.args[0][1].get("summary")).to.contain(bookData.summary);
   });
 
   it("refreshes book after editing", (done) => {
