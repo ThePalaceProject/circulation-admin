@@ -204,8 +204,8 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   renderRightsForm() {
-    const copyrightUri = "http://librarysimplified.org/terms/rights-status/in-copyright";
-    const otherUri = "http://librarysimplified.org/terms/rights-status/unknown";
+    const copyrightStatusUri = "http://librarysimplified.org/terms/rights-status/in-copyright";
+    const unknownStatusUri = "http://librarysimplified.org/terms/rights-status/unknown";
     let rightStatusRef = this.refs["rights_status"] as any;
     let rightStatusValue = rightStatusRef && rightStatusRef.getValue();
     return (
@@ -234,8 +234,8 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 return null;
               }
             )}
-              <option value={copyrightUri} aria-selected={rightStatusValue === copyrightUri}>In Copyright</option>
-              <option value={otherUri} aria-selected={rightStatusValue === otherUri}>Other</option>
+              <option value={copyrightStatusUri} aria-selected={rightStatusValue === copyrightStatusUri}>In Copyright</option>
+              <option value={unknownStatusUri} aria-selected={rightStatusValue === unknownStatusUri}>Other</option>
           </EditableInput>
           <EditableInput
             elementType="textarea"
