@@ -175,28 +175,28 @@ describe("Header", () => {
         expect(patronManagerLink.children().text()).to.equal("Patrons");
       });
     });
-    describe("diagnostics display", () => {
-      it("does not show Diagnostics link for librarian", () => {
+    describe("troubleshooting display", () => {
+      it("does not show Troubleshooting link for librarian", () => {
         wrapper.setContext({ library: () => "nypl", admin: librarian });
         let links = wrapper.find(Link);
         expect(links.length).to.equal(2);
         links.forEach(link => {
-          expect(link.children().text()).to.not.equal("Diagnostics");
+          expect(link.children().text()).to.not.equal("Troubleshooting");
         });
       });
-      it("does not show Diagnostics link for library manager", () => {
+      it("does not show Troubleshooting link for library manager", () => {
         wrapper.setContext({ library: () => "nypl", admin: libraryManager });
         let links = wrapper.find(Link);
         expect(links.length).to.equal(5);
         links.forEach(link => {
-          expect(link.children().text()).to.not.equal("Diagnostics");
+          expect(link.children().text()).to.not.equal("Troubleshooting");
         });
       });
-      it("shows Diagnostics link for system admin", () => {
+      it("shows Troubleshooting link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
         let links = wrapper.find(Link);
         expect(links.length).to.equal(6);
-        expect(links.at(4).children().text()).to.equal("Diagnostics");
+        expect(links.at(4).children().text()).to.equal("Troubleshooting");
       });
     });
   });

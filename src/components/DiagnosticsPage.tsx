@@ -29,10 +29,6 @@ export default class DiagnosticsPage extends React.Component<{}, DiagnosticsPage
     this.goToTab = this.goToTab.bind(this);
   }
 
-  componentWillMount() {
-    document.title = "Circulation Manager - Diagnostics";
-  }
-
   render(): JSX.Element {
     return(
       <div className="diagnostics-page">

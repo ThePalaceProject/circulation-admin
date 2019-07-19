@@ -5,7 +5,6 @@ import { shallow } from "enzyme";
 
 import DiagnosticsPage from "../DiagnosticsPage";
 import DiagnosticsTabContainer from "../DiagnosticsTabContainer";
-import Header from "../Header";
 import buildStore from "../../store";
 
 describe("DiagnosticsPage", () => {
@@ -34,10 +33,4 @@ describe("DiagnosticsPage", () => {
     expect(wrapper.state()["tab"]).to.equal("monitor");
     expect(wrapper.find(DiagnosticsTabContainer).prop("tab")).to.equal("monitor");
   });
-
-  it("sets the document title", () => {
-    let title = (global as any).window.document.title;
-    expect(title).to.equal("Circulation Manager - Diagnostics");
-  });
-
 });

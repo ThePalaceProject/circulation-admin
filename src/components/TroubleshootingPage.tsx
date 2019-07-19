@@ -3,7 +3,7 @@ import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import { State } from "../reducers/index";
-import TroubleshootingSidebar from "./TroubleshootingSidebar";
+import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 
 
 export interface TroubleshootingPageContext {
@@ -39,7 +39,7 @@ export default class TroubleshootingPage extends React.Component<{}, Troubleshoo
         <Header />
         <div className="body">
           <h2>Troubleshooting</h2>
-          <TroubleshootingSidebar
+          <TroubleshootingTabContainer
             store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
             tab={this.state.tab}

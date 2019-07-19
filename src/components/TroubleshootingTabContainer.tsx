@@ -5,12 +5,11 @@ import { State } from "../reducers/index";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 import DiagnosticsPage from "./DiagnosticsPage";
 
-export interface TroubleshootingSidebarProps extends TabContainerProps {
-  store: Store<State>;
+export interface TroubleshootingTabContainerProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
 }
 
-export default class DiagnosticsSidebar extends TabContainer<TroubleshootingSidebarProps> {
+export default class TroubleshootingTabContainer extends TabContainer<TroubleshootingTabContainerProps> {
   context: TabContainerContext;
   static contextTypes: React.ValidationMap<TabContainerContext> = {
     router: PropTypes.object.isRequired,
@@ -40,7 +39,6 @@ export default class DiagnosticsSidebar extends TabContainer<TroubleshootingSide
   }
 
   defaultTab() {
-    console.log("HIT");
     return "diagnostics";
   }
 }
