@@ -1,12 +1,17 @@
 .diagnostics-page {
-  h2  {
-    margin: 20px 15px;
+  width: 84%;
+  height: 100%;
+  position: absolute;
+  left: 16%;
+  h3  {
+    margin: 0 0 20px 0;
   }
   // Service Type tabs
   .service-types {
-    .nav-tabs {
+    height: 100%;
+    width: 100%;
+    > .nav-tabs {
       border-bottom: 1px solid $dark;
-      margin-bottom: 2em;
       li {
         &.active {
           a,
@@ -19,6 +24,11 @@
         }
       }
     }
+    > .tab-content {
+      height: 100%;
+      border-left: 1px solid $dark;
+      padding-top: 2em;
+    }
   }
 
   // List of services
@@ -30,6 +40,7 @@
       border-color: $medium-gray;
       a {
         border: none;
+        border-radius: 0;
         .service-name {
           display: inline-block;
           max-width: 85%;
@@ -39,7 +50,10 @@
       &.active {
         border-bottom: 1px solid $medium-gray;
         a {
-          border: 1px solid $dark;
+          border-top: 1px solid $dark;
+          border-right: 1px solid $dark;
+          border-bottom: 1px solid $dark;
+          border-left: none;
         }
       }
     }
@@ -80,6 +94,42 @@
       pre {
         border: none;
         background: inherit;
+      }
+    }
+  }
+}
+
+.troubleshooting-page {
+  height: 100%;
+  width: 100%;
+  h2 {
+    margin-left: 15px;
+  }
+  .body {
+    height: 100%;
+    width: 100%;
+    > .tab-container {
+      position: relative;
+      height: 100%;
+      > .nav-tabs {
+        width: 15%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        border-right: 1px solid #DDD;
+        border-top: 1px solid #DDD;
+
+        li {
+          display: block;
+          width: 100%;
+          border-bottom: 1px solid #DDD;
+
+          a {
+            padding-left: 15px;
+            width: 100%;
+            border: none;
+          }
+        }
       }
     }
   }

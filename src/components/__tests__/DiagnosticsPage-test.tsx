@@ -20,17 +20,6 @@ describe("DiagnosticsPage", () => {
     wrapper = shallow(<DiagnosticsPage />, { context });
   });
 
-  it("renders a Header", () => {
-    let header = wrapper.find(Header);
-    expect(header.length).to.equal(1);
-  });
-
-  it("renders a heading", () => {
-    let heading = wrapper.find("h2");
-    expect(heading.length).to.equal(1);
-    expect(heading.text()).to.equal("Diagnostics");
-  });
-
   it("renders a tab container", () => {
     let container = wrapper.find(DiagnosticsTabContainer);
     expect(container.length).to.equal(1);

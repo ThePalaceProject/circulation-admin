@@ -36,17 +36,13 @@ export default class DiagnosticsPage extends React.Component<{}, DiagnosticsPage
   render(): JSX.Element {
     return(
       <div className="diagnostics-page">
-        <Header />
-        <div className="body">
-          <h2>Diagnostics</h2>
-          <DiagnosticsTabContainer
-            class="service-types"
-            store={this.context.editorStore}
-            csrfToken={this.context.csrfToken}
-            tab={this.state.tab}
-            goToTab={this.goToTab}
-          />
-        </div>
+        <DiagnosticsTabContainer
+          class="service-types"
+          store={this.context.editorStore}
+          csrfToken={this.context.csrfToken}
+          tab={this.state.tab}
+          goToTab={this.goToTab}
+        />
       </div>
     );
   }
