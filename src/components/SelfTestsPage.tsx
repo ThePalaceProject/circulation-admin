@@ -2,40 +2,40 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
-import DiagnosticsTabContainer from "./DiagnosticsTabContainer";
+import SelfTestsTabContainer from "./SelfTestsTabContainer";
 
-export interface DiagnosticsPageContext {
+export interface SelfTestsPageContext {
   editorStore: Store<State>;
   csrfToken: string;
 }
 
-export interface DiagnosticsPageState {
+export interface SelfTestsPageState {
   tab: string;
 }
 
-export default class DiagnosticsPage extends React.Component<{}, DiagnosticsPageState> {
-  context: DiagnosticsPageContext;
+export default class SelfTestsPage extends React.Component<{}, SelfTestsPageState> {
+  context: SelfTestsPageContext;
 
-  static contextTypes: React.ValidationMap<DiagnosticsPageContext> = {
+  static contextTypes: React.ValidationMap<SelfTestsPageContext> = {
     editorStore: PropTypes.object.isRequired,
     csrfToken: PropTypes.string.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.state = { tab: "coverage_provider" };
+    this.state = { tab: "collections" };
     this.goToTab = this.goToTab.bind(this);
   }
 
   render(): JSX.Element {
     return(
-      <div className="diagnostics-page">
-        <DiagnosticsTabContainer
-          class="service-types"
-          store={this.context.editorStore}
-          csrfToken={this.context.csrfToken}
+      <div className="self-tests-page">
+        <SelfTestsTabContainer
           tab={this.state.tab}
+          csrfToken={this.context.csrfToken}
+          store={this.context.editorStore}
           goToTab={this.goToTab}
+          class="self-test-types"
         />
       </div>
     );

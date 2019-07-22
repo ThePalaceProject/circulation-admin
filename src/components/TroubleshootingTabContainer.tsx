@@ -4,6 +4,7 @@ import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 import DiagnosticsPage from "./DiagnosticsPage";
+import SelfTestsPage from "./SelfTestsPage";
 
 export interface TroubleshootingTabContainerProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
@@ -17,28 +18,14 @@ export default class TroubleshootingTabContainer extends TabContainer<Troublesho
   };
 
   tabs() {
-    const tabs = {};
-    tabs["diagnostics"] = (
-      <DiagnosticsPage />
-    );
-    tabs["self-tests"] = <h1>Self Tests</h1>;
-    return tabs;
+    return {
+      "diagnostics": <DiagnosticsPage />,
+      "self-tests": <SelfTestsPage />
+    };
   }
 
   handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
     this.props.goToTab(tab);
-  }
-
-  tabDisplayName(name) {
-    if (name === "diagnostics") {
-      return "Diagnostics";
-    } else {
-      return super.tabDisplayName(name);
-    }
-  }
-
-  defaultTab() {
-    return "diagnostics";
   }
 }

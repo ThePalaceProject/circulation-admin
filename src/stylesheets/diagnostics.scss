@@ -1,4 +1,4 @@
-.diagnostics-page {
+.diagnostics-page, .self-tests-page {
   width: 84%;
   height: 100%;
   position: absolute;
@@ -7,7 +7,7 @@
     margin: 0 0 20px 0;
   }
   // Service Type tabs
-  .service-types {
+  .service-types, .self-test-types {
     height: 100%;
     width: 100%;
     > .nav-tabs {
@@ -96,6 +96,14 @@
         background: inherit;
       }
     }
+  }
+}
+
+.self-test-types .tab-content {
+  padding: 0 40px;
+  height: 100%;
+  ul {
+    padding: 0;
   }
 }
 

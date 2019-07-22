@@ -90,7 +90,6 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       this.props.data && this.props.data[this.listDataKey];
     let EditForm = this.EditForm;
     let itemToEdit = this.itemToEdit();
-
     return (
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
