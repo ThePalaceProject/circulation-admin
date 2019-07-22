@@ -2,7 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { SelfTestsData } from "../interfaces";
+import { CollectionsData, PatronAuthServicesData, SearchServicesData } from "../interfaces";
 import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -22,10 +22,7 @@ export interface SelfTestsTabContainerOwnProps extends TabContainerProps {
 
 export interface SelfTestsTabContainerStateProps {
   fetchError?: FetchErrorData;
-  items?: any;
-  collections?: any;
-  patronAuthServices?: any;
-  searchServices?: any;
+  items?: CollectionsData | PatronAuthServicesData | SearchServicesData;
   isLoaded?: boolean;
 }
 
@@ -39,12 +36,6 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
     searchServices: "Search Service Configuration"
   };
 
-  KEY_NAMES = {
-    collections: "collections",
-    patronAuthServices: "patron_auth_services",
-    searchServices: "search_services"
-  }
-
   componentWillMount() {
     this.props.fetchItems(this.props.tab);
   }
@@ -52,7 +43,9 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
   async handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
     await this.props.goToTab(tab);
-    await this.props.fetchItems(tab);
+    if (!this.props.items || !this.props.items[this.getKeyName(tab)]) {
+      await this.props.fetchItems(tab);
+    }
   }
 
   tabDisplayName(name) {
@@ -63,10 +56,15 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
     }
   }
 
+  getKeyName(name: string): string {
+    return name.split(/(?=[A-Z])/).map(w => w.toLowerCase()).join("_");
+  }
+
   tabs() {
     let tabs = {};
     let categories = Object.keys(this.DISPLAY_NAMES);
     categories.forEach((cat) => {
+      let keyName = this.getKeyName(cat);
       let component = null;
       if (this.props.fetchError) {
         component = <ErrorMessage error={this.props.fetchError} />;
@@ -74,8 +72,8 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
       else if (!this.props.isLoaded) {
         component = <LoadingIndicator />;
       }
-      else if (this.props[cat]) {
-        component = <SelfTestsCategory type={this.KEY_NAMES[cat]} csrfToken={this.props.csrfToken} items={this.props[cat]} />;
+      else if (this.props.items && this.props.items[keyName]) {
+        component = <SelfTestsCategory store={this.props.store} type={keyName} csrfToken={this.props.csrfToken} items={this.props.items[keyName]} />;
       }
       tabs[cat] = component;
     });
@@ -90,9 +88,6 @@ function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
     items: state.editor[category] && state.editor[category].data,
     fetchError: state.editor[category] && state.editor[category].fetchError,
     isLoaded: state.editor[category] && state.editor[category].isLoaded,
-    collections: state.editor.collections && state.editor.collections.data,
-    patronAuthServices: state.editor.patronAuthServices && state.editor.patronAuthServices.data,
-    searchServices: state.editor.searchServices && state.editor.searchServices.data
   };
 }
 

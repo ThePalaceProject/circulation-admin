@@ -428,7 +428,6 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   fetchPatronAuthServices() {
-    console.log("HIT");
     const url = "/admin/patron_auth_services";
     return this.fetchJSON<PatronAuthServicesData>(ActionCreator.PATRON_AUTH_SERVICES, url).bind(this);
   }
