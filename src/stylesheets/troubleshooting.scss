@@ -27,7 +27,10 @@
     > .tab-content {
       height: 100%;
       border-left: 1px solid $dark;
+      border-bottom: 1px solid $dark;
       padding-top: 2em;
+      padding-bottom: 2em;
+      overflow-y: scroll;
     }
   }
 
@@ -138,6 +141,23 @@
             border: none;
           }
         }
+      }
+    }
+  }
+}
+
+.self-test-types .tab-content {
+  ul {
+    li:not(.panel) {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0px;
+      padding-bottom: 5px;
+      h4 {
+        margin-right: 20px;
+        flex-grow: 1;
       }
     }
   }
