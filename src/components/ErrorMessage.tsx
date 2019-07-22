@@ -23,7 +23,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
           <h4>You have been logged out.<br />
             <a target="_blank" href="/admin/sign_in_again">Log in again</a><br />
             { this.props.tryAgain &&
-              <a onClick={this.tryAgain.bind(this)}>Try again</a>
+              <a role="button" onClick={this.tryAgain.bind(this)}>Try again</a>
             }
           </h4>
         </Alert>
@@ -55,7 +55,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
             }
             <span dangerouslySetInnerHTML={{ __html: errorMessageText }} /><br />
             { this.props.tryAgain &&
-              <a onClick={this.tryAgain.bind(this)}>Try again</a>
+              <a role="button" onClick={this.tryAgain.bind(this)}>Try again</a>
             }
           </h4>
         </Alert>

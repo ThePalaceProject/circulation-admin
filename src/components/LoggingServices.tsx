@@ -17,7 +17,7 @@ export class LoggingServices extends EditableConfigList<LoggingServicesData, Log
 }
 
 function mapStateToProps(state, ownProps) {
-  // fetchError = an error involving loading the list of logging services; formError = an error upon submission of the 
+  // fetchError = an error involving loading the list of logging services; formError = an error upon submission of the
   // create/edit form.
   return {
     data: state.editor.loggingServices && state.editor.loggingServices.data,

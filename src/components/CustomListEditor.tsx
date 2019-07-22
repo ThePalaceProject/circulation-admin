@@ -139,7 +139,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                           checked={this.hasCollection(collection)}
                           label={collection.name}
                           value={String(collection.id)}
-                          onChange={() => {this.changeCollection(collection);}}
+                          onChange={() => { this.changeCollection(collection); }}
                           />
                       )
                     }

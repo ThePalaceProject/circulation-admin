@@ -92,6 +92,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
               <div className="form-group form-inline">
                 { this.props.bookData.hideLink &&
                   <Button
+                    className="left-align"
                     disabled={this.props.isFetching}
                     content="Hide"
                     callback={this.hide}

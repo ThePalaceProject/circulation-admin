@@ -17,10 +17,12 @@ export default class WithRemoveButton extends React.Component<WithRemoveButtonPr
         <i
           className="fa fa-times remove"
           aria-hidden="true"
+          role="button"
           onClick={() => !this.props.disabled && this.props.onRemove()}
           ></i>
         <a
           className="sr-only"
+          role="button"
           onClick={() => !this.props.disabled && this.props.onRemove()}
           >remove</a>
       </div>
