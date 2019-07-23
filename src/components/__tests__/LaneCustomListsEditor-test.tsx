@@ -285,7 +285,7 @@ describe("LaneCustomListsEditor", () => {
         />
     );
 
-    let addLink = wrapper.find(".available-lists .links a");
+    let addLink = wrapper.find(".available-lists .links button");
     addLink.at(0).simulate("click");
 
     // the item has been added to the current lists
@@ -308,7 +308,7 @@ describe("LaneCustomListsEditor", () => {
         />
     );
 
-    let deleteLink = wrapper.find(".current-lists .links a");
+    let deleteLink = wrapper.find(".current-lists .links button");
     deleteLink.at(0).simulate("click");
     wrapper.setProps({customListIds: onUpdate.args[0][0]});
     // this list has been removed from the current lists

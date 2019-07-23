@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import WithEditButton from "../WithEditButton";
 
@@ -12,7 +12,7 @@ describe("WithEditButton", () => {
 
   beforeEach(() => {
     onEdit = stub();
-    wrapper = shallow(
+    wrapper = mount(
       <WithEditButton
         disabled={false}
         onEdit={onEdit}
@@ -28,33 +28,22 @@ describe("WithEditButton", () => {
     });
 
     it("shows edit buttons", () => {
-      let icon = wrapper.find(".edit");
-      expect(icon.length).to.equal(1);
-
-      let srLink = wrapper.find("a.sr-only");
-      expect(srLink.length).to.equal(1);
+      let editBtn = wrapper.find(".edit-btn").hostNodes();
+      expect(editBtn.length).to.equal(1);
     });
   });
 
   describe("behavior", () => {
     it("calls onEdit", () => {
-      let icon = wrapper.find(".edit");
-      icon.simulate("click");
+      let editBtn = wrapper.find(".edit-btn").hostNodes();
+      editBtn.simulate("click");
       expect(onEdit.callCount).to.equal(1);
-
-      let srLink = wrapper.find("a.sr-only");
-      srLink.simulate("click");
-      expect(onEdit.callCount).to.equal(2);
     });
 
     it("does nothing when disabled", () => {
       wrapper.setProps({ disabled: true });
-      let icon = wrapper.find(".edit");
-      icon.simulate("click");
-      expect(onEdit.callCount).to.equal(0);
-
-      let srLink = wrapper.find("a.sr-only");
-      srLink.simulate("click");
+      let editBtn = wrapper.find(".edit-btn").hostNodes();
+      editBtn.simulate("click");
       expect(onEdit.callCount).to.equal(0);
     });
   });

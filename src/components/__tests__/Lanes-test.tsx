@@ -283,7 +283,7 @@ describe("Lanes", () => {
     let topLevelLanes = getTopLevelLanes();
     let lane1 = topLevelLanes.at(0).find(".lane-parent").at(0);
     let sublane2 = lane1.find("li .lane-parent").at(0);
-    let sublane2Expand = sublane2.find(".expand-button");
+    let sublane2Expand = sublane2.find(".expand-button").hostNodes();
     sublane2Expand.simulate("click");
     let sublane2Droppable = getDroppableById("2");
     expect(sublane2Droppable.props().isDropDisabled).to.be.true;

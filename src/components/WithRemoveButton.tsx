@@ -1,5 +1,6 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { Button } from "library-simplified-reusable-components";
+import { XIcon } from "@nypl/dgx-svg-icons";
 
 export interface WithRemoveButtonProps {
   disabled: boolean;
@@ -9,23 +10,23 @@ export interface WithRemoveButtonProps {
 /** When wrapped around an element, renders a remove button next to the element. */
 export default class WithRemoveButton extends React.Component<WithRemoveButtonProps, {}> {
   render(): JSX.Element {
+    const removeContent = <span>Remove <XIcon title="Remove library" /></span>;
     return (
       <div className="with-remove-button">
         <span>
           { this.props.children }
         </span>
-        <i
-          className="fa fa-times remove"
-          aria-hidden="true"
-          role="button"
-          onClick={() => !this.props.disabled && this.props.onRemove()}
-          ></i>
-        <a
-          className="sr-only"
-          role="button"
-          onClick={() => !this.props.disabled && this.props.onRemove()}
-          >remove</a>
+        <Button
+          className="remove-btn danger"
+          callback={this.onClick.bind(this)}
+          content={removeContent}
+        />
       </div>
     );
+  }
+
+  onClick(e: Event) {
+    e.preventDefault();
+    !this.props.disabled && this.props.onRemove();
   }
 }

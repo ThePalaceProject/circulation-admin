@@ -64,9 +64,9 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
 
-        { this.state.customLists && this.state.customLists.map(list =>
+        { this.state.customLists && this.state.customLists.map((list, idx) =>
             <WithRemoveButton
-              key={list.id}
+              key={`${list.id}-${idx}`}
               disabled={this.props.isFetching}
               onRemove={() => this.removeList(list) }
               >
@@ -92,7 +92,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
               value=""
               ref="addList"
               />
-            <Button className="left-align" callback={this.addList} content="Add" />
+            <Button className="left-align add-list-btn" callback={this.addList} content="Add" />
           </div>
         }
       </div>

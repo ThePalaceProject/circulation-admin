@@ -688,8 +688,8 @@ describe("ServiceEditForm", () => {
       library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("Brooklyn Public Library");
-      expect(library.text()).to.contain("remove");
-      expect(library.text()).to.contain("edit");
+      expect(library.text()).to.contain("Remove");
+      expect(library.text()).to.contain("Edit");
 
       let stateLibraries = wrapper.state().libraries;
       expect(stateLibraries.length).to.equal(1);
@@ -745,7 +745,7 @@ describe("ServiceEditForm", () => {
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("New York Public Library");
 
-      let onEdit = library.find("a");
+      let onEdit = library.find("button");
       onEdit.simulate("click");
 
       let settings = wrapper.find(".edit-library-settings");
@@ -812,7 +812,9 @@ describe("ServiceEditForm", () => {
     it("calls handleData", () => {
       let handleData = spy(wrapper.instance(), "handleData");
       wrapper.setProps({ item: serviceData });
-      wrapper.find(Button).simulate("click");
+      // The first two buttons are the edit and remove buttons for this component
+      // which only contains one object as data.
+      wrapper.find(Button).at(2).simulate("click");
 
       expect(handleData.callCount).to.equal(1);
 
@@ -822,7 +824,9 @@ describe("ServiceEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: serviceData });
 
-      let saveButton = wrapper.find(Button);
+      // The first two buttons are the edit and remove buttons for this component
+      // which only contains one object as data.
+      let saveButton = wrapper.find(Button).at(2);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);

@@ -12,6 +12,7 @@ import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { Router } from "opds-web-client/lib/interfaces";
+import { Button } from "library-simplified-reusable-components";
 
 export interface HeaderStateProps {
   libraries?: LibraryData[];
@@ -53,7 +54,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
 
     document.body.addEventListener("click", (event: MouseEvent) => {
-      if (this.state.showAccountDropdown && (event.target as any).className !== "account-dropdown-toggle") {
+      if (this.state.showAccountDropdown &&
+        ((event.target as any).className).indexOf("account-dropdown-toggle") === -1) {
         this.toggleAccountDropdown();
       }
     });
@@ -182,13 +184,14 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             }
             { this.context.admin.email &&
               <li className="dropdown">
-                <a
-                  className="account-dropdown-toggle"
-                  role="button"
+                <Button
+                  className="account-dropdown-toggle transparent"
+                  type="button"
                   aria-haspopup="true"
                   aria-expanded={this.state.showAccountDropdown}
-                  onClick={this.toggleAccountDropdown}
-                  >{ this.context.admin.email } &#9660;</a>
+                  callback={this.toggleAccountDropdown}
+                  content={this.context.admin.email}
+                />
                 { this.state.showAccountDropdown &&
                   <ul className="dropdown-menu">
                     <li>

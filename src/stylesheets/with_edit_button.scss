@@ -4,8 +4,13 @@
     margin-right: 10px;
   }
 
-  .edit {
-    color: #AAA;
-    cursor: pointer;
+  .edit-btn {
+    display: inline-block;
+    color: $white;
+    font-size: 14px;
+
+    svg {
+      width: 1em;
+    }
   }
 }

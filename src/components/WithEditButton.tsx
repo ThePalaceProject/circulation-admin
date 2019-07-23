@@ -1,5 +1,6 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { Button } from "library-simplified-reusable-components";
+import { PencilIcon } from "@nypl/dgx-svg-icons";
 
 export interface WithEditButtonProps {
   disabled: boolean;
@@ -9,23 +10,23 @@ export interface WithEditButtonProps {
 /** When wrapped around an element, renders an edit button next to the element. */
 export default class WithEditButton extends React.Component<WithEditButtonProps, {}> {
   render(): JSX.Element {
+    const editContent = <span>Edit <PencilIcon title="Edit library" /></span>;
     return (
       <div className="with-edit-button">
         <span>
           { this.props.children }
         </span>
-        <i
-          className="fa fa-pencil-square-o edit"
-          aria-hidden="true"
-          role="button"
-          onClick={() => !this.props.disabled && this.props.onEdit()}
-          ></i>
-        <a
-          className="sr-only"
-          role="button"
-          onClick={() => !this.props.disabled && this.props.onEdit()}
-          >edit</a>
+        <Button
+          className="edit-btn"
+          callback={this.onClick.bind(this)}
+          content={editContent}
+        />
       </div>
     );
+  }
+
+  onClick(e: Event) {
+    e.preventDefault();
+    !this.props.disabled && this.props.onEdit();
   }
 }
