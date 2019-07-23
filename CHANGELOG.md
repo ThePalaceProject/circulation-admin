@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.3.9
+#### Updated
+- Using the Button components for elements that should be buttons instead of anchors or divs.
+#### Fixed
+- Styling for the book edit components and related buttons.
+
 ### v0.3.8
 #### Added
 - Added a basic WYSIWYG editor to the summary field in the book details form.

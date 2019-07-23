@@ -20,6 +20,7 @@ export default class WithRemoveButton extends React.Component<WithRemoveButtonPr
           className="remove-btn danger"
           callback={this.onClick.bind(this)}
           content={removeContent}
+          type="button"
         />
       </div>
     );
