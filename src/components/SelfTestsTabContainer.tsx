@@ -2,7 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { CollectionsData, PatronAuthServicesData, SearchServicesData } from "../interfaces";
+import { CollectionsData, PatronAuthServicesData, SearchServicesData, ServicesData } from "../interfaces";
 import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -68,12 +68,10 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
       let component = null;
       if (this.props.fetchError) {
         component = <ErrorMessage error={this.props.fetchError} />;
-      }
-      else if (!this.props.isLoaded) {
-        component = <LoadingIndicator />;
-      }
-      else if (this.props.items && this.props.items[keyName]) {
+      } else if (this.props.items && this.props.items[keyName]) {
         component = <SelfTestsCategory store={this.props.store} type={keyName} csrfToken={this.props.csrfToken} items={this.props.items[keyName]} />;
+      } else if (!this.props.isLoaded) {
+        component = <LoadingIndicator />;
       }
       tabs[cat] = component;
     });

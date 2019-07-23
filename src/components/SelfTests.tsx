@@ -106,7 +106,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       />
     );
 
-    let resultList = integration.self_test_results ? results.map(result => <SelfTestResult result={result} isFetching={isFetching} />) : null;
+    let resultList = integration.self_test_results ? results.map((result, idx) => <SelfTestResult key={idx} result={result} isFetching={isFetching} />) : null;
 
     return (
       <div className="integration-selftests">
