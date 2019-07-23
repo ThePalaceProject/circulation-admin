@@ -17,7 +17,7 @@ export default class WithEditButton extends React.Component<WithEditButtonProps,
           { this.props.children }
         </span>
         <Button
-          className="edit-btn"
+          className="edit-btn small"
           callback={this.onClick.bind(this)}
           content={editContent}
           type="button"

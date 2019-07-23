@@ -129,17 +129,4 @@ describe("ErrorMessage", () => {
     tryAgainLink.simulate("click");
     expect(tryAgain.callCount).to.equal(1);
   });
-
-  it("does not show try again button for logged out message", () => {
-    let error = {
-      status: 401,
-      response: "",
-      url: ""
-    };
-    let tryAgain = stub();
-    let wrapper = mount(<ErrorMessage error={error} tryAgain={tryAgain} />);
-    let tryAgainLink = wrapper.find("button");
-
-    expect(tryAgainLink.length).to.equal(0);
-  });
 });

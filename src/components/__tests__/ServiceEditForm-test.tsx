@@ -688,7 +688,7 @@ describe("ServiceEditForm", () => {
       library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("Brooklyn Public Library");
-      expect(library.text()).to.contain("Remove");
+      expect(library.text()).to.contain("Delete");
       expect(library.text()).to.contain("Edit");
 
       let stateLibraries = wrapper.state().libraries;

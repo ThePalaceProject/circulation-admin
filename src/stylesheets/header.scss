@@ -32,6 +32,12 @@
         padding: 13px 10px;
         margin: 0;
 
+        svg {
+          transform: rotate(270deg);
+          fill: $white;
+          height: 0.9em;
+        }
+
         &:focus {
           @include basic-focus;
           outline-color: $white;

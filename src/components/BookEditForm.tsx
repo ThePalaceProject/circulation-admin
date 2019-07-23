@@ -127,7 +127,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
               />
             <Button
               type="button"
-              className="add-contributor"
+              className="add-contributor small"
               disabled={this.props.disabled}
               callback={this.addContributor}
               content="Add"

@@ -23,6 +23,13 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
         <Alert bsStyle="danger">
           <h4>You have been logged out.<br />
             <a target="_blank" href="/admin/sign_in_again">Log in again</a>
+            { this.props.tryAgain &&
+              <Button
+                className="left-align"
+                callback={this.tryAgain.bind(this)}
+                content="Try again"
+              />
+            }
           </h4>
         </Alert>
       );

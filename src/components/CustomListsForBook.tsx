@@ -55,7 +55,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
 
   render(): JSX.Element {
     return (
-      <div>
+      <div className="custom-list-for-book">
         { this.props.book &&
           <h2>{this.props.book.title}</h2>
         }
