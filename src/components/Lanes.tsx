@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Link } from "react-router";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
@@ -15,7 +14,6 @@ import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import { Button } from "library-simplified-reusable-components";
 import ResetIcon from "./icons/ResetIcon";
-import XCloseIcon from "./icons/XCloseIcon";
 
 export interface LanesStateProps {
   lanes: LaneData[];

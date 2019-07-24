@@ -124,7 +124,7 @@ describe("ErrorMessage", () => {
     let wrapper = mount(
       <ErrorMessage error={error} tryAgain={tryAgain} />
     );
-    let tryAgainLink = wrapper.find("a");
+    let tryAgainLink = wrapper.find("button");
     expect(tryAgainLink.text()).to.contain("Try again");
     tryAgainLink.simulate("click");
     expect(tryAgain.callCount).to.equal(1);

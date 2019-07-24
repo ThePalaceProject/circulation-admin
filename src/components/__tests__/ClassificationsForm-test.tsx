@@ -322,18 +322,17 @@ describe("ClassificationsForm", () => {
       instance.addGenre("Erotica");
       let newGenres = wrapper.find(WithRemoveButton).map(name => name.text());
       expect(newGenres.length).to.equal(1);
-      expect(newGenres[0]).to.contain(instance.fullGenre(bookData.categories[0]) + "remove");
+      expect(newGenres[0]).to.contain(instance.fullGenre(bookData.categories[0]) + "Delete");
       expect(newGenres[0]).not.to.contain("Erotica");
 
       instance.validateAudience = stub().returns(true);
       expect(instance.validateAudience.callCount).to.equal(0);
-
       instance.addGenre("Folklore");
       wrapper.update();
 
       expect(instance.validateAudience.callCount).to.equal(1);
       newGenres = wrapper.find(WithRemoveButton).map(name => name.text());
-      expect(newGenres).to.contain(instance.fullGenre("Folklore") + "remove");
+      expect(newGenres[0]).to.contain(instance.fullGenre("Folklore") + "Delete");
     });
 
     it("removes genre when remove button is clicked", () => {

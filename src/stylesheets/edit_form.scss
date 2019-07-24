@@ -20,11 +20,18 @@
     height: 300px;
   }
 
-  .with-remove-button {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
+  .update-libraries {
+    .with-remove-button,
+    .with-edit-button {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: baseline;
+
+      > span {
+        width: 100%;
+      }
+    }
   }
 
   .contributor-form {
@@ -35,6 +42,10 @@
 
     .form-group {
       margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 

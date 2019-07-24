@@ -39,7 +39,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
   }
 
   render(): JSX.Element {
-    let {lane, active, snapshot, provided, orderChanged, toggleLaneVisibility, parent, library, renderLanes} = this.props;
+    let { lane, active, snapshot, provided, renderLanes } = this.props;
     let hasSublanes = lane.sublanes && !!lane.sublanes.length;
     let hasCustomLists = lane.custom_list_ids && !!lane.custom_list_ids.length;
 
@@ -58,13 +58,12 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
           <div className={"lane-info" + (provided ? " draggable" : "")}>
             <span>
               { snapshot && <GrabIcon /> }
-              <div
-                className={this.state.expanded ? "collapse-button" :  "expand-button"}
-                onClick={this.toggleExpanded}
-                role="button"
-              >
-                <PyramidIcon />
-              </div>
+              <Button
+                className={`transparent ${this.state.expanded ? "collapse-button" :  "expand-button"}`}
+                type="button"
+                callback={this.toggleExpanded}
+                content={<PyramidIcon />}
+              />
               { lane.display_name + " (" + lane.count + ")" }
             </span>
             { this.renderVisibilityToggle() }

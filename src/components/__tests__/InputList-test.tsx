@@ -138,7 +138,7 @@ describe("InputList", () => {
   it("removes an item", () => {
     let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
-    let button = removables.at(0).find(".remove");
+    let button = removables.at(0).find(".remove-btn").hostNodes();
     button.simulate("click");
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(1);
