@@ -64,9 +64,9 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
 
-        { this.state.customLists && this.state.customLists.map((list, idx) =>
+        { this.state.customLists && this.state.customLists.map(list =>
             <WithRemoveButton
-              key={`${list.id}-${idx}`}
+              key={list.id}
               disabled={this.props.isFetching}
               onRemove={() => this.removeList(list) }
               >
