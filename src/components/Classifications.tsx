@@ -52,7 +52,7 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
     return (
       <div>
         { this.props.book &&
-          <div>
+          <>
             <h2>
               {this.props.book.title}
             </h2>
@@ -64,7 +64,7 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
                 </h4>
               }
             </div>
-          </div>
+          </>
         }
 
         { this.props.fetchError &&

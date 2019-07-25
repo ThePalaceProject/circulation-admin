@@ -44,7 +44,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
 
   render(): JSX.Element {
     return (
-      <div>
+      <>
         { this.props.book &&
           <div>
             <h2>
@@ -104,7 +104,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
             postComplaint={this.props.postComplaint}
             refreshComplaints={this.refresh} />
         }
-      </div>
+      </>
     );
   }
 

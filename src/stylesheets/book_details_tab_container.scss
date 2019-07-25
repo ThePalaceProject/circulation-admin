@@ -1,17 +1,31 @@
-.book-details-wrapper .tab-content {
-  .details {
-    padding-top: 2em;
-  }
-
+.book-details-tab-container .tab-content {
   .form-inline {
     display: flex;
+  }
+  
+  // First Tab
+  .book-details {
+    padding-top: 2em;
+
+    .circulation-links .btn {
+      color: $blue;
+      border-color: $blue;
+  
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+
+  // For all forms on the Book edit tab page
+  .edit-form {
+    width: 100%;
   }
 
   .cover-edit-form {
     margin: 0;
     padding: 0;
     form {
-      width: 100%;
       height: auto;
       .alert h4 {
         margin-bottom: 0;

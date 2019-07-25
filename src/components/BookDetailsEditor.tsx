@@ -69,9 +69,8 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
 
   render(): JSX.Element {
     return (
-      <div>
-        { this.props.bookData && !this.props.fetchError &&
-          (<div>
+      <>
+        { this.props.bookData && !this.props.fetchError && (<>
             <h2>
               {this.props.bookData.title}
             </h2>
@@ -100,6 +99,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
                 }
                 { this.props.bookData.restoreLink &&
                   <Button
+                    className="left-align"
                     disabled={this.props.isFetching}
                     content="Restore"
                     callback={this.restore}
@@ -125,12 +125,12 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
                 editBook={this.props.editBook}
                 refresh={this.refresh} />
             }
-          </div>)
-        }
+          </>
+        )}
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
-      </div>
+      </>
     );
   }
 

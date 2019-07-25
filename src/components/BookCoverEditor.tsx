@@ -59,57 +59,53 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   render(): JSX.Element {
-    return (
+    return (this.props.book &&
       <div>
-        { this.props.book &&
-          <div>
-            <h2>
-              {this.props.book.title}
-            </h2>
-            { this.props.isFetching &&
-              <div className="cover-fetching-container">
-                <h4>
-                  Updating
-                  <i className="fa fa-spinner fa-spin"></i>
-                </h4>
-              </div>
-            }
-            <div>
-              <h3>Current cover:</h3>
-              <img
-                src={this.props.book.coverUrl}
-                className="book-cover current-cover"
-                alt="Current book cover"
-                />
-            </div>
-            <div ref="form-container" className="cover-edit-form">
-              <h3>Change cover:</h3>
+        <h2>
+          {this.props.book.title}
+        </h2>
+        { this.props.isFetching &&
+          <div className="cover-fetching-container">
+            <h4>
+              Updating
+              <i className="fa fa-spinner fa-spin"></i>
+            </h4>
+          </div>
+        }
+        <div>
+          <h3>Current cover:</h3>
+          <img
+            src={this.props.book.coverUrl}
+            className="book-cover current-cover"
+            alt="Current book cover"
+            />
+        </div>
+        <div ref="form-container" className="cover-edit-form">
+          <h3>Change cover:</h3>
+          <Panel
+            headerText="Cover Metadata"
+            openByDefault={true}
+            content={this.renderCoverForm()}
+            onEnter={this.save}
+          />
+          {
+            this.props.rightsStatuses &&
               <Panel
-                headerText="Cover Metadata"
+                headerText="Rights"
                 openByDefault={true}
-                content={this.renderCoverForm()}
                 onEnter={this.save}
+                content={this.renderRightsForm()}
               />
-              {
-                this.props.rightsStatuses &&
-                  <Panel
-                    headerText="Rights"
-                    openByDefault={true}
-                    onEnter={this.save}
-                    content={this.renderRightsForm()}
-                  />
-              }
-              <Button
-                className="left-align"
-                content="Save this cover"
-                disabled={this.props.isFetching || !this.props.preview}
-                callback={this.save}
-              />
-            </div>
+          }
+          <Button
+            className="left-align"
+            content="Save this cover"
+            disabled={this.props.isFetching || !this.props.preview}
+            callback={this.save}
+          />
+        </div>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
-        }
-        </div>
         }
       </div>
     );

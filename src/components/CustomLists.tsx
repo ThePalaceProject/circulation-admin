@@ -88,7 +88,6 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
   }
 
   render(): JSX.Element {
-    const enabledEntryPoints = this.getEnabledEntryPoints(this.props.libraries);
     let listCollections = [];
     let entryCount;
 
