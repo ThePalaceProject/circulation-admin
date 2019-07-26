@@ -77,7 +77,7 @@ describe("SelfTestsCategory", () => {
 
   beforeEach(() => {
     store = buildStore();
-    wrapper = mount(<SelfTestsCategory type="collections" csrfToken="token" items={collections} store={store} />);
+    wrapper = mount(<SelfTestsCategory type="collection" linkName="collections" csrfToken="token" items={collections} store={store} />);
   });
 
   it("renders a list of items", () => {
@@ -90,7 +90,7 @@ describe("SelfTestsCategory", () => {
     listItems.forEach((item, idx) => {
       let selfTests = item.find(SelfTests);
       expect(selfTests.length).to.equal(1);
-      expect(selfTests.prop("type")).to.equal("collection");
+      expect(selfTests.prop("type")).to.equal(wrapper.prop("type"));
       expect(selfTests.prop("item")).to.equal(collections[idx]);
     });
   });

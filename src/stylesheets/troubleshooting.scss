@@ -133,12 +133,28 @@
         li {
           display: block;
           width: 100%;
-          border-bottom: 1px solid #DDD;
+          &.active {
+            a {
+              background: $dark;
+              color: $white;
+            }
+          }
+          &:hover:not(.active) {
+            a {
+              background: $blue;
+              color: $white;
+            }
+          }
 
           a {
             padding-left: 15px;
             width: 100%;
-            border: none;
+            border-bottom: 1px solid #DDD;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-radius: 0;
+            color: $dark;
           }
         }
       }

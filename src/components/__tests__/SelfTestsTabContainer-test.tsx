@@ -81,8 +81,9 @@ describe("SelfTestsTabContainer", () => {
     expect(contentComponents.length).to.equal(3);
     let [collectionsContent, patronAuthContent, searchContent] = contentComponents.map(c => c.childAt(0));
 
-    expect(collectionsContent.prop("type")).to.equal("collections");
+    expect(collectionsContent.prop("type")).to.equal("collection");
     expect(collectionsContent.prop("items")).to.equal(collections);
+    expect(collectionsContent.prop("linkName")).to.equal("collections");
     expect(collectionsContent.find(".self-tests-category").length).to.equal(1);
 
     expect(patronAuthContent.find(LoadingIndicator).length).to.equal(1);
@@ -137,9 +138,9 @@ describe("SelfTestsTabContainer", () => {
     expect(patronAuthTab.hasClass("active")).to.be.true;
   });
 
-  it("converts from the tab name to the key name", () => {
-    expect(wrapper.instance().getKeyName("collections")).to.equal("collections");
-    expect(wrapper.instance().getKeyName("patronAuthServices")).to.equal("patron_auth_services");
-    expect(wrapper.instance().getKeyName("searchServices")).to.equal("search_services");
+  it("converts from the tab name to the key name, type name, and link name", () => {
+    expect(wrapper.instance().getNames("collections")).to.eql(["collections", "collection", "collections"]);
+    expect(wrapper.instance().getNames("patronAuthServices")).to.eql(["patron_auth_services", "patron_authentication_service", "patronAuth"]);
+    expect(wrapper.instance().getNames("searchServices")).to.eql(["search_services", "search_service", "search"]);
   });
 });

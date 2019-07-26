@@ -42,8 +42,9 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
 
   async handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
+    let keyName = this.getNames(tab)[0];
     await this.props.goToTab(tab);
-    if (!this.props.items || !this.props.items[this.getKeyName(tab)]) {
+    if (!this.props.items || !this.props.items[keyName]) {
       await this.props.fetchItems(tab);
     }
   }
@@ -56,20 +57,27 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
     }
   }
 
-  getKeyName(name: string): string {
-    return name.split(/(?=[A-Z])/).map(w => w.toLowerCase()).join("_");
+  getNames(category: string): string[] {
+    // The name used to look up data in the store: "collections", "patron_auth_services", "search_services".
+    let keyName = category.split(/(?=[A-Z])/).map(w => w.toLowerCase()).join("_");
+    // The name the SelfTests component is expecting: "collection", "patron_authentication_service", "search_service".
+    let typeName = keyName.replace("auth", "authentication").slice(0, -1);
+    // The name used to create a link to the service's edit form: "collections", "patronAuth", "search".
+    let linkName = category.replace("Services", "");
+
+    return [keyName, typeName, linkName];
   }
 
   tabs() {
     let tabs = {};
     let categories = Object.keys(this.DISPLAY_NAMES);
     categories.forEach((cat) => {
-      let keyName = this.getKeyName(cat);
+      let [keyName, typeName, linkName] = this.getNames(cat);
       let component = null;
       if (this.props.fetchError) {
         component = <ErrorMessage error={this.props.fetchError} />;
       } else if (this.props.items && this.props.items[keyName]) {
-        component = <SelfTestsCategory store={this.props.store} type={keyName} csrfToken={this.props.csrfToken} items={this.props.items[keyName]} />;
+        component = <SelfTestsCategory store={this.props.store} linkName={linkName} type={typeName} csrfToken={this.props.csrfToken} items={this.props.items[keyName]} />;
       } else if (!this.props.isLoaded) {
         component = <LoadingIndicator />;
       }
