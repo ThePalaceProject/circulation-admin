@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.9
+#### Added
+- Created a Troubleshooting page, comprising Diagnostics and Self-tests.
+
 ### v0.3.8
 #### Added
 - Added a basic WYSIWYG editor to the summary field in the book details form.
