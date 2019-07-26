@@ -20,10 +20,6 @@ import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
-import EditableInput from "./EditableInput";
-import PencilIcon from "./icons/PencilIcon";
-import TrashIcon from "./icons/TrashIcon";
-import { Button } from "library-simplified-reusable-components";
 import CustomListsSidebar from "./CustomListsSidebar";
 
 export interface CustomListsStateProps {

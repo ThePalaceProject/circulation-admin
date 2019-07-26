@@ -7,22 +7,6 @@
   }
 }
 
-.add-list-item-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: baseline;
-
-  span.add-list-item {
-    display: inline-block;
-    margin-right: 10px;
-  }
-  
-  .btn.add-list-item {
-    vertical-align: top;
-  }
-}
-
 span.input-group-addon {
   display: flex;
   flex-direction: column;
@@ -31,19 +15,4 @@ span.input-group-addon {
   padding: 2px;
   border-color: $linkcolor;
 
-}
-.with-add-on {
-  display: flex;
-  .tool-tip-container {
-    height: 100%;
-    cursor: pointer;
-  }
-  input {
-    flex: 1;
-  }
-  svg {
-    height: 100%;
-    width: 80%;
-    fill: $linkcolor;
-  }
 }

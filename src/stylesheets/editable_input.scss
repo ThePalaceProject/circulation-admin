@@ -32,6 +32,22 @@
   }
 }
 
+.with-add-on {
+  display: flex;
+  .tool-tip-container {
+    height: 100%;
+    cursor: pointer;
+  }
+  input {
+    flex: 1;
+  }
+  svg {
+    height: 100%;
+    width: 80%;
+    fill: $linkcolor;
+  }
+}
+
 .field-error {
   background: $white;
 

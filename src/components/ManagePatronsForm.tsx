@@ -9,7 +9,6 @@ import { Button, Form } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import ErrorMessage from "./ErrorMessage";
 import PatronInfo from "./PatronInfo";
-import { Alert } from "react-bootstrap";
 
 export interface ManagePatronsFormStateProps {
   patron?: PatronData;
