@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.10
+#### Updated
+- Updating the scss files so they better match one-to-one with React component files.
+
 ### v0.3.9
 #### Updated
 - Using the Button components for elements that should be buttons instead of anchors or divs.

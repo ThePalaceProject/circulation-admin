@@ -44,7 +44,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
 
   render(): JSX.Element {
     return (
-      <div>
+      <div className="complaints">
         { this.props.book &&
           <div>
             <h2>

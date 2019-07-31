@@ -6,8 +6,6 @@ import ApplyIcon from "./icons/ApplyIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
 import AddIcon from "./icons/AddIcon";
-import XCloseIcon from "./icons/XCloseIcon";
-import MoreDotsIcon from "./icons/MoreDotsIcon";
 import { Button } from "library-simplified-reusable-components";
 import {
   AudioHeadphoneIcon,

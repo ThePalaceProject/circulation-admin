@@ -34,6 +34,7 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
     return (
       <div className="book-details-container">
         <BookDetailsTabContainer
+          class="book-details-tab-container"
           bookUrl={this.props.bookUrl}
           collectionUrl={this.props.collectionUrl}
           refreshCatalog={this.props.refreshCatalog}

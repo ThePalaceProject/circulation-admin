@@ -1,84 +1,14 @@
-.custom-list-page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-
-  .custom-lists-container {
-    flex: 1;
-    position: relative;
-    overflow-y: hidden;
-    padding-bottom: 10px;
-    svg {
-      float: unset;
-      vertical-align: unset;
-      height: .9em;
-      margin-left: .5em;
-    }
-  }
-
-  .custom-lists {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-  }
-
-  .custom-lists-sidebar {
-    border: 1px solid $gray;
-    padding: 15px;
-    margin: 7px;
-    overflow-y: scroll;
-
-    .form-group {
-      display: inline-block;
-      margin-top: 15px;
-      margin-left: 15px;
-      margin-right: 25px;
-    }
-
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    li {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      font-size: 0.9em;
-      color: $pagetextcolor;
-      border: 1px solid $pagecolorlight;
-      border-bottom-color: $pagetextcolor;
-      &.active {
-        background-color: darken($pagecolorlight, 5%);
-        border-color: $pagetextcolor;
-      }
-      div {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        padding: 5px;
-
-        &:nth-child(1) {
-          flex-direction: column;
-          hyphens: auto;
-        }
-
-        &:nth-child(2) {
-          .btn {
-            width: 50%;
-          }
-        }
-      }
-    }
-  }
+.custom-lists-container {
+  flex: 1;
+  position: relative;
+  overflow-y: hidden;
+  padding-bottom: 10px;
 }
 
-.dragging .custom-list-manager .custom-lists-sidebar li a {
-  cursor: inherit;
-
-  &:hover {
-    background-color: inherit;
-  }
+.custom-lists {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
