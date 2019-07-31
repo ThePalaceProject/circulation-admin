@@ -69,7 +69,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
 
   render(): JSX.Element {
     return (
-      <div className="bookDetailsEditor">
+      <div className="book-details-editor">
         { this.props.bookData && !this.props.fetchError && (<>
             <h2>
               {this.props.bookData.title}
