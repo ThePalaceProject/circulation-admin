@@ -50,7 +50,7 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
 
   render(): JSX.Element {
     return (
-      <div>
+      <div className="classifications">
         { this.props.book &&
           <>
             <h2>
