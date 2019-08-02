@@ -13,7 +13,11 @@ export interface DiagnosticsPageState {
   tab: string;
 }
 
-export default class DiagnosticsPage extends React.Component<{}, DiagnosticsPageState> {
+export interface DiagnosticsPageProps {
+  subtab?: string;
+}
+
+export default class DiagnosticsPage extends React.Component<DiagnosticsPageProps, DiagnosticsPageState> {
   context: DiagnosticsPageContext;
 
   static contextTypes: React.ValidationMap<DiagnosticsPageContext> = {
@@ -23,7 +27,7 @@ export default class DiagnosticsPage extends React.Component<{}, DiagnosticsPage
 
   constructor(props) {
     super(props);
-    this.state = { tab: "coverage_provider" };
+    this.state = { tab: this.props.subtab || "coverage_provider" };
     this.goToTab = this.goToTab.bind(this);
   }
 
@@ -34,7 +38,7 @@ export default class DiagnosticsPage extends React.Component<{}, DiagnosticsPage
           class="service-types"
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
-          tab={this.state.tab}
+          tab={this.props.subtab || this.state.tab }
           goToTab={this.goToTab}
         />
       </div>

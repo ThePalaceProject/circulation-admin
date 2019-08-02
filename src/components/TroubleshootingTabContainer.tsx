@@ -8,6 +8,7 @@ import SelfTestsPage from "./SelfTestsPage";
 
 export interface TroubleshootingTabContainerProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
+  subtab?: string;
 }
 
 export default class TroubleshootingTabContainer extends TabContainer<TroubleshootingTabContainerProps> {
@@ -19,13 +20,26 @@ export default class TroubleshootingTabContainer extends TabContainer<Troublesho
 
   tabs() {
     return {
-      "diagnostics": <DiagnosticsPage />,
-      "self-tests": <SelfTestsPage />
+      "diagnostics": <DiagnosticsPage subtab={this.props.tab === "diagnostics" ? this.props.subtab : "coverage_provider"} />,
+      "self-tests": <SelfTestsPage subtab={this.props.tab === "self-tests" ? this.props.subtab : "collections"} />
     };
+  }
+
+  componentWillReceiveProps(newProps: TroubleshootingTabContainerProps) {
+    (newProps.tab !== this.props.tab) && this.route(newProps.tab, newProps.subtab);
   }
 
   handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
+    let subtab = this.props.subtab;
     this.props.goToTab(tab);
+    this.route(tab, subtab);
+
+  }
+
+  route(tab: string, subtab: string) {
+    if (this.context.router) {
+      this.context.router.push("/admin/web/troubleshooting/" + tab + "/" + subtab);
+    }
   }
 }

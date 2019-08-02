@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
-import SelfTests from "./SelfTests";
 
 /** Right panel for patron authentication services on the system
     configuration page. Shows a list of current patron authentication
@@ -11,12 +10,12 @@ import SelfTests from "./SelfTests";
     an existing service. */
 export class PatronAuthServices extends EditableConfigList<PatronAuthServicesData, PatronAuthServiceData> {
   EditForm = ServiceEditForm;
-  AdditionalContent = SelfTests;
   listDataKey = "patron_auth_services";
   itemTypeName = "patron authentication service";
   urlBase = "/admin/web/config/patronAuth/";
   identifierKey = "id";
   labelKey = "protocol";
+  hasSelfTests = true;
 
   label(item): string {
     for (const protocol of this.props.data.protocols) {

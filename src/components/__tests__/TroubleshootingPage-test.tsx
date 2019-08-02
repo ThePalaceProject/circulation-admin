@@ -16,7 +16,7 @@ describe("TroubleshootingPage", () => {
   beforeEach(() => {
     store = buildStore();
     context = { editorStore: store, csrfToken: "token" };
-    wrapper = shallow(<TroubleshootingPage />, { context });
+    wrapper = shallow(<TroubleshootingPage params={{tab: "", subtab: ""}}/>, { context });
   });
 
   it("renders a header", () => {

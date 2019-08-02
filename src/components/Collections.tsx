@@ -5,7 +5,6 @@ import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import { CollectionsData, CollectionData, LibraryData, LibraryRegistrationsData, ServiceData } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
-import SelfTests from "./SelfTests";
 import TrashIcon from "./icons/TrashIcon";
 
 export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {
@@ -28,12 +27,12 @@ class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsDat
     the collection supports it. */
 export class Collections extends GenericEditableConfigList<CollectionsData, CollectionData, CollectionsProps> {
   EditForm = CollectionEditForm;
-  AdditionalContent = SelfTests;
   listDataKey = "collections";
   itemTypeName = "collection";
   urlBase = "/admin/web/config/collections/";
   identifierKey = "id";
   labelKey = "name";
+  hasSelfTests = true;
 
   static childContextTypes: React.ValidationMap<any> = {
     registerLibrary: PropTypes.func,

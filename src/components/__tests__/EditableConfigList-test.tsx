@@ -79,6 +79,11 @@ describe("EditableConfigList", () => {
     AdditionalContent = AdditionalContent;
   }
 
+  class ThingWithSelfTests extends ThingEditableConfigList {
+    hasSelfTests = true;
+    itemTypeName = "patron authentication service";
+  }
+
   let wrapper;
   let fetchData;
   let editItem;
@@ -398,5 +403,27 @@ describe("EditableConfigList", () => {
     expect(additionalContent.length).to.equal(1);
     expect(additionalContent.props().item).to.deep.equal(thingData);
     expect(additionalContent.props().csrfToken).to.equal("token");
+  });
+
+  it("should not render a troubleshooting link if there are no self-tests", () => {
+    let link = wrapper.find("h5");
+    expect(link.length).to.equal(0);
+  });
+
+  it("should render a troubleshooting link if there are self-tests", () => {
+    wrapper = shallow(
+      <ThingWithSelfTests
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+      />
+    );
+    let link = wrapper.find("h5");
+    expect(link.length).to.equal(1);
+    expect(link.text()).to.equal("Problems with your patron authentication services?  Please visit the troubleshooting page.");
+    expect(link.find("a").prop("href")).to.equal("http://localhost:6500/admin/web/troubleshooting/self-tests/patronAuthServices");
   });
 });

@@ -196,7 +196,7 @@ describe("Header", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
         let links = wrapper.find(Link);
         expect(links.length).to.equal(6);
-        expect(links.at(4).children().text()).to.equal("Troubleshooting");
+        expect(links.at(5).children().text()).to.equal("Troubleshooting");
       });
     });
   });

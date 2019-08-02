@@ -2,17 +2,17 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { CollectionsData, PatronAuthServicesData, SearchServicesData, ServicesData } from "../interfaces";
+import { CollectionsData, PatronAuthServicesData, SearchServicesData } from "../interfaces";
 import { State } from "../reducers/index";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
-import { TabContainer, TabContainerProps } from "./TabContainer";
+import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
 import SelfTestsCategory from "./SelfTestsCategory";
-import { formatString } from "./sharedFunctions";
+import * as PropTypes from "prop-types";
 
 export interface SelfTestsTabContainerDispatchProps {
-  fetchItems: (category: string) => Promise<any>;
+  fetchItems: () => Promise<any>;
 }
 
 export interface SelfTestsTabContainerOwnProps extends TabContainerProps {
@@ -27,8 +27,14 @@ export interface SelfTestsTabContainerStateProps {
 }
 
 export interface SelfTestsTabContainerProps extends SelfTestsTabContainerDispatchProps, SelfTestsTabContainerStateProps, SelfTestsTabContainerOwnProps {};
+export interface SelfTestsTabContainerContext extends TabContainerContext {};
 
 export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerProps> {
+  context: SelfTestsTabContainerContext;
+  static contextTypes: React.ValidationMap<SelfTestsTabContainerContext> = {
+    router: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired,
+  };
 
   DISPLAY_NAMES = {
     collections: "Collections",
@@ -37,15 +43,15 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
   };
 
   componentWillMount() {
-    this.props.fetchItems(this.props.tab);
+    this.props.fetchItems();
   }
 
   async handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
     let keyName = this.getNames(tab)[0];
     await this.props.goToTab(tab);
-    if (!this.props.items || !this.props.items[keyName]) {
-      await this.props.fetchItems(tab);
+    if (this.context.router) {
+      this.context.router.push("/admin/web/troubleshooting/self-tests/" + tab);
     }
   }
 
@@ -88,7 +94,6 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
 }
 
 function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
-
   const category = ownProps.tab;
   return {
     items: state.editor[category] && state.editor[category].data,
@@ -99,10 +104,9 @@ function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
 
 function mapDispatchToProps(dispatch: Function, ownProps: SelfTestsTabContainerOwnProps) {
   let actions = new ActionCreator();
-  const fetchString = "fetch" + formatString(ownProps.tab);
-
+  const itemTypes = ["Collections", "PatronAuthServices", "SearchServices"];
   return {
-    fetchItems: () => dispatch(actions[fetchString]())
+    fetchItems: () => itemTypes.forEach(type => dispatch(actions["fetch" + type]()))
   };
 }
 

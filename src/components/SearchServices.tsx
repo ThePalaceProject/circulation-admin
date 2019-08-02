@@ -3,20 +3,19 @@ import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { SearchServicesData, SearchServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
-import SelfTests from "./SelfTests";
 
 /** Right panel for search services on the system configuration page.
     Shows a list of current search services and allows creating a new
     service or editing or deleting an existing service. */
 export class SearchServices extends EditableConfigList<SearchServicesData, SearchServiceData> {
   EditForm = ServiceEditForm;
-  AdditionalContent = SelfTests;
   listDataKey = "search_services";
   itemTypeName = "search service";
   urlBase = "/admin/web/config/search/";
   identifierKey = "id";
   labelKey = "protocol";
   limitOne = true;
+  hasSelfTests = true;
 }
 
 function mapStateToProps(state, ownProps) {

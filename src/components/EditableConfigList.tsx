@@ -66,6 +66,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   abstract urlBase: string;
   abstract identifierKey: string;
   abstract labelKey: string;
+  hasSelfTests = false;
   limitOne = false;
   AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
 
@@ -157,8 +158,20 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               />
           </div>
         }
+        {
+          this.hasSelfTests && this.renderLink()
+        }
       </div>
     );
+  }
+
+  renderLink(): JSX.Element {
+    const linkNames = {
+      "collection": "collections",
+      "patron authentication service": "patronAuthServices",
+      "search service": "searchServices"
+    };
+    return <h5>Problems with your {this.itemTypeName}{!this.limitOne && "s"}?  Please visit <a href={`http://localhost:6500/admin/web/troubleshooting/self-tests/${linkNames[this.itemTypeName]}`}>the troubleshooting page</a>.</h5>;
   }
 
   renderLi(item, index): JSX.Element {

@@ -70,7 +70,7 @@ class CirculationWeb {
             <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
             <Route path="/admin/web/account" component={AccountPage} />
             <Route path="/admin/web/patrons/:library(/:tab)" component={ManagePatrons} />
-            <Route path="/admin/web/troubleshooting" component={TroubleshootingPage} />
+            <Route path="/admin/web/troubleshooting(/:tab)(/:subtab)" component={TroubleshootingPage} />
           </Router>
         </ContextProvider>,
         document.getElementById("opds-catalog")

@@ -13,9 +13,17 @@ export interface TroubleshootingPageContext {
 
 export interface TroubleshootingPageState {
   tab: string;
+  subtab: string;
 }
 
-export default class TroubleshootingPage extends React.Component<{}, TroubleshootingPageState> {
+export interface TroubleshootingPageProps extends React.Props<TroubleshootingPageProps> {
+  params: {
+    tab?: string;
+    subtab?: string;
+  };
+}
+
+export default class TroubleshootingPage extends React.Component<TroubleshootingPageProps, TroubleshootingPageState> {
   context: TroubleshootingPageContext;
 
   static contextTypes: React.ValidationMap<TroubleshootingPageContext> = {
@@ -23,9 +31,14 @@ export default class TroubleshootingPage extends React.Component<{}, Troubleshoo
     csrfToken: PropTypes.string.isRequired
   };
 
+  CATEGORIES = {
+    "diagnostics": ["coverage_provider", "script", "monitor", "other"],
+    "self-tests": ["collections", "patronAuthServices", "searchServices"]
+  };
+
   constructor(props) {
     super(props);
-    this.state = { tab: "diagnostics" };
+    this.state = { tab: "diagnostics", subtab: "coverage_provider" };
     this.goToTab = this.goToTab.bind(this);
   }
 
@@ -34,6 +47,9 @@ export default class TroubleshootingPage extends React.Component<{}, Troubleshoo
   }
 
   render(): JSX.Element {
+    let tab = this.props.params.tab || this.state.tab;
+    let subtab = this.props.params.subtab || this.state.subtab;
+    subtab = this.CATEGORIES[tab].indexOf(subtab) >= 0 ? subtab : this.CATEGORIES[tab][0];
     return(
       <div className="troubleshooting-page">
         <Header />
@@ -42,8 +58,9 @@ export default class TroubleshootingPage extends React.Component<{}, Troubleshoo
           <TroubleshootingTabContainer
             store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
-            tab={this.state.tab}
+            tab={tab}
             goToTab={this.goToTab}
+            subtab={subtab}
           />
         </div>
       </div>
@@ -51,7 +68,7 @@ export default class TroubleshootingPage extends React.Component<{}, Troubleshoo
   }
 
   goToTab(tab: string) {
-    this.setState({ tab });
+    this.setState({ tab, subtab: this.props.params.subtab });
   }
 
 }
