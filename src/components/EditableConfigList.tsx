@@ -68,6 +68,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   abstract labelKey: string;
   hasSelfTests = false;
   limitOne = false;
+  linkName?: string;
   AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
 
   constructor(props) {
@@ -91,9 +92,13 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
       this.props.data && this.props.data[this.listDataKey];
     let EditForm = this.EditForm;
     let itemToEdit = this.itemToEdit();
+    let [itemName, link] = this.renderLink();
     return (
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
+        { canListAllData && this.hasSelfTests &&
+          <Alert bsStyle="info">Self-tests for the {itemName} have been moved to {link}.</Alert>
+        }
         { this.props.responseBody && this.props.editOrCreate &&
           <Alert bsStyle="success">
             {this.successMessage()}
@@ -159,19 +164,17 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           </div>
         }
         {
-          this.hasSelfTests && this.renderLink()
+          this.hasSelfTests && <p>Problems with your {itemName}?  Please visit {link}.</p>
         }
       </div>
     );
   }
 
-  renderLink(): JSX.Element {
-    const linkNames = {
-      "collection": "collections",
-      "patron authentication service": "patronAuthServices",
-      "search service": "searchServices"
-    };
-    return <h5>Problems with your {this.itemTypeName}{!this.limitOne && "s"}?  Please visit <a href={`http://localhost:6500/admin/web/troubleshooting/self-tests/${linkNames[this.itemTypeName]}`}>the troubleshooting page</a>.</h5>;
+  renderLink(): [string, JSX.Element] {
+    let itemName = `${this.itemTypeName}${!this.limitOne ? "s" : ""}`;
+    let url = `/admin/web/troubleshooting/self-tests/${this.linkName}`;
+    let link = <a href={url}>the troubleshooting page</a>;
+    return [itemName, link];
   }
 
   renderLi(item, index): JSX.Element {

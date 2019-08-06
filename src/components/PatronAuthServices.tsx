@@ -12,6 +12,7 @@ export class PatronAuthServices extends EditableConfigList<PatronAuthServicesDat
   EditForm = ServiceEditForm;
   listDataKey = "patron_auth_services";
   itemTypeName = "patron authentication service";
+  linkName = "patronAuthServices";
   urlBase = "/admin/web/config/patronAuth/";
   identifierKey = "id";
   labelKey = "protocol";

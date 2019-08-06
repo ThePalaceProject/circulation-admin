@@ -175,8 +175,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             }
             { isSystemAdmin &&
               <li className="header-link">
-                <Link to={"/admin/web/troubleshooting"}
-                className={currentPathname.indexOf("/admin/web/troubleshooting") !== -1 ? "active-link" : ""}
+                <Link
+                  to={"/admin/web/troubleshooting"}
+                  className={currentPathname.indexOf("/admin/web/troubleshooting") !== -1 ? "active-link" : ""}
                 >Troubleshooting</Link>
               </li>
             }

@@ -3,8 +3,7 @@ import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
-import DiagnosticsPage from "./DiagnosticsPage";
-import SelfTestsPage from "./SelfTestsPage";
+import TroubleshootingCategoryPage from "./TroubleshootingCategoryPage";
 
 export interface TroubleshootingTabContainerProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
@@ -20,8 +19,8 @@ export default class TroubleshootingTabContainer extends TabContainer<Troublesho
 
   tabs() {
     return {
-      "diagnostics": <DiagnosticsPage subtab={this.props.tab === "diagnostics" ? this.props.subtab : "coverage_provider"} />,
-      "self-tests": <SelfTestsPage subtab={this.props.tab === "self-tests" ? this.props.subtab : "collections"} />
+      "diagnostics": <TroubleshootingCategoryPage subtab={this.props.tab === "diagnostics" ? this.props.subtab : "coverage_provider"} type="diagnostics" />,
+      "self-tests": <TroubleshootingCategoryPage subtab={this.props.tab === "self-tests" ? this.props.subtab : "collections"} type="self-tests" />
     };
   }
 

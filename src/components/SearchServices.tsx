@@ -16,6 +16,7 @@ export class SearchServices extends EditableConfigList<SearchServicesData, Searc
   labelKey = "protocol";
   limitOne = true;
   hasSelfTests = true;
+  linkName = "searchServices";
 }
 
 function mapStateToProps(state, ownProps) {

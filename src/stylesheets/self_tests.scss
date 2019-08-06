@@ -40,15 +40,10 @@
         }
 
         .results {
-          display: none;
+          display: flex;
           align-items: center;
           flex-wrap: wrap;
           justify-content: space-between;
-
-          &.active {
-            display: flex;
-          }
-
 
           ul {
             width: 100%;

@@ -29,6 +29,7 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
   EditForm = CollectionEditForm;
   listDataKey = "collections";
   itemTypeName = "collection";
+  linkName = "collections";
   urlBase = "/admin/web/config/collections/";
   identifierKey = "id";
   labelKey = "name";

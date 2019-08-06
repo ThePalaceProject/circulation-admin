@@ -54,6 +54,7 @@ describe("EditableConfigList", () => {
     EditForm = ThingEditForm;
     listDataKey = "things";
     itemTypeName = "thing";
+    linkName = "thingServices";
     urlBase = "/admin/things/";
     identifierKey = "id";
     labelKey = "label";
@@ -81,7 +82,6 @@ describe("EditableConfigList", () => {
 
   class ThingWithSelfTests extends ThingEditableConfigList {
     hasSelfTests = true;
-    itemTypeName = "patron authentication service";
   }
 
   let wrapper;
@@ -410,6 +410,11 @@ describe("EditableConfigList", () => {
     expect(link.length).to.equal(0);
   });
 
+  it("should not render an info alert if there are no self-tests", () => {
+    let alert = wrapper.find(Alert);
+    expect(alert.length).to.equal(0);
+  });
+
   it("should render a troubleshooting link if there are self-tests", () => {
     wrapper = shallow(
       <ThingWithSelfTests
@@ -421,9 +426,26 @@ describe("EditableConfigList", () => {
         isFetching={false}
       />
     );
-    let link = wrapper.find("h5");
+    let link = wrapper.find("p");
     expect(link.length).to.equal(1);
-    expect(link.text()).to.equal("Problems with your patron authentication services?  Please visit the troubleshooting page.");
-    expect(link.find("a").prop("href")).to.equal("http://localhost:6500/admin/web/troubleshooting/self-tests/patronAuthServices");
+    expect(link.text()).to.equal("Problems with your things?  Please visit the troubleshooting page.");
+    expect(link.find("a").prop("href")).to.equal("/admin/web/troubleshooting/self-tests/thingServices");
+  });
+
+  it("should render an info alert if there are self-tests", () => {
+    wrapper = mount(
+      <ThingWithSelfTests
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+      />
+    );
+    let alert = wrapper.find(".alert");
+    expect(alert.length).to.equal(1);
+    expect(alert.text()).to.equal("Self-tests for the things have been moved to the troubleshooting page.");
+    expect(alert.find("a").prop("href")).to.equal("/admin/web/troubleshooting/self-tests/thingServices");
   });
 });
