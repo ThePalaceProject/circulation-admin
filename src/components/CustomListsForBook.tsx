@@ -55,7 +55,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
 
   render(): JSX.Element {
     return (
-      <div>
+      <div className="custom-list-for-book">
         { this.props.book &&
           <h2>{this.props.book.title}</h2>
         }
@@ -92,7 +92,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
               value=""
               ref="addList"
               />
-            <Button className="left-align" callback={this.addList} content="Add" />
+            <Button className="left-align add-list-btn" callback={this.addList} content="Add" type="button" />
           </div>
         }
       </div>

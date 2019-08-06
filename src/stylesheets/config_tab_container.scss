@@ -49,7 +49,7 @@ $dangercolor: #D9534F;
         }
       }
 
-      a.btn-default, button.btn-default:not(.btn), a.danger, button.danger {
+      a.btn-default, a.danger {
         display: unset;
         margin: 12px 12px 12px 0;
         color: $pagecolor;
@@ -63,7 +63,7 @@ $dangercolor: #D9534F;
         }
       }
 
-      a.danger, button.danger {
+      a.danger {
         &:hover {
           background-color: white;
           border-color: $dangercolor;

@@ -139,7 +139,7 @@ describe("CustomListsForBook", () => {
       );
       // Add one of the existing lists.
       autocompleteStub.returns("list 1");
-      let addButton = wrapper.find("button");
+      let addButton = wrapper.find(".add-list-btn").hostNodes();
       addButton.simulate("click");
 
       let removables = wrapper.find(WithRemoveButton);
@@ -204,7 +204,7 @@ describe("CustomListsForBook", () => {
 
       let removable = wrapper.find(WithRemoveButton);
       expect(removable.length).to.equal(1);
-      let removeButton = removable.find(".remove");
+      let removeButton = removable.find(".remove-btn").hostNodes();
       removeButton.simulate("click");
 
       let removables = wrapper.find(WithRemoveButton);

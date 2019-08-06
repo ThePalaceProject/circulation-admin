@@ -1,0 +1,15 @@
+.add-list-item-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+
+  span.add-list-item {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  .btn.add-list-item {
+    vertical-align: top;
+  }
+}

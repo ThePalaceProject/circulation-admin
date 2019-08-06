@@ -4,6 +4,7 @@ import { CustomListData } from "../interfaces";
 import AddIcon from "./icons/AddIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
+import { Button } from "library-simplified-reusable-components";
 
 export interface LaneCustomListsEditorProps extends React.Props<LaneCustomListsEditor> {
   allCustomLists: CustomListData[];
@@ -65,13 +66,11 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
                               <div className="list-id">ID-{list.id}</div>
                             </div>
                             <div className="links">
-                              <a
-                                className="btn inverted"
-                                role="button"
-                                onClick={() => { this.add(list.id); }}
-                                >Add to lane
-                                  <AddIcon />
-                              </a>
+                              <Button
+                                className="inverted"
+                                callback={() => { this.add(list.id); }}
+                                content={<span>Add to lane <AddIcon /></span>}
+                              />
                             </div>
                           </div>
                           { provided.placeholder }
@@ -116,13 +115,11 @@ export default class LaneCustomListsEditor extends React.Component<LaneCustomLis
                               <div className="list-id">ID-{list.id}</div>
                             </div>
                             <div className="links">
-                              <a
-                                className="btn danger"
-                                role="button"
-                                onClick={() => { this.remove(list.id); }}
-                                >Remove from lane
-                                  <TrashIcon />
-                              </a>
+                              <Button
+                                className="danger"
+                                callback={() => { this.remove(list.id); }}
+                                content={<span>Remove from lane <TrashIcon /></span>}
+                              />
                             </div>
                           </div>
                           { provided.placeholder }

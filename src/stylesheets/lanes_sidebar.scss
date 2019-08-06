@@ -1,0 +1,85 @@
+.lanes-sidebar {
+  min-width: 400px;
+  border: 1px solid $gray;
+  padding: 15px;
+  margin: 7px;
+  overflow-y: scroll;
+  
+  ul {
+    list-style-type: none;
+    padding-left: 30px;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 5px;
+      border-bottom: 1px solid $dark-gray;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .active {
+        background-color: $pagecolorlight;
+      }
+
+      .lane-info {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 5px;
+
+        &.draggable {
+          cursor: grab;
+          cursor: -webkit-grab;
+        }
+      }
+
+      .lane-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+        padding-bottom: 10px;
+
+        > a {
+          align-self: flex-end;
+        }
+      }
+
+      .dragging {
+        border: 1px solid $pagetextcolor;
+        background-color: $pagecolorlight;
+      }
+    }
+
+    &.dragging-over {
+      border: 1px solid red;
+    }
+  }
+
+  & > ul {
+    clear: both;
+    padding-left: 0px;
+    margin-top: 10px;
+    border-top: 4px solid $gray;
+  }
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    .btn {
+      margin-left: 0;
+    }
+  }
+}
+
+.lanes-sidebar .btn, .reset-button, .cancel-button {
+  display: inline-block;
+  svg {
+    height: .7em;
+    margin-left: .5em;
+    float: unset;
+    vertical-align: unset;
+  }
+}

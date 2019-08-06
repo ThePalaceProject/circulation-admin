@@ -1,5 +1,6 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { Button } from "library-simplified-reusable-components";
+import TrashIcon from "./icons/TrashIcon";
 
 export interface WithRemoveButtonProps {
   disabled: boolean;
@@ -9,23 +10,24 @@ export interface WithRemoveButtonProps {
 /** When wrapped around an element, renders a remove button next to the element. */
 export default class WithRemoveButton extends React.Component<WithRemoveButtonProps, {}> {
   render(): JSX.Element {
+    const removeContent = <span>Delete <TrashIcon /></span>;
     return (
       <div className="with-remove-button">
         <span>
           { this.props.children }
         </span>
-        <i
-          className="fa fa-times remove"
-          aria-hidden="true"
-          role="button"
-          onClick={() => !this.props.disabled && this.props.onRemove()}
-          ></i>
-        <a
-          className="sr-only"
-          role="button"
-          onClick={() => !this.props.disabled && this.props.onRemove()}
-          >remove</a>
+        <Button
+          className="remove-btn danger small"
+          callback={this.onClick.bind(this)}
+          content={removeContent}
+          type="button"
+        />
       </div>
     );
+  }
+
+  onClick(e: Event) {
+    e.preventDefault();
+    !this.props.disabled && this.props.onRemove();
   }
 }

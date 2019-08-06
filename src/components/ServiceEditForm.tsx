@@ -5,7 +5,6 @@ import { Panel, Button, Form } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
-import { EditFormProps } from "./EditableConfigList";
 import { clearForm } from "./sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -235,7 +234,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   renderLibrariesForm() {
     return (
-      <fieldset>
+      <fieldset className="update-libraries">
         <legend className="visuallyHidden">Libraries</legend>
         <div className="form-group">
           { this.state.libraries.map(library =>

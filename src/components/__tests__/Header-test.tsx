@@ -17,10 +17,26 @@ describe("Header", () => {
   const libraryManager = new Admin([{ "role": "manager", "library": "nypl" }]);
   const librarian = new Admin([{ "role": "librarian", "library": "nypl" }]);
   const systemAdmin = new Admin([{ "role": "system", "library": "nypl" }]);
+  const router = {
+    createHref: stub(),
+    push: stub(),
+    isActive: stub(),
+    replace: stub(),
+    go: stub(),
+    goBack: stub(),
+    goForward: stub(),
+    setRouteLeaveHook: stub(),
+    getCurrentLocation: stub(),
+  };
+  const childContextTypes = {
+    router: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired,
+    admin: PropTypes.object.isRequired
+  };
 
   beforeEach(() => {
     push = stub();
-    context = { library: () => "nypl", admin: libraryManager };
+    context = { library: () => "nypl", admin: libraryManager, router };
 
     wrapper = shallow(
       <Header />,
@@ -145,10 +161,10 @@ describe("Header", () => {
 
     it("shows account dropdown when the admin has an email", () => {
       const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
-      wrapper.setContext({ library: () => "nypl", admin: admin });
-      let links = wrapper.find("li.dropdown > a");
-      expect(links.length).to.equal(1);
-      expect(links.text()).to.contain("admin@nypl.org");
+      wrapper.setContext({ library: () => "nypl", admin: admin, router });
+      let emailBtn = wrapper.find(".account-dropdown-toggle").render();
+      expect(emailBtn.length).to.equal(1);
+      expect(emailBtn.text()).to.contain("admin@nypl.org");
     });
 
     describe("patron manager display", () => {
@@ -218,24 +234,9 @@ describe("Header", () => {
         { short_name: "nypl", name: "NYPL" },
         { short_name: "bpl" }
       ];
-      let childContextTypes = {
-        router: PropTypes.object.isRequired,
-        pathFor: PropTypes.func.isRequired,
-        admin: PropTypes.object.isRequired
-      };
       let fullContext = Object.assign({}, context, {
         pathFor: stub().returns("url"),
-        router: {
-          createHref: stub(),
-          push: stub(),
-          isActive: stub(),
-          replace: stub(),
-          go: stub(),
-          goBack: stub(),
-          goForward: stub(),
-          setRouteLeaveHook: stub(),
-          getCurrentLocation: stub(),
-        },
+        router,
         admin: libraryManager
       });
       wrapper = mount(
@@ -255,9 +256,18 @@ describe("Header", () => {
 
     it("toggles account dropdown", () => {
       const admin = new Admin([{ "role": "librarian", "library": "nypl" }], "admin@nypl.org");
-      wrapper.setContext({ library: () => "nypl", admin: admin });
+      context = { library: () => "nypl", admin, router };
+      let fullContext = Object.assign({}, context, {
+        pathFor: stub().returns("url"),
+        router,
+        admin
+      });
+      wrapper = mount(
+        <Header />,
+        { context: fullContext, childContextTypes }
+      );
 
-      let toggle = wrapper.find("li.dropdown > a");
+      let toggle = wrapper.find(".account-dropdown-toggle").hostNodes();
       let dropdownLinks = wrapper.find("ul.dropdown-menu a");
       expect(dropdownLinks.length).to.equal(0);
 
@@ -266,7 +276,8 @@ describe("Header", () => {
       expect(dropdownLinks.length).to.equal(2);
       let changePassword = dropdownLinks.find(Link);
       expect(changePassword.prop("to")).to.equal("/admin/web/account");
-      let signOut = dropdownLinks.find("a");
+      // The first anchor element is from the Link component.
+      let signOut = dropdownLinks.find("a").at(1);
       expect(signOut.prop("href")).to.equal("/admin/sign_out");
 
       toggle.simulate("click");

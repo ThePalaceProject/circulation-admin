@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import WithRemoveButton from "../WithRemoveButton";
 
@@ -12,11 +12,11 @@ describe("WithRemoveButton", () => {
 
   beforeEach(() => {
     onRemove = stub();
-    wrapper = shallow(
+    wrapper = mount(
       <WithRemoveButton
         disabled={false}
         onRemove={onRemove}
-        >
+      >
         child
       </WithRemoveButton>
     );
@@ -28,33 +28,22 @@ describe("WithRemoveButton", () => {
     });
 
     it("shows remove buttons", () => {
-      let icon = wrapper.find(".remove");
-      expect(icon.length).to.equal(1);
-
-      let srLink = wrapper.find("a.sr-only");
-      expect(srLink.length).to.equal(1);
+      let removeBtn = wrapper.find(".remove-btn").hostNodes();
+      expect(removeBtn.length).to.equal(1);
     });
   });
 
   describe("behavior", () => {
     it("calls onRemove", () => {
-      let icon = wrapper.find(".remove");
-      icon.simulate("click");
+      let removeBtn = wrapper.find(".remove-btn").hostNodes();
+      removeBtn.simulate("click");
       expect(onRemove.callCount).to.equal(1);
-
-      let srLink = wrapper.find("a.sr-only");
-      srLink.simulate("click");
-      expect(onRemove.callCount).to.equal(2);
     });
 
     it("does nothing when disabled", () => {
       wrapper.setProps({ disabled: true });
-      let icon = wrapper.find(".remove");
-      icon.simulate("click");
-      expect(onRemove.callCount).to.equal(0);
-
-      let srLink = wrapper.find("a.sr-only");
-      srLink.simulate("click");
+      let removeBtn = wrapper.find(".remove-btn").hostNodes();
+      removeBtn.simulate("click");
       expect(onRemove.callCount).to.equal(0);
     });
   });

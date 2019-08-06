@@ -1,8 +1,18 @@
 ## Changelog
 
-### v0.3.9
+### v0.3.11
 #### Added
 - Created a Troubleshooting page, comprising Diagnostics and Self-tests.
+
+### v0.3.10
+#### Updated
+- Updating the scss files so they better match one-to-one with React component files.
+
+### v0.3.9
+#### Updated
+- Using the Button components for elements that should be buttons instead of anchors or divs.
+#### Fixed
+- Styling for the book edit components and related buttons.
 
 ### v0.3.8
 #### Added

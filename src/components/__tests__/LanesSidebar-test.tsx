@@ -178,17 +178,17 @@ describe("LanesSidebar", () => {
 
   it("renders and expands and collapses lanes and sublanes", () => {
     const expectExpanded = (lane) => {
-      let collapse = lane.find(".lane-info").at(0).find(".collapse-button");
+      let collapse = lane.find(".lane-info").at(0).find(".collapse-button").hostNodes();
       expect(collapse.length).to.equal(1);
-      let expand = lane.find(".lane-info").at(0).find(".expand-button");
+      let expand = lane.find(".lane-info").at(0).find(".expand-button").hostNodes();
       expect(expand.length).to.equal(0);
       return collapse;
     };
 
     const expectCollapsed = (lane) => {
-      let collapse = lane.find(".lane-info").at(0).find(".collapse-button");
+      let collapse = lane.find(".lane-info").at(0).find(".collapse-button").hostNodes();
       expect(collapse.length).to.equal(0);
-      let expand = lane.find(".lane-info").at(0).find(".expand-button");
+      let expand = lane.find(".lane-info").at(0).find(".expand-button").hostNodes();
       expect(expand.length).to.equal(1);
       return expand;
     };
@@ -306,7 +306,7 @@ describe("LanesSidebar", () => {
     ];
 
     let expand = (lane) => {
-      lane.find(".expand-button").at(0).props().onClick();
+      lane.find(".expand-button").hostNodes().at(0).props().onClick();
     };
     let isDraggable = (lane) => {
       return lane.find(".lane-info").at(0).hasClass("draggable");

@@ -4,9 +4,14 @@
     margin-right: 10px;
   }
 
-  .remove {
-    padding: 9px 0;
-    color: #AAA;
-    cursor: pointer;
+  .remove-btn {
+    display: inline-block;
+    color: $white;
+    font-size: 14px;
+    margin: 0.5em;
+
+    svg {
+      width: 1em;
+    }
   }
 }

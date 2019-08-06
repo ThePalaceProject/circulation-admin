@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Alert } from "react-bootstrap";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { Button } from "library-simplified-reusable-components";
 
 export interface ErrorMessageProps {
   error: FetchErrorData;
@@ -21,9 +22,13 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
       alertElement = (
         <Alert bsStyle="danger">
           <h4>You have been logged out.<br />
-            <a target="_blank" href="/admin/sign_in_again">Log in again</a><br />
+            <a target="_blank" href="/admin/sign_in_again">Log in again</a>
             { this.props.tryAgain &&
-              <a role="button" onClick={this.tryAgain.bind(this)}>Try again</a>
+              <Button
+                className="left-align"
+                callback={this.tryAgain.bind(this)}
+                content="Try again"
+              />
             }
           </h4>
         </Alert>
@@ -55,7 +60,11 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
             }
             <span dangerouslySetInnerHTML={{ __html: errorMessageText }} /><br />
             { this.props.tryAgain &&
-              <a role="button" onClick={this.tryAgain.bind(this)}>Try again</a>
+              <Button
+                className="left-align"
+                callback={this.tryAgain.bind(this)}
+                content="Try again"
+              />
             }
           </h4>
         </Alert>

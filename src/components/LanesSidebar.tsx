@@ -1,11 +1,6 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
 import AddIcon from "./icons/AddIcon";
-import PencilIcon from "./icons/PencilIcon";
 import ResetIcon from "./icons/ResetIcon";
-import VisibleIcon from "./icons/VisibleIcon";
-import HiddenIcon from "./icons/HiddenIcon";
-import XCloseIcon from "./icons/XCloseIcon";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Link } from "react-router";
 import { LaneData } from "../interfaces";
