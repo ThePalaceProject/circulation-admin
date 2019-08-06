@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.11
+#### Fixed
+- Fixed an issue with the alignment of delete buttons in the Input List component. 
+
 ### v0.3.10
 #### Updated
 - Updating the scss files so they better match one-to-one with React component files.
