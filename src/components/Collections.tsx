@@ -29,11 +29,10 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
   EditForm = CollectionEditForm;
   listDataKey = "collections";
   itemTypeName = "collection";
-  linkName = "collections";
   urlBase = "/admin/web/config/collections/";
   identifierKey = "id";
   labelKey = "name";
-  hasSelfTests = true;
+  links = this.renderLinks();
 
   static childContextTypes: React.ValidationMap<any> = {
     registerLibrary: PropTypes.func,
@@ -61,6 +60,15 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
     if (this.props.fetchLibraryRegistrations) {
       this.props.fetchLibraryRegistrations();
     }
+  }
+
+  renderLinks(): {[key: string]: JSX.Element} {
+    let linkBase = "/admin/web/troubleshooting/self-tests/collections";
+    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+    return {
+      "info": <>Self-tests for the collections have been moved to {linkElement}</>,
+      "footer": <>Problems with your collections?  Please visit {linkElement}.</>
+    };
   }
 
   renderLi(item, index): JSX.Element {

@@ -27,22 +27,27 @@ export default class TroubleshootingCategoryPage extends React.Component<Trouble
     csrfToken: PropTypes.string.isRequired
   };
 
+  CATEGORIES = {
+    "diagnostics": ["coverage_provider", DiagnosticsTabContainer, "service-types"],
+    "self-tests": ["collections", SelfTestsTabContainer, "self-test-types"]
+  };
+
   constructor(props) {
     super(props);
-    let defaultSubtab = this.props.type === "diagnostics" ? "coverage_provider" : "collections";
+    let defaultSubtab = this.CATEGORIES[this.props.type][0];
     this.state = { tab: this.props.subtab || defaultSubtab };
     this.goToTab = this.goToTab.bind(this);
   }
 
   render(): JSX.Element {
-    let tabContainer = this.props.type === "diagnostics" ? DiagnosticsTabContainer : SelfTestsTabContainer;
+    let [tabContainer, className] = [this.CATEGORIES[this.props.type][1], this.CATEGORIES[this.props.type][2]];
     return(
       <div className={`${this.props.type}-page`}>
        {
          React.createElement(
            tabContainer,
            {
-             class: this.props.type === "diagnostics" ? "service-types" : "self-test-types",
+             class: className,
              store: this.context.editorStore,
              csrfToken: this.context.csrfToken,
              tab: this.props.subtab || this.state.tab,

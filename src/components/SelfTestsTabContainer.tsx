@@ -66,8 +66,9 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
   getNames(category: string): string[] {
     // The name used to look up data in the store: "collections", "patron_auth_services", "search_services".
     let keyName = category.split(/(?=[A-Z])/).map(w => w.toLowerCase()).join("_");
-    // The name the SelfTests component is expecting: "collection", "patron_authentication_service", "search_service".
-    let typeName = keyName.replace("auth", "authentication").slice(0, -1);
+    // The name the SelfTests component is expecting: "collection", "patron_auth_service", "search_service".
+    let typeName = keyName.slice(0, -1);
+    // let typeName = keyName.replace("auth", "authentication").slice(0, -1);
     // The name used to create a link to the service's edit form: "collections", "patronAuth", "search".
     let linkName = category.replace("Services", "");
 

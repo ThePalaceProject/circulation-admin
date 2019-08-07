@@ -54,7 +54,6 @@ describe("EditableConfigList", () => {
     EditForm = ThingEditForm;
     listDataKey = "things";
     itemTypeName = "thing";
-    linkName = "thingServices";
     urlBase = "/admin/things/";
     identifierKey = "id";
     labelKey = "label";
@@ -81,7 +80,10 @@ describe("EditableConfigList", () => {
   }
 
   class ThingWithSelfTests extends ThingEditableConfigList {
-    hasSelfTests = true;
+    links = {
+      "info": <>Self-tests for the things have been moved to <a href="/admin/web/troubleshooting/self-tests/thingServices">the troubleshooting page</a>.</>,
+      "footer": <>Problems with your things?  Please visit <a href="/admin/web/troubleshooting/self-tests/thingServices">the troubleshooting page</a>.</>
+    };
   }
 
   let wrapper;

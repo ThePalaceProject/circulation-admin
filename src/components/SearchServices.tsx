@@ -1,8 +1,10 @@
+import * as React from "react";
 import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { SearchServicesData, SearchServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
+import { Alert } from "react-bootstrap";
 
 /** Right panel for search services on the system configuration page.
     Shows a list of current search services and allows creating a new
@@ -15,8 +17,16 @@ export class SearchServices extends EditableConfigList<SearchServicesData, Searc
   identifierKey = "id";
   labelKey = "protocol";
   limitOne = true;
-  hasSelfTests = true;
-  linkName = "searchServices";
+  links = this.renderLinks();
+
+  renderLinks(): {[key: string]: JSX.Element} {
+    let linkBase = "/admin/web/troubleshooting/self-tests/searchServices";
+    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+    return {
+      "info": <>Self-tests for the search service have been moved to {linkElement}.</>,
+      "footer": <>Problems with your search service?  Please visit {linkElement}.</>
+    };
+  }
 }
 
 function mapStateToProps(state, ownProps) {

@@ -140,7 +140,7 @@ describe("SelfTestsTabContainer", () => {
 
   it("converts from the tab name to the key name, type name, and link name", () => {
     expect(wrapper.instance().getNames("collections")).to.eql(["collections", "collection", "collections"]);
-    expect(wrapper.instance().getNames("patronAuthServices")).to.eql(["patron_auth_services", "patron_authentication_service", "patronAuth"]);
+    expect(wrapper.instance().getNames("patronAuthServices")).to.eql(["patron_auth_services", "patron_auth_service", "patronAuth"]);
     expect(wrapper.instance().getNames("searchServices")).to.eql(["search_services", "search_service", "search"]);
   });
 });
