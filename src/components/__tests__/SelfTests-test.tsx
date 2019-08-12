@@ -181,16 +181,15 @@ describe("SelfTests", () => {
       const selfTestResults = list.find("li");
 
       expect(selfTestResults.length).to.equal(2);
+      expect(list.childAt(1).find("li").hasClass("success")).to.equal(true);
+      expect(list.childAt(1).find("h4").text()).to.equal("Initial setup.");
+      expect(list.childAt(1).find(".success-description").text()).to.equal("success: true");
+      expect(list.childAt(1).find(".exception-description").length).to.equal(0);
 
-      expect(list.childAt(0).render().hasClass("success")).to.equal(true);
-      expect(list.childAt(0).find("h4").text()).to.equal("Initial setup.");
-      expect(list.childAt(0).find(".success-description").text()).to.equal("success: true");
-      expect(list.childAt(0).find(".exception-description").length).to.equal(0);
-
-      expect(list.childAt(1).render().hasClass("failure")).to.equal(true);
-      expect(list.childAt(1).find("h4").text()).to.equal("Acquiring test patron credentials.");
-      expect(list.childAt(1).find(".success-description").text()).to.equal("success: false");
-      expect(list.childAt(1).find(".exception-description").text()).to.equal("exception: Collection is not associated with any libraries.");
+      expect(list.childAt(2).find("li").hasClass("failure")).to.equal(true);
+      expect(list.childAt(2).find("h4").text()).to.equal("Acquiring test patron credentials.");
+      expect(list.childAt(2).find(".success-description").text()).to.equal("success: false");
+      expect(list.childAt(2).find(".exception-description").text()).to.equal("exception: Collection is not associated with any libraries.");
     });
   });
 
