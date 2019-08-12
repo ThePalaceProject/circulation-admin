@@ -98,18 +98,17 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
           {results.length ? resultIcon : null}
           <p className="description">{failedSelfTest ? failedSelfTest : testDescription}</p>
         </div>
+        { runButton }
         <div className="results">
-          <h4>Self Test Results</h4>
           {isFetching &&
             <span>Running new self tests</span>
           }
-          { runButton }
           {
             this.state.error &&
-              <ErrorMessage error={this.state.error} />
+            <ErrorMessage error={this.state.error} />
           }
           {
-            resultList && <ul>{resultList}</ul>
+            resultList && <ul><h4>Self Test Results</h4>{resultList}</ul>
           }
         </div>
       </div>

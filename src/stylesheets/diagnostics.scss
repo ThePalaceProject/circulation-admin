@@ -71,6 +71,9 @@
       li {
         border-bottom: none;
         max-width: none;
+        .well {
+          max-width: 100%;
+        }
       }
       .exception {
         border-color: $red-tint;
@@ -81,6 +84,8 @@
       pre {
         border: none;
         background: inherit;
+        overflow: scroll;
+        width: 100%;
       }
     }
   }

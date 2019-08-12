@@ -6,7 +6,17 @@
           flex-wrap: wrap;
         }
       }
+      a {
+        color: $blue;
+        &:hover {
+          color: $blue-dark;
+        }
+      }
       .integration-selftests {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
         padding: 20px 0 0;
         flex-grow: 1;
         width: 100%;
@@ -32,14 +42,19 @@
         & > div:first-child {
           display: flex;
           justify-content: space-between;
-          align-items: baseline;
+          align-items: center;
+          width: 100%;
+          .description {
+            margin-bottom: 0;
+          }
         }
 
-        .btn-default {
-          margin-right: 0;
+        .btn {
+          margin-left: auto;
         }
 
         .results {
+          width: 100%;
           display: flex;
           align-items: center;
           flex-wrap: wrap;
@@ -61,8 +76,7 @@
               display: list-item;
             }
           }
-
-          .alert {
+          & > div:first-child {
             width: 100%;
             margin-top: 15px;
           }
