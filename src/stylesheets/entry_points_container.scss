@@ -2,6 +2,46 @@
   height: 100%;
   margin: 10px 0 15px;
   padding: 0 15px;
+  .lane {
+    a.title {
+      color: $blue;
+      &:hover {
+        color: $blue-dark;
+      }
+    }
+    .lane-books-container {
+      .scroll-button {
+        background: $blue;
+        &:hover {
+          background: $blue-dark;
+          color: $white;
+          transition: background .5s;
+        }
+        &.right {
+          border-top-right-radius: .25em;
+          border-bottom-right-radius: .25em;
+        }
+        &.left {
+          border-top-left-radius: .25em;
+          border-bottom-left-radius: .25em;
+        }
+      }
+    }
+    .item-icon svg {
+      fill: $blue;
+      &:hover {
+        fill: $blue-dark;
+      }
+    }
+    .item-details {
+      color: $blue;
+      .title, span {
+        &:hover {
+          color: $blue-dark;
+        }
+      }
+    }
+  }
 
   .nav-tabs {
     border-bottom: 1px solid $dark;
