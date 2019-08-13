@@ -5,7 +5,6 @@ import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
 import { CollectionsData, CollectionData, LibraryData, LibraryRegistrationsData, ServiceData } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
-import SelfTests from "./SelfTests";
 import TrashIcon from "./icons/TrashIcon";
 
 export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {
@@ -28,12 +27,12 @@ class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsDat
     the collection supports it. */
 export class Collections extends GenericEditableConfigList<CollectionsData, CollectionData, CollectionsProps> {
   EditForm = CollectionEditForm;
-  AdditionalContent = SelfTests;
   listDataKey = "collections";
   itemTypeName = "collection";
   urlBase = "/admin/web/config/collections/";
   identifierKey = "id";
   labelKey = "name";
+  links = this.renderLinks();
 
   static childContextTypes: React.ValidationMap<any> = {
     registerLibrary: PropTypes.func,
@@ -61,6 +60,15 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
     if (this.props.fetchLibraryRegistrations) {
       this.props.fetchLibraryRegistrations();
     }
+  }
+
+  renderLinks(): {[key: string]: JSX.Element} {
+    let linkBase = "/admin/web/troubleshooting/self-tests/collections";
+    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+    return {
+      "info": <>Self-tests for the collections have been moved to {linkElement}</>,
+      "footer": <>Problems with your collections?  Please visit {linkElement}.</>
+    };
   }
 
   renderLi(item, index): JSX.Element {

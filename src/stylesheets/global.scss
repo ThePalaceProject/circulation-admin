@@ -36,6 +36,12 @@
 }
 
 .breadcrumbs-or-search-wrapper {
+  a {
+    color: $blue;
+    &:hover {
+      color: $blue-dark;
+    }
+  }
   .search {
     button {
       margin-top: 0;

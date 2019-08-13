@@ -43,6 +43,9 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
   handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
     this.props.goToTab(tab);
+    if (this.context.router) {
+      this.context.router.push("/admin/web/troubleshooting/diagnostics/" + tab);
+    }
   }
 
   tabDisplayName(name) {

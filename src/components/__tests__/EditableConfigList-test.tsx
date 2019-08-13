@@ -79,6 +79,13 @@ describe("EditableConfigList", () => {
     AdditionalContent = AdditionalContent;
   }
 
+  class ThingWithSelfTests extends ThingEditableConfigList {
+    links = {
+      "info": <>Self-tests for the things have been moved to <a href="/admin/web/troubleshooting/self-tests/thingServices">the troubleshooting page</a>.</>,
+      "footer": <>Problems with your things?  Please visit <a href="/admin/web/troubleshooting/self-tests/thingServices">the troubleshooting page</a>.</>
+    };
+  }
+
   let wrapper;
   let fetchData;
   let editItem;
@@ -398,5 +405,49 @@ describe("EditableConfigList", () => {
     expect(additionalContent.length).to.equal(1);
     expect(additionalContent.props().item).to.deep.equal(thingData);
     expect(additionalContent.props().csrfToken).to.equal("token");
+  });
+
+  it("should not render a troubleshooting link if there are no self-tests", () => {
+    let link = wrapper.find("h5");
+    expect(link.length).to.equal(0);
+  });
+
+  it("should not render an info alert if there are no self-tests", () => {
+    let alert = wrapper.find(Alert);
+    expect(alert.length).to.equal(0);
+  });
+
+  it("should render a troubleshooting link if there are self-tests", () => {
+    wrapper = shallow(
+      <ThingWithSelfTests
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+      />
+    );
+    let link = wrapper.find("p");
+    expect(link.length).to.equal(1);
+    expect(link.text()).to.equal("Problems with your things?  Please visit the troubleshooting page.");
+    expect(link.find("a").prop("href")).to.equal("/admin/web/troubleshooting/self-tests/thingServices");
+  });
+
+  it("should render an info alert if there are self-tests", () => {
+    wrapper = mount(
+      <ThingWithSelfTests
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+      />
+    );
+    let alert = wrapper.find(".alert");
+    expect(alert.length).to.equal(1);
+    expect(alert.text()).to.equal("Self-tests for the things have been moved to the troubleshooting page.");
+    expect(alert.find("a").prop("href")).to.equal("/admin/web/troubleshooting/self-tests/thingServices");
   });
 });

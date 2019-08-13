@@ -1,0 +1,180 @@
+.diagnostics-page, .self-tests-page {
+  width: 84%;
+  height: 100%;
+  position: absolute;
+  left: 16%;
+  h3  {
+    margin: 0 0 20px 0;
+  }
+  // Service Type tabs
+  .service-types, .self-test-types {
+    height: 100%;
+    width: 100%;
+    > .nav-tabs {
+      border-bottom: 1px solid $dark;
+      li {
+        &.active {
+          a,
+          a:hover,
+          a:focus,
+          a:visited {
+            border: 1px solid $dark;
+            border-bottom-color: transparent;
+          }
+        }
+      }
+    }
+    > .tab-content {
+      height: 100%;
+      border-left: 1px solid $dark;
+      border-bottom: 1px solid $dark;
+      padding-top: 2em;
+      padding-bottom: 2em;
+      overflow-y: scroll;
+    }
+  }
+
+  // List of services
+  .services .nav-tabs {
+    border-bottom: 1px solid $medium-gray;
+    border-right: 1px solid $medium-gray;
+    border-top: none;
+    li {
+      border-color: $medium-gray;
+      a {
+        border: none;
+        border-radius: 0;
+        .service-name {
+          display: inline-block;
+          max-width: 85%;
+          margin: 0;
+        }
+      }
+      &.active {
+        border-bottom: 1px solid $medium-gray;
+        a {
+          border-top: 1px solid $dark;
+          border-right: 1px solid $dark;
+          border-bottom: 1px solid $dark;
+          border-left: none;
+        }
+      }
+    }
+  }
+
+  // List of collections
+  .services .tab-content {
+    padding: 0;
+    min-width: 70%;
+    height: 100%;
+    // Individual collection
+    .timestamps {
+      padding: 0;
+      .timestamp-holder {
+        padding: 0;
+        min-width: 100%;
+        border: none;
+        margin: 0;
+      }
+    }
+  }
+
+  // Individual timestamp
+  .timestamp-holder {
+    // Timestamp info inside panel body
+    .panel .panel-body ul {
+      padding: 0;
+      li {
+        border-bottom: none;
+        max-width: none;
+      }
+      .exception {
+        border-color: $red-tint;
+        background: $red-error;
+        box-shadow: inset 0 .5px .5px $red-tint;
+        overflow-x: scroll;
+      }
+      pre {
+        border: none;
+        background: inherit;
+      }
+    }
+  }
+}
+
+.self-test-types .tab-content {
+  padding: 0 40px;
+  height: 100%;
+  ul {
+    padding: 0;
+  }
+}
+
+.troubleshooting-page {
+  height: 100%;
+  width: 100%;
+  h2 {
+    margin-left: 15px;
+  }
+  .body {
+    height: 100%;
+    width: 100%;
+    > .tab-container {
+      position: relative;
+      height: 100%;
+      > .nav-tabs {
+        width: 15%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        border-right: 1px solid #DDD;
+        border-top: 1px solid #DDD;
+
+        li {
+          display: block;
+          width: 100%;
+          &.active {
+            a {
+              background: $dark;
+              color: $white;
+            }
+          }
+          &:hover:not(.active) {
+            a {
+              background: $blue;
+              color: $white;
+            }
+          }
+
+          a {
+            padding-left: 15px;
+            width: 100%;
+            border-bottom: 1px solid #DDD;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-radius: 0;
+            color: $dark;
+          }
+        }
+      }
+    }
+  }
+}
+
+.self-test-types .tab-content {
+  ul {
+    li:not(.panel) {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0px;
+      padding-bottom: 5px;
+      h4 {
+        margin-right: 20px;
+        flex-grow: 1;
+      }
+    }
+  }
+}
