@@ -33,7 +33,6 @@ export interface SelfTestsOwnProps {
 export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsStateProps, SelfTestsDispatchProps, SelfTestsOwnProps {}
 
 export interface SelfTestsState {
-  expand: boolean;
   runTests: boolean;
   error: FetchErrorData;
 }
@@ -43,17 +42,14 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     super(props);
 
     this.state = {
-      expand: false,
       runTests: false,
       error: null,
     };
-    this.toggleView = this.toggleView.bind(this);
     this.runSelfTests = this.runSelfTests.bind(this);
   }
 
   render() {
     const integration = this.props.item;
-    const expand = this.state.expand;
     const selfTestException = integration.self_test_results && integration.self_test_results.exception;
     let date;
     let startDate;
@@ -63,7 +59,6 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     let startTime;
     let results = [];
     let duration;
-    let disableToggleView = false;
 
     if (integration.self_test_results && !selfTestException) {
       date = new Date(integration.self_test_results.start);
@@ -76,8 +71,6 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
     }
 
-    const expandResultClass = expand ? "active" : "";
-    const resultsLabel = expand ? "Collapse" : "Expand";
     const findFailures = (result) => !result.success;
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
@@ -88,15 +81,6 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       "No self test results found.";
 
     const failedSelfTest = selfTestException ? selfTestException : "";
-    const disableToggle = integration.self_test_results && integration.self_test_results.disabled;
-
-    const toggleButton = (
-      <Button
-        callback={this.toggleView}
-        disabled={disableToggle}
-        content={`${resultsLabel} Results`}
-      />
-    );
 
     const runButton = (
       <Button
@@ -106,45 +90,34 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       />
     );
 
-    let resultList = integration.self_test_results ? results.map(result => <SelfTestResult result={result} isFetching={isFetching} />) : null;
+    let resultList = integration.self_test_results ? results.map((result, idx) => <SelfTestResult key={idx} result={result} isFetching={isFetching} />) : null;
 
     return (
       <div className="integration-selftests">
         <div>
           {results.length ? resultIcon : null}
           <p className="description">{failedSelfTest ? failedSelfTest : testDescription}</p>
-          { toggleButton }
         </div>
-        <div className={`results collapse ${expandResultClass}`}>
-          <h4>Self Test Results</h4>
+        { runButton }
+        <div className="results">
           {isFetching &&
             <span>Running new self tests</span>
           }
-          { runButton }
           {
             this.state.error &&
-              <ErrorMessage error={this.state.error} />
+            <ErrorMessage error={this.state.error} />
           }
           {
-            resultList && <ul>{resultList}</ul>
+            resultList && <ul><h4>Self Test Results</h4>{resultList}</ul>
           }
         </div>
       </div>
     );
   }
 
-  toggleView() {
-    this.setState({
-      expand: !this.state.expand,
-      runTests: this.state.runTests,
-      error: null,
-    });
-  }
-
   async runSelfTests(e) {
     e.preventDefault();
     this.setState({
-      expand: this.state.expand,
       runTests: true,
       error: null,
     });
@@ -153,13 +126,11 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       await this.props.runSelfTests();
       this.props.getSelfTests();
       this.setState({
-        expand: this.state.expand,
         runTests: false,
         error: null,
       });
     } catch (error) {
       this.setState({
-        expand: this.state.expand,
         runTests: false,
         error: error,
       });

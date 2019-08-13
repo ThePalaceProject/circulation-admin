@@ -167,19 +167,20 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 >Dashboard</Link>
               </li>
             }
-            { isSystemAdmin &&
-              <li className="header-link">
-                <Link to={"/admin/web/diagnostics"}
-                className={currentPathname.indexOf("/admin/web/diagnostics") !== -1 ? "active-link" : ""}
-                >Diagnostics</Link>
-              </li>
-            }
             { this.context.admin.isLibraryManagerOfSomeLibrary() &&
               <li className="header-link">
                 <Link
                   to="/admin/web/config"
                   className={currentPathname.indexOf("/admin/web/config") !== -1 ? "active-link" : ""}
                 >System Configuration</Link>
+              </li>
+            }
+            { isSystemAdmin &&
+              <li className="header-link">
+                <Link
+                  to={"/admin/web/troubleshooting"}
+                  className={currentPathname.indexOf("/admin/web/troubleshooting") !== -1 ? "active-link" : ""}
+                >Troubleshooting</Link>
               </li>
             }
             { this.context.admin.email &&

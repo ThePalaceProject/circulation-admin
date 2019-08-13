@@ -3,12 +3,12 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import DiagnosticsPage from "../DiagnosticsPage";
+import TroubleshootingCategoryPage from "../TroubleshootingCategoryPage";
 import DiagnosticsTabContainer from "../DiagnosticsTabContainer";
-import Header from "../Header";
+import SelfTestsTabContainer from "../SelfTestsTabContainer";
 import buildStore from "../../store";
 
-describe("DiagnosticsPage", () => {
+describe("TroubleshootingCategoryPage", () => {
   let wrapper;
   let store;
   let context;
@@ -16,19 +16,7 @@ describe("DiagnosticsPage", () => {
   beforeEach(() => {
     store = buildStore();
     context = { editorStore: store, csrfToken: "token" };
-
-    wrapper = shallow(<DiagnosticsPage />, { context });
-  });
-
-  it("renders a Header", () => {
-    let header = wrapper.find(Header);
-    expect(header.length).to.equal(1);
-  });
-
-  it("renders a heading", () => {
-    let heading = wrapper.find("h2");
-    expect(heading.length).to.equal(1);
-    expect(heading.text()).to.equal("Diagnostics");
+    wrapper = shallow(<TroubleshootingCategoryPage type="diagnostics" />, { context });
   });
 
   it("renders a tab container", () => {
@@ -46,9 +34,9 @@ describe("DiagnosticsPage", () => {
     expect(wrapper.find(DiagnosticsTabContainer).prop("tab")).to.equal("monitor");
   });
 
-  it("sets the document title", () => {
-    let title = (global as any).window.document.title;
-    expect(title).to.equal("Circulation Manager - Diagnostics");
+  it("renders a different tab container", () => {
+    wrapper.setProps({ type: "self-tests" });
+    expect(wrapper.find(DiagnosticsTabContainer).length).to.equal(0);
+    expect(wrapper.find(SelfTestsTabContainer).length).to.equal(1);
   });
-
 });

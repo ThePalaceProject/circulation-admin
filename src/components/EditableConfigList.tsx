@@ -67,6 +67,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   abstract identifierKey: string;
   abstract labelKey: string;
   limitOne = false;
+  links?: {[key: string]: JSX.Element};
   AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
 
   constructor(props) {
@@ -94,6 +95,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     return (
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
+        { canListAllData && this.links && this.links["info"] &&
+          <Alert bsStyle="info">{this.links["info"]}</Alert>
+        }
         { this.props.responseBody && this.props.editOrCreate &&
           <Alert bsStyle="success">
             {this.successMessage()}
@@ -158,6 +162,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               />
           </div>
         }
+        { this.links && this.links["footer"] && <p>{this.links["footer"]}</p> }
       </div>
     );
   }

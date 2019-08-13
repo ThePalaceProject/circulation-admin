@@ -1,9 +1,9 @@
+import * as React from "react";
 import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
-import SelfTests from "./SelfTests";
 
 /** Right panel for patron authentication services on the system
     configuration page. Shows a list of current patron authentication
@@ -11,12 +11,12 @@ import SelfTests from "./SelfTests";
     an existing service. */
 export class PatronAuthServices extends EditableConfigList<PatronAuthServicesData, PatronAuthServiceData> {
   EditForm = ServiceEditForm;
-  AdditionalContent = SelfTests;
   listDataKey = "patron_auth_services";
   itemTypeName = "patron authentication service";
   urlBase = "/admin/web/config/patronAuth/";
   identifierKey = "id";
   labelKey = "protocol";
+  links = this.renderLinks();
 
   label(item): string {
     for (const protocol of this.props.data.protocols) {
@@ -25,6 +25,15 @@ export class PatronAuthServices extends EditableConfigList<PatronAuthServicesDat
       }
     }
     return item.protocol;
+  }
+
+  renderLinks(): {[key: string]: JSX.Element} {
+    let linkBase = "/admin/web/troubleshooting/self-tests/patronAuthServices";
+    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+    return {
+      "info": <>Self-tests for the patron authentication services have been moved to {linkElement}.</>,
+      "footer": <>Problems with your patron authentication services?  Please visit {linkElement}.</>
+    };
   }
 }
 
