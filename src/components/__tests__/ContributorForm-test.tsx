@@ -67,7 +67,37 @@ describe.only("ContributorForm", () => {
     expect(button.text()).to.equal("Add");
   });
 
-  it.only("deletes a contributor", () => {
+  it("deletes a contributor", () => {
+    expect(wrapper.state()["contributors"]).to.eql(contributors);
+    let existingContributors = wrapper.find(".with-remove-button");
+    expect(existingContributors.length).to.equal(2);
+    expect(hasSelect(existingContributors.first(), roles[contributors[0].role]));
+    expect(hasInput(existingContributors.first(), contributors[0].name));
+    existingContributors.first().find("button").simulate("click");
+    expect(wrapper.state()["contributors"]).to.eql([contributors[1]]);
+    existingContributors = wrapper.find(".with-remove-button");
+    expect(existingContributors.length).to.equal(1);
+    expect(hasSelect(existingContributors.first(), roles[contributors[1].role]));
+    expect(hasInput(existingContributors.first(), contributors[1].name));
+  });
+
+  it.only("adds a contributor", () => {
+    expect(wrapper.state()["contributors"]).to.eql(contributors);
+    let existingContributors = wrapper.find(".with-remove-button");
+    expect(existingContributors.length).to.equal(2);
+    let newContributorForm = wrapper.find(".contributor-form").last();
+    newContributorForm.find("select").getDOMNode().value = "Illustrator";
+    newContributorForm.find("select").simulate("change");
+    newContributorForm.find("input").getDOMNode().value = "An Illustrator";
+    newContributorForm.find("input").simulate("change");
+    newContributorForm.find("button").simulate("click");
+    expect(wrapper.state()["contributors"]).to.eql(
+      contributors.concat({ role: "Illustrator", name: "An Illustrator" })
+    );
+    existingContributors = wrapper.find(".with-remove-button");
+    expect(existingContributors.length).to.equal(3);
+    expect(existingContributors.last().find("select").prop("value")).to.equal("Illustrator");
+    expect(existingContributors.last().find("input").prop("value")).to.equal("An Illustrator");
 
   });
 
