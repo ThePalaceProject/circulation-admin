@@ -50,6 +50,19 @@
   // EntryPointsTabs
   .entry-points-list {
     li {
+      a {
+        color: $blue;
+        svg {
+          fill: $blue;
+        }
+        &:hover {
+          color: $blue-dark;
+          svg {
+            fill: $blue-dark;
+          }
+        }
+      }
+
       &.no-svg {
         a {
           padding: 11px;
@@ -65,7 +78,7 @@
           border-bottom-color: transparent;
 
           svg {
-            fill: $dark;
+            fill: $blue-dark;
           }
         }
       }
@@ -73,24 +86,12 @@
       a {
         min-width: 100px;
         text-align: center;
-
-        &:visited {
-          svg {
-            fill: $linkvisitedcolor;
-          }
-        }
-        &:hover {
-          svg {
-            fill: $linkhovercolor;
-          }
-        }
       }
 
       svg {
         height: 28px;
         width: 28px;
         margin: 0 3px -9px 0;
-        fill: $linkcolor;
       }
     }
   }

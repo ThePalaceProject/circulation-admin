@@ -8,3 +8,4 @@ npm-debug.log
 selenium-debug.log
 tests/browser/reports/*
 selenium-server.log
+docs
