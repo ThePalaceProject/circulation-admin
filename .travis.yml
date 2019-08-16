@@ -13,5 +13,5 @@ deploy:
   keep-history: true
   github_token: $GITHUB_TOKEN
   on:
-    branch: typedoc-2
+    branch: master
   local_dir: docs
