@@ -10,6 +10,9 @@ export interface ToolTipProps {
   direction?: string;
 }
 
+/**
+ * Displays a tooltip helper displaying additional information.
+ */
 export default class ToolTip extends React.Component <ToolTipProps, ToolTipState> {
 
   constructor(props) {

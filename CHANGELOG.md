@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.12
+#### Added
+- Typedoc for generating code documentation.
+
 ### v0.3.11
 #### Added
 - Created a Troubleshooting page, comprising Diagnostics and Self-tests.
