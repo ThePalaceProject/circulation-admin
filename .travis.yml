@@ -5,3 +5,13 @@ node_js:
 
 before_script:
 - export TZ=America/New_York
+- npm run build-docs
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  keep-history: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
+  local_dir: docs

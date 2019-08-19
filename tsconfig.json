@@ -13,5 +13,9 @@
     "lib",
     "node_modules",
     "tests"
-  ]
+  ],
+  "typedocOptions": {
+    "mode": "file",
+    "out": "docs"
+  }
 }

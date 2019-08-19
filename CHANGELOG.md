@@ -1,6 +1,8 @@
 ## Changelog
 
 ### v0.3.12
+#### Added
+- Typedoc for generating code documentation.
 #### Fixed
 - Fixed an issue with the alignment of delete buttons in the Classifications Form.
 

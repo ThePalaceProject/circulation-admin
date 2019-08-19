@@ -2,14 +2,12 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import { ChangePasswordForm } from "../ChangePasswordForm";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../ErrorMessage";
 import EditableInput from "../EditableInput";
-import { Alert } from "react-bootstrap";
-import { Form } from "library-simplified-reusable-components";
 
 
 describe("ChangePasswordForm", () => {
