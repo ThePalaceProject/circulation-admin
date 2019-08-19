@@ -23,7 +23,7 @@
     "test-firefox": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox",
     "dev": "webpack --watch --progress --display-modules --config webpack.dev.config",
     "prod": "webpack -p --progress --display-modules --config webpack.prod.config",
-    "build-docs": "node_modules/.bin/typedoc --tsconfig tsconfig.json"
+    "build-docs": "typedoc --tsconfig tsconfig.json"
   },
   "dependencies": {
     "@nypl/dgx-svg-icons": "0.3.4",
