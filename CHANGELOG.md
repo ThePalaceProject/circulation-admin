@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.13
+#### Updated
+- Refactored the BookEditForm code.
+
 ### v0.3.12
 #### Added
 - Typedoc for generating code documentation.

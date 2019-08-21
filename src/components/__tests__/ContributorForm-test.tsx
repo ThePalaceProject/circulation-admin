@@ -1,16 +1,11 @@
 import { expect } from "chai";
-import { stub } from "sinon";
-
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import ContributorForm from "../ContributorForm";
-import EditableInput from "../EditableInput";
-import WithRemoveButton from "../WithRemoveButton";
-import { Button } from "library-simplified-reusable-components";
 import { RolesData, ContributorData } from "../../interfaces";
 
-describe.only("ContributorForm", () => {
+describe("ContributorForm", () => {
   let roles: RolesData = {
     "aut": "Author",
     "ill": "Illustrator",
@@ -81,7 +76,7 @@ describe.only("ContributorForm", () => {
     expect(hasInput(existingContributors.first(), contributors[1].name));
   });
 
-  it.only("adds a contributor", () => {
+  it("adds a contributor", () => {
     expect(wrapper.state()["contributors"]).to.eql(contributors);
     let existingContributors = wrapper.find(".with-remove-button");
     expect(existingContributors.length).to.equal(2);
@@ -98,7 +93,13 @@ describe.only("ContributorForm", () => {
     expect(existingContributors.length).to.equal(3);
     expect(existingContributors.last().find("select").prop("value")).to.equal("Illustrator");
     expect(existingContributors.last().find("input").prop("value")).to.equal("An Illustrator");
+  });
 
+  it("looks up the full name of a contributor's role", () => {
+    expect(wrapper.instance().getContributorRole(contributors[0])).to.equal("Translator");
+    // If the look-up doesn't yield anything, it just uses the abbreviated version.
+    let adapter = { name: "An Adapter", role: "adp" };
+    expect(wrapper.instance().getContributorRole(adapter)).to.equal("adp");
   });
 
 });
