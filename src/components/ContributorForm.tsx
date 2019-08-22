@@ -33,6 +33,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
   }
 
   newContributor(): JSX.Element {
+    // The component for adding a new contributor; menu, input field, and add button.
     const newRoleRef = this.refs["addContributorRole"] as any;
     const newRoleValue = newRoleRef && newRoleRef.getValue();
     return (
@@ -51,6 +52,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
   }
 
   contributorSelect(contributorRole?: string, isNew = false): JSX.Element {
+    // The drop-down list of all the possible contributor roles.
     return (
       <EditableInput
         elementType="select"
@@ -68,6 +70,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
   }
 
   contributorField(contributor?) {
+    // The input field containing the name of the contributor.
     return(
       <EditableInput
         elementType="input"
@@ -82,6 +85,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
   }
 
   existingContributors() {
+    // The list of one or more existing contributors; each row has menu, input field, and delete button.
     return this.state.contributors.map(contributor => {
       const contributorRole = this.getContributorRole(contributor);
       return (
