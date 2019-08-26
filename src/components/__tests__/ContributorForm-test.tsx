@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
+import { spy } from "sinon";
 
 import ContributorForm from "../ContributorForm";
 import { RolesData, ContributorData } from "../../interfaces";
@@ -35,7 +36,7 @@ describe("ContributorForm", () => {
 
   beforeEach(() => {
     wrapper = mount(
-      <ContributorForm roles={roles} contributors={contributors}/>
+      <ContributorForm roles={roles} contributors={contributors} disabled={false} />
     );
   });
 
@@ -93,6 +94,33 @@ describe("ContributorForm", () => {
     expect(existingContributors.length).to.equal(3);
     expect(existingContributors.last().find("select").prop("value")).to.equal("Illustrator");
     expect(existingContributors.last().find("input").prop("value")).to.equal("An Illustrator");
+  });
+
+  it("does not add an empty string as a contributor's name", () => {
+    let spyAddContributor = spy(wrapper.instance(), "addContributor");
+    let newContributorForm = wrapper.find(".contributor-form").last();
+    let button = newContributorForm.find("button");
+    expect(wrapper.state()["disabled"]).to.be.true;
+    button.simulate("click");
+    // Nothing happens.
+    expect(spyAddContributor.callCount).to.equal(0);
+
+    newContributorForm.find("input").getDOMNode().value = "An Author";
+    newContributorForm.find("input").simulate("change");
+    expect(wrapper.state()["disabled"]).to.be.false;
+    button.simulate("click");
+    // The button works now!
+    expect(spyAddContributor.callCount).to.equal(1);
+
+    // Deleting the text disables the button again.
+    newContributorForm.find("input").getDOMNode().value = "";
+    newContributorForm.find("input").simulate("change");
+    expect(wrapper.state()["disabled"]).to.be.true;
+    expect(wrapper.state()["disabled"]).to.be.true;
+    button.simulate("click");
+    expect(spyAddContributor.callCount).to.equal(1);
+
+    spyAddContributor.restore();
   });
 
   it("looks up the full name of a contributor's role", () => {
