@@ -12,14 +12,16 @@ export interface ContributorFormProps {
 
 export interface ContributorFormState {
   contributors: ContributorData[];
+  disabled: boolean;
 }
 
 export default class ContributorForm extends React.Component<ContributorFormProps, ContributorFormState> {
   constructor(props) {
     super(props);
-    this.state = { contributors: this.props.contributors || [] };
+    this.state = { contributors: this.props.contributors || [], disabled: true };
     this.addContributor = this.addContributor.bind(this);
     this.removeContributor = this.removeContributor.bind(this);
+    this.toggleDisabled = this.toggleDisabled.bind(this);
   }
 
   render(): JSX.Element {
@@ -36,6 +38,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
     // The component for adding a new contributor; menu, input field, and add button.
     const newRoleRef = this.refs["addContributorRole"] as any;
     const newRoleValue = newRoleRef && newRoleRef.getValue();
+    let disabled = this.state.disabled || this.props.disabled;
     return (
       <span className="contributor-form">
         { this.contributorSelect(newRoleValue, true) }
@@ -43,7 +46,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
         <Button
           type="button"
           className="add-contributor small"
-          disabled={this.props.disabled}
+          disabled={disabled}
           callback={this.addContributor}
           content="Add"
         />
@@ -79,6 +82,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
         name="contributor-name"
         value={contributor && contributor.name}
         ref={!contributor && "addContributorName"}
+        onChange={this.toggleDisabled}
         optionalText={false}
       />
     );
@@ -101,6 +105,11 @@ export default class ContributorForm extends React.Component<ContributorFormProp
         </WithRemoveButton>
       );
     });
+  }
+
+  toggleDisabled(val) {
+    // If the input field for the new contributor's name is blank, the Add button will be disabled.
+    this.setState({ disabled: val.length < 1});
   }
 
   getContributorRole(contributor) {
