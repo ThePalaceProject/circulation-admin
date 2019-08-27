@@ -3,10 +3,10 @@ import * as React from "react";
 import { mount } from "enzyme";
 import { spy } from "sinon";
 
-import ContributorForm from "../ContributorForm";
+import Contributors from "../Contributors";
 import { RolesData, ContributorData } from "../../interfaces";
 
-describe("ContributorForm", () => {
+describe("Contributors", () => {
   let roles: RolesData = {
     "aut": "Author",
     "ill": "Illustrator",
@@ -36,7 +36,7 @@ describe("ContributorForm", () => {
 
   beforeEach(() => {
     wrapper = mount(
-      <ContributorForm roles={roles} contributors={contributors} disabled={false} />
+      <Contributors roles={roles} contributors={contributors} disabled={false} />
     );
   });
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import EditableInput from "./EditableInput";
-import { clearForm } from "./sharedFunctions";
+import { clearForm } from "../utils/sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 import { Panel, Button, Form } from "library-simplified-reusable-components";

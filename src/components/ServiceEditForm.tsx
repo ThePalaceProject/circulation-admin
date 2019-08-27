@@ -5,7 +5,7 @@ import { Panel, Button, Form } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
 import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
-import { clearForm } from "./sharedFunctions";
+import { clearForm } from "../utils/sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ServiceEditFormProps<T> {

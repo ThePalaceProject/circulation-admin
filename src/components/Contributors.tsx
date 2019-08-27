@@ -4,18 +4,21 @@ import { Button } from "library-simplified-reusable-components";
 import { ContributorData, RolesData } from "../interfaces";
 import WithRemoveButton from "./WithRemoveButton";
 
-export interface ContributorFormProps {
+export interface ContributorsProps {
   roles: RolesData;
   contributors?: ContributorData[];
   disabled?: boolean;
 }
 
-export interface ContributorFormState {
+export interface ContributorsState {
   contributors: ContributorData[];
   disabled: boolean;
 }
 
-export default class ContributorForm extends React.Component<ContributorFormProps, ContributorFormState> {
+export default class Contributors extends React.Component<ContributorsProps, ContributorsState> {
+  private addContributorRole = React.createRef<EditableInput>();
+  private addContributorName = React.createRef<EditableInput>();
+
   constructor(props) {
     super(props);
     this.state = { contributors: this.props.contributors || [], disabled: true };
@@ -34,9 +37,9 @@ export default class ContributorForm extends React.Component<ContributorFormProp
     );
   }
 
+  /** The component for adding a new contributor; menu, input field, and add button. */
   newContributor(): JSX.Element {
-    // The component for adding a new contributor; menu, input field, and add button.
-    const newRoleRef = this.refs["addContributorRole"] as any;
+    const newRoleRef = this.addContributorRole.current as any;
     const newRoleValue = newRoleRef && newRoleRef.getValue();
     let disabled = this.state.disabled || this.props.disabled;
     return (
@@ -54,15 +57,15 @@ export default class ContributorForm extends React.Component<ContributorFormProp
     );
   }
 
-  contributorSelect(contributorRole?: string, isNew = false): JSX.Element {
-    // The drop-down list of all the possible contributor roles.
+  /** The drop-down list of all the possible contributor roles. */
+  contributorSelect(contributorRole?: string, isNew: boolean = false): JSX.Element {
     return (
       <EditableInput
         elementType="select"
         disabled={this.props.disabled}
         name="contributor-role"
         value={contributorRole || "Author"}
-        ref={isNew && "addContributorRole"}
+        ref={isNew && this.addContributorRole}
        >
         { this.props.roles && Object.values(this.props.roles).map(role =>
             <option value={role} key={role} aria-selected={contributorRole === role}>{role}</option>
@@ -72,8 +75,8 @@ export default class ContributorForm extends React.Component<ContributorFormProp
     );
   }
 
-  contributorField(contributor?) {
-    // The input field containing the name of the contributor.
+  /** The input field containing the name of the contributor. */
+  contributorField(contributor?: ContributorData) {
     return(
       <EditableInput
         elementType="input"
@@ -81,15 +84,15 @@ export default class ContributorForm extends React.Component<ContributorFormProp
         disabled={this.props.disabled}
         name="contributor-name"
         value={contributor && contributor.name}
-        ref={!contributor && "addContributorName"}
+        ref={!contributor && this.addContributorName}
         onChange={this.toggleDisabled}
         optionalText={false}
       />
     );
   }
 
-  existingContributors() {
-    // The list of one or more existing contributors; each row has menu, input field, and delete button.
+  existingContributors(): JSX.Element[] {
+    /** The list of one or more existing contributors; each row has menu, input field, and delete button. */
     return this.state.contributors.map(contributor => {
       const contributorRole = this.getContributorRole(contributor);
       return (
@@ -112,7 +115,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
     this.setState({ disabled: val.length < 1});
   }
 
-  getContributorRole(contributor) {
+  getContributorRole(contributor: ContributorData): string {
     if (this.props.roles) {
       if (this.props.roles[contributor.role]) {
         return this.props.roles[contributor.role];
@@ -121,7 +124,7 @@ export default class ContributorForm extends React.Component<ContributorFormProp
     return contributor.role;
   }
 
-  removeContributor(contributor) {
+  removeContributor(contributor: ContributorData) {
     const remainingContributors = this.state.contributors.filter(stateContributor => {
       return !(stateContributor.name === contributor.name && stateContributor.role === contributor.role);
     });
@@ -129,11 +132,11 @@ export default class ContributorForm extends React.Component<ContributorFormProp
   }
 
   addContributor() {
-    const name = (this.refs["addContributorName"] as any).getValue();
-    const role = (this.refs["addContributorRole"] as any).getValue();
+    const name = (this.addContributorName.current).getValue();
+    const role = (this.addContributorRole.current).getValue();
     this.setState({ contributors: this.state.contributors.concat({ role, name }) });
-    (this.refs["addContributorName"] as any).clear();
-    (this.refs["addContributorRole"] as any).clear();
+    (this.addContributorName.current).clear();
+    (this.addContributorRole.current).clear();
   }
 
 }

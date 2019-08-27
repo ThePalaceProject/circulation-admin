@@ -9,7 +9,7 @@ import { Button } from "library-simplified-reusable-components";
 import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
-import { formatString } from "./sharedFunctions";
+import { formatString } from "../utils/sharedFunctions";
 
 export interface ComplaintsStateProps {
   complaints?: any;

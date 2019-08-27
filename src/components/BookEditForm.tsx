@@ -4,8 +4,8 @@ import EditorField from "./EditorField";
 import { Form } from "library-simplified-reusable-components";
 import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import LanguageField from "./LanguageField";
-import { formatString } from "./sharedFunctions";
-import ContributorForm from "./ContributorForm";
+import { formatString } from "../utils/sharedFunctions";
+import Contributors from "./Contributors";
 
 export interface BookEditFormProps extends BookData {
   roles: RolesData;
@@ -66,7 +66,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
         <legend className="visuallyHidden">Edit Book Metadata</legend>
         { this.renderTextField("title") }
         { this.renderTextField("subtitle") }
-        <ContributorForm disabled={this.props.disabled} roles={this.props.roles} contributors={this.state.contributors} />
+        <Contributors disabled={this.props.disabled} roles={this.props.roles} contributors={this.state.contributors} />
         <div className="form-group">
           <label>Series</label>
           <div className="form-inline">
