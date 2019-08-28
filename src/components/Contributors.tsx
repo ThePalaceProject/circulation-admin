@@ -39,7 +39,7 @@ export default class Contributors extends React.Component<ContributorsProps, Con
 
   /** The component for adding a new contributor; menu, input field, and add button. */
   newContributor(): JSX.Element {
-    const newRoleRef = this.addContributorRole.current as any;
+    const newRoleRef = this.addContributorRole.current;
     const newRoleValue = newRoleRef && newRoleRef.getValue();
     let disabled = this.state.disabled || this.props.disabled;
     return (
@@ -134,9 +134,12 @@ export default class Contributors extends React.Component<ContributorsProps, Con
   addContributor() {
     const name = (this.addContributorName.current).getValue();
     const role = (this.addContributorRole.current).getValue();
-    this.setState({ contributors: this.state.contributors.concat({ role, name }) });
+    this.setState({
+      contributors: this.state.contributors.concat({ role, name }),
+      disabled: true
+    });
     (this.addContributorName.current).clear();
-    (this.addContributorRole.current).clear();
+    (this.addContributorRole.current).setValue("Author");
   }
 
 }

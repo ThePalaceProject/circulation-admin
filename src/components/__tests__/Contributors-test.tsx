@@ -130,4 +130,22 @@ describe("Contributors", () => {
     expect(wrapper.instance().getContributorRole(adapter)).to.equal("adp");
   });
 
+  it("resets the form after adding a contributor", () => {
+    // Add a contributor:
+    let newContributorForm = wrapper.find(".contributor-form").last();
+    newContributorForm.find("select").getDOMNode().value = "Illustrator";
+    newContributorForm.find("select").simulate("change");
+    newContributorForm.find("input").getDOMNode().value = "An Illustrator";
+    newContributorForm.find("input").simulate("change");
+    newContributorForm.find("button").simulate("click");
+
+    newContributorForm = wrapper.find(".contributor-form").last();
+    // The input field is blank.
+    expect(newContributorForm.find("input").prop("value")).to.equal("");
+    // The drop-down menu has defaulted to "Author".
+    expect(newContributorForm.find("select").prop("value")).to.equal("Author");
+    // The button is disabled.
+    expect(wrapper.state()["disabled"]).to.be.true;
+  });
+
 });
