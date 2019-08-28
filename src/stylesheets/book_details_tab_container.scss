@@ -15,7 +15,7 @@
       justify-content: center;
       margin: 0;
       padding-bottom: 2em;
-      border-bottom: 1px solid #CCC;
+      border-bottom: 1px solid $gray-border;
 
       .top {
         width: 60%;
@@ -23,15 +23,13 @@
         .circulation-links {
           padding-bottom: 1em;
           border-bottom: 1px solid $blue;
-        }
-
-        .circulation-links .btn {
-          color: $blue;
-          border-color: $blue;
-          margin: 5px 10px;
-
-          &:hover {
-            color: $white;
+          .btn {
+            color: $blue;
+            border-color: $blue;
+            margin: 5px 10px;
+            &:hover {
+              color: $white;
+            }
           }
         }
         .open-access-info {
@@ -40,8 +38,6 @@
         }
       }
     }
-
-
   }
 
   // For all forms on the Book edit tab page
