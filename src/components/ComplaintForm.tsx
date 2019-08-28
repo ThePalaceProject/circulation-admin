@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
 import { Button, Form } from "library-simplified-reusable-components";
-import { formatString } from "./sharedFunctions";
+import { formatString } from "../utils/sharedFunctions";
 
 export interface ComplaintFormProps {
   disabled?: boolean;

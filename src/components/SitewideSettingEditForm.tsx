@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { Button, Form } from "library-simplified-reusable-components";
 import { SitewideSettingsData, SitewideSettingData } from "../interfaces";
-import { clearForm } from "./sharedFunctions";
+import { clearForm } from "../utils/sharedFunctions";
 
 export interface SitewideSettingEditFormProps {
   data: SitewideSettingsData;

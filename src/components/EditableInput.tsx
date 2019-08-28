@@ -140,6 +140,10 @@ export default class EditableInput extends React.Component<EditableInputProps, E
     return (this.refs as any).element.checked;
   }
 
+  setValue(value) {
+    this.setState({ value });
+  }
+
   clear() {
     this.setState({ value: "", checked: false });
   }

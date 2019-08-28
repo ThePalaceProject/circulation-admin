@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { findDefault, clearForm } from "./sharedFunctions";
+import { findDefault, clearForm } from "../utils/sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";

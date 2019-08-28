@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import BookEditForm from "../BookEditForm";
 import EditableInput from "../EditableInput";
 import WithRemoveButton from "../WithRemoveButton";
+import Contributors from "../Contributors";
 import LanguageField from "../LanguageField";
 import { Form } from "library-simplified-reusable-components";
 import { BookData, RolesData, MediaData, LanguagesData } from "../../interfaces";
@@ -244,6 +245,7 @@ describe("BookEditForm", () => {
 
     addContributorName.at(0).setState({ value: "New Author" });
     addContributorRole.at(0).setState({ value: "Author" });
+    wrapper.find(Contributors).setState({ "disabled": false });
     addButton.simulate("click");
 
     contributorNames = editableInputByName("contributor-name");

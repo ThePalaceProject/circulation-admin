@@ -78,6 +78,24 @@ describe("EditableInput", () => {
     expect(option.text()).to.equal("option");
   });
 
+  it("directly sets a new value", () => {
+    let wrapper = mount(
+      <EditableInput
+        elementType="input"
+        type="text"
+        label="label"
+        name="name"
+        disabled={false}
+        value="initial value"
+      />
+    );
+    expect(wrapper.state()["value"]).to.equal("initial value");
+    expect(wrapper.instance().getValue()).to.equal("initial value");
+    wrapper.instance().setValue("updated");
+    expect(wrapper.state()["value"]).to.equal("updated");
+    expect(wrapper.instance().getValue()).to.equal("updated");
+  });
+
   it("updates state and value when props change", () => {
     wrapper.setProps({ value: "new value", checked: false });
     expect(wrapper.state().value).to.equal("new value");

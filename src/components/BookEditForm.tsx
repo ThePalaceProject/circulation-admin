@@ -1,10 +1,11 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import EditorField from "./EditorField";
-import { Button, Form } from "library-simplified-reusable-components";
+import { Form } from "library-simplified-reusable-components";
 import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
-import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
+import { formatString } from "../utils/sharedFunctions";
+import Contributors from "./Contributors";
 
 export interface BookEditFormProps extends BookData {
   roles: RolesData;
@@ -28,8 +29,6 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     this.state = {
       contributors: (props.authors || []).concat(props.contributors || [])
     };
-    this.addContributor = this.addContributor.bind(this);
-    this.removeContributor = this.removeContributor.bind(this);
     this.renderForm = this.renderForm.bind(this);
   }
 
@@ -44,118 +43,36 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     );
   }
 
+  renderTextField(name: string, placeholder?: string, value?: string, hasLabel = true): JSX.Element {
+    return (
+      <EditableInput
+        elementType="input"
+        type="text"
+        disabled={this.props.disabled}
+        name={name}
+        label={hasLabel && formatString(name)}
+        value={value || this.props[name]}
+        optionalText={false}
+        placeholder={placeholder}
+      />
+    );
+  }
+
   renderForm() {
-    const newRoleRef = this.refs["addContributorRole"] as any;
-    const newRoleValue = newRoleRef && newRoleRef.getValue();
     const mediumValue = this.getMedium(this.props.medium);
+    const seriesPosition = this.props.seriesPosition !== undefined && this.props.seriesPosition !== null && String(this.props.seriesPosition);
     return (
       <fieldset key="book-info">
         <legend className="visuallyHidden">Edit Book Metadata</legend>
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          name="title"
-          label="Title"
-          value={this.props.title}
-          optionalText={false}
-          />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          name="subtitle"
-          label="Subtitle"
-          value={this.props.subtitle}
-          optionalText={false}
-          />
-        <div className="form-group">
-          <label>Authors and Contributors</label>
-          { this.state.contributors.map(contributor => {
-              const contributorRole = this.getContributorRole(contributor);
-              return (
-                <WithRemoveButton
-                  key={contributor.name + contributor.role}
-                  disabled={this.props.disabled}
-                  onRemove={() => this.removeContributor(contributor)}
-                  >
-                  <span className="contributor-form">
-                    <EditableInput
-                      elementType="select"
-                      disabled={this.props.disabled}
-                      name="contributor-role"
-                      value={contributorRole}
-                      >
-                      { this.props.roles && Object.values(this.props.roles).map(role =>
-                          <option value={role} key={role} aria-selected={contributorRole === role}>{role}</option>
-                        )
-                      }
-                    </EditableInput>
-                    <EditableInput
-                      elementType="input"
-                      type="text"
-                      disabled={this.props.disabled}
-                      name="contributor-name"
-                      value={contributor.name}
-                      optionalText={false}
-                      />
-                  </span>
-                </WithRemoveButton>)
-              ;
-            })
-          }
-          <span className="contributor-form">
-            <EditableInput
-              elementType="select"
-              disabled={this.props.disabled}
-              name="contributor-role"
-              value="Author"
-              ref="addContributorRole"
-              >
-              { this.props.roles && Object.values(this.props.roles).map(role =>
-                 <option value={role} key={role} aria-selected={newRoleValue === role}>{role}</option>
-                )
-              }
-            </EditableInput>
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              name="contributor-name"
-              ref="addContributorName"
-              optionalText={false}
-              />
-            <Button
-              type="button"
-              className="add-contributor small"
-              disabled={this.props.disabled}
-              callback={this.addContributor}
-              content="Add"
-            />
-          </span>
-        </div>
+        { this.renderTextField("title") }
+        { this.renderTextField("subtitle") }
+        <Contributors disabled={this.props.disabled} roles={this.props.roles} contributors={this.state.contributors} />
         <div className="form-group">
           <label>Series</label>
           <div className="form-inline">
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              name="series"
-              placeholder="Name"
-              value={this.props.series}
-              optionalText={false}
-              />
+            { this.renderTextField("series", "Name", null, false) }
             <span>&nbsp;&nbsp;</span>
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              name="series_position"
-              placeholder="#"
-              value={this.props.seriesPosition !== undefined && this.props.seriesPosition !== null && String(this.props.seriesPosition)}
-              optionalText={false}
-              />
+            { this.renderTextField("series_position", "#", seriesPosition, false) }
           </div>
         </div>
         <EditableInput
@@ -164,7 +81,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           name="medium"
           label="Medium"
           value={mediumValue}
-          >
+        >
           { this.props.media && Object.values(this.props.media).map(medium =>
               <option value={medium} key={medium} aria-selected={mediumValue === medium}>{medium}</option>
             )
@@ -177,24 +94,8 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           label="Language"
           value={this.props.language}
         />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          name="publisher"
-          label="Publisher"
-          value={this.props.publisher}
-          optionalText={false}
-          />
-        <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          name="imprint"
-          label="Imprint"
-          value={this.props.imprint}
-          optionalText={false}
-          />
+        { this.renderTextField("publisher") }
+        { this.renderTextField("imprint") }
         <EditableInput
           elementType="input"
           type="date"
@@ -203,7 +104,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           label="Publication Date"
           value={this.props.issued}
           optionalText={false}
-          />
+        />
         <EditableInput
           elementType="input"
           type="number"
@@ -214,7 +115,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           max={5}
           value={this.props.rating && String(Math.round(this.props.rating))}
           optionalText={false}
-          />
+        />
         <div className="editor form-group">
           <label className="control-label">Summary</label>
           <EditorField ref={this.summaryRef} content={this.props.summary} disabled={this.props.disabled}/>
@@ -230,30 +131,6 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
       }
     }
     return additionalTypeOrMedium;
-  }
-
-  getContributorRole(contributor) {
-    if (this.props.roles) {
-      if (this.props.roles[contributor.role]) {
-        return this.props.roles[contributor.role];
-      }
-    }
-    return contributor.role;
-  }
-
-  removeContributor(contributor) {
-    const remainingContributors = this.state.contributors.filter(stateContributor => {
-      return !(stateContributor.name === contributor.name && stateContributor.role === contributor.role);
-    });
-    this.setState({ contributors: remainingContributors });
-  }
-
-  addContributor() {
-    const name = (this.refs["addContributorName"] as any).getValue();
-    const role = (this.refs["addContributorRole"] as any).getValue();
-    this.setState({ contributors: this.state.contributors.concat({ role, name }) });
-    (this.refs["addContributorName"] as any).clear();
-    (this.refs["addContributorRole"] as any).clear();
   }
 
   save(data: FormData) {
