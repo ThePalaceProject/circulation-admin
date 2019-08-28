@@ -3,6 +3,7 @@
 ### v0.3.13
 #### Updated
 - Refactored the BookEditForm code.
+- Made styling improvements to Book Details.
 #### Fixed
 - Prevented the addition of blank strings as contributor names.
 
