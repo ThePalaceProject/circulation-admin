@@ -102,13 +102,14 @@ describe("SelfTests", () => {
       <SelfTests
         item={collections[0]}
         type="collection"
+        getSelfTests={stub()}
       />
     );
   });
 
   it("should render the SelfTests component with empty self_test_results", () => {
     wrapper = shallow(
-      <SelfTests item={{} as any} type="collection" />
+      <SelfTests item={{} as any} type="collection" getSelfTests={stub()} />
     );
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
@@ -147,7 +148,7 @@ describe("SelfTests", () => {
     beforeEach(() => {
       wrapper = mount(
         <SelfTests
-          item={collections[1]} type="collection"
+          item={collections[1]} type="collection" getSelfTests={stub()}
         />
       );
     });
@@ -155,7 +156,7 @@ describe("SelfTests", () => {
     it("should display the base error message when attempting to run self tests", () => {
       wrapper = shallow(
         <SelfTests
-          item={collections[2]} type="collection"
+          item={collections[2]} type="collection" getSelfTests={stub()}
         />
       );
 
