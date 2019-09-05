@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.14
+#### Updated
+- Updated the catalog book default colors as well as book detail tabs and entrypoint tabs link color.
+
 ### v0.3.13
 #### Updated
 - Refactored the BookEditForm code.

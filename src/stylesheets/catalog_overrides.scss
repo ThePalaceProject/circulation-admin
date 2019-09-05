@@ -1,0 +1,22 @@
+.collection-container {
+  .book {
+    .item-icon svg {
+      fill: $blue-dark;
+    }
+    .item-details {
+      color: $blue-dark;
+    }
+  }
+  .more-link div {
+    color: $blue;
+    svg {
+      fill: $blue;
+    }
+    &:hover {
+      color: $blue-dark;
+      svg {
+        fill: $blue-dark;
+      }
+    }
+  }
+}
