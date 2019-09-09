@@ -2,6 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
+import Footer from "./Footer";
 import { State } from "../reducers/index";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 
@@ -63,6 +64,7 @@ export default class TroubleshootingPage extends React.Component<Troubleshooting
             subtab={subtab}
           />
         </div>
+        <Footer />
       </div>
     );
   }

@@ -2,6 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
+import Footer from "./Footer";
 import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
 import { State } from "../reducers/index";
@@ -45,6 +46,7 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
             <CirculationEvents store={this.context.editorStore} />
           }
         </div>
+        <Footer />
       </div>
     );
   }

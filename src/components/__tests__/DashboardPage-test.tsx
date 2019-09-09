@@ -5,6 +5,7 @@ import { shallow } from "enzyme";
 
 import DashboardPage from "../DashboardPage";
 import Header from "../Header";
+import Footer from "../Footer";
 import CirculationEvents from "../CirculationEvents";
 import Stats from "../Stats";
 import buildStore from "../../store";
@@ -44,5 +45,10 @@ describe("DashboardPage", () => {
     stats = wrapper.find(Stats);
     expect(stats.prop("store")).to.equal(store);
     expect(stats.prop("library")).to.equal("NYPL");
+  });
+
+  it("shows Footer", () => {
+    let footer = wrapper.find(Footer);
+    expect(footer.length).to.equal(1);
   });
 });

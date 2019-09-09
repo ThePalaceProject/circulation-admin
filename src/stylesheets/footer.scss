@@ -1,0 +1,22 @@
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  background: $blue-dark;
+  width: 100%;
+  padding: 15px 0;
+  &.sticky {
+    position: sticky;
+  }
+  a, a:visited {
+    color: $white;
+    text-decoration: underline;
+    &:hover {
+      font-weight: bold;
+      color: $white;
+      text-decoration: underline;
+    }
+  }
+}

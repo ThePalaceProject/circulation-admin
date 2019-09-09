@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.14
+#### Added
+- Created a Footer which displays a Terms of Service link.
+
 ### v0.3.13
 #### Updated
 - Refactored the BookEditForm code.
