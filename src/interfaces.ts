@@ -404,6 +404,16 @@ export interface CustomListsData {
   custom_lists: CustomListData[];
 }
 
+export interface CustomListsSetting {
+  type: string;
+  format?: string;
+  label?: string;
+  key: string | number;
+  custom_lists: CustomListsData;
+  required?: boolean;
+  menuOptions?: JSX.Element[];
+}
+
 export interface LaneData {
   id: string | number;
   display_name: string;

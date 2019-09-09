@@ -1,32 +1,37 @@
 import * as React from "react";
 import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
-import { SettingData } from "../interfaces";
+import EditableInput from "./EditableInput";
+import { SettingData, CustomListsSetting } from "../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
 import { Button } from "library-simplified-reusable-components";
+import { isEqual } from "../utils/sharedFunctions";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
   labelAndDescription: (SettingData) => JSX.Element[];
-  setting: SettingData;
+  setting: SettingData | CustomListsSetting;
   disabled: boolean;
-  value: Array<string | {}>;
+  value: Array<string | {} | JSX.Element>;
   additionalData?: any;
 }
 
 export interface InputListState {
   listItems: Array<string | {}>;
   newItem?: string;
+  options?: JSX.Element[];
 }
 
 export default class InputList extends React.Component<InputListProps, InputListState> {
 
   constructor(props) {
     super(props);
+    let isMenu = props.setting.type === "menu";
     this.state = {
       listItems: (props.value as string[] || []),
-      newItem: ""
+      newItem: "",
+      options: isMenu && this.filterMenu()
     };
     this.updateNewItem = this.updateNewItem.bind(this);
     this.addListItem = this.addListItem.bind(this);
@@ -35,11 +40,18 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({ listItems: (newProps.value || []) });
+    this.setState({ listItems: (newProps.value || []), options: this.filterMenu() });
+  }
+
+  componentDidUpdate(oldProps, oldState) {
+    if (this.props.setting.format === "narrow" && !isEqual(oldState.listItems, this.state.listItems)) {
+      this.setState({ options: this.filterMenu()});
+    }
   }
 
   render(): JSX.Element {
-    const setting = this.props.setting;
+    const setting = this.props.setting as any;
+    let showButton = !this.state.options || this.state.options.length > 0;
     return (
       <div>
         { this.props.labelAndDescription(setting) }
@@ -52,7 +64,7 @@ export default class InputList extends React.Component<InputListProps, InputList
               onRemove={() => this.removeListItem(listItem)}
             >
               {
-                this.props.setting.format === "language-code" ?
+                setting.format === "language-code" ?
                   <LanguageField
                     disabled={this.props.disabled}
                     value={value}
@@ -60,21 +72,23 @@ export default class InputList extends React.Component<InputListProps, InputList
                     languages={this.props.additionalData}
                   /> :
                   this.props.createEditableInput(setting, {
-                  type: "text",
-                  description: null,
-                  disabled: this.props.disabled,
-                  value: value,
-                  name: setting.key,
-                  label: null,
-                  extraContent: this.renderToolTip(listItem, setting.format)
-                })
-              }
+                    type: "text",
+                    description: null,
+                    disabled: this.props.disabled,
+                    value: value,
+                    name: setting.key,
+                    label: null,
+                    extraContent: this.renderToolTip(listItem, setting.format),
+                    optionalText: !setting.required
+                  })
+                }
+
             </WithRemoveButton>
           );
         })}
         <div className="add-list-item-container">
           <span className="add-list-item">
-            { this.props.setting.format === "language-code" ?
+            {  setting.format === "language-code" ?
                 <LanguageField
                   disabled={this.props.disabled}
                   ref="addListItem"
@@ -82,26 +96,47 @@ export default class InputList extends React.Component<InputListProps, InputList
                   languages={this.props.additionalData}
                   onChange={this.updateNewItem}
                 /> :
-              this.props.createEditableInput(setting, {
-                value: null,
-                disabled: this.props.disabled,
-                onChange: this.updateNewItem,
-                ref: "addListItem",
-                label: null,
-                description: null
-              })
+                setting.type === "menu" ?
+                  this.renderMenu(setting) :
+                  this.props.createEditableInput(setting, {
+                    value: null,
+                    disabled: this.props.disabled,
+                    onChange: this.updateNewItem,
+                    ref: "addListItem",
+                    label: null,
+                    description: null
+                  })
             }
           </span>
-          <Button
-            type="button"
-            className="add-list-item inline small bottom-align"
-            disabled={this.props.disabled || !this.state.newItem.length}
-            callback={this.addListItem}
-            content="Add"
-          />
+          { showButton &&
+            <Button
+              type="button"
+              className="add-list-item inline small bottom-align"
+              callback={this.addListItem}
+              content="Add"
+              disabled={this.props.disabled || (setting.type !== "menu" && !this.state.newItem.length)}
+            />
+          }
         </div>
       </div>
     );
+  }
+
+  renderMenu(setting) {
+    let choices = this.state.options;
+    if (choices.length > 0) {
+      return this.props.createEditableInput(
+        setting,
+        {
+          elementType: "select",
+          name: setting.key,
+          value: setting.key,
+          label: null,
+          ref: "addListItem",
+          optionalText: !setting.required
+        }, choices
+      );
+    }
   }
 
   renderToolTip(item: {} | string, format: string) {
@@ -117,6 +152,15 @@ export default class InputList extends React.Component<InputListProps, InputList
       );
     }
     return null;
+  }
+
+  filterMenu() {
+    let allOptions = (this.props.setting as any).menuOptions;
+    if (!allOptions) {
+      return;
+    }
+    let remainingOptions = allOptions.filter(o => this.state.listItems.indexOf(o.props.value) < 0);
+    return remainingOptions;
   }
 
   updateNewItem() {
@@ -135,7 +179,6 @@ export default class InputList extends React.Component<InputListProps, InputList
     let ref = this.props.setting.format === "language-code" ?
       (this.refs["addListItem"] as any).refs["autocomplete"] :
       (this.refs["addListItem"] as any);
-
     const listItem = ref.getValue();
     this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
     ref.clear();

@@ -4,14 +4,13 @@ import { connect } from "react-redux";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
-import WithRemoveButton from "./WithRemoveButton";
-import Autocomplete from "./Autocomplete";
+import ProtocolFormField from "./ProtocolFormField";
 import {
   BookData, CustomListData, CustomListsData
 } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
-import { Button } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
@@ -50,7 +49,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
       customLists: this.props.customListsForBook || []
     };
     this.refresh = this.refresh.bind(this);
-    this.addList = this.addList.bind(this);
+    this.save = this.save.bind(this);
   }
 
   render(): JSX.Element {
@@ -63,39 +62,33 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
-
-        { this.state.customLists && this.state.customLists.map(list =>
-            <WithRemoveButton
-              key={list.id}
-              disabled={this.props.isFetching}
-              onRemove={() => this.removeList(list) }
-              >
-              <h4>
-                { list.id ?
-                  <a href={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}>
-                    {list.name}
-                  </a> :
-                  list.name
-                }
-              </h4>
-            </WithRemoveButton>
-          )
-        }
-
-        { this.availableLists().length > 0 &&
-          <div>
-            <Autocomplete
-              autocompleteValues={this.availableLists().map(list => list.name)}
-              disabled={this.props.isFetching}
-              name="list"
-              label="Add a list"
-              value=""
-              ref="addList"
-              />
-            <Button className="left-align add-list-btn" callback={this.addList} content="Add" type="button" />
-          </div>
-        }
+        <Form className="edit-form" content={this.renderInputList()} onSubmit={this.save} />
       </div>
+    );
+  }
+
+  makeSelect(list) {
+    return <option value={list.name} key={list.id} aria-selected={false}>{list.name}</option>;
+  }
+
+  renderInputList() {
+    let allLists = this.props.allCustomLists || [];
+    return (
+        <ProtocolFormField
+          key={"lists"}
+          ref={"addList"}
+          setting={{
+            type: "menu",
+            format: "narrow",
+            key: "lists?",
+            label: null,
+            custom_lists: this.state.customLists,
+            required: true,
+            menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l))
+          }}
+          disabled={this.props.isFetching}
+          value={this.state.customLists.map(l => l.name)}
+        />
     );
   }
 
@@ -114,32 +107,6 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
       }
     }
     return availableLists;
-  }
-
-  addList() {
-    const lists = this.state.customLists.slice(0);
-    const newListName = (this.refs["addList"] as Autocomplete).getValue();
-    const newList: CustomListData = { name : newListName };
-    for (const list of this.props.allCustomLists) {
-      if (list.name === newListName) {
-        newList.id = list.id;
-        break;
-      }
-    }
-    lists.push(newList);
-    this.setState({ customLists: lists });
-    this.save(lists);
-  }
-
-  removeList(list: CustomListData) {
-    const newLists = [];
-    for (const stateList of this.state.customLists) {
-      if (stateList.id !== list.id) {
-        newLists.push(stateList);
-      }
-    }
-    this.setState({ customLists: newLists });
-    this.save(newLists);
   }
 
   componentWillMount() {
@@ -167,9 +134,15 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     this.props.refreshCatalog();
   }
 
-  save(lists: CustomListData[]) {
-    let url = this.listsUrl();
+  save() {
+    const listNames = (this.refs.addList as ProtocolFormField).getValue();
+    const url = this.listsUrl();
     let data = new (window as any).FormData();
+    let lists = [];
+    listNames.map((name) => {
+      let list = this.props.allCustomLists.find(x => x.name === name);
+      lists.push(list);
+    });
     data.append("lists", JSON.stringify(lists));
     return this.props.editCustomListsForBook(url, data).then(this.refresh);
   }

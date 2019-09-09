@@ -7,8 +7,12 @@
   span.add-list-item {
     display: inline-block;
     margin-right: 10px;
+    width: 193px;
+    .form-group div {
+      width: 100%;
+    }
   }
-  
+
   .btn.add-list-item {
     vertical-align: top;
   }

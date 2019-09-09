@@ -4,13 +4,13 @@ import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
-import { SettingData } from "../interfaces";
+import { SettingData, CustomListsSetting } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ProtocolFormFieldProps {
-  setting: SettingData;
+  setting: SettingData | CustomListsSetting;
   disabled: boolean;
-  value?: string | string[] | {}[] | Array<string | {}>;
+  value?: string | string[] | {}[] | Array<string | {} | JSX.Element> | JSX.Element;
   default?: any;
   error?: FetchErrorData;
   additionalData?: any;
@@ -27,12 +27,12 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   render(): JSX.Element {
-    const setting = this.props.setting;
+    const setting = this.props.setting as any;
     if (setting.type === "select") {
       return this.renderSelectSetting(setting);
     } else if (setting.type === "list" && setting.options) {
         return this.renderListSettingWithOptions(setting);
-    } else if (setting.type === "list") {
+    } else if (setting.type === "list" || setting.type === "menu") {
         return this.renderListSetting(setting);
     } else if (setting.type === "color-picker") {
         return this.renderColorPickerSetting(setting);
@@ -117,7 +117,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     );
   }
 
-  renderListSetting(setting: SettingData): JSX.Element {
+  renderListSetting(setting: SettingData | CustomListsSetting): JSX.Element {
     // Flatten an object in which the values are arrays
     let value = Array.isArray(this.props.value) ?
       this.props.value :
