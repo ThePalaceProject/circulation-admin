@@ -9,14 +9,27 @@ footer {
   padding: 15px 0;
   &.sticky {
     position: sticky;
+    z-index: 1;
   }
-  a, a:visited {
-    color: $white;
-    text-decoration: underline;
-    &:hover {
-      font-weight: bold;
-      color: $white;
-      text-decoration: underline;
+  ul {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    align-items: center;
+    li {
+      margin: 2px 0;
+      a, a:visited {
+        color: $white;
+        text-decoration: underline;
+        &:hover {
+          font-weight: bold;
+          color: $white;
+          text-decoration: underline;
+        }
+      }
     }
   }
 }

@@ -9,8 +9,9 @@ describe("Footer", () => {
   beforeEach(() => {
     wrapper = shallow(<Footer />);
   });
-  it("displays a link", () => {
-    let linkElement = wrapper.find("a");
+  it("displays a list with a default link", () => {
+    let list = wrapper.find("ul");
+    let linkElement = list.find("li").find("a");
     expect(linkElement.length).to.equal(1);
     expect(linkElement.text()).to.equal("Terms of Service for presenting e-reading materials through NYPL's SimplyE mobile app");
     expect(linkElement.prop("href")).to.equal("https://www.librarysimplified.org/SimplyETermsofService2.html");
@@ -26,11 +27,13 @@ describe("Footer", () => {
       "Link 3": "www.link3.html"
     };
     wrapper.setProps({ links });
-    let linkElements = wrapper.find("a");
-    expect(linkElements.length).to.equal(3);
-    linkElements.map((el, idx) => {
-      expect(el.text()).to.equal(`Link ${idx + 1}`);
-      expect(el.prop("href")).to.equal(`www.link${idx + 1}.html`);
+    let list = wrapper.find("ul");
+    let listElements = list.find("li");
+    expect(listElements.length).to.equal(3);
+    listElements.map((el, idx) => {
+      expect(el.find("a").length).to.equal(1);
+      expect(el.find("a").text()).to.equal(`Link ${idx + 1}`);
+      expect(el.find("a").prop("href")).to.equal(`www.link${idx + 1}.html`);
     });
   });
 });

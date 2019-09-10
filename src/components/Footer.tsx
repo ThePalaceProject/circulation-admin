@@ -2,7 +2,7 @@ import * as React from "react";
 
 export interface FooterProps {
   className?: string;
-  links?: {[key: string]: string};
+  links?: [string, string][];
 }
 
 // If you run a well-known registry for circulation managers, you can add a link here to the terms of service for
@@ -10,19 +10,22 @@ export interface FooterProps {
 // process.
 export default class Footer extends React.Component<FooterProps, {}> {
   render() {
-    let links = this.props.links || {
-      "Terms of Service for presenting e-reading materials through NYPL's SimplyE mobile app":
+    let links = this.props.links || [[
+      "Terms of Service for presenting e-reading materials through NYPL's SimplyE mobile app",
       "https://www.librarysimplified.org/SimplyETermsofService2.html"
-    };
+    ]];
     return (
       <footer className={this.props.className}>
-        {
-          Object.keys(links).map((l) => {
-            return (
-              <a href={links[l]} target="_blank">{l}</a>
-            );
-          })
-        }
+        <ul>
+          {
+            links.map((link, idx) => {
+              let [text, url] = link;
+              return (
+                <li key={idx}><a href={url} target="_blank">{text}</a></li>
+              );
+            })
+          }
+        </ul>
       </footer>
     );
   }
