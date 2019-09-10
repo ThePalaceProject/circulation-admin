@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.15
+#### Fixed
+- Ensured that the Self-tests page updates to display the most recent test results.
+
 ### v0.3.14
 #### Updated
 - Updated the catalog book default colors as well as book detail tabs and entrypoint tabs link color.
