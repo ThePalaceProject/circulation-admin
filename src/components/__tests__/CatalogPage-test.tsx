@@ -76,6 +76,5 @@ describe("CatalogPage", () => {
   it("shows Footer", () => {
     let footer = wrapper.find(Footer);
     expect(footer.length).to.equal(1);
-    expect(footer.hasClass("sticky")).to.be.true;
   });
 });

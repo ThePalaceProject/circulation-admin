@@ -21,11 +21,11 @@ describe("Footer", () => {
     expect(wrapper.hasClass("customClass")).to.be.true;
   });
   it("accepts an optional links prop", () => {
-    let links = {
-      "Link 1": "www.link1.html",
-      "Link 2": "www.link2.html",
-      "Link 3": "www.link3.html"
-    };
+    let links = [
+      ["Link 1", "www.link1.html"],
+      ["Link 2", "www.link2.html"],
+      ["Link 3", "www.link3.html"]
+    ];
     wrapper.setProps({ links });
     let list = wrapper.find("ul");
     let listElements = list.find("li");
