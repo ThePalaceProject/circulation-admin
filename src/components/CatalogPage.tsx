@@ -68,7 +68,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
           CollectionContainer={EntryPointsContainer}
           allLanguageSearch={true}
         />
-        <Footer className="sticky" />
+        <Footer />
       </>
     );
   }

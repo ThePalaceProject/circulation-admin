@@ -17,8 +17,8 @@ describe("Footer", () => {
     expect(linkElement.prop("href")).to.equal("https://www.librarysimplified.org/SimplyETermsofService2.html");
   });
   it("accepts an optional className prop", () => {
-    wrapper.setProps({ "className": "sticky" });
-    expect(wrapper.hasClass("sticky")).to.be.true;
+    wrapper.setProps({ "className": "customClass" });
+    expect(wrapper.hasClass("customClass")).to.be.true;
   });
   it("accepts an optional links prop", () => {
     let links = {

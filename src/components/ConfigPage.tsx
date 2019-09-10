@@ -40,7 +40,7 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
         />
-        <Footer />
+        <Footer className="pin-to-end" />
       </div>
     );
   }

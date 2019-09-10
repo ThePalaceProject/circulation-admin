@@ -51,7 +51,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
             library={this.props.params.library}
           />
         </div>
-        <Footer />
+        <Footer className="pin-to-end" />
       </div>
     );
   }
