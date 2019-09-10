@@ -65,7 +65,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     const currentPathname = (this.context.router &&
       this.context.router.getCurrentLocation() &&
       this.context.router.getCurrentLocation().pathname) || "";
-      let currentLibrary = this.context.library && this.context.library();
+    let currentLibrary = this.context.library && this.context.library();
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
     return (
