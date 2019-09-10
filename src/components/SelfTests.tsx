@@ -35,21 +35,35 @@ export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsSt
 export interface SelfTestsState {
   runTests: boolean;
   error: FetchErrorData;
+  mostRecent?: ServiceData;
 }
 
 export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
-  constructor(props) {
+  constructor(props: SelfTestsProps) {
     super(props);
 
     this.state = {
       runTests: false,
       error: null,
+      mostRecent: this.props.item
     };
     this.runSelfTests = this.runSelfTests.bind(this);
   }
 
-  render() {
-    const integration = this.props.item;
+  componentDidMount() {
+    this.props.getSelfTests();
+  }
+
+  componentWillReceiveProps(nextProps: SelfTestsProps) {
+    let newTime = nextProps.item && nextProps.item.self_test_results && nextProps.item.self_test_results.start;
+    let oldTime = this.props.item && this.props.item.self_test_results && this.props.item.self_test_results.start;
+    if (!oldTime || (newTime > oldTime)) {
+      this.setState({ mostRecent: nextProps.item });
+    }
+  }
+
+  render(): JSX.Element {
+    const integration = this.state.mostRecent;
     const selfTestException = integration.self_test_results && integration.self_test_results.exception;
     let date;
     let startDate;
@@ -70,12 +84,10 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       results = integration.self_test_results.results || [];
       duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
     }
-
     const findFailures = (result) => !result.success;
     const oneFailedResult = results.some(findFailures);
     const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
     const isFetching = !!(this.props.isFetching && this.state.runTests);
-
     let testDescription = integration.self_test_results && integration.self_test_results.start ?
       `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
       "No self test results found.";
@@ -140,8 +152,19 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
 
 function mapStateToProps(state, ownProps) {
   const selfTests = state.editor.selfTests;
+  let item = ownProps.item;
+  if (selfTests && selfTests.responseBody && selfTests.responseBody.self_test_results) {
+    if (ownProps.type.includes(selfTests.responseBody.self_test_results.goal)) {
+      let oldTime = ownProps.item.self_test_results.start;
+      let newTime = selfTests.responseBody.self_test_results.self_test_results.start;
+      if (!oldTime || (newTime > oldTime)) {
+        item = selfTests.responseBody.self_test_results;
+      }
+    }
+  }
   return {
     isFetching: selfTests.isFetching,
+    item: item
   };
 }
 
