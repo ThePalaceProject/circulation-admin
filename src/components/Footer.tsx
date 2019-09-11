@@ -5,9 +5,9 @@ export interface FooterProps {
   links?: [string, string][];
 }
 
-// If you run a well-known registry for circulation managers, you can add a link here to the terms of service for
-// that registry. Make sure to also configure the registry to provide a `terms-of-service` link during the registration
-// process.
+/** If you run a well-known registry for circulation managers, you can add a link here to the terms of service for
+that registry. Make sure to also configure the registry to provide a `terms-of-service` link during the registration
+process. */
 export default class Footer extends React.Component<FooterProps, {}> {
   render() {
     let links = this.props.links || [[
