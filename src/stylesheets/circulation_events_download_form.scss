@@ -7,7 +7,10 @@
   }
 
   .form-group {
-    // width: 160px;
     width: 100%;
+
+    select {
+      display: block;
+    }
   }
 }
