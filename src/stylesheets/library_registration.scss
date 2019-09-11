@@ -35,13 +35,14 @@
     .registration-status {
       .registration-checkbox {
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
-        align-items: center;
         background: $medium-gray;
         padding: 10px;
         margin: 15px 5px 0px 5px;
         label {
-          margin: 0;
+          margin: 0 0 4px 0;
+          width: 100%;
         }
         input {
           margin: 0;

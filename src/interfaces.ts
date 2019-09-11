@@ -387,6 +387,9 @@ export interface LibraryDataWithStatus extends LibraryData {
 export interface LibraryRegistrationData {
   id: string | number;
   libraries: LibraryDataWithStatus[];
+  access_problem?: any;
+  terms_of_service_html?: string;
+  terms_of_service_link?: string;
 }
 
 export interface LibraryRegistrationsData {
