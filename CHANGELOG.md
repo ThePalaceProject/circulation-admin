@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.16
+#### Updated
+- Added a date end, event type, and locations input fields to the report form for circulation events in the Dashboard.
+
 ### v0.3.14
 #### Updated
 - Updated the catalog book default colors as well as book detail tabs and entrypoint tabs link color.
