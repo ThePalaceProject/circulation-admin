@@ -12,7 +12,7 @@ import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Button } from "library-simplified-reusable-components";
 import { CirculationEventData } from "../../interfaces";
 
-describe.only("CirculationEvents", () => {
+describe("CirculationEvents", () => {
   let eventsData: CirculationEventData[] = [
     {
       id: 1,
