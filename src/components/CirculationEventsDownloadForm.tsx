@@ -118,7 +118,7 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
                 ref={this.locations}
                 className=""
                 label="Locations"
-                description="Comma separated list of location zip codes to gather events from."
+                description="Comma-separated list of zip codes to gather events from."
                 name="locations"
                 id="locations"
                 optionalText={false}
@@ -129,7 +129,7 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
           <EditableInput
             ref={this.dateStart}
             name="dateStart"
-            label="Date Start"
+            label="Start Date"
             type="date"
             value={today}
             className="date-input"
@@ -138,7 +138,7 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
           <EditableInput
             ref={this.dateEnd}
             name="dateEnd"
-            label="Date End"
+            label="End Date"
             type="date"
             value={today}
             className="date-input"
