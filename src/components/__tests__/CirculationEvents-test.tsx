@@ -12,7 +12,7 @@ import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Button } from "library-simplified-reusable-components";
 import { CirculationEventData } from "../../interfaces";
 
-describe("CirculationEvents", () => {
+describe.only("CirculationEvents", () => {
   let eventsData: CirculationEventData[] = [
     {
       id: 1,
@@ -52,7 +52,7 @@ describe("CirculationEvents", () => {
           events={eventsData}
           fetchCirculationEvents={fetchCirculationEvents}
           isLoaded={false}
-          />,
+        />,
         { context }
       );
     });
@@ -81,7 +81,7 @@ describe("CirculationEvents", () => {
       expect(error.length).to.equal(1);
     });
 
-    it("shows table data", () => {
+    it("shows table data since there is no library", () => {
       let instance = wrapper.instance();
       let table = wrapper.find("table").find("tbody");
       let rows = table.find("tr");
@@ -104,6 +104,30 @@ describe("CirculationEvents", () => {
       wrapper.setProps({ isLoaded: true });
       loading = wrapper.find(LoadingIndicator);
       expect(loading.length).to.equal(0);
+    });
+
+    it("does not show the table data since there is library", () => {
+      // The previous instance needs to be unmounted due to the timer.
+      wrapper.instance().componentWillUnmount();
+
+      fetchCirculationEvents = stub().returns(
+        new Promise((resolve, reject) => resolve())
+      );
+      // Not making a real request so isLoaded is true.
+      wrapper = shallow(
+        <CirculationEvents
+          events={eventsData}
+          fetchCirculationEvents={fetchCirculationEvents}
+          isLoaded={false}
+          library="NYPL"
+        />,
+        { context }
+      );
+
+      let table = wrapper.find("table");
+      expect(table.length).to.equal(0);
+
+      wrapper.instance().componentWillUnmount();
     });
   });
 
@@ -136,6 +160,29 @@ describe("CirculationEvents", () => {
       wrapper.instance().componentWillMount();
       expect(fetchAndQueue.callCount).to.equal(1);
       fetchAndQueue.restore();
+    });
+
+    it("does not fetch and queues on mount if there is a library", () => {
+      wrapper.instance().componentWillUnmount();
+
+      fetchCirculationEvents = stub().returns(
+        new Promise((resolve, reject) => resolve())
+      );
+
+      wrapper = shallow(
+        <CirculationEvents
+          events={eventsData}
+          fetchCirculationEvents={fetchCirculationEvents}
+          wait={1}
+          library="NYPL"
+          />,
+        { context }
+      );
+
+      let fetchAndQueue = stub(wrapper.instance(), "fetchAndQueue");
+      expect(fetchAndQueue.callCount).to.equal(0);
+      fetchAndQueue.restore();
+      wrapper.instance().componentWillMount();
     });
 
     describe("fetchAndQueue", () => {
