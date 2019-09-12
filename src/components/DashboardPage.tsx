@@ -46,7 +46,7 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
             <CirculationEvents store={this.context.editorStore} />
           }
         </div>
-        <Footer className="pin-to-end"/>
+        <Footer />
       </div>
     );
   }
