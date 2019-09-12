@@ -118,10 +118,11 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
                 ref={this.locations}
                 className=""
                 label="Locations"
-                description="Comma separated list of locations to gather events from."
+                description="Comma separated list of location zip codes to gather events from."
                 name="locations"
                 id="locations"
                 optionalText={false}
+                placeholder="10001,10002,10003"
               />
             )
           }
