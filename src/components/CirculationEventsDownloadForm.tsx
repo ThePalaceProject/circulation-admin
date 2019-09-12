@@ -161,12 +161,10 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
    * Send all the data and get back the report.
    */
   download() {
-    // The value for the ref for the <select> element is retrieved differently.
-    const type = this.type.current && this.type.current.value;
     const date = this.getRefValue(this.dateStart);
     const dateEnd = this.getRefValue(this.dateEnd);
     const locations = this.getRefValue(this.locations);
-    const paramValues = { type, date, dateEnd, locations };
+    const paramValues = { date, dateEnd, locations };
 
     let url = "/admin/bulk_circulation_events";
     let params = qs.stringify(paramValues, { skipNulls: true });

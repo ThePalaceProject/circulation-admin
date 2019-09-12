@@ -5,9 +5,8 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import CirculationEventsDownloadForm from "../CirculationEventsDownloadForm";
-import EditableInput from "../EditableInput";
 
-describe.only("CirculationEventsDownloadForm", () => {
+describe("CirculationEventsDownloadForm", () => {
   let wrapper;
   let hide;
 
