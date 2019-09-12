@@ -14,7 +14,7 @@ describe("LibraryRegistrationForm", () => {
     status: "success",
     stage: "production"
   };
-  let registrationDataWithHTML = {
+  let registrationData = {
     id: 1,
     libraries: [library],
     access_problem: null,
@@ -32,7 +32,7 @@ describe("LibraryRegistrationForm", () => {
         buttonText={"Update registration"}
         register={register}
         disabled={false}
-        registrationData={registrationDataWithHTML}
+        registrationData={registrationData}
       />
     );
   });
@@ -45,27 +45,42 @@ describe("LibraryRegistrationForm", () => {
     expect(wrapper.find(".registration-status").find("input").length).to.equal(0);
   });
 
-  it("displays a label and checkbox if there is terms-of-service HTML", () => {
+  it("displays an error message if there is a problem with the terms-of-service data", () => {
+    let dataWithProblem = {...registrationData, ...{access_problem: {detail: "Something went wrong."}}};
+    wrapper.setProps({ registrationData: dataWithProblem });
+    expect(wrapper.find(".registration-checkbox").find(".bg-danger").text()).to.equal("Something went wrong.");
+    // If the terms can't be displayed, there's no point showing the checkbox and button.
+    expect(wrapper.find(".registration-status").find("input").length).to.equal(0);
+    expect(wrapper.find(".registration-status").find("button").length).to.equal(0);
+  });
+
+  it("displays content and a checkbox with a label if there is terms-of-service HTML", () => {
     let termsSection = wrapper.find(".registration-checkbox");
     expect(termsSection.length).to.equal(1);
-    let label = termsSection.find("label");
+    let content = termsSection.find("p");
+    expect(content.length).to.equal(1);
+    expect(content.text()).to.equal("Here are the terms of service!");
+    let label = wrapper.find("label");
     expect(label.length).to.equal(1);
-    expect(label.text()).to.equal("Here are the terms of service!");
+    expect(label.text()).to.equal("I agree to the terms of service.");
     let checkbox = wrapper.find("input");
     expect(checkbox.length).to.equal(1);
     expect(checkbox.prop("type")).to.equal("checkbox");
   });
 
-  it("displays a label and checkbox if there is a terms-of-service link", () => {
-    wrapper.setProps({ registrationData: {...registrationDataWithHTML, ...{terms_of_service_html: null}} });
+  it("displays content and a checkbox with a label if there is a terms-of-service link", () => {
+    wrapper.setProps({ registrationData: {...registrationData, ...{terms_of_service_html: null}} });
     let termsSection = wrapper.find(".registration-checkbox");
     expect(termsSection.length).to.equal(1);
-    let label = termsSection.find("label");
-    expect(label.length).to.equal(1);
-    expect(label.text()).to.equal("I have read and agree to the terms and conditions.");
+    let content = termsSection.find("p");
+    expect(content.length).to.equal(1);
+    expect(content.text()).to.equal("You must read the terms of service before registering your library.");
     let link = wrapper.find("a");
     expect(link.length).to.equal(1);
     expect(link.prop("href")).to.equal("terms.html");
+    let label = wrapper.find("label");
+    expect(label.length).to.equal(1);
+    expect(label.text()).to.equal("I agree to the terms of service.");
     let checkbox = wrapper.find("input");
     expect(checkbox.length).to.equal(1);
     expect(checkbox.prop("type")).to.equal("checkbox");
