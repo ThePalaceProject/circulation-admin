@@ -25,6 +25,7 @@ export interface CirculationEventsDispatchProps {
 export interface CirculationEventsOwnProps {
   store?: Store<State>;
   wait?: number;
+  library?: string;
 }
 
 export interface CirculationEventsProps extends CirculationEventsStateProps, CirculationEventsDispatchProps, CirculationEventsOwnProps {}
@@ -65,6 +66,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
         <CirculationEventsDownloadForm
           show={this.state.showDownloadForm}
           hide={this.hideDownloadForm}
+          library={this.props.library}
         />
 
         { this.props.fetchError &&
