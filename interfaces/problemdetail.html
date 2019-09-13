@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ConfigPageContext | simplified-circulation-web</title>
+	<title>ProblemDetail | simplified-circulation-web</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="configpagecontext.html">ConfigPageContext</a>
+					<a href="problemdetail.html">ProblemDetail</a>
 				</li>
 			</ul>
-			<h1>Interface ConfigPageContext</h1>
+			<h1>Interface ProblemDetail</h1>
 		</div>
 	</div>
 </header>
@@ -70,7 +70,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ConfigPageContext</span>
+						<span class="target">ProblemDetail</span>
 					</li>
 				</ul>
 			</section>
@@ -81,8 +81,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configpagecontext.html#csrftoken" class="tsd-kind-icon">csrf<wbr>Token</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="configpagecontext.html#editorstore" class="tsd-kind-icon">editor<wbr>Store</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="problemdetail.html#detail" class="tsd-kind-icon">detail</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="problemdetail.html#status" class="tsd-kind-icon">status</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="problemdetail.html#title" class="tsd-kind-icon">title</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="problemdetail.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -91,22 +93,42 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="csrftoken" class="tsd-anchor"></a>
-					<h3>csrf<wbr>Token</h3>
-					<div class="tsd-signature tsd-kind-icon">csrf<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="detail" class="tsd-anchor"></a>
+					<h3>detail</h3>
+					<div class="tsd-signature tsd-kind-icon">detail<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/deb904f/src/components/ConfigPage.tsx#L18">components/ConfigPage.tsx:18</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/deb904f/src/interfaces.ts#L399">interfaces.ts:399</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="editorstore" class="tsd-anchor"></a>
-					<h3>editor<wbr>Store</h3>
-					<div class="tsd-signature tsd-kind-icon">editor<wbr>Store<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Store</span><span class="tsd-signature-symbol">&lt;</span><a href="state.html" class="tsd-signature-type">State</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="status" class="tsd-anchor"></a>
+					<h3>status</h3>
+					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/deb904f/src/components/ConfigPage.tsx#L17">components/ConfigPage.tsx:17</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/deb904f/src/interfaces.ts#L396">interfaces.ts:396</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="title" class="tsd-anchor"></a>
+					<h3>title</h3>
+					<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/deb904f/src/interfaces.ts#L397">interfaces.ts:397</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/deb904f/src/interfaces.ts#L398">interfaces.ts:398</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -125,13 +147,19 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="configpagecontext.html" class="tsd-kind-icon">Config<wbr>Page<wbr>Context</a>
+						<a href="problemdetail.html" class="tsd-kind-icon">Problem<wbr>Detail</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="configpagecontext.html#csrftoken" class="tsd-kind-icon">csrf<wbr>Token</a>
+								<a href="problemdetail.html#detail" class="tsd-kind-icon">detail</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="configpagecontext.html#editorstore" class="tsd-kind-icon">editor<wbr>Store</a>
+								<a href="problemdetail.html#status" class="tsd-kind-icon">status</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="problemdetail.html#title" class="tsd-kind-icon">title</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="problemdetail.html#type" class="tsd-kind-icon">type</a>
 							</li>
 						</ul>
 					</li>
