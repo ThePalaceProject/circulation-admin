@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
-import PatronAuthServiceForm from "./PatronAuthServiceForm";
 
 /** Right panel for patron authentication services on the system
     configuration page. Shows a list of current patron authentication
