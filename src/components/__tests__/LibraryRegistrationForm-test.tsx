@@ -12,13 +12,15 @@ describe("LibraryRegistrationForm", () => {
   let library = {
     name: "Test Library",
     status: "success",
-    stage: "production",
-    settings: {
-      "terms-of-service": "terms_url"
-    }
+    stage: "production"
   };
-
-  let libraryNoLink = { ...library, ...{ settings: [] }};
+  let registrationData = {
+    id: 1,
+    libraries: [library],
+    access_problem: null,
+    terms_of_service_html: "Here are the <a href='terms.html'>terms of service</a>!",
+    terms_of_service_link: "terms.html"
+  };
   let register = stub();
 
   beforeEach(() => {
@@ -30,30 +32,58 @@ describe("LibraryRegistrationForm", () => {
         buttonText={"Update registration"}
         register={register}
         disabled={false}
+        registrationData={registrationData}
       />
     );
   });
 
-  it("displays a label and checkbox if there is a terms-of-service link", () => {
+  it("does not display a label and checkbox if there is no terms-of-service data", () => {
+    wrapper.setProps({ registrationData: null });
+    expect(wrapper.find(".registration-checkbox").length).to.equal(0);
+    expect(wrapper.find(".registration-status").find("label").length).to.equal(0);
+    expect(wrapper.find(".registration-status").find("a").length).to.equal(0);
+    expect(wrapper.find(".registration-status").find("input").length).to.equal(0);
+  });
+
+  it("displays an error message if there is a problem with the terms-of-service data", () => {
+    let dataWithProblem = {...registrationData, ...{access_problem: {detail: "Something went wrong."}}};
+    wrapper.setProps({ registrationData: dataWithProblem });
+    expect(wrapper.find(".registration-checkbox").find(".bg-danger").text()).to.equal("Something went wrong.");
+    // If the terms can't be displayed, there's no point showing the checkbox and button.
+    expect(wrapper.find(".registration-status").find("input").length).to.equal(0);
+    expect(wrapper.find(".registration-status").find("button").length).to.equal(0);
+  });
+
+  it("displays content and a checkbox with a label if there is terms-of-service HTML", () => {
     let termsSection = wrapper.find(".registration-checkbox");
     expect(termsSection.length).to.equal(1);
-    let label = termsSection.find("label");
+    let content = termsSection.find("p");
+    expect(content.length).to.equal(1);
+    expect(content.text()).to.equal("Here are the terms of service!");
+    let label = wrapper.find("label");
     expect(label.length).to.equal(1);
-    expect(label.text()).to.equal("I have read and agree to the terms and conditions");
-    let link = label.find("a");
-    expect(link.length).to.equal(1);
-    expect(link.prop("href")).to.equal("terms_url");
+    expect(label.text()).to.equal("I agree to the terms of service.");
     let checkbox = wrapper.find("input");
     expect(checkbox.length).to.equal(1);
     expect(checkbox.prop("type")).to.equal("checkbox");
   });
 
-  it("does not display a label and checkbox if there is no terms-of-service link", () => {
-    wrapper.setProps({ library: libraryNoLink });
-    expect(wrapper.find(".registration-checkbox").length).to.equal(0);
-    expect(wrapper.find(".registration-status").find("label").length).to.equal(0);
-    expect(wrapper.find(".registration-status").find("a").length).to.equal(0);
-    expect(wrapper.find(".registration-status").find("input").length).to.equal(0);
+  it("displays content and a checkbox with a label if there is a terms-of-service link", () => {
+    wrapper.setProps({ registrationData: {...registrationData, ...{terms_of_service_html: null}} });
+    let termsSection = wrapper.find(".registration-checkbox");
+    expect(termsSection.length).to.equal(1);
+    let content = termsSection.find("p");
+    expect(content.length).to.equal(1);
+    expect(content.text()).to.equal("You must read the terms of service before registering your library.");
+    let link = wrapper.find("a");
+    expect(link.length).to.equal(1);
+    expect(link.prop("href")).to.equal("terms.html");
+    let label = wrapper.find("label");
+    expect(label.length).to.equal(1);
+    expect(label.text()).to.equal("I agree to the terms of service.");
+    let checkbox = wrapper.find("input");
+    expect(checkbox.length).to.equal(1);
+    expect(checkbox.prop("type")).to.equal("checkbox");
   });
 
   it("displays a registration button", () => {
@@ -72,7 +102,7 @@ describe("LibraryRegistrationForm", () => {
   it("disables the button if there is a checkbox and it is unchecked", () => {
     expect(wrapper.state()["checked"]).to.be.true;
     let button = wrapper.find(Button);
-    expect(button.prop("disabled")).to.be.false;
+    expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setState({ checked: false });
     button = wrapper.find(Button);
@@ -85,13 +115,9 @@ describe("LibraryRegistrationForm", () => {
     let button = wrapper.find(Button);
     expect(button.prop("disabled")).to.be.true;
 
-    wrapper.setProps({ library: libraryNoLink });
-    button = wrapper.find(Button);
-    expect(button.prop("disabled")).to.be.true;
-
     wrapper.setProps({ disabled: false });
     button = wrapper.find(Button);
-    expect(button.prop("disabled")).to.be.false;
+    expect(button.prop("disabled")).not.to.be.true;
   });
 
 
@@ -101,7 +127,7 @@ describe("LibraryRegistrationForm", () => {
 
     wrapper.setProps({ checked: false });
     checkbox = wrapper.find("input");
-    expect(checkbox.prop("checked")).to.be.false;
+    expect(checkbox.prop("checked")).not.to.be.true;
   });
 
   it("calls register", () => {

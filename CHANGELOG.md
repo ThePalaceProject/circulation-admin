@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.15
+#### Updated
+- Displayed additional terms-of-service information on the library registration form.
+
 ### v0.3.14
 #### Updated
 - Updated the catalog book default colors as well as book detail tabs and entrypoint tabs link color.
