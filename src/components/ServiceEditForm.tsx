@@ -4,7 +4,7 @@ import ProtocolFormField from "./ProtocolFormField";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
-import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
+import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData, SettingData } from "../interfaces";
 import { clearForm } from "../utils/sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -25,6 +25,7 @@ export interface ServiceEditFormState {
   libraries: LibraryWithSettingsData[];
   expandedLibraries: string[];
   selectedLibrary: string | null;
+  analyticsOption?: string | null;
 }
 
 /** Form for editing service configuration based on protocol information from the server.
@@ -41,7 +42,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       parentId: (this.props.item && this.props.item.parent_id && String(this.props.item.parent_id)) || null,
       libraries: (this.props.item && this.props.item.libraries) || [],
       expandedLibraries: [],
-      selectedLibrary: null
+      selectedLibrary: null,
+      analyticsOption: null
     };
     this.handleProtocolChange = this.handleProtocolChange.bind(this);
     this.handleParentChange = this.handleParentChange.bind(this);
@@ -55,6 +57,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.renderRequiredFields = this.renderRequiredFields.bind(this);
     this.renderOptionalFields = this.renderOptionalFields.bind(this);
     this.renderLibrariesForm = this.renderLibrariesForm.bind(this);
+    this.renderNeighborhoodForm = this.renderNeighborhoodForm.bind(this);
+    this.protocolNeighborhoodSetting = this.protocolNeighborhoodSetting.bind(this);
+    this.handleNeighborhoodChange = this.handleNeighborhoodChange.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -93,9 +98,9 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   render(): JSX.Element {
     const { requiredFields, nonRequiredFields } = this.protocolSettings();
     const showLibrariesForm = (!this.sitewide() || this.protocolLibrarySettings().length > 0);
+    const showNeighborhoodForm = this.props.data && this.protocolNeighborhoodSetting();
     const hasNonRequiredFields = nonRequiredFields.length > 0;
     const hasInstructions = this.props.data && this.protocolInstructions();
-
     let instructions = hasInstructions && (
       <div className="form-group" key="instructions">
         <label className="control-label">Instructions</label>
@@ -126,6 +131,14 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       />
     );
 
+    let neighborhoodForm = showNeighborhoodForm && (
+      <Panel
+        key="neighborhood"
+        headerText="Patron Neighborhood Analytics"
+        content={this.renderNeighborhoodForm()}
+      />
+    );
+
     let librariesForm = showLibrariesForm && (
       <Panel
         key="libraries"
@@ -141,7 +154,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         hiddenName={this.props.item && this.props.item.id && "id"}
         hiddenValue={this.props.item && this.props.item.id && String(this.props.item.id)}
         disableButton={this.props.disabled}
-        content={[instructions, requiredFieldsPanel, optionalFieldsPanel, librariesForm]}
+        content={[instructions, requiredFieldsPanel, optionalFieldsPanel, neighborhoodForm, librariesForm]}
       />
     );
   }
@@ -214,10 +227,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   renderOptionalFields(optionalFields) {
+    // Some settings are optional, but should appear in their own panels rather than in this one.
+    let exclude = ["neighborhood_mode"];
     return (
       <fieldset>
         <legend className="visuallyHidden">Additional Fields</legend>
-        { optionalFields.map(setting =>
+        { optionalFields.filter(s => !exclude.includes(s.key)).map(setting =>
             <ProtocolFormField
               key={setting.key}
               ref={setting.key}
@@ -230,6 +245,37 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         }
       </fieldset>
     );
+  }
+
+  renderNeighborhoodForm() {
+    let setting = this.protocolNeighborhoodSetting() as any;
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Patron Neighborhood Analytics</legend>
+        <p>{setting.description}</p>
+        <EditableInput
+          key={setting.key}
+          ref={setting.key}
+          label={setting.label}
+          elementType="select"
+          disabled={this.props.disabled}
+          value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+          error={this.props.error}
+          onChange={this.handleNeighborhoodChange}
+        >
+        { setting.options.map(o =>
+            <option key={o.name} value={o.label}>
+              {o.label}
+            </option>
+          )
+        }
+        </EditableInput>
+        {
+          this.state.analyticsOption && this.state.analyticsOption !== "disabled" &&
+          <p>In order to use this feature, you must enable it in your <a href="/admin/web/config/analytics">analytics service configuration settings</a>.</p>
+        }
+      </fieldset>
+    )
   }
 
   renderLibrariesForm() {
@@ -439,6 +485,24 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       }
     }
     return [];
+  }
+
+  protocolNeighborhoodSetting(): SettingData {
+    if (this.state.protocol && this.props.data && this.props.data.protocols) {
+      for (const protocol of this.props.data.protocols) {
+        if (protocol.name === this.state.protocol) {
+          let neighborhoodSetting = protocol.settings.find(s => s.key === "neighborhood_mode");
+          if (neighborhoodSetting) {
+            return neighborhoodSetting;
+          }
+        }
+      }
+    }
+  }
+
+  handleNeighborhoodChange(choiceName) {
+    let choice = this.protocolNeighborhoodSetting().options.find(o => o.label === choiceName).key;
+    this.setState({ analyticsOption: choice });
   }
 
   sitewide() {
