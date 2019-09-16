@@ -7,6 +7,7 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
+import NeighborhoodAnalyticsForm from "../NeighborhoodAnalyticsForm";
 import { Button, Form } from "library-simplified-reusable-components";
 import WithRemoveButton from "../WithRemoveButton";
 import WithEditButton from "../WithEditButton";
@@ -526,6 +527,24 @@ describe("ServiceEditForm", () => {
       expect(options.length).to.equal(2);
       expect(options.at(0).props().value).to.equal("none");
       expect(options.at(1).props().value).to.equal("bpl");
+    });
+
+    it("renders neighborhood analytics form for a relevant patron auth protocol", () => {
+      let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+      expect(neighborhoodForm.length).to.equal(0);
+      let patronAuthProtocol = {...protocolsData[0], ...{settings: [{"key": "neighborhood_mode", options: []}]}};
+      wrapper.setProps({ data: {...servicesData, ...{protocols: [patronAuthProtocol]}}});
+      neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+      expect(neighborhoodForm.length).to.equal(1);
+    });
+
+    it("renders neighborhood analytics form for a relevant analytics protocol", () => {
+      let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+      expect(neighborhoodForm.length).to.equal(0);
+      let analyticsProtocol = {...protocolsData[0], ...{settings: [{"key": "location_source", options: []}]}};
+      wrapper.setProps({ data: {...servicesData, ...{protocols: [analyticsProtocol]}}});
+      neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+      expect(neighborhoodForm.length).to.equal(1);
     });
 
     it("has a save button", () => {
