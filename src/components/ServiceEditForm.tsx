@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import NeighborhoodAnalyticsForm from "./NeighborhoodAnalyticsForm";
+import NeighborhoodAnalyticsForm  from "./NeighborhoodAnalyticsForm";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
@@ -59,9 +59,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.renderRequiredFields = this.renderRequiredFields.bind(this);
     this.renderOptionalFields = this.renderOptionalFields.bind(this);
     this.renderLibrariesForm = this.renderLibrariesForm.bind(this);
-    // this.renderNeighborhoodForm = this.renderNeighborhoodForm.bind(this);
-    // this.protocolNeighborhoodSetting = this.protocolNeighborhoodSetting.bind(this);
-    // this.handleNeighborhoodChange = this.handleNeighborhoodChange.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -137,17 +134,14 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       <NeighborhoodAnalyticsForm
         setting={this.protocolNeighborhoodSetting()}
         ref={this.neighborhoodForm}
-        currentValue={this.props.item && this.props.item.settings && this.props.item.settings["neighborhood_mode"]}
+        currentValue={
+          this.props.item && this.props.item.settings &&
+          this.props.item.settings[(
+            this.props.listDataKey === "patron_auth_services" ? "neighborhood_mode" : "location_source"
+          )]
+        }
       />
     );
-
-    // let neighborhoodForm = showNeighborhoodForm && (
-    //   <Panel
-    //     key="neighborhood"
-    //     headerText="Patron Neighborhood Analytics"
-    //     content={this.renderNeighborhoodForm()}
-    //   />
-    // );
 
     let librariesForm = showLibrariesForm && (
       <Panel
@@ -255,38 +249,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     );
   }
 
-  // renderNeighborhoodForm() {
-  //   let setting = this.protocolNeighborhoodSetting() as any;
-  //   // console.log(this.props.item.settings);
-  //   return (
-  //     <fieldset>
-  //       <legend className="visuallyHidden">Patron Neighborhood Analytics</legend>
-  //       <p dangerouslySetInnerHTML={{__html: setting.description}}/>
-  //       <EditableInput
-  //         key={setting.key}
-  //         ref={setting.key}
-  //         label={setting.label}
-  //         elementType="select"
-  //         disabled={this.props.disabled}
-  //         value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
-  //         error={this.props.error}
-  //         onChange={this.handleNeighborhoodChange}
-  //       >
-  //       { setting.options.map(o =>
-  //           <option key={o.name} value={o.label}>
-  //             {o.label}
-  //           </option>
-  //         )
-  //       }
-  //       </EditableInput>
-  //       {
-  //         (this.state.analyticsOption && this.state.analyticsOption !== "disabled") &&
-  //         <p>In order to use this feature, you must also enable it in your {setting.key === "location_source" ? <a href="/admin/web/config/patronAuth">patron authentication service configuration settings</a> : <a href="/admin/web/config/analytics">analytics service configuration settings</a>}.</p>
-  //       }
-  //     </fieldset>
-  //   )
-  // }
-
   renderLibrariesForm() {
     return (
       <fieldset className="update-libraries">
@@ -383,8 +345,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       </fieldset>
     );
   }
-
-
 
   availableProtocols(props?): ProtocolData[] {
     props = props || this.props;
@@ -511,11 +471,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     }
   }
 
-  // handleNeighborhoodChange(choiceName) {
-  //   let choice = this.protocolNeighborhoodSetting().options.find(o => o.label === choiceName).key;
-  //   this.setState({ analyticsOption: choice });
-  // }
-
   sitewide() {
     if (this.state.protocol && this.props.data && this.props.data.protocols) {
       for (const protocol of this.props.data.protocols) {
@@ -614,7 +569,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   handleData(data: FormData) {
     const neighborhoodRef = this.neighborhoodForm.current;
-    neighborhoodRef && data.append("neighborhood_mode", neighborhoodRef.getValue());
+    const dataKey = this.props.listDataKey === "patron_auth_services" ? "neighborhood_mode" : "location_source";
+    neighborhoodRef && data.append(dataKey, neighborhoodRef.getValue());
     data && data.append("libraries", JSON.stringify(this.state.libraries));
     return data;
   }

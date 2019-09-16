@@ -1,25 +1,24 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { Button, Form, Panel } from "library-simplified-reusable-components";
-import { clearForm } from "../utils/sharedFunctions";
+import { Panel } from "library-simplified-reusable-components";
 import { SettingData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
-export interface NeighborhoodAnalyticsProps {
+export interface NeighborhoodAnalyticsFormProps {
   setting: SettingData;
   disabled?: boolean;
   error?: FetchErrorData;
   currentValue?: string;
 }
 
-export interface NeighborhoodAnalyticsState {
-  analyticsOption?: string;
+export interface NeighborhoodAnalyticsFormState {
+  selected?: string;
 }
 
-export default class NeighborhoodAnalyticsForm extends React.Component<NeighborhoodAnalyticsProps, NeighborhoodAnalyticsState> {
+export default class NeighborhoodAnalyticsForm extends React.Component<NeighborhoodAnalyticsFormProps, NeighborhoodAnalyticsFormState> {
   constructor(props) {
     super(props);
-    this.state = { analyticsOption: props.currentValue || null };
+    this.state = { selected: props.currentValue || null };
     this.handleNeighborhoodChange = this.handleNeighborhoodChange.bind(this);
     this.renderNeighborhoodForm = this.renderNeighborhoodForm.bind(this);
   }
@@ -27,18 +26,19 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
   render() {
     return (
       <Panel
-        headerText="Patron Neighborhood Analytics"
+        headerText={`Patron Neighborhood Analytics: ${this.state.selected && this.state.selected !== "disabled" ? "En" : "Dis"}abled`}
         content={this.renderNeighborhoodForm()}
       />
     )
   }
 
   handleNeighborhoodChange(choice) {
-    this.setState({ analyticsOption: choice });
+    this.setState({ selected: choice });
   }
 
   renderNeighborhoodForm() {
     let setting = this.props.setting;
+    let [oppositeKey, oppositeName] = this.getPairedService(setting);
     return (
       <fieldset>
         <legend className="visuallyHidden">Patron Neighborhood Analytics</legend>
@@ -60,15 +60,20 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
         }
         </EditableInput>
         {
-          this.state.analyticsOption && this.state.analyticsOption !== "disabled" &&
-          <p>In order to use this feature, you must also enable it in your {setting.key === "location_source" ? <a href="/admin/web/config/patronAuth">patron authentication service configuration settings</a> : <a href="/admin/web/config/analytics">analytics service configuration settings</a>}.</p>
+          this.state.selected && this.state.selected !== "disabled" &&
+          <p>This feature will work only if it is also enabled in your <a href={"/admin/web/config/" + oppositeKey}>{oppositeName} service configuration settings</a>.</p>
         }
       </fieldset>
     )
   }
 
-  getValue(): string {
-    return this.state.analyticsOption;
+  getPairedService(setting): string[] {
+    return setting.key === "location_source" ?
+      ["patronAuth", "patron authentication"] :
+      ["analytics", "analytics"];
   }
 
+  getValue(): string {
+    return this.state.selected;
+  }
 }
