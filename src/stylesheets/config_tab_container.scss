@@ -5,31 +5,28 @@ $dangercolor: #D9534F;
   .tab-container {
     position: relative;
     height: 100%;
+    width: 100%;
+      .nav-tabs {
+        float: left;
+        width: 25%;
+        border-right: 1px solid #DDD;
 
-    .nav-tabs {
-      width: 25%;
-      position: absolute;
-      left: 0;
-      border-right: 1px solid #DDD;
-
-      li {
-        display: block;
-        width: 100%;
-        border-top: 1px solid #DDD;
-
-        a {
-          padding-left: 15px;
+        li {
+          display: block;
           width: 100%;
+          border-top: 1px solid #DDD;
+
+          a {
+            padding-left: 15px;
+            width: 100%;
+          }
         }
       }
-    }
 
     .tab-content {
+      float: left;
       width: 73%;
-      max-width: 700px;
-      position: absolute;
-      left: 27%;
-      padding: 40px;
+      padding: 40px 50px;
 
       ul {
         padding-left: 10px;
