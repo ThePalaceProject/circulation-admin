@@ -39,7 +39,7 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
   };
 
   render(): JSX.Element {
-    let className = this.props.class ? `tab-container clearfix ${this.props.class}` : "tab-container clearfix";
+    let className = this.props.class ? `tab-container ${this.props.class}` : "tab-container";
     return (
       <div className={className}>
         <ul className="nav nav-tabs">

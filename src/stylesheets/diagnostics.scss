@@ -18,50 +18,58 @@
         }
       }
     }
-  }
+    .services {
+      height: 100%;
+      width: 100%;
+      .tab-container {
+        display: flex;
+        padding-right: 40px;
+        justify-content: space-between;
+      }
+      // List of services
+      .nav-tabs {
+        border-bottom: 1px solid $medium-gray;
+        border-right: 1px solid $medium-gray;
+        border-top: none;
+        li {
+          border-color: $medium-gray;
+          a {
+            border: none;
+            .service-name {
+              display: inline-block;
+              max-width: 85%;
+              margin: 0;
+            }
+          }
+          &.active {
+            border-bottom: 1px solid $medium-gray;
+            a {
+              border: 1px solid $dark;
+              border-left: none;
+            }
+          }
+        }
+      }
 
-  .services {
-    // List of services
-    .nav-tabs {
-      border-bottom: 1px solid $medium-gray;
-      border-right: 1px solid $medium-gray;
-      border-top: none;
-      li {
-        border-color: $medium-gray;
-        a {
-          border: none;
-          .service-name {
-            display: inline-block;
-            max-width: 85%;
+      // List of collections
+      .tab-content {
+        padding: 0;
+        min-width: 70%;
+        height: 100%;
+        // Individual collection
+        .timestamps {
+          padding: 0;
+          .timestamp-holder {
+            padding: 0;
+            min-width: 100%;
+            border: none;
             margin: 0;
           }
         }
-        &.active {
-          border-bottom: 1px solid $medium-gray;
-          a {
-            border: 1px solid $dark;
-          }
-        }
-      }
-    }
-
-    // List of collections
-    .tab-content {
-      padding: 0;
-      min-width: 70%;
-      height: 100%;
-      // Individual collection
-      .timestamps {
-        padding: 0;
-        .timestamp-holder {
-          padding: 0;
-          min-width: 100%;
-          border: none;
-          margin: 0;
-        }
       }
     }
   }
+
 
   // Individual timestamp
   .timestamp-holder {

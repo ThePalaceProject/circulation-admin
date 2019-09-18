@@ -39,6 +39,7 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
           identifier={this.props.params.identifier}
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
+          class="clearfix"
         />
         <Footer />
       </div>

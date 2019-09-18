@@ -21,8 +21,8 @@
 
 .clearfix:before,
 .clearfix:after {
-  content: "";
   display: table;
+  content: "";
 }
 
 .clearfix:after {

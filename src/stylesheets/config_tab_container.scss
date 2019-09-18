@@ -6,22 +6,22 @@ $dangercolor: #D9534F;
     position: relative;
     height: 100%;
     width: 100%;
-      .nav-tabs {
-        float: left;
-        width: 25%;
-        border-right: 1px solid #DDD;
+    .nav-tabs {
+      float: left;
+      width: 25%;
+      border-right: 1px solid #DDD;
 
-        li {
-          display: block;
+      li {
+        display: block;
+        width: 100%;
+        border-top: 1px solid #DDD;
+
+        a {
+          padding-left: 15px;
           width: 100%;
-          border-top: 1px solid #DDD;
-
-          a {
-            padding-left: 15px;
-            width: 100%;
-          }
         }
       }
+    }
 
     .tab-content {
       float: left;

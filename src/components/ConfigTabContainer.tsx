@@ -20,6 +20,7 @@ import Admin from "../models/Admin";
 export interface ConfigTabContainerProps extends TabContainerProps {
   editOrCreate?: string;
   identifier?: string;
+  class?: string;
 }
 
 export interface ConfigTabContainerContext extends TabContainerContext {

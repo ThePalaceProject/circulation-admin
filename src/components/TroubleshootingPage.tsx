@@ -64,7 +64,7 @@ export default class TroubleshootingPage extends React.Component<Troubleshooting
             subtab={subtab}
           />
         </div>
-        <Footer className="pin-to-end" />
+        <Footer />
       </div>
     );
   }
