@@ -7,6 +7,7 @@ import * as qs from "qs";
 export interface CirculationEventsDownloadFormProps extends React.Props<CirculationEventsDownloadForm> {
   show: boolean;
   hide: () => void;
+  library?: string;
 }
 
 export interface CirculationEventsDownloadFormState {
@@ -166,8 +167,13 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
     const dateEnd = this.getRefValue(this.dateEnd);
     const locations = this.getRefValue(this.locations);
     const paramValues = { date, dateEnd, locations };
+    let library = "";
 
-    let url = "/admin/bulk_circulation_events";
+    if (this.props.library) {
+      library = "/" + this.props.library;
+    }
+
+    let url = library + "/admin/bulk_circulation_events";
     let params = qs.stringify(paramValues, { skipNulls: true });
 
     if (params) {
