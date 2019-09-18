@@ -25,6 +25,7 @@ export interface CirculationEventsDispatchProps {
 export interface CirculationEventsOwnProps {
   store?: Store<State>;
   wait?: number;
+  library?: string;
 }
 
 export interface CirculationEventsProps extends CirculationEventsStateProps, CirculationEventsDispatchProps, CirculationEventsOwnProps {}
@@ -54,7 +55,8 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
   };
 
   render(): JSX.Element {
-    return(
+    const { library, fetchError, isLoaded, events } = this.props;
+    return (
       <div className="circulation-events">
         <h3>Circulation Events</h3>
 
@@ -65,49 +67,58 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
         <CirculationEventsDownloadForm
           show={this.state.showDownloadForm}
           hide={this.hideDownloadForm}
+          library={library}
         />
 
-        { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} />
+        { fetchError &&
+          <ErrorMessage error={fetchError} />
         }
 
-        { !this.props.isLoaded &&
+        { (!isLoaded && !library) &&
           <LoadingIndicator />
         }
 
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>Book</th>
-              <th>Event</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            { this.props.events.map(event =>
-              <tr key={event.id}>
-                <td>
-                  <CatalogLink bookUrl={event.book.url}>
-                    {event.book.title}
-                  </CatalogLink>
-                </td>
-                <td>{this.formatType(event.type)}</td>
-                <td>{this.formatTime(event.time)}</td>
-              </tr>
-            ) }
-          </tbody>
-        </table>
+        {
+          !library && (
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Book</th>
+                    <th>Event</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  { events.map(event =>
+                    <tr key={event.id}>
+                      <td>
+                        <CatalogLink bookUrl={event.book.url}>
+                          {event.book.title}
+                        </CatalogLink>
+                      </td>
+                      <td>{this.formatType(event.type)}</td>
+                      <td>{this.formatTime(event.time)}</td>
+                    </tr>
+                  ) }
+                </tbody>
+              </table>
+            )
+        }
       </div>
     );
   }
 
   componentWillMount() {
     this._isMounted = true;
-    this.fetchAndQueue();
+    if (!this.props.library) {
+      this.fetchAndQueue();
+    }
   }
 
   componentWillUnmount() {
-    clearTimeout(this.timer);
+    if (!this.props.library) {
+      clearTimeout(this.timer);
+    }
     this._isMounted = false;
   }
 

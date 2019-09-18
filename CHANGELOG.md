@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.16
+#### Updated
+- Added a date end, event type, and locations input fields to the report form for circulation events in the Dashboard.
+
 ### v0.3.15
 #### Updated
 - Displayed additional terms-of-service information on the library registration form.
