@@ -4,9 +4,15 @@
 #### Updated
 - Added a date end, event type, and locations input fields to the report form for circulation events in the Dashboard.
 
+### v0.3.15
+#### Updated
+- Displayed additional terms-of-service information on the library registration form.
+
 ### v0.3.14
 #### Updated
 - Updated the catalog book default colors as well as book detail tabs and entrypoint tabs link color.
+#### Fixed
+- Ensured that the Self-tests page updates to display the most recent test results.
 
 ### v0.3.13
 #### Updated

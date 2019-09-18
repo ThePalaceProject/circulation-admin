@@ -2,7 +2,7 @@ import * as React from "react";
 import { ServiceEditFormProps } from "./ServiceEditForm";
 import EditableInput from "./EditableInput";
 import LibraryRegistrationForm from "./LibraryRegistrationForm";
-import { ServicesWithRegistrationsData, LibraryDataWithStatus, LibraryData } from "../interfaces";
+import { ServicesWithRegistrationsData, LibraryDataWithStatus, LibraryRegistrationData, LibraryData } from "../interfaces";
 
 export interface LibraryRegistrationState {
   registration_stage?: { [key: string]: string } | null;
@@ -50,7 +50,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
         <div>
           <h2>Register libraries</h2>
           <ul>
-          { this.props.data.allLibraries.map(library => this.libraryRegistrationItem(library)) }
+          { this.props.data.allLibraries.map((library, idx) => this.libraryRegistrationItem(library, idx)) }
           </ul>
         </div>
       );
@@ -70,7 +70,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
     return libraryRegistrationStatus;
   }
 
-  libraryRegistrationItem(library: LibraryData): JSX.Element {
+  libraryRegistrationItem(library: LibraryData, idx: number): JSX.Element {
     let statusString = this.getStatus(library);
     return (
       <li className="service-with-registrations-library" key={library.short_name}>
@@ -78,7 +78,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
         <div className="library-registration-info">
           { this.currentStage(library, statusString) }
           { this.statusSpan(statusString) }
-          { this.libraryRegistrationForm(library, statusString) }
+          { this.libraryRegistrationForm(library, statusString, this.props.data.libraryRegistrations && this.props.data.libraryRegistrations[idx]) }
         </div>
       </li>
     );
@@ -136,7 +136,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
     );
   }
 
-  libraryRegistrationForm(library: LibraryData, status: string): JSX.Element {
+  libraryRegistrationForm(library: LibraryData, status: string, registrationData: LibraryRegistrationData): JSX.Element {
     return (
       <LibraryRegistrationForm
         library={library}
@@ -144,6 +144,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
         buttonText={this.MESSAGES[status].buttonText}
         checked={status === "success"}
         disabled={this.props.disabled}
+        registrationData={registrationData}
       />
     );
   }

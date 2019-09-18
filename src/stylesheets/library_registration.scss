@@ -35,23 +35,40 @@
     .registration-status {
       .registration-checkbox {
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
-        align-items: center;
         background: $medium-gray;
         padding: 10px;
         margin: 15px 5px 0px 5px;
-        label {
-          margin: 0;
+        width: 100%;
+        p {
+          margin: 0 0 8px 0;
+          width: 100%;
+          &.bg-danger {
+            margin: 0;
+            padding: 4px;
+            color: $red-dark;
+            border: 1px solid $red-dark;
+          }
         }
-        input {
+        label {
+          width: 100%;
+          background: white;
+          padding: 4px;
+          border: 1px solid $medium-gray;
           margin: 0;
+          input {
+            margin: 0;
+            width: 10%;
+            &:focus {
+              box-shadow: none;
+            }
+          }
         }
       }
     }
     button {
-      margin-left: 5px;
-      margin-right: 10px;
-      margin-top: 15px;
+      margin: 15px 10px 10px 5px;
     }
   }
 
