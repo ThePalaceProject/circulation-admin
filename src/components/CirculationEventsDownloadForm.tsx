@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Modal } from "react-bootstrap";
-import { Button, Form, Input } from "library-simplified-reusable-components";
+import { Button, Form } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import * as qs from "qs";
 
