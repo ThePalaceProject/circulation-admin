@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>LibraryStatsData | simplified-circulation-web</title>
+	<title>CirculationEventsDownloadFormState | simplified-circulation-web</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="librarystatsdata.html">LibraryStatsData</a>
+					<a href="circulationeventsdownloadformstate.html">CirculationEventsDownloadFormState</a>
 				</li>
 			</ul>
-			<h1>Interface LibraryStatsData</h1>
+			<h1>Interface CirculationEventsDownloadFormState</h1>
 		</div>
 	</div>
 </header>
@@ -70,7 +70,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">LibraryStatsData</span>
+						<span class="target">CirculationEventsDownloadFormState</span>
 					</li>
 				</ul>
 			</section>
@@ -81,9 +81,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="librarystatsdata.html#collections" class="tsd-kind-icon">collections</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="librarystatsdata.html#inventory" class="tsd-kind-icon">inventory</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="librarystatsdata.html#patrons" class="tsd-kind-icon">patrons</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="circulationeventsdownloadformstate.html#showlocationsinput" class="tsd-kind-icon">show<wbr>Locations<wbr>Input</a></li>
 							</ul>
 						</section>
 					</div>
@@ -92,90 +90,14 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="collections" class="tsd-anchor"></a>
-					<h3>collections</h3>
-					<div class="tsd-signature tsd-kind-icon">collections<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<a name="showlocationsinput" class="tsd-anchor"></a>
+					<h3>show<wbr>Locations<wbr>Input</h3>
+					<div class="tsd-signature tsd-kind-icon">show<wbr>Locations<wbr>Input<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/interfaces.ts#L134">interfaces.ts:134</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/CirculationEventsDownloadForm.tsx#L14">components/CirculationEventsDownloadForm.tsx:14</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-index-signature">
-								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">object</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter">
-										<h5>available_<wbr>licenses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>licensed_<wbr>titles<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>licenses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-									<li class="tsd-parameter">
-										<h5>open_<wbr>access_<wbr>titles<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="inventory" class="tsd-anchor"></a>
-					<h3>inventory</h3>
-					<div class="tsd-signature tsd-kind-icon">inventory<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/interfaces.ts#L129">interfaces.ts:129</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>available_<wbr>licenses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>licenses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>titles<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="patrons" class="tsd-anchor"></a>
-					<h3>patrons</h3>
-					<div class="tsd-signature tsd-kind-icon">patrons<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/interfaces.ts#L122">interfaces.ts:122</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>holds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>loans<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>total<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>with_<wbr>active_<wbr>loans<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>with_<wbr>active_<wbr>loans_<wbr>or_<wbr>holds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -192,16 +114,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="librarystatsdata.html" class="tsd-kind-icon">Library<wbr>Stats<wbr>Data</a>
+						<a href="circulationeventsdownloadformstate.html" class="tsd-kind-icon">Circulation<wbr>Events<wbr>Download<wbr>Form<wbr>State</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="librarystatsdata.html#collections" class="tsd-kind-icon">collections</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="librarystatsdata.html#inventory" class="tsd-kind-icon">inventory</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="librarystatsdata.html#patrons" class="tsd-kind-icon">patrons</a>
+								<a href="circulationeventsdownloadformstate.html#showlocationsinput" class="tsd-kind-icon">show<wbr>Locations<wbr>Input</a>
 							</li>
 						</ul>
 					</li>
