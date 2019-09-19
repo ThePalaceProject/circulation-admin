@@ -55,6 +55,8 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
       return "Circulation Manager" + (details ? " - " + details : "");
     };
 
+    console.log(collectionUrl);
+
     return (
       <OPDSCatalog
         collectionUrl={collectionUrl}

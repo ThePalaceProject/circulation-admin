@@ -34,6 +34,7 @@ export interface HeaderState {
 
 export interface HeaderRouter extends Router {
   getCurrentLocation?: Function;
+  location?: any;
 }
 
 /** Header of all admin interface pages, with a dropdown for selecting a library,
@@ -62,9 +63,10 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render(): JSX.Element {
-    const currentPathname = (this.context.router &&
+    const currentPathname = decodeURIComponent(this.context.router &&
       this.context.router.getCurrentLocation() &&
       this.context.router.getCurrentLocation().pathname) || "";
+    console.log(this.context);
     let currentLibrary = this.context.library && this.context.library();
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
@@ -106,7 +108,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 <CatalogLink
                   collectionUrl={"/" + currentLibrary + "/groups"}
                   bookUrl={null}
-                  className={currentPathname.indexOf("/admin/web/collection") !== -1 ? "active-link" : ""}
+                  className={currentPathname.indexOf("/groups") !== -1 ? "active-link" : ""}
                 >
                   Catalog
                 </CatalogLink>
