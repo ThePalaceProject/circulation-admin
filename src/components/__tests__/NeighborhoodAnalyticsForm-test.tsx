@@ -53,19 +53,19 @@ describe("NeighborhoodAnalyticsForm", () => {
   });
 
   it("renders a warning message", () => {
-    let warning = wrapper.find(".bg-danger");
+    let warning = wrapper.find(".bg-warning");
     expect(warning.length).to.equal(0);
     chooseOption("disabled");
-    warning = wrapper.find(".bg-danger");
+    warning = wrapper.find(".bg-warning");
     expect(warning.length).to.equal(0);
     chooseOption("choice1");
-    warning = wrapper.find(".bg-danger");
+    warning = wrapper.find(".bg-warning");
     expect(warning.length).to.equal(1);
-    expect(warning.text()).to.equal("This feature will work only if it is also enabled in your analytics service configuration settings.");
+    expect(warning.text()).to.equal("This feature will work only if it is also enabled in your local analytics service configuration settings.");
     expect(warning.find("a").prop("href")).to.equal("/admin/web/config/analytics");
 
     wrapper.setProps({ setting: analyticsSetting });
-    warning = wrapper.find(".bg-danger");
+    warning = wrapper.find(".bg-warning");
     expect(warning.length).to.equal(1);
     expect(warning.text()).to.equal("This feature will work only if it is also enabled in your patron authentication service configuration settings.");
     expect(warning.find("a").prop("href")).to.equal("/admin/web/config/patronAuth");
@@ -107,7 +107,7 @@ describe("NeighborhoodAnalyticsForm", () => {
   });
 
   it("provides the name of the paired service", () => {
-    expect(wrapper.instance().getPairedService(patronAuthSetting)).to.eql(["/admin/web/config/analytics", "analytics service configuration settings"]);
+    expect(wrapper.instance().getPairedService(patronAuthSetting)).to.eql(["/admin/web/config/analytics", "local analytics service configuration settings"]);
     expect(wrapper.instance().getPairedService(analyticsSetting)).to.eql(["/admin/web/config/patronAuth", "patron authentication service configuration settings"]);
   });
 

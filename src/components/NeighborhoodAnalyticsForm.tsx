@@ -28,6 +28,7 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
       <Panel
         headerText={`Patron Neighborhood Analytics: ${this.isEnabled() ? "En" : "Dis"}abled`}
         content={this.renderNeighborhoodForm()}
+        id="neighborhood"
       />
     );
   }
@@ -65,7 +66,7 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
         </EditableInput>
         {
           this.isEnabled() &&
-          <p className="bg-danger">This feature will work only if it is also enabled in your <a href={url}>{name}</a>.</p>
+          <p className="bg-warning">This feature will work only if it is also enabled in your <a href={url}>{name}</a>.</p>
         }
       </fieldset>
     );
@@ -73,7 +74,7 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
 
   getPairedService(setting: SettingData): string[] {
     // Whichever type of service we're currently dealing with--patron authentication or analytics--we need to provide a link to the other one.
-    const services = { "patronAuth": "patron authentication", "analytics": "analytics" };
+    const services = { "patronAuth": "patron authentication", "analytics": "local analytics" };
     let targetService = setting.key === "location_source" ? "patronAuth" : "analytics";
     let url = "/admin/web/config/" + targetService;
     let name = services[targetService] + " service configuration settings";
