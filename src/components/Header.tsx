@@ -38,7 +38,6 @@ export interface HeaderRouter extends Router {
 export interface HeaderNavItem {
   label: string;
   href: string;
-  catalog?: boolean;
   auth?: boolean;
 }
 
@@ -197,7 +196,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
    */
   renderNavItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
     const rootCatalogURL = "/admin/web/collection/";
-    const href = item.href;
+    const { label, href } = item;
     const isActive = currentPathname.indexOf(href) !== -1;
 
     return (
@@ -207,7 +206,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         href={`${rootCatalogURL}${currentLibrary}${href}`}
         active={isActive}
       >
-        {item.label}
+        {label}
       </NavItem>
     );
   }
@@ -221,7 +220,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
    * @param {string} currentLibrary Active library.
    */
   renderLinkItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
-    const href = item.href;
+    const { label, href, auth } = item;
     let isActive = currentPathname.indexOf(href) !== -1;
     if (currentLibrary) {
       isActive = !!(isActive && currentLibrary);
@@ -232,15 +231,15 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           to={`${href}${currentLibrary}`}
           className={isActive ? "active-link" : ""}
         >
-          {item.label}
+          {label}
         </Link>
       </li>
     );
 
     // Sometimes, some links should only be shown to admins who have
     // specific privileges. If there is no restriction, always render the link.
-    if (item.auth !== undefined) {
-      if (item.auth) {
+    if (auth !== undefined) {
+      if (auth) {
         return liElem;
       } else {
         return;
