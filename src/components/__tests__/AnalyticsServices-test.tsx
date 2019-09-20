@@ -5,6 +5,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import { AnalyticsServices } from "../AnalyticsServices";
+import NeighborhoodAnalyticsForm from "../NeighborhoodAnalyticsForm";
 
 describe("AnalyticsServices", () => {
   let wrapper;
@@ -54,5 +55,25 @@ describe("AnalyticsServices", () => {
     expect(service.at(0).text()).to.contain("test protocol label");
     let editLink = service.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/analytics/edit/2");
+  });
+
+  it("shows patron auth service list", () => {
+    let patronAuthService = wrapper.find("li");
+    expect(patronAuthService.length).to.equal(1);
+    expect(patronAuthService.at(0).text()).to.contain("nypl protocol: test protocol label");
+    let editLink = patronAuthService.at(0).find("a").at(0);
+    expect(editLink.props().href).to.equal("/admin/web/config/patronAuth/edit/2");
+  });
+
+  it("shows neighborhood analytics panel", () => {
+    let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+    expect(neighborhoodForm.length).to.equal(0);
+    let setting = { key: "location_source", options: [] };
+    let protocols = [{...data.protocols[0], ...{ settings: [setting] }}];
+    wrapper.setProps({ editOrCreate: "create", data: {...data, ...{ protocols }} });
+    wrapper.setState({ protocol: "test protocol"});
+    neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+    expect(neighborhoodForm.length).to.equal(1);
+    expect(neighborhoodForm.prop("setting")).to.equal(setting);
   });
 });

@@ -18,6 +18,8 @@ export interface ServiceEditFormProps<T> {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  extraFormSection?: any;
+  extraFormKey?: string;
 }
 
 export interface ServiceEditFormState {
@@ -32,7 +34,7 @@ export interface ServiceEditFormState {
 /** Form for editing service configuration based on protocol information from the server.
     Used on most tabs on the system configuration page. */
 export default class ServiceEditForm<T extends ServicesData> extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
-  private neighborhoodForm = React.createRef<NeighborhoodAnalyticsForm>();
+  private extraForm = React.createRef();
   constructor(props) {
     super(props);
     let defaultProtocol;
@@ -96,7 +98,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   render(): JSX.Element {
     let protocol = this.findProtocol();
-    const { requiredFields, nonRequiredFields, neighborhoodFields } = this.protocolSettings(protocol);
+    const { requiredFields, nonRequiredFields, extraFields } = this.protocolSettings(protocol);
     const showLibrariesForm = (!this.sitewide(protocol) || this.protocolLibrarySettings(protocol).length > 0);
     const hasNonRequiredFields = nonRequiredFields.length > 0;
     const hasInstructions = this.props.data && this.protocolInstructions(protocol);
@@ -130,18 +132,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       />
     );
 
-    let neighborhoodPanel = neighborhoodFields.length > 0 && (
-      <NeighborhoodAnalyticsForm
-        key="neighborhood"
-        setting={neighborhoodFields[0]}
-        ref={this.neighborhoodForm}
-        currentValue={
-          this.props.item && this.props.item.settings &&
-          this.props.item.settings[(
-            this.props.listDataKey === "patron_auth_services" ? "neighborhood_mode" : "location_source"
-          )]
-        }
-      />
+    let extraPanel = this.props.extraFormSection && extraFields.length > 0 && (
+        React.createElement(this.props.extraFormSection, {
+          key: this.props.extraFormKey,
+          setting: extraFields[0],
+          ref: this.extraForm,
+          currentValue: this.props.item && this.props.item.settings && this.props.item.settings[this.props.extraFormKey]
+        })
     );
 
     let librariesForm = showLibrariesForm && (
@@ -159,7 +156,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         hiddenName={this.props.item && this.props.item.id && "id"}
         hiddenValue={this.props.item && this.props.item.id && String(this.props.item.id)}
         disableButton={this.props.disabled}
-        content={[instructions, requiredFieldsPanel, optionalFieldsPanel, neighborhoodPanel, librariesForm]}
+        content={[instructions, requiredFieldsPanel, optionalFieldsPanel, extraPanel, librariesForm]}
       />
     );
   }
@@ -405,17 +402,17 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   protocolSettings(protocol: ProtocolData) {
     let requiredFields = [];
     let nonRequiredFields = [];
-    let neighborhoodFields = [];
-    let neighborhoodSettings = ["neighborhood_mode", "location_source"];
+    let extraFields = [];
+    let extraSettings = [this.props.extraFormKey];
     let settings;
     if (protocol) {
       settings = this.state.parentId ? protocol.child_settings : protocol.settings;
       settings && settings.forEach((s) => {
-        neighborhoodSettings.includes(s.key) ? neighborhoodFields.push(s) :
+        extraSettings.includes(s.key) ? extraFields.push(s) :
         (s.required ? requiredFields.push(s) : nonRequiredFields.push(s));
       });
     }
-    return { requiredFields, nonRequiredFields, neighborhoodFields };
+    return { requiredFields, nonRequiredFields, extraFields };
   }
 
   protocolDescription(protocol: ProtocolData) {
@@ -520,9 +517,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   handleData(data: FormData) {
-    const neighborhoodRef = this.neighborhoodForm.current;
-    const dataKey = this.props.listDataKey === "patron_auth_services" ? "neighborhood_mode" : "location_source";
-    neighborhoodRef && data.append(dataKey, neighborhoodRef.getValue());
+    const extraFormRef = this.extraForm.current;
+    extraFormRef && data.append(this.props.extraFormKey, (extraFormRef as any).getValue());
     data && data.append("libraries", JSON.stringify(this.state.libraries));
     return data;
   }
