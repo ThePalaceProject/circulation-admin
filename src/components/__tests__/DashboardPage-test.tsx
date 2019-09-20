@@ -26,14 +26,16 @@ describe("DashboardPage", () => {
     expect(header.length).to.equal(1);
   });
 
-  it("shows CirculationEvents when there is no library", () => {
+  it("shows CirculationEvents ", () => {
     let events = wrapper.find(CirculationEvents);
     expect(events.length).to.equal(1);
     expect(events.prop("store")).to.equal(store);
+    expect(events.prop("library")).to.equal(undefined);
 
     wrapper.setProps({ params: { library: "NYPL" } });
     events = wrapper.find(CirculationEvents);
-    expect(events.length).to.equal(0);
+    expect(events.length).to.equal(1);
+    expect(events.prop("library")).to.equal("NYPL");
   });
 
   it("shows Stats", () => {
