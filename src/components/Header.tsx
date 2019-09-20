@@ -75,17 +75,20 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let currentLibrary = this.context.library && this.context.library();
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
+    // Links that will be rendered in a NavItem Bootstrap component.
     const libraryNavItems = [
       { label: "Catalog", href: "%2Fgroups" },
       { label: "Complaints", href: "%2Fadmin%2Fcomplaints" },
       { label: "Hidden Books", href: "%2Fadmin%2Fsuppressed" },
     ];
+    // Links that will be rendered in a Link router component and are library specific.
     const libraryLinkItems = [
       { label: "Lists", href: "/admin/web/lists/" },
       { label: "Lanes", href: "/admin/web/lanes/", auth: isLibraryManager },
       { label: "Dashboard", href: "/admin/web/dashboard/"  },
       { label: "Patrons", href: "/admin/web/patrons/", auth: isLibraryManager },
     ];
+    // Links that will be rendered in a Link router component and are sitewide.
     const sitewideLinkItems = [
       { label: "Dashboard", href: "/admin/web/dashboard/",
         auth: (!this.context.library || !currentLibrary) },
@@ -185,7 +188,14 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState({ showAccountDropdown });
   }
 
-  renderNavItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string) {
+  /**
+   * renderNavItem
+   * Renders a NavItem Bootstrap component and is active based on the page's current path.
+   * @param {HeaderNavItem} item Object with the label and href for the navigation item.
+   * @param {string} currentPathname Page's current URL.
+   * @param {string} currentLibrary Active library.
+   */
+  renderNavItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
     const rootCatalogURL = "/admin/web/collection/";
     const href = item.href;
     const isActive = currentPathname.indexOf(href) !== -1;
@@ -202,6 +212,14 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     );
   }
 
+  /**
+   * renderLinkItem
+   * Renders a Link Router component for library and sitewide navigation links
+   * and if the current admin has the correct authentication.
+   * @param {HeaderNavItem} item Object with the label and href for the navigation item.
+   * @param {string} currentPathname Page's current URL.
+   * @param {string} currentLibrary Active library.
+   */
   renderLinkItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
     const href = item.href;
     let isActive = currentPathname.indexOf(href) !== -1;
@@ -219,6 +237,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       </li>
     );
 
+    // Sometimes, some links should only be shown to admins who have
+    // specific privileges. If there is no restriction, always render the link.
     if (item.auth !== undefined) {
       if (item.auth) {
         return liElem;

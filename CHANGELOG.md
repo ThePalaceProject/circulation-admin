@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.17
+#### Fixed
+- Fixed a bug where the catalog navigation links were not styled as "active" when they were on the correct page.
+
 ### v0.3.16
 #### Updated
 - Added a date end, event type, and locations input fields to the report form for circulation events in the Dashboard.
