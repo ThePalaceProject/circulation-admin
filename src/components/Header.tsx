@@ -82,21 +82,21 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     ];
     // Links that will be rendered in a Link router component and are library specific.
     const libraryLinkItems = [
-      { label: "Lists", href: "/admin/web/lists/" },
-      { label: "Lanes", href: "/admin/web/lanes/", auth: isLibraryManager },
-      { label: "Dashboard", href: "/admin/web/dashboard/"  },
-      { label: "Patrons", href: "/admin/web/patrons/", auth: isLibraryManager },
+      { label: "Lists", href: "lists/" },
+      { label: "Lanes", href: "lanes/", auth: isLibraryManager },
+      { label: "Dashboard", href: "dashboard/"  },
+      { label: "Patrons", href: "patrons/", auth: isLibraryManager },
     ];
     // Links that will be rendered in a Link router component and are sitewide.
     const sitewideLinkItems = [
-      { label: "Dashboard", href: "/admin/web/dashboard/",
+      { label: "Dashboard", href: "dashboard/",
         auth: (!this.context.library || !currentLibrary) },
-      { label: "System Configuration", href: "/admin/web/config/",
+      { label: "System Configuration", href: "config/",
         auth: this.context.admin.isLibraryManagerOfSomeLibrary() },
-      { label: "Troubleshooting", href: "/admin/web/troubleshooting/",
+      { label: "Troubleshooting", href: "troubleshooting/",
         auth: isSystemAdmin },
     ];
-    const accountLink = { label: "Change password", href: "/admin/web/account/" };
+    const accountLink = { label: "Change password", href: "account/" };
 
     return (
       <Navbar fluid={true}>
@@ -220,6 +220,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
    * @param {string} currentLibrary Active library.
    */
   renderLinkItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
+    const rootUrl = "/admin/web/";
     const { label, href, auth } = item;
     let isActive = currentPathname.indexOf(href) !== -1;
     if (currentLibrary) {
@@ -228,7 +229,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     const liElem = (
       <li className="header-link" key={href}>
         <Link
-          to={`${href}${currentLibrary}`}
+          to={`${rootUrl}${href}${currentLibrary}`}
           className={isActive ? "active-link" : ""}
         >
           {label}
