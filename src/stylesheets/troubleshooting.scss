@@ -9,10 +9,12 @@
   }
   // Service Type tabs
   .service-types, .self-test-types {
+    display: flex;
+    flex-direction: column;
     height: 100%;
     width: 100%;
     > .nav-tabs {
-      height: 44px;
+      height: 45px;
       border-bottom: 1px solid $dark;
       li {
         &.active {
@@ -27,7 +29,6 @@
       }
     }
     > .tab-content {
-      height: 610px;
       width: 100%;
       border-left: 1px solid $dark;
       border-bottom: 1px solid $dark;
