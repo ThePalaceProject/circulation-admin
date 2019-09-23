@@ -533,7 +533,7 @@ describe("ServiceEditForm", () => {
       let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(0);
       let patronAuthProtocol = {...protocolsData[0], ...{settings: [{"key": "neighborhood_mode", options: []}]}};
-      wrapper.setProps({ data: {...servicesData, ...{protocols: [patronAuthProtocol]}}});
+      wrapper.setProps({ extraFormKey: "neighborhood_mode", extraFormSection: NeighborhoodAnalyticsForm, data: {...servicesData, ...{protocols: [patronAuthProtocol]}}});
       neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(1);
     });
@@ -542,7 +542,7 @@ describe("ServiceEditForm", () => {
       let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(0);
       let analyticsProtocol = {...protocolsData[0], ...{settings: [{"key": "location_source", options: []}]}};
-      wrapper.setProps({ data: {...servicesData, ...{protocols: [analyticsProtocol]}}});
+      wrapper.setProps({ extraFormKey: "location_source", extraFormSection: NeighborhoodAnalyticsForm, data: {...servicesData, ...{protocols: [analyticsProtocol]}}});
       neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(1);
     });
@@ -564,7 +564,7 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
     });
 

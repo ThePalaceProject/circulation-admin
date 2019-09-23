@@ -57,14 +57,6 @@ describe("AnalyticsServices", () => {
     expect(editLink.props().href).to.equal("/admin/web/config/analytics/edit/2");
   });
 
-  it("shows patron auth service list", () => {
-    let patronAuthService = wrapper.find("li");
-    expect(patronAuthService.length).to.equal(1);
-    expect(patronAuthService.at(0).text()).to.contain("nypl protocol: test protocol label");
-    let editLink = patronAuthService.at(0).find("a").at(0);
-    expect(editLink.props().href).to.equal("/admin/web/config/patronAuth/edit/2");
-  });
-
   it("shows neighborhood analytics panel", () => {
     let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
     expect(neighborhoodForm.length).to.equal(0);
