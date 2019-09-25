@@ -143,6 +143,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#componentwillupdate" class="tsd-kind-icon">component<wbr>Will<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#editlibrary" class="tsd-kind-icon">edit<wbr>Library</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#expandlibrary" class="tsd-kind-icon">expand<wbr>Library</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#findprotocol" class="tsd-kind-icon">find<wbr>Protocol</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#getlibrary" class="tsd-kind-icon">get<wbr>Library</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#getsnapshotbeforeupdate" class="tsd-kind-icon">get<wbr>Snapshot<wbr>Before<wbr>Update</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#handledata" class="tsd-kind-icon">handle<wbr>Data</a></li>
@@ -153,6 +154,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#protocolinstructions" class="tsd-kind-icon">protocol<wbr>Instructions</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#protocollibrarysettings" class="tsd-kind-icon">protocol<wbr>Library<wbr>Settings</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#protocolsettings" class="tsd-kind-icon">protocol<wbr>Settings</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#protocols" class="tsd-kind-icon">protocols</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#removelibrary" class="tsd-kind-icon">remove<wbr>Library</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="servicewithregistrationseditform.html#render" class="tsd-kind-icon">render</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="servicewithregistrationseditform.html#renderlibrariesform" class="tsd-kind-icon">render<wbr>Libraries<wbr>Form</a></li>
@@ -186,7 +188,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L32">components/ServiceEditForm.tsx:32</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L37">components/ServiceEditForm.tsx:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -208,7 +210,7 @@
 					<div class="tsd-signature tsd-kind-icon">context<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceWithRegistrationsEditForm.tsx#L11">components/ServiceWithRegistrationsEditForm.tsx:11</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceWithRegistrationsEditForm.tsx#L11">components/ServiceWithRegistrationsEditForm.tsx:11</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -385,16 +387,22 @@
 					<a name="addlibrary" class="tsd-anchor"></a>
 					<h3>add<wbr>Library</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Library<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Library<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#addlibrary">addLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L525">components/ServiceEditForm.tsx:525</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L504">components/ServiceEditForm.tsx:504</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -403,16 +411,22 @@
 					<a name="allowsparent" class="tsd-anchor"></a>
 					<h3>allows<wbr>Parent</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">allows<wbr>Parent<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">allows<wbr>Parent<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#allowsparent">allowsParent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L357">components/ServiceEditForm.tsx:357</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L370">components/ServiceEditForm.tsx:370</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
@@ -428,7 +442,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#availablelibraries">availableLibraries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L465">components/ServiceEditForm.tsx:465</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L444">components/ServiceEditForm.tsx:444</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/librarydata.html" class="tsd-signature-type">LibraryData</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -446,7 +460,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#availableparents">availableParents</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L368">components/ServiceEditForm.tsx:368</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L374">components/ServiceEditForm.tsx:374</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -464,7 +478,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#availableprotocols">availableProtocols</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L334">components/ServiceEditForm.tsx:334</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L347">components/ServiceEditForm.tsx:347</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -618,7 +632,7 @@
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#componentwillreceiveprops">componentWillReceiveProps</a></p>
 								<p>Overrides DeprecatedLifecycle.componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L60">components/ServiceEditForm.tsx:60</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L66">components/ServiceEditForm.tsx:66</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -708,20 +722,23 @@
 					<a name="editlibrary" class="tsd-anchor"></a>
 					<h3>edit<wbr>Library</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">edit<wbr>Library<span class="tsd-signature-symbol">(</span>library<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">edit<wbr>Library<span class="tsd-signature-symbol">(</span>library<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#editlibrary">editLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L510">components/ServiceEditForm.tsx:510</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L489">components/ServiceEditForm.tsx:489</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>library: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -739,7 +756,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#expandlibrary">expandLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L497">components/ServiceEditForm.tsx:497</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L476">components/ServiceEditForm.tsx:476</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -749,6 +766,24 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="findprotocol" class="tsd-anchor"></a>
+					<h3>find<wbr>Protocol</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Protocol<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#findprotocol">findProtocol</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L398">components/ServiceEditForm.tsx:398</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -763,7 +798,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#getlibrary">getLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L455">components/ServiceEditForm.tsx:455</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L434">components/ServiceEditForm.tsx:434</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -826,7 +861,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#handledata">handleData</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L540">components/ServiceEditForm.tsx:540</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L519">components/ServiceEditForm.tsx:519</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -850,7 +885,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#handleparentchange">handleParentChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L379">components/ServiceEditForm.tsx:379</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L385">components/ServiceEditForm.tsx:385</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -868,7 +903,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#handleprotocolchange">handleProtocolChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L351">components/ServiceEditForm.tsx:351</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L364">components/ServiceEditForm.tsx:364</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -886,7 +921,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#isexpanded">isExpanded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L486">components/ServiceEditForm.tsx:486</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L465">components/ServiceEditForm.tsx:465</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -903,16 +938,22 @@
 					<a name="protocoldescription" class="tsd-anchor"></a>
 					<h3>protocol<wbr>Description</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Description<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Description<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocoldescription">protocolDescription</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L411">components/ServiceEditForm.tsx:411</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L418">components/ServiceEditForm.tsx:418</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
@@ -921,16 +962,22 @@
 					<a name="protocolinstructions" class="tsd-anchor"></a>
 					<h3>protocol<wbr>Instructions</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Instructions<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Instructions<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocolinstructions">protocolInstructions</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L422">components/ServiceEditForm.tsx:422</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L422">components/ServiceEditForm.tsx:422</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
@@ -939,16 +986,22 @@
 					<a name="protocollibrarysettings" class="tsd-anchor"></a>
 					<h3>protocol<wbr>Library<wbr>Settings</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Library<wbr>Settings<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/settingdata.html" class="tsd-signature-type">SettingData</a><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Library<wbr>Settings<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/settingdata.html" class="tsd-signature-type">SettingData</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocollibrarysettings">protocolLibrarySettings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L433">components/ServiceEditForm.tsx:433</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L426">components/ServiceEditForm.tsx:426</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/settingdata.html" class="tsd-signature-type">SettingData</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
@@ -957,18 +1010,27 @@
 					<a name="protocolsettings" class="tsd-anchor"></a>
 					<h3>protocol<wbr>Settings</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Settings<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon">protocol<wbr>Settings<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocolsettings">protocolSettings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L388">components/ServiceEditForm.tsx:388</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L402">components/ServiceEditForm.tsx:402</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
 							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>extra<wbr>Fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
 								<li class="tsd-parameter">
 									<h5>non<wbr>Required<wbr>Fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
@@ -976,6 +1038,24 @@
 									<h5>required<wbr>Fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="protocols" class="tsd-anchor"></a>
+					<h3>protocols</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">protocols<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocols">protocols</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L394">components/ServiceEditForm.tsx:394</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -990,7 +1070,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#removelibrary">removeLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L490">components/ServiceEditForm.tsx:490</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L469">components/ServiceEditForm.tsx:469</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1014,7 +1094,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#render">render</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceWithRegistrationsEditForm.tsx#L17">components/ServiceWithRegistrationsEditForm.tsx:17</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceWithRegistrationsEditForm.tsx#L17">components/ServiceWithRegistrationsEditForm.tsx:17</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -1025,16 +1105,22 @@
 					<a name="renderlibrariesform" class="tsd-anchor"></a>
 					<h3>render<wbr>Libraries<wbr>Form</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">render<wbr>Libraries<wbr>Form<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Libraries<wbr>Form<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#renderlibrariesform">renderLibrariesForm</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L235">components/ServiceEditForm.tsx:235</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L250">components/ServiceEditForm.tsx:250</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
 						</li>
 					</ul>
@@ -1050,7 +1136,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#renderoptionalfields">renderOptionalFields</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L216">components/ServiceEditForm.tsx:216</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L231">components/ServiceEditForm.tsx:231</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1067,20 +1153,23 @@
 					<a name="renderrequiredfields" class="tsd-anchor"></a>
 					<h3>render<wbr>Required<wbr>Fields</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">render<wbr>Required<wbr>Fields<span class="tsd-signature-symbol">(</span>requiredFields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Required<wbr>Fields<span class="tsd-signature-symbol">(</span>requiredFields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#renderrequiredfields">renderRequiredFields</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L149">components/ServiceEditForm.tsx:149</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L164">components/ServiceEditForm.tsx:164</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>requiredFields: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -1098,7 +1187,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#selectlibrary">selectLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L477">components/ServiceEditForm.tsx:477</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L456">components/ServiceEditForm.tsx:456</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1149,16 +1238,22 @@
 					<a name="sitewide" class="tsd-anchor"></a>
 					<h3>sitewide</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">sitewide<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">sitewide<span class="tsd-signature-symbol">(</span>protocol<span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#sitewide">sitewide</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L444">components/ServiceEditForm.tsx:444</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L430">components/ServiceEditForm.tsx:430</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>protocol: <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
@@ -1174,7 +1269,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#submit">submit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceEditForm.tsx#L545">components/ServiceEditForm.tsx:545</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceEditForm.tsx#L526">components/ServiceEditForm.tsx:526</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1196,7 +1291,7 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceWithRegistrationsEditForm.tsx#L13">components/ServiceWithRegistrationsEditForm.tsx:13</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceWithRegistrationsEditForm.tsx#L13">components/ServiceWithRegistrationsEditForm.tsx:13</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1205,7 +1300,7 @@
 						<div class="tsd-signature tsd-kind-icon">register<wbr>Library<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.func</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/784edaf/src/components/ServiceWithRegistrationsEditForm.tsx#L14">components/ServiceWithRegistrationsEditForm.tsx:14</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/6fd9d00/src/components/ServiceWithRegistrationsEditForm.tsx#L14">components/ServiceWithRegistrationsEditForm.tsx:14</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1285,6 +1380,9 @@
 								<a href="servicewithregistrationseditform.html#expandlibrary" class="tsd-kind-icon">expand<wbr>Library</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="servicewithregistrationseditform.html#findprotocol" class="tsd-kind-icon">find<wbr>Protocol</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="servicewithregistrationseditform.html#getlibrary" class="tsd-kind-icon">get<wbr>Library</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -1313,6 +1411,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="servicewithregistrationseditform.html#protocolsettings" class="tsd-kind-icon">protocol<wbr>Settings</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="servicewithregistrationseditform.html#protocols" class="tsd-kind-icon">protocols</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="servicewithregistrationseditform.html#removelibrary" class="tsd-kind-icon">remove<wbr>Library</a>
