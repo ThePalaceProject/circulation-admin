@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.17
+#### Updated
+- Streamlined the interfaces for configuring location analytics.
+
 ### v0.3.16
 #### Updated
 - Added a date end, event type, and locations input fields to the report form for circulation events in the Dashboard.
