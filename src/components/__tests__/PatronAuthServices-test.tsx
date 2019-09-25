@@ -2,9 +2,10 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { PatronAuthServices } from "../PatronAuthServices";
+import NeighborhoodAnalyticsForm from "../NeighborhoodAnalyticsForm";
 
 describe("PatronAuthServices", () => {
   let wrapper;
@@ -41,14 +42,14 @@ describe("PatronAuthServices", () => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
-    wrapper = shallow(
+    wrapper = mount(
       <PatronAuthServices
         data={data}
         fetchData={fetchData}
         editItem={editItem}
         csrfToken="token"
         isFetching={false}
-        />
+      />
     );
   });
 
@@ -58,5 +59,17 @@ describe("PatronAuthServices", () => {
     expect(patronAuthService.at(0).text()).to.contain("nypl protocol: test protocol label");
     let editLink = patronAuthService.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/patronAuth/edit/2");
+  });
+
+  it("shows neighborhood analytics panel", () => {
+    let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+    expect(neighborhoodForm.length).to.equal(0);
+    let setting = { key: "neighborhood_mode", options: [] };
+    let protocols = [{...data.protocols[0], ...{ settings: [setting] }}];
+    wrapper.setProps({ editOrCreate: "create", data: {...data, ...{ protocols }} });
+    wrapper.setState({ protocol: "test protocol"});
+    neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
+    expect(neighborhoodForm.length).to.equal(1);
+    expect(neighborhoodForm.prop("setting")).to.equal(setting);
   });
 });

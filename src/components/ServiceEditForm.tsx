@@ -1,10 +1,11 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
+import NeighborhoodAnalyticsForm  from "./NeighborhoodAnalyticsForm";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
-import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData } from "../interfaces";
+import { LibraryData, LibraryWithSettingsData, ProtocolData, ServiceData, ServicesData, SettingData } from "../interfaces";
 import { clearForm } from "../utils/sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
@@ -17,6 +18,8 @@ export interface ServiceEditFormProps<T> {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  extraFormSection?: any;
+  extraFormKey?: string;
 }
 
 export interface ServiceEditFormState {
@@ -25,11 +28,13 @@ export interface ServiceEditFormState {
   libraries: LibraryWithSettingsData[];
   expandedLibraries: string[];
   selectedLibrary: string | null;
+  analyticsOption?: string | null;
 }
 
 /** Form for editing service configuration based on protocol information from the server.
     Used on most tabs on the system configuration page. */
 export default class ServiceEditForm<T extends ServicesData> extends React.Component<ServiceEditFormProps<T>, ServiceEditFormState> {
+  private extraForm = React.createRef();
   constructor(props) {
     super(props);
     let defaultProtocol;
@@ -41,7 +46,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       parentId: (this.props.item && this.props.item.parent_id && String(this.props.item.parent_id)) || null,
       libraries: (this.props.item && this.props.item.libraries) || [],
       expandedLibraries: [],
-      selectedLibrary: null
+      selectedLibrary: null,
+      analyticsOption: null
     };
     this.handleProtocolChange = this.handleProtocolChange.bind(this);
     this.handleParentChange = this.handleParentChange.bind(this);
@@ -91,19 +97,19 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   render(): JSX.Element {
-    const { requiredFields, nonRequiredFields } = this.protocolSettings();
-    const showLibrariesForm = (!this.sitewide() || this.protocolLibrarySettings().length > 0);
+    let protocol = this.findProtocol();
+    const { requiredFields, nonRequiredFields, extraFields } = this.protocolSettings(protocol);
+    const showLibrariesForm = (!this.sitewide(protocol) || this.protocolLibrarySettings(protocol).length > 0);
     const hasNonRequiredFields = nonRequiredFields.length > 0;
-    const hasInstructions = this.props.data && this.protocolInstructions();
-
+    const hasInstructions = this.props.data && this.protocolInstructions(protocol);
     let instructions = hasInstructions && (
       <div className="form-group" key="instructions">
         <label className="control-label">Instructions</label>
         <Panel
-          headerText={this.protocolDescription()}
+          headerText={this.protocolDescription(protocol)}
           style="instruction"
           onEnter={this.submit}
-          content={this.protocolInstructions()}
+          content={this.protocolInstructions(protocol)}
         />
       </div>
     );
@@ -114,7 +120,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         headerText="Required Fields"
         openByDefault={true}
         collapsible={hasNonRequiredFields || showLibrariesForm}
-        content={this.renderRequiredFields(requiredFields)}
+        content={this.renderRequiredFields(requiredFields, protocol)}
       />
     );
 
@@ -126,11 +132,20 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       />
     );
 
+    let extraPanel = this.props.extraFormSection && extraFields.length > 0 && (
+        React.createElement(this.props.extraFormSection, {
+          key: this.props.extraFormKey,
+          setting: extraFields[0],
+          ref: this.extraForm,
+          currentValue: this.props.item && this.props.item.settings && this.props.item.settings[this.props.extraFormKey]
+        })
+    );
+
     let librariesForm = showLibrariesForm && (
       <Panel
         key="libraries"
         headerText="Libraries"
-        content={this.renderLibrariesForm()}
+        content={this.renderLibrariesForm(protocol)}
       />
     );
 
@@ -141,12 +156,12 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         hiddenName={this.props.item && this.props.item.id && "id"}
         hiddenValue={this.props.item && this.props.item.id && String(this.props.item.id)}
         disableButton={this.props.disabled}
-        content={[instructions, requiredFieldsPanel, optionalFieldsPanel, librariesForm]}
+        content={[instructions, requiredFieldsPanel, optionalFieldsPanel, extraPanel, librariesForm]}
       />
     );
   }
 
-  renderRequiredFields(requiredFields) {
+  renderRequiredFields(requiredFields, protocol: ProtocolData) {
     return (
       <fieldset>
         <legend className="visuallyHidden"><h4>Required Fields</h4></legend>
@@ -170,7 +185,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           value={this.state.protocol}
           ref="protocol"
           onChange={this.handleProtocolChange}
-          description={!this.protocolInstructions() && this.protocolDescription()}
+          description={!this.protocolInstructions(protocol) && this.protocolDescription(protocol)}
           >
           { this.availableProtocols().map(protocol =>
               <option key={protocol.name} value={protocol.name} aria-selected={this.state.protocol === protocol.name}>
@@ -179,7 +194,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             )
           }
         </EditableInput>
-        { this.props.data && this.allowsParent() && (this.availableParents().length > 0) &&
+        { this.props.data && this.allowsParent(protocol) && (this.availableParents().length > 0) &&
           <EditableInput
             elementType="select"
             disabled={this.props.disabled}
@@ -232,7 +247,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     );
   }
 
-  renderLibrariesForm() {
+  renderLibrariesForm(protocol: ProtocolData) {
     return (
       <fieldset className="update-libraries">
         <legend className="visuallyHidden">Libraries</legend>
@@ -244,7 +259,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                   onRemove={() => this.removeLibrary(library)}
                   ref={library.short_name}
                   >
-                  { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0 &&
+                  { this.props.data && this.props.data.protocols && this.protocolLibrarySettings(protocol) && this.protocolLibrarySettings(protocol).length > 0 &&
                     <WithEditButton
                       disabled={this.props.disabled}
                       onEdit={() => this.expandLibrary(library)}
@@ -252,13 +267,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                       {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
                     </WithEditButton>
                   }
-                  { !(this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().length > 0) &&
+                  { !(this.props.data && this.props.data.protocols && this.protocolLibrarySettings(protocol) && this.protocolLibrarySettings(protocol).length > 0) &&
                     this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name
                   }
                 </WithRemoveButton>
                 { this.isExpanded(library) &&
                   <div className="edit-library-settings">
-                    { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
+                    { this.props.data && this.props.data.protocols && this.protocolLibrarySettings(protocol) && this.protocolLibrarySettings(protocol).map(setting =>
                       <ProtocolFormField
                         key={setting.key}
                         setting={setting}
@@ -272,7 +287,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                       type="button"
                       className="edit-library"
                       disabled={this.props.disabled}
-                      callback={() => this.editLibrary(library)}
+                      callback={() => this.editLibrary(library, protocol)}
                       content="Save"
                     />
                   </div>
@@ -306,7 +321,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               </EditableInput>
               { this.state.selectedLibrary &&
                 <div>
-                  { this.props.data && this.props.data.protocols && this.protocolLibrarySettings() && this.protocolLibrarySettings().map(setting =>
+                  { this.props.data && this.props.data.protocols && this.protocolLibrarySettings(protocol) && this.protocolLibrarySettings(protocol).map(setting =>
                       <ProtocolFormField
                         key={setting.key}
                         setting={setting}
@@ -318,7 +333,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                   <Button
                     type="button"
                     disabled={this.props.disabled}
-                    callback={this.addLibrary}
+                    callback={() => this.addLibrary(protocol)}
                     content="Add Library"
                   />
                 </div>
@@ -328,8 +343,6 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       </fieldset>
     );
   }
-
-
 
   availableProtocols(props?): ProtocolData[] {
     props = props || this.props;
@@ -354,15 +367,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState(newState);
   }
 
-  allowsParent(): boolean {
-    if (this.state.protocol && this.props.data && this.props.data.protocols) {
-      for (const protocol of this.props.data.protocols) {
-        if (protocol.name === this.state.protocol) {
-          return !!protocol.child_settings;
-        }
-      }
-    }
-    return false;
+  allowsParent(protocol: ProtocolData): boolean {
+    return protocol && !!protocol.child_settings;
   }
 
   availableParents() {
@@ -385,71 +391,44 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState(newState);
   }
 
-  protocolSettings() {
+  protocols(): ProtocolData[] {
+    return this.state.protocol && this.props.data && this.props.data.protocols;
+  }
+
+  findProtocol(): ProtocolData {
+    return this.protocols() && this.protocols().find(p => p.name === this.state.protocol);
+  }
+
+  protocolSettings(protocol: ProtocolData) {
     let requiredFields = [];
     let nonRequiredFields = [];
-    if (this.state.protocol && this.props.data && this.props.data.protocols) {
-      for (const protocol of this.props.data.protocols) {
-        if (protocol.name === this.state.protocol) {
-          let settings = [];
-          if (this.state.parentId) {
-            settings = protocol.child_settings;
-          } else {
-            settings = protocol.settings;
-          }
-          nonRequiredFields = settings.filter(setting => !setting.required);
-          requiredFields = settings.filter(setting => setting.required);
-        }
-      }
+    let extraFields = [];
+    let extraSettings = [this.props.extraFormKey];
+    let settings;
+    if (protocol) {
+      settings = this.state.parentId ? protocol.child_settings : protocol.settings;
+      settings && settings.forEach((s) => {
+        extraSettings.includes(s.key) ? extraFields.push(s) :
+        (s.required ? requiredFields.push(s) : nonRequiredFields.push(s));
+      });
     }
-    return {
-      requiredFields,
-      nonRequiredFields,
-    };
+    return { requiredFields, nonRequiredFields, extraFields };
   }
 
-  protocolDescription() {
-    if (this.state.protocol && this.props.data && this.props.data.protocols) {
-      for (const protocol of this.props.data.protocols) {
-        if (protocol.name === this.state.protocol) {
-          return protocol.description;
-        }
-      }
-    }
-    return "";
+  protocolDescription(protocol: ProtocolData) {
+    return (protocol && protocol.description) || "";
   }
 
-  protocolInstructions() {
-    if (this.state.protocol && this.props.data.protocols) {
-      for (const protocol of this.props.data.protocols) {
-        if (protocol.name === this.state.protocol) {
-          return protocol.instructions;
-        }
-      }
-    }
-    return "";
+  protocolInstructions(protocol: ProtocolData) {
+    return (protocol && protocol.instructions) || "";
   }
 
-  protocolLibrarySettings() {
-    if (this.state.protocol && this.props.data && this.props.data.protocols) {
-      for (const protocol of this.props.data.protocols) {
-        if (protocol.name === this.state.protocol) {
-          return protocol.library_settings || [];
-        }
-      }
-    }
-    return [];
+  protocolLibrarySettings(protocol: ProtocolData) {
+    return (protocol && protocol.library_settings) || [];
   }
 
-  sitewide() {
-    if (this.state.protocol && this.props.data && this.props.data.protocols) {
-      for (const protocol of this.props.data.protocols) {
-        if (protocol.name === this.state.protocol) {
-          return protocol.sitewide;
-        }
-      }
-    }
-    return false;
+  sitewide(protocol: ProtocolData): boolean {
+    return protocol && protocol.sitewide;
   }
 
   getLibrary(shortName: string): LibraryData {
@@ -507,11 +486,11 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     }
   }
 
-  editLibrary(library) {
+  editLibrary(library, protocol: ProtocolData) {
     const libraries = this.state.libraries.filter(stateLibrary => stateLibrary.short_name !== library.short_name);
     const expandedLibraries = this.state.expandedLibraries.filter(shortName => shortName !== library.short_name);
     const newLibrary = { short_name: library.short_name };
-    for (const setting of this.protocolLibrarySettings()) {
+    for (const setting of this.protocolLibrarySettings(protocol)) {
       const value = (this.refs[library.short_name + "_" + setting.key] as any).getValue();
       if (value) {
         newLibrary[setting.key] = value;
@@ -522,10 +501,10 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     this.setState(newState);
   }
 
-  addLibrary() {
+  addLibrary(protocol: ProtocolData) {
     const name = this.state.selectedLibrary;
     const newLibrary = { short_name: name };
-    for (const setting of this.protocolLibrarySettings()) {
+    for (const setting of this.protocolLibrarySettings(protocol)) {
       const value = (this.refs[setting.key] as any).getValue();
       if (value) {
         newLibrary[setting.key] = value;
@@ -538,6 +517,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
   }
 
   handleData(data: FormData) {
+    const extraFormRef = this.extraForm.current;
+    extraFormRef && data.append(this.props.extraFormKey, (extraFormRef as any).getValue());
     data && data.append("libraries", JSON.stringify(this.state.libraries));
     return data;
   }
