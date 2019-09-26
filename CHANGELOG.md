@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.3.17
+### v0.3.18
 #### Fixed
 - Fixed a bug where the catalog navigation links were not styled as "active" when they were on the correct page.
+
+### v0.3.17
+#### Updated
+- Streamlined the interfaces for configuring location analytics.
 
 ### v0.3.16
 #### Updated
