@@ -4,6 +4,7 @@ import * as PropTypes from "prop-types";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { State } from "../reducers/index";
 import Header from "./Header";
+import Footer from "./Footer";
 
 export interface AccountPageContext {
   editorStore: Store<State>;
@@ -27,7 +28,8 @@ export default class AccountPage extends React.Component<{}, {}> {
         <ChangePasswordForm
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
-          />
+        />
+        <Footer />
       </div>
     );
   }

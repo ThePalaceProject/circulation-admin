@@ -2,6 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
+import Footer from "./Footer";
 import CustomLists from "./CustomLists";
 import { State } from "../reducers/index";
 
@@ -47,7 +48,8 @@ export default class CustomListPage extends React.Component<CustomListPageProps,
           identifier={this.props.params.identifier}
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
-          />
+        />
+        <Footer />
       </div>
     );
   }

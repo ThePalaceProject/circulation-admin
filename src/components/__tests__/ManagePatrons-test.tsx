@@ -7,6 +7,7 @@ import ManagePatrons from "../ManagePatrons";
 import ManagePatronsForm from "../ManagePatronsForm";
 import ManagePatronsTabContainer from "../ManagePatronsTabContainer";
 import Header from "../Header";
+import Footer from "../Footer";
 import buildStore from "../../store";
 
 describe("ManagePatrons", () => {
@@ -48,5 +49,10 @@ describe("ManagePatrons", () => {
     expect(tabContainer.prop("store")).to.equal(store);
     expect(tabContainer.prop("library")).to.equal("NYPL");
     expect(tabContainer.prop("tab")).to.equal("adobeResetId");
+  });
+
+  it("shows Footer", () => {
+    let footer = wrapper.find(Footer);
+    expect(footer.length).to.equal(1);
   });
 });

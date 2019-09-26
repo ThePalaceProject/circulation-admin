@@ -7,6 +7,7 @@ import * as jsdom from "jsdom";
 import CatalogPage from "../CatalogPage";
 import OPDSCatalog from "opds-web-client/lib/components/OPDSCatalog";
 import Header from "../Header";
+import Footer from "../Footer";
 import WelcomePage from "../WelcomePage";
 import BookDetailsContainer from "../BookDetailsContainer";
 
@@ -70,5 +71,10 @@ describe("CatalogPage", () => {
     wrapper.setProps({ params: newParams });
     context = wrapper.instance().getChildContext();
     expect(context.library()).to.equal(null);
+  });
+
+  it("shows Footer", () => {
+    let footer = wrapper.find(Footer);
+    expect(footer.length).to.equal(1);
   });
 });

@@ -1,5 +1,6 @@
 import * as React from "react";
 import Header from "./Header";
+import Footer from "./Footer";
 import { Jumbotron } from "react-bootstrap";
 
 export default class WelcomePage extends React.Component<{}, {}> {
@@ -16,6 +17,7 @@ export default class WelcomePage extends React.Component<{}, {}> {
               <a href="/admin/web/config/libraries/create"> create a new library</a>.
           </p>
         </Jumbotron>
+        <Footer />
       </div>
     );
   }

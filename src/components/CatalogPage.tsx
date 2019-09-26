@@ -8,6 +8,7 @@ import * as PropTypes from "prop-types";
 import reducers from "../reducers/index";
 import BookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
+import Footer from "./Footer";
 import { BookLink } from "../interfaces";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 import EntryPointsContainer from "./EntryPointsContainer";
@@ -56,16 +57,19 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
     };
 
     return (
-      <OPDSCatalog
-        collectionUrl={collectionUrl}
-        bookUrl={bookUrl}
-        BookDetailsContainer={BookDetailsContainer}
-        Header={Header}
-        pageTitleTemplate={pageTitleTemplate}
-        computeBreadcrumbs={computeBreadcrumbs}
-        CollectionContainer={EntryPointsContainer}
-        allLanguageSearch={true}
-      />
+      <>
+        <OPDSCatalog
+          collectionUrl={collectionUrl}
+          bookUrl={bookUrl}
+          BookDetailsContainer={BookDetailsContainer}
+          Header={Header}
+          pageTitleTemplate={pageTitleTemplate}
+          computeBreadcrumbs={computeBreadcrumbs}
+          CollectionContainer={EntryPointsContainer}
+          allLanguageSearch={true}
+        />
+        <Footer />
+      </>
     );
   }
 
