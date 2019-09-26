@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { SettingData } from "../interfaces";
 import { Alert } from "react-bootstrap";
 import { State } from "../reducers/index";
 import { Button } from "library-simplified-reusable-components";
@@ -38,6 +39,8 @@ export interface EditFormProps<T, U> {
   item?: U;
   data: T;
   additionalData?: any;
+  extraFormSection?: any;
+  extraFormKey?: string;
   disabled: boolean;
   save?: (data: FormData) => void;
   urlBase: string;
@@ -51,6 +54,13 @@ export interface AdditionalContentProps<T, U> {
   csrfToken?: string;
   item?: U;
   type?: string;
+}
+
+export interface ExtraFormSectionProps<T, U> {
+  setting: SettingData;
+  disabled?: boolean;
+  error?: FetchErrorData;
+  currentValue?: string;
 }
 
 /** Shows a list of configuration services of a particular type and allows creating a new
@@ -69,6 +79,8 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   limitOne = false;
   links?: {[key: string]: JSX.Element};
   AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
+  ExtraFormSection?: new(props: ExtraFormSectionProps<T, U>) => React.Component<ExtraFormSectionProps<T, U>, any>;
+  extraFormKey?: string;
 
   constructor(props) {
     super(props);
@@ -90,8 +102,8 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     const canListAllData = !this.props.isFetching && !this.props.editOrCreate &&
       this.props.data && this.props.data[this.listDataKey];
     let EditForm = this.EditForm;
+    let ExtraFormSection = this.ExtraFormSection;
     let itemToEdit = this.itemToEdit();
-
     return (
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
@@ -142,7 +154,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
               error={this.props.formError}
-              />
+              extraFormSection={ExtraFormSection}
+              extraFormKey={this.extraFormKey}
+            />
           </div>
         }
 
@@ -159,7 +173,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}
               error={this.props.formError}
-              />
+              extraFormSection={ExtraFormSection}
+              extraFormKey={this.extraFormKey}
+            />
           </div>
         }
         { this.links && this.links["footer"] && <p>{this.links["footer"]}</p> }

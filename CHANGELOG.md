@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.3.17
+### v0.3.18
 #### Added
 - Created a Footer which displays a Terms of Service link.
+
+### v0.3.17
+#### Updated
+- Streamlined the interfaces for configuring location analytics.
 
 ### v0.3.16
 #### Updated
