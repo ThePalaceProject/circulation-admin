@@ -5,6 +5,7 @@ import { shallow } from "enzyme";
 
 import AccountPage from "../AccountPage";
 import Header from "../Header";
+import Footer from "../Footer";
 import ChangePasswordForm from "../ChangePasswordForm";
 import buildStore from "../../store";
 
@@ -28,5 +29,10 @@ describe("AccountPage", () => {
     let form = wrapper.find(ChangePasswordForm);
     expect(form.prop("store")).to.equal(store);
     expect(form.prop("csrfToken")).to.equal("token");
+  });
+
+  it("shows Footer", () => {
+    let footer = wrapper.find(Footer);
+    expect(footer.length).to.equal(1);
   });
 });

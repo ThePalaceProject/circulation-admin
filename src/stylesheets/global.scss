@@ -19,6 +19,16 @@
   }
 }
 
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
+
 .form-control {
   &:focus {
     @include basic-focus;

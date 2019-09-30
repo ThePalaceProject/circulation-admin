@@ -2,6 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
+import Footer from "./Footer";
 import Lanes from "./Lanes";
 import { State } from "../reducers/index";
 
@@ -46,7 +47,8 @@ export default class LanePage extends React.Component<LanePageProps, LanePageCon
           identifier={this.props.params.identifier}
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
-          />
+        />
+        <Footer />
       </div>
     );
   }

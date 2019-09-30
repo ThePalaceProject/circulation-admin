@@ -5,6 +5,7 @@ import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import ManagePatronsForm from "./ManagePatronsForm";
 import Header from "./Header";
+import Footer from "./Footer";
 import ManagePatronsTabContainer from "./ManagePatronsTabContainer";
 
 export interface ManagePatronsProps extends React.Props<ManagePatronsProps> {
@@ -50,6 +51,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
             library={this.props.params.library}
           />
         </div>
+        <Footer />
       </div>
     );
   }

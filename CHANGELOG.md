@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.3.18
+### v0.3.19
 #### Fixed
 - Fixed a bug where the catalog navigation links were not styled as "active" when they were on the correct page.
+
+### v0.3.18
+#### Added
+- Created a Footer which displays a Terms of Service link.
 
 ### v0.3.17
 #### Updated

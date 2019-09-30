@@ -6,6 +6,7 @@ import { shallow } from "enzyme";
 
 import WelcomePage from "../WelcomePage";
 import Header from "../Header";
+import Footer from "../Footer";
 import { Jumbotron } from "react-bootstrap";
 
 describe("WelcomePage", () => {
@@ -34,5 +35,10 @@ describe("WelcomePage", () => {
     let link = wrapper.find("a");
     expect(link.length).to.equal(1);
     expect(link.props().href).to.equal("/admin/web/config/libraries/create");
+  });
+
+  it("shows Footer", () => {
+    let footer = wrapper.find(Footer);
+    expect(footer.length).to.equal(1);
   });
 });
