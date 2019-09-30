@@ -6,13 +6,13 @@ import { shallow, mount } from "enzyme";
 
 import { Header } from "../Header";
 import EditableInput from "../EditableInput";
-import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import { NavItem } from "react-bootstrap";
 import { Link } from "react-router";
 import Admin from "../../models/Admin";
 
 describe("Header", () => {
   let wrapper;
-  let push, context;
+  let context;
 
   const libraryManager = new Admin([{ "role": "manager", "library": "nypl" }]);
   const librarian = new Admin([{ "role": "librarian", "library": "nypl" }]);
@@ -35,7 +35,6 @@ describe("Header", () => {
   };
 
   beforeEach(() => {
-    push = stub();
     context = { library: () => "nypl", admin: libraryManager, router };
 
     wrapper = shallow(
@@ -85,28 +84,25 @@ describe("Header", () => {
     });
 
     it("shows catalog links when there's a library", () => {
-      let catalogLinks = wrapper.find(CatalogLink);
+      let navItems = wrapper.find(NavItem);
 
-      expect(catalogLinks.length).to.equal(3);
+      expect(navItems.length).to.equal(3);
 
-      let mainCatalogLink = catalogLinks.at(0);
-      expect(mainCatalogLink.prop("collectionUrl")).to.equal("/nypl/groups");
-      expect(mainCatalogLink.prop("bookUrl")).to.equal(null);
-      expect(mainCatalogLink.children().text()).to.equal("Catalog");
+      let mainNavItem = navItems.at(0);
+      expect(mainNavItem.prop("href")).to.contain("/nypl%2Fgroups");
+      expect(mainNavItem.children().text()).to.equal("Catalog");
 
-      let complaintsLink = catalogLinks.at(1);
-      expect(complaintsLink.prop("collectionUrl")).to.equal("/nypl/admin/complaints");
-      expect(complaintsLink.prop("bookUrl")).to.equal(null);
+      let complaintsLink = navItems.at(1);
+      expect(complaintsLink.prop("href")).to.contain("/nypl%2Fadmin%2Fcomplaints");
       expect(complaintsLink.children().text()).to.equal("Complaints");
 
-      let hiddenLink = catalogLinks.at(2);
-      expect(hiddenLink.prop("collectionUrl")).to.equal("/nypl/admin/suppressed");
-      expect(hiddenLink.prop("bookUrl")).to.equal(null);
+      let hiddenLink = navItems.at(2);
+      expect(hiddenLink.prop("href")).to.contain("/nypl%2Fadmin%2Fsuppressed");
       expect(hiddenLink.children().text()).to.equal("Hidden Books");
 
       wrapper.setContext({ admin: libraryManager });
-      catalogLinks = wrapper.find(CatalogLink);
-      expect(catalogLinks.length).to.equal(0);
+      navItems = wrapper.find(NavItem);
+      expect(navItems.length).to.equal(0);
     });
 
     it("shows sitewide links, non-catalog library links, and patron manager link for library manager", () => {
@@ -130,7 +126,7 @@ describe("Header", () => {
       expect(patronManagerLink.children().text()).to.equal("Patrons");
 
       let settingsLink = links.at(4);
-      expect(settingsLink.prop("to")).to.equal("/admin/web/config");
+      expect(settingsLink.prop("to")).to.equal("/admin/web/config/");
       expect(settingsLink.children().text()).to.equal("System Configuration");
 
 
@@ -138,10 +134,10 @@ describe("Header", () => {
       wrapper.setContext({ admin: libraryManager });
       links = wrapper.find(Link);
       dashboardLink = links.at(0);
-      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard");
+      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/");
 
       settingsLink = links.at(1);
-      expect(settingsLink.prop("to")).to.equal("/admin/web/config");
+      expect(settingsLink.prop("to")).to.equal("/admin/web/config/");
     });
 
     it("shows sitewide and non-catalog library links for librarian", () => {
@@ -275,7 +271,7 @@ describe("Header", () => {
       dropdownLinks = wrapper.find("ul.dropdown-menu li");
       expect(dropdownLinks.length).to.equal(2);
       let changePassword = dropdownLinks.find(Link);
-      expect(changePassword.prop("to")).to.equal("/admin/web/account");
+      expect(changePassword.prop("to")).to.equal("/admin/web/account/");
       // The first anchor element is from the Link component.
       let signOut = dropdownLinks.find("a").at(1);
       expect(signOut.prop("href")).to.equal("/admin/sign_out");
