@@ -74,6 +74,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let currentLibrary = this.context.library && this.context.library();
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
+    let isSiteWide = (!this.context.library || !currentLibrary);
+    let isSomeLibraryManager = this.context.admin.isLibraryManagerOfSomeLibrary();
+
     // Links that will be rendered in a NavItem Bootstrap component.
     const libraryNavItems = [
       { label: "Catalog", href: "%2Fgroups" },
@@ -89,12 +92,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     ];
     // Links that will be rendered in a Link router component and are sitewide.
     const sitewideLinkItems = [
-      { label: "Dashboard", href: "dashboard/",
-        auth: (!this.context.library || !currentLibrary) },
-      { label: "System Configuration", href: "config/",
-        auth: this.context.admin.isLibraryManagerOfSomeLibrary() },
-      { label: "Troubleshooting", href: "troubleshooting/",
-        auth: isSystemAdmin },
+      { label: "Dashboard", href: "dashboard/", auth: isSiteWide },
+      { label: "System Configuration", href: "config/", auth: isSomeLibraryManager },
+      { label: "Troubleshooting", href: "troubleshooting/", auth: isSystemAdmin },
     ];
     const accountLink = { label: "Change password", href: "account/" };
 
