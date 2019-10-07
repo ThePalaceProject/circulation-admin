@@ -119,7 +119,7 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
                 ref={this.locations}
                 className=""
                 label="Locations"
-                description="Comma-separated list of zip codes to gather events from."
+                description="Comma-separated list of locations (e.g. ZIP codes or library branch codes) to focus on."
                 name="locations"
                 id="locations"
                 optionalText={false}
@@ -183,6 +183,8 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
     let link = document.createElement("a");
     link.href = url;
     link.target = "_blank";
+    document.body.appendChild(link);
     link.click();
+    link.remove();
   }
 }

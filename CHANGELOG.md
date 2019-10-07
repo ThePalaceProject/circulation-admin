@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.20
+#### Fixed
+- Fixed a bug where Firefox doesn't programmatically click on an anchor element created to download circulation events.
+
 ### v0.3.19
 #### Fixed
 - Fixed a bug where the catalog navigation links were not styled as "active" when they were on the correct page.
