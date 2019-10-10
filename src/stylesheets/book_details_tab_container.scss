@@ -1,60 +1,84 @@
-.book-details-tab-container .tab-content {
-  .form-inline {
-    display: flex;
+.book-details-tab-container {
+  .nav-tabs {
+    li {
+      a {
+        color: $blue;
+        &:active,
+        &:visited,
+        &:hover {
+          color: $blue-dark;
+        }
+      }
+
+      &.active {
+        a,
+        a:hover,
+        a:focus,
+        a:visited {
+          color: $blue-dark;
+        }
+      }
+    }
   }
 
-  // First Tab
-  .book-details {
-    padding-top: 2em;
-    .right-column-links {
-      display: none;
+  .tab-content {
+    .form-inline {
+      display: flex;
     }
 
-    .main .row {
-      display: flex;
-      justify-content: center;
-      margin: 0;
-      padding-bottom: 2em;
-      border-bottom: 1px solid $gray-border;
+    // First Tab
+    .book-details {
+      padding-top: 2em;
+      .right-column-links {
+        display: none;
+      }
 
-      .top {
-        width: 60%;
-        margin: auto;
-        .circulation-links {
-          padding-bottom: 1em;
-          border-bottom: 1px solid $blue;
-          .btn {
-            color: $blue;
-            border-color: $blue;
-            margin: 5px 10px;
-            &:hover {
-              color: $white;
+      .main .row {
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        padding-bottom: 2em;
+        border-bottom: 1px solid $gray-border;
+
+        .top {
+          width: 60%;
+          margin: auto;
+          .circulation-links {
+            padding-bottom: 1em;
+            border-bottom: 1px solid $blue;
+            .btn {
+              color: $blue;
+              border-color: $blue;
+              margin: 5px 10px;
+              &:hover {
+                color: $white;
+              }
             }
           }
-        }
-        .open-access-info {
-          padding-top: .75em;
-          width: 100%;
+          .open-access-info {
+            padding-top: .75em;
+            width: 100%;
+          }
         }
       }
     }
-  }
 
-  // For all forms on the Book edit tab page
-  .edit-form {
-    width: 100%;
-  }
+    // For all forms on the Book edit tab page
+    .edit-form {
+      width: 100%;
+    }
 
-  .cover-edit-form {
-    margin: 0;
-    padding: 0;
-    form {
-      height: auto;
-      .alert h4 {
-        margin-bottom: 0;
-      }
-      button.btn.top-align {
-        margin: unset;
+    .cover-edit-form {
+      margin: 0;
+      padding: 0;
+      form {
+        height: auto;
+        .alert h4 {
+          margin-bottom: 0;
+        }
+        button.btn.top-align {
+          margin: unset;
+        }
       }
     }
   }

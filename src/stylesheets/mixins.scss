@@ -9,3 +9,10 @@ $white: #FFF !default;
 @function tint($color, $percentage) {
   @return mix($white, $color, $percentage);
 }
+
+@mixin headerNavLink {
+  color: $dark-gray;
+  background-color: $light-gray;
+  border-radius: 2px;
+  transition: background-color 0.3s ease-in;
+}

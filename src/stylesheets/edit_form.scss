@@ -52,4 +52,11 @@
   > .btn {
     margin-left: 0;
   }
+
+  fieldset {
+    .bg-warning {
+      padding: 8px;
+      border: 1px solid darken($yellow, 20%);
+    }
+  }
 }

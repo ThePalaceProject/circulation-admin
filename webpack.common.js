@@ -52,6 +52,9 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".scss"]
+    extensions: [".ts", ".tsx", ".js", ".scss"],
+    alias: {
+      react: path.resolve('./node_modules/react')
+    },
   }
 };

@@ -2,6 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
+import Footer from "./Footer";
 import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
 import { State } from "../reducers/index";
@@ -36,15 +37,15 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
   }
 
   render(): JSX.Element {
+    const { library } = this.props.params;
     return (
       <div className="dashboard">
         <Header />
         <div className="body">
-          <Stats store={this.context.editorStore} library={this.props.params.library}/>
-          { !this.props.params.library &&
-            <CirculationEvents store={this.context.editorStore} />
-          }
+          <Stats store={this.context.editorStore} library={library} />
+          <CirculationEvents store={this.context.editorStore} library={library} />
         </div>
+        <Footer />
       </div>
     );
   }

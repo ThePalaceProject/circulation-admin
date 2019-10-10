@@ -1,5 +1,35 @@
 ## Changelog
 
+### v0.3.20
+#### Fixed
+- Fixed a bug where Firefox doesn't programmatically click on an anchor element created to download circulation events.
+
+### v0.3.19
+#### Fixed
+- Fixed a bug where the catalog navigation links were not styled as "active" when they were on the correct page.
+
+### v0.3.18
+#### Added
+- Created a Footer which displays a Terms of Service link.
+
+### v0.3.17
+#### Updated
+- Streamlined the interfaces for configuring location analytics.
+
+### v0.3.16
+#### Updated
+- Added a date end, event type, and locations input fields to the report form for circulation events in the Dashboard.
+
+### v0.3.15
+#### Updated
+- Displayed additional terms-of-service information on the library registration form.
+
+### v0.3.14
+#### Updated
+- Updated the catalog book default colors as well as book detail tabs and entrypoint tabs link color.
+#### Fixed
+- Ensured that the Self-tests page updates to display the most recent test results.
+
 ### v0.3.13
 #### Updated
 - Refactored the BookEditForm code.

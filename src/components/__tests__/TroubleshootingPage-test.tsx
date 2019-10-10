@@ -6,6 +6,7 @@ import { shallow } from "enzyme";
 import TroubleshootingPage from "../TroubleshootingPage";
 import TroubleshootingTabContainer from "../TroubleshootingTabContainer";
 import Header from "../Header";
+import Footer from "../Footer";
 import buildStore from "../../store";
 
 describe("TroubleshootingPage", () => {
@@ -50,4 +51,8 @@ describe("TroubleshootingPage", () => {
     expect(title).to.equal("Circulation Manager - Troubleshooting");
   });
 
+  it("shows Footer", () => {
+    let footer = wrapper.find(Footer);
+    expect(footer.length).to.equal(1);
+  });
 });

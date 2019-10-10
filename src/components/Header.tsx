@@ -7,7 +7,6 @@ import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
 import Admin from "../models/Admin";
 import EditableInput from "./EditableInput";
-import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { Router } from "opds-web-client/lib/interfaces";
@@ -36,6 +35,12 @@ export interface HeaderRouter extends Router {
   getCurrentLocation?: Function;
 }
 
+export interface HeaderNavItem {
+  label: string;
+  href: string;
+  auth?: boolean;
+}
+
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, HeaderState> {
@@ -52,6 +57,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     this.state = { showAccountDropdown: false };
     this.changeLibrary = this.changeLibrary.bind(this);
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
+    this.renderNavItem = this.renderNavItem.bind(this);
 
     document.body.addEventListener("click", (event: MouseEvent) => {
       if (this.state.showAccountDropdown &&
@@ -65,9 +71,33 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     const currentPathname = (this.context.router &&
       this.context.router.getCurrentLocation() &&
       this.context.router.getCurrentLocation().pathname) || "";
-      let currentLibrary = this.context.library && this.context.library();
+    let currentLibrary = this.context.library && this.context.library();
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
+    let isSiteWide = (!this.context.library || !currentLibrary);
+    let isSomeLibraryManager = this.context.admin.isLibraryManagerOfSomeLibrary();
+
+    // Links that will be rendered in a NavItem Bootstrap component.
+    const libraryNavItems = [
+      { label: "Catalog", href: "%2Fgroups" },
+      { label: "Complaints", href: "%2Fadmin%2Fcomplaints" },
+      { label: "Hidden Books", href: "%2Fadmin%2Fsuppressed" },
+    ];
+    // Links that will be rendered in a Link router component and are library specific.
+    const libraryLinkItems = [
+      { label: "Lists", href: "lists/" },
+      { label: "Lanes", href: "lanes/", auth: isLibraryManager },
+      { label: "Dashboard", href: "dashboard/"  },
+      { label: "Patrons", href: "patrons/", auth: isLibraryManager },
+    ];
+    // Links that will be rendered in a Link router component and are sitewide.
+    const sitewideLinkItems = [
+      { label: "Dashboard", href: "dashboard/", auth: isSiteWide },
+      { label: "System Configuration", href: "config/", auth: isSomeLibraryManager },
+      { label: "Troubleshooting", href: "troubleshooting/", auth: isSystemAdmin },
+    ];
+    const accountLink = { label: "Change password", href: "account/" };
+
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
@@ -102,86 +132,17 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse className="menu">
           { currentLibrary &&
             <Nav>
-              <li className="header-link">
-                <CatalogLink
-                  collectionUrl={"/" + currentLibrary + "/groups"}
-                  bookUrl={null}
-                  className={currentPathname.indexOf("/admin/web/collection") !== -1 ? "active-link" : ""}
-                >
-                  Catalog
-                </CatalogLink>
-              </li>
-              <li className="header-link">
-                <CatalogLink
-                  collectionUrl={"/" + currentLibrary + "/admin/complaints"}
-                  bookUrl={null}
-                  className={currentPathname.indexOf("/admin/complaints") !== -1 ? "active-link" : ""}
-                >
-                  Complaints
-                </CatalogLink>
-              </li>
-              <li className="header-link">
-                <CatalogLink
-                  collectionUrl={"/" + currentLibrary + "/admin/suppressed"}
-                  bookUrl={null}
-                  className={currentPathname.indexOf("/admin/suppressed") !== -1 ? "active-link" : ""}
-                >
-                  Hidden Books
-                </CatalogLink>
-              </li>
-              <li className="header-link">
-                <Link
-                  to={"/admin/web/lists/" + currentLibrary}
-                  className={currentPathname.indexOf("/admin/web/lists") !== -1 ? "active-link" : ""}
-                >Lists</Link>
-              </li>
-              { isLibraryManager &&
-                <li className="header-link">
-                  <Link
-                    to={"/admin/web/lanes/" + currentLibrary}
-                    className={currentPathname.indexOf("/admin/web/lanes") !== -1 ? "active-link" : ""}
-                  >Lanes</Link>
-                </li>
+              { libraryNavItems.map(item =>
+                  this.renderNavItem(item, currentPathname, currentLibrary))
               }
-              <li className="header-link">
-                <Link
-                  to={"/admin/web/dashboard/" + currentLibrary}
-                  className={(currentPathname.indexOf("/admin/web/dashboard") !== -1) && currentLibrary ? "active-link" : ""}
-                >Dashboard</Link>
-              </li>
-              { isLibraryManager &&
-                <li className="header-link">
-                  <Link
-                    to={"/admin/web/patrons/" + currentLibrary}
-                    className={currentPathname.indexOf("/admin/web/patrons") !== -1 ? "active-link" : ""}
-                  >Patrons</Link>
-                </li>
+              { libraryLinkItems.map(item =>
+                  this.renderLinkItem(item, currentPathname, currentLibrary))
               }
             </Nav>
           }
           <Nav className="pull-right">
-            { (!this.context.library || !currentLibrary) &&
-              <li className="header-link">
-                <Link to="/admin/web/dashboard"
-                  className={currentPathname.indexOf("/admin/web/dashboard") !== -1 ? "active-link" : ""}
-                >Dashboard</Link>
-              </li>
-            }
-            { this.context.admin.isLibraryManagerOfSomeLibrary() &&
-              <li className="header-link">
-                <Link
-                  to="/admin/web/config"
-                  className={currentPathname.indexOf("/admin/web/config") !== -1 ? "active-link" : ""}
-                >System Configuration</Link>
-              </li>
-            }
-            { isSystemAdmin &&
-              <li className="header-link">
-                <Link
-                  to={"/admin/web/troubleshooting"}
-                  className={currentPathname.indexOf("/admin/web/troubleshooting") !== -1 ? "active-link" : ""}
-                >Troubleshooting</Link>
-              </li>
+            { sitewideLinkItems.map(item =>
+                this.renderLinkItem(item, currentPathname))
             }
             { this.context.admin.email &&
               <li className="dropdown">
@@ -195,12 +156,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 />
                 { this.state.showAccountDropdown &&
                   <ul className="dropdown-menu">
-                    <li>
-                      <Link
-                        to="/admin/web/account"
-                        className={currentPathname.indexOf("/admin/web/account") !== -1 ? "active-link" : ""}
-                      >Change password</Link>
-                    </li>
+                    {this.renderLinkItem(accountLink, currentPathname)}
                     <li><a href="/admin/sign_out">Sign out</a></li>
                   </ul>
                 }
@@ -229,6 +185,69 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   toggleAccountDropdown() {
     let showAccountDropdown = !this.state.showAccountDropdown;
     this.setState({ showAccountDropdown });
+  }
+
+  /**
+   * renderNavItem
+   * Renders a NavItem Bootstrap component and is active based on the page's current path.
+   * @param {HeaderNavItem} item Object with the label and href for the navigation item.
+   * @param {string} currentPathname Page's current URL.
+   * @param {string} currentLibrary Active library.
+   */
+  renderNavItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
+    const rootCatalogURL = "/admin/web/collection/";
+    const { label, href } = item;
+    const isActive = currentPathname.indexOf(href) !== -1;
+
+    return (
+      <NavItem
+        key={href}
+        className="header-link"
+        href={`${rootCatalogURL}${currentLibrary}${href}`}
+        active={isActive}
+      >
+        {label}
+      </NavItem>
+    );
+  }
+
+  /**
+   * renderLinkItem
+   * Renders a Link Router component for library and sitewide navigation links
+   * and if the current admin has the correct authentication.
+   * @param {HeaderNavItem} item Object with the label and href for the navigation item.
+   * @param {string} currentPathname Page's current URL.
+   * @param {string} currentLibrary Active library.
+   */
+  renderLinkItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
+    const rootUrl = "/admin/web/";
+    const { label, href, auth } = item;
+    let isActive = currentPathname.indexOf(href) !== -1;
+    if (currentLibrary) {
+      isActive = !!(isActive && currentLibrary);
+    }
+    const liElem = (
+      <li className="header-link" key={href}>
+        <Link
+          to={`${rootUrl}${href}${currentLibrary}`}
+          className={isActive ? "active-link" : ""}
+        >
+          {label}
+        </Link>
+      </li>
+    );
+
+    // Sometimes, some links should only be shown to admins who have
+    // specific privileges. If there is no restriction, always render the link.
+    if (auth !== undefined) {
+      if (auth) {
+        return liElem;
+      } else {
+        return;
+      }
+    }
+
+    return liElem;
   }
 }
 

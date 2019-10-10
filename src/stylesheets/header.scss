@@ -61,10 +61,7 @@
         }
 
         &:hover, &:active, &:focus {
-          color: $dark-gray;
-          background-color: $light-gray;
-          border-radius: 2px;
-          transition: background-color 0.3s ease-in;
+          @include headerNavLink;
         }
       }
     }
@@ -102,11 +99,11 @@
         &.active-link,
         &:hover,
         &:focus {
-          color: $dark-gray;
-          background-color: $light-gray;
-          border-radius: 2px;
-          transition: background-color 0.3s ease-in;
+          @include headerNavLink;
         }
+      }
+      &.active a {
+        @include headerNavLink;
       }
     }
   }

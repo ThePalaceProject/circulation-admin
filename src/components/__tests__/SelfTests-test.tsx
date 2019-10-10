@@ -94,6 +94,33 @@ const collections = [
   },
 ];
 
+const updatedCollection = {
+  id: 1,
+  name: "collection 1",
+  protocol: "protocol",
+  libraries: [{ short_name: "library" }],
+  settings: {
+    external_account_id: "nypl",
+  },
+  self_test_results: {
+    duration: 1.75,
+    start: "2018-08-07T20:34:54Z",
+    end: "2018-08-07T20:34:55Z",
+    results: [
+      {
+        duration: 0.000119,
+        end: "2018-08-07T20:34:54Z",
+        exception: null,
+        name: "Initial setup.",
+        result: null,
+        start: "2018-08-07T20:34:54Z",
+        success: true
+      },
+    ]
+  }
+};
+
+
 describe("SelfTests", () => {
   let wrapper;
 
@@ -102,13 +129,14 @@ describe("SelfTests", () => {
       <SelfTests
         item={collections[0]}
         type="collection"
+        getSelfTests={stub()}
       />
     );
   });
 
   it("should render the SelfTests component with empty self_test_results", () => {
     wrapper = shallow(
-      <SelfTests item={{} as any} type="collection" />
+      <SelfTests item={{} as any} type="collection" getSelfTests={stub()} />
     );
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
@@ -118,6 +146,16 @@ describe("SelfTests", () => {
   it("should render the SelfTests component with results", () => {
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(1);
+  });
+
+  it("should handle new props", () => {
+    expect(wrapper.state()["mostRecent"]).to.equal(wrapper.prop("item"));
+    wrapper.setProps({ "item": updatedCollection });
+    // The new item has a more recent start time, so the state gets updated.
+    expect(wrapper.state()["mostRecent"]).to.equal(updatedCollection);
+    wrapper.setProps({ "item": collections[1] });
+    // This is not a new result.  Nothing happens.
+    expect(wrapper.state()["mostRecent"]).to.equal(updatedCollection);
   });
 
   describe("Successful self tests", () => {
@@ -147,7 +185,7 @@ describe("SelfTests", () => {
     beforeEach(() => {
       wrapper = mount(
         <SelfTests
-          item={collections[1]} type="collection"
+          item={collections[1]} type="collection" getSelfTests={stub()}
         />
       );
     });
@@ -155,7 +193,7 @@ describe("SelfTests", () => {
     it("should display the base error message when attempting to run self tests", () => {
       wrapper = shallow(
         <SelfTests
-          item={collections[2]} type="collection"
+          item={collections[2]} type="collection" getSelfTests={stub()}
         />
       );
 
