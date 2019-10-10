@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.21
+#### Updated
+- Updated the StorageServices component to allow multiple storage services and also displaying each storage's name in the list of services.
+
 ### v0.3.20
 #### Fixed
 - Fixed a bug where Firefox doesn't programmatically click on an anchor element created to download circulation events.
