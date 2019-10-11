@@ -207,6 +207,7 @@ export interface SettingData {
   options?: SettingData[];
   instructions?: string;
   format?: string;
+  urlBase?: any;
 }
 
 export interface ProtocolData {

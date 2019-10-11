@@ -116,7 +116,7 @@ export default class InputList extends React.Component<InputListProps, InputList
       );
     } else if (setting.urlBase) {
       return (
-        <a href={`${setting.urlBase}${listItem}`}>{listItem}</a>
+        <a href={setting.urlBase(listItem)}>{listItem}</a>
       );
     } else {
       return (

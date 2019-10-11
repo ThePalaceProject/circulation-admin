@@ -50,6 +50,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     };
     this.refresh = this.refresh.bind(this);
     this.save = this.save.bind(this);
+    this.makeURL = this.makeURL.bind(this);
   }
 
   render(): JSX.Element {
@@ -85,12 +86,19 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
             custom_lists: this.state.customLists,
             required: true,
             menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l)),
-            urlBase: `/admin/web/lists/${this.props.library}/edit/`
+            urlBase: this.makeURL
           }}
           disabled={this.props.isFetching}
           value={this.state.customLists && this.state.customLists.map(l => l.name)}
         />
     );
+  }
+
+  makeURL(listName): string {
+    let list = (this.props.allCustomLists || []).find(l => l.name === listName);
+    if (list) {
+      return `/admin/web/lists/${this.props.library}/edit/${list.id}`;
+    }
   }
 
   availableLists(): CustomListData[] {

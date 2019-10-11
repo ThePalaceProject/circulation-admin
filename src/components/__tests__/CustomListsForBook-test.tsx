@@ -71,9 +71,9 @@ describe("CustomListsForBook", () => {
       expect(removable.length).to.equal(1);
 
       let link = wrapper.find("a");
-      // expect(link.length).to.equal(1);
-      // expect(link.props().href).to.equal("/admin/web/lists/library/edit/2");
-      // expect(link.text()).to.equal("list 2");
+      expect(link.length).to.equal(1);
+      expect(link.props().href).to.equal("/admin/web/lists/library/edit/2");
+      expect(link.text()).to.equal("list 2");
     });
 
     it("shows available lists", () => {
@@ -124,7 +124,7 @@ describe("CustomListsForBook", () => {
       expect(editCustomListsForBook.callCount).to.equal(0);
       let removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(1);
-      expect(removables.find("input").prop("value")).to.equal("list 2");
+      expect(removables.find("a").text()).to.equal("list 2");
 
       let menu = wrapper.find("select");
       menu.getDOMNode().value = "list 1";
@@ -133,8 +133,8 @@ describe("CustomListsForBook", () => {
 
       removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(2);
-      expect(removables.at(0).find("input").prop("value")).to.equal("list 2");
-      expect(removables.at(1).find("input").prop("value")).to.equal("list 1");
+      expect(removables.at(0).find("a").text()).to.equal("list 2");
+      expect(removables.at(1).find("a").text()).to.equal("list 1");
 
       // Click the submit button to trigger the callback
       wrapper.find(Button).last().simulate("click");
