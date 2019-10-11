@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.21
+#### Updated
+- Streamlined the book editor Lists tab by implementing a dropdown menu option on the InputList component.
+
 ### v0.3.20
 #### Fixed
 - Fixed a bug where Firefox doesn't programmatically click on an anchor element created to download circulation events.
