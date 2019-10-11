@@ -87,7 +87,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
             menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l))
           }}
           disabled={this.props.isFetching}
-          value={this.state.customLists.map(l => l.name)}
+          value={this.state.customLists && this.state.customLists.map(l => l.name)}
         />
     );
   }

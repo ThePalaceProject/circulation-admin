@@ -37,6 +37,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.clear = this.clear.bind(this);
+    this.filterMenu = this.filterMenu.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -159,7 +160,8 @@ export default class InputList extends React.Component<InputListProps, InputList
     if (!allOptions) {
       return;
     }
-    let remainingOptions = allOptions.filter(o => this.state.listItems.indexOf(o.props.value) < 0);
+    let listItems = this.state ? this.state.listItems : this.props.value;
+    let remainingOptions = allOptions.filter(o => listItems.indexOf(o.props.value) < 0);
     return remainingOptions;
   }
 
