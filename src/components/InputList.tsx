@@ -54,7 +54,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     const setting = this.props.setting as any;
     let showButton = !this.state.options || this.state.options.length > 0;
     return (
-      <div>
+      <div className="input-list">
         { this.props.labelAndDescription(setting) }
         { this.state.listItems && this.state.listItems.map((listItem) => {
           let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
@@ -64,26 +64,7 @@ export default class InputList extends React.Component<InputListProps, InputList
               disabled={this.props.disabled}
               onRemove={() => this.removeListItem(listItem)}
             >
-              {
-                setting.format === "language-code" ?
-                  <LanguageField
-                    disabled={this.props.disabled}
-                    value={value}
-                    name={setting.key}
-                    languages={this.props.additionalData}
-                  /> :
-                  this.props.createEditableInput(setting, {
-                    type: "text",
-                    description: null,
-                    disabled: this.props.disabled,
-                    value: value,
-                    name: setting.key,
-                    label: null,
-                    extraContent: this.renderToolTip(listItem, setting.format),
-                    optionalText: !setting.required
-                  })
-                }
-
+              { this.renderListItem(setting, value, listItem) }
             </WithRemoveButton>
           );
         })}
@@ -121,6 +102,36 @@ export default class InputList extends React.Component<InputListProps, InputList
         </div>
       </div>
     );
+  }
+
+  renderListItem(setting, value, listItem) {
+    if (setting.format === "language-code") {
+      return (
+        <LanguageField
+          disabled={this.props.disabled}
+          value={value}
+          name={setting.key}
+          languages={this.props.additionalData}
+        />
+      );
+    } else if (setting.urlBase) {
+      return (
+        <a href={`${setting.urlBase}${listItem}`}>{listItem}</a>
+      );
+    } else {
+      return (
+        this.props.createEditableInput(setting, {
+          type: "text",
+          description: null,
+          disabled: this.props.disabled,
+          value: value,
+          name: setting.key,
+          label: null,
+          extraContent: this.renderToolTip(listItem, setting.format),
+          optionalText: !setting.required
+        })
+      );
+    }
   }
 
   renderMenu(setting) {

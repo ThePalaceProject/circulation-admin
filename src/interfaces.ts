@@ -422,6 +422,7 @@ export interface CustomListsSetting {
   custom_lists: CustomListsData;
   required?: boolean;
   menuOptions?: JSX.Element[];
+  urlBase?: string;
 }
 
 export interface LaneData {

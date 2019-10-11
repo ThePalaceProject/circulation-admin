@@ -84,7 +84,8 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
             label: null,
             custom_lists: this.state.customLists,
             required: true,
-            menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l))
+            menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l)),
+            urlBase: `/admin/web/lists/${this.props.library}/edit/`
           }}
           disabled={this.props.isFetching}
           value={this.state.customLists && this.state.customLists.map(l => l.name)}
