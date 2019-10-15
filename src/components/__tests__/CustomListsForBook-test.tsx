@@ -76,6 +76,18 @@ describe("CustomListsForBook", () => {
       expect(link.text()).to.equal("list 2");
     });
 
+    it("creates a URL based on list ID", () => {
+      let url1 = wrapper.instance().makeURL("list 1");
+      expect(url1).to.equal("/admin/web/lists/library/edit/1");
+      let url2 = wrapper.instance().makeURL("list 2");
+      expect(url2).to.equal("/admin/web/lists/library/edit/2");
+      // Making sure that it's actually using the ID, not just the number in the name...
+      let newList = { name: "new", id: "42" };
+      wrapper.setProps({ allCustomLists: allCustomLists.concat([newList] )});
+      let newUrl = wrapper.instance().makeURL("new");
+      expect(newUrl).to.equal("/admin/web/lists/library/edit/42");
+    });
+
     it("shows available lists", () => {
       let availableLists = wrapper.find("select");
       expect(availableLists.length).to.equal(1);

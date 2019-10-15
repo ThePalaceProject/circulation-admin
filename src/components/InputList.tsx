@@ -167,11 +167,14 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   filterMenu() {
+    // All the possibilities, regardless of whether they've already been selected.
     let allOptions = (this.props.setting as any).menuOptions;
     if (!allOptions) {
       return;
     }
+    // Items that have already been selected, and should be eliminated from the menu.
     let listItems = this.state ? this.state.listItems : this.props.value;
+    // Items that haven't been selected yet.
     let remainingOptions = allOptions.filter(o => listItems.indexOf(o.props.value) < 0);
     return remainingOptions;
   }

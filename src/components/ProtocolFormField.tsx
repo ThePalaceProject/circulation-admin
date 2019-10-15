@@ -1,6 +1,5 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";

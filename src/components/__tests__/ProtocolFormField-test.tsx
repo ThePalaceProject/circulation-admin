@@ -5,7 +5,6 @@ import { mount } from "enzyme";
 
 import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
-import WithRemoveButton from "../WithRemoveButton";
 import ColorPicker from "../ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 

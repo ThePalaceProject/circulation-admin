@@ -74,6 +74,18 @@ describe("InputList", () => {
     expect(createEditableInput.callCount).to.equal(3);
   });
 
+  it("optionally renders links", () => {
+    let urlBase = (itemName) => { return `admin/web/${itemName}`; };
+    let settingWithUrlBase = {...setting, ...{urlBase}};
+    wrapper.setProps({ setting: settingWithUrlBase });
+    let links = wrapper.find("a");
+    expect(links.length).to.equal(2);
+    links.forEach((l, idx) => {
+      expect(l.text()).to.equal(`Thing ${idx + 1}`);
+      expect(l.prop("href")).to.equal(`admin/web/Thing ${idx + 1}`);
+    });
+  });
+
   it("renders WithRemoveButton elements", () => {
     let withRemoveButtons = wrapper.find(WithRemoveButton);
     expect(withRemoveButtons.length).to.equal(2);
@@ -216,5 +228,65 @@ describe("InputList", () => {
     wrapper.update();
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(0);
+  });
+  describe("dropdown menu", () => {
+    beforeEach(() => {
+      let options = [];
+      while (options.length < 3) {
+        let optionName = `Option ${options.length + 1}`;
+        options.push(
+          <option value={optionName} aria-selected={false}>{optionName}</option>
+        );
+      };
+      let menuSetting = {...setting, ...{type: "menu", menuOptions: options}};
+      wrapper = mount(
+        <InputList
+          createEditableInput={createEditableInput}
+          labelAndDescription={labelAndDescription}
+          value={value}
+          setting={menuSetting}
+          disabled={false}
+        />
+      , { context });
+    });
+    it("renders a dropdown menu", () => {
+      let menu = wrapper.find("select");
+      expect(menu.length).to.equal(1);
+      let menuOptions = menu.find("option");
+      expect(menuOptions.length).to.equal(3);
+      menuOptions.forEach((o, idx) => {
+        expect(o.text()).to.equal(`Option ${idx + 1}`);
+      });
+    });
+    it("adds an item from the menu", () => {
+      let removables = wrapper.find(WithRemoveButton);
+      expect(removables.length).to.equal(2);
+      expect(wrapper.state()["listItems"].includes("Option 1")).to.be.false;
+      let menu = wrapper.find("select");
+      expect(menu.getDOMNode().value).to.equal("Option 1");
+      let addButton = wrapper.find(Button).last();
+      addButton.simulate("click");
+      removables = wrapper.find(WithRemoveButton);
+      expect(removables.length).to.equal(3);
+      expect(removables.last().find(EditableInput).prop("value")).to.equal("Option 1");
+      expect(wrapper.state()["listItems"].includes("Option 1")).to.be.true;
+    });
+    it("optionally eliminates already-selected options from the menu", () => {
+      let options = wrapper.find("option");
+      expect(options.length).to.equal(3);
+      expect(options.map(o => o.text()).includes("Option 1")).to.be.true;
+      wrapper.find(Button).last().simulate("click");
+      options = wrapper.find("option");
+      expect(options.length).to.equal(3);
+      expect(options.map(o => o.text()).includes("Option 1")).to.be.true;
+
+      let narrowSetting = {...wrapper.prop("setting"), ...{ format: "narrow" }};
+      wrapper.setProps({ setting: narrowSetting });
+
+      wrapper.find(Button).last().simulate("click");
+      options = wrapper.find("option");
+      expect(options.length).to.equal(2);
+      expect(options.map(o => o.text()).includes("Option 1")).to.be.false;
+    });
   });
 });
