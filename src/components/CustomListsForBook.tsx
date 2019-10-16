@@ -63,7 +63,10 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
-        <Form className="edit-form" content={this.renderInputList()} onSubmit={this.save} />
+        <Form className="edit-form" content={[
+          this.renderInputList(),
+          <a href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
+        ]} onSubmit={this.save} />
       </div>
     );
   }
