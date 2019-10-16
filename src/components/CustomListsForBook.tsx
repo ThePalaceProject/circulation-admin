@@ -11,6 +11,7 @@ import {
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 import { Button, Form } from "library-simplified-reusable-components";
+import { isEqual } from "../utils/sharedFunctions";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
@@ -51,6 +52,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     this.refresh = this.refresh.bind(this);
     this.save = this.save.bind(this);
     this.makeURL = this.makeURL.bind(this);
+    this.copyTitle = this.copyTitle.bind(this);
   }
 
   render(): JSX.Element {
@@ -76,17 +78,28 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
   }
 
   renderLink() {
-    if (this.props.allCustomLists && this.props.allCustomLists.length) {
-      return ([
-        <hr key="hr1"/>,
-        <span key="or">or</span>,
-        <hr key="hr2"/>,
-        <div key="list-creator-link" onClick={() => {(navigator as any).clipboard.writeText(this.props.book.title)}}>
-          <a href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
-          <p>(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)</p>
-        </div>
-      ]);
+    let getIDs = arr => arr.map(el => el.id);
+    let divider;
+    // No point saying "or" if creating a new list is the only option -- i.e. if 1) no lists exist or 2) the book is already on all of them.
+    if (this.props.allCustomLists && this.props.allCustomLists.length && !isEqual(getIDs(this.props.allCustomLists), getIDs(this.state.customLists))) {
+      divider =
+        <>
+          <hr key="hr1"/>
+            <span key="or">or</span>
+          <hr key="hr2"/>
+        </>;
     }
+    return([
+      divider,
+      <div role="button" key="list-creator-link" onClick={this.copyTitle}>
+        <a href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
+        <p>(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)</p>
+      </div>
+    ]);
+  }
+
+  copyTitle() {
+    (navigator as any).clipboard.writeText(this.props.book.title);
   }
 
   renderInputList() {
@@ -94,22 +107,25 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     if (allLists.length) {
       return (
         <ProtocolFormField
-        key={"lists"}
-        ref={"addList"}
-        setting={{
-          type: "menu",
-          format: "narrow",
-          key: "lists-input",
-          label: null,
-          custom_lists: this.state.customLists,
-          required: true,
-          menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l)),
-          urlBase: this.makeURL
-        }}
-        disabled={this.props.isFetching}
-        value={this.state.customLists && this.state.customLists.map(l => l.name)}
+          key={"lists"}
+          ref={"addList"}
+          setting={{
+            type: "menu",
+            format: "narrow",
+            key: "lists-input",
+            label: null,
+            custom_lists: this.state.customLists,
+            required: true,
+            menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l)),
+            urlBase: this.makeURL
+          }}
+          disabled={this.props.isFetching}
+          value={this.state.customLists && this.state.customLists.map(l => l.name)}
         />
       );
+    } else {
+        // Don't show the dropdown if no lists exist.
+        return <p>There are no available lists.</p>;
     }
   }
 

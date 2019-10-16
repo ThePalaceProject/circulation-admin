@@ -69,8 +69,7 @@ describe("CustomListsForBook", () => {
     it("shows current lists", () => {
       let removable = wrapper.find(WithRemoveButton);
       expect(removable.length).to.equal(1);
-
-      let link = wrapper.find("a");
+      let link = removable.find("a");
       expect(link.length).to.equal(1);
       expect(link.props().href).to.equal("/admin/web/lists/library/edit/2");
       expect(link.text()).to.equal("list 2");
@@ -97,12 +96,49 @@ describe("CustomListsForBook", () => {
       expect(button.prop("content")).to.equal("Add");
     });
 
+    it("does not show the InputList or the divider if no lists exist", () => {
+      let inputList = wrapper.find(InputList);
+      expect(inputList.length).to.equal(1);
+      let dividers = wrapper.find("hr");
+      expect(dividers.length).to.equal(2);
+      wrapper.setProps({ allCustomLists: [] });
+      inputList = wrapper.find(InputList);
+      expect(inputList.length).to.equal(0);
+      dividers = wrapper.find("hr");
+      expect(dividers.length).to.equal(0);
+    });
+
+    it("does not show the divider if all the lists have already been selected", () => {
+      let dividers = wrapper.find("hr");
+      expect(dividers.length).to.equal(2);
+      wrapper.setState({ customLists: wrapper.prop("allCustomLists") });
+      dividers = wrapper.find("hr");
+      expect(dividers.length).to.equal(0);
+    });
+
     it("disables while fetching", () => {
       wrapper.setProps({ isFetching: true });
       let removable = wrapper.find(WithRemoveButton);
       expect(removable.props().disabled).to.equal(true);
       let inputList = wrapper.find(InputList);
       expect(inputList.props().disabled).to.equal(true);
+    });
+
+    it("displays a link to the list creator", () => {
+      let linkDiv = wrapper.find("div").last();
+      let link = linkDiv.find("a");
+      expect(link.prop("href")).to.equal("/admin/web/lists/library/create");
+      expect(link.text()).to.equal("Create a new list");
+      expect(linkDiv.find("p").text()).to.equal(
+        "(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)"
+      );
+      let copyTitle = stub(wrapper.instance(), "copyTitle").returns(wrapper.prop("book").title);
+      wrapper.setProps({ copyTitle });
+      expect(copyTitle.callCount).to.equal(0);
+      linkDiv.simulate("click");
+      expect(copyTitle.callCount).to.equal(1);
+      expect(copyTitle()).to.equal("test title");
+      copyTitle.restore();
     });
   });
 
@@ -169,11 +205,11 @@ describe("CustomListsForBook", () => {
       expect(removables.length).to.equal(0);
       // Click the submit button to trigger the callback
       wrapper.find(Button).last().simulate("click");
-      // let links = wrapper.find("a");
-      // expect(links.length).to.equal(0);
-      //
+      let links = wrapper.find(WithRemoveButton).find("a");
+      expect(links.length).to.equal(0);
+
       expect(editCustomListsForBook.callCount).to.equal(1);
-      // expect(editCustomListsForBook.args[0][0]).to.equal("admin/works/book url/lists");
+      expect(editCustomListsForBook.args[0][0]).to.equal("admin/works/book url/lists");
       let formData = editCustomListsForBook.args[0][1];
       expect(JSON.parse(formData.get("lists"))).to.deep.equal([]);
     });
