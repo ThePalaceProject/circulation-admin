@@ -11,4 +11,46 @@
       fill: $blue;
     }
   }
+  .custom-list-for-book {
+    h3 {
+      margin-bottom: 0;
+    }
+    form {
+      .input-list a {
+        border-radius: .25em;
+        border: 1px solid darken($gray-tint, 5);
+        padding-left: 8px;
+      }
+      .btn.add-list-item {
+        width: 92px;
+      }
+      > span {
+        display: inline-block;
+        margin: 0 10px;
+        color: $dark;
+      }
+      > div:not(.input-list) {
+        margin-top: 16px;
+        a {
+          display: block;
+          width: 100%;
+          padding-bottom: 6px;
+          margin-bottom: 8px;
+          border-bottom: 1px solid $blue;
+        }
+        p {
+          font-size: .9em;
+          margin-bottom: 0;
+        }
+      }
+      hr {
+        display: inline-block;
+        vertical-align: middle;
+        width: 9.7vw;
+        margin: 0;
+        border: none;
+        border-bottom: 1px solid $blue-dark;
+      }
+    }
+  }
 }

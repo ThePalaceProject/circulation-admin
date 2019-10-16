@@ -59,13 +59,13 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
         { this.props.book &&
           <h2>{this.props.book.title}</h2>
         }
-        <h3>Lists</h3>
+          <h3>Lists:</h3>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
         <Form className="edit-form" content={[
           this.renderInputList(),
-          <a href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
+          this.renderLink()
         ]} onSubmit={this.save} />
       </div>
     );
@@ -75,26 +75,42 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     return <option value={list.name} key={list.id} aria-selected={false}>{list.name}</option>;
   }
 
+  renderLink() {
+    if (this.props.allCustomLists && this.props.allCustomLists.length) {
+      return ([
+        <hr key="hr1"/>,
+        <span key="or">or</span>,
+        <hr key="hr2"/>,
+        <div key="list-creator-link" onClick={() => {(navigator as any).clipboard.writeText(this.props.book.title)}}>
+          <a href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
+          <p>(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)</p>
+        </div>
+      ]);
+    }
+  }
+
   renderInputList() {
     let allLists = this.props.allCustomLists || [];
-    return (
+    if (allLists.length) {
+      return (
         <ProtocolFormField
-          key={"lists"}
-          ref={"addList"}
-          setting={{
-            type: "menu",
-            format: "narrow",
-            key: "lists?",
-            label: null,
-            custom_lists: this.state.customLists,
-            required: true,
-            menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l)),
-            urlBase: this.makeURL
-          }}
-          disabled={this.props.isFetching}
-          value={this.state.customLists && this.state.customLists.map(l => l.name)}
+        key={"lists"}
+        ref={"addList"}
+        setting={{
+          type: "menu",
+          format: "narrow",
+          key: "lists-input",
+          label: null,
+          custom_lists: this.state.customLists,
+          required: true,
+          menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l)),
+          urlBase: this.makeURL
+        }}
+        disabled={this.props.isFetching}
+        value={this.state.customLists && this.state.customLists.map(l => l.name)}
         />
-    );
+      );
+    }
   }
 
   makeURL(listName): string {
