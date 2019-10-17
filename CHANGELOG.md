@@ -1,6 +1,8 @@
 ## Changelog
 
 ### v0.3.21
+#### Updated
+- Updated the StorageServices component to allow multiple storage services and also displaying each storage's name in the list of services.
 #### Fixed
 - Fixed an alignment issue in the WithRemoveButton component.
 

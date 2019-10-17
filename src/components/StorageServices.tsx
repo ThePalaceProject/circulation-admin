@@ -12,7 +12,15 @@ export class StorageServices extends EditableConfigList<StorageServicesData, Sto
   urlBase = "/admin/web/config/storage/";
   identifierKey = "id";
   labelKey = "protocol";
-  limitOne = true;
+
+  label(item): string {
+    for (const protocol of this.props.data.protocols) {
+      if (protocol.name === item.protocol) {
+        return `${item.name}: ${protocol.label}`;
+      }
+    }
+    return item.protocol;
+  }
 }
 
 function mapStateToProps(state, ownProps) {
