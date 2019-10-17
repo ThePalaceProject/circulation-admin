@@ -5,6 +5,7 @@ import { mount } from "enzyme";
 
 import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
+import InputList from "../InputList";
 import ColorPicker from "../ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 
@@ -209,6 +210,21 @@ describe("ProtocolFormField", () => {
     expect(input.at(0).prop("checked")).to.be.ok;
     expect(input.at(1).prop("checked")).not.to.be.ok;
     expect(input.at(2).prop("checked")).to.be.ok;
+  });
+
+  it("renders menu setting", () => {
+    let inputList = wrapper.find(InputList);
+    expect(inputList.length).to.equal(0);
+    let menuSetting = {...setting, ...{
+      type: "menu",
+      menuOptions: ["A", "B", "C"].map(x => <option role="option" aria-selected={false}>{x}</option>)
+    }};
+    wrapper.setProps({ setting: menuSetting, value: [], altValue: "Alternate" });
+    inputList = wrapper.find(InputList);
+    expect(inputList.length).to.equal(1);
+    expect(inputList.prop("setting")).to.equal(menuSetting);
+    expect(inputList.prop("altValue")).to.equal("Alternate");
+    expect(inputList.find("select").length).to.equal(1);
   });
 
   it("renders image setting", () => {
