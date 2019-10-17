@@ -75,6 +75,15 @@ describe("CustomListsForBook", () => {
       expect(link.text()).to.equal("list 2");
     });
 
+    it("shows placeholder text if there are no current lists", () => {
+      let placeholder = (wrapper.find(".input-list > span"));
+      expect(placeholder.length).to.equal(0);
+      wrapper.setState({ customLists: [] });
+      placeholder = (wrapper.find(".input-list > span"));
+      expect(placeholder.length).to.equal(1);
+      expect(placeholder.text()).to.equal("This book is not currently on any lists.");
+    });
+
     it("creates a URL based on list ID", () => {
       let url1 = wrapper.instance().makeURL("list 1");
       expect(url1).to.equal("/admin/web/lists/library/edit/1");

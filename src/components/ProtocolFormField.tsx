@@ -10,6 +10,7 @@ export interface ProtocolFormFieldProps {
   setting: SettingData | CustomListsSetting;
   disabled: boolean;
   value?: string | string[] | {}[] | Array<string | {} | JSX.Element> | JSX.Element;
+  altValue?: string;
   default?: any;
   error?: FetchErrorData;
   additionalData?: any;
@@ -129,6 +130,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         labelAndDescription={this.labelAndDescription}
         disabled={this.props.disabled}
         value={value}
+        altValue={this.props.altValue}
         additionalData={this.props.additionalData}
       />
     );

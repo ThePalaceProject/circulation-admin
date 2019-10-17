@@ -122,6 +122,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
           }}
           disabled={this.props.isFetching}
           value={this.state.customLists && this.state.customLists.map(l => l.name)}
+          altValue="This book is not currently on any lists."
         />
       );
     } else {

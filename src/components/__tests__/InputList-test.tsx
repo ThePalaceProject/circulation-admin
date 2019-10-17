@@ -238,7 +238,7 @@ describe("InputList", () => {
           <option value={optionName} aria-selected={false}>{optionName}</option>
         );
       };
-      let menuSetting = {...setting, ...{type: "menu", menuOptions: options}};
+      let menuSetting = {...setting, ...{type: "menu", menuOptions: options, description: null }};
       wrapper = mount(
         <InputList
           createEditableInput={createEditableInput}
@@ -302,6 +302,18 @@ describe("InputList", () => {
       requiredText = wrapper.find(".required-field");
       expect(requiredText.length).to.equal(1);
       expect(requiredText.text()).to.equal("Required");
+    });
+    it("optionally renders an alternate value if there are no list items", () => {
+      let placeholder = (wrapper.find(".input-list > span"));
+      expect(placeholder.length).to.equal(0);
+      wrapper.setProps({ altValue: "No list items!" });
+      placeholder = (wrapper.find(".input-list > span"));
+      // There are still list items, so the placeholder isn't rendered yet.
+      expect(placeholder.length).to.equal(0);
+      wrapper.setProps({ value: [] });
+      placeholder = (wrapper.find(".input-list > span"));
+      expect(placeholder.length).to.equal(1);
+      expect(placeholder.text()).to.equal("No list items!");
     });
   });
 });

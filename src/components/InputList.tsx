@@ -14,6 +14,7 @@ export interface InputListProps {
   setting: SettingData | CustomListsSetting;
   disabled: boolean;
   value: Array<string | {} | JSX.Element>;
+  altValue?: string;
   additionalData?: any;
 }
 
@@ -56,6 +57,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     return (
       <div className="input-list">
         { this.props.labelAndDescription(setting) }
+        { !(this.state.listItems.length > 0) && <span>{this.props.altValue}</span> }
         { this.state.listItems && this.state.listItems.map((listItem) => {
           let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
           return (
