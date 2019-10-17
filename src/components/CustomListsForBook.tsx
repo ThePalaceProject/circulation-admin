@@ -110,12 +110,13 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
           key={"lists"}
           ref={"addList"}
           setting={{
+            menuTitle: "Select an existing list",
             type: "menu",
             format: "narrow",
             key: "lists-input",
             label: null,
             custom_lists: this.state.customLists,
-            required: true,
+            required: false,
             menuOptions: allLists.filter(l => l.name).map(l => this.makeSelect(l)),
             urlBase: this.makeURL
           }}

@@ -288,5 +288,20 @@ describe("InputList", () => {
       expect(options.length).to.equal(2);
       expect(options.map(o => o.text()).includes("Option 1")).to.be.false;
     });
+    it("optionally renders a label", () => {
+      let settingWithLabel = {...wrapper.prop("setting"), ...{ menuTitle: "Custom Menu Title" }};
+      wrapper.setProps({ setting: settingWithLabel });
+      let label = wrapper.find("select").closest("label");
+      expect(label.text()).to.contain("Custom Menu Title");
+    });
+    it("optionally marks the menu as required", () => {
+      let requiredText = wrapper.find(".required-field");
+      expect(requiredText.length).to.equal(0);
+      let requiredSetting = {...wrapper.prop("setting"), ...{ menuTitle: "title", required: true }};
+      wrapper.setProps({ setting: requiredSetting });
+      requiredText = wrapper.find(".required-field");
+      expect(requiredText.length).to.equal(1);
+      expect(requiredText.text()).to.equal("Required");
+    });
   });
 });

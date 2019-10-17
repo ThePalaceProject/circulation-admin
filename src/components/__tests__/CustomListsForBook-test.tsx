@@ -87,10 +87,13 @@ describe("CustomListsForBook", () => {
       expect(newUrl).to.equal("/admin/web/lists/library/edit/42");
     });
 
-    it("shows available lists", () => {
+    it("shows a menu of available lists", () => {
       let availableLists = wrapper.find("select");
       expect(availableLists.length).to.equal(1);
       expect(availableLists.find("option").map(o => o.prop("value"))).to.deep.equal(["list 1", "list 3"]);
+      let label = availableLists.closest("label");
+      expect(label.length).to.equal(1);
+      expect(label.text()).to.contain("Select an existing list");
       let button = wrapper.find(".add-list-item-container").find(Button);
       expect(button.length).to.equal(1);
       expect(button.prop("content")).to.equal("Add");

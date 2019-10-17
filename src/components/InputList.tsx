@@ -143,7 +143,8 @@ export default class InputList extends React.Component<InputListProps, InputList
           elementType: "select",
           name: setting.key,
           value: setting.key,
-          label: null,
+          label: setting.menuTitle,
+          required: setting.required,
           ref: "addListItem",
           optionalText: !setting.required
         }, choices

@@ -423,6 +423,7 @@ export interface CustomListsSetting {
   custom_lists: CustomListsData;
   required?: boolean;
   menuOptions?: JSX.Element[];
+  menuTitle?: string;
   urlBase?: string;
 }
 
