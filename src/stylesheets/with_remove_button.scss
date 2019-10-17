@@ -1,4 +1,8 @@
 .with-remove-button {
+  margin: 15px 0;
+  .form-group, .form-control {
+    margin: 0;
+  }
   > span {
     display: inline-block;
     margin-right: 10px;
