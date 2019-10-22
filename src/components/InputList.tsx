@@ -1,7 +1,6 @@
 import * as React from "react";
 import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
-import EditableInput from "./EditableInput";
 import { SettingData, CustomListsSetting } from "../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
@@ -16,6 +15,7 @@ export interface InputListProps {
   value: Array<string | {} | JSX.Element>;
   altValue?: string;
   additionalData?: any;
+  onSubmit?: any;
 }
 
 export interface InputListState {
@@ -26,7 +26,7 @@ export interface InputListState {
 
 export default class InputList extends React.Component<InputListProps, InputListState> {
 
-  constructor(props) {
+  constructor(props: InputListProps) {
     super(props);
     let isMenu = props.setting.type === "menu";
     this.state = {
@@ -42,23 +42,28 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({ listItems: (newProps.value || []), options: this.filterMenu() });
+    // Update the list of existing items with value from new props
+    if (this.state.listItems && newProps.value && !isEqual(this.state.listItems, newProps.value)) {
+      this.setState({ listItems: newProps.value });
+    }
   }
 
   componentDidUpdate(oldProps, oldState) {
-    if (this.props.setting.format === "narrow" && !isEqual(oldState.listItems, this.state.listItems)) {
-      this.setState({ options: this.filterMenu()});
+    // Remove already-selected items from the dropdown menu
+    if (oldState.listItems && this.state.listItems && !isEqual(oldState.listItems, this.state.listItems)) {
+      this.props.setting.format === "narrow" && this.setState({ options: this.filterMenu() });
     }
   }
 
   render(): JSX.Element {
     const setting = this.props.setting as any;
+    // Hide the "Add" button if there are no options left
     let showButton = !this.state.options || this.state.options.length > 0;
     return (
       <div className="input-list">
         { this.props.labelAndDescription(setting) }
-        { !(this.state.listItems.length > 0) && <span>{this.props.altValue}</span> }
-        { this.state.listItems && this.state.listItems.map((listItem) => {
+        { this.props.altValue && !(this.state.listItems && this.state.listItems.length > 0) && <span>{this.props.altValue}</span> }
+        { this.state.listItems && this.state.listItems.filter(listItem => listItem).map((listItem) => {
           let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
           return (
             <WithRemoveButton
@@ -117,6 +122,7 @@ export default class InputList extends React.Component<InputListProps, InputList
         />
       );
     } else if (setting.urlBase) {
+      // Use information stored in the parent component to render the list item as a link
       return (
         <a href={setting.urlBase(listItem)}>{listItem}</a>
       );
@@ -138,6 +144,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   renderMenu(setting) {
     let choices = this.state.options;
+    // If there are no available options, don't show the menu
     if (choices.length > 0) {
       return this.props.createEditableInput(
         setting,
@@ -178,7 +185,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     // Items that have already been selected, and should be eliminated from the menu.
     let listItems = this.state ? this.state.listItems : this.props.value;
     // Items that haven't been selected yet.
-    let remainingOptions = allOptions.filter(o => listItems.indexOf(o.props.value) < 0);
+    let remainingOptions = listItems ? allOptions.filter(o => listItems.indexOf(o.props.value) < 0) : [];
     return remainingOptions;
   }
 
@@ -186,20 +193,23 @@ export default class InputList extends React.Component<InputListProps, InputList
     let ref = this.props.setting.format === "language-code" ?
       (this.refs["addListItem"] as any).refs["autocomplete"] :
       (this.refs["addListItem"] as any);
-
     this.setState({...this.state, ...{ newItem: ref.getValue() }});
   }
 
-  removeListItem(listItem: string | {}) {
-    this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
+  async removeListItem(listItem: string | {}) {
+    await this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
+    // Actually save the changes instead of just manipulating the state
+    if (this.props.onSubmit) { await this.props.onSubmit(); };
   }
 
-  addListItem() {
+  async addListItem() {
     let ref = this.props.setting.format === "language-code" ?
       (this.refs["addListItem"] as any).refs["autocomplete"] :
       (this.refs["addListItem"] as any);
     const listItem = ref.getValue();
-    this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
+    await this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
+    // Actually save the changes instead of just manipulating the state
+    if (this.props.onSubmit) { await this.props.onSubmit(); };
     ref.clear();
   }
 

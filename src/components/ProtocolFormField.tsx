@@ -14,6 +14,7 @@ export interface ProtocolFormFieldProps {
   default?: any;
   error?: FetchErrorData;
   additionalData?: any;
+  onSubmit?: any;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -132,6 +133,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         value={value}
         altValue={this.props.altValue}
         additionalData={this.props.additionalData}
+        onSubmit={this.props.onSubmit}
       />
     );
   }

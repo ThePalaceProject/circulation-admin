@@ -2,13 +2,11 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
 import { CustomListsForBook } from "../CustomListsForBook";
 import ErrorMessage from "../ErrorMessage";
 import WithRemoveButton from "../WithRemoveButton";
-import ProtocolFormField from "../ProtocolFormField";
-import Autocomplete from "../Autocomplete";
 import InputList from "../InputList";
 
 describe("CustomListsForBook", () => {
@@ -47,7 +45,7 @@ describe("CustomListsForBook", () => {
         fetchCustomListsForBook={fetchCustomListsForBook}
         editCustomListsForBook={editCustomListsForBook}
         refreshCatalog={refreshCatalog}
-        />
+      />
     );
   });
 
@@ -75,10 +73,10 @@ describe("CustomListsForBook", () => {
       expect(link.text()).to.equal("list 2");
     });
 
-    it("shows placeholder text if there are no current lists", () => {
+    it("shows placeholder text if there are no current lists", async () => {
       let placeholder = (wrapper.find(".input-list > span"));
       expect(placeholder.length).to.equal(0);
-      wrapper.setState({ customLists: [] });
+      wrapper.setProps({ customListsForBook: [] });
       placeholder = (wrapper.find(".input-list > span"));
       expect(placeholder.length).to.equal(1);
       expect(placeholder.text()).to.equal("This book is not currently on any lists.");
@@ -108,24 +106,15 @@ describe("CustomListsForBook", () => {
       expect(button.prop("content")).to.equal("Add");
     });
 
-    it("does not show the InputList or the divider if no lists exist", () => {
+    it("does not show the InputList if no lists exist", async () => {
       let inputList = wrapper.find(InputList);
       expect(inputList.length).to.equal(1);
-      let dividers = wrapper.find("hr");
-      expect(dividers.length).to.equal(2);
       wrapper.setProps({ allCustomLists: [] });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      wrapper.update();
       inputList = wrapper.find(InputList);
       expect(inputList.length).to.equal(0);
-      dividers = wrapper.find("hr");
-      expect(dividers.length).to.equal(0);
-    });
-
-    it("does not show the divider if all the lists have already been selected", () => {
-      let dividers = wrapper.find("hr");
-      expect(dividers.length).to.equal(2);
-      wrapper.setState({ customLists: wrapper.prop("allCustomLists") });
-      dividers = wrapper.find("hr");
-      expect(dividers.length).to.equal(0);
+      expect(wrapper.find("p").at(0).text()).to.equal("There are no available lists.");
     });
 
     it("disables while fetching", () => {
@@ -180,7 +169,7 @@ describe("CustomListsForBook", () => {
       expect(fetchAllCustomLists.callCount).to.equal(1);
     });
 
-    it("adds a list", () => {
+    it("adds a list", async () => {
       expect(editCustomListsForBook.callCount).to.equal(0);
       let removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(1);
@@ -190,33 +179,29 @@ describe("CustomListsForBook", () => {
       menu.getDOMNode().value = "list 1";
       menu.simulate("change");
       wrapper.find("button.add-list-item").simulate("click");
-
-      removables = wrapper.find(WithRemoveButton);
-      expect(removables.length).to.equal(2);
-      expect(removables.at(0).find("a").text()).to.equal("list 2");
-      expect(removables.at(1).find("a").text()).to.equal("list 1");
-
-      // Click the submit button to trigger the callback
-      wrapper.find(Button).last().simulate("click");
+      await new Promise((resolve) => setTimeout(resolve, 0));
       expect(editCustomListsForBook.callCount).to.equal(1);
       let formData = editCustomListsForBook.args[0][1];
       expect(JSON.parse(formData.get("lists"))).to.deep.equal([
         {id: "2", name: "list 2"},
         {id: "1", name: "list 1"}
       ]);
+      removables = wrapper.find(WithRemoveButton);
+      expect(removables.length).to.equal(2);
+      expect(removables.at(0).find("a").text()).to.equal("list 2");
+      expect(removables.at(1).find("a").text()).to.equal("list 1");
     });
 
-    it("removes a list", () => {
+    it("removes a list", async () => {
       expect(editCustomListsForBook.callCount).to.equal(0);
       let removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(1);
       let removeButton = removables.find(Button);
       removeButton.simulate("click");
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(0);
-      // Click the submit button to trigger the callback
-      wrapper.find(Button).last().simulate("click");
       let links = wrapper.find(WithRemoveButton).find("a");
       expect(links.length).to.equal(0);
 

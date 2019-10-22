@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
-import { spy, stub } from "sinon";
+import { spy } from "sinon";
 import { Button } from "library-simplified-reusable-components";
 import buildStore from "../../store";
 
@@ -156,7 +156,7 @@ describe("InputList", () => {
     expect(removables.length).to.equal(1);
   });
 
-  it("adds a regular item", () => {
+  it("adds a regular item", async () => {
     let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
 
@@ -165,7 +165,9 @@ describe("InputList", () => {
     blankInput.simulate("change");
     let addButton = wrapper.find("button.add-list-item");
     addButton.simulate("click");
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
+    wrapper.update();
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(3);
 
@@ -173,7 +175,7 @@ describe("InputList", () => {
     expect(blankInput.prop("value")).to.equal("");
   });
 
-  it("adds an autocompleted item", () => {
+  it("adds an autocompleted item", async () => {
     let languageSetting = { ...setting, format: "language-code" };
     wrapper.setProps({ setting: languageSetting, value: ["abc"] });
 
@@ -184,6 +186,8 @@ describe("InputList", () => {
     autocomplete.simulate("change");
     let addButton = wrapper.find("button.add-list-item");
     addButton.simulate("click");
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    wrapper.update();
 
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
