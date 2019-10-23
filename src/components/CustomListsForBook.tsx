@@ -19,8 +19,8 @@ export interface CustomListsForBookStateProps {
 }
 
 export interface CustomListsForBookDispatchProps {
-  fetchAllCustomLists?: () => Promise<CustomListsData>;
-  fetchCustomListsForBook?: (url: string) => Promise<CustomListsData>;
+  fetchAllCustomLists?: () => Promise<CustomListData[]>;
+  fetchCustomListsForBook?: (url: string) => Promise<CustomListData[]>;
   editCustomListsForBook?: (url: string, data: FormData) => Promise<void>;
 }
 
