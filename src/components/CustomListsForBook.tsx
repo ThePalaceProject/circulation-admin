@@ -13,14 +13,14 @@ import { State } from "../reducers/index";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
-  customListsForBook?: CustomListData[];
+  customListsForBook?: CustomListsData;
   fetchError?: FetchErrorData;
   isFetching?: boolean;
 }
 
 export interface CustomListsForBookDispatchProps {
-  fetchAllCustomLists?: () => Promise<CustomListData[]>;
-  fetchCustomListsForBook?: (url: string) => Promise<CustomListData[]>;
+  fetchAllCustomLists?: () => Promise<CustomListsData>;
+  fetchCustomListsForBook?: (url: string) => Promise<CustomListsData>;
   editCustomListsForBook?: (url: string, data: FormData) => Promise<void>;
 }
 
@@ -36,7 +36,7 @@ export interface CustomListsForBookOwnProps {
 export interface CustomListsForBookProps extends CustomListsForBookStateProps, CustomListsForBookDispatchProps, CustomListsForBookOwnProps {};
 
 export interface CustomListsForBookState {
-  customLists: CustomListData[];
+  customLists?: CustomListsData;
 }
 
 /** Tab on the book details page that shows custom lists a book is on and lets
@@ -45,7 +45,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
   constructor(props: CustomListsForBookProps) {
     super(props);
     this.state = {
-      customLists: this.props.customListsForBook || []
+      customLists: this.props.customListsForBook
     };
     this.refresh = this.refresh.bind(this);
     this.save = this.save.bind(this);
@@ -111,7 +111,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
             urlBase: this.makeURL
           }}
           disabled={this.props.isFetching}
-          value={this.props.customListsForBook && this.props.customListsForBook.map(l => l.name)}
+          value={this.props.customListsForBook && this.props.customListsForBook.custom_lists.map(l => l.name)}
           altValue="This book is not currently on any lists."
           onSubmit={this.save}
         />

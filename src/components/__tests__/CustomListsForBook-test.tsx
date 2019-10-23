@@ -24,9 +24,9 @@ describe("CustomListsForBook", () => {
     { id: "2", name: "list 2"},
     { id: "3", name: "list 3"}
   ];
-  let customListsForBook = [
-    { id: "2", name: "list 2"}
-  ];
+  let customListsForBook = {
+    custom_lists: [{ id: "2", name: "list 2"}]
+  };
 
   beforeEach(() => {
     fetchAllCustomLists = stub();
@@ -76,7 +76,7 @@ describe("CustomListsForBook", () => {
     it("shows placeholder text if there are no current lists", async () => {
       let placeholder = (wrapper.find(".input-list > span"));
       expect(placeholder.length).to.equal(0);
-      wrapper.setProps({ customListsForBook: [] });
+      wrapper.setProps({ customListsForBook: { custom_lists: [] }});
       placeholder = (wrapper.find(".input-list > span"));
       expect(placeholder.length).to.equal(1);
       expect(placeholder.text()).to.equal("This book is not currently on any lists.");
