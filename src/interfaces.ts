@@ -420,7 +420,7 @@ export interface CustomListsSetting {
   format?: string;
   label?: string;
   key: string | number;
-  custom_lists: CustomListsData;
+  custom_lists: CustomListData[];
   required?: boolean;
   menuOptions?: JSX.Element[];
   menuTitle?: string;

@@ -210,7 +210,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     await this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
     // Actually save the changes instead of just manipulating the state
     if (this.props.onSubmit) { await this.props.onSubmit(); };
-    ref.clear();
+    if (this.props.setting.type !== "menu") { ref.clear(); };
   }
 
   getValue() {

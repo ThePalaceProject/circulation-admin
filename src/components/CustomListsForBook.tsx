@@ -13,7 +13,7 @@ import { State } from "../reducers/index";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
-  customListsForBook?: CustomListsData;
+  customListsForBook?: CustomListData[];
   fetchError?: FetchErrorData;
   isFetching?: boolean;
 }
@@ -36,7 +36,7 @@ export interface CustomListsForBookOwnProps {
 export interface CustomListsForBookProps extends CustomListsForBookStateProps, CustomListsForBookDispatchProps, CustomListsForBookOwnProps {};
 
 export interface CustomListsForBookState {
-  customLists?: CustomListsData;
+  customLists?: CustomListData[];
 }
 
 /** Tab on the book details page that shows custom lists a book is on and lets
@@ -111,7 +111,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
             urlBase: this.makeURL
           }}
           disabled={this.props.isFetching}
-          value={this.props.customListsForBook && this.props.customListsForBook.custom_lists.map(l => l.name)}
+          value={this.props.customListsForBook && this.props.customListsForBook.map(l => l.name)}
           altValue="This book is not currently on any lists."
           onSubmit={this.save}
         />
