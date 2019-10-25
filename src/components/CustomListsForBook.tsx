@@ -42,6 +42,8 @@ export interface CustomListsForBookState {
 /** Tab on the book details page that shows custom lists a book is on and lets
     an admin add the book to lists or remove the book from lists. */
 export class CustomListsForBook extends React.Component<CustomListsForBookProps, CustomListsForBookState> {
+  private addListRef = React.createRef<ProtocolFormField>();
+
   constructor(props: CustomListsForBookProps) {
     super(props);
     this.state = {
@@ -79,8 +81,8 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
   renderLink(): JSX.Element {
     // Link to the form for creating a new list
     return(
-      <div role="button" key="list-creator-link" onClick={this.copyTitle}>
-        <a href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
+      <div key="list-creator-link">
+        <a onClick={this.copyTitle} href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
         <p>(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)</p>
       </div>
     );
@@ -97,8 +99,8 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     if (allLists.length > 0) {
       return (
         <ProtocolFormField
-          key={"lists"}
-          ref={"addList"}
+          key="lists"
+          ref={this.addListRef}
           setting={{
             menuTitle: "Select an existing list",
             type: "menu",
@@ -110,10 +112,12 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
             menuOptions: allLists.filter(l => l.name).map(l => this.makeOption(l)),
             urlBase: this.makeURL
           }}
+          title="Current Lists"
           disabled={this.props.isFetching}
           value={this.props.customListsForBook && this.props.customListsForBook.map(l => l.name)}
           altValue="This book is not currently on any lists."
           onSubmit={this.save}
+          onEmpty="This book has been added to all the available lists."
         />
       );
     } else {
@@ -156,7 +160,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
   }
 
   save() {
-    const listNames = (this.refs.addList as ProtocolFormField).getValue();
+    const listNames = (this.addListRef.current as ProtocolFormField).getValue();
     const url = this.listsUrl();
     let data = new (window as any).FormData();
     let lists = [];

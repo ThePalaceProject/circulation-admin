@@ -65,6 +65,9 @@ describe("CustomListsForBook", () => {
     });
 
     it("shows current lists", () => {
+      let h4 = wrapper.find("h4");
+      expect(h4.length).to.equal(1);
+      expect(h4.text()).to.equal("Current Lists");
       let removable = wrapper.find(WithRemoveButton);
       expect(removable.length).to.equal(1);
       let link = removable.find("a");
@@ -80,6 +83,8 @@ describe("CustomListsForBook", () => {
       placeholder = (wrapper.find(".input-list > span"));
       expect(placeholder.length).to.equal(1);
       expect(placeholder.text()).to.equal("This book is not currently on any lists.");
+      let h4 = wrapper.find("h4");
+      expect(h4.length).to.equal(0);
     });
 
     it("creates a URL based on list ID", () => {
@@ -106,12 +111,19 @@ describe("CustomListsForBook", () => {
       expect(button.prop("content")).to.equal("Add");
     });
 
+    it("does not show the menu if the book is already on all the lists", () => {
+      wrapper.setProps({ customListsForBook: allCustomLists });
+      wrapper.update();
+      let menu = wrapper.find("select");
+      expect(menu.length).to.equal(0);
+      let message = wrapper.find("span.add-list-item");
+      expect(message.text()).to.equal("This book has been added to all the available lists.");
+    });
+
     it("does not show the InputList if no lists exist", async () => {
       let inputList = wrapper.find(InputList);
       expect(inputList.length).to.equal(1);
       wrapper.setProps({ allCustomLists: [] });
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      wrapper.update();
       inputList = wrapper.find(InputList);
       expect(inputList.length).to.equal(0);
       expect(wrapper.find("p").at(0).text()).to.equal("There are no available lists.");
@@ -136,7 +148,7 @@ describe("CustomListsForBook", () => {
       let copyTitle = stub(wrapper.instance(), "copyTitle").returns(wrapper.prop("book").title);
       wrapper.setProps({ copyTitle });
       expect(copyTitle.callCount).to.equal(0);
-      linkDiv.simulate("click");
+      link.simulate("click");
       expect(copyTitle.callCount).to.equal(1);
       expect(copyTitle()).to.equal("test title");
       copyTitle.restore();
@@ -178,8 +190,7 @@ describe("CustomListsForBook", () => {
       let menu = wrapper.find("select");
       menu.getDOMNode().value = "list 1";
       menu.simulate("change");
-      wrapper.find("button.add-list-item").simulate("click");
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await wrapper.find("button.add-list-item").simulate("click");
       expect(editCustomListsForBook.callCount).to.equal(1);
       let formData = editCustomListsForBook.args[0][1];
       expect(JSON.parse(formData.get("lists"))).to.deep.equal([
@@ -197,8 +208,7 @@ describe("CustomListsForBook", () => {
       let removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(1);
       let removeButton = removables.find(Button);
-      removeButton.simulate("click");
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await removeButton.simulate("click");
 
       removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(0);

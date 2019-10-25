@@ -9,6 +9,9 @@
       display: inline-block;
       margin-right: 10px;
       width: 193px;
+      &:only-child {
+        width: 100%;
+      }
       .form-group div {
         width: 100%;
       }
@@ -17,11 +20,15 @@
       vertical-align: top;
     }
   }
-  .with-remove-button a {
-    display: block;
-    background: darken($gray-tint, 5);
-    padding: 6px 12px;
-    height: 34px;
-    width: 192px;
+  .input-list-ul {
+    padding: 0;
+    list-style: none;
+    .with-remove-button a {
+      display: block;
+      background: darken($gray-tint, 5);
+      padding: 6px 12px;
+      height: 34px;
+      width: 192px;
+    }
   }
 }

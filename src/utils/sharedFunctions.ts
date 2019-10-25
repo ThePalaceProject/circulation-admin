@@ -43,6 +43,6 @@ export function formatString(word: string, replacement?: string[], capitalize = 
   return word;
 }
 
-export function isEqual(array1, array2): boolean {
+export function isEqual(array1: Array<any>, array2: Array<any>): boolean {
   return array1.length === array2.length && array1.every(x => array2.indexOf(x) >= 0);
 }

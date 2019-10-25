@@ -9,13 +9,15 @@ import { isEqual } from "../utils/sharedFunctions";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
-  labelAndDescription: (SettingData) => JSX.Element[];
+  labelAndDescription?: (SettingData) => JSX.Element[];
   setting: SettingData | CustomListsSetting;
   disabled: boolean;
   value: Array<string | {} | JSX.Element>;
   altValue?: string;
   additionalData?: any;
   onSubmit?: any;
+  onEmpty?: string;
+  title?: string;
 }
 
 export interface InputListState {
@@ -59,22 +61,13 @@ export default class InputList extends React.Component<InputListProps, InputList
     const setting = this.props.setting as any;
     // Hide the "Add" button if there are no options left
     let showButton = !this.state.options || this.state.options.length > 0;
+    let hasListItems = this.state.listItems && this.state.listItems.length > 0;
     return (
       <div className="input-list">
-        { this.props.labelAndDescription(setting) }
-        { this.props.altValue && !(this.state.listItems && this.state.listItems.length > 0) && <span>{this.props.altValue}</span> }
-        { this.state.listItems && this.state.listItems.filter(listItem => listItem).map((listItem) => {
-          let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
-          return (
-            <WithRemoveButton
-              key={value}
-              disabled={this.props.disabled}
-              onRemove={() => this.removeListItem(listItem)}
-            >
-              { this.renderListItem(setting, value, listItem) }
-            </WithRemoveButton>
-          );
-        })}
+        { this.props.labelAndDescription && this.props.labelAndDescription(setting) }
+        { this.props.altValue && !hasListItems && <span>{this.props.altValue}</span> }
+        { this.props.title && hasListItems && <h4>{this.props.title}</h4> }
+        { hasListItems && this.renderList(this.state.listItems, setting) }
         <div className="add-list-item-container">
           <span className="add-list-item">
             {  setting.format === "language-code" ?
@@ -111,9 +104,23 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
+  renderList(listItems, setting) {
+    return (
+      <ul className="input-list-ul">
+        {
+          listItems.filter(listItem => listItem).map((listItem) => {
+            let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
+            return this.renderListItem(setting, value, listItem);
+          })
+        }
+      </ul>
+    );
+  }
+
   renderListItem(setting, value, listItem) {
+    let item;
     if (setting.format === "language-code") {
-      return (
+      item = (
         <LanguageField
           disabled={this.props.disabled}
           value={value}
@@ -123,11 +130,11 @@ export default class InputList extends React.Component<InputListProps, InputList
       );
     } else if (setting.urlBase) {
       // Use information stored in the parent component to render the list item as a link
-      return (
+      item = (
         <a href={setting.urlBase(listItem)}>{listItem}</a>
       );
     } else {
-      return (
+      item = (
         this.props.createEditableInput(setting, {
           type: "text",
           description: null,
@@ -140,6 +147,16 @@ export default class InputList extends React.Component<InputListProps, InputList
         })
       );
     }
+    return (
+      <li className="input-list-item" key={value}>
+        <WithRemoveButton
+          disabled={this.props.disabled}
+          onRemove={() => this.removeListItem(listItem)}
+        >
+          { item }
+        </WithRemoveButton>
+      </li>
+    );
   }
 
   renderMenu(setting) {
@@ -158,6 +175,10 @@ export default class InputList extends React.Component<InputListProps, InputList
           optionalText: !setting.required
         }, choices
       );
+    }
+    else if (this.props.onEmpty) {
+      // Optionally render a string telling the user that there are no more available choices.
+      return this.props.onEmpty;
     }
   }
 
@@ -209,8 +230,12 @@ export default class InputList extends React.Component<InputListProps, InputList
     const listItem = ref.getValue();
     await this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
     // Actually save the changes instead of just manipulating the state
-    if (this.props.onSubmit) { await this.props.onSubmit(); };
-    if (this.props.setting.type !== "menu") { ref.clear(); };
+    if (this.props.onSubmit) {
+      await this.props.onSubmit();
+    };
+    if (this.props.setting.type !== "menu") {
+      ref.clear();
+    };
   }
 
   getValue() {

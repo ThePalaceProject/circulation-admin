@@ -234,8 +234,9 @@ describe("InputList", () => {
     expect(removables.length).to.equal(0);
   });
   describe("dropdown menu", () => {
+    let options;
     beforeEach(() => {
-      let options = [];
+      options = [];
       while (options.length < 3) {
         let optionName = `Option ${options.length + 1}`;
         options.push(
@@ -318,6 +319,18 @@ describe("InputList", () => {
       placeholder = (wrapper.find(".input-list > span"));
       expect(placeholder.length).to.equal(1);
       expect(placeholder.text()).to.equal("No list items!");
+    });
+    it("optionally renders an alternate value if all the available list items have already been added", () => {
+      wrapper.setProps({
+        value: ["Option 1", "Option 2", "Option 3"],
+        onEmpty: "You've run out of options!",
+        setting: {...wrapper.prop("setting"), ...{ format: "narrow" } }
+      });
+      wrapper.update();
+      let menu = wrapper.find("select");
+      expect(menu.length).to.equal(0);
+      let message = wrapper.find(".add-list-item-container span");
+      expect(message.text()).to.equal("You've run out of options!");
     });
   });
 });

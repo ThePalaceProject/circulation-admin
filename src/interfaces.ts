@@ -415,16 +415,10 @@ export interface CustomListsData {
   custom_lists: CustomListData[];
 }
 
-export interface CustomListsSetting {
-  type: string;
-  format?: string;
-  label?: string;
-  key: string | number;
+export interface CustomListsSetting extends SettingData {
   custom_lists: CustomListData[];
-  required?: boolean;
   menuOptions?: JSX.Element[];
   menuTitle?: string;
-  urlBase?: string;
 }
 
 export interface LaneData {

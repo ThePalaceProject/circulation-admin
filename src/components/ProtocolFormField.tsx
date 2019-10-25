@@ -15,6 +15,8 @@ export interface ProtocolFormFieldProps {
   error?: FetchErrorData;
   additionalData?: any;
   onSubmit?: any;
+  onEmpty?: string;
+  title?: string;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -104,7 +106,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   renderListSettingWithOptions(setting: SettingData): JSX.Element {
     return (
       <div>
-        { this.labelAndDescription(setting) }
+        { setting.label && this.labelAndDescription(setting) }
         { setting.options.map((option) => {
             return this.createEditableInput(option, {
                 type: "checkbox",
@@ -128,12 +130,14 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         ref="element"
         setting={setting}
         createEditableInput={this.createEditableInput}
-        labelAndDescription={this.labelAndDescription}
+        labelAndDescription={setting.label && this.labelAndDescription}
         disabled={this.props.disabled}
         value={value}
         altValue={this.props.altValue}
         additionalData={this.props.additionalData}
         onSubmit={this.props.onSubmit}
+        onEmpty={this.props.onEmpty}
+        title={this.props.title}
       />
     );
   }

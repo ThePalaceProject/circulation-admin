@@ -1,8 +1,14 @@
 ## Changelog
 
-### v0.3.21
+### v0.3.22
 #### Updated
 - Streamlined the book editor Lists tab by implementing a dropdown menu option on the InputList component.
+
+### v0.3.21
+#### Updated
+- Updated the StorageServices component to allow multiple storage services and also displaying each storage's name in the list of services.
+#### Fixed
+- Fixed an alignment issue in the WithRemoveButton component.
 
 ### v0.3.20
 #### Fixed

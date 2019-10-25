@@ -111,5 +111,8 @@ describe("isEqual", () => {
     let arr2 = ["b", "c", "a"];
     expect(isEqual(arr1, arr2)).to.be.true;
   });
+  it("returns true if the arrays have the same duplicates", () => {
+    expect(isEqual(["a", "a", "b"], ["b", "a", "a"])).to.be.true;
+  });
 
 });
