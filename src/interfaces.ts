@@ -207,6 +207,7 @@ export interface SettingData {
   options?: SettingData[];
   instructions?: string;
   format?: string;
+  urlBase?: any;
 }
 
 export interface ProtocolData {
@@ -412,6 +413,12 @@ export interface CustomListData {
 
 export interface CustomListsData {
   custom_lists: CustomListData[];
+}
+
+export interface CustomListsSetting extends SettingData {
+  custom_lists: CustomListData[];
+  menuOptions?: JSX.Element[];
+  menuTitle?: string;
 }
 
 export interface LaneData {

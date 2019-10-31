@@ -4,14 +4,12 @@ import { connect } from "react-redux";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
-import WithRemoveButton from "./WithRemoveButton";
-import Autocomplete from "./Autocomplete";
+import ProtocolFormField from "./ProtocolFormField";
 import {
   BookData, CustomListData, CustomListsData
 } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
-import { Button } from "library-simplified-reusable-components";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
@@ -38,19 +36,23 @@ export interface CustomListsForBookOwnProps {
 export interface CustomListsForBookProps extends CustomListsForBookStateProps, CustomListsForBookDispatchProps, CustomListsForBookOwnProps {};
 
 export interface CustomListsForBookState {
-  customLists: CustomListData[];
+  customLists?: CustomListData[];
 }
 
 /** Tab on the book details page that shows custom lists a book is on and lets
     an admin add the book to lists or remove the book from lists. */
 export class CustomListsForBook extends React.Component<CustomListsForBookProps, CustomListsForBookState> {
-  constructor(props) {
+  private addListRef = React.createRef<ProtocolFormField>();
+
+  constructor(props: CustomListsForBookProps) {
     super(props);
     this.state = {
-      customLists: this.props.customListsForBook || []
+      customLists: this.props.customListsForBook
     };
     this.refresh = this.refresh.bind(this);
-    this.addList = this.addList.bind(this);
+    this.save = this.save.bind(this);
+    this.makeURL = this.makeURL.bind(this);
+    this.copyTitle = this.copyTitle.bind(this);
   }
 
   render(): JSX.Element {
@@ -59,87 +61,77 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
         { this.props.book &&
           <h2>{this.props.book.title}</h2>
         }
-        <h3>Lists</h3>
+          <h3>Lists:</h3>
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
         }
-
-        { this.state.customLists && this.state.customLists.map(list =>
-            <WithRemoveButton
-              key={list.id}
-              disabled={this.props.isFetching}
-              onRemove={() => this.removeList(list) }
-              >
-              <h4>
-                { list.id ?
-                  <a href={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}>
-                    {list.name}
-                  </a> :
-                  list.name
-                }
-              </h4>
-            </WithRemoveButton>
-          )
-        }
-
-        { this.availableLists().length > 0 &&
-          <div>
-            <Autocomplete
-              autocompleteValues={this.availableLists().map(list => list.name)}
-              disabled={this.props.isFetching}
-              name="list"
-              label="Add a list"
-              value=""
-              ref="addList"
-              />
-            <Button className="left-align add-list-btn" callback={this.addList} content="Add" type="button" />
-          </div>
-        }
+        <div className="edit-form">
+          {this.renderInputList()}
+          {this.renderLink()}
+        </div>
       </div>
     );
   }
 
-  availableLists(): CustomListData[] {
-    const availableLists = [];
-    for (const list of (this.props.allCustomLists || [])) {
-      let inStateLists = false;
-      for (const stateList of this.state.customLists) {
-        if (stateList.id === list.id) {
-          inStateLists = true;
-          break;
-        }
-      }
-      if (!inStateLists) {
-        availableLists.push(list);
-      }
-    }
-    return availableLists;
+  makeOption(list: CustomListData): JSX.Element {
+    // Dropdown menu of the lists to which the book can still be added
+    return <option value={list.name} key={list.id} aria-selected={false}>{list.name}</option>;
   }
 
-  addList() {
-    const lists = this.state.customLists.slice(0);
-    const newListName = (this.refs["addList"] as Autocomplete).getValue();
-    const newList: CustomListData = { name : newListName };
-    for (const list of this.props.allCustomLists) {
-      if (list.name === newListName) {
-        newList.id = list.id;
-        break;
-      }
-    }
-    lists.push(newList);
-    this.setState({ customLists: lists });
-    this.save(lists);
+  renderLink(): JSX.Element {
+    // Link to the form for creating a new list
+    return(
+      <div key="list-creator-link">
+        <a onClick={this.copyTitle} href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
+        <p>(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)</p>
+      </div>
+    );
   }
 
-  removeList(list: CustomListData) {
-    const newLists = [];
-    for (const stateList of this.state.customLists) {
-      if (stateList.id !== list.id) {
-        newLists.push(stateList);
-      }
+  copyTitle() {
+    // Enable admins to paste the book title into the list creator search field
+    (navigator as any).clipboard.writeText(this.props.book.title);
+  }
+
+  renderInputList(): JSX.Element {
+    // The list of lists the book is already on, and the dropdown for adding it to others
+    let allLists = this.props.allCustomLists || [];
+    if (allLists.length > 0) {
+      return (
+        <ProtocolFormField
+          key="lists"
+          ref={this.addListRef}
+          setting={{
+            menuTitle: "Select an existing list",
+            type: "menu",
+            format: "narrow",
+            key: "lists-input",
+            label: null,
+            custom_lists: this.state.customLists,
+            required: false,
+            menuOptions: allLists.filter(l => l.name).map(l => this.makeOption(l)),
+            urlBase: this.makeURL
+          }}
+          title="Current Lists"
+          disabled={this.props.isFetching}
+          value={this.props.customListsForBook && this.props.customListsForBook.map(l => l.name)}
+          altValue="This book is not currently on any lists."
+          onSubmit={this.save}
+          onEmpty="This book has been added to all the available lists."
+        />
+      );
+    } else {
+        // Don't show the dropdown if no lists exist.
+        return <p>There are no available lists.</p>;
     }
-    this.setState({ customLists: newLists });
-    this.save(newLists);
+  }
+
+  makeURL(listName: string): string {
+    // Each item in the list of lists links to its list edit form
+    let list = (this.props.allCustomLists || []).find(l => l.name === listName);
+    if (list) {
+      return `/admin/web/lists/${this.props.library}/edit/${list.id}`;
+    }
   }
 
   componentWillMount() {
@@ -152,7 +144,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
   }
 
   componentWillReceiveProps(nextProps) {
-    if ((this.props.bookUrl !== nextProps.bookUrl) || (!this.props.customListsForBook && nextProps.customListsForBook)) {
+    if (this.props.bookUrl !== nextProps.bookUrl) {
       this.setState({ customLists: nextProps.customListsForBook });
     }
   }
@@ -167,9 +159,15 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     this.props.refreshCatalog();
   }
 
-  save(lists: CustomListData[]) {
-    let url = this.listsUrl();
+  save() {
+    const listNames = (this.addListRef.current as ProtocolFormField).getValue();
+    const url = this.listsUrl();
     let data = new (window as any).FormData();
+    let lists = [];
+    listNames.map((name) => {
+      let list = this.props.allCustomLists.find(x => x.name === name);
+      lists.push(list);
+    });
     data.append("lists", JSON.stringify(lists));
     return this.props.editCustomListsForBook(url, data).then(this.refresh);
   }

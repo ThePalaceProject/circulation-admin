@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { findDefault, clearForm, formatString } from "../utils/sharedFunctions";
+import { findDefault, clearForm, formatString, isEqual } from "../utils/sharedFunctions";
 
 
 describe("findDefault", () => {
@@ -86,4 +86,33 @@ describe("formatString", () => {
     let result = formatString(stringToFormat, ["-"]);
     expect(result).to.equal("This is a sentence.");
   });
+});
+
+describe("isEqual", () => {
+  const arr1 = ["a", "b", "c"];
+
+  it("returns false if the arrays are not the same length", () => {
+    let arr2 = ["a", "b", "c", "d"];
+    expect(isEqual(arr1, arr2)).to.be.false;
+  });
+  it("returns false if the lengths are the same but not all of the elements match", () => {
+    let arr2 = ["a", "b", "d"];
+    expect(isEqual(arr1, arr2)).to.be.false;
+  });
+  it("returns false if there are duplicates", () => {
+    let arr2 = ["a", "a", "b"];
+    expect(isEqual(arr1, arr2)).to.be.false;
+  });
+  it("returns true if the arrays are the same", () => {
+    let arr2 = ["a", "b", "c"];
+    expect(isEqual(arr1, arr2)).to.be.true;
+  });
+  it("returns true even if the arrays do not list the elements in the same order", () => {
+    let arr2 = ["b", "c", "a"];
+    expect(isEqual(arr1, arr2)).to.be.true;
+  });
+  it("returns true if the arrays have the same duplicates", () => {
+    expect(isEqual(["a", "a", "b"], ["b", "a", "a"])).to.be.true;
+  });
+
 });

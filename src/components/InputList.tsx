@@ -1,80 +1,76 @@
 import * as React from "react";
 import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
-import { SettingData } from "../interfaces";
+import { SettingData, CustomListsSetting } from "../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
 import { Button } from "library-simplified-reusable-components";
+import { isEqual } from "../utils/sharedFunctions";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
-  labelAndDescription: (SettingData) => JSX.Element[];
-  setting: SettingData;
+  labelAndDescription?: (SettingData) => JSX.Element[];
+  setting: SettingData | CustomListsSetting;
   disabled: boolean;
-  value: Array<string | {}>;
+  value: Array<string | {} | JSX.Element>;
+  altValue?: string;
   additionalData?: any;
+  onSubmit?: any;
+  onEmpty?: string;
+  title?: string;
 }
 
 export interface InputListState {
   listItems: Array<string | {}>;
   newItem?: string;
+  options?: JSX.Element[];
 }
 
 export default class InputList extends React.Component<InputListProps, InputListState> {
 
-  constructor(props) {
+  constructor(props: InputListProps) {
     super(props);
+    let isMenu = props.setting.type === "menu";
     this.state = {
       listItems: (props.value as string[] || []),
-      newItem: ""
+      newItem: "",
+      options: isMenu && this.filterMenu()
     };
     this.updateNewItem = this.updateNewItem.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.clear = this.clear.bind(this);
+    this.filterMenu = this.filterMenu.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({ listItems: (newProps.value || []) });
+    // Update the list of existing items with value from new props
+    if (this.state.listItems && newProps.value && !isEqual(this.state.listItems, newProps.value)) {
+      this.setState({ listItems: newProps.value });
+    }
+  }
+
+  componentDidUpdate(oldProps, oldState) {
+    // Remove already-selected items from the dropdown menu
+    if (oldState.listItems && this.state.listItems && !isEqual(oldState.listItems, this.state.listItems)) {
+      this.props.setting.format === "narrow" && this.setState({ options: this.filterMenu() });
+    }
   }
 
   render(): JSX.Element {
-    const setting = this.props.setting;
+    const setting = this.props.setting as any;
+    // Hide the "Add" button if there are no options left
+    let showButton = !this.state.options || this.state.options.length > 0;
+    let hasListItems = this.state.listItems && this.state.listItems.length > 0;
     return (
-      <div>
-        { this.props.labelAndDescription(setting) }
-        { this.state.listItems && this.state.listItems.map((listItem) => {
-          let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
-          return (
-            <WithRemoveButton
-              key={value}
-              disabled={this.props.disabled}
-              onRemove={() => this.removeListItem(listItem)}
-            >
-              {
-                this.props.setting.format === "language-code" ?
-                  <LanguageField
-                    disabled={this.props.disabled}
-                    value={value}
-                    name={setting.key}
-                    languages={this.props.additionalData}
-                  /> :
-                  this.props.createEditableInput(setting, {
-                  type: "text",
-                  description: null,
-                  disabled: this.props.disabled,
-                  value: value,
-                  name: setting.key,
-                  label: null,
-                  extraContent: this.renderToolTip(listItem, setting.format)
-                })
-              }
-            </WithRemoveButton>
-          );
-        })}
+      <div className="input-list">
+        { this.props.labelAndDescription && this.props.labelAndDescription(setting) }
+        { this.props.altValue && !hasListItems && <span>{this.props.altValue}</span> }
+        { this.props.title && hasListItems && <h4>{this.props.title}</h4> }
+        { hasListItems && this.renderList(this.state.listItems, setting) }
         <div className="add-list-item-container">
           <span className="add-list-item">
-            { this.props.setting.format === "language-code" ?
+            {  setting.format === "language-code" ?
                 <LanguageField
                   disabled={this.props.disabled}
                   ref="addListItem"
@@ -82,26 +78,108 @@ export default class InputList extends React.Component<InputListProps, InputList
                   languages={this.props.additionalData}
                   onChange={this.updateNewItem}
                 /> :
-              this.props.createEditableInput(setting, {
-                value: null,
-                disabled: this.props.disabled,
-                onChange: this.updateNewItem,
-                ref: "addListItem",
-                label: null,
-                description: null
-              })
+                setting.type === "menu" ?
+                  this.renderMenu(setting) :
+                  this.props.createEditableInput(setting, {
+                    value: null,
+                    disabled: this.props.disabled,
+                    onChange: this.updateNewItem,
+                    ref: "addListItem",
+                    label: null,
+                    description: null
+                  })
             }
           </span>
-          <Button
-            type="button"
-            className="add-list-item inline small bottom-align"
-            disabled={this.props.disabled || !this.state.newItem.length}
-            callback={this.addListItem}
-            content="Add"
-          />
+          { showButton &&
+            <Button
+              type="button"
+              className="add-list-item inline small bottom-align"
+              callback={this.addListItem}
+              content="Add"
+              disabled={this.props.disabled || (setting.type !== "menu" && !this.state.newItem.length)}
+            />
+          }
         </div>
       </div>
     );
+  }
+
+  renderList(listItems, setting) {
+    return (
+      <ul className="input-list-ul">
+        {
+          listItems.filter(listItem => listItem).map((listItem) => {
+            let value = typeof(listItem) === "string" ? listItem : Object.keys(listItem)[0];
+            return this.renderListItem(setting, value, listItem);
+          })
+        }
+      </ul>
+    );
+  }
+
+  renderListItem(setting, value, listItem) {
+    let item;
+    if (setting.format === "language-code") {
+      item = (
+        <LanguageField
+          disabled={this.props.disabled}
+          value={value}
+          name={setting.key}
+          languages={this.props.additionalData}
+        />
+      );
+    } else if (setting.urlBase) {
+      // Use information stored in the parent component to render the list item as a link
+      item = (
+        <a href={setting.urlBase(listItem)}>{listItem}</a>
+      );
+    } else {
+      item = (
+        this.props.createEditableInput(setting, {
+          type: "text",
+          description: null,
+          disabled: this.props.disabled,
+          value: value,
+          name: setting.key,
+          label: null,
+          extraContent: this.renderToolTip(listItem, setting.format),
+          optionalText: !setting.required
+        })
+      );
+    }
+    return (
+      <li className="input-list-item" key={value}>
+        <WithRemoveButton
+          disabled={this.props.disabled}
+          onRemove={() => this.removeListItem(listItem)}
+        >
+          { item }
+        </WithRemoveButton>
+      </li>
+    );
+  }
+
+  renderMenu(setting) {
+    let choices = this.state.options;
+    // If there are no available options, don't show the menu
+    if (choices.length > 0) {
+      return this.props.createEditableInput(
+        setting,
+        {
+          elementType: "select",
+          name: setting.key,
+          value: setting.key,
+          label: setting.menuTitle,
+          required: setting.required,
+          ref: "addListItem",
+          optionalText: !setting.required
+        }, choices
+      );
+    }
+    else if (this.props.onEmpty) {
+      // Optionally render a string telling the user that there are no more available choices.
+      return this.props.onEmpty;
+    }
   }
 
   renderToolTip(item: {} | string, format: string) {
@@ -119,26 +197,45 @@ export default class InputList extends React.Component<InputListProps, InputList
     return null;
   }
 
+  filterMenu() {
+    // All the possibilities, regardless of whether they've already been selected.
+    let allOptions = (this.props.setting as any).menuOptions;
+    if (!allOptions) {
+      return;
+    }
+    // Items that have already been selected, and should be eliminated from the menu.
+    let listItems = this.state ? this.state.listItems : this.props.value;
+    // Items that haven't been selected yet.
+    let remainingOptions = listItems ? allOptions.filter(o => listItems.indexOf(o.props.value) < 0) : [];
+    return remainingOptions;
+  }
+
   updateNewItem() {
     let ref = this.props.setting.format === "language-code" ?
       (this.refs["addListItem"] as any).refs["autocomplete"] :
       (this.refs["addListItem"] as any);
-
     this.setState({...this.state, ...{ newItem: ref.getValue() }});
   }
 
-  removeListItem(listItem: string | {}) {
-    this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
+  async removeListItem(listItem: string | {}) {
+    await this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
+    // Actually save the changes instead of just manipulating the state
+    if (this.props.onSubmit) { await this.props.onSubmit(); };
   }
 
-  addListItem() {
+  async addListItem() {
     let ref = this.props.setting.format === "language-code" ?
       (this.refs["addListItem"] as any).refs["autocomplete"] :
       (this.refs["addListItem"] as any);
-
     const listItem = ref.getValue();
-    this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
-    ref.clear();
+    await this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
+    // Actually save the changes instead of just manipulating the state
+    if (this.props.onSubmit) {
+      await this.props.onSubmit();
+    };
+    if (this.props.setting.type !== "menu") {
+      ref.clear();
+    };
   }
 
   getValue() {

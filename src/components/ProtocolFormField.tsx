@@ -1,19 +1,22 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import WithRemoveButton from "./WithRemoveButton";
 import ColorPicker from "./ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
-import { SettingData } from "../interfaces";
+import { SettingData, CustomListsSetting } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ProtocolFormFieldProps {
-  setting: SettingData;
+  setting: SettingData | CustomListsSetting;
   disabled: boolean;
-  value?: string | string[] | {}[] | Array<string | {}>;
+  value?: string | string[] | {}[] | Array<string | {} | JSX.Element> | JSX.Element;
+  altValue?: string;
   default?: any;
   error?: FetchErrorData;
   additionalData?: any;
+  onSubmit?: any;
+  onEmpty?: string;
+  title?: string;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -27,12 +30,12 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   render(): JSX.Element {
-    const setting = this.props.setting;
+    const setting = this.props.setting as SettingData | CustomListsSetting;
     if (setting.type === "select") {
       return this.renderSelectSetting(setting);
     } else if (setting.type === "list" && setting.options) {
         return this.renderListSettingWithOptions(setting);
-    } else if (setting.type === "list") {
+    } else if (setting.type === "list" || setting.type === "menu") {
         return this.renderListSetting(setting);
     } else if (setting.type === "color-picker") {
         return this.renderColorPickerSetting(setting);
@@ -103,7 +106,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   renderListSettingWithOptions(setting: SettingData): JSX.Element {
     return (
       <div>
-        { this.labelAndDescription(setting) }
+        { setting.label && this.labelAndDescription(setting) }
         { setting.options.map((option) => {
             return this.createEditableInput(option, {
                 type: "checkbox",
@@ -117,7 +120,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     );
   }
 
-  renderListSetting(setting: SettingData): JSX.Element {
+  renderListSetting(setting: SettingData | CustomListsSetting): JSX.Element {
     // Flatten an object in which the values are arrays
     let value = Array.isArray(this.props.value) ?
       this.props.value :
@@ -127,10 +130,14 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         ref="element"
         setting={setting}
         createEditableInput={this.createEditableInput}
-        labelAndDescription={this.labelAndDescription}
+        labelAndDescription={setting.label && this.labelAndDescription}
         disabled={this.props.disabled}
         value={value}
+        altValue={this.props.altValue}
         additionalData={this.props.additionalData}
+        onSubmit={this.props.onSubmit}
+        onEmpty={this.props.onEmpty}
+        title={this.props.title}
       />
     );
   }

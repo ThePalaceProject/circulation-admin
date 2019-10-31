@@ -1,15 +1,34 @@
-.add-list-item-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: baseline;
+.input-list {
+  .add-list-item-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
 
-  span.add-list-item {
-    display: inline-block;
-    margin-right: 10px;
+    span.add-list-item {
+      display: inline-block;
+      margin-right: 10px;
+      width: 193px;
+      &:only-child {
+        width: 100%;
+      }
+      .form-group div {
+        width: 100%;
+      }
+    }
+    .btn.add-list-item {
+      vertical-align: top;
+    }
   }
-  
-  .btn.add-list-item {
-    vertical-align: top;
+  .input-list-ul {
+    padding: 0;
+    list-style: none;
+    .with-remove-button a {
+      display: block;
+      background: darken($gray-tint, 5);
+      padding: 6px 12px;
+      height: 34px;
+      width: 192px;
+    }
   }
 }

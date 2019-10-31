@@ -11,4 +11,47 @@
       fill: $blue;
     }
   }
+  .custom-list-for-book {
+    h3 {
+      margin-bottom: 0;
+    }
+    .edit-form {
+      .input-list a {
+        border-radius: .25em;
+        border: 1px solid darken($gray-tint, 5);
+        padding-left: 8px;
+      }
+      .add-list-item-container {
+        margin-top: 48px;
+        padding-top: 16px;
+        border-top: 1px solid darken($gray-tint, 25);
+        select {
+          margin-top: 6px;
+        }
+      }
+      .btn.add-list-item {
+        width: 92px;
+      }
+      > span {
+        display: inline-block;
+        margin: 0 10px;
+        color: $dark;
+      }
+      > div:not(.input-list) {
+        margin-top: 16px;
+        a {
+          display: block;
+          width: 100%;
+          padding-bottom: 6px;
+          margin-bottom: 8px;
+          border-bottom: 1px solid $blue;
+          font-weight: bold;
+        }
+        p {
+          font-size: .9em;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
 }
