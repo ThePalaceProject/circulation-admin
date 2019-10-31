@@ -30,7 +30,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   render(): JSX.Element {
-    const setting = this.props.setting as any;
+    const setting = this.props.setting as SettingData | CustomListsSetting;
     if (setting.type === "select") {
       return this.renderSelectSetting(setting);
     } else if (setting.type === "list" && setting.options) {
