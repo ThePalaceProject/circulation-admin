@@ -12,6 +12,7 @@ export interface CustomListPageProps extends React.Props<CustomListPageProps> {
     editOrCreate?: string;
     identifier?: string;
   };
+  location?: { [key: string]: string | {[key: string]: string }};
 }
 
 export interface CustomListPageContext {
@@ -39,6 +40,10 @@ export default class CustomListPage extends React.Component<CustomListPageProps,
   }
 
   render(): JSX.Element {
+    let startingTitle;
+    if (this.props.location && this.props.location.state) {
+      startingTitle = (this.props.location.state as any).bookTitle;
+    }
     return (
       <div className="custom-list-page">
         <Header />
@@ -48,6 +53,7 @@ export default class CustomListPage extends React.Component<CustomListPageProps,
           identifier={this.props.params.identifier}
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
+          startingTitle={startingTitle}
         />
         <Footer />
       </div>

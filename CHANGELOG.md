@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.23
+#### Fixed
+- Implemented an automatic search for a title when the link from the book editor Lists tab to the Lists page is used.
+
 ### v0.3.22
 #### Updated
 - Streamlined the book editor Lists tab by implementing a dropdown menu option on the InputList component.

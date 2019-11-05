@@ -422,6 +422,32 @@ describe("CustomListEditor", () => {
     expect(search.args[0][0]).to.equal("/library/search?q=test");
   });
 
+  it("optionally searches a title passed as a prop", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library="library"
+        list={listData}
+        listId="1"
+        listCollections={listCollections}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryPoints={entryPoints}
+        startingTitle="test title"
+      />,
+      { context: fullContext, childContextTypes }
+    );
+    let searchField = wrapper.find(".form-control");
+    expect(searchField.getDOMNode().value).to.equal("test title");
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][0]).to.equal("/library/search?q=test%20title");
+
+  });
+
   it("searches with audiobooks selected", () => {
     wrapper = mount(
       <CustomListEditor

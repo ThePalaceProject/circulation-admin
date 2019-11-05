@@ -8,6 +8,7 @@ import { CustomListsForBook } from "../CustomListsForBook";
 import ErrorMessage from "../ErrorMessage";
 import WithRemoveButton from "../WithRemoveButton";
 import InputList from "../InputList";
+import { Link } from "react-router";
 
 describe("CustomListsForBook", () => {
   let wrapper;
@@ -139,19 +140,13 @@ describe("CustomListsForBook", () => {
 
     it("displays a link to the list creator", () => {
       let linkDiv = wrapper.find("div").last();
-      let link = linkDiv.find("a");
-      expect(link.prop("href")).to.equal("/admin/web/lists/library/create");
+      let link = linkDiv.find(Link);
+      expect(link.prop("to").pathname).to.equal("/admin/web/lists/library/create");
+      expect(link.prop("to").state.bookTitle).to.equal("test title");
       expect(link.text()).to.equal("Create a new list");
       expect(linkDiv.find("p").text()).to.equal(
-        "(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)"
+        "(The book title will be automatically copied and searched on the list creator page.)"
       );
-      let copyTitle = stub(wrapper.instance(), "copyTitle").returns(wrapper.prop("book").title);
-      wrapper.setProps({ copyTitle });
-      expect(copyTitle.callCount).to.equal(0);
-      link.simulate("click");
-      expect(copyTitle.callCount).to.equal(1);
-      expect(copyTitle()).to.equal("test title");
-      copyTitle.restore();
     });
   });
 
