@@ -23,6 +23,7 @@ export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   isFetchingMoreCustomListEntries: boolean;
   entryPoints?: string[];
   entryCount?: string;
+  startingTitle?: string;
 }
 
 export interface CustomListEditorState {
@@ -172,6 +173,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         </div>
       </div>
     );
+  }
+
+  componentDidMount() {
+    if (this.props.startingTitle) {
+      (this.refs["searchTerms"] as HTMLInputElement).value = this.props.startingTitle;
+      this.search();
+    }
   }
 
   componentWillReceiveProps(nextProps) {

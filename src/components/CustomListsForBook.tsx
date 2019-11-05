@@ -10,6 +10,7 @@ import {
 } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import { Link } from "react-router";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
@@ -52,7 +53,6 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     this.refresh = this.refresh.bind(this);
     this.save = this.save.bind(this);
     this.makeURL = this.makeURL.bind(this);
-    this.copyTitle = this.copyTitle.bind(this);
   }
 
   render(): JSX.Element {
@@ -82,15 +82,13 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     // Link to the form for creating a new list
     return(
       <div key="list-creator-link">
-        <a onClick={this.copyTitle} href={`/admin/web/lists/${this.props.library}/create`}>Create a new list</a>
-        <p>(The book title will be copied to the clipboard so that you can easily search for it on the list creator page.)</p>
+        <Link to={{
+          pathname: `/admin/web/lists/${this.props.library}/create`,
+          state: { bookTitle: this.props.book && this.props.book.title }
+        }}>Create a new list</Link>
+        <p>(The book title will be automatically copied and searched on the list creator page.)</p>
       </div>
     );
-  }
-
-  copyTitle() {
-    // Enable admins to paste the book title into the list creator search field
-    (navigator as any).clipboard.writeText(this.props.book.title);
   }
 
   renderInputList(): JSX.Element {

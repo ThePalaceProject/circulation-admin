@@ -55,6 +55,7 @@ export interface CustomListsOwnProps {
   editOrCreate?: string;
   identifier?: string;
   csrfToken: string;
+  startingTitle?: string;
 }
 
 export interface CustomListsProps extends React.Props<CustomListsProps>, CustomListsStateProps, CustomListsDispatchProps, CustomListsOwnProps {}
@@ -141,7 +142,9 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
       searchResults: this.props.searchResults
     };
     let extraProps = this.props.editOrCreate === "create" ?
-      { responseBody: this.props.responseBody } :
+      { responseBody: this.props.responseBody,
+        startingTitle: this.props.startingTitle
+      } :
       { entryCount: entryCount,
         list: this.props.listDetails,
         listCollections: listCollections,
