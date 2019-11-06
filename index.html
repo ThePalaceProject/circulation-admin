@@ -112,6 +112,11 @@
 				</a>
 				<p>This package is <a href="https://www.npmjs.com/package/simplified-circulation-web">published to npm</a>.</p>
 				<p>To publish a new version, you need to create an npm account and be a collaborator on the package. Then you can run <code>npm publish</code> from your local copy of the repository.</p>
+				<a href="#accessibility" id="accessibility" style="color: inherit; text-decoration: none;">
+					<h2>Accessibility</h2>
+				</a>
+				<p>In order to develop user interfaces that are accessible to everyone, there are tools added to the workflow. Besides the Typescript <code>tslint-react-a11y</code> plugin, <code>react-axe</code> is also installed for local development. Using that module while running the app uses a lot of resources so it should be only when specifically testing for accessibility and not while actively developing new features or fixing bugs.</p>
+				<p>In order to run the app with <code>react-axe</code>, run <code>npm run dev-test-axe</code>. This will add a local global variable <code>process.env.TEST_AXE</code> (through webpack) that will trigger <code>react-axe</code> in <code>/src/index.tsx</code>. The output will be seen in the <em>browser&#39;s</em> console terminal.</p>
 				<a href="#tests" id="tests" style="color: inherit; text-decoration: none;">
 					<h2>Tests</h2>
 				</a>
