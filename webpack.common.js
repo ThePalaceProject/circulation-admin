@@ -23,7 +23,12 @@ module.exports = {
     // in the browser even if it is never used, so we ignore it:
     new webpack.IgnorePlugin(/jsdom$/),
     // Extract separate css file.
-    new MiniCssExtractPlugin({ filename: "circulation-web.css" })
+    new MiniCssExtractPlugin({ filename: "circulation-web.css" }),
+    // Set a local global variable in the app that will be used only
+    // for testing AXE in development mode.
+    new webpack.DefinePlugin({
+      "process.env.TEST_AXE": JSON.stringify(process.env.TEST_AXE)
+    })
   ],
   optimization: {
     minimizer: [new TerserPlugin({ terserOptions: { compress: false }})]

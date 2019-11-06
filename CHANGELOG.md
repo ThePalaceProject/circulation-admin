@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.3.24
+#### Added
+- Added `react-axe` to test for accessibility.
+- Updated the `opds-web-client` package to version 0.2.10.
+
 ### v0.3.23
 #### Fixed
 - Implemented an automatic search for a title when the link from the book editor Lists tab to the Lists page is used.
