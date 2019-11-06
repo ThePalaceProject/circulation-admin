@@ -2,7 +2,7 @@
 
 ### v0.3.24
 #### Added
-- `react-axe` to test for accessibility.
+- Added `react-axe` to test for accessibility.
 
 ### v0.3.23
 #### Fixed
