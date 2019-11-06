@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.24
+#### Added
+- `react-axe` to test for accessibility.
+
 ### v0.3.23
 #### Fixed
 - Implemented an automatic search for a title when the link from the book editor Lists tab to the Lists page is used.

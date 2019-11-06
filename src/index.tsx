@@ -52,6 +52,14 @@ class CirculationWeb {
     let customListPagePath = "/admin/web/lists(/:library)(/:editOrCreate)(/:identifier)";
     let lanePagePath = "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
 
+    // `react-axe` should only run in development and testing mode.
+    // Running this is resource intensive and should only be used to test
+    // for accessibility and not while active development.
+    if (process.env.TEST_AXE === 'true') {
+      let axe = require('react-axe');
+      axe(React, ReactDOM, 1000);
+    }
+
     if (config.settingUp) {
       ReactDOM.render(
         <ContextProvider {...config}>
