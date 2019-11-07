@@ -1,5 +1,9 @@
 ## Changelog
 
+###v0.3.24
+#### Fixed
+- Cosmetic fixes for buttons on the Lists page.
+
 ### v0.3.23
 #### Fixed
 - Implemented an automatic search for a title when the link from the book editor Lists tab to the Lists page is used.
