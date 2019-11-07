@@ -1,5 +1,9 @@
 ## Changelog
 
+###v0.3.25
+#### Fixed
+- Cosmetic fixes for buttons on the Lists page.
+
 ### v0.3.24
 #### Added
 - Added `react-axe` to test for accessibility.
