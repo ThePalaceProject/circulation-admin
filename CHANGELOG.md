@@ -1,8 +1,13 @@
 ## Changelog
 
-###v0.3.24
+###v0.3.25
 #### Fixed
 - Cosmetic fixes for buttons on the Lists page.
+
+### v0.3.24
+#### Added
+- Added `react-axe` to test for accessibility.
+- Updated the `opds-web-client` package to version 0.2.10.
 
 ### v0.3.23
 #### Fixed
