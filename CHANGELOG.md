@@ -1,5 +1,9 @@
 ## Changelog
 
+###v0.3.26
+#### Fixed
+- Cosmetic fix for InputList items.
+
 ###v0.3.25
 #### Fixed
 - Cosmetic fixes for buttons on the Lists page.
