@@ -41,10 +41,10 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
     return (
       <div className="dashboard">
         <Header />
-        <div className="body">
+        <main className="body">
           <Stats store={this.context.editorStore} library={library} />
           <CirculationEvents store={this.context.editorStore} library={library} />
-        </div>
+        </main>
         <Footer />
       </div>
     );

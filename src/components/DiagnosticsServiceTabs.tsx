@@ -41,9 +41,10 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
 
   renderCollections(collections: Array<DiagnosticsCollectionData>) {
     // If the collection has any timestamps with exceptions, it should start out expanded.
-    return Object.keys(collections).map((collectionName) =>
+    return Object.keys(collections).map((collectionName, idx) =>
       <Panel
         key={collectionName}
+        id={`${collectionName}-${idx}`}
         headerText={collectionName}
         openByDefault={collections[collectionName].some((ts) => ts.exception)}
         content={this.renderTimestamps(collections[collectionName])}

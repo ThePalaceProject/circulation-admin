@@ -81,6 +81,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               ) : null
             }
             <input
+              placeholder="Harry Potter"
+              aria-label="Search for a book title"
               className="form-control"
               ref="searchTerms"
               type="text"
@@ -103,7 +105,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 placeholder="list title"
                 onUpdate={this.changeTitle}
                 ref="listTitle"
-                />
+                aria-label="Enter list title"
+              />
             </fieldset>
             { listId &&
               <h4>ID-{listId}</h4>
@@ -129,6 +132,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <div className="custom-list-filters">
               <Panel
                 headerText="Add from collections"
+                id="add-from-collections-panel"
                 content={
                   <div className="collections">
                     <div>Automatically add new books from these collections to this list:</div>
@@ -151,6 +155,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           }
           <Panel
             headerText="Search for titles"
+            id="search-titles-panel"
             openByDefault={true}
             onEnter={this.search}
             content={searchForm}

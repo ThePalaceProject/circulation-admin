@@ -26,7 +26,18 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
     return (
       <div className="self-tests-category has-additional-content">
         <ul>
-          { this.props.items && this.props.items.map(i => <Panel style={getClassName(i)} key={i.name} openByDefault={onlyChild} headerText={i.name} content={[link(i), selfTests(i)]} />)}
+          { this.props.items && this.props.items.map((item, idx) =>
+              <li>
+                <Panel
+                  style={getClassName(item)}
+                  key={item.name}
+                  id={`${item.name}-${idx}`}
+                  openByDefault={onlyChild}
+                  headerText={item.name}
+                  content={[link(item), selfTests(item)]}
+                />
+              </li>)
+          }
         </ul>
       </div>
     );

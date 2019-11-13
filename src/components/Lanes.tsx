@@ -96,7 +96,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   render(): JSX.Element {
     const errorMessage = this.props.formError || this.props.fetchError;
     return (
-      <div className="lanes-container">
+      <main className="lanes-container">
         { errorMessage && <ErrorMessage error={errorMessage} /> }
         { this.props.isFetching && <LoadingIndicator /> }
         <div className="lanes">
@@ -112,7 +112,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           />
           { this.renderMainContent() }
           </div>
-      </div>
+      </main>
     );
   }
 
