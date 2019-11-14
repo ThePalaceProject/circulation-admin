@@ -197,7 +197,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           </span>
         </a>
 
-        <h4>{this.label(item)}</h4>
+        <h3>{this.label(item)}</h3>
 
         {this.canDelete() &&
           <Button

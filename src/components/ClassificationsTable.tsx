@@ -22,8 +22,8 @@ export default class ClassificationsTable extends React.Component<Classification
             </tr>
           </thead>
           <tbody>
-            { this.props.classifications.map(classification =>
-              <tr key={classification.source + ":" + classification.name}>
+            { this.props.classifications.map((classification, idx) =>
+              <tr key={classification.source + "-" + idx}>
                 <td>{this.readableType(classification.type)}</td>
                 <td>{classification.name}</td>
                 <td>{classification.source}</td>

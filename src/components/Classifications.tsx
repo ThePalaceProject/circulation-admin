@@ -7,7 +7,7 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable  from "./ClassificationsTable";
-import { BookData, Audience, Fiction, GenreTree, ClassificationData } from "../interfaces";
+import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 

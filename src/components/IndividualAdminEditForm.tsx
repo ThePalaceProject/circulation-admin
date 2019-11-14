@@ -68,6 +68,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         content = {[
           <Panel
             headerText="Admin Information"
+            id="admin-info"
             key="info"
             content={this.renderForm()}
             openByDefault={true}
@@ -76,6 +77,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           />,
           !this.context.settingUp &&
           <Panel
+            id="admin-roles"
             headerText="Admin Roles"
             key="roles"
             content={this.renderRoleForm()}
@@ -177,6 +179,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     name={"manager-" + library.short_name}
                     ref={"manager-" + library.short_name}
                     label=""
+                    aria-label={`Library Manager for ${library.short_name}`}
                     checked={this.isSelected("manager", library.short_name)}
                     onChange={() => this.handleRoleChange("manager", library.short_name)}
                     />
@@ -189,6 +192,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     name={"librarian-" + library.short_name}
                     ref={"librarian-" + library.short_name}
                     label=""
+                    aria-label={`Librarian for ${library.short_name}`}
                     checked={this.isSelected("librarian", library.short_name)}
                     onChange={() => this.handleRoleChange("librarian", library.short_name)}
                     />

@@ -34,7 +34,10 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
     // If any of the timestamps has an exception, display a warning.  Otherwise, display the number of timestamps.
     let badge = hasException ?
         <span className="badge danger">!</span> :
-        <ToolTip trigger={<span className="badge">{timestampArray.length}</span>} text="Total number of timestamps for this service"/>;
+        <ToolTip
+          trigger={<span className="badge">{timestampArray.length}</span>}
+          text="Total number of timestamps for this service"
+        />;
 
     return <section><span className="service-name">{super.tabDisplayName(name)}</span>{badge}</section>;
   }
@@ -44,7 +47,6 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
     return Object.keys(collections).map((collectionName, idx) =>
       <Panel
         key={collectionName}
-        id={`${collectionName}-${idx}`}
         headerText={collectionName}
         openByDefault={collections[collectionName].some((ts) => ts.exception)}
         content={this.renderTimestamps(collections[collectionName])}

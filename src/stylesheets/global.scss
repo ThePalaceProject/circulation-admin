@@ -54,7 +54,8 @@
   }
   .search {
     button {
-      margin-top: 0;
+      margin-top: 1px;
+      display: inline-block;
     }
     form {
       border: none;

@@ -28,6 +28,7 @@ export default class Timestamp extends React.Component<TimestampProps, {}> {
     // If the timestamp has an exception, it should start out expanded.
     return (
       <Panel
+        id="timestamp"
         headerText={this.props.timestamp.start}
         style={this.props.timestamp.exception ? "danger" : "success"}
         content={content}

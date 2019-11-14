@@ -45,6 +45,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
     let basicInfoPanel = (
       <Panel
+        id="library-basic-info"
         headerText="Basic Information"
         key="basic_info"
         openByDefault={true}
@@ -113,9 +114,10 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   renderForms(categories) {
     let forms = [];
     let categoryNames = Object.keys(categories);
-    categoryNames.forEach((name) => {
+    categoryNames.forEach((name, idx) => {
       let form = (
         <Panel
+          id={`${name.replace(/\s+/g, '')}-${idx}`}
           headerText={`${name} (Optional)`}
           onEnter={this.submit}
           key={name}

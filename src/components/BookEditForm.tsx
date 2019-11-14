@@ -44,13 +44,16 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
   }
 
   renderTextField(name: string, placeholder?: string, value?: string, hasLabel = true): JSX.Element {
+    const formattedName = formatString(name);
+    const ariaLabel = !hasLabel ? `Field for ${formattedName}` : null;
     return (
       <EditableInput
         elementType="input"
         type="text"
         disabled={this.props.disabled}
         name={name}
-        label={hasLabel && formatString(name)}
+        label={hasLabel && formattedName}
+        aria-label={ariaLabel}
         value={value || this.props[name]}
         optionalText={false}
         placeholder={placeholder}

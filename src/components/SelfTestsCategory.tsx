@@ -31,7 +31,7 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
                 <Panel
                   style={getClassName(item)}
                   key={item.name}
-                  id={`${item.name}-${idx}`}
+                  id={`${item.name.replace(/\s+/g, '')}-${idx}`}
                   openByDefault={onlyChild}
                   headerText={item.name}
                   content={[link(item), selfTests(item)]}

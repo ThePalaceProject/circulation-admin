@@ -90,6 +90,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                       type="text"
                       disabled={this.props.disabled}
                       name="target_age_min"
+                      aria-label="Target age minimum"
                       value={this.props.book.targetAgeRange[0]}
                       />
                     <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
@@ -99,6 +100,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                       type="text"
                       disabled={this.props.disabled}
                       name="target_age_max"
+                      aria-label="Target age maximum"
                       value={this.props.book.targetAgeRange[1]}
                       />
                   </div>

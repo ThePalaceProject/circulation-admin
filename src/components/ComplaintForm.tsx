@@ -55,7 +55,9 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
                 ref="type"
                 name="type"
                 placeholder=""
-                disabled={this.props.disabled}>
+                aria-label="Select a complaint type"
+                disabled={this.props.disabled}
+              >
                 <option value="" aria-selected={false}>Complaint type</option>
                 { complaintTypes.map(type => <option key={type} value={type} aria-selected={false}>{formatString(type, ["-"])}</option>) }
               </EditableInput>
