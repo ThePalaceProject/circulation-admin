@@ -117,7 +117,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     categoryNames.forEach((name, idx) => {
       let form = (
         <Panel
-          id={`${name.replace(/\s+/g, '')}-${idx}`}
+          id={`${name.replace(/\s+/g, "")}-${idx}`}
           headerText={`${name} (Optional)`}
           onEnter={this.submit}
           key={name}

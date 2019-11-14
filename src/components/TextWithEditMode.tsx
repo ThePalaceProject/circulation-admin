@@ -7,7 +7,7 @@ export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
   text?: string;
   placeholder: string;
   onUpdate?: (text: string) => void;
-  'aria-label'?: string;
+  "aria-label"?: string;
 }
 
 export interface TextWithEditModeState {
@@ -41,7 +41,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               value={this.state.text}
               optionalText={false}
               ref="text"
-              aria-label={this.props['aria-label']}
+              aria-label={this.props["aria-label"]}
             />
             <Button
               className="inverted inline"
