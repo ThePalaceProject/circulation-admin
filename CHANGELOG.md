@@ -1,6 +1,17 @@
 ## Changelog
 
-###v0.3.25
+### v0.3.27
+#### Updated
+- Updated npm packages including chai, mocha, and sinon.
+- Updated version of Node to run in Travis to Node v10.
+#### Fixed
+- Fixed tests that were passing in Node v8 but failing in Node v10. Specifically, stubbing window.confirm did not work on components that were fully mounted. A shallow mount helped fix this issue, but the tests needed to be updated accordingly.
+
+### v0.3.26
+#### Fixed
+- Cosmetic fix for InputList items.
+
+### v0.3.25
 #### Fixed
 - Cosmetic fixes for buttons on the Lists page.
 

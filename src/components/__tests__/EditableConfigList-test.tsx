@@ -8,8 +8,6 @@ import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../Ed
 import ErrorMessage from "../ErrorMessage";
 import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
-import { Button } from "library-simplified-reusable-components";
-import { Link } from "react-router";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 
 describe("EditableConfigList", () => {
