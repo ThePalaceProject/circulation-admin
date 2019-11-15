@@ -76,10 +76,10 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
             </h2>
             <div className="editor-fetching-container">
               { this.props.isFetching &&
-                <h4>
+                <h3>
                   Updating
                   <i className="fa fa-spinner fa-spin"></i>
-                </h4>
+                </h3>
               }
             </div>
 
@@ -150,7 +150,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
   refresh() {
     this.props.fetchBook(this.props.bookAdminUrl);
     this.props.refreshCatalog();
-  };
+  }
 
   editBook(url) {
     return this.props.editBook(url, null).then(this.refresh);

@@ -84,6 +84,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               className="form-control"
               ref="searchTerms"
               type="text"
+              placeholder="Enter a search term"
             />
           </fieldset>
         }
@@ -373,7 +374,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     );
 
     return entryPointsElms;
-  };
+  }
 
   search() {
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);

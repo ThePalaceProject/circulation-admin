@@ -34,7 +34,7 @@ export interface CustomListsForBookOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface CustomListsForBookProps extends CustomListsForBookStateProps, CustomListsForBookDispatchProps, CustomListsForBookOwnProps {};
+export interface CustomListsForBookProps extends CustomListsForBookStateProps, CustomListsForBookDispatchProps, CustomListsForBookOwnProps {}
 
 export interface CustomListsForBookState {
   customLists?: CustomListData[];

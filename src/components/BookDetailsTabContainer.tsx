@@ -105,7 +105,7 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
       capitalized += " (" + this.props.complaintsCount + ")";
     }
     return capitalized;
-  };
+  }
 }
 
 function mapStateToProps(state, ownProps) {

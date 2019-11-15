@@ -242,7 +242,7 @@ describe("InputList", () => {
         options.push(
           <option value={optionName} aria-selected={false}>{optionName}</option>
         );
-      };
+      }
       let menuSetting = {...setting, ...{type: "menu", menuOptions: options, description: null }};
       wrapper = mount(
         <InputList

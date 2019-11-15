@@ -37,7 +37,7 @@ export interface ClassificationsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {};
+export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {}
 
 /** Tab on the book details page with a table of a book's current classifications and
     a form for editing them. */
@@ -58,10 +58,10 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
             </h2>
             <div className="classifications-fetching-container">
               { this.props.isFetching &&
-                <h4>
+                <h3>
                   Updating
                   <i className="fa fa-spinner fa-spin"></i>
-                </h4>
+                </h3>
               }
             </div>
           </>
