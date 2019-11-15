@@ -424,7 +424,7 @@ describe("CustomLists", () => {
   });
 
   // These tests are for mocking the confirm function in the window object.
-  // It relying works when shallow mounting a component but not when doing a
+  // It reliably works when shallow mounting a component but not when doing a
   // full mount. Seems to be a problem with Node v10+.
   describe("on shallow mount", () => {
     let confirmStub;
