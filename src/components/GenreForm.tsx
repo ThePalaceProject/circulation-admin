@@ -44,7 +44,7 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
         <div className="form-inline">
           <select
             name="genre"
-            aria-label="Select table for genres"
+            aria-label="Select one of the following genres"
             size={this.topLevelGenres().length}
             className="form-control"
             {...disabledProps}

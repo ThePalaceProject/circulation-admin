@@ -38,13 +38,12 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
           trigger={<span className="badge">{timestampArray.length}</span>}
           text="Total number of timestamps for this service"
         />;
-
     return <section><span className="service-name">{super.tabDisplayName(name)}</span>{badge}</section>;
   }
 
   renderCollections(collections: Array<DiagnosticsCollectionData>) {
     // If the collection has any timestamps with exceptions, it should start out expanded.
-    return Object.keys(collections).map((collectionName, idx) =>
+    return Object.keys(collections).map((collectionName) =>
       <Panel
         key={collectionName}
         headerText={collectionName}

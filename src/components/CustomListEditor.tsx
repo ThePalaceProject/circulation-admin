@@ -81,7 +81,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               ) : null
             }
             <input
-              placeholder="Harry Potter"
+              placeholder="Book title"
               aria-label="Search for a book title"
               className="form-control"
               ref="searchTerms"
@@ -105,7 +105,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 placeholder="list title"
                 onUpdate={this.changeTitle}
                 ref="listTitle"
-                aria-label="Enter list title"
+                aria-label="Enter a title for this list"
               />
             </fieldset>
             { listId &&

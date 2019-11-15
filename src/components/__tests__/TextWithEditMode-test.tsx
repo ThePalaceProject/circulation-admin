@@ -17,7 +17,11 @@ describe("TextWithEditMode", () => {
 
   it("renders text", () => {
     let wrapper = mount(
-      <TextWithEditMode text="test" placeholder="editable thing" />
+      <TextWithEditMode
+        text="test"
+        placeholder="editable thing"
+        aria-label="label"
+      />
     );
     expect(wrapper.text()).to.contain("test");
     expect(wrapper.text()).to.contain("Edit editable thing");
@@ -29,7 +33,7 @@ describe("TextWithEditMode", () => {
 
   it("starts in edit mode if there's no text", () => {
     let wrapper = mount(
-      <TextWithEditMode placeholder="editable thing" />
+      <TextWithEditMode placeholder="editable thing" aria-label="label" />
     );
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
@@ -41,7 +45,11 @@ describe("TextWithEditMode", () => {
 
   it("switches to edit mode", () => {
     let wrapper = mount(
-      <TextWithEditMode text="test" placeholder="editable thing" />
+      <TextWithEditMode
+        text="test"
+        placeholder="editable thing"
+        aria-label="label"
+      />
     );
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
@@ -62,7 +70,8 @@ describe("TextWithEditMode", () => {
       <TextWithEditMode
         placeholder="editable thing"
         onUpdate={onUpdate}
-        />
+        aria-label="label"
+      />
     );
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
@@ -87,14 +96,18 @@ describe("TextWithEditMode", () => {
 
   it("gets text", () => {
     let wrapper = mount(
-      <TextWithEditMode text="test" placeholder="editable thing" />
+      <TextWithEditMode
+        text="test"
+        placeholder="editable thing"
+        aria-label="label"
+      />
     );
     expect((wrapper.instance() as TextWithEditMode).getText()).to.equal("test");
 
     // From edit mode, it returns the current input value and exists edit mode.
     let getValueStub = stub(EditableInput.prototype, "getValue").returns("new value");
     wrapper = mount(
-      <TextWithEditMode placeholder="editable thing" />
+      <TextWithEditMode placeholder="editable thing" aria-label="label" />
     );
     expect((wrapper.instance() as TextWithEditMode).getText()).to.equal("new value");
     wrapper.update();
@@ -110,7 +123,8 @@ describe("TextWithEditMode", () => {
       <TextWithEditMode
         placeholder="editable thing"
         onUpdate={onUpdate}
-        />
+        aria-label="label"
+      />
     );
     let saveButton = wrapper.find(Button);
     saveButton.simulate("click");
@@ -130,7 +144,8 @@ describe("TextWithEditMode", () => {
         text="test"
         placeholder="editable thing"
         onUpdate={onUpdate}
-        />
+        aria-label="label"
+      />
     );
     let editButton = wrapper.find(Button);
     editButton.simulate("click");
