@@ -102,6 +102,7 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
               id="event-select"
               ref={this.type}
               name="type"
+              onChange={this.toggleLocationsInput}
               onBlur={this.toggleLocationsInput}
             >
               {

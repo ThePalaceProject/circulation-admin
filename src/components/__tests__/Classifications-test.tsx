@@ -57,11 +57,11 @@ describe("Classifications", () => {
     });
 
     it("hides/shows updating indicator", () => {
-      let updating = wrapper.find("h4");
+      let updating = wrapper.find("h3");
       expect(updating.length).to.equal(0);
 
       wrapper.setProps({ isFetching: true });
-      updating = wrapper.find("h4");
+      updating = wrapper.find("h3");
       expect(updating.text()).to.equal("Updating");
     });
 

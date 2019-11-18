@@ -26,7 +26,7 @@ export default class ManagePatronsTabContainer extends TabContainer<ManagePatron
   static contextTypes: React.ValidationMap<ManagePatronsTabContainerContext> = {
     router: PropTypes.object.isRequired,
     pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired as React.Validator<Admin>
   };
 
   tabs() {

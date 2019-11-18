@@ -28,7 +28,7 @@ export default class TroubleshootingPage extends React.Component<Troubleshooting
   context: TroubleshootingPageContext;
 
   static contextTypes: React.ValidationMap<TroubleshootingPageContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired
   };
 

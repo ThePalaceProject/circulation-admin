@@ -25,7 +25,7 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
   context: ConfigPageContext;
 
   static contextTypes: React.ValidationMap<ConfigPageContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired
   };
 

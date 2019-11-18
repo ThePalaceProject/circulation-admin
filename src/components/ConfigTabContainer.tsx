@@ -34,7 +34,7 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
   static contextTypes: React.ValidationMap<ConfigTabContainerContext> = {
     router: PropTypes.object.isRequired,
     pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired as React.Validator<Admin>
   };
 
   LIBRARY_MANAGER_TABS = ["libraries", "individualAdmins"];

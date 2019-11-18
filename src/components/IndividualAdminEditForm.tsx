@@ -34,7 +34,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
 
   static contextTypes: React.ValidationMap<IndividualAdminEditFormContext> = {
     settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired as React.Validator<Admin>
   };
 
   constructor(props) {
