@@ -37,6 +37,6 @@ describe("UpdatingLoader", () => {
     const loader = wrapper.find(".updating-loader");
     expect(container.length).to.equal(1);
     expect(loader.length).to.equal(1);
-    expect(loader.text()).to.equal("Doing something ");
+    expect(loader.text()).to.equal("Doing something");
   });
 });

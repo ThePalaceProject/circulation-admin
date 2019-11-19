@@ -5,7 +5,6 @@ import { TabContainer, TabContainerProps } from "./TabContainer";
 import { Panel } from "library-simplified-reusable-components";
 import Timestamp from "./Timestamp";
 import ToolTip from "./ToolTip";
-import collection from "opds-web-client/lib/reducers/collection";
 
 export interface DiagnosticsServiceTabsProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
