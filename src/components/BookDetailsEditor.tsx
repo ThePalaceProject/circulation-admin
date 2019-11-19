@@ -10,6 +10,7 @@ import { BookData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 import { Button } from "library-simplified-reusable-components";
+import UpdatingLoader from "./UpdatingLoader";
 
 export interface BookDetailsEditorStateProps {
   bookData?: BookData;
@@ -74,14 +75,8 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
             <h2>
               {this.props.bookData.title}
             </h2>
-            <div className="editor-fetching-container">
-              { this.props.isFetching &&
-                <h4>
-                  Updating
-                  <i className="fa fa-spinner fa-spin"></i>
-                </h4>
-              }
-            </div>
+
+            <UpdatingLoader show={this.props.isFetching} />
 
             { this.props.editError &&
               <ErrorMessage error={this.props.editError} />

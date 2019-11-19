@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.28
+#### Updated
+- Updated components that had accessibility issues found by `react-axe`.
+
 ### v0.3.27
 #### Updated
 - Updated npm packages including chai, mocha, and sinon.

@@ -121,7 +121,11 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
         />
         <div className="editor form-group">
           <label className="control-label">Summary</label>
-          <EditorField ref={this.summaryRef} content={this.props.summary} disabled={this.props.disabled}/>
+          <EditorField
+            ref={this.summaryRef}
+            content={this.props.summary}
+            disabled={this.props.disabled}
+          />
         </div>
       </fieldset>
     );

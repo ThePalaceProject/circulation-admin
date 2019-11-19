@@ -4,7 +4,7 @@ import EditableInput from "./EditableInput";
 import { clearForm } from "../utils/sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Form } from "library-simplified-reusable-components";
 
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 

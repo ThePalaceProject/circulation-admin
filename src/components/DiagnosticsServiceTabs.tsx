@@ -5,6 +5,7 @@ import { TabContainer, TabContainerProps } from "./TabContainer";
 import { Panel } from "library-simplified-reusable-components";
 import Timestamp from "./Timestamp";
 import ToolTip from "./ToolTip";
+import collection from "opds-web-client/lib/reducers/collection";
 
 export interface DiagnosticsServiceTabsProps extends TabContainerProps {
   goToTab: (tabName: string) => void;
@@ -43,19 +44,23 @@ export default class DiagnosticsServiceTabs extends TabContainer<DiagnosticsServ
 
   renderCollections(collections: Array<DiagnosticsCollectionData>) {
     // If the collection has any timestamps with exceptions, it should start out expanded.
-    return Object.keys(collections).map((collectionName) =>
-      <Panel
-        key={collectionName}
-        headerText={collectionName}
-        openByDefault={collections[collectionName].some((ts) => ts.exception)}
-        content={this.renderTimestamps(collections[collectionName])}
-      />
-    );
+    return Object.keys(collections).map((collectionName) => {
+      const collectionToRender = collections[collectionName];
+      return (
+        <Panel
+          id={`diagnostics-${collectionToRender[0].id}`}
+          key={collectionName}
+          headerText={collectionName}
+          openByDefault={collectionToRender.some((ts) => ts.exception)}
+          content={this.renderTimestamps(collectionToRender)}
+        />
+      );
+    });
   }
 
   renderTimestamps(timestamps: Array<TimestampData>): JSX.Element {
     let tsList = timestamps.map(timestamp =>
-      <li className="timestamp-holder" key={timestamp.toString()}>
+      <li className="timestamp-holder" key={timestamp.id}>
         <Timestamp timestamp={timestamp} />
       </li>
     );

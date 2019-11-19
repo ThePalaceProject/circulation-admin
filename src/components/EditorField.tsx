@@ -77,7 +77,12 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     return (
       <div className="editor-field">
         <ul>{ styles.map(style => this.renderButton(style)) }</ul>
-        <Editor editorState={this.state.editorState} onChange={this.onChange} handleKeyCommand={this.handleKeyCommand} readOnly={this.props.disabled} />
+        <Editor
+          editorState={this.state.editorState}
+          onChange={this.onChange}
+          handleKeyCommand={this.handleKeyCommand}
+          readOnly={this.props.disabled}
+        />
       </div>
     );
   }
