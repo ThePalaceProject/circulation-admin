@@ -10,7 +10,7 @@ import LibraryRegistration from "../LibraryRegistration";
 import EditableInput from "../EditableInput";
 
 describe("ServiceWithRegistrationsEditForm", () => {
-  class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {};
+  class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {}
 
   let wrapper;
   let save;
