@@ -64,8 +64,8 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
     );
   }
 
-  abstract handleSelect(event)
-  abstract tabs()
+  abstract handleSelect(event);
+  abstract tabs();
 
   defaultTab() {
     return Object.keys(this.tabs())[0];
@@ -82,7 +82,7 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
   tabDisplayName(name) {
     const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
     return capitalized;
-  };
+  }
 
   renderTab(name, children) {
     let display = this.currentTab() === name ? "block" : "none";
@@ -91,7 +91,7 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
         { children }
       </div>
     );
-  };
+  }
 }
 
 export default TabContainer;

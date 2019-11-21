@@ -23,7 +23,7 @@ export default class LanePage extends React.Component<LanePageProps, LanePageCon
   context: LanePageContext;
 
   static contextTypes: React.ValidationMap<LanePageContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired
   };
 

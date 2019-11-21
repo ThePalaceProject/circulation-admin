@@ -88,7 +88,7 @@ export function mapDispatchToProps(dispatch, ownProps) {
     patronLookup: (data: FormData, library: string) => dispatch(actions.patronLookup(data, library)),
     clearPatronData: () => dispatch(actions.clearPatronData()),
   };
-};
+}
 
 const ConnectedManagePatronsForm = connect<ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps>(
   mapStateToProps,

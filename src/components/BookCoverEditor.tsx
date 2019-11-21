@@ -37,7 +37,7 @@ export interface BookCoverEditorOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface BookCoverEditorProps extends BookCoverEditorStateProps, BookCoverEditorDispatchProps, BookCoverEditorOwnProps {};
+export interface BookCoverEditorProps extends BookCoverEditorStateProps, BookCoverEditorDispatchProps, BookCoverEditorOwnProps {}
 
 /** Tab on the book details page for uploading a new book cover. */
 export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
@@ -66,10 +66,10 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
         </h2>
         { this.props.isFetching &&
           <div className="cover-fetching-container">
-            <h4>
+            <h3>
               Updating
               <i className="fa fa-spinner fa-spin"></i>
-            </h4>
+            </h3>
           </div>
         }
         <div>

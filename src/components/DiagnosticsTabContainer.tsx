@@ -25,7 +25,7 @@ export interface DiagnosticsTabContainerStateProps {
   fetchError?: FetchErrorData;
 }
 
-export interface DiagnosticsTabContainerProps extends DiagnosticsTabContainerDispatchProps, DiagnosticsTabContainerStateProps, DiagnosticsTabContainerOwnProps {};
+export interface DiagnosticsTabContainerProps extends DiagnosticsTabContainerDispatchProps, DiagnosticsTabContainerStateProps, DiagnosticsTabContainerOwnProps {}
 
 export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContainerProps> {
 

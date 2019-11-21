@@ -220,7 +220,7 @@ export default class InputList extends React.Component<InputListProps, InputList
   async removeListItem(listItem: string | {}) {
     await this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
     // Actually save the changes instead of just manipulating the state
-    if (this.props.onSubmit) { await this.props.onSubmit(); };
+    if (this.props.onSubmit) { await this.props.onSubmit(); }
   }
 
   async addListItem() {
@@ -232,10 +232,10 @@ export default class InputList extends React.Component<InputListProps, InputList
     // Actually save the changes instead of just manipulating the state
     if (this.props.onSubmit) {
       await this.props.onSubmit();
-    };
+    }
     if (this.props.setting.type !== "menu") {
       ref.clear();
-    };
+    }
   }
 
   getValue() {
