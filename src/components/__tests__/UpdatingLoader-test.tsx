@@ -39,4 +39,15 @@ describe("UpdatingLoader", () => {
     expect(loader.length).to.equal(1);
     expect(loader.text()).to.equal("Doing something");
   });
+
+  it("should render a spinner loader", () => {
+    const wrapper = mount(
+      <UpdatingLoader show={true} />
+    );
+    const spinner = wrapper.find("i");
+
+    // The spinner is based on Font Awesome.
+    expect(spinner.length).to.equal(1);
+    expect(spinner.prop("className")).to.include("fa-spinner");
+  });
 });

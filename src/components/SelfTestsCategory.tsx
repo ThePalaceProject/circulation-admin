@@ -26,8 +26,8 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
     return (
       <div className="self-tests-category has-additional-content">
         <ul>
-          { this.props.items && this.props.items.map((item) => {
-              return <li key={item.name}>
+          { this.props.items && this.props.items.map((item) =>
+              <li key={item.name}>
                 <Panel
                   id={`${item.name.replace(/\s/g, "")}-${item.id}`}
                   style={getClassName(item)}
@@ -35,8 +35,8 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
                   headerText={item.name}
                   content={[link(item), selfTests(item)]}
                 />
-              </li>;
-            })
+              </li>
+            )
           }
         </ul>
       </div>
