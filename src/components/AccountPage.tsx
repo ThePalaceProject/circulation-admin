@@ -16,7 +16,7 @@ export default class AccountPage extends React.Component<{}, {}> {
   context: AccountPageContext;
 
   static contextTypes: React.ValidationMap<AccountPageContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 

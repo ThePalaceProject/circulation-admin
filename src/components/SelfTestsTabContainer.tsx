@@ -26,8 +26,8 @@ export interface SelfTestsTabContainerStateProps {
   isLoaded?: boolean;
 }
 
-export interface SelfTestsTabContainerProps extends SelfTestsTabContainerDispatchProps, SelfTestsTabContainerStateProps, SelfTestsTabContainerOwnProps {};
-export interface SelfTestsTabContainerContext extends TabContainerContext {};
+export interface SelfTestsTabContainerProps extends SelfTestsTabContainerDispatchProps, SelfTestsTabContainerStateProps, SelfTestsTabContainerOwnProps {}
+export interface SelfTestsTabContainerContext extends TabContainerContext {}
 
 export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerProps> {
   context: SelfTestsTabContainerContext;

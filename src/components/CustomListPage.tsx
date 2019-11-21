@@ -25,7 +25,7 @@ export default class CustomListPage extends React.Component<CustomListPageProps,
   context: CustomListPageContext;
 
   static contextTypes: React.ValidationMap<CustomListPageContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired
   };
 

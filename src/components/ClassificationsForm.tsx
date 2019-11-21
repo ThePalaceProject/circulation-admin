@@ -268,7 +268,7 @@ export default class ClassificationsForm extends React.Component<Classifications
       this.setState({ audience: value });
     } else {
       return false;
-    };
+    }
   }
 
   handleFictionChange() {
@@ -289,7 +289,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   addGenre(genre) {
     if (this.validateAudience(this.state.audience, [genre])) {
       this.setState({ genres: this.state.genres.concat([genre]) });
-    };
+    }
   }
 
   removeGenre(genreToRemove) {

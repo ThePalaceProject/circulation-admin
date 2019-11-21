@@ -83,4 +83,4 @@ export default class Admin {
   isLibraryManagerOfSomeLibrary() {
     return this.manager;
   }
-};
+}

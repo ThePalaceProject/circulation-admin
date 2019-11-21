@@ -63,7 +63,7 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
       (this.state.registration_stage && this.state.registration_stage[library.short_name]) || "testing";
     let stage = this.getLibraryProp(library, "stage") === "production" ? "production" : registration_stage;
     this.props.registerLibrary(library, stage);
-  };
+  }
 
   getStatus(library: LibraryData): string {
     const libraryRegistrationStatus = this.getLibraryProp(library, "status") || "warning";

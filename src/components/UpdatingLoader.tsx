@@ -15,6 +15,6 @@ function UpdatingLoader(props: LoadButtonProps) {
       }
     </div>
   );
-};
+}
 
 export default UpdatingLoader;

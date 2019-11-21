@@ -24,7 +24,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
   context: ManagePatronsContext;
 
   static contextTypes: React.ValidationMap<ManagePatronsContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 

@@ -147,4 +147,4 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
       this.props.refresh();
     });
   }
-};
+}

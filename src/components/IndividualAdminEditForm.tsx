@@ -34,7 +34,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
 
   static contextTypes: React.ValidationMap<IndividualAdminEditFormContext> = {
     settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired as React.Validator<Admin>
   };
 
   constructor(props) {
@@ -203,7 +203,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         </table>
       </fieldset>
     );
-  };
+  }
 
   canChangePassword() {
     if (this.context.settingUp || !this.props.item || !this.props.item.roles) {

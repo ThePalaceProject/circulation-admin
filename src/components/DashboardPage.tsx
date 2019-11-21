@@ -23,7 +23,7 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
   context: DashboardPageContext;
 
   static contextTypes: React.ValidationMap<DashboardPageContext> = {
-    editorStore: PropTypes.object.isRequired
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>
   };
 
   static childContextTypes: React.ValidationMap<{}> = {

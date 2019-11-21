@@ -1,8 +1,13 @@
 ## Changelog
 
-### v0.3.28
+### v0.4.1
+#### Fixed
+- Fixed accessibility issues found by the `react-axe` package.
+
+### v0.4.0
 #### Updated
-- Updated components that had accessibility issues found by `react-axe`.
+- Updated the `opds-web-client` package to v0.3.0.
+- Updated Typescript to version 3.7.2 and updated other related packages to their latest version.
 
 ### v0.3.27
 #### Updated

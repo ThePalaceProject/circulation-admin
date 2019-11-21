@@ -75,6 +75,6 @@ export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, {}> {
       </ul>
     );
   }
-};
+}
 
 export default EntryPointsTabs;

@@ -23,7 +23,7 @@ export default class TroubleshootingCategoryPage extends React.Component<Trouble
   context: TroubleshootingCategoryPageContext;
 
   static contextTypes: React.ValidationMap<TroubleshootingCategoryPageContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired
   };
 

@@ -145,7 +145,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps, {
   refresh() {
     this.props.fetchBook(this.props.bookAdminUrl);
     this.props.refreshCatalog();
-  };
+  }
 
   editBook(url) {
     return this.props.editBook(url, null).then(this.refresh);

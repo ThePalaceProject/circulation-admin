@@ -15,9 +15,9 @@ export interface DiscoveryServicesDispatchProps extends EditableConfigListDispat
   fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
 }
 
-export interface DiscoveryServicesProps extends DiscoveryServicesStateProps, DiscoveryServicesDispatchProps, EditableConfigListOwnProps {};
+export interface DiscoveryServicesProps extends DiscoveryServicesStateProps, DiscoveryServicesDispatchProps, EditableConfigListOwnProps {}
 
-class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {};
+class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {}
 
 /** Right panel for discovery services on the system configuration page.
     Shows a list of current discovery services and allows creating a new

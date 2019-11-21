@@ -32,7 +32,7 @@ export interface ComplaintsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ComplaintsProps extends ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps {};
+export interface ComplaintsProps extends ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps {}
 
 /** Tab on the book details page that shows existing complaints and lets an admin resolve
     complaints or add new complaints. */
@@ -128,7 +128,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
   refresh() {
     this.props.fetchComplaints(this.complaintsUrl());
     this.props.refreshCatalog();
-  };
+  }
 
   resolve(type: string) {
     let readableType = this.readableComplaintType(type);

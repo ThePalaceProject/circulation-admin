@@ -38,7 +38,7 @@ export interface ClassificationsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {};
+export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {}
 
 /** Tab on the book details page with a table of a book's current classifications and
     a form for editing them. */
