@@ -111,6 +111,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="individualadmineditform.html#props" class="tsd-kind-icon">props</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="individualadmineditform.html#refs" class="tsd-kind-icon">refs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="individualadmineditform.html#state" class="tsd-kind-icon">state</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="individualadmineditform.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -163,7 +164,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L38">components/IndividualAdminEditForm.tsx:38</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L38">src/components/IndividualAdminEditForm.tsx:38</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -186,18 +187,18 @@
 					<aside class="tsd-sources">
 						<p>Overrides Component.context</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L33">components/IndividualAdminEditForm.tsx:33</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L33">src/components/IndividualAdminEditForm.tsx:33</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="props" class="tsd-anchor"></a>
 					<h3>props</h3>
-					<div class="tsd-signature tsd-kind-icon">props<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/individualadmineditformprops.html" class="tsd-signature-type">IndividualAdminEditFormProps</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">props<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/individualadmineditformprops.html" class="tsd-signature-type">IndividualAdminEditFormProps</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from Component.props</p>
 						<ul>
-							<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:308</li>
+							<li>Defined in node_modules/@types/react/index.d.ts:470</li>
 						</ul>
 					</aside>
 				</section>
@@ -208,7 +209,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Component.refs</p>
 						<ul>
-							<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:319</li>
+							<li>Defined in node_modules/@types/react/index.d.ts:476</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -234,9 +235,41 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Component.state</p>
 						<ul>
-							<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:309</li>
+							<li>Defined in node_modules/@types/react/index.d.ts:471</li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="contexttype" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagOptional">Optional</span> context<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">context<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Context</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Component.contextType</p>
+						<ul>
+							<li>Defined in node_modules/@types/react/index.d.ts:427</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If set, <code>this.context</code> will be set at runtime to the current value of the given Context.</p>
+						</div>
+						<p>Usage:</p>
+						<pre><code class="language-ts">type MyContext = number
+const Ctx = React.createContext&lt;MyContext&gt;(0)
+
+class Foo extends React.Component {
+  static contextType = Ctx
+  context!: React.ContextType&lt;typeof Ctx&gt;
+  render () {
+    return &lt;&gt;My context's value: {this.context}&lt;/&gt;;
+  }
+}</code></pre>
+						<dl class="tsd-comment-tags">
+							<dt>see</dt>
+							<dd><p><a href="https://reactjs.org/docs/context.html#classcontexttype">https://reactjs.org/docs/context.html#classcontexttype</a></p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -252,7 +285,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillMount</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:474</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:658</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -290,7 +323,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:506</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:690</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -339,7 +372,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:534</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:718</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -388,7 +421,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L204">components/IndividualAdminEditForm.tsx:204</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L204">src/components/IndividualAdminEditForm.tsx:204</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -406,7 +439,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.componentDidCatch</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:413</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:587</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -439,7 +472,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.componentDidMount</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:392</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:566</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -462,7 +495,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from NewLifecycle.componentDidUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:445</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:629</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -498,7 +531,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.componentWillMount</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:460</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:644</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -535,7 +568,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides DeprecatedLifecycle.componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L53">components/IndividualAdminEditForm.tsx:53</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L53">src/components/IndividualAdminEditForm.tsx:53</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -559,7 +592,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.componentWillUnmount</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:408</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:582</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -583,7 +616,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.componentWillUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:519</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:703</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -625,20 +658,20 @@
 					<a name="forceupdate" class="tsd-anchor"></a>
 					<h3>force<wbr>Update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">force<wbr>Update<span class="tsd-signature-symbol">(</span>callBack<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">force<wbr>Update<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from Component.forceUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:300</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:462</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callBack: <span class="tsd-signature-type">function</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">function</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
@@ -668,7 +701,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from NewLifecycle.getSnapshotBeforeUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:439</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:623</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -706,7 +739,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L343">components/IndividualAdminEditForm.tsx:343</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L343">src/components/IndividualAdminEditForm.tsx:343</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -729,7 +762,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L254">components/IndividualAdminEditForm.tsx:254</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L254">src/components/IndividualAdminEditForm.tsx:254</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -755,7 +788,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L230">components/IndividualAdminEditForm.tsx:230</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L230">src/components/IndividualAdminEditForm.tsx:230</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -781,7 +814,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L226">components/IndividualAdminEditForm.tsx:226</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L226">src/components/IndividualAdminEditForm.tsx:226</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -808,7 +841,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L62">components/IndividualAdminEditForm.tsx:62</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L62">src/components/IndividualAdminEditForm.tsx:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -825,7 +858,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L90">components/IndividualAdminEditForm.tsx:90</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L90">src/components/IndividualAdminEditForm.tsx:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -842,7 +875,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L122">components/IndividualAdminEditForm.tsx:122</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L122">src/components/IndividualAdminEditForm.tsx:122</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -860,7 +893,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Component.setState</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:295</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:457</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -905,7 +938,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.shouldComponentUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:403</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:577</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -944,7 +977,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L353">components/IndividualAdminEditForm.tsx:353</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L353">src/components/IndividualAdminEditForm.tsx:353</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -966,26 +999,26 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L35">components/IndividualAdminEditForm.tsx:35</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L35">src/components/IndividualAdminEditForm.tsx:35</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
 						<a name="contexttypes.admin" class="tsd-anchor"></a>
 						<h3>admin</h3>
-						<div class="tsd-signature tsd-kind-icon">admin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.object.isRequired</span></div>
+						<div class="tsd-signature tsd-kind-icon">admin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Validator</span><span class="tsd-signature-symbol">&lt;</span><a href="admin.html" class="tsd-signature-type">Admin</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.object.isRequired as React.Validator&lt;Admin&gt;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L37">components/IndividualAdminEditForm.tsx:37</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L37">src/components/IndividualAdminEditForm.tsx:37</a></li>
 							</ul>
 						</aside>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
 						<a name="contexttypes.settingup" class="tsd-anchor"></a>
 						<h3>setting<wbr>Up</h3>
-						<div class="tsd-signature tsd-kind-icon">setting<wbr>Up<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.bool.isRequired</span></div>
+						<div class="tsd-signature tsd-kind-icon">setting<wbr>Up<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Validator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.bool.isRequired</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/IndividualAdminEditForm.tsx#L36">components/IndividualAdminEditForm.tsx:36</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/IndividualAdminEditForm.tsx#L36">src/components/IndividualAdminEditForm.tsx:36</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1021,6 +1054,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="individualadmineditform.html#state" class="tsd-kind-icon">state</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="individualadmineditform.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="individualadmineditform.html#unsafe_componentwillmount" class="tsd-kind-icon">UNSAFE_<wbr>component<wbr>Will<wbr>Mount</a>

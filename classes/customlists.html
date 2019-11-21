@@ -112,6 +112,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="customlists.html#props" class="tsd-kind-icon">props</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="customlists.html#refs" class="tsd-kind-icon">refs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="customlists.html#state" class="tsd-kind-icon">state</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="customlists.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -166,7 +167,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L74">components/CustomLists.tsx:74</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L74">src/components/CustomLists.tsx:74</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -189,7 +190,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides Component.context</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L70">components/CustomLists.tsx:70</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L70">src/components/CustomLists.tsx:70</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -204,11 +205,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="props" class="tsd-anchor"></a>
 					<h3>props</h3>
-					<div class="tsd-signature tsd-kind-icon">props<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/customlistsprops.html" class="tsd-signature-type">CustomListsProps</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">props<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/customlistsprops.html" class="tsd-signature-type">CustomListsProps</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from Component.props</p>
 						<ul>
-							<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:308</li>
+							<li>Defined in node_modules/@types/react/index.d.ts:470</li>
 						</ul>
 					</aside>
 				</section>
@@ -219,7 +220,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Component.refs</p>
 						<ul>
-							<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:319</li>
+							<li>Defined in node_modules/@types/react/index.d.ts:476</li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -245,9 +246,41 @@
 					<aside class="tsd-sources">
 						<p>Inherited from Component.state</p>
 						<ul>
-							<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:309</li>
+							<li>Defined in node_modules/@types/react/index.d.ts:471</li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="contexttype" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagOptional">Optional</span> context<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">context<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Context</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from Component.contextType</p>
+						<ul>
+							<li>Defined in node_modules/@types/react/index.d.ts:427</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If set, <code>this.context</code> will be set at runtime to the current value of the given Context.</p>
+						</div>
+						<p>Usage:</p>
+						<pre><code class="language-ts">type MyContext = number
+const Ctx = React.createContext&lt;MyContext&gt;(0)
+
+class Foo extends React.Component {
+  static contextType = Ctx
+  context!: React.ContextType&lt;typeof Ctx&gt;
+  render () {
+    return &lt;&gt;My context's value: {this.context}&lt;/&gt;;
+  }
+}</code></pre>
+						<dl class="tsd-comment-tags">
+							<dt>see</dt>
+							<dd><p><a href="https://reactjs.org/docs/context.html#classcontexttype">https://reactjs.org/docs/context.html#classcontexttype</a></p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -263,7 +296,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillMount</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:474</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:658</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -301,7 +334,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:506</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:690</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -350,7 +383,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.UNSAFE_componentWillUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:534</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:718</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -399,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L190">components/CustomLists.tsx:190</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L190">src/components/CustomLists.tsx:190</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -416,7 +449,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L295">components/CustomLists.tsx:295</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L295">src/components/CustomLists.tsx:295</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AdminCollectionData</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -434,7 +467,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.componentDidCatch</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:413</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:587</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -467,7 +500,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.componentDidMount</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:392</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:566</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -490,7 +523,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from NewLifecycle.componentDidUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:445</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:629</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -526,7 +559,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides DeprecatedLifecycle.componentWillMount</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L158">components/CustomLists.tsx:158</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L158">src/components/CustomLists.tsx:158</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -544,7 +577,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides DeprecatedLifecycle.componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L171">components/CustomLists.tsx:171</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L171">src/components/CustomLists.tsx:171</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -568,7 +601,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.componentWillUnmount</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:408</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:582</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -592,7 +625,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from DeprecatedLifecycle.componentWillUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:519</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:703</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -640,7 +673,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L242">components/CustomLists.tsx:242</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L242">src/components/CustomLists.tsx:242</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -663,7 +696,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L289">components/CustomLists.tsx:289</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L289">src/components/CustomLists.tsx:289</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -696,7 +729,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L234">components/CustomLists.tsx:234</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L234">src/components/CustomLists.tsx:234</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -716,20 +749,20 @@
 					<a name="forceupdate" class="tsd-anchor"></a>
 					<h3>force<wbr>Update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">force<wbr>Update<span class="tsd-signature-symbol">(</span>callBack<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">force<wbr>Update<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from Component.forceUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:300</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:462</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callBack: <span class="tsd-signature-type">function</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">function</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
@@ -758,7 +791,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L264">components/CustomLists.tsx:264</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L264">src/components/CustomLists.tsx:264</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -793,7 +826,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L219">components/CustomLists.tsx:219</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L219">src/components/CustomLists.tsx:219</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -817,7 +850,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from NewLifecycle.getSnapshotBeforeUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:439</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:623</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -856,7 +889,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L87">components/CustomLists.tsx:87</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L87">src/components/CustomLists.tsx:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -873,7 +906,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L131">components/CustomLists.tsx:131</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L131">src/components/CustomLists.tsx:131</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -899,7 +932,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L116">components/CustomLists.tsx:116</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L116">src/components/CustomLists.tsx:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -917,7 +950,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from Component.setState</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:295</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:457</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -962,7 +995,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from ComponentLifecycle.shouldComponentUpdate</p>
 								<ul>
-									<li>Defined in /home/travis/build/NYPL-Simplified/circulation-web/node_modules/@types/react/index.d.ts:403</li>
+									<li>Defined in node_modules/@types/react/index.d.ts:577</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1001,7 +1034,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L199">components/CustomLists.tsx:199</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L199">src/components/CustomLists.tsx:199</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1023,16 +1056,16 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L72">components/CustomLists.tsx:72</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L72">src/components/CustomLists.tsx:72</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
 						<a name="contexttypes.admin-1" class="tsd-anchor"></a>
 						<h3>admin</h3>
-						<div class="tsd-signature tsd-kind-icon">admin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.object.isRequired</span></div>
+						<div class="tsd-signature tsd-kind-icon">admin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Validator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.object.isRequired</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ea561c7/src/components/CustomLists.tsx#L73">components/CustomLists.tsx:73</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/5ea904d/src/components/CustomLists.tsx#L73">src/components/CustomLists.tsx:73</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1068,6 +1101,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="customlists.html#state" class="tsd-kind-icon">state</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="customlists.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="customlists.html#unsafe_componentwillmount" class="tsd-kind-icon">UNSAFE_<wbr>component<wbr>Will<wbr>Mount</a>
