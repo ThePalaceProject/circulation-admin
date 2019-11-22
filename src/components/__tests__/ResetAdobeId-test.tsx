@@ -59,7 +59,7 @@ describe("ResetAdobeId", () => {
     });
 
     it("has a header", () => {
-      let header = wrapper.find("h4");
+      let header = wrapper.find("h3");
       expect(header.text()).to.equal("Reset Adobe ID");
     });
 

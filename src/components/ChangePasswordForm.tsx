@@ -63,7 +63,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
     );
 
     return (
-      <div className="change-password-form">
+      <main className="change-password-form">
         <h2>Change Password</h2>
         <Form
           onSubmit={this.save}
@@ -75,7 +75,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
           errorText={(this.props.fetchError && <ErrorMessage error={this.props.fetchError} />) || this.state.error}
           loadingText={this.props.isFetching && <LoadingIndicator />}
         ></Form>
-      </div>
+      </main>
     );
   }
 

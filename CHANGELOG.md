@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.1
+#### Fixed
+- Fixed accessibility issues found by the `react-axe` package.
+
 ### v0.4.0
 #### Updated
 - Updated the `opds-web-client` package to v0.3.0.

@@ -110,7 +110,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               ref="library"
               value={currentLibrary}
               onChange={this.changeLibrary}
-              >
+              aria-label="Select a library"
+            >
               { (!this.context.library || !currentLibrary) &&
                 <option aria-selected={false}>Select a library</option>
               }

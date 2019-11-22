@@ -64,6 +64,7 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
     let title = isList ? `Results (${result.length})` : "Results";
 
     return <Panel
+      id={title.replace(/\s/g, "")}
       headerText={title}
       content={body}
       style={colorResultClass}

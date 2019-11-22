@@ -24,6 +24,7 @@ export interface EditableInputState {
     This component keeps an updated value in its state. This also handles rendering an optional
     label and description for the input. */
 export default class EditableInput extends React.Component<EditableInputProps, EditableInputState> {
+  private elementRef = React.createRef<HTMLInputElement>();
   static defaultProps = {
     optionalText: true,
   };
@@ -38,75 +39,83 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   render() {
+    const {
+      type, elementType, optionalText, required, description, clientError, error,
+      label, extraContent,
+    } = this.props;
     const checkboxOrRadioOrSelect = !!(
-      this.props.type === "checkbox" ||
-      this.props.type === "radio" ||
-      this.props.elementType === "select");
-    const optionalText = (this.props.optionalText && !this.props.required && !checkboxOrRadioOrSelect)
+      type === "checkbox" || type === "radio" || elementType === "select"
+    );
+    const optionalTextStr = (optionalText && !required && !checkboxOrRadioOrSelect)
       ? "(Optional) " : "";
-    const descriptionText = this.props.description ? this.props.description : "";
-    const description = `${optionalText}${descriptionText}`;
-    const errorClass = this.props.clientError ||
-      (this.props.error && this.props.error.status >= 400 &&
-      !this.state.value && this.props.required) ?
+    const descriptionText = description ? description : "";
+    const descriptionStr = `${optionalTextStr}${descriptionText}`;
+    const errorClass = clientError ||
+      (error && error.status >= 400 && !this.state.value && required) ?
       "field-error" : "";
     return (
       <div className={`form-group ${errorClass}`}>
-        { this.props.label &&
+        { label &&
           <label className="control-label">
-            { this.props.type !== "checkbox" && this.props.type !== "radio" && this.props.label }
-            { this.props.required && <span className="required-field">Required</span>}
+            { type !== "checkbox" && type !== "radio" && label }
+            { required && <span className="required-field">Required</span>}
             { this.renderElement() }
-            { this.props.type === "checkbox" && this.props.label }
-            { this.props.type === "radio" && <span>{this.props.label}</span> }
+            { type === "checkbox" && label }
+            { type === "radio" && <span>{label}</span> }
           </label>
         }
-        { (this.props.extraContent || !this.props.label) &&
-          <div className={this.props.extraContent ? "with-add-on" : ""}>
-            { this.props.extraContent }
-            {!this.props.label && this.renderElement()}
+        { (extraContent || !label) &&
+          <div className={extraContent ? "with-add-on" : ""}>
+            {extraContent}
+            {!label && this.renderElement()}
           </div>
         }
-        {description.trim() && this.renderDescription(description)}
+        {descriptionStr.trim() && this.renderDescription(descriptionStr)}
       </div>
     );
   }
 
   renderElement() {
-    return React.createElement(this.props.elementType || "input", {
-      className: ((this.props.type !== "checkbox" && this.props.type !== "radio") ? "form-control" : ""),
-      type: this.props.type,
-      disabled: this.props.disabled,
-      readOnly: this.props.readOnly,
-      name: this.props.name,
-      ref: "element",
+    const {
+      type, elementType, placeholder, accept, list, min, max, children,
+      disabled, readOnly, name, validation, style,
+    } = this.props;
+
+    return React.createElement(elementType || "input", {
+      className: ((type !== "checkbox" && type !== "radio") ? "form-control" : ""),
+      ref: this.elementRef,
       value: this.state.value,
       checked: this.state.checked,
-      onKeyPress: this.props.validation && this.props.validation === "number" && this.validateNumber,
+      onKeyPress: validation && validation === "number" && this.validateNumber,
       onChange: this.handleChange,
-      style: this.props.style,
-      placeholder: this.props.placeholder,
-      accept: this.props.accept,
-      list: this.props.list,
-      min: this.props.min,
-      max: this.props.max,
-    }, this.props.children);
+      type,
+      disabled,
+      readOnly,
+      name,
+      style,
+      placeholder,
+      accept,
+      list,
+      min,
+      max,
+      ["aria-label"]: this.props["aria-label"]
+    }, children);
   }
 
   renderDescription(description: string) {
     return <p className="description" dangerouslySetInnerHTML={{__html: description}} />;
   }
 
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps(nextProps) {
     let value = this.state.value;
     let checked = this.state.checked;
     let changed = false;
-    if (props.value !== this.props.value) {
-      value = props.value || "";
+    if (nextProps.value !== this.props.value) {
+      value = nextProps.value || "";
       changed = true;
     }
-    if (props.checked !== this.props.checked) {
-      checked = props.checked || false;
+    if (nextProps.checked !== this.props.checked) {
+      checked = nextProps.checked || false;
       changed = true;
     }
     if (changed) {
@@ -135,11 +144,11 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   getValue() {
-    return (this.refs as any).element.value;
+    return this.elementRef.current && this.elementRef.current.value;
   }
 
   getChecked() {
-    return (this.refs as any).element.checked;
+    return this.elementRef.current && this.elementRef.current.checked;
   }
 
   setValue(value) {

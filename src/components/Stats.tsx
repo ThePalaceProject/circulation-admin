@@ -46,7 +46,7 @@ export class Stats extends React.Component<StatsProps, {}> {
     const totalStats = this.props.isLoaded && this.props.libraries && this.props.libraries.length > 1 && this.props.stats && this.props.stats["total"];
 
     return (
-      <div>
+      <>
         { libraryStats &&
           <LibraryStats library={libraryData} stats={libraryStats} />
         }
@@ -60,7 +60,7 @@ export class Stats extends React.Component<StatsProps, {}> {
         { !this.props.isLoaded &&
           <LoadingIndicator />
         }
-      </div>
+      </>
     );
   }
 

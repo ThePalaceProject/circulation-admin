@@ -62,7 +62,7 @@ describe("CirculationEvents", () => {
     });
 
     it("shows header", () => {
-      let header = wrapper.find("h3");
+      let header = wrapper.find("h2");
       expect(header.text()).to.equal("Circulation Events");
     });
 

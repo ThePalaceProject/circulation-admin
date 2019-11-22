@@ -44,9 +44,11 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
         <div className="form-inline">
           <select
             name="genre"
+            aria-label="Select one of the following genres"
             size={this.topLevelGenres().length}
             className="form-control"
-            {...disabledProps}>
+            {...disabledProps}
+          >
             { this.topLevelGenres().map(genre =>
               <option
                 key={genre.name}

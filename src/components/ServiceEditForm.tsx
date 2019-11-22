@@ -1,7 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import NeighborhoodAnalyticsForm  from "./NeighborhoodAnalyticsForm";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import WithEditButton from "./WithEditButton";
 import WithRemoveButton from "./WithRemoveButton";
@@ -98,6 +97,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   render(): JSX.Element {
     let protocol = this.findProtocol();
+    const listDataKey = this.props.listDataKey;
     const { requiredFields, nonRequiredFields, extraFields } = this.protocolSettings(protocol);
     const showLibrariesForm = (!this.sitewide(protocol) || this.protocolLibrarySettings(protocol).length > 0);
     const hasNonRequiredFields = nonRequiredFields.length > 0;
@@ -106,6 +106,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
       <div className="form-group" key="instructions">
         <label className="control-label">Instructions</label>
         <Panel
+          id={`form-${listDataKey}-instructions`}
           headerText={this.protocolDescription(protocol)}
           style="instruction"
           onEnter={this.submit}
@@ -117,6 +118,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     let requiredFieldsPanel = (
       <Panel
         key="required"
+        id={`form-${listDataKey}-required`}
         headerText="Required Fields"
         openByDefault={true}
         collapsible={hasNonRequiredFields || showLibrariesForm}
@@ -126,6 +128,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
     let optionalFieldsPanel = hasNonRequiredFields && (
       <Panel
+        id={`form-${listDataKey}-optional`}
         key="optional"
         headerText="Optional Fields"
         content={this.renderOptionalFields(nonRequiredFields)}
@@ -144,6 +147,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
     let librariesForm = showLibrariesForm && (
       <Panel
         key="libraries"
+        id={`form-${listDataKey}-libraries`}
         headerText="Libraries"
         content={this.renderLibrariesForm(protocol)}
       />

@@ -98,7 +98,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
     }
 
     return (
-      <div className="custom-lists-container">
+      <main className="custom-lists-container">
         { this.props.fetchError &&
           <ErrorMessage error={this.props.fetchError} />
         }
@@ -109,7 +109,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
           { this.renderSidebar() }
           { this.props.editOrCreate && this.renderEditor(entryCount, listCollections) }
         </div>
-      </div>
+      </main>
     );
   }
 

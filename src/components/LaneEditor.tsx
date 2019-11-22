@@ -57,7 +57,8 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
                 placeholder="name"
                 onUpdate={this.changeName}
                 ref="laneName"
-                />
+                aria-label="Enter a name for this lane"
+              />
               { this.props.lane &&
                 <h4>ID-{this.props.lane.id}</h4>
               }

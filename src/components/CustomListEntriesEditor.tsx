@@ -190,17 +190,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                 </div>
               }
             </div>
+            <p>Drag search results here to add them to the list.</p>
             <Droppable
               droppableId="custom-list-entries"
               isDropDisabled={draggingFrom !== "search-results"}
-              >
+            >
               {(provided, snapshot) => (
                 <ul
                   ref={provided.innerRef}
                   id="custom-list-entries-droppable"
                   className={snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"}
-                  >
-                  <p>Drag search results here to add them to the list.</p>
+                >
                   { entries && entries.map((book, i) => (
                       <Draggable key={book.id} draggableId={book.id}>
                         {(provided, snapshot) => (

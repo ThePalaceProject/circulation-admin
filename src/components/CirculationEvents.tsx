@@ -58,7 +58,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
     const { library, fetchError, isLoaded, events } = this.props;
     return (
       <div className="circulation-events">
-        <h3>Circulation Events</h3>
+        <h2>Circulation Events</h2>
 
         { this.context.showCircEventsDownload &&
             <Button callback={this.showDownloadForm} content="Download CSV" className="left-align"/>

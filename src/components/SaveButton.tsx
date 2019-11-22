@@ -4,7 +4,7 @@ export interface SaveButtonProps {
   disabled: boolean;
   submit?: any;
   text?: string;
-  type?: "button" | "reset" | "submit";
+  type?: "submit" | "reset" | "button";
 }
 
 export default class SaveButton extends React.Component<SaveButtonProps, {}> {

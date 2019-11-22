@@ -33,14 +33,16 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
     return (
       <div className="config">
         <Header />
-        <ConfigTabContainer
-          tab={this.props.params.tab}
-          editOrCreate={this.props.params.editOrCreate}
-          identifier={this.props.params.identifier}
-          store={this.context.editorStore}
-          csrfToken={this.context.csrfToken}
-          class="clearfix"
-        />
+        <main>
+          <ConfigTabContainer
+            tab={this.props.params.tab}
+            editOrCreate={this.props.params.editOrCreate}
+            identifier={this.props.params.identifier}
+            store={this.context.editorStore}
+            csrfToken={this.context.csrfToken}
+            class="clearfix"
+          />
+        </main>
         <Footer />
       </div>
     );
