@@ -3,7 +3,7 @@ import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import { findDefault, clearForm } from "../utils/sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface LibraryEditFormProps {
@@ -117,6 +117,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     categoryNames.forEach((name) => {
       let form = (
         <Panel
+          id={`library-form-${name.replace(/\s/g, "-")}`}
           headerText={`${name} (Optional)`}
           onEnter={this.submit}
           key={name}

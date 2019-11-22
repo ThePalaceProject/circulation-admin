@@ -56,6 +56,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         }
 
         <Panel
+          id="classifications"
           headerText="Classifications"
           collapsible={false}
           onEnter={this.submit}

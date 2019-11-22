@@ -48,7 +48,6 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
 
   async handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
-    let keyName = this.getNames(tab)[0];
     await this.props.goToTab(tab);
     if (this.context.router) {
       this.context.router.push("/admin/web/troubleshooting/self-tests/" + tab);

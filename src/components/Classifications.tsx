@@ -10,6 +10,7 @@ import ClassificationsTable  from "./ClassificationsTable";
 import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import UpdatingLoader from "./UpdatingLoader";
 
 export interface ClassificationsStateProps {
   // from store
@@ -56,14 +57,7 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
             <h2>
               {this.props.book.title}
             </h2>
-            <div className="classifications-fetching-container">
-              { this.props.isFetching &&
-                <h3>
-                  Updating
-                  <i className="fa fa-spinner fa-spin"></i>
-                </h3>
-              }
-            </div>
+            <UpdatingLoader show={this.props.isFetching} />
           </>
         }
 

@@ -13,13 +13,11 @@
 @import "catalog_overrides";
 @import "change_password_form";
 @import "circulation_events_download_form";
-@import "classifications";
 @import "classifications_form";
 @import "classifications_table";
 @import "collection";
 @import "color_picker";
 @import "complaint_form";
-@import "complaints";
 @import "config_tab_container";
 @import "custom_list_editor";
 @import "custom_list_entries_editor";
@@ -49,6 +47,7 @@
 @import "stats";
 @import "tool_tip";
 @import "troubleshooting";
+@import "updating_loader";
 @import "welcome_page";
 @import "with_edit_button";
 @import "with_remove_button";

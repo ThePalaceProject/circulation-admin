@@ -132,7 +132,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             <div className="custom-list-filters">
               <Panel
                 headerText="Add from collections"
-                id="add-from-collections-panel"
+                id="add-from-collections"
                 content={
                   <div className="collections">
                     <div>Automatically add new books from these collections to this list:</div>
@@ -155,7 +155,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           }
           <Panel
             headerText="Search for titles"
-            id="search-titles-panel"
+            id="search-titles"
             openByDefault={true}
             onEnter={this.search}
             content={searchForm}

@@ -10,6 +10,7 @@ import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 import { formatString } from "../utils/sharedFunctions";
+import UpdatingLoader from "./UpdatingLoader";
 
 export interface ComplaintsStateProps {
   complaints?: any;
@@ -50,14 +51,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
             <h2>
               {this.props.book.title}
             </h2>
-            <div className="complaints-fetching-container">
-              { this.props.isFetching &&
-                <h3>
-                  Updating
-                  <i className="fa fa-spinner fa-spin"></i>
-                </h3>
-              }
-            </div>
+            <UpdatingLoader show={this.props.isFetching} />
           </div>
         }
 

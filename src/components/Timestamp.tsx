@@ -8,18 +8,19 @@ export interface TimestampProps {
 
 export default class Timestamp extends React.Component<TimestampProps, {}> {
   render(): JSX.Element {
-    let exception = <section className="well exception"><pre>{this.props.timestamp.exception}</pre></section>;
-    let achievements = <section className="well"><pre>{this.props.timestamp.achievements}</pre></section>;
+    const { timestamp } = this.props;
+    let exception = <section className="well exception"><pre>{timestamp.exception}</pre></section>;
+    let achievements = <section className="well"><pre>{timestamp.achievements}</pre></section>;
 
     let content = (
       <ul>
-        <li>Duration: {this.props.timestamp.duration} seconds</li>
+        <li>Duration: {timestamp.duration} seconds</li>
         {
-          this.props.timestamp.achievements &&
+          timestamp.achievements &&
           <li>{achievements}</li>
         }
         {
-          this.props.timestamp.exception &&
+          timestamp.exception &&
           <li>{exception}</li>
         }
       </ul>
@@ -28,9 +29,9 @@ export default class Timestamp extends React.Component<TimestampProps, {}> {
     // If the timestamp has an exception, it should start out expanded.
     return (
       <Panel
-        id="timestamp"
-        headerText={this.props.timestamp.start}
-        style={this.props.timestamp.exception ? "danger" : "success"}
+        id={`timestamp-${timestamp.id}`}
+        headerText={timestamp.start}
+        style={timestamp.exception ? "danger" : "success"}
         content={content}
         collapsible={false}
       />
