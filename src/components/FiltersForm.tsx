@@ -1,0 +1,115 @@
+import * as React from "react";
+import { SettingData, LibraryData } from "../interfaces";
+import { Panel } from "library-simplified-reusable-components";
+import ProtocolFormField from "./ProtocolFormField";
+import InputList from "./InputList";
+import { findDefault } from "../utils/sharedFunctions";
+import { FetchErrorData } from "opds-web-client/lib/interfaces";
+
+export interface FiltersFormProps {
+  submit: (data: FormData) => void;
+  content: SettingData[];
+  disabled: boolean;
+  item?: LibraryData;
+  error?: FetchErrorData;
+}
+
+export interface FiltersFormState {
+  enabled?: string[];
+  available?: string[];
+  collection?: string[];
+}
+
+export default class FiltersForm extends React.Component<FiltersFormProps, FiltersFormState> {
+
+  constructor(props: FiltersFormProps) {
+    super(props);
+
+  }
+
+  render() {
+    return (
+      <Panel
+        openByDefault={true}
+        headerText="Lanes & Filters (Optional)"
+        onEnter={this.props.submit}
+        key="Lanes & Filters"
+        content={this.props.content.map(x => this.renderContent(x))}
+      />
+    );
+  }
+
+  findCorresponding(setting: SettingData): any {
+    let settingName = setting.key;
+    let settingIsAbout = settingName.split("_")[2];
+    let itemSettings = this.props.item && this.props.item.settings;
+    let correspondingName;
+    if (itemSettings) {
+      correspondingName = Object.keys(itemSettings).find(k => k === `facets_enabled_${settingIsAbout}`);
+      return itemSettings[correspondingName];
+    } else {
+      return [setting.default];
+    }
+  }
+
+  getValue(setting: SettingData) {
+    let value = this.props.item && this.props.item.settings ?
+      this.props.item.settings[setting.key] : setting.default;
+    return value;
+  }
+
+  makeNumberField(setting: SettingData) {
+    return (
+      <ProtocolFormField
+        key={setting.key}
+        ref={setting.key}
+        setting={setting}
+        disabled={this.props.disabled}
+        value={this.getValue(setting)}
+        default={findDefault(setting)}
+        error={this.props.error}
+      />
+    )
+  }
+
+  makeCheckboxSet(setting: SettingData) {
+    return (
+      <ProtocolFormField
+        key={setting.key}
+        ref={setting.key}
+        setting={setting}
+        disabled={this.props.disabled}
+        value={this.getValue(setting)}
+        default={findDefault(setting)}
+        error={this.props.error}
+      />
+    );
+  }
+
+  makeDropdownMenu(setting: SettingData) {
+    let availableOptions: string[] = this.findCorresponding(setting);
+    let displayOnly = setting.options.filter(o => availableOptions.includes(o.key));
+    setting = {...setting as any, ...{options: displayOnly}};
+    return (
+      <ProtocolFormField
+        key={setting.key}
+        ref={setting.key}
+        setting={setting}
+        disabled={this.props.disabled}
+        value={this.getValue(setting)}
+        default={findDefault(setting)}
+        error={this.props.error}
+      />
+    );
+  }
+
+  renderContent(setting: SettingData) {
+    if (setting.type === "number") {
+      return this.makeNumberField(setting);
+    } else if (setting.type === "select") {
+      return this.makeDropdownMenu(setting);
+    } else if (setting.type === "list"){
+      return this.makeCheckboxSet(setting);
+    }
+  }
+}

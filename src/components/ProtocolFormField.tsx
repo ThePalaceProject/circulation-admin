@@ -132,7 +132,12 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         createEditableInput={this.createEditableInput}
         labelAndDescription={setting.label && this.labelAndDescription}
         disabled={this.props.disabled}
-        value={value}
+        value={
+          value ||
+          setting.options &&
+          setting.options.filter(o => (setting.default as string[]).includes(o.key))
+          .map(o => o.label)
+        }
         altValue={this.props.altValue}
         additionalData={this.props.additionalData}
         onSubmit={this.props.onSubmit}

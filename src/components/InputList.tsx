@@ -41,6 +41,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     this.removeListItem = this.removeListItem.bind(this);
     this.clear = this.clear.bind(this);
     this.filterMenu = this.filterMenu.bind(this);
+    this.convert = this.convert.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -238,7 +239,15 @@ export default class InputList extends React.Component<InputListProps, InputList
     };
   }
 
+  convert(label: string) {
+    let option = this.props.setting.options.find(o => o.label == label);
+    return option && option.key;
+  }
+
   getValue() {
+    if (this.props.setting.options) {
+      return ((this.state.listItems as string[]).map(l => this.convert(l)));
+    }
     return this.state.listItems;
   }
 

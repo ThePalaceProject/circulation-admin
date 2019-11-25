@@ -5,6 +5,7 @@ import { findDefault, clearForm } from "../utils/sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import FiltersForm from "./FiltersForm";
 
 export interface LibraryEditFormProps {
   data: LibrariesData;
@@ -114,7 +115,17 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     let forms = [];
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
-      let form = (
+      let form = name == "Lanes & Filters" ?
+      (
+        <FiltersForm
+          submit={this.submit}
+          content={categories[name]}
+          disabled={this.props.disabled}
+          item={this.props.item}
+          error={this.props.error}
+        />
+      ) :
+      (
         <Panel
           headerText={`${name} (Optional)`}
           onEnter={this.submit}
