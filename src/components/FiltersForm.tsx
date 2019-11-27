@@ -15,16 +15,33 @@ export interface FiltersFormProps {
 }
 
 export interface FiltersFormState {
-  enabled?: string[];
   available?: string[];
   collection?: string[];
+  order?: string[];
 }
 
 export default class FiltersForm extends React.Component<FiltersFormProps, FiltersFormState> {
+  private available = React.createRef<ProtocolFormField>();
+  private collection = React.createRef<ProtocolFormField>();
+  private order = React.createRef<ProtocolFormField>();
 
   constructor(props: FiltersFormProps) {
     super(props);
-
+    let item = this.props.item;
+    let available;
+    let collection;
+    let order;
+    if (item) {
+      available = item.settings.facets_enabled_available as string[];
+      collection = item.settings.facets_enabled_collection as string[];
+      order = item.settings.facets_enabled_order as string[];
+    } else {
+      available = props.content.find(x => x.key == "facets_enabled_available").default;
+      collection = props.content.find(x => x.key == "facets_enabled_collection").default;
+      order = props.content.find(x => x.key == "facets_enabled_order").default;
+    }
+    this.state = { available, collection, order };
+    this.onChange = this.onChange.bind(this);
   }
 
   render() {
@@ -52,6 +69,11 @@ export default class FiltersForm extends React.Component<FiltersFormProps, Filte
     }
   }
 
+  onChange(e) {
+    // debugger
+    this.order.current.getValue();
+  }
+
   getValue(setting: SettingData) {
     let value = this.props.item && this.props.item.settings ?
       this.props.item.settings[setting.key] : setting.default;
@@ -76,12 +98,13 @@ export default class FiltersForm extends React.Component<FiltersFormProps, Filte
     return (
       <ProtocolFormField
         key={setting.key}
-        ref={setting.key}
+        ref={this[`${setting.key.split("_")[2]}`]}
         setting={setting}
         disabled={this.props.disabled}
         value={this.getValue(setting)}
         default={findDefault(setting)}
         error={this.props.error}
+        onChange={this.onChange}
       />
     );
   }

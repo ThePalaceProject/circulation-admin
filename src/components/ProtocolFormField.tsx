@@ -17,6 +17,7 @@ export interface ProtocolFormFieldProps {
   onSubmit?: any;
   onEmpty?: string;
   title?: string;
+  onChange?: any;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -112,7 +113,8 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
                 type: "checkbox",
                 required: setting.required,
                 name: `${setting.key}_${option.key}`,
-                checked: this.shouldBeChecked(option)
+                checked: this.shouldBeChecked(option),
+                onChange: this.props.onChange
               });
             })
         }
