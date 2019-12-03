@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.4.2
+#### Updated
+- Updated the `opds-web-client` package to v0.3.2.
+- Updated the ContextProvider based on the `opds-web-client`'s updated context APIs.
+
 ### v0.4.1
 #### Fixed
 - Fixed accessibility issues found by the `react-axe` package.

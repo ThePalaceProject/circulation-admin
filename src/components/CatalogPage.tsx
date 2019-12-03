@@ -1,20 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Router, Route, browserHistory } from "react-router";
 const OPDSCatalog = require("opds-web-client");
-import { NavigateContext } from "opds-web-client/lib/interfaces";
-import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
-import PathForProvider from "opds-web-client/lib/components/context/PathForContext";
 import * as PropTypes from "prop-types";
-import reducers from "../reducers/index";
 import BookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
 import Footer from "./Footer";
-import { BookLink } from "../interfaces";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 import EntryPointsContainer from "./EntryPointsContainer";
 import WelcomePage from "./WelcomePage";
-import { PathFor } from "../interfaces";
 
 export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
@@ -24,20 +17,12 @@ export interface CatalogPageProps extends React.Props<CatalogPage> {
   };
 }
 
-export interface CatalogPageContext {
-  pathFor: PathFor;
-}
-
 /** Extracts URL parameters and renders the OPDS Web Client for the appropriate catalog
     and book, using the admin interface header and book details wrapper with extra tabs. */
 export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
   static childContextTypes: React.ValidationMap<any> = {
     tab: PropTypes.string,
     library: PropTypes.func
-  };
-
-  static contextTypes: React.ValidationMap<CatalogPageContext> = {
-    pathFor: PropTypes.func.isRequired
   };
 
   getChildContext() {
@@ -68,18 +53,16 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
 
     return (
       <>
-        <PathForProvider pathFor={this.context.pathFor}>
-          <OPDSCatalog
-            collectionUrl={collectionUrl}
-            bookUrl={bookUrl}
-            BookDetailsContainer={BookDetailsContainer}
-            Header={Header}
-            pageTitleTemplate={pageTitleTemplate}
-            computeBreadcrumbs={computeBreadcrumbs}
-            CollectionContainer={EntryPointsContainer}
-            allLanguageSearch={true}
-          />
-        </PathForProvider>
+        <OPDSCatalog
+          collectionUrl={collectionUrl}
+          bookUrl={bookUrl}
+          BookDetailsContainer={BookDetailsContainer}
+          Header={Header}
+          pageTitleTemplate={pageTitleTemplate}
+          computeBreadcrumbs={computeBreadcrumbs}
+          CollectionContainer={EntryPointsContainer}
+          allLanguageSearch={true}
+        />
         <Footer />
       </>
     );
