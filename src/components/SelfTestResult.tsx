@@ -15,7 +15,6 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
   }
 
   render() {
-    console.log(this.props);
     const colorResultClass = this.props.result.success ? "success" : "failure";
     return (
       <li className={this.props.isFetching ? "loading-self-test" : colorResultClass} key={this.props.result.name}>
