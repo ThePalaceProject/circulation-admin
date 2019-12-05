@@ -155,8 +155,8 @@ function mapStateToProps(state, ownProps) {
   let item = ownProps.item;
   if (selfTests && selfTests.responseBody && selfTests.responseBody.self_test_results) {
     if (ownProps.type.includes(selfTests.responseBody.self_test_results.goal)) {
-      let oldTime = ownProps.item.self_test_results.start;
-      let newTime = selfTests.responseBody.self_test_results.self_test_results.start;
+      let oldTime = item.self_test_results && item.self_test_results.start;
+      let newTime = selfTests.responseBody.self_test_results.self_test_results && selfTests.responseBody.self_test_results.self_test_results.start;
       if (!oldTime || (newTime > oldTime)) {
         item = selfTests.responseBody.self_test_results;
       }
