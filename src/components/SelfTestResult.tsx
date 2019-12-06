@@ -45,7 +45,6 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
 
   renderResult(result, colorResultClass) {
     let isList = Array.isArray(result);
-
     let content = isList ?
       <ol>{result.map((item, idx) => <li key={idx}>{item}</li>)}</ol> :
       result;

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { spy, stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -293,6 +293,56 @@ describe("SelfTests", () => {
 
       alert = wrapper.render().find(".alert");
       expect(alert.length).to.equal(1);
+    });
+  });
+  describe("Handle metadata test results", () => {
+    const collectionNames = ["A", "B", "C"];
+    const baseResult = collections[0].self_test_results.results[0];
+    let results = [];
+    let makeResult = (c: string, success = true) => {
+      return {...baseResult, ...{
+        collection: c,
+        name: `Test ${results.length < collectionNames.length ? 1 : 2}`,
+        success: success
+      }};
+    };
+    let f = (results) => wrapper.instance().displayMetadata(results, false);
+    it("should call displayMetadata", () => {
+      let spyDisplayMetadata = spy(wrapper.instance(), "displayMetadata");
+      expect(spyDisplayMetadata.callCount).to.equal(0);
+      let integration = {...collections[0], ...{goal: "metadata"}};
+      wrapper.setState({ mostRecent: integration });
+      expect(spyDisplayMetadata.callCount).to.equal(1);
+      expect(spyDisplayMetadata.args[0][0][0]).to.equal(baseResult);
+      spyDisplayMetadata.restore();
+    });
+    it("should sort metadata test results by their collection", () => {
+      while (results.length < collectionNames.length * 2) {
+        collectionNames.map(c => results.push(makeResult(c)));
+      }
+      let collectionPanels = f(results);
+      expect(collectionPanels.length).to.equal(collectionNames.length);
+      collectionPanels.map((panel: JSX.Element, idx: number) => {
+        let collectionName = collectionNames[idx];
+        let { headerText, style, content } = panel.props;
+        expect(headerText).to.equal(collectionName);
+        expect(style).to.equal("success");
+        content.map((x: JSX.Element, idx: number) => {
+          expect(x.props.result.collection).to.equal(collectionName);
+          expect(x.props.result.name).to.equal(`Test ${idx + 1}`);
+        });
+      });
+    });
+    it("should display the result of the initial setup test", () => {
+      let initialResult = makeResult("undefined");
+      let panel = f([initialResult])[0];
+      expect(panel.props.headerText).to.equal("Initial Setup");
+    });
+    it("should add the 'danger' class if not all the tests for the collection succeeded", () => {
+      let errorResult = makeResult("With Error", false);
+      let successResult = makeResult("With Error");
+      let panel = f([errorResult, successResult])[0];
+      expect(panel.props.style).to.equal("danger");
     });
   });
 });

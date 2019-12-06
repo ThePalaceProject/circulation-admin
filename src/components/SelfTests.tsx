@@ -3,12 +3,12 @@ import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
-import { ServiceData, SelfTestsData } from "../interfaces";
+import { ServiceData, SelfTestsData, SelfTestsResult } from "../interfaces";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import SelfTestResult from "./SelfTestResult";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
-import { Button } from "library-simplified-reusable-components";
+import { Panel, Button } from "library-simplified-reusable-components";
 
 import {
   CheckSoloIcon,
@@ -48,6 +48,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       mostRecent: this.props.item
     };
     this.runSelfTests = this.runSelfTests.bind(this);
+    this.displayMetadata = this.displayMetadata.bind(this);
   }
 
   componentDidMount() {
@@ -102,7 +103,9 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       />
     );
 
-    let resultList = integration.self_test_results ? results.map((result, idx) => <SelfTestResult key={idx} result={result} isFetching={isFetching} />) : null;
+    let resultList: JSX.Element[] = results.length ? results.map((result, idx) => this.makeResult(result, idx, isFetching)) : null;
+    let shouldSortByCollection: boolean = results.length && integration.goal && integration.goal === "metadata";
+    let collectionList = shouldSortByCollection && this.displayMetadata(results, isFetching);
 
     return (
       <div className="integration-selftests">
@@ -120,11 +123,38 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
             <ErrorMessage error={this.state.error} />
           }
           {
-            resultList && <ul><h4>Self Test Results</h4>{resultList}</ul>
+            resultList && <ul><h4>Self Test Results</h4>{collectionList || resultList}</ul>
           }
         </div>
       </div>
     );
+  }
+
+  makeResult(result: SelfTestsResult, idx: Number, isFetching: boolean) {
+    return <SelfTestResult key={`${result.collection}-${idx}`} result={result} isFetching={isFetching} />;
+  }
+
+  displayMetadata(results: SelfTestsResult[], isFetching: boolean): JSX.Element[] {
+    let collectionList: JSX.Element[];
+    let sorted = {};
+    // The initial set-up test's collection property is always undefined
+    let isInitial = (c: string) => c === "undefined";
+    // Group the results by their collections
+    results.forEach(r => sorted[r.collection] = results.filter(result => result.collection === r.collection));
+    let style = (resultsForCollection: SelfTestsResult[]) => resultsForCollection.every(r => r.success) ? "success" : "danger";
+    collectionList = Object.keys(sorted).map((collection) => {
+      let resultsForCollection = sorted[collection];
+      return (
+        <Panel
+          key={collection}
+          headerText={isInitial(collection) ? "Initial Setup" : collection}
+          openByDefault={isInitial(collection)}
+          content={resultsForCollection.map((result: SelfTestsResult, idx: Number) => this.makeResult(result, idx, isFetching))}
+          style={style(resultsForCollection)}
+        />
+      );
+    });
+    return collectionList;
   }
 
   async runSelfTests(e) {
