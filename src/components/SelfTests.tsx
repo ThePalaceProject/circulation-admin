@@ -104,7 +104,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     );
 
     let resultList: JSX.Element[] = results.length ? results.map((result, idx) => this.makeResult(result, idx, isFetching)) : null;
-    let shouldSortByCollection: boolean = results.length && integration.goal && integration.goal === "metadata";
+    let shouldSortByCollection: boolean = results.length && (integration.goal && integration.goal === "metadata") || (integration.protocol && integration.protocol === "Metadata Wrangler");
     let collectionList = shouldSortByCollection && this.displayMetadata(results, isFetching);
 
     return (
@@ -187,7 +187,7 @@ function mapStateToProps(state, ownProps) {
     if (ownProps.type.includes(selfTests.responseBody.self_test_results.goal)) {
       let oldTime = item.self_test_results && item.self_test_results.start;
       let newTime = selfTests.responseBody.self_test_results.self_test_results && selfTests.responseBody.self_test_results.self_test_results.start;
-      if (!oldTime || (newTime > oldTime)) {
+      if (!oldTime || (newTime > oldTime) && selfTests.responseBody.self_test_results.id === item.id) {
         item = selfTests.responseBody.self_test_results;
       }
     }
