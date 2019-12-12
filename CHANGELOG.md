@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.3
+#### Fixed
+- Fixed a bug where an empty book summary caused creating a DraftJS instance to crash the app.
+
 ### v0.4.2
 #### Updated
 - Updated the `opds-web-client` package to v0.3.2.
