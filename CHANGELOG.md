@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.3
+#### Added
+- Added a Metadata Services tab to the self-tests section of the Troubleshooting page.
+
 ### v0.4.2
 #### Updated
 - Updated the `opds-web-client` package to v0.3.2.
