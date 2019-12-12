@@ -29,8 +29,6 @@ export class MetadataServices extends EditableConfigList<MetadataServicesData, M
     let label = item.name ? `${item.name}: ${item.protocol}` : item.protocol;
     return label;
   }
-
-
 }
 
 function mapStateToProps(state, ownProps) {
