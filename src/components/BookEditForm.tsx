@@ -144,6 +144,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
 
   save(data: FormData) {
     const summary = (this.summaryRef.current).getValue();
+    // Only update the summary if it was intentionally updated.
     if (summary !== this.defaultContent) {
       data.append("summary", summary);
     }

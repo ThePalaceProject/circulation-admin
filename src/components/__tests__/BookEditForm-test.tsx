@@ -338,10 +338,13 @@ describe("BookEditForm", () => {
     let refreshStub = stub().returns(new Promise((resolve, reject) => {
       resolve();
     }));
+    // Since we are adding an empty string, there should be no `summary` value
+    // in the FormData object that gets passed to the `editBook` function.
+    const emptySummaryData = { ...bookData, summary: "<p></p>" };
 
     wrapper = mount(
       <BookEditForm
-        {...{ ...bookData, summary: "<p></p>" }}
+        {...emptySummaryData}
         roles={roles}
         media={media}
         languages={languages}

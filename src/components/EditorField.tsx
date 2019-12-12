@@ -1,6 +1,12 @@
 import * as React from "react";
-import { Editor, EditorState, ContentState, RichUtils, convertFromHTML, compositeDecorator,
-ContentBlock } from "draft-js";
+import {
+  Editor,
+  EditorState,
+  ContentState,
+  RichUtils,
+  convertFromHTML,
+  compositeDecorator
+} from "draft-js";
 import { convertToHTML } from "draft-convert";
 import { Button } from "library-simplified-reusable-components";
 
