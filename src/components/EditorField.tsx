@@ -31,7 +31,7 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     // summary is empty. This value, however, breaks when trying to create
     // a contentState from `ContentState.createFromBlockArray` since
     // `blocksFromHTML.contentBlocks` is an empty array.
-    let content = (props.content === "<p></p>" || props.content === "") ?
+    let content = (!props.content || props.content === "<p></p>" || props.content === "") ?
       props.defaultContent : props.content;
     let blocksFromHTML;
 

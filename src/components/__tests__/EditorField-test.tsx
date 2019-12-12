@@ -61,6 +61,10 @@ describe("EditorField", () => {
     wrapper = mount(<EditorField content="" disabled={false} />);
     expect(wrapper.instance().getValue())
       .to.equal("<p>Update the content for this field.</p>");
+
+    wrapper = mount(<EditorField content={undefined} disabled={false} />);
+      expect(wrapper.instance().getValue())
+        .to.equal("<p>Update the content for this field.</p>");
   });
 
   it("can be disabled", () => {
