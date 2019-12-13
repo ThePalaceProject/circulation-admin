@@ -143,9 +143,25 @@ describe("SelfTests", () => {
     expect(wrapper.find("p").text()).to.equal("No self test results found.");
   });
 
+  it("should render the SelfTests component for new services", () => {
+    let exception = "This integration has no attribute 'prior_test_results'";
+    let self_test_results = {...collections[0].self_test_results, ...{exception}};
+    let item = {...collections[0], ...{self_test_results}};
+    wrapper = shallow(
+      <SelfTests item={item} type="collection" getSelfTests={stub()} />
+    );
+    expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.find("ul").length).to.equal(0);
+    expect(wrapper.find(".description").text()).to.equal("There are no self test results yet.");
+  });
+
   it("should render the SelfTests component with results", () => {
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(1);
+  });
+
+  it("should format the date and duration of the most recent tests", () => {
+    expect(wrapper.instance().formatDate(collections[0])).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
   });
 
   it("should handle new props", () => {

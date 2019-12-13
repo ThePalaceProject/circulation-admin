@@ -4,7 +4,7 @@
 #### Added
 - Added a Metadata Services tab to the self-tests section of the Troubleshooting page.
 
-### v0.4.2
+### v0.4.2`
 #### Updated
 - Updated the `opds-web-client` package to v0.3.2.
 - Updated the ContextProvider based on the `opds-web-client`'s updated context APIs.
@@ -22,7 +22,7 @@
 #### Updated
 - Updated npm packages including chai, mocha, and sinon.
 - Updated version of Node to run in Travis to Node v10.
-#### Fixed
+#### Fixed``
 - Fixed tests that were passing in Node v8 but failing in Node v10. Specifically, stubbing window.confirm did not work on components that were fully mounted. A shallow mount helped fix this issue, but the tests needed to be updated accordingly.
 
 ### v0.3.26

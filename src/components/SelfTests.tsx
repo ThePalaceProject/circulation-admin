@@ -64,36 +64,26 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   }
 
   render(): JSX.Element {
-    const integration = this.state.mostRecent;
+    const integration: ServiceData = this.state.mostRecent;
     const selfTestException = integration.self_test_results && integration.self_test_results.exception;
-    let date;
-    let startDate;
-    let hours;
-    let minutes;
-    let seconds;
-    let startTime;
+    const firstTime: boolean = selfTestException && selfTestException.includes("no attribute 'prior_test_results'");
     let results = [];
-    let duration;
-
-    if (integration.self_test_results && !selfTestException) {
-      date = new Date(integration.self_test_results.start);
-      startDate = date.toDateString();
-      hours = ("0" + date.getHours()).slice(-2);
-      minutes = ("0" + date.getMinutes()).slice(-2);
-      seconds = ("0" + date.getSeconds()).slice(-2);
-      startTime = `${hours}:${minutes}:${seconds}`;
-      results = integration.self_test_results.results || [];
-      duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
+    let resultIcon: JSX.Element;
+    let testDescription: string;
+    if (firstTime) {
+      testDescription = "There are no self test results yet.";
+    } else {
+      testDescription = integration.self_test_results && integration.self_test_results.start ?
+      this.formatDate(integration) : "No self test results found.";
     }
-    const findFailures = (result) => !result.success;
-    const oneFailedResult = results.some(findFailures);
-    const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
+    if (integration.self_test_results && !selfTestException) {
+      results = integration.self_test_results.results || [];
+      const findFailures = (result) => !result.success;
+      const oneFailedResult = results.some(findFailures);
+      resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
+    }
     const isFetching = !!(this.props.isFetching && this.state.runTests);
-    let testDescription = integration.self_test_results && integration.self_test_results.start ?
-      `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
-      "No self test results found.";
-
-    const failedSelfTest = selfTestException ? selfTestException : "";
+    const failedSelfTest = (selfTestException && !firstTime) ? selfTestException : "";
 
     const runButton = (
       <Button
@@ -128,6 +118,16 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
         </div>
       </div>
     );
+  }
+
+  formatDate(integration: ServiceData): string {
+    const date = new Date(integration.self_test_results.start);
+    const startDate = date.toDateString();
+    let format = (x) => `0${x}`.slice(-2);
+    const [hours, minutes, seconds] = [format(date.getHours()), format(date.getMinutes()), format(date.getSeconds())];
+    const startTime = `${hours}:${minutes}:${seconds}`;
+    const duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
+    return `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.`;
   }
 
   makeResult(result: SelfTestsResult, idx: Number, isFetching: boolean) {
@@ -187,7 +187,7 @@ function mapStateToProps(state, ownProps) {
     if (ownProps.type.includes(selfTests.responseBody.self_test_results.goal)) {
       let oldTime = item.self_test_results && item.self_test_results.start;
       let newTime = selfTests.responseBody.self_test_results.self_test_results && selfTests.responseBody.self_test_results.self_test_results.start;
-      if (!oldTime || (newTime > oldTime) && selfTests.responseBody.self_test_results.id === item.id) {
+      if ((!oldTime || (newTime > oldTime)) && selfTests.responseBody.self_test_results.id === item.id) {
         item = selfTests.responseBody.self_test_results;
       }
     }
