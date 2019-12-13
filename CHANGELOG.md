@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.3
+#### Fixed
+- Fixed the display color for the Terms & Conditions link in the footer.
+
 ### v0.4.2
 #### Updated
 - Updated the `opds-web-client` package to v0.3.2.
