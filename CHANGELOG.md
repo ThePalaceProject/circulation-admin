@@ -2,6 +2,7 @@
 
 ### v0.4.3
 #### Fixed
+- Fixed the display color for the Terms & Conditions link in the footer.
 - Fixed a bug where an empty book summary caused creating a DraftJS instance to crash the app.
 
 ### v0.4.2
