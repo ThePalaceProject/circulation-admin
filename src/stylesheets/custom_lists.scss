@@ -1,14 +1,12 @@
 .custom-lists-container {
   flex: 1;
-  position: relative;
-  overflow-y: hidden;
+  overflow-y: auto;
   padding-bottom: 10px;
+  height: 100%;
 }
 
 .custom-lists {
   display: flex;
   flex-direction: row;
-  height: 100%;
   width: 100%;
-  position: absolute;
 }

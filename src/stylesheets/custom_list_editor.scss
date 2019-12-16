@@ -3,6 +3,8 @@
   flex-direction: column;
   margin-left: 20px;
   flex-grow: 0.9;
+  padding: 15px;
+  height: 10%;
 
   .custom-list-editor-header {
     display: flex;
@@ -28,6 +30,7 @@
     .custom-list-filters {
       display: flex;
       flex-direction: column;
+      height: 100%;
     }
 
     h3 {
@@ -58,6 +61,7 @@
     display: flex;
     flex-direction: column;
     margin-top: 10px;
+    height: 90%;
     .collections {
       width: 100%;
 
