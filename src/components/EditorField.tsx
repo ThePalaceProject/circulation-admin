@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Editor, EditorState, ContentState, RichUtils, convertFromHTML, compositeDecorator } from "draft-js";
+import {
+  Editor,
+  EditorState,
+  ContentState,
+  RichUtils,
+  convertFromHTML,
+  compositeDecorator
+} from "draft-js";
 import { convertToHTML } from "draft-convert";
 import { Button } from "library-simplified-reusable-components";
 
@@ -8,18 +15,30 @@ interface EditorFieldState {
 }
 
 interface EditorFieldProps {
+  defaultContent?: string;
   content: string;
   disabled: boolean;
 }
 
 export default class EditorField extends React.Component<EditorFieldProps, EditorFieldState> {
+  static defaultProps = {
+    defaultContent: "<p>Update the content for this field.</p>"
+  };
+
   constructor(props) {
     super(props);
+    // "<p></p>" is the default that DraftJS outputs when the content
+    // summary is empty. This value, however, breaks when trying to create
+    // a contentState from `ContentState.createFromBlockArray` since
+    // `blocksFromHTML.contentBlocks` is an empty array.
+    let content = (!props.content || props.content === "<p></p>" || props.content === "") ?
+      props.defaultContent : props.content;
     let blocksFromHTML;
+
     try {
-      blocksFromHTML = convertFromHTML(JSON.parse(props.content));
+      blocksFromHTML = convertFromHTML(JSON.parse(content));
     } catch {
-      blocksFromHTML = convertFromHTML(props.content);
+      blocksFromHTML = convertFromHTML(content);
     }
     const contentState = ContentState.createFromBlockArray(
       blocksFromHTML.contentBlocks,

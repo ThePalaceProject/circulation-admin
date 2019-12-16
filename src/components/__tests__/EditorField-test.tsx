@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { spy, stub } from "sinon";
+import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import EditorField from "../EditorField";
 import { Editor } from "draft-js";
@@ -46,6 +46,25 @@ describe("EditorField", () => {
 
   it("gets the current value", () => {
     expect(wrapper.instance().getValue()).to.equal("<p>This is a summary.</p>");
+  });
+
+  it("gets the default content if no content is an empty html string", () => {
+    // The empty paragraph element seems to be the default that is
+    // injected whenever the editor is saved with no content. We are checking
+    // against that in case the summary is empty or it was removed by
+    // the admin.
+    wrapper = mount(<EditorField content="<p></p>" disabled={false} />);
+    expect(wrapper.instance().getValue())
+      .to.equal("<p>Update the content for this field.</p>");
+
+    // The empty string case.
+    wrapper = mount(<EditorField content="" disabled={false} />);
+    expect(wrapper.instance().getValue())
+      .to.equal("<p>Update the content for this field.</p>");
+
+    wrapper = mount(<EditorField content={undefined} disabled={false} />);
+      expect(wrapper.instance().getValue())
+        .to.equal("<p>Update the content for this field.</p>");
   });
 
   it("can be disabled", () => {
