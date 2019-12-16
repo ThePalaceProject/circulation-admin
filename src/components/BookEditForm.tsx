@@ -23,6 +23,7 @@ export interface BookEditFormState {
 /** Edit a book's metadata in the edit tab on the book details page. */
 export default class BookEditForm extends React.Component<BookEditFormProps, BookEditFormState> {
   private summaryRef = React.createRef<EditorField>();
+  defaultContent = "<p>Update the summary for this book.</p>";
 
   constructor(props) {
     super(props);
@@ -124,6 +125,7 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           <EditorField
             ref={this.summaryRef}
             content={this.props.summary}
+            defaultContent={this.defaultContent}
             disabled={this.props.disabled}
           />
         </div>
@@ -142,7 +144,10 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
 
   save(data: FormData) {
     const summary = (this.summaryRef.current).getValue();
-    data.append("summary", summary);
+    // Only update the summary if it was intentionally updated.
+    if (summary !== this.defaultContent) {
+      data.append("summary", summary);
+    }
     this.props.editBook(this.props.editLink.href, data).then(response => {
       this.props.refresh();
     });
