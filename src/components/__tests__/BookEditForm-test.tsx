@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import BookEditForm from "../BookEditForm";
 import EditableInput from "../EditableInput";
@@ -307,8 +307,11 @@ describe("BookEditForm", () => {
     expect(editBook.args[0][1].get("summary")).to.contain(bookData.summary);
   });
 
-  it("refreshes book after editing", (done) => {
+  it("refreshes book after editing", async () => {
     let editBook = stub().returns(new Promise((resolve, reject) => {
+      resolve();
+    }));
+    let refreshStub = stub().returns(new Promise((resolve, reject) => {
       resolve();
     }));
     wrapper = mount(
@@ -318,13 +321,45 @@ describe("BookEditForm", () => {
         media={media}
         languages={languages}
         disabled={false}
-        refresh={done}
+        refresh={refreshStub}
         editBook={editBook}
       />
     );
 
     let form = wrapper.find(Form);
-    form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
+    await form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
+    expect(refreshStub.callCount).to.equal(1);
+  });
+
+  it("only adds updated summary content if it's not empty", async () => {
+    let editBook = stub().returns(new Promise((resolve, reject) => {
+      resolve();
+    }));
+    let refreshStub = stub().returns(new Promise((resolve, reject) => {
+      resolve();
+    }));
+    // Since we are adding an empty string, there should be no `summary` value
+    // in the FormData object that gets passed to the `editBook` function.
+    const emptySummaryData = { ...bookData, summary: "<p></p>" };
+
+    wrapper = mount(
+      <BookEditForm
+        {...emptySummaryData}
+        roles={roles}
+        media={media}
+        languages={languages}
+        disabled={false}
+        refresh={refreshStub}
+        editBook={editBook}
+        editLink={{ href: "test-url", rel: "something" }}
+      />
+    );
+
+    let form = wrapper.find(Form);
+    let data = new (window as any).FormData(form.getDOMNode());
+    await form.prop("onSubmit")(data);
+
+    expect(editBook.args[0][1].get("summary")).to.equal(null);
   });
 
   it("disables all inputs", () => {
