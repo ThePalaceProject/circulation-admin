@@ -17,12 +17,24 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
 
   render(): JSX.Element {
     let onlyChild = this.props.items && this.props.items.length === 1;
+    let results = (item: ServiceData) => item.self_test_results && item.self_test_results.results || [];
+    let sortByCollection = (item: ServiceData): boolean => results(item).some(r => r.collection);
     let getClassName = (item: ServiceData): string => {
-      let results = item.self_test_results && item.self_test_results.results;
-      return results ? (results.every(r => r.success) ? "success" : "danger") : "default";
+      return results(item).length ? (results(item).every(r => r.success) ? "success" : "danger") : "default";
     };
-    let link = (item: ServiceData): JSX.Element => <a key={item.id} href={`/admin/web/config/${this.props.linkName}/edit/${item.id}`}>{item.name} configuration settings</a>;
-    let selfTests = (item: ServiceData): JSX.Element => <SelfTests key={item.name} store={this.props.store} type={this.props.type} item={item} csrfToken={this.props.csrfToken} />;
+    let link = (item: ServiceData): JSX.Element =>
+      <a key={item.id} href={`/admin/web/config/${this.props.linkName}/edit/${item.id}`}>
+        {item.name} configuration settings
+      </a>;
+    let selfTests = (item: ServiceData): JSX.Element =>
+      <SelfTests
+        key={item.name}
+        store={this.props.store}
+        type={this.props.type}
+        item={item}
+        csrfToken={this.props.csrfToken}
+        sortByCollection={sortByCollection(item)}
+      />;
     return (
       <div className="self-tests-category has-additional-content">
         <ul>

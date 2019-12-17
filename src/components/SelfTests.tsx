@@ -28,6 +28,7 @@ export interface SelfTestsDispatchProps {
 export interface SelfTestsOwnProps {
   store?: Store<State>;
   type: string;
+  sortByCollection: boolean;
 }
 
 export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsStateProps, SelfTestsDispatchProps, SelfTestsOwnProps {}
@@ -48,7 +49,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       mostRecent: this.props.item
     };
     this.runSelfTests = this.runSelfTests.bind(this);
-    this.displayMetadata = this.displayMetadata.bind(this);
+    this.displayByCollection = this.displayByCollection.bind(this);
   }
 
   componentDidMount() {
@@ -94,8 +95,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     );
 
     let resultList: JSX.Element[] = results.length ? results.map((result, idx) => this.makeResult(result, idx, isFetching)) : null;
-    let shouldSortByCollection: boolean = results.length && (integration.goal && integration.goal === "metadata") || (integration.protocol && integration.protocol === "Metadata Wrangler");
-    let collectionList = shouldSortByCollection && this.displayMetadata(results, isFetching);
+    let collectionList = this.props.sortByCollection && this.displayByCollection(results, isFetching);
 
     return (
       <div className="integration-selftests">
@@ -134,22 +134,24 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     return <SelfTestResult key={`${result.collection}-${idx}`} result={result} isFetching={isFetching} />;
   }
 
-  displayMetadata(results: SelfTestsResult[], isFetching: boolean): JSX.Element[] {
+  displayByCollection(results: SelfTestsResult[], isFetching: boolean): JSX.Element[] {
     let collectionList: JSX.Element[];
     let sorted = {};
     // The initial set-up test's collection property is always undefined
     let isInitial = (c: string) => c === "undefined";
     // Group the results by their collections
     results.forEach(r => sorted[r.collection] = results.filter(result => result.collection === r.collection));
+    let content = (resultsForCollection: SelfTestsResult[]) => resultsForCollection.map((result, idx) => this.makeResult(result, idx, isFetching));
     let style = (resultsForCollection: SelfTestsResult[]) => resultsForCollection.every(r => r.success) ? "success" : "danger";
-    collectionList = Object.keys(sorted).map((collection) => {
+    collectionList = Object.keys(sorted).map((collection, idx) => {
       let resultsForCollection = sorted[collection];
       return (
         <Panel
+          id={`collection-${idx}`}
           key={collection}
           headerText={isInitial(collection) ? "Initial Setup" : collection}
           openByDefault={isInitial(collection)}
-          content={resultsForCollection.map((result: SelfTestsResult, idx: Number) => this.makeResult(result, idx, isFetching))}
+          content={content(resultsForCollection)}
           style={style(resultsForCollection)}
         />
       );

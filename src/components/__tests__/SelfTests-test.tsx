@@ -130,13 +130,14 @@ describe("SelfTests", () => {
         item={collections[0]}
         type="collection"
         getSelfTests={stub()}
+        sortByCollection={false}
       />
     );
   });
 
   it("should render the SelfTests component with empty self_test_results", () => {
     wrapper = shallow(
-      <SelfTests item={{} as any} type="collection" getSelfTests={stub()} />
+      <SelfTests item={{} as any} type="collection" getSelfTests={stub()} sortByCollection={false} />
     );
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
@@ -148,7 +149,7 @@ describe("SelfTests", () => {
     let self_test_results = {...collections[0].self_test_results, ...{exception}};
     let item = {...collections[0], ...{self_test_results}};
     wrapper = shallow(
-      <SelfTests item={item} type="collection" getSelfTests={stub()} />
+      <SelfTests item={item} type="collection" getSelfTests={stub()} sortByCollection={false} />
     );
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
@@ -201,7 +202,7 @@ describe("SelfTests", () => {
     beforeEach(() => {
       wrapper = mount(
         <SelfTests
-          item={collections[1]} type="collection" getSelfTests={stub()}
+          item={collections[1]} type="collection" getSelfTests={stub()} sortByCollection={false}
         />
       );
     });
@@ -209,7 +210,7 @@ describe("SelfTests", () => {
     it("should display the base error message when attempting to run self tests", () => {
       wrapper = shallow(
         <SelfTests
-          item={collections[2]} type="collection" getSelfTests={stub()}
+          item={collections[2]} type="collection" getSelfTests={stub()} sortByCollection={false}
         />
       );
 
@@ -260,6 +261,7 @@ describe("SelfTests", () => {
           type="collection"
           runSelfTests={runSelfTests}
           getSelfTests={getSelfTests}
+          sortByCollection={false}
         />
       );
     });
@@ -288,6 +290,7 @@ describe("SelfTests", () => {
           type="collection"
           runSelfTests={runSelfTests}
           getSelfTests={getSelfTests}
+          sortByCollection={false}
         />
       );
       let runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests").at(0);
@@ -322,21 +325,22 @@ describe("SelfTests", () => {
         success: success
       }};
     };
-    let f = (results) => wrapper.instance().displayMetadata(results, false);
+    let display = (results) => wrapper.instance().displayByCollection(results, false);
     it("should call displayMetadata", () => {
-      let spyDisplayMetadata = spy(wrapper.instance(), "displayMetadata");
-      expect(spyDisplayMetadata.callCount).to.equal(0);
+      let spyDisplayByCollection = spy(wrapper.instance(), "displayByCollection");
+      expect(spyDisplayByCollection.callCount).to.equal(0);
       let integration = {...collections[0], ...{goal: "metadata"}};
       wrapper.setState({ mostRecent: integration });
-      expect(spyDisplayMetadata.callCount).to.equal(1);
-      expect(spyDisplayMetadata.args[0][0][0]).to.equal(baseResult);
-      spyDisplayMetadata.restore();
+      wrapper.setProps({ sortByCollection: true });
+      expect(spyDisplayByCollection.callCount).to.equal(1);
+      expect(spyDisplayByCollection.args[0][0][0]).to.equal(baseResult);
+      spyDisplayByCollection.restore();
     });
     it("should sort metadata test results by their collection", () => {
       while (results.length < collectionNames.length * 2) {
         collectionNames.map(c => results.push(makeResult(c)));
       }
-      let collectionPanels = f(results);
+      let collectionPanels = display(results);
       expect(collectionPanels.length).to.equal(collectionNames.length);
       collectionPanels.map((panel: JSX.Element, idx: number) => {
         let collectionName = collectionNames[idx];
@@ -351,13 +355,13 @@ describe("SelfTests", () => {
     });
     it("should display the result of the initial setup test", () => {
       let initialResult = makeResult("undefined");
-      let panel = f([initialResult])[0];
+      let panel = display([initialResult])[0];
       expect(panel.props.headerText).to.equal("Initial Setup");
     });
     it("should add the 'danger' class if not all the tests for the collection succeeded", () => {
       let errorResult = makeResult("With Error", false);
       let successResult = makeResult("With Error");
-      let panel = f([errorResult, successResult])[0];
+      let panel = display([errorResult, successResult])[0];
       expect(panel.props.style).to.equal("danger");
     });
   });
