@@ -4,8 +4,6 @@
   margin-left: 20px;
   flex-grow: 0.9;
   padding: 15px;
-  height: 10%;
-
   .custom-list-editor-header {
     display: flex;
     flex-direction: row;
@@ -45,26 +43,33 @@
 
   .form-inline {
     display: flex;
+    align-items: center;
     fieldset {
       width: 60%;
+      height: 100%;
       input {
         width: 100%;
+        margin: 0;
       }
     }
     button {
       align-self: flex-end;
-      margin-bottom: 4px;
+      margin-bottom: 8.5px;
     }
   }
 
   .custom-list-editor-body {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     margin-top: 10px;
-    height: 90%;
+    height: 60%;
+    width: 100%;
+    .custom-list-editor-panels {
+      width: 100%;
+    }
     .collections {
       width: 100%;
-
       .form-group {
         float: left;
         margin-right: 15px;

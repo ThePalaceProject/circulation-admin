@@ -23,7 +23,7 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
       <div className="custom-lists-sidebar">
         <h2>List Manager</h2>
         <Link
-          className="btn centered create-button"
+          className="btn create-button"
           to={"/admin/web/lists/" + this.props.library + "/create"}>
             Create New List
         </Link>
