@@ -40,6 +40,9 @@ export interface SelfTestsState {
 }
 
 export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
+  static defaultProps = {
+    sortByCollection: false
+  };
   constructor(props: SelfTestsProps) {
     super(props);
 

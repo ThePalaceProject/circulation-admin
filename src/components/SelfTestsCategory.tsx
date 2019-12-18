@@ -18,9 +18,11 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
   render(): JSX.Element {
     let onlyChild = this.props.items && this.props.items.length === 1;
     let results = (item: ServiceData) => item.self_test_results && item.self_test_results.results || [];
-    let sortByCollection = (item: ServiceData): boolean => results(item).some(r => r.collection);
+    let items = {};
+    this.props.items && this.props.items.map(i => items[i.name] ? items[i.name].concat(results(i)) : items[i.name] = results(i));
+    let sortByCollection = (item: ServiceData): boolean => items[item.name].some(r => r.collection);
     let getClassName = (item: ServiceData): string => {
-      return results(item).length ? (results(item).every(r => r.success) ? "success" : "danger") : "default";
+      return items[item.name].length ? (items[item.name].every(r => r.success) ? "success" : "danger") : "default";
     };
     let link = (item: ServiceData): JSX.Element =>
       <a key={item.id} href={`/admin/web/config/${this.props.linkName}/edit/${item.id}`}>
