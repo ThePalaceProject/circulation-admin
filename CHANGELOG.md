@@ -1,6 +1,8 @@
 ## Changelog
 
 ### v0.4.3
+#### Added
+- Added a Metadata Services tab to the self-tests section of the Troubleshooting page.
 #### Fixed
 - Fixed the display color for the Terms & Conditions link in the footer.
 - Fixed a bug where an empty book summary caused creating a DraftJS instance to crash the app.

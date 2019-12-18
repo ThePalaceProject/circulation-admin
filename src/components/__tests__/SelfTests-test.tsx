@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { spy, stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -143,9 +143,25 @@ describe("SelfTests", () => {
     expect(wrapper.find("p").text()).to.equal("No self test results found.");
   });
 
+  it("should render the SelfTests component for new services", () => {
+    let exception = "This integration has no attribute 'prior_test_results'";
+    let self_test_results = {...collections[0].self_test_results, ...{exception}};
+    let item = {...collections[0], ...{self_test_results}};
+    wrapper = shallow(
+      <SelfTests item={item} type="collection" getSelfTests={stub()} />
+    );
+    expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
+    expect(wrapper.find("ul").length).to.equal(0);
+    expect(wrapper.find(".description").text()).to.equal("There are no self test results yet.");
+  });
+
   it("should render the SelfTests component with results", () => {
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(1);
+  });
+
+  it("should format the date and duration of the most recent tests", () => {
+    expect(wrapper.instance().formatDate(collections[0])).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
   });
 
   it("should handle new props", () => {
@@ -293,6 +309,57 @@ describe("SelfTests", () => {
 
       alert = wrapper.render().find(".alert");
       expect(alert.length).to.equal(1);
+    });
+  });
+  describe("Handle metadata test results", () => {
+    const collectionNames = ["A", "B", "C"];
+    const baseResult = collections[0].self_test_results.results[0];
+    let results = [];
+    let makeResult = (c: string, success = true) => {
+      return {...baseResult, ...{
+        collection: c,
+        name: `Test ${results.length < collectionNames.length ? 1 : 2}`,
+        success: success
+      }};
+    };
+    let display = (results) => wrapper.instance().displayByCollection(results, false);
+    it("should call displayMetadata", () => {
+      let spyDisplayByCollection = spy(wrapper.instance(), "displayByCollection");
+      expect(spyDisplayByCollection.callCount).to.equal(0);
+      let integration = {...collections[0], ...{goal: "metadata"}};
+      wrapper.setState({ mostRecent: integration });
+      wrapper.setProps({ sortByCollection: true });
+      expect(spyDisplayByCollection.callCount).to.equal(1);
+      expect(spyDisplayByCollection.args[0][0][0]).to.equal(baseResult);
+      spyDisplayByCollection.restore();
+    });
+    it("should sort metadata test results by their collection", () => {
+      while (results.length < collectionNames.length * 2) {
+        collectionNames.map(c => results.push(makeResult(c)));
+      }
+      let collectionPanels = display(results);
+      expect(collectionPanels.length).to.equal(collectionNames.length);
+      collectionPanels.map((panel: JSX.Element, idx: number) => {
+        let collectionName = collectionNames[idx];
+        let { headerText, style, content } = panel.props;
+        expect(headerText).to.equal(collectionName);
+        expect(style).to.equal("success");
+        content.map((x: JSX.Element, idx: number) => {
+          expect(x.props.result.collection).to.equal(collectionName);
+          expect(x.props.result.name).to.equal(`Test ${idx + 1}`);
+        });
+      });
+    });
+    it("should display the result of the initial setup test", () => {
+      let initialResult = makeResult("undefined");
+      let panel = display([initialResult])[0];
+      expect(panel.props.headerText).to.equal("Initial Setup");
+    });
+    it("should add the 'danger' class if not all the tests for the collection succeeded", () => {
+      let errorResult = makeResult("With Error", false);
+      let successResult = makeResult("With Error");
+      let panel = display([errorResult, successResult])[0];
+      expect(panel.props.style).to.equal("danger");
     });
   });
 });

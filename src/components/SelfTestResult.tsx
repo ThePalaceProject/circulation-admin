@@ -33,7 +33,7 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
           success: {`${this.props.result.success}`}
         </p>
         {
-          !this.props.result.success && (
+          !this.props.result.success && this.props.result.exception && (
             <p className="exception-description">
               exception: {this.props.result.exception.message}
             </p>
@@ -45,7 +45,6 @@ export default class SelfTestResult extends React.Component<SelfTestResultProps,
 
   renderResult(result, colorResultClass) {
     let isList = Array.isArray(result);
-
     let content = isList ?
       <ol>{result.map((item, idx) => <li key={idx}>{item}</li>)}</ol> :
       result;

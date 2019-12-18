@@ -34,7 +34,7 @@ export default class TroubleshootingPage extends React.Component<Troubleshooting
 
   CATEGORIES = {
     "diagnostics": ["coverage_provider", "script", "monitor", "other"],
-    "self-tests": ["collections", "patronAuthServices", "searchServices"]
+    "self-tests": ["collections", "patronAuthServices", "searchServices", "metadataServices"]
   };
 
   constructor(props) {

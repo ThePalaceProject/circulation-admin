@@ -3,12 +3,12 @@ import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
-import { ServiceData, SelfTestsData } from "../interfaces";
+import { ServiceData, SelfTestsData, SelfTestsResult } from "../interfaces";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import SelfTestResult from "./SelfTestResult";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
-import { Button } from "library-simplified-reusable-components";
+import { Panel, Button } from "library-simplified-reusable-components";
 
 import {
   CheckSoloIcon,
@@ -28,6 +28,7 @@ export interface SelfTestsDispatchProps {
 export interface SelfTestsOwnProps {
   store?: Store<State>;
   type: string;
+  sortByCollection: boolean;
 }
 
 export interface SelfTestsProps extends React.Props<SelfTestsProps>, SelfTestsStateProps, SelfTestsDispatchProps, SelfTestsOwnProps {}
@@ -39,6 +40,9 @@ export interface SelfTestsState {
 }
 
 export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
+  static defaultProps = {
+    sortByCollection: false
+  };
   constructor(props: SelfTestsProps) {
     super(props);
 
@@ -48,6 +52,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       mostRecent: this.props.item
     };
     this.runSelfTests = this.runSelfTests.bind(this);
+    this.displayByCollection = this.displayByCollection.bind(this);
   }
 
   componentDidMount() {
@@ -63,36 +68,26 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   }
 
   render(): JSX.Element {
-    const integration = this.state.mostRecent;
+    const integration: ServiceData = this.state.mostRecent;
     const selfTestException = integration.self_test_results && integration.self_test_results.exception;
-    let date;
-    let startDate;
-    let hours;
-    let minutes;
-    let seconds;
-    let startTime;
+    const firstTime: boolean = selfTestException && selfTestException.includes("no attribute 'prior_test_results'");
     let results = [];
-    let duration;
-
-    if (integration.self_test_results && !selfTestException) {
-      date = new Date(integration.self_test_results.start);
-      startDate = date.toDateString();
-      hours = ("0" + date.getHours()).slice(-2);
-      minutes = ("0" + date.getMinutes()).slice(-2);
-      seconds = ("0" + date.getSeconds()).slice(-2);
-      startTime = `${hours}:${minutes}:${seconds}`;
-      results = integration.self_test_results.results || [];
-      duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
+    let resultIcon: JSX.Element;
+    let testDescription: string;
+    if (firstTime) {
+      testDescription = "There are no self test results yet.";
+    } else {
+      testDescription = integration.self_test_results && integration.self_test_results.start ?
+      this.formatDate(integration) : "No self test results found.";
     }
-    const findFailures = (result) => !result.success;
-    const oneFailedResult = results.some(findFailures);
-    const resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
+    if (integration.self_test_results && !selfTestException) {
+      results = integration.self_test_results.results || [];
+      const findFailures = (result) => !result.success;
+      const oneFailedResult = results.some(findFailures);
+      resultIcon = oneFailedResult ? <XIcon className="failure" /> : <CheckSoloIcon className="success" />;
+    }
     const isFetching = !!(this.props.isFetching && this.state.runTests);
-    let testDescription = integration.self_test_results && integration.self_test_results.start ?
-      `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.` :
-      "No self test results found.";
-
-    const failedSelfTest = selfTestException ? selfTestException : "";
+    const failedSelfTest = (selfTestException && !firstTime) ? selfTestException : "";
 
     const runButton = (
       <Button
@@ -102,7 +97,8 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
       />
     );
 
-    let resultList = integration.self_test_results ? results.map((result, idx) => <SelfTestResult key={idx} result={result} isFetching={isFetching} />) : null;
+    let resultList: JSX.Element[] = results.length ? results.map((result, idx) => this.makeResult(result, idx, isFetching)) : null;
+    let collectionList = this.props.sortByCollection && this.displayByCollection(results, isFetching);
 
     return (
       <div className="integration-selftests">
@@ -120,11 +116,50 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
             <ErrorMessage error={this.state.error} />
           }
           {
-            resultList && <ul><h4>Self Test Results</h4>{resultList}</ul>
+            resultList && <ul><h4>Self Test Results</h4>{collectionList || resultList}</ul>
           }
         </div>
       </div>
     );
+  }
+
+  formatDate(integration: ServiceData): string {
+    const date = new Date(integration.self_test_results.start);
+    const startDate = date.toDateString();
+    let format = (x) => `0${x}`.slice(-2);
+    const [hours, minutes, seconds] = [format(date.getHours()), format(date.getMinutes()), format(date.getSeconds())];
+    const startTime = `${hours}:${minutes}:${seconds}`;
+    const duration = integration.self_test_results.duration && integration.self_test_results.duration.toFixed(2);
+    return `Tests last ran on ${startDate} ${startTime} and lasted ${duration}s.`;
+  }
+
+  makeResult(result: SelfTestsResult, idx: Number, isFetching: boolean) {
+    return <SelfTestResult key={`${result.collection}-${idx}`} result={result} isFetching={isFetching} />;
+  }
+
+  displayByCollection(results: SelfTestsResult[], isFetching: boolean): JSX.Element[] {
+    let collectionList: JSX.Element[];
+    let sorted = {};
+    // The initial set-up test's collection property is always undefined
+    let isInitial = (c: string) => c === "undefined";
+    // Group the results by their collections
+    results.forEach(r => sorted[r.collection] = results.filter(result => result.collection === r.collection));
+    let content = (resultsForCollection: SelfTestsResult[]) => resultsForCollection.map((result, idx) => this.makeResult(result, idx, isFetching));
+    let style = (resultsForCollection: SelfTestsResult[]) => resultsForCollection.every(r => r.success) ? "success" : "danger";
+    collectionList = Object.keys(sorted).map((collection, idx) => {
+      let resultsForCollection = sorted[collection];
+      return (
+        <Panel
+          id={`collection-${idx}`}
+          key={collection}
+          headerText={isInitial(collection) ? "Initial Setup" : collection}
+          openByDefault={isInitial(collection)}
+          content={content(resultsForCollection)}
+          style={style(resultsForCollection)}
+        />
+      );
+    });
+    return collectionList;
   }
 
   async runSelfTests(e) {
@@ -155,9 +190,9 @@ function mapStateToProps(state, ownProps) {
   let item = ownProps.item;
   if (selfTests && selfTests.responseBody && selfTests.responseBody.self_test_results) {
     if (ownProps.type.includes(selfTests.responseBody.self_test_results.goal)) {
-      let oldTime = ownProps.item.self_test_results.start;
-      let newTime = selfTests.responseBody.self_test_results.self_test_results.start;
-      if (!oldTime || (newTime > oldTime)) {
+      let oldTime = item.self_test_results && item.self_test_results.start;
+      let newTime = selfTests.responseBody.self_test_results.self_test_results && selfTests.responseBody.self_test_results.self_test_results.start;
+      if ((!oldTime || (newTime > oldTime)) && selfTests.responseBody.self_test_results.id === item.id) {
         item = selfTests.responseBody.self_test_results;
       }
     }

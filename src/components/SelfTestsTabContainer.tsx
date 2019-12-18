@@ -39,7 +39,8 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
   DISPLAY_NAMES = {
     collections: "Collections",
     patronAuthServices: "Patron Authentication",
-    searchServices: "Search Service Configuration"
+    searchServices: "Search Service Configuration",
+    metadataServices: "Metadata Services"
   };
 
   componentWillMount() {
@@ -104,7 +105,7 @@ function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
 
 function mapDispatchToProps(dispatch: Function, ownProps: SelfTestsTabContainerOwnProps) {
   let actions = new ActionCreator();
-  const itemTypes = ["Collections", "PatronAuthServices", "SearchServices"];
+  const itemTypes = ["Collections", "PatronAuthServices", "SearchServices", "MetadataServices"];
   return {
     fetchItems: () => itemTypes.forEach(type => dispatch(actions["fetch" + type]()))
   };

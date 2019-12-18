@@ -61,7 +61,7 @@ describe("ContextProvider", () => {
         pathFor: PropTypes.func.isRequired
       };
       render() {
-        const hasContext = this.context?.pathFor === pathForStub;
+        const hasContext = this.context && this.context.pathFor === pathForStub;
         return (
           <div>
             {hasContext ? hasAccess : "doesn't have access to context"}
