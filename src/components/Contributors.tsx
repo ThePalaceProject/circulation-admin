@@ -66,6 +66,7 @@ export default class Contributors extends React.Component<ContributorsProps, Con
         name="contributor-role"
         value={contributorRole || "Author"}
         ref={isNew && this.addContributorRole}
+        aria-label="Select a contributor role type"
        >
         { this.props.roles && Object.values(this.props.roles).map(role =>
             <option value={role} key={role} aria-selected={contributorRole === role}>{role}</option>
@@ -83,6 +84,7 @@ export default class Contributors extends React.Component<ContributorsProps, Con
         type="text"
         disabled={this.props.disabled}
         name="contributor-name"
+        aria-label="Enter contributor name"
         value={contributor && contributor.name}
         ref={!contributor && this.addContributorName}
         onChange={this.toggleDisabled}

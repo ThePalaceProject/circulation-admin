@@ -24,7 +24,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
   context: ManagePatronsContext;
 
   static contextTypes: React.ValidationMap<ManagePatronsContext> = {
-    editorStore: PropTypes.object.isRequired,
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
     csrfToken: PropTypes.string.isRequired,
   };
 
@@ -42,7 +42,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
     return (
       <div className="manage-patrons-page config">
         <Header />
-        <div className="manage-patrons">
+        <main className="manage-patrons">
           <h2>Patron Manager</h2>
           <ManagePatronsTabContainer
             tab={this.props.params.tab}
@@ -50,7 +50,7 @@ export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
             csrfToken={this.context.csrfToken}
             library={this.props.params.library}
           />
-        </div>
+        </main>
         <Footer />
       </div>
     );

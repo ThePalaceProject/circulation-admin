@@ -56,6 +56,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         }
 
         <Panel
+          id="classifications"
           headerText="Classifications"
           collapsible={false}
           onEnter={this.submit}
@@ -90,6 +91,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                       type="text"
                       disabled={this.props.disabled}
                       name="target_age_min"
+                      aria-label="Enter a minimum target age"
                       value={this.props.book.targetAgeRange[0]}
                       />
                     <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
@@ -99,6 +101,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                       type="text"
                       disabled={this.props.disabled}
                       name="target_age_max"
+                      aria-label="Enter a maximum target age"
                       value={this.props.book.targetAgeRange[1]}
                       />
                   </div>
@@ -265,7 +268,7 @@ export default class ClassificationsForm extends React.Component<Classifications
       this.setState({ audience: value });
     } else {
       return false;
-    };
+    }
   }
 
   handleFictionChange() {
@@ -286,7 +289,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   addGenre(genre) {
     if (this.validateAudience(this.state.audience, [genre])) {
       this.setState({ genres: this.state.genres.concat([genre]) });
-    };
+    }
   }
 
   removeGenre(genreToRemove) {

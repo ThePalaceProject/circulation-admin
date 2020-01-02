@@ -7,9 +7,10 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable  from "./ClassificationsTable";
-import { BookData, Audience, Fiction, GenreTree, ClassificationData } from "../interfaces";
+import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
+import UpdatingLoader from "./UpdatingLoader";
 
 export interface ClassificationsStateProps {
   // from store
@@ -37,7 +38,7 @@ export interface ClassificationsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {};
+export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {}
 
 /** Tab on the book details page with a table of a book's current classifications and
     a form for editing them. */
@@ -56,14 +57,7 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
             <h2>
               {this.props.book.title}
             </h2>
-            <div className="classifications-fetching-container">
-              { this.props.isFetching &&
-                <h4>
-                  Updating
-                  <i className="fa fa-spinner fa-spin"></i>
-                </h4>
-              }
-            </div>
+            <UpdatingLoader show={this.props.isFetching} />
           </>
         }
 

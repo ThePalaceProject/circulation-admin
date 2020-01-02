@@ -11,6 +11,7 @@ import ClassificationsTable from "../ClassificationsTable";
 import buildStore from "../../store";
 import genreData from "./genreData";
 import classificationsData from "./classificationsData";
+import UpdatingLoader from "../UpdatingLoader";
 
 describe("Classifications", () => {
   let wrapper;
@@ -57,12 +58,15 @@ describe("Classifications", () => {
     });
 
     it("hides/shows updating indicator", () => {
-      let updating = wrapper.find("h4");
-      expect(updating.length).to.equal(0);
+      wrapper.setProps({ isFetching: false });
+
+      let updating = wrapper.find(UpdatingLoader);
+      expect(updating.length).to.equal(1);
+      expect(updating.prop("show")).to.equal(false);
 
       wrapper.setProps({ isFetching: true });
-      updating = wrapper.find("h4");
-      expect(updating.text()).to.equal("Updating");
+      updating = wrapper.find(UpdatingLoader);
+      expect(updating.prop("show")).to.equal(true);
     });
 
     it("shows fetchError", () => {

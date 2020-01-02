@@ -25,7 +25,7 @@ export interface DiagnosticsTabContainerStateProps {
   fetchError?: FetchErrorData;
 }
 
-export interface DiagnosticsTabContainerProps extends DiagnosticsTabContainerDispatchProps, DiagnosticsTabContainerStateProps, DiagnosticsTabContainerOwnProps {};
+export interface DiagnosticsTabContainerProps extends DiagnosticsTabContainerDispatchProps, DiagnosticsTabContainerStateProps, DiagnosticsTabContainerOwnProps {}
 
 export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContainerProps> {
 
@@ -64,11 +64,9 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
       let component = null;
       if (this.props.fetchError) {
         component = <ErrorMessage error={this.props.fetchError} />;
-      }
-      else if (!this.props.isLoaded) {
+      } else if (!this.props.isLoaded) {
         component = <LoadingIndicator />;
-      }
-      else if (this.props.diagnostics) {
+      } else if (this.props.diagnostics) {
         component = <DiagnosticsServiceType type={serviceType} services={this.props.diagnostics[serviceType]} />;
       }
       tabs[serviceType] = component;

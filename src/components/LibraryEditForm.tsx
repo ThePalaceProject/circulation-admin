@@ -3,7 +3,7 @@ import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import { findDefault, clearForm } from "../utils/sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import FiltersForm from "./FiltersForm";
 
@@ -46,6 +46,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
     let basicInfoPanel = (
       <Panel
+        id="library-basic-info"
         headerText="Basic Information"
         key="basic_info"
         openByDefault={true}
@@ -127,6 +128,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       ) :
       (
         <Panel
+          id={`library-form-${name.replace(/\s/g, "-")}`}
           headerText={`${name} (Optional)`}
           onEnter={this.submit}
           key={name}

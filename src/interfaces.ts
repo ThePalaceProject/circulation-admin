@@ -237,6 +237,7 @@ export interface SelfTestsResult {
   result?: string | string[];
   start: string;
   success: boolean;
+  collection?: string;
 }
 
 export interface SelfTestsData {
@@ -258,6 +259,7 @@ export interface ServiceData {
   };
   libraries?: LibraryWithSettingsData[];
   self_test_results?: SelfTestsData;
+  goal?: string;
 }
 
 export interface ServicesData {

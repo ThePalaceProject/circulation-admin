@@ -112,4 +112,16 @@ describe("SelfTestsCategory", () => {
     let singleItem = wrapper.find("ul").first().find(Panel);
     expect(singleItem.prop("openByDefault")).to.be.true;
   });
+
+  it("passes the sortByCollection prop to SelfTests", () => {
+    let selfTests = wrapper.find(SelfTests).at(0);
+    expect(selfTests.prop("sortByCollection")).to.be.false;
+    let inner = {...collections[0].self_test_results.results, ...{collection: "sort!"}};
+    let outer = {...collections[0].self_test_results, ...{results: [inner]}};
+    let withCollection = {...collections[0], ...({self_test_results: outer})};
+    (collections as any).unshift(withCollection);
+    wrapper.setProps({ items: collections });
+    selfTests = wrapper.find(SelfTests).at(0);
+    expect(selfTests.prop("sortByCollection")).to.be.true;
+  });
 });

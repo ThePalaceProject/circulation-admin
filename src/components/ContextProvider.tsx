@@ -5,8 +5,9 @@ import buildStore from "../store";
 import { PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 import Admin from "../models/Admin";
+import PathForProvider from "opds-web-client/lib/components/context/PathForContext";
 
-export interface ContextProviderProps extends React.Props<any> {
+export interface ContextProviderProps extends React.Props<{}> {
   csrfToken: string;
   showCircEventsDownload?: boolean;
   settingUp?: boolean;
@@ -63,9 +64,8 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     }
   }
 
-  static childContextTypes: React.ValidationMap<any> = {
+  static childContextTypes: React.ValidationMap<{}> = {
     editorStore: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
     csrfToken: PropTypes.string.isRequired,
     showCircEventsDownload: PropTypes.bool.isRequired,
     settingUp: PropTypes.bool.isRequired,
@@ -75,7 +75,6 @@ export default class ContextProvider extends React.Component<ContextProviderProp
   getChildContext() {
     return {
       editorStore: this.store,
-      pathFor: this.pathFor,
       csrfToken: this.props.csrfToken,
       showCircEventsDownload: this.props.showCircEventsDownload || false,
       settingUp: this.props.settingUp || false,
@@ -84,6 +83,10 @@ export default class ContextProvider extends React.Component<ContextProviderProp
   }
 
   render() {
-    return React.Children.only(this.props.children) as JSX.Element;
-  };
-};
+    return (
+      <PathForProvider pathFor={this.pathFor}>
+        {React.Children.only(this.props.children) as JSX.Element}
+      </PathForProvider>
+    );
+  }
+}

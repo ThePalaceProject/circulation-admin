@@ -1,3 +1,4 @@
+import * as React from "react";
 import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
@@ -14,7 +15,16 @@ export class MetadataServices extends EditableConfigList<MetadataServicesData, M
   urlBase = "/admin/web/config/metadata/";
   identifierKey = "id";
   labelKey = "protocol";
+  links = this.renderLinks();
 
+  renderLinks(): {[key: string]: JSX.Element} {
+    let linkBase = "/admin/web/troubleshooting/self-tests/metadataServices";
+    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+    return {
+      "info": <>Self-tests for the metadata services have been moved to {linkElement}.</>,
+      "footer": <>Problems with your metadata services?  Please visit {linkElement}.</>
+    };
+  }
   label(item): string {
     let label = item.name ? `${item.name}: ${item.protocol}` : item.protocol;
     return label;

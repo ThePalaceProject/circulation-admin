@@ -81,9 +81,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               ) : null
             }
             <input
+              aria-label="Search for a book title"
               className="form-control"
               ref="searchTerms"
               type="text"
+              placeholder="Enter a search term"
             />
           </fieldset>
         }
@@ -103,7 +105,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 placeholder="list title"
                 onUpdate={this.changeTitle}
                 ref="listTitle"
-                />
+                aria-label="Enter a title for this list"
+              />
             </fieldset>
             { listId &&
               <h4>ID-{listId}</h4>
@@ -125,37 +128,40 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
           </div>
         </div>
         <div className="custom-list-editor-body">
-          { this.props.collections && this.props.collections.length > 0 &&
-            <div className="custom-list-filters">
-              <Panel
-                headerText="Add from collections"
-                content={
-                  <div className="collections">
-                    <div>Automatically add new books from these collections to this list:</div>
-                    { this.props.collections.map(collection =>
-                        <EditableInput
-                          key={collection.id}
-                          type="checkbox"
-                          name="collection"
-                          checked={this.hasCollection(collection)}
-                          label={collection.name}
-                          value={String(collection.id)}
-                          onChange={() => { this.changeCollection(collection); }}
-                          />
-                      )
-                    }
-                  </div>
-                }
-              />
-            </div>
-          }
-          <Panel
-            headerText="Search for titles"
-            openByDefault={true}
-            onEnter={this.search}
-            content={searchForm}
-          />
-
+          <section>
+            { this.props.collections && this.props.collections.length > 0 &&
+              <div className="custom-list-filters">
+                <Panel
+                  headerText="Add from collections"
+                  id="add-from-collections"
+                  content={
+                    <div className="collections">
+                      <div>Automatically add new books from these collections to this list:</div>
+                      { this.props.collections.map(collection =>
+                          <EditableInput
+                            key={collection.id}
+                            type="checkbox"
+                            name="collection"
+                            checked={this.hasCollection(collection)}
+                            label={collection.name}
+                            value={String(collection.id)}
+                            onChange={() => { this.changeCollection(collection); }}
+                            />
+                        )
+                      }
+                    </div>
+                  }
+                />
+              </div>
+            }
+            <Panel
+              headerText="Search for titles"
+              id="search-titles"
+              openByDefault={true}
+              onEnter={this.search}
+              content={searchForm}
+            />
+          </section>
           <CustomListEntriesEditor
             searchResults={this.props.searchResults}
             entries={this.props.list && this.props.list.books}
@@ -373,7 +379,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     );
 
     return entryPointsElms;
-  };
+  }
 
   search() {
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);

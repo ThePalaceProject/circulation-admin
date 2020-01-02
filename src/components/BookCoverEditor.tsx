@@ -10,6 +10,7 @@ import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
+import UpdatingLoader from "./UpdatingLoader";
 
 export interface BookCoverEditorStateProps {
   bookAdminUrl?: string;
@@ -37,7 +38,7 @@ export interface BookCoverEditorOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface BookCoverEditorProps extends BookCoverEditorStateProps, BookCoverEditorDispatchProps, BookCoverEditorOwnProps {};
+export interface BookCoverEditorProps extends BookCoverEditorStateProps, BookCoverEditorDispatchProps, BookCoverEditorOwnProps {}
 
 /** Tab on the book details page for uploading a new book cover. */
 export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
@@ -64,14 +65,9 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
         <h2>
           {this.props.book.title}
         </h2>
-        { this.props.isFetching &&
-          <div className="cover-fetching-container">
-            <h4>
-              Updating
-              <i className="fa fa-spinner fa-spin"></i>
-            </h4>
-          </div>
-        }
+
+        <UpdatingLoader show={this.props.isFetching} />
+
         <div>
           <h3>Current cover:</h3>
           <img
@@ -83,6 +79,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
         <div ref="form-container" className="cover-edit-form">
           <h3>Change cover:</h3>
           <Panel
+            id="cover-metadata"
             headerText="Cover Metadata"
             openByDefault={true}
             content={this.renderCoverForm()}
@@ -91,6 +88,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
           {
             this.props.rightsStatuses &&
               <Panel
+                id="rights"
                 headerText="Rights"
                 openByDefault={true}
                 onEnter={this.save}
@@ -164,12 +162,9 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
             </fieldset>
           }
         />
-        { this.props.isFetchingPreview &&
-          <h5 className="cover-fetching-preview-container">
-            Updating Preview&nbsp;
-            <i className="fa fa-spinner fa-spin"></i>
-          </h5>
-        }
+
+        <UpdatingLoader text="Updating Preview" show={this.props.isFetchingPreview} />
+
         { this.props.preview &&
           <div>
             <h4>Preview:</h4>

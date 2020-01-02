@@ -17,16 +17,41 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
 
   render(): JSX.Element {
     let onlyChild = this.props.items && this.props.items.length === 1;
+    let results = (item: ServiceData) => item.self_test_results && item.self_test_results.results || [];
+    let items = {};
+    this.props.items && this.props.items.map(i => items[i.name] ? items[i.name].concat(results(i)) : items[i.name] = results(i));
+    let sortByCollection = (item: ServiceData): boolean => items[item.name].some(r => r.collection);
     let getClassName = (item: ServiceData): string => {
-      let results = item.self_test_results && item.self_test_results.results;
-      return results ? (results.every(r => r.success) ? "success" : "danger") : "default";
+      return items[item.name].length ? (items[item.name].every(r => r.success) ? "success" : "danger") : "default";
     };
-    let link = (item: ServiceData): JSX.Element => <a key={item.id} href={`/admin/web/config/${this.props.linkName}/edit/${item.id}`}>{item.name} configuration settings</a>;
-    let selfTests = (item: ServiceData): JSX.Element => <SelfTests key={item.name} store={this.props.store} type={this.props.type} item={item} csrfToken={this.props.csrfToken} />;
+    let link = (item: ServiceData): JSX.Element =>
+      <a key={item.id} href={`/admin/web/config/${this.props.linkName}/edit/${item.id}`}>
+        {item.name} configuration settings
+      </a>;
+    let selfTests = (item: ServiceData): JSX.Element =>
+      <SelfTests
+        key={item.name}
+        store={this.props.store}
+        type={this.props.type}
+        item={item}
+        csrfToken={this.props.csrfToken}
+        sortByCollection={sortByCollection(item)}
+      />;
     return (
       <div className="self-tests-category has-additional-content">
         <ul>
-          { this.props.items && this.props.items.map(i => <Panel style={getClassName(i)} key={i.name} openByDefault={onlyChild} headerText={i.name} content={[link(i), selfTests(i)]} />)}
+          { this.props.items && this.props.items.map((item) =>
+              <li key={item.name}>
+                <Panel
+                  id={`${item.name.replace(/\s/g, "")}-${item.id}`}
+                  style={getClassName(item)}
+                  openByDefault={onlyChild}
+                  headerText={item.name}
+                  content={[link(item), selfTests(item)]}
+                />
+              </li>
+            )
+          }
         </ul>
       </div>
     );

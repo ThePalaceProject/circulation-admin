@@ -103,6 +103,7 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
               ref={this.type}
               name="type"
               onChange={this.toggleLocationsInput}
+              onBlur={this.toggleLocationsInput}
             >
               {
                 eventTypes.map(event =>

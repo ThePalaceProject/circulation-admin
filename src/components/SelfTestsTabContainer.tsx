@@ -26,8 +26,8 @@ export interface SelfTestsTabContainerStateProps {
   isLoaded?: boolean;
 }
 
-export interface SelfTestsTabContainerProps extends SelfTestsTabContainerDispatchProps, SelfTestsTabContainerStateProps, SelfTestsTabContainerOwnProps {};
-export interface SelfTestsTabContainerContext extends TabContainerContext {};
+export interface SelfTestsTabContainerProps extends SelfTestsTabContainerDispatchProps, SelfTestsTabContainerStateProps, SelfTestsTabContainerOwnProps {}
+export interface SelfTestsTabContainerContext extends TabContainerContext {}
 
 export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerProps> {
   context: SelfTestsTabContainerContext;
@@ -39,7 +39,8 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
   DISPLAY_NAMES = {
     collections: "Collections",
     patronAuthServices: "Patron Authentication",
-    searchServices: "Search Service Configuration"
+    searchServices: "Search Service Configuration",
+    metadataServices: "Metadata Services"
   };
 
   componentWillMount() {
@@ -48,7 +49,6 @@ export class SelfTestsTabContainer extends TabContainer<SelfTestsTabContainerPro
 
   async handleSelect(event) {
     let tab = event.currentTarget.dataset.tabkey;
-    let keyName = this.getNames(tab)[0];
     await this.props.goToTab(tab);
     if (this.context.router) {
       this.context.router.push("/admin/web/troubleshooting/self-tests/" + tab);
@@ -105,7 +105,7 @@ function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
 
 function mapDispatchToProps(dispatch: Function, ownProps: SelfTestsTabContainerOwnProps) {
   let actions = new ActionCreator();
-  const itemTypes = ["Collections", "PatronAuthServices", "SearchServices"];
+  const itemTypes = ["Collections", "PatronAuthServices", "SearchServices", "MetadataServices"];
   return {
     fetchItems: () => itemTypes.forEach(type => dispatch(actions["fetch" + type]()))
   };

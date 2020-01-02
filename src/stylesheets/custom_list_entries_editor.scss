@@ -2,16 +2,16 @@
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  height: 50%;
+  justify-content: center;
 }
 
 .custom-list-search-results, .custom-list-entries {
   display: flex;
   flex-direction: column;
   flex-basis: 47%;
-  margin-top: 15px;
-  margin-right: 20px;
-  height: 100%;
-
+  margin: 15px 10px 0 10px;
+  overflow-y: scroll;
   h4 {
     display: inline-block;
   }
@@ -20,13 +20,16 @@
     float: right;
 
     &.load-more-button {
-      margin-bottom: 50px;
+      line-height: 0;
+      margin: 0;
+      padding: 12px;
     }
   }
 
   .droppable-header {
     flex: 0 0 auto;
     overflow: hidden;
+    margin-bottom: 10px;
 
     > div {
       display: flex;
@@ -39,7 +42,7 @@
     padding: 10px;
     overflow-y: scroll;
     margin-bottom: 15px;
-    height: 500px;
+    height: 100%;
 
     &.dragging-over {
       border-color: $pagetextcolor;

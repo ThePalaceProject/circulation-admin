@@ -18,7 +18,7 @@ export interface CollectionsDispatchProps extends EditableConfigListDispatchProp
 
 export interface CollectionsProps extends CollectionsStateProps, CollectionsDispatchProps, EditableConfigListOwnProps {}
 
-class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsData> {};
+class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsData> {}
 
 /**
  * Right panel for collections on the system configuration page.
@@ -87,7 +87,7 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
           </p>
         </li>
       );
-    };
+    }
     return super.renderLi(item, index);
   }
 

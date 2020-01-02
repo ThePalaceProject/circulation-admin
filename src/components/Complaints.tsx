@@ -10,6 +10,7 @@ import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
 import { formatString } from "../utils/sharedFunctions";
+import UpdatingLoader from "./UpdatingLoader";
 
 export interface ComplaintsStateProps {
   complaints?: any;
@@ -31,7 +32,7 @@ export interface ComplaintsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ComplaintsProps extends ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps {};
+export interface ComplaintsProps extends ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps {}
 
 /** Tab on the book details page that shows existing complaints and lets an admin resolve
     complaints or add new complaints. */
@@ -50,14 +51,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
             <h2>
               {this.props.book.title}
             </h2>
-            <div className="complaints-fetching-container">
-              { this.props.isFetching &&
-                <h4>
-                  Updating
-                  <i className="fa fa-spinner fa-spin"></i>
-                </h4>
-              }
-            </div>
+            <UpdatingLoader show={this.props.isFetching} />
           </div>
         }
 
@@ -134,7 +128,7 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
   refresh() {
     this.props.fetchComplaints(this.complaintsUrl());
     this.props.refreshCatalog();
-  };
+  }
 
   resolve(type: string) {
     let readableType = this.readableComplaintType(type);

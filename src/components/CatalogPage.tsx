@@ -1,15 +1,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Router, Route, browserHistory } from "react-router";
 const OPDSCatalog = require("opds-web-client");
-import { NavigateContext } from "opds-web-client/lib/interfaces";
-import { ComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
 import * as PropTypes from "prop-types";
-import reducers from "../reducers/index";
 import BookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
 import Footer from "./Footer";
-import { BookLink } from "../interfaces";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 import EntryPointsContainer from "./EntryPointsContainer";
 import WelcomePage from "./WelcomePage";

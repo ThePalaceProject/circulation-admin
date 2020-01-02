@@ -16,7 +16,7 @@ footer {
     align-items: center;
     li {
       margin: 2px 0;
-      a, a:visited {
+      a, a:visited, a:link {
         color: $white;
         &:hover {
           color: $white;

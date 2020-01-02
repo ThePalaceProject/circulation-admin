@@ -10,6 +10,7 @@ const win = doc.defaultView;
 
 global["document"] = doc;
 global["window"] = win;
+global["HTMLElement"] = win.HTMLElement;
 
 Object.keys(window).forEach((key) => {
   if (!(key in global)) {

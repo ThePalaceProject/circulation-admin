@@ -64,11 +64,16 @@ describe("BookCoverEditor", () => {
     });
 
     it("shows updating message", () => {
-      let updating = wrapper.find(".cover-fetching-container");
+      let updatingContainer = wrapper.find(".updating-loader-container");
+      let updating = wrapper.find(".updating-loader");
+      expect(updatingContainer.length).to.equal(2);
       expect(updating.length).to.equal(0);
 
       wrapper.setProps({ isFetching: true });
-      updating = wrapper.find(".cover-fetching-container");
+      updating = wrapper.find(".updating-loader");
+
+      // The second loader component renders based on a different prop,
+      // so only one loader should be rendered.
       expect(updating.length).to.equal(1);
       expect(updating.text()).to.contain("Updating");
     });
@@ -103,11 +108,16 @@ describe("BookCoverEditor", () => {
     });
 
     it("shows preview updating message", () => {
-      let updating = wrapper.find(".cover-fetching-preview-container");
+      let updatingContainer = wrapper.find(".updating-loader-container");
+      let updating = wrapper.find(".updating-loader");
+      expect(updatingContainer.length).to.equal(2);
       expect(updating.length).to.equal(0);
 
       wrapper.setProps({ isFetchingPreview: true });
-      updating = wrapper.find(".cover-fetching-preview-container");
+      updatingContainer = wrapper.find(".updating-loader-container");
+      updating = wrapper.find(".updating-loader");
+
+      // This specific loader renders based on the `isFetchingPreview` prop.
       expect(updating.length).to.equal(1);
       expect(updating.text()).to.contain("Updating Preview");
     });

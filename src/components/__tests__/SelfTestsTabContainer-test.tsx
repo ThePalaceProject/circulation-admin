@@ -61,7 +61,7 @@ describe("SelfTestsTabContainer", () => {
     let nav = wrapper.find(".nav-tabs").at(0);
     expect(nav.length).to.equal(1);
     let tabs = nav.find("li");
-    expect(tabs.length).to.equal(3);
+    expect(tabs.length).to.equal(4);
 
     let collectionsTab = tabs.at(0);
     expect(collectionsTab.text()).to.equal("Collections");
@@ -74,12 +74,16 @@ describe("SelfTestsTabContainer", () => {
     let searchTab = tabs.at(2);
     expect(searchTab.text()).to.equal("Search Service Configuration");
     expect(searchTab.hasClass("active")).to.be.false;
+
+    let metadataTab = tabs.at(3);
+    expect(metadataTab.text()).to.equal("Metadata Services");
+    expect(metadataTab.hasClass("active")).to.be.false;
   });
 
   it("renders tab content", () => {
     let contentComponents = wrapper.find(".tab-content > div");
-    expect(contentComponents.length).to.equal(3);
-    let [collectionsContent, patronAuthContent, searchContent] = contentComponents.map(c => c.childAt(0));
+    expect(contentComponents.length).to.equal(4);
+    let [collectionsContent, patronAuthContent, searchContent, metadataContent] = contentComponents.map(c => c.childAt(0));
 
     expect(collectionsContent.prop("type")).to.equal("collection");
     expect(collectionsContent.prop("items")).to.equal(collections);
@@ -88,6 +92,7 @@ describe("SelfTestsTabContainer", () => {
 
     expect(patronAuthContent.find(LoadingIndicator).length).to.equal(1);
     expect(searchContent.find(LoadingIndicator).length).to.equal(1);
+    expect(metadataContent.find(LoadingIndicator).length).to.equal(1);
   });
 
   it("calls fetchItems on mount", () => {
@@ -102,7 +107,7 @@ describe("SelfTestsTabContainer", () => {
     wrapper.setProps({ fetchError });
 
     error = wrapper.find(ErrorMessage);
-    expect(error.length).to.equal(3);
+    expect(error.length).to.equal(4);
   });
 
   it("calls goToTab", () => {
@@ -142,5 +147,6 @@ describe("SelfTestsTabContainer", () => {
     expect(wrapper.instance().getNames("collections")).to.eql(["collections", "collection", "collections"]);
     expect(wrapper.instance().getNames("patronAuthServices")).to.eql(["patron_auth_services", "patron_auth_service", "patronAuth"]);
     expect(wrapper.instance().getNames("searchServices")).to.eql(["search_services", "search_service", "search"]);
+    expect(wrapper.instance().getNames("metadataServices")).to.eql(["metadata_services", "metadata_service", "metadata"]);
   });
 });

@@ -23,7 +23,7 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
   context: DashboardPageContext;
 
   static contextTypes: React.ValidationMap<DashboardPageContext> = {
-    editorStore: PropTypes.object.isRequired
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>
   };
 
   static childContextTypes: React.ValidationMap<{}> = {
@@ -41,10 +41,10 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
     return (
       <div className="dashboard">
         <Header />
-        <div className="body">
+        <main className="body">
           <Stats store={this.context.editorStore} library={library} />
           <CirculationEvents store={this.context.editorStore} library={library} />
-        </div>
+        </main>
         <Footer />
       </div>
     );

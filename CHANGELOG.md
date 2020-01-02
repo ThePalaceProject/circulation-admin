@@ -1,10 +1,39 @@
 ## Changelog
 
-###v0.3.26
+### v0.4.3
+#### Added
+- Added a Metadata Services tab to the self-tests section of the Troubleshooting page.
+#### Fixed
+- Fixed a display bug on the List Manager page.
+- Fixed the display color for the Terms & Conditions link in the footer.
+- Fixed a bug where an empty book summary caused creating a DraftJS instance to crash the app.
+
+### v0.4.2
+#### Updated
+- Updated the `opds-web-client` package to v0.3.2.
+- Updated the ContextProvider based on the `opds-web-client`'s updated context APIs.
+
+### v0.4.1
+#### Fixed
+- Fixed accessibility issues found by the `react-axe` package.
+
+### v0.4.0
+#### Updated
+- Updated the `opds-web-client` package to v0.3.0.
+- Updated Typescript to version 3.7.2 and updated other related packages to their latest version.
+
+### v0.3.27
+#### Updated
+- Updated npm packages including chai, mocha, and sinon.
+- Updated version of Node to run in Travis to Node v10.
+#### Fixed
+- Fixed tests that were passing in Node v8 but failing in Node v10. Specifically, stubbing window.confirm did not work on components that were fully mounted. A shallow mount helped fix this issue, but the tests needed to be updated accordingly.
+
+### v0.3.26
 #### Fixed
 - Cosmetic fix for InputList items.
 
-###v0.3.25
+### v0.3.25
 #### Fixed
 - Cosmetic fixes for buttons on the Lists page.
 

@@ -62,6 +62,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
                 className={`transparent ${this.state.expanded ? "collapse-button" :  "expand-button"}`}
                 type="button"
                 callback={this.toggleExpanded}
+                aria-label={`Button to expand or collapse a lane`}
                 content={<PyramidIcon />}
               />
               { lane.display_name + " (" + lane.count + ")" }

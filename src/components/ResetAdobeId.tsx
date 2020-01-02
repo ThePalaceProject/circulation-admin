@@ -52,7 +52,7 @@ export class ResetAdobeId extends React.Component<ResetAdobeIdProps, ResetAdobeI
 
     return (
       <div className="patron-actions">
-        <h4>Reset Adobe ID</h4>
+        <h3>Reset Adobe ID</h3>
         { (fetchError && patronExists) &&
           <Alert bsStyle="danger">Error: failed to reset Adobe ID for patron {patron.authorization_identifier}</Alert>
         }
