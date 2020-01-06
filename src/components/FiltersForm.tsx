@@ -33,7 +33,7 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
     let settingName = setting.key;
     let settingIsAbout = settingName.split("_")[2];
     let itemSettings = this.props.item && this.props.item.settings;
-    let correspondingName;
+    let correspondingName: string;
     if (itemSettings) {
       correspondingName = Object.keys(itemSettings).find(k => k === `facets_enabled_${settingIsAbout}`);
       return itemSettings[correspondingName];
