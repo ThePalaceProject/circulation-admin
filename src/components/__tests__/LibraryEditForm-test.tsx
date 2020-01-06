@@ -8,6 +8,7 @@ import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
+import FiltersForm from "../FiltersForm";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -18,7 +19,8 @@ describe("LibraryEditForm", () => {
     short_name: "short_name",
     settings: {
       "privacy-policy": "http://privacy",
-      "copyright": "http://copyright"
+      "copyright": "http://copyright",
+      "featured_lane_size": "20"
     }
   };
   let settingFields = [
@@ -26,6 +28,7 @@ describe("LibraryEditForm", () => {
     { key: "copyright", label: "Copyright", category: "Links" },
     { key: "logo", label: "Logo", category: "Client Interface Customization" },
     { key: "large_collection_languages", label: "Languages", category: "Languages" },
+    { key: "featured_lane_size", label: "Maximum number of books in the 'featured' lanes", category: "Lanes & Filters", type: "number"},
     { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" }
   ];
 
@@ -111,7 +114,7 @@ describe("LibraryEditForm", () => {
 
     it("subdivides fields", () => {
       let collapsible = wrapper.find(".panel");
-      expect(collapsible.length).to.equal(5);
+      expect(collapsible.length).to.equal(6);
 
       let basic = collapsible.at(0).find(".panel-heading");
       expect(basic.text()).to.contain("Basic Information");
@@ -132,6 +135,19 @@ describe("LibraryEditForm", () => {
       expect(addListItems.length).to.equal(2);
       expect(addListItems.at(0).type()).to.equal("span");
       expect(addListItems.at(1).type()).to.equal("button");
+    });
+
+    it("renders a FiltersForm", () => {
+      let filters = collapsibleByName("Lanes & Filters");
+      expect(filters.parent().type()).to.equal(FiltersForm);
+
+      let input = protocolFormFieldByKey("featured_lane_size");
+      expect(input.length).to.equal(1);
+      expect(input.props().value).not.to.be.ok;
+
+      wrapper.setProps({ item: libraryData });
+      input = protocolFormFieldByKey("featured_lane_size");
+      expect(input.props().value).to.equal("20");
     });
 
     it("has a save button", () => {
@@ -188,6 +204,15 @@ describe("LibraryEditForm", () => {
       nameInputElement.value = "new name";
       nameInput.simulate("change");
     };
+
+    it("submits data from the FiltersForm", () => {
+      wrapper.setProps({ item: libraryData });
+      let saveButton = wrapper.find(Button).at(1);
+      saveButton.simulate("click");
+      expect(save.callCount).to.equal(1);
+      let formData = save.args[0][0];
+      expect(formData.get("featured_lane_size")).to.equal("20");
+    });
 
     it("clears the form", () => {
       fillOutFormFields();

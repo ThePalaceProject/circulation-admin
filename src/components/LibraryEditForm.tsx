@@ -116,7 +116,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     let forms = [];
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
-      let form = name == "Lanes & Filters" ?
+      let form = name === "Lanes & Filters" ?
       (
         <FiltersForm
           submit={this.submit}

@@ -240,7 +240,7 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   convert(label: string) {
-    let option = this.props.setting.options.find(o => o.label == label);
+    let option = this.props.setting.options.find(o => o.label === label);
     return option && option.key;
   }
 

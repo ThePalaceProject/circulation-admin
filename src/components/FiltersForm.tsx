@@ -14,35 +14,8 @@ export interface FiltersFormProps {
   error?: FetchErrorData;
 }
 
-export interface FiltersFormState {
-  available?: string[];
-  collection?: string[];
-  order?: string[];
-}
 
-export default class FiltersForm extends React.Component<FiltersFormProps, FiltersFormState> {
-  private available = React.createRef<ProtocolFormField>();
-  private collection = React.createRef<ProtocolFormField>();
-  private order = React.createRef<ProtocolFormField>();
-
-  constructor(props: FiltersFormProps) {
-    super(props);
-    let item = this.props.item;
-    let available;
-    let collection;
-    let order;
-    if (item) {
-      available = item.settings.facets_enabled_available as string[];
-      collection = item.settings.facets_enabled_collection as string[];
-      order = item.settings.facets_enabled_order as string[];
-    } else {
-      available = props.content.find(x => x.key == "facets_enabled_available").default;
-      collection = props.content.find(x => x.key == "facets_enabled_collection").default;
-      order = props.content.find(x => x.key == "facets_enabled_order").default;
-    }
-    this.state = { available, collection, order };
-    this.onChange = this.onChange.bind(this);
-  }
+export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
 
   render() {
     return (
@@ -69,11 +42,6 @@ export default class FiltersForm extends React.Component<FiltersFormProps, Filte
     }
   }
 
-  onChange(e) {
-    // debugger
-    this.order.current.getValue();
-  }
-
   getValue(setting: SettingData) {
     let value = this.props.item && this.props.item.settings ?
       this.props.item.settings[setting.key] : setting.default;
@@ -91,7 +59,7 @@ export default class FiltersForm extends React.Component<FiltersFormProps, Filte
         default={findDefault(setting)}
         error={this.props.error}
       />
-    )
+    );
   }
 
   makeCheckboxSet(setting: SettingData) {
@@ -104,14 +72,13 @@ export default class FiltersForm extends React.Component<FiltersFormProps, Filte
         value={this.getValue(setting)}
         default={findDefault(setting)}
         error={this.props.error}
-        onChange={this.onChange}
       />
     );
   }
 
   makeDropdownMenu(setting: SettingData) {
     let availableOptions: string[] = this.findCorresponding(setting);
-    let displayOnly = setting.options.filter(o => availableOptions.includes(o.key));
+    let displayOnly = setting.options.filter(o => availableOptions && availableOptions.includes(o.key));
     setting = {...setting as any, ...{options: displayOnly}};
     return (
       <ProtocolFormField
@@ -131,7 +98,7 @@ export default class FiltersForm extends React.Component<FiltersFormProps, Filte
       return this.makeNumberField(setting);
     } else if (setting.type === "select") {
       return this.makeDropdownMenu(setting);
-    } else if (setting.type === "list"){
+    } else if (setting.type === "list") {
       return this.makeCheckboxSet(setting);
     }
   }
