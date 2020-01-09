@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.4
+#### Added
+- Added "All Ages" and "Research" to the list of audiences for an item's classification.
+
 ### v0.4.3
 #### Added
 - Added a Metadata Services tab to the self-tests section of the Troubleshooting page.

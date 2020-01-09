@@ -79,6 +79,8 @@ export default class ClassificationsForm extends React.Component<Classifications
                 <option value="Young Adult" aria-selected={audience === "Young Adult"}>Young Adult</option>
                 <option value="Adult" aria-selected={audience === "Adult"}>Adult</option>
                 <option value="Adults Only" aria-selected={audience === "Adults Only"}>Adults Only</option>
+                <option value="All Ages" aria-selected={audience === "All Ages"}>All Ages</option>
+                <option value="Research" aria-selected={audience === "Research"}>Research</option>
               </EditableInput>
 
               { this.shouldShowTargetAge() &&
