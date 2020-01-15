@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.5
+#### Fixed
+- Fixed a bug that blocked creation of a new local analytics service with disabled patron neighborhood analytics.
+
 ### v0.4.4
 #### Added
 - Added "All Ages" and "Research" to the list of audiences for an item's classification.

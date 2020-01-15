@@ -72,7 +72,7 @@ describe("NeighborhoodAnalyticsForm", () => {
   });
 
   it("updates the state when an option is chosen", () => {
-    expect(wrapper.state()["selected"]).to.be.null;
+    expect(wrapper.state()["selected"]).to.equal("");
     chooseOption("choice1");
     expect(wrapper.state()["selected"]).to.equal("choice1");
   });
@@ -112,7 +112,7 @@ describe("NeighborhoodAnalyticsForm", () => {
   });
 
   it("returns the value of the currently selected option", () => {
-    expect(wrapper.instance().getValue()).to.be.null;
+    expect(wrapper.instance().getValue()).to.equal("");
     chooseOption("choice1");
     expect(wrapper.instance().getValue()).to.equal("choice1");
     chooseOption("choice2");
