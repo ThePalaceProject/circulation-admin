@@ -18,7 +18,7 @@ export interface NeighborhoodAnalyticsFormState {
 export default class NeighborhoodAnalyticsForm extends React.Component<NeighborhoodAnalyticsFormProps, NeighborhoodAnalyticsFormState> {
   constructor(props: NeighborhoodAnalyticsFormProps) {
     super(props);
-    this.state = { selected: props.currentValue || null };
+    this.state = { selected: props.currentValue || "" };
     this.handleNeighborhoodChange = this.handleNeighborhoodChange.bind(this);
     this.renderNeighborhoodForm = this.renderNeighborhoodForm.bind(this);
   }

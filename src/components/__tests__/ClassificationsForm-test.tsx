@@ -58,7 +58,7 @@ describe("ClassificationsForm", () => {
       expect(select.props().value).to.equal("None");
 
       let options = select.find("select").children();
-      expect(options.length).to.equal(5);
+      expect(options.length).to.equal(7);
 
       // This only gets rendered without an initial fiction classification:
       let noFictionSelectedRadio = wrapper
@@ -178,7 +178,7 @@ describe("ClassificationsForm", () => {
 
       let options = select.find("select").children();
       // The "None" select Audience value should not be rendered.
-      expect(options.length).to.equal(4);
+      expect(options.length).to.equal(6);
     });
 
     it("shows editable inputs with min and max target age", () => {
