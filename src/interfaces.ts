@@ -208,6 +208,7 @@ export interface SettingData {
   instructions?: string;
   format?: string;
   urlBase?: any;
+  capitalize?: boolean;
 }
 
 export interface ProtocolData {
