@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.6
+#### Updated
+- Implemented an optional case-insensitive configuration for InputList.
+
 ### v0.4.5
 #### Fixed
 - Fixed a bug that blocked creation of a new local analytics service with disabled patron neighborhood analytics.
