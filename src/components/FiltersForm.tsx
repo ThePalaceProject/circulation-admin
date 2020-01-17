@@ -5,6 +5,7 @@ import ProtocolFormField from "./ProtocolFormField";
 import InputList from "./InputList";
 import { findDefault } from "../utils/sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import CheckboxMenu from "./CheckboxMenu";
 
 export interface FiltersFormProps {
   submit: (data: FormData) => void;
@@ -64,16 +65,19 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
 
   makeCheckboxSet(setting: SettingData) {
     return (
-      <ProtocolFormField
-        key={setting.key}
-        ref={this[`${setting.key.split("_")[2]}`]}
-        setting={setting}
-        disabled={this.props.disabled}
-        value={this.getValue(setting)}
-        default={findDefault(setting)}
-        error={this.props.error}
-      />
+      <CheckboxMenu setting={setting} item={this.props.item} />
     );
+    // return (
+    //   <ProtocolFormField
+    //     key={setting.key}
+    //     ref={this[`${setting.key.split("_")[2]}`]}
+    //     setting={setting}
+    //     disabled={this.props.disabled}
+    //     value={this.getValue(setting)}
+    //     default={findDefault(setting)}
+    //     error={this.props.error}
+    //   />
+    // );
   }
 
   makeDropdownMenu(setting: SettingData) {
