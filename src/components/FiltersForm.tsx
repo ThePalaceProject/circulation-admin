@@ -5,7 +5,7 @@ import ProtocolFormField from "./ProtocolFormField";
 import InputList from "./InputList";
 import { findDefault } from "../utils/sharedFunctions";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
-import CheckboxMenu from "./CheckboxMenu";
+import PairedMenus from "./PairedMenus";
 
 export interface FiltersFormProps {
   submit: (data: FormData) => void;
@@ -56,11 +56,11 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
     return value;
   }
 
-  makeCheckboxMenu(checkboxSetting: SettingData) {
-    let dropdownSetting = this.findDropdownSetting(checkboxSetting);
+  makePairedMenus(inputListSetting: SettingData) {
+    let dropdownSetting = this.findDropdownSetting(inputListSetting);
     return (
-      <CheckboxMenu
-        checkboxSetting={checkboxSetting}
+      <PairedMenus
+        inputListSetting={inputListSetting}
         dropdownSetting={dropdownSetting}
         item={this.props.item}
         disabled={this.props.disabled}
@@ -83,24 +83,6 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
     );
   }
 
-  makeCheckboxSet(setting: SettingData) {
-    return this.makeCheckboxMenu(setting);
-    // return (
-    //   <CheckboxMenu setting={setting} item={this.props.item} />
-    // );
-    // return (
-    //   <ProtocolFormField
-    //     key={setting.key}
-    //     ref={this[`${setting.key.split("_")[2]}`]}
-    //     setting={setting}
-    //     disabled={this.props.disabled}
-    //     value={this.getValue(setting)}
-    //     default={findDefault(setting)}
-    //     error={this.props.error}
-    //   />
-    // );
-  }
-
   makeDropdownMenu(setting: SettingData) {
     let availableOptions: string[] = this.findCorresponding(setting);
     let displayOnly = setting.options.filter(o => availableOptions && availableOptions.includes(o.key));
@@ -121,10 +103,8 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
   renderContent(setting: SettingData) {
     if (setting.type === "number") {
       return this.makeNumberField(setting);
-    } else if (setting.type === "select") {
-      return this.makeDropdownMenu(setting);
     } else if (setting.type === "list") {
-      return this.makeCheckboxSet(setting);
+      return this.makePairedMenus(setting);
     }
   }
 }

@@ -18,6 +18,7 @@ export interface InputListProps {
   onSubmit?: any;
   onEmpty?: string;
   title?: string;
+  onChange?: (any) => {};
 }
 
 export interface InputListState {
@@ -162,7 +163,7 @@ export default class InputList extends React.Component<InputListProps, InputList
   renderMenu(setting) {
     let choices = this.state.options;
     // If there are no available options, don't show the menu
-    if (choices.length > 0) {
+    if (choices && choices.length > 0) {
       return this.props.createEditableInput(
         setting,
         {
@@ -219,6 +220,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   async removeListItem(listItem: string | {}) {
     await this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
+    this.props.onChange && this.props.onChange(this.state);
     // Actually save the changes instead of just manipulating the state
     if (this.props.onSubmit) { await this.props.onSubmit(); }
   }
@@ -229,6 +231,7 @@ export default class InputList extends React.Component<InputListProps, InputList
       (this.refs["addListItem"] as any);
     const listItem = ref.getValue();
     await this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
+    this.props.onChange && this.props.onChange(this.state);
     // Actually save the changes instead of just manipulating the state
     if (this.props.onSubmit) {
       await this.props.onSubmit();
