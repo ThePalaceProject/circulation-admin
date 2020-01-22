@@ -42,11 +42,31 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
       return [setting.default];
     }
   }
+  findDropdownSetting(setting: SettingData): any {
+    let settingName = setting.key;
+    let settingIsAbout = settingName.split("_")[2];
+    let dropdownSettingName = `facets_default_${settingIsAbout}`
+    let dropdownSetting = this.props.content.find(x => x.key === dropdownSettingName);
+    return dropdownSetting;
+  }
 
   getValue(setting: SettingData) {
     let value = this.props.item && this.props.item.settings ?
       this.props.item.settings[setting.key] : setting.default;
     return value;
+  }
+
+  makeCheckboxMenu(checkboxSetting: SettingData) {
+    let dropdownSetting = this.findDropdownSetting(checkboxSetting);
+    return (
+      <CheckboxMenu
+        checkboxSetting={checkboxSetting}
+        dropdownSetting={dropdownSetting}
+        item={this.props.item}
+        disabled={this.props.disabled}
+        error={this.props.error}
+      />
+    );
   }
 
   makeNumberField(setting: SettingData) {
@@ -64,9 +84,10 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
   }
 
   makeCheckboxSet(setting: SettingData) {
-    return (
-      <CheckboxMenu setting={setting} item={this.props.item} />
-    );
+    return this.makeCheckboxMenu(setting);
+    // return (
+    //   <CheckboxMenu setting={setting} item={this.props.item} />
+    // );
     // return (
     //   <ProtocolFormField
     //     key={setting.key}

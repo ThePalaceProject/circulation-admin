@@ -17,6 +17,7 @@ export interface ProtocolFormFieldProps {
   onSubmit?: any;
   onEmpty?: string;
   title?: string;
+  onChange?: any;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -27,6 +28,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     this.randomize = this.randomize.bind(this);
     this.isDefault = this.isDefault.bind(this);
     this.shouldBeChecked = this.shouldBeChecked.bind(this);
+    this.createEditableInput = this.createEditableInput.bind(this);
   }
 
   render(): JSX.Element {
@@ -86,7 +88,8 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       description: setting.description,
       value: (this.props && this.props.value) || setting.default,
       error: this.props && this.props.error,
-      ref: "element"
+      ref: "element",
+      onChange: this.props.onChange
     };
 
     let props = extraProps[setting.type] ? {...basicProps, ...extraProps[setting.type]} : basicProps;
