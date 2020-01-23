@@ -19,6 +19,7 @@ export interface InputListProps {
   onEmpty?: string;
   title?: string;
   onChange?: (value: any) => {};
+  locked?: boolean;
 }
 
 export interface InputListState {
@@ -134,8 +135,11 @@ export default class InputList extends React.Component<InputListProps, InputList
       item = (
         <a href={setting.urlBase(listItem)}>{listItem}</a>
       );
+    } else if (this.props.locked) {
+      item = (
+        <span className="locked-item">{setting.options.find(o => o.key === value).label}</span>
+      );
     } else {
-      console.log(setting, value);
       item = (
         this.props.createEditableInput(setting, {
           type: "text",

@@ -23,7 +23,7 @@
   .input-list-ul {
     padding: 0;
     list-style: none;
-    .with-remove-button a {
+    .locked-item, .with-remove-button a {
       display: block;
       background: darken($gray-tint, 5);
       padding: 6px 12px;
