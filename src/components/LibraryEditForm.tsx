@@ -163,8 +163,8 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   submit(data: FormData) {
-    console.log(data.get("facets_enabled_order"), data.get("facets_default_order"));
-    // this.props.save(data);
+    console.log(data.getAll("facets_enabled_order"), data.get("facets_default_order"));
+    this.props.save(data);
   }
 
 }

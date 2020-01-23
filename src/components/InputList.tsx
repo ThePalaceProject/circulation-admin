@@ -18,7 +18,7 @@ export interface InputListProps {
   onSubmit?: any;
   onEmpty?: string;
   title?: string;
-  onChange?: (any) => {};
+  onChange?: (value: any) => {};
 }
 
 export interface InputListState {
@@ -135,13 +135,14 @@ export default class InputList extends React.Component<InputListProps, InputList
         <a href={setting.urlBase(listItem)}>{listItem}</a>
       );
     } else {
+      console.log(setting, value);
       item = (
         this.props.createEditableInput(setting, {
           type: "text",
           description: null,
           disabled: this.props.disabled,
-          value: value,
-          name: setting.key,
+          value: setting.options.find(o => o.key === value).label,
+          name: `${setting.key}_${value}`,
           label: null,
           extraContent: this.renderToolTip(listItem, setting.format),
           optionalText: !setting.required

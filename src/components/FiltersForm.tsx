@@ -45,7 +45,7 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
   findDropdownSetting(setting: SettingData): any {
     let settingName = setting.key;
     let settingIsAbout = settingName.split("_")[2];
-    let dropdownSettingName = `facets_default_${settingIsAbout}`
+    let dropdownSettingName = `facets_default_${settingIsAbout}`;
     let dropdownSetting = this.props.content.find(x => x.key === dropdownSettingName);
     return dropdownSetting;
   }
