@@ -115,7 +115,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   renderForms(categories) {
     let forms = [];
     let categoryNames = Object.keys(categories);
-    // console.log(Object.values(categories).map(x => (x as any).filter(y => y.type === "list")));
     categoryNames.forEach((name) => {
       let form = name === "Lanes & Filters" ?
       (
@@ -163,7 +162,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   submit(data: FormData) {
-    console.log(data.getAll("facets_enabled_order"), data.get("facets_default_order"));
     this.props.save(data);
   }
 

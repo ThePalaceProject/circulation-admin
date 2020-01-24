@@ -20,6 +20,7 @@ export interface InputListProps {
   title?: string;
   onChange?: (value: any) => {};
   locked?: boolean;
+  optionalText?: boolean;
 }
 
 export interface InputListState {
@@ -121,6 +122,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   renderListItem(setting, value, listItem) {
     let item;
+    let label = setting.options ? setting.options.find(o => o.key === value).label : value;
     if (setting.format === "language-code") {
       item = (
         <LanguageField
@@ -135,21 +137,18 @@ export default class InputList extends React.Component<InputListProps, InputList
       item = (
         <a href={setting.urlBase(listItem)}>{listItem}</a>
       );
-    } else if (this.props.locked) {
-      item = (
-        <span className="locked-item">{setting.options.find(o => o.key === value).label}</span>
-      );
     } else {
       item = (
         this.props.createEditableInput(setting, {
           type: "text",
           description: null,
           disabled: this.props.disabled,
-          value: setting.options.find(o => o.key === value).label,
+          value: label,
           name: `${setting.key}_${value}`,
           label: null,
           extraContent: this.renderToolTip(listItem, setting.format),
-          optionalText: !setting.required
+          optionalText: false,
+          readOnly: this.props.locked
         })
       );
     }
@@ -178,7 +177,8 @@ export default class InputList extends React.Component<InputListProps, InputList
           label: setting.menuTitle,
           required: setting.required,
           ref: "addListItem",
-          optionalText: !setting.required
+          optionalText: !setting.required,
+          description: !setting.required ? "(Optional) " : ""
         }, choices
       );
     }
