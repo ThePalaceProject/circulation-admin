@@ -144,7 +144,7 @@ export default class InputList extends React.Component<InputListProps, InputList
           description: null,
           disabled: this.props.disabled,
           value: label,
-          name: `${setting.key}_${value}`,
+          name: setting.type === "menu" ? `${setting.key}_${value}` : setting.key,
           label: null,
           extraContent: this.renderToolTip(listItem, setting.format),
           optionalText: false,
