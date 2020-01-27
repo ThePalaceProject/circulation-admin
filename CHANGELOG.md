@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.7
+#### Updated
+- Added the query param `&language=all` for searches done in the List admin page to allow searches without a language filter.
+
 ### v0.4.6
 #### Updated
 - Implemented an optional case-insensitive configuration for InputList.
