@@ -124,6 +124,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     );
   }
 
+
   renderListSetting(setting: SettingData | CustomListsSetting): JSX.Element {
     // Flatten an object in which the values are arrays
     let value = Array.isArray(this.props.value) ?

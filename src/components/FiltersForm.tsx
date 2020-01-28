@@ -30,18 +30,18 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
     );
   }
 
-  findCorresponding(setting: SettingData): any {
-    let settingName = setting.key;
-    let settingIsAbout = settingName.split("_")[2];
-    let itemSettings = this.props.item && this.props.item.settings;
-    let correspondingName: string;
-    if (itemSettings) {
-      correspondingName = Object.keys(itemSettings).find(k => k === `facets_enabled_${settingIsAbout}`);
-      return itemSettings[correspondingName];
-    } else {
-      return [setting.default];
-    }
-  }
+  // findCorresponding(setting: SettingData): any {
+  //   let settingName = setting.key;
+  //   let settingIsAbout = settingName.split("_")[2];
+  //   let itemSettings = this.props.item && this.props.item.settings;
+  //   let correspondingName: string;
+  //   if (itemSettings) {
+  //     correspondingName = Object.keys(itemSettings).find(k => k === `facets_enabled_${settingIsAbout}`);
+  //     return itemSettings[correspondingName];
+  //   } else {
+  //     return [setting.default];
+  //   }
+  // }
   findDropdownSetting(setting: SettingData): any {
     let settingName = setting.key;
     let settingIsAbout = settingName.split("_")[2];
@@ -83,22 +83,22 @@ export default class FiltersForm extends React.Component<FiltersFormProps, {}> {
     );
   }
 
-  makeDropdownMenu(setting: SettingData) {
-    let availableOptions: string[] = this.findCorresponding(setting);
-    let displayOnly = setting.options.filter(o => availableOptions && availableOptions.includes(o.key));
-    setting = {...setting as any, ...{options: displayOnly}};
-    return (
-      <ProtocolFormField
-        key={setting.key}
-        ref={setting.key}
-        setting={setting}
-        disabled={this.props.disabled}
-        value={this.getValue(setting)}
-        default={findDefault(setting)}
-        error={this.props.error}
-      />
-    );
-  }
+  // makeDropdownMenu(setting: SettingData) {
+  //   let availableOptions: string[] = this.findCorresponding(setting);
+  //   let displayOnly = setting.options.filter(o => availableOptions && availableOptions.includes(o.key));
+  //   setting = {...setting as any, ...{options: displayOnly}};
+  //   return (
+  //     <ProtocolFormField
+  //       key={setting.key}
+  //       ref={setting.key}
+  //       setting={setting}
+  //       disabled={this.props.disabled}
+  //       value={this.getValue(setting)}
+  //       default={findDefault(setting)}
+  //       error={this.props.error}
+  //     />
+  //   );
+  // }
 
   renderContent(setting: SettingData) {
     if (setting.type === "number") {

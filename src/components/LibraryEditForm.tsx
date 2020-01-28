@@ -6,6 +6,7 @@ import { LibrariesData, LibraryData } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import FiltersForm from "./FiltersForm";
+import PairedMenus from "./PairedMenus";
 
 export interface LibraryEditFormProps {
   data: LibrariesData;
@@ -116,17 +117,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     let forms = [];
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
-      let form = name === "Lanes & Filters" ?
-      (
-        <FiltersForm
-          submit={this.submit}
-          content={categories[name]}
-          disabled={this.props.disabled}
-          item={this.props.item}
-          error={this.props.error}
-        />
-      ) :
-      (
+      let form =
         <Panel
           id={`library-form-${name.replace(/\s/g, "-")}`}
           headerText={`${name} (Optional)`}
@@ -134,17 +125,30 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           key={name}
           content={this.renderFieldset(categories[name])}
         />
-      );
       forms.push(form);
     });
     return forms;
   }
 
   renderFieldset(fields) {
+    let renderPairedMenus = (setting) => {
+      let dropdownSetting = fields.find(x => x.key === setting.paired);
+      return (
+        <PairedMenus
+          inputListSetting={setting}
+          dropdownSetting={dropdownSetting}
+          item={this.props.item}
+          disabled={this.props.disabled}
+          error={this.props.error}
+        />
+      );
+    }
     return (
       <fieldset>
         <legend className="visuallyHidden">Additional Fields</legend>
-        { fields.map(setting =>
+        { fields.map(setting => (setting.paired &&
+          renderPairedMenus(setting))
+        ||
           <ProtocolFormField
             key={setting.key}
             ref={setting.key}

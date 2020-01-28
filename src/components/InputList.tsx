@@ -108,6 +108,7 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   renderList(listItems, setting) {
+    // console.log(setting.key, listItems);
     return (
       <ul className="input-list-ul">
         {
@@ -122,6 +123,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   renderListItem(setting, value, listItem) {
     let item;
+    // let label = "meow";
     let label = setting.options ? setting.options.find(o => o.key === value).label : value;
     if (setting.format === "language-code") {
       item = (
@@ -165,6 +167,7 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   renderMenu(setting) {
+    console.log(setting);
     let choices = this.state.options;
     // If there are no available options, don't show the menu
     if (choices && choices.length > 0) {
