@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import { findDefault, clearForm } from "../utils/sharedFunctions";
-import { LibrariesData, LibraryData } from "../interfaces";
+import { LibrariesData, LibraryData, LibrarySettingField, SettingData } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import PairedMenus from "./PairedMenus";
@@ -22,7 +22,7 @@ export interface LibraryEditFormProps {
 /** Form for editing a library's configuration, on the libraries tab of the
     system configuration page. */
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, {}> {
-  constructor(props) {
+  constructor(props: LibraryEditFormProps) {
     super(props);
     this.submit = this.submit.bind(this);
   }
@@ -104,7 +104,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       />);
   }
 
-  separateCategories(nonRequiredFields) {
+  separateCategories(nonRequiredFields: LibrarySettingField[]) {
     let categories = {};
     nonRequiredFields.forEach((setting) => {
       categories[setting.category] = categories[setting.category] ? categories[setting.category].concat(setting) : [setting];
@@ -112,7 +112,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     return categories;
   }
 
-  renderForms(categories) {
+  renderForms(categories: {[key: string]: LibrarySettingField[]}) {
     let forms = [];
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
@@ -129,7 +129,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     return forms;
   }
 
-  renderPairedMenus(setting, fields) {
+  renderPairedMenus(setting: SettingData, fields: LibrarySettingField[]) {
     let dropdownSetting = fields.find(x => x.key === setting.paired);
     return (
       <PairedMenus
@@ -142,7 +142,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     );
   }
 
-  renderFieldset(fields) {
+  renderFieldset(fields: SettingData[]) {
     return (
       <fieldset>
         <legend className="visuallyHidden">Additional Fields</legend>

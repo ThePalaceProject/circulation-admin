@@ -25,7 +25,7 @@ export interface ProtocolFormFieldProps {
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
 export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, {}> {
-  constructor(props) {
+  constructor(props: ProtocolFormFieldProps) {
     super(props);
     this.randomize = this.randomize.bind(this);
     this.isDefault = this.isDefault.bind(this);
@@ -176,13 +176,13 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     return [label, description, instructions];
   }
 
-  isDefault(option) {
+  isDefault(option: JSX.Element) {
     if (this.props.default) {
       return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
     }
   }
 
-  shouldBeChecked(option) {
+  shouldBeChecked(option: JSX.Element) {
     let isArray = this.props.value && Array.isArray(this.props.value);
     let isAllStrings = isArray && (this.props.value as any).every(x => typeof(x) === "string");
     let hasKey = isArray && (this.props.value as any).includes(option.key);

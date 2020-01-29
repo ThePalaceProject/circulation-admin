@@ -9,7 +9,7 @@ import { isEqual } from "../utils/sharedFunctions";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
-  labelAndDescription?: (SettingData) => JSX.Element[];
+  labelAndDescription?: (setting: SettingData) => JSX.Element[];
   setting: SettingData | CustomListsSetting;
   disabled: boolean;
   value: Array<string | {} | JSX.Element>;
@@ -46,14 +46,14 @@ export default class InputList extends React.Component<InputListProps, InputList
     this.filterMenu = this.filterMenu.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps(newProps: InputListProps) {
     // Update the list of existing items with value from new props
     if (this.state.listItems && newProps.value && !isEqual(this.state.listItems, newProps.value)) {
       this.setState({ listItems: newProps.value });
     }
   }
 
-  componentDidUpdate(oldProps, oldState) {
+  componentDidUpdate(oldProps: InputListProps, oldState: InputListState) {
     // Remove already-selected items from the dropdown menu
     if (oldState.listItems && this.state.listItems && !isEqual(oldState.listItems, this.state.listItems)) {
       this.props.setting.format === "narrow" && this.setState({ options: this.filterMenu() });
@@ -64,8 +64,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     const setting = this.props.setting as any;
     // Hide the "Add" button if there are no options left
     let showButton = !this.state.options || this.state.options.length > 0;
-    let hasListItems = (this.state.listItems && this.state.listItems.length > 0) || setting.default;
-    let listItems = this.state.listItems && this.state.listItems.length > 0 ? this.state.listItems : setting.default;
+    let hasListItems = this.state.listItems && this.state.listItems.length > 0;
     return (
       <div className="input-list">
         { this.props.labelAndDescription && this.props.labelAndDescription(setting) }
@@ -108,7 +107,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
-  renderList(listItems, setting) {
+  renderList(listItems, setting: SettingData) {
     return (
       <ul className="input-list-ul">
         {
@@ -121,8 +120,8 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
-  renderListItem(setting, value, listItem) {
-    let item;
+  renderListItem(setting: SettingData, value: string, listItem) {
+    let item: JSX.Element;
     let label = setting.options ? setting.options.find(o => o.key === value).label : value;
     if (setting.format === "language-code") {
       item = (
@@ -165,7 +164,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
-  renderMenu(setting) {
+  renderMenu(setting: CustomListsSetting) {
     let choices = this.state.options;
     // If there are no available options, don't show the menu
     if (choices && choices.length > 0) {
