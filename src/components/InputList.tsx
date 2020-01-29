@@ -64,7 +64,8 @@ export default class InputList extends React.Component<InputListProps, InputList
     const setting = this.props.setting as any;
     // Hide the "Add" button if there are no options left
     let showButton = !this.state.options || this.state.options.length > 0;
-    let hasListItems = this.state.listItems && this.state.listItems.length > 0;
+    let hasListItems = (this.state.listItems && this.state.listItems.length > 0) || setting.default;
+    let listItems = this.state.listItems && this.state.listItems.length > 0 ? this.state.listItems : setting.default;
     return (
       <div className="input-list">
         { this.props.labelAndDescription && this.props.labelAndDescription(setting) }
@@ -108,7 +109,6 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   renderList(listItems, setting) {
-    // console.log(setting.key, listItems);
     return (
       <ul className="input-list-ul">
         {
@@ -123,7 +123,6 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   renderListItem(setting, value, listItem) {
     let item;
-    // let label = "meow";
     let label = setting.options ? setting.options.find(o => o.key === value).label : value;
     if (setting.format === "language-code") {
       item = (
@@ -167,7 +166,6 @@ export default class InputList extends React.Component<InputListProps, InputList
   }
 
   renderMenu(setting) {
-    console.log(setting);
     let choices = this.state.options;
     // If there are no available options, don't show the menu
     if (choices && choices.length > 0) {
@@ -210,10 +208,15 @@ export default class InputList extends React.Component<InputListProps, InputList
     // All the possibilities, regardless of whether they've already been selected.
     let allOptions = (this.props.setting as any).menuOptions;
     if (!allOptions) {
-      return;
+      try {
+        allOptions = this.props.setting.options.map(o => <option key={o.key} value={o.key} aria-selected={false}>{o.label}</option>);
+      }
+      catch {
+        return;
+      }
     }
     // Items that have already been selected, and should be eliminated from the menu.
-    let listItems = this.state ? this.state.listItems : this.props.value;
+    let listItems = this.state ? this.state.listItems : (this.props.value || this.props.setting.default);
     // Items that haven't been selected yet.
     let remainingOptions = listItems ? allOptions.filter(o => listItems.indexOf(o.props.value) < 0) : [];
     return remainingOptions;

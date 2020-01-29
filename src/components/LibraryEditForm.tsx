@@ -124,7 +124,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           onEnter={this.submit}
           key={name}
           content={this.renderFieldset(categories[name])}
-        />
+        />;
       forms.push(form);
     });
     return forms;
@@ -142,7 +142,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           error={this.props.error}
         />
       );
-    }
+    };
     return (
       <fieldset>
         <legend className="visuallyHidden">Additional Fields</legend>
@@ -152,13 +152,14 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           <ProtocolFormField
             key={setting.key}
             ref={setting.key}
-            setting={setting}
+            setting={setting.format === "narrow" ? {...setting, ...{type: "menu"}} : setting}
             additionalData={this.props.additionalData}
             disabled={this.props.disabled}
-            value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+            value={(this.props.item && this.props.item.settings && this.props.item.settings[setting.key]) || setting.default}
             default={findDefault(setting)}
             error={this.props.error}
-            />
+            locked={setting.locked}
+          />
           )
         }
       </fieldset>
