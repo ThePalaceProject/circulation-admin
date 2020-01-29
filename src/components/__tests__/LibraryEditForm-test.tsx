@@ -8,7 +8,6 @@ import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
-import FiltersForm from "../FiltersForm";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -135,19 +134,6 @@ describe("LibraryEditForm", () => {
       expect(addListItems.length).to.equal(2);
       expect(addListItems.at(0).type()).to.equal("span");
       expect(addListItems.at(1).type()).to.equal("button");
-    });
-
-    it("renders a FiltersForm", () => {
-      let filters = collapsibleByName("Lanes & Filters");
-      expect(filters.parent().type()).to.equal(FiltersForm);
-
-      let input = protocolFormFieldByKey("featured_lane_size");
-      expect(input.length).to.equal(1);
-      expect(input.props().value).not.to.be.ok;
-
-      wrapper.setProps({ item: libraryData });
-      input = protocolFormFieldByKey("featured_lane_size");
-      expect(input.props().value).to.equal("20");
     });
 
     it("has a save button", () => {

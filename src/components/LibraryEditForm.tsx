@@ -5,7 +5,6 @@ import { findDefault, clearForm } from "../utils/sharedFunctions";
 import { LibrariesData, LibraryData } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
-import FiltersForm from "./FiltersForm";
 import PairedMenus from "./PairedMenus";
 
 export interface LibraryEditFormProps {
@@ -130,24 +129,25 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     return forms;
   }
 
+  renderPairedMenus(setting, fields) {
+    let dropdownSetting = fields.find(x => x.key === setting.paired);
+    return (
+      <PairedMenus
+        inputListSetting={setting}
+        dropdownSetting={dropdownSetting}
+        item={this.props.item}
+        disabled={this.props.disabled}
+        error={this.props.error}
+      />
+    );
+  }
+
   renderFieldset(fields) {
-    let renderPairedMenus = (setting) => {
-      let dropdownSetting = fields.find(x => x.key === setting.paired);
-      return (
-        <PairedMenus
-          inputListSetting={setting}
-          dropdownSetting={dropdownSetting}
-          item={this.props.item}
-          disabled={this.props.disabled}
-          error={this.props.error}
-        />
-      );
-    };
     return (
       <fieldset>
         <legend className="visuallyHidden">Additional Fields</legend>
         { fields.map(setting => (setting.paired &&
-          renderPairedMenus(setting))
+          this.renderPairedMenus(setting, fields))
         ||
           <ProtocolFormField
             key={setting.key}
