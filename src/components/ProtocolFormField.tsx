@@ -29,7 +29,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     super(props);
     this.randomize = this.randomize.bind(this);
     this.isDefault = this.isDefault.bind(this);
-    this.shouldBeChecked = this.shouldBeChecked.bind(this);
     this.createEditableInput = this.createEditableInput.bind(this);
   }
 
@@ -105,24 +104,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     return this.createEditableInput(setting, null, children);
   }
 
-  renderListSettingWithOptions(setting: SettingData): JSX.Element {
-    return (
-      <div>
-        { setting.label && this.labelAndDescription(setting) }
-        { setting.options.map((option) => {
-            return this.createEditableInput(option, {
-                type: "checkbox",
-                required: setting.required,
-                name: `${setting.key}_${option.key}`,
-                checked: this.shouldBeChecked(option)
-              });
-            })
-        }
-      </div>
-    );
-  }
-
-
   renderListSetting(setting: SettingData | CustomListsSetting): JSX.Element {
     // Flatten an object in which the values are arrays
     let value = Array.isArray(this.props.value) ?
@@ -180,18 +161,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     if (this.props.default) {
       return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
     }
-  }
-
-  shouldBeChecked(option: JSX.Element) {
-    let isArray = this.props.value && Array.isArray(this.props.value);
-    let isAllStrings = isArray && (this.props.value as any).every(x => typeof(x) === "string");
-    let hasKey = isArray && (this.props.value as any).includes(option.key);
-
-    let isValue = this.props.value &&
-      (typeof(this.props.value) === "string" || isAllStrings) &&
-      (this.props.value === option.key || hasKey);
-    let isDefault = (!this.props.value && this.isDefault(option));
-    return isValue || isDefault;
   }
 
   getValue() {

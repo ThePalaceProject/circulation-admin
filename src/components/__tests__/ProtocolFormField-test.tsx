@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import * as React from "react";
 import { mount } from "enzyme";
+import { stub } from "sinon";
 
 import ProtocolFormField from "../ProtocolFormField";
 import EditableInput from "../EditableInput";
@@ -94,29 +95,6 @@ describe("ProtocolFormField", () => {
     expect(input.prop("value")).to.equal("test");
   });
 
-  it("calculates whether checkbox should be checked by default", () => {
-    // const defaultOptions = ["box2"];
-    // let defaultOptionsSetting = {...setting, ...{options: [{ key: "box1", label: "don't check" }, { key: "box2", label: "check" }]}};
-    // wrapper.setProps({ setting: defaultOptionsSetting, default: defaultOptions });
-    //
-    // expect((wrapper.instance() as ProtocolFormField).shouldBeChecked(defaultOptionsSetting.options[0])).to.be.false;
-    // expect((wrapper.instance() as ProtocolFormField).shouldBeChecked(defaultOptionsSetting.options[1])).to.be.true;
-    // console.log(wrapper.debug());
-    // let input = wrapper.find(EditableInput);
-    // // expect(input.length).to.equal(2);
-    //
-    // expect(input.at(0).prop("type")).to.equal("checkbox");
-    // expect(input.at(0).prop("checked")).to.be.false;
-
-    // expect(input.at(1).prop("type")).to.equal("checkbox");
-    // expect(input.at(1).prop("checked")).to.be.true;
-    //
-    // wrapper.setProps({ default: ["box1"]});
-    // input = wrapper.find(EditableInput);
-    // expect(input.at(0).prop("checked")).to.be.true;
-    // expect(input.at(1).prop("checked")).to.be.false;
-  });
-
   it("renders number setting", () => {
     let numberSetting = {...setting, ...{"type": "number"}};
     wrapper.setProps({ setting: numberSetting });
@@ -176,41 +154,6 @@ describe("ProtocolFormField", () => {
     (wrapper.instance() as ProtocolFormField).clear();
     expect(inputElement.text()).to.equal("");
   });
-
-  // it("renders list setting with options", () => {
-  //   const defaultOptions = ["option2", "option3"];
-  //   let listSettingWithOptions = {...setting, ...{type: "list", options: [{ key: "option1", label: "option 1" }, { key: "option2", label: "option 2" }, { key: "option3", label: "option 3" }], default: defaultOptions}};
-  //   wrapper.setProps({ setting: listSettingWithOptions, default: defaultOptions });
-  //
-  //   expect(wrapper.find("div").at(0).text()).to.contain("label");
-  //   let description = wrapper.find(".description");
-  //   expect(description.at(0).html()).to.equal("<span class=\"description\"><p>description</p></span>");
-  //   // There are three inputs but only one description.
-  //   expect(description.length).to.equal(1);
-  //
-  //   let input = wrapper.find(EditableInput);
-  //   expect(input.length).to.equal(3);
-  //
-  //   expect(input.at(0).prop("name")).to.equal("setting_option1");
-  //   expect(input.at(1).prop("name")).to.equal("setting_option2");
-  //   expect(input.at(2).prop("name")).to.equal("setting_option3");
-  //
-  //   expect(input.at(0).prop("label")).to.equal("option 1");
-  //   expect(input.at(1).prop("label")).to.equal("option 2");
-  //   expect(input.at(2).prop("label")).to.equal("option 3");
-  //
-  //   expect(input.at(0).prop("checked")).not.to.be.ok;
-  //   expect(input.at(1).prop("checked")).to.be.ok;
-  //   expect(input.at(2).prop("checked")).to.be.ok;
-  //
-  //   wrapper.setProps({ value: ["option1", "option3"] });
-  //
-  //   input = wrapper.find(EditableInput);
-  //   expect(input.length).to.equal(3);
-  //   expect(input.at(0).prop("checked")).to.be.ok;
-  //   expect(input.at(1).prop("checked")).not.to.be.ok;
-  //   expect(input.at(2).prop("checked")).to.be.ok;
-  // });
 
   it("renders menu setting", () => {
     let inputList = wrapper.find(InputList);
@@ -282,6 +225,32 @@ describe("ProtocolFormField", () => {
     expect(instructions.hasClass("description")).to.be.true;
     expect(instructions.text()).to.equal("Step 1");
   });
+
+  it("optionally accepts an onChange prop", () => {
+    let onChange = stub();
+    wrapper.setProps({ onChange });
+    let element = wrapper.find(EditableInput);
+    expect(element.prop("onChange")).to.equal(onChange);
+    let setting = {...wrapper.prop("setting"), ...{type: "list"}};
+    wrapper.setProps({ setting });
+    let inputList = wrapper.find(InputList);
+    expect(inputList.prop("onChange")).to.equal(onChange);
+  });
+
+  it("optionally accepts a locked prop", () => {
+    let setting = {...wrapper.prop("setting"), ...{type: "list"}};
+    wrapper.setProps({ setting: setting, locked: true });
+    let inputList = wrapper.find(InputList);
+    expect(inputList.prop("locked")).to.be.true;
+  });
+
+  it("optionally accepts an optionalText prop", () => {
+    let setting = {...wrapper.prop("setting"), ...{type: "list"}};
+    wrapper.setProps({ setting: setting, optionalText: true });
+    let inputList = wrapper.find(InputList);
+    expect(inputList.prop("optionalText")).to.be.true;
+  });
+
 
   it("gets value of text setting", () => {
     wrapper.setProps({ value: "test" });
