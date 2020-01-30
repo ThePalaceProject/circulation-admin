@@ -387,5 +387,9 @@ describe("InputList", () => {
       let message = wrapper.find(".add-list-item-container span");
       expect(message.text()).to.equal("You've run out of options!");
     });
+    it.only("renders option elements if necessary", () => {
+      wrapper.setProps({ setting: {...wrapper.prop("setting"), ...{menuOptions: null}}});
+      console.log(wrapper.instance().filterMenu());
+    });
   });
 });
