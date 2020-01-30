@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
-import { spy } from "sinon";
+import { stub, spy } from "sinon";
 import { Button } from "library-simplified-reusable-components";
 import buildStore from "../../store";
 
@@ -218,6 +218,14 @@ describe("InputList", () => {
     addButton = wrapper.find("button.add-list-item");
     expect(removables.length).to.equal(3);
     expect(addButton.prop("disabled")).to.be.true;
+  });
+
+  it.only("optionally accepts an onChange prop", () => {
+    let onChange = stub();
+    wrapper.setProps({ onChange });
+    expect(onChange.callCount).to.equal(0);
+    wrapper.instance().addListItem();
+    console.log(onChange.callCount);
   });
 
   it("gets the value", () => {

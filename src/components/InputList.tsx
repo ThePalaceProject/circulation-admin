@@ -18,6 +18,7 @@ export interface InputListProps {
   onSubmit?: any;
   onEmpty?: string;
   title?: string;
+  capitalize?: boolean;
   onChange?: (value: any) => {};
   locked?: boolean;
   optionalText?: boolean;
