@@ -175,6 +175,41 @@ describe("InputList", () => {
     expect(blankInput.prop("value")).to.equal("");
   });
 
+  it("adds and capitalizes an item", async() => {
+    wrapper.setProps({ setting: { ...wrapper.prop("setting"), ...{"capitalize": true} }});
+    let removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(2);
+
+    let blankInput = wrapper.find("span.add-list-item input");
+    blankInput.getDOMNode().value = "new york";
+    blankInput.simulate("change");
+    let addButton = wrapper.find("button.add-list-item");
+    addButton.simulate("click");
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    wrapper.update();
+    removables = wrapper.find(WithRemoveButton);
+    expect(removables.length).to.equal(3);
+    expect(removables.at(2).find(EditableInput).prop("value")).to.equal("New York");
+    expect(wrapper.state()["listItems"][2]).to.equal("New York");
+
+    blankInput = wrapper.find("span.add-list-item input");
+    expect(blankInput.prop("value")).to.equal("");
+  });
+
+  it("capitalizes a string", () => {
+    wrapper.setProps({ setting: {...wrapper.prop("setting"), ...{"format": "geographic"}}});
+    let cap = wrapper.instance().capitalize;
+    // Capitalizes one word
+    expect(cap("california")).to.equal("California");
+    // Capitalizes multiple words
+    expect(cap("new jersey")).to.equal("New Jersey");
+    // Capitalizes two-letter state/province abbreviations
+    expect(cap("fl")).to.equal("FL");
+    // Handles mixed words and abbreviations
+    expect(cap("new york city, ny")).to.equal("New York City, NY");
+  });
+
   it("adds an autocompleted item", async () => {
     let languageSetting = { ...setting, format: "language-code" };
     wrapper.setProps({ setting: languageSetting, value: ["abc"] });

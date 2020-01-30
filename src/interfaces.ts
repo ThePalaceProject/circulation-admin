@@ -210,6 +210,7 @@ export interface SettingData {
   urlBase?: any;
   paired?: string;
   locked?: boolean;
+  capitalize?: boolean;
 }
 
 export interface ProtocolData {

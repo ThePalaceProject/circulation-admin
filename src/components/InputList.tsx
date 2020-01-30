@@ -5,7 +5,7 @@ import { SettingData, CustomListsSetting } from "../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
 import { Button } from "library-simplified-reusable-components";
-import { isEqual } from "../utils/sharedFunctions";
+import { isEqual, formatString } from "../utils/sharedFunctions";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
@@ -44,6 +44,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     this.removeListItem = this.removeListItem.bind(this);
     this.clear = this.clear.bind(this);
     this.filterMenu = this.filterMenu.bind(this);
+    this.capitalize = this.capitalize.bind(this);
   }
 
   componentWillReceiveProps(newProps: InputListProps) {
@@ -239,7 +240,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     let ref = this.props.setting.format === "language-code" ?
       (this.refs["addListItem"] as any).refs["autocomplete"] :
       (this.refs["addListItem"] as any);
-    const listItem = ref.getValue();
+    const listItem = this.props.setting.capitalize ? this.capitalize(ref.getValue()) : ref.getValue();
     await this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
     this.props.onChange && this.props.onChange(this.state);
     // Actually save the changes instead of just manipulating the state
@@ -249,6 +250,14 @@ export default class InputList extends React.Component<InputListProps, InputList
     if (this.props.setting.type !== "menu") {
       ref.clear();
     }
+  }
+
+  capitalize(value: string): string {
+    // If it's a state/province abbreviation, the whole thing should be uppercase.  Otherwise, just capitalize
+    // the first letter of each word.
+    return value.split(" ").map(x =>
+      x.length === 2 && this.props.setting.format === "geographic" ? x.toUpperCase() : formatString(x)
+    ).join(" ");
   }
 
   getValue() {

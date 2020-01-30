@@ -394,7 +394,7 @@ describe("CustomListEditor", () => {
     expect(inputs.at(1).props().checked).to.equal(false);
   });
 
-  it("searches", () => {
+  it("searches with a default of language set to 'all'", () => {
     wrapper = mount(
       <CustomListEditor
         library="library"
@@ -419,7 +419,7 @@ describe("CustomListEditor", () => {
     searchForm.simulate("submit");
 
     expect(search.callCount).to.equal(1);
-    expect(search.args[0][0]).to.equal("/library/search?q=test");
+    expect(search.args[0][0]).to.equal("/library/search?q=test&language=all");
   });
 
   it("optionally searches a title passed as a prop", () => {
@@ -444,7 +444,7 @@ describe("CustomListEditor", () => {
     let searchField = wrapper.find(".form-control");
     expect(searchField.getDOMNode().value).to.equal("test title");
     expect(search.callCount).to.equal(1);
-    expect(search.args[0][0]).to.equal("/library/search?q=test%20title");
+    expect(search.args[0][0]).to.equal("/library/search?q=test%20title&language=all");
 
   });
 
@@ -480,7 +480,7 @@ describe("CustomListEditor", () => {
 
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0])
-      .to.equal("/library/search?q=harry%20potter&entrypoint=Book");
+      .to.equal("/library/search?q=harry%20potter&language=all&entrypoint=Book");
   });
 
   it("searches with ebook selected", () => {
@@ -515,7 +515,7 @@ describe("CustomListEditor", () => {
 
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0])
-      .to.equal("/library/search?q=oliver%20twist&entrypoint=Audio");
+      .to.equal("/library/search?q=oliver%20twist&language=all&entrypoint=Audio");
   });
 
   it("should keep the same state when the list prop gets updated", () => {

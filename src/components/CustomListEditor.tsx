@@ -340,11 +340,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }, 200);
   }
 
-  getEntryPointQuery() {
+  getSearchQueries() {
     const entryPointSelected = this.state.entryPointSelected;
-    let query = "";
+    let query = "&language=all";
     if (entryPointSelected && entryPointSelected !== "all") {
-      query = `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
+      query += `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
     }
 
     return query;
@@ -381,10 +381,16 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     return entryPointsElms;
   }
 
+  /**
+   * search()
+   * Search for items along with an EntryPoint query and a default
+   * language query set to 'all', for librarians who may want to search
+   * for items without a language filter.
+   */
   search() {
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
-    const entryPointQuery = this.getEntryPointQuery();
-    const url = "/" + this.props.library + "/search?q=" + searchTerms + entryPointQuery;
+    const searchQueries = this.getSearchQueries();
+    const url = `/${this.props.library}/search?q=${searchTerms}${searchQueries}`;
     this.props.search(url);
   }
 }
