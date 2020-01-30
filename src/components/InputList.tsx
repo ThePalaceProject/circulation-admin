@@ -123,7 +123,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   renderListItem(setting: SettingData, value: string, listItem) {
     let item: JSX.Element;
-    let label = setting.options ? setting.options.find(o => o.key === value).label : value;
+    let label = setting.options ? setting.options.find(o => o.key === value)?.label : value;
     if (setting.format === "language-code") {
       item = (
         <LanguageField
@@ -217,7 +217,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     }
     // Items that have already been selected, and should be eliminated from the menu.
     let listItems = this.state ? this.state.listItems : (this.props.value || this.props.setting.default);
-    // Items that haven't been selected yet.
+    // // Items that haven't been selected yet.
     let remainingOptions = listItems ? allOptions.filter(o => listItems.indexOf(o.props.value) < 0) : [];
     return remainingOptions;
   }

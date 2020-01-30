@@ -387,9 +387,26 @@ describe("InputList", () => {
       let message = wrapper.find(".add-list-item-container span");
       expect(message.text()).to.equal("You've run out of options!");
     });
-    it.only("renders option elements if necessary", () => {
-      wrapper.setProps({ setting: {...wrapper.prop("setting"), ...{menuOptions: null}}});
-      console.log(wrapper.instance().filterMenu());
+    it("renders option elements if necessary", () => {
+      // If the setting does not have a menuOptions property (e.g. because it has come from the server without being modified),
+      // InputList will use its options property to generate the dropdown menu with basic default values.
+      let options = [{key: "key_1", label: "label_1"}, {key: "key_2", label: "label_2"}];
+      let setting = {...wrapper.prop("setting"), ...{options: options, menuOptions: null}};
+      wrapper = mount(
+        <InputList
+          createEditableInput={createEditableInput}
+          labelAndDescription={labelAndDescription}
+          value={value}
+          setting={setting}
+          disabled={false}
+        />
+      , { context });
+      let select = wrapper.find("select");
+      expect(select.length).to.equal(1);
+      expect(select.find("option").at(0).prop("value")).to.equal("key_1");
+      expect(select.find("option").at(0).text()).to.equal("label_1");
+      expect(select.find("option").at(1).prop("value")).to.equal("key_2");
+      expect(select.find("option").at(1).text()).to.equal("label_2");
     });
   });
 });
