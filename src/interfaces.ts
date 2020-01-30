@@ -211,6 +211,7 @@ export interface SettingData {
   paired?: string;
   locked?: boolean;
   capitalize?: boolean;
+  skip?: boolean;
 }
 
 export interface ProtocolData {

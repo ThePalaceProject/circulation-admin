@@ -149,6 +149,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         { fields.map(setting => (setting.paired &&
           this.renderPairedMenus(setting, fields))
         ||
+          !setting.skip &&
           <ProtocolFormField
             key={setting.key}
             ref={setting.key}
@@ -160,8 +161,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             error={this.props.error}
             locked={setting.locked}
           />
-          )
-        }
+        )}
       </fieldset>
     );
   }
