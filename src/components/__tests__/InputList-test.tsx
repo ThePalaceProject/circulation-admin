@@ -220,12 +220,24 @@ describe("InputList", () => {
     expect(addButton.prop("disabled")).to.be.true;
   });
 
-  it.only("optionally accepts an onChange prop", () => {
+  it("optionally accepts an onChange prop", async () => {
     let onChange = stub();
     wrapper.setProps({ onChange });
     expect(onChange.callCount).to.equal(0);
     wrapper.instance().addListItem();
-    console.log(onChange.callCount);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(onChange.callCount).to.equal(1);
+    expect(onChange.args[0][0]).to.equal(wrapper.state());
+    wrapper.instance().removeListItem("test");
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(onChange.callCount).to.equal(2);
+    expect(onChange.args[1][0]).to.equal(wrapper.state());
+  });
+
+  it("optionally accepts a locked prop", () => {
+    wrapper.setProps({ locked: true });
+    expect(wrapper.find(EditableInput).at(0).prop("readOnly")).to.be.true;
+    expect(wrapper.find(EditableInput).at(1).prop("readOnly")).to.be.true;
   });
 
   it("gets the value", () => {

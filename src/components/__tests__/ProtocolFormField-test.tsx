@@ -244,14 +244,6 @@ describe("ProtocolFormField", () => {
     expect(inputList.prop("locked")).to.be.true;
   });
 
-  it("optionally accepts an optionalText prop", () => {
-    let setting = {...wrapper.prop("setting"), ...{type: "list"}};
-    wrapper.setProps({ setting: setting, optionalText: true });
-    let inputList = wrapper.find(InputList);
-    expect(inputList.prop("optionalText")).to.be.true;
-  });
-
-
   it("gets value of text setting", () => {
     wrapper.setProps({ value: "test" });
     expect((wrapper.instance() as ProtocolFormField).getValue()).to.equal("test");

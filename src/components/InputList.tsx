@@ -21,7 +21,6 @@ export interface InputListProps {
   capitalize?: boolean;
   onChange?: (value: any) => {};
   locked?: boolean;
-  optionalText?: boolean;
 }
 
 export interface InputListState {
