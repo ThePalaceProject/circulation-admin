@@ -8,6 +8,8 @@ import LibraryEditForm from "../LibraryEditForm";
 import EditableInput from "../EditableInput";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
+import PairedMenus from "../PairedMenus";
+import InputList from "../InputList";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -109,6 +111,35 @@ describe("LibraryEditForm", () => {
       expect(privacyInput.props().value).to.equal("http://privacy");
       copyrightInput = protocolFormFieldByKey("copyright");
       expect(copyrightInput.props().value).to.equal("http://copyright");
+    });
+
+    it("does not render settings with the skip attribute", () => {
+      expect(wrapper.find(ProtocolFormField).length).to.equal(6);
+      let settings = wrapper.prop("data").settings.concat([{ key: "skip", label: "Skip this setting!", skip: true }]);
+      wrapper.setProps({ data: {...wrapper.prop("data"), ...{settings}}});
+      expect(wrapper.find(ProtocolFormField).length).to.equal(6);
+      expect(protocolFormFieldByKey("skip").length).to.equal(0);
+    });
+
+    it("renders the PairedMenus component", () => {
+      let inputListSetting = { key: "inputList", label: "Input List", paired: "dropdown", options: [], default: ["opt_1"] };
+      let dropdownSetting = { key: "dropdown", label: "Dropdown List", options: [{key: "opt_1", label: "Option 1"}, {key: "opt_2", label: "Option 2"}], type: "select" };
+      wrapper.setProps({ data: {...wrapper.prop("data"), ...{ settings: [inputListSetting, dropdownSetting]}}});
+      let pairedMenus = wrapper.find(PairedMenus);
+      expect(pairedMenus.length).to.equal(1);
+
+      let inputList = pairedMenus.find(InputList);
+      expect(inputList.length).to.equal(1);
+      expect(inputList.prop("setting")).to.eql({
+        ...inputListSetting,
+        ...{ format: "narrow", menuOptions: [], type: "menu" }
+      });
+
+      let dropdown = pairedMenus.find("select");
+      expect(dropdown.length).to.equal(1);
+      expect(dropdown.prop("name")).to.equal("dropdown");
+      expect(dropdown.children().length).to.equal(1);
+      expect(dropdown.children().at(0).prop("value")).to.equal(inputListSetting.default[0]);
     });
 
     it("subdivides fields", () => {

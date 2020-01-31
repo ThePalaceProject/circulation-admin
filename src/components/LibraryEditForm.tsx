@@ -131,6 +131,8 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
   renderPairedMenus(setting: SettingData, fields: LibrarySettingField[]) {
     let dropdownSetting = fields.find(x => x.key === setting.paired);
+    // These dropdown settings have the :skip: attribute, so they'll get rendered only here;
+    // when the iterator in renderFieldset gets to them, they'll get skipped over, not rendered a second time.
     return (
       <PairedMenus
         inputListSetting={setting}
