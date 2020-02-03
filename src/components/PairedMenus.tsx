@@ -42,7 +42,7 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
 
   render() {
     return (
-      <fieldset className="paired-menu">
+      <fieldset className="paired-menus">
         {this.renderInputList(this.props.inputListSetting.options)}
         {this.props.dropdownSetting && this.renderDropdown()}
       </fieldset>
