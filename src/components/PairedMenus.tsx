@@ -22,10 +22,8 @@ export interface PairedMenusState {
 export default class PairedMenus extends React.Component<PairedMenusProps, PairedMenusState> {
   constructor(props: PairedMenusProps) {
     super(props);
-    let inputListValues = {};
     let existingInput = this.existingInput();
-    this.props.inputListSetting.options.forEach(o => inputListValues[o.key] = existingInput.includes(o.key));
-    this.state = { inputListValues: this.existingInput(), dropdownValue: this.props.dropdownSetting ? (this.getValueFromItem(this.props.dropdownSetting) as string) : "" };
+    this.state = { inputListValues: existingInput, dropdownValue: this.props.dropdownSetting ? (this.getValueFromItem(this.props.dropdownSetting) as string) : "" };
     this.updateInputList = this.updateInputList.bind(this);
     this.renderDropdown = this.renderDropdown.bind(this);
   }
@@ -79,6 +77,11 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
   renderDropdown() {
     let setting = {...this.props.dropdownSetting};
     let available = this.state.inputListValues && setting.options.filter(o => this.state.inputListValues.includes(o.key));
+    if (available.length === 0) {
+      return (
+        <p className="bg-warning">In order to set a default value, you must add at least one option.</p>
+      );
+    }
     setting = {...setting, ...{options: available}};
     return (
       <ProtocolFormField

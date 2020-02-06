@@ -145,20 +145,34 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   renderFieldset(fields: SettingData[]) {
+    let formatSetting = (setting: SettingData) => {
+      if (setting.format === "narrow") {
+        // We need to tell the ProtocolFormField to make an InputList with a menu that gets narrowed down.
+        return {...setting, ...{type: "menu"}};
+      }
+      return setting;
+    };
+    let settingValue = (setting: SettingData) => {
+      // Does the library already have a saved value for this setting?
+      if (this.props.item?.settings) {
+        return this.props.item.settings[setting.key];
+      }
+      return setting.default;
+    };
     return (
       <fieldset>
         <legend className="visuallyHidden">Additional Fields</legend>
-        { fields.map(setting => (setting.paired &&
-          this.renderPairedMenus(setting, fields))
-        ||
+        { fields.map(setting => setting.paired ?
+          this.renderPairedMenus(setting, fields)
+        :
           !setting.skip &&
           <ProtocolFormField
             key={setting.key}
             ref={setting.key}
-            setting={setting.format === "narrow" ? {...setting, ...{type: "menu"}} : setting}
+            setting={formatSetting(setting)}
             additionalData={this.props.additionalData}
             disabled={this.props.disabled}
-            value={(this.props.item && this.props.item.settings && this.props.item.settings[setting.key]) || setting.default}
+            value={settingValue(setting)}
             default={findDefault(setting)}
             error={this.props.error}
             locked={setting.locked}

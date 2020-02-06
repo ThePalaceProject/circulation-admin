@@ -207,6 +207,9 @@ export default class InputList extends React.Component<InputListProps, InputList
   filterMenu() {
     // All the possibilities, regardless of whether they've already been selected.
     let allOptions = (this.props.setting as any).menuOptions;
+    // The setting probably came with menuOptions--an array of HTML option elements.  If not, we can try to make them here.
+    // If that doesn't work--e.g. because not everything has a key and label attribute--just return rather than throwing an error
+    // and crashing.
     if (!allOptions) {
       try {
         allOptions = this.props.setting.options.map(o => <option key={o.key} value={o.key} aria-selected={false}>{o.label}</option>);
@@ -217,7 +220,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     }
     // Items that have already been selected, and should be eliminated from the menu.
     let listItems = this.state ? this.state.listItems : (this.props.value || this.props.setting.default);
-    // // Items that haven't been selected yet.
+    // Items that haven't been selected yet.
     let remainingOptions = listItems ? allOptions.filter(o => listItems.indexOf(o.props.value) < 0) : [];
     return remainingOptions;
   }
