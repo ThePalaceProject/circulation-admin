@@ -16,6 +16,8 @@ export interface ContextProviderProps extends React.Props<{}> {
     role: string;
     library?: string;
   }[];
+  tos_link_text?: string;
+  tos_link_href?: string;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -27,6 +29,7 @@ export default class ContextProvider extends React.Component<ContextProviderProp
 
   constructor(props) {
     super(props);
+    // console.log(props);
     this.store = buildStore();
     this.admin = new Admin(props.roles || [], props.email || null);
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
@@ -69,7 +72,9 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     csrfToken: PropTypes.string.isRequired,
     showCircEventsDownload: PropTypes.bool.isRequired,
     settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired,
+    tos_link_text: PropTypes.string,
+    tos_link_href: PropTypes.string
   };
 
   getChildContext() {
@@ -78,7 +83,9 @@ export default class ContextProvider extends React.Component<ContextProviderProp
       csrfToken: this.props.csrfToken,
       showCircEventsDownload: this.props.showCircEventsDownload || false,
       settingUp: this.props.settingUp || false,
-      admin: this.admin
+      admin: this.admin,
+      tos_link_text: this.props.tos_link_text,
+      tos_link_href: this.props.tos_link_href
     };
   }
 

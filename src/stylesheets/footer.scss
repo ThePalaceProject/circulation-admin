@@ -6,22 +6,22 @@ footer {
   width: 100%;
   padding: 15px 0;
   z-index: 1;
-  ul {
-    display: flex;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    flex-direction: column;
-    list-style: none;
-    align-items: center;
-    li {
-      margin: 2px 0;
-      a, a:visited, a:link {
+  // ul {
+  //   display: flex;
+  //   margin: 0;
+  //   height: 100%;
+  //   width: 100%;
+  //   flex-direction: column;
+  //   list-style: none;
+  //   align-items: center;
+  // }
+  p {
+    margin: 2px 0;
+    a, a:visited, a:link {
+      color: $white;
+      &:hover {
         color: $white;
-        &:hover {
-          color: $white;
-          text-decoration: underline;
-        }
+        text-decoration: underline;
       }
     }
   }
