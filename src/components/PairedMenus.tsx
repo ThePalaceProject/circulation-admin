@@ -79,7 +79,7 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
     let available = this.state.inputListValues && setting.options.filter(o => this.state.inputListValues.includes(o.key));
     if (available.length === 0) {
       return (
-        <p className="bg-warning">In order to set a default value, you must add at least one option.</p>
+        <p className="bg-warning">In order to set this value, you must add at least one option from the menu above.</p>
       );
     }
     setting = {...setting, ...{options: available}};
