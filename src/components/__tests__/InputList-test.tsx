@@ -269,8 +269,8 @@ describe("InputList", () => {
     expect(onChange.args[1][0]).to.equal(wrapper.state());
   });
 
-  it("optionally accepts a locked prop", () => {
-    wrapper.setProps({ locked: true });
+  it("optionally accepts a readOnly prop", () => {
+    wrapper.setProps({ readOnly: true });
     expect(wrapper.find(EditableInput).at(0).prop("readOnly")).to.be.true;
     expect(wrapper.find(EditableInput).at(1).prop("readOnly")).to.be.true;
   });

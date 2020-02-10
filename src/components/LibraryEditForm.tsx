@@ -175,7 +175,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             value={settingValue(setting)}
             default={findDefault(setting)}
             error={this.props.error}
-            locked={setting.locked}
+            readOnly={setting.readOnly}
           />
         )}
       </fieldset>

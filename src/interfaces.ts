@@ -209,7 +209,7 @@ export interface SettingData {
   format?: string;
   urlBase?: any;
   paired?: string;
-  locked?: boolean;
+  readOnly?: boolean;
   capitalize?: boolean;
   skip?: boolean;
 }

@@ -19,6 +19,12 @@ export interface PairedMenusState {
   dropdownValue: string;
 }
 
+/**
+ * Renders an InputList component and a dropdown menu.  The values in the dropdown menu
+ * are filtered to reflect the current InputList values--i.e. you can only add a value from
+ * the dropdown if it has already been added to the InputList.
+*/
+
 export default class PairedMenus extends React.Component<PairedMenusProps, PairedMenusState> {
   constructor(props: PairedMenusProps) {
     super(props);
@@ -69,7 +75,7 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
         value={this.state.inputListValues}
         disabled={this.props.disabled}
         onChange={this.updateInputList}
-        locked={true}
+        readOnly={true}
       />
     );
   }
@@ -77,7 +83,7 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
   renderDropdown() {
     let setting = {...this.props.dropdownSetting};
     let available = this.state.inputListValues && setting.options.filter(o => this.state.inputListValues.includes(o.key));
-    if (available.length === 0) {
+    if (available && available.length === 0) {
       return (
         <p className="bg-warning">In order to set this value, you must add at least one option from the menu above.</p>
       );

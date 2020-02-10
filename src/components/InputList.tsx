@@ -20,7 +20,7 @@ export interface InputListProps {
   title?: string;
   capitalize?: boolean;
   onChange?: (value: any) => {};
-  locked?: boolean;
+  readOnly?: boolean;
 }
 
 export interface InputListState {
@@ -149,7 +149,7 @@ export default class InputList extends React.Component<InputListProps, InputList
           label: null,
           extraContent: this.renderToolTip(listItem, setting.format),
           optionalText: false,
-          readOnly: this.props.locked
+          readOnly: this.props.readOnly
         })
       );
     }

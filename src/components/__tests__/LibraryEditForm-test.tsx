@@ -222,15 +222,6 @@ describe("LibraryEditForm", () => {
       nameInput.simulate("change");
     };
 
-    it("submits data from the FiltersForm", () => {
-      wrapper.setProps({ item: libraryData });
-      let saveButton = wrapper.find(Button).at(1);
-      saveButton.simulate("click");
-      expect(save.callCount).to.equal(1);
-      let formData = save.args[0][0];
-      expect(formData.get("featured_lane_size")).to.equal("20");
-    });
-
     it("clears the form", () => {
       fillOutFormFields();
       let nameInput = wrapper.find("input[name='name']");

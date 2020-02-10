@@ -237,11 +237,11 @@ describe("ProtocolFormField", () => {
     expect(inputList.prop("onChange")).to.equal(onChange);
   });
 
-  it("optionally accepts a locked prop", () => {
+  it("optionally accepts a readOnly prop", () => {
     let setting = {...wrapper.prop("setting"), ...{type: "list"}};
-    wrapper.setProps({ setting: setting, locked: true });
+    wrapper.setProps({ setting: setting, readOnly: true });
     let inputList = wrapper.find(InputList);
-    expect(inputList.prop("locked")).to.be.true;
+    expect(inputList.prop("readOnly")).to.be.true;
   });
 
   it("gets value of text setting", () => {
