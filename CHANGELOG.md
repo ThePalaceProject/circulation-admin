@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.9
+#### Added
+- Created a PairedMenus component to render a related InputList and dropdown menu and implemented it in the Lanes & Filters section of the Library Edit Form.
+
 ### v0.4.8
 #### Fixed
 - Fixed an issue with button alignment on forms for adding libraries to analytics integrations and collections.
