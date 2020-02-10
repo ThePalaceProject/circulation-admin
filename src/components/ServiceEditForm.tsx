@@ -339,6 +339,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                     disabled={this.props.disabled}
                     callback={() => this.addLibrary(protocol)}
                     content="Add Library"
+                    className="left-align"
                   />
                 </div>
               }

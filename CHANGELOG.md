@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.8
+#### Fixed
+- Fixed an issue with button alignment on forms for adding libraries to analytics integrations and collections.
+
 ### v0.4.7
 #### Updated
 - Added the query param `&language=all` for searches done in the List admin page to allow searches without a language filter.
