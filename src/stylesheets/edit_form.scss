@@ -55,8 +55,10 @@
 
   fieldset {
     .bg-warning {
+      display: block;
       padding: 8px;
       border: 1px solid darken($yellow, 20%);
+      margin-bottom: 10px;
     }
   }
 }

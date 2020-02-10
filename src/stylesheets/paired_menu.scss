@@ -1,0 +1,8 @@
+.paired-menus {
+  border-bottom: 1px solid $dark-gray;
+  padding-top: 15px;
+  margin: 15px 0;
+  &:last-child {
+    border-bottom: none;
+  }
+}

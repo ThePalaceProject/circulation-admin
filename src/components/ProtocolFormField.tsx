@@ -17,24 +17,24 @@ export interface ProtocolFormFieldProps {
   onSubmit?: any;
   onEmpty?: string;
   title?: string;
+  onChange?: any;
+  readOnly?: boolean;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
 export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, {}> {
-  constructor(props) {
+  constructor(props: ProtocolFormFieldProps) {
     super(props);
     this.randomize = this.randomize.bind(this);
     this.isDefault = this.isDefault.bind(this);
-    this.shouldBeChecked = this.shouldBeChecked.bind(this);
+    this.createEditableInput = this.createEditableInput.bind(this);
   }
 
   render(): JSX.Element {
     const setting = this.props.setting as SettingData | CustomListsSetting;
     if (setting.type === "select") {
       return this.renderSelectSetting(setting);
-    } else if (setting.type === "list" && setting.options) {
-        return this.renderListSettingWithOptions(setting);
     } else if (setting.type === "list" || setting.type === "menu") {
         return this.renderListSetting(setting);
     } else if (setting.type === "color-picker") {
@@ -86,9 +86,9 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       description: setting.description,
       value: (this.props && this.props.value) || setting.default,
       error: this.props && this.props.error,
-      ref: "element"
+      ref: "element",
+      onChange: this.props.onChange,
     };
-
     let props = extraProps[setting.type] ? {...basicProps, ...extraProps[setting.type]} : basicProps;
     if (customProps) {
       props = {...props, ...customProps};
@@ -101,23 +101,6 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       <option key={option.key} value={option.key} aria-selected={false}>{option.label}</option>
     );
     return this.createEditableInput(setting, null, children);
-  }
-
-  renderListSettingWithOptions(setting: SettingData): JSX.Element {
-    return (
-      <div>
-        { setting.label && this.labelAndDescription(setting) }
-        { setting.options.map((option) => {
-            return this.createEditableInput(option, {
-                type: "checkbox",
-                required: setting.required,
-                name: `${setting.key}_${option.key}`,
-                checked: this.shouldBeChecked(option)
-              });
-            })
-        }
-      </div>
-    );
   }
 
   renderListSetting(setting: SettingData | CustomListsSetting): JSX.Element {
@@ -138,6 +121,8 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         onSubmit={this.props.onSubmit}
         onEmpty={this.props.onEmpty}
         title={this.props.title}
+        onChange={this.props.onChange}
+        readOnly={this.props.readOnly}
       />
     );
   }
@@ -170,22 +155,10 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     return [label, description, instructions];
   }
 
-  isDefault(option) {
+  isDefault(option: JSX.Element) {
     if (this.props.default) {
       return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
     }
-  }
-
-  shouldBeChecked(option) {
-    let isArray = this.props.value && Array.isArray(this.props.value);
-    let isAllStrings = isArray && (this.props.value as any).every(x => typeof(x) === "string");
-    let hasKey = isArray && (this.props.value as any).includes(option.key);
-
-    let isValue = this.props.value &&
-      (typeof(this.props.value) === "string" || isAllStrings) &&
-      (this.props.value === option.key || hasKey);
-    let isDefault = (!this.props.value && this.isDefault(option));
-    return isValue || isDefault;
   }
 
   getValue() {
