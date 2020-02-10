@@ -133,6 +133,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="libraryeditform.html#render" class="tsd-kind-icon">render</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="libraryeditform.html#renderfieldset" class="tsd-kind-icon">render<wbr>Fieldset</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="libraryeditform.html#renderforms" class="tsd-kind-icon">render<wbr>Forms</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="libraryeditform.html#renderpairedmenus" class="tsd-kind-icon">render<wbr>Paired<wbr>Menus</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="libraryeditform.html#separatecategories" class="tsd-kind-icon">separate<wbr>Categories</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="libraryeditform.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="libraryeditform.html#shouldcomponentupdate" class="tsd-kind-icon">should<wbr>Component<wbr>Update</a></li>
@@ -148,20 +149,20 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Library<wbr>Edit<wbr>Form<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="libraryeditform.html" class="tsd-signature-type">LibraryEditForm</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Library<wbr>Edit<wbr>Form<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><a href="../interfaces/libraryeditformprops.html" class="tsd-signature-type">LibraryEditFormProps</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="libraryeditform.html" class="tsd-signature-type">LibraryEditForm</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ffc2bb9/src/components/LibraryEditForm.tsx#L23">src/components/LibraryEditForm.tsx:23</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L24">src/components/LibraryEditForm.tsx:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>props: <span class="tsd-signature-type">any</span></h5>
+									<h5>props: <a href="../interfaces/libraryeditformprops.html" class="tsd-signature-type">LibraryEditFormProps</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="libraryeditform.html" class="tsd-signature-type">LibraryEditForm</a></h4>
@@ -559,7 +560,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides DeprecatedLifecycle.componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ffc2bb9/src/components/LibraryEditForm.tsx#L29">src/components/LibraryEditForm.tsx:29</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L30">src/components/LibraryEditForm.tsx:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -731,7 +732,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ffc2bb9/src/components/LibraryEditForm.tsx#L35">src/components/LibraryEditForm.tsx:35</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L36">src/components/LibraryEditForm.tsx:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -742,19 +743,19 @@ class Foo extends React.Component {
 					<a name="renderfieldset" class="tsd-anchor"></a>
 					<h3>render<wbr>Fieldset</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">render<wbr>Fieldset<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Fieldset<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><a href="../interfaces/settingdata.html" class="tsd-signature-type">SettingData</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ffc2bb9/src/components/LibraryEditForm.tsx#L132">src/components/LibraryEditForm.tsx:132</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L147">src/components/LibraryEditForm.tsx:147</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>fields: <span class="tsd-signature-type">any</span></h5>
+									<h5>fields: <a href="../interfaces/settingdata.html" class="tsd-signature-type">SettingData</a><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -765,19 +766,24 @@ class Foo extends React.Component {
 					<a name="renderforms" class="tsd-anchor"></a>
 					<h3>render<wbr>Forms</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">render<wbr>Forms<span class="tsd-signature-symbol">(</span>categories<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Forms<span class="tsd-signature-symbol">(</span>categories<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ffc2bb9/src/components/LibraryEditForm.tsx#L114">src/components/LibraryEditForm.tsx:114</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L115">src/components/LibraryEditForm.tsx:115</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>categories: <span class="tsd-signature-type">any</span></h5>
+									<h5>categories: <span class="tsd-signature-type">object</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-index-signature">
+											<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../interfaces/librarysettingfield.html" class="tsd-signature-type">LibrarySettingField</a><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -785,22 +791,48 @@ class Foo extends React.Component {
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="separatecategories" class="tsd-anchor"></a>
-					<h3>separate<wbr>Categories</h3>
+					<a name="renderpairedmenus" class="tsd-anchor"></a>
+					<h3>render<wbr>Paired<wbr>Menus</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">separate<wbr>Categories<span class="tsd-signature-symbol">(</span>nonRequiredFields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Paired<wbr>Menus<span class="tsd-signature-symbol">(</span>setting<span class="tsd-signature-symbol">: </span><a href="../interfaces/settingdata.html" class="tsd-signature-type">SettingData</a>, fields<span class="tsd-signature-symbol">: </span><a href="../interfaces/librarysettingfield.html" class="tsd-signature-type">LibrarySettingField</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ffc2bb9/src/components/LibraryEditForm.tsx#L106">src/components/LibraryEditForm.tsx:106</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L132">src/components/LibraryEditForm.tsx:132</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>nonRequiredFields: <span class="tsd-signature-type">any</span></h5>
+									<h5>setting: <a href="../interfaces/settingdata.html" class="tsd-signature-type">SettingData</a></h5>
+								</li>
+								<li>
+									<h5>fields: <a href="../interfaces/librarysettingfield.html" class="tsd-signature-type">LibrarySettingField</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="separatecategories" class="tsd-anchor"></a>
+					<h3>separate<wbr>Categories</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">separate<wbr>Categories<span class="tsd-signature-symbol">(</span>nonRequiredFields<span class="tsd-signature-symbol">: </span><a href="../interfaces/librarysettingfield.html" class="tsd-signature-type">LibrarySettingField</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L107">src/components/LibraryEditForm.tsx:107</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>nonRequiredFields: <a href="../interfaces/librarysettingfield.html" class="tsd-signature-type">LibrarySettingField</a><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
@@ -904,7 +936,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/ffc2bb9/src/components/LibraryEditForm.tsx#L153">src/components/LibraryEditForm.tsx:153</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/c1eaead/src/components/LibraryEditForm.tsx#L185">src/components/LibraryEditForm.tsx:185</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -996,6 +1028,9 @@ class Foo extends React.Component {
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="libraryeditform.html#renderforms" class="tsd-kind-icon">render<wbr>Forms</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="libraryeditform.html#renderpairedmenus" class="tsd-kind-icon">render<wbr>Paired<wbr>Menus</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="libraryeditform.html#separatecategories" class="tsd-kind-icon">separate<wbr>Categories</a>
