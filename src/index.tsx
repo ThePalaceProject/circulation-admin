@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Router, Route, browserHistory } from "react-router";
 import ContextProvider from "./components/ContextProvider";
+import { TOSContextProvider } from "./components/TOSContext";
 import CatalogPage from "./components/CatalogPage";
 import CustomListPage from "./components/CustomListPage";
 import LanePage from "./components/LanePage";
@@ -40,7 +41,6 @@ interface ConfigurationSettings {
   }[];
 
   tos_link_text?: string;
-
   tos_link_href?: string;
 }
 
@@ -74,16 +74,18 @@ class CirculationWeb {
     } else {
       ReactDOM.render(
         <ContextProvider {...config}>
-          <Router history={browserHistory}>
-            <Route path={catalogEditorPath} component={CatalogPage} />
-            <Route path={customListPagePath} component={CustomListPage} />
-            <Route path={lanePagePath} component={LanePage} />
-            <Route path="/admin/web/dashboard(/:library)" component={DashboardPage} />
-            <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
-            <Route path="/admin/web/account" component={AccountPage} />
-            <Route path="/admin/web/patrons/:library(/:tab)" component={ManagePatrons} />
-            <Route path="/admin/web/troubleshooting(/:tab)(/:subtab)" component={TroubleshootingPage} />
-          </Router>
+          <TOSContextProvider value={...[config.tos_link_text, config.tos_link_href]}>
+            <Router history={browserHistory}>
+              <Route path={catalogEditorPath} component={CatalogPage} />
+              <Route path={customListPagePath} component={CustomListPage} />
+              <Route path={lanePagePath} component={LanePage} />
+              <Route path="/admin/web/dashboard(/:library)" component={DashboardPage} />
+              <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
+              <Route path="/admin/web/account" component={AccountPage} />
+              <Route path="/admin/web/patrons/:library(/:tab)" component={ManagePatrons} />
+              <Route path="/admin/web/troubleshooting(/:tab)(/:subtab)" component={TroubleshootingPage} />
+            </Router>
+          </TOSContextProvider>
         </ContextProvider>,
         document.getElementById("opds-catalog")
       );
