@@ -208,7 +208,10 @@ export interface SettingData {
   instructions?: string;
   format?: string;
   urlBase?: any;
+  paired?: string;
+  readOnly?: boolean;
   capitalize?: boolean;
+  skip?: boolean;
 }
 
 export interface ProtocolData {
@@ -419,7 +422,7 @@ export interface CustomListsData {
 }
 
 export interface CustomListsSetting extends SettingData {
-  custom_lists: CustomListData[];
+  custom_lists?: CustomListData[];
   menuOptions?: JSX.Element[];
   menuTitle?: string;
 }

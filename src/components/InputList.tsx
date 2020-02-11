@@ -9,7 +9,7 @@ import { isEqual, formatString } from "../utils/sharedFunctions";
 
 export interface InputListProps {
   createEditableInput: (setting: SettingData, customProps?: any, children?: JSX.Element[]) => JSX.Element;
-  labelAndDescription?: (SettingData) => JSX.Element[];
+  labelAndDescription?: (setting: SettingData) => JSX.Element[];
   setting: SettingData | CustomListsSetting;
   disabled: boolean;
   value: Array<string | {} | JSX.Element>;
@@ -19,6 +19,8 @@ export interface InputListProps {
   onEmpty?: string;
   title?: string;
   capitalize?: boolean;
+  onChange?: (value: any) => {};
+  readOnly?: boolean;
 }
 
 export interface InputListState {
@@ -45,14 +47,14 @@ export default class InputList extends React.Component<InputListProps, InputList
     this.capitalize = this.capitalize.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps(newProps: InputListProps) {
     // Update the list of existing items with value from new props
     if (this.state.listItems && newProps.value && !isEqual(this.state.listItems, newProps.value)) {
       this.setState({ listItems: newProps.value });
     }
   }
 
-  componentDidUpdate(oldProps, oldState) {
+  componentDidUpdate(oldProps: InputListProps, oldState: InputListState) {
     // Remove already-selected items from the dropdown menu
     if (oldState.listItems && this.state.listItems && !isEqual(oldState.listItems, this.state.listItems)) {
       this.props.setting.format === "narrow" && this.setState({ options: this.filterMenu() });
@@ -106,7 +108,7 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
-  renderList(listItems, setting) {
+  renderList(listItems, setting: SettingData) {
     return (
       <ul className="input-list-ul">
         {
@@ -119,8 +121,9 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
-  renderListItem(setting, value, listItem) {
-    let item;
+  renderListItem(setting: SettingData, value: string, listItem) {
+    let item: JSX.Element;
+    let label = setting.options ? setting.options.find(o => o.key === value)?.label : value;
     if (setting.format === "language-code") {
       item = (
         <LanguageField
@@ -141,11 +144,12 @@ export default class InputList extends React.Component<InputListProps, InputList
           type: "text",
           description: null,
           disabled: this.props.disabled,
-          value: value,
-          name: setting.key,
+          value: label,
+          name: setting.type === "menu" ? `${setting.key}_${value}` : setting.key,
           label: null,
           extraContent: this.renderToolTip(listItem, setting.format),
-          optionalText: !setting.required
+          optionalText: false,
+          readOnly: this.props.readOnly
         })
       );
     }
@@ -161,10 +165,10 @@ export default class InputList extends React.Component<InputListProps, InputList
     );
   }
 
-  renderMenu(setting) {
+  renderMenu(setting: CustomListsSetting) {
     let choices = this.state.options;
     // If there are no available options, don't show the menu
-    if (choices.length > 0) {
+    if (choices && choices.length > 0) {
       return this.props.createEditableInput(
         setting,
         {
@@ -174,7 +178,8 @@ export default class InputList extends React.Component<InputListProps, InputList
           label: setting.menuTitle,
           required: setting.required,
           ref: "addListItem",
-          optionalText: !setting.required
+          optionalText: !setting.required,
+          description: !setting.required ? "(Optional) " : ""
         }, choices
       );
     }
@@ -202,11 +207,19 @@ export default class InputList extends React.Component<InputListProps, InputList
   filterMenu() {
     // All the possibilities, regardless of whether they've already been selected.
     let allOptions = (this.props.setting as any).menuOptions;
+    // The setting probably came with menuOptions--an array of HTML option elements.  If not, we can try to make them here.
+    // If that doesn't work--e.g. because not everything has a key and label attribute--just return rather than throwing an error
+    // and crashing.
     if (!allOptions) {
-      return;
+      try {
+        allOptions = this.props.setting.options.map(o => <option key={o.key} value={o.key} aria-selected={false}>{o.label}</option>);
+      }
+      catch {
+        return;
+      }
     }
     // Items that have already been selected, and should be eliminated from the menu.
-    let listItems = this.state ? this.state.listItems : this.props.value;
+    let listItems = this.state ? this.state.listItems : (this.props.value || this.props.setting.default);
     // Items that haven't been selected yet.
     let remainingOptions = listItems ? allOptions.filter(o => listItems.indexOf(o.props.value) < 0) : [];
     return remainingOptions;
@@ -221,6 +234,7 @@ export default class InputList extends React.Component<InputListProps, InputList
 
   async removeListItem(listItem: string | {}) {
     await this.setState({ listItems: this.state.listItems.filter(stateListItem => stateListItem !== listItem) });
+    this.props.onChange && this.props.onChange(this.state);
     // Actually save the changes instead of just manipulating the state
     if (this.props.onSubmit) { await this.props.onSubmit(); }
   }
@@ -231,6 +245,7 @@ export default class InputList extends React.Component<InputListProps, InputList
       (this.refs["addListItem"] as any);
     const listItem = this.props.setting.capitalize ? this.capitalize(ref.getValue()) : ref.getValue();
     await this.setState({ listItems: this.state.listItems.concat(listItem), newItem: "" });
+    this.props.onChange && this.props.onChange(this.state);
     // Actually save the changes instead of just manipulating the state
     if (this.props.onSubmit) {
       await this.props.onSubmit();

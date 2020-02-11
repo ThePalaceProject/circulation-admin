@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
-import { spy } from "sinon";
+import { stub, spy } from "sinon";
 import { Button } from "library-simplified-reusable-components";
 import buildStore from "../../store";
 
@@ -255,6 +255,26 @@ describe("InputList", () => {
     expect(addButton.prop("disabled")).to.be.true;
   });
 
+  it("optionally accepts an onChange prop", async () => {
+    let onChange = stub();
+    wrapper.setProps({ onChange });
+    expect(onChange.callCount).to.equal(0);
+    wrapper.instance().addListItem();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(onChange.callCount).to.equal(1);
+    expect(onChange.args[0][0]).to.equal(wrapper.state());
+    wrapper.instance().removeListItem("test");
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(onChange.callCount).to.equal(2);
+    expect(onChange.args[1][0]).to.equal(wrapper.state());
+  });
+
+  it("optionally accepts a readOnly prop", () => {
+    wrapper.setProps({ readOnly: true });
+    expect(wrapper.find(EditableInput).at(0).prop("readOnly")).to.be.true;
+    expect(wrapper.find(EditableInput).at(1).prop("readOnly")).to.be.true;
+  });
+
   it("gets the value", () => {
     expect((wrapper.instance() as InputList).getValue()).to.eql(value);
   });
@@ -366,6 +386,27 @@ describe("InputList", () => {
       expect(menu.length).to.equal(0);
       let message = wrapper.find(".add-list-item-container span");
       expect(message.text()).to.equal("You've run out of options!");
+    });
+    it("renders option elements if necessary", () => {
+      // If the setting does not have a menuOptions property (e.g. because it has come from the server without being modified),
+      // InputList will use its options property to generate the dropdown menu with basic default values.
+      let options = [{key: "key_1", label: "label_1"}, {key: "key_2", label: "label_2"}];
+      let setting = {...wrapper.prop("setting"), ...{options: options, menuOptions: null}};
+      wrapper = mount(
+        <InputList
+          createEditableInput={createEditableInput}
+          labelAndDescription={labelAndDescription}
+          value={value}
+          setting={setting}
+          disabled={false}
+        />
+      , { context });
+      let select = wrapper.find("select");
+      expect(select.length).to.equal(1);
+      expect(select.find("option").at(0).prop("value")).to.equal("key_1");
+      expect(select.find("option").at(0).text()).to.equal("label_1");
+      expect(select.find("option").at(1).prop("value")).to.equal("key_2");
+      expect(select.find("option").at(1).text()).to.equal("label_2");
     });
   });
 });
