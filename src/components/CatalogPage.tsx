@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSCatalog = require("opds-web-client");
 import * as PropTypes from "prop-types";
+import { ActionsProvider } from "opds-web-client/lib/components/context/ActionsContext";
 import BookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -53,16 +54,18 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
 
     return (
       <>
-        <OPDSCatalog
-          collectionUrl={collectionUrl}
-          bookUrl={bookUrl}
-          BookDetailsContainer={BookDetailsContainer}
-          Header={Header}
-          pageTitleTemplate={pageTitleTemplate}
-          computeBreadcrumbs={computeBreadcrumbs}
-          CollectionContainer={EntryPointsContainer}
-          allLanguageSearch={true}
-        />
+        <ActionsProvider>
+          <OPDSCatalog
+            collectionUrl={collectionUrl}
+            bookUrl={bookUrl}
+            BookDetailsContainer={BookDetailsContainer}
+            Header={Header}
+            pageTitleTemplate={pageTitleTemplate}
+            computeBreadcrumbs={computeBreadcrumbs}
+            CollectionContainer={EntryPointsContainer}
+            allLanguageSearch={true}
+          />
+        </ActionsProvider>
         <Footer />
       </>
     );
