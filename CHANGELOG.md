@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.10
+#### Updated
+- Updated the version of `opds-web-client` to v0.3.4 and added ActionsProvider component wrapper to use the redux actions/dispatch hook.
+
 ### v0.4.9
 #### Added
 - Created a PairedMenus component to render a related InputList and dropdown menu and implemented it in the Lanes & Filters section of the Library Edit Form.
