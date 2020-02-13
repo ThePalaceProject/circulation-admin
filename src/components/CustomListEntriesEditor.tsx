@@ -12,6 +12,7 @@ import {
   BookIcon,
 } from "@nypl/dgx-svg-icons";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import EditableInput from "./EditableInput";
 import { formatString } from "../utils/sharedFunctions";
 
 export interface Entry extends BookData {
@@ -63,7 +64,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.clearState = this.clearState.bind(this);
   }
 
-  sortBy(books, attr: string) {
+  sortBy(books: BookData[], attr: string) {
     let parse = (value: string | string[]) => {
       if (attr === "authors") {
         return value[0].split(" ").reverse()[0];
@@ -121,14 +122,21 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     }
 
     let sortDropdown = (
-      <fieldset className="sort-results-by">
-        <label>Sort by:</label>
-        <select onChange={(e) => this.setState({ sortBy: e.currentTarget.value.toLowerCase() })}>
-          <option>Default</option>
-          <option>Title</option>
-          <option>Authors</option>
-        </select>
-      </fieldset>
+      <EditableInput
+        key="sortBy"
+        elementType="select"
+        name="sortBy"
+        className="sort-results-by"
+        label="Sort search results by:"
+        onChange={(value) => this.setState({ sortBy: value.toLowerCase() })}
+      >
+        {
+          ["default", "title", "authors"].map((x) => {
+            return <option key={x} value={x} aria-selected={this.state.sortBy === x}>{formatString(x)}</option>;
+          })
+
+        }
+      </EditableInput>
     );
 
     return (
@@ -139,6 +147,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
               <h4>Search Results</h4>
               { searchResults && (this.searchResultsNotInEntries().length > 0) &&
                 [<Button
+                  key="addAll"
                   className="add-all-button"
                   callback={this.addAll}
                   content={<span>Add all to list<ApplyIcon /></span>}

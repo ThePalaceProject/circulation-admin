@@ -131,13 +131,14 @@
   border: 1px solid $medium-gray;
   border-radius: 4px;
   label {
+    display: block;
     margin: 0;
+    width: 100%;
   }
   select {
     display: block;
-    float: right;
-    margin: 0;
-    width: 50%;
+    margin-top: 6px;
+    width: 100%;
     border-color: $blue;
   }
 }
