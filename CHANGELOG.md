@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.11
+#### Added
+- Enabled admins to configure the terms of service text and link displayed in the Footer.
+
 ### v0.4.10
 #### Updated
 - Updated the version of `opds-web-client` to v0.3.4 and added ActionsProvider component wrapper to use the redux actions/dispatch hook.
