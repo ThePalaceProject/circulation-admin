@@ -1,39 +1,33 @@
 import { expect } from "chai";
 import * as React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import Footer from "../Footer";
+import { TOSContextProvider } from "../TOSContext";
 
 describe("Footer", () => {
   let wrapper;
+  let context;
   beforeEach(() => {
-    wrapper = shallow(<Footer />);
+    context = ["Terms of Service Text", "terms_of_service"];
+    wrapper = mount(
+      <TOSContextProvider value={["Terms of Service Text", "terms_of_service"]}>
+        <Footer />
+      </TOSContextProvider>
+    );
   });
-  it("displays a list with a default link", () => {
-    let list = wrapper.find("ul");
-    let linkElement = list.find("li").find("a");
+  it("displays a link", () => {
+    let linkElement = wrapper.find("p").find("a");
     expect(linkElement.length).to.equal(1);
-    expect(linkElement.text()).to.equal("Terms of Service for presenting e-reading materials through NYPL's SimplyE mobile app");
-    expect(linkElement.prop("href")).to.equal("https://www.librarysimplified.org/SimplyETermsofService2.html");
+    expect(linkElement.text()).to.equal("Terms of Service Text");
+    expect(linkElement.prop("href")).to.equal("terms_of_service");
   });
   it("accepts an optional className prop", () => {
-    wrapper.setProps({ "className": "customClass" });
+    wrapper = mount(
+      <TOSContextProvider value={["Terms of Service Text", "terms_of_service"]}>
+        <Footer className="customClass" />
+      </TOSContextProvider>
+    );
     expect(wrapper.hasClass("customClass")).to.be.true;
-  });
-  it("accepts an optional links prop", () => {
-    let links = [
-      ["Link 1", "www.link1.html"],
-      ["Link 2", "www.link2.html"],
-      ["Link 3", "www.link3.html"]
-    ];
-    wrapper.setProps({ links });
-    let list = wrapper.find("ul");
-    let listElements = list.find("li");
-    expect(listElements.length).to.equal(3);
-    listElements.map((el, idx) => {
-      expect(el.find("a").length).to.equal(1);
-      expect(el.find("a").text()).to.equal(`Link ${idx + 1}`);
-      expect(el.find("a").prop("href")).to.equal(`www.link${idx + 1}.html`);
-    });
   });
 });
