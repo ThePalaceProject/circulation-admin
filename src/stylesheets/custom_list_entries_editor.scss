@@ -122,3 +122,22 @@
   cursor: grabbing;
   cursor: -webkit-grabbing;
 }
+
+.sort-results-by {
+  display: block;
+  width: 100%;
+  padding: 12px 18px;
+  background-color: $gray-tint;
+  border: 1px solid $medium-gray;
+  border-radius: 4px;
+  label {
+    margin: 0;
+  }
+  select {
+    display: block;
+    float: right;
+    margin: 0;
+    width: 50%;
+    border-color: $blue;
+  }
+}

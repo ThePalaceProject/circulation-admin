@@ -12,6 +12,7 @@ import {
   BookIcon,
 } from "@nypl/dgx-svg-icons";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import { formatString } from "../utils/sharedFunctions";
 
 export interface Entry extends BookData {
   medium?: string;
@@ -37,6 +38,7 @@ export interface CustomListEntriesEditorState {
   deleted: Entry[];
   added: Entry[];
   totalVisibleEntries?: number;
+  sortBy?: string;
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -59,6 +61,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.loadMore = this.loadMore.bind(this);
     this.loadMoreEntries = this.loadMoreEntries.bind(this);
     this.clearState = this.clearState.bind(this);
+  }
+
+  sortBy(books, attr: string) {
+    let parse = (value: string | string[]) => {
+      if (attr === "authors") {
+        return value[0].split(" ").reverse()[0];
+      } else if (attr === "title") {
+        return formatString((value as string), ["The ", "A ", "An ", ""], false);
+      }
+    };
+    return books.sort((x, y) => (parse(x[attr]) > parse(y[attr])) ? 1 : -1);
   }
 
   render(): JSX.Element {
@@ -107,6 +120,17 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       }
     }
 
+    let sortDropdown = (
+      <fieldset className="sort-results-by">
+        <label>Sort by:</label>
+        <select onChange={(e) => this.setState({ sortBy: e.currentTarget.value.toLowerCase() })}>
+          <option>Default</option>
+          <option>Title</option>
+          <option>Authors</option>
+        </select>
+      </fieldset>
+    );
+
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="custom-list-drag-and-drop">
@@ -114,11 +138,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
             <div className="droppable-header">
               <h4>Search Results</h4>
               { searchResults && (this.searchResultsNotInEntries().length > 0) &&
-                <Button
+                [<Button
                   className="add-all-button"
                   callback={this.addAll}
                   content={<span>Add all to list<ApplyIcon /></span>}
-                />
+                />,
+                sortDropdown]
               }
             </div>
             <Droppable
@@ -364,7 +389,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   searchResultsNotInEntries() {
     let entryIds = this.state.entries && this.state.entries.length ?
       this.state.entries.map(entry => entry.id) : [];
-    return this.props.searchResults.books && this.props.searchResults.books.length ?
+    let books = this.props.searchResults.books && this.props.searchResults.books.length ?
       this.props.searchResults.books.filter(book => {
         for (const entryId of entryIds) {
           if (entryId === book.id) {
@@ -375,6 +400,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       }) :
       []
     ;
+    return this.sortBy(books, this.state.sortBy);
   }
 
   onDragStart(initial) {
