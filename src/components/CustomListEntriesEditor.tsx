@@ -39,7 +39,7 @@ export interface CustomListEntriesEditorState {
   deleted: Entry[];
   added: Entry[];
   totalVisibleEntries?: number;
-  sortBy?: string;
+  sortBy: string;
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -52,6 +52,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       deleted: [],
       added: [],
       totalVisibleEntries: this.props.entries ? this.props.entries.length : 0,
+      sortBy: "default"
     };
 
     this.reset = this.reset.bind(this);
@@ -65,6 +66,9 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   }
 
   sortBy(books: BookData[], attr: string) {
+    if (attr === "default") {
+      return books;
+    }
     let parse = (value: string | string[]) => {
       if (attr === "authors") {
         return value[0].split(" ").reverse()[0];
@@ -138,14 +142,14 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         }
       </EditableInput>
     );
-
+    let resultsToDisplay = searchResults && this.searchResultsNotInEntries();
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="custom-list-drag-and-drop">
           <div className="custom-list-search-results">
             <div className="droppable-header">
               <h4>Search Results</h4>
-              { searchResults && (this.searchResultsNotInEntries().length > 0) &&
+              { searchResults && (resultsToDisplay.length > 0) &&
                 [<Button
                   key="addAll"
                   className="add-all-button"
@@ -167,7 +171,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   { draggingFrom === "custom-list-entries" &&
                     <p>Drag books here to remove them from the list.</p>
                   }
-                  { (draggingFrom !== "custom-list-entries") && searchResults && this.searchResultsNotInEntries().map((book, i) =>
+                  { (draggingFrom !== "custom-list-entries") && searchResults && resultsToDisplay.map((book, i) =>
                     <Draggable key={book.id} draggableId={book.id}>
                       {(provided, snapshot) => (
                         <li>
@@ -518,7 +522,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   addAll() {
     let entries = [];
-
     for (const result of this.searchResultsNotInEntries()) {
       const medium = this.getMedium(result);
       const language = this.getLanguage(result);

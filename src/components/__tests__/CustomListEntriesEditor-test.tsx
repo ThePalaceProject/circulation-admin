@@ -109,7 +109,6 @@ describe("CustomListEntriesEditor", () => {
 
     let results = droppable.find(Draggable);
     expect(results.length).to.equal(3);
-
     expect(results.at(0).text()).to.contain("result 1");
     expect(results.at(0).text()).to.contain("author 1");
     expect(results.at(1).text()).to.contain("result 2");
