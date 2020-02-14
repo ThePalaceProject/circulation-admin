@@ -70,7 +70,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   render(): JSX.Element {
     const integration: ServiceData = this.state.mostRecent;
     const selfTestException = integration.self_test_results && integration.self_test_results.exception;
-    const cannotRunTests = selfTestException?.search(/[before you can  run self tests]/) >= 0;
+    const cannotRunTests = selfTestException?.search(/[before you can run self tests]/) >= 0;
     const firstTime: boolean = selfTestException && selfTestException.includes("no attribute 'prior_test_results'");
     let results = [];
     let resultIcon: JSX.Element;
