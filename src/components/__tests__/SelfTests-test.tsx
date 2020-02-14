@@ -220,7 +220,7 @@ describe("SelfTests", () => {
     });
 
     it("should display the base error message when attempting to run self tests", () => {
-      wrapper = mount(
+      wrapper = shallow(
         <SelfTests
           item={collections[2]} type="collection" getSelfTests={stub()}
         />
