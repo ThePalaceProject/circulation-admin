@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { spy, stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -115,6 +115,54 @@ describe("CustomListEntriesEditor", () => {
     expect(results.at(1).text()).to.contain("author 2a, author 2b");
     expect(results.at(2).text()).to.contain("result 3");
     expect(results.at(2).text()).to.contain("author 3");
+  });
+
+  it("sorts search results", () => {
+    let books = ["C", "B", "A"].map((x, idx) => {
+      return {...searchResultsData.books[idx], ...{title: x}};
+    });
+    let wrapper = mount(
+      <CustomListEntriesEditor
+        searchResults={{...searchResultsData, ...{ books }}}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+    let spySortBy = spy(wrapper.instance(), "sortBy");
+    wrapper.setProps({ sortBy: spySortBy });
+
+    let sortMenu = wrapper.find("[name='sortBy']").at(0);
+    expect(sortMenu.find("option").map(o => o.text())).to.eql(["Default", "Title", "Authors"]);
+    expect(sortMenu.props().label).to.equal("Sort search results by:");
+
+    expect(wrapper.state().sortBy).to.equal("default");
+    expect(spySortBy.callCount).to.equal(1);
+    expect(spySortBy.args[0][0]).to.eql(wrapper.prop("searchResults").books);
+    expect(spySortBy.args[0][1]).to.eql("default");
+    expect(wrapper.find(".search-result").map(x => x.find(".title").text())).to.eql(["C", "B", "A"]);
+
+    sortMenu.props().onChange("title");
+
+    expect(wrapper.state().sortBy).to.equal("title");
+    wrapper.update();
+    expect(spySortBy.callCount).to.equal(2);
+    expect(spySortBy.args[1][0]).to.eql(wrapper.prop("searchResults").books.reverse());
+    expect(spySortBy.args[1][1]).to.eql("title");
+    expect(wrapper.find(".search-result").map(x => x.find(".title").text())).to.eql(["A", "B", "C"]);
+
+    sortMenu.props().onChange("authors");
+
+    expect(wrapper.state().sortBy).to.equal("authors");
+    wrapper.update();
+    expect(spySortBy.callCount).to.equal(3);
+    expect(spySortBy.args[2][0]).to.eql(wrapper.prop("searchResults").books.reverse());
+    expect(spySortBy.args[2][1]).to.eql("authors");
+    expect(wrapper.find(".search-result").map(x => x.find(".title").text())).to.eql(["C", "B", "A"]);
+
+    spySortBy.restore();
   });
 
   it("renders a link to view each search result", () => {
