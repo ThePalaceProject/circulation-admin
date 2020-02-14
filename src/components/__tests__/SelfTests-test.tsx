@@ -144,10 +144,7 @@ describe("SelfTests", () => {
   });
 
   it("should disable the button if the tests cannot be run", () => {
-    let selfTestResultsWithException = {
-      ...collections[0].self_test_results, ...{
-        exception: "You must associate this service with at least one library before you can run self tests for it."
-    }};
+    let selfTestResultsWithException = {...collections[0].self_test_results, ...{ exception: "Exception!", disabled: true }};
     let collectionWithException = {...collections[0], ...{self_test_results: selfTestResultsWithException}};
     wrapper = mount(
       <SelfTests item={collectionWithException} type="collection" getSelfTests={stub()} />
