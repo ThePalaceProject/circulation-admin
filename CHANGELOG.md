@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.12
+#### Added
+- Implemented sorting functionality for search results in the Lists creator.
+
 ### v0.4.11
 #### Added
 - Enabled admins to configure the terms of service text and link displayed in the Footer.
