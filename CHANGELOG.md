@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.12
+#### Updated
+- Disabled the "run tests" button in cases in which tests cannot be run.
+
 ### v0.4.11
 #### Added
 - Enabled admins to configure the terms of service text and link displayed in the Footer.

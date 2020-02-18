@@ -143,6 +143,15 @@ describe("SelfTests", () => {
     expect(wrapper.find("p").text()).to.equal("No self test results found.");
   });
 
+  it("should disable the button if the tests cannot be run", () => {
+    let selfTestResultsWithException = {...collections[0].self_test_results, ...{ exception: "Exception!", disabled: true }};
+    let collectionWithException = {...collections[0], ...{self_test_results: selfTestResultsWithException}};
+    wrapper = mount(
+      <SelfTests item={collectionWithException} type="collection" getSelfTests={stub()} />
+    );
+    expect(wrapper.find("button").props().disabled).to.be.true;
+  });
+
   it("should render the SelfTests component for new services", () => {
     let exception = "This integration has no attribute 'prior_test_results'";
     let self_test_results = {...collections[0].self_test_results, ...{exception}};
