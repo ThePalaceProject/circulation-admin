@@ -125,7 +125,7 @@ describe("CustomListEditor", () => {
 
   it("shows collections", () => {
     let inputs = wrapper.find(EditableInput);
-    expect(inputs.length).to.equal(6);
+    expect(inputs.length).to.equal(9);
     expect(inputs.at(0).props().label).to.equal("collection 1");
     expect(inputs.at(0).props().value).to.equal("1");
     expect(inputs.at(0).props().checked).to.equal(false);

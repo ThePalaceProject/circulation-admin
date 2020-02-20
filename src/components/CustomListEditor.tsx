@@ -94,6 +94,38 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       />
     );
 
+    const sortBy = ["Relevance", "Title", "Author"];
+
+    const searchOptions = (
+      <Panel
+        id="advanced-search-options"
+        key="advanced-search-options"
+        style="instruction"
+        headerText="Advanced search options"
+        openByDefault={true}
+        content={[
+          <fieldset key="sortBy" className="search-options">
+            <legend>Sort by:</legend>
+            <ul>
+              {
+                sortBy.map(x => (
+                  <li key={x.toLowerCase()}><EditableInput
+                    type="radio"
+                    name={x.toLowerCase()}
+                    value={x.toLowerCase()}
+                    label={x}
+                    ref={x.toLowerCase()}
+                    checked={true}
+                  /></li>
+                ))
+              }
+            </ul>
+            <p><i>Selecting "Title" or "Author" will automatically filter out less relevant results.</i></p>
+          </fieldset>
+        ]}
+      />
+    );
+
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -159,7 +191,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               id="search-titles"
               openByDefault={true}
               onEnter={this.search}
-              content={searchForm}
+              content={[searchForm, searchOptions]}
             />
           </section>
           <CustomListEntriesEditor

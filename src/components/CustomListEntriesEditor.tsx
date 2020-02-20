@@ -99,6 +99,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let displayTotal;
     let entriesCount;
     let booksText;
+    const sortOrders = ["default", "title", "authors"];
 
     if (totalVisibleEntries && totalEntriesServer) {
       if (entries.length) {
@@ -135,7 +136,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         onChange={(value) => this.setState({ sortBy: value.toLowerCase() })}
       >
         {
-          ["default", "title", "authors"].map((x) => {
+          sortOrders.map((x) => {
             return <option key={x} value={x} aria-selected={this.state.sortBy === x}>{formatString(x)}</option>;
           })
 
