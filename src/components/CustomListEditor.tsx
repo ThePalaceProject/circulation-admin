@@ -4,6 +4,7 @@ import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
+import CustomListSearch from "./CustomListSearch";
 import SearchIcon from "./icons/SearchIcon";
 import { Button, Panel, Form } from "library-simplified-reusable-components";
 
@@ -186,13 +187,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 />
               </div>
             }
-            <Panel
-              headerText="Search for titles"
-              id="search-titles"
-              openByDefault={true}
-              onEnter={this.search}
-              content={[searchForm, searchOptions]}
-            />
+            <CustomListSearch search={this.search} entryPoints={this.props.entryPoints} getEntryPointsElms={this.getEntryPointsElms} />
           </section>
           <CustomListEntriesEditor
             searchResults={this.props.searchResults}
@@ -419,8 +414,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
    * language query set to 'all', for librarians who may want to search
    * for items without a language filter.
    */
-  search() {
-    const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
+  search(searchTerms: string, sortBy: string) {
     const searchQueries = this.getSearchQueries();
     const url = `/${this.props.library}/search?q=${searchTerms}${searchQueries}`;
     this.props.search(url);
