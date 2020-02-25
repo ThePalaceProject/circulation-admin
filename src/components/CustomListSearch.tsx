@@ -33,13 +33,39 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
     this.props.search(searchTerms, this.state.sortBy);
   }
+
   sort(sortBy: string) {
     this.setState({ sortBy });
   }
-  render(): JSX.Element {
-    const sortBy = {"Relevance (default)": "score", "Title": "title", "Author": "author"};
 
-    const searchOptions = (
+  renderSearchBox(): JSX.Element {
+    return (
+      <fieldset key="search">
+        <legend className="visuallyHidden">Search for titles</legend>
+        {
+          this.props.entryPoints?.length ? (
+            <div className="entry-points">
+              <span>Select the entry point to search for:</span>
+              <div className="entry-points-selection">
+                {this.props.getEntryPointsElms(this.props.entryPoints)}
+              </div>
+            </div>
+          ) : null
+        }
+        <input
+          aria-label="Search for a book title"
+          className="form-control"
+          ref="searchTerms"
+          type="text"
+          placeholder="Enter a search term"
+        />
+      </fieldset>
+    );
+  }
+
+  renderSearchOptions(): JSX.Element {
+    const sortBy = {"Relevance (default)": "score", "Title": "title", "Author": "author"};
+    return (
       <Panel
         id="advanced-search-options"
         key="advanced-search-options"
@@ -47,53 +73,43 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
         headerText="Advanced search options"
         openByDefault={true}
         content={[
-            <fieldset key="sortBy" className="search-options">
-              <legend>Sort by:</legend>
-              <ul>
-                {
-                  Object.keys(sortBy).map(x => (
-                      <li key={sortBy[x]}><EditableInput
-                        type="radio"
-                        name={sortBy[x]}
-                        value={sortBy[x]}
-                        label={x}
-                        ref={sortBy[x]}
-                        checked={sortBy[x] === this.state.sortBy}
-                        onChange={() => this.sort(sortBy[x])}
-                      /></li>
-                    ))
-                  }
-                </ul>
-                <p><i>Selecting "Title" or "Author" will automatically filter out less relevant results.</i></p>
-              </fieldset>
-            ]}
-          />
-        );
+          <fieldset key="sortBy" className="search-options">
+            <legend>Sort by:</legend>
+            <ul>
+              {
+                Object.keys(sortBy).map(x => this.renderInput(x, sortBy[x]))
+              }
+            </ul>
+            <p><i>Selecting "Title" or "Author" will automatically filter out less relevant results.</i></p>
+          </fieldset>
+        ]}
+      />
+    );
+  }
+
+  renderInput(k: string, v: string): JSX.Element {
+    return (
+      <li key={v}>
+        <EditableInput
+          type="radio"
+          name={v}
+          value={v}
+          label={k}
+          ref={v}
+          checked={v === this.state.sortBy}
+          onChange={() => this.sort(v)}
+        />
+      </li>
+    );
+  }
+
+  render(): JSX.Element {
     const searchForm = (
       <Form
         onSubmit={this.submitSearch}
         content={[
-          <fieldset key="search">
-            <legend className="visuallyHidden">Search for titles</legend>
-            {
-              this.props.entryPoints?.length ? (
-                <div className="entry-points">
-                  <span>Select the entry point to search for:</span>
-                  <div className="entry-points-selection">
-                    {this.props.getEntryPointsElms(this.props.entryPoints)}
-                  </div>
-                </div>
-              ) : null
-            }
-            <input
-              aria-label="Search for a book title"
-              className="form-control"
-              ref="searchTerms"
-              type="text"
-              placeholder="Enter a search term"
-            />
-          </fieldset>,
-          searchOptions
+          this.renderSearchBox(),
+          this.renderSearchOptions()
         ]}
         buttonClass="left-align"
         buttonContent={<span>Search<SearchIcon /></span>}
