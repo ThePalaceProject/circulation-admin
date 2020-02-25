@@ -7,6 +7,7 @@ export interface CustomListSearchProps {
   search: (searchTerms: string, sortBy: string) => void;
   entryPoints?: string[];
   getEntryPointsElms?: (entryPoints: string[]) => {};
+  startingTitle?: string;
 }
 
 export interface CustomListSearchState {
@@ -20,6 +21,14 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
     this.sort = this.sort.bind(this);
     this.state = { sortBy: "score" };
   }
+
+  componentDidMount() {
+    if (this.props.startingTitle) {
+      (this.refs["searchTerms"] as HTMLInputElement).value = this.props.startingTitle;
+      this.submitSearch();
+    }
+  }
+
   submitSearch() {
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
     this.props.search(searchTerms, this.state.sortBy);

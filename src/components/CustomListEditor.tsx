@@ -63,70 +63,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
     const disableSave = this.isTitleEmpty() || !hasChanges;
-
-    const searchForm = (
-      <Form
-        onSubmit={this.search}
-        className="form-inline"
-        content={
-          <fieldset key="search">
-            <legend className="visuallyHidden">Search for titles</legend>
-            {
-              this.props.entryPoints.length ? (
-                <div className="entry-points">
-                  <span>Select the entry point to search for:</span>
-                  <div className="entry-points-selection">
-                    {this.getEntryPointsElms(this.props.entryPoints)}
-                  </div>
-                </div>
-              ) : null
-            }
-            <input
-              aria-label="Search for a book title"
-              className="form-control"
-              ref="searchTerms"
-              type="text"
-              placeholder="Enter a search term"
-            />
-          </fieldset>
-        }
-        buttonClass="bottom-align inline"
-        buttonContent={<span>Search<SearchIcon /></span>}
-      />
-    );
-
-    const sortBy = ["Relevance", "Title", "Author"];
-
-    const searchOptions = (
-      <Panel
-        id="advanced-search-options"
-        key="advanced-search-options"
-        style="instruction"
-        headerText="Advanced search options"
-        openByDefault={true}
-        content={[
-          <fieldset key="sortBy" className="search-options">
-            <legend>Sort by:</legend>
-            <ul>
-              {
-                sortBy.map(x => (
-                  <li key={x.toLowerCase()}><EditableInput
-                    type="radio"
-                    name={x.toLowerCase()}
-                    value={x.toLowerCase()}
-                    label={x}
-                    ref={x.toLowerCase()}
-                    checked={true}
-                  /></li>
-                ))
-              }
-            </ul>
-            <p><i>Selecting "Title" or "Author" will automatically filter out less relevant results.</i></p>
-          </fieldset>
-        ]}
-      />
-    );
-
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -187,7 +123,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 />
               </div>
             }
-            <CustomListSearch search={this.search} entryPoints={this.props.entryPoints} getEntryPointsElms={this.getEntryPointsElms} />
+            <CustomListSearch
+              search={this.search}
+              entryPoints={this.props.entryPoints}
+              getEntryPointsElms={this.getEntryPointsElms}
+              startingTitle={this.props.startingTitle}
+            />
           </section>
           <CustomListEntriesEditor
             searchResults={this.props.searchResults}
@@ -206,13 +147,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         </div>
       </div>
     );
-  }
-
-  componentDidMount() {
-    if (this.props.startingTitle) {
-      (this.refs["searchTerms"] as HTMLInputElement).value = this.props.startingTitle;
-      this.search(this.props.startingTitle, "relevance");
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -417,7 +351,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   search(searchTerms: string, sortBy: string) {
     const searchQueries = this.getSearchQueries(sortBy);
     const url = `/${this.props.library}/search?q=${searchTerms}${searchQueries}`;
-    console.log(url);
     this.props.search(url);
   }
 }

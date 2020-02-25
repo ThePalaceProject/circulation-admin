@@ -5,7 +5,7 @@ import { mount } from "enzyme";
 import CustomListSearch from "../CustomListSearch";
 
 
-describe.only("CustomListSearch", () => {
+describe("CustomListSearch", () => {
   let wrapper;
   let search;
   beforeEach(() => {
@@ -71,5 +71,14 @@ describe.only("CustomListSearch", () => {
     expect(wrapper.state().sortBy).to.equal("score");
 
     spySort.restore();
+  });
+  it("automatically searches if there is a startingTitle prop", () => {
+    let search = stub();
+    wrapper = mount(
+      <CustomListSearch startingTitle="test" search={search} />
+    );
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][0]).to.equal("test");
+    expect(search.args[0][1]).to.equal("score");
   });
 });
