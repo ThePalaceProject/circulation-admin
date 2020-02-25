@@ -211,7 +211,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   componentDidMount() {
     if (this.props.startingTitle) {
       (this.refs["searchTerms"] as HTMLInputElement).value = this.props.startingTitle;
-      this.search();
+      this.search(this.props.startingTitle, "relevance");
     }
   }
 
@@ -367,13 +367,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }, 200);
   }
 
-  getSearchQueries() {
+  getSearchQueries(sortBy: string) {
     const entryPointSelected = this.state.entryPointSelected;
     let query = "&language=all";
     if (entryPointSelected && entryPointSelected !== "all") {
       query += `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
     }
-
+    query += `&order=${encodeURIComponent(sortBy)}`;
     return query;
   }
 
@@ -415,8 +415,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
    * for items without a language filter.
    */
   search(searchTerms: string, sortBy: string) {
-    const searchQueries = this.getSearchQueries();
+    const searchQueries = this.getSearchQueries(sortBy);
     const url = `/${this.props.library}/search?q=${searchTerms}${searchQueries}`;
+    console.log(url);
     this.props.search(url);
   }
 }
