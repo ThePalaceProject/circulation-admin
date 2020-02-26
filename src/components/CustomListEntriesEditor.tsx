@@ -39,7 +39,6 @@ export interface CustomListEntriesEditorState {
   deleted: Entry[];
   added: Entry[];
   totalVisibleEntries?: number;
-  sortBy: string;
 }
 
 /** Drag and drop interface for adding books from search results to a custom list. */
@@ -52,7 +51,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       deleted: [],
       added: [],
       totalVisibleEntries: this.props.entries ? this.props.entries.length : 0,
-      sortBy: "default"
     };
 
     this.reset = this.reset.bind(this);
@@ -63,20 +61,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     this.loadMore = this.loadMore.bind(this);
     this.loadMoreEntries = this.loadMoreEntries.bind(this);
     this.clearState = this.clearState.bind(this);
-  }
-
-  sortBy(books: BookData[], attr: string) {
-    if (attr === "default") {
-      return books;
-    }
-    let parse = (value: string | string[]) => {
-      if (attr === "authors") {
-        return value[0].split(" ").reverse()[0];
-      } else if (attr === "title") {
-        return formatString((value as string), ["The ", "A ", "An ", ""], false);
-      }
-    };
-    return books.sort((x, y) => (parse(x[attr]) > parse(y[attr])) ? 1 : -1);
   }
 
   render(): JSX.Element {
@@ -99,7 +83,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
     let displayTotal;
     let entriesCount;
     let booksText;
-    const sortOrders = ["default", "title", "authors"];
 
     if (totalVisibleEntries && totalEntriesServer) {
       if (entries.length) {
@@ -395,7 +378,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       }) :
       []
     ;
-    return this.sortBy(books, this.state.sortBy);
+    return books;
   }
 
   onDragStart(initial) {
