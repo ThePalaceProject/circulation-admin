@@ -125,24 +125,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
       }
     }
-
-    let sortDropdown = (
-      <EditableInput
-        key="sortBy"
-        elementType="select"
-        name="sortBy"
-        className="sort-results-by"
-        label="Sort search results by:"
-        onChange={(value) => this.setState({ sortBy: value.toLowerCase() })}
-      >
-        {
-          sortOrders.map((x) => {
-            return <option key={x} value={x} aria-selected={this.state.sortBy === x}>{formatString(x)}</option>;
-          })
-
-        }
-      </EditableInput>
-    );
     let resultsToDisplay = searchResults && this.searchResultsNotInEntries();
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
@@ -151,13 +133,12 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
             <div className="droppable-header">
               <h4>Search Results</h4>
               { searchResults && (resultsToDisplay.length > 0) &&
-                [<Button
+                <Button
                   key="addAll"
                   className="add-all-button"
                   callback={this.addAll}
                   content={<span>Add all to list<ApplyIcon /></span>}
-                />,
-                sortDropdown]
+                />
               }
             </div>
             <Droppable

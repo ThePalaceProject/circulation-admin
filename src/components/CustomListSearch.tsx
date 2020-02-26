@@ -19,7 +19,7 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
     super(props);
     this.submitSearch = this.submitSearch.bind(this);
     this.sort = this.sort.bind(this);
-    this.state = { sortBy: "_score" };
+    this.state = { sortBy: null };
   }
 
   componentDidMount() {
@@ -64,7 +64,7 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
   }
 
   renderSearchOptions(): JSX.Element {
-    const sortBy = {"Relevance (default)": "_score", "Title": "title", "Author": "author"};
+    const sortBy = {"Relevance (default)": null, "Title": "title", "Author": "author"};
     return (
       <Panel
         id="advanced-search-options"

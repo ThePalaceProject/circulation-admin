@@ -5,7 +5,7 @@ import { mount } from "enzyme";
 import CustomListSearch from "../CustomListSearch";
 
 
-describe("CustomListSearch", () => {
+describe.only("CustomListSearch", () => {
   let wrapper;
   let search;
   beforeEach(() => {

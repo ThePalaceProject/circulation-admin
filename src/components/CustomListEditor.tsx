@@ -307,7 +307,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     if (entryPointSelected && entryPointSelected !== "all") {
       query += `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
     }
-    query += `&order=${encodeURIComponent(sortBy)}`;
+    sortBy && (query += `&order=${encodeURIComponent(sortBy)}`);
     return query;
   }
 
