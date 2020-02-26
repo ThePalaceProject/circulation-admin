@@ -173,7 +173,7 @@ export default class InputList extends React.Component<InputListProps, InputList
         setting,
         {
           elementType: "select",
-          name: setting.key,
+          name: setting.key + "_menu",
           value: setting.key,
           label: setting.menuTitle,
           required: setting.required,

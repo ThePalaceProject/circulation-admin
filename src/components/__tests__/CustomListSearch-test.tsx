@@ -22,12 +22,12 @@ describe("CustomListSearch", () => {
 
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0]).to.equal("test");
-    expect(search.args[0][1]).to.equal("score");
+    expect(search.args[0][1]).to.equal("_score");
   });
   it("sorts", () => {
     let spySort = spy(wrapper.instance(), "sort");
     wrapper.setProps({ sort: spySort });
-    expect(wrapper.state().sortBy).to.equal("score");
+    expect(wrapper.state().sortBy).to.equal("_score");
     let sortOptions = wrapper.find(".search-options").find(".form-group");
     expect(sortOptions.length).to.equal(3);
 
@@ -35,8 +35,8 @@ describe("CustomListSearch", () => {
     expect(relevance.text()).to.equal("Relevance (default)");
     let relevanceRadio = relevance.find("input");
     expect(relevanceRadio.props().type).to.equal("radio");
-    expect(relevanceRadio.props().name).to.equal("score");
-    expect(relevanceRadio.props().value).to.equal("score");
+    expect(relevanceRadio.props().name).to.equal("_score");
+    expect(relevanceRadio.props().value).to.equal("_score");
     expect(relevanceRadio.props().checked).to.be.true;
 
     let title = sortOptions.at(1);
@@ -67,8 +67,8 @@ describe("CustomListSearch", () => {
 
     relevanceRadio.simulate("change");
     expect(spySort.callCount).to.equal(3);
-    expect(spySort.args[2][0]).to.equal("score");
-    expect(wrapper.state().sortBy).to.equal("score");
+    expect(spySort.args[2][0]).to.equal("_score");
+    expect(wrapper.state().sortBy).to.equal("_score");
 
     spySort.restore();
   });
@@ -79,6 +79,6 @@ describe("CustomListSearch", () => {
     );
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0]).to.equal("test");
-    expect(search.args[0][1]).to.equal("score");
+    expect(search.args[0][1]).to.equal("_score");
   });
 });
