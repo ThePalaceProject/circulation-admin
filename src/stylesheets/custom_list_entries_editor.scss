@@ -122,23 +122,3 @@
   cursor: grabbing;
   cursor: -webkit-grabbing;
 }
-
-.sort-results-by {
-  display: block;
-  width: 100%;
-  padding: 12px 18px;
-  background-color: $gray-tint;
-  border: 1px solid $medium-gray;
-  border-radius: 4px;
-  label {
-    display: block;
-    margin: 0;
-    width: 100%;
-  }
-  select {
-    display: block;
-    margin-top: 6px;
-    width: 100%;
-    border-color: $blue;
-  }
-}

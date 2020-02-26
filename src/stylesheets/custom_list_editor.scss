@@ -109,6 +109,7 @@
 }
 
 .search-options {
+  width: 80%;
   padding-bottom: 20px;
   legend {
     border-top: 1px solid $blue-dark;
@@ -148,5 +149,20 @@
       padding-top: 5px;
       border-top: 1px solid $dark-gray;
     }
+  }
+}
+
+.search-titles {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .panel {
+    margin: 5px 0 10px 0;
+  }
+  br {
+    display: none;
+  }
+  button {
+    margin: 0;
   }
 }

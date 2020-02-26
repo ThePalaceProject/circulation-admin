@@ -113,6 +113,7 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
         ]}
         buttonClass="left-align"
         buttonContent={<span>Search<SearchIcon /></span>}
+        className="search-titles"
       />
     );
 
