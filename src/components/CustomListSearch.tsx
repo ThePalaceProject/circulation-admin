@@ -71,7 +71,6 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
         key="advanced-search-options"
         style="instruction"
         headerText="Advanced search options"
-        openByDefault={true}
         content={[
           <fieldset key="sortBy" className="search-options">
             <legend>Sort by:</legend>
