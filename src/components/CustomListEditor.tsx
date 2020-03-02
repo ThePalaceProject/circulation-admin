@@ -313,7 +313,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   getEntryPointsElms(entryPoints) {
     const entryPointsElms = [];
-    entryPointsElms.push(
+    !entryPoints.includes("All") && entryPointsElms.push(
       <EditableInput
         key="all"
         type="radio"
@@ -324,14 +324,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         onChange={() => this.changeEntryPoint("all")}
       />
     );
-
     entryPoints.forEach(entryPoint =>
       entryPointsElms.push(
         <EditableInput
           key={entryPoint}
           type="radio"
           name="entry-points-selection"
-          checked={entryPoint === this.state.entryPointSelected}
+          checked={entryPoint === this.state.entryPointSelected || entryPoint.toLowerCase() === this.state.entryPointSelected}
           label={entryPoint}
           value={entryPoint}
           onChange={() => this.changeEntryPoint(entryPoint)}
