@@ -127,8 +127,11 @@ fieldset.search-options.well {
   p {
     border-left: 1px solid $blue-dark;
     border-right: 1px solid $blue-dark;
-    border-bottom: 1px solid $blue-dark;
-    border-radius: 0 0 4px 4px;
+    margin: 0 auto;
+    &:last-child {
+      border-bottom: 1px solid $blue-dark;
+      border-radius: 0 0 4px 4px;
+    }
     font-size: 14px;
     padding: 0 0 5px 15px;
     i {

@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.14
+#### Added
+- Added a message to clarify usage of new sorting feature.
+
 ### v0.4.13
 #### Added
 - Implemented sorting functionality for search results in the Lists creator.

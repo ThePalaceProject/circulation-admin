@@ -79,6 +79,7 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
                 Object.keys(sortBy).map(x => this.renderInput(x, sortBy[x]))
               }
             </ul>
+            <p><i>Note: currently, you can sort only by attributes which you have enabled in this library's Lanes & Filters configuration.</i></p>
             <p><i>Selecting "Title" or "Author" will automatically filter out less relevant results.</i></p>
           </fieldset>
         ]}
