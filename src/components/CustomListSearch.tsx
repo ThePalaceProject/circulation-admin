@@ -72,7 +72,7 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
         style="instruction"
         headerText="Advanced search options"
         content={[
-          <fieldset key="sortBy" className="search-options">
+          <fieldset key="sortBy" className="well search-options">
             <legend>Sort by:</legend>
             <ul>
               {
