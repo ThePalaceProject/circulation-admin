@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.13
+#### Added
+- Implemented sorting functionality for search results in the Lists creator.
+
 ### v0.4.12
 #### Updated
 - Disabled the "run tests" button in cases in which tests cannot be run.

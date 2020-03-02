@@ -12,6 +12,8 @@ import {
   BookIcon,
 } from "@nypl/dgx-svg-icons";
 import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import EditableInput from "./EditableInput";
+import { formatString } from "../utils/sharedFunctions";
 
 export interface Entry extends BookData {
   medium?: string;
@@ -106,15 +108,16 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
         entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
       }
     }
-
+    let resultsToDisplay = searchResults && this.searchResultsNotInEntries();
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
         <div className="custom-list-drag-and-drop">
           <div className="custom-list-search-results">
             <div className="droppable-header">
               <h4>Search Results</h4>
-              { searchResults && (this.searchResultsNotInEntries().length > 0) &&
+              { searchResults && (resultsToDisplay.length > 0) &&
                 <Button
+                  key="addAll"
                   className="add-all-button"
                   callback={this.addAll}
                   content={<span>Add all to list<ApplyIcon /></span>}
@@ -133,7 +136,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
                   { draggingFrom === "custom-list-entries" &&
                     <p>Drag books here to remove them from the list.</p>
                   }
-                  { (draggingFrom !== "custom-list-entries") && searchResults && this.searchResultsNotInEntries().map((book, i) =>
+                  { (draggingFrom !== "custom-list-entries") && searchResults && resultsToDisplay.map((book, i) =>
                     <Draggable key={book.id} draggableId={book.id}>
                       {(provided, snapshot) => (
                         <li>
@@ -364,7 +367,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
   searchResultsNotInEntries() {
     let entryIds = this.state.entries && this.state.entries.length ?
       this.state.entries.map(entry => entry.id) : [];
-    return this.props.searchResults.books && this.props.searchResults.books.length ?
+    let books = this.props.searchResults.books && this.props.searchResults.books.length ?
       this.props.searchResults.books.filter(book => {
         for (const entryId of entryIds) {
           if (entryId === book.id) {
@@ -375,6 +378,7 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
       }) :
       []
     ;
+    return books;
   }
 
   onDragStart(initial) {
@@ -483,7 +487,6 @@ export default class CustomListEntriesEditor extends React.Component<CustomListE
 
   addAll() {
     let entries = [];
-
     for (const result of this.searchResultsNotInEntries()) {
       const medium = this.getMedium(result);
       const language = this.getLanguage(result);

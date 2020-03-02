@@ -76,6 +76,7 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
         disabled={this.props.disabled}
         onChange={this.updateInputList}
         readOnly={true}
+        ref={this.props.inputListSetting.key}
       />
     );
   }

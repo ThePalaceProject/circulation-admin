@@ -4,6 +4,7 @@ import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
+import CustomListSearch from "./CustomListSearch";
 import SearchIcon from "./icons/SearchIcon";
 import { Button, Panel, Form } from "library-simplified-reusable-components";
 
@@ -62,38 +63,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
     const disableSave = this.isTitleEmpty() || !hasChanges;
-
-    const searchForm = (
-      <Form
-        onSubmit={this.search}
-        className="form-inline"
-        content={
-          <fieldset key="search">
-            <legend className="visuallyHidden">Search for titles</legend>
-            {
-              this.props.entryPoints.length ? (
-                <div className="entry-points">
-                  <span>Select the entry point to search for:</span>
-                  <div className="entry-points-selection">
-                    {this.getEntryPointsElms(this.props.entryPoints)}
-                  </div>
-                </div>
-              ) : null
-            }
-            <input
-              aria-label="Search for a book title"
-              className="form-control"
-              ref="searchTerms"
-              type="text"
-              placeholder="Enter a search term"
-            />
-          </fieldset>
-        }
-        buttonClass="bottom-align inline"
-        buttonContent={<span>Search<SearchIcon /></span>}
-      />
-    );
-
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -154,12 +123,11 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 />
               </div>
             }
-            <Panel
-              headerText="Search for titles"
-              id="search-titles"
-              openByDefault={true}
-              onEnter={this.search}
-              content={searchForm}
+            <CustomListSearch
+              search={this.search}
+              entryPoints={this.props.entryPoints}
+              getEntryPointsElms={this.getEntryPointsElms}
+              startingTitle={this.props.startingTitle}
             />
           </section>
           <CustomListEntriesEditor
@@ -179,13 +147,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         </div>
       </div>
     );
-  }
-
-  componentDidMount() {
-    if (this.props.startingTitle) {
-      (this.refs["searchTerms"] as HTMLInputElement).value = this.props.startingTitle;
-      this.search();
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -340,19 +301,19 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }, 200);
   }
 
-  getSearchQueries() {
+  getSearchQueries(sortBy: string) {
     const entryPointSelected = this.state.entryPointSelected;
     let query = "&language=all";
     if (entryPointSelected && entryPointSelected !== "all") {
       query += `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
     }
-
+    sortBy && (query += `&order=${encodeURIComponent(sortBy)}`);
     return query;
   }
 
   getEntryPointsElms(entryPoints) {
     const entryPointsElms = [];
-    entryPointsElms.push(
+    !entryPoints.includes("All") && entryPointsElms.push(
       <EditableInput
         key="all"
         type="radio"
@@ -363,14 +324,13 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         onChange={() => this.changeEntryPoint("all")}
       />
     );
-
     entryPoints.forEach(entryPoint =>
       entryPointsElms.push(
         <EditableInput
           key={entryPoint}
           type="radio"
           name="entry-points-selection"
-          checked={entryPoint === this.state.entryPointSelected}
+          checked={entryPoint === this.state.entryPointSelected || entryPoint.toLowerCase() === this.state.entryPointSelected}
           label={entryPoint}
           value={entryPoint}
           onChange={() => this.changeEntryPoint(entryPoint)}
@@ -387,9 +347,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
    * language query set to 'all', for librarians who may want to search
    * for items without a language filter.
    */
-  search() {
-    const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
-    const searchQueries = this.getSearchQueries();
+  search(searchTerms: string, sortBy: string) {
+    const searchQueries = this.getSearchQueries(sortBy);
     const url = `/${this.props.library}/search?q=${searchTerms}${searchQueries}`;
     this.props.search(url);
   }

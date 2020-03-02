@@ -12,6 +12,7 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   validation?: string;
   clientError?: boolean;
   extraContent?: string | JSX.Element;
+  className?: string;
 }
 
 export interface EditableInputState {
@@ -54,7 +55,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       (error && error.status >= 400 && !this.state.value && required) ?
       "field-error" : "";
     return (
-      <div className={`form-group ${errorClass}`}>
+      <div className={`form-group ${errorClass} ${this.props.className}`}>
         { label &&
           <label className="control-label">
             { type !== "checkbox" && type !== "radio" && label }

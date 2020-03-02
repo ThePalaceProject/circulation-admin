@@ -5,6 +5,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import CustomListEditor from "../CustomListEditor";
+import CustomListSearch from "../CustomListSearch";
 import TextWithEditMode from "../TextWithEditMode";
 import EditableInput from "../EditableInput";
 import CustomListEntriesEditor from "../CustomListEntriesEditor";
@@ -125,7 +126,7 @@ describe("CustomListEditor", () => {
 
   it("shows collections", () => {
     let inputs = wrapper.find(EditableInput);
-    expect(inputs.length).to.equal(6);
+    expect(inputs.length).to.equal(9);
     expect(inputs.at(0).props().label).to.equal("collection 1");
     expect(inputs.at(0).props().value).to.equal("1");
     expect(inputs.at(0).props().checked).to.equal(false);
@@ -392,6 +393,15 @@ describe("CustomListEditor", () => {
     inputs = wrapper.find(EditableInput);
     expect(inputs.at(0).props().checked).to.equal(true);
     expect(inputs.at(1).props().checked).to.equal(false);
+  });
+
+  it("has a search component", () => {
+    let search = wrapper.find(CustomListSearch);
+    expect(search.length).to.equal(1);
+    expect(search.props().entryPoints).to.eql(wrapper.props().entryPoints);
+    wrapper.setProps({ startingTitle: "test" });
+    search = wrapper.find(CustomListSearch);
+    expect(search.props().startingTitle).to.equal("test");
   });
 
   it("searches with a default of language set to 'all'", () => {
