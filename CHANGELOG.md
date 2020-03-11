@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.15
+#### Added
+- Implemented a language filter for search results in the Lists creator.
+
 ### v0.4.14
 #### Added
 - Added a message to clarify usage of new sorting feature.

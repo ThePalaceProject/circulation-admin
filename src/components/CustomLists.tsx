@@ -14,6 +14,7 @@ import {
   LibraryData,
   LaneData,
   LanesData,
+  LanguagesData
 } from "../interfaces";
 import Admin from "../models/Admin";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
@@ -34,6 +35,7 @@ export interface CustomListsStateProps {
   isFetchingMoreCustomListEntries: boolean;
   libraries?: LibraryData[];
   lanes?: LaneData[];
+  languages?: LanguagesData;
 }
 
 export interface CustomListsDispatchProps {
@@ -47,6 +49,7 @@ export interface CustomListsDispatchProps {
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   fetchCollections: () => Promise<CollectionsData>;
   fetchLibraries: () => void;
+  fetchLanguages: () => void;
 }
 
 export interface CustomListsOwnProps {
@@ -135,7 +138,8 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
       entryPoints: this.getEnabledEntryPoints(this.props.libraries),
       isFetchingMoreCustomListEntries: this.props.isFetchingMoreCustomListEntries,
       isFetchingMoreSearchResults: this.props.isFetchingMoreSearchResults,
-      library: this.props.library,
+      languages: this.props.languages,
+      library: this.props.libraries?.find(l => l.short_name === this.props.library),
       loadMoreEntries: this.props.loadMoreEntries,
       loadMoreSearchResults: this.props.loadMoreSearchResults,
       search: this.props.search,
@@ -166,6 +170,7 @@ export class CustomLists extends React.Component<CustomListsProps, CustomListsSt
       this.props.fetchCollections();
     }
     this.props.fetchLibraries();
+    this.props.fetchLanguages();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -317,6 +322,7 @@ function mapStateToProps(state, ownProps) {
     searchResults: state.editor.collection && state.editor.collection.data,
     isFetchingMoreSearchResults: state.editor.collection && state.editor.collection.isFetchingPage,
     collections: state.editor.collections && state.editor.collections.data && state.editor.collections.data.collections,
+    languages: state.editor.languages && state.editor.languages.data,
     libraries: state.editor.libraries.data && state.editor.libraries.data.libraries,
     lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
   };
@@ -336,6 +342,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchCollections: () => dispatch(actions.fetchCollections()),
     fetchLibraries: () => dispatch(actions.fetchLibraries()),
     fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
+    fetchLanguages: () => dispatch(actions.fetchLanguages())
   };
 }
 
