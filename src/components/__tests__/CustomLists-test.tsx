@@ -64,6 +64,12 @@ describe("CustomLists", () => {
     },
   ];
 
+  let languages = {
+    "eng": ["English"],
+    "spa": ["Spanish", "Castilian"],
+    "fre": ["French"]
+  };
+
   const lane1: LaneData = {
     id: 1, display_name: "lane 1", visible: false, count: 1, sublanes: [],
     custom_list_ids: [2], inherit_parent_restrictions: false
@@ -118,9 +124,15 @@ describe("CustomLists", () => {
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
           libraries={libraries}
+          languages={languages}
         />,
         { context: { admin: libraryManager }}
       );
+    });
+
+    it("fetches libraries and languages", () => {
+      expect(fetchLibraries.callCount).to.equal(1);
+      expect(fetchLanguages.callCount).to.equal(1);
     });
 
     it("renders error message", () => {
@@ -167,6 +179,7 @@ describe("CustomLists", () => {
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
           fetchLanguages={fetchLanguages}
+          languages={languages}
         />,
         { context: { admin: libraryManager }}
       );
@@ -194,6 +207,7 @@ describe("CustomLists", () => {
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
           fetchLanguages={fetchLanguages}
+          languages={languages}
         />,
         { context: { admin: libraryManager }}
       );
@@ -224,6 +238,7 @@ describe("CustomLists", () => {
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
           fetchLanguages={fetchLanguages}
+          languages={languages}
         />,
         { context: { admin: libraryManager }}
       );
@@ -284,6 +299,7 @@ describe("CustomLists", () => {
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
           fetchLanguages={fetchLanguages}
+          languages={languages}
         />,
         { context: { admin: librarian }}
       );
@@ -353,6 +369,7 @@ describe("CustomLists", () => {
       expect(editor.props().responseBody).to.be.undefined;
       expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
       expect(editor.props().collections).to.deep.equal([collections[1], collections[2]]);
+      expect(editor.props().languages).to.eql(languages);
 
       expect(fetchCustomLists.callCount).to.equal(1);
       let editCustomListProp = editor.props().editCustomList;
@@ -380,6 +397,7 @@ describe("CustomLists", () => {
       expect(editor.props().searchResults).to.equal(searchResults);
       expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
       expect(editor.props().collections).to.deep.equal([collections[1], collections[2]]);
+      expect(editor.props().languages).to.eql(languages);
 
       expect(fetchCustomListDetails.callCount).to.equal(1);
 
@@ -421,6 +439,7 @@ describe("CustomLists", () => {
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
           fetchLanguages={fetchLanguages}
+          languages={languages}
         />,
         { context: { admin: librarian }}
       );
@@ -474,6 +493,7 @@ describe("CustomLists", () => {
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
           fetchLanguages={fetchLanguages}
+          languages={languages}
         />,
         { context: { admin: librarian }}
       );
