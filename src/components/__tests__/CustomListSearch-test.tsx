@@ -8,10 +8,24 @@ import CustomListSearch from "../CustomListSearch";
 describe("CustomListSearch", () => {
   let wrapper;
   let search;
+  let library = {
+    uuid: "uuid",
+    name: "name",
+    short_name: "short_name",
+    settings: {
+      "large_collection_languages": ["eng", "fre", "spa"]
+    }
+  };
+
+  let languages = {
+    "eng": ["English"],
+    "spa": ["Spanish", "Castilian"],
+    "fre": ["French"]
+  };
   beforeEach(() => {
     search = stub();
     wrapper = mount(
-      <CustomListSearch search={search} />
+      <CustomListSearch search={search} library={library} languages={languages} />
     );
   });
   it("searches", () => {
@@ -75,7 +89,7 @@ describe("CustomListSearch", () => {
   it("automatically searches if there is a startingTitle prop", () => {
     let search = stub();
     wrapper = mount(
-      <CustomListSearch startingTitle="test" search={search} />
+      <CustomListSearch startingTitle="test" search={search} library={library} languages={languages} />
     );
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0]).to.equal("test");

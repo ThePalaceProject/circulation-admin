@@ -24,6 +24,7 @@ describe("CustomLists", () => {
   let fetchCollections;
   let fetchLibraries;
   let fetchLanes;
+  let fetchLanguages;
 
   let listsData = [
     { id: 1, name: "a list", entry_count: 0, collections: [] },
@@ -93,6 +94,7 @@ describe("CustomLists", () => {
       fetchCollections = stub();
       fetchLibraries = stub();
       fetchLanes = stub().returns(new Promise<void>(resolve => resolve()));
+      fetchLanguages = stub();
 
       wrapper = mount(
         <CustomLists
@@ -104,6 +106,7 @@ describe("CustomLists", () => {
           isFetching={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
+          fetchLanguages={fetchLanguages}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
           editCustomList={editCustomList}
@@ -114,6 +117,7 @@ describe("CustomLists", () => {
           fetchCollections={fetchCollections}
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
+          libraries={libraries}
         />,
         { context: { admin: libraryManager }}
       );
@@ -162,6 +166,7 @@ describe("CustomLists", () => {
           fetchCollections={fetchCollections}
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
         />,
         { context: { admin: libraryManager }}
       );
@@ -188,6 +193,7 @@ describe("CustomLists", () => {
           fetchCollections={fetchCollections}
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
         />,
         { context: { admin: libraryManager }}
       );
@@ -217,6 +223,7 @@ describe("CustomLists", () => {
           fetchCollections={fetchCollections}
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
         />,
         { context: { admin: libraryManager }}
       );
@@ -276,6 +283,7 @@ describe("CustomLists", () => {
           fetchCollections={fetchCollections}
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
         />,
         { context: { admin: librarian }}
       );
@@ -337,7 +345,7 @@ describe("CustomLists", () => {
       wrapper.setProps({ editOrCreate: "create" });
       editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(1);
-      expect(editor.props().library).to.equal("library");
+      expect(editor.props().library).to.eql(libraries[0]);
       expect(editor.props().list).to.be.undefined;
       expect(editor.props().search).to.equal(search);
       expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
@@ -366,7 +374,7 @@ describe("CustomLists", () => {
       editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(1);
       expect(editor.props().list).to.deep.equal(listDetails);
-      expect(editor.props().library).to.equal("library");
+      expect(editor.props().library).to.eql(libraries[0]);
       expect(editor.props().search).to.equal(search);
       expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
       expect(editor.props().searchResults).to.equal(searchResults);
@@ -412,6 +420,7 @@ describe("CustomLists", () => {
           fetchCollections={fetchCollections}
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
         />,
         { context: { admin: librarian }}
       );
@@ -464,6 +473,7 @@ describe("CustomLists", () => {
           fetchCollections={fetchCollections}
           fetchLibraries={fetchLibraries}
           fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
         />,
         { context: { admin: librarian }}
       );

@@ -57,6 +57,21 @@ describe("CustomListEditor", () => {
 
   let entryPoints = ["Book", "Audio"];
 
+  let library = {
+    uuid: "uuid",
+    name: "name",
+    short_name: "library",
+    settings: {
+      "large_collection_languages": ["eng", "fre", "spa"]
+    }
+  };
+
+  let languages = {
+    "eng": ["English"],
+    "spa": ["Spanish", "Castilian"],
+    "fre": ["French"]
+  };
+
   beforeEach(() => {
     editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
     search = stub();
@@ -82,7 +97,8 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -154,7 +170,8 @@ describe("CustomListEditor", () => {
   it("saves list", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -194,7 +211,8 @@ describe("CustomListEditor", () => {
   it("shouldn't allow you to save unless the list has a title", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
@@ -223,7 +241,8 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         searchResults={searchResults}
         editCustomList={editCustomList}
         search={search}
@@ -265,7 +284,8 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -317,7 +337,8 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -361,7 +382,8 @@ describe("CustomListEditor", () => {
   it("changes selected collections", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -407,7 +429,8 @@ describe("CustomListEditor", () => {
   it("searches with a default of language set to 'all'", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -435,7 +458,8 @@ describe("CustomListEditor", () => {
   it("optionally searches a title passed as a prop", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -461,7 +485,8 @@ describe("CustomListEditor", () => {
   it("searches with audiobooks selected", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -496,7 +521,8 @@ describe("CustomListEditor", () => {
   it("searches with ebook selected", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -531,7 +557,8 @@ describe("CustomListEditor", () => {
   it("should keep the same state when the list prop gets updated", () => {
     wrapper = mount(
       <CustomListEditor
-        library="library"
+        library={library}
+        languages={languages}
         list={listData}
         listId="1"
         listCollections={listCollections}
@@ -573,7 +600,8 @@ describe("CustomListEditor", () => {
     it("should update correctly", () => {
       wrapper = mount(
         <CustomListEditor
-          library="library"
+          library={library}
+          languages={languages}
           searchResults={searchResults}
           editCustomList={editCustomList}
           search={search}
@@ -605,7 +633,8 @@ describe("CustomListEditor", () => {
 
       wrapper = mount(
         <CustomListEditor
-          library="library"
+          library={library}
+          languages={languages}
           searchResults={searchResults}
           editCustomList={editCustomList}
           search={search}
