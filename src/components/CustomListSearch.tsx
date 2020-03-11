@@ -101,6 +101,7 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
         <legend>Filter by language:</legend>
         <section>
           <select ref="languages">
+            <option value="all" aria-selected={false}>All</option>
             {languages.map(x => <option value={x} aria-selected={false}>{this.getLanguageName(x)}</option>)}
           </select>
         </section>

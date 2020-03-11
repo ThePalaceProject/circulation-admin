@@ -304,9 +304,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }, 200);
   }
 
-  getSearchQueries(sortBy: string, language?: string) {
+  getSearchQueries(sortBy: string, language: string) {
     const entryPointSelected = this.state.entryPointSelected;
-    let query = language ? "" : "&language=all";
+    let query = "";
     if (entryPointSelected && entryPointSelected !== "all") {
       query += `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
     }
