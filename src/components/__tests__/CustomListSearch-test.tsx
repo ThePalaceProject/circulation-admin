@@ -13,7 +13,7 @@ describe("CustomListSearch", () => {
     name: "name",
     short_name: "short_name",
     settings: {
-      "large_collection_languages": ["eng", "fre", "spa"]
+      "large_collections": ["eng", "fre", "spa"]
     }
   };
 
@@ -85,6 +85,26 @@ describe("CustomListSearch", () => {
     expect(wrapper.state().sortBy).to.be.null;
 
     spySort.restore();
+  });
+  it("filters by language", () => {
+    let languageFieldset = wrapper.find("fieldset").at(2);
+    expect(languageFieldset.find("legend").text()).to.equal("Filter by language:");
+    let languageMenu = languageFieldset.find("select");
+    let options = languageMenu.find("option");
+    expect(options.at(0).prop("value")).to.equal("all");
+    expect(options.at(0).text()).to.equal("All");
+    expect(options.at(1).prop("value")).to.equal("eng");
+    expect(options.at(1).text()).to.equal("English");
+    expect(options.at(2).prop("value")).to.equal("fre");
+    expect(options.at(2).text()).to.equal("French");
+    expect(options.at(3).prop("value")).to.equal("spa");
+    expect(options.at(3).text()).to.equal("Spanish; Castilian");
+
+    languageMenu.getDOMNode().value = "fre";
+    languageMenu.simulate("change");
+    languageFieldset.closest("form").simulate("submit");
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][2]).to.equal("fre");
   });
   it("automatically searches if there is a startingTitle prop", () => {
     let search = stub();

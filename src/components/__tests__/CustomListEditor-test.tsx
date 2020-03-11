@@ -526,7 +526,7 @@ describe("CustomListEditor", () => {
 
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0])
-      .to.equal("/library/search?q=harry%20potter&language=all&entrypoint=Book");
+      .to.equal("/library/search?q=harry%20potter&entrypoint=Book&language=all");
   });
 
   it("searches with ebook selected", () => {
@@ -562,7 +562,7 @@ describe("CustomListEditor", () => {
 
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0])
-      .to.equal("/library/search?q=oliver%20twist&language=all&entrypoint=Audio");
+      .to.equal("/library/search?q=oliver%20twist&entrypoint=Audio&language=all");
   });
 
   it("should keep the same state when the list prop gets updated", () => {
