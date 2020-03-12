@@ -452,7 +452,7 @@ describe("CustomListEditor", () => {
 
     let searchForm = wrapper.find("form");
     searchForm.simulate("submit");
-    // The default lanuage is "all"
+    // The default language is "all"
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0]).to.equal("/library/search?q=test&language=all");
 
