@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.15
+#### Fixed
+- Made sure the list curation "Load more" button is never hidden.
+
 ### v0.4.14
 #### Added
 - Added a message to clarify usage of new sorting feature.
