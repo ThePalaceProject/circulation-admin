@@ -28,7 +28,7 @@ describe("LibraryEditForm", () => {
     { key: "privacy-policy", label: "Privacy Policy", category: "Links" },
     { key: "copyright", label: "Copyright", category: "Links" },
     { key: "logo", label: "Logo", category: "Client Interface Customization" },
-    { key: "large_collection_languages", label: "Languages", category: "Languages" },
+    { key: "large_collections", label: "Languages", category: "Languages" },
     { key: "featured_lane_size", label: "Maximum number of books in the 'featured' lanes", category: "Lanes & Filters", type: "number"},
     { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" }
   ];

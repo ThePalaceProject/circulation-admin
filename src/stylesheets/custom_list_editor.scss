@@ -109,20 +109,25 @@
 }
 
 fieldset.search-options.well {
+  display: block;
   width: unset;
   padding-bottom: 20px;
-  ul {
+  ul, section {
     list-style: none;
     width: 100%;
     margin: auto;
     padding: 15px;
-    border-radius: 0 4px 0 0;
+    border-radius: 4px 4px 0 0;
     border-left: 1px solid $blue-dark;
     border-right: 1px solid $blue-dark;
     border-top: 1px solid $blue-dark;
     li .form-group {
       margin: 0;
     }
+  }
+  section {
+    border-bottom: 1px solid $blue-dark;
+    border-radius: 4px;
   }
   p {
     border-left: 1px solid $blue-dark;
