@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CollectionData as AdminCollectionData } from "../interfaces";
+import { LanguagesData, LibraryData, CollectionData as AdminCollectionData } from "../interfaces";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
@@ -9,7 +9,8 @@ import SearchIcon from "./icons/SearchIcon";
 import { Button, Panel, Form } from "library-simplified-reusable-components";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
-  library: string;
+  languages: LanguagesData;
+  library: LibraryData;
   list?: CollectionData;
   listId?: string | number;
   listCollections?: AdminCollectionData[];
@@ -58,7 +59,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     const listId = this.props.listId;
     const listTitle = this.props.list && this.props.list.title ? this.props.list.title : "";
     const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
-    const opdsFeedUrl = `${this.props.library}/lists/${listTitle}/crawlable`;
+    const opdsFeedUrl = `${this.props.library?.short_name}/lists/${listTitle}/crawlable`;
     const hasChanges = this.hasChanges();
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
@@ -128,6 +129,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               entryPoints={this.props.entryPoints}
               getEntryPointsElms={this.getEntryPointsElms}
               startingTitle={this.props.startingTitle}
+              library={this.props.library}
+              languages={this.props.languages}
             />
           </section>
           <CustomListEntriesEditor
@@ -283,7 +286,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
       // If a new list was created, go to the new list's edit page.
       if (!this.props.list && this.props.responseBody) {
-        window.location.href = "/admin/web/lists/" + this.props.library + "/edit/" + this.props.responseBody;
+        window.location.href = "/admin/web/lists/" + this.props.library.short_name + "/edit/" + this.props.responseBody;
       }
     });
   }
@@ -301,13 +304,14 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }, 200);
   }
 
-  getSearchQueries(sortBy: string) {
+  getSearchQueries(sortBy: string, language: string) {
     const entryPointSelected = this.state.entryPointSelected;
-    let query = "&language=all";
+    let query = "";
     if (entryPointSelected && entryPointSelected !== "all") {
       query += `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
     }
     sortBy && (query += `&order=${encodeURIComponent(sortBy)}`);
+    language && (query += `&language=${[language]}`);
     return query;
   }
 
@@ -347,9 +351,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
    * language query set to 'all', for librarians who may want to search
    * for items without a language filter.
    */
-  search(searchTerms: string, sortBy: string) {
-    const searchQueries = this.getSearchQueries(sortBy);
-    const url = `/${this.props.library}/search?q=${searchTerms}${searchQueries}`;
+  search(searchTerms: string, sortBy: string, language: string) {
+    const searchQueries = this.getSearchQueries(sortBy, language);
+    const url = `/${this.props.library.short_name}/search?q=${searchTerms}${searchQueries}`;
     this.props.search(url);
   }
 }

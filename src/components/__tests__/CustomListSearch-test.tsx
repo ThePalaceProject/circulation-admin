@@ -8,10 +8,24 @@ import CustomListSearch from "../CustomListSearch";
 describe("CustomListSearch", () => {
   let wrapper;
   let search;
+  let library = {
+    uuid: "uuid",
+    name: "name",
+    short_name: "short_name",
+    settings: {
+      "large_collections": ["eng", "fre", "spa"]
+    }
+  };
+
+  let languages = {
+    "eng": ["English"],
+    "spa": ["Spanish", "Castilian"],
+    "fre": ["French"]
+  };
   beforeEach(() => {
     search = stub();
     wrapper = mount(
-      <CustomListSearch search={search} />
+      <CustomListSearch search={search} library={library} languages={languages} />
     );
   });
   it("searches", () => {
@@ -72,10 +86,30 @@ describe("CustomListSearch", () => {
 
     spySort.restore();
   });
+  it("filters by language", () => {
+    let languageFieldset = wrapper.find("fieldset").at(2);
+    expect(languageFieldset.find("legend").text()).to.equal("Filter by language:");
+    let languageMenu = languageFieldset.find("select");
+    let options = languageMenu.find("option");
+    expect(options.at(0).prop("value")).to.equal("all");
+    expect(options.at(0).text()).to.equal("All");
+    expect(options.at(1).prop("value")).to.equal("eng");
+    expect(options.at(1).text()).to.equal("English");
+    expect(options.at(2).prop("value")).to.equal("fre");
+    expect(options.at(2).text()).to.equal("French");
+    expect(options.at(3).prop("value")).to.equal("spa");
+    expect(options.at(3).text()).to.equal("Spanish; Castilian");
+
+    languageMenu.getDOMNode().value = "fre";
+    languageMenu.simulate("change");
+    languageFieldset.closest("form").simulate("submit");
+    expect(search.callCount).to.equal(1);
+    expect(search.args[0][2]).to.equal("fre");
+  });
   it("automatically searches if there is a startingTitle prop", () => {
     let search = stub();
     wrapper = mount(
-      <CustomListSearch startingTitle="test" search={search} />
+      <CustomListSearch startingTitle="test" search={search} library={library} languages={languages} />
     );
     expect(search.callCount).to.equal(1);
     expect(search.args[0][0]).to.equal("test");

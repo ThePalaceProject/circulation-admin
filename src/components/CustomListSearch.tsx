@@ -1,13 +1,16 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import SearchIcon from "./icons/SearchIcon";
+import { LanguagesData, LibraryData } from "../interfaces";
 import { Button, Panel, Form } from "library-simplified-reusable-components";
 
 export interface CustomListSearchProps {
-  search: (searchTerms: string, sortBy: string) => void;
+  search: (searchTerms: string, sortBy: string, language: string) => void;
   entryPoints?: string[];
   getEntryPointsElms?: (entryPoints: string[]) => {};
   startingTitle?: string;
+  library: LibraryData;
+  languages: LanguagesData;
 }
 
 export interface CustomListSearchState {
@@ -31,7 +34,8 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
 
   submitSearch() {
     const searchTerms = encodeURIComponent((this.refs["searchTerms"] as HTMLInputElement).value);
-    this.props.search(searchTerms, this.state.sortBy);
+    const language = encodeURIComponent((this.refs["languages"] as HTMLSelectElement).value);
+    this.props.search(searchTerms, this.state.sortBy, language);
   }
 
   sort(sortBy: string) {
@@ -81,10 +85,33 @@ export default class CustomListSearch extends React.Component<CustomListSearchPr
             </ul>
             <p><i>Note: currently, you can sort only by attributes which you have enabled in this library's Lanes & Filters configuration.</i></p>
             <p><i>Selecting "Title" or "Author" will automatically filter out less relevant results.</i></p>
-          </fieldset>
+          </fieldset>,
+          this.renderLanguageFilter()
         ]}
       />
     );
+  }
+
+  renderLanguageFilter() {
+    let settings = this.props.library?.settings;
+    let languageFields = settings && Object.keys(this.props.library.settings).filter(x => x.match(/_collections/));
+    let languages = [].concat(...languageFields?.map(x => settings[x]));
+    let fieldset = (
+      <fieldset key="languages" className="well search-options">
+        <legend>Filter by language:</legend>
+        <section>
+          <select ref="languages">
+            <option value="all" aria-selected={false}>All</option>
+            {languages.map(x => <option value={x} aria-selected={false}>{this.getLanguageName(x)}</option>)}
+          </select>
+        </section>
+      </fieldset>
+    );
+    return fieldset;
+  }
+
+  getLanguageName(languageAbbreviation: string): string {
+    return this.props.languages && this.props.languages[languageAbbreviation].join("; ");
   }
 
   renderInput(k: string, v: string): JSX.Element {
