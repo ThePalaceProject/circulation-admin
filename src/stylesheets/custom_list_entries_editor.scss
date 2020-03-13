@@ -3,14 +3,17 @@
   flex-direction: row;
   flex-grow: 1;
   height: 50%;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .custom-list-search-results, .custom-list-entries {
   display: flex;
+  border: 1px solid $medium-gray;
+  padding: 12px 24px 24px 24px;
+  border-radius: 4px;
   flex-direction: column;
   flex-basis: 47%;
-  margin: 15px 10px 0 10px;
+  margin: 15px 0;
   overflow-y: scroll;
   h4 {
     display: inline-block;

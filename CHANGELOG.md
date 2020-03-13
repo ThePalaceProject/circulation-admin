@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.16
+#### Fixed
+- Made sure the list curation "Load more" button is never hidden.
+
 ### v0.4.15
 #### Added
 - Implemented a language filter for search results in the Lists creator.
