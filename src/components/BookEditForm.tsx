@@ -12,7 +12,6 @@ import {
 import LanguageField from "./LanguageField";
 import { formatString } from "../utils/sharedFunctions";
 import Contributors from "./Contributors";
-import { getMedium } from "opds-web-client/lib/utils/book";
 
 export interface BookEditFormProps extends BookData {
   roles: RolesData;
@@ -78,7 +77,7 @@ export default class BookEditForm extends React.Component<
   }
 
   renderForm() {
-    const mediumValue = getMedium(this.props.medium);
+    const mediumValue = this.getMedium(this.props.medium);
     const seriesPosition =
       this.props.seriesPosition !== undefined &&
       this.props.seriesPosition !== null &&
