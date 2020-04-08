@@ -2,7 +2,13 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import EditorField from "./EditorField";
 import { Form } from "library-simplified-reusable-components";
-import { BookData, ContributorData, RolesData, MediaData, LanguagesData } from "../interfaces";
+import {
+  BookData,
+  ContributorData,
+  RolesData,
+  MediaData,
+  LanguagesData,
+} from "../interfaces";
 import LanguageField from "./LanguageField";
 import { formatString } from "../utils/sharedFunctions";
 import Contributors from "./Contributors";
@@ -21,14 +27,17 @@ export interface BookEditFormState {
 }
 
 /** Edit a book's metadata in the edit tab on the book details page. */
-export default class BookEditForm extends React.Component<BookEditFormProps, BookEditFormState> {
+export default class BookEditForm extends React.Component<
+  BookEditFormProps,
+  BookEditFormState
+> {
   private summaryRef = React.createRef<EditorField>();
   defaultContent = "<p>Update the summary for this book.</p>";
 
   constructor(props) {
     super(props);
     this.state = {
-      contributors: (props.authors || []).concat(props.contributors || [])
+      contributors: (props.authors || []).concat(props.contributors || []),
     };
     this.renderForm = this.renderForm.bind(this);
   }
@@ -44,7 +53,12 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
     );
   }
 
-  renderTextField(name: string, placeholder?: string, value?: string, hasLabel = true): JSX.Element {
+  renderTextField(
+    name: string,
+    placeholder?: string,
+    value?: string,
+    hasLabel = true
+  ): JSX.Element {
     const formattedName = formatString(name);
     const ariaLabel = !hasLabel ? `Field for ${formattedName}` : null;
     return (
@@ -64,19 +78,31 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
 
   renderForm() {
     const mediumValue = this.getMedium(this.props.medium);
-    const seriesPosition = this.props.seriesPosition !== undefined && this.props.seriesPosition !== null && String(this.props.seriesPosition);
+    const seriesPosition =
+      this.props.seriesPosition !== undefined &&
+      this.props.seriesPosition !== null &&
+      String(this.props.seriesPosition);
     return (
       <fieldset key="book-info">
         <legend className="visuallyHidden">Edit Book Metadata</legend>
-        { this.renderTextField("title") }
-        { this.renderTextField("subtitle") }
-        <Contributors disabled={this.props.disabled} roles={this.props.roles} contributors={this.state.contributors} />
+        {this.renderTextField("title")}
+        {this.renderTextField("subtitle")}
+        <Contributors
+          disabled={this.props.disabled}
+          roles={this.props.roles}
+          contributors={this.state.contributors}
+        />
         <div className="form-group">
           <label>Series</label>
           <div className="form-inline">
-            { this.renderTextField("series", "Name", null, false) }
+            {this.renderTextField("series", "Name", null, false)}
             <span>&nbsp;&nbsp;</span>
-            { this.renderTextField("series_position", "#", seriesPosition, false) }
+            {this.renderTextField(
+              "series_position",
+              "#",
+              seriesPosition,
+              false
+            )}
           </div>
         </div>
         <EditableInput
@@ -86,10 +112,16 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           label="Medium"
           value={mediumValue}
         >
-          { this.props.media && Object.values(this.props.media).map(medium =>
-              <option value={medium} key={medium} aria-selected={mediumValue === medium}>{medium}</option>
-            )
-          }
+          {this.props.media &&
+            Object.values(this.props.media).map((medium) => (
+              <option
+                value={medium}
+                key={medium}
+                aria-selected={mediumValue === medium}
+              >
+                {medium}
+              </option>
+            ))}
         </EditableInput>
         <LanguageField
           disabled={this.props.disabled}
@@ -98,8 +130,8 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
           label="Language"
           value={this.props.language}
         />
-        { this.renderTextField("publisher") }
-        { this.renderTextField("imprint") }
+        {this.renderTextField("publisher")}
+        {this.renderTextField("imprint")}
         <EditableInput
           elementType="input"
           type="date"
@@ -143,12 +175,12 @@ export default class BookEditForm extends React.Component<BookEditFormProps, Boo
   }
 
   save(data: FormData) {
-    const summary = (this.summaryRef.current).getValue();
+    const summary = this.summaryRef.current.getValue();
     // Only update the summary if it was intentionally updated.
     if (summary !== this.defaultContent) {
       data.append("summary", summary);
     }
-    this.props.editBook(this.props.editLink.href, data).then(response => {
+    this.props.editBook(this.props.editLink.href, data).then((response) => {
       this.props.refresh();
     });
   }
