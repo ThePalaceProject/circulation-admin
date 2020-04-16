@@ -43,7 +43,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       title: this.props.list && this.props.list.title,
       entries: (this.props.list && this.props.list.books) || [],
       collections: this.props.listCollections || [],
-      entryPointSelected: "all",
+      entryPointSelected: "all"
     };
 
     this.changeTitle = this.changeTitle.bind(this);
@@ -76,6 +76,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 onUpdate={this.changeTitle}
                 ref="listTitle"
                 aria-label="Enter a title for this list"
+                disableIfBlank={true}
               />
             </fieldset>
             { listId &&
@@ -152,13 +153,18 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     );
   }
 
+  // componentDidUpdate(oldProps, oldState) {
+  //   if (this.hasChanges() && !oldState.hasChanges) {
+  //     this.setState({ hasChanges: true });
+  //   }
+  // }
   componentWillReceiveProps(nextProps) {
     // Note: This gets called after performing a search, at which point the
     // state of the component can already have updates that need to be taken
     // into account.
     if (!nextProps.list && !this.props.list) {
       // This is no current or previous list, so this is a new list.
-      this.setState({ title: "", entries: [], collections: [] });
+      this.setState({ title: this.state.title, entries: [], collections: [] });
     } else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
       // Update the state with the next list to edit.
       this.setState({
@@ -175,19 +181,23 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       this.setState({
         title,
         entries: nextProps.list.books,
-        collections: collections,
+        collections: collections
       });
     } else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
       this.setState({
         title: this.state.title,
         entries: this.state.entries,
-        collections: nextProps.listCollections,
+        collections: nextProps.listCollections
       });
     }
   }
 
   isTitleEmpty(): boolean {
-    return this.state.title === "";
+    if (this.props.list?.title) {
+      return false;
+    } else {
+      return this.state.title === "" || this.state.title === "list title";
+    }
   }
 
   hasChanges(): boolean {
@@ -198,12 +208,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     // the state for the entries or title can be populated so there's a need to check.
     if (!this.props.list) {
       titleChanged = this.state.title && this.state.title !== "";
-      entriesChanged = this.state.entries.length > 0;
+      entriesChanged = this.state.entries?.length > 0;
     }
 
     if (!entriesChanged) {
       let propsIds = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
-      let stateIds = this.state.entries.map(entry => entry.id).sort();
+      let stateIds = this.state.entries?.map(entry => entry.id).sort();
       for (let i = 0; i < propsIds.length; i++) {
         if (propsIds[i] !== stateIds[i]) {
           entriesChanged = true;
@@ -224,8 +234,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         }
       }
     }
-
-    return titleChanged || entriesChanged || collectionsChanged;
+    let hasChanges = titleChanged || entriesChanged || collectionsChanged;
+    return hasChanges;
   }
 
   changeTitle(title: string) {
