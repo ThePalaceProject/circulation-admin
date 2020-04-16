@@ -9,7 +9,9 @@ import Footer from "./Footer";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 import EntryPointsContainer from "./EntryPointsContainer";
 import WelcomePage from "./WelcomePage";
-
+import DataFetcher from "opds-web-client/lib/DataFetcher";
+import ActionsCreator from "opds-web-client/lib/actions";
+import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
 export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
     collectionUrl: string;
@@ -23,28 +25,28 @@ export interface CatalogPageProps extends React.Props<CatalogPage> {
 export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
   static childContextTypes: React.ValidationMap<any> = {
     tab: PropTypes.string,
-    library: PropTypes.func
+    library: PropTypes.func,
   };
 
   getChildContext() {
     return {
       tab: this.props.params.tab,
-      library: () => this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl)
+      library: () =>
+        this.getLibrary(
+          this.props.params.collectionUrl,
+          this.props.params.bookUrl
+        ),
     };
   }
 
   render(): JSX.Element {
     if (!this.hasLibrary()) {
-      return (
-        <WelcomePage />
-      );
+      return <WelcomePage />;
     }
 
     let { collectionUrl, bookUrl } = this.props.params;
 
-    collectionUrl =
-      this.expandCollectionUrl(collectionUrl) ||
-      null;
+    collectionUrl = this.expandCollectionUrl(collectionUrl) || null;
     bookUrl = this.expandBookUrl(bookUrl) || null;
 
     let pageTitleTemplate = (collectionTitle, bookTitle) => {
@@ -52,9 +54,12 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
       return "Circulation Manager" + (details ? " - " + details : "");
     };
 
+    const fetcher = new DataFetcher({ adapter });
+    const actions = new ActionsCreator(fetcher);
+
     return (
       <>
-        <ActionsProvider>
+        <ActionsProvider actions={actions} fetcher={fetcher}>
           <OPDSCatalog
             collectionUrl={collectionUrl}
             bookUrl={bookUrl}
@@ -88,20 +93,27 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
   }
 
   hasLibrary(): boolean {
-    let library = this.getLibrary(this.props.params.collectionUrl, this.props.params.bookUrl);
-    return !!(library);
+    let library = this.getLibrary(
+      this.props.params.collectionUrl,
+      this.props.params.bookUrl
+    );
+    return !!library;
   }
 
   expandCollectionUrl(url: string): string {
-    return url ?
-      document.location.origin + "/" + url :
-      url;
+    return url ? document.location.origin + "/" + url : url;
   }
 
   expandBookUrl(url: string): string {
     if (url) {
       const library = this.getLibrary(null, url);
-      return document.location.origin + "/" + library + "/works/" + url.replace(library + "/", "");
+      return (
+        document.location.origin +
+        "/" +
+        library +
+        "/works/" +
+        url.replace(library + "/", "")
+      );
     } else {
       return url;
     }
