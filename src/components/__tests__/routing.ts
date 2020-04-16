@@ -6,7 +6,6 @@ export const mockRouter = (push) => {
   return {
     push,
     createHref: (location) => "test href",
-    isActive: (location, onlyActiveOnIndex) => true
   };
 };
 
