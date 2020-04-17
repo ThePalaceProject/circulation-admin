@@ -121,6 +121,7 @@ describe("CustomListEditor", () => {
     expect(title.length).to.equal(1);
     expect(title.props().text).to.equal("list");
     expect(title.props().placeholder).to.equal("list title");
+    expect(title.props().disableIfBlank).to.be.true;
   });
 
   it("shows list id", () => {
@@ -670,5 +671,19 @@ describe("CustomListEditor", () => {
 
       expect(hasChanges).to.equal(true);
     });
+  });
+  it("should know whether the list title is blank", () => {
+    // There is a list property with a title
+    expect(wrapper.instance().isTitleEmpty()).to.be.false;
+    wrapper.setProps({ list: null });
+    wrapper.setState({ title: "" });
+    // New list, no title
+    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    // New list, title is still just the placeholder
+    wrapper.setState({ title: "list title" });
+    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    // Adding a title...
+    wrapper.setState({ title: "testing..." });
+    expect(wrapper.instance().isTitleEmpty()).to.be.false;
   });
 });

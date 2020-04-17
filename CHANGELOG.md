@@ -1,9 +1,13 @@
 ## Changelog
 
+### v0.4.18
+#### Fixed
+- Fixed a bug which incorrectly disabled the list-saving functionality.
+
 ### v0.4.17
 #### Updated
 - Updated version of `opds-web-client` to v0.4.0 and changed reliance on `Book.getMedium` to imported `getMedium` and `getMediumSVG`.
-- Instantiates `ActionsCreator` and `DataFetcher` locally to be passed in to `ActionsProvider` to match updated API. 
+- Instantiates `ActionsCreator` and `DataFetcher` locally to be passed in to `ActionsProvider` to match updated API.
 
 ### v0.4.16
 #### Fixed

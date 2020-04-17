@@ -153,11 +153,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     );
   }
 
-  // componentDidUpdate(oldProps, oldState) {
-  //   if (this.hasChanges() && !oldState.hasChanges) {
-  //     this.setState({ hasChanges: true });
-  //   }
-  // }
   componentWillReceiveProps(nextProps) {
     // Note: This gets called after performing a search, at which point the
     // state of the component can already have updates that need to be taken
