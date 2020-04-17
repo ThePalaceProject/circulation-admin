@@ -228,7 +228,7 @@ describe("CustomListEditor", () => {
     let saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
     expect(saveButton.props().disabled).to.equal(true);
 
-    wrapper.setState({ title: "list title" });
+    wrapper.setState({ title: "new list title" });
     saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
 
     expect(saveButton.props().disabled).to.equal(false);
@@ -260,7 +260,7 @@ describe("CustomListEditor", () => {
     ];
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
-    wrapper.setState({ title: "list title" });
+    wrapper.setState({ title: "new list title" });
     saveButton.simulate("click");
 
     expect(editCustomList.callCount).to.equal(1);
