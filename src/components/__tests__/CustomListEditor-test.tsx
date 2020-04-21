@@ -676,11 +676,14 @@ describe("CustomListEditor", () => {
     // There is a list property with a title
     expect(wrapper.instance().isTitleEmpty()).to.be.false;
     wrapper.setProps({ list: null });
-    wrapper.setState({ title: "" });
+    wrapper.setState({ title: null });
     // New list, no title
     expect(wrapper.instance().isTitleEmpty()).to.be.true;
     // New list, title is still just the placeholder
     wrapper.setState({ title: "list title" });
+    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    // New list, placeholder has been deleted.
+    wrapper.setState({ title: "" });
     expect(wrapper.instance().isTitleEmpty()).to.be.true;
     // Adding a title...
     wrapper.setState({ title: "testing..." });

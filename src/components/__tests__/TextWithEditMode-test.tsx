@@ -170,7 +170,7 @@ describe("TextWithEditMode", () => {
       <TextWithEditMode
         placeholder="editable thing"
         aria-label="label"
-        disableIfBlank={true}
+        disableIfBlank
       />
     );
     let button = wrapper.find("button");
