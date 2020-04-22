@@ -197,8 +197,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   hasChanges(): boolean {
     let titleChanged = (this.props.list && this.props.list.title !== this.state.title);
-    // console.log(this.props.list?.title);
-    // console.log(this.state.title);
     let entriesChanged = this.props.list && !!this.props.list.books &&
       (this.props.list.books.length !== this.state.entries.length);
     // If the current list is new then this.props.list will be undefined, but
@@ -232,9 +230,6 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       }
     }
     let hasChanges = titleChanged || entriesChanged || collectionsChanged;
-    // console.log("title ", titleChanged);
-    // console.log("entries ", entriesChanged);
-    // console.log("collections ", collectionsChanged);
     return hasChanges;
   }
 
