@@ -159,6 +159,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       this.setState({ title: "", entries: [], collections: [] });
     });
   }
+  componentWillUnmount() {
+    window.removeEventListener("listen", browserHistory);
+  }
 
   componentWillReceiveProps(nextProps) {
     // Note: This gets called after performing a search, at which point the
