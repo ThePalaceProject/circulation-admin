@@ -59,7 +59,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     const listId = this.props.listId;
     const listTitle = this.props.list && this.props.list.title ? this.props.list.title : "";
     const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
-    const opdsFeedUrl = `${this.props.library?.short_name}/lists/${listTitle}/crawlable`;
+    const crawlable = `${listTitle ? `lists/${listTitle}/` : ""}crawlable`;
+    const opdsFeedUrl = `${this.props.library?.short_name}/${crawlable}`;
     const hasChanges = this.hasChanges();
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
