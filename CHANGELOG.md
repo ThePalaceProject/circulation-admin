@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.18
+#### Removed
+- Removed a reference to the unused `isActive` property of `opds-web-client`'s `router` context.
+
 ### v0.4.17
 #### Updated
 - Updated version of `opds-web-client` to v0.4.0 and changed reliance on `Book.getMedium` to imported `getMedium` and `getMediumSVG`.
