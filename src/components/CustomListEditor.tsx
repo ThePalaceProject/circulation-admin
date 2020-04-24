@@ -7,6 +7,7 @@ import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import CustomListSearch from "./CustomListSearch";
 import SearchIcon from "./icons/SearchIcon";
 import { Button, Panel, Form } from "library-simplified-reusable-components";
+import { browserHistory } from "react-router";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   languages: LanguagesData;
@@ -153,13 +154,19 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     );
   }
 
+  componentDidMount() {
+    browserHistory.listen( location =>  {
+      this.setState({ title: "", entries: [], collections: [] });
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     // Note: This gets called after performing a search, at which point the
     // state of the component can already have updates that need to be taken
     // into account.
     if (!nextProps.list && !this.props.list) {
       // This is no current or previous list, so this is a new list.
-      this.setState({ title: (this.props.searchResults ? "" : this.state.title), entries: [], collections: []});
+      this.setState({ title: "", entries: [], collections: []});
     } else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
       // Update the state with the next list to edit.
       this.setState({
