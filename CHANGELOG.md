@@ -3,6 +3,8 @@
 ### v0.4.18
 #### Removed
 - Removed a reference to the unused `isActive` property of `opds-web-client`'s `router` context.
+#### Fixed
+- Fixed link construction for book `View Detail` button when creating a list in List Manager.
 
 ### v0.4.17
 #### Updated
