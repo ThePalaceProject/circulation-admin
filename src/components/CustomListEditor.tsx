@@ -38,6 +38,7 @@ export interface CustomListEditorState {
 
 /** Right panel of the lists page for editing a single list. */
 export default class CustomListEditor extends React.Component<CustomListEditorProps, CustomListEditorState> {
+  static listener;
   constructor(props) {
     super(props);
     this.state = {
@@ -155,12 +156,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentDidMount() {
-    browserHistory.listen( location =>  {
+    CustomListEditor.listener = browserHistory.listen( location =>  {
       this.setState({ title: "", entries: [], collections: [] });
     });
   }
   componentWillUnmount() {
-    window.removeEventListener("listen", browserHistory);
+    CustomListEditor.listener();
   }
 
   componentWillReceiveProps(nextProps) {
