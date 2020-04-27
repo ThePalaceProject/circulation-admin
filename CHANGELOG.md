@@ -1,8 +1,12 @@
 ## Changelog
 
-### v0.4.18
+### v0.4.19
 #### Fixed
 - Fixed a bug which incorrectly disabled the list-saving functionality.
+
+### v0.4.18
+#### Removed
+- Removed a reference to the unused `isActive` property of `opds-web-client`'s `router` context.
 
 ### v0.4.17
 #### Updated
