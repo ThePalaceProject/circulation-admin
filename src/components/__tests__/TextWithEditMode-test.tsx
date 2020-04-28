@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { stub } from "sinon";
+import { spy, stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
@@ -163,5 +163,40 @@ describe("TextWithEditMode", () => {
     expect(onUpdate.args[3][0]).to.equal("test");
 
     getValueStub.restore();
+  });
+
+  it("optionally disables the save button if the text is blank", () => {
+    let wrapper = mount(
+      <TextWithEditMode
+        placeholder="editable thing"
+        aria-label="label"
+        disableIfBlank
+      />
+    );
+    let button = wrapper.find("button");
+    expect(button.prop("disabled")).to.be.true;
+    wrapper.setState({ text: "test" });
+    button = wrapper.find("button");
+    expect(button.prop("disabled")).not.to.be.true;
+  });
+
+  it("updates the text state", () => {
+    let wrapper = mount(
+      <TextWithEditMode
+        placeholder="editable thing"
+        aria-label="label"
+      />
+    );
+    let spySetText = spy(wrapper.instance(), "setText");
+    wrapper.setProps({ setText: spySetText });
+    expect(spySetText.callCount).to.equal(0);
+    expect(wrapper.state().text).to.equal("");
+    let input = wrapper.find("input");
+    input.getDOMNode().value = "test";
+    input.simulate("change");
+    expect(spySetText.callCount).to.equal(1);
+    expect(spySetText.args[0][0]).to.equal("test");
+    expect(wrapper.state().text).to.equal("test");
+    spySetText.restore();
   });
 });

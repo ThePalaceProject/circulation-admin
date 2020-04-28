@@ -7,6 +7,7 @@ import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 import CustomListSearch from "./CustomListSearch";
 import SearchIcon from "./icons/SearchIcon";
 import { Button, Panel, Form } from "library-simplified-reusable-components";
+import { browserHistory } from "react-router";
 
 export interface CustomListEditorProps extends React.Props<CustomListEditor> {
   languages: LanguagesData;
@@ -37,13 +38,14 @@ export interface CustomListEditorState {
 
 /** Right panel of the lists page for editing a single list. */
 export default class CustomListEditor extends React.Component<CustomListEditorProps, CustomListEditorState> {
+  static listener;
   constructor(props) {
     super(props);
     this.state = {
       title: this.props.list && this.props.list.title,
       entries: (this.props.list && this.props.list.books) || [],
       collections: this.props.listCollections || [],
-      entryPointSelected: "all",
+      entryPointSelected: "all"
     };
 
     this.changeTitle = this.changeTitle.bind(this);
@@ -64,7 +66,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     const hasChanges = this.hasChanges();
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
-    const disableSave = this.isTitleEmpty() || !hasChanges;
+    let disableSave = this.isTitleEmpty() || !hasChanges;
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -77,6 +79,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 onUpdate={this.changeTitle}
                 ref="listTitle"
                 aria-label="Enter a title for this list"
+                disableIfBlank={true}
               />
             </fieldset>
             { listId &&
@@ -153,13 +156,22 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     );
   }
 
+  componentDidMount() {
+    CustomListEditor.listener = browserHistory.listen( location =>  {
+      this.setState({ title: "", entries: [], collections: [] });
+    });
+  }
+  componentWillUnmount() {
+    CustomListEditor.listener();
+  }
+
   componentWillReceiveProps(nextProps) {
     // Note: This gets called after performing a search, at which point the
     // state of the component can already have updates that need to be taken
     // into account.
     if (!nextProps.list && !this.props.list) {
       // This is no current or previous list, so this is a new list.
-      this.setState({ title: "", entries: [], collections: [] });
+      this.setState({ title: "", entries: [], collections: []});
     } else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
       // Update the state with the next list to edit.
       this.setState({
@@ -176,19 +188,23 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       this.setState({
         title,
         entries: nextProps.list.books,
-        collections: collections,
+        collections: collections
       });
     } else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
       this.setState({
         title: this.state.title,
         entries: this.state.entries,
-        collections: nextProps.listCollections,
+        collections: nextProps.listCollections
       });
     }
   }
 
   isTitleEmpty(): boolean {
-    return this.state.title === "";
+    if (this.props.list?.title) {
+      return false;
+    } else {
+      return (!this.state.title || this.state.title === "list title" || this.state.title === "");
+    }
   }
 
   hasChanges(): boolean {
@@ -199,12 +215,12 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     // the state for the entries or title can be populated so there's a need to check.
     if (!this.props.list) {
       titleChanged = this.state.title && this.state.title !== "";
-      entriesChanged = this.state.entries.length > 0;
+      entriesChanged = this.state.entries?.length > 0;
     }
 
     if (!entriesChanged) {
       let propsIds = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
-      let stateIds = this.state.entries.map(entry => entry.id).sort();
+      let stateIds = this.state.entries?.map(entry => entry.id).sort();
       for (let i = 0; i < propsIds.length; i++) {
         if (propsIds[i] !== stateIds[i]) {
           entriesChanged = true;
@@ -225,8 +241,8 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         }
       }
     }
-
-    return titleChanged || entriesChanged || collectionsChanged;
+    let hasChanges = titleChanged || entriesChanged || collectionsChanged;
+    return hasChanges;
   }
 
   changeTitle(title: string) {
@@ -297,7 +313,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     (this.refs["listEntries"] as CustomListEntriesEditor).reset();
     setTimeout(() => {
       this.setState({
-        title: (this.refs["listTitle"] as TextWithEditMode).getText(),
+        title: this.state.title,
         entries: this.state.entries,
         collections: (this.props.listCollections) || [],
         entryPointSelected: "all",

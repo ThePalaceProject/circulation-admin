@@ -121,6 +121,7 @@ describe("CustomListEditor", () => {
     expect(title.length).to.equal(1);
     expect(title.props().text).to.equal("list");
     expect(title.props().placeholder).to.equal("list title");
+    expect(title.props().disableIfBlank).to.be.true;
   });
 
   it("shows list id", () => {
@@ -228,7 +229,7 @@ describe("CustomListEditor", () => {
     let saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
     expect(saveButton.props().disabled).to.equal(true);
 
-    wrapper.setState({ title: "list title" });
+    wrapper.setState({ title: "new list title" });
     saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
 
     expect(saveButton.props().disabled).to.equal(false);
@@ -260,7 +261,7 @@ describe("CustomListEditor", () => {
     ];
     let getEntriesStub = stub(CustomListEntriesEditor.prototype, "getEntries").returns(newEntries);
     let saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
-    wrapper.setState({ title: "list title" });
+    wrapper.setState({ title: "new list title" });
     saveButton.simulate("click");
 
     expect(editCustomList.callCount).to.equal(1);
@@ -670,5 +671,22 @@ describe("CustomListEditor", () => {
 
       expect(hasChanges).to.equal(true);
     });
+  });
+  it("should know whether the list title is blank", () => {
+    // There is a list property with a title
+    expect(wrapper.instance().isTitleEmpty()).to.be.false;
+    wrapper.setProps({ list: null });
+    wrapper.setState({ title: null });
+    // New list, no title
+    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    // New list, title is still just the placeholder
+    wrapper.setState({ title: "list title" });
+    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    // New list, placeholder has been deleted.
+    wrapper.setState({ title: "" });
+    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    // Adding a title...
+    wrapper.setState({ title: "testing..." });
+    expect(wrapper.instance().isTitleEmpty()).to.be.false;
   });
 });

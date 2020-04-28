@@ -5,11 +5,12 @@
 - Removed a reference to the unused `isActive` property of `opds-web-client`'s `router` context.
 #### Fixed
 - Fixed link construction for book `View Detail` button when creating a list in List Manager.
+- Fixed a bug which incorrectly disabled the list-saving functionality.
 
 ### v0.4.17
 #### Updated
 - Updated version of `opds-web-client` to v0.4.0 and changed reliance on `Book.getMedium` to imported `getMedium` and `getMediumSVG`.
-- Instantiates `ActionsCreator` and `DataFetcher` locally to be passed in to `ActionsProvider` to match updated API. 
+- Instantiates `ActionsCreator` and `DataFetcher` locally to be passed in to `ActionsProvider` to match updated API.
 
 ### v0.4.16
 #### Fixed

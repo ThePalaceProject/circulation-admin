@@ -8,6 +8,7 @@ export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
   placeholder: string;
   onUpdate?: (text: string) => void;
   "aria-label": string;
+  disableIfBlank?: boolean;
 }
 
 export interface TextWithEditModeState {
@@ -42,11 +43,13 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               optionalText={false}
               ref="text"
               aria-label={this.props["aria-label"]}
+              onChange={(e) => this.setText(e)}
             />
             <Button
               className="inverted inline"
               callback={this.updateText}
               content={`Save ${this.props.placeholder}`}
+              disabled={this.props.disableIfBlank && !this.state.text.length}
             />
           </h3>
         }
@@ -68,6 +71,10 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
     if (nextProps.text !== this.props.text) {
       this.setState({ text: nextProps.text, editMode: !nextProps.text });
     }
+  }
+
+  setText(text: string) {
+    this.setState({ text });
   }
 
   updateText() {
