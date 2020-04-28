@@ -161,7 +161,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L22">src/components/LibraryRegistration.tsx:22</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L22">src/components/LibraryRegistration.tsx:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -187,23 +187,6 @@
 							<li>Defined in node_modules/@types/react/index.d.ts:445</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>If using the new style context, re-declare this in your class to be the
-								<code>React.ContextType</code> of your <code>static contextType</code>.
-							Should be used with type annotation or static contextType.</p>
-						</div>
-						<pre><code class="language-ts"><span class="hljs-keyword">static</span> contextType = MyContext
-<span class="hljs-comment">// For TS pre-3.7:</span>
-context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContext&gt;
-<span class="hljs-comment">// For TS 3.7 and above:</span>
-<span class="hljs-keyword">declare</span> context: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContext&gt;</code></pre>
-						<dl class="tsd-comment-tags">
-							<dt>see</dt>
-							<dd><p><a href="https://reactjs.org/docs/context.html">https://reactjs.org/docs/context.html</a></p>
-							</dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="props" class="tsd-anchor"></a>
@@ -226,13 +209,6 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 							<li>Defined in node_modules/@types/react/index.d.ts:476</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>deprecated</dt>
-							<dd><p><a href="https://reactjs.org/docs/refs-and-the-dom.html#legacy-api-string-refs">https://reactjs.org/docs/refs-and-the-dom.html#legacy-api-string-refs</a></p>
-							</dd>
-						</dl>
-					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -263,27 +239,6 @@ context!: React.ContextType&lt;<span class="hljs-keyword">typeof</span> MyContex
 							<li>Defined in node_modules/@types/react/index.d.ts:427</li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>If set, <code>this.context</code> will be set at runtime to the current value of the given Context.</p>
-						</div>
-						<p>Usage:</p>
-						<pre><code class="language-ts">type MyContext = number
-const Ctx = React.createContext&lt;MyContext&gt;(0)
-
-class Foo extends React.Component {
-  static contextType = Ctx
-  context!: React.ContextType&lt;typeof Ctx&gt;
-  render () {
-    return &lt;&gt;My context's value: {this.context}&lt;/&gt;;
-  }
-}</code></pre>
-						<dl class="tsd-comment-tags">
-							<dt>see</dt>
-							<dd><p><a href="https://reactjs.org/docs/context.html#classcontexttype">https://reactjs.org/docs/context.html#classcontexttype</a></p>
-							</dd>
-						</dl>
-					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -302,26 +257,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:658</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before mounting occurs, and before <code>Component#render</code>.
-									Avoid introducing any side-effects or subscriptions in this method.</p>
-								</div>
-								<p>This method will not stop working in React 17.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use componentDidMount or the constructor instead</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -340,28 +275,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:690</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the component may be receiving new props.
-										React may call this even if props have not changed, so be sure to compare new and existing
-									props if you only want to handle changes.</p>
-								</div>
-								<p>Calling <code>Component#setState</code> generally does not trigger this method.</p>
-								<p>This method will not stop working in React 17.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use static getDerivedStateFromProps instead</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -389,26 +302,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:718</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before rendering when new props or state is received. Not called for the initial render.</p>
-								</div>
-								<p>Note: You cannot call <code>Component#setState</code> here.</p>
-								<p>This method will not stop working in React 17.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use getSnapshotBeforeUpdate instead</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -439,12 +332,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:587</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Catches exceptions generated in descendant components. Unhandled exceptions will cause
-									the entire component tree to unmount.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -472,11 +359,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:566</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately after a component is mounted. Setting state here will trigger re-rendering.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -485,7 +367,7 @@ class Foo extends React.Component {
 					<a name="componentdidupdate" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> component<wbr>Did<wbr>Update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">component<wbr>Did<wbr>Update<span class="tsd-signature-symbol">(</span>prevProps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/libraryregistrationprops.html" class="tsd-signature-type">LibraryRegistrationProps</a><span class="tsd-signature-symbol">&gt;</span>, prevState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/libraryregistrationstate.html" class="tsd-signature-type">LibraryRegistrationState</a><span class="tsd-signature-symbol">&gt;</span>, snapshot<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">SS</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">component<wbr>Did<wbr>Update<span class="tsd-signature-symbol">(</span>prevProps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/libraryregistrationprops.html" class="tsd-signature-type">LibraryRegistrationProps</a><span class="tsd-signature-symbol">&gt;</span>, prevState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/libraryregistrationstate.html" class="tsd-signature-type">LibraryRegistrationState</a><span class="tsd-signature-symbol">&gt;</span>, snapshot<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SS</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -495,12 +377,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:629</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately after updating occurs. Not called for the initial render.</p>
-								</div>
-								<p>The snapshot is only present if getSnapshotBeforeUpdate is present and returns non-null.</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -531,25 +407,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:644</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before mounting occurs, and before <code>Component#render</code>.
-									Avoid introducing any side-effects or subscriptions in this method.</p>
-								</div>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use componentDidMount or the constructor instead; will stop working in React 17</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -568,27 +425,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:673</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the component may be receiving new props.
-										React may call this even if props have not changed, so be sure to compare new and existing
-									props if you only want to handle changes.</p>
-								</div>
-								<p>Calling <code>Component#setState</code> generally does not trigger this method.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use static getDerivedStateFromProps instead; will stop working in React 17</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -616,12 +452,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:582</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before a component is destroyed. Perform any necessary cleanup in this method, such as
-									cancelled network requests, or cleaning up any DOM elements created in <code>componentDidMount</code>.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -640,25 +470,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:703</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before rendering when new props or state is received. Not called for the initial render.</p>
-								</div>
-								<p>Note: You cannot call <code>Component#setState</code> here.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use getSnapshotBeforeUpdate instead; will stop working in React 17</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -685,7 +496,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L104">src/components/LibraryRegistration.tsx:104</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L104">src/components/LibraryRegistration.tsx:104</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -708,7 +519,7 @@ class Foo extends React.Component {
 					<a name="forceupdate" class="tsd-anchor"></a>
 					<h3>force<wbr>Update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">force<wbr>Update<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">force<wbr>Update<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -750,7 +561,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L162">src/components/LibraryRegistration.tsx:162</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L162">src/components/LibraryRegistration.tsx:162</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -776,7 +587,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L177">src/components/LibraryRegistration.tsx:177</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L177">src/components/LibraryRegistration.tsx:177</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -809,15 +620,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:623</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Runs before React applies the result of <code>render</code> to the document, and
-										returns an object to be given to componentDidUpdate. Useful for saving
-									things such as scroll position before <code>render</code> causes changes to it.</p>
-								</div>
-								<p>Note: the presence of getSnapshotBeforeUpdate prevents any of the deprecated
-								lifecycle events from running.</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -844,7 +646,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L68">src/components/LibraryRegistration.tsx:68</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L68">src/components/LibraryRegistration.tsx:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -867,7 +669,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L139">src/components/LibraryRegistration.tsx:139</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L139">src/components/LibraryRegistration.tsx:139</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -896,7 +698,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L73">src/components/LibraryRegistration.tsx:73</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L73">src/components/LibraryRegistration.tsx:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -922,7 +724,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L87">src/components/LibraryRegistration.tsx:87</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L87">src/components/LibraryRegistration.tsx:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -945,7 +747,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L182">src/components/LibraryRegistration.tsx:182</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L182">src/components/LibraryRegistration.tsx:182</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -968,7 +770,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L61">src/components/LibraryRegistration.tsx:61</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L61">src/components/LibraryRegistration.tsx:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -991,7 +793,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L120">src/components/LibraryRegistration.tsx:120</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L120">src/components/LibraryRegistration.tsx:120</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1021,7 +823,7 @@ class Foo extends React.Component {
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L46">src/components/LibraryRegistration.tsx:46</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L46">src/components/LibraryRegistration.tsx:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -1032,7 +834,7 @@ class Foo extends React.Component {
 					<a name="setstate" class="tsd-anchor"></a>
 					<h3>set<wbr>State</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>State&lt;K&gt;<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>State&lt;K&gt;<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -1087,16 +889,6 @@ class Foo extends React.Component {
 									<li>Defined in node_modules/@types/react/index.d.ts:577</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called to determine whether the change in props and state should trigger a re-render.</p>
-								</div>
-								<p><code>Component</code> always returns true.
-									<code>PureComponent</code> implements a shallow comparison on props and state and returns true if any
-								props or states have changed.</p>
-								<p>If false is returned, <code>Component#render</code>, <code>componentWillUpdate</code>
-								and <code>componentDidUpdate</code> will not be called.</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -1123,7 +915,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L97">src/components/LibraryRegistration.tsx:97</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L97">src/components/LibraryRegistration.tsx:97</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1146,7 +938,7 @@ class Foo extends React.Component {
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L152">src/components/LibraryRegistration.tsx:152</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L152">src/components/LibraryRegistration.tsx:152</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1168,7 +960,7 @@ class Foo extends React.Component {
 					<div class="tsd-signature tsd-kind-icon">MESSAGES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L18">src/components/LibraryRegistration.tsx:18</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L18">src/components/LibraryRegistration.tsx:18</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
@@ -1177,7 +969,7 @@ class Foo extends React.Component {
 						<div class="tsd-signature tsd-kind-icon">failure<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L21">src/components/LibraryRegistration.tsx:21</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L21">src/components/LibraryRegistration.tsx:21</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1186,7 +978,7 @@ class Foo extends React.Component {
 							<div class="tsd-signature tsd-kind-icon">button<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Retry registration&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L21">src/components/LibraryRegistration.tsx:21</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L21">src/components/LibraryRegistration.tsx:21</a></li>
 								</ul>
 							</aside>
 						</section>
@@ -1196,7 +988,7 @@ class Foo extends React.Component {
 							<div class="tsd-signature tsd-kind-icon">status<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Registration failed&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L21">src/components/LibraryRegistration.tsx:21</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L21">src/components/LibraryRegistration.tsx:21</a></li>
 								</ul>
 							</aside>
 						</section>
@@ -1207,7 +999,7 @@ class Foo extends React.Component {
 						<div class="tsd-signature tsd-kind-icon">success<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L19">src/components/LibraryRegistration.tsx:19</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L19">src/components/LibraryRegistration.tsx:19</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1216,7 +1008,7 @@ class Foo extends React.Component {
 							<div class="tsd-signature tsd-kind-icon">button<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Update registration&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L19">src/components/LibraryRegistration.tsx:19</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L19">src/components/LibraryRegistration.tsx:19</a></li>
 								</ul>
 							</aside>
 						</section>
@@ -1226,7 +1018,7 @@ class Foo extends React.Component {
 							<div class="tsd-signature tsd-kind-icon">status<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Registered&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L19">src/components/LibraryRegistration.tsx:19</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L19">src/components/LibraryRegistration.tsx:19</a></li>
 								</ul>
 							</aside>
 						</section>
@@ -1237,7 +1029,7 @@ class Foo extends React.Component {
 						<div class="tsd-signature tsd-kind-icon">warning<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L20">src/components/LibraryRegistration.tsx:20</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L20">src/components/LibraryRegistration.tsx:20</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1246,7 +1038,7 @@ class Foo extends React.Component {
 							<div class="tsd-signature tsd-kind-icon">button<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Register&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L20">src/components/LibraryRegistration.tsx:20</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L20">src/components/LibraryRegistration.tsx:20</a></li>
 								</ul>
 							</aside>
 						</section>
@@ -1256,7 +1048,7 @@ class Foo extends React.Component {
 							<div class="tsd-signature tsd-kind-icon">status<wbr>Text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Not registered&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/LibraryRegistration.tsx#L20">src/components/LibraryRegistration.tsx:20</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/LibraryRegistration.tsx#L20">src/components/LibraryRegistration.tsx:20</a></li>
 								</ul>
 							</aside>
 						</section>

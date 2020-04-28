@@ -66,15 +66,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Form for editing discovery services on the discovery service configuration tab.
-							Includes the same form as other services but an addition section with a list
-						of libraries and their registration statuses and buttons to register them.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-type-parameters">
 				<h3>Type parameters</h3>
 				<ul class="tsd-type-parameters">
@@ -188,7 +179,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L36">src/components/ServiceEditForm.tsx:36</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L36">src/components/ServiceEditForm.tsx:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -210,7 +201,7 @@
 					<div class="tsd-signature tsd-kind-icon">context<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceWithRegistrationsEditForm.tsx#L11">src/components/ServiceWithRegistrationsEditForm.tsx:11</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceWithRegistrationsEditForm.tsx#L11">src/components/ServiceWithRegistrationsEditForm.tsx:11</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -260,26 +251,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:658</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before mounting occurs, and before <code>Component#render</code>.
-									Avoid introducing any side-effects or subscriptions in this method.</p>
-								</div>
-								<p>This method will not stop working in React 17.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use componentDidMount or the constructor instead</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -298,28 +269,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:690</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the component may be receiving new props.
-										React may call this even if props have not changed, so be sure to compare new and existing
-									props if you only want to handle changes.</p>
-								</div>
-								<p>Calling <code>Component#setState</code> generally does not trigger this method.</p>
-								<p>This method will not stop working in React 17.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use static getDerivedStateFromProps instead</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -347,26 +296,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:718</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before rendering when new props or state is received. Not called for the initial render.</p>
-								</div>
-								<p>Note: You cannot call <code>Component#setState</code> here.</p>
-								<p>This method will not stop working in React 17.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use getSnapshotBeforeUpdate instead</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -394,7 +323,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#addlibrary">addLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L509">src/components/ServiceEditForm.tsx:509</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L509">src/components/ServiceEditForm.tsx:509</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -418,7 +347,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#allowsparent">allowsParent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L375">src/components/ServiceEditForm.tsx:375</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L375">src/components/ServiceEditForm.tsx:375</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -442,7 +371,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#availablelibraries">availableLibraries</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L449">src/components/ServiceEditForm.tsx:449</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L449">src/components/ServiceEditForm.tsx:449</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/librarydata.html" class="tsd-signature-type">LibraryData</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -460,7 +389,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#availableparents">availableParents</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L379">src/components/ServiceEditForm.tsx:379</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L379">src/components/ServiceEditForm.tsx:379</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -471,14 +400,14 @@
 					<a name="availableprotocols" class="tsd-anchor"></a>
 					<h3>available<wbr>Protocols</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">available<wbr>Protocols<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">available<wbr>Protocols<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#availableprotocols">availableProtocols</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L352">src/components/ServiceEditForm.tsx:352</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L352">src/components/ServiceEditForm.tsx:352</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -505,12 +434,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:587</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Catches exceptions generated in descendant components. Unhandled exceptions will cause
-									the entire component tree to unmount.</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -538,11 +461,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:566</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately after a component is mounted. Setting state here will trigger re-rendering.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -551,7 +469,7 @@
 					<a name="componentdidupdate" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> component<wbr>Did<wbr>Update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">component<wbr>Did<wbr>Update<span class="tsd-signature-symbol">(</span>prevProps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/serviceeditformprops.html" class="tsd-signature-type">ServiceEditFormProps</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>, prevState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/serviceeditformstate.html" class="tsd-signature-type">ServiceEditFormState</a><span class="tsd-signature-symbol">&gt;</span>, snapshot<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">SS</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">component<wbr>Did<wbr>Update<span class="tsd-signature-symbol">(</span>prevProps<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/serviceeditformprops.html" class="tsd-signature-type">ServiceEditFormProps</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>, prevState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/serviceeditformstate.html" class="tsd-signature-type">ServiceEditFormState</a><span class="tsd-signature-symbol">&gt;</span>, snapshot<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SS</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -561,12 +479,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:629</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately after updating occurs. Not called for the initial render.</p>
-								</div>
-								<p>The snapshot is only present if getSnapshotBeforeUpdate is present and returns non-null.</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -597,25 +509,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:644</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before mounting occurs, and before <code>Component#render</code>.
-									Avoid introducing any side-effects or subscriptions in this method.</p>
-								</div>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use componentDidMount or the constructor instead; will stop working in React 17</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -632,7 +525,7 @@
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#componentwillreceiveprops">componentWillReceiveProps</a></p>
 								<p>Overrides DeprecatedLifecycle.componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L65">src/components/ServiceEditForm.tsx:65</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L65">src/components/ServiceEditForm.tsx:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -659,12 +552,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:582</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before a component is destroyed. Perform any necessary cleanup in this method, such as
-									cancelled network requests, or cleaning up any DOM elements created in <code>componentDidMount</code>.</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -683,25 +570,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:703</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called immediately before rendering when new props or state is received. Not called for the initial render.</p>
-								</div>
-								<p>Note: You cannot call <code>Component#setState</code> here.</p>
-								<p>Note: the presence of getSnapshotBeforeUpdate or getDerivedStateFromProps
-								prevents this from being invoked.</p>
-								<dl class="tsd-comment-tags">
-									<dt>deprecated</dt>
-									<dd><p>16.3, use getSnapshotBeforeUpdate instead; will stop working in React 17</p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update</a></p>
-									</dd>
-									<dt>see</dt>
-									<dd><p><a href="https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path">https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path</a></p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -729,7 +597,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#editlibrary">editLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L494">src/components/ServiceEditForm.tsx:494</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L494">src/components/ServiceEditForm.tsx:494</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -756,7 +624,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#expandlibrary">expandLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L481">src/components/ServiceEditForm.tsx:481</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L481">src/components/ServiceEditForm.tsx:481</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -780,7 +648,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#findprotocol">findProtocol</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L403">src/components/ServiceEditForm.tsx:403</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L403">src/components/ServiceEditForm.tsx:403</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a></h4>
@@ -798,7 +666,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#getlibrary">getLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L439">src/components/ServiceEditForm.tsx:439</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L439">src/components/ServiceEditForm.tsx:439</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -825,15 +693,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:623</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Runs before React applies the result of <code>render</code> to the document, and
-										returns an object to be given to componentDidUpdate. Useful for saving
-									things such as scroll position before <code>render</code> causes changes to it.</p>
-								</div>
-								<p>Note: the presence of getSnapshotBeforeUpdate prevents any of the deprecated
-								lifecycle events from running.</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -861,7 +720,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#handledata">handleData</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L524">src/components/ServiceEditForm.tsx:524</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L524">src/components/ServiceEditForm.tsx:524</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -885,7 +744,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#handleparentchange">handleParentChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L390">src/components/ServiceEditForm.tsx:390</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L390">src/components/ServiceEditForm.tsx:390</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -903,7 +762,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#handleprotocolchange">handleProtocolChange</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L369">src/components/ServiceEditForm.tsx:369</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L369">src/components/ServiceEditForm.tsx:369</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -921,7 +780,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#isexpanded">isExpanded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L470">src/components/ServiceEditForm.tsx:470</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L470">src/components/ServiceEditForm.tsx:470</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -945,7 +804,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocoldescription">protocolDescription</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L423">src/components/ServiceEditForm.tsx:423</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L423">src/components/ServiceEditForm.tsx:423</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -969,7 +828,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocolinstructions">protocolInstructions</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L427">src/components/ServiceEditForm.tsx:427</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L427">src/components/ServiceEditForm.tsx:427</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -993,7 +852,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocollibrarysettings">protocolLibrarySettings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L431">src/components/ServiceEditForm.tsx:431</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L431">src/components/ServiceEditForm.tsx:431</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1017,7 +876,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocolsettings">protocolSettings</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L407">src/components/ServiceEditForm.tsx:407</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L407">src/components/ServiceEditForm.tsx:407</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1052,7 +911,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#protocols">protocols</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L399">src/components/ServiceEditForm.tsx:399</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L399">src/components/ServiceEditForm.tsx:399</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -1070,7 +929,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#removelibrary">removeLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L474">src/components/ServiceEditForm.tsx:474</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L474">src/components/ServiceEditForm.tsx:474</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1094,7 +953,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#render">render</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceWithRegistrationsEditForm.tsx#L17">src/components/ServiceWithRegistrationsEditForm.tsx:17</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceWithRegistrationsEditForm.tsx#L17">src/components/ServiceWithRegistrationsEditForm.tsx:17</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -1112,7 +971,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#renderlibrariesform">renderLibrariesForm</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L254">src/components/ServiceEditForm.tsx:254</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L254">src/components/ServiceEditForm.tsx:254</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1136,7 +995,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#renderoptionalfields">renderOptionalFields</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L235">src/components/ServiceEditForm.tsx:235</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L235">src/components/ServiceEditForm.tsx:235</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1160,7 +1019,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#renderrequiredfields">renderRequiredFields</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L168">src/components/ServiceEditForm.tsx:168</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L168">src/components/ServiceEditForm.tsx:168</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1187,7 +1046,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#selectlibrary">selectLibrary</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L461">src/components/ServiceEditForm.tsx:461</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L461">src/components/ServiceEditForm.tsx:461</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1208,16 +1067,6 @@
 									<li>Defined in node_modules/@types/react/index.d.ts:577</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called to determine whether the change in props and state should trigger a re-render.</p>
-								</div>
-								<p><code>Component</code> always returns true.
-									<code>PureComponent</code> implements a shallow comparison on props and state and returns true if any
-								props or states have changed.</p>
-								<p>If false is returned, <code>Component#render</code>, <code>componentWillUpdate</code>
-								and <code>componentDidUpdate</code> will not be called.</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -1245,7 +1094,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#sitewide">sitewide</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L435">src/components/ServiceEditForm.tsx:435</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L435">src/components/ServiceEditForm.tsx:435</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1269,7 +1118,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serviceeditform.html">ServiceEditForm</a>.<a href="serviceeditform.html#submit">submit</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceEditForm.tsx#L531">src/components/ServiceEditForm.tsx:531</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceEditForm.tsx#L531">src/components/ServiceEditForm.tsx:531</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1291,7 +1140,7 @@
 					<div class="tsd-signature tsd-kind-icon">context<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceWithRegistrationsEditForm.tsx#L13">src/components/ServiceWithRegistrationsEditForm.tsx:13</a></li>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceWithRegistrationsEditForm.tsx#L13">src/components/ServiceWithRegistrationsEditForm.tsx:13</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -1300,7 +1149,7 @@
 						<div class="tsd-signature tsd-kind-icon">register<wbr>Library<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Requireable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;PropTypes.func</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/0289434/src/components/ServiceWithRegistrationsEditForm.tsx#L14">src/components/ServiceWithRegistrationsEditForm.tsx:14</a></li>
+								<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/54566e0/src/components/ServiceWithRegistrationsEditForm.tsx#L14">src/components/ServiceWithRegistrationsEditForm.tsx:14</a></li>
 							</ul>
 						</aside>
 					</section>
