@@ -114,6 +114,17 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
   renderForms(categories: {[key: string]: LibrarySettingField[]}) {
     let forms = [];
+    let tempAnnouncementsForm =
+    <Panel
+      id={`library-form-announcements`}
+      headerText={`Announcements (Optional)`}
+      onEnter={this.submit}
+      key={"announcements"}
+      content={<div></div>}
+      openByDefault={true}
+    />;
+    forms.push(tempAnnouncementsForm);
+    console.log(forms);
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
       let form =
