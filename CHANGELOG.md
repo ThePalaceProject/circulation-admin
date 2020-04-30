@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.19
+#### Fixed
+- Fixed a bug preventing scrolling through the available lists on the Lanes page.
+
 ### v0.4.18
 #### Removed
 - Removed a reference to the unused `isActive` property of `opds-web-client`'s `router` context.
