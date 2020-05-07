@@ -6,6 +6,7 @@ import { LibrariesData, LibraryData, LibrarySettingField, SettingData } from "..
 import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import PairedMenus from "./PairedMenus";
+import AnnouncementsSection from "./AnnouncementsSection";
 
 export interface LibraryEditFormProps {
   data: LibrariesData;
@@ -120,11 +121,19 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       headerText={`Announcements (Optional)`}
       onEnter={this.submit}
       key={"announcements"}
-      content={<div></div>}
+      content={
+        <AnnouncementsSection setting={{
+              description: "announcements",
+              format: "date-range",
+              key: "announcements",
+              label: "Announcements",
+              type: "list"}}
+              value={[{content: "cat", startDate: "START", endDate: "END"}]}
+        />
+      }
       openByDefault={true}
     />;
     forms.push(tempAnnouncementsForm);
-    console.log(forms);
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
       let form =

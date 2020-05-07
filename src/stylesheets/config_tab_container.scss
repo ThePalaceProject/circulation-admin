@@ -28,9 +28,9 @@ $dangercolor: #D9534F;
       width: 73%;
       padding: 40px 50px;
 
-      ul:not(.input-list-ul) {
+      ul:not(.input-list-ul):not(.announcements-ul) {
         padding-left: 10px;
-        li:not(.panel) {
+        li:not(.panel):not(.announcement) {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
