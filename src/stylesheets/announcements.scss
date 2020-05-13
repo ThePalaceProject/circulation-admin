@@ -1,0 +1,19 @@
+.announcements-section {
+   ul.announcements-ul {
+    border: 1px solid $blue-dark;
+    padding: 16px 16px 6px 16px;
+    li.announcement {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      border: 1px solid $dark-gray;
+      margin: 0 0 10px 0;
+      background: $gray-tint;
+      padding: 16px;
+      section {
+        display: flex;
+        justify-content: flex-start;
+      }
+    }
+  }
+}
