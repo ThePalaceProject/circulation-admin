@@ -40,9 +40,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   updateEndDate(endDate) {
     this.setState({ endDate });
   }
-  // updatePosition(position) {
-  //   this.setState({ position: parseInt(position) });
-  // }
+
   add(e) {
     e.preventDefault();
     this.props.add({ content: this.state.content, startDate: this.state.startDate, endDate: this.state.endDate, position: this.state.position });
