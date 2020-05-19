@@ -2,6 +2,7 @@
    ul.announcements-ul {
     border: 1px solid $blue-dark;
     padding: 16px 16px 6px 16px;
+    list-style: none;
     li.announcement {
       display: flex;
       flex-direction: column;
@@ -10,6 +11,21 @@
       margin: 0 0 10px 0;
       background: $gray-tint;
       padding: 16px;
+      .announcement-info {
+        border-bottom: 1px solid $dark-gray;
+        justify-content: space-between;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        .position {
+          display: block;
+          padding: 6px 8px;
+          height: 36px;
+          width: 36px;
+          background: white;
+          border: 1px solid $blue-dark;
+          color: $blue-dark;
+        }
+      }
       section {
         display: flex;
         justify-content: flex-start;

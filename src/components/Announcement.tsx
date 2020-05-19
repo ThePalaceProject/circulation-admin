@@ -2,12 +2,13 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import AnnouncementForm from "./AnnouncementForm";
 import { Button } from "library-simplified-reusable-components";
-import { Droppable, Draggable } from "react-beautiful-dnd";
+// import { Droppable, Draggable } from "react-beautiful-dnd";
 
 export interface AnnouncementProps {
   content?: string;
   startDate?: string;
   endDate?: string;
+  position?: number;
   onChange?: () => void;
   editable?: boolean;
   delete?: (content: string) => void;
@@ -30,8 +31,11 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
     this.props.delete(this.props.content);
   }
   render() {
+    // <span className="position">#{this.props.position}</span>
     let announcement =
-      <span>{this.props.content}: {this.props.startDate} to {this.props.endDate}</span>;
+      <section className="announcement-info">
+        <span>{this.props.content}: {this.props.startDate} to {this.props.endDate}</span>
+      </section>
     let editButton = (
       <Button
         content="Edit"
@@ -45,7 +49,7 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
         onClick={(e) => this.delete(e)}
       />
     )
-    let renderAnnouncement = (provided, snapshot) => {
+    let renderAnnouncement = (provided?, snapshot?) => {
       return (
         <li className="announcement">
           { announcement }
@@ -57,7 +61,8 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
       )
     }
     return (
-      <Draggable draggableId={this.props.content} key={this.props.content}>{(provided, snapshot) => renderAnnouncement(provided, snapshot)}</Draggable>
+      renderAnnouncement()
+      // <Draggable draggableId={this.props.content} key={this.props.content}>{(provided, snapshot) => renderAnnouncement(provided, snapshot)}</Draggable>
     )
   }
 }
