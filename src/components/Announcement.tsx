@@ -27,7 +27,6 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
   }
   delete(e) {
     e.preventDefault();
-    console.log(this.props);
     this.props.delete(this.props.content);
   }
   render() {

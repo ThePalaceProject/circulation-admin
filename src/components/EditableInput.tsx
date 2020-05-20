@@ -44,9 +44,6 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       type, elementType, optionalText, required, description, clientError, error,
       label, extraContent,
     } = this.props;
-    if (type === "date" || elementType === "date") {
-      console.log("!!!", this.state.value);
-    }
     const checkboxOrRadioOrSelect = !!(
       type === "checkbox" || type === "radio" || elementType === "select"
     );
