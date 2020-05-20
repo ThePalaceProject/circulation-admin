@@ -29,11 +29,14 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
     e.preventDefault();
     this.props.delete(this.props.content);
   }
+  format(date) {
+    let [year, month, day] = date.split("-");
+    return `${month}/${day}/${year}`;
+  }
   render() {
-    // <span className="position">#{this.props.position}</span>
     let announcement =
       <section className="announcement-info">
-        <span>{this.props.content}: {this.props.startDate} to {this.props.endDate}</span>
+        <span>{this.props.content}: {this.format(this.props.startDate)} to {this.format(this.props.endDate)}</span>
       </section>
     let editButton = (
       <Button

@@ -46,7 +46,17 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   add(e) {
     e.preventDefault();
     this.props.add({ content: this.state.content, startDate: this.state.startDate, endDate: this.state.endDate });
-    this.setState({ content: "", startDate: "", endDate: "" });
+    let [start, end] = this.getDefaultDates()
+    this.setState({content: "", startDate: start, endDate: end});
+  }
+  cancel(e) {
+    e.preventDefault();
+    if (this.props.content) {
+      this.add(e);
+    } else {
+      let [start, end] = this.getDefaultDates()
+      this.setState({content: "", startDate: start, endDate: end});
+    }
   }
   componentWillReceiveProps(newProps: AnnouncementFormProps) {
     if (newProps.content !== this.props.content) {
@@ -54,12 +64,21 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     }
   }
   render(): JSX.Element {
+    let shouldDisable = () => {
+      if (!this.state.content || !this.state.startDate || !this.state.endDate) {
+        return true;
+      } else if (this.state.content.length < 15 || this.state.content.length > 300){
+        return true;
+      }
+      return false;
+    }
     return (
       <div>
-        <EditableInput type="text" value={this.state.content} label="Content" optionalText={false} onChange={(e) => this.updateContent(e)} />
+        <EditableInput className={this.state.content.length < 15 && "too-short"} elementType="textarea" type="text" minlength={15} maxlength={300} value={this.state.content} label="Content (15–300 characters)" optionalText={false} onChange={(e) => this.updateContent(e)} description={`(${this.state.content.length}/300)`} />
         <EditableInput type="date" max={this.state.endDate} value={this.state.startDate} label="Start" optionalText={false} onChange={(e) => this.updateStartDate(e)} description="If no start date is chosen, the default start date is today's date."/>
         <EditableInput type="date" min={this.state.startDate} value={this.state.endDate} label="End" optionalText={false} onChange={(e) => this.updateEndDate(e)} description="If no expiration date is chosen, the default expiration date is 2 months from the start date." />
-        <Button callback={(e) => this.add(e)} className="left-align" disabled={!(this.state.content && this.state.startDate && this.state.endDate)}/>
+        <Button callback={(e) => this.add(e)} className="inline left-align" disabled={shouldDisable()}/>
+        <Button callback={(e) => this.cancel(e)} content="Cancel" className="inline left-align" />
       </div>
     );
   }

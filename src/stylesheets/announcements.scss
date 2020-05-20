@@ -32,4 +32,7 @@
       }
     }
   }
+  .form-group.too-short p.description {
+    color: $red;
+  }
 }

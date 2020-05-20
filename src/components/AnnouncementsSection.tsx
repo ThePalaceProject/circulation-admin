@@ -149,7 +149,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     // </DragDropContext>
     return (
       <div className="announcements-section">
-        { this.renderList() }
+        { this.state.currentAnnouncements.length > 0 && this.renderList() }
         { this.state.currentAnnouncements.length < 3 && <AnnouncementForm add={this.addAnnouncement} content={this.state.editing?.content} startDate={this.state.editing?.startDate} endDate={this.state.editing?.endDate} /> }
       </div>
     )
