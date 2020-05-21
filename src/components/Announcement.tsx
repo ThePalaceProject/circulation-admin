@@ -2,7 +2,6 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import AnnouncementForm from "./AnnouncementForm";
 import { Button } from "library-simplified-reusable-components";
-// import { Droppable, Draggable } from "react-beautiful-dnd";
 
 export interface AnnouncementProps {
   content?: string;
@@ -36,7 +35,10 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
   render() {
     let announcement =
       <section className="announcement-info">
-        <span>{this.props.content}: {this.format(this.props.startDate)} to {this.format(this.props.endDate)}</span>
+        <section className="dates">
+          {this.format(this.props.startDate)} – {this.format(this.props.endDate)}
+        </section>
+        <span>{this.props.content}</span>
       </section>
     let editButton = (
       <Button
@@ -49,12 +51,14 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
       <Button
         content="Delete"
         onClick={(e) => this.delete(e)}
+        className="left-align"
       />
     )
     let renderAnnouncement = (provided?, snapshot?) => {
       return (
         <li className="announcement">
           { announcement }
+          <hr />
           <section className="buttons">
             { editButton }
             { deleteButton }
@@ -64,7 +68,6 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
     }
     return (
       renderAnnouncement()
-      // <Draggable draggableId={this.props.content} key={this.props.content}>{(provided, snapshot) => renderAnnouncement(provided, snapshot)}</Draggable>
     )
   }
 }

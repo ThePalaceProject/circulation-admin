@@ -7,28 +7,39 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      border: 1px solid $dark-gray;
       margin: 0 0 10px 0;
-      background: $gray-tint;
-      padding: 16px;
       .announcement-info {
-        border-bottom: 1px solid $dark-gray;
         justify-content: space-between;
-        padding-bottom: 8px;
-        margin-bottom: 8px;
-        .position {
-          display: block;
-          padding: 6px 8px;
-          height: 36px;
-          width: 36px;
-          background: white;
-          border: 1px solid $blue-dark;
-          color: $blue-dark;
-        }
       }
       section {
         display: flex;
         justify-content: flex-start;
+        &:first-child {
+          flex-direction: column;
+        }
+        span {
+          padding: 16px 12px;
+          border-left: 1px solid $blue-dark;
+          border-right: 1px solid $blue-dark;
+        }
+        .dates {
+          background: $gray-tint;
+          display: block;
+          padding: 16px 12px;
+          font-weight: bold;
+          border: 1px solid $dark-gray;
+        }
+      }
+      hr {
+        width: 96%;
+        border-color: $blue-dark;
+        margin: 0 auto;
+      }
+      .buttons {
+        padding: 10px 8px 0 10px;
+        border-left: 1px solid $blue-dark;
+        border-right: 1px solid $blue-dark;
+        border-bottom: 1px solid $blue-dark;
       }
     }
   }
