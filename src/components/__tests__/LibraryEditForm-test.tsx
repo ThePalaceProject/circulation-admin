@@ -144,7 +144,7 @@ describe("LibraryEditForm", () => {
 
     it("subdivides fields", () => {
       let collapsible = wrapper.find(".panel");
-      expect(collapsible.length).to.equal(6);
+      expect(collapsible.length).to.equal(7);
 
       let basic = collapsible.at(0).find(".panel-heading");
       expect(basic.text()).to.contain("Basic Information");
@@ -169,7 +169,7 @@ describe("LibraryEditForm", () => {
 
     it("has a save button", () => {
       let form = wrapper.find(Form);
-      let saveButton = form.find(Button).at(1);
+      let saveButton = form.find(Button).last();
       expect(saveButton.text()).to.equal("Submit");
       expect(form.prop("onSubmit")).to.equal(wrapper.instance().submit);
     });
@@ -190,7 +190,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find(Button).at(1);
+      let saveButton = wrapper.find(Button).last();
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -203,7 +203,7 @@ describe("LibraryEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
-      let saveButton = wrapper.find(Button).at(1);
+      let saveButton = wrapper.find(Button).last();
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);
