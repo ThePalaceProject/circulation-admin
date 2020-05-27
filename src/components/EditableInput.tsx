@@ -13,8 +13,8 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   clientError?: boolean;
   extraContent?: string | JSX.Element;
   className?: string;
-  minlength?: number;
-  maxlength?: number;
+  minLength?: number;
+  maxLength?: number;
 }
 
 export interface EditableInputState {
@@ -81,7 +81,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   renderElement() {
     const {
       type, elementType, placeholder, accept, list, min, max, children,
-      disabled, readOnly, name, validation, style, minlength, maxlength
+      disabled, readOnly, name, validation, style, minLength, maxLength
     } = this.props;
 
     return React.createElement(elementType || "input", {
@@ -101,8 +101,8 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       list,
       min,
       max,
-      minlength,
-      maxlength,
+      minLength,
+      maxLength,
       ["aria-label"]: this.props["aria-label"]
     }, children);
   }

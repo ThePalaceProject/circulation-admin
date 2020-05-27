@@ -7,9 +7,7 @@ export interface AnnouncementProps {
   content?: string;
   startDate?: string;
   endDate?: string;
-  position?: number;
   onChange?: () => void;
-  editable?: boolean;
   delete?: (content: string) => void;
   edit?: (content: string) => void;
 }
@@ -33,41 +31,42 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
     return `${month}/${day}/${year}`;
   }
   render() {
-    let announcement =
+    let announcement = (
       <section className="announcement-info">
         <section className="dates">
           {this.format(this.props.startDate)} – {this.format(this.props.endDate)}
         </section>
         <span>{this.props.content}</span>
       </section>
+    );
     let editButton = (
       <Button
         content="Edit"
         onClick={(e) => this.edit(e)}
         className="left-align"
       />
-    )
+    );
     let deleteButton = (
       <Button
         content="Delete"
         onClick={(e) => this.delete(e)}
         className="left-align"
       />
-    )
-    let renderAnnouncement = (provided?, snapshot?) => {
+    );
+    let renderAnnouncement = () => {
       return (
-        <li className="announcement">
+        <div className="announcement">
           { announcement }
           <hr />
           <section className="buttons">
             { editButton }
             { deleteButton }
           </section>
-        </li>
-      )
-    }
+        </div>
+      );
+    };
     return (
       renderAnnouncement()
-    )
+    );
   }
 }

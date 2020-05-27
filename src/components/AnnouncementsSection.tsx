@@ -18,7 +18,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     this.addAnnouncement = this.addAnnouncement.bind(this);
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
     this.editAnnouncement = this.editAnnouncement.bind(this);
-    this.state = { currentAnnouncements: this.props.value || [] }
+    this.state = { currentAnnouncements: this.props.value || [] };
   }
   addAnnouncement(announcement) {
     let announcements = this.state.currentAnnouncements;
@@ -32,14 +32,13 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
   async editAnnouncement(content) {
     await this.setState({ editing: this.state.currentAnnouncements.filter(a => a.content === content)[0], currentAnnouncements: this.state.currentAnnouncements.filter(a => a.content !== content) });
   }
-  renderAnnouncement(a, provided?, snapshot?) {
+  renderAnnouncement(a) {
     return (
       <Announcement
         key={a.content}
         content={a.content}
         startDate={a.startDate}
         endDate={a.endDate}
-        position={a.position}
         delete={this.deleteAnnouncement}
         edit={this.editAnnouncement}
       />
@@ -64,6 +63,6 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
         { this.state.currentAnnouncements.length > 0 && this.renderList() }
         { this.state.currentAnnouncements.length < 3 && <AnnouncementForm add={this.addAnnouncement} content={this.state.editing?.content} startDate={this.state.editing?.startDate} endDate={this.state.editing?.endDate} /> }
       </div>
-    )
+    );
   }
 }

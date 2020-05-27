@@ -42,7 +42,6 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
     let { lane, active, snapshot, provided, renderLanes } = this.props;
     let hasSublanes = lane.sublanes && !!lane.sublanes.length;
     let hasCustomLists = lane.custom_list_ids && !!lane.custom_list_ids.length;
-
     return (
       <li key={lane.id}>
         <div

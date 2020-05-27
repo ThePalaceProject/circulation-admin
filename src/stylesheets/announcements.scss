@@ -1,9 +1,9 @@
 .announcements-section {
-   ul.announcements-ul {
+  ul.announcements-ul {
     border: 1px solid $blue-dark;
     padding: 16px 16px 6px 16px;
     list-style: none;
-    li.announcement {
+    .announcement {
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -23,8 +23,8 @@
           border-right: 1px solid $blue-dark;
         }
         .dates {
-          background: $gray-tint;
           display: block;
+          background: $gray-tint;
           padding: 16px 12px;
           font-weight: bold;
           border: 1px solid $dark-gray;
