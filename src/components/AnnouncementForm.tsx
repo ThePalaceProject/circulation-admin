@@ -6,8 +6,7 @@ export interface AnnouncementFormProps {
   content?: string;
   startDate?: string;
   endDate?: string;
-  onChange?: () => void;
-  add?: (announcement: any) => void;
+  add: (announcement: any) => void;
 }
 
 export interface AnnouncementFormState {
