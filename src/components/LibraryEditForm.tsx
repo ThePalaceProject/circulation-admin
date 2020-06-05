@@ -120,7 +120,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       id={`library-form-announcements`}
       headerText={`Announcements (Optional)`}
       onEnter={this.submit}
-      key={"announcements"}
+      key="announcements"
       content={
         <AnnouncementsSection setting={{
               description: "announcements",
@@ -129,6 +129,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
               label: "Announcements",
               type: "list"}}
               value={[{content: "FIRST ANNOUNCEMENT", startDate: "2020-05-19", endDate: "2020-05-21", position: 1}, {content: "SECOND ANNOUNCEMENT", startDate: "2020-06-01", endDate: "2020-08-01", position: 2}]}
+              ref="announcements"
         />
       }
       openByDefault={true}
@@ -203,6 +204,10 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   submit(data: FormData) {
+    let announcements = (this.refs["announcements"] as any).getValue();
+    let announcementList = [];
+    announcements.forEach(a => announcementList.push(a));
+    data?.set("announcements", JSON.stringify(announcementList));
     this.props.save(data);
   }
 

@@ -7,8 +7,14 @@ export interface AnnouncementsSectionProps {
   setting: SettingData;
   value?: Array<any>;
 }
+export interface AnnouncementData {
+  id?: number;
+  content: string;
+  startDate: string;
+  endDate: string;
+}
 export interface AnnouncementsSectionState {
-  currentAnnouncements: Array<any>;
+  currentAnnouncements: Array<AnnouncementData>;
   editing?: any;
 }
 
@@ -18,6 +24,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     this.addAnnouncement = this.addAnnouncement.bind(this);
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
     this.editAnnouncement = this.editAnnouncement.bind(this);
+    this.getValue = this.getValue.bind(this);
     this.state = { currentAnnouncements: this.props.value || [] };
   }
   addAnnouncement(announcement) {
@@ -64,5 +71,8 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
         { this.state.currentAnnouncements.length < 3 && <AnnouncementForm add={this.addAnnouncement} content={this.state.editing?.content} startDate={this.state.editing?.startDate} endDate={this.state.editing?.endDate} /> }
       </div>
     );
+  }
+  getValue() {
+    return this.state.currentAnnouncements;
   }
 }
