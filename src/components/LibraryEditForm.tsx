@@ -128,7 +128,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
               key: "announcements",
               label: "Announcements",
               type: "list"}}
-              value={[{content: "FIRST ANNOUNCEMENT", startDate: "2020-05-19", endDate: "2020-05-21", position: 1}, {content: "SECOND ANNOUNCEMENT", startDate: "2020-06-01", endDate: "2020-08-01", position: 2}]}
+              value={[{content: "FIRST ANNOUNCEMENT", startDate: "2020-05-19", endDate: "2020-05-21", id: 1}, {content: "SECOND ANNOUNCEMENT", startDate: "2020-06-01", endDate: "2020-08-01", id: 2}]}
               ref="announcements"
         />
       }

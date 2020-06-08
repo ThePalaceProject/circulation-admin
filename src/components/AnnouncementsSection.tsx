@@ -31,13 +31,13 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     let announcements = this.state.currentAnnouncements;
     this.setState({ currentAnnouncements: announcements.concat(announcement) });
   }
-  deleteAnnouncement(content) {
+  deleteAnnouncement(id: number) {
     if (window.confirm("This will remove this announcement from your list. Are you sure you want to continue?")) {
-      this.setState({ currentAnnouncements: this.state.currentAnnouncements.filter(a => a.content !== content), editing: null});
+      this.setState({ currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id), editing: null});
     }
   }
-  async editAnnouncement(content) {
-    await this.setState({ editing: this.state.currentAnnouncements.filter(a => a.content === content)[0], currentAnnouncements: this.state.currentAnnouncements.filter(a => a.content !== content) });
+  async editAnnouncement(id: number) {
+    await this.setState({ editing: this.state.currentAnnouncements.find(a => a.id === id), currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id) });
   }
   renderAnnouncement(a) {
     return (
@@ -46,6 +46,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
         content={a.content}
         startDate={a.startDate}
         endDate={a.endDate}
+        id={a.id}
         delete={this.deleteAnnouncement}
         edit={this.editAnnouncement}
       />

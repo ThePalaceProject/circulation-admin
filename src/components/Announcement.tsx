@@ -8,8 +8,9 @@ export interface AnnouncementProps {
   startDate?: string;
   endDate?: string;
   onChange?: () => void;
-  delete?: (content: string) => void;
-  edit?: (content: string) => void;
+  id?: number;
+  delete?: (id: number) => void;
+  edit?: (id: number) => Promise<void>;
 }
 
 export default class Announcement extends React.Component<AnnouncementProps, {}> {
@@ -20,11 +21,11 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
   }
   edit(e) {
     e.preventDefault();
-    this.props.edit(this.props.content);
+    this.props.edit(this.props.id);
   }
   delete(e) {
     e.preventDefault();
-    this.props.delete(this.props.content);
+    this.props.delete(this.props.id);
   }
   format(date) {
     let [year, month, day] = date.split("-");

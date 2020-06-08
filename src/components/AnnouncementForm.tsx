@@ -6,6 +6,7 @@ export interface AnnouncementFormProps {
   content?: string;
   startDate?: string;
   endDate?: string;
+  id?: number;
   add: (announcement: any) => void;
 }
 
@@ -13,6 +14,7 @@ export interface AnnouncementFormState {
   content?: string;
   startDate?: string;
   endDate?: string;
+  id?: number;
 }
 
 export default class AnnouncementForm extends React.Component<AnnouncementFormProps, AnnouncementFormState> {
