@@ -4,16 +4,16 @@ import { Button } from "library-simplified-reusable-components";
 
 export interface AnnouncementFormProps {
   content?: string;
-  startDate?: string;
-  endDate?: string;
+  start?: string;
+  finish?: string;
   id?: number;
   add: (announcement: any) => void;
 }
 
 export interface AnnouncementFormState {
   content?: string;
-  startDate?: string;
-  endDate?: string;
+  start?: string;
+  finish?: string;
   id?: number;
 }
 
@@ -22,14 +22,14 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     super(props);
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
-    let [start, end] = this.getDefaultDates();
-    this.state = {content: "", startDate: start, endDate: end};
+    let [start, finish] = this.getDefaultDates();
+    this.state = {content: "", start: start, finish: finish};
   }
   getDefaultDates(): string[] {
     let today = new Date();
-    let startDate = this.formatDate(today);
-    let endDate = this.formatDate(new Date(today.setMonth(today.getMonth() + 2)));
-    return [startDate, endDate];
+    let start = this.formatDate(today);
+    let finish = this.formatDate(new Date(today.setMonth(today.getMonth() + 2)));
+    return [start, finish];
   }
   formatDate(date: Date): string {
     let [month, day, year] = date.toLocaleDateString().split("/");
@@ -38,35 +38,35 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   updateContent(content: string) {
     this.setState({ content });
   }
-  updateStartDate(startDate: string) {
-    this.setState({ startDate });
+  updateStartDate(start: string) {
+    this.setState({ start });
   }
-  updateEndDate(endDate: string) {
-    this.setState({ endDate });
+  updateEndDate(finish: string) {
+    this.setState({ finish });
   }
   add(e) {
     e.preventDefault();
-    this.props.add({ content: this.state.content, startDate: this.state.startDate, endDate: this.state.endDate });
-    let [start, end] = this.getDefaultDates();
-    this.setState({content: "", startDate: start, endDate: end});
+    this.props.add({ content: this.state.content, start: this.state.start, finish: this.state.finish });
+    let [start, finish] = this.getDefaultDates();
+    this.setState({content: "", start: start, finish: finish});
   }
   cancel(e) {
     e.preventDefault();
     if (this.props.content) {
       this.add(e);
     } else {
-      let [start, end] = this.getDefaultDates();
-      this.setState({content: "", startDate: start, endDate: end});
+      let [start, finish] = this.getDefaultDates();
+      this.setState({content: "", start: start, finish: finish});
     }
   }
   componentWillReceiveProps(newProps: AnnouncementFormProps) {
     if (newProps.content !== this.props.content) {
-      this.setState({ content: newProps.content, startDate: this.formatDate(new Date(newProps.startDate)), endDate: this.formatDate(new Date(newProps.endDate)) });
+      this.setState({ content: newProps.content, start: this.formatDate(new Date(newProps.start)), finish: this.formatDate(new Date(newProps.finish)) });
     }
   }
   render(): JSX.Element {
     let shouldDisable = () => {
-      if (!this.state.content || !this.state.startDate || !this.state.endDate) {
+      if (!this.state.content || !this.state.start || !this.state.finish) {
         return true;
       } else if (this.state.content.length < 15 || this.state.content.length > 350) {
         return true;
@@ -78,8 +78,8 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
         <EditableInput className={(this.state.content.length < 15 || this.state.content.length >= 350) && "wrong-length"} elementType="textarea" type="text" minLength={15} maxLength={350} value={this.state.content} label="Content (15-350 characters)" optionalText={false} onChange={(e) => this.updateContent(e)} description={`(${this.state.content.length}/350)`} />
         <EditableInput
           type="date"
-          max={this.state.endDate}
-          value={this.state.startDate}
+          max={this.state.finish}
+          value={this.state.start}
           label="Start"
           optionalText={true}
           onChange={(e) => this.updateStartDate(e)}
@@ -87,8 +87,8 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
         />
         <EditableInput
           type="date"
-          min={this.state.startDate}
-          value={this.state.endDate}
+          min={this.state.start}
+          value={this.state.finish}
           label="End"
           optionalText={true}
           onChange={(e) => this.updateEndDate(e)}

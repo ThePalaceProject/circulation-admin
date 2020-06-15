@@ -10,6 +10,7 @@ import { Panel, Button, Form } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
 import PairedMenus from "../PairedMenus";
 import InputList from "../InputList";
+import AnnouncementsSection from "../AnnouncementsSection";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -21,7 +22,8 @@ describe("LibraryEditForm", () => {
     settings: {
       "privacy-policy": "http://privacy",
       "copyright": "http://copyright",
-      "featured_lane_size": "20"
+      "featured_lane_size": "20",
+      "announcements": "[{\"content\": \"Announcement #1\", \"start\": \"2020-06-15\", \"finish\": \"2020-08-15\"}]"
     }
   };
   let settingFields = [
@@ -30,7 +32,8 @@ describe("LibraryEditForm", () => {
     { key: "logo", label: "Logo", category: "Client Interface Customization" },
     { key: "large_collections", label: "Languages", category: "Languages" },
     { key: "featured_lane_size", label: "Maximum number of books in the 'featured' lanes", category: "Lanes & Filters", type: "number"},
-    { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" }
+    { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" },
+    { key: "announcements", label: "Announcements", category: "Announcements", format: "announcements" }
   ];
 
   let editableInputByName = (name) => {
@@ -140,6 +143,14 @@ describe("LibraryEditForm", () => {
       expect(dropdown.prop("name")).to.equal("dropdown");
       expect(dropdown.children().length).to.equal(1);
       expect(dropdown.children().at(0).prop("value")).to.equal(inputListSetting.default[0]);
+    });
+
+    it("renders the Announcements component", () => {
+      wrapper.setProps({ item: libraryData });
+      let announcements = wrapper.find(AnnouncementsSection);
+      expect(announcements.length).to.equal(1);
+      expect(announcements.props().setting.key).to.equal("announcements");
+      expect(announcements.props().value).to.eql(JSON.parse(libraryData.settings.announcements));
     });
 
     it("subdivides fields", () => {

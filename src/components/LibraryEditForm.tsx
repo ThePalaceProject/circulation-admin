@@ -115,26 +115,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
   renderForms(categories: {[key: string]: LibrarySettingField[]}) {
     let forms = [];
-    let tempAnnouncementsForm =
-    <Panel
-      id={`library-form-announcements`}
-      headerText={`Announcements (Optional)`}
-      onEnter={this.submit}
-      key="announcements"
-      content={
-        <AnnouncementsSection setting={{
-              description: "announcements",
-              format: "date-range",
-              key: "announcements",
-              label: "Announcements",
-              type: "list"}}
-              value={[{content: "FIRST ANNOUNCEMENT", startDate: "2020-05-19", endDate: "2020-05-21", id: 1}, {content: "SECOND ANNOUNCEMENT", startDate: "2020-06-01", endDate: "2020-08-01", id: 2}]}
-              ref="announcements"
-        />
-      }
-      openByDefault={true}
-    />;
-    forms.push(tempAnnouncementsForm);
     let categoryNames = Object.keys(categories);
     categoryNames.forEach((name) => {
       let form =
@@ -148,6 +128,21 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       forms.push(form);
     });
     return forms;
+  }
+
+  renderAnnouncements(setting: SettingData, value) {
+    return (
+      <AnnouncementsSection setting={{
+            description: "announcements",
+            format: "date-range",
+            key: "announcements",
+            label: "Announcements",
+            type: "list"}}
+            value={value && JSON.parse(value)}
+            ref="announcements"
+      />
+    );
+    // value={[{content: "FIRST ANNOUNCEMENT", startDate: "2020-05-19", endDate: "2020-05-21", id: 1}, {content: "SECOND ANNOUNCEMENT", startDate: "2020-06-01", endDate: "2020-08-01", id: 2}]}
   }
 
   renderPairedMenus(setting: SettingData, fields: LibrarySettingField[]) {
@@ -180,13 +175,13 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       }
       return setting.default;
     };
-    return (
-      <fieldset>
-        <legend className="visuallyHidden">Additional Fields</legend>
-        { fields.map(setting => setting.paired ?
-          this.renderPairedMenus(setting, fields)
-        :
-          !setting.skip &&
+    let render = (setting) => {
+      if (setting.paired) {
+        return this.renderPairedMenus(setting, fields);
+      } else if (setting.format === "announcements") {
+        return this.renderAnnouncements(setting, settingValue(setting));
+      } else if (!setting.skip) {
+        return (
           <ProtocolFormField
             key={setting.key}
             ref={setting.key}
@@ -198,7 +193,13 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             error={this.props.error}
             readOnly={setting.readOnly}
           />
-        )}
+        );
+      }
+    };
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Additional Fields</legend>
+        { fields.map(setting => render(setting))}
       </fieldset>
     );
   }

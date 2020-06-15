@@ -10,8 +10,8 @@ export interface AnnouncementsSectionProps {
 export interface AnnouncementData {
   id?: number;
   content: string;
-  startDate: string;
-  endDate: string;
+  start: string;
+  finish: string;
 }
 export interface AnnouncementsSectionState {
   currentAnnouncements: Array<AnnouncementData>;
@@ -25,7 +25,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
     this.editAnnouncement = this.editAnnouncement.bind(this);
     this.getValue = this.getValue.bind(this);
-    this.state = { currentAnnouncements: this.props.value || [] };
+    this.state = { currentAnnouncements: Array.isArray(this.props.value) ? this.props.value : [] };
   }
   addAnnouncement(announcement) {
     let announcements = this.state.currentAnnouncements;
@@ -44,8 +44,8 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       <Announcement
         key={a.content}
         content={a.content}
-        startDate={a.startDate}
-        endDate={a.endDate}
+        start={a.start}
+        finish={a.finish}
         id={a.id}
         delete={this.deleteAnnouncement}
         edit={this.editAnnouncement}
@@ -56,7 +56,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     return (
       <ul className="announcements-ul">
         {
-          this.state.currentAnnouncements.map(a =>
+          Array.isArray(this.state.currentAnnouncements) && this.state.currentAnnouncements.map(a =>
               <li key={a.content}>
                 {this.renderAnnouncement(a)}
               </li>
@@ -69,7 +69,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     return (
       <div className="announcements-section">
         { this.state.currentAnnouncements.length > 0 && this.renderList() }
-        { this.state.currentAnnouncements.length < 3 && <AnnouncementForm add={this.addAnnouncement} content={this.state.editing?.content} startDate={this.state.editing?.startDate} endDate={this.state.editing?.endDate} /> }
+        { this.state.currentAnnouncements.length < 3 && <AnnouncementForm add={this.addAnnouncement} content={this.state.editing?.content} start={this.state.editing?.start} finish={this.state.editing?.finish} /> }
       </div>
     );
   }

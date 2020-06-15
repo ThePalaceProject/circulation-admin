@@ -5,8 +5,8 @@ import { Button } from "library-simplified-reusable-components";
 
 export interface AnnouncementProps {
   content?: string;
-  startDate?: string;
-  endDate?: string;
+  start?: string;
+  finish?: string;
   onChange?: () => void;
   id?: number;
   delete?: (id: number) => void;
@@ -28,14 +28,17 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
     this.props.delete(this.props.id);
   }
   format(date) {
-    let [year, month, day] = date.split("-");
-    return `${month}/${day}/${year}`;
+    if (date) {
+      let [year, month, day] = date.split("-");
+      return `${month}/${day}/${year}`;
+    }
+    return "";
   }
   render() {
     let announcement = (
       <section className="announcement-info">
         <section className="dates">
-          {this.format(this.props.startDate)} – {this.format(this.props.endDate)}
+          {this.format(this.props.start)} – {this.format(this.props.finish)}
         </section>
         <span>{this.props.content}</span>
       </section>

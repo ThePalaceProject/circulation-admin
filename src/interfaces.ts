@@ -175,7 +175,7 @@ export interface LibraryData {
   name?: string;
   short_name?: string;
   settings?: {
-    [key: string]: string | string[];
+    [key: string]: string | string[] | {}[];
   };
 }
 
@@ -439,4 +439,12 @@ export interface LaneData {
 
 export interface LanesData {
   lanes: LaneData[];
+}
+
+export interface AnnouncementData {
+
+}
+
+export interface AnnouncementsData {
+
 }
