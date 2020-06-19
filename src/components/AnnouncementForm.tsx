@@ -6,7 +6,6 @@ export interface AnnouncementFormProps {
   content?: string;
   start?: string;
   finish?: string;
-  id?: number;
   add: (announcement: any) => void;
 }
 
@@ -14,7 +13,6 @@ export interface AnnouncementFormState {
   content?: string;
   start?: string;
   finish?: string;
-  id?: number;
 }
 
 export default class AnnouncementForm extends React.Component<AnnouncementFormProps, AnnouncementFormState> {
@@ -26,6 +24,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     this.state = {content: "", start: start, finish: finish};
   }
   getDefaultDates(): string[] {
+    // By default, the start date is today's date and the end date is two months from today.
     let today = new Date();
     let start = this.formatDate(today);
     let finish = this.formatDate(new Date(today.setMonth(today.getMonth() + 2)));
@@ -44,27 +43,32 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   updateEndDate(finish: string) {
     this.setState({ finish });
   }
-  add(e) {
+  add(e: Event) {
     e.preventDefault();
     this.props.add({ content: this.state.content, start: this.state.start, finish: this.state.finish });
+    // Restore the form to default dates and an empty content field.
     let [start, finish] = this.getDefaultDates();
     this.setState({content: "", start: start, finish: finish});
   }
-  cancel(e) {
+  cancel(e: Event) {
     e.preventDefault();
+    // If an existing announcement was being edited, just put it back into the list.
     if (this.props.content) {
       this.add(e);
     } else {
+      // Blank out the content field and restore the dates to their defaults.
       let [start, finish] = this.getDefaultDates();
       this.setState({content: "", start: start, finish: finish});
     }
   }
   componentWillReceiveProps(newProps: AnnouncementFormProps) {
+    // Switch from creating a new announcement to editing an existing one.
     if (newProps.content !== this.props.content) {
       this.setState({ content: newProps.content, start: this.formatDate(new Date(newProps.start)), finish: this.formatDate(new Date(newProps.finish)) });
     }
   }
   render(): JSX.Element {
+    // None of the fields can be blank.  Content must be between 15 and 350 characters.
     let shouldDisable = () => {
       if (!this.state.content || !this.state.start || !this.state.finish) {
         return true;
@@ -94,8 +98,8 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
           onChange={(e) => this.updateEndDate(e)}
           description="If no expiration date is chosen, the default expiration date is 2 months from the start date."
         />
-        <Button callback={(e) => this.add(e)} className="inline left-align" disabled={shouldDisable()}/>
-        <Button callback={(e) => this.cancel(e)} content="Cancel" className="inline left-align" />
+        <Button callback={(e: Event) => this.add(e)} className="inline left-align" disabled={shouldDisable()}/>
+        <Button callback={(e: Event) => this.cancel(e)} content="Cancel" className="inline left-align" />
       </div>
     );
   }

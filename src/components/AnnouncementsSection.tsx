@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SettingData } from "../interfaces";
+import { SettingData, AnnouncementData } from "../interfaces";
 import AnnouncementForm from "./AnnouncementForm";
 import Announcement from "./Announcement";
 
@@ -7,19 +7,14 @@ export interface AnnouncementsSectionProps {
   setting: SettingData;
   value?: Array<any>;
 }
-export interface AnnouncementData {
-  id?: number;
-  content: string;
-  start: string;
-  finish: string;
-}
+
 export interface AnnouncementsSectionState {
   currentAnnouncements: Array<AnnouncementData>;
   editing?: any;
 }
 
 export default class AnnouncementsSection extends React.Component<AnnouncementsSectionProps, AnnouncementsSectionState> {
-  constructor(props) {
+  constructor(props: AnnouncementsSectionProps) {
     super(props);
     this.addAnnouncement = this.addAnnouncement.bind(this);
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
@@ -27,19 +22,19 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     this.getValue = this.getValue.bind(this);
     this.state = { currentAnnouncements: Array.isArray(this.props.value) ? this.props.value : [] };
   }
-  addAnnouncement(announcement) {
+  addAnnouncement(announcement: AnnouncementData) {
     let announcements = this.state.currentAnnouncements;
     this.setState({ currentAnnouncements: announcements.concat(announcement) });
   }
-  deleteAnnouncement(id: number) {
+  deleteAnnouncement(id: string) {
     if (window.confirm("This will remove this announcement from your list. Are you sure you want to continue?")) {
       this.setState({ currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id), editing: null});
     }
   }
-  async editAnnouncement(id: number) {
+  async editAnnouncement(id: string) {
     await this.setState({ editing: this.state.currentAnnouncements.find(a => a.id === id), currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id) });
   }
-  renderAnnouncement(a) {
+  renderAnnouncement(a: AnnouncementData): JSX.Element {
     return (
       <Announcement
         key={a.content}
@@ -52,7 +47,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       />
     );
   }
-  renderList() {
+  renderList(): JSX.Element {
     return (
       <ul className="announcements-ul">
         {
@@ -65,7 +60,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       </ul>
     );
   }
-  render() {
+  render(): JSX.Element {
     return (
       <div className="announcements-section">
         { this.state.currentAnnouncements.length > 0 && this.renderList() }
@@ -73,7 +68,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       </div>
     );
   }
-  getValue() {
+  getValue(): Array<AnnouncementData> {
     return this.state.currentAnnouncements;
   }
 }

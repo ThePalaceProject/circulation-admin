@@ -442,9 +442,8 @@ export interface LanesData {
 }
 
 export interface AnnouncementData {
-
-}
-
-export interface AnnouncementsData {
-
+  id: string;
+  content: string;
+  start: string;
+  finish: string;
 }
