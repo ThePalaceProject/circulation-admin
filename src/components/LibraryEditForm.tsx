@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import { findDefault, clearForm } from "../utils/sharedFunctions";
-import { LibrariesData, LibraryData, LibrarySettingField, SettingData } from "../interfaces";
+import { LibrariesData, LibraryData, LibrarySettingField, SettingData, AnnouncementData } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import PairedMenus from "./PairedMenus";
@@ -207,7 +207,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   submit(data: FormData) {
     let announcements = (this.refs["announcements"] as any).getValue();
     let announcementList = [];
-    announcements.forEach(a => announcementList.push(a));
+    announcements.forEach((a: AnnouncementData) => announcementList.push(a));
     data?.set("announcements", JSON.stringify(announcementList));
     this.props.save(data);
   }
