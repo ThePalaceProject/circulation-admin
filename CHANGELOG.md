@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.19
+#### Added
+- Implemented a new LibraryEditForm section so that admins can manage announcements.
+
 ### v0.4.18
 #### Removed
 - Removed a reference to the unused `isActive` property of `opds-web-client`'s `router` context.

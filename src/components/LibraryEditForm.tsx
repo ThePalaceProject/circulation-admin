@@ -178,7 +178,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     let render = (setting) => {
       if (setting.paired) {
         return this.renderPairedMenus(setting, fields);
-      } else if (setting.format === "announcements") {
+      } else if (setting.type === "announcements") {
         return this.renderAnnouncements(setting, settingValue(setting));
       } else if (!setting.skip) {
         return (

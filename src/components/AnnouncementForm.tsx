@@ -39,6 +39,15 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   }
   updateStartDate(start: string) {
     this.setState({ start });
+    // The first time you change the start date, the end date updates to be two months later.
+    // Presumably, if the end date has already been changed away from the default, then it's already where
+    // you want it, and it would just be annoying/confusing for it to keep jumping around every time you change the start date,
+    if (this.state.finish === this.getDefaultDates()[1]) {
+      let startDate = new Date(start);
+      let newMonth = startDate.getMonth() + 2;
+      let finishDate = startDate.setMonth(newMonth);
+      this.setState({ finish: this.formatDate(new Date(finishDate)) });
+    }
   }
   updateEndDate(finish: string) {
     this.setState({ finish });

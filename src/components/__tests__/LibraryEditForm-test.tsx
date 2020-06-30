@@ -33,7 +33,7 @@ describe("LibraryEditForm", () => {
     { key: "large_collections", label: "Languages", category: "Languages" },
     { key: "featured_lane_size", label: "Maximum number of books in the 'featured' lanes", category: "Lanes & Filters", type: "number"},
     { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" },
-    { key: "announcements", label: "Announcements", category: "Announcements", format: "announcements" }
+    { key: "announcements", label: "Announcements", category: "Announcements", type: "announcements" }
   ];
 
   let editableInputByName = (name) => {
