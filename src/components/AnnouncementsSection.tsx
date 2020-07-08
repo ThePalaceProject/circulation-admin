@@ -10,7 +10,7 @@ export interface AnnouncementsSectionProps {
 
 export interface AnnouncementsSectionState {
   currentAnnouncements: Array<AnnouncementData>;
-  editing?: any;
+  editing?: AnnouncementData | null;
 }
 
 export default class AnnouncementsSection extends React.Component<AnnouncementsSectionProps, AnnouncementsSectionState> {
@@ -20,11 +20,11 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
     this.editAnnouncement = this.editAnnouncement.bind(this);
     this.getValue = this.getValue.bind(this);
-    this.state = { currentAnnouncements: Array.isArray(this.props.value) ? this.props.value : [] };
+    this.state = { currentAnnouncements: Array.isArray(this.props.value) ? this.props.value : [], editing: null };
   }
   addAnnouncement(announcement: AnnouncementData) {
     let announcements = this.state.currentAnnouncements;
-    this.setState({ currentAnnouncements: announcements.concat(announcement) });
+    this.setState({ currentAnnouncements: announcements.concat(announcement), editing: null });
   }
   deleteAnnouncement(id: string) {
     if (window.confirm("This will remove this announcement from your list. Are you sure you want to continue?")) {
@@ -32,12 +32,18 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     }
   }
   async editAnnouncement(id: string) {
-    await this.setState({ editing: this.state.currentAnnouncements.find(a => a.id === id), currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id) });
+    let editing = this.state.currentAnnouncements.find(a => a.id === id);
+    let currentAnnouncements = this.state.currentAnnouncements.filter(a => a.id !== id);
+    if (this.state.editing && this.state.editing.id !== id) {
+      // Switch between editing two announcements without making the first one disappear. 
+      currentAnnouncements = currentAnnouncements.concat(this.state.editing);
+    }
+    await this.setState({ editing, currentAnnouncements });
   }
   renderAnnouncement(a: AnnouncementData): JSX.Element {
     return (
       <Announcement
-        key={a.content}
+        key={a.id}
         content={a.content}
         start={a.start}
         finish={a.finish}
@@ -52,7 +58,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       <ul className="announcements-ul">
         {
           Array.isArray(this.state.currentAnnouncements) && this.state.currentAnnouncements.map(a =>
-              <li key={a.content}>
+              <li key={a.id}>
                 {this.renderAnnouncement(a)}
               </li>
           )
@@ -60,11 +66,22 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       </ul>
     );
   }
+  renderForm(): JSX.Element {
+    return (
+      <AnnouncementForm
+        add={this.addAnnouncement}
+        content={this.state.editing?.content}
+        start={this.state.editing?.start}
+        finish={this.state.editing?.finish}
+        id={this.state.editing?.id}
+      />
+    );
+  }
   render(): JSX.Element {
     return (
       <div className="announcements-section">
         { this.state.currentAnnouncements.length > 0 && this.renderList() }
-        { this.state.currentAnnouncements.length < 3 && <AnnouncementForm add={this.addAnnouncement} content={this.state.editing?.content} start={this.state.editing?.start} finish={this.state.editing?.finish} /> }
+        { this.state.currentAnnouncements.length < 3 && this.renderForm() }
       </div>
     );
   }

@@ -60,7 +60,7 @@ describe("AnnouncementsSection", () => {
 
   });
   it("edits an announcement", () => {
-    expect(wrapper.state().editing).to.be.undefined;
+    expect(wrapper.state().editing).to.be.null;
     expect(wrapper.state().currentAnnouncements.length).to.equal(2);
     expect(wrapper.find(".announcement").length).to.equal(2);
     let editButton = wrapper.find("button").at(0);

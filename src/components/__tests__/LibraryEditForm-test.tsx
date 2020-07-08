@@ -23,7 +23,7 @@ describe("LibraryEditForm", () => {
       "privacy-policy": "http://privacy",
       "copyright": "http://copyright",
       "featured_lane_size": "20",
-      "announcements": "[{\"content\": \"Announcement #1\", \"start\": \"2020-06-15\", \"finish\": \"2020-08-15\"}]"
+      "announcements": "[{\"content\": \"Announcement #1\", \"start\": \"2020-06-15\", \"finish\": \"2020-08-15\", \"id\": \"1\"}]"
     }
   };
   let settingFields = [

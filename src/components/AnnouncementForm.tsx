@@ -6,6 +6,7 @@ export interface AnnouncementFormProps {
   content?: string;
   start?: string;
   finish?: string;
+  id?: string;
   add: (announcement: any) => void;
 }
 
@@ -13,6 +14,7 @@ export interface AnnouncementFormState {
   content?: string;
   start?: string;
   finish?: string;
+  id?: string;
 }
 
 export default class AnnouncementForm extends React.Component<AnnouncementFormProps, AnnouncementFormState> {
@@ -53,8 +55,9 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     this.setState({ finish });
   }
   add(e: Event) {
+    // Add the current announcement to the list of announcements in the parent component (AnnouncementsSection)
     e.preventDefault();
-    this.props.add({ content: this.state.content, start: this.state.start, finish: this.state.finish });
+    this.props.add({ content: this.state.content, start: this.state.start, finish: this.state.finish, id: this.props.id || null });
     // Restore the form to default dates and an empty content field.
     let [start, finish] = this.getDefaultDates();
     this.setState({content: "", start: start, finish: finish});
@@ -72,23 +75,26 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   }
   componentWillReceiveProps(newProps: AnnouncementFormProps) {
     // Switch from creating a new announcement to editing an existing one.
-    if (newProps.content !== this.props.content) {
-      this.setState({ content: newProps.content, start: this.formatDate(new Date(newProps.start)), finish: this.formatDate(new Date(newProps.finish)) });
+    // if (newProps.content !== this.props.content) {
+    if (newProps.content?.length > 0) {
+      let formatDate = (dateString) => this.formatDate(new Date(dateString));
+      this.setState({ content: newProps.content, start: formatDate(newProps.start), finish: formatDate(newProps.finish) });
     }
   }
   render(): JSX.Element {
     // None of the fields can be blank.  Content must be between 15 and 350 characters.
+    let wrongLength = this.state.content.length < 15 || this.state.content.length >= 350;
     let shouldDisable = () => {
       if (!this.state.content || !this.state.start || !this.state.finish) {
         return true;
-      } else if (this.state.content.length < 15 || this.state.content.length > 350) {
+      } else if (wrongLength) {
         return true;
       }
       return false;
     };
     return (
       <div className="announcement-form">
-        <EditableInput className={(this.state.content.length < 15 || this.state.content.length >= 350) && "wrong-length"} elementType="textarea" type="text" minLength={15} maxLength={350} value={this.state.content} label="Content (15-350 characters)" optionalText={false} onChange={(e) => this.updateContent(e)} description={`(${this.state.content.length}/350)`} />
+        <EditableInput className={wrongLength && "wrong-length"} elementType="textarea" type="text" minLength={15} maxLength={350} value={this.state.content} label="Content (15-350 characters)" optionalText={false} onChange={(e) => this.updateContent(e)} description={`(${this.state.content.length}/350)`} />
         <EditableInput
           type="date"
           max={this.state.finish}

@@ -132,17 +132,12 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
   renderAnnouncements(setting: SettingData, value) {
     return (
-      <AnnouncementsSection setting={{
-            description: "announcements",
-            format: "date-range",
-            key: "announcements",
-            label: "Announcements",
-            type: "list"}}
+      <AnnouncementsSection
+            setting={{...setting, ...{format: "date-range"}}}
             value={value && JSON.parse(value)}
             ref="announcements"
       />
     );
-    // value={[{content: "FIRST ANNOUNCEMENT", startDate: "2020-05-19", endDate: "2020-05-21", id: 1}, {content: "SECOND ANNOUNCEMENT", startDate: "2020-06-01", endDate: "2020-08-01", id: 2}]}
   }
 
   renderPairedMenus(setting: SettingData, fields: LibrarySettingField[]) {
