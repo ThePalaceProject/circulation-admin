@@ -35,7 +35,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     let editing = this.state.currentAnnouncements.find(a => a.id === id);
     let currentAnnouncements = this.state.currentAnnouncements.filter(a => a.id !== id);
     if (this.state.editing && this.state.editing.id !== id) {
-      // Switch between editing two announcements without making the first one disappear. 
+      // Switch between editing two announcements without making the first one disappear.
       currentAnnouncements = currentAnnouncements.concat(this.state.editing);
     }
     await this.setState({ editing, currentAnnouncements });
