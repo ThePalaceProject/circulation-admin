@@ -32,8 +32,11 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     let finish = this.formatDate(new Date(today.setMonth(today.getMonth() + 2)));
     return [start, finish];
   }
-  formatDate(date: Date): string {
-    let [month, day, year] = date.toLocaleDateString().split("/");
+  formatDate(date: Date | string): string {
+    if (typeof date === "string" && date.indexOf("/") === -1) {
+      return date;
+    }
+    let [month, day, year] = typeof date === "string" ? date.split("/") : date.toLocaleDateString().split("/");
     return `${year}-${month.toString().length === 1 ? "0" + month : month}-${day.toString().length === 1 ? "0" + day : day}`;
   }
   updateContent(content: string) {
@@ -77,8 +80,8 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     // Switch from creating a new announcement to editing an existing one.
     // if (newProps.content !== this.props.content) {
     if (newProps.content?.length > 0) {
-      let formatDate = (dateString) => this.formatDate(new Date(dateString));
-      this.setState({ content: newProps.content, start: formatDate(newProps.start), finish: formatDate(newProps.finish) });
+      let [content, start, finish] = [newProps.content, newProps.start, newProps.finish];
+      this.setState({ content: content, start: this.formatDate(start), finish: this.formatDate(finish) });
     }
   }
   render(): JSX.Element {

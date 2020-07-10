@@ -54,10 +54,17 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     );
   }
   renderList(): JSX.Element {
+    let compareStartDate = (x, y) => {
+      if (x.start < y.start) {
+        return -1;
+      } else if (x.start > y.start) {
+        return 1;
+      }
+    };
     return (
       <ul className="announcements-ul">
         {
-          Array.isArray(this.state.currentAnnouncements) && this.state.currentAnnouncements.map(a =>
+          Array.isArray(this.state.currentAnnouncements) && this.state.currentAnnouncements.sort(compareStartDate).map(a =>
               <li key={a.id}>
                 {this.renderAnnouncement(a)}
               </li>
