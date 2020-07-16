@@ -2,11 +2,11 @@
 
 ### v0.4.20
 #### Added
-- Implemented a new LibraryEditForm section so that admins can manage announcements.
+- Implemented a new LibraryEditForm section so that admins can manage library-specific announcements.
 
 ### v0.4.19
-#### Added
-- Implemented a new LibraryEditForm section so that admins can manage announcements.
+#### Fixed
+- Fixed a bug preventing scrolling through the available lists on the Lanes page.
 
 ### v0.4.18
 #### Removed
