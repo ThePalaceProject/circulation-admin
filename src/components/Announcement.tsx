@@ -7,7 +7,7 @@ export interface AnnouncementProps {
   finish: string;
   id: string;
   delete: (id: string) => void;
-  edit: (id: string) => Promise<void>;
+  edit: (id: string) => void;
 }
 
 export default class Announcement extends React.Component<AnnouncementProps, {}> {
