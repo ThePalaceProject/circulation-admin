@@ -89,7 +89,6 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
   render(): JSX.Element {
     return (
       <div className="announcements-section">
-        { null }
         { this.state.currentAnnouncements.length > 0 && this.renderList() }
         { this.state.currentAnnouncements.length < 3 && this.renderForm() }
       </div>
