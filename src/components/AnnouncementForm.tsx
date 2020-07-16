@@ -80,7 +80,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     // Switch from creating a new announcement to editing an existing one.
     // if (newProps.content !== this.props.content) {
     if (newProps.content?.length > 0) {
-      let [content, start, finish] = [newProps.content, newProps.start, newProps.finish];
+      const { content, start, finish } = newProps;
       this.setState({ content: content, start: this.formatDate(start), finish: this.formatDate(finish) });
     }
   }
@@ -97,12 +97,12 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     };
     return (
       <div className="announcement-form">
-        <EditableInput className={wrongLength && "wrong-length"} elementType="textarea" type="text" minLength={15} maxLength={350} value={this.state.content} label="Content (15-350 characters)" optionalText={false} onChange={(e) => this.updateContent(e)} description={`(${this.state.content.length}/350)`} />
+        <EditableInput className={wrongLength && "wrong-length"} elementType="textarea" type="text" minLength={15} maxLength={350} value={this.state.content} label="Content (15-350 characters)" optionalText={false} onChange={(e) => this.updateContent(e)} description={`(Current length: ${this.state.content.length}/350)`} />
         <EditableInput
           type="date"
           max={this.state.finish}
           value={this.state.start}
-          label="Start"
+          label="Start Date"
           optionalText={true}
           onChange={(e) => this.updateStartDate(e)}
           description="If no start date is chosen, the default start date is today's date."
@@ -111,7 +111,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
           type="date"
           min={this.state.start}
           value={this.state.finish}
-          label="End"
+          label="End Date"
           optionalText={true}
           onChange={(e) => this.updateEndDate(e)}
           description="If no expiration date is chosen, the default expiration date is 2 months from the start date."

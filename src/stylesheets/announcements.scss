@@ -3,6 +3,9 @@
     border: 1px solid $blue-dark;
     padding: 16px 16px 6px 16px;
     list-style: none;
+    > hr {
+      border-color: $blue-dark;
+    }
     .announcement {
       display: flex;
       flex-direction: column;

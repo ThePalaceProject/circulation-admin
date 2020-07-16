@@ -26,16 +26,16 @@ describe("AnnouncementForm", () => {
     expect(contentField.props().minLength).to.equal(15);
     expect(contentField.props().maxLength).to.equal(350);
     expect(contentField.props().label).to.equal("Content (15-350 characters)");
-    expect(contentField.props().description).to.equal("(0/350)");
+    expect(contentField.props().description).to.equal("(Current length: 0/350)");
 
     let startDateField = fields.at(1);
     expect(startDateField.props().type).to.equal("date");
-    expect(startDateField.props().label).to.equal("Start");
+    expect(startDateField.props().label).to.equal("Start Date");
     expect(startDateField.props().description).to.equal("If no start date is chosen, the default start date is today's date.");
 
     let endDateField = fields.at(2);
     expect(endDateField.props().type).to.equal("date");
-    expect(endDateField.props().label).to.equal("End");
+    expect(endDateField.props().label).to.equal("End Date");
     expect(endDateField.props().description).to.equal("If no expiration date is chosen, the default expiration date is 2 months from the start date.");
   });
   it("renders the buttons", () => {
@@ -46,14 +46,14 @@ describe("AnnouncementForm", () => {
   });
   it("keeps track of whether the content is too short or too long", () => {
     let counter = wrapper.find(".description").at(0);
-    expect(counter.text()).to.equal("(0/350)");
+    expect(counter.text()).to.equal("(Current length: 0/350)");
     expect(counter.parent().hasClass("wrong-length")).to.be.true;
     expect(wrapper.find("button").at(0).prop("disabled")).to.be.true;
 
     fillOutForm();
 
     counter = wrapper.find(".description").at(0);
-    expect(counter.text()).to.equal("(66/350)");
+    expect(counter.text()).to.equal("(Current length: 66/350)");
     expect(counter.parent().hasClass("wrong-length")).to.be.false;
     expect(wrapper.find("button").at(0).prop("disabled")).not.to.be.true;
 
@@ -63,7 +63,7 @@ describe("AnnouncementForm", () => {
     contentField.simulate("change");
 
     counter = wrapper.find(".description").at(0);
-    expect(counter.text()).to.equal("(350/350)");
+    expect(counter.text()).to.equal("(Current length: 350/350)");
     expect(counter.parent().hasClass("wrong-length")).to.be.true;
   });
   let fillOutForm = () => {

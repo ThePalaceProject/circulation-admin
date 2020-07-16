@@ -31,14 +31,14 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       this.setState({ currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id), editing: null});
     }
   }
-  async editAnnouncement(id: string) {
+  editAnnouncement(id: string) {
     let editing = this.state.currentAnnouncements.find(a => a.id === id);
     let currentAnnouncements = this.state.currentAnnouncements.filter(a => a.id !== id);
     if (this.state.editing && this.state.editing.id !== id) {
       // Switch between editing two announcements without making the first one disappear.
       currentAnnouncements = currentAnnouncements.concat(this.state.editing);
     }
-    await this.setState({ editing, currentAnnouncements });
+    this.setState({ editing, currentAnnouncements });
   }
   renderAnnouncement(a: AnnouncementData): JSX.Element {
     return (
@@ -63,6 +63,8 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     };
     return (
       <ul className="announcements-ul">
+        <h4>Scheduled Announcements:</h4>
+        <hr />
         {
           Array.isArray(this.state.currentAnnouncements) && this.state.currentAnnouncements.sort(compareStartDate).map(a =>
               <li key={a.id}>
@@ -87,6 +89,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
   render(): JSX.Element {
     return (
       <div className="announcements-section">
+        { null }
         { this.state.currentAnnouncements.length > 0 && this.renderList() }
         { this.state.currentAnnouncements.length < 3 && this.renderForm() }
       </div>

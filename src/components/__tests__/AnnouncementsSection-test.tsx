@@ -36,6 +36,7 @@ describe("AnnouncementsSection", () => {
     );
   });
   it("renders a list of announcements", () => {
+    expect(wrapper.find("ul").find("h4").text()).to.equal("Scheduled Announcements:");
     let list = wrapper.find(".announcements-ul");
     let announcement1 = list.find(".announcement").at(0);
     let announcement2 = list.find(".announcement").at(1);
