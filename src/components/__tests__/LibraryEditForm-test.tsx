@@ -10,6 +10,7 @@ import { Panel, Button, Form } from "library-simplified-reusable-components";
 import ProtocolFormField from "../ProtocolFormField";
 import PairedMenus from "../PairedMenus";
 import InputList from "../InputList";
+import AnnouncementsSection from "../AnnouncementsSection";
 
 describe("LibraryEditForm", () => {
   let wrapper;
@@ -21,7 +22,8 @@ describe("LibraryEditForm", () => {
     settings: {
       "privacy-policy": "http://privacy",
       "copyright": "http://copyright",
-      "featured_lane_size": "20"
+      "featured_lane_size": "20",
+      "announcements": "[{\"content\": \"Announcement #1\", \"start\": \"2020-06-15\", \"finish\": \"2020-08-15\", \"id\": \"1\"}]"
     }
   };
   let settingFields = [
@@ -30,7 +32,8 @@ describe("LibraryEditForm", () => {
     { key: "logo", label: "Logo", category: "Client Interface Customization" },
     { key: "large_collections", label: "Languages", category: "Languages" },
     { key: "featured_lane_size", label: "Maximum number of books in the 'featured' lanes", category: "Lanes & Filters", type: "number"},
-    { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" }
+    { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" },
+    { key: "announcements", label: "Announcements", category: "Announcements", type: "announcements" }
   ];
 
   let editableInputByName = (name) => {
@@ -142,9 +145,17 @@ describe("LibraryEditForm", () => {
       expect(dropdown.children().at(0).prop("value")).to.equal(inputListSetting.default[0]);
     });
 
+    it("renders the Announcements component", () => {
+      wrapper.setProps({ item: libraryData });
+      let announcements = wrapper.find(AnnouncementsSection);
+      expect(announcements.length).to.equal(1);
+      expect(announcements.props().setting.key).to.equal("announcements");
+      expect(announcements.props().value).to.eql(JSON.parse(libraryData.settings.announcements));
+    });
+
     it("subdivides fields", () => {
       let collapsible = wrapper.find(".panel");
-      expect(collapsible.length).to.equal(6);
+      expect(collapsible.length).to.equal(7);
 
       let basic = collapsible.at(0).find(".panel-heading");
       expect(basic.text()).to.contain("Basic Information");
@@ -169,7 +180,7 @@ describe("LibraryEditForm", () => {
 
     it("has a save button", () => {
       let form = wrapper.find(Form);
-      let saveButton = form.find(Button).at(1);
+      let saveButton = form.find(Button).last();
       expect(saveButton.text()).to.equal("Submit");
       expect(form.prop("onSubmit")).to.equal(wrapper.instance().submit);
     });
@@ -190,7 +201,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find(Button).at(1);
+      let saveButton = wrapper.find(Button).last();
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -203,7 +214,7 @@ describe("LibraryEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
-      let saveButton = wrapper.find(Button).at(1);
+      let saveButton = wrapper.find(Button).last();
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);

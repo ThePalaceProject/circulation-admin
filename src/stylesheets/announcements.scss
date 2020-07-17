@@ -1,0 +1,52 @@
+.announcements-section {
+  ul.announcements-ul {
+    border: 1px solid $blue-dark;
+    padding: 16px 16px 6px 16px;
+    list-style: none;
+    > hr {
+      border-color: $blue-dark;
+    }
+    .announcement {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin: 0 0 10px 0;
+      .announcement-info {
+        justify-content: space-between;
+      }
+      section {
+        display: flex;
+        justify-content: flex-start;
+        &:first-child {
+          flex-direction: column;
+        }
+        span {
+          padding: 16px 12px;
+          border-left: 1px solid $blue-dark;
+          border-right: 1px solid $blue-dark;
+        }
+        .dates {
+          display: block;
+          background: $gray-tint;
+          padding: 16px 12px;
+          font-weight: bold;
+          border: 1px solid $dark-gray;
+        }
+      }
+      hr {
+        width: 96%;
+        border-color: $blue-dark;
+        margin: 0 auto;
+      }
+      .buttons {
+        padding: 10px 8px 0 10px;
+        border-left: 1px solid $blue-dark;
+        border-right: 1px solid $blue-dark;
+        border-bottom: 1px solid $blue-dark;
+      }
+    }
+  }
+  .form-group.wrong-length p.description {
+    color: $red;
+  }
+}

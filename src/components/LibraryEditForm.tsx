@@ -2,10 +2,11 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
 import { findDefault, clearForm } from "../utils/sharedFunctions";
-import { LibrariesData, LibraryData, LibrarySettingField, SettingData } from "../interfaces";
+import { LibrariesData, LibraryData, LibrarySettingField, SettingData, AnnouncementData } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import PairedMenus from "./PairedMenus";
+import AnnouncementsSection from "./AnnouncementsSection";
 
 export interface LibraryEditFormProps {
   data: LibrariesData;
@@ -129,6 +130,16 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     return forms;
   }
 
+  renderAnnouncements(setting: SettingData, value) {
+    return (
+      <AnnouncementsSection
+            setting={{...setting, ...{format: "date-range"}}}
+            value={value && JSON.parse(value)}
+            ref="announcements"
+      />
+    );
+  }
+
   renderPairedMenus(setting: SettingData, fields: LibrarySettingField[]) {
     let dropdownSetting = fields.find(x => x.key === setting.paired);
     // These dropdown settings have the :skip: attribute, so they'll get rendered only here;
@@ -159,13 +170,13 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       }
       return setting.default;
     };
-    return (
-      <fieldset>
-        <legend className="visuallyHidden">Additional Fields</legend>
-        { fields.map(setting => setting.paired ?
-          this.renderPairedMenus(setting, fields)
-        :
-          !setting.skip &&
+    let render = (setting) => {
+      if (setting.paired) {
+        return this.renderPairedMenus(setting, fields);
+      } else if (setting.type === "announcements") {
+        return this.renderAnnouncements(setting, settingValue(setting));
+      } else if (!setting.skip) {
+        return (
           <ProtocolFormField
             key={setting.key}
             ref={setting.key}
@@ -177,12 +188,22 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             error={this.props.error}
             readOnly={setting.readOnly}
           />
-        )}
+        );
+      }
+    };
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Additional Fields</legend>
+        { fields.map(setting => render(setting))}
       </fieldset>
     );
   }
 
   submit(data: FormData) {
+    let announcements = (this.refs["announcements"] as any).getValue();
+    let announcementList = [];
+    announcements.forEach((a: AnnouncementData) => announcementList.push(a));
+    data?.set("announcements", JSON.stringify(announcementList));
     this.props.save(data);
   }
 

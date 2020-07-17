@@ -66,6 +66,31 @@ export default class InputList extends React.Component<InputListProps, InputList
     // Hide the "Add" button if there are no options left
     let showButton = !this.state.options || this.state.options.length > 0;
     let hasListItems = this.state.listItems && this.state.listItems.length > 0;
+    let element: string | JSX.Element;
+    if (setting.format === "language-code") {
+      element = (
+        <LanguageField
+          disabled={this.props.disabled}
+          ref="addListItem"
+          name={setting.key}
+          languages={this.props.additionalData}
+          onChange={this.updateNewItem}
+        />
+      );
+    } else if (setting.type === "menu") {
+      element = this.renderMenu(setting);
+    } else {
+      element = (
+        this.props.createEditableInput(setting, {
+          value: null,
+          disabled: this.props.disabled,
+          onChange: this.updateNewItem,
+          ref: "addListItem",
+          label: null,
+          description: null
+        })
+      );
+    }
     return (
       <div className="input-list">
         { this.props.labelAndDescription && this.props.labelAndDescription(setting) }
@@ -74,25 +99,7 @@ export default class InputList extends React.Component<InputListProps, InputList
         { hasListItems && this.renderList(this.state.listItems, setting) }
         <div className="add-list-item-container">
           <span className="add-list-item">
-            {  setting.format === "language-code" ?
-                <LanguageField
-                  disabled={this.props.disabled}
-                  ref="addListItem"
-                  name={setting.key}
-                  languages={this.props.additionalData}
-                  onChange={this.updateNewItem}
-                /> :
-                setting.type === "menu" ?
-                  this.renderMenu(setting) :
-                  this.props.createEditableInput(setting, {
-                    value: null,
-                    disabled: this.props.disabled,
-                    onChange: this.updateNewItem,
-                    ref: "addListItem",
-                    label: null,
-                    description: null
-                  })
-            }
+            { element }
           </span>
           { showButton &&
             <Button
