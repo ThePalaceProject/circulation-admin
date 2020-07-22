@@ -24,6 +24,14 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
   }
   addAnnouncement(announcement: AnnouncementData) {
     let announcements = this.state.currentAnnouncements;
+    // If the announcement hasn't been saved yet, it does not have an ID; the ID is assigned by the server code.  But editing
+    // announcements involves finding them by their ID, so we give the new announcement a temporary ID just so that we'll be able
+    // to edit it.  The temporary ID gets blanked out before the announcement goes to the server, so the permanent ID will still get
+    // assigned on the back end.
+    if (!announcement.id) {
+      let tempId = ["temp_1", "temp_2", "temp_3"].find(x => !announcements.map(a => a.id).includes(x));
+      announcement.id = tempId;
+    }
     this.setState({ currentAnnouncements: announcements.concat(announcement), editing: null });
   }
   deleteAnnouncement(id: string) {
@@ -31,7 +39,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
       this.setState({ currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id), editing: null});
     }
   }
-  editAnnouncement(id: string) {
+  editAnnouncement(id: string): void {
     let editing = this.state.currentAnnouncements.find(a => a.id === id);
     let currentAnnouncements = this.state.currentAnnouncements.filter(a => a.id !== id);
     if (this.state.editing && this.state.editing.id !== id) {
@@ -95,6 +103,9 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     );
   }
   getValue(): Array<AnnouncementData> {
-    return this.state.currentAnnouncements;
+    // If there are any new announcements, blank out their temporary IDs so that the server wil assign them permanent ones.
+    return this.state.currentAnnouncements.map(a =>
+      a.id.match(/temp_/) ? ({content: a.content, start: a.start, finish: a.finish} as AnnouncementData) : a
+    );
   }
 }

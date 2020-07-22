@@ -21,9 +21,8 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   constructor(props: AnnouncementFormProps) {
     super(props);
     this.updateStartDate = this.updateStartDate.bind(this);
-    this.updateEndDate = this.updateEndDate.bind(this);
     let [start, finish] = this.getDefaultDates();
-    this.state = {content: "", start: start, finish: finish};
+    this.state = {content: this.props.content || "", start: this.props.start || start, finish: this.props.finish || finish};
   }
   getDefaultDates(): string[] {
     // By default, the start date is today's date and the end date is two months from today.
@@ -76,9 +75,9 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
       this.setState({content: "", start: start, finish: finish});
     }
   }
+
   componentWillReceiveProps(newProps: AnnouncementFormProps) {
     // Switch from creating a new announcement to editing an existing one.
-    // if (newProps.content !== this.props.content) {
     if (newProps.content?.length > 0) {
       const { content, start, finish } = newProps;
       this.setState({ content: content, start: this.formatDate(start), finish: this.formatDate(finish) });
@@ -93,6 +92,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
       } else if (wrongLength) {
         return true;
       }
+      this.updateEndDate = this.updateEndDate.bind(this);
       return false;
     };
     return (

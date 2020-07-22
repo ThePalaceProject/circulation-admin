@@ -13,13 +13,13 @@ describe("AnnouncementsSection", () => {
       content: "First Announcement",
       start: "2020-05-12",
       finish: "2020-06-12",
-      id: 1
+      id: "perm_1"
     },
     {
       content: "Second Announcement",
       start: "2020-05-28",
       finish: "2020-06-28",
-      id: 2
+      id: "perm_2"
     }
   ];
   let setting = {
@@ -57,8 +57,8 @@ describe("AnnouncementsSection", () => {
     textarea.simulate("change");
     form.find("button").at(0).simulate("click");
     expect(wrapper.state().currentAnnouncements.length).to.equal(3);
+    expect(wrapper.state().currentAnnouncements[2].id).to.equal("temp_1");
     expect(wrapper.find(".announcement").length).to.equal(3);
-
   });
   it("edits an announcement", () => {
     expect(wrapper.state().editing).to.be.null;
@@ -85,5 +85,14 @@ describe("AnnouncementsSection", () => {
     expect(wrapper.find(".announcement").length).to.equal(1);
     expect(wrapper.find(".announcement").at(0).text()).to.contain("Second Announcement");
     confirmStub.restore();
+  });
+  it("removes any temporary IDs before submitting the list of announcements", () => {
+    wrapper.setState({
+      currentAnnouncements: announcements.concat({ content: "temp", start: "2020-05-28", finish: "2020-06-28", id: "temp_1"})
+    });
+    let list = wrapper.instance().getValue();
+    expect(list[0].id).to.equal("perm_1");
+    expect(list[1].id).to.equal("perm_2");
+    expect(list[2].id).to.be.undefined;
   });
 });
