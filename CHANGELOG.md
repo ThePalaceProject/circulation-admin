@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.21
+#### Fixed
+- Fixed a bug involving editing unsaved announcements.
+
 ### v0.4.20
 #### Added
 - Implemented a new LibraryEditForm section so that admins can manage library-specific announcements.
