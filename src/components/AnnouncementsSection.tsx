@@ -72,6 +72,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     return (
       <ul className="announcements-ul">
         <h4>Scheduled Announcements:</h4>
+        <p>You can have a maximum of 3 announcements.</p>
         <hr />
         {
           Array.isArray(this.state.currentAnnouncements) && this.state.currentAnnouncements.sort(compareStartDate).map(a =>

@@ -21,6 +21,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   constructor(props: AnnouncementFormProps) {
     super(props);
     this.updateStartDate = this.updateStartDate.bind(this);
+    this.updateEndDate = this.updateEndDate.bind(this);
     let [start, finish] = this.getDefaultDates();
     this.state = {content: this.props.content || "", start: this.props.start || start, finish: this.props.finish || finish};
   }
@@ -92,7 +93,6 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
       } else if (wrongLength) {
         return true;
       }
-      this.updateEndDate = this.updateEndDate.bind(this);
       return false;
     };
     return (

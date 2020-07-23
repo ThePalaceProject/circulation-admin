@@ -3,8 +3,16 @@
     border: 1px solid $blue-dark;
     padding: 16px 16px 6px 16px;
     list-style: none;
+    > h4 {
+      margin-bottom: 1vh;
+    }
+    > p {
+      color: $red-dark;
+      margin-bottom: 0;
+    }
     > hr {
       border-color: $blue-dark;
+      margin-top: 1vh;
     }
     .announcement {
       display: flex;
