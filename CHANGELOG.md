@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.22
+#### Fixed
+- Specified "en-US" locale for date parsing, to resolve a problem with parsing Canadian date strings.
+
 ### v0.4.21
 #### Fixed
 - Fixed a bug involving editing unsaved announcements.
