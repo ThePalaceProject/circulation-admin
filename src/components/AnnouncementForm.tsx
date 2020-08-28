@@ -36,7 +36,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     if (typeof date === "string" && date.indexOf("/") === -1) {
       return date;
     }
-    let [month, day, year] = typeof date === "string" ? date.split("/") : date.toLocaleDateString().split("/");
+    let [month, day, year] = typeof date === "string" ? date.split("/") : date.toLocaleDateString("en-US").split("/");
     return `${year}-${month.toString().length === 1 ? "0" + month : month}-${day.toString().length === 1 ? "0" + day : day}`;
   }
   updateContent(content: string) {
