@@ -17,7 +17,7 @@ export default class SelfTestsCategory extends React.Component<SelfTestsCategory
 
   handleUnnamed(): CollectionData[] | PatronAuthServiceData[] | SearchServiceData[] {
     // It's possible for older systems to have services in which the name property is null,
-    // which will block the page from loading.  We check for these services and assign them a placeholder name. 
+    // which will block the page from loading.  We check for these services and assign them a placeholder name.
     let items = [];
     this.props.items.forEach(i => items.push(i.name ? i : {...i, ...{name: `Unnamed ${this.props.type}`}}));
     return items;
