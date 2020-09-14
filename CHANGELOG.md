@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.23
+#### Fixed
+- Handled case in which service for self-tests has no name.
+
 ### v0.4.22
 #### Fixed
 - Specified "en-US" locale for date parsing, to resolve a problem with parsing Canadian date strings.

@@ -124,4 +124,32 @@ describe("SelfTestsCategory", () => {
     selfTests = wrapper.find(SelfTests).at(0);
     expect(selfTests.prop("sortByCollection")).to.be.true;
   });
+
+  it("handles unnamed items", () => {
+    let nameless = {
+        id: 1,
+        name: null,
+        protocol: "protocol",
+        self_test_results: {
+          duration: 1.75,
+          start: "2018-08-07T19:34:54Z",
+          end: "2018-08-07T19:34:55Z",
+          results: [
+            {
+              duration: 0.000119,
+              end: "2018-08-07T19:34:54Z",
+              exception: null,
+              name: "Initial setup.",
+              result: null,
+              start: "2018-08-07T19:34:54Z",
+              success: true
+            },
+          ]
+        }
+      };
+    wrapper = mount(<SelfTestsCategory type="collection" linkName="collections" csrfToken="token" items={[nameless]} store={store} />);
+    let panel = wrapper.find(Panel);
+    expect(panel.prop("id")).to.equal("Unnamedcollection-1");
+    expect(panel.prop("headerText")).to.equal("Unnamed collection");
+  });
 });
