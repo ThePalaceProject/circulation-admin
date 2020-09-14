@@ -126,7 +126,7 @@ describe("SelfTestsCategory", () => {
   });
 
   it("handles unnamed items", () => {
-    let nameless =   {
+    let nameless = {
         id: 1,
         name: null,
         protocol: "protocol",
