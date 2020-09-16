@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.4.24
+#### Updated
+- Clarified name of announcements field to minimize potential user confusion.
+
 ### v0.4.23
 #### Fixed
 - Handled case in which service for self-tests has no name.
