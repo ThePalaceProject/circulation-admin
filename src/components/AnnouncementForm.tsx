@@ -97,7 +97,18 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     };
     return (
       <div className="announcement-form">
-        <EditableInput className={wrongLength && "wrong-length"} elementType="textarea" type="text" minLength={15} maxLength={350} value={this.state.content} label="Content (15-350 characters)" optionalText={false} onChange={(e) => this.updateContent(e)} description={`(Current length: ${this.state.content.length}/350)`} />
+        <EditableInput
+          className={wrongLength && "wrong-length"}
+          elementType="textarea"
+          type="text"
+          minLength={15}
+          maxLength={350}
+          value={this.state.content}
+          label="New Announcement Text (15-350 characters)"
+          optionalText={false}
+          onChange={(e) => this.updateContent(e)}
+          description={`(Current length: ${this.state.content.length}/350)`}
+        />
         <EditableInput
           type="date"
           max={this.state.finish}

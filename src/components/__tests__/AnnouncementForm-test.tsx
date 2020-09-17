@@ -25,7 +25,7 @@ describe("AnnouncementForm", () => {
     expect(contentField.props().elementType).to.equal("textarea");
     expect(contentField.props().minLength).to.equal(15);
     expect(contentField.props().maxLength).to.equal(350);
-    expect(contentField.props().label).to.equal("Content (15-350 characters)");
+    expect(contentField.props().label).to.equal("New Announcement Text (15-350 characters)");
     expect(contentField.props().description).to.equal("(Current length: 0/350)");
 
     let startDateField = fields.at(1);
