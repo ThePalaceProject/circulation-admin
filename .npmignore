@@ -3,3 +3,7 @@ lib/*
 typings/*
 *~
 docs
+
+# prettier
+build
+coverage

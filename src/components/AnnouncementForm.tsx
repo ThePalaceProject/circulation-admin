@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import { Button } from "library-simplified-reusable-components";
@@ -17,27 +18,41 @@ export interface AnnouncementFormState {
   id?: string;
 }
 
-export default class AnnouncementForm extends React.Component<AnnouncementFormProps, AnnouncementFormState> {
+export default class AnnouncementForm extends React.Component<
+  AnnouncementFormProps,
+  AnnouncementFormState
+> {
   constructor(props: AnnouncementFormProps) {
     super(props);
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
     let [start, finish] = this.getDefaultDates();
-    this.state = {content: this.props.content || "", start: this.props.start || start, finish: this.props.finish || finish};
+    this.state = {
+      content: this.props.content || "",
+      start: this.props.start || start,
+      finish: this.props.finish || finish,
+    };
   }
   getDefaultDates(): string[] {
     // By default, the start date is today's date and the end date is two months from today.
     let today = new Date();
     let start = this.formatDate(today);
-    let finish = this.formatDate(new Date(today.setMonth(today.getMonth() + 2)));
+    let finish = this.formatDate(
+      new Date(today.setMonth(today.getMonth() + 2))
+    );
     return [start, finish];
   }
   formatDate(date: Date | string): string {
     if (typeof date === "string" && date.indexOf("/") === -1) {
       return date;
     }
-    let [month, day, year] = typeof date === "string" ? date.split("/") : date.toLocaleDateString("en-US").split("/");
-    return `${year}-${month.toString().length === 1 ? "0" + month : month}-${day.toString().length === 1 ? "0" + day : day}`;
+    let [month, day, year] =
+      typeof date === "string"
+        ? date.split("/")
+        : date.toLocaleDateString("en-US").split("/");
+    return `${year}-${month.toString().length === 1 ? "0" + month : month}-${
+      day.toString().length === 1 ? "0" + day : day
+    }`;
   }
   updateContent(content: string) {
     this.setState({ content });
@@ -60,10 +75,15 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
   add(e: Event) {
     // Add the current announcement to the list of announcements in the parent component (AnnouncementsSection)
     e.preventDefault();
-    this.props.add({ content: this.state.content, start: this.state.start, finish: this.state.finish, id: this.props.id || null });
+    this.props.add({
+      content: this.state.content,
+      start: this.state.start,
+      finish: this.state.finish,
+      id: this.props.id || null,
+    });
     // Restore the form to default dates and an empty content field.
     let [start, finish] = this.getDefaultDates();
-    this.setState({content: "", start: start, finish: finish});
+    this.setState({ content: "", start: start, finish: finish });
   }
   cancel(e: Event) {
     e.preventDefault();
@@ -73,7 +93,7 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     } else {
       // Blank out the content field and restore the dates to their defaults.
       let [start, finish] = this.getDefaultDates();
-      this.setState({content: "", start: start, finish: finish});
+      this.setState({ content: "", start: start, finish: finish });
     }
   }
 
@@ -81,12 +101,17 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
     // Switch from creating a new announcement to editing an existing one.
     if (newProps.content?.length > 0) {
       const { content, start, finish } = newProps;
-      this.setState({ content: content, start: this.formatDate(start), finish: this.formatDate(finish) });
+      this.setState({
+        content: content,
+        start: this.formatDate(start),
+        finish: this.formatDate(finish),
+      });
     }
   }
   render(): JSX.Element {
     // None of the fields can be blank.  Content must be between 15 and 350 characters.
-    let wrongLength = this.state.content.length < 15 || this.state.content.length >= 350;
+    let wrongLength =
+      this.state.content.length < 15 || this.state.content.length >= 350;
     let shouldDisable = () => {
       if (!this.state.content || !this.state.start || !this.state.finish) {
         return true;
@@ -127,8 +152,16 @@ export default class AnnouncementForm extends React.Component<AnnouncementFormPr
           onChange={(e) => this.updateEndDate(e)}
           description="If no expiration date is chosen, the default expiration date is 2 months from the start date."
         />
-        <Button callback={(e: Event) => this.add(e)} className="inline left-align" disabled={shouldDisable()}/>
-        <Button callback={(e: Event) => this.cancel(e)} content="Cancel" className="inline left-align" />
+        <Button
+          callback={(e: Event) => this.add(e)}
+          className="inline left-align"
+          disabled={shouldDisable()}
+        />
+        <Button
+          callback={(e: Event) => this.cancel(e)}
+          content="Cancel"
+          className="inline left-align"
+        />
       </div>
     );
   }
