@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { expect } from "chai";
 import { stub, spy } from "sinon";
 
@@ -12,9 +13,7 @@ describe("AnnouncementForm", () => {
   let add;
   beforeEach(() => {
     add = stub();
-    wrapper = mount(
-      <AnnouncementForm add={add} />
-    );
+    wrapper = mount(<AnnouncementForm add={add} />);
   });
   it("renders the input fields", () => {
     let fields = wrapper.find(EditableInput);
@@ -25,18 +24,26 @@ describe("AnnouncementForm", () => {
     expect(contentField.props().elementType).to.equal("textarea");
     expect(contentField.props().minLength).to.equal(15);
     expect(contentField.props().maxLength).to.equal(350);
-    expect(contentField.props().label).to.equal("Content (15-350 characters)");
-    expect(contentField.props().description).to.equal("(Current length: 0/350)");
+    expect(contentField.props().label).to.equal(
+      "New Announcement Text (15-350 characters)"
+    );
+    expect(contentField.props().description).to.equal(
+      "(Current length: 0/350)"
+    );
 
     let startDateField = fields.at(1);
     expect(startDateField.props().type).to.equal("date");
     expect(startDateField.props().label).to.equal("Start Date");
-    expect(startDateField.props().description).to.equal("If no start date is chosen, the default start date is today's date.");
+    expect(startDateField.props().description).to.equal(
+      "If no start date is chosen, the default start date is today's date."
+    );
 
     let endDateField = fields.at(2);
     expect(endDateField.props().type).to.equal("date");
     expect(endDateField.props().label).to.equal("End Date");
-    expect(endDateField.props().description).to.equal("If no expiration date is chosen, the default expiration date is 2 months from the start date.");
+    expect(endDateField.props().description).to.equal(
+      "If no expiration date is chosen, the default expiration date is 2 months from the start date."
+    );
   });
   it("renders the buttons", () => {
     let buttons = wrapper.find("button");
@@ -57,7 +64,8 @@ describe("AnnouncementForm", () => {
     expect(counter.parent().hasClass("wrong-length")).to.be.false;
     expect(wrapper.find("button").at(0).prop("disabled")).not.to.be.true;
 
-    let longString = "Here's some extremely/gratuitously long content.  The point of the content is just to get up to 350 characters so that I can test whether the class name will change.  I realize even as I am typing this that it probably would have been a better idea to do it with filler text; oh well...?  Anyway, I have now written the most boring announcement EVER.";
+    let longString =
+      "Here's some extremely/gratuitously long content.  The point of the content is just to get up to 350 characters so that I can test whether the class name will change.  I realize even as I am typing this that it probably would have been a better idea to do it with filler text; oh well...?  Anyway, I have now written the most boring announcement EVER.";
     let contentField = wrapper.find("textarea");
     contentField.getDOMNode().value = longString;
     contentField.simulate("change");
@@ -71,7 +79,8 @@ describe("AnnouncementForm", () => {
     checkDefaultValues();
     expect(add.callCount).to.equal(0);
 
-    let contentString = "Here is some sample content which comes out to over 15 characters.";
+    let contentString =
+      "Here is some sample content which comes out to over 15 characters.";
     let contentField = wrapper.find("textarea");
     contentField.getDOMNode().value = contentString;
     contentField.simulate("change");
@@ -88,19 +97,29 @@ describe("AnnouncementForm", () => {
   };
   let checkDefaultState = () => {
     expect(wrapper.state().content).to.equal("");
-    expect(wrapper.state().start).to.equal(wrapper.instance().getDefaultDates()[0]);
-    expect(wrapper.state().finish).to.equal(wrapper.instance().getDefaultDates()[1]);
+    expect(wrapper.state().start).to.equal(
+      wrapper.instance().getDefaultDates()[0]
+    );
+    expect(wrapper.state().finish).to.equal(
+      wrapper.instance().getDefaultDates()[1]
+    );
   };
   let checkDefaultValues = () => {
     expect(wrapper.find("textarea").text()).to.equal("");
-    expect(wrapper.find("input").at(0).props().value).to.equal(wrapper.instance().getDefaultDates()[0]);
-    expect(wrapper.find("input").at(1).props().value).to.equal(wrapper.instance().getDefaultDates()[1]);
+    expect(wrapper.find("input").at(0).props().value).to.equal(
+      wrapper.instance().getDefaultDates()[0]
+    );
+    expect(wrapper.find("input").at(1).props().value).to.equal(
+      wrapper.instance().getDefaultDates()[1]
+    );
   };
   it("adds a new announcement", () => {
     fillOutForm();
     wrapper.find("button").at(0).simulate("click");
     expect(add.callCount).to.equal(1);
-    expect(add.args[0][0].content).to.equal("Here is some sample content which comes out to over 15 characters.");
+    expect(add.args[0][0].content).to.equal(
+      "Here is some sample content which comes out to over 15 characters."
+    );
     expect(add.args[0][0].start).to.equal("2020-06-01");
     expect(add.args[0][0].finish).to.equal("2020-07-01");
   });
@@ -111,37 +130,61 @@ describe("AnnouncementForm", () => {
     checkDefaultValues();
   });
   it("edits an existing announcement", () => {
-    wrapper.setProps({ content: "Here is some sample content which comes out to over 15 characters.", start: "07/01/2020", finish: "08/01/2020"});
-    expect(wrapper.state().content).to.equal("Here is some sample content which comes out to over 15 characters.");
+    wrapper.setProps({
+      content:
+        "Here is some sample content which comes out to over 15 characters.",
+      start: "07/01/2020",
+      finish: "08/01/2020",
+    });
+    expect(wrapper.state().content).to.equal(
+      "Here is some sample content which comes out to over 15 characters."
+    );
     expect(wrapper.state().start).to.equal("2020-07-01");
     expect(wrapper.state().finish).to.equal("2020-08-01");
-    expect(wrapper.find("textarea").text()).to.equal("Here is some sample content which comes out to over 15 characters.");
+    expect(wrapper.find("textarea").text()).to.equal(
+      "Here is some sample content which comes out to over 15 characters."
+    );
     expect(wrapper.find("input").at(0).props().value).to.equal("2020-07-01");
     expect(wrapper.find("input").at(1).props().value).to.equal("2020-08-01");
     let contentField = wrapper.find("textarea");
-    contentField.getDOMNode().value = "Here is an edited version of the content";
+    contentField.getDOMNode().value =
+      "Here is an edited version of the content";
     contentField.simulate("change");
     wrapper.find("button").at(0).simulate("click");
     expect(add.callCount).to.equal(1);
-    expect(add.args[0][0].content).to.equal("Here is an edited version of the content");
+    expect(add.args[0][0].content).to.equal(
+      "Here is an edited version of the content"
+    );
     checkDefaultState();
     checkDefaultValues();
   });
   it("cancels editing an existing announcement", () => {
     let spyCancel = spy(wrapper.instance(), "cancel");
-    wrapper.setProps({ content: "Here is some sample content which comes out to over 15 characters.", start: "07/01/2020", finish: "08/01/2020"});
-    expect(wrapper.state().content).to.equal("Here is some sample content which comes out to over 15 characters.");
+    wrapper.setProps({
+      content:
+        "Here is some sample content which comes out to over 15 characters.",
+      start: "07/01/2020",
+      finish: "08/01/2020",
+    });
+    expect(wrapper.state().content).to.equal(
+      "Here is some sample content which comes out to over 15 characters."
+    );
     expect(wrapper.state().start).to.equal("2020-07-01");
     expect(wrapper.state().finish).to.equal("2020-08-01");
-    expect(wrapper.find("textarea").text()).to.equal("Here is some sample content which comes out to over 15 characters.");
+    expect(wrapper.find("textarea").text()).to.equal(
+      "Here is some sample content which comes out to over 15 characters."
+    );
     expect(wrapper.find("input").at(0).props().value).to.equal("2020-07-01");
     expect(wrapper.find("input").at(1).props().value).to.equal("2020-08-01");
     let contentField = wrapper.find("textarea");
-    contentField.getDOMNode().value = "Here is an edited version of the content";
+    contentField.getDOMNode().value =
+      "Here is an edited version of the content";
     contentField.simulate("change");
     wrapper.find("button").at(1).simulate("click");
     expect(add.callCount).to.equal(1);
-    expect(add.args[0][0].content).to.equal("Here is an edited version of the content");
+    expect(add.args[0][0].content).to.equal(
+      "Here is an edited version of the content"
+    );
     expect(spyCancel.callCount).to.equal(1);
     checkDefaultState();
     checkDefaultValues();

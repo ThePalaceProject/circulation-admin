@@ -1,10 +1,16 @@
 ## Changelog
 
-### v0.4.24
+### v0.4.25
 
 #### Added
 
 - Added Prettier for code syntax formatting in a pre-commit hook.
+
+### v0.4.24
+
+#### Updated
+
+- Clarified name of announcements field to minimize potential user confusion.
 
 ### v0.4.23
 
