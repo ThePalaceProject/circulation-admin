@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
@@ -361,7 +362,6 @@ export default class CustomListEntriesEditor extends React.Component<
     if (!book.url) {
       return null;
     }
-
     return (
       <CatalogLink
         collectionUrl={this.props.opdsFeedUrl}

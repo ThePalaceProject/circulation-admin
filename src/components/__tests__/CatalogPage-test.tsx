@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { expect } from "chai";
 
 import * as React from "react";
@@ -23,29 +24,37 @@ describe("CatalogPage", () => {
     params = {
       collectionUrl: "library/collectionurl",
       bookUrl: "library/bookurl",
-      tab: "tab"
+      tab: "tab",
     };
-    wrapper = shallow(
-      <CatalogPage
-        params={params}
-        />
-    );
+    wrapper = shallow(<CatalogPage params={params} />);
   });
 
   it("renders OPDSCatalog", () => {
     let catalog = wrapper.find(OPDSCatalog);
-    expect(catalog.prop("collectionUrl")).to.equal(host + "/library/collectionurl");
+    expect(catalog.prop("collectionUrl")).to.equal(
+      host + "/library/collectionurl?max_cache_age=0"
+    );
     expect(catalog.prop("bookUrl")).to.equal(host + "/library/works/bookurl");
-    expect(catalog.prop("BookDetailsContainer").name).to.equal(BookDetailsContainer.name);
+    expect(catalog.prop("BookDetailsContainer").name).to.equal(
+      BookDetailsContainer.name
+    );
     expect(catalog.prop("Header").name).to.equal(Header.name);
     expect(catalog.prop("computeBreadcrumbs")).to.be.ok;
     let pageTitleTemplate = catalog.prop("pageTitleTemplate");
-    expect(pageTitleTemplate("Collection", "Book")).to.equal("Circulation Manager - Book");
-    expect(pageTitleTemplate("Collection", null)).to.equal("Circulation Manager - Collection");
+    expect(pageTitleTemplate("Collection", "Book")).to.equal(
+      "Circulation Manager - Book"
+    );
+    expect(pageTitleTemplate("Collection", null)).to.equal(
+      "Circulation Manager - Collection"
+    );
   });
 
   it("renders welcome page when there's no library", () => {
-    let newParams = Object.assign({}, params, { collectionUrl: null, bookUrl: null, tab: null });
+    let newParams = Object.assign({}, params, {
+      collectionUrl: null,
+      bookUrl: null,
+      tab: null,
+    });
     wrapper.setProps({ params: newParams });
     let catalog = wrapper.find(OPDSCatalog);
     expect(catalog.length).to.equal(0);
@@ -62,12 +71,18 @@ describe("CatalogPage", () => {
     let context = wrapper.instance().getChildContext();
     expect(context.library()).to.equal("library");
 
-    let newParams = Object.assign({}, params, { collectionUrl: null, bookUrl: "library/bookurl" });
+    let newParams = Object.assign({}, params, {
+      collectionUrl: null,
+      bookUrl: "library/bookurl",
+    });
     wrapper.setProps({ params: newParams });
     context = wrapper.instance().getChildContext();
     expect(context.library()).to.equal("library");
 
-    newParams = Object.assign({}, params, { collectionUrl: null, bookUrl: null });
+    newParams = Object.assign({}, params, {
+      collectionUrl: null,
+      bookUrl: null,
+    });
     wrapper.setProps({ params: newParams });
     context = wrapper.instance().getChildContext();
     expect(context.library()).to.equal(null);

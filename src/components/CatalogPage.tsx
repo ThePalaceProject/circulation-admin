@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 const OPDSCatalog = require("opds-web-client");
@@ -56,7 +57,6 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
 
     const fetcher = new DataFetcher({ adapter });
     const actions = new ActionsCreator(fetcher);
-
     return (
       <>
         <ActionsProvider actions={actions} fetcher={fetcher}>
@@ -101,7 +101,9 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
   }
 
   expandCollectionUrl(url: string): string {
-    return url ? document.location.origin + "/" + url : url;
+    return url
+      ? document.location.origin + "/" + url + "?max_cache_age=0"
+      : url;
   }
 
   expandBookUrl(url: string): string {
