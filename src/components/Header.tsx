@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from "react";
 import { connect } from "react-redux";
 import { Store } from "redux";
@@ -25,7 +26,11 @@ export interface HeaderOwnProps {
   store?: Store<State>;
 }
 
-export interface HeaderProps extends React.Props<Header>, HeaderStateProps, HeaderDispatchProps, HeaderOwnProps {}
+export interface HeaderProps
+  extends React.Props<Header>,
+    HeaderStateProps,
+    HeaderDispatchProps,
+    HeaderOwnProps {}
 
 export interface HeaderState {
   showAccountDropdown: boolean;
@@ -44,7 +49,7 @@ export interface HeaderNavItem {
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, HeaderState> {
-  context: { library: () => string, router: HeaderRouter, admin: Admin };
+  context: { library: () => string; router: HeaderRouter; admin: Admin };
 
   static contextTypes = {
     library: PropTypes.func,
@@ -60,26 +65,31 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     this.renderNavItem = this.renderNavItem.bind(this);
 
     document.body.addEventListener("click", (event: MouseEvent) => {
-      if (this.state.showAccountDropdown &&
-        ((event.target as any).className).indexOf("account-dropdown-toggle") === -1) {
+      if (
+        this.state.showAccountDropdown &&
+        (event.target as any).className.indexOf("account-dropdown-toggle") ===
+          -1
+      ) {
         this.toggleAccountDropdown();
       }
     });
   }
 
   render(): JSX.Element {
-    const currentPathname = (this.context.router &&
-      this.context.router.getCurrentLocation() &&
-      this.context.router.getCurrentLocation().pathname) || "";
+    const currentPathname =
+      (this.context.router &&
+        this.context.router.getCurrentLocation() &&
+        this.context.router.getCurrentLocation().pathname) ||
+      "";
     let currentLibrary = this.context.library && this.context.library();
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
-    let isSiteWide = (!this.context.library || !currentLibrary);
+    let isSiteWide = !this.context.library || !currentLibrary;
     let isSomeLibraryManager = this.context.admin.isLibraryManagerOfSomeLibrary();
 
     // Links that will be rendered in a NavItem Bootstrap component.
     const libraryNavItems = [
-      { label: "Catalog", href: "%2Fgroups" },
+      { label: "Catalog", href: "%2Fgroups?max_cache_age=0" },
       { label: "Complaints", href: "%2Fadmin%2Fcomplaints" },
       { label: "Hidden Books", href: "%2Fadmin%2Fsuppressed" },
     ];
@@ -87,24 +97,30 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     const libraryLinkItems = [
       { label: "Lists", href: "lists/" },
       { label: "Lanes", href: "lanes/", auth: isLibraryManager },
-      { label: "Dashboard", href: "dashboard/"  },
+      { label: "Dashboard", href: "dashboard/" },
       { label: "Patrons", href: "patrons/", auth: isLibraryManager },
     ];
     // Links that will be rendered in a Link router component and are sitewide.
     const sitewideLinkItems = [
       { label: "Dashboard", href: "dashboard/", auth: isSiteWide },
-      { label: "System Configuration", href: "config/", auth: isSomeLibraryManager },
-      { label: "Troubleshooting", href: "troubleshooting/", auth: isSystemAdmin },
+      {
+        label: "System Configuration",
+        href: "config/",
+        auth: isSomeLibraryManager,
+      },
+      {
+        label: "Troubleshooting",
+        href: "troubleshooting/",
+        auth: isSystemAdmin,
+      },
     ];
     const accountLink = { label: "Change password", href: "account/" };
 
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
-          <Navbar.Brand>
-            Admin
-          </Navbar.Brand>
-          { this.props.libraries && this.props.libraries.length > 0 &&
+          <Navbar.Brand>Admin</Navbar.Brand>
+          {this.props.libraries && this.props.libraries.length > 0 && (
             <EditableInput
               elementType="select"
               ref="library"
@@ -112,40 +128,39 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               onChange={this.changeLibrary}
               aria-label="Select a library"
             >
-              { (!this.context.library || !currentLibrary) &&
+              {(!this.context.library || !currentLibrary) && (
                 <option aria-selected={false}>Select a library</option>
-              }
-              { this.props.libraries.map(library =>
-                  <option
-                    key={library.short_name}
-                    value={library.short_name}
-                    aria-selected={currentLibrary === library.short_name}
-                  >
-                    {library.name || library.short_name}
-                  </option>
-                )
-              }
+              )}
+              {this.props.libraries.map((library) => (
+                <option
+                  key={library.short_name}
+                  value={library.short_name}
+                  aria-selected={currentLibrary === library.short_name}
+                >
+                  {library.name || library.short_name}
+                </option>
+              ))}
             </EditableInput>
-          }
+          )}
           <Navbar.Toggle />
         </Navbar.Header>
 
         <Navbar.Collapse className="menu">
-          { currentLibrary &&
+          {currentLibrary && (
             <Nav>
-              { libraryNavItems.map(item =>
-                  this.renderNavItem(item, currentPathname, currentLibrary))
-              }
-              { libraryLinkItems.map(item =>
-                  this.renderLinkItem(item, currentPathname, currentLibrary))
-              }
+              {libraryNavItems.map((item) =>
+                this.renderNavItem(item, currentPathname, currentLibrary)
+              )}
+              {libraryLinkItems.map((item) =>
+                this.renderLinkItem(item, currentPathname, currentLibrary)
+              )}
             </Nav>
-          }
+          )}
           <Nav className="pull-right">
-            { sitewideLinkItems.map(item =>
-                this.renderLinkItem(item, currentPathname))
-            }
-            { this.context.admin.email &&
+            {sitewideLinkItems.map((item) =>
+              this.renderLinkItem(item, currentPathname)
+            )}
+            {this.context.admin.email && (
               <li className="dropdown">
                 <Button
                   className="account-dropdown-toggle transparent"
@@ -153,16 +168,22 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   aria-haspopup="true"
                   aria-expanded={this.state.showAccountDropdown}
                   callback={this.toggleAccountDropdown}
-                  content={<span>{this.context.admin.email} <GenericWedgeIcon /></span>}
+                  content={
+                    <span>
+                      {this.context.admin.email} <GenericWedgeIcon />
+                    </span>
+                  }
                 />
-                { this.state.showAccountDropdown &&
+                {this.state.showAccountDropdown && (
                   <ul className="dropdown-menu">
                     {this.renderLinkItem(accountLink, currentPathname)}
-                    <li><a href="/admin/sign_out">Sign out</a></li>
+                    <li>
+                      <a href="/admin/sign_out">Sign out</a>
+                    </li>
                   </ul>
-                }
+                )}
               </li>
-            }
+            )}
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -178,7 +199,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   changeLibrary() {
     let library = (this.refs["library"] as any).getValue();
     if (library) {
-      this.context.router.push("/admin/web/collection/" + library + "%2Fgroups");
+      this.context.router.push(
+        "/admin/web/collection/" + library + "%2Fgroups?max_cache_age=0"
+      );
       this.forceUpdate();
     }
   }
@@ -195,7 +218,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
    * @param {string} currentPathname Page's current URL.
    * @param {string} currentLibrary Active library.
    */
-  renderNavItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
+  renderNavItem(
+    item: HeaderNavItem,
+    currentPathname: string,
+    currentLibrary: string = ""
+  ) {
     const rootCatalogURL = "/admin/web/collection/";
     const { label, href } = item;
     const isActive = currentPathname.indexOf(href) !== -1;
@@ -220,7 +247,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
    * @param {string} currentPathname Page's current URL.
    * @param {string} currentLibrary Active library.
    */
-  renderLinkItem(item: HeaderNavItem, currentPathname: string, currentLibrary: string = "") {
+  renderLinkItem(
+    item: HeaderNavItem,
+    currentPathname: string,
+    currentLibrary: string = ""
+  ) {
     const rootUrl = "/admin/web/";
     const { label, href, auth } = item;
     let isActive = currentPathname.indexOf(href) !== -1;
@@ -254,20 +285,27 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
 function mapStateToProps(state, ownProps) {
   return {
-    libraries: state.editor.libraries && state.editor.libraries.data && state.editor.libraries.data.libraries
+    libraries:
+      state.editor.libraries &&
+      state.editor.libraries.data &&
+      state.editor.libraries.data.libraries,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   let actions = new ActionCreator();
   return {
-    fetchLibraries: () => dispatch(actions.fetchLibraries())
+    fetchLibraries: () => dispatch(actions.fetchLibraries()),
   };
 }
 
-const ConnectedHeader = connect<HeaderStateProps, HeaderDispatchProps, HeaderOwnProps>(
+const ConnectedHeader = connect<
+  HeaderStateProps,
+  HeaderDispatchProps,
+  HeaderOwnProps
+>(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Header);
 
 /** HeaderWithStore is a wrapper component to pass the store as a prop to the
@@ -276,14 +314,10 @@ export default class HeaderWithStore extends React.Component<{}, {}> {
   context: { editorStore: Store<State> };
 
   static contextTypes = {
-    editorStore: PropTypes.object.isRequired
+    editorStore: PropTypes.object.isRequired,
   };
 
   render(): JSX.Element {
-    return (
-      <ConnectedHeader
-        store={this.context.editorStore}
-        />
-    );
+    return <ConnectedHeader store={this.context.editorStore} />;
   }
 }

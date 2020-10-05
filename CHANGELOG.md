@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.26
+
+#### Updated
+
+- Specified that the catalog should request non-cached OPDS feeds.
+
 ### v0.4.25
 
 #### Added
