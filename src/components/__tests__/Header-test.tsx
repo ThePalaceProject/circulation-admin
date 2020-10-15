@@ -263,14 +263,23 @@ describe("Header", () => {
       wrapper = mount(<Header />, { context: fullContext, childContextTypes });
 
       let toggle = wrapper.find(".account-dropdown-toggle").hostNodes();
-      let dropdownLinks = wrapper.find("ul.dropdown-menu a");
+      let dropdownItems = wrapper.find("ul.dropdown-menu li");
+      let dropdownLinks = wrapper.find("ul.dropdown-menu li a");
+      expect(dropdownItems.length).to.equal(0);
       expect(dropdownLinks.length).to.equal(0);
 
       toggle.simulate("click");
-      dropdownLinks = wrapper.find("ul.dropdown-menu li");
+      dropdownItems = wrapper.find("ul.dropdown-menu li");
+      dropdownLinks = wrapper.find("ul.dropdown-menu li a");
+      expect(dropdownItems.length).to.equal(3);
       expect(dropdownLinks.length).to.equal(2);
-      let changePassword = dropdownLinks.find(Link);
-      expect(changePassword.prop("to")).to.equal("/admin/web/account/");
+
+      let loggedInAs = dropdownItems.at(0);
+      expect(loggedInAs.text()).to.equal("Logged in as a librarian");
+      let changePassword = dropdownLinks.at(0);
+      expect(changePassword.parent().prop("to")).to.equal(
+        "/admin/web/account/"
+      );
       // The first anchor element is from the Link component.
       let signOut = dropdownLinks.find("a").at(1);
       expect(signOut.prop("href")).to.equal("/admin/sign_out");
@@ -279,5 +288,19 @@ describe("Header", () => {
       dropdownLinks = wrapper.find("ul.dropdown-menu li");
       expect(dropdownLinks.length).to.equal(0);
     });
+  });
+
+  it("displays the user's level of permissions", () => {
+    let permissions = (args) =>
+      wrapper
+        .instance()
+        .displayPermissions(...args)
+        .props.children.join("");
+    expect(permissions([true, true])).to.equal("Logged in as a system admin");
+    expect(permissions([true, false])).to.equal("Logged in as a system admin");
+    expect(permissions([false, true])).to.equal(
+      "Logged in as a library manager"
+    );
+    expect(permissions([false, false])).to.equal("Logged in as a librarian");
   });
 });
