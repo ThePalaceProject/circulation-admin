@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.27
+
+#### Added
+
+- Displayed the current user's level of permissions in the account dropdown.
+
 ### v0.4.26
 
 #### Updated

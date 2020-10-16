@@ -50,6 +50,11 @@
       background-color: $dark-gray;
       left: auto;
       right: 0;
+      padding-bottom: 0;
+
+      .permissions, a {
+        padding: 5px;
+      }
 
       a {
         background-color: $dark;

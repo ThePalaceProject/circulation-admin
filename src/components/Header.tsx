@@ -75,6 +75,15 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     });
   }
 
+  displayPermissions(isSystemAdmin: boolean, isLibraryManager: boolean) {
+    let permissions = isSystemAdmin
+      ? "system admin"
+      : isLibraryManager
+      ? "library manager"
+      : "librarian";
+    return <li className="permissions">Logged in as a {permissions}</li>;
+  }
+
   render(): JSX.Element {
     const currentPathname =
       (this.context.router &&
@@ -176,6 +185,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 />
                 {this.state.showAccountDropdown && (
                   <ul className="dropdown-menu">
+                    {this.displayPermissions(isSystemAdmin, isLibraryManager)}
                     {this.renderLinkItem(accountLink, currentPathname)}
                     <li>
                       <a href="/admin/sign_out">Sign out</a>
