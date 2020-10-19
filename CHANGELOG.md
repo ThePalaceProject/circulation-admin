@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.28
+
+#### Fixed
+
+- Fixed a CSS issue whereby text was erroneously styled to look like a link on hover.
+
 ### v0.4.27
 
 #### Added
