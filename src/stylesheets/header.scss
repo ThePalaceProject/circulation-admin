@@ -1,7 +1,7 @@
 .navbar-default {
   padding: 3px 0;
 
-  .navbar-brand {
+  .navbar-brand, .navbar-brand:hover {
     color: $pagecolorlight;
     font-size: 1.8em;
   }
