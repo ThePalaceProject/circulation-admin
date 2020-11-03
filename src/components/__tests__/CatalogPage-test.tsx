@@ -49,6 +49,13 @@ describe("CatalogPage", () => {
     );
   });
 
+  it("handles the case in which the URL already contains a query string", () => {
+    let queryUrl = "library/collectionurl?samplequery=test";
+    expect(wrapper.instance().expandCollectionUrl(queryUrl)).to.equal(
+      host + "/library/collectionurl?samplequery=test&max_cache_age=0"
+    );
+  });
+
   it("renders welcome page when there's no library", () => {
     let newParams = Object.assign({}, params, {
       collectionUrl: null,
