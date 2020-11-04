@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.29
+
+#### Fixed
+
+- Fixed a bug resulting in the creation of an extra query string in the URL.
+
 ### v0.4.28
 
 #### Fixed
