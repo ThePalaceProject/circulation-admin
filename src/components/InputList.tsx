@@ -42,7 +42,6 @@ export default class InputList extends React.Component<
     super(props);
     let isMenu = props.setting.type === "menu";
     this.state = {
-      // listItems: (props.value as string[] || []),
       listItems:
         (props.value as string[]) || (props.setting.default as string[]) || [],
       newItem: "",
