@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.30
+
+#### Fixed
+
+- Fixed a bug whereby the InputList wasn't rendering default values from the server
+
 ### v0.4.29
 
 #### Fixed
