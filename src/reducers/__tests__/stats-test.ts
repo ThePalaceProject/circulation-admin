@@ -16,36 +16,55 @@ describe("stats reducer", () => {
       },
       inventory: {
         titles: 54321,
+        open_access_titles: 500,
+        enumerated_license_titles: 1200,
+        unlimited_license_titles: 785,
         licenses: 123456,
-        available_licenses: 100000,
+        available_licenses: 100000
       },
       collections: {
         Overdrive: {
           licensed_titles: 500,
+          enumerated_license_titles: 500,
+          unlimited_license_titles: 0,
           open_access_titles: 10,
           licenses: 350,
-          available_licenses: 100,
+          available_licenses: 100
         },
         Bibliotheca: {
           licensed_titles: 400,
+          enumerated_license_titles: 400,
+          unlimited_license_titles: 0,
           open_access_titles: 0,
           licenses: 300,
-          available_licenses: 170,
+          available_licenses: 170
         },
         "Axis 360": {
           licensed_titles: 300,
+          enumerated_license_titles: 300,
+          unlimited_license_titles: 0,
           open_access_titles: 0,
           licenses: 280,
-          available_licenses: 260,
+          available_licenses: 260
         },
-        "Open Bookshelf": {
+        "Open Bookshelf" : {
           licensed_titles: 0,
+          enumerated_license_titles: 0,
+          unlimited_license_titles: 0,
           open_access_titles: 1200,
           licenses: 0,
-          available_licenses: 0,
+          available_licenses: 0
         },
-      },
-    },
+        "Manual Protected Collection": {
+          licensed_titles: 785,
+          enumerated_license_titles: 0,
+          unlimited_license_titles: 785,
+          open_access_titles: 0,
+          licenses: 0,
+          available_licenses: 0
+        }
+      }
+    }
   };
 
   const initState: StatsState = {

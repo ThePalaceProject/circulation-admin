@@ -134,6 +134,9 @@ export interface LibraryStatsData {
   };
   inventory: {
     titles: number;
+    open_access_titles: number;
+    enumerated_license_titles: number;
+    unlimited_license_titles: number;
     licenses: number;
     available_licenses: number;
   };
@@ -141,6 +144,8 @@ export interface LibraryStatsData {
     [key: string]: {
       licensed_titles: number;
       open_access_titles: number;
+      enumerated_license_titles: number;
+      unlimited_license_titles: number;
       licenses: number;
       available_licenses: number;
     };
