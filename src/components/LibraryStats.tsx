@@ -2,6 +2,7 @@ import * as React from "react";
 import { LibraryStatsData, LibraryData } from "../interfaces";
 import { BarChart, XAxis, YAxis, Tooltip, Bar } from "recharts";
 import * as numeral from "numeral";
+import SingleStat from "./SingleStat";
 
 export interface LibraryStatsProps {
   stats: LibraryStatsData;
@@ -53,32 +54,14 @@ export default class LibraryStats extends React.Component<
                   <span className="stat-grouping-label">Patrons</span>
                 </h3>
                 <ul>
-                  <li className="single-stat">
-                    <span className="stat-value">
-                      {this.formatNumber(this.props.stats.patrons.total)}
-                    </span>
-                    <span className="stat-label">Total Patrons</span>
-                  </li>
-                  <li className="single-stat">
-                    <span className="stat-value">
-                      {this.formatNumber(
-                        this.props.stats.patrons.with_active_loans
-                      )}
-                    </span>
-                    <span className="stat-label">
-                      Patrons With Active Loans
-                    </span>
-                  </li>
-                  <li className="single-stat">
-                    <span className="stat-value">
-                      {this.formatNumber(
-                        this.props.stats.patrons.with_active_loans_or_holds
-                      )}
-                    </span>
-                    <span className="stat-label">
-                      Patrons With Active Loans or Holds
-                    </span>
-                  </li>
+                  <SingleStat label="Total Patrons" value={this.formatNumber(this.props.stats.patrons.total)}
+                              tooltip="Total number of patrons." />
+                  <SingleStat label="Patrons With Active Loans"
+                              value={this.formatNumber(this.props.stats.patrons.with_active_loans)}
+                              tooltip="Number of patron with at least one active loan." />
+                  <SingleStat label="Patrons With Active Loans or Holds"
+                              value={this.formatNumber(this.props.stats.patrons.with_active_loans_or_holds)}
+                              tooltip="Number of patrons with at least one active loan or at least one hold."  />
                 </ul>
               </li>
             )}
@@ -88,18 +71,10 @@ export default class LibraryStats extends React.Component<
                   <span className="stat-grouping-label">Circulation</span>
                 </h3>
                 <ul>
-                  <li className="single-stat">
-                    <div className="stat-value">
-                      {this.formatNumber(this.props.stats.patrons.loans)}
-                    </div>
-                    <div className="stat-label">Active Loans</div>
-                  </li>
-                  <li className="single-stat">
-                    <div className="stat-value">
-                      {this.formatNumber(this.props.stats.patrons.holds)}
-                    </div>
-                    <div className="stat-label">Active Holds</div>
-                  </li>
+                  <SingleStat label="Active Loans" value={this.formatNumber(this.props.stats.patrons.loans)}
+                              tooltip="Total number of active loans for all patrons." />
+                  <SingleStat label="Active Holds" value={this.formatNumber(this.props.stats.patrons.holds)}
+                              tooltip="Total number of active holds for all patrons." />
                 </ul>
               </li>
             )}
@@ -108,47 +83,31 @@ export default class LibraryStats extends React.Component<
                 <span className="stat-grouping-label">Inventory</span>
               </h3>
               <ul>
-                <li className="single-stat">
-                  <div className="stat-value">
-                    {this.formatNumber(this.props.stats.inventory.titles)}
-                  </div>
-                  <div className="stat-label">Titles</div>
-                </li>
-                <li className="single-stat">
-                  <div className="stat-value">{this.formatNumber(this.props.stats.inventory.enumerated_license_titles)}</div>
-                  <div className="stat-label">Enumerated license titles</div>
-                </li>
-                <li className="single-stat">
-                  <div className="stat-value">{this.formatNumber(this.props.stats.inventory.unlimited_license_titles)}</div>
-                  <div className="stat-label">Unlimited license titles</div>
-                </li>
-                <li className="single-stat">
-                  <div className="stat-value">{this.formatNumber(this.props.stats.inventory.open_access_titles)}</div>
-                  <div className="stat-label">Open access titles</div>
-                </li>
+                <SingleStat label="Titles" value={this.formatNumber(this.props.stats.inventory.titles)}
+                            tooltip="Total number of titles." />
+                <SingleStat label="Enumerated license titles"
+                            value={this.formatNumber(this.props.stats.inventory.enumerated_license_titles)}
+                            tooltip="Number of titles for which a specific number of licenses is allocated." />
+                <SingleStat label="Unlimited license titles"
+                            value={this.formatNumber(this.props.stats.inventory.unlimited_license_titles)}
+                            tooltip="Number of titles for which there is no limit on the number of licenses." />
+                <SingleStat label="Open access titles"
+                            value={this.formatNumber(this.props.stats.inventory.open_access_titles)}
+                            tooltip="Number of titles for which there are no limits on use." />
               </ul>
             </li>
             <li className="stat-group">
               <h3><span className="stat-grouping-label">Enumerated Licenses</span></h3>
               <ul>
                 { this.props.stats.inventory.licenses > 0 &&
-                  <li className="single-stat">
-                    <div className="stat-value">
-                      {this.formatNumber(this.props.stats.inventory.licenses)}
-                    </div>
-                    <div className="stat-label">Total Licenses</div>
-                  </li>
-                )}
-                {this.props.stats.inventory.licenses > 0 && (
-                  <li className="single-stat">
-                    <div className="stat-value">
-                      {this.formatNumber(
-                        this.props.stats.inventory.available_licenses
-                      )}
-                    </div>
-                    <div className="stat-label">Available Licenses</div>
-                  </li>
-                )}
+                  <SingleStat label="Total Licenses" value={this.formatNumber(this.props.stats.inventory.licenses)}
+                              tooltip="Total number of licenses allocated for those titles for which licenses are counted." />
+                }
+                { this.props.stats.inventory.licenses > 0 &&
+                  <SingleStat label="Available Licenses"
+                              value={this.formatNumber(this.props.stats.inventory.available_licenses)}
+                              tooltip="Total number of allocated licenses that are currently available." />
+                }
               </ul>
             </li>
             {collectionCounts.length > 0 && (
