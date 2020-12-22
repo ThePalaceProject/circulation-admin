@@ -19,6 +19,7 @@ export interface TextWithEditModeState {
 /** Renders text with a link to switch to edit mode and show an editable input instead.
     If the text isn't defined yet, it starts in edit mode. */
 export default class TextWithEditMode extends React.Component<TextWithEditModeProps, TextWithEditModeState> {
+  private textRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +42,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               placeholder={this.props.placeholder}
               value={this.state.text}
               optionalText={false}
-              ref="text"
+              ref={this.textRef}
               aria-label={this.props["aria-label"]}
               onChange={(e) => this.setText(e)}
             />
@@ -78,7 +79,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
   }
 
   updateText() {
-    const text = (this.refs["text"] as EditableInput).getValue();
+    const text = this.textRef.current.getValue();
     this.setState({ text, editMode: false });
     if (this.props.onUpdate) {
       this.props.onUpdate(text);
@@ -91,7 +92,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
 
   getText() {
     if (this.state.editMode) {
-      let value = (this.refs["text"] as EditableInput).getValue();
+      let value = this.textRef.current.getValue();
       this.updateText();
       return value;
     } else {

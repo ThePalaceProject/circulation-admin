@@ -28,6 +28,8 @@ export interface LaneEditorState {
 
 /** Right panel of the lanes page for editing a single lane. */
 export default class LaneEditor extends React.Component<LaneEditorProps, LaneEditorState> {
+  private laneNameRef = React.createRef<TextWithEditMode>();
+  private laneCustomListsRef = React.createRef<LaneCustomListsEditor>();
   constructor(props) {
     super(props);
     this.state = {
@@ -56,7 +58,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
                 text={this.props.lane && this.props.lane.display_name}
                 placeholder="name"
                 onUpdate={this.changeName}
-                ref="laneName"
+                ref={this.laneNameRef}
                 aria-label="Enter a name for this lane"
               />
               { this.props.lane &&
@@ -104,7 +106,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
             allCustomLists={this.props.customLists}
             customListIds={this.state.customListIds}
             onUpdate={this.changeCustomLists}
-            ref="laneCustomLists"
+            ref={this.laneCustomListsRef}
             />
         </div>
       </div>
@@ -203,9 +205,9 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
     if (parent) {
       data.append("parent_id", parent.id);
     }
-    let name = (this.refs["laneName"] as TextWithEditMode).getText();
+    let name = this.laneNameRef.current.getText();
     data.append("display_name", name);
-    let listIds = (this.refs["laneCustomLists"] as LaneCustomListsEditor).getCustomListIds();
+    let listIds = this.laneCustomListsRef.current.getCustomListIds();
     data.append("custom_list_ids", JSON.stringify(listIds));
     data.append("inherit_parent_restrictions", this.state.inheritParentRestrictions);
     this.props.editLane(data).then(() => {
@@ -217,8 +219,8 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   reset() {
-    (this.refs["laneName"] as TextWithEditMode).reset();
-    (this.refs["laneCustomLists"] as LaneCustomListsEditor).reset(this.props.lane.custom_list_ids);
+    this.laneNameRef.current.reset();
+    this.laneCustomListsRef.current.reset(this.props.lane.custom_list_ids);
     let inheritParentRestrictions = this.props.lane && this.props.lane.inherit_parent_restrictions;
     this.setState(Object.assign({}, this.state, { inheritParentRestrictions }));
   }

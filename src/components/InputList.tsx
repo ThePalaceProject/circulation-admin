@@ -38,6 +38,7 @@ export default class InputList extends React.Component<
   InputListProps,
   InputListState
 > {
+  private addListItemRef = React.createRef<LanguageField>();
   constructor(props: InputListProps) {
     super(props);
     let isMenu = props.setting.type === "menu";
@@ -88,7 +89,7 @@ export default class InputList extends React.Component<
       element = (
         <LanguageField
           disabled={this.props.disabled}
-          ref="addListItem"
+          ref={this.addListItemRef}
           name={setting.key}
           languages={this.props.additionalData}
           onChange={this.updateNewItem}
@@ -101,7 +102,7 @@ export default class InputList extends React.Component<
         value: null,
         disabled: this.props.disabled,
         onChange: this.updateNewItem,
-        ref: "addListItem",
+        ref: this.addListItemRef,
         label: null,
         description: null,
       });
@@ -204,7 +205,7 @@ export default class InputList extends React.Component<
           value: setting.key,
           label: setting.menuTitle,
           required: setting.required,
-          ref: "addListItem",
+          ref: this.addListItemRef,
           optionalText: !setting.required,
           description: !setting.required ? "(Optional) " : "",
         },
@@ -266,9 +267,9 @@ export default class InputList extends React.Component<
   updateNewItem() {
     let ref =
       this.props.setting.format === "language-code"
-        ? (this.refs["addListItem"] as any).refs["autocomplete"]
-        : (this.refs["addListItem"] as any);
-    this.setState({ ...this.state, ...{ newItem: ref.getValue() } });
+        ? this.addListItemRef.current.autocompleteRef.current
+        : this.addListItemRef.current;
+    this.setState({ ...this.state, ...{ newItem: (ref as any).getValue() } });
   }
 
   async removeListItem(listItem: string | {}) {
@@ -287,11 +288,11 @@ export default class InputList extends React.Component<
   async addListItem() {
     let ref =
       this.props.setting.format === "language-code"
-        ? (this.refs["addListItem"] as any).refs["autocomplete"]
-        : (this.refs["addListItem"] as any);
+        ? this.addListItemRef.current.autocompleteRef.current
+        : this.addListItemRef.current;
     const listItem = this.props.setting.capitalize
-      ? this.capitalize(ref.getValue())
-      : ref.getValue();
+      ? this.capitalize((ref as any).getValue())
+      : (ref as any).getValue();
     await this.setState({
       listItems: this.state.listItems.concat(listItem),
       newItem: "",
@@ -302,7 +303,7 @@ export default class InputList extends React.Component<
       await this.props.onSubmit();
     }
     if (this.props.setting.type !== "menu") {
-      ref.clear();
+      (ref as any).clear();
     }
   }
 

@@ -31,6 +31,8 @@ export interface ChangePasswordState {
 }
 
 export class ChangePasswordForm extends React.Component<ChangePasswordFormProps, ChangePasswordState> {
+  private passwordRef = React.createRef<EditableInput>();
+  private confirmRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
     this.state = { success: false, error: null };
@@ -47,7 +49,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
           disabled={this.props.isFetching}
           name="password"
           label="New Password"
-          ref="password"
+          ref={this.passwordRef}
           required={true}
         />
         <EditableInput
@@ -56,7 +58,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
           disabled={this.props.isFetching}
           name="confirm_password"
           label="Confirm New Password"
-          ref="confirm"
+          ref={this.confirmRef}
           required={true}
         />
       </fieldset>

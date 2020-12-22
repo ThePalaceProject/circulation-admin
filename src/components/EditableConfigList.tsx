@@ -81,6 +81,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
   ExtraFormSection?: new(props: ExtraFormSectionProps<T, U>) => React.Component<ExtraFormSectionProps<T, U>, any>;
   extraFormKey?: string;
+  private editFormRef = React.createRef<any>();
 
   constructor(props) {
     super(props);
@@ -145,7 +146,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           <div>
             <h3>{headers["h3"]}</h3>
             <EditForm
-              ref="edit-form"
+              ref={this.editFormRef}
               data={this.props.data}
               additionalData={this.props.additionalData}
               disabled={this.props.isFetching}

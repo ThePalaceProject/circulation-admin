@@ -24,6 +24,9 @@ export interface ProtocolFormFieldProps {
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
 export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, {}> {
+  private inputListRef = React.createRef<InputList>();
+  private colorPickerRef = React.createRef<ColorPicker>();
+  private elementRef = React.createRef<EditableInput>();
   constructor(props: ProtocolFormFieldProps) {
     super(props);
     this.randomize = this.randomize.bind(this);
@@ -86,7 +89,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       description: setting.description,
       value: (this.props && this.props.value) || setting.default,
       error: this.props && this.props.error,
-      ref: "element",
+      ref: this.elementRef,
       onChange: this.props.onChange,
     };
     let props = extraProps[setting.type] ? {...basicProps, ...extraProps[setting.type]} : basicProps;
@@ -110,7 +113,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       (this.props.value && [].concat.apply([], Object.values(this.props.value)));
     return (
       <InputList
-        ref="element"
+        ref={this.inputListRef}
         setting={setting}
         createEditableInput={this.createEditableInput}
         labelAndDescription={setting.label && this.labelAndDescription}
@@ -134,7 +137,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         <ColorPicker
           value={String(this.props.value || setting.default)}
           setting={setting}
-          ref="element"
+          ref={this.colorPickerRef}
         />
       </div>
     );
@@ -162,21 +165,29 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   getValue() {
-    return (this.refs["element"] as any).getValue();
+    return this.findRef().getValue();
   }
 
   randomize() {
-    const element = (this.refs["element"] as any);
+    const element = this.findRef();
     const chars = "1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()";
     let random = "";
     for (let i = 0; i < 32; i++) {
       random += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    element.setState({ value: random });
+    element?.setState({ value: random });
+  }
+
+  findRef() {
+    return (
+      this.inputListRef?.current ||
+      this.elementRef?.current ||
+      this.colorPickerRef?.current
+    ) as any;
   }
 
   clear() {
-    const element = (this.refs["element"] as any);
+    const element = this.findRef();
     if (element && element.clear) {
       element.clear();
     }

@@ -56,6 +56,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     router: PropTypes.object.isRequired,
     admin: PropTypes.object.isRequired,
   };
+  private libraryRef = React.createRef<EditableInput>();
 
   constructor(props) {
     super(props);
@@ -132,7 +133,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           {this.props.libraries && this.props.libraries.length > 0 && (
             <EditableInput
               elementType="select"
-              ref="library"
+              ref={this.libraryRef}
               value={currentLibrary}
               onChange={this.changeLibrary}
               aria-label="Select a library"
@@ -207,7 +208,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   changeLibrary() {
-    let library = (this.refs["library"] as any).getValue();
+    let library = this.libraryRef.current.getValue();
     if (library) {
       this.context.router.push(
         "/admin/web/collection/" + library + "%2Fgroups?max_cache_age=0"

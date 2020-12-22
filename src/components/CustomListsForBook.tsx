@@ -162,7 +162,7 @@ export class CustomListsForBook extends React.Component<CustomListsForBookProps,
     const url = this.listsUrl();
     let data = new (window as any).FormData();
     let lists = [];
-    listNames.map((name) => {
+    (listNames as string[]).map((name) => {
       let list = this.props.allCustomLists.find(x => x.name === name);
       lists.push(list);
     });

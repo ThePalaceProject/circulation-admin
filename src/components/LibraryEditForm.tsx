@@ -23,6 +23,10 @@ export interface LibraryEditFormProps {
 /** Form for editing a library's configuration, on the libraries tab of the
     system configuration page. */
 export default class LibraryEditForm extends React.Component<LibraryEditFormProps, {}> {
+  private nameRef = React.createRef<EditableInput>();
+  private shortNameRef = React.createRef<EditableInput>();
+  private settingRef = React.createRef<ProtocolFormField>();
+  private announcementsRef = React.createRef<AnnouncementsSection>();
   constructor(props: LibraryEditFormProps) {
     super(props);
     this.submit = this.submit.bind(this);
@@ -30,7 +34,12 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.responseBody && !nextProps.fetchError) {
-      clearForm(this.refs);
+      clearForm([
+        this.nameRef.current,
+        this.shortNameRef.current,
+        this.settingRef.current,
+        this.announcementsRef.current
+      ]);
     }
   }
 
@@ -60,7 +69,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             disabled={this.props.disabled}
             required={true}
             name="name"
-            ref="name"
+            ref={this.nameRef}
             label="Name"
             value={this.props.item && this.props.item.name}
             description="The human-readable name of this library."
@@ -72,7 +81,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             disabled={this.props.disabled}
             required={true}
             name="short_name"
-            ref="short_name"
+            ref={this.shortNameRef}
             label="Short name"
             value={this.props.item && this.props.item.short_name}
             description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
@@ -81,7 +90,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
           { basicInfo.map(setting =>
             <ProtocolFormField
               key={setting.key}
-              ref={setting.key}
+              ref={this.settingRef}
               setting={setting}
               disabled={this.props.disabled}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
@@ -135,7 +144,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
       <AnnouncementsSection
             setting={{...setting, ...{format: "date-range"}}}
             value={value && JSON.parse(value)}
-            ref="announcements"
+            ref={this.announcementsRef}
       />
     );
   }
@@ -179,7 +188,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         return (
           <ProtocolFormField
             key={setting.key}
-            ref={setting.key}
+            ref={this.settingRef}
             setting={formatSetting(setting)}
             additionalData={this.props.additionalData}
             disabled={this.props.disabled}
@@ -200,7 +209,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   submit(data: FormData) {
-    let announcements = (this.refs["announcements"] as any).getValue();
+    let announcements = this.announcementsRef.current.getValue();
     let announcementList = [];
     announcements.forEach((a: AnnouncementData) => announcementList.push(a));
     data?.set("announcements", JSON.stringify(announcementList));

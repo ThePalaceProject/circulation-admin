@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.31
+
+#### Updated
+
+- Switched from string refs to the React 16 refs API for as many components as are currently compatible with it
+
 ### v0.4.30
 
 #### Fixed
