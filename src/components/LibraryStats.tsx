@@ -1,12 +1,20 @@
 import * as React from "react";
 import { LibraryStatsData, LibraryData } from "../interfaces";
-import { BarChart, XAxis, YAxis, Tooltip, Bar } from "recharts";
+import {
+  BarChart, XAxis, YAxis, Tooltip, Bar
+} from "recharts";
+import DefaultTooltipContent from 'recharts/lib/component/DefaultTooltipContent';
 import SingleStat from "./SingleStat";
 
 export interface LibraryStatsProps {
   stats: LibraryStatsData;
   library?: LibraryData;
 }
+
+const formatNumber = ((n: number | null): string => {
+  // Use non-strict check to get null or undefined.
+  return n != null ? Intl.NumberFormat("en-US").format(n) : "";
+});
 
 /** Displays statistics about patrons, licenses, and collections from the server,
     for a single library or all libraries the admin has access to. */
@@ -15,25 +23,60 @@ export default class LibraryStats extends React.Component<
   {}
 > {
   render(): JSX.Element {
-    const collectionCounts =
-      this.props.stats &&
-      this.props.stats.collections &&
-      Object.keys(this.props.stats.collections)
-        .map(collection => {
-          const data = this.props.stats.collections[collection];
-          return {
-            label: collection,
-            // The "Titles" key is displayed in the default recharts tooltip.
-            "Open Access Titles": data.open_access_titles,
-            "Licensed Titles": data.licensed_titles,
-            "Enumerated License Titles": data.enumerated_license_titles,
-            "Unlimited License Titles": data.unlimited_license_titles,
-          };
-        }).filter(collection => {
-          let open_access = collection["Open Access Titles"];
-          let licensed = collection["Licensed Titles"];
-          return (open_access && open_access > 0) || (licensed && licensed > 0);
-        });
+    const labeledCollectionCounts = this.props.stats && this.props.stats.collections &&
+      Object.entries(this.props.stats.collections)
+        .reduce((acc, [k, v]) => {
+          acc[k] = {
+            "Title Count": v.titles,
+            "Self-Hosted Titles": v.self_hosted_titles,
+            "Open Access Titles": v.open_access_titles,
+            "Licensed Titles": v.licensed_titles,
+            "Unlimited License Titles": v.unlimited_license_titles,
+            "Enumerated License Titles": v.enumerated_license_titles,
+            "Enumerated Licenses Owned": v.licenses,
+            "Enumerated Licenses Available": v.available_licenses,
+          }
+          return acc;
+        }, {});
+
+    const CustomTooltip = props => {
+      const { active, payload, label: collection } = props;
+      if (!active) return null;
+
+      const color = "#A0A0A0";
+      const nonZeroPayload = payload.filter(entry => entry.value > 0);
+      const payloadKeys = nonZeroPayload.map(entry => entry.name);
+      const addedPayload = Object.entries(labeledCollectionCounts[collection])
+          .map(([name, value]) => {
+        return { name, value, color };
+      }).filter(({name}) => {
+        return !payloadKeys.includes(name);
+      });
+      const newPayload = [
+        ...nonZeroPayload,
+        {}, // blank line
+        { name: ": Additional Information", color},
+        ...addedPayload,
+      ];
+
+      // we render the default, but with our overridden payload
+      return <DefaultTooltipContent {...props} payload={newPayload} />;
+    };
+    const collectionCounts = this.props.stats && this.props.stats.collections && Object.keys(this.props.stats.collections).map(collection => {
+      const data = this.props.stats.collections[collection];
+      return {
+        label: collection,
+        // The "Titles" key is displayed in the default recharts tooltip.
+        "Open Access Titles": data.open_access_titles,
+        "Licensed Titles": data.licensed_titles,
+        "Enumerated License Titles": data.enumerated_license_titles,
+        "Unlimited License Titles": data.unlimited_license_titles,
+      };
+    }).filter(collection => {
+      let open_access = collection["Open Access Titles"];
+      let licensed = collection["Licensed Titles"];
+      return (open_access && open_access > 0) || (licensed && licensed > 0);
+    });
 
     return (
       <div className="library-stats">
@@ -134,28 +177,11 @@ export default class LibraryStats extends React.Component<
                     height={175}
                   />
                   <YAxis hide={true} />
-                  <Tooltip
-                    formatter={(value) => new Intl.NumberFormat('en').format(value)}
-                    labelStyle={{ 'text-decoration': 'underline' }}
-                  />
-                  {/*<Bar stackId="collections" dataKey="Licensed Titles" barSize={50} fill="#737373" />*/}
-                  <Bar
-                    stackId="collections"
-                    dataKey="Enumerated License Titles"
-                    barSize={50}
-                    fill="#404040"
-                    />
-                  <Bar
-                    stackId="collections"
-                    dataKey="Unlimited License Titles"
-                    barSize={50}
-                    fill="#808080"
-                  />
-                  <Bar
-                    stackId="collections"
-                    dataKey="Open Access Titles"
-                    barSize={50} fill="#000000"
-                  />
+                  <Tooltip content={CustomTooltip} formatter={formatNumber}
+                           labelStyle={{ "text-decoration": "underline" }}/>
+                  <Bar stackId="collections" dataKey="Enumerated License Titles" barSize={50} fill="#606060" />
+                  <Bar stackId="collections" dataKey="Unlimited License Titles" barSize={50} fill="#404040" />
+                  <Bar stackId="collections" dataKey="Open Access Titles" barSize={50} fill="#202020"/>
                 </BarChart>
               </li>
             )}
