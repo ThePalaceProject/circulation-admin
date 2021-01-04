@@ -97,13 +97,20 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="classificationsform.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="classificationsform.html#audienceref" class="tsd-kind-icon">audience<wbr>Ref</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="classificationsform.html#context" class="tsd-kind-icon">context</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="classificationsform.html#errormessageref" class="tsd-kind-icon">error<wbr>Message<wbr>Ref</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="classificationsform.html#fictionref" class="tsd-kind-icon">fiction<wbr>Ref</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="classificationsform.html#nofictionselectedref" class="tsd-kind-icon">no<wbr>Fiction<wbr>Selected<wbr>Ref</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="classificationsform.html#nonfictionref" class="tsd-kind-icon">nonfiction<wbr>Ref</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="classificationsform.html#props" class="tsd-kind-icon">props</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="classificationsform.html#refs" class="tsd-kind-icon">refs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="classificationsform.html#state" class="tsd-kind-icon">state</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="classificationsform.html#targetagemaxref" class="tsd-kind-icon">target<wbr>Age<wbr>Max<wbr>Ref</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="classificationsform.html#targetageminref" class="tsd-kind-icon">target<wbr>Age<wbr>Min<wbr>Ref</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="classificationsform.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a></li>
 							</ul>
 						</section>
@@ -155,7 +162,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L19">src/components/ClassificationsForm.tsx:19</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L26">src/components/ClassificationsForm.tsx:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -169,8 +176,18 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="audienceref" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> audience<wbr>Ref</h3>
+					<div class="tsd-signature tsd-kind-icon">audience<wbr>Ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><a href="editableinput.html" class="tsd-signature-type">EditableInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;React.createRef&lt;EditableInput&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L21">src/components/ClassificationsForm.tsx:21</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="context" class="tsd-anchor"></a>
 					<h3>context</h3>
@@ -179,6 +196,46 @@
 						<p>Inherited from Component.context</p>
 						<ul>
 							<li>Defined in node_modules/@types/react/index.d.ts:445</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="errormessageref" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> error<wbr>Message<wbr>Ref</h3>
+					<div class="tsd-signature tsd-kind-icon">error<wbr>Message<wbr>Ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;React.createRef&lt;Alert&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L20">src/components/ClassificationsForm.tsx:20</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="fictionref" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> fiction<wbr>Ref</h3>
+					<div class="tsd-signature tsd-kind-icon">fiction<wbr>Ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><a href="editableinput.html" class="tsd-signature-type">EditableInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;React.createRef&lt;EditableInput&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L25">src/components/ClassificationsForm.tsx:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="nofictionselectedref" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> no<wbr>Fiction<wbr>Selected<wbr>Ref</h3>
+					<div class="tsd-signature tsd-kind-icon">no<wbr>Fiction<wbr>Selected<wbr>Ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><a href="editableinput.html" class="tsd-signature-type">EditableInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;React.createRef&lt;EditableInput&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L24">src/components/ClassificationsForm.tsx:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="nonfictionref" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> nonfiction<wbr>Ref</h3>
+					<div class="tsd-signature tsd-kind-icon">nonfiction<wbr>Ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><a href="editableinput.html" class="tsd-signature-type">EditableInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;React.createRef&lt;EditableInput&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L26">src/components/ClassificationsForm.tsx:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -220,6 +277,26 @@
 						<p>Inherited from Component.state</p>
 						<ul>
 							<li>Defined in node_modules/@types/react/index.d.ts:471</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="targetagemaxref" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> target<wbr>Age<wbr>Max<wbr>Ref</h3>
+					<div class="tsd-signature tsd-kind-icon">target<wbr>Age<wbr>Max<wbr>Ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><a href="editableinput.html" class="tsd-signature-type">EditableInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;React.createRef&lt;EditableInput&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L23">src/components/ClassificationsForm.tsx:23</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="targetageminref" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> target<wbr>Age<wbr>Min<wbr>Ref</h3>
+					<div class="tsd-signature tsd-kind-icon">target<wbr>Age<wbr>Min<wbr>Ref<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RefObject</span><span class="tsd-signature-symbol">&lt;</span><a href="editableinput.html" class="tsd-signature-type">EditableInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;React.createRef&lt;EditableInput&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L22">src/components/ClassificationsForm.tsx:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -322,7 +399,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L291">src/components/ClassificationsForm.tsx:291</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L297">src/components/ClassificationsForm.tsx:297</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -345,7 +422,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L196">src/components/ClassificationsForm.tsx:196</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L203">src/components/ClassificationsForm.tsx:203</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -368,7 +445,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L204">src/components/ClassificationsForm.tsx:204</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L211">src/components/ClassificationsForm.tsx:211</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -467,7 +544,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides DeprecatedLifecycle.componentWillMount</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L180">src/components/ClassificationsForm.tsx:180</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L187">src/components/ClassificationsForm.tsx:187</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -485,7 +562,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides DeprecatedLifecycle.componentWillReceiveProps</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L188">src/components/ClassificationsForm.tsx:188</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L195">src/components/ClassificationsForm.tsx:195</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -556,7 +633,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L220">src/components/ClassificationsForm.tsx:220</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L227">src/components/ClassificationsForm.tsx:227</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -618,7 +695,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L245">src/components/ClassificationsForm.tsx:245</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L252">src/components/ClassificationsForm.tsx:252</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -641,7 +718,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L230">src/components/ClassificationsForm.tsx:230</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L237">src/components/ClassificationsForm.tsx:237</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -688,7 +765,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L266">src/components/ClassificationsForm.tsx:266</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L273">src/components/ClassificationsForm.tsx:273</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -705,7 +782,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L276">src/components/ClassificationsForm.tsx:276</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L282">src/components/ClassificationsForm.tsx:282</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -722,7 +799,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L297">src/components/ClassificationsForm.tsx:297</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L303">src/components/ClassificationsForm.tsx:303</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -746,7 +823,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides Component.render</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L35">src/components/ClassificationsForm.tsx:35</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L42">src/components/ClassificationsForm.tsx:42</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
@@ -838,7 +915,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L215">src/components/ClassificationsForm.tsx:215</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L222">src/components/ClassificationsForm.tsx:222</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -855,7 +932,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L303">src/components/ClassificationsForm.tsx:303</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L309">src/components/ClassificationsForm.tsx:309</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -872,7 +949,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/fc88782/src/components/ClassificationsForm.tsx#L256">src/components/ClassificationsForm.tsx:256</a></li>
+									<li>Defined in <a href="https://github.com/NYPL-Simplified/circulation-web/blob/015083f/src/components/ClassificationsForm.tsx#L263">src/components/ClassificationsForm.tsx:263</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -908,8 +985,23 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="classificationsform.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="classificationsform.html#audienceref" class="tsd-kind-icon">audience<wbr>Ref</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="classificationsform.html#context" class="tsd-kind-icon">context</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="classificationsform.html#errormessageref" class="tsd-kind-icon">error<wbr>Message<wbr>Ref</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="classificationsform.html#fictionref" class="tsd-kind-icon">fiction<wbr>Ref</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="classificationsform.html#nofictionselectedref" class="tsd-kind-icon">no<wbr>Fiction<wbr>Selected<wbr>Ref</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="classificationsform.html#nonfictionref" class="tsd-kind-icon">nonfiction<wbr>Ref</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="classificationsform.html#props" class="tsd-kind-icon">props</a>
@@ -919,6 +1011,12 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="classificationsform.html#state" class="tsd-kind-icon">state</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="classificationsform.html#targetagemaxref" class="tsd-kind-icon">target<wbr>Age<wbr>Max<wbr>Ref</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="classificationsform.html#targetageminref" class="tsd-kind-icon">target<wbr>Age<wbr>Min<wbr>Ref</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="classificationsform.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a>
