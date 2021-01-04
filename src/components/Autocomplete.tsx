@@ -11,6 +11,7 @@ export interface AutocompleteProps {
 }
 
 export default class Autocomplete extends React.Component<AutocompleteProps, {}> {
+  private inputRef = React.createRef<EditableInput>();
   render(): JSX.Element {
     return (
       <div>
@@ -22,7 +23,7 @@ export default class Autocomplete extends React.Component<AutocompleteProps, {}>
           list={this.props.name + "-autocomplete-list"}
           label={this.props.label}
           value={this.props.value}
-          ref="input"
+          ref={this.inputRef}
           optionalText={false}
           onChange={this.props.onChange}
         />
@@ -39,10 +40,10 @@ export default class Autocomplete extends React.Component<AutocompleteProps, {}>
   }
 
   getValue() {
-    return (this.refs["input"] as any).getValue();
+    return this.inputRef.current.getValue();
   }
 
   clear() {
-    (this.refs["input"] as any).setState({ value: "" });
+    this.inputRef.current.setState({ value: "" });
   }
 }

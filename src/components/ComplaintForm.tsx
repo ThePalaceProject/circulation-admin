@@ -13,6 +13,7 @@ export interface ComplaintFormProps {
 
 /** Form for adding a new complaint to a book, from the complaints tab of the book detail page. */
 export default class ComplaintForm extends React.Component<ComplaintFormProps, any> {
+  private typeRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
     this.state = { errors: [] };
@@ -52,7 +53,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
               <legend>Add Complaint</legend>
               <EditableInput
                 elementType="select"
-                ref="type"
+                ref={this.typeRef}
                 name="type"
                 placeholder=""
                 aria-label="Select a complaint type"
@@ -95,6 +96,6 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
   }
 
   clear() {
-    (this.refs["type"] as any).clear();
+    this.typeRef.current.clear();
   }
 }

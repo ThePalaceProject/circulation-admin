@@ -149,11 +149,11 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   getValue() {
-    return this.elementRef.current && this.elementRef.current.value;
+    return this.elementRef.current?.value;
   }
 
   getChecked() {
-    return this.elementRef.current && this.elementRef.current.checked;
+    return this.elementRef.current?.checked;
   }
 
   setValue(value) {

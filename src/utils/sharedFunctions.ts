@@ -15,14 +15,22 @@ export function findDefault(setting) {
 // Blank out the create form on successful submission, so that the user can go
 // ahead and create another new thing.  Used by IndividualAdminEditForm,
 // LibraryEditForm, SitewideSettingEditForm, and ServiceEditForm.
-export function clearForm(refs) {
+export function clearForm(refs, useCurrent = false) {
   if (refs) {
     let keys = Object.keys(refs);
     for (let i = 0; i < keys.length; i++) {
       let key = keys[i];
-      refs[key].clear && refs[key].clear();
-      if (refs[key].props && refs[key].props.onRemove) {
-        refs[key].props.onRemove();
+      if (useCurrent) {
+        refs[key].current?.clear && refs[key].current.clear();
+        if (refs[key].current?.props && refs[key].current.props.onRemove) {
+          refs[key].current.props.onRemove();
+        }
+      }
+      else {
+        refs[key].clear && refs[key].clear();
+        if (refs[key].props && refs[key].props.onRemove) {
+          refs[key].props.onRemove();
+        }
       }
     }
   }

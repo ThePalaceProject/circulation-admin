@@ -42,6 +42,13 @@ export interface BookCoverEditorProps extends BookCoverEditorStateProps, BookCov
 
 /** Tab on the book details page for uploading a new book cover. */
 export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
+  private formContainerRef = React.createRef<HTMLDivElement>();
+  private imageFormRef = React.createRef<Form>();
+  private coverUrlRef = React.createRef<EditableInput>();
+  private coverFileRef = React.createRef<EditableInput>();
+  private titlePositionRef = React.createRef<EditableInput>();
+  private rightsFormRef = React.createRef<Form>();
+  private rightStatusRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
     this.refresh = this.refresh.bind(this);
@@ -76,7 +83,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
             alt="Current book cover"
             />
         </div>
-        <div ref="form-container" className="cover-edit-form">
+        <div ref={this.formContainerRef} className="cover-edit-form">
           <h3>Change cover:</h3>
           <Panel
             id="cover-metadata"
@@ -110,13 +117,13 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   renderCoverForm() {
-    let titlePositionRef = this.refs["title_position"] as any;
+    let titlePositionRef = this.titlePositionRef.current;
     let titlePositionValue = titlePositionRef && titlePositionRef.getValue();
     return (
       <div>
         <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
         <Form
-          ref="image-form"
+          ref={this.imageFormRef}
           className="edit-form"
           onSubmit={this.preview}
           buttonContent="Preview"
@@ -133,7 +140,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 disabled={this.props.isFetching}
                 name="cover_url"
                 label="URL for cover image"
-                ref="cover_url"
+                ref={this.coverUrlRef}
                 optionalText={false}
               />
               <EditableInput
@@ -143,7 +150,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 name="cover_file"
                 label="Or upload cover image"
                 accept="image/*"
-                ref="cover_file"
+                ref={this.coverFileRef}
                 optionalText={false}
               />
               <EditableInput
@@ -152,7 +159,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 name="title_position"
                 label="Title and Author Position"
                 value="none"
-                ref="title_position"
+                ref={this.titlePositionRef}
               >
                 <option value="none" aria-selected={titlePositionValue === "none"}>None</option>
                 <option value="top" aria-selected={titlePositionValue === "top"}>Top</option>
@@ -184,8 +191,8 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   preview(data: FormData) {
-    const file = (this.refs["cover_file"] as any).getValue();
-    const url = (this.refs["cover_url"] as any).getValue();
+    const file = this.coverFileRef.current.getValue();
+    const url = this.coverUrlRef.current.getValue();
     if (!file && !url && this.props.clearPreview) {
       this.props.clearPreview();
     }
@@ -197,11 +204,11 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   renderRightsForm() {
     const copyrightStatusUri = "http://librarysimplified.org/terms/rights-status/in-copyright";
     const unknownStatusUri = "http://librarysimplified.org/terms/rights-status/unknown";
-    let rightStatusRef = this.refs["rights_status"] as any;
+    let rightStatusRef = this.rightStatusRef.current;
     let rightStatusValue = rightStatusRef && rightStatusRef.getValue();
     return (
       <Form
-        ref="rights-form"
+        ref={this.rightsFormRef}
         onSubmit={this.save}
         className="edit-form"
         withoutButton={true}
@@ -212,7 +219,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
               elementType="select"
               disabled={this.props.isFetching}
               name="rights_status"
-              ref="rights_status"
+              ref={this.rightStatusRef}
               label="License"
             >
               { Object.keys(this.props.rightsStatuses).map(uri => {
@@ -250,13 +257,13 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
 
     const editUrl = this.props.book && this.props.book.changeCoverLink && this.props.book.changeCoverLink.href;
 
-    const imageForm = (this.refs["image-form"] as HTMLFormElement).formRef.current;
+    const imageForm = this.imageFormRef.current.formRef.current;
     const imageFormData = new (window as any).FormData(imageForm);
     data.append("cover_file", imageFormData.get("cover_file"));
     data.append("cover_url", imageFormData.get("cover_url"));
     data.append("title_position", imageFormData.get("title_position"));
 
-    const rightsForm = (this.refs["rights-form"] as HTMLFormElement).formRef.current;
+    const rightsForm = this.rightsFormRef.current.formRef.current;
     const rightsFormData = new (window as any).FormData(rightsForm);
     data.append("rights_status", rightsFormData.get("rights_status"));
     data.append("rights_explanation", rightsFormData.get("rights_explanation"));

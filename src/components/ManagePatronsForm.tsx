@@ -30,6 +30,7 @@ export interface ManagePatronsFormProps extends ManagePatronsFormStateProps, Man
 
 
 export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {}> {
+  private identifierRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
     this.submit = this.submit.bind(this);
@@ -52,7 +53,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {
           content={
             <EditableInput
               elementType="input"
-              ref="identifier"
+              ref={this.identifierRef}
               name="identifier"
               label="Identifier"
               className="form-control"

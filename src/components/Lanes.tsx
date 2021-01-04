@@ -56,6 +56,7 @@ export interface LanesState {
 /** Body of the lanes page, with all a library's lanes shown in a left sidebar and
     a lane editor on the right. */
 export class Lanes extends React.Component<LanesProps, LanesState> {
+  private resetRef = React.createRef<EditableInput>();
   static defaultProps = {
     editOrCreate: "create"
   };
@@ -167,7 +168,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   checkReset() {
-    let inputValue = this.refs["reset"] && (this.refs["reset"] as EditableInput).getValue();
+    let inputValue = this.resetRef.current && this.resetRef.current.getValue();
     this.setState({...this.state, canReset: (inputValue === "RESET")});
   }
 
@@ -180,7 +181,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
           <hr />
           <p>This cannot be undone.</p>
           <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
-          <EditableInput type="text" ref="reset" required={true} onChange={this.checkReset}/>
+          <EditableInput type="text" ref={this.resetRef} required={true} onChange={this.checkReset}/>
           <Button
             className="reset-button left-align danger"
             callback={this.resetLanes}

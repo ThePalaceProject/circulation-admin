@@ -12,7 +12,7 @@ export interface LanguageFieldProps {
 }
 
 export default class LanguageField extends React.Component<LanguageFieldProps, {}> {
-
+  autocompleteRef = React.createRef<Autocomplete>();
   render() {
     let value = (this.props.languages && this.props.languages[this.props.value] && this.props.languages[this.props.value][0]) || this.props.value;
     return (
@@ -22,7 +22,7 @@ export default class LanguageField extends React.Component<LanguageFieldProps, {
         name={this.props.name || "language"}
         value={value}
         label={this.props.label}
-        ref="autocomplete"
+        ref={this.autocompleteRef}
         onChange={this.props.onChange}
       />
     );

@@ -12,6 +12,7 @@ export interface ErrorMessageProps {
 /** Shows a bootstrap error message at the top of the page when there's a bad
     response from the server. */
 export default class ErrorMessage extends React.Component<ErrorMessageProps, {}> {
+  private errorMessageRef = React.createRef<HTMLDivElement>();
   render(): JSX.Element {
     let status = this.props.error.status;
     let errorMessageHeader;
@@ -72,15 +73,15 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
     }
 
     return (
-      <div tabIndex={0} ref="errorMessage">
+      <div tabIndex={0} ref={this.errorMessageRef}>
         {alertElement}
       </div>
     );
   }
 
   componentDidMount() {
-    if (this.refs["errorMessage"]) {
-      ReactDOM.findDOMNode<HTMLDivElement>(this.refs["errorMessage"]).focus();
+    if (this.errorMessageRef.current) {
+      ReactDOM.findDOMNode<HTMLDivElement>(this.errorMessageRef.current).focus();
     }
   }
 

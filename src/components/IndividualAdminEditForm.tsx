@@ -36,6 +36,13 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     settingUp: PropTypes.bool.isRequired,
     admin: PropTypes.object.isRequired as React.Validator<Admin>
   };
+  private emailRef = React.createRef<EditableInput>();
+  private passwordRef = React.createRef<EditableInput>();
+  private systemRef = React.createRef<EditableInput>();
+  private managerAllRef = React.createRef<EditableInput>();
+  private librarianAllRef = React.createRef<EditableInput>();
+  private libraryManagerRef = React.createRef<EditableInput>();
+  private librarianRef = React.createRef<EditableInput>();
 
   constructor(props) {
     super(props);
@@ -55,7 +62,15 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       this.setState({ admin: new Admin(nextProps.item.roles || []) });
     }
     if (nextProps.responseBody && !nextProps.fetchError) {
-      clearForm(this.refs);
+      [
+        this.emailRef,
+        this.passwordRef,
+        this.systemRef,
+        this.managerAllRef,
+        this.librarianAllRef,
+        this.libraryManagerRef,
+        this.librarianRef
+      ].forEach(ref => clearForm(ref));
     }
   }
 
@@ -101,7 +116,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           readOnly={!!(this.props.item && this.props.item.email)}
           name="email"
           label="Email"
-          ref="email"
+          ref={this.emailRef}
           value={this.props.item && this.props.item.email}
           error={this.props.error}
           />
@@ -112,7 +127,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             disabled={this.props.disabled}
             name="password"
             label="Password"
-            ref="password"
+            ref={this.passwordRef}
             required={this.context.settingUp}
             error={this.props.error}
             />
@@ -130,7 +145,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           type="checkbox"
           disabled={this.isDisabled("system")}
           name="system"
-          ref="system"
+          ref={this.systemRef}
           label="System Admin"
           checked={this.isSelected("system")}
           onChange={() => this.handleRoleChange("system")}
@@ -145,7 +160,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                    type="checkbox"
                    disabled={this.isDisabled("manager-all")}
                    name="manager-all"
-                   ref="manager-all"
+                   ref={this.managerAllRef}
                    label="Library Manager"
                    checked={this.isSelected("manager-all")}
                    onChange={() => this.handleRoleChange("manager-all")}
@@ -157,7 +172,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                   type="checkbox"
                   disabled={this.isDisabled("librarian-all")}
                   name="librarian-all"
-                  ref="librarian-all"
+                  ref={this.librarianAllRef}
                   label="Librarian"
                   checked={this.isSelected("librarian-all")}
                   onChange={() => this.handleRoleChange("librarian-all")}
@@ -177,7 +192,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     type="checkbox"
                     disabled={this.isDisabled("manager", library.short_name)}
                     name={"manager-" + library.short_name}
-                    ref={"manager-" + library.short_name}
+                    ref={this.libraryManagerRef}
                     label=""
                     aria-label={`Library Manager for ${library.short_name}`}
                     checked={this.isSelected("manager", library.short_name)}
@@ -190,7 +205,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     type="checkbox"
                     disabled={this.isDisabled("librarian", library.short_name)}
                     name={"librarian-" + library.short_name}
-                    ref={"librarian-" + library.short_name}
+                    ref={this.librarianRef}
                     label=""
                     aria-label={`Librarian for ${library.short_name}`}
                     checked={this.isSelected("librarian", library.short_name)}

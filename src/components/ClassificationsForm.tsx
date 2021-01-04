@@ -17,6 +17,13 @@ export interface ClassificationsFormProps {
 /** Form for editing a books classifications on the classifications tab of the
     book detail page. */
 export default class ClassificationsForm extends React.Component<ClassificationsFormProps, any> {
+  private errorMessageRef = React.createRef<Alert>();
+  private audienceRef = React.createRef<EditableInput>();
+  private targetAgeMinRef = React.createRef<EditableInput>();
+  private targetAgeMaxRef = React.createRef<EditableInput>();
+  private noFictionSelectedRef = React.createRef<EditableInput>();
+  private fictionRef = React.createRef<EditableInput>();
+  private nonfictionRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +55,7 @@ export default class ClassificationsForm extends React.Component<Classifications
         <legend className="visuallyHidden">Classifications</legend>
 
         { error &&
-          <Alert bsStyle="danger" ref="errorMessage" tabIndex={-1}>
+          <Alert bsStyle="danger" ref={this.errorMessageRef} tabIndex={-1}>
             { Object.keys(error).map(err => {
               return (<p>{error[err]}</p>);
             })}
@@ -67,7 +74,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                 disabled={this.props.disabled}
                 name="audience"
                 label="Audience"
-                ref="audience"
+                ref={this.audienceRef}
                 value={this.props.book.audience || "None"}
                 onChange={this.handleAudienceChange}
                 clientError={hasAudienceError}
@@ -89,7 +96,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                   <div className="form-inline">
                     <EditableInput
                       elementType="input"
-                      ref="targetAgeMin"
+                      ref={this.targetAgeMinRef}
                       type="text"
                       disabled={this.props.disabled}
                       name="target_age_min"
@@ -99,7 +106,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                     <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
                     <EditableInput
                       elementType="input"
-                      ref="targetAgeMax"
+                      ref={this.targetAgeMaxRef}
                       type="text"
                       disabled={this.props.disabled}
                       name="target_age_max"
@@ -119,7 +126,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                       name="fiction"
                       value="none"
                       label="None"
-                      ref="noFictionSelected"
+                      ref={this.noFictionSelectedRef}
                       checked={true}
                       onChange={this.handleFictionChange}
                       clientError={hasFictionError}
@@ -131,7 +138,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                     name="fiction"
                     value="fiction"
                     label="Fiction"
-                    ref="fiction"
+                    ref={this.fictionRef}
                     checked={fiction !== undefined && fiction}
                     onChange={this.handleFictionChange}
                     clientError={hasFictionError}
@@ -142,7 +149,7 @@ export default class ClassificationsForm extends React.Component<Classifications
                     name="fiction"
                     value="nonfiction"
                     label="Nonfiction"
-                    ref="nonfiction"
+                    ref={this.nonfictionRef}
                     checked={fiction !== undefined && !fiction}
                     onChange={this.handleFictionChange}
                     clientError={hasFictionError}
@@ -264,8 +271,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   handleAudienceChange() {
-    let value = (this.refs as any).audience.getValue();
-
+    let value = this.audienceRef.current.getValue();
     if (this.validateAudience(value, this.state.genres)) {
       this.setState({ audience: value });
     } else {
@@ -274,7 +280,7 @@ export default class ClassificationsForm extends React.Component<Classifications
   }
 
   handleFictionChange() {
-    let value = (this.refs as any).fiction.getChecked();
+    let value = this.fictionRef.current.getChecked();
     let clearedType = value ? "Nonfiction" : "Fiction";
     let message = "Are you sure? This will clear any " +
                   clearedType +
@@ -316,8 +322,8 @@ export default class ClassificationsForm extends React.Component<Classifications
     if (error["audience"] || error["fiction"]) {
       this.setState({ error });
       setTimeout(() => {
-        if (this.refs["errorMessage"]) {
-          ReactDOM.findDOMNode<HTMLDivElement>(this.refs["errorMessage"]).focus();
+        if (this.errorMessageRef.current) {
+          ReactDOM.findDOMNode<HTMLDivElement>(this.errorMessageRef.current).focus();
         }
       }, 500);
       return;
@@ -325,8 +331,8 @@ export default class ClassificationsForm extends React.Component<Classifications
 
     data.append("audience", audience);
     if (this.shouldShowTargetAge()) {
-      data.append("target_age_min", (this.refs as any).targetAgeMin.getValue());
-      data.append("target_age_max", (this.refs as any).targetAgeMax.getValue());
+      data.append("target_age_min", this.targetAgeMinRef.current.getValue());
+      data.append("target_age_max", this.targetAgeMaxRef.current.getValue());
     }
     data.append("fiction", fiction ? "fiction" : "nonfiction");
     this.state.genres.forEach(genre => data.append("genres", genre));
