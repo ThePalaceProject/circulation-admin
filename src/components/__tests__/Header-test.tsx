@@ -107,7 +107,7 @@ describe("Header", () => {
 
     it("shows sitewide links, non-catalog library links, and patron manager link for library manager", () => {
       let links = wrapper.find(Link);
-      expect(links.length).to.equal(5);
+      expect(links.length).to.equal(6);
 
       let listsLink = links.at(0);
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
@@ -125,7 +125,11 @@ describe("Header", () => {
       expect(patronManagerLink.prop("to")).to.equal("/admin/web/patrons/nypl");
       expect(patronManagerLink.children().text()).to.equal("Patrons");
 
-      let settingsLink = links.at(4);
+      let plugins = links.at(4);
+      expect(plugins.prop("to")).to.equal("/admin/web/plugin/nypl");
+      expect(plugins.children().text()).to.equal("Plugins");
+
+      let settingsLink = links.at(5);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config/");
       expect(settingsLink.children().text()).to.equal("System Configuration");
 
@@ -178,14 +182,14 @@ describe("Header", () => {
         wrapper.setContext({ library: () => "nypl", admin: libraryManager });
         let links = wrapper.find(Link);
         let patronManagerLink = links.at(3);
-        expect(links.length).to.equal(5);
+        expect(links.length).to.equal(6);
         expect(patronManagerLink.children().text()).to.equal("Patrons");
       });
       it("shows Patron Manager link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
         let links = wrapper.find(Link);
         let patronManagerLink = links.at(3);
-        expect(links.length).to.equal(6);
+        expect(links.length).to.equal(7);
         expect(patronManagerLink.children().text()).to.equal("Patrons");
       });
     });
@@ -201,7 +205,7 @@ describe("Header", () => {
       it("does not show Troubleshooting link for library manager", () => {
         wrapper.setContext({ library: () => "nypl", admin: libraryManager });
         let links = wrapper.find(Link);
-        expect(links.length).to.equal(5);
+        expect(links.length).to.equal(6);
         links.forEach((link) => {
           expect(link.children().text()).to.not.equal("Troubleshooting");
         });
@@ -209,8 +213,8 @@ describe("Header", () => {
       it("shows Troubleshooting link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
         let links = wrapper.find(Link);
-        expect(links.length).to.equal(6);
-        expect(links.at(5).children().text()).to.equal("Troubleshooting");
+        expect(links.length).to.equal(7);
+        expect(links.at(6).children().text()).to.equal("Troubleshooting");
       });
     });
   });

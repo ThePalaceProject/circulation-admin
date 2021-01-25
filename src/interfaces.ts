@@ -200,7 +200,7 @@ export interface SettingData {
   key: string;
   label: string;
   description?: string;
-  default?: string | string[] | Object[];
+  default?: string | string[] | Record<string, any>[];
   required?: boolean;
   randomizable?: boolean;
   type?: string;
@@ -275,7 +275,7 @@ export interface ServicesWithRegistrationsData extends ServicesData {
   libraryRegistrations?: LibraryRegistrationData[];
 }
 
-export interface CollectionData extends ServiceData { }
+export type CollectionData = ServiceData;
 
 export interface CollectionsData extends ServicesWithRegistrationsData {
   collections: CollectionData[];
@@ -285,7 +285,7 @@ export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
 
-export interface AdminAuthServiceData extends ServiceData { }
+export type AdminAuthServiceData = ServiceData;
 
 export interface AdminAuthServicesData extends ServicesData {
   admin_auth_services: AdminAuthServiceData[];
@@ -307,7 +307,7 @@ export interface IndividualAdminsData {
   allLibraries?: LibraryData[];
 }
 
-export interface PatronAuthServiceData extends ServiceData { }
+export type PatronAuthServiceData = ServiceData;
 
 export interface PatronAuthServicesData extends ServicesData {
   patron_auth_services: PatronAuthServiceData[];
@@ -338,49 +338,72 @@ export interface SitewideSettingsData {
   all_settings: SettingData[];
 }
 
-export interface LoggingServiceData extends ServiceData { }
+export type LoggingServiceData = ServiceData;
 
 export interface LoggingServicesData extends ServicesData {
   logging_services: LoggingServiceData[];
 }
 
-export interface MetadataServiceData extends ServiceData { }
+export type MetadataServiceData = ServiceData;
 
 export interface MetadataServicesData extends ServicesData {
   metadata_services: MetadataServiceData[];
 }
 
-export interface AnalyticsServiceData extends ServiceData { }
+export type AnalyticsServiceData = ServiceData;
 
 export interface AnalyticsServicesData extends ServicesData {
   analytics_services: AnalyticsServiceData[];
 }
 
-export interface CDNServiceData extends ServiceData { }
+export type CDNServiceData = ServiceData;
 
 export interface CDNServicesData extends ServicesData {
   cdn_services: CDNServiceData[];
 }
 
-export interface SearchServiceData extends ServiceData { }
+export interface PluginData extends ServiceData {
+  name: string;
+}
+
+export interface PluginSettingField extends SettingData {
+  value:
+    | string
+    | string[]
+    | {}[]
+    | Array<string | {} | JSX.Element>
+    | JSX.Element;
+}
+
+export interface PluginConfig extends ServiceData {
+  name: string;
+  lib: string;
+  fields: PluginSettingField[];
+}
+
+export interface PluginListData extends ServicesData {
+  plugins: PluginData[];
+}
+
+export type SearchServiceData = ServiceData;
 
 export interface SearchServicesData extends ServicesData {
   search_services: SearchServiceData[];
 }
 
-export interface StorageServiceData extends ServiceData { }
+export type StorageServiceData = ServiceData;
 
 export interface StorageServicesData extends ServicesData {
   storage_services: StorageServiceData[];
 }
 
-export interface CatalogServiceData extends ServiceData { }
+export type CatalogServiceData = ServiceData;
 
 export interface CatalogServicesData extends ServicesData {
   catalog_services: CatalogServiceData[];
 }
 
-export interface DiscoveryServiceData extends ServiceData { }
+export type DiscoveryServiceData = ServiceData;
 
 export interface DiscoveryServicesData extends ServicesWithRegistrationsData {
   discovery_services: DiscoveryServiceData[];

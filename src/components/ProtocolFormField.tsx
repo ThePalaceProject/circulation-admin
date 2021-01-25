@@ -1,15 +1,25 @@
+/* eslint-disable */
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ColorPicker from "./ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
-import { SettingData, CustomListsSetting } from "../interfaces";
+import {
+  SettingData,
+  CustomListsSetting,
+  PluginSettingField,
+} from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 
 export interface ProtocolFormFieldProps {
-  setting: SettingData | CustomListsSetting;
+  setting: SettingData | CustomListsSetting | PluginSettingField;
   disabled: boolean;
-  value?: string | string[] | {}[] | Array<string | {} | JSX.Element> | JSX.Element;
+  value?:
+    | string
+    | string[]
+    | {}[]
+    | Array<string | {} | JSX.Element>
+    | JSX.Element;
   altValue?: string;
   default?: any;
   error?: FetchErrorData;
@@ -23,7 +33,10 @@ export interface ProtocolFormFieldProps {
 
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
-export default class ProtocolFormField extends React.Component<ProtocolFormFieldProps, {}> {
+export default class ProtocolFormField extends React.Component<
+  ProtocolFormFieldProps,
+  {}
+> {
   private inputListRef = React.createRef<InputList>();
   private colorPickerRef = React.createRef<ColorPicker>();
   private elementRef = React.createRef<EditableInput>();
@@ -39,43 +52,55 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     if (setting.type === "select") {
       return this.renderSelectSetting(setting);
     } else if (setting.type === "list" || setting.type === "menu") {
-        return this.renderListSetting(setting);
+      return this.renderListSetting(setting);
     } else if (setting.type === "color-picker") {
-        return this.renderColorPickerSetting(setting);
+      return this.renderColorPickerSetting(setting);
     } else {
-        return this.renderSetting(setting);
+      return this.renderSetting(setting);
     }
   }
 
   renderSetting(setting: SettingData, customProps = null): JSX.Element {
     return (
       <div className={setting.randomizable ? "randomizable" : ""}>
-        {this.props.value && setting.type === "image" && <img src={String(this.props.value)} alt="" role="presentation" />}
-        {
-          this.createEditableInput(setting)
-        }
-        { setting.randomizable && !this.props.value &&
+        {this.props.value && setting.type === "image" && (
+          <img src={String(this.props.value)} alt="" role="presentation" />
+        )}
+        {this.createEditableInput(setting)}
+        {setting.randomizable && !this.props.value && (
           <div className="text-right">
-            <Button disabled={this.props.disabled} callback={this.randomize} content={"Set to random value"} type="button" />
+            <Button
+              disabled={this.props.disabled}
+              callback={this.randomize}
+              content={"Set to random value"}
+              type="button"
+            />
           </div>
-        }
+        )}
       </div>
     );
   }
 
-  createEditableInput(setting: SettingData, customProps = null, children = null): JSX.Element {
-    let elementType = setting.type && ["text", "textarea", "select"].includes(setting.type) ? setting.type : "input";
+  createEditableInput(
+    setting: SettingData,
+    customProps = null,
+    children = null
+  ): JSX.Element {
+    let elementType =
+      setting.type && ["text", "textarea", "select"].includes(setting.type)
+        ? setting.type
+        : "input";
 
     const extraProps = {
-      "image": {
+      image: {
         accept: "image/*",
         type: "file",
-        value: undefined
+        value: undefined,
       },
-      "number": {
+      number: {
         validation: "number",
-        step: 1
-      }
+        step: 1,
+      },
     };
 
     const basicProps = {
@@ -92,25 +117,31 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       ref: this.elementRef,
       onChange: this.props.onChange,
     };
-    let props = extraProps[setting.type] ? {...basicProps, ...extraProps[setting.type]} : basicProps;
+    let props = extraProps[setting.type]
+      ? { ...basicProps, ...extraProps[setting.type] }
+      : basicProps;
     if (customProps) {
-      props = {...props, ...customProps};
+      props = { ...props, ...customProps };
     }
     return React.createElement(EditableInput, props, children);
   }
 
   renderSelectSetting(setting: SettingData): JSX.Element {
-    let children = setting.options && setting.options.map(option =>
-      <option key={option.key} value={option.key} aria-selected={false}>{option.label}</option>
-    );
+    let children =
+      setting.options &&
+      setting.options.map((option) => (
+        <option key={option.key} value={option.key} aria-selected={false}>
+          {option.label}
+        </option>
+      ));
     return this.createEditableInput(setting, null, children);
   }
 
   renderListSetting(setting: SettingData | CustomListsSetting): JSX.Element {
     // Flatten an object in which the values are arrays
-    let value = Array.isArray(this.props.value) ?
-      this.props.value :
-      (this.props.value && [].concat.apply([], Object.values(this.props.value)));
+    let value = Array.isArray(this.props.value)
+      ? this.props.value
+      : this.props.value && [].concat([], ...Object.values(this.props.value));
     return (
       <InputList
         ref={this.inputListRef}
@@ -133,7 +164,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   renderColorPickerSetting(setting: SettingData): JSX.Element {
     return (
       <div>
-        { this.labelAndDescription(setting) }
+        {this.labelAndDescription(setting)}
         <ColorPicker
           value={String(this.props.value || setting.default)}
           setting={setting}
@@ -144,23 +175,29 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   labelAndDescription(setting: SettingData): JSX.Element[] {
-    let label = (
-      <label key={setting.label}>
-        {setting.label}
-      </label>
-    );
+    let label = <label key={setting.label}>{setting.label}</label>;
     let description = setting.description && (
-      <span key={setting.description} className="description" dangerouslySetInnerHTML={{__html: setting.description }} />
+      <span
+        key={setting.description}
+        className="description"
+        dangerouslySetInnerHTML={{ __html: setting.description }}
+      />
     );
     let instructions = setting.instructions && (
-      <div className="well description" dangerouslySetInnerHTML={{__html: setting.instructions }}></div>
+      <div
+        className="well description"
+        dangerouslySetInnerHTML={{ __html: setting.instructions }}
+      ></div>
     );
     return [label, description, instructions];
   }
 
   isDefault(option: JSX.Element) {
     if (this.props.default) {
-      return this.props.default.indexOf(option) >= 0 || this.props.default.indexOf(option.key) >= 0;
+      return (
+        this.props.default.indexOf(option) >= 0 ||
+        this.props.default.indexOf(option.key) >= 0
+      );
     }
   }
 
@@ -179,11 +216,9 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   }
 
   findRef() {
-    return (
-      this.inputListRef?.current ||
+    return (this.inputListRef?.current ||
       this.elementRef?.current ||
-      this.colorPickerRef?.current
-    ) as any;
+      this.colorPickerRef?.current) as any;
   }
 
   clear() {

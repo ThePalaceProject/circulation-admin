@@ -1,0 +1,59 @@
+.plugin-list-sidebar {
+  border: 1px solid $gray;
+  padding: 15px;
+  margin: 7px 7px 15px 7px;
+  overflow-y: scroll;
+  h2 {
+    text-align: center;
+  }
+  .form-group {
+    display: inline-block;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 25px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: $pagetextcolor;
+    border: 1px solid $pagecolorlight;
+    border-bottom-color: $pagetextcolor;
+    &.active {
+      background-color: darken($pagecolorlight, 5%);
+      border-color: $pagetextcolor;
+    }
+    div {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 5px;
+
+      &:nth-child(1) {
+        flex-direction: column;
+        hyphens: auto;
+      }
+
+      &:nth-child(2) {
+        .btn {
+          width: 50%;
+        }
+      }
+    }
+  }
+}
+
+.dragging .plugin-list-manager .plugin-lists-sidebar li a {
+  cursor: inherit;
+
+  &:hover {
+    background-color: inherit;
+  }
+}

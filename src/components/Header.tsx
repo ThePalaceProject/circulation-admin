@@ -109,6 +109,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       { label: "Lanes", href: "lanes/", auth: isLibraryManager },
       { label: "Dashboard", href: "dashboard/" },
       { label: "Patrons", href: "patrons/", auth: isLibraryManager },
+      { label: "Plugins", href: "plugin/", auth: isLibraryManager },
     ];
     // Links that will be rendered in a Link router component and are sitewide.
     const sitewideLinkItems = [
