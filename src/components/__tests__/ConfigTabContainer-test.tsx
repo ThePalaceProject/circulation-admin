@@ -111,6 +111,7 @@ describe("ConfigTabContainer", () => {
       let linkTexts = links.map(link => link.text());
       expect(linkTexts).to.contain("Libraries");
       expect(linkTexts).to.contain("Admins");
+      expect(linkTexts).to.contain("Analytics");
       expect(linkTexts).not.to.contain("Collections");
       expect(linkTexts).not.to.contain("Admin Authentication");
       expect(linkTexts).not.to.contain("Patron Authentication");
@@ -122,7 +123,7 @@ describe("ConfigTabContainer", () => {
 
     it("shows components", () => {
       const expectedComponentClasses = [
-        Libraries, IndividualAdmins
+        Libraries, IndividualAdmins, AnalyticsServices
       ];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
@@ -133,7 +134,7 @@ describe("ConfigTabContainer", () => {
 
       const hiddenComponentClasses = [
         Collections, AdminAuthServices, PatronAuthServices, SitewideSettings,
-        MetadataServices, AnalyticsServices, CDNServices,
+        MetadataServices, CDNServices,
         SearchServices, StorageServices, CatalogServices,
         DiscoveryServices
       ];
@@ -162,20 +163,31 @@ describe("ConfigTabContainer", () => {
       );
     });
 
-    it("shows no tabs", () => {
+    it("shows tabs", () => {
       let links = wrapper.find("ul.nav-tabs").find("a");
-      expect(links.length).to.equal(0);
+      expect(links.length).to.equal(2);
+      let linkTexts = links.map(link => link.text());
+      expect(linkTexts).to.contain("Libraries");
+      expect(linkTexts).to.contain("Analytics");
     });
 
-    it("shows no components", () => {
-      const componentClasses = [
-        Libraries, IndividualAdmins, Collections,
-        AdminAuthServices, PatronAuthServices, SitewideSettings,
-        MetadataServices, AnalyticsServices, CDNServices,
-        SearchServices, StorageServices, CatalogServices,
-        DiscoveryServices
+    it("shows components", () => {
+      const expectedComponentClasses = [
+        Libraries, AnalyticsServices
       ];
-      for (const componentClass of componentClasses) {
+      for (const componentClass of expectedComponentClasses) {
+        const component = wrapper.find(componentClass);
+        expect(component.props().csrfToken).to.equal("token");
+        expect(component.props().editOrCreate).to.equal("edit");
+        expect(component.props().identifier).to.equal("identifier");
+      }
+      const hiddenComponentClasses = [
+        Collections, AdminAuthServices, PatronAuthServices, SitewideSettings,
+        MetadataServices, CDNServices,
+        SearchServices, StorageServices, CatalogServices,
+        DiscoveryServices, IndividualAdmins
+      ];
+      for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);
         expect(component.length).to.equal(0);
       }

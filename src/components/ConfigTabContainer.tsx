@@ -37,11 +37,6 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     admin: PropTypes.object.isRequired as React.Validator<Admin>
   };
 
-  LIBRARY_MANAGER_TABS = ["libraries", "individualAdmins"];
-  SYSTEM_ADMIN_TABS = ["collections", "adminAuth", "patronAuth", "sitewideSettings",
-                       "logging", "metadata", "analytics", "cdn", "search", "storage",
-                       "catalogServices", "discovery"];
-
   COMPONENT_CLASSES = {
     libraries: Libraries,
     individualAdmins: IndividualAdmins,
@@ -59,6 +54,10 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     discovery: DiscoveryServices
   };
 
+  LIBRARIAN_TABS = ["libraries", "analytics"];
+  LIBRARY_MANAGER_TABS = ["libraries", "individualAdmins", "analytics"];
+  SYSTEM_ADMIN_TABS = Object.keys(this.COMPONENT_CLASSES);
+
   DISPLAY_NAMES = {
     adminAuth: "Admin Authentication",
     individualAdmins: "Admins",
@@ -70,32 +69,28 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
 
   tabs() {
     const tabs = {};
-    if (this.context.admin.isLibraryManagerOfSomeLibrary()) {
-      for (let tab of this.LIBRARY_MANAGER_TABS) {
+    let makeTabs = (tabNames) => {
+      for (let tab of tabNames) {
         let ComponentClass = this.COMPONENT_CLASSES[tab];
         tabs[tab] = (
           <ComponentClass
-            store={this.props.store}
-            csrfToken={this.props.csrfToken}
-            editOrCreate={this.props.editOrCreate}
-            identifier={this.props.identifier}
-            />
+          store={this.props.store}
+          csrfToken={this.props.csrfToken}
+          editOrCreate={this.props.editOrCreate}
+          identifier={this.props.identifier}
+          />
         );
       }
-    }
+    };
+    let tabNames;
     if (this.context.admin.isSystemAdmin()) {
-      for (let tab of this.SYSTEM_ADMIN_TABS) {
-        let ComponentClass = this.COMPONENT_CLASSES[tab];
-        tabs[tab] = (
-          <ComponentClass
-            store={this.props.store}
-            csrfToken={this.props.csrfToken}
-            editOrCreate={this.props.editOrCreate}
-            identifier={this.props.identifier}
-            />
-        );
-      }
+      tabNames = this.SYSTEM_ADMIN_TABS;
+    } else if (this.context.admin.isLibraryManagerOfSomeLibrary()) {
+      tabNames = this.LIBRARY_MANAGER_TABS;
+    } else {
+      tabNames = this.LIBRARIAN_TABS;
     }
+    makeTabs(tabNames);
     return tabs;
   }
 
