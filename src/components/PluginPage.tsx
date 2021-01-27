@@ -39,7 +39,7 @@ export default class PluginPage extends React.Component<
 
   getChildContext() {
     return {
-      library: () => this.libraryObject.name,
+      library: () => this.libraryObject,
     };
   }
 
