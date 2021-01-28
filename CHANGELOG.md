@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.4.32
+
+#### Updated
+
+- Enabled all admins to access the system configuration section
+- Implemented a protocol for disabling specific input fields based on the current admin's permissions level
+
 ### v0.4.31
 
 #### Updated
