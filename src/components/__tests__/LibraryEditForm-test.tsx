@@ -70,6 +70,7 @@ describe("LibraryEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="libraries"
+          adminLevel={3}
         />
       );
     });
@@ -183,6 +184,34 @@ describe("LibraryEditForm", () => {
       let saveButton = form.find(Button).last();
       expect(saveButton.text()).to.equal("Submit");
       expect(form.prop("onSubmit")).to.equal(wrapper.instance().submit);
+    });
+
+    it("disables some fields if the user isn't a system admin", () => {
+      let sysAdminOnly = { key: "level-3", label: "Level 3", category: "Basic Information", level: 3 };
+      let sysAdminAndLibMgr = { key: "level-2", label: "Level 2", category: "Basic Information", level: 2 };
+      let data = {libraries: [libraryData], settings: settingFields.concat([sysAdminOnly, sysAdminAndLibMgr]) };
+      let fields = wrapper.find(EditableInput);
+
+      // System admin
+      fields.forEach(x => {
+        expect(x.prop("readOnly")).to.be.false;
+      });
+
+      // Library manager
+      wrapper.setProps({ adminLevel: 2, data });
+      fields = wrapper.find(EditableInput);
+      fields.forEach(x => {
+        expect(x.prop("readOnly")).to.equal(x.prop("label") === "Level 3");
+      });
+
+      // Librarian
+      wrapper.setProps({ adminLevel: 1 });
+      fields = wrapper.find(EditableInput);
+      fields.forEach(x => {
+        expect(x.prop("readOnly")).to.equal(
+          ["Level 3", "Level 2", "Name"].includes(x.prop("label"))
+        );
+      });
     });
   });
 

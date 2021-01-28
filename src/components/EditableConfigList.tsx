@@ -9,6 +9,8 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
+import Admin from "../models/Admin";
+import * as PropTypes from "prop-types";
 
 export interface EditableConfigListStateProps<T> {
   data?: T;
@@ -47,6 +49,7 @@ export interface EditFormProps<T, U> {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  adminLevel?: number;
 }
 
 export interface AdditionalContentProps<T, U> {
@@ -70,12 +73,17 @@ export interface ExtraFormSectionProps<T, U> {
     GenericEditableConfigList allows subclasses to define additional props. Subclasses of
     EditableConfigList cannot change the props and do not have to specify a type for them. */
 export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, {}> {
+  context: { admin: Admin };
+  static contextTypes = {
+    admin: PropTypes.object.isRequired
+  };
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
   abstract identifierKey: string;
   abstract labelKey: string;
+  adminLevel?: number;
   limitOne = false;
   links?: {[key: string]: JSX.Element};
   AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
@@ -157,6 +165,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               error={this.props.formError}
               extraFormSection={ExtraFormSection}
               extraFormKey={this.extraFormKey}
+              adminLevel={this.getAdminLevel()}
             />
           </div>
         }
@@ -176,6 +185,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               error={this.props.formError}
               extraFormSection={ExtraFormSection}
               extraFormKey={this.extraFormKey}
+              adminLevel={this.getAdminLevel()}
             />
           </div>
         }
@@ -222,6 +232,18 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  getAdminLevel() {
+    let level;
+    if (this.context.admin?.isSystemAdmin()) {
+      level = 3;
+    } else if (this.context.admin?.isLibraryManagerOfSomeLibrary()) {
+      level = 2;
+    } else {
+      level = 1;
+    }
+    return level;
   }
 
   getHeaders() {

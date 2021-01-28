@@ -18,6 +18,7 @@ export interface LibraryEditFormProps {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  adminLevel?: number;
 }
 
 /** Form for editing a library's configuration, on the libraries tab of the
@@ -53,7 +54,6 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     }
 
     let categories = this.separateCategories(otherFields);
-
     let basicInfoPanel = (
       <Panel
         id="library-basic-info"
@@ -74,6 +74,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             value={this.props.item && this.props.item.name}
             description="The human-readable name of this library."
             error={this.props.error}
+            readOnly={this.props.adminLevel < 2}
           />
           <EditableInput
             elementType="input"
@@ -92,10 +93,11 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
               key={setting.key}
               ref={this.settingRef}
               setting={setting}
-              disabled={this.props.disabled}
+              disabled={this.props.disabled || (setting.level && (setting.level > this.props.adminLevel))}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               default={findDefault(setting)}
               error={this.props.error}
+              readOnly={setting.level && (setting.level > this.props.adminLevel)}
             />
           )
         }
@@ -158,7 +160,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         inputListSetting={setting}
         dropdownSetting={dropdownSetting}
         item={this.props.item}
-        disabled={this.props.disabled}
+        disabled={this.props.disabled || (setting.level && (setting.level > this.props.adminLevel))}
         error={this.props.error}
       />
     );
@@ -191,7 +193,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             ref={this.settingRef}
             setting={formatSetting(setting)}
             additionalData={this.props.additionalData}
-            disabled={this.props.disabled}
+            disabled={this.props.disabled || (setting.level && (setting.level > this.props.adminLevel))}
             value={settingValue(setting)}
             default={findDefault(setting)}
             error={this.props.error}

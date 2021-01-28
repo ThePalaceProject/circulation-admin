@@ -18,7 +18,7 @@ export interface ProtocolFormFieldProps {
   onEmpty?: string;
   title?: string;
   onChange?: any;
-  readOnly?: boolean;
+  readOnly: boolean;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -27,6 +27,9 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
   private inputListRef = React.createRef<InputList>();
   private colorPickerRef = React.createRef<ColorPicker>();
   private elementRef = React.createRef<EditableInput>();
+  static defaultProps = {
+    readOnly: false,
+  };
   constructor(props: ProtocolFormFieldProps) {
     super(props);
     this.randomize = this.randomize.bind(this);
@@ -91,6 +94,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
       error: this.props && this.props.error,
       ref: this.elementRef,
       onChange: this.props.onChange,
+      readOnly: this.props.readOnly
     };
     let props = extraProps[setting.type] ? {...basicProps, ...extraProps[setting.type]} : basicProps;
     if (customProps) {

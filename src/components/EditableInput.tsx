@@ -30,6 +30,7 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   private elementRef = React.createRef<HTMLInputElement>();
   static defaultProps = {
     optionalText: true,
+    readOnly: false
   };
 
   constructor(props) {
@@ -83,7 +84,6 @@ export default class EditableInput extends React.Component<EditableInputProps, E
       type, elementType, placeholder, accept, list, min, max, children,
       disabled, readOnly, name, validation, style, minLength, maxLength
     } = this.props;
-
     return React.createElement(elementType || "input", {
       className: ((type !== "checkbox" && type !== "radio") ? "form-control" : ""),
       ref: this.elementRef,

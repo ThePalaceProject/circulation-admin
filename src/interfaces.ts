@@ -212,6 +212,7 @@ export interface SettingData {
   readOnly?: boolean;
   capitalize?: boolean;
   skip?: boolean;
+  level?: number;
 }
 
 export interface ProtocolData {
