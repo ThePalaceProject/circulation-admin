@@ -305,11 +305,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   /**
    * canDelete
    * Does this service have the ability to delete an item? The default is
-   * true but the logic can be overridden by other classes
+   * true, as long as the user is a system admin, but the logic can be overridden by other classes
    * that inherit GenericEditableConfigList.
    */
   canDelete() {
-    return true;
+    return (this.getAdminLevel() === 3);
   }
 
   save(data: FormData) {

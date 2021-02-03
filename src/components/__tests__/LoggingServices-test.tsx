@@ -4,6 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
+import Admin from "../../models/Admin";
 import { LoggingServices } from "../LoggingServices";
 
 describe("LoggingServices", () => {
@@ -74,6 +75,8 @@ describe("LoggingServices", () => {
   };
 
   beforeEach(() => {
+    const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
+
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
@@ -84,7 +87,8 @@ describe("LoggingServices", () => {
         editItem={editItem}
         csrfToken="token"
         isFetching={false}
-        />
+        />,
+        { context: { admin: systemAdmin }}
     );
   });
 
