@@ -5,6 +5,8 @@ import { AnalyticsServicesData, AnalyticsServiceData } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 import NeighborhoodAnalyticsForm from "./NeighborhoodAnalyticsForm";
 
+// TODO: HIDE LOCAL ANALYTICS FROM LIBRARIAN!
+
 /** Right panel for analytics services on the system configuration page.
     Shows a list of current analytics services and allows creating a new
     service or editing or deleting an existing service. */
