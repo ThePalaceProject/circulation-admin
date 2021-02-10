@@ -20,7 +20,7 @@ export default class SetupPage extends React.Component<{}, {}> {
 
   static contextTypes: React.ValidationMap<SetupPageContext> = {
     editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired,
+    csrfToken: PropTypes.string.isRequired
   };
 
   render(): JSX.Element {

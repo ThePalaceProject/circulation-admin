@@ -9,6 +9,7 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
+import VisibleIcon from "./icons/VisibleIcon";
 import Admin from "../models/Admin";
 import * as PropTypes from "prop-types";
 
@@ -196,16 +197,17 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   renderLi(item, index): JSX.Element {
     let AdditionalContent = this.AdditionalContent || null;
+
     return (
       <li key={index}>
         <a
           className="btn small edit-item"
           href={this.urlBase + "edit/" + item[this.identifierKey]}
         >
-          <span>
-            Edit
-            <PencilIcon />
-          </span>
+        { this.canEdit(item) ?
+          <span>Edit <PencilIcon /></span> :
+          <span>View <VisibleIcon /></span>
+        }
         </a>
 
         <h3>{this.label(item)}</h3>
@@ -310,6 +312,10 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
    */
   canDelete() {
     return (this.getAdminLevel() === 3);
+  }
+
+  canEdit(item) {
+    return (!item.level || item.level <= this.getAdminLevel());
   }
 
   save(data: FormData) {

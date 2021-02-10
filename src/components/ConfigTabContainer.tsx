@@ -24,7 +24,7 @@ export interface ConfigTabContainerProps extends TabContainerProps {
 }
 
 export interface ConfigTabContainerContext extends TabContainerContext {
-  admin: Admin;
+  admin?: Admin;
 }
 
 /** Body of the system configuration page, with a tab for each type of

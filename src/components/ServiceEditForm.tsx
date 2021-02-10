@@ -19,6 +19,7 @@ export interface ServiceEditFormProps<T> {
   error?: FetchErrorData;
   extraFormSection?: any;
   extraFormKey?: string;
+  adminLevel?: number;
 }
 
 export interface ServiceEditFormState {
@@ -95,6 +96,10 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
 
   }
 
+  shouldDisable(): boolean {
+    return this.props.disabled || (this.props.item?.level && this.props.item.level > this.props.adminLevel);
+  }
+
   render(): JSX.Element {
     let protocol = this.findProtocol();
     const listDataKey = this.props.listDataKey;
@@ -134,13 +139,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         content={this.renderOptionalFields(nonRequiredFields)}
       />
     );
-
     let extraPanel = this.props.extraFormSection && extraFields.length > 0 && (
         React.createElement(this.props.extraFormSection, {
           key: this.props.extraFormKey,
           setting: extraFields[0],
           ref: this.extraForm,
-          currentValue: this.props.item && this.props.item.settings && this.props.item.settings[this.props.extraFormKey]
+          currentValue: this.props.item && this.props.item.settings && this.props.item.settings[this.props.extraFormKey],
+          disabled: this.props.item?.level && this.props.adminLevel && (this.props.item.level > this.props.adminLevel)
         })
     );
 
@@ -159,7 +164,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         className="no-border edit-form"
         hiddenName={this.props.item && this.props.item.id && "id"}
         hiddenValue={this.props.item && this.props.item.id && String(this.props.item.id)}
-        disableButton={this.props.disabled}
+        disableButton={this.shouldDisable()}
         content={[instructions, requiredFieldsPanel, optionalFieldsPanel, extraPanel, librariesForm]}
       />
     );
@@ -172,7 +177,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         <EditableInput
           elementType="input"
           type="text"
-          disabled={this.props.disabled}
+          disabled={this.shouldDisable()}
+          readOnly={this.shouldDisable()}
           required={true}
           name="name"
           ref="name"
@@ -182,8 +188,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           />
         <EditableInput
           elementType="select"
-          disabled={this.props.disabled}
-          readOnly={!!(this.props.item && this.props.item.protocol)}
+          disabled={this.shouldDisable()}
+          readOnly={this.shouldDisable() || !!(this.props.item && this.props.item.protocol)}
           name="protocol"
           label="Protocol"
           value={this.state.protocol}
@@ -201,7 +207,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
         { this.props.data && this.allowsParent(protocol) && (this.availableParents().length > 0) &&
           <EditableInput
             elementType="select"
-            disabled={this.props.disabled}
+            readOnly={this.shouldDisable()}
+            disabled={this.shouldDisable()}
             name="parent_id"
             label="Parent"
             value={this.state.parentId}
@@ -222,7 +229,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               key={setting.key}
               ref={setting.key}
               setting={setting}
-              disabled={this.props.disabled}
+              readOnly={this.shouldDisable()}
+              disabled={this.shouldDisable()}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               error={this.props.error}
               />
@@ -241,7 +249,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
               key={setting.key}
               ref={setting.key}
               setting={setting}
-              disabled={this.props.disabled}
+              readOnly={this.shouldDisable()}
+              disabled={this.shouldDisable()}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               error={this.props.error}
               />
@@ -259,13 +268,13 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           { this.state.libraries.map(library =>
               <div key={library.short_name}>
                 <WithRemoveButton
-                  disabled={this.props.disabled}
+                  disabled={this.shouldDisable()}
                   onRemove={() => this.removeLibrary(library)}
                   ref={library.short_name}
                   >
                   { this.props.data && this.props.data.protocols && this.protocolLibrarySettings(protocol) && this.protocolLibrarySettings(protocol).length > 0 &&
                     <WithEditButton
-                      disabled={this.props.disabled}
+                      disabled={this.shouldDisable()}
                       onEdit={() => this.expandLibrary(library)}
                       >
                       {this.getLibrary(library.short_name) && this.getLibrary(library.short_name).name}
@@ -281,7 +290,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                       <ProtocolFormField
                         key={setting.key}
                         setting={setting}
-                        disabled={this.props.disabled}
+                        disabled={this.shouldDisable()}
                         value={library[setting.key]}
                         ref={library.short_name + "_" + setting.key}
                         />
@@ -290,7 +299,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                     <Button
                       type="button"
                       className="edit-library"
-                      disabled={this.props.disabled}
+                      disabled={this.shouldDisable()}
                       callback={() => this.editLibrary(library, protocol)}
                       content="Save"
                     />
@@ -304,7 +313,8 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
             <div className="form-group">
               <EditableInput
                 elementType="select"
-                disabled={this.props.disabled}
+                disabled={this.shouldDisable()}
+                readOnly={this.shouldDisable()}
                 name="add-library"
                 label="Add Library"
                 ref="addLibrary"
@@ -329,14 +339,15 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
                       <ProtocolFormField
                         key={setting.key}
                         setting={setting}
-                        disabled={this.props.disabled}
+                        disabled={this.shouldDisable()}
+                        readOnly={this.shouldDisable()}
                         ref={setting.key}
                         />
                     )
                   }
                   <Button
                     type="button"
-                    disabled={this.props.disabled}
+                    disabled={this.shouldDisable()}
                     callback={() => this.addLibrary(protocol)}
                     content="Add Library"
                     className="left-align"

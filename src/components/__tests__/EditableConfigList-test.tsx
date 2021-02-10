@@ -69,6 +69,7 @@ describe("EditableConfigList", () => {
     canDelete() {
       return canDelete;
     }
+
   }
 
   class OneThingEditableConfigList extends ThingEditableConfigList {
@@ -98,6 +99,7 @@ describe("EditableConfigList", () => {
   };
 
   const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
+  const libraryManager = new Admin([{ role: "manager", library: "nypl"} ]);
   const childContextTypes = {
     admin: PropTypes.object.isRequired,
   };
@@ -284,6 +286,25 @@ describe("EditableConfigList", () => {
     expect(createLink.prop("href")).to.equal("/admin/things/create");
   });
 
+  it("displays a view button instead of an edit button if canEdit returns false", () => {
+    let viewableThing = { id: 6, label: "View Only", level: 3};
+    wrapper = shallow(
+      <ThingEditableConfigList
+        data={{things: [viewableThing]}}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+        />,
+        { context: { admin: libraryManager }}
+    );
+    expect(wrapper.instance().canEdit(viewableThing)).to.be.false;
+    let viewLink = wrapper.find("span");
+    expect(viewLink.text()).to.contain("View");
+    expect(viewLink.text()).not.to.contain("Edit");
+  });
+
   it("hides delete button if canDelete returns false", () => {
     canDelete = false;
     wrapper = shallow(
@@ -465,6 +486,5 @@ describe("EditableConfigList", () => {
     expect(wrapper.instance().getAdminLevel()).to.equal(2);
     wrapper.setContext({ admin: librarian });
     expect(wrapper.instance().getAdminLevel()).to.equal(1);
-
   });
 });
