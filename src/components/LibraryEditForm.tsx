@@ -44,6 +44,10 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     }
   }
 
+  adminNotAuthorized(setting): boolean {
+    return (setting.level && (setting.level > this.props.adminLevel));
+  }
+
   render(): JSX.Element {
     let basicInfo = [];
     let otherFields = [];
@@ -93,11 +97,11 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
               key={setting.key}
               ref={this.settingRef}
               setting={setting}
-              disabled={this.props.disabled || (setting.level && (setting.level > this.props.adminLevel))}
+              disabled={this.props.disabled || this.adminNotAuthorized(setting)}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               default={findDefault(setting)}
               error={this.props.error}
-              readOnly={setting.level && (setting.level > this.props.adminLevel)}
+              readOnly={this.adminNotAuthorized(setting)}
             />
           )
         }
@@ -160,7 +164,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         inputListSetting={setting}
         dropdownSetting={dropdownSetting}
         item={this.props.item}
-        disabled={this.props.disabled || (setting.level && (setting.level > this.props.adminLevel))}
+        disabled={this.props.disabled || this.adminNotAuthorized(setting)}
         error={this.props.error}
       />
     );
@@ -193,7 +197,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             ref={this.settingRef}
             setting={formatSetting(setting)}
             additionalData={this.props.additionalData}
-            disabled={this.props.disabled || (setting.level && (setting.level > this.props.adminLevel))}
+            disabled={this.props.disabled || this.adminNotAuthorized(setting)}
             value={settingValue(setting)}
             default={findDefault(setting)}
             error={this.props.error}

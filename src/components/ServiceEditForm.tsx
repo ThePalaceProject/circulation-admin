@@ -145,7 +145,7 @@ export default class ServiceEditForm<T extends ServicesData> extends React.Compo
           setting: extraFields[0],
           ref: this.extraForm,
           currentValue: this.props.item && this.props.item.settings && this.props.item.settings[this.props.extraFormKey],
-          disabled: this.props.item?.level && this.props.adminLevel && (this.props.item.level > this.props.adminLevel)
+          disabled: this.shouldDisable()
         })
     );
 
