@@ -100,7 +100,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.renderLi = this.renderLi.bind(this);
   }
 
-  componentWillMount() {
+   componentWillMount(): void {
     if (this.props.fetchData) {
       this.props.fetchData();
     }

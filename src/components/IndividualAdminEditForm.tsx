@@ -109,19 +109,19 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       <fieldset>
         <legend className="visuallyHidden">Admin information</legend>
         <EditableInput
-          elementType="input"
-          type="text"
-          disabled={this.props.disabled}
-          required={true}
-          readOnly={!!(this.props.item && this.props.item.email)}
-          name="email"
-          label="Email"
-          ref={this.emailRef}
-          value={this.props.item && this.props.item.email}
-          error={this.props.error}
-          />
+        elementType="input"
+        type="text"
+        disabled={this.props.disabled}
+        required={true}
+        readOnly={!!(this.props.item && this.props.item.email)}
+        name="email"
+        label="Email"
+        ref={this.emailRef}
+        value={this.props.item && this.props.item.email}
+        error={this.props.error}
+        />
         { this.canChangePassword() &&
-          <EditableInput
+            <EditableInput
             elementType="input"
             type="text"
             disabled={this.props.disabled}
@@ -131,7 +131,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             required={this.context.settingUp}
             error={this.props.error}
             />
-        }
+          }
       </fieldset>
     );
   }
