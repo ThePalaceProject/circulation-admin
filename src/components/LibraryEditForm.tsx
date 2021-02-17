@@ -18,6 +18,7 @@ export interface LibraryEditFormProps {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  adminLevel?: number;
 }
 
 /** Form for editing a library's configuration, on the libraries tab of the
@@ -43,6 +44,13 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     }
   }
 
+  adminNotAuthorized(setting): boolean {
+    // The server has assigned each setting a level from 1 to 3, indicating what level of permissions
+    // the admin needs to have in order to be able to modify the item.  If the server has left the level blank,
+    // the setting will be treated as if it is level 1 (editable by all admins).
+    return (setting.level && (setting.level > this.props.adminLevel));
+  }
+
   render(): JSX.Element {
     let basicInfo = [];
     let otherFields = [];
@@ -53,7 +61,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     }
 
     let categories = this.separateCategories(otherFields);
-
+    const requiresHigherThanLibrarian = 2;
     let basicInfoPanel = (
       <Panel
         id="library-basic-info"
@@ -74,6 +82,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             value={this.props.item && this.props.item.name}
             description="The human-readable name of this library."
             error={this.props.error}
+            readOnly={this.props.adminLevel < requiresHigherThanLibrarian}
           />
           <EditableInput
             elementType="input"
@@ -92,10 +101,11 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
               key={setting.key}
               ref={this.settingRef}
               setting={setting}
-              disabled={this.props.disabled}
+              disabled={this.props.disabled || this.adminNotAuthorized(setting)}
               value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
               default={findDefault(setting)}
               error={this.props.error}
+              readOnly={this.adminNotAuthorized(setting)}
             />
           )
         }
@@ -158,7 +168,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         inputListSetting={setting}
         dropdownSetting={dropdownSetting}
         item={this.props.item}
-        disabled={this.props.disabled}
+        disabled={this.props.disabled || this.adminNotAuthorized(setting)}
         error={this.props.error}
       />
     );
@@ -191,7 +201,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             ref={this.settingRef}
             setting={formatSetting(setting)}
             additionalData={this.props.additionalData}
-            disabled={this.props.disabled}
+            disabled={this.props.disabled || this.adminNotAuthorized(setting)}
             value={settingValue(setting)}
             default={findDefault(setting)}
             error={this.props.error}

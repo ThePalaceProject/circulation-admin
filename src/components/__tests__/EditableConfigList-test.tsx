@@ -3,7 +3,9 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
+import * as PropTypes from "prop-types";
 
+import Admin from "../../models/Admin";
 import { EditableConfigList, EditFormProps, AdditionalContentProps } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
 import EditableInput from "../EditableInput";
@@ -67,6 +69,7 @@ describe("EditableConfigList", () => {
     canDelete() {
       return canDelete;
     }
+
   }
 
   class OneThingEditableConfigList extends ThingEditableConfigList {
@@ -95,6 +98,12 @@ describe("EditableConfigList", () => {
     return new Promise<void>(resolve => setTimeout(resolve, 0));
   };
 
+  const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
+  const libraryManager = new Admin([{ role: "manager", library: "nypl"} ]);
+  const childContextTypes = {
+    admin: PropTypes.object.isRequired,
+  };
+
   beforeEach(() => {
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
@@ -110,7 +119,8 @@ describe("EditableConfigList", () => {
         deleteItem={deleteItem}
         csrfToken="token"
         isFetching={false}
-        />
+        />,
+        { context: { admin: systemAdmin }}
     );
   });
 
@@ -274,6 +284,25 @@ describe("EditableConfigList", () => {
     expect(createLink.length).to.equal(1);
     expect(createLink.text()).to.equal("Create new thing");
     expect(createLink.prop("href")).to.equal("/admin/things/create");
+  });
+
+  it("displays a view button instead of an edit button if canEdit returns false", () => {
+    let viewableThing = { id: 6, label: "View Only", level: 3};
+    wrapper = shallow(
+      <ThingEditableConfigList
+        data={{things: [viewableThing]}}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching={false}
+        />,
+        { context: { admin: libraryManager }}
+    );
+    expect(wrapper.instance().canEdit(viewableThing)).to.be.false;
+    let viewLink = wrapper.find("span");
+    expect(viewLink.text()).to.contain("View");
+    expect(viewLink.text()).not.to.contain("Edit");
   });
 
   it("hides delete button if canDelete returns false", () => {
@@ -447,5 +476,15 @@ describe("EditableConfigList", () => {
     expect(alert.length).to.equal(1);
     expect(alert.text()).to.equal("Self-tests for the things have been moved to the troubleshooting page.");
     expect(alert.find("a").prop("href")).to.equal("/admin/web/troubleshooting/self-tests/thingServices");
+  });
+
+  it("figures out what level of permissions the admin has", () => {
+    const libraryManager = new Admin([{ role: "manager", library: "nypl" }]);
+    const librarian = new Admin([{ role: "librarian", library: "nypl" }]);
+    expect(wrapper.instance().getAdminLevel()).to.equal(3);
+    wrapper.setContext({ admin: libraryManager });
+    expect(wrapper.instance().getAdminLevel()).to.equal(2);
+    wrapper.setContext({ admin: librarian });
+    expect(wrapper.instance().getAdminLevel()).to.equal(1);
   });
 });

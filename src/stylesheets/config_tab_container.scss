@@ -2,6 +2,9 @@ $dangercolor: #D9534F;
 
 .config {
   height: 100%;
+  main {
+    height: 82%;
+  }
   .tab-container {
     position: relative;
     height: 100%;
@@ -15,7 +18,12 @@ $dangercolor: #D9534F;
         display: block;
         width: 100%;
         border-top: 1px solid #DDD;
-
+        &.active a {
+          border-bottom: 1px solid #DDD;
+          border-top: none;
+          border-left: none;
+          border-right: none;
+        }
         a {
           padding-left: 15px;
           width: 100%;

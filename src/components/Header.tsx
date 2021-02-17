@@ -115,8 +115,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       { label: "Dashboard", href: "dashboard/", auth: isSiteWide },
       {
         label: "System Configuration",
-        href: "config/",
-        auth: isSomeLibraryManager,
+        href: "config/"
       },
       {
         label: "Troubleshooting",

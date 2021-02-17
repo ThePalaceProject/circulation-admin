@@ -9,6 +9,9 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
+import VisibleIcon from "./icons/VisibleIcon";
+import Admin from "../models/Admin";
+import * as PropTypes from "prop-types";
 
 export interface EditableConfigListStateProps<T> {
   data?: T;
@@ -47,6 +50,7 @@ export interface EditFormProps<T, U> {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  adminLevel?: number;
 }
 
 export interface AdditionalContentProps<T, U> {
@@ -70,12 +74,17 @@ export interface ExtraFormSectionProps<T, U> {
     GenericEditableConfigList allows subclasses to define additional props. Subclasses of
     EditableConfigList cannot change the props and do not have to specify a type for them. */
 export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, {}> {
+  context: { admin: Admin };
+  static contextTypes = {
+    admin: PropTypes.object.isRequired
+  };
   abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
   abstract identifierKey: string;
   abstract labelKey: string;
+  adminLevel?: number;
   limitOne = false;
   links?: {[key: string]: JSX.Element};
   AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
@@ -91,7 +100,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.renderLi = this.renderLi.bind(this);
   }
 
-  componentWillMount() {
+   componentWillMount() {
     if (this.props.fetchData) {
       this.props.fetchData();
     }
@@ -157,6 +166,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               error={this.props.formError}
               extraFormSection={ExtraFormSection}
               extraFormKey={this.extraFormKey}
+              adminLevel={this.getAdminLevel()}
             />
           </div>
         }
@@ -176,6 +186,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               error={this.props.formError}
               extraFormSection={ExtraFormSection}
               extraFormKey={this.extraFormKey}
+              adminLevel={this.getAdminLevel()}
             />
           </div>
         }
@@ -186,16 +197,17 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   renderLi(item, index): JSX.Element {
     let AdditionalContent = this.AdditionalContent || null;
+
     return (
       <li key={index}>
         <a
           className="btn small edit-item"
           href={this.urlBase + "edit/" + item[this.identifierKey]}
         >
-          <span>
-            Edit
-            <PencilIcon />
-          </span>
+        { this.canEdit(item) ?
+          <span>Edit <PencilIcon /></span> :
+          <span>View <VisibleIcon /></span>
+        }
         </a>
 
         <h3>{this.label(item)}</h3>
@@ -222,6 +234,18 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
 
   label(item): string {
     return item[this.labelKey];
+  }
+
+  getAdminLevel() {
+    let level;
+    if (this.context.admin?.isSystemAdmin()) {
+      level = 3;
+    } else if (this.context.admin?.isLibraryManagerOfSomeLibrary()) {
+      level = 2;
+    } else {
+      level = 1;
+    }
+    return level;
   }
 
   getHeaders() {
@@ -283,11 +307,18 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   /**
    * canDelete
    * Does this service have the ability to delete an item? The default is
-   * true but the logic can be overridden by other classes
+   * true, as long as the user is a system admin, but the logic can be overridden by other classes
    * that inherit GenericEditableConfigList.
    */
   canDelete() {
-    return true;
+    return (this.getAdminLevel() === 3);
+  }
+
+  canEdit(item) {
+    // The server has the option to assign the item a level from 1 to 3, indicating what level of permissions
+    // the admin needs to have in order to be able to modify the item.
+    // (Currently, this is just being used to prevent librarians from modifying local analytics configurations.)
+    return (!item.level || item.level <= this.getAdminLevel());
   }
 
   save(data: FormData) {

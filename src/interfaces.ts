@@ -212,6 +212,7 @@ export interface SettingData {
   readOnly?: boolean;
   capitalize?: boolean;
   skip?: boolean;
+  level?: number;
 }
 
 export interface ProtocolData {
@@ -258,6 +259,7 @@ export interface ServiceData {
   name?: string;
   protocol: string;
   parent_id?: string | number;
+  level?: number;
   settings?: {
     [key: string]: string;
   };

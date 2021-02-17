@@ -203,7 +203,7 @@ describe("ProtocolFormField", () => {
     expect(picker.length).to.equal(1);
     expect(picker.prop("setting")).to.equal(colorPickerSetting);
     expect(picker.prop("value")).to.equal("#aaaaaa");
-    let label = wrapper.find("label");
+    let label = wrapper.find("label").at(0);
     expect(label.text()).to.equal("label");
 
     wrapper.setProps({ value: "#222222" });

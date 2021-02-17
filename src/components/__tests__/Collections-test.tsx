@@ -2,7 +2,9 @@ import { expect } from "chai";
 import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
+import * as PropTypes from "prop-types";
 
+import Admin from "../../models/Admin";
 import { Collections } from "../Collections";
 
 const collections = [
@@ -16,6 +18,10 @@ describe("Collections", () => {
   let wrapper;
   let registerLibrary;
   let fetchLibraryRegistrations;
+  const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
+  const childContextTypes = {
+    admin: PropTypes.object.isRequired,
+  };
 
   describe("In Edit mode", () => {
     beforeEach(() => {
@@ -29,7 +35,8 @@ describe("Collections", () => {
           identifier="2"
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
-          />
+          />,
+          { context: { admin: systemAdmin }}
       );
     });
 
@@ -64,7 +71,8 @@ describe("Collections", () => {
           data={{ collections, protocols: [] }}
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
-          />
+        />,
+          { context: { admin: systemAdmin }}
       );
     });
 

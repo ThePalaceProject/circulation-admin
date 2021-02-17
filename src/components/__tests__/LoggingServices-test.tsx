@@ -4,6 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
+import Admin from "../../models/Admin";
 import { LoggingServices } from "../LoggingServices";
 
 describe("LoggingServices", () => {
@@ -74,6 +75,8 @@ describe("LoggingServices", () => {
   };
 
   beforeEach(() => {
+    const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
+
     fetchData = stub();
     editItem = stub().returns(new Promise<void>(resolve => resolve()));
 
@@ -84,14 +87,15 @@ describe("LoggingServices", () => {
         editItem={editItem}
         csrfToken="token"
         isFetching={false}
-        />
+        />,
+        { context: { admin: systemAdmin }}
     );
   });
 
   it("shows logging service list", () => {
     let loggingService = wrapper.find("li");
     expect(loggingService.length).to.equal(1);
-    expect(loggingService.at(0).text()).to.contain("EditPencil IconlogglyDeleteTrash Icon");
+    expect(loggingService.at(0).text()).to.contain("Edit Pencil IconlogglyDeleteTrash Icon");
     let editLink = loggingService.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/logging/edit/1");
   });
