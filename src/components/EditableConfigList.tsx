@@ -315,6 +315,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   canEdit(item) {
+    // The server has the option to assign the item a level from 1 to 3, indicating what level of permissions
+    // the admin needs to have in order to be able to modify the item.
+    // (Currently, this is just being used to prevent librarians from modifying local analytics configurations.)
     return (!item.level || item.level <= this.getAdminLevel());
   }
 

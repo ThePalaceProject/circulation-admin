@@ -55,7 +55,7 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
   };
 
   LIBRARIAN_TABS = ["libraries", "analytics"];
-  LIBRARY_MANAGER_TABS = ["libraries", "individualAdmins", "analytics"];
+  LIBRARY_MANAGER_TABS = [...this.LIBRARIAN_TABS, "individualAdmins"];
   SYSTEM_ADMIN_TABS = Object.keys(this.COMPONENT_CLASSES);
 
   DISPLAY_NAMES = {
@@ -74,10 +74,10 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
         let ComponentClass = this.COMPONENT_CLASSES[tab];
         tabs[tab] = (
           <ComponentClass
-          store={this.props.store}
-          csrfToken={this.props.csrfToken}
-          editOrCreate={this.props.editOrCreate}
-          identifier={this.props.identifier}
+            store={this.props.store}
+            csrfToken={this.props.csrfToken}
+            editOrCreate={this.props.editOrCreate}
+            identifier={this.props.identifier}
           />
         );
       }

@@ -109,27 +109,27 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       <fieldset>
         <legend className="visuallyHidden">Admin information</legend>
         <EditableInput
-        elementType="input"
-        type="text"
-        disabled={this.props.disabled}
-        required={true}
-        readOnly={!!(this.props.item && this.props.item.email)}
-        name="email"
-        label="Email"
-        ref={this.emailRef}
-        value={this.props.item && this.props.item.email}
-        error={this.props.error}
+          elementType="input"
+          type="text"
+          disabled={this.props.disabled}
+          required={true}
+          readOnly={!!(this.props.item && this.props.item.email)}
+          name="email"
+          label="Email"
+          ref={this.emailRef}
+          value={this.props.item && this.props.item.email}
+          error={this.props.error}
         />
         { this.canChangePassword() &&
             <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            name="password"
-            label="Password"
-            ref={this.passwordRef}
-            required={this.context.settingUp}
-            error={this.props.error}
+              elementType="input"
+              type="text"
+              disabled={this.props.disabled}
+              name="password"
+              label="Password"
+              ref={this.passwordRef}
+              required={this.context.settingUp}
+              error={this.props.error}
             />
           }
       </fieldset>
@@ -149,7 +149,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           label="System Admin"
           checked={this.isSelected("system")}
           onChange={() => this.handleRoleChange("system")}
-          />
+        />
         <table className="library-admin-roles">
           <thead>
             <tr>
@@ -176,7 +176,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                   label="Librarian"
                   checked={this.isSelected("librarian-all")}
                   onChange={() => this.handleRoleChange("librarian-all")}
-                  />
+                />
               </th>
             </tr>
           </thead>
@@ -197,7 +197,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     aria-label={`Library Manager for ${library.short_name}`}
                     checked={this.isSelected("manager", library.short_name)}
                     onChange={() => this.handleRoleChange("manager", library.short_name)}
-                    />
+                  />
                 </td>
                 <td>
                   <EditableInput
@@ -210,7 +210,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
                     aria-label={`Librarian for ${library.short_name}`}
                     checked={this.isSelected("librarian", library.short_name)}
                     onChange={() => this.handleRoleChange("librarian", library.short_name)}
-                    />
+                  />
                 </td>
               </tr>
             ) }

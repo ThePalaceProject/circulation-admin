@@ -45,6 +45,9 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
   }
 
   adminNotAuthorized(setting): boolean {
+    // The server has assigned each setting a level from 1 to 3, indicating what level of permissions
+    // the admin needs to have in order to be able to modify the item.  If the server has left the level blank,
+    // the setting will be treated as if it is level 1 (editable by all admins).
     return (setting.level && (setting.level > this.props.adminLevel));
   }
 
@@ -58,6 +61,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     }
 
     let categories = this.separateCategories(otherFields);
+    const requiresHigherThanLibrarian = 2;
     let basicInfoPanel = (
       <Panel
         id="library-basic-info"
@@ -78,7 +82,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             value={this.props.item && this.props.item.name}
             description="The human-readable name of this library."
             error={this.props.error}
-            readOnly={this.props.adminLevel < 2}
+            readOnly={this.props.adminLevel < requiresHigherThanLibrarian}
           />
           <EditableInput
             elementType="input"
