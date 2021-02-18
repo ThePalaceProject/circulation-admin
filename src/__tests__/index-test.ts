@@ -20,7 +20,7 @@ describe("CirculationWeb", () => {
     expect(setup.length).to.equal(1);
     renderSpy.restore();
   });
-  
+
   it("renders Router", () => {
     const renderSpy = spy(ReactDOM, "render");
     new CirculationWeb({});

@@ -41,7 +41,7 @@ describe("ResetAdobeId", () => {
   let wrapper;
 
   describe("rendering without patron", () => {
-  
+
     beforeEach(() => {
       store = buildStore();
       wrapper = mount(
