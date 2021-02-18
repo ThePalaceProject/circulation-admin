@@ -123,7 +123,7 @@ describe("ConfigTabContainer", () => {
 
     it("shows components", () => {
       const expectedComponentClasses = [
-        Libraries, IndividualAdmins, AnalyticsServices
+        Libraries, AnalyticsServices
       ];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
@@ -136,7 +136,7 @@ describe("ConfigTabContainer", () => {
         Collections, AdminAuthServices, PatronAuthServices, SitewideSettings,
         MetadataServices, CDNServices,
         SearchServices, StorageServices, CatalogServices,
-        DiscoveryServices
+        DiscoveryServices, IndividualAdmins
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);
