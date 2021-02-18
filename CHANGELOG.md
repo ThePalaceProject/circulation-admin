@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.33
+
+#### Fixed
+
+- Reverted accidentally granting privileges for creating individual admins to library managers
+
 ### v0.4.32
 
 #### Updated

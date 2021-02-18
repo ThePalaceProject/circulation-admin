@@ -110,7 +110,7 @@ describe("ConfigTabContainer", () => {
       let links = wrapper.find("ul.nav-tabs").find("a");
       let linkTexts = links.map(link => link.text());
       expect(linkTexts).to.contain("Libraries");
-      expect(linkTexts).to.contain("Admins");
+      expect(linkTexts).not.to.contain("Admins");
       expect(linkTexts).to.contain("Analytics");
       expect(linkTexts).not.to.contain("Collections");
       expect(linkTexts).not.to.contain("Admin Authentication");
