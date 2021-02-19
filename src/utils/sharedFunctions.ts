@@ -33,9 +33,9 @@ export function clearForm(refs, useCurrent = false) {
           refs[key].current.props.onRemove();
         }
       } else {
-        refs[key].clear && refs[key].clear();
+        refs[key]?.clear && refs[key].clear();
         if (refs[key]?.props && refs[key].props.onRemove) {
-          refs[key]?.props.onRemove();
+          refs[key].props.onRemove();
         }
       }
     }
