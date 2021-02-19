@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.34
+
+#### Fixed
+
+- Fixed bug resulting in blank screen upon form submission
+
 ### v0.4.33
 
 #### Fixed
