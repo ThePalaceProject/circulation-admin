@@ -110,7 +110,7 @@ describe("ConfigTabContainer", () => {
       let links = wrapper.find("ul.nav-tabs").find("a");
       let linkTexts = links.map(link => link.text());
       expect(linkTexts).to.contain("Libraries");
-      expect(linkTexts).to.contain("Admins");
+      expect(linkTexts).not.to.contain("Admins");
       expect(linkTexts).to.contain("Analytics");
       expect(linkTexts).not.to.contain("Collections");
       expect(linkTexts).not.to.contain("Admin Authentication");
@@ -123,7 +123,7 @@ describe("ConfigTabContainer", () => {
 
     it("shows components", () => {
       const expectedComponentClasses = [
-        Libraries, IndividualAdmins, AnalyticsServices
+        Libraries, AnalyticsServices
       ];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
@@ -136,7 +136,7 @@ describe("ConfigTabContainer", () => {
         Collections, AdminAuthServices, PatronAuthServices, SitewideSettings,
         MetadataServices, CDNServices,
         SearchServices, StorageServices, CatalogServices,
-        DiscoveryServices
+        DiscoveryServices, IndividualAdmins
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);

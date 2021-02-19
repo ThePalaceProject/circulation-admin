@@ -55,7 +55,7 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
   };
 
   LIBRARIAN_TABS = ["libraries", "analytics"];
-  LIBRARY_MANAGER_TABS = [...this.LIBRARIAN_TABS, "individualAdmins"];
+  LIBRARY_MANAGER_TABS = this.LIBRARIAN_TABS;
   SYSTEM_ADMIN_TABS = Object.keys(this.COMPONENT_CLASSES);
 
   DISPLAY_NAMES = {
