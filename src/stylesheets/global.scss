@@ -65,3 +65,12 @@
     }
   }
 }
+
+main.body {
+  height: 76%;
+  background: crimson;
+}
+#opds-catalog > div:first-child {
+  height: 100%;
+}
+// Go through each page on QA--identify the actual floaty ones.
