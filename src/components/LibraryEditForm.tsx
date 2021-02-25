@@ -61,7 +61,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
     }
 
     let categories = this.separateCategories(otherFields);
-    const requiresHigherThanLibrarian = 2;
+    const requiresSystemAdmin = 3;
     let basicInfoPanel = (
       <Panel
         id="library-basic-info"
@@ -82,7 +82,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             value={this.props.item && this.props.item.name}
             description="The human-readable name of this library."
             error={this.props.error}
-            readOnly={this.props.adminLevel < requiresHigherThanLibrarian}
+            readOnly={this.props.adminLevel < requiresSystemAdmin}
           />
           <EditableInput
             elementType="input"
@@ -95,6 +95,7 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
             value={this.props.item && this.props.item.short_name}
             description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
             error={this.props.error}
+            readOnly={this.props.adminLevel < requiresSystemAdmin}
           />
           { basicInfo.map(setting =>
             <ProtocolFormField

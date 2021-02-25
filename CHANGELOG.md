@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.35
+
+#### Fixed
+
+- Revoked librarians' and library managers' privileges on the "Basic Information" section of the library edit form.
+
 ### v0.4.34
 
 #### Fixed
