@@ -12,7 +12,7 @@ import PairedMenus from "../PairedMenus";
 import InputList from "../InputList";
 import AnnouncementsSection from "../AnnouncementsSection";
 
-describe("LibraryEditForm", () => {
+describe.only("LibraryEditForm", () => {
   let wrapper;
   let save;
   let libraryData = {
@@ -201,16 +201,14 @@ describe("LibraryEditForm", () => {
       wrapper.setProps({ adminLevel: 2, data });
       fields = wrapper.find(EditableInput);
       fields.forEach(x => {
-        expect(x.prop("readOnly")).to.equal(x.prop("label") === "Level 3");
+        expect(x.prop("readOnly")).to.equal(["Name", "Short name", "Level 3"].includes(x.prop("label")));
       });
 
       // Librarian
       wrapper.setProps({ adminLevel: 1 });
       fields = wrapper.find(EditableInput);
       fields.forEach(x => {
-        expect(x.prop("readOnly")).to.equal(
-          ["Level 3", "Level 2", "Name"].includes(x.prop("label"))
-        );
+        expect(x.prop("readOnly")).to.equal(["Name", "Short name", "Level 3", "Level 2"].includes(x.prop("label")));
       });
     });
   });
