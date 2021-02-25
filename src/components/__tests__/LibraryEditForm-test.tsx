@@ -12,7 +12,7 @@ import PairedMenus from "../PairedMenus";
 import InputList from "../InputList";
 import AnnouncementsSection from "../AnnouncementsSection";
 
-describe.only("LibraryEditForm", () => {
+describe("LibraryEditForm", () => {
   let wrapper;
   let save;
   let libraryData = {
