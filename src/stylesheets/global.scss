@@ -66,11 +66,17 @@
   }
 }
 
-main.body {
-  height: 76%;
-  background: crimson;
-}
-#opds-catalog > div:first-child {
+#opds-catalog > div:first-child:not(.config) {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  justify-content: flex-start;
+  background: plum;
+  main {
+    height: 78.5% !important;
+    background: crimson;
+  }
 }
-// Go through each page on QA--identify the actual floaty ones.
+.config main {
+  overflow: auto;
+}
