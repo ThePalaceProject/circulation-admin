@@ -26,6 +26,7 @@ export interface InputListProps {
   capitalize?: boolean;
   onChange?: (value: any) => {};
   readOnly?: boolean;
+  disableButton?: boolean;
 }
 
 export interface InputListState {
@@ -105,6 +106,7 @@ export default class InputList extends React.Component<
         ref: this.addListItemRef,
         label: null,
         description: null,
+        readOnly: this.props.readOnly
       });
     }
     return (
@@ -125,7 +127,7 @@ export default class InputList extends React.Component<
               callback={this.addListItem}
               content="Add"
               disabled={
-                this.props.disabled ||
+                this.props.disabled || this.props.disableButton ||
                 (setting.type !== "menu" && !this.state.newItem.length)
               }
             />
@@ -184,7 +186,7 @@ export default class InputList extends React.Component<
     return (
       <li className="input-list-item" key={value}>
         <WithRemoveButton
-          disabled={this.props.disabled}
+          disabled={this.props.disabled || this.props.disableButton}
           onRemove={() => this.removeListItem(listItem)}
         >
           {item}

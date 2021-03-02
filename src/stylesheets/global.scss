@@ -65,18 +65,3 @@
     }
   }
 }
-
-#opds-catalog > div:first-child:not(.config) {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: flex-start;
-  background: plum;
-  main {
-    height: 78.5% !important;
-    background: crimson;
-  }
-}
-.config main {
-  overflow: auto;
-}

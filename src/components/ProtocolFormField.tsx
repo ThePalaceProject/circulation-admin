@@ -19,6 +19,7 @@ export interface ProtocolFormFieldProps {
   title?: string;
   onChange?: any;
   readOnly: boolean;
+  disableButton?: boolean;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -130,6 +131,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         title={this.props.title}
         onChange={this.props.onChange}
         readOnly={this.props.readOnly}
+        disableButton={this.props.disableButton}
       />
     );
   }

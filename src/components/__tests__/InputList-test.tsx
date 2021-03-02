@@ -102,6 +102,16 @@ describe("InputList", () => {
     );
   });
 
+  it("optionally disables the remove buttons", () => {
+    wrapper.setProps({ disableButton: true });
+    const withRemoveButtons = wrapper.find(WithRemoveButton);
+    expect(withRemoveButtons.length).to.equal(2);
+    expect(withRemoveButtons.at(0).prop("disabled")).to.be.true;
+    expect(withRemoveButtons.at(0).find("button").prop("disabled")).to.be.true;
+    expect(withRemoveButtons.at(1).prop("disabled")).to.be.true;
+    expect(withRemoveButtons.at(1).find("button").prop("disabled")).to.be.true;
+  });
+
   it("renders a button for adding a list item", () => {
     const addListItemContainer = wrapper.find(".add-list-item-container");
     const addListItem = addListItemContainer.find("span.add-list-item");

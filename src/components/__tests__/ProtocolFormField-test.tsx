@@ -162,12 +162,14 @@ describe("ProtocolFormField", () => {
       type: "menu",
       menuOptions: ["A", "B", "C"].map(x => <option role="option" aria-selected={false}>{x}</option>)
     }};
-    wrapper.setProps({ setting: menuSetting, value: [], altValue: "Alternate" });
+    wrapper.setProps({ setting: menuSetting, value: [], altValue: "Alternate", readOnly: true, disableButton: true });
     inputList = wrapper.find(InputList);
     expect(inputList.length).to.equal(1);
     expect(inputList.prop("setting")).to.equal(menuSetting);
     expect(inputList.prop("altValue")).to.equal("Alternate");
     expect(inputList.find("select").length).to.equal(1);
+    expect(inputList.prop("readOnly")).to.be.true;
+    expect(inputList.prop("disableButton")).to.be.true;
   });
 
   it("renders image setting", () => {
