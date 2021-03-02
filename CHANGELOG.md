@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.36
+
+#### Fixed
+
+- Fixed data submission bug involving disabled fields.
+
 ### v0.4.35
 
 #### Fixed
