@@ -88,7 +88,10 @@ export default class InputList extends React.Component<
     let element: string | JSX.Element;
     // Disable the button if 1) the whole component is supposed to be disabled,
     // 2) the admin isn't authorized to add items to the list, or 3) the input field is blank.
-    let disableButton = this.props.disabled || this.props.disableButton || (setting.type !== "menu" && !this.state.newItem.length)
+    let disableButton =
+      this.props.disabled ||
+      this.props.disableButton ||
+      (setting.type !== "menu" && !this.state.newItem.length);
     if (setting.format === "language-code") {
       element = (
         <LanguageField
@@ -109,7 +112,7 @@ export default class InputList extends React.Component<
         ref: this.addListItemRef,
         label: null,
         description: null,
-        readOnly: this.props.readOnly
+        readOnly: this.props.readOnly,
       });
     }
     return (
