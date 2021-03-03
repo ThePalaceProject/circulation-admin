@@ -19,6 +19,7 @@ export interface ProtocolFormFieldProps {
   title?: string;
   onChange?: any;
   readOnly: boolean;
+  disableButton?: boolean;
 }
 
 /** Shows a form field for editing a single setting, based on setting information
@@ -115,6 +116,10 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
     let value = Array.isArray(this.props.value) ?
       this.props.value :
       (this.props.value && [].concat.apply([], Object.values(this.props.value)));
+    // Currently, the use case for the disableButton prop is to tell the InputList
+    // whether the admin should be able to click the buttons to add and delete list items.
+    // The readOnly prop tells the InputList whether the input fields should let the admin type or
+    // select (if it's a menu) new items.
     return (
       <InputList
         ref={this.inputListRef}
@@ -130,6 +135,7 @@ export default class ProtocolFormField extends React.Component<ProtocolFormField
         title={this.props.title}
         onChange={this.props.onChange}
         readOnly={this.props.readOnly}
+        disableButton={this.props.disableButton}
       />
     );
   }

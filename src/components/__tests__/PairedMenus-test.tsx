@@ -78,6 +78,13 @@ describe("PairedMenus", () => {
       expect(o.props.value).to.equal(dropdown.children().at(idx).props().children);
     });
   });
+  it("optionally disables the InputList's button", () => {
+    let inputList = wrapper.find(InputList);
+    expect(inputList.prop("disableButton")).not.to.be.true;
+    wrapper.setProps({ readOnly: true });
+    inputList = wrapper.find(InputList);
+    expect(inputList.prop("disableButton")).to.be.true;
+  });
   it("calculates state", () => {
     expect(wrapper.state().inputListValues).to.eql(inputListSetting.default);
     expect(wrapper.state().dropdownValue).to.equal(dropdownSetting.default);

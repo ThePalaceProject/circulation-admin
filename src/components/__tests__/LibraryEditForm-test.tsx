@@ -126,11 +126,12 @@ describe("LibraryEditForm", () => {
     });
 
     it("renders the PairedMenus component", () => {
-      let inputListSetting = { key: "inputList", label: "Input List", paired: "dropdown", options: [], default: ["opt_1"] };
-      let dropdownSetting = { key: "dropdown", label: "Dropdown List", options: [{key: "opt_1", label: "Option 1"}, {key: "opt_2", label: "Option 2"}], type: "select" };
+      let inputListSetting = { key: "inputList", label: "Input List", paired: "dropdown", options: [], default: ["opt_1"], level: 2 };
+      let dropdownSetting = { key: "dropdown", label: "Dropdown List", options: [{key: "opt_1", label: "Option 1"}, {key: "opt_2", label: "Option 2"}], type: "select", level: 2 };
       wrapper.setProps({ data: {...wrapper.prop("data"), ...{ settings: [inputListSetting, dropdownSetting]}}});
       let pairedMenus = wrapper.find(PairedMenus);
       expect(pairedMenus.length).to.equal(1);
+      expect(pairedMenus.prop("readOnly")).not.to.be.true;
 
       let inputList = pairedMenus.find(InputList);
       expect(inputList.length).to.equal(1);
@@ -144,6 +145,29 @@ describe("LibraryEditForm", () => {
       expect(dropdown.prop("name")).to.equal("dropdown");
       expect(dropdown.children().length).to.equal(1);
       expect(dropdown.children().at(0).prop("value")).to.equal(inputListSetting.default[0]);
+
+      // If the admin isn't authorized to make changes to the setting represented by the PairedMenus component,
+      // PairedMenus should be read-only.
+      wrapper.setProps({ adminLevel: 1 });
+      pairedMenus = wrapper.find(PairedMenus);
+      expect(pairedMenus.prop("readOnly")).to.be.true;
+    });
+
+    it("renders the InputList component", () => {
+      let inputListSetting = { key: "inputList", label: "Input List", options: [], default: ["opt_1"], level: 2,  menuOptions: [], type: "menu" };
+      wrapper.setProps({ data: {...wrapper.prop("data"), ...{ settings: [inputListSetting]}}});
+      let inputList = wrapper.find(InputList);
+      expect(inputList.length).to.equal(1);
+      expect(inputList.prop("setting")).to.eql(inputListSetting);
+      expect(inputList.prop("readOnly")).not.to.be.true;
+      expect(inputList.prop("disableButton")).not.to.be.true;
+
+      // If the admin isn't authorized to make changes to the setting represented by the InputList component,
+      // InputList should be read-only.
+      wrapper.setProps({ adminLevel: 1 });
+      inputList = wrapper.find(InputList);
+      expect(inputList.prop("readOnly")).to.be.true;
+      expect(inputList.prop("disableButton")).to.be.true;
     });
 
     it("renders the Announcements component", () => {

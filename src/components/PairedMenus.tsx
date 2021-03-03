@@ -11,6 +11,7 @@ export interface PairedMenusProps {
   dropdownSetting: SettingData;
   item?: LibraryData;
   disabled: boolean;
+  readOnly?: boolean;
   error?: FetchErrorData;
 }
 
@@ -68,6 +69,9 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
   }
 
   renderInputList(options: SettingData[]) {
+    // The readOnly prop indicates that admins should never be able to enter new values for existing list items, since that
+    // would create a mismatch between the list items in the InputList and the list items in the dropdown.
+    // The disableButton prop is just to tell the InputList whether this particular admin is authorized to add and remove list items.
     let makeOption = (x: SettingData) => <option value={x.key} key={x.key} aria-selected={false}>{x.label}</option>;
     return (
       <ProtocolFormField
@@ -75,6 +79,7 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
         value={this.state.inputListValues}
         disabled={this.props.disabled}
         onChange={this.updateInputList}
+        disableButton={this.props.readOnly || this.props.disabled}
         readOnly={true}
         ref={this.props.inputListSetting.key}
       />

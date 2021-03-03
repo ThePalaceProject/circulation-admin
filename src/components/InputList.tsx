@@ -26,6 +26,7 @@ export interface InputListProps {
   capitalize?: boolean;
   onChange?: (value: any) => {};
   readOnly?: boolean;
+  disableButton?: boolean;
 }
 
 export interface InputListState {
@@ -85,6 +86,12 @@ export default class InputList extends React.Component<
     let showButton = !this.state.options || this.state.options.length > 0;
     let hasListItems = this.state.listItems && this.state.listItems.length > 0;
     let element: string | JSX.Element;
+    // Disable the button if 1) the whole component is supposed to be disabled,
+    // 2) the admin isn't authorized to add items to the list, or 3) the input field is blank.
+    let disableButton =
+      this.props.disabled ||
+      this.props.disableButton ||
+      (setting.type !== "menu" && !this.state.newItem.length);
     if (setting.format === "language-code") {
       element = (
         <LanguageField
@@ -105,6 +112,7 @@ export default class InputList extends React.Component<
         ref: this.addListItemRef,
         label: null,
         description: null,
+        readOnly: this.props.readOnly,
       });
     }
     return (
@@ -124,10 +132,7 @@ export default class InputList extends React.Component<
               className="add-list-item inline small bottom-align"
               callback={this.addListItem}
               content="Add"
-              disabled={
-                this.props.disabled ||
-                (setting.type !== "menu" && !this.state.newItem.length)
-              }
+              disabled={disableButton}
             />
           )}
         </div>
@@ -181,10 +186,13 @@ export default class InputList extends React.Component<
         readOnly: this.props.readOnly,
       });
     }
+    // Disable the delete button in the WithRemoveButton component if 1) the whole InputList is supposed to be disabled,
+    // or 2) the admin isn't authorized to delete items from the list
+    let disableRemoveButton = this.props.disabled || this.props.disableButton;
     return (
       <li className="input-list-item" key={value}>
         <WithRemoveButton
-          disabled={this.props.disabled}
+          disabled={disableRemoveButton}
           onRemove={() => this.removeListItem(listItem)}
         >
           {item}
