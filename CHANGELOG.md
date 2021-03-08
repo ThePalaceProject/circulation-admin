@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.37
+
+#### Fixed
+
+- Fixed CSS bug that caused the footer to sometimes float in the middle of the screen.
+
 ### v0.4.36
 
 #### Fixed
