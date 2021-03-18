@@ -62,6 +62,15 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
 
     let categories = this.separateCategories(otherFields);
     const requiresSystemAdmin = 3;
+    let ref = (setting) => {
+      if (setting.key === "name") {
+        return this.nameRef;
+      } else if (setting.key === "short name") {
+        return this.shortNameRef;
+      } else {
+        return this.settingRef;
+      }
+    };
     let basicInfoPanel = (
       <Panel
         id="library-basic-info"
@@ -71,39 +80,13 @@ export default class LibraryEditForm extends React.Component<LibraryEditFormProp
         content={
           <fieldset>
           <legend className="visuallyHidden">Basic Information</legend>
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            required={true}
-            name="name"
-            ref={this.nameRef}
-            label="Name"
-            value={this.props.item && this.props.item.name}
-            description="The human-readable name of this library."
-            error={this.props.error}
-            readOnly={this.props.adminLevel < requiresSystemAdmin}
-          />
-          <EditableInput
-            elementType="input"
-            type="text"
-            disabled={this.props.disabled}
-            required={true}
-            name="short_name"
-            ref={this.shortNameRef}
-            label="Short name"
-            value={this.props.item && this.props.item.short_name}
-            description="A short name of this library, to use when identifying it in scripts or URLs, e.g. 'NYPL'."
-            error={this.props.error}
-            readOnly={this.props.adminLevel < requiresSystemAdmin}
-          />
           { basicInfo.map(setting =>
             <ProtocolFormField
               key={setting.key}
-              ref={this.settingRef}
+              ref={ref(setting) as any}
               setting={setting}
               disabled={this.props.disabled}
-              value={this.props.item && this.props.item.settings && this.props.item.settings[setting.key]}
+              value={this.props.item && this.props.item[setting.key] || this.props.item?.settings && this.props.item.settings[setting.key]}
               default={findDefault(setting)}
               error={this.props.error}
               readOnly={this.adminNotAuthorized(setting)}

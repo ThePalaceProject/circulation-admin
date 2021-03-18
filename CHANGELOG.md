@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.38
+
+#### Fixed
+
+- Stopped hard-coding the "name" and "short name" fields in the library create/edit form.
+
 ### v0.4.37
 
 #### Fixed
