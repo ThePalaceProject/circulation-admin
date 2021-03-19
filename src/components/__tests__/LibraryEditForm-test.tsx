@@ -27,6 +27,8 @@ describe("LibraryEditForm", () => {
     }
   };
   let settingFields = [
+    { key: "name", label: "Name", category: "Basic Information", level: 3 },
+    { key: "short_name", label: "Short Name", category: "Basic Information", level: 3 },
     { key: "privacy-policy", label: "Privacy Policy", category: "Links" },
     { key: "copyright", label: "Copyright", category: "Links" },
     { key: "logo", label: "Logo", category: "Client Interface Customization" },
@@ -104,10 +106,10 @@ describe("LibraryEditForm", () => {
 
     it("renders settings", () => {
       let privacyInput = protocolFormFieldByKey("privacy-policy");
-      expect(privacyInput.props().setting).to.equal(settingFields[0]);
+      expect(privacyInput.props().setting).to.equal(settingFields[2]);
       expect(privacyInput.props().value).not.to.be.ok;
       let copyrightInput = protocolFormFieldByKey("copyright");
-      expect(copyrightInput.props().setting).to.equal(settingFields[1]);
+      expect(copyrightInput.props().setting).to.equal(settingFields[3]);
       expect(copyrightInput.props().value).not.to.be.ok;
 
       wrapper.setProps({ item: libraryData });
@@ -118,10 +120,10 @@ describe("LibraryEditForm", () => {
     });
 
     it("does not render settings with the skip attribute", () => {
-      expect(wrapper.find(ProtocolFormField).length).to.equal(6);
+      expect(wrapper.find(ProtocolFormField).length).to.equal(8);
       let settings = wrapper.prop("data").settings.concat([{ key: "skip", label: "Skip this setting!", skip: true }]);
       wrapper.setProps({ data: {...wrapper.prop("data"), ...{settings}}});
-      expect(wrapper.find(ProtocolFormField).length).to.equal(6);
+      expect(wrapper.find(ProtocolFormField).length).to.equal(8);
       expect(protocolFormFieldByKey("skip").length).to.equal(0);
     });
 
@@ -218,21 +220,23 @@ describe("LibraryEditForm", () => {
 
       // System admin
       fields.forEach(x => {
-        expect(x.prop("readOnly")).to.be.false;
+        if (!["Name", "Short name"].includes(x.prop("label"))) {
+          expect(x.prop("readOnly")).to.be.false;
+        }
       });
 
       // Library manager
       wrapper.setProps({ adminLevel: 2, data });
       fields = wrapper.find(EditableInput);
       fields.forEach(x => {
-        expect(x.prop("readOnly")).to.equal(["Name", "Short name", "Level 3"].includes(x.prop("label")));
+        expect(x.prop("readOnly")).to.equal(["Name", "Short Name", "Level 3"].includes(x.prop("label")));
       });
 
       // Librarian
       wrapper.setProps({ adminLevel: 1 });
       fields = wrapper.find(EditableInput);
       fields.forEach(x => {
-        expect(x.prop("readOnly")).to.equal(["Name", "Short name", "Level 3", "Level 2"].includes(x.prop("label")));
+        expect(x.prop("readOnly")).to.equal(["Name", "Short Name", "Level 3", "Level 2"].includes(x.prop("label")));
       });
     });
   });
