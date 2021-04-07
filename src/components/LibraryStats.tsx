@@ -36,9 +36,10 @@ export default class LibraryStats extends React.Component<
             "Enumerated Licenses Owned": v.licenses,
             "Enumerated Licenses Available": v.available_licenses,
           }
-          return acc;
-        }, {});
 
+        return acc;
+      }, {});
+    /* Customize the Rechart tooltip to provide additional information */
     const CustomTooltip = props => {
       const { active, payload, label: collection } = props;
       if (!active) return null;
@@ -55,7 +56,7 @@ export default class LibraryStats extends React.Component<
       const newPayload = [
         ...nonZeroPayload,
         {}, // blank line
-        { name: ": Additional Information", color},
+        { value: ">>> Additional Information <<<", color},
         ...addedPayload,
       ];
 
