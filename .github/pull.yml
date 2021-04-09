@@ -3,7 +3,7 @@
 
 version: "1"
 rules:
- - base: develop
+  - base: develop
     upstream: NYPL-Simplified:master
     mergeMethod: none
 conflictLabel: "merge-conflict"
