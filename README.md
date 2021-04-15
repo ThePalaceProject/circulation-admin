@@ -1,9 +1,8 @@
-# circulation-web
-Web front-end for the Circulation Manager administrative interface.
+# Circulation Manager Administrative Interface
 
-[![npm version](https://badge.fury.io/js/simplified-circulation-web.svg)](https://badge.fury.io/js/simplified-circulation-web)
+[![Test Client & Deploy Documentation](https://github.com/lyrasis/simplye-circulation-web/actions/workflows/test-and-deploy.yml/badge.svg?branch=main)](https://github.com/lyrasis/simplye-circulation-web/actions/workflows/test-and-deploy.yml)
 
-[![Build Status](https://travis-ci.org/NYPL-Simplified/circulation-web.svg?branch=master)](https://travis-ci.org/NYPL-Simplified/circulation-web)
+This is a [LYRASIS](http://lyrasis.org)-maintained fork of the NYPL [Library Simplified](http://www.librarysimplified.org/) Circulation Manager administrative interface.
 
 ## Library Simplified Documentation
 
@@ -16,6 +15,7 @@ This package is meant to be used with the Library Simplified [Circulation Manage
 #### Use npm version
 
 Suggested local folder setup:
+
 - `/[path to project folder]/circulation`
 
 To use the published version with your circulation manager, run `npm install` from `api/admin` in the `circulation` local installed repository.
@@ -23,6 +23,7 @@ To use the published version with your circulation manager, run `npm install` fr
 #### Use local development version
 
 Suggested local folder setup:
+
 - `/[path to project folder]/circulation`
 - `/[path to project folder]/circulation-web`
 
@@ -30,9 +31,9 @@ If you're working on the administrative interface and want to test local changes
 
 1. Run `npm link` in this `circulation-web` repository,
 2. run `npm link simplified-circulation-web` from `api/admin` in the `circulation` repository,
-2. run the circulation manager using `python app.py` at the root in the `circulation` repository,
-3. run the web interface using `npm run dev` at the root of this `circulation-web` repository,
-4. visit `localhost:6500/admin/`
+3. run the circulation manager using `python app.py` at the root in the `circulation` repository,
+4. run the web interface using `npm run dev` at the root of this `circulation-web` repository,
+5. visit `localhost:6500/admin/`
 
 Webpack will take care of compiling and updating any new changes made locally for development. Just refresh the page to see updates without having to restart either the `circulation` or `circulation-web` servers.
 
@@ -55,6 +56,7 @@ In order to run the app with `react-axe`, run `npm run dev-test-axe`. This will 
 ## Tests
 
 ### Unit Tests
+
 Like the codebase, all the unit tests are written in Typescript. Tests are written for all React components as well as redux and utility functions, and all can be found in their respective `__tests__` folders.
 
 To run the tests, perform `npm test`.
@@ -62,6 +64,7 @@ To run the tests, perform `npm test`.
 We use Travis CI for continuous integration. Any pull requests submitted must have tests and those tests must pass on Travis CI.
 
 ### Nightwatch
+
 There are end-to-end tests that run on Nightwatch. This selenium-based test runner allows us to include integration tests for logging into the admin and clicking through different pages.
 
 To set up credentials and run the tests, check out the [README](/tests/README.md) in `/tests/.

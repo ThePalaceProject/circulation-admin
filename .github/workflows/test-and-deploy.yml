@@ -1,0 +1,41 @@
+name: Test & Deploy Documentation
+on: [push, pull_request]
+
+jobs:
+  build-test-and-deploy:
+    runs-on: ubuntu-latest
+
+    # We want to run on external PRs, but not on our own internal PRs as they'll be run
+    # by the push to the branch. This prevents duplicated runs on internal PRs.
+    # Some discussion of this here:
+    # https://github.community/t/duplicate-checks-on-push-and-pull-request-simultaneous-event/18012
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Install locked dependencies 🔧
+        run: |
+          npm ci
+          npm run build --if-present
+
+      - name: Test 🧪
+        env:
+          TZ: America/New_York
+        run: npm test
+
+      - name: Build docs 📃
+        run: npm run build-docs
+
+      # If we are merging to a release branch (main or master), then we need
+      # to deploy the documentation to GitHub Pages.
+      - name: Deploy docs to GitHub pages 🚀
+        if: github.event_name == 'push' && contains(['refs/heads/main', 'refs/heads/master'], github.ref)
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: docs
