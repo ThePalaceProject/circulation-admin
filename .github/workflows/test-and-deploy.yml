@@ -33,7 +33,7 @@ jobs:
       # If we are merging to a release branch (main or master), then we need
       # to deploy the documentation to GitHub Pages.
       - name: Deploy docs to GitHub pages 🚀
-        if: github.event_name == 'push' && contains(['refs/heads/main', 'refs/heads/master'], github.ref)
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
