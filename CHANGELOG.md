@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.40
+
+#### Fixed
+
+- Fixed another footer placement bug.
+
 ### v0.4.39
 
 #### Updated
