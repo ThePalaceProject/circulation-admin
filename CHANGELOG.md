@@ -1,5 +1,17 @@
 ## Changelog
 
+### v0.4.40
+
+#### Fixed
+
+- Fixed another footer placement bug.
+
+### v0.4.39
+
+#### Updated
+
+- Upgraded to v1.3.18 of the reusable components package.
+
 ### v0.4.38
 
 #### Fixed

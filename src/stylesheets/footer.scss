@@ -8,7 +8,7 @@ footer {
   z-index: 1;
   position: absolute;
   bottom: 0;
-  height: 56px; 
+  height: 56px;
   p {
     margin: 2px 0;
     a, a:visited, a:link {
@@ -19,4 +19,8 @@ footer {
       }
     }
   }
+}
+
+.config footer {
+  position: relative;
 }
