@@ -1,9 +1,9 @@
 {
-  "name": "@thepalaceproject/circulation-web",
+  "name": "@jonathangreen/circulation-web",
   "description": "Admin Interface for The Palace Project Circulation Manager",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ThePalaceProject/circulation-web.git"
+    "url": "git://github.com/jonathangreen/circulation-web.git"
   },
   "main": "dist/circulation-web.js",
   "author": "The Palace Project",
