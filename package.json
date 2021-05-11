@@ -1,16 +1,16 @@
 {
-  "name": "@jonathangreen/circulation-web",
+  "name": "@thepalaceproject/circulation-admin",
   "description": "Admin Interface for The Palace Project Circulation Manager",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jonathangreen/circulation-web.git"
+    "url": "git://github.com/ThePalaceProject/circulation-admin.git"
   },
-  "main": "dist/circulation-web.js",
+  "main": "dist/circulation-admin.js",
   "author": "The Palace Project",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=10.0.0",
-    "npm": ">=6.0.0"
+    "npm": ">=7.0.0"
   },
   "scripts": {
     "prepublish": "npm run prod",
@@ -24,9 +24,6 @@
     "dev-test-axe": "TEST_AXE=true npm run dev",
     "prod": "webpack -p --progress --display-modules --config webpack.prod.config",
     "build-docs": "typedoc --tsconfig tsconfig.json"
-  },
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
   },
   "dependencies": {
     "@nypl/dgx-svg-icons": "0.3.4",
