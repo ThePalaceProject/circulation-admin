@@ -46,7 +46,7 @@ interface ConfigurationSettings {
 
 /** The main admin interface application. Create an instance of this class
     to render the app and set up routing. */
-class CirculationWeb {
+class CirculationAdmin {
   constructor(config: ConfigurationSettings) {
     let div = document.createElement("div");
     div.id = "opds-catalog";
@@ -93,4 +93,4 @@ class CirculationWeb {
   }
 }
 
-export = CirculationWeb;
+export = CirculationAdmin;

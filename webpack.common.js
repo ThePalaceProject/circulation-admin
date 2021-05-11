@@ -13,8 +13,8 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
-    filename: "circulation-web.js",
-    library: "CirculationWeb",
+    filename: "circulation-admin.js",
+    library: "CirculationAdmin",
     libraryTarget: "umd"
   },
   plugins: [
@@ -23,7 +23,7 @@ module.exports = {
     // in the browser even if it is never used, so we ignore it:
     new webpack.IgnorePlugin(/jsdom$/),
     // Extract separate css file.
-    new MiniCssExtractPlugin({ filename: "circulation-web.css" }),
+    new MiniCssExtractPlugin({ filename: "circulation-admin.css" }),
     // Set a local global variable in the app that will be used only
     // for testing AXE in development mode.
     new webpack.DefinePlugin({
