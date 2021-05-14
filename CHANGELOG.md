@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.4.5
+
+#### Fixed
+
+- Updated npm packages to fix security issues.
+- Minor updates to types to run and build the project.
+
 ### v0.4.40
 
 #### Fixed

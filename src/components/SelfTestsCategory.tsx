@@ -6,7 +6,6 @@ import {
   CollectionData,
   PatronAuthServiceData,
   SearchServiceData,
-  SelfTestsResult,
   ServiceData,
 } from "../interfaces";
 import { Panel } from "library-simplified-reusable-components";
@@ -27,8 +26,9 @@ export default class SelfTestsCategory extends React.Component<
     | CollectionData[]
     | PatronAuthServiceData[]
     | SearchServiceData[] {
-    // It's possible for older systems to have services in which the name property is null,
-    // which will block the page from loading.  We check for these services and assign them a placeholder name.
+    // It's possible for older systems to have services in which the name
+    // property is null, which will block the page from loading.  We check for
+    // these services and assign them a placeholder name.
     const items = [];
     this.props.items.forEach((i) =>
       items.push(
