@@ -52,7 +52,11 @@ module.exports = {
       },
       {
         test: /\.(ttf|woff|eot|svg|png|woff2|gif|jpg)(\?[\s\S]+)?$/,
-        loader: 'url-loader?limit=100000'
+        loader: 'url-loader',
+        options: {
+            'limit': 10000,
+            'name': 'assets/[hash].[ext]'
+        }
       }
     ]
   },
