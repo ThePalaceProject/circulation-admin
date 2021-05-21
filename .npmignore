@@ -1,4 +1,5 @@
 src/*
+tests/*
 lib/*
 typings/*
 *~
@@ -10,3 +11,8 @@ coverage
 
 # github
 .github
+
+.sass-lint.yml
+/*.json
+/webpack.*.js
+/.*
