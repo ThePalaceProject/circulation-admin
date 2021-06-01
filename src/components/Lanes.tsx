@@ -1,3 +1,4 @@
+/* eslint-disable react/no-deprecated */
 import * as React from "react";
 import { Link } from "react-router";
 import { Store } from "redux";
@@ -5,7 +6,12 @@ import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
-import { LaneData, LanesData, CustomListData, CustomListsData } from "../interfaces";
+import {
+  LaneData,
+  LanesData,
+  CustomListData,
+  CustomListsData,
+} from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import LaneEditor from "./LaneEditor";
 import LanesSidebar from "./LanesSidebar";
@@ -43,7 +49,11 @@ export interface LanesOwnProps {
   csrfToken: string;
 }
 
-export interface LanesProps extends React.Props<LanesProps>, LanesStateProps, LanesDispatchProps, LanesOwnProps {}
+export interface LanesProps
+  extends React.Props<LanesProps>,
+    LanesStateProps,
+    LanesDispatchProps,
+    LanesOwnProps {}
 
 export interface LanesState {
   draggableId: string | null;
@@ -58,7 +68,7 @@ export interface LanesState {
 export class Lanes extends React.Component<LanesProps, LanesState> {
   private resetRef = React.createRef<EditableInput>();
   static defaultProps = {
-    editOrCreate: "create"
+    editOrCreate: "create",
   };
 
   constructor(props) {
@@ -81,14 +91,14 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       draggingFrom: null,
       lanes: this.copyLanes(this.props.lanes || []),
       orderChanged: false,
-      canReset: false
+      canReset: false,
     };
   }
 
   private copyLanes(lanes: LaneData[]): LaneData[] {
     const copy = (lane) => {
       return Object.assign({}, lane, {
-        sublanes: lane.sublanes.map(copy)
+        sublanes: lane.sublanes.map(copy),
       });
     };
     return lanes.map(copy);
@@ -98,21 +108,25 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     const errorMessage = this.props.formError || this.props.fetchError;
     return (
       <main className="lanes-container">
-        { errorMessage && <ErrorMessage error={errorMessage} /> }
-        { this.props.isFetching && <LoadingIndicator /> }
+        {errorMessage && <ErrorMessage error={errorMessage} />}
+        {this.props.isFetching && <LoadingIndicator />}
         <div className="lanes">
           <LanesSidebar
             orderChanged={this.state.orderChanged}
             library={this.props.library}
             drag={this.drag}
-            lanes={ this.state.lanes && this.state.lanes.length > 0 && this.state.lanes }
+            lanes={
+              this.state.lanes &&
+              this.state.lanes.length > 0 &&
+              this.state.lanes
+            }
             findLaneForIdentifier={this.findLaneForIdentifier}
             findParentOfLane={this.findParentOfLane}
             identifier={this.props.identifier}
             toggleLaneVisibility={this.toggleLaneVisibility}
           />
-          { this.renderMainContent() }
-          </div>
+          {this.renderMainContent()}
+        </div>
       </main>
     );
   }
@@ -128,71 +142,101 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   orderChanged(): JSX.Element {
-    return (<div className="order-change-info">
-      <h2>Change Lane Order</h2>
-      <Button
-        callback={this.saveOrder}
-        className="left-align inline save-lane-order-changes"
-        disabled={this.props.isFetching}
-        content="Save Order Changes"
-      />
-      <Button
-        className="inverted inline cancel-lane-order-changes"
-        callback={this.resetOrder}
-        content={"Cancel"}
-      />
-      <hr />
-      <p>Save or cancel your changes to the lane order before making additional changes.</p>
-    </div>);
+    return (
+      <div className="order-change-info">
+        <h2>Change Lane Order</h2>
+        <Button
+          callback={this.saveOrder}
+          className="left-align inline save-lane-order-changes"
+          disabled={this.props.isFetching}
+          content="Save Order Changes"
+        />
+        <Button
+          className="inverted inline cancel-lane-order-changes"
+          callback={this.resetOrder}
+          content={"Cancel"}
+        />
+        <hr />
+        <p>
+          Save or cancel your changes to the lane order before making additional
+          changes.
+        </p>
+      </div>
+    );
   }
 
   renderEditor(editOrCreate: string): JSX.Element {
-    let props = {
+    const props = {
       library: this.props.library,
       customLists: this.props.customLists,
-      editLane: this.editLane
+      editLane: this.editLane,
     };
-    let extraProps = {
-      "create": {
+    const extraProps = {
+      create: {
         findParentOfLane: this.getLane,
-        responseBody: this.props.responseBody
+        responseBody: this.props.responseBody,
       },
-      "edit": {
+      edit: {
         lane: this.getLane(),
         findParentOfLane: this.findParentOfLane,
         deleteLane: this.deleteLane,
-        toggleLaneVisibility: this.toggleLaneVisibility
-      }
+        toggleLaneVisibility: this.toggleLaneVisibility,
+      },
     };
-    return React.createElement(LaneEditor, {...props, ...extraProps[editOrCreate]});
+    return React.createElement(LaneEditor, {
+      ...props,
+      ...extraProps[editOrCreate],
+    });
   }
 
   checkReset() {
-    let inputValue = this.resetRef.current && this.resetRef.current.getValue();
-    this.setState({...this.state, canReset: (inputValue === "RESET")});
+    const inputValue =
+      this.resetRef.current && this.resetRef.current.getValue();
+    this.setState({ ...this.state, canReset: inputValue === "RESET" });
   }
 
   renderReset(): JSX.Element {
-      return (
-        <div className="reset">
-          <h2>Reset all lanes</h2>
-          <p>This will delete all lanes for the library and automatically generate new lanes based on the library's language configuration or the languages in the library's collection.</p>
-          <p>Any lanes based on lists will be removed and will need to be created again (the lists will be preserved.)</p>
-          <hr />
-          <p>This cannot be undone.</p>
-          <p>If you're sure you want to reset the lanes, type "RESET" below and click Reset.</p>
-          <EditableInput type="text" ref={this.resetRef} required={true} onChange={this.checkReset}/>
-          <Button
-            className="reset-button left-align danger"
-            callback={this.resetLanes}
-            disabled={!this.state.canReset}
-            content={<span>Reset <ResetIcon/></span>}
-          />
-          <Link
-            className="btn inverted cancel-button"
-            to={`/admin/web/lanes/${this.props.library}/`}
-          >Cancel</Link>
-        </div>
+    return (
+      <div className="reset">
+        <h2>Reset all lanes</h2>
+        <p>
+          This will delete all lanes for the library and automatically generate
+          new lanes based on the library&apos;s language configuration or the
+          languages in the library&apos;s collection.
+        </p>
+        <p>
+          Any lanes based on lists will be removed and will need to be created
+          again (the lists will be preserved.)
+        </p>
+        <hr />
+        <p>This cannot be undone.</p>
+        <p>
+          If you&apos;re sure you want to reset the lanes, type
+          &quot;RESET&quot; below and click Reset.
+        </p>
+        <EditableInput
+          type="text"
+          ref={this.resetRef}
+          required={true}
+          onChange={this.checkReset}
+        />
+        <Button
+          className="reset-button left-align danger"
+          callback={this.resetLanes}
+          disabled={!this.state.canReset}
+          content={
+            <span>
+              Reset <ResetIcon />
+            </span>
+          }
+        />
+        <Link
+          className="btn inverted cancel-button"
+          to={`/admin/web/lanes/${this.props.library}/`}
+        >
+          Cancel
+        </Link>
+      </div>
     );
   }
 
@@ -203,7 +247,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         lanes,
         draggingFrom: null,
         draggableId: null,
-        orderChanged: false
+        orderChanged: false,
       });
     }
   }
@@ -218,7 +262,11 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   resetOrder() {
-    this.setState({ ...this.state, lanes: this.props.lanes, orderChanged: false });
+    this.setState({
+      ...this.state,
+      lanes: this.props.lanes,
+      orderChanged: false,
+    });
   }
 
   async saveOrder() {
@@ -232,14 +280,18 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   async deleteLane(lane: LaneData): Promise<void> {
-    if (window.confirm("Delete lane \"" + lane.display_name + "\" and its sublanes?")) {
+    if (
+      window.confirm(`Delete lane "${lane.display_name}" and its sublanes?`)
+    ) {
       await this.props.deleteLane(String(lane.id));
       this.props.fetchLanes();
     }
   }
 
   async toggleLaneVisibility(lane: LaneData, shouldBeVisible: boolean) {
-    let callback = shouldBeVisible ? this.props.showLane : this.props.hideLane;
+    const callback = shouldBeVisible
+      ? this.props.showLane
+      : this.props.hideLane;
     await callback(String(lane.id));
     this.props.fetchLanes();
   }
@@ -260,7 +312,10 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       if (String(lane.id) === String(identifier)) {
         return lane;
       }
-      const sublaneMatch = this.findLaneForIdentifier(lane.sublanes, identifier);
+      const sublaneMatch = this.findLaneForIdentifier(
+        lane.sublanes,
+        identifier
+      );
       if (sublaneMatch) {
         return sublaneMatch;
       }
@@ -270,7 +325,10 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
 
   getLane(): LaneData | null {
     if (this.props.lanes) {
-      return this.findLaneForIdentifier(this.props.lanes, this.props.identifier);
+      return this.findLaneForIdentifier(
+        this.props.lanes,
+        this.props.identifier
+      );
     }
     return null;
   }
@@ -280,11 +338,18 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       lanes = this.state.lanes || [];
     }
     for (const possibleParent of lanes) {
-      if (lane && possibleParent.sublanes.find(child => child["id"] === lane.id)) {
+      if (
+        lane &&
+        possibleParent.sublanes.find((child) => child["id"] === lane.id)
+      ) {
         return possibleParent;
       }
-      // If we didn't find the parent in this level of lanes, then go one level down and look again.
-      let sublaneParent = this.findParentOfLane(lane, possibleParent.sublanes);
+      // If we didn't find the parent in this level of lanes,
+      // then go one level down and look again.
+      const sublaneParent = this.findParentOfLane(
+        lane,
+        possibleParent.sublanes
+      );
       if (sublaneParent) {
         return sublaneParent;
       }
@@ -293,39 +358,66 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 
   drag(newState) {
-    this.setState({...this.state, ...newState});
+    this.setState({ ...this.state, ...newState });
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mapStateToProps(state, ownProps) {
   return {
-    lanes: state.editor.lanes && state.editor.lanes.data && state.editor.lanes.data.lanes,
+    lanes:
+      state.editor.lanes &&
+      state.editor.lanes.data &&
+      state.editor.lanes.data.lanes,
     responseBody: state.editor.lanes && state.editor.lanes.successMessage,
-    customLists: state.editor.customLists && state.editor.customLists.data && state.editor.customLists.data.custom_lists,
-    fetchError: state.editor.lanes.fetchError || state.editor.laneVisibility.fetchError || state.editor.laneOrder.fetchError,
-    formError: state.editor.lanes.formError || state.editor.laneVisibility.formError,
-    isFetching: state.editor.lanes.isFetching || state.editor.lanes.isEditing || state.editor.laneVisibility.isFetching || state.editor.customLists.isFetching || state.editor.resetLanes.isFetching || state.editor.laneOrder.isFetching
+    customLists:
+      state.editor.customLists &&
+      state.editor.customLists.data &&
+      state.editor.customLists.data.custom_lists,
+    fetchError:
+      state.editor.lanes.fetchError ||
+      state.editor.laneVisibility.fetchError ||
+      state.editor.laneOrder.fetchError,
+    formError:
+      state.editor.lanes.formError || state.editor.laneVisibility.formError,
+    isFetching:
+      state.editor.lanes.isFetching ||
+      state.editor.lanes.isEditing ||
+      state.editor.laneVisibility.isFetching ||
+      state.editor.customLists.isFetching ||
+      state.editor.resetLanes.isFetching ||
+      state.editor.laneOrder.isFetching,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let fetcher = new DataFetcher();
-  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
+  const fetcher = new DataFetcher();
+  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
-    fetchCustomLists: () => dispatch(actions.fetchCustomLists(ownProps.library)),
-    editLane: (data: FormData) => dispatch(actions.editLane(ownProps.library, data)),
-    deleteLane: (identifier: string) => dispatch(actions.deleteLane(ownProps.library, identifier)),
-    showLane: (identifier: string) => dispatch(actions.showLane(ownProps.library, identifier)),
-    hideLane: (identifier: string) => dispatch(actions.hideLane(ownProps.library, identifier)),
+    fetchCustomLists: () =>
+      dispatch(actions.fetchCustomLists(ownProps.library)),
+    editLane: (data: FormData) =>
+      dispatch(actions.editLane(ownProps.library, data)),
+    deleteLane: (identifier: string) =>
+      dispatch(actions.deleteLane(ownProps.library, identifier)),
+    showLane: (identifier: string) =>
+      dispatch(actions.showLane(ownProps.library, identifier)),
+    hideLane: (identifier: string) =>
+      dispatch(actions.hideLane(ownProps.library, identifier)),
     resetLanes: () => dispatch(actions.resetLanes(ownProps.library)),
-    changeLaneOrder: (lanes: LaneData[]) => dispatch(actions.changeLaneOrder(ownProps.library, lanes))
+    changeLaneOrder: (lanes: LaneData[]) =>
+      dispatch(actions.changeLaneOrder(ownProps.library, lanes)),
   };
 }
 
-const ConnectedLanes = connect<LanesStateProps, LanesDispatchProps, LanesOwnProps>(
+const ConnectedLanes = connect<
+  LanesStateProps,
+  LanesDispatchProps,
+  LanesOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
-)(Lanes);
+)(Lanes as any);
 
 export default ConnectedLanes;

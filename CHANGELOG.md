@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.4.5
+
+#### Updated
+
+- Updated `opds-web-client` to version `^0.6.1`.
+
+#### Fixed
+
+- Updated npm packages to fix security issues.
+- Minor updates to types to run and build the project.
+
 ### v0.4.41
 
 #### Added

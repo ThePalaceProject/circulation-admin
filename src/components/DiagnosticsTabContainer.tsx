@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
@@ -25,15 +26,19 @@ export interface DiagnosticsTabContainerStateProps {
   fetchError?: FetchErrorData;
 }
 
-export interface DiagnosticsTabContainerProps extends DiagnosticsTabContainerDispatchProps, DiagnosticsTabContainerStateProps, DiagnosticsTabContainerOwnProps {}
+export interface DiagnosticsTabContainerProps
+  extends DiagnosticsTabContainerDispatchProps,
+    DiagnosticsTabContainerStateProps,
+    DiagnosticsTabContainerOwnProps {}
 
-export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContainerProps> {
-
+export class DiagnosticsTabContainer extends TabContainer<
+  DiagnosticsTabContainerProps
+> {
   DISPLAY_NAMES = {
     coverage_provider: "Coverage Providers",
     monitor: "Monitors",
     script: "Scripts",
-    other: "Other"
+    other: "Other",
   };
 
   componentWillMount() {
@@ -41,7 +46,7 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
   }
 
   handleSelect(event) {
-    let tab = event.currentTarget.dataset.tabkey;
+    const tab = event.currentTarget.dataset.tabkey;
     this.props.goToTab(tab);
     if (this.context.router) {
       this.context.router.push("/admin/web/troubleshooting/diagnostics/" + tab);
@@ -57,8 +62,8 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
   }
 
   tabs() {
-    let tabs = {};
-    let serviceTypes = ["coverage_provider", "monitor", "script", "other"];
+    const tabs = {};
+    const serviceTypes = ["coverage_provider", "monitor", "script", "other"];
 
     serviceTypes.forEach((serviceType) => {
       let component = null;
@@ -67,7 +72,12 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
       } else if (!this.props.isLoaded) {
         component = <LoadingIndicator />;
       } else if (this.props.diagnostics) {
-        component = <DiagnosticsServiceType type={serviceType} services={this.props.diagnostics[serviceType]} />;
+        component = (
+          <DiagnosticsServiceType
+            type={serviceType}
+            services={this.props.diagnostics[serviceType]}
+          />
+        );
       }
       tabs[serviceType] = component;
     });
@@ -76,24 +86,29 @@ export class DiagnosticsTabContainer extends TabContainer<DiagnosticsTabContaine
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mapStateToProps(state, ownProps: DiagnosticsTabContainerOwnProps) {
   return {
     diagnostics: state.editor.diagnostics && state.editor.diagnostics.data,
     isLoaded: state.editor.diagnostics.isLoaded,
-    fetchError: state.editor.diagnostics.fetchError
+    fetchError: state.editor.diagnostics.fetchError,
   };
 }
 
 function mapDispatchToProps(dispatch: Function) {
-  let actions = new ActionCreator();
+  const actions = new ActionCreator();
   return {
-    fetchDiagnostics: () => dispatch(actions.fetchDiagnostics())
+    fetchDiagnostics: () => dispatch(actions.fetchDiagnostics()),
   };
 }
 
-const ConnectedDiagnosticsTabContainer = connect<DiagnosticsTabContainerStateProps, DiagnosticsTabContainerDispatchProps, DiagnosticsTabContainerOwnProps>(
+const ConnectedDiagnosticsTabContainer = connect<
+  DiagnosticsTabContainerStateProps,
+  DiagnosticsTabContainerDispatchProps,
+  DiagnosticsTabContainerOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
-)(DiagnosticsTabContainer);
+)(DiagnosticsTabContainer as any);
 
 export default ConnectedDiagnosticsTabContainer;
