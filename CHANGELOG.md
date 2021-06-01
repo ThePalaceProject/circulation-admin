@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.41
+
+#### Added
+
+- Added a custom Mocha reporter so that a formatted list of suites and tests can be generated via the CLI.
+
 ### v0.4.40
 
 #### Fixed

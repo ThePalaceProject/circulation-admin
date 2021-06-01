@@ -1,6 +1,6 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.4.40",
+  "version": "0.4.41",
   "description": "Web Front-end for Library Simplified Circulation Manager Admin Interface",
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
     "prepublish": "npm run prod",
     "lint": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && sass-lint -c .sass-lint.yml -v -q",
     "test": "npm run lint && tsc && cp -r src/stylesheets lib && mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js",
+    "test-list": "mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js --reporter ./testReporter.js",
     "test-file": "npm run lint && tsc && cp -r src/stylesheets lib && mocha --require lib/testHelper.js",
     "test-browser": "npm run test-chrome && npm run test-firefox",
     "test-chrome": "node_modules/.bin/selenium-standalone install && nightwatch -e chrome",
@@ -60,6 +61,7 @@
     "@typescript-eslint/parser": "^3.6.0",
     "chai": "4.2.0",
     "clean-webpack-plugin": "^2.0.1",
+    "colors-cli": "^1.0.27",
     "css-loader": "^2.1.1",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.12.1",
