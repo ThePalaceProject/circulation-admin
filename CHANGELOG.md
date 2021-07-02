@@ -1,5 +1,10 @@
 ## Changelog
 
+#### (Prerelease) Updated
+
+- Updated the README.
+- Added a Github pull request template.
+
 ### v0.5.1
 
 #### Fixed
