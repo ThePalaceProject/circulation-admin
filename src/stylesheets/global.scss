@@ -80,3 +80,8 @@ body > div > div:first-child {
     block-size: fit-content;
   }
 }
+
+// overwriting rules from the opds-web-client for the complaints list view
+.collection .collection-container .collection-main {
+  padding-bottom: 50px;
+}
