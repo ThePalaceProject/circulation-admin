@@ -14,7 +14,7 @@ To see screenshots, read in-depth documentation, and find out more about the pro
 
 This package is meant to be used with the Library Simplified [Circulation Manager](https://github.com/NYPL-Simplified/circulation), and cannot be run in isolation. Please follow the Circulation Manager README instructions before setting up this repository.
 
-#### Use NPM Version
+#### Use npm Version
 
 Suggested local folder setup:
 
@@ -54,7 +54,7 @@ This package is [published to npm](https://www.npmjs.com/package/simplified-circ
 
 If you're not already logged in to npm from your terminal, you'll have to do so at this point. Run `npm login` and enter your credentials when prompted.
 
-Then, you can run `npm publish` from your local copy of the repository.
+Then, you can run `npm publish` from your local copy of the repository (ensure you are on the main branch before doing so).
 
 Afterwards, you should tag the release and add comments to Github. On the main branch, run `git tag -a v[version number] -m '[commit message]'`. Then run `git push origin v[version number]`.
 
