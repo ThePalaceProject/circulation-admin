@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.5.1
+
+#### Fixed
+
+- Made footer consistent across pages.
+- Ensured footer was not covering other page elements.
+
+#### Updated
+
+- Updated the opds-web-client to version 0.6.2.
+
 ### v0.5.0
 
 #### Updated
