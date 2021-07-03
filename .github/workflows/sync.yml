@@ -13,8 +13,8 @@ jobs:
     env:
       REMOTE_ORG: NYPL-Simplified
       REMOTE_REPO: circulation-web
-      REMOTE_BRANCH: master
-      LOCAL_BRANCH: nypl/master
+      REMOTE_BRANCH: main
+      LOCAL_BRANCH: nypl/main
 
     steps:
     - name: Checkout local branch
