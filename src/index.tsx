@@ -46,51 +46,67 @@ interface ConfigurationSettings {
 
 /** The main admin interface application. Create an instance of this class
     to render the app and set up routing. */
-class CirculationWeb {
+class CirculationAdmin {
   constructor(config: ConfigurationSettings) {
-    let div = document.createElement("div");
+    const div = document.createElement("div");
     div.id = "opds-catalog";
     document.getElementsByTagName("body")[0].appendChild(div);
 
-    let catalogEditorPath = "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
-    let customListPagePath = "/admin/web/lists(/:library)(/:editOrCreate)(/:identifier)";
-    let lanePagePath = "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
+    const catalogEditorPath =
+      "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
+    const customListPagePath =
+      "/admin/web/lists(/:library)(/:editOrCreate)(/:identifier)";
+    const lanePagePath =
+      "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
+
+    const appElement = "opds-catalog";
+    const app = config.settingUp ? (
+      <ContextProvider {...config}>
+        <SetupPage />
+      </ContextProvider>
+    ) : (
+      <ContextProvider {...config}>
+        <TOSContextProvider
+          value={...[config.tos_link_text, config.tos_link_href]}
+        >
+          <Router history={browserHistory}>
+            <Route path={catalogEditorPath} component={CatalogPage} />
+            <Route path={customListPagePath} component={CustomListPage} />
+            <Route path={lanePagePath} component={LanePage} />
+            <Route
+              path="/admin/web/dashboard(/:library)"
+              component={DashboardPage}
+            />
+            <Route
+              path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
+              component={ConfigPage}
+            />
+            <Route path="/admin/web/account" component={AccountPage} />
+            <Route
+              path="/admin/web/patrons/:library(/:tab)"
+              component={ManagePatrons}
+            />
+            <Route
+              path="/admin/web/troubleshooting(/:tab)(/:subtab)"
+              component={TroubleshootingPage}
+            />
+          </Router>
+        </TOSContextProvider>
+      </ContextProvider>
+    );
 
     // `react-axe` should only run in development and testing mode.
     // Running this is resource intensive and should only be used to test
     // for accessibility and not during active development.
     if (process.env.TEST_AXE === "true") {
-      let axe = require("react-axe");
-      axe(React, ReactDOM, 1000);
-    }
-
-    if (config.settingUp) {
-      ReactDOM.render(
-        <ContextProvider {...config}>
-          <SetupPage />
-        </ContextProvider>,
-        document.getElementById("opds-catalog")
-      );
+      import("react-axe").then((axe) => {
+        axe(React, ReactDOM, 1000);
+        ReactDOM.render(app, document.getElementById(appElement));
+      });
     } else {
-      ReactDOM.render(
-        <ContextProvider {...config}>
-          <TOSContextProvider value={...[config.tos_link_text, config.tos_link_href]}>
-            <Router history={browserHistory}>
-              <Route path={catalogEditorPath} component={CatalogPage} />
-              <Route path={customListPagePath} component={CustomListPage} />
-              <Route path={lanePagePath} component={LanePage} />
-              <Route path="/admin/web/dashboard(/:library)" component={DashboardPage} />
-              <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
-              <Route path="/admin/web/account" component={AccountPage} />
-              <Route path="/admin/web/patrons/:library(/:tab)" component={ManagePatrons} />
-              <Route path="/admin/web/troubleshooting(/:tab)(/:subtab)" component={TroubleshootingPage} />
-            </Router>
-          </TOSContextProvider>
-        </ContextProvider>,
-        document.getElementById("opds-catalog")
-      );
+      ReactDOM.render(app, document.getElementById(appElement));
     }
   }
 }
 
-export = CirculationWeb;
+export = CirculationAdmin;

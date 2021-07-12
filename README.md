@@ -1,10 +1,8 @@
-# circulation-web
+# Circulation Manager Administrative Interface
 
-Web front-end for the Circulation Manager administrative interface.
+[![Test Client & Deploy Documentation](https://github.com/lyrasis/simplye-circulation-web/actions/workflows/test-and-deploy.yml/badge.svg?branch=main)](https://github.com/lyrasis/simplye-circulation-web/actions/workflows/test-and-deploy.yml)
 
-[![npm version](https://badge.fury.io/js/simplified-circulation-web.svg)](https://badge.fury.io/js/simplified-circulation-web)
-
-[![Build Status](https://travis-ci.org/NYPL-Simplified/circulation-web.svg?branch=main)](https://travis-ci.org/NYPL-Simplified/circulation-web)
+This is a [LYRASIS](http://lyrasis.org)-maintained fork of the NYPL [Library Simplified](http://www.librarysimplified.org/) Circulation Manager administrative interface.
 
 ## Library Simplified Documentation
 
