@@ -73,12 +73,12 @@
 					<h2>Library Simplified Documentation</h2>
 				</a>
 				<p>To see screenshots, read in-depth documentation, and find out more about the project, check out the <a href="https://confluence.nypl.org/display/SIM/">Confluence</a> site hosted by The New York Public Library.</p>
-				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
-					<h2>Setup</h2>
+				<a href="#set-up" id="set-up" style="color: inherit; text-decoration: none;">
+					<h2>Set Up</h2>
 				</a>
-				<p>This package is meant to be used with the Library Simplified <a href="https://github.com/NYPL-Simplified/circulation">Circulation Manager</a>.</p>
+				<p>This package is meant to be used with the Library Simplified <a href="https://github.com/NYPL-Simplified/circulation">Circulation Manager</a>, and cannot be run in isolation. Please follow the Circulation Manager README instructions before setting up this repository.</p>
 				<a href="#use-npm-version" id="use-npm-version" style="color: inherit; text-decoration: none;">
-					<h4>Use npm version</h4>
+					<h4>Use npm Version</h4>
 				</a>
 				<p>Suggested local folder setup:</p>
 				<ul>
@@ -86,7 +86,7 @@
 				</ul>
 				<p>To use the published version with your circulation manager, run <code>npm install</code> from <code>api/admin</code> in the <code>circulation</code> local installed repository.</p>
 				<a href="#use-local-development-version" id="use-local-development-version" style="color: inherit; text-decoration: none;">
-					<h4>Use local development version</h4>
+					<h4>Use Local Development Version</h4>
 				</a>
 				<p>Suggested local folder setup:</p>
 				<ul>
@@ -96,21 +96,27 @@
 				<p>If you&#39;re working on the administrative interface and want to test local changes, you can link your local clone of this repository to your local circulation manager. These steps will allow you to work on the front-end administrative interface and see updates while developing.</p>
 				<ol>
 					<li>Run <code>npm link</code> in this <code>circulation-web</code> repository,</li>
-					<li>run <code>npm link simplified-circulation-web</code> from <code>api/admin</code> in the <code>circulation</code> repository,</li>
+					<li>run <code>npm link simplified-circulation-web</code> from <code>api/admin</code> in the <code>circulation</code> repository (which is where package.json is located),</li>
 					<li>run the circulation manager using <code>python app.py</code> at the root in the <code>circulation</code> repository,</li>
 					<li>run the web interface using <code>npm run dev</code> at the root of this <code>circulation-web</code> repository,</li>
-					<li>visit <code>localhost:6500/admin/</code></li>
+					<li>run the Elasticsearch server using <code>./bin/elasticsearch</code> in the elasticsearch-[version] directory,</li>
+					<li>visit <code>localhost:6500/admin/</code>.</li>
 				</ol>
-				<p>Webpack will take care of compiling and updating any new changes made locally for development. Just refresh the page to see updates without having to restart either the <code>circulation</code> or <code>circulation-web</code> servers.</p>
+				<p>Webpack will take care of compiling and updating any new changes made locally for development. Just hard refresh the page (command + shift + R) to see updates without having to restart either the <code>circulation</code> or <code>circulation-web</code> servers.</p>
 				<a href="#web-catalog" id="web-catalog" style="color: inherit; text-decoration: none;">
 					<h2>Web Catalog</h2>
 				</a>
-				<p>The Circulation Manager administrative interface relies on the <a href="https://github.com/NYPL-Simplified/opds-web-client">OPDS Web Catalog</a> as its base React component and application. For more information, please check out the repository.</p>
-				<a href="#publishing" id="publishing" style="color: inherit; text-decoration: none;">
-					<h2>Publishing</h2>
+				<p>The Circulation Manager administrative interface relies on the <a href="https://github.com/NYPL-Simplified/opds-web-client">OPDS Web Catalog</a> as its base React component and application. For more information, please check out that repository.</p>
+				<a href="#publishing-a-new-release" id="publishing-a-new-release" style="color: inherit; text-decoration: none;">
+					<h2>Publishing a New Release</h2>
 				</a>
-				<p>This package is <a href="https://www.npmjs.com/package/simplified-circulation-web">published to npm</a>.</p>
-				<p>To publish a new version, you need to create an npm account and be a collaborator on the package. Then you can run <code>npm publish</code> from your local copy of the repository.</p>
+				<p>Before publishing a new release, update the version number in package.json and add the new version number + comments about what the new version includes to CHANGELOG.md. For new version numbers, you can refer to <a href="https://semver.org/">Semantic Versioning</a> (major.minor.patch). Then, run <code>npm install</code> to update the package-lock.json file to include the new version.</p>
+				<p>Commit your changes, push them to Github, make a PR, and request your reviewer. Once approved, you may go back to your local repository, checkout the main branch, and <code>git pull</code>.</p>
+				<p>This package is <a href="https://www.npmjs.com/package/simplified-circulation-web">published to npm</a>. To publish a new version, you need to create an npm account and be a collaborator on the package.</p>
+				<p>If you&#39;re not already logged in to npm from your terminal, you&#39;ll have to do so at this point. Run <code>npm login</code> and enter your credentials when prompted.</p>
+				<p>Then, you can run <code>npm publish</code> from your local copy of the repository (ensure you are on the main branch before doing so).</p>
+				<p>Afterwards, you should tag the release and add comments to Github. On the main branch, run <code>git tag -a v[version number] -m &#39;[commit message]&#39;</code>. Then run <code>git push origin v[version number]</code>.</p>
+				<p>Go to the Github repository, click on &quot;tags,&quot; find the tag you pushed, click on it and hit &quot;edit.&quot; Add a release title, and a description. Then save by clicking, &quot;Update Release.&quot;</p>
 				<a href="#accessibility" id="accessibility" style="color: inherit; text-decoration: none;">
 					<h2>Accessibility</h2>
 				</a>
