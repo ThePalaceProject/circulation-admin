@@ -1,21 +1,21 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const webpack = require('webpack');
+const CleanWebpackPlugin = require("clean-webpack-plugin");
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
   entry: {
-    app: [
-      "./src/stylesheets/app.scss", "./src/index.tsx"
-    ]
+    app: ["./src/stylesheets/app.scss", "./src/index.tsx"],
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "circulation-admin.js",
     library: "CirculationAdmin",
-    libraryTarget: "umd"
+    libraryTarget: "umd",
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -27,39 +27,33 @@ module.exports = {
     // Set a local global variable in the app that will be used only
     // for testing AXE in development mode.
     new webpack.DefinePlugin({
-      "process.env.TEST_AXE": JSON.stringify(process.env.TEST_AXE)
-    })
+      "process.env.TEST_AXE": JSON.stringify(process.env.TEST_AXE),
+    }),
   ],
   optimization: {
-    minimizer: [new TerserPlugin({ terserOptions: { compress: false }})]
+    minimizer: [new TerserPlugin({ terserOptions: { compress: false } })],
   },
   module: {
     rules: [
       {
         test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          "css-loader",
-          "sass-loader"
-        ]
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
         test: /\.tsx?$/,
         exclude: [/node_modules/],
-        loaders: [
-          'ts-loader'
-        ]
+        loaders: ["ts-loader"],
       },
       {
         test: /\.(ttf|woff|eot|svg|png|woff2|gif|jpg)(\?[\s\S]+)?$/,
-        loader: 'url-loader?limit=100000'
-      }
-    ]
+        loader: "url-loader?limit=100000",
+      },
+    ],
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".scss"],
     alias: {
-      react: path.resolve('./node_modules/react')
+      react: path.resolve("./node_modules/react"),
     },
-  }
+  },
 };

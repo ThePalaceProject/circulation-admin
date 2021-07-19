@@ -1,5 +1,38 @@
 ## Changelog
 
+#### (Prerelease) Updated
+
+- Updated the README.
+- Added a Github pull request template.
+
+### v0.5.1
+
+#### Fixed
+
+- Made footer consistent across pages.
+- Ensured footer was not covering other page elements.
+
+#### Updated
+
+- Updated the opds-web-client to version 0.6.2.
+
+### v0.5.0
+
+#### Updated
+
+- Updated `opds-web-client` to version `^0.6.1`.
+
+#### Fixed
+
+- Updated npm packages to fix security issues.
+- Minor updates to types to run and build the project.
+
+### v0.4.41
+
+#### Added
+
+- Added a custom Mocha reporter so that a formatted list of suites and tests can be generated via the CLI.
+
 ### v0.4.40
 
 #### Fixed
