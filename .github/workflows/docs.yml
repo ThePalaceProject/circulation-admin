@@ -19,7 +19,7 @@ jobs:
           node-version: '12.x'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci
      
       - name: Build docs
         run: npm run build-docs
@@ -28,6 +28,4 @@ jobs:
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
-          dir: dist
           branch: gh-pages # The branch the action should deploy to.
-          token: ${{ secrets.ACCESS_TOKEN }}
