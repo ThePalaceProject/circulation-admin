@@ -4,7 +4,7 @@ Web front-end for the Circulation Manager administrative interface.
 
 [![npm version](https://badge.fury.io/js/simplified-circulation-web.svg)](https://badge.fury.io/js/simplified-circulation-web)
 
-[![Build Status](https://travis-ci.org/NYPL-Simplified/circulation-web.svg?branch=main)](https://travis-ci.org/NYPL-Simplified/circulation-web)
+![Build Status](https://github.com/nypl-simplified/circulation-web/actions/workflows/test.yml/badge.svg?branch=main)
 
 ## Library Simplified Documentation
 
@@ -74,7 +74,7 @@ Like the codebase, all the unit tests are written in Typescript. Tests are writt
 
 To run the tests, perform `npm test`.
 
-We use Travis CI for continuous integration. Any pull requests submitted must have tests and those tests must pass on Travis CI.
+We use GitHub Actions for continuous integration. Any pull requests submitted must have tests and those tests must pass on GitHub Actions.
 
 ### Nightwatch
 
@@ -85,7 +85,7 @@ To set up credentials and run the tests, check out the [README](/tests/README.md
 ## License
 
 ```
-Copyright © 2015 The New York Public Library, Astor, Lenox, and Tilden Foundations
+Copyright © 2021 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
