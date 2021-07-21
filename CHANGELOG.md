@@ -1,7 +1,8 @@
 ## Changelog
 
-#### (Prerelease) Updated
+### v0.5.2
 
+- Updated CI from Travis to GitHub Actions.
 - Updated the README.
 - Added a Github pull request template.
 
