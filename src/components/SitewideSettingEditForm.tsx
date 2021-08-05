@@ -18,13 +18,18 @@ export interface SitewideSettingEditFormState {
 }
 
 /** Form for editing a single sitewide setting. */
-export default class SitewideSettingEditForm extends React.Component<SitewideSettingEditFormProps, SitewideSettingEditFormState> {
+export default class SitewideSettingEditForm extends React.Component<
+  SitewideSettingEditFormProps,
+  SitewideSettingEditFormState
+> {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
     this.submit = this.submit.bind(this);
     this.state = {
-      inputKey: this.availableSettings().length ? this.availableSettings()[0].key : "",
+      inputKey: this.availableSettings().length
+        ? this.availableSettings()[0].key
+        : "",
     };
   }
 
@@ -32,22 +37,28 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     const inputKey = this.state.inputKey;
     const availableSettings = this.availableSettings();
     let settingToRender;
-    availableSettings.forEach(setting => {
+    availableSettings.forEach((setting) => {
       if (setting.key === inputKey) {
         settingToRender = setting;
       }
     });
-    const selectType = !!(settingToRender && settingToRender.options && settingToRender.options.length);
+    const selectType = !!(
+      settingToRender &&
+      settingToRender.options &&
+      settingToRender.options.length
+    );
     return (
       <div>
-        { availableSettings.length > 0 &&
+        {availableSettings.length > 0 && (
           <Form
             onSubmit={this.submit}
             className="no-border edit-form"
             disableButton={this.props.disabled}
             content={
               <fieldset key="sitewide-setting">
-                <legend className="visuallyHidden">Enter or edit a value for the selected sitewide setting key</legend>
+                <legend className="visuallyHidden">
+                  Enter or edit a value for the selected sitewide setting key
+                </legend>
                 <EditableInput
                   elementType="select"
                   disabled={this.props.disabled}
@@ -58,58 +69,71 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
                   value={this.props.item && this.props.item.key}
                   onChange={this.onChange}
                 >
-                  {
-                    availableSettings.map(setting =>
-                      <option key={setting.key} value={setting.key} aria-selected={false}>{setting.label}</option>
-                    )
-                  }
-                </EditableInput>
-                {
-                  selectType ? (
-                    <EditableInput
-                      elementType="select"
-                      name="value"
-                      ref="value"
-                      label="Value"
-                      value={this.props.item && this.props.item.value}
+                  {availableSettings.map((setting) => (
+                    <option
+                      key={setting.key}
+                      value={setting.key}
+                      aria-selected={false}
                     >
-                      {
-                        availableSettings.map(setting => {
-                          if (setting.key === inputKey) {
-                            return setting.options.map(s => {
-                              return <option key={s.key} value={s.key} aria-selected={false}>{s.label}</option>;
-                            });
-                          }
-                        })
+                      {setting.label}
+                    </option>
+                  ))}
+                </EditableInput>
+                {selectType ? (
+                  <EditableInput
+                    elementType="select"
+                    name="value"
+                    ref="value"
+                    label="Value"
+                    value={this.props.item && this.props.item.value}
+                  >
+                    {availableSettings.map((setting) => {
+                      if (setting.key === inputKey) {
+                        return setting.options.map((s) => {
+                          return (
+                            <option
+                              key={s.key}
+                              value={s.key}
+                              aria-selected={false}
+                            >
+                              {s.label}
+                            </option>
+                          );
+                        });
                       }
-                    </EditableInput>
-                  ) : (
-                    <EditableInput
-                      elementType="input"
-                      type="text"
-                      disabled={this.props.disabled}
-                      required={settingToRender && settingToRender.required}
-                      name="value"
-                      ref="value"
-                      label="Value"
-                      value={this.props.item && this.props.item.value}
-                    />
-                  )
-                }
-                {
-                  availableSettings.map(setting => {
-                    if (setting.key === inputKey && setting.description) {
-                      return <p className="description" dangerouslySetInnerHTML={{__html: setting.description}} />;
-                    }
-                  })
-                }
+                    })}
+                  </EditableInput>
+                ) : (
+                  <EditableInput
+                    elementType="input"
+                    type="text"
+                    disabled={this.props.disabled}
+                    required={settingToRender && settingToRender.required}
+                    name="value"
+                    ref="value"
+                    label="Value"
+                    value={this.props.item && this.props.item.value}
+                  />
+                )}
+                {availableSettings.map((setting) => {
+                  if (setting.key === inputKey && setting.description) {
+                    return (
+                      <p
+                        className="description"
+                        dangerouslySetInnerHTML={{
+                          __html: setting.description,
+                        }}
+                      />
+                    );
+                  }
+                })}
               </fieldset>
             }
           />
-        }
-        { this.availableSettings().length === 0 &&
+        )}
+        {this.availableSettings().length === 0 && (
           <p>All sitewide settings have already been created.</p>
-        }
+        )}
       </div>
     );
   }
@@ -119,7 +143,7 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
   }
 
   availableSettings() {
-    const allSettings = this.props.data && this.props.data.all_settings || [];
+    const allSettings = (this.props.data && this.props.data.all_settings) || [];
     if (this.props.item) {
       for (const setting of allSettings) {
         if (setting.key === this.props.item.key) {
@@ -130,7 +154,9 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
       const availableSettings = [];
       for (const possibleSetting of allSettings) {
         let hasSetting = false;
-        for (const actualSetting of (this.props.data && this.props.data.settings) || []) {
+        for (const actualSetting of (this.props.data &&
+          this.props.data.settings) ||
+          []) {
           if (actualSetting.key === possibleSetting.key) {
             hasSetting = true;
           }
@@ -148,10 +174,9 @@ export default class SitewideSettingEditForm extends React.Component<SitewideSet
     await this.props.save(data);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.responseBody && !nextProps.fetchError) {
       clearForm(this.refs);
     }
   }
-
 }

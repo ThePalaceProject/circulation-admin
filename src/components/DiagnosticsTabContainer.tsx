@@ -41,7 +41,7 @@ export class DiagnosticsTabContainer extends TabContainer<
     other: "Other",
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.fetchDiagnostics();
   }
 

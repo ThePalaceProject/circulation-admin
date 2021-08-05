@@ -18,13 +18,16 @@ export interface TextWithEditModeState {
 
 /** Renders text with a link to switch to edit mode and show an editable input instead.
     If the text isn't defined yet, it starts in edit mode. */
-export default class TextWithEditMode extends React.Component<TextWithEditModeProps, TextWithEditModeState> {
+export default class TextWithEditMode extends React.Component<
+  TextWithEditModeProps,
+  TextWithEditModeState
+> {
   private textRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
     this.state = {
       text: this.props.text || "",
-      editMode: !this.props.text
+      editMode: !this.props.text,
     };
 
     this.updateText = this.updateText.bind(this);
@@ -35,7 +38,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
   render(): JSX.Element {
     return (
       <div>
-        { this.state.editMode &&
+        {this.state.editMode && (
           <h3>
             <EditableInput
               type="text"
@@ -53,22 +56,26 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
               disabled={this.props.disableIfBlank && !this.state.text.length}
             />
           </h3>
-        }
-        { !this.state.editMode &&
+        )}
+        {!this.state.editMode && (
           <h3>
-            { this.state.text }
+            {this.state.text}
             <Button
               callback={this.startEditMode}
               className="inverted inline"
-              content={<span>Edit {this.props.placeholder} <PencilIcon /></span>}
+              content={
+                <span>
+                  Edit {this.props.placeholder} <PencilIcon />
+                </span>
+              }
             />
           </h3>
-        }
+        )}
       </div>
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.text !== this.props.text) {
       this.setState({ text: nextProps.text, editMode: !nextProps.text });
     }
@@ -92,7 +99,7 @@ export default class TextWithEditMode extends React.Component<TextWithEditModePr
 
   getText() {
     if (this.state.editMode) {
-      let value = this.textRef.current.getValue();
+      const value = this.textRef.current.getValue();
       this.updateText();
       return value;
     } else {

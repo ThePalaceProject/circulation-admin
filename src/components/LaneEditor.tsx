@@ -16,7 +16,10 @@ export interface LaneEditorProps extends React.Props<LaneEditor> {
   responseBody?: string;
   editLane: (data: FormData) => Promise<void>;
   deleteLane?: (lane: LaneData) => Promise<void>;
-  toggleLaneVisibility: (lane: LaneData, shouldBeVisible: boolean) => Promise<void>;
+  toggleLaneVisibility: (
+    lane: LaneData,
+    shouldBeVisible: boolean
+  ) => Promise<void>;
   findParentOfLane: (lane: LaneData) => LaneData | null;
 }
 
@@ -27,19 +30,25 @@ export interface LaneEditorState {
 }
 
 /** Right panel of the lanes page for editing a single lane. */
-export default class LaneEditor extends React.Component<LaneEditorProps, LaneEditorState> {
+export default class LaneEditor extends React.Component<
+  LaneEditorProps,
+  LaneEditorState
+> {
   private laneNameRef = React.createRef<TextWithEditMode>();
   private laneCustomListsRef = React.createRef<LaneCustomListsEditor>();
   constructor(props) {
     super(props);
     this.state = {
       name: this.props.lane && this.props.lane.display_name,
-      customListIds: this.props.lane && this.props.lane.custom_list_ids || [],
-      inheritParentRestrictions: this.props.lane && this.props.lane.inherit_parent_restrictions
+      customListIds: (this.props.lane && this.props.lane.custom_list_ids) || [],
+      inheritParentRestrictions:
+        this.props.lane && this.props.lane.inherit_parent_restrictions,
     };
     this.changeName = this.changeName.bind(this);
     this.changeCustomLists = this.changeCustomLists.bind(this);
-    this.changeInheritParentRestrictions = this.changeInheritParentRestrictions.bind(this);
+    this.changeInheritParentRestrictions = this.changeInheritParentRestrictions.bind(
+      this
+    );
     this.delete = this.delete.bind(this);
     this.save = this.save.bind(this);
     this.reset = this.reset.bind(this);
@@ -48,7 +57,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   render(): JSX.Element {
-    let parent = this.props.findParentOfLane(this.props.lane);
+    const parent = this.props.findParentOfLane(this.props.lane);
     return (
       <div className="lane-editor">
         <div className="lane-editor-header">
@@ -61,44 +70,46 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
                 ref={this.laneNameRef}
                 aria-label="Enter a name for this lane"
               />
-              { this.props.lane &&
-                <h4>ID-{this.props.lane.id}</h4>
-              }
+              {this.props.lane && <h4>ID-{this.props.lane.id}</h4>}
             </div>
             <span className="lane-buttons">
-              { this.props.lane && this.props.deleteLane &&
+              {this.props.lane && this.props.deleteLane && (
                 <Button
                   className="danger delete-lane"
                   callback={this.delete}
-                  content={<span>Delete lane <TrashIcon /></span>}
+                  content={
+                    <span>
+                      Delete lane <TrashIcon />
+                    </span>
+                  }
                 />
-              }
-              { this.visibilityToggle() }
+              )}
+              {this.visibilityToggle()}
               <Button
                 className="save-lane"
                 callback={this.save}
                 content="Save lane"
               />
-              { this.hasChanges() &&
+              {this.hasChanges() && (
                 <Button
                   className="cancel-changes inverted"
                   callback={this.reset}
                   content="Cancel changes"
                 />
-              }
+              )}
             </span>
           </div>
           <div className="lane-details">
             {this.renderInfo(parent)}
-            { parent &&
+            {parent && (
               <EditableInput
                 type="checkbox"
                 name="inherit_parent_restrictions"
                 checked={this.state.inheritParentRestrictions}
                 label="Inherit restrictions from parent lane"
                 onChange={this.changeInheritParentRestrictions}
-                />
-            }
+              />
+            )}
           </div>
         </div>
         <div className="lane-editor-body">
@@ -107,47 +118,67 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
             customListIds={this.state.customListIds}
             onUpdate={this.changeCustomLists}
             ref={this.laneCustomListsRef}
-            />
+          />
         </div>
       </div>
     );
   }
 
   renderInfo(parent?: LaneData): JSX.Element {
-    let isVisible = (lane: LaneData) => lane.visible;
+    const isVisible = (lane: LaneData) => lane.visible;
 
     if (this.props.lane) {
       let visibility;
       if (isVisible(this.props.lane)) {
-        visibility = <div>This lane is currently visible. <VisibleIcon /></div>;
+        visibility = (
+          <div>
+            This lane is currently visible. <VisibleIcon />
+          </div>
+        );
       } else if (parent && !isVisible(parent)) {
-        visibility = <div>This lane's parent is currently hidden. <HiddenIcon /></div>;
+        visibility = (
+          <div>
+            This lane's parent is currently hidden. <HiddenIcon />
+          </div>
+        );
       } else {
-        visibility = <div>This lane is currently hidden. <HiddenIcon /></div>;
+        visibility = (
+          <div>
+            This lane is currently hidden. <HiddenIcon />
+          </div>
+        );
       }
       return visibility;
     } else {
-      let laneLevel = parent ? `sublane of ${parent.display_name}` : "top-level lane";
+      const laneLevel = parent
+        ? `sublane of ${parent.display_name}`
+        : "top-level lane";
       return <div>New {laneLevel}</div>;
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       name: nextProps.lane && nextProps.lane.display_name,
-      customListIds: nextProps.lane && nextProps.lane.custom_list_ids || [],
-      inheritParentRestrictions: nextProps.lane && nextProps.lane.inherit_parent_restrictions
+      customListIds: (nextProps.lane && nextProps.lane.custom_list_ids) || [],
+      inheritParentRestrictions:
+        nextProps.lane && nextProps.lane.inherit_parent_restrictions,
     });
   }
 
   hasChanges(): boolean {
-    const nameChanged = (this.props.lane && this.props.lane.display_name !== this.state.name);
+    const nameChanged =
+      this.props.lane && this.props.lane.display_name !== this.state.name;
     let listsChanged = false;
-    if (this.props.lane && this.props.lane.custom_list_ids.length !== this.state.customListIds.length) {
+    if (
+      this.props.lane &&
+      this.props.lane.custom_list_ids.length !== this.state.customListIds.length
+    ) {
       listsChanged = true;
     } else {
-      let propsListIds = this.props.lane && this.props.lane.custom_list_ids.sort() || [];
-      let stateListIds = this.state.customListIds.sort();
+      const propsListIds =
+        (this.props.lane && this.props.lane.custom_list_ids.sort()) || [];
+      const stateListIds = this.state.customListIds.sort();
       for (let i = 0; i < propsListIds.length; i++) {
         if (propsListIds[i] !== stateListIds[i]) {
           listsChanged = true;
@@ -156,7 +187,11 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
       }
     }
     let inheritParentRestrictionsChanged = false;
-    if (this.props.lane && this.props.lane.inherit_parent_restrictions !== this.state.inheritParentRestrictions) {
+    if (
+      this.props.lane &&
+      this.props.lane.inherit_parent_restrictions !==
+        this.state.inheritParentRestrictions
+    ) {
       inheritParentRestrictionsChanged = true;
     }
     return nameChanged || listsChanged || inheritParentRestrictionsChanged;
@@ -171,7 +206,7 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   }
 
   changeInheritParentRestrictions() {
-    let inheritParentRestrictions = !this.state.inheritParentRestrictions;
+    const inheritParentRestrictions = !this.state.inheritParentRestrictions;
     this.setState(Object.assign({}, this.state, { inheritParentRestrictions }));
   }
 
@@ -185,19 +220,27 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
     // The lane's visibility cannot be changed if it has a hidden parent.  In all other cases--i.e.
     // if 1) the lane does not have a parent or 2) the lane has a parent which is visible--we render
     // the hide/show button.
-    let parent = this.props.findParentOfLane(this.props.lane);
-    let canToggle = this.props.lane && (!parent || (parent && parent.visible));
+    const parent = this.props.findParentOfLane(this.props.lane);
+    const canToggle =
+      this.props.lane && (!parent || (parent && parent.visible));
     if (canToggle) {
-      return (<Button
-                className={this.props.lane.visible ? "hide-lane" : "show-lane"}
-                content={`${this.props.lane.visible ? "Hide" : "Show"} lane`}
-                callback={() => this.props.toggleLaneVisibility(this.props.lane, !this.props.lane.visible)}
-             />);
+      return (
+        <Button
+          className={this.props.lane.visible ? "hide-lane" : "show-lane"}
+          content={`${this.props.lane.visible ? "Hide" : "Show"} lane`}
+          callback={() =>
+            this.props.toggleLaneVisibility(
+              this.props.lane,
+              !this.props.lane.visible
+            )
+          }
+        />
+      );
     }
   }
 
   save() {
-    let parent = this.props.findParentOfLane(this.props.lane);
+    const parent = this.props.findParentOfLane(this.props.lane);
     const data = new (window as any).FormData();
     if (this.props.lane) {
       data.append("id", this.props.lane.id);
@@ -205,15 +248,22 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
     if (parent) {
       data.append("parent_id", parent.id);
     }
-    let name = this.laneNameRef.current.getText();
+    const name = this.laneNameRef.current.getText();
     data.append("display_name", name);
-    let listIds = this.laneCustomListsRef.current.getCustomListIds();
+    const listIds = this.laneCustomListsRef.current.getCustomListIds();
     data.append("custom_list_ids", JSON.stringify(listIds));
-    data.append("inherit_parent_restrictions", this.state.inheritParentRestrictions);
+    data.append(
+      "inherit_parent_restrictions",
+      this.state.inheritParentRestrictions
+    );
     this.props.editLane(data).then(() => {
       // If a new lane was created, go to its edit page.
       if (!this.props.lane && this.props.responseBody) {
-        window.location.href = "/admin/web/lanes/" + this.props.library + "/edit/" + this.props.responseBody;
+        window.location.href =
+          "/admin/web/lanes/" +
+          this.props.library +
+          "/edit/" +
+          this.props.responseBody;
       }
     });
   }
@@ -221,7 +271,8 @@ export default class LaneEditor extends React.Component<LaneEditorProps, LaneEdi
   reset() {
     this.laneNameRef.current.reset();
     this.laneCustomListsRef.current.reset(this.props.lane.custom_list_ids);
-    let inheritParentRestrictions = this.props.lane && this.props.lane.inherit_parent_restrictions;
+    const inheritParentRestrictions =
+      this.props.lane && this.props.lane.inherit_parent_restrictions;
     this.setState(Object.assign({}, this.state, { inheritParentRestrictions }));
   }
 }

@@ -1,5 +1,9 @@
 import * as React from "react";
-import { LanguagesData, LibraryData, CollectionData as AdminCollectionData } from "../interfaces";
+import {
+  LanguagesData,
+  LibraryData,
+  CollectionData as AdminCollectionData,
+} from "../interfaces";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
@@ -37,7 +41,10 @@ export interface CustomListEditorState {
 }
 
 /** Right panel of the lists page for editing a single list. */
-export default class CustomListEditor extends React.Component<CustomListEditorProps, CustomListEditorState> {
+export default class CustomListEditor extends React.Component<
+  CustomListEditorProps,
+  CustomListEditorState
+> {
   static listener;
   constructor(props) {
     super(props);
@@ -45,7 +52,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       title: this.props.list && this.props.list.title,
       entries: (this.props.list && this.props.list.books) || [],
       collections: this.props.listCollections || [],
-      entryPointSelected: "all"
+      entryPointSelected: "all",
     };
 
     this.changeTitle = this.changeTitle.bind(this);
@@ -59,14 +66,15 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   render(): JSX.Element {
     const listId = this.props.listId;
-    const listTitle = this.props.list && this.props.list.title ? this.props.list.title : "";
+    const listTitle =
+      this.props.list && this.props.list.title ? this.props.list.title : "";
     const nextPageUrl = this.props.list && this.props.list.nextPageUrl;
     const crawlable = `${listTitle ? `lists/${listTitle}/` : ""}crawlable`;
     const opdsFeedUrl = `${this.props.library?.short_name}/${crawlable}`;
     const hasChanges = this.hasChanges();
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
-    let disableSave = this.isTitleEmpty() || !hasChanges;
+    const disableSave = this.isTitleEmpty() || !hasChanges;
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -82,9 +90,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
                 disableIfBlank={true}
               />
             </fieldset>
-            { listId &&
-              <h4>ID-{listId}</h4>
-            }
+            {listId && <h4>ID-{listId}</h4>}
           </div>
           <div className="save-or-cancel-list">
             <Button
@@ -92,42 +98,46 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
               disabled={disableSave}
               content="Save this list"
             />
-            { hasChanges &&
+            {hasChanges && (
               <Button
                 className="inverted"
                 callback={this.reset}
                 content="Cancel Changes"
               />
-            }
+            )}
           </div>
         </div>
         <div className="custom-list-editor-body">
           <section>
-            { this.props.collections && this.props.collections.length > 0 &&
+            {this.props.collections && this.props.collections.length > 0 && (
               <div className="custom-list-filters">
                 <Panel
                   headerText="Add from collections"
                   id="add-from-collections"
                   content={
                     <div className="collections">
-                      <div>Automatically add new books from these collections to this list:</div>
-                      { this.props.collections.map(collection =>
-                          <EditableInput
-                            key={collection.id}
-                            type="checkbox"
-                            name="collection"
-                            checked={this.hasCollection(collection)}
-                            label={collection.name}
-                            value={String(collection.id)}
-                            onChange={() => { this.changeCollection(collection); }}
-                            />
-                        )
-                      }
+                      <div>
+                        Automatically add new books from these collections to
+                        this list:
+                      </div>
+                      {this.props.collections.map((collection) => (
+                        <EditableInput
+                          key={collection.id}
+                          type="checkbox"
+                          name="collection"
+                          checked={this.hasCollection(collection)}
+                          label={collection.name}
+                          value={String(collection.id)}
+                          onChange={() => {
+                            this.changeCollection(collection);
+                          }}
+                        />
+                      ))}
                     </div>
                   }
                 />
               </div>
-            }
+            )}
             <CustomListSearch
               search={this.search}
               entryPoints={this.props.entryPoints}
@@ -145,7 +155,9 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
             loadMoreEntries={this.props.loadMoreEntries}
             onUpdate={this.changeEntries}
             isFetchingMoreSearchResults={this.props.isFetchingMoreSearchResults}
-            isFetchingMoreCustomListEntries={this.props.isFetchingMoreCustomListEntries}
+            isFetchingMoreCustomListEntries={
+              this.props.isFetchingMoreCustomListEntries
+            }
             ref="listEntries"
             opdsFeedUrl={opdsFeedUrl}
             entryCount={this.props.entryCount}
@@ -157,7 +169,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
   }
 
   componentDidMount() {
-    CustomListEditor.listener = browserHistory.listen( location =>  {
+    CustomListEditor.listener = browserHistory.listen((location) => {
       this.setState({ title: "", entries: [], collections: [] });
     });
   }
@@ -165,36 +177,48 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     CustomListEditor.listener();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // Note: This gets called after performing a search, at which point the
     // state of the component can already have updates that need to be taken
     // into account.
     if (!nextProps.list && !this.props.list) {
       // This is no current or previous list, so this is a new list.
-      this.setState({ title: "", entries: [], collections: []});
-    } else if (nextProps.list && (nextProps.listId !== this.props.listId)) {
+      this.setState({ title: "", entries: [], collections: [] });
+    } else if (nextProps.list && nextProps.listId !== this.props.listId) {
       // Update the state with the next list to edit.
       this.setState({
         title: nextProps.list && nextProps.list.title,
         entries: (nextProps.list && nextProps.list.books) || [],
-        collections: (nextProps.list && nextProps.listCollections) || []
+        collections: (nextProps.list && nextProps.listCollections) || [],
       });
-    } else if (nextProps.list && nextProps.list.books && nextProps.list.books.length !== this.state.entries.length) {
+    } else if (
+      nextProps.list &&
+      nextProps.list.books &&
+      nextProps.list.books.length !== this.state.entries.length
+    ) {
       let collections = this.state.collections;
-      if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
+      if (
+        (!this.props.list || !this.props.listCollections) &&
+        nextProps.list &&
+        nextProps.listCollections
+      ) {
         collections = nextProps.listCollections;
       }
-      let title = this.state.title ? this.state.title : nextProps.list.title;
+      const title = this.state.title ? this.state.title : nextProps.list.title;
       this.setState({
         title,
         entries: nextProps.list.books,
-        collections: collections
+        collections: collections,
       });
-    } else if ((!this.props.list || !this.props.listCollections) && nextProps.list && nextProps.listCollections) {
+    } else if (
+      (!this.props.list || !this.props.listCollections) &&
+      nextProps.list &&
+      nextProps.listCollections
+    ) {
       this.setState({
         title: this.state.title,
         entries: this.state.entries,
-        collections: nextProps.listCollections
+        collections: nextProps.listCollections,
       });
     }
   }
@@ -203,14 +227,21 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     if (this.props.list?.title) {
       return false;
     } else {
-      return (!this.state.title || this.state.title === "list title" || this.state.title === "");
+      return (
+        !this.state.title ||
+        this.state.title === "list title" ||
+        this.state.title === ""
+      );
     }
   }
 
   hasChanges(): boolean {
-    let titleChanged = (this.props.list && this.props.list.title !== this.state.title);
-    let entriesChanged = this.props.list && !!this.props.list.books &&
-      (this.props.list.books.length !== this.state.entries.length);
+    let titleChanged =
+      this.props.list && this.props.list.title !== this.state.title;
+    let entriesChanged =
+      this.props.list &&
+      !!this.props.list.books &&
+      this.props.list.books.length !== this.state.entries.length;
     // If the current list is new then this.props.list will be undefined, but
     // the state for the entries or title can be populated so there's a need to check.
     if (!this.props.list) {
@@ -219,8 +250,10 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     }
 
     if (!entriesChanged) {
-      let propsIds = ((this.props.list && this.props.list.books) || []).map(entry => entry.id).sort();
-      let stateIds = this.state.entries?.map(entry => entry.id).sort();
+      const propsIds = ((this.props.list && this.props.list.books) || [])
+        .map((entry) => entry.id)
+        .sort();
+      const stateIds = this.state.entries?.map((entry) => entry.id).sort();
       for (let i = 0; i < propsIds.length; i++) {
         if (propsIds[i] !== stateIds[i]) {
           entriesChanged = true;
@@ -229,11 +262,18 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       }
     }
     let collectionsChanged = false;
-    if (this.props.listCollections && this.props.listCollections.length !== this.state.collections.length) {
+    if (
+      this.props.listCollections &&
+      this.props.listCollections.length !== this.state.collections.length
+    ) {
       collectionsChanged = true;
     } else {
-      let propsIds = (this.props.listCollections || []).map(collection => collection.id).sort();
-      let stateIds = this.state.collections.map(collection => collection.id).sort();
+      const propsIds = (this.props.listCollections || [])
+        .map((collection) => collection.id)
+        .sort();
+      const stateIds = this.state.collections
+        .map((collection) => collection.id)
+        .sort();
       for (let i = 0; i < propsIds.length; i++) {
         if (propsIds[i] !== stateIds[i]) {
           collectionsChanged = true;
@@ -241,16 +281,24 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
         }
       }
     }
-    let hasChanges = titleChanged || entriesChanged || collectionsChanged;
+    const hasChanges = titleChanged || entriesChanged || collectionsChanged;
     return hasChanges;
   }
 
   changeTitle(title: string) {
-    this.setState({ title, entries: this.state.entries, collections: this.state.collections });
+    this.setState({
+      title,
+      entries: this.state.entries,
+      collections: this.state.collections,
+    });
   }
 
   changeEntries(entries: Entry[]) {
-    this.setState({ entries, title: this.state.title, collections: this.state.collections });
+    this.setState({
+      entries,
+      title: this.state.title,
+      collections: this.state.collections,
+    });
   }
 
   hasCollection(collection: AdminCollectionData) {
@@ -266,12 +314,18 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     const hasCollection = this.hasCollection(collection);
     let newCollections;
     if (hasCollection) {
-      newCollections = this.state.collections.filter(stateCollection => stateCollection.id !== collection.id);
+      newCollections = this.state.collections.filter(
+        (stateCollection) => stateCollection.id !== collection.id
+      );
     } else {
       newCollections = this.state.collections.slice(0);
       newCollections.push(collection);
     }
-    this.setState({ title: this.state.title, entries: this.state.entries, collections: newCollections });
+    this.setState({
+      title: this.state.title,
+      entries: this.state.entries,
+      collections: newCollections,
+    });
   }
 
   changeEntryPoint(entryPointSelected: string) {
@@ -288,24 +342,36 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
     if (this.props.list) {
       data.append("id", this.props.listId);
     }
-    let title = (this.refs["listTitle"] as TextWithEditMode).getText();
+    const title = (this.refs["listTitle"] as TextWithEditMode).getText();
     data.append("name", title);
-    let entries = (this.refs["listEntries"] as CustomListEntriesEditor).getEntries();
+    const entries = (this.refs[
+      "listEntries"
+    ] as CustomListEntriesEditor).getEntries();
     data.append("entries", JSON.stringify(entries));
-    let deletedEntries = (this.refs["listEntries"] as CustomListEntriesEditor).getDeleted();
+    const deletedEntries = (this.refs[
+      "listEntries"
+    ] as CustomListEntriesEditor).getDeleted();
     data.append("deletedEntries", JSON.stringify(deletedEntries));
-    let collections = this.state.collections.map(collection => collection.id);
+    const collections = this.state.collections.map(
+      (collection) => collection.id
+    );
     data.append("collections", JSON.stringify(collections));
 
-    this.props.editCustomList(data, this.props.listId && String(this.props.listId)).then(() => {
-      (this.refs["listEntries"] as CustomListEntriesEditor).clearState();
-      this.setState({ title: this.state.title, entries });
+    this.props
+      .editCustomList(data, this.props.listId && String(this.props.listId))
+      .then(() => {
+        (this.refs["listEntries"] as CustomListEntriesEditor).clearState();
+        this.setState({ title: this.state.title, entries });
 
-      // If a new list was created, go to the new list's edit page.
-      if (!this.props.list && this.props.responseBody) {
-        window.location.href = "/admin/web/lists/" + this.props.library.short_name + "/edit/" + this.props.responseBody;
-      }
-    });
+        // If a new list was created, go to the new list's edit page.
+        if (!this.props.list && this.props.responseBody) {
+          window.location.href =
+            "/admin/web/lists/" +
+            this.props.library.short_name +
+            "/edit/" +
+            this.props.responseBody;
+        }
+      });
   }
 
   reset() {
@@ -315,7 +381,7 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
       this.setState({
         title: this.state.title,
         entries: this.state.entries,
-        collections: (this.props.listCollections) || [],
+        collections: this.props.listCollections || [],
         entryPointSelected: "all",
       });
     }, 200);
@@ -334,24 +400,28 @@ export default class CustomListEditor extends React.Component<CustomListEditorPr
 
   getEntryPointsElms(entryPoints) {
     const entryPointsElms = [];
-    !entryPoints.includes("All") && entryPointsElms.push(
-      <EditableInput
-        key="all"
-        type="radio"
-        name="entry-points-selection"
-        checked={"all" === this.state.entryPointSelected}
-        label="All"
-        value="all"
-        onChange={() => this.changeEntryPoint("all")}
-      />
-    );
-    entryPoints.forEach(entryPoint =>
+    !entryPoints.includes("All") &&
+      entryPointsElms.push(
+        <EditableInput
+          key="all"
+          type="radio"
+          name="entry-points-selection"
+          checked={"all" === this.state.entryPointSelected}
+          label="All"
+          value="all"
+          onChange={() => this.changeEntryPoint("all")}
+        />
+      );
+    entryPoints.forEach((entryPoint) =>
       entryPointsElms.push(
         <EditableInput
           key={entryPoint}
           type="radio"
           name="entry-points-selection"
-          checked={entryPoint === this.state.entryPointSelected || entryPoint.toLowerCase() === this.state.entryPointSelected}
+          checked={
+            entryPoint === this.state.entryPointSelected ||
+            entryPoint.toLowerCase() === this.state.entryPointSelected
+          }
           label={entryPoint}
           value={entryPoint}
           onChange={() => this.changeEntryPoint(entryPoint)}

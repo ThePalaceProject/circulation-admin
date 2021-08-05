@@ -36,7 +36,10 @@ export interface EditableConfigListOwnProps {
   settingUp?: boolean;
 }
 
-export interface EditableConfigListProps<T> extends EditableConfigListStateProps<T>, EditableConfigListDispatchProps<T>, EditableConfigListOwnProps {}
+export interface EditableConfigListProps<T>
+  extends EditableConfigListStateProps<T>,
+    EditableConfigListDispatchProps<T>,
+    EditableConfigListOwnProps {}
 
 export interface EditFormProps<T, U> {
   item?: U;
@@ -73,12 +76,19 @@ export interface ExtraFormSectionProps<T, U> {
 
     GenericEditableConfigList allows subclasses to define additional props. Subclasses of
     EditableConfigList cannot change the props and do not have to specify a type for them. */
-export abstract class GenericEditableConfigList<T, U, V extends EditableConfigListProps<T>> extends React.Component<V, {}> {
+export abstract class GenericEditableConfigList<
+  T,
+  U,
+  V extends EditableConfigListProps<T>
+> extends React.Component<V, {}> {
   context: { admin: Admin };
   static contextTypes = {
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired,
   };
-  abstract EditForm: new(props: EditFormProps<T, U>) => React.Component<EditFormProps<T, U>, any>;
+  abstract EditForm: new (props: EditFormProps<T, U>) => React.Component<
+    EditFormProps<T, U>,
+    any
+  >;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
@@ -86,9 +96,13 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   abstract labelKey: string;
   adminLevel?: number;
   limitOne = false;
-  links?: {[key: string]: JSX.Element};
-  AdditionalContent?: new(props: AdditionalContentProps<T, U>) => React.Component<AdditionalContentProps<T, U>, any>;
-  ExtraFormSection?: new(props: ExtraFormSectionProps<T, U>) => React.Component<ExtraFormSectionProps<T, U>, any>;
+  links?: { [key: string]: JSX.Element };
+  AdditionalContent?: new (
+    props: AdditionalContentProps<T, U>
+  ) => React.Component<AdditionalContentProps<T, U>, any>;
+  ExtraFormSection?: new (
+    props: ExtraFormSectionProps<T, U>
+  ) => React.Component<ExtraFormSectionProps<T, U>, any>;
   extraFormKey?: string;
   private editFormRef = React.createRef<any>();
 
@@ -100,7 +114,7 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     this.renderLi = this.renderLi.bind(this);
   }
 
-   componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.fetchData) {
       this.props.fetchData();
     }
@@ -109,49 +123,50 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   render(): JSX.Element {
     const headers = this.getHeaders();
     // If not in edit or create mode and there is data, display the list.
-    const canListAllData = !this.props.isFetching && !this.props.editOrCreate &&
-      this.props.data && this.props.data[this.listDataKey];
-    let EditForm = this.EditForm;
-    let ExtraFormSection = this.ExtraFormSection;
-    let itemToEdit = this.itemToEdit();
+    const canListAllData =
+      !this.props.isFetching &&
+      !this.props.editOrCreate &&
+      this.props.data &&
+      this.props.data[this.listDataKey];
+    const EditForm = this.EditForm;
+    const ExtraFormSection = this.ExtraFormSection;
+    const itemToEdit = this.itemToEdit();
     return (
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
-        { canListAllData && this.links && this.links["info"] &&
+        {canListAllData && this.links && this.links["info"] && (
           <Alert bsStyle="info">{this.links["info"]}</Alert>
-        }
-        { this.props.responseBody && this.props.editOrCreate &&
-          <Alert bsStyle="success">
-            {this.successMessage()}
-          </Alert>
-        }
-        { this.props.fetchError && !this.props.editOrCreate &&
+        )}
+        {this.props.responseBody && this.props.editOrCreate && (
+          <Alert bsStyle="success">{this.successMessage()}</Alert>
+        )}
+        {this.props.fetchError && !this.props.editOrCreate && (
           <ErrorMessage error={this.props.fetchError} />
-        }
-        { this.props.formError && this.props.editOrCreate &&
+        )}
+        {this.props.formError && this.props.editOrCreate && (
           <ErrorMessage error={this.props.formError} />
-        }
-        { this.props.isFetching &&
-          <LoadingIndicator />
-        }
-        { canListAllData &&
+        )}
+        {this.props.isFetching && <LoadingIndicator />}
+        {canListAllData && (
           <div>
-            { (!this.limitOne || this.props.data[this.listDataKey].length === 0) &&
-              this.canCreate() &&
+            {(!this.limitOne ||
+              this.props.data[this.listDataKey].length === 0) &&
+              this.canCreate() && (
                 <a
                   className="btn btn-default create-item"
                   href={this.urlBase + "create"}
-                  >Create new {this.itemTypeName}
+                >
+                  Create new {this.itemTypeName}
                 </a>
-            }
+              )}
             <ul>
-              { this.props.data[this.listDataKey].map((item, index) =>
-                  this.renderLi(item, index))
-              }
+              {this.props.data[this.listDataKey].map((item, index) =>
+                this.renderLi(item, index)
+              )}
             </ul>
           </div>
-        }
-        { (this.props.editOrCreate === "create") &&
+        )}
+        {this.props.editOrCreate === "create" && (
           <div>
             <h3>{headers["h3"]}</h3>
             <EditForm
@@ -169,9 +184,9 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               adminLevel={this.getAdminLevel()}
             />
           </div>
-        }
+        )}
 
-        { itemToEdit &&
+        {itemToEdit && (
           <div>
             <h3>Edit {this.label(itemToEdit)}</h3>
             <EditForm
@@ -189,14 +204,14 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
               adminLevel={this.getAdminLevel()}
             />
           </div>
-        }
-        { this.links && this.links["footer"] && <p>{this.links["footer"]}</p> }
+        )}
+        {this.links && this.links["footer"] && <p>{this.links["footer"]}</p>}
       </div>
     );
   }
 
   renderLi(item, index): JSX.Element {
-    let AdditionalContent = this.AdditionalContent || null;
+    const AdditionalContent = this.AdditionalContent || null;
 
     return (
       <li key={index}>
@@ -204,30 +219,39 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
           className="btn small edit-item"
           href={this.urlBase + "edit/" + item[this.identifierKey]}
         >
-        { this.canEdit(item) ?
-          <span>Edit <PencilIcon /></span> :
-          <span>View <VisibleIcon /></span>
-        }
+          {this.canEdit(item) ? (
+            <span>
+              Edit <PencilIcon />
+            </span>
+          ) : (
+            <span>
+              View <VisibleIcon />
+            </span>
+          )}
         </a>
 
         <h3>{this.label(item)}</h3>
 
-        {this.canDelete() &&
+        {this.canDelete() && (
           <Button
             className="danger delete-item small"
-            callback={() => this.delete(item) }
-            content={<span>Delete<TrashIcon /></span>}
+            callback={() => this.delete(item)}
+            content={
+              <span>
+                Delete
+                <TrashIcon />
+              </span>
+            }
           />
-        }
-        {
-          AdditionalContent &&
+        )}
+        {AdditionalContent && (
           <AdditionalContent
             type={this.itemTypeName}
             item={item}
             store={this.props.store}
             csrfToken={this.props.csrfToken}
           />
-        }
+        )}
       </li>
     );
   }
@@ -249,18 +273,20 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   getHeaders() {
-    let h2 = `${this.getItemType()} configuration`;
-    let h3 = `Create a new ${this.itemTypeName}`;
+    const h2 = `${this.getItemType()} configuration`;
+    const h3 = `Create a new ${this.itemTypeName}`;
     return { h2, h3 };
   }
 
   getClassName() {
-    let className = this.AdditionalContent ? "has-additional-content" : "";
+    const className = this.AdditionalContent ? "has-additional-content" : "";
     return className;
   }
 
   getItemType() {
-    return this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1);
+    return (
+      this.itemTypeName.slice(0, 1).toUpperCase() + this.itemTypeName.slice(1)
+    );
   }
 
   formatItemType() {
@@ -277,14 +303,18 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
     if (this.props.editOrCreate === "create") {
       verb = "Successfully created ";
       return (
-        <span>{verb}
+        <span>
+          {verb}
           <a href={this.getLink()}>a new {this.formatItemType()}</a>
         </span>
       );
     } else {
       verb = "Successfully edited this ";
       return (
-        <span>{verb}{this.formatItemType()}</span>
+        <span>
+          {verb}
+          {this.formatItemType()}
+        </span>
       );
     }
   }
@@ -311,14 +341,14 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
    * that inherit GenericEditableConfigList.
    */
   canDelete() {
-    return (this.getAdminLevel() === 3);
+    return this.getAdminLevel() === 3;
   }
 
   canEdit(item) {
     // The server has the option to assign the item a level from 1 to 3, indicating what level of permissions
     // the admin needs to have in order to be able to modify the item.
     // (Currently, this is just being used to prevent librarians from modifying local analytics configurations.)
-    return (!item.level || item.level <= this.getAdminLevel());
+    return !item.level || item.level <= this.getAdminLevel();
   }
 
   save(data: FormData) {
@@ -341,7 +371,11 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   itemToEdit(): U | null {
-    if (this.props.editOrCreate === "edit" && this.props.data && this.props.data[this.listDataKey]) {
+    if (
+      this.props.editOrCreate === "edit" &&
+      this.props.data &&
+      this.props.data[this.listDataKey]
+    ) {
       for (const item of this.props.data[this.listDataKey]) {
         if (String(item[this.identifierKey]) === this.props.identifier) {
           return item;
@@ -352,13 +386,16 @@ export abstract class GenericEditableConfigList<T, U, V extends EditableConfigLi
   }
 
   async delete(item: U): Promise<void> {
-    if (window.confirm("Delete \"" + this.label(item) + "\"?")) {
+    if (window.confirm('Delete "' + this.label(item) + '"?')) {
       await this.props.deleteItem(item[this.identifierKey]);
       this.props.fetchData();
     }
   }
 }
 
-export abstract class EditableConfigList<T, U> extends GenericEditableConfigList<T, U, EditableConfigListProps<T>> {}
+export abstract class EditableConfigList<
+  T,
+  U
+> extends GenericEditableConfigList<T, U, EditableConfigListProps<T>> {}
 
 export default EditableConfigList;
