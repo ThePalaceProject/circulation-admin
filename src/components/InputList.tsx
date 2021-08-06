@@ -57,7 +57,7 @@ export default class InputList extends React.Component<
     this.capitalize = this.capitalize.bind(this);
   }
 
-  componentWillReceiveProps(newProps: InputListProps) {
+  UNSAFE_componentWillReceiveProps(newProps: InputListProps) {
     // Update the list of existing items with value from new props
     if (
       this.state.listItems &&

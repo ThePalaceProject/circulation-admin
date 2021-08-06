@@ -1,6 +1,14 @@
 ## Changelog
 
+### 08/06/2021
+
+#### Updated (to be included in next version)
+
+- Prepended all deprecated React lifecycle methods (componentWillMount and componentWillReceiveProps) with UNSAFE\_.
+
 ### v0.5.2
+
+#### Updated
 
 - Updated CI from Travis to GitHub Actions.
 - Updated the README.

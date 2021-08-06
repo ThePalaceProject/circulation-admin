@@ -58,7 +58,7 @@ export class SelfTestsTabContainer extends TabContainer<
     metadataServices: "Metadata Services",
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.fetchItems();
   }
 

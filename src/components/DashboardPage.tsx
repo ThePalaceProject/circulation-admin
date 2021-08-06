@@ -19,20 +19,23 @@ export interface DashboardPageContext {
 
 /** Page that shows high-level statistics about patrons and collections
     and a list of the most recent circulation events. */
-export default class DashboardPage extends React.Component<DashboardPageProps, {}> {
+export default class DashboardPage extends React.Component<
+  DashboardPageProps,
+  {}
+> {
   context: DashboardPageContext;
 
   static contextTypes: React.ValidationMap<DashboardPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>
+    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
   };
 
   static childContextTypes: React.ValidationMap<{}> = {
-    library: PropTypes.func
+    library: PropTypes.func,
   };
 
   getChildContext() {
     return {
-      library: () => this.props.params.library
+      library: () => this.props.params.library,
     };
   }
 
@@ -43,14 +46,17 @@ export default class DashboardPage extends React.Component<DashboardPageProps, {
         <Header />
         <main className="body">
           <Stats store={this.context.editorStore} library={library} />
-          <CirculationEvents store={this.context.editorStore} library={library} />
+          <CirculationEvents
+            store={this.context.editorStore}
+            library={library}
+          />
         </main>
         <Footer />
       </div>
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     document.title = "Circulation Manager - Dashboard";
   }
 }

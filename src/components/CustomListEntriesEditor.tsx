@@ -302,7 +302,7 @@ export default class CustomListEntriesEditor extends React.Component<
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let deleted = this.state.deleted;
     let added = this.state.added;
     let totalVisibleEntries = this.state.totalVisibleEntries;

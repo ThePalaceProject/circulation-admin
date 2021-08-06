@@ -23,13 +23,14 @@ export interface BookDetailsTabContainerProps extends TabContainerProps {
 
 /** Wraps the book details component from OPDSWebClient with additional tabs
     for editing metadata, classifications, and complaints. */
-export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContainerProps> {
-
+export class BookDetailsTabContainer extends TabContainer<
+  BookDetailsTabContainerProps
+> {
   componentWillUnmount() {
     this.props.clearBook();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.bookUrl !== this.props.bookUrl) {
       this.props.clearBook();
     }
@@ -37,14 +38,14 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
 
   tabs() {
     const tabs = {};
-    tabs["details"] = (<div>{this.props.children}</div>);
+    tabs["details"] = <div>{this.props.children}</div>;
     tabs["edit"] = (
       <BookDetailsEditor
         store={this.props.store}
         csrfToken={this.props.csrfToken}
         bookUrl={this.props.bookUrl}
         refreshCatalog={this.props.refreshCatalog}
-        />
+      />
     );
     tabs["classifications"] = (
       <Classifications
@@ -53,7 +54,7 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
         bookUrl={this.props.bookUrl}
         book={this.props.bookData}
         refreshCatalog={this.props.refreshCatalog}
-        />
+      />
     );
     if (this.props.bookData && this.props.bookData.changeCoverLink) {
       tabs["cover"] = (
@@ -63,7 +64,7 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
           bookUrl={this.props.bookUrl}
           book={this.props.bookData}
           refreshCatalog={this.props.refreshCatalog}
-          />
+        />
       );
     }
     tabs["complaints"] = (
@@ -73,7 +74,7 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
         bookUrl={this.props.bookUrl}
         book={this.props.bookData}
         refreshCatalog={this.props.refreshCatalog}
-        />
+      />
     );
     tabs["lists"] = (
       <CustomListsForBook
@@ -82,16 +83,21 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
         bookUrl={this.props.bookUrl}
         book={this.props.bookData}
         refreshCatalog={this.props.refreshCatalog}
-        library={this.props.library(this.props.collectionUrl, this.props.bookUrl)}
-        />
+        library={this.props.library(
+          this.props.collectionUrl,
+          this.props.bookUrl
+        )}
+      />
     );
     return tabs;
   }
 
   handleSelect(event) {
-    let tab = event.target.dataset.tabkey;
+    const tab = event.target.dataset.tabkey;
     if (this.context.router) {
-      this.context.router.push(this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab));
+      this.context.router.push(
+        this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab)
+      );
     }
   }
 
@@ -101,7 +107,10 @@ export class BookDetailsTabContainer extends TabContainer<BookDetailsTabContaine
 
   tabDisplayName(name) {
     let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
-    if (name === "complaints" && typeof this.props.complaintsCount !== "undefined") {
+    if (
+      name === "complaints" &&
+      typeof this.props.complaintsCount !== "undefined"
+    ) {
       capitalized += " (" + this.props.complaintsCount + ")";
     }
     return capitalized;
@@ -112,28 +121,31 @@ function mapStateToProps(state, ownProps) {
   let complaintsCount;
 
   if (state.editor.complaints.data) {
-    complaintsCount = Object.keys(state.editor.complaints.data).reduce((result, type) => {
-      return result + state.editor.complaints.data[type];
-    }, 0);
+    complaintsCount = Object.keys(state.editor.complaints.data).reduce(
+      (result, type) => {
+        return result + state.editor.complaints.data[type];
+      },
+      0
+    );
   } else {
     complaintsCount = undefined;
   }
 
   return {
     complaintsCount: complaintsCount,
-    bookData: state.editor.book.data
+    bookData: state.editor.book.data,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  let fetcher = new DataFetcher({ adapter: editorAdapter });
-  let actions = new ActionCreator(fetcher);
+  const fetcher = new DataFetcher({ adapter: editorAdapter });
+  const actions = new ActionCreator(fetcher);
   return {
-    clearBook: () => dispatch(actions.clearBook())
+    clearBook: () => dispatch(actions.clearBook()),
   };
 }
 
-let connectOptions = { pure: true };
+const connectOptions = { pure: true };
 const ConnectedBookDetailsTabContainer = connect<any, any, any>(
   mapStateToProps,
   mapDispatchToProps,

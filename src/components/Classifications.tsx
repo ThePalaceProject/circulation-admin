@@ -6,7 +6,7 @@ import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ClassificationsForm from "./ClassificationsForm";
-import ClassificationsTable  from "./ClassificationsTable";
+import ClassificationsTable from "./ClassificationsTable";
 import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "opds-web-client/lib/interfaces";
 import { State } from "../reducers/index";
@@ -38,7 +38,10 @@ export interface ClassificationsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ClassificationsProps extends ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps {}
+export interface ClassificationsProps
+  extends ClassificationsStateProps,
+    ClassificationsDispatchProps,
+    ClassificationsOwnProps {}
 
 /** Tab on the book details page with a table of a book's current classifications and
     a form for editing them. */
@@ -52,36 +55,37 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
   render(): JSX.Element {
     return (
       <div className="classifications">
-        { this.props.book &&
+        {this.props.book && (
           <>
-            <h2>
-              {this.props.book.title}
-            </h2>
+            <h2>{this.props.book.title}</h2>
             <UpdatingLoader show={this.props.isFetching} />
           </>
-        }
+        )}
 
-        { this.props.fetchError &&
+        {this.props.fetchError && (
           <ErrorMessage error={this.props.fetchError} />
-        }
+        )}
 
-        { this.props.book && this.props.genreTree &&
+        {this.props.book && this.props.genreTree && (
           <ClassificationsForm
             book={this.props.book}
             genreTree={this.props.genreTree}
             disabled={this.props.isFetching}
             editClassifications={this.editClassifications}
-            />
-        }
+          />
+        )}
 
-        { this.props.classifications && this.props.classifications.length > 0 &&
-          <ClassificationsTable classifications={this.props.classifications} />
-        }
+        {this.props.classifications &&
+          this.props.classifications.length > 0 && (
+            <ClassificationsTable
+              classifications={this.props.classifications}
+            />
+          )}
       </div>
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.bookUrl) {
       this.props.fetchGenreTree("/admin/genres");
       this.props.fetchClassifications(this.classificationsUrl());
@@ -89,11 +93,16 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
   }
 
   classificationsUrl() {
-    return this.props.bookUrl.replace("works", "admin/works") + "/classifications";
+    return (
+      this.props.bookUrl.replace("works", "admin/works") + "/classifications"
+    );
   }
 
   editClassificationsUrl() {
-    return this.props.bookUrl.replace("works", "admin/works") + "/edit_classifications";
+    return (
+      this.props.bookUrl.replace("works", "admin/works") +
+      "/edit_classifications"
+    );
   }
 
   refresh() {
@@ -103,9 +112,11 @@ export class Classifications extends React.Component<ClassificationsProps, {}> {
   }
 
   editClassifications(data: FormData) {
-    return this.props.editClassifications(this.editClassificationsUrl(), data).then(response => {
-      this.refresh();
-    });
+    return this.props
+      .editClassifications(this.editClassificationsUrl(), data)
+      .then((response) => {
+        this.refresh();
+      });
   }
 }
 
@@ -114,26 +125,33 @@ function mapStateToProps(state, ownProps) {
     bookAdminUrl: state.editor.book.url,
     genreTree: state.editor.classifications.genreTree,
     classifications: state.editor.classifications.classifications,
-    isFetching: state.editor.classifications.isFetchingGenreTree ||
-                state.editor.classifications.isEditingClassifications ||
-                state.editor.classifications.isFetchingClassifications ||
-                state.editor.book.isFetching,
-    fetchError: state.editor.classifications.fetchError
+    isFetching:
+      state.editor.classifications.isFetchingGenreTree ||
+      state.editor.classifications.isEditingClassifications ||
+      state.editor.classifications.isFetchingClassifications ||
+      state.editor.book.isFetching,
+    fetchError: state.editor.classifications.fetchError,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let fetcher = new DataFetcher({ adapter: editorAdapter });
-  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
+  const fetcher = new DataFetcher({ adapter: editorAdapter });
+  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
     fetchGenreTree: (url: string) => dispatch(actions.fetchGenreTree(url)),
-    fetchClassifications: (url: string) => dispatch(actions.fetchClassifications(url)),
-    editClassifications: (url: string, data: FormData) => dispatch(actions.editClassifications(url, data))
+    fetchClassifications: (url: string) =>
+      dispatch(actions.fetchClassifications(url)),
+    editClassifications: (url: string, data: FormData) =>
+      dispatch(actions.editClassifications(url, data)),
   };
 }
 
-const ConnectedClassifications = connect<ClassificationsStateProps, ClassificationsDispatchProps, ClassificationsOwnProps>(
+const ConnectedClassifications = connect<
+  ClassificationsStateProps,
+  ClassificationsDispatchProps,
+  ClassificationsOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(Classifications);

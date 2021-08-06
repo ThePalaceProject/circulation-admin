@@ -38,7 +38,10 @@ export interface BookCoverEditorOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface BookCoverEditorProps extends BookCoverEditorStateProps, BookCoverEditorDispatchProps, BookCoverEditorOwnProps {}
+export interface BookCoverEditorProps
+  extends BookCoverEditorStateProps,
+    BookCoverEditorDispatchProps,
+    BookCoverEditorOwnProps {}
 
 /** Tab on the book details page for uploading a new book cover. */
 export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
@@ -57,7 +60,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
     this.renderCoverForm = this.renderCoverForm.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.clearPreview) {
       this.props.clearPreview();
     }
@@ -67,33 +70,31 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   render(): JSX.Element {
-    return (this.props.book &&
-      <div>
-        <h2>
-          {this.props.book.title}
-        </h2>
-
-        <UpdatingLoader show={this.props.isFetching} />
-
+    return (
+      this.props.book && (
         <div>
-          <h3>Current cover:</h3>
-          <img
-            src={this.props.book.coverUrl}
-            className="book-cover current-cover"
-            alt="Current book cover"
+          <h2>{this.props.book.title}</h2>
+
+          <UpdatingLoader show={this.props.isFetching} />
+
+          <div>
+            <h3>Current cover:</h3>
+            <img
+              src={this.props.book.coverUrl}
+              className="book-cover current-cover"
+              alt="Current book cover"
             />
-        </div>
-        <div ref={this.formContainerRef} className="cover-edit-form">
-          <h3>Change cover:</h3>
-          <Panel
-            id="cover-metadata"
-            headerText="Cover Metadata"
-            openByDefault={true}
-            content={this.renderCoverForm()}
-            onEnter={this.save}
-          />
-          {
-            this.props.rightsStatuses &&
+          </div>
+          <div ref={this.formContainerRef} className="cover-edit-form">
+            <h3>Change cover:</h3>
+            <Panel
+              id="cover-metadata"
+              headerText="Cover Metadata"
+              openByDefault={true}
+              content={this.renderCoverForm()}
+              onEnter={this.save}
+            />
+            {this.props.rightsStatuses && (
               <Panel
                 id="rights"
                 headerText="Rights"
@@ -101,35 +102,40 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 onEnter={this.save}
                 content={this.renderRightsForm()}
               />
-          }
-          <Button
-            className="left-align"
-            content="Save this cover"
-            disabled={this.props.isFetching || !this.props.preview}
-            callback={this.save}
-          />
+            )}
+            <Button
+              className="left-align"
+              content="Save this cover"
+              disabled={this.props.isFetching || !this.props.preview}
+              callback={this.save}
+            />
+          </div>
+          {this.props.fetchError && (
+            <ErrorMessage error={this.props.fetchError} />
+          )}
         </div>
-        { this.props.fetchError &&
-          <ErrorMessage error={this.props.fetchError} />
-        }
-      </div>
+      )
     );
   }
 
   renderCoverForm() {
-    let titlePositionRef = this.titlePositionRef.current;
-    let titlePositionValue = titlePositionRef && titlePositionRef.getValue();
+    const titlePositionRef = this.titlePositionRef.current;
+    const titlePositionValue = titlePositionRef && titlePositionRef.getValue();
     return (
       <div>
-        <p>Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.</p>
+        <p>
+          Cover must be at least 600px x 900px and in PNG, JPG, or GIF format.
+        </p>
         <Form
           ref={this.imageFormRef}
           className="edit-form"
           onSubmit={this.preview}
           buttonContent="Preview"
           buttonClass="top-align"
-          errorText={ this.props.previewFetchError &&
-            <ErrorMessage error={this.props.previewFetchError} />
+          errorText={
+            this.props.previewFetchError && (
+              <ErrorMessage error={this.props.previewFetchError} />
+            )
           }
           content={
             <fieldset key="cover-image">
@@ -161,27 +167,50 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 value="none"
                 ref={this.titlePositionRef}
               >
-                <option value="none" aria-selected={titlePositionValue === "none"}>None</option>
-                <option value="top" aria-selected={titlePositionValue === "top"}>Top</option>
-                <option value="center" aria-selected={titlePositionValue === "center"}>Center</option>
-                <option value="bottom" aria-selected={titlePositionValue === "bottom"}>Bottom</option>
+                <option
+                  value="none"
+                  aria-selected={titlePositionValue === "none"}
+                >
+                  None
+                </option>
+                <option
+                  value="top"
+                  aria-selected={titlePositionValue === "top"}
+                >
+                  Top
+                </option>
+                <option
+                  value="center"
+                  aria-selected={titlePositionValue === "center"}
+                >
+                  Center
+                </option>
+                <option
+                  value="bottom"
+                  aria-selected={titlePositionValue === "bottom"}
+                >
+                  Bottom
+                </option>
               </EditableInput>
             </fieldset>
           }
         />
 
-        <UpdatingLoader text="Updating Preview" show={this.props.isFetchingPreview} />
+        <UpdatingLoader
+          text="Updating Preview"
+          show={this.props.isFetchingPreview}
+        />
 
-        { this.props.preview &&
+        {this.props.preview && (
           <div>
             <h4>Preview:</h4>
             <img
               src={this.props.preview}
               className="book-cover preview-cover"
               alt="Preview of new cover"
-              />
+            />
           </div>
-        }
+        )}
       </div>
     );
   }
@@ -202,10 +231,12 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   }
 
   renderRightsForm() {
-    const copyrightStatusUri = "http://librarysimplified.org/terms/rights-status/in-copyright";
-    const unknownStatusUri = "http://librarysimplified.org/terms/rights-status/unknown";
-    let rightStatusRef = this.rightStatusRef.current;
-    let rightStatusValue = rightStatusRef && rightStatusRef.getValue();
+    const copyrightStatusUri =
+      "http://librarysimplified.org/terms/rights-status/in-copyright";
+    const unknownStatusUri =
+      "http://librarysimplified.org/terms/rights-status/unknown";
+    const rightStatusRef = this.rightStatusRef.current;
+    const rightStatusValue = rightStatusRef && rightStatusRef.getValue();
     return (
       <Form
         ref={this.rightsFormRef}
@@ -222,29 +253,45 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
               ref={this.rightStatusRef}
               label="License"
             >
-              { Object.keys(this.props.rightsStatuses).map(uri => {
-                let status = this.props.rightsStatuses[uri];
+              {Object.keys(this.props.rightsStatuses).map((uri) => {
+                const status = this.props.rightsStatuses[uri];
                 if (status.allows_derivatives) {
                   return (
-                    <option value={uri} key={uri} aria-selected={rightStatusValue === uri}>{status.name}</option>
+                    <option
+                      value={uri}
+                      key={uri}
+                      aria-selected={rightStatusValue === uri}
+                    >
+                      {status.name}
+                    </option>
                   );
                 }
                 return null;
-              }
-            )}
-              <option value={copyrightStatusUri} aria-selected={rightStatusValue === copyrightStatusUri}>In Copyright</option>
-              <option value={unknownStatusUri} aria-selected={rightStatusValue === unknownStatusUri}>Other</option>
-          </EditableInput>
-          <EditableInput
-            elementType="textarea"
-            disabled={this.props.isFetching}
-            name="rights_explanation"
-            label="Explanation of rights"
-            optionalText={false}
-          />
-        </fieldset>
-      }
-    />);
+              })}
+              <option
+                value={copyrightStatusUri}
+                aria-selected={rightStatusValue === copyrightStatusUri}
+              >
+                In Copyright
+              </option>
+              <option
+                value={unknownStatusUri}
+                aria-selected={rightStatusValue === unknownStatusUri}
+              >
+                Other
+              </option>
+            </EditableInput>
+            <EditableInput
+              elementType="textarea"
+              disabled={this.props.isFetching}
+              name="rights_explanation"
+              label="Explanation of rights"
+              optionalText={false}
+            />
+          </fieldset>
+        }
+      />
+    );
   }
 
   refresh() {
@@ -255,7 +302,10 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
   save() {
     const data = new (window as any).FormData();
 
-    const editUrl = this.props.book && this.props.book.changeCoverLink && this.props.book.changeCoverLink.href;
+    const editUrl =
+      this.props.book &&
+      this.props.book.changeCoverLink &&
+      this.props.book.changeCoverLink.href;
 
     const imageForm = this.imageFormRef.current.formRef.current;
     const imageFormData = new (window as any).FormData(imageForm);
@@ -279,26 +329,39 @@ function mapStateToProps(state, ownProps) {
     bookAdminUrl: state.editor.book.url,
     preview: state.editor.bookCoverPreview.data,
     rightsStatuses: state.editor.rightsStatuses.data,
-    isFetching: state.editor.book.isFetching || state.editor.bookCover.isFetching || state.editor.rightsStatuses.isFetching || state.editor.bookCover.isEditing,
-    fetchError: state.editor.book.fetchError || state.editor.bookCover.fetchError || state.editor.rightsStatuses.fetchError,
+    isFetching:
+      state.editor.book.isFetching ||
+      state.editor.bookCover.isFetching ||
+      state.editor.rightsStatuses.isFetching ||
+      state.editor.bookCover.isEditing,
+    fetchError:
+      state.editor.book.fetchError ||
+      state.editor.bookCover.fetchError ||
+      state.editor.rightsStatuses.fetchError,
     isFetchingPreview: state.editor.bookCoverPreview.isFetching,
-    previewFetchError: state.editor.bookCoverPreview.fetchError
+    previewFetchError: state.editor.bookCoverPreview.fetchError,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let fetcher = new DataFetcher({ adapter: editorAdapter });
-  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
+  const fetcher = new DataFetcher({ adapter: editorAdapter });
+  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
-    fetchPreview: (url: string, data: FormData) => dispatch(actions.fetchBookCoverPreview(url, data)),
+    fetchPreview: (url: string, data: FormData) =>
+      dispatch(actions.fetchBookCoverPreview(url, data)),
     clearPreview: () => dispatch(actions.clearBookCoverPreview()),
-    editCover: (url: string, data: FormData) => dispatch(actions.editBookCover(url, data)),
-    fetchRightsStatuses: () => dispatch(actions.fetchRightsStatuses())
+    editCover: (url: string, data: FormData) =>
+      dispatch(actions.editBookCover(url, data)),
+    fetchRightsStatuses: () => dispatch(actions.fetchRightsStatuses()),
   };
 }
 
-const ConnectedBookCoverEditor = connect<BookCoverEditorStateProps, BookCoverEditorDispatchProps, BookCoverEditorOwnProps>(
+const ConnectedBookCoverEditor = connect<
+  BookCoverEditorStateProps,
+  BookCoverEditorDispatchProps,
+  BookCoverEditorOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(BookCoverEditor);

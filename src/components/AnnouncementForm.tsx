@@ -97,7 +97,7 @@ export default class AnnouncementForm extends React.Component<
     }
   }
 
-  componentWillReceiveProps(newProps: AnnouncementFormProps) {
+  UNSAFE_componentWillReceiveProps(newProps: AnnouncementFormProps) {
     // Switch from creating a new announcement to editing an existing one.
     if (newProps.content?.length > 0) {
       const { content, start, finish } = newProps;

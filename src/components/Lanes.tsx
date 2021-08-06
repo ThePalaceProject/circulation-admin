@@ -240,7 +240,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.lanes && !this.props.lanes) {
       const lanes = this.copyLanes(nextProps.lanes);
       this.setState({
@@ -252,7 +252,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.fetchLanes) {
       this.props.fetchLanes();
     }

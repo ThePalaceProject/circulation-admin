@@ -20,7 +20,6 @@ export default class AccountPage extends React.Component<{}, {}> {
     csrfToken: PropTypes.string.isRequired,
   };
 
-
   render(): JSX.Element {
     return (
       <div className="account">
@@ -34,7 +33,7 @@ export default class AccountPage extends React.Component<{}, {}> {
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     document.title = "Circulation Manager - Account";
   }
 }

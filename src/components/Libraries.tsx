@@ -1,5 +1,10 @@
 import * as React from "react";
-import { GenericEditableConfigList, EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
+import {
+  GenericEditableConfigList,
+  EditableConfigListStateProps,
+  EditableConfigListDispatchProps,
+  EditableConfigListOwnProps,
+} from "./EditableConfigList";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
@@ -11,17 +16,26 @@ import LibraryEditForm from "./LibraryEditForm";
     Shows a list of current libraries and allows creating a new library or
     editing or deleting an existing library. */
 
-export interface LibrariesStateProps extends EditableConfigListStateProps<LibrariesData> {
+export interface LibrariesStateProps
+  extends EditableConfigListStateProps<LibrariesData> {
   additionalData?: LanguagesData;
 }
 
-export interface LibrariesDispatchProps extends EditableConfigListDispatchProps<LibrariesData> {
+export interface LibrariesDispatchProps
+  extends EditableConfigListDispatchProps<LibrariesData> {
   fetchLanguages: () => void;
 }
 
-export interface LibrariesProps extends LibrariesStateProps, LibrariesDispatchProps, EditableConfigListOwnProps {}
+export interface LibrariesProps
+  extends LibrariesStateProps,
+    LibrariesDispatchProps,
+    EditableConfigListOwnProps {}
 
-export class Libraries extends GenericEditableConfigList<LibrariesData, LibraryData, LibrariesProps> {
+export class Libraries extends GenericEditableConfigList<
+  LibrariesData,
+  LibraryData,
+  LibrariesProps
+> {
   EditForm = LibraryEditForm;
   listDataKey = "libraries";
   itemTypeName = "library";
@@ -31,11 +45,11 @@ export class Libraries extends GenericEditableConfigList<LibrariesData, LibraryD
 
   context: { admin: Admin };
   static contextTypes = {
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired,
   };
 
-  componentWillMount() {
-    super.componentWillMount();
+  UNSAFE_componentWillMount() {
+    super.UNSAFE_componentWillMount();
     this.props.fetchLanguages();
   }
 
@@ -57,25 +71,32 @@ function mapStateToProps(state, ownProps) {
   // create/edit form.
   return {
     data: state.editor.libraries && state.editor.libraries.data,
-    responseBody: state.editor.libraries && state.editor.libraries.successMessage,
+    responseBody:
+      state.editor.libraries && state.editor.libraries.successMessage,
     fetchError: state.editor.libraries.fetchError,
     formError: state.editor.libraries.formError,
-    isFetching: state.editor.libraries.isFetching || state.editor.libraries.isEditing,
-    additionalData: state.editor.languages && state.editor.languages.data
+    isFetching:
+      state.editor.libraries.isFetching || state.editor.libraries.isEditing,
+    additionalData: state.editor.languages && state.editor.languages.data,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchLibraries()),
     editItem: (data: FormData) => dispatch(actions.editLibrary(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deleteLibrary(identifier)),
-    fetchLanguages: () => dispatch(actions.fetchLanguages())
+    deleteItem: (identifier: string | number) =>
+      dispatch(actions.deleteLibrary(identifier)),
+    fetchLanguages: () => dispatch(actions.fetchLanguages()),
   };
 }
 
-const ConnectedLibraries = connect<EditableConfigListStateProps<LibrariesData>, EditableConfigListDispatchProps<LibrariesData>, EditableConfigListOwnProps>(
+const ConnectedLibraries = connect<
+  EditableConfigListStateProps<LibrariesData>,
+  EditableConfigListDispatchProps<LibrariesData>,
+  EditableConfigListOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(Libraries);
