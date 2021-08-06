@@ -44,11 +44,10 @@ export class IndividualAdmins extends EditableConfigList<
     return { h2, h3 };
   }
 
-  getSetUpClassName() {
+  getClassName() {
     const className = this.props.settingUp ? "set-up" : "";
     return className;
   }
-
   save(data: FormData) {
     this.editItem(data).then(() => {
       // If we're setting up an admin for the first time, refresh the page

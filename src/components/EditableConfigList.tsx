@@ -132,7 +132,7 @@ export abstract class GenericEditableConfigList<
     const ExtraFormSection = this.ExtraFormSection;
     const itemToEdit = this.itemToEdit();
     return (
-      <div className={this.getAdditionalContentClassName()}>
+      <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
         {canListAllData && this.links && this.links["info"] && (
           <Alert bsStyle="info">{this.links["info"]}</Alert>
@@ -278,7 +278,7 @@ export abstract class GenericEditableConfigList<
     return { h2, h3 };
   }
 
-  getAdditionalContentClassName() {
+  getClassName(): string {
     const className = this.AdditionalContent ? "has-additional-content" : "";
     return className;
   }
