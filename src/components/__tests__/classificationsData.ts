@@ -1,3 +1,4 @@
+// prettier-ignore
 export default [
   {
     "name": "Fiction",
@@ -40,5 +41,5 @@ export default [
     "source": "Axis 360",
     "type": "BISAC",
     "weight": 1
-  }
+  },
 ];

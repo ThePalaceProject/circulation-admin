@@ -24,7 +24,7 @@ describe("ManagePatrons", () => {
   });
 
   it("shows Header", () => {
-    let header = wrapper.find(Header);
+    const header = wrapper.find(Header);
     expect(header.length).to.equal(1);
   });
 
@@ -33,7 +33,7 @@ describe("ManagePatrons", () => {
   });
 
   it("shows heading", () => {
-    let heading = wrapper.find("h2");
+    const heading = wrapper.find("h2");
     expect(heading.text()).to.equal("Patron Manager");
   });
 
@@ -52,7 +52,7 @@ describe("ManagePatrons", () => {
   });
 
   it("shows Footer", () => {
-    let footer = wrapper.find(Footer);
+    const footer = wrapper.find(Footer);
     expect(footer.length).to.equal(1);
   });
 });

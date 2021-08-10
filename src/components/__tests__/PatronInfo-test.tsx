@@ -5,7 +5,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import PatronInfo from "../PatronInfo";
 
-let patrons = [
+const patrons = [
   {
     authorization_expires: "",
     username: "User Name",
@@ -34,11 +34,7 @@ describe("Patron Info", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(
-      <PatronInfo
-        patron={patrons[0]}
-      />
-    );
+    wrapper = shallow(<PatronInfo patron={patrons[0]} />);
   });
 
   it("should display the patron's information", () => {
@@ -49,7 +45,9 @@ describe("Patron Info", () => {
     expect(patronInfoItem.length).to.equal(4);
     expect(patronInfoItem.at(0).text()).to.equal("Username:User Name");
     expect(patronInfoItem.at(1).text()).to.equal("Personal Name:Personal Name");
-    expect(patronInfoItem.at(2).text()).to.equal("Email Address:user@email.com");
+    expect(patronInfoItem.at(2).text()).to.equal(
+      "Email Address:user@email.com"
+    );
     expect(patronInfoItem.at(3).text()).to.equal("Identifier:1234");
   });
 
@@ -60,7 +58,9 @@ describe("Patron Info", () => {
 
     expect(patronList.length).to.equal(1);
     expect(patronInfoItem.length).to.equal(2);
-    expect(patronInfoItem.at(0).text()).to.equal("Personal Name:Personal Name2");
+    expect(patronInfoItem.at(0).text()).to.equal(
+      "Personal Name:Personal Name2"
+    );
     expect(patronInfoItem.at(1).text()).to.equal("Identifier:5678");
   });
 });

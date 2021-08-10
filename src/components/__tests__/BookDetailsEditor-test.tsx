@@ -24,18 +24,22 @@ describe("BookDetailsEditor", () => {
     fetchLanguages = stub();
     editBook = stub();
     dispatchProps = {
-      fetchBook, fetchRoles, fetchMedia, fetchLanguages, editBook
+      fetchBook,
+      fetchRoles,
+      fetchMedia,
+      fetchLanguages,
+      editBook,
     };
   });
 
   it("loads admin book url, roles, languages, and media on mount", () => {
-    let permalink = "works/1234";
-    let wrapper = shallow(
+    const permalink = "works/1234";
+    const wrapper = shallow(
       <BookDetailsEditor
         bookUrl={permalink}
         {...dispatchProps}
         csrfToken={"token"}
-        />
+      />
     );
 
     expect(fetchBook.callCount).to.equal(1);
@@ -46,15 +50,15 @@ describe("BookDetailsEditor", () => {
   });
 
   it("loads admin book url when given a new book url", () => {
-    let permalink = "works/1234";
-    let newPermalink = "works/5555";
-    let element = document.createElement("div");
-    let wrapper = shallow(
+    const permalink = "works/1234";
+    const newPermalink = "works/5555";
+    const element = document.createElement("div");
+    const wrapper = shallow(
       <BookDetailsEditor
         bookUrl={permalink}
         {...dispatchProps}
         csrfToken={"token"}
-        />
+      />
     );
     wrapper.setProps({ bookUrl: newPermalink });
     wrapper.update();
@@ -64,139 +68,145 @@ describe("BookDetailsEditor", () => {
   });
 
   it("shows title", () => {
-    let wrapper = shallow(
+    const wrapper = shallow(
       <BookDetailsEditor
         bookData={{ id: "id", title: "title" }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
-        />
+      />
     );
 
-    let header = wrapper.find("h2");
+    const header = wrapper.find("h2");
     expect(header.text()).to.contain("title");
   });
 
   it("shows button form for hide link", () => {
-    let hideLink = {
-      href: "href", rel: "http://librarysimplified.org/terms/rel/hide"
+    const hideLink = {
+      href: "href",
+      rel: "http://librarysimplified.org/terms/rel/hide",
     };
-    let wrapper = shallow(
+    const wrapper = shallow(
       <BookDetailsEditor
-        bookData={{ id: "id",  title: "title", hideLink: hideLink }}
+        bookData={{ id: "id", title: "title", hideLink: hideLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
-        />
+      />
     );
-    let hide = (wrapper.instance() as any).hide;
+    const hide = (wrapper.instance() as any).hide;
 
-    let hideButton = wrapper.find(Button);
+    const hideButton = wrapper.find(Button);
     expect(hideButton.prop("content")).to.equal("Hide");
     expect(hideButton.prop("callback")).to.equal(hide);
   });
 
   it("shows button form for restore link", () => {
-    let restoreLink = {
-      href: "href", rel: "http://librarysimplified.org/terms/rel/restore"
+    const restoreLink = {
+      href: "href",
+      rel: "http://librarysimplified.org/terms/rel/restore",
     };
-    let wrapper = shallow(
+    const wrapper = shallow(
       <BookDetailsEditor
         bookData={{ id: "id", title: "title", restoreLink: restoreLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
-        />
+      />
     );
-    let restore = (wrapper.instance() as any).restore;
+    const restore = (wrapper.instance() as any).restore;
 
-    let restoreButton = wrapper.find(Button);
+    const restoreButton = wrapper.find(Button);
     expect(restoreButton.prop("content")).to.equal("Restore");
     expect(restoreButton.prop("callback")).to.equal(restore);
   });
 
   it("shows button form for refresh link", () => {
-    let refreshLink = {
-      href: "href", rel: "http://librarysimplified/terms/rel/refresh"
+    const refreshLink = {
+      href: "href",
+      rel: "http://librarysimplified/terms/rel/refresh",
     };
-    let wrapper = shallow(
+    const wrapper = shallow(
       <BookDetailsEditor
         bookData={{ id: "id", title: "title", refreshLink: refreshLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
-        />
+      />
     );
-    let refresh = (wrapper.instance() as any).refreshMetadata;
+    const refresh = (wrapper.instance() as any).refreshMetadata;
 
-    let refreshButton = wrapper.find(Button);
+    const refreshButton = wrapper.find(Button);
     expect(refreshButton.prop("content")).to.equal("Refresh Metadata");
     expect(refreshButton.prop("callback")).to.equal(refresh);
   });
 
   it("shows fetch error message", () => {
-    let fetchError = {
+    const fetchError = {
       status: 500,
       response: "response",
-      url: ""
+      url: "",
     };
-    let wrapper = shallow(
+    const wrapper = shallow(
       <BookDetailsEditor
         bookData={{ id: "id", title: "title" }}
-        bookUrl="url" csrfToken="token"
+        bookUrl="url"
+        csrfToken="token"
         fetchError={fetchError}
         {...dispatchProps}
-        />
+      />
     );
 
-    let editForm = wrapper.find(BookEditForm);
+    const editForm = wrapper.find(BookEditForm);
     expect(editForm.length).to.equal(0);
-    let error = wrapper.find(ErrorMessage);
+    const error = wrapper.find(ErrorMessage);
     expect(error.prop("error")).to.equal(fetchError);
   });
 
   it("shows edit error message with form", () => {
-    let editError = {
+    const editError = {
       status: 500,
       response: "response",
-      url: ""
+      url: "",
     };
-    let editLink = {
-      href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
+    const editLink = {
+      href: "href",
+      rel: "http://librarysimplified.org/terms/rel/edit",
     };
-    let wrapper = shallow(
+    const wrapper = shallow(
       <BookDetailsEditor
         bookData={{ id: "id", title: "title", editLink: editLink }}
         bookUrl="url"
         csrfToken="token"
         editError={editError}
         {...dispatchProps}
-        />
+      />
     );
 
-    let editForm = wrapper.find(BookEditForm);
+    const editForm = wrapper.find(BookEditForm);
     expect(editForm.length).to.equal(1);
-    let error = wrapper.find(ErrorMessage);
+    const error = wrapper.find(ErrorMessage);
     expect(error.prop("error")).to.equal(editError);
   });
 
   it("shows book edit form", () => {
-    let roles = {
-      "aut": "Author",
-      "nar": "Narrator"
+    const roles = {
+      aut: "Author",
+      nar: "Narrator",
     };
-    let media = {
+    const media = {
       "http://schema.org/AudioObject": "Audio",
-      "http://schema.org/Book": "Book"
+      "http://schema.org/Book": "Book",
     };
-    let languages = {
-      "eng": ["English"],
-      "spa": ["Spanish", "Castilian"]
+    const languages = {
+      eng: ["English"],
+      spa: ["Spanish", "Castilian"],
     };
-    let editLink = {
-      href: "href", rel: "http://librarysimplified.org/terms/rel/edit"
+    const editLink = {
+      href: "href",
+      rel: "http://librarysimplified.org/terms/rel/edit",
     };
-    let wrapper = shallow(
+    const wrapper = shallow(
       <BookDetailsEditor
         bookData={{ id: "id", title: "title", editLink }}
         bookUrl="url"
@@ -208,7 +218,7 @@ describe("BookDetailsEditor", () => {
       />
     );
 
-    let editForm = wrapper.find(BookEditForm);
+    const editForm = wrapper.find(BookEditForm);
     expect(editForm.length).to.equal(1);
     expect(editForm.prop("title")).to.equal("title");
     expect(editForm.prop("roles")).to.equal(roles);

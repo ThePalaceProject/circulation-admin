@@ -13,12 +13,7 @@ describe("LoadButton", () => {
 
   beforeEach(() => {
     loadMore = stub();
-    wrapper = mount(
-      <LoadButton
-        isFetching={false}
-        loadMore={loadMore}
-      />
-    );
+    wrapper = mount(<LoadButton isFetching={false} loadMore={loadMore} />);
   });
 
   describe("rendering", () => {

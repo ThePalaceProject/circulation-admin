@@ -11,78 +11,78 @@ import LibraryStats from "../LibraryStats";
 import { StatsData, LibraryStatsData, LibraryData } from "../../interfaces";
 
 describe("Stats", () => {
-  let libraryStatsData: LibraryStatsData = {
-    patrons:  {
+  const libraryStatsData: LibraryStatsData = {
+    patrons: {
       total: 3456,
       with_active_loans: 55,
       with_active_loans_or_holds: 1234,
       loans: 100,
-      holds: 2000
+      holds: 2000,
     },
     inventory: {
       titles: 54321,
       licenses: 123456,
-      available_licenses: 100000
+      available_licenses: 100000,
     },
     collections: {
       Overdrive: {
         licensed_titles: 500,
         open_access_titles: 10,
         licenses: 350,
-        available_licenses: 100
+        available_licenses: 100,
       },
       Bibliotheca: {
         licensed_titles: 400,
         open_access_titles: 0,
         licenses: 300,
-        available_licenses: 170
+        available_licenses: 170,
       },
       "Axis 360": {
         licensed_titles: 300,
         open_access_titles: 0,
         licenses: 280,
-        available_licenses: 260
+        available_licenses: 260,
       },
-      "Open Bookshelf" : {
+      "Open Bookshelf": {
         licensed_titles: 0,
         open_access_titles: 1200,
         licenses: 0,
-        available_licenses: 0
-      }
-    }
+        available_licenses: 0,
+      },
+    },
   };
 
-  let totalStatsData = Object.assign({}, libraryStatsData, {
+  const totalStatsData = Object.assign({}, libraryStatsData, {
     inventory: {
       titles: 100000,
       licenses: 234567,
-      available_licenses: 200000
-    }
+      available_licenses: 200000,
+    },
   });
 
-  let statsData: StatsData = {
+  const statsData: StatsData = {
     NYPL: libraryStatsData,
     BPL: libraryStatsData,
-    total: totalStatsData
+    total: totalStatsData,
   };
 
-  let librariesData: LibraryData[] = [
+  const librariesData: LibraryData[] = [
     { short_name: "NYPL" },
-    { short_name: "BPL" }
+    { short_name: "BPL" },
   ];
 
   describe("rendering", () => {
     let wrapper;
-    let fetchError = { status: 401, response: "test", url: "test url" };
+    const fetchError = { status: 401, response: "test", url: "test url" };
     let fetchStats;
     let fetchLibraries;
 
     beforeEach(() => {
       fetchStats = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
       fetchLibraries = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
 
       wrapper = shallow(
@@ -92,7 +92,7 @@ describe("Stats", () => {
           fetchStats={fetchStats}
           fetchLibraries={fetchLibraries}
           isLoaded={false}
-          />
+        />
       );
     });
 
@@ -118,7 +118,9 @@ describe("Stats", () => {
       expect(libraryStats.length).to.equal(2);
 
       expect(libraryStats.at(0).props().stats).to.deep.equal(libraryStatsData);
-      expect(libraryStats.at(0).props().library).to.deep.equal(librariesData[0]);
+      expect(libraryStats.at(0).props().library).to.deep.equal(
+        librariesData[0]
+      );
       expect(libraryStats.at(1).props().stats).to.deep.equal(totalStatsData);
       expect(libraryStats.at(1).props().library).to.be.undefined;
 
@@ -128,18 +130,29 @@ describe("Stats", () => {
       expect(libraryStats.length).to.equal(1);
 
       expect(libraryStats.at(0).props().stats).to.deep.equal(libraryStatsData);
-      expect(libraryStats.at(0).props().library).to.deep.equal(librariesData[0]);
+      expect(libraryStats.at(0).props().library).to.deep.equal(
+        librariesData[0]
+      );
 
       // Still no total stats, since there's only one library.
-      wrapper.setProps({ stats: { NYPL: libraryStatsData, total: totalStatsData }, libraries: [librariesData[0]] });
+      wrapper.setProps({
+        stats: { NYPL: libraryStatsData, total: totalStatsData },
+        libraries: [librariesData[0]],
+      });
       libraryStats = wrapper.find(LibraryStats);
       expect(libraryStats.length).to.equal(1);
 
       expect(libraryStats.at(0).props().stats).to.deep.equal(libraryStatsData);
-      expect(libraryStats.at(0).props().library).to.deep.equal(librariesData[0]);
+      expect(libraryStats.at(0).props().library).to.deep.equal(
+        librariesData[0]
+      );
 
       // No library stats.
-      wrapper.setProps({ stats: { total: totalStatsData }, libraries: librariesData, library: null });
+      wrapper.setProps({
+        stats: { total: totalStatsData },
+        libraries: librariesData,
+        library: null,
+      });
       libraryStats = wrapper.find(LibraryStats);
       expect(libraryStats.length).to.equal(1);
 

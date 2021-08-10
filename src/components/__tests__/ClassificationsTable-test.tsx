@@ -17,22 +17,22 @@ describe("ClassificationsTable", () => {
     });
 
     it("should show header", () => {
-      let header = wrapper.find("h3");
+      const header = wrapper.find("h3");
       expect(header.length).to.equal(1);
     });
 
     it("should show column headers", () => {
-      let headers = wrapper.find("th");
-      let headerNames = headers.map(header => header.text());
+      const headers = wrapper.find("th");
+      const headerNames = headers.map((header) => header.text());
       expect(headerNames).to.deep.equal(["Type", "Name", "Source", "Weight"]);
     });
 
     it("should show one row for each classification", () => {
-      let readableType = (wrapper.instance() as any).readableType;
-      let rows = wrapper.find("tbody").find("tr");
+      const readableType = (wrapper.instance() as any).readableType;
+      const rows = wrapper.find("tbody").find("tr");
       rows.forEach((row, i) => {
-        let cells = row.find("td");
-        let c = classificationsData[i];
+        const cells = row.find("td");
+        const c = classificationsData[i];
         expect(cells.at(0).text()).to.equal(readableType(c.type));
         expect(cells.at(1).text()).to.equal(c.name);
         expect(cells.at(2).text()).to.equal(c.source);

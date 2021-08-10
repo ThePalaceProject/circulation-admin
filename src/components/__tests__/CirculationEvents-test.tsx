@@ -44,7 +44,7 @@ describe("CirculationEvents", () => {
 
     beforeEach(() => {
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
 
       wrapper = shallow(
@@ -111,7 +111,7 @@ describe("CirculationEvents", () => {
       wrapper.instance().componentWillUnmount();
 
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
       // Not making a real request so isLoaded is true.
       wrapper = shallow(
@@ -138,7 +138,7 @@ describe("CirculationEvents", () => {
 
     beforeEach(() => {
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
 
       wrapper = shallow(
@@ -166,7 +166,7 @@ describe("CirculationEvents", () => {
       wrapper.instance().componentWillUnmount();
 
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
 
       wrapper = shallow(

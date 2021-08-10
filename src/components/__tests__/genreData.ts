@@ -1,162 +1,127 @@
+/* eslint-disable */
 import { GenreTree } from "../../interfaces";
 
-let genres: GenreTree = {
+const genres: GenreTree = {
   Fiction: {
     Adventure: {
       name: "Adventure",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Alternative History": {
       name: "Alternative History",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     Classics: {
       name: "Classics",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Comics & Graphic Novels": {
       name: "Comics & Graphic Novels",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Contemporary Romance": {
       name: "Contemporary Romance",
-      parents: [
-        "Romance"
-      ],
-      subgenres: []
+      parents: ["Romance"],
+      subgenres: [],
     },
     "Cozy Mystery": {
       name: "Cozy Mystery",
-      parents: [
-        "Mystery"
-      ],
-      subgenres: []
+      parents: ["Mystery"],
+      subgenres: [],
     },
     "Crime & Detective Stories": {
       name: "Crime & Detective Stories",
-      parents: [
-        "Mystery"
-      ],
-      subgenres: []
+      parents: ["Mystery"],
+      subgenres: [],
     },
     Cyberpunk: {
       name: "Cyberpunk",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     Drama: {
       name: "Drama",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Dystopian SF": {
       name: "Dystopian SF",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     "Epic Fantasy": {
       name: "Epic Fantasy",
-      parents: [
-        "Fantasy"
-      ],
-      subgenres: []
+      parents: ["Fantasy"],
+      subgenres: [],
     },
     Erotica: {
       name: "Erotica",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     Espionage: {
       name: "Espionage",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     Fantasy: {
       name: "Fantasy",
       parents: [],
-      subgenres: [
-        "Epic Fantasy",
-        "Historical Fantasy",
-        "Urban Fantasy"
-      ]
+      subgenres: ["Epic Fantasy", "Historical Fantasy", "Urban Fantasy"],
     },
     Folklore: {
       name: "Folklore",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Ghost Stories": {
       name: "Ghost Stories",
-      parents: [
-        "Horror"
-      ],
-      subgenres: []
+      parents: ["Horror"],
+      subgenres: [],
     },
     "Gothic Horror": {
       name: "Gothic Horror",
-      parents: [
-        "Horror"
-      ],
-      subgenres: []
+      parents: ["Horror"],
+      subgenres: [],
     },
     "Gothic Romance": {
       name: "Gothic Romance",
-      parents: [
-        "Romance"
-      ],
-      subgenres: []
+      parents: ["Romance"],
+      subgenres: [],
     },
     "Hard-Boiled Mystery": {
       name: "Hard-Boiled Mystery",
-      parents: [
-        "Mystery"
-      ],
-      subgenres: []
+      parents: ["Mystery"],
+      subgenres: [],
     },
     "Historical Fantasy": {
       name: "Historical Fantasy",
-      parents: [
-        "Fantasy"
-      ],
-      subgenres: []
+      parents: ["Fantasy"],
+      subgenres: [],
     },
     "Historical Fiction": {
       name: "Historical Fiction",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Historical Mystery": {
       name: "Historical Mystery",
-      parents: [
-        "Mystery"
-      ],
-      subgenres: []
+      parents: ["Mystery"],
+      subgenres: [],
     },
     "Historical Romance": {
       name: "Historical Romance",
-      parents: [
-        "Romance"
-      ],
-      subgenres: []
+      parents: ["Romance"],
+      subgenres: [],
     },
     "Historical Thriller": {
       name: "Historical Thriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     Horror: {
       name: "Horror",
@@ -166,58 +131,48 @@ let genres: GenreTree = {
         "Ghost Stories",
         "Vampires",
         "Werewolves",
-        "Occult Horror"
-      ]
+        "Occult Horror",
+      ],
     },
     "Humorous Fiction": {
       name: "Humorous Fiction",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "LGBTQ Fiction": {
       name: "LGBTQ Fiction",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Legal Thriller": {
       name: "Legal Thriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     "Literary Fiction": {
       name: "Literary Fiction",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Media Tie-in SF": {
       name: "Media Tie-in SF",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     "Medical Thriller": {
       name: "Medical Thriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     "Military SF": {
       name: "Military SF",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     "Military Thriller": {
       name: "Military Thriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     Mystery: {
       name: "Mystery",
@@ -229,60 +184,48 @@ let genres: GenreTree = {
         "Cozy Mystery",
         "Historical Mystery",
         "Paranormal Mystery",
-        "Women Detectives"
-      ]
+        "Women Detectives",
+      ],
     },
     "Occult Horror": {
       name: "Occult Horror",
-      parents: [
-        "Horror"
-      ],
-      subgenres: []
+      parents: ["Horror"],
+      subgenres: [],
     },
     "Paranormal Mystery": {
       name: "Paranormal Mystery",
-      parents: [
-        "Mystery"
-      ],
-      subgenres: []
+      parents: ["Mystery"],
+      subgenres: [],
     },
     "Paranormal Romance": {
       name: "Paranormal Romance",
-      parents: [
-        "Romance"
-      ],
-      subgenres: []
+      parents: ["Romance"],
+      subgenres: [],
     },
     Poetry: {
       name: "Poetry",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Police Procedural": {
       name: "Police Procedural",
-      parents: [
-        "Mystery"
-      ],
-      subgenres: []
+      parents: ["Mystery"],
+      subgenres: [],
     },
     "Political Thriller": {
       name: "Political Thriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     "Psychological Thriller": {
       name: "Psychological Thriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     "Religious Fiction": {
       name: "Religious Fiction",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     Romance: {
       name: "Romance",
@@ -293,22 +236,18 @@ let genres: GenreTree = {
         "Historical Romance",
         "Paranormal Romance",
         "Western Romance",
-        "Romantic Suspense"
-      ]
+        "Romantic Suspense",
+      ],
     },
     "Romantic SF": {
       name: "Romantic SF",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     "Romantic Suspense": {
       name: "Romantic Suspense",
-      parents: [
-        "Romance"
-      ],
-      subgenres: []
+      parents: ["Romance"],
+      subgenres: [],
     },
     "Science Fiction": {
       name: "Science Fiction",
@@ -321,34 +260,28 @@ let genres: GenreTree = {
         "Alternative History",
         "Steampunk",
         "Romantic SF",
-        "Media Tie-in SF"
-      ]
+        "Media Tie-in SF",
+      ],
     },
     "Short Stories": {
       name: "Short Stories",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Space Opera": {
       name: "Space Opera",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     Steampunk: {
       name: "Steampunk",
-      parents: [
-        "Science Fiction"
-      ],
-      subgenres: []
+      parents: ["Science Fiction"],
+      subgenres: [],
     },
     "Supernatural Thriller": {
       name: "Supernatural Thriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     "Suspense/Thriller": {
       name: "Suspense/Thriller",
@@ -362,102 +295,80 @@ let genres: GenreTree = {
         "Psychological Thriller",
         "Technothriller",
         "Legal Thriller",
-        "Military Thriller"
-      ]
+        "Military Thriller",
+      ],
     },
     Technothriller: {
       name: "Technothriller",
-      parents: [
-        "Suspense/Thriller"
-      ],
-      subgenres: []
+      parents: ["Suspense/Thriller"],
+      subgenres: [],
     },
     "Urban Fantasy": {
       name: "Urban Fantasy",
-      parents: [
-        "Fantasy"
-      ],
-      subgenres: []
+      parents: ["Fantasy"],
+      subgenres: [],
     },
     "Urban Fiction": {
       name: "Urban Fiction",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     Vampires: {
       name: "Vampires",
-      parents: [
-        "Horror"
-      ],
-      subgenres: []
+      parents: ["Horror"],
+      subgenres: [],
     },
     Werewolves: {
       name: "Werewolves",
-      parents: [
-        "Horror"
-      ],
-      subgenres: []
+      parents: ["Horror"],
+      subgenres: [],
     },
     "Western Romance": {
       name: "Western Romance",
-      parents: [
-        "Romance"
-      ],
-      subgenres: []
+      parents: ["Romance"],
+      subgenres: [],
     },
     Westerns: {
       name: "Westerns",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Women Detectives": {
       name: "Women Detectives",
-      parents: [
-        "Mystery"
-      ],
-      subgenres: []
+      parents: ["Mystery"],
+      subgenres: [],
     },
     "Women's Fiction": {
       name: "Women's Fiction",
       parents: [],
-      subgenres: []
-    }
+      subgenres: [],
+    },
   },
   Nonfiction: {
     "African History": {
       name: "African History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Ancient History": {
       name: "Ancient History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Antiques & Collectibles": {
       name: "Antiques & Collectibles",
-      parents: [
-        "Hobbies & Home"
-      ],
-      subgenres: []
+      parents: ["Hobbies & Home"],
+      subgenres: [],
     },
     Architecture: {
       name: "Architecture",
-      parents: [
-        "Art & Design"
-      ],
-      subgenres: []
+      parents: ["Art & Design"],
+      subgenres: [],
     },
     Art: {
       name: "Art",
-      parents: [
-        "Art & Design"
-      ],
-      subgenres: []
+      parents: ["Art & Design"],
+      subgenres: [],
     },
     "Art & Design": {
       name: "Art & Design",
@@ -469,160 +380,118 @@ let genres: GenreTree = {
         "Art History",
         "Design",
         "Fashion",
-        "Photography"
-      ]
+        "Photography",
+      ],
     },
     "Art Criticism & Theory": {
       name: "Art Criticism & Theory",
-      parents: [
-        "Art & Design"
-      ],
-      subgenres: []
+      parents: ["Art & Design"],
+      subgenres: [],
     },
     "Art History": {
       name: "Art History",
-      parents: [
-        "Art & Design"
-      ],
-      subgenres: []
+      parents: ["Art & Design"],
+      subgenres: [],
     },
     "Asian History": {
       name: "Asian History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Bartending & Cocktails": {
       name: "Bartending & Cocktails",
-      parents: [
-        "Food & Health"
-      ],
-      subgenres: []
+      parents: ["Food & Health"],
+      subgenres: [],
     },
     "Biography & Memoir": {
       name: "Biography & Memoir",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Body, Mind & Spirit": {
       name: "Body, Mind & Spirit",
-      parents: [
-        "Religion & Spirituality"
-      ],
-      subgenres: []
+      parents: ["Religion & Spirituality"],
+      subgenres: [],
     },
     Buddhism: {
       name: "Buddhism",
-      parents: [
-        "Religion & Spirituality"
-      ],
-      subgenres: []
+      parents: ["Religion & Spirituality"],
+      subgenres: [],
     },
     Business: {
       name: "Business",
-      parents: [
-        "Personal Finance & Business"
-      ],
-      subgenres: []
+      parents: ["Personal Finance & Business"],
+      subgenres: [],
     },
     Christianity: {
       name: "Christianity",
-      parents: [
-        "Religion & Spirituality"
-      ],
-      subgenres: []
+      parents: ["Religion & Spirituality"],
+      subgenres: [],
     },
     "Civil War History": {
       name: "Civil War History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     Computers: {
       name: "Computers",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     Cooking: {
       name: "Cooking",
-      parents: [
-        "Food & Health"
-      ],
-      subgenres: []
+      parents: ["Food & Health"],
+      subgenres: [],
     },
     "Crafts & Hobbies": {
       name: "Crafts & Hobbies",
-      parents: [
-        "Hobbies & Home"
-      ],
-      subgenres: []
+      parents: ["Hobbies & Home"],
+      subgenres: [],
     },
     Design: {
       name: "Design",
-      parents: [
-        "Art & Design"
-      ],
-      subgenres: []
+      parents: ["Art & Design"],
+      subgenres: [],
     },
     Dictionaries: {
       name: "Dictionaries",
-      parents: [
-        "Reference & Study Aids"
-      ],
-      subgenres: []
+      parents: ["Reference & Study Aids"],
+      subgenres: [],
     },
     Economics: {
       name: "Economics",
-      parents: [
-        "Personal Finance & Business"
-      ],
-      subgenres: []
+      parents: ["Personal Finance & Business"],
+      subgenres: [],
     },
     Education: {
       name: "Education",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     Entertainment: {
       name: "Entertainment",
       parents: [],
-      subgenres: [
-        "Film & TV",
-        "Music",
-        "Performing Arts"
-      ]
+      subgenres: ["Film & TV", "Music", "Performing Arts"],
     },
     "European History": {
       name: "European History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Family & Relationships": {
       name: "Family & Relationships",
-      parents: [
-        "Parenting & Family"
-      ],
-      subgenres: []
+      parents: ["Parenting & Family"],
+      subgenres: [],
     },
     Fashion: {
       name: "Fashion",
-      parents: [
-        "Art & Design"
-      ],
-      subgenres: []
+      parents: ["Art & Design"],
+      subgenres: [],
     },
     "Film & TV": {
       name: "Film & TV",
-      parents: [
-        "Entertainment"
-      ],
-      subgenres: []
+      parents: ["Entertainment"],
+      subgenres: [],
     },
     "Food & Health": {
       name: "Food & Health",
@@ -631,43 +500,33 @@ let genres: GenreTree = {
         "Bartending & Cocktails",
         "Cooking",
         "Health & Diet",
-        "Vegetarian & Vegan"
-      ]
+        "Vegetarian & Vegan",
+      ],
     },
     "Foreign Language Study": {
       name: "Foreign Language Study",
-      parents: [
-        "Reference & Study Aids"
-      ],
-      subgenres: []
+      parents: ["Reference & Study Aids"],
+      subgenres: [],
     },
     Games: {
       name: "Games",
-      parents: [
-        "Hobbies & Home"
-      ],
-      subgenres: []
+      parents: ["Hobbies & Home"],
+      subgenres: [],
     },
     Gardening: {
       name: "Gardening",
-      parents: [
-        "Hobbies & Home"
-      ],
-      subgenres: []
+      parents: ["Hobbies & Home"],
+      subgenres: [],
     },
     "Health & Diet": {
       name: "Health & Diet",
-      parents: [
-        "Food & Health"
-      ],
-      subgenres: []
+      parents: ["Food & Health"],
+      subgenres: [],
     },
     Hinduism: {
       name: "Hinduism",
-      parents: [
-        "Religion & Spirituality"
-      ],
-      subgenres: []
+      parents: ["Religion & Spirituality"],
+      subgenres: [],
     },
     History: {
       name: "History",
@@ -685,8 +544,8 @@ let genres: GenreTree = {
         "Modern History",
         "Renaissance & Early Modern History",
         "United States History",
-        "World History"
-      ]
+        "World History",
+      ],
     },
     "Hobbies & Home": {
       name: "Hobbies & Home",
@@ -697,148 +556,113 @@ let genres: GenreTree = {
         "Gardening",
         "Games",
         "House & Home",
-        "Pets"
-      ]
+        "Pets",
+      ],
     },
     "House & Home": {
       name: "House & Home",
-      parents: [
-        "Hobbies & Home"
-      ],
-      subgenres: []
+      parents: ["Hobbies & Home"],
+      subgenres: [],
     },
     "Humorous Nonfiction": {
       name: "Humorous Nonfiction",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     Islam: {
       name: "Islam",
-      parents: [
-        "Religion & Spirituality"
-      ],
-      subgenres: []
+      parents: ["Religion & Spirituality"],
+      subgenres: [],
     },
     Judaism: {
       name: "Judaism",
-      parents: [
-        "Religion & Spirituality"
-      ],
-      subgenres: []
+      parents: ["Religion & Spirituality"],
+      subgenres: [],
     },
     "Latin American History": {
       name: "Latin American History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     Law: {
       name: "Law",
-      parents: [
-        "Reference & Study Aids"
-      ],
-      subgenres: []
+      parents: ["Reference & Study Aids"],
+      subgenres: [],
     },
     "Life Strategies": {
       name: "Life Strategies",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Literary Criticism": {
       name: "Literary Criticism",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Management & Leadership": {
       name: "Management & Leadership",
-      parents: [
-        "Personal Finance & Business"
-      ],
-      subgenres: []
+      parents: ["Personal Finance & Business"],
+      subgenres: [],
     },
     Mathematics: {
       name: "Mathematics",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     Medical: {
       name: "Medical",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     "Medieval History": {
       name: "Medieval History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Middle East History": {
       name: "Middle East History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Military History": {
       name: "Military History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Modern History": {
       name: "Modern History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     Music: {
       name: "Music",
-      parents: [
-        "Entertainment"
-      ],
-      subgenres: []
+      parents: ["Entertainment"],
+      subgenres: [],
     },
     Nature: {
       name: "Nature",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     Parenting: {
       name: "Parenting",
-      parents: [
-        "Parenting & Family"
-      ],
-      subgenres: []
+      parents: ["Parenting & Family"],
+      subgenres: [],
     },
     "Parenting & Family": {
       name: "Parenting & Family",
       parents: [],
-      subgenres: [
-        "Family & Relationships",
-        "Parenting"
-      ]
+      subgenres: ["Family & Relationships", "Parenting"],
     },
     "Performing Arts": {
       name: "Performing Arts",
-      parents: [
-        "Entertainment"
-      ],
-      subgenres: []
+      parents: ["Entertainment"],
+      subgenres: [],
     },
     Periodicals: {
       name: "Periodicals",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Personal Finance & Business": {
       name: "Personal Finance & Business",
@@ -848,53 +672,43 @@ let genres: GenreTree = {
         "Economics",
         "Management & Leadership",
         "Personal Finance & Investing",
-        "Real Estate"
-      ]
+        "Real Estate",
+      ],
     },
     "Personal Finance & Investing": {
       name: "Personal Finance & Investing",
-      parents: [
-        "Personal Finance & Business"
-      ],
-      subgenres: []
+      parents: ["Personal Finance & Business"],
+      subgenres: [],
     },
     Pets: {
       name: "Pets",
-      parents: [
-        "Hobbies & Home"
-      ],
-      subgenres: []
+      parents: ["Hobbies & Home"],
+      subgenres: [],
     },
     Philosophy: {
       name: "Philosophy",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     Photography: {
       name: "Photography",
-      parents: [
-        "Art & Design"
-      ],
-      subgenres: []
+      parents: ["Art & Design"],
+      subgenres: [],
     },
     "Political Science": {
       name: "Political Science",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     Psychology: {
       name: "Psychology",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     "Real Estate": {
       name: "Real Estate",
-      parents: [
-        "Personal Finance & Business"
-      ],
-      subgenres: []
+      parents: ["Personal Finance & Business"],
+      subgenres: [],
     },
     "Reference & Study Aids": {
       name: "Reference & Study Aids",
@@ -903,8 +717,8 @@ let genres: GenreTree = {
         "Dictionaries",
         "Foreign Language Study",
         "Law",
-        "Study Aids"
-      ]
+        "Study Aids",
+      ],
     },
     "Religion & Spirituality": {
       name: "Religion & Spirituality",
@@ -915,22 +729,18 @@ let genres: GenreTree = {
         "Christianity",
         "Hinduism",
         "Islam",
-        "Judaism"
-      ]
+        "Judaism",
+      ],
     },
     "Renaissance & Early Modern History": {
       name: "Renaissance & Early Modern History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     Science: {
       name: "Science",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     "Science & Technology": {
       name: "Science & Technology",
@@ -943,72 +753,60 @@ let genres: GenreTree = {
         "Psychology",
         "Science",
         "Social Sciences",
-        "Technology"
-      ]
+        "Technology",
+      ],
     },
     "Self-Help": {
       name: "Self-Help",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Social Sciences": {
       name: "Social Sciences",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     Sports: {
       name: "Sports",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "Study Aids": {
       name: "Study Aids",
-      parents: [
-        "Reference & Study Aids"
-      ],
-      subgenres: []
+      parents: ["Reference & Study Aids"],
+      subgenres: [],
     },
     Technology: {
       name: "Technology",
-      parents: [
-        "Science & Technology"
-      ],
-      subgenres: []
+      parents: ["Science & Technology"],
+      subgenres: [],
     },
     Travel: {
       name: "Travel",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "True Crime": {
       name: "True Crime",
       parents: [],
-      subgenres: []
+      subgenres: [],
     },
     "United States History": {
       name: "United States History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
+      parents: ["History"],
+      subgenres: [],
     },
     "Vegetarian & Vegan": {
       name: "Vegetarian & Vegan",
-      parents: [
-        "Food & Health"
-      ],
-      subgenres: []
+      parents: ["Food & Health"],
+      subgenres: [],
     },
     "World History": {
       name: "World History",
-      parents: [
-        "History"
-      ],
-      subgenres: []
-    }
-  }
+      parents: ["History"],
+      subgenres: [],
+    },
+  },
 };
 
 export default genres;

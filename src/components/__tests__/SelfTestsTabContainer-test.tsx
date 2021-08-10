@@ -16,7 +16,8 @@ describe("SelfTestsTabContainer", () => {
   let goToTab;
   let fetchItems;
 
-  const collections = [{
+  const collections = [
+    {
       id: 1,
       name: "collection 1",
       protocol: "protocol",
@@ -32,11 +33,12 @@ describe("SelfTestsTabContainer", () => {
             name: "Initial setup.",
             result: null,
             start: "2018-08-07T19:34:54Z",
-            success: true
+            success: true,
           },
-        ]
-      }
-    }];
+        ],
+      },
+    },
+  ];
 
   beforeEach(() => {
     store = buildStore();
@@ -48,7 +50,7 @@ describe("SelfTestsTabContainer", () => {
         goToTab={goToTab}
         fetchItems={fetchItems}
         tab="collections"
-        items={{protocols: [], collections: collections}}
+        items={{ protocols: [], collections: collections }}
       />
     );
   });
@@ -58,32 +60,37 @@ describe("SelfTestsTabContainer", () => {
   });
 
   it("renders tabs and defaults to showing the Collections tab", () => {
-    let nav = wrapper.find(".nav-tabs").at(0);
+    const nav = wrapper.find(".nav-tabs").at(0);
     expect(nav.length).to.equal(1);
-    let tabs = nav.find("li");
+    const tabs = nav.find("li");
     expect(tabs.length).to.equal(4);
 
-    let collectionsTab = tabs.at(0);
+    const collectionsTab = tabs.at(0);
     expect(collectionsTab.text()).to.equal("Collections");
     expect(collectionsTab.hasClass("active")).to.be.true;
 
-    let patronAuthTab = tabs.at(1);
+    const patronAuthTab = tabs.at(1);
     expect(patronAuthTab.text()).to.equal("Patron Authentication");
     expect(patronAuthTab.hasClass("active")).to.be.false;
 
-    let searchTab = tabs.at(2);
+    const searchTab = tabs.at(2);
     expect(searchTab.text()).to.equal("Search Service Configuration");
     expect(searchTab.hasClass("active")).to.be.false;
 
-    let metadataTab = tabs.at(3);
+    const metadataTab = tabs.at(3);
     expect(metadataTab.text()).to.equal("Metadata Services");
     expect(metadataTab.hasClass("active")).to.be.false;
   });
 
   it("renders tab content", () => {
-    let contentComponents = wrapper.find(".tab-content > div");
+    const contentComponents = wrapper.find(".tab-content > div");
     expect(contentComponents.length).to.equal(4);
-    let [collectionsContent, patronAuthContent, searchContent, metadataContent] = contentComponents.map(c => c.childAt(0));
+    const [
+      collectionsContent,
+      patronAuthContent,
+      searchContent,
+      metadataContent,
+    ] = contentComponents.map((c) => c.childAt(0));
 
     expect(collectionsContent.prop("type")).to.equal("collection");
     expect(collectionsContent.prop("items")).to.equal(collections);
@@ -103,7 +110,7 @@ describe("SelfTestsTabContainer", () => {
     let error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(0);
 
-    let fetchError = { status: 401, response: "error fetching diagnostics" };
+    const fetchError = { status: 401, response: "error fetching diagnostics" };
     wrapper.setProps({ fetchError });
 
     error = wrapper.find(ErrorMessage);
@@ -117,13 +124,15 @@ describe("SelfTestsTabContainer", () => {
         tab="collections"
         store={buildStore()}
         fetchItems={fetchItems}
-        items={{protocols: [], collections: collections}}
+        items={{ protocols: [], collections: collections }}
         isLoaded={true}
       />
     );
-    let tabs = wrapper.find("ul.nav-tabs").find("a");
-    let patronAuthTab = tabs.at(1);
-    patronAuthTab.simulate("click", { currentTarget : { dataset: { tabkey: "patronAuthServices" } } });
+    const tabs = wrapper.find("ul.nav-tabs").find("a");
+    const patronAuthTab = tabs.at(1);
+    patronAuthTab.simulate("click", {
+      currentTarget: { dataset: { tabkey: "patronAuthServices" } },
+    });
 
     expect(goToTab.callCount).to.equal(1);
     expect(goToTab.args[0][0]).to.equal("patronAuthServices");
@@ -144,9 +153,25 @@ describe("SelfTestsTabContainer", () => {
   });
 
   it("converts from the tab name to the key name, type name, and link name", () => {
-    expect(wrapper.instance().getNames("collections")).to.eql(["collections", "collection", "collections"]);
-    expect(wrapper.instance().getNames("patronAuthServices")).to.eql(["patron_auth_services", "patron_auth_service", "patronAuth"]);
-    expect(wrapper.instance().getNames("searchServices")).to.eql(["search_services", "search_service", "search"]);
-    expect(wrapper.instance().getNames("metadataServices")).to.eql(["metadata_services", "metadata_service", "metadata"]);
+    expect(wrapper.instance().getNames("collections")).to.eql([
+      "collections",
+      "collection",
+      "collections",
+    ]);
+    expect(wrapper.instance().getNames("patronAuthServices")).to.eql([
+      "patron_auth_services",
+      "patron_auth_service",
+      "patronAuth",
+    ]);
+    expect(wrapper.instance().getNames("searchServices")).to.eql([
+      "search_services",
+      "search_service",
+      "search",
+    ]);
+    expect(wrapper.instance().getNames("metadataServices")).to.eql([
+      "metadata_services",
+      "metadata_service",
+      "metadata",
+    ]);
   });
 });

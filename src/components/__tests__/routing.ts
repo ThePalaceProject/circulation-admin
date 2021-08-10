@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { stub } from "sinon";
 
 import * as React from "react";
@@ -12,6 +13,7 @@ export const mockRouter = (push) => {
 export const mockRouterContext = (push?, pathFor?) => {
   return {
     router: mockRouter(push || stub()),
-    pathFor: pathFor || ((collectionUrl, bookUrl) => collectionUrl + "::" + bookUrl)
+    pathFor:
+      pathFor || ((collectionUrl, bookUrl) => collectionUrl + "::" + bookUrl),
   };
 };

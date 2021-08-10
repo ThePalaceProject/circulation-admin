@@ -13,32 +13,32 @@ describe("WelcomePage", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallow(
-      <WelcomePage />
-    );
+    wrapper = shallow(<WelcomePage />);
   });
 
   it("shows the header", () => {
-    let header = wrapper.find(Header);
+    const header = wrapper.find(Header);
     expect(header.length).to.equal(1);
   });
 
   it("shows the welcome message", () => {
-    let jumbotron = wrapper.find(Jumbotron);
+    const jumbotron = wrapper.find(Jumbotron);
     expect(jumbotron.length).to.equal(1);
-    let title = jumbotron.find("h2");
+    const title = jumbotron.find("h2");
     expect(title.length).to.equal(1);
-    expect(title.text()).to.equal("Welcome to the Circulation Admin Interface!");
+    expect(title.text()).to.equal(
+      "Welcome to the Circulation Admin Interface!"
+    );
   });
 
   it("shows a link to the library form", () => {
-    let link = wrapper.find("a");
+    const link = wrapper.find("a");
     expect(link.length).to.equal(1);
     expect(link.props().href).to.equal("/admin/web/config/libraries/create");
   });
 
   it("shows Footer", () => {
-    let footer = wrapper.find(Footer);
+    const footer = wrapper.find(Footer);
     expect(footer.length).to.equal(1);
   });
 });

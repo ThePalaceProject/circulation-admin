@@ -17,24 +17,19 @@ describe("LanePage", () => {
     store = buildStore();
     context = {
       editorStore: store,
-      csrfToken: "token"
+      csrfToken: "token",
     };
-    let params = {
+    const params = {
       library: "library",
       editOrCreate: "edit",
-      identifier: "5"
+      identifier: "5",
     };
 
-    wrapper = shallow(
-      <LanePage
-        params={params}
-        />,
-      { context }
-    );
+    wrapper = shallow(<LanePage params={params} />, { context });
   });
 
   it("shows lanes with info from params", () => {
-    let lanes = wrapper.find(Lanes);
+    const lanes = wrapper.find(Lanes);
     expect(lanes).to.be.ok;
     expect(lanes.props().library).to.equal("library");
     expect(lanes.props().editOrCreate).to.equal("edit");

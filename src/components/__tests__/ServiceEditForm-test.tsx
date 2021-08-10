@@ -4,7 +4,10 @@ import { stub, spy } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import ServiceEditForm, { ServiceEditFormProps, ServiceEditFormState } from "../ServiceEditForm";
+import ServiceEditForm, {
+  ServiceEditFormProps,
+  ServiceEditFormState,
+} from "../ServiceEditForm";
 import EditableInput from "../EditableInput";
 import ProtocolFormField from "../ProtocolFormField";
 import NeighborhoodAnalyticsForm from "../NeighborhoodAnalyticsForm";
@@ -14,36 +17,38 @@ import WithEditButton from "../WithEditButton";
 import { ServicesData } from "../../interfaces";
 
 describe("ServiceEditForm", () => {
-  let TestServiceEditForm: new(props: ServiceEditFormProps<ServicesData>) =>
-    React.Component<ServiceEditFormProps<ServicesData>, ServiceEditFormState> = ServiceEditForm;
+  const TestServiceEditForm: new (
+    props: ServiceEditFormProps<ServicesData>
+  ) => React.Component<
+    ServiceEditFormProps<ServicesData>,
+    ServiceEditFormState
+  > = ServiceEditForm;
   let wrapper;
   let save;
-  let urlBase = "/services";
-  let serviceData = {
+  const urlBase = "/services";
+  const serviceData = {
     id: 2,
     protocol: "protocol 1",
     settings: {
       text_setting: "text setting",
-      select_setting: "option2"
+      select_setting: "option2",
     },
-    libraries: [{
-      short_name: "nypl",
-      library_text_setting: "library text setting",
-      library_select_setting: "option4"
-    }]
+    libraries: [
+      {
+        short_name: "nypl",
+        library_text_setting: "library text setting",
+        library_select_setting: "option4",
+      },
+    ],
   };
-  let parentProtocol = {
+  const parentProtocol = {
     name: "protocol 3",
     label: "protocol 3 label",
-    settings: [
-      { key: "parent_setting", label: "parent label" }
-    ],
-    child_settings: [
-      { key: "child_setting", label: "child label" }
-    ],
-    library_settings: []
+    settings: [{ key: "parent_setting", label: "parent label" }],
+    child_settings: [{ key: "child_setting", label: "child label" }],
+    library_settings: [],
   };
-  let protocolsData = [
+  const protocolsData = [
     {
       name: "protocol 1",
       label: "protocol 1 label",
@@ -51,22 +56,32 @@ describe("ServiceEditForm", () => {
       sitewide: false,
       settings: [
         { key: "text_setting", label: "text label", optional: true },
-        { key: "select_setting", label: "select label", type: "select",
+        {
+          key: "select_setting",
+          label: "select label",
+          type: "select",
           options: [
             { key: "option1", label: "option 1" },
-            { key: "option2", label: "option 2" }
-          ]
-        }
+            { key: "option2", label: "option 2" },
+          ],
+        },
       ],
       library_settings: [
-        { key: "library_text_setting", label: "library text label", optional: true },
-        { key: "library_select_setting", label: "library select label", type: "select",
+        {
+          key: "library_text_setting",
+          label: "library text label",
+          optional: true,
+        },
+        {
+          key: "library_select_setting",
+          label: "library select label",
+          type: "select",
           options: [
             { key: "option3", label: "option 3" },
-            { key: "option4", label: "option 4" }
-          ]
-        }
-      ]
+            { key: "option4", label: "option 4" },
+          ],
+        },
+      ],
     },
     {
       name: "protocol 2",
@@ -77,7 +92,7 @@ describe("ServiceEditForm", () => {
         { key: "text_setting", label: "text label" },
         { key: "protocol2_setting", label: "protocol2 label" },
       ],
-      library_settings: []
+      library_settings: [],
     },
     {
       name: "protocol with instructions",
@@ -86,32 +101,34 @@ describe("ServiceEditForm", () => {
       instructions: "Instructions!",
       sitewide: false,
       settings: [],
-      library_settings: []
+      library_settings: [],
     },
-    parentProtocol
+    parentProtocol,
   ];
-  let allLibraries = [
-    { "short_name": "nypl", name: "New York Public Library" },
-    { "short_name": "bpl", name: "Brooklyn Public Library" }
+  const allLibraries = [
+    { short_name: "nypl", name: "New York Public Library" },
+    { short_name: "bpl", name: "Brooklyn Public Library" },
   ];
-  let servicesData = {
+  const servicesData = {
     services: [serviceData],
     protocols: protocolsData,
-    allLibraries: allLibraries
+    allLibraries: allLibraries,
   };
 
-  let editableInputByName = (name) => {
-    let inputs = wrapper.find(EditableInput);
+  const editableInputByName = (name) => {
+    const inputs = wrapper.find(EditableInput);
     if (inputs.length >= 1) {
-      return inputs.filterWhere(input => input.props().name === name);
+      return inputs.filterWhere((input) => input.props().name === name);
     }
     return [];
   };
 
-  let protocolFormFieldByKey = (key) => {
-    let formFields = wrapper.find(ProtocolFormField);
+  const protocolFormFieldByKey = (key) => {
+    const formFields = wrapper.find(ProtocolFormField);
     if (formFields.length >= 1) {
-      return formFields.filterWhere(formField => formField.props().setting.key === key);
+      return formFields.filterWhere(
+        (formField) => formField.props().setting.key === key
+      );
     }
     return [];
   };
@@ -126,15 +143,17 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
     });
 
     it("renders hidden id", () => {
+      // prettier-ignore
       let input = wrapper.find("input[name=\"id\"]");
       expect(input.length).to.equal(0);
 
       wrapper.setProps({ item: serviceData });
+      // prettier-ignore
       input = wrapper.find("input[name=\"id\"]");
       expect(input.props().type).to.equal("hidden");
       expect(input.props().value).to.equal("2");
@@ -160,7 +179,7 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       input = editableInputByName("protocol");
       expect(input.props().value).to.equal("protocol 1");
@@ -191,7 +210,7 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
 
       input = protocolFormFieldByKey("text_setting");
@@ -213,25 +232,27 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       wrapper.setState({ protocol: "protocol with instructions" });
 
-      let collapsible = wrapper.find(".panel");
+      const collapsible = wrapper.find(".panel");
       expect(collapsible.length).to.equal(3);
-      let title = collapsible.at(0).find(".panel-title");
+      const title = collapsible.at(0).find(".panel-title");
       expect(title.text()).to.equal("click for instructions");
-      let body = collapsible.at(0).find(".panel-body");
+      const body = collapsible.at(0).find(".panel-body");
       expect(body.text()).to.equal("Instructions!");
     });
 
     it("doesn't render parent dropdown for protocol with no child settings", () => {
-      let input = editableInputByName("parent_id");
+      const input = editableInputByName("parent_id");
       expect(input.length).to.equal(0);
     });
 
     it("doesn't render parent dropdown when there are no available parents", () => {
-      const newService = Object.assign({}, serviceData, { protocol: "protocol 3" });
+      const newService = Object.assign({}, serviceData, {
+        protocol: "protocol 3",
+      });
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -240,17 +261,26 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
 
-      let input = editableInputByName("parent_id");
+      const input = editableInputByName("parent_id");
       expect(input.length).to.equal(0);
     });
 
     it("renders parent dropdown for protocol with child settings and available parents", () => {
-      const parentService = Object.assign({}, serviceData, { protocol: "protocol 3", name: "Parent" });
-      const childService = Object.assign({}, serviceData, { protocol: "protocol 3", id: 3, name: "Child" });
-      let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService, childService] });
+      const parentService = Object.assign({}, serviceData, {
+        protocol: "protocol 3",
+        name: "Parent",
+      });
+      const childService = Object.assign({}, serviceData, {
+        protocol: "protocol 3",
+        id: 3,
+        name: "Child",
+      });
+      const servicesDataWithParent = Object.assign({}, servicesData, {
+        services: [parentService, childService],
+      });
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -259,7 +289,7 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
 
       let input = editableInputByName("parent_id");
@@ -279,7 +309,7 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       input = editableInputByName("parent_id");
       expect(input.length).to.equal(1);
@@ -291,10 +321,18 @@ describe("ServiceEditForm", () => {
     });
 
     it("renders protocol fields for child", () => {
-      const parentService = Object.assign({}, serviceData, { protocol: "protocol 3", name: "Parent" });
-      const childService = Object.assign({}, serviceData,
-        { protocol: "protocol 3", id: 3, name: "Child" });
-      let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService, childService] });
+      const parentService = Object.assign({}, serviceData, {
+        protocol: "protocol 3",
+        name: "Parent",
+      });
+      const childService = Object.assign({}, serviceData, {
+        protocol: "protocol 3",
+        id: 3,
+        name: "Child",
+      });
+      const servicesDataWithParent = Object.assign({}, servicesData, {
+        services: [parentService, childService],
+      });
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -303,7 +341,7 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
 
       let input = protocolFormFieldByKey("parent_setting");
@@ -328,7 +366,7 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
 
       input = protocolFormFieldByKey("parent_setting");
@@ -346,8 +384,8 @@ describe("ServiceEditForm", () => {
     });
 
     it("doesn't render libraries for sitewide protocol without library settings", () => {
-      let servicesDataSitewide = Object.assign({}, servicesData, {
-        protocols: [servicesData.protocols[1]]
+      const servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [servicesData.protocols[1]],
       });
 
       wrapper = mount(
@@ -357,14 +395,14 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
 
-      let serviceDataSitewide = Object.assign({}, servicesData, {
+      const serviceDataSitewide = Object.assign({}, servicesData, {
         libraries: [],
-        protocol: ""
+        protocol: "",
       });
       wrapper = mount(
         <TestServiceEditForm
@@ -381,8 +419,10 @@ describe("ServiceEditForm", () => {
     });
 
     it("renders libraries for a sitewide protocol with library settings", () => {
-      let servicesDataSitewide = Object.assign({}, servicesData, {
-        protocols: [Object.assign({}, servicesData.protocols[1], { sitewide: true })]
+      const servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [
+          Object.assign({}, servicesData.protocols[1], { sitewide: true }),
+        ],
       });
 
       wrapper = mount(
@@ -393,9 +433,9 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
-      let library = wrapper.find(WithRemoveButton);
+      const library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
     });
 
@@ -411,11 +451,11 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
-      let editable = library.find(WithEditButton);
+      const editable = library.find(WithEditButton);
       expect(editable.length).to.equal(1);
       expect(editable.props().children).to.contain("New York Public Library");
     });
@@ -424,7 +464,9 @@ describe("ServiceEditForm", () => {
       let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
 
-      let newServiceData = Object.assign({}, serviceData, { protocol: "protocol 3" });
+      const newServiceData = Object.assign({}, serviceData, {
+        protocol: "protocol 3",
+      });
 
       wrapper = mount(
         <TestServiceEditForm
@@ -434,7 +476,7 @@ describe("ServiceEditForm", () => {
           item={newServiceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
@@ -442,8 +484,8 @@ describe("ServiceEditForm", () => {
     });
 
     it("doesn't render library add dropdown for sitewide protocol", () => {
-      let servicesDataSitewide = Object.assign({}, servicesData, {
-        protocols: [servicesData.protocols[1]]
+      const servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [servicesData.protocols[1]],
       });
 
       wrapper = shallow(
@@ -453,12 +495,12 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       let select = wrapper.find("select[name='add-library']");
       expect(select.length).to.equal(0);
 
-      let serviceDataSitewide = Object.assign({}, servicesData, {
+      const serviceDataSitewide = Object.assign({}, servicesData, {
         libraries: [],
         protocol: "",
       });
@@ -470,15 +512,17 @@ describe("ServiceEditForm", () => {
           item={serviceDataSitewide}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       select = wrapper.find("select[name='add-library']");
       expect(select.length).to.equal(0);
     });
 
     it("renders library add dropdown for a sitewide protocol with library settings", () => {
-      let servicesDataSitewide = Object.assign({}, servicesData, {
-        protocols: [Object.assign({}, servicesData.protocols[1], { sitewide: true })]
+      const servicesDataSitewide = Object.assign({}, servicesData, {
+        protocols: [
+          Object.assign({}, servicesData.protocols[1], { sitewide: true }),
+        ],
       });
 
       wrapper = mount(
@@ -489,9 +533,9 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
-      let select = wrapper.find("select[name='add-library']");
+      const select = wrapper.find("select[name='add-library']");
       expect(select.length).to.equal(1);
     });
 
@@ -518,7 +562,7 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       select = editableInputByName("add-library");
       expect(select.props().label).to.equal("Add Library");
@@ -532,8 +576,15 @@ describe("ServiceEditForm", () => {
     it("renders neighborhood analytics form for a relevant patron auth protocol", () => {
       let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(0);
-      let patronAuthProtocol = {...protocolsData[0], ...{settings: [{"key": "neighborhood_mode", options: []}]}};
-      wrapper.setProps({ extraFormKey: "neighborhood_mode", extraFormSection: NeighborhoodAnalyticsForm, data: {...servicesData, ...{protocols: [patronAuthProtocol]}}});
+      const patronAuthProtocol = {
+        ...protocolsData[0],
+        ...{ settings: [{ key: "neighborhood_mode", options: [] }] },
+      };
+      wrapper.setProps({
+        extraFormKey: "neighborhood_mode",
+        extraFormSection: NeighborhoodAnalyticsForm,
+        data: { ...servicesData, ...{ protocols: [patronAuthProtocol] } },
+      });
       neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(1);
     });
@@ -541,22 +592,30 @@ describe("ServiceEditForm", () => {
     it("renders neighborhood analytics form for a relevant analytics protocol", () => {
       let neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(0);
-      let analyticsProtocol = {...protocolsData[0], ...{settings: [{"key": "location_source", options: []}]}};
-      wrapper.setProps({ extraFormKey: "location_source", extraFormSection: NeighborhoodAnalyticsForm, data: {...servicesData, ...{protocols: [analyticsProtocol]}}});
+      const analyticsProtocol = {
+        ...protocolsData[0],
+        ...{ settings: [{ key: "location_source", options: [] }] },
+      };
+      wrapper.setProps({
+        extraFormKey: "location_source",
+        extraFormSection: NeighborhoodAnalyticsForm,
+        data: { ...servicesData, ...{ protocols: [analyticsProtocol] } },
+      });
       neighborhoodForm = wrapper.find(NeighborhoodAnalyticsForm);
       expect(neighborhoodForm.length).to.equal(1);
     });
 
     it("has a save button", () => {
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       expect(saveButton.length).to.equal(1);
     });
-
   });
 
   describe("behavior", () => {
     beforeEach(() => {
-      save = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -570,14 +629,18 @@ describe("ServiceEditForm", () => {
 
     it("changes fields and description when protocol changes", () => {
       // Select a library so the library settings are shown.
-      let librarySelect = wrapper.find("select[name='add-library']") as any;
+      const librarySelect = wrapper.find("select[name='add-library']") as any;
       librarySelect.getDOMNode().value = "nypl";
       librarySelect.simulate("change");
 
       let textSettingInput = protocolFormFieldByKey("text_setting");
       let selectSettingInput = protocolFormFieldByKey("select_setting");
-      let libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
-      let librarySelectSettingInput = protocolFormFieldByKey("library_select_setting");
+      let libraryTextSettingInput = protocolFormFieldByKey(
+        "library_text_setting"
+      );
+      let librarySelectSettingInput = protocolFormFieldByKey(
+        "library_select_setting"
+      );
       let protocol2SettingInput = protocolFormFieldByKey("protocol2_setting");
       expect(textSettingInput.length).to.equal(1);
       expect(selectSettingInput.length).to.equal(1);
@@ -586,17 +649,21 @@ describe("ServiceEditForm", () => {
       expect(protocol2SettingInput.length).to.equal(0);
 
       let protocolInput = editableInputByName("protocol");
-      expect(protocolInput.prop("description")).to.equal("protocol 1 description");
+      expect(protocolInput.prop("description")).to.equal(
+        "protocol 1 description"
+      );
 
-      let select = wrapper.find("select[name='protocol']") as any;
-      let selectElement = select.getDOMNode();
+      const select = wrapper.find("select[name='protocol']") as any;
+      const selectElement = select.getDOMNode();
       selectElement.value = "protocol 2";
       select.simulate("change");
 
       textSettingInput = protocolFormFieldByKey("text_setting");
       selectSettingInput = protocolFormFieldByKey("select_setting");
       libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
-      librarySelectSettingInput = protocolFormFieldByKey("library_select_setting");
+      librarySelectSettingInput = protocolFormFieldByKey(
+        "library_select_setting"
+      );
       protocol2SettingInput = protocolFormFieldByKey("protocol2_setting");
       expect(textSettingInput.length).to.equal(1);
       expect(selectSettingInput.length).to.equal(0);
@@ -605,7 +672,9 @@ describe("ServiceEditForm", () => {
       expect(protocol2SettingInput.length).to.equal(1);
 
       protocolInput = editableInputByName("protocol");
-      expect(protocolInput.prop("description")).to.equal("protocol 2 description");
+      expect(protocolInput.prop("description")).to.equal(
+        "protocol 2 description"
+      );
       expect(protocolInput.prop("link")).to.be.undefined;
 
       selectElement.value = "protocol 1";
@@ -614,7 +683,9 @@ describe("ServiceEditForm", () => {
       textSettingInput = protocolFormFieldByKey("text_setting");
       selectSettingInput = protocolFormFieldByKey("select_setting");
       libraryTextSettingInput = protocolFormFieldByKey("library_text_setting");
-      librarySelectSettingInput = protocolFormFieldByKey("library_select_setting");
+      librarySelectSettingInput = protocolFormFieldByKey(
+        "library_select_setting"
+      );
       protocol2SettingInput = protocolFormFieldByKey("protocol2_setting");
       expect(textSettingInput.length).to.equal(1);
       expect(selectSettingInput.length).to.equal(1);
@@ -623,12 +694,20 @@ describe("ServiceEditForm", () => {
       expect(protocol2SettingInput.length).to.equal(0);
 
       protocolInput = editableInputByName("protocol");
-      expect(protocolInput.prop("description")).to.equal("protocol 1 description");
+      expect(protocolInput.prop("description")).to.equal(
+        "protocol 1 description"
+      );
     });
 
     it("changes fields when parent changes", () => {
-      const parentService = Object.assign({}, serviceData, { protocol: "protocol 3", name: "Parent" });
-      let servicesDataWithParent = Object.assign({}, servicesData, { services: [parentService], protocols: [parentProtocol] });
+      const parentService = Object.assign({}, serviceData, {
+        protocol: "protocol 3",
+        name: "Parent",
+      });
+      const servicesDataWithParent = Object.assign({}, servicesData, {
+        services: [parentService],
+        protocols: [parentProtocol],
+      });
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -636,7 +715,7 @@ describe("ServiceEditForm", () => {
           save={save}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       let input = protocolFormFieldByKey("parent_setting");
       expect(input.length).to.equal(1);
@@ -644,8 +723,8 @@ describe("ServiceEditForm", () => {
       input = protocolFormFieldByKey("child_setting");
       expect(input.length).to.equal(0);
 
-      let select = wrapper.find("select[name='parent_id']") as any;
-      let selectElement = select.getDOMNode();
+      const select = wrapper.find("select[name='parent_id']") as any;
+      const selectElement = select.getDOMNode();
       selectElement.value = "2";
       select.simulate("change");
 
@@ -669,39 +748,58 @@ describe("ServiceEditForm", () => {
       let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(0);
 
-      let libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      let libraryTextSettingInput = editableInputByName(
+        "library_text_setting"
+      ).find("input");
       expect(libraryTextSettingInput.length).to.equal(0);
-      let librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      let librarySelectSettingInput = editableInputByName(
+        "library_select_setting"
+      ).find("select");
       expect(librarySelectSettingInput.length).to.equal(0);
 
       let select = wrapper.find("select[name='add-library']").hostNodes();
       select.getDOMNode().value = "bpl";
       select.simulate("change");
 
-      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      libraryTextSettingInput = editableInputByName(
+        "library_text_setting"
+      ).find("input");
       expect(libraryTextSettingInput.length).to.equal(1);
-      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      librarySelectSettingInput = editableInputByName(
+        "library_select_setting"
+      ).find("select");
       expect(librarySelectSettingInput.length).to.equal(1);
 
       select.getDOMNode().value = "none";
       select.simulate("change");
 
-      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      libraryTextSettingInput = editableInputByName(
+        "library_text_setting"
+      ).find("input");
       expect(libraryTextSettingInput.length).to.equal(0);
-      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      librarySelectSettingInput = editableInputByName(
+        "library_select_setting"
+      ).find("select");
       expect(librarySelectSettingInput.length).to.equal(0);
 
       select.getDOMNode().value = "bpl";
       select.simulate("change");
 
-      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      libraryTextSettingInput = editableInputByName(
+        "library_text_setting"
+      ).find("input");
       libraryTextSettingInput.getDOMNode().value = "library text";
       libraryTextSettingInput.simulate("change");
-      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      librarySelectSettingInput = editableInputByName(
+        "library_select_setting"
+      ).find("select");
       librarySelectSettingInput.getDOMNode().value = "option4";
       librarySelectSettingInput.simulate("change");
 
-      let addButton = wrapper.find("button").findWhere(el => el.text() === "Add Library").hostNodes();
+      const addButton = wrapper
+        .find("button")
+        .findWhere((el) => el.text() === "Add Library")
+        .hostNodes();
       addButton.simulate("click");
 
       library = wrapper.find(WithRemoveButton);
@@ -710,7 +808,7 @@ describe("ServiceEditForm", () => {
       expect(library.text()).to.contain("Delete");
       expect(library.text()).to.contain("Edit");
 
-      let stateLibraries = wrapper.state().libraries;
+      const stateLibraries = wrapper.state().libraries;
       expect(stateLibraries.length).to.equal(1);
       expect(stateLibraries[0].short_name).to.equal("bpl");
       expect(stateLibraries[0].library_text_setting).to.equal("library text");
@@ -720,9 +818,13 @@ describe("ServiceEditForm", () => {
       select.getDOMNode().value = "nypl";
       select.simulate("change");
 
-      libraryTextSettingInput = editableInputByName("library_text_setting").find("input");
+      libraryTextSettingInput = editableInputByName(
+        "library_text_setting"
+      ).find("input");
       expect(libraryTextSettingInput.getDOMNode().value).to.equal("");
-      librarySelectSettingInput = editableInputByName("library_select_setting").find("select");
+      librarySelectSettingInput = editableInputByName(
+        "library_select_setting"
+      ).find("select");
       expect(librarySelectSettingInput.getDOMNode().value).to.equal("option3");
     });
 
@@ -735,13 +837,13 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
       let library = wrapper.find(WithRemoveButton);
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("New York Public Library");
 
-      let onRemove = library.prop("onRemove");
+      const onRemove = library.prop("onRemove");
       onRemove();
       wrapper.update();
 
@@ -758,20 +860,26 @@ describe("ServiceEditForm", () => {
           item={serviceData}
           urlBase={urlBase}
           listDataKey="services"
-          />
+        />
       );
-      let library = wrapper.find(WithRemoveButton).find(".with-edit-button");
+      const library = wrapper.find(WithRemoveButton).find(".with-edit-button");
       expect(library.length).to.equal(1);
       expect(library.text()).to.contain("New York Public Library");
 
-      let onEdit = library.find("button");
+      const onEdit = library.find("button");
       onEdit.simulate("click");
 
       let settings = wrapper.find(".edit-library-settings");
       expect(settings.length).to.equal(1);
-      let libraryTextSettingInput = settings.find("input[name='library_text_setting']") as any;
-      expect(libraryTextSettingInput.getDOMNode().value).to.equal("library text setting");
-      let librarySelectSettingInput = settings.find("select[name='library_select_setting']") as any;
+      let libraryTextSettingInput = settings.find(
+        "input[name='library_text_setting']"
+      ) as any;
+      expect(libraryTextSettingInput.getDOMNode().value).to.equal(
+        "library text setting"
+      );
+      let librarySelectSettingInput = settings.find(
+        "select[name='library_select_setting']"
+      ) as any;
       expect(librarySelectSettingInput.getDOMNode().value).to.equal("option4");
 
       libraryTextSettingInput.getDOMNode().value = "new library text";
@@ -788,9 +896,15 @@ describe("ServiceEditForm", () => {
 
       settings = wrapper.find(".edit-library-settings");
       expect(settings.length).to.equal(1);
-      libraryTextSettingInput = settings.find("input[name='library_text_setting']") as any;
-      expect(libraryTextSettingInput.getDOMNode().value).to.equal("library text setting");
-      librarySelectSettingInput = settings.find("select[name='library_select_setting']") as any;
+      libraryTextSettingInput = settings.find(
+        "input[name='library_text_setting']"
+      ) as any;
+      expect(libraryTextSettingInput.getDOMNode().value).to.equal(
+        "library text setting"
+      );
+      librarySelectSettingInput = settings.find(
+        "select[name='library_select_setting']"
+      ) as any;
       expect(librarySelectSettingInput.getDOMNode().value).to.equal("option4");
 
       libraryTextSettingInput.getDOMNode().value = "new library text";
@@ -798,18 +912,20 @@ describe("ServiceEditForm", () => {
       librarySelectSettingInput.getDOMNode().value = "option3";
       librarySelectSettingInput.simulate("change");
 
-      let saveButton = settings.find("button");
+      const saveButton = settings.find("button");
       saveButton.simulate("click");
 
-      let stateLibraries = wrapper.state().libraries;
+      const stateLibraries = wrapper.state().libraries;
       expect(stateLibraries.length).to.equal(1);
       expect(stateLibraries[0].short_name).to.equal("nypl");
-      expect(stateLibraries[0].library_text_setting).to.equal("new library text");
+      expect(stateLibraries[0].library_text_setting).to.equal(
+        "new library text"
+      );
       expect(stateLibraries[0].library_select_setting).to.equal("option3");
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -821,7 +937,7 @@ describe("ServiceEditForm", () => {
 
     it("calls save on submit even if there is a collapsible panel", () => {
       wrapper.setState({ protocol: "protocol with instructions" });
-      let collapsible = wrapper.find(".panel");
+      const collapsible = wrapper.find(".panel");
       expect(collapsible.length).to.equal(3);
 
       wrapper.find(Form).props().onSubmit();
@@ -829,7 +945,7 @@ describe("ServiceEditForm", () => {
     });
 
     it("calls handleData", () => {
-      let handleData = spy(wrapper.instance(), "handleData");
+      const handleData = spy(wrapper.instance(), "handleData");
       wrapper.setProps({ item: serviceData });
       // The first two buttons are the edit and remove buttons for this component
       // which only contains one object as data.
@@ -845,21 +961,23 @@ describe("ServiceEditForm", () => {
 
       // The first two buttons are the edit and remove buttons for this component
       // which only contains one object as data.
-      let saveButton = wrapper.find(Button).at(2);
+      const saveButton = wrapper.find(Button).at(2);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);
-      let formData = save.args[0][0];
+      const formData = save.args[0][0];
       expect(formData.get("id")).to.equal("2");
       expect(formData.get("protocol")).to.equal("protocol 1");
       expect(formData.get("text_setting")).to.equal("text setting");
       expect(formData.get("select_setting")).to.equal("option2");
-      expect(formData.get("libraries")).to.equal(JSON.stringify(serviceData.libraries));
+      expect(formData.get("libraries")).to.equal(
+        JSON.stringify(serviceData.libraries)
+      );
     });
 
-    let fillOutFormFields = () => {
-      let nameInput = wrapper.find("input[name='name']");
-      let nameInputElement = nameInput.getDOMNode();
+    const fillOutFormFields = () => {
+      const nameInput = wrapper.find("input[name='name']");
+      const nameInputElement = nameInput.getDOMNode();
       nameInputElement.value = "new service";
       nameInput.simulate("change");
     };
@@ -870,7 +988,7 @@ describe("ServiceEditForm", () => {
       expect(nameInput.props().value).to.equal("new service");
 
       wrapper.simulate("submit");
-      let newProps = { responseBody: "new service", ...wrapper.props() };
+      const newProps = { responseBody: "new service", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       nameInput = wrapper.find("input[name='name']");
@@ -884,12 +1002,11 @@ describe("ServiceEditForm", () => {
       expect(nameInput.props().value).to.equal("new service");
 
       wrapper.simulate("submit");
-      let newProps = { fetchError: "ERROR", ...wrapper.props() };
+      const newProps = { fetchError: "ERROR", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       nameInput = wrapper.find("input[name='name']");
       expect(nameInput.props().value).to.equal("new service");
     });
-
   });
 });

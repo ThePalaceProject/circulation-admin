@@ -13,7 +13,7 @@ import { Alert } from "react-bootstrap";
 
 import ActionCreator from "../../actions";
 
-let patron = {
+const patron = {
   authorization_expires: "",
   username: "User Name",
   personal_name: "Personal Name",
@@ -27,20 +27,14 @@ let patron = {
 };
 
 describe("ManagePatronsForm", () => {
-
   let wrapper;
   let store;
 
   describe("rendering", () => {
-
     beforeEach(() => {
       store = buildStore();
       wrapper = mount(
-        <ManagePatronsForm
-          store={store}
-          csrfToken="token"
-          library="nypl"
-        />
+        <ManagePatronsForm store={store} csrfToken="token" library="nypl" />
       );
     });
 
@@ -49,33 +43,34 @@ describe("ManagePatronsForm", () => {
     });
 
     it("shows EditableInput", () => {
-      let editableInput = wrapper.find(EditableInput);
+      const editableInput = wrapper.find(EditableInput);
       expect(editableInput.length).to.equal(1);
     });
 
     it("has a form with an input field and a button", () => {
-      let form = wrapper.find("form");
-      let input = wrapper.find("form input");
-      let button = wrapper.find("form button");
+      const form = wrapper.find("form");
+      const input = wrapper.find("form input");
+      const button = wrapper.find("form button");
       expect(form.length).to.equal(1);
       expect(input.length).to.equal(1);
       expect(button.length).to.equal(1);
     });
 
     it("doesn't initially show an alert or error message", () => {
-      let alert = wrapper.find(Alert);
-      let errorMessage = wrapper.find(ErrorMessage);
+      const alert = wrapper.find(Alert);
+      const errorMessage = wrapper.find(ErrorMessage);
       expect(alert.length).to.equal(0);
       expect(errorMessage.length).to.equal(0);
     });
-
   });
 
   describe("behavior", () => {
     let patronLookup;
 
     beforeEach(() => {
-      patronLookup = stub().returns(new Promise<void>(resolve => resolve()));
+      patronLookup = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       store = buildStore();
       wrapper = mount(
         <ManagePatronsForm
@@ -96,7 +91,7 @@ describe("ManagePatronsForm", () => {
 
     it("displays an error message if there is an error", () => {
       let errorMessage = wrapper.find(ErrorMessage);
-      const fetchError = {status: 400, response: "", url: ""};
+      const fetchError = { status: 400, response: "", url: "" };
       expect(errorMessage.length).to.equal(0);
 
       wrapper.setProps({ fetchError });
@@ -107,7 +102,11 @@ describe("ManagePatronsForm", () => {
     });
 
     it("should display a no identifier if the input field is blank when searching", async () => {
-      const fetchError = { status: 400, response: "No patron identifier provided", url: "" };
+      const fetchError = {
+        status: 400,
+        response: "No patron identifier provided",
+        url: "",
+      };
       patronLookup = stub();
       wrapper = mount(
         <ManagePatronsForm
@@ -126,7 +125,9 @@ describe("ManagePatronsForm", () => {
       errorMessage = wrapper.find(ErrorMessage);
       expect(errorMessage.length).to.equal(1);
       expect(errorMessage.props().error).to.equal(fetchError);
-      expect(errorMessage.text()).to.equal("Error: No patron identifier provided");
+      expect(errorMessage.text()).to.equal(
+        "Error: No patron identifier provided"
+      );
     });
 
     it("should display a success alert message when a patron is found", () => {
@@ -138,7 +139,9 @@ describe("ManagePatronsForm", () => {
       alert = wrapper.find(".alert-success");
 
       expect(alert.length).to.equal(1);
-      expect(alert.text()).to.equal(`Patron found: ${patron.authorization_identifier}`);
+      expect(alert.text()).to.equal(
+        `Patron found: ${patron.authorization_identifier}`
+      );
     });
 
     it("should show the PatronInfo list when a patron is found", () => {
@@ -146,7 +149,5 @@ describe("ManagePatronsForm", () => {
       const patronInfo = wrapper.find(".patron-info");
       expect(patronInfo.length).to.equal(1);
     });
-
   });
-
 });
