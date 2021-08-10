@@ -16,13 +16,13 @@ export default class Admin {
       switch (role.role) {
         case "system": {
           this.systemAdmin = true;
+          break;
         }
-        // eslint-disable-next-line no-fallthrough
         case "manager-all": {
           this.sitewideLibraryManager = true;
           this.manager = true;
+          break;
         }
-        // eslint-disable-next-line no-fallthrough
         case "librarian-all": {
           this.sitewideLibrarian = true;
           break;
