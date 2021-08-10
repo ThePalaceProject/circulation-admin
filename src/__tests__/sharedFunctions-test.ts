@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { expect } from "chai";
 import {
   findDefault,
@@ -37,19 +36,19 @@ describe("findDefault", () => {
   };
 
   it("doesn't return anything if the setting has no default value", () => {
-    let result = findDefault(settingWithoutDefaults);
+    const result = findDefault(settingWithoutDefaults);
     expect(result).to.be.undefined;
   });
 
   it("identifies the default setting from a list of options", () => {
-    let result = findDefault(settingWithOneDefault);
+    const result = findDefault(settingWithOneDefault);
     expect(result.length).to.equal(1);
     expect(result[0].key).to.equal("true");
     expect(result[0].label).to.equal("Yes");
   });
 
   it("identifies multiple default settings from a list of options", () => {
-    let result = findDefault(settingWithMultipleDefaults);
+    const result = findDefault(settingWithMultipleDefaults);
     expect(result.length).to.equal(2);
     expect(result[0].key).to.equal("first default");
     expect(result[0].label).to.equal("Yes");
@@ -59,29 +58,29 @@ describe("findDefault", () => {
 });
 
 describe("formatString", () => {
-  let stringToFormat = "this-is-a-sentence.";
+  const stringToFormat = "this-is-a-sentence.";
   it("capitalizes the first letter of a string by default", () => {
-    let result = formatString(stringToFormat);
+    const result = formatString(stringToFormat);
     expect(result).to.equal("This-is-a-sentence.");
   });
 
   it("can be prevented from capitalizing", () => {
-    let result = formatString(stringToFormat, null, false);
+    const result = formatString(stringToFormat, null, false);
     expect(result).to.equal("this-is-a-sentence.");
   });
 
   it("replaces characters", () => {
-    let result = formatString(stringToFormat, ["-", " "], false);
+    const result = formatString(stringToFormat, ["-", " "], false);
     expect(result).to.equal("this is a sentence.");
   });
 
   it("replaces characters and capitalizes", () => {
-    let result = formatString(stringToFormat, ["-", "!"]);
+    const result = formatString(stringToFormat, ["-", "!"]);
     expect(result).to.equal("This!is!a!sentence.");
   });
 
   it("replaces multiple characters", () => {
-    let result = formatString("need-to-replace!multiple-characters", [
+    const result = formatString("need-to-replace!multiple-characters", [
       "-",
       "!",
       " ",
@@ -90,7 +89,7 @@ describe("formatString", () => {
   });
 
   it("defaults to replacing characters with a space", () => {
-    let result = formatString(stringToFormat, ["-"]);
+    const result = formatString(stringToFormat, ["-"]);
     expect(result).to.equal("This is a sentence.");
   });
 });
@@ -99,23 +98,23 @@ describe("isEqual", () => {
   const arr1 = ["a", "b", "c"];
 
   it("returns false if the arrays are not the same length", () => {
-    let arr2 = ["a", "b", "c", "d"];
+    const arr2 = ["a", "b", "c", "d"];
     expect(isEqual(arr1, arr2)).to.be.false;
   });
   it("returns false if the lengths are the same but not all of the elements match", () => {
-    let arr2 = ["a", "b", "d"];
+    const arr2 = ["a", "b", "d"];
     expect(isEqual(arr1, arr2)).to.be.false;
   });
   it("returns false if there are duplicates", () => {
-    let arr2 = ["a", "a", "b"];
+    const arr2 = ["a", "a", "b"];
     expect(isEqual(arr1, arr2)).to.be.false;
   });
   it("returns true if the arrays are the same", () => {
-    let arr2 = ["a", "b", "c"];
+    const arr2 = ["a", "b", "c"];
     expect(isEqual(arr1, arr2)).to.be.true;
   });
   it("returns true even if the arrays do not list the elements in the same order", () => {
-    let arr2 = ["b", "c", "a"];
+    const arr2 = ["b", "c", "a"];
     expect(isEqual(arr1, arr2)).to.be.true;
   });
   it("returns true if the arrays have the same duplicates", () => {

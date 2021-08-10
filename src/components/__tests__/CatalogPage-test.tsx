@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { expect } from "chai";
 
 import * as React from "react";
@@ -17,7 +16,7 @@ describe("CatalogPage", () => {
   let params;
   let context;
   let child;
-  let host = "http://example.com";
+  const host = "http://example.com";
 
   beforeEach(() => {
     (jsdom as any).changeURL(window, host + "/test");
@@ -30,7 +29,7 @@ describe("CatalogPage", () => {
   });
 
   it("renders OPDSCatalog", () => {
-    let catalog = wrapper.find(OPDSCatalog);
+    const catalog = wrapper.find(OPDSCatalog);
     expect(catalog.prop("collectionUrl")).to.equal(
       host + "/library/collectionurl?max_cache_age=0"
     );
@@ -40,7 +39,7 @@ describe("CatalogPage", () => {
     );
     expect(catalog.prop("Header").name).to.equal(Header.name);
     expect(catalog.prop("computeBreadcrumbs")).to.be.ok;
-    let pageTitleTemplate = catalog.prop("pageTitleTemplate");
+    const pageTitleTemplate = catalog.prop("pageTitleTemplate");
     expect(pageTitleTemplate("Collection", "Book")).to.equal(
       "Circulation Manager - Book"
     );
@@ -50,27 +49,27 @@ describe("CatalogPage", () => {
   });
 
   it("handles the case in which the URL already contains a query string", () => {
-    let queryUrl = "library/collectionurl?samplequery=test";
+    const queryUrl = "library/collectionurl?samplequery=test";
     expect(wrapper.instance().expandCollectionUrl(queryUrl)).to.equal(
       host + "/library/collectionurl?samplequery=test&max_cache_age=0"
     );
   });
 
   it("renders welcome page when there's no library", () => {
-    let newParams = Object.assign({}, params, {
+    const newParams = Object.assign({}, params, {
       collectionUrl: null,
       bookUrl: null,
       tab: null,
     });
     wrapper.setProps({ params: newParams });
-    let catalog = wrapper.find(OPDSCatalog);
+    const catalog = wrapper.find(OPDSCatalog);
     expect(catalog.length).to.equal(0);
-    let welcomePage = wrapper.find(WelcomePage);
+    const welcomePage = wrapper.find(WelcomePage);
     expect(welcomePage.length).to.equal(1);
   });
 
   it("includes tab in child context", () => {
-    let context = wrapper.instance().getChildContext();
+    const context = wrapper.instance().getChildContext();
     expect(context.tab).to.equal("tab");
   });
 
@@ -96,7 +95,7 @@ describe("CatalogPage", () => {
   });
 
   it("shows Footer", () => {
-    let footer = wrapper.find(Footer);
+    const footer = wrapper.find(Footer);
     expect(footer.length).to.equal(1);
   });
 });

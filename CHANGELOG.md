@@ -1,5 +1,11 @@
 ## Changelog
 
+### 08/10/2021
+
+#### Updated (to be included in next version)
+
+- Addressed linter errors throughout repo and used prettier to format code conistently.
+
 ### 08/06/2021
 
 #### Updated (to be included in next version)

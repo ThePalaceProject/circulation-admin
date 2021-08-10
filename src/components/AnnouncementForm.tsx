@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import { Button } from "library-simplified-reusable-components";
@@ -26,7 +25,7 @@ export default class AnnouncementForm extends React.Component<
     super(props);
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
-    let [start, finish] = this.getDefaultDates();
+    const [start, finish] = this.getDefaultDates();
     this.state = {
       content: this.props.content || "",
       start: this.props.start || start,
@@ -35,9 +34,9 @@ export default class AnnouncementForm extends React.Component<
   }
   getDefaultDates(): string[] {
     // By default, the start date is today's date and the end date is two months from today.
-    let today = new Date();
-    let start = this.formatDate(today);
-    let finish = this.formatDate(
+    const today = new Date();
+    const start = this.formatDate(today);
+    const finish = this.formatDate(
       new Date(today.setMonth(today.getMonth() + 2))
     );
     return [start, finish];
@@ -46,7 +45,7 @@ export default class AnnouncementForm extends React.Component<
     if (typeof date === "string" && date.indexOf("/") === -1) {
       return date;
     }
-    let [month, day, year] =
+    const [month, day, year] =
       typeof date === "string"
         ? date.split("/")
         : date.toLocaleDateString("en-US").split("/");
@@ -63,9 +62,9 @@ export default class AnnouncementForm extends React.Component<
     // Presumably, if the end date has already been changed away from the default, then it's already where
     // you want it, and it would just be annoying/confusing for it to keep jumping around every time you change the start date,
     if (this.state.finish === this.getDefaultDates()[1]) {
-      let startDate = new Date(start);
-      let newMonth = startDate.getMonth() + 2;
-      let finishDate = startDate.setMonth(newMonth);
+      const startDate = new Date(start);
+      const newMonth = startDate.getMonth() + 2;
+      const finishDate = startDate.setMonth(newMonth);
       this.setState({ finish: this.formatDate(new Date(finishDate)) });
     }
   }
@@ -82,7 +81,7 @@ export default class AnnouncementForm extends React.Component<
       id: this.props.id || null,
     });
     // Restore the form to default dates and an empty content field.
-    let [start, finish] = this.getDefaultDates();
+    const [start, finish] = this.getDefaultDates();
     this.setState({ content: "", start: start, finish: finish });
   }
   cancel(e: Event) {
@@ -92,7 +91,7 @@ export default class AnnouncementForm extends React.Component<
       this.add(e);
     } else {
       // Blank out the content field and restore the dates to their defaults.
-      let [start, finish] = this.getDefaultDates();
+      const [start, finish] = this.getDefaultDates();
       this.setState({ content: "", start: start, finish: finish });
     }
   }
@@ -110,9 +109,9 @@ export default class AnnouncementForm extends React.Component<
   }
   render(): JSX.Element {
     // None of the fields can be blank.  Content must be between 15 and 350 characters.
-    let wrongLength =
+    const wrongLength =
       this.state.content.length < 15 || this.state.content.length >= 350;
-    let shouldDisable = () => {
+    const shouldDisable = () => {
       if (!this.state.content || !this.state.start || !this.state.finish) {
         return true;
       } else if (wrongLength) {
