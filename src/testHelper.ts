@@ -19,5 +19,6 @@ Object.keys(window).forEach((key) => {
 });
 
 // Ignore imported stylesheets.
-let noop = () => {};
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
 require.extensions[".scss"] = noop;

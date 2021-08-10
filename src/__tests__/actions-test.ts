@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { stub } from "sinon";
-const fetchMock =  require("fetch-mock");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fetchMock = require("fetch-mock");
 
 import ActionCreator from "../actions";
 
@@ -16,7 +17,7 @@ class MockDataFetcher {
         reject({
           status: null,
           response: "test error",
-          url: url
+          url: url,
         });
       }
     });
@@ -28,7 +29,7 @@ class MockDataFetcher {
         resolve(this.testData);
       } else {
         reject({
-          message: "test error"
+          message: "test error",
         });
       }
     });
@@ -52,15 +53,20 @@ describe("actions", () => {
     it("dispatches request, success, and load", async () => {
       const dispatch = stub();
       const responseText = "response";
-      fetchMock
-        .mock(url, responseText);
-      let fetchArgs = fetchMock.calls();
+      fetchMock.mock(url, responseText);
+      const fetchArgs = fetchMock.calls();
 
       await actions.postForm(type, url, formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${type}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${type}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${type}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${type}_${ActionCreator.LOAD}`
+      );
       expect(dispatch.args[2][0].data).to.equal(responseText);
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(url);
@@ -73,16 +79,22 @@ describe("actions", () => {
 
     it("postForm with JSON response dispatches request, success, and load", async () => {
       const dispatch = stub();
+      // prettier-ignore
       const responseText = "{\"id\": \"test\", \"name\": \"test\"}";
-      fetchMock
-        .mock(url, responseText);
-      let fetchArgs = fetchMock.calls();
+      fetchMock.mock(url, responseText);
+      const fetchArgs = fetchMock.calls();
 
       await actions.postForm(type, url, formData, "POST", "", "JSON")(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${type}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${type}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${type}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${type}_${ActionCreator.LOAD}`
+      );
       expect(dispatch.args[2][0].data).to.deep.equal(JSON.parse(responseText));
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(url);
@@ -96,9 +108,8 @@ describe("actions", () => {
     it("dispatches a DELETE request", async () => {
       const dispatch = stub();
       const responseText = "response";
-      fetchMock
-        .mock(url, responseText);
-      let fetchArgs = fetchMock.calls();
+      fetchMock.mock(url, responseText);
+      const fetchArgs = fetchMock.calls();
 
       await actions.postForm(type, url, formData, "DELETE")(dispatch);
       expect(dispatch.callCount).to.equal(3);
@@ -113,8 +124,7 @@ describe("actions", () => {
 
     it("dispatches failure on bad response", async () => {
       const dispatch = stub();
-      fetchMock
-        .mock(url, { status: 500, body: { detail: "problem detail" }});
+      fetchMock.mock(url, { status: 500, body: { detail: "problem detail" } });
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -122,43 +132,57 @@ describe("actions", () => {
         expect(false).to.equal(true);
       } catch (err) {
         expect(dispatch.callCount).to.equal(2);
-        expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-        expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
+        expect(dispatch.args[0][0].type).to.equal(
+          `${type}_${ActionCreator.REQUEST}`
+        );
+        expect(dispatch.args[1][0].type).to.equal(
+          `${type}_${ActionCreator.FAILURE}`
+        );
         expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: 500,
           response: "problem detail",
-          url: url
+          url: url,
         });
       }
     });
 
     it("dispatches failure on non-JSON response", async () => {
       const dispatch = stub();
-      fetchMock
-        .mock(url, { status: 500, body: "Not JSON" });
+      fetchMock.mock(url, { status: 500, body: "Not JSON" });
 
       try {
-        await actions.postForm(type, url, formData, "POST", "Default error")(dispatch);
+        await actions.postForm(
+          type,
+          url,
+          formData,
+          "POST",
+          "Default error"
+        )(dispatch);
         // shouldn't get here
         expect(false).to.equal(true);
       } catch (err) {
         expect(dispatch.callCount).to.equal(2);
-        expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-        expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
+        expect(dispatch.args[0][0].type).to.equal(
+          `${type}_${ActionCreator.REQUEST}`
+        );
+        expect(dispatch.args[1][0].type).to.equal(
+          `${type}_${ActionCreator.FAILURE}`
+        );
         expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: 500,
           response: "Default error",
-          url: url
+          url: url,
         });
       }
     });
 
     it("dispatches failure on no response", async () => {
       const dispatch = stub();
-      fetchMock
-        .mock(url, () => { throw { message: "test error" }; });
+      fetchMock.mock(url, () => {
+        throw { message: "test error" };
+      });
 
       try {
         await actions.postForm(type, url, formData)(dispatch);
@@ -166,13 +190,17 @@ describe("actions", () => {
         expect(false).to.equal(true);
       } catch (err) {
         expect(dispatch.callCount).to.equal(2);
-        expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-        expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
+        expect(dispatch.args[0][0].type).to.equal(
+          `${type}_${ActionCreator.REQUEST}`
+        );
+        expect(dispatch.args[1][0].type).to.equal(
+          `${type}_${ActionCreator.FAILURE}`
+        );
         expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: null,
           response: "test error",
-          url: url
+          url: url,
         });
       }
     });
@@ -181,18 +209,21 @@ describe("actions", () => {
   describe("postJSON", () => {
     const type = "TEST";
     const url = "http://example.com/test";
-    const jsonData = { "test": 1 };
+    const jsonData = { test: 1 };
 
     it("dispatches request and success", async () => {
       const dispatch = stub();
-      fetchMock
-        .mock(url, 200);
-      let fetchArgs = fetchMock.calls();
+      fetchMock.mock(url, 200);
+      const fetchArgs = fetchMock.calls();
 
       await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
       expect(dispatch.callCount).to.equal(2);
-      expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${type}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${type}_${ActionCreator.SUCCESS}`
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(url);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -206,8 +237,7 @@ describe("actions", () => {
 
     it("dispatches failure on bad response", async () => {
       const dispatch = stub();
-      fetchMock
-        .mock(url, { status: 500, body: { detail: "problem detail" }});
+      fetchMock.mock(url, { status: 500, body: { detail: "problem detail" } });
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -215,21 +245,26 @@ describe("actions", () => {
         expect(false).to.equal(true);
       } catch (err) {
         expect(dispatch.callCount).to.equal(2);
-        expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-        expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
+        expect(dispatch.args[0][0].type).to.equal(
+          `${type}_${ActionCreator.REQUEST}`
+        );
+        expect(dispatch.args[1][0].type).to.equal(
+          `${type}_${ActionCreator.FAILURE}`
+        );
         expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: 500,
           response: "problem detail",
-          url: url
+          url: url,
         });
       }
     });
 
     it("dispatches failure on no response", async () => {
       const dispatch = stub();
-      fetchMock
-        .mock(url, () => { throw { message: "test error" }; });
+      fetchMock.mock(url, () => {
+        throw { message: "test error" };
+      });
 
       try {
         await actions.postJSON<{ test: number }>(type, url, jsonData)(dispatch);
@@ -237,13 +272,17 @@ describe("actions", () => {
         expect(false).to.equal(true);
       } catch (err) {
         expect(dispatch.callCount).to.equal(2);
-        expect(dispatch.args[0][0].type).to.equal(`${type}_${ActionCreator.REQUEST}`);
-        expect(dispatch.args[1][0].type).to.equal(`${type}_${ActionCreator.FAILURE}`);
+        expect(dispatch.args[0][0].type).to.equal(
+          `${type}_${ActionCreator.REQUEST}`
+        );
+        expect(dispatch.args[1][0].type).to.equal(
+          `${type}_${ActionCreator.FAILURE}`
+        );
         expect(fetchMock.called()).to.equal(true);
         expect(err).to.deep.equal({
           status: null,
           response: "test error",
-          url: url
+          url: url,
         });
       }
     });
@@ -253,15 +292,21 @@ describe("actions", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();
       const bookData = {
-        title: "test title"
+        title: "test title",
       };
       fetcher.testData = bookData;
       fetcher.resolve = true;
 
-      const data = await actions.fetchBookAdmin("http://example.com/book")(dispatch);
+      const data = await actions.fetchBookAdmin("http://example.com/book")(
+        dispatch
+      );
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.BOOK_ADMIN_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.BOOK_ADMIN_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.BOOK_ADMIN_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.BOOK_ADMIN_SUCCESS
+      );
       expect(dispatch.args[2][0].type).to.equal(ActionCreator.BOOK_ADMIN_LOAD);
       expect(data).to.deep.equal(bookData);
     });
@@ -275,12 +320,16 @@ describe("actions", () => {
       formData.append("title", "title");
 
       fetchMock.mock(editBookUrl, "done");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.editBook(editBookUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_BOOK_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_BOOK_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.EDIT_BOOK_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.EDIT_BOOK_SUCCESS
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(editBookUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -293,21 +342,28 @@ describe("actions", () => {
       const dispatch = stub();
       const complaintsData = {
         book: { id: "test id" },
-        complaints: { "test-type": 1 }
+        complaints: { "test-type": 1 },
       };
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(complaintsData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(complaintsData);
+          }),
       };
       fetcher.resolve = true;
 
-      const data = await actions.fetchComplaints("http://example.com/complaints")(dispatch);
+      const data = await actions.fetchComplaints(
+        "http://example.com/complaints"
+      )(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.COMPLAINTS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.COMPLAINTS_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.COMPLAINTS_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.COMPLAINTS_SUCCESS
+      );
       expect(dispatch.args[2][0].type).to.equal(ActionCreator.COMPLAINTS_LOAD);
       expect(data).to.deep.equal(complaintsData);
     });
@@ -318,16 +374,20 @@ describe("actions", () => {
       const postComplaintUrl = "http://example.com/postComplaint";
       const dispatch = stub();
       const data = {
-        type: "test type"
+        type: "test type",
       };
 
       fetchMock.mock(postComplaintUrl, 201);
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.postComplaint(postComplaintUrl, data)(dispatch);
       expect(dispatch.callCount).to.equal(2);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.POST_COMPLAINT_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.POST_COMPLAINT_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.POST_COMPLAINT_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.POST_COMPLAINT_SUCCESS
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(postComplaintUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -343,12 +403,16 @@ describe("actions", () => {
       formData.append("type", "test type");
 
       fetchMock.mock(resolveComplaintsUrl, "server response");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.resolveComplaints(resolveComplaintsUrl, formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.RESOLVE_COMPLAINTS_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.RESOLVE_COMPLAINTS_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.RESOLVE_COMPLAINTS_SUCCESS
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(resolveComplaintsUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -363,16 +427,23 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(genresData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(genresData);
+          }),
       };
       fetcher.resolve = true;
 
-      const data = await actions.fetchGenreTree("http://example.com/genres")(dispatch);
+      const data = await actions.fetchGenreTree("http://example.com/genres")(
+        dispatch
+      );
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.GENRE_TREE_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.GENRE_TREE_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.GENRE_TREE_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.GENRE_TREE_SUCCESS
+      );
       expect(dispatch.args[2][0].type).to.equal(ActionCreator.GENRE_TREE_LOAD);
       expect(data).to.equal(genresData);
     });
@@ -384,15 +455,22 @@ describe("actions", () => {
       const dispatch = stub();
       const formData = new (window as any).FormData();
       const newGenreTree = ["Drama", "Epic Fantasy", "Women Detectives"];
-      newGenreTree.forEach(genre => formData.append("genres", genre));
+      newGenreTree.forEach((genre) => formData.append("genres", genre));
 
       fetchMock.mock(editClassificationsUrl, "server response");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
-      await actions.editClassifications(editClassificationsUrl, formData)(dispatch);
+      await actions.editClassifications(
+        editClassificationsUrl,
+        formData
+      )(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.EDIT_CLASSIFICATIONS_SUCCESS);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.EDIT_CLASSIFICATIONS_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.EDIT_CLASSIFICATIONS_SUCCESS
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(editClassificationsUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -405,22 +483,31 @@ describe("actions", () => {
       const dispatch = stub();
       const classificationsData = {
         book: { id: "test id" },
-        classifications: { "test-type": 1 }
+        classifications: { "test-type": 1 },
       };
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(classificationsData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(classificationsData);
+          }),
       };
       fetcher.resolve = true;
 
-      const data = await actions.fetchClassifications("http://example.com/classifications")(dispatch);
+      const data = await actions.fetchClassifications(
+        "http://example.com/classifications"
+      )(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.CLASSIFICATIONS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.CLASSIFICATIONS_SUCCESS);
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.CLASSIFICATIONS_LOAD);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.CLASSIFICATIONS_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.CLASSIFICATIONS_SUCCESS
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        ActionCreator.CLASSIFICATIONS_LOAD
+      );
       expect(data).to.equal(classificationsData);
     });
   });
@@ -432,17 +519,24 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(eventsData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(eventsData);
+          }),
       };
       fetcher.resolve = true;
 
       const data = await actions.fetchCirculationEvents()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.CIRCULATION_EVENTS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.CIRCULATION_EVENTS_SUCCESS);
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.CIRCULATION_EVENTS_LOAD);
+      expect(dispatch.args[0][0].type).to.equal(
+        ActionCreator.CIRCULATION_EVENTS_REQUEST
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.CIRCULATION_EVENTS_SUCCESS
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        ActionCreator.CIRCULATION_EVENTS_LOAD
+      );
       expect(data).to.deep.equal(eventsData);
     });
   });
@@ -454,9 +548,10 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(statsData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(statsData);
+          }),
       };
       fetcher.resolve = true;
 
@@ -476,18 +571,25 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(diagnosticsData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(diagnosticsData);
+          }),
       };
       fetcher.resolve = true;
 
       const data = await actions.fetchDiagnostics()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.DIAGNOSTICS}_${ActionCreator.REQUEST}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.DIAGNOSTICS}_${ActionCreator.REQUEST}`
+      );
       expect(dispatch.args[0][0].url).to.equal("/admin/diagnostics");
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.DIAGNOSTICS}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.DIAGNOSTICS}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.DIAGNOSTICS}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.DIAGNOSTICS}_${ActionCreator.LOAD}`
+      );
       expect(data).to.deep.equal(diagnosticsData);
     });
   });
@@ -499,17 +601,24 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(librariesData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(librariesData);
+          }),
       };
       fetcher.resolve = true;
 
       const data = await actions.fetchLibraries()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.LIBRARIES}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.LIBRARIES}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.LIBRARIES}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.LIBRARIES}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.LIBRARIES}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.LIBRARIES}_${ActionCreator.LOAD}`
+      );
       expect(data).to.deep.equal(librariesData);
     });
   });
@@ -522,12 +631,16 @@ describe("actions", () => {
       formData.append("name", "new name");
 
       fetchMock.mock(editLibraryUrl, "server response");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.editLibrary(formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_LIBRARY}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.EDIT_LIBRARY}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.EDIT_LIBRARY}_${ActionCreator.SUCCESS}`
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(editLibraryUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -542,17 +655,24 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(collectionsData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(collectionsData);
+          }),
       };
       fetcher.resolve = true;
 
       const data = await actions.fetchCollections()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.COLLECTIONS}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.COLLECTIONS}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.COLLECTIONS}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.COLLECTIONS}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.COLLECTIONS}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.COLLECTIONS}_${ActionCreator.LOAD}`
+      );
       expect(data).to.deep.equal(collectionsData);
     });
   });
@@ -565,12 +685,16 @@ describe("actions", () => {
       formData.append("name", "new name");
 
       fetchMock.mock(editCollectionUrl, "server response");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.editCollection(formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_COLLECTION}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.EDIT_COLLECTION}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.EDIT_COLLECTION}_${ActionCreator.SUCCESS}`
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(editCollectionUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -585,17 +709,24 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(adminAuthServicesData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(adminAuthServicesData);
+          }),
       };
       fetcher.resolve = true;
 
       const data = await actions.fetchAdminAuthServices()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.LOAD}`
+      );
       expect(data).to.deep.equal(adminAuthServicesData);
     });
   });
@@ -608,12 +739,16 @@ describe("actions", () => {
       formData.append("name", "new name");
 
       fetchMock.mock(editAdminAuthServiceUrl, "server response");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.editAdminAuthService(formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.SUCCESS}`
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(editAdminAuthServiceUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -628,17 +763,24 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(individualAdminsData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(individualAdminsData);
+          }),
       };
       fetcher.resolve = true;
 
       const data = await actions.fetchIndividualAdmins()(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.INDIVIDUAL_ADMINS}_${ActionCreator.LOAD}`
+      );
       expect(data).to.deep.equal(individualAdminsData);
     });
   });
@@ -651,12 +793,16 @@ describe("actions", () => {
       formData.append("email", "email");
 
       fetchMock.mock(editIndividualAdminUrl, "server response");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.editIndividualAdmin(formData)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.EDIT_INDIVIDUAL_ADMIN}_${ActionCreator.SUCCESS}`
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(editIndividualAdminUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -672,17 +818,26 @@ describe("actions", () => {
       fetcher.testData = {
         ok: true,
         status: 200,
-        json: () => new Promise<any>((resolve, reject) => {
-          resolve(selfTestData);
-        })
+        json: () =>
+          new Promise<any>((resolve, reject) => {
+            resolve(selfTestData);
+          }),
       };
       fetcher.resolve = true;
 
-      const data = await actions.getSelfTests(`${collectionSelfTestURL}/1`)(dispatch);
+      const data = await actions.getSelfTests(`${collectionSelfTestURL}/1`)(
+        dispatch
+      );
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.GET_SELF_TESTS}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.GET_SELF_TESTS}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.GET_SELF_TESTS}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.GET_SELF_TESTS}_${ActionCreator.LOAD}`
+      );
       expect(data).to.deep.equal(selfTestData);
     });
   });
@@ -694,12 +849,16 @@ describe("actions", () => {
       const dispatch = stub();
 
       fetchMock.mock(collectionSelfTestURL, "server response");
-      let fetchArgs = fetchMock.calls();
+      const fetchArgs = fetchMock.calls();
 
       await actions.runSelfTests(collectionSelfTestURL)(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.RUN_SELF_TESTS}_${ActionCreator.SUCCESS}`
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(collectionSelfTestURL);
       expect(fetchArgs[0][1].method).to.equal("POST");
@@ -711,17 +870,23 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       formData.append("test", "test");
       const dispatch = stub();
+      // prettier-ignore
       const response = "{\"id\": \"test\", \"name\": \"test\"}";
 
-      fetchMock
-        .mock("/nypl/admin/manage_patrons", response);
-      let fetchArgs = fetchMock.calls();
+      fetchMock.mock("/nypl/admin/manage_patrons", response);
+      const fetchArgs = fetchMock.calls();
 
       const data = await actions.patronLookup(formData, "nypl")(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.PATRON_LOOKUP}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.PATRON_LOOKUP}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.PATRON_LOOKUP}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.PATRON_LOOKUP}_${ActionCreator.LOAD}`
+      );
       expect(dispatch.args[2][0].data).to.deep.equal(JSON.parse(response));
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal("/nypl/admin/manage_patrons");
@@ -735,15 +900,24 @@ describe("actions", () => {
       const formData = new (window as any).FormData();
       const dispatch = stub();
 
-      fetchMock.mock("/nypl/admin/manage_patrons/reset_adobe_id", "server response");
-      let fetchArgs = fetchMock.calls();
+      fetchMock.mock(
+        "/nypl/admin/manage_patrons/reset_adobe_id",
+        "server response"
+      );
+      const fetchArgs = fetchMock.calls();
 
       const data = await actions.resetAdobeId(formData, "nypl")(dispatch);
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.SUCCESS}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.RESET_ADOBE_ID}_${ActionCreator.SUCCESS}`
+      );
       expect(fetchMock.called()).to.equal(true);
-      expect(fetchArgs[0][0]).to.equal("/nypl/admin/manage_patrons/reset_adobe_id");
+      expect(fetchArgs[0][0]).to.equal(
+        "/nypl/admin/manage_patrons/reset_adobe_id"
+      );
       expect(fetchArgs[0][1].method).to.equal("POST");
       expect(fetchArgs[0][1].body).to.equal(formData);
       expect(data.status).to.equal(200);
@@ -757,7 +931,9 @@ describe("actions", () => {
       actions.clearPatronData()(dispatch);
 
       expect(dispatch.callCount).to.equal(1);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.CLEAR_PATRON_DATA}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.CLEAR_PATRON_DATA}_${ActionCreator.LOAD}`
+      );
       expect(dispatch.args[0][0].data).to.equal(null);
     });
   });
@@ -766,7 +942,7 @@ describe("actions", () => {
     it("dispatches request and load", async () => {
       const dispatch = stub();
       const customListDetailsData = {
-        title: "custom list"
+        title: "custom list",
       };
       fetcher.testData = customListDetailsData;
       fetcher.resolve = true;
@@ -774,9 +950,15 @@ describe("actions", () => {
       const data = await actions.fetchMoreCustomListEntries("url")(dispatch);
 
       expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(`${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.REQUEST}`);
-      expect(dispatch.args[1][0].type).to.equal(`${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.SUCCESS}`);
-      expect(dispatch.args[2][0].type).to.equal(`${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_${ActionCreator.LOAD}`
+      );
       expect(data).to.eql(customListDetailsData);
     });
   });

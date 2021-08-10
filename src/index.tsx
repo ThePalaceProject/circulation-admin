@@ -48,19 +48,23 @@ interface ConfigurationSettings {
     to render the app and set up routing. */
 class CirculationWeb {
   constructor(config: ConfigurationSettings) {
-    let div = document.createElement("div");
+    const div = document.createElement("div");
     div.id = "opds-catalog";
     document.getElementsByTagName("body")[0].appendChild(div);
 
-    let catalogEditorPath = "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
-    let customListPagePath = "/admin/web/lists(/:library)(/:editOrCreate)(/:identifier)";
-    let lanePagePath = "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
+    const catalogEditorPath =
+      "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
+    const customListPagePath =
+      "/admin/web/lists(/:library)(/:editOrCreate)(/:identifier)";
+    const lanePagePath =
+      "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
 
     // `react-axe` should only run in development and testing mode.
     // Running this is resource intensive and should only be used to test
     // for accessibility and not during active development.
     if (process.env.TEST_AXE === "true") {
-      let axe = require("react-axe");
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const axe = require("react-axe");
       axe(React, ReactDOM, 1000);
     }
 
@@ -74,16 +78,30 @@ class CirculationWeb {
     } else {
       ReactDOM.render(
         <ContextProvider {...config}>
-          <TOSContextProvider value={...[config.tos_link_text, config.tos_link_href]}>
+          <TOSContextProvider
+            value={...[config.tos_link_text, config.tos_link_href]}
+          >
             <Router history={browserHistory}>
               <Route path={catalogEditorPath} component={CatalogPage} />
               <Route path={customListPagePath} component={CustomListPage} />
               <Route path={lanePagePath} component={LanePage} />
-              <Route path="/admin/web/dashboard(/:library)" component={DashboardPage} />
-              <Route path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)" component={ConfigPage} />
+              <Route
+                path="/admin/web/dashboard(/:library)"
+                component={DashboardPage}
+              />
+              <Route
+                path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
+                component={ConfigPage}
+              />
               <Route path="/admin/web/account" component={AccountPage} />
-              <Route path="/admin/web/patrons/:library(/:tab)" component={ManagePatrons} />
-              <Route path="/admin/web/troubleshooting(/:tab)(/:subtab)" component={TroubleshootingPage} />
+              <Route
+                path="/admin/web/patrons/:library(/:tab)"
+                component={ManagePatrons}
+              />
+              <Route
+                path="/admin/web/troubleshooting(/:tab)(/:subtab)"
+                component={TroubleshootingPage}
+              />
             </Router>
           </TOSContextProvider>
         </ContextProvider>,

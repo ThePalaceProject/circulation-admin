@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface Navigate {
   (collectionUrl: string, bookUrl: string, tab?: string): void;
 }
@@ -277,7 +278,7 @@ export interface ServicesWithRegistrationsData extends ServicesData {
   libraryRegistrations?: LibraryRegistrationData[];
 }
 
-export interface CollectionData extends ServiceData { }
+export interface CollectionData extends ServiceData {}
 
 export interface CollectionsData extends ServicesWithRegistrationsData {
   collections: CollectionData[];
@@ -287,7 +288,7 @@ export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
 
-export interface AdminAuthServiceData extends ServiceData { }
+export interface AdminAuthServiceData extends ServiceData {}
 
 export interface AdminAuthServicesData extends ServicesData {
   admin_auth_services: AdminAuthServiceData[];
@@ -309,7 +310,7 @@ export interface IndividualAdminsData {
   allLibraries?: LibraryData[];
 }
 
-export interface PatronAuthServiceData extends ServiceData { }
+export interface PatronAuthServiceData extends ServiceData {}
 
 export interface PatronAuthServicesData extends ServicesData {
   patron_auth_services: PatronAuthServiceData[];
@@ -340,49 +341,49 @@ export interface SitewideSettingsData {
   all_settings: SettingData[];
 }
 
-export interface LoggingServiceData extends ServiceData { }
+export interface LoggingServiceData extends ServiceData {}
 
 export interface LoggingServicesData extends ServicesData {
   logging_services: LoggingServiceData[];
 }
 
-export interface MetadataServiceData extends ServiceData { }
+export interface MetadataServiceData extends ServiceData {}
 
 export interface MetadataServicesData extends ServicesData {
   metadata_services: MetadataServiceData[];
 }
 
-export interface AnalyticsServiceData extends ServiceData { }
+export interface AnalyticsServiceData extends ServiceData {}
 
 export interface AnalyticsServicesData extends ServicesData {
   analytics_services: AnalyticsServiceData[];
 }
 
-export interface CDNServiceData extends ServiceData { }
+export interface CDNServiceData extends ServiceData {}
 
 export interface CDNServicesData extends ServicesData {
   cdn_services: CDNServiceData[];
 }
 
-export interface SearchServiceData extends ServiceData { }
+export interface SearchServiceData extends ServiceData {}
 
 export interface SearchServicesData extends ServicesData {
   search_services: SearchServiceData[];
 }
 
-export interface StorageServiceData extends ServiceData { }
+export interface StorageServiceData extends ServiceData {}
 
 export interface StorageServicesData extends ServicesData {
   storage_services: StorageServiceData[];
 }
 
-export interface CatalogServiceData extends ServiceData { }
+export interface CatalogServiceData extends ServiceData {}
 
 export interface CatalogServicesData extends ServicesData {
   catalog_services: CatalogServiceData[];
 }
 
-export interface DiscoveryServiceData extends ServiceData { }
+export interface DiscoveryServiceData extends ServiceData {}
 
 export interface DiscoveryServicesData extends ServicesWithRegistrationsData {
   discovery_services: DiscoveryServiceData[];

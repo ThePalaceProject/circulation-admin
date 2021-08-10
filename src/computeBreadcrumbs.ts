@@ -5,25 +5,29 @@ import { hierarchyComputeBreadcrumbs } from "opds-web-client/lib/components/Brea
     If the server provides <simplified:breadcrumbs> tags, those will be used
     with the current collection added as the final breadcrumb. Otherwise,
     it falls back to OPDS Web Client's breadcrumbs. */
-export default (collection: CollectionData, history: LinkData[]): LinkData[] => {
+export default (
+  collection: CollectionData,
+  history: LinkData[]
+): LinkData[] => {
   let links = [];
 
-  if (collection &&
-      collection.raw &&
-      collection.raw["simplified:breadcrumbs"] &&
-      collection.raw["simplified:breadcrumbs"][0] &&
-      collection.raw["simplified:breadcrumbs"][0].link
-    ) {
-    let rawLinks = collection.raw["simplified:breadcrumbs"][0].link;
-    links = rawLinks.map(link => {
+  if (
+    collection &&
+    collection.raw &&
+    collection.raw["simplified:breadcrumbs"] &&
+    collection.raw["simplified:breadcrumbs"][0] &&
+    collection.raw["simplified:breadcrumbs"][0].link
+  ) {
+    const rawLinks = collection.raw["simplified:breadcrumbs"][0].link;
+    links = rawLinks.map((link) => {
       return {
         url: link["$"].href.value,
-        text: link["$"].title.value
+        text: link["$"].title.value,
       };
     });
     links.push({
       url: collection.url,
-      text: collection.title
+      text: collection.title,
     });
   } else {
     links = hierarchyComputeBreadcrumbs(collection, history);

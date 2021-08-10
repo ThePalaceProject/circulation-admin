@@ -27,7 +27,9 @@ import discoveryServiceLibraryRegistrations from "./discoveryServiceLibraryRegis
 import registerLibraryWithCollection from "./registerLibraryWithCollection";
 import collectionLibraryRegistrations from "./collectionLibraryRegistrations";
 import customLists from "./customLists";
-import customListDetails, { FetchMoreCustomListDetails } from "./customListDetails";
+import customListDetails, {
+  FetchMoreCustomListDetails,
+} from "./customListDetails";
 import lanes from "./lanes";
 import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
@@ -37,21 +39,40 @@ import roles from "./roles";
 import media from "./media";
 import languages from "./languages";
 import rightsStatuses from "./rightsStatuses";
-import collection, { CollectionState } from "opds-web-client/lib/reducers/collection";
+import collection, {
+  CollectionState,
+} from "opds-web-client/lib/reducers/collection";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
 import { RegisterLibraryState } from "./createRegisterLibraryReducer";
 import patronManager from "./managePatrons";
 import {
-  LibrariesData, CollectionsData, AdminAuthServicesData, IndividualAdminsData,
-  PatronAuthServicesData, SitewideSettingsData, LoggingServicesData, MetadataServicesData,
-  AnalyticsServicesData, CDNServicesData, SearchServicesData, StorageServicesData,
-  CatalogServicesData, DiscoveryServicesData, LibraryRegistrationsData, CustomListsData,
-  LanesData, RolesData, MediaData, LanguagesData,
-  RightsStatusData, PatronData, DiagnosticsData, ServiceData
+  LibrariesData,
+  CollectionsData,
+  AdminAuthServicesData,
+  IndividualAdminsData,
+  PatronAuthServicesData,
+  SitewideSettingsData,
+  LoggingServicesData,
+  MetadataServicesData,
+  AnalyticsServicesData,
+  CDNServicesData,
+  SearchServicesData,
+  StorageServicesData,
+  CatalogServicesData,
+  DiscoveryServicesData,
+  LibraryRegistrationsData,
+  CustomListsData,
+  LanesData,
+  RolesData,
+  MediaData,
+  LanguagesData,
+  RightsStatusData,
+  PatronData,
+  DiagnosticsData,
+  ServiceData,
 } from "../interfaces";
-
 
 export interface State {
   book: BookState;
@@ -78,7 +99,9 @@ export interface State {
   catalogServices: FetchEditState<CatalogServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
   registerLibraryWithDiscoveryService: RegisterLibraryState;
-  discoveryServiceLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
+  discoveryServiceLibraryRegistrations: FetchEditState<
+    LibraryRegistrationsData
+  >;
   registerLibraryWithCollection: RegisterLibraryState;
   collectionLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
@@ -138,5 +161,5 @@ export default combineReducers<State>({
   languages,
   rightsStatuses,
   changePassword,
-  patronManager
+  patronManager,
 });

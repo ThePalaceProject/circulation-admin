@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { stub } from "sinon";
 
 import * as React from "react";

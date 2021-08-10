@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { GenreTree } from "../../interfaces";
 
 const genres: GenreTree = {

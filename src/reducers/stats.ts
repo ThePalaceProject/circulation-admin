@@ -13,7 +13,7 @@ const initialState: StatsState = {
   data: null,
   isFetching: false,
   fetchError: null,
-  isLoaded: false
+  isLoaded: false,
 };
 
 export default (state: StatsState = initialState, action) => {
@@ -21,24 +21,24 @@ export default (state: StatsState = initialState, action) => {
     case ActionCreator.STATS_REQUEST:
       return Object.assign({}, state, {
         isFetching: true,
-        fetchError: null
+        fetchError: null,
       });
 
     case ActionCreator.STATS_LOAD:
       return Object.assign({}, state, {
         data: action.data,
         isFetching: false,
-        isLoaded: true
+        isLoaded: true,
       });
 
     case ActionCreator.STATS_FAILURE:
-       return Object.assign({}, state, {
-         fetchError: action.error,
-         isFetching: false,
-         isLoaded: true
-       });
+      return Object.assign({}, state, {
+        fetchError: action.error,
+        isFetching: false,
+        isLoaded: true,
+      });
 
-     default:
-       return state;
+    default:
+      return state;
   }
 };

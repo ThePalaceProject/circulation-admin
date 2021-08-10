@@ -1,15 +1,19 @@
+/* eslint-disable */
 import { expect } from "chai";
-import { findDefault, clearForm, formatString, isEqual } from "../utils/sharedFunctions";
-
+import {
+  findDefault,
+  clearForm,
+  formatString,
+  isEqual,
+} from "../utils/sharedFunctions";
 
 describe("findDefault", () => {
-
   const settingWithoutDefaults = {
     key: "test_setting_no_default",
     options: [
       { key: "true", label: "Yes" },
-      { key: "false", label: "No" }
-    ]
+      { key: "false", label: "No" },
+    ],
   };
 
   const settingWithOneDefault = {
@@ -17,8 +21,8 @@ describe("findDefault", () => {
     key: "test_setting_1_default",
     options: [
       { key: "true", label: "Yes" },
-      { key: "false", label: "No" }
-    ]
+      { key: "false", label: "No" },
+    ],
   };
 
   const settingWithMultipleDefaults = {
@@ -28,8 +32,8 @@ describe("findDefault", () => {
       { key: "first default", label: "Yes" },
       { key: "no", label: "No" },
       { key: "second default", label: "This one too" },
-      { key: "also no", label: "Not this one" }
-    ]
+      { key: "also no", label: "Not this one" },
+    ],
   };
 
   it("doesn't return anything if the setting has no default value", () => {
@@ -52,7 +56,6 @@ describe("findDefault", () => {
     expect(result[1].key).to.equal("second default");
     expect(result[1].label).to.equal("This one too");
   });
-
 });
 
 describe("formatString", () => {
@@ -78,7 +81,11 @@ describe("formatString", () => {
   });
 
   it("replaces multiple characters", () => {
-    let result = formatString("need-to-replace!multiple-characters", ["-", "!", " "]);
+    let result = formatString("need-to-replace!multiple-characters", [
+      "-",
+      "!",
+      " ",
+    ]);
     expect(result).to.equal("Need to replace multiple characters");
   });
 
@@ -114,5 +121,4 @@ describe("isEqual", () => {
   it("returns true if the arrays have the same duplicates", () => {
     expect(isEqual(["a", "a", "b"], ["b", "a", "a"])).to.be.true;
   });
-
 });
