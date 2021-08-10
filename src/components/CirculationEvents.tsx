@@ -143,14 +143,13 @@ export class CirculationEvents extends React.Component<
 
   formatTime(str) {
     const date = new Date(str);
-    const options = {
+    return date.toLocaleString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
       hour: "numeric",
       minute: "numeric",
-    };
-    return date.toLocaleString("en-US", options);
+    });
   }
 
   showDownloadForm() {

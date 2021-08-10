@@ -10,7 +10,10 @@ export interface AnnouncementProps {
   edit: (id: string) => void;
 }
 
-export default class Announcement extends React.Component<AnnouncementProps, {}> {
+export default class Announcement extends React.Component<
+  AnnouncementProps,
+  {}
+> {
   constructor(props: AnnouncementProps) {
     super(props);
     this.delete = this.delete.bind(this);
@@ -28,13 +31,13 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
     // The date is stored in the format year-month-day, because that's the format that the date picker
     // in AnnouncementForm understands.  But month/day/year looks nicer for display purposes.
     if (date) {
-      let [year, month, day] = date.split("-");
+      const [year, month, day] = date.split("-");
       return `${month}/${day}/${year}`;
     }
     return "";
   }
   render(): JSX.Element {
-    let announcement = (
+    const announcement = (
       <section className="announcement-info">
         <section className="dates">
           {this.format(this.props.start)} – {this.format(this.props.finish)}
@@ -42,14 +45,14 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
         <span>{this.props.content}</span>
       </section>
     );
-    let editButton = (
+    const editButton = (
       <Button
         content="Edit"
         onClick={(e) => this.edit(e)}
         className="left-align"
       />
     );
-    let deleteButton = (
+    const deleteButton = (
       <Button
         content="Delete"
         onClick={(e) => this.delete(e)}
@@ -59,11 +62,11 @@ export default class Announcement extends React.Component<AnnouncementProps, {}>
 
     return (
       <div className="announcement">
-        { announcement }
+        {announcement}
         <hr />
         <section className="buttons">
-          { editButton }
-          { deleteButton }
+          {editButton}
+          {deleteButton}
         </section>
       </div>
     );

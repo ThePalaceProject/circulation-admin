@@ -1,5 +1,9 @@
 import * as React from "react";
-import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
+import EditableConfigList, {
+  EditableConfigListStateProps,
+  EditableConfigListDispatchProps,
+  EditableConfigListOwnProps,
+} from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { MetadataServicesData, MetadataServiceData } from "../interfaces";
@@ -8,7 +12,10 @@ import ServiceEditForm from "./ServiceEditForm";
 /** Right panel for metadata services on the system configuration page.
     Shows a list of current metadata services and allows creating a new
     service or editing or deleting an existing service. */
-export class MetadataServices extends EditableConfigList<MetadataServicesData, MetadataServiceData> {
+export class MetadataServices extends EditableConfigList<
+  MetadataServicesData,
+  MetadataServiceData
+> {
   EditForm = ServiceEditForm;
   listDataKey = "metadata_services";
   itemTypeName = "metadata service";
@@ -17,22 +24,31 @@ export class MetadataServices extends EditableConfigList<MetadataServicesData, M
   labelKey = "protocol";
   links = this.renderLinks();
 
-  renderLinks(): {[key: string]: JSX.Element} {
-    let linkBase = "/admin/web/troubleshooting/self-tests/metadataServices";
-    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+  renderLinks(): { [key: string]: JSX.Element } {
+    const linkBase = "/admin/web/troubleshooting/self-tests/metadataServices";
+    const linkElement = <a href={linkBase}>the troubleshooting page</a>;
     return {
-      "info": <>Self-tests for the metadata services have been moved to {linkElement}.</>,
-      "footer": <>Problems with your metadata services?  Please visit {linkElement}.</>
+      info: (
+        <>
+          Self-tests for the metadata services have been moved to {linkElement}.
+        </>
+      ),
+      footer: (
+        <>Problems with your metadata services? Please visit {linkElement}.</>
+      ),
     };
   }
   label(item): string {
-    let label = item.name ? `${item.name}: ${item.protocol}` : item.protocol;
+    const label = item.name ? `${item.name}: ${item.protocol}` : item.protocol;
     return label;
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const data = Object.assign({}, state.editor.metadataServices && state.editor.metadataServices.data || {});
+  const data = Object.assign(
+    {},
+    (state.editor.metadataServices && state.editor.metadataServices.data) || {}
+  );
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
@@ -40,23 +56,32 @@ function mapStateToProps(state, ownProps) {
   // create/edit form.
   return {
     data: data,
-    responseBody: state.editor.metadataServices && state.editor.metadataServices.successMessage,
+    responseBody:
+      state.editor.metadataServices &&
+      state.editor.metadataServices.successMessage,
     fetchError: state.editor.metadataServices.fetchError,
     formError: state.editor.metadataServices.formError,
-    isFetching: state.editor.metadataServices.isFetching || state.editor.metadataServices.isEditing
+    isFetching:
+      state.editor.metadataServices.isFetching ||
+      state.editor.metadataServices.isEditing,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchMetadataServices()),
     editItem: (data: FormData) => dispatch(actions.editMetadataService(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deleteMetadataService(identifier))
+    deleteItem: (identifier: string | number) =>
+      dispatch(actions.deleteMetadataService(identifier)),
   };
 }
 
-const ConnectedMetadataServices = connect<EditableConfigListStateProps<MetadataServicesData>, EditableConfigListDispatchProps<MetadataServicesData>, EditableConfigListOwnProps>(
+const ConnectedMetadataServices = connect<
+  EditableConfigListStateProps<MetadataServicesData>,
+  EditableConfigListDispatchProps<MetadataServicesData>,
+  EditableConfigListOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(MetadataServices);

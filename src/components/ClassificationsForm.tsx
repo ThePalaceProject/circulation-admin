@@ -58,7 +58,7 @@ export default class ClassificationsForm extends React.Component<
         {error && (
           <Alert bsStyle="danger" ref={this.errorMessageRef} tabIndex={-1}>
             {Object.keys(error).map((err) => {
-              return <p>{error[err]}</p>;
+              return <p key={err}>{error[err]}</p>;
             })}
           </Alert>
         )}

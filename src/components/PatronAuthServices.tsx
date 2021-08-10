@@ -1,5 +1,9 @@
 import * as React from "react";
-import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
+import EditableConfigList, {
+  EditableConfigListStateProps,
+  EditableConfigListDispatchProps,
+  EditableConfigListOwnProps,
+} from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
@@ -10,7 +14,10 @@ import NeighborhoodAnalyticsForm from "./NeighborhoodAnalyticsForm";
     configuration page. Shows a list of current patron authentication
     services and allows creating a new service or editing or deleting
     an existing service. */
-export class PatronAuthServices extends EditableConfigList<PatronAuthServicesData, PatronAuthServiceData> {
+export class PatronAuthServices extends EditableConfigList<
+  PatronAuthServicesData,
+  PatronAuthServiceData
+> {
   EditForm = ServiceEditForm;
   ExtraFormSection = NeighborhoodAnalyticsForm;
   extraFormKey = "neighborhood_mode";
@@ -30,18 +37,32 @@ export class PatronAuthServices extends EditableConfigList<PatronAuthServicesDat
     return item.protocol;
   }
 
-  renderLinks(): {[key: string]: JSX.Element} {
-    let linkBase = "/admin/web/troubleshooting/self-tests/patronAuthServices";
-    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+  renderLinks(): { [key: string]: JSX.Element } {
+    const linkBase = "/admin/web/troubleshooting/self-tests/patronAuthServices";
+    const linkElement = <a href={linkBase}>the troubleshooting page</a>;
     return {
-      "info": <>Self-tests for the patron authentication services have been moved to {linkElement}.</>,
-      "footer": <>Problems with your patron authentication services?  Please visit {linkElement}.</>
+      info: (
+        <>
+          Self-tests for the patron authentication services have been moved to{" "}
+          {linkElement}.
+        </>
+      ),
+      footer: (
+        <>
+          Problems with your patron authentication services? Please visit{" "}
+          {linkElement}.
+        </>
+      ),
     };
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const data = Object.assign({}, state.editor.patronAuthServices && state.editor.patronAuthServices.data || {});
+  const data = Object.assign(
+    {},
+    (state.editor.patronAuthServices && state.editor.patronAuthServices.data) ||
+      {}
+  );
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
@@ -49,23 +70,32 @@ function mapStateToProps(state, ownProps) {
   // of the create/edit form.
   return {
     data: data,
-    responseBody: state.editor.patronAuthServices && state.editor.patronAuthServices.successMessage,
+    responseBody:
+      state.editor.patronAuthServices &&
+      state.editor.patronAuthServices.successMessage,
     fetchError: state.editor.patronAuthServices.fetchError,
     formError: state.editor.patronAuthServices.formError,
-    isFetching: state.editor.patronAuthServices.isFetching || state.editor.patronAuthServices.isEditing
+    isFetching:
+      state.editor.patronAuthServices.isFetching ||
+      state.editor.patronAuthServices.isEditing,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchPatronAuthServices()),
     editItem: (data: FormData) => dispatch(actions.editPatronAuthService(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deletePatronAuthService(identifier))
+    deleteItem: (identifier: string | number) =>
+      dispatch(actions.deletePatronAuthService(identifier)),
   };
 }
 
-const ConnectedPatronAuthServices = connect<EditableConfigListStateProps<PatronAuthServicesData>, EditableConfigListDispatchProps<PatronAuthServicesData>, EditableConfigListOwnProps>(
+const ConnectedPatronAuthServices = connect<
+  EditableConfigListStateProps<PatronAuthServicesData>,
+  EditableConfigListDispatchProps<PatronAuthServicesData>,
+  EditableConfigListOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(PatronAuthServices);

@@ -7,7 +7,10 @@ export interface ClassificationsTableProps {
 
 /** Shows a table of a book's current classifications on the classifications tab of the
     book detail page. */
-export default class ClassificationsTable extends React.Component<ClassificationsTableProps, {}> {
+export default class ClassificationsTable extends React.Component<
+  ClassificationsTableProps,
+  {}
+> {
   render(): JSX.Element {
     return (
       <div className="classifications-table">
@@ -22,7 +25,7 @@ export default class ClassificationsTable extends React.Component<Classification
             </tr>
           </thead>
           <tbody>
-            { this.props.classifications.map((classification, idx) =>
+            {this.props.classifications.map((classification, idx) => (
               <tr
                 key={`${classification.source}:${classification.name || idx}`}
               >
@@ -31,7 +34,7 @@ export default class ClassificationsTable extends React.Component<Classification
                 <td>{classification.source}</td>
                 <td>{classification.weight}</td>
               </tr>
-            ) }
+            ))}
           </tbody>
         </table>
       </div>
@@ -39,6 +42,9 @@ export default class ClassificationsTable extends React.Component<Classification
   }
 
   readableType(type) {
-    return type.replace(/http:\/\/librarysimplified\.org\/terms\/genres\/([^\/]+)\//, "$1");
+    return type.replace(
+      /http:\/\/librarysimplified\.org\/terms\/genres\/([^\/]+)\//,
+      "$1"
+    );
   }
 }

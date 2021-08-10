@@ -16,12 +16,15 @@ export interface GenreFormState {
 
 /** Form for selecting a genre to add to a book, used on the classifications tab
     of the book detail page. */
-export default class GenreForm extends React.Component<GenreFormProps, GenreFormState> {
+export default class GenreForm extends React.Component<
+  GenreFormProps,
+  GenreFormState
+> {
   constructor(props) {
     super(props);
     this.state = {
       genre: null,
-      subgenre: null
+      subgenre: null,
     };
     this.handleGenreSelect = this.handleGenreSelect.bind(this);
     this.handleSubgenreSelect = this.handleSubgenreSelect.bind(this);
@@ -31,13 +34,15 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
   render(): JSX.Element {
     let subgenres = null;
     if (this.state.genre) {
-      let genre = this.props.genreOptions.find(genre => genre.name === this.state.genre);
+      const genre = this.props.genreOptions.find(
+        (genre) => genre.name === this.state.genre
+      );
       if (genre) {
         subgenres = genre.subgenres.sort();
       }
     }
 
-    let disabledProps = this.props.disabled ? { disabled: true } : {};
+    const disabledProps = this.props.disabled ? { disabled: true } : {};
 
     return (
       <div className="genre-form">
@@ -49,7 +54,7 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
             className="form-control"
             {...disabledProps}
           >
-            { this.topLevelGenres().map(genre =>
+            {this.topLevelGenres().map((genre) => (
               <option
                 key={genre.name}
                 value={genre.name}
@@ -59,16 +64,17 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
               >
                 {genre.name + (genre.subgenres.length > 0 ? " >" : "")}
               </option>
-            ) }
+            ))}
           </select>
 
-          { subgenres && subgenres.length > 0 &&
+          {subgenres && subgenres.length > 0 && (
             <select
               name="subgenre"
               size={subgenres.length}
               className="form-control subgenres"
-              {...disabledProps}>
-              { subgenres.map(genre =>
+              {...disabledProps}
+            >
+              {subgenres.map((genre) => (
                 <option
                   key={genre}
                   value={genre}
@@ -78,25 +84,26 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
                 >
                   {genre}
                 </option>
-              ) }
+              ))}
             </select>
-          }
+          )}
 
-          { this.state.genre &&
+          {this.state.genre && (
             <Button
               className="top-align"
               callback={this.addGenre}
               content="Add"
             />
-          }
+          )}
         </div>
       </div>
     );
   }
 
   topLevelGenres() {
-    return this.props.genreOptions
-      .filter(genre => genre.parents.length === 0);
+    return this.props.genreOptions.filter(
+      (genre) => genre.parents.length === 0
+    );
   }
 
   bookHasGenre(genre) {
@@ -116,7 +123,7 @@ export default class GenreForm extends React.Component<GenreFormProps, GenreForm
   }
 
   addGenre() {
-    let newGenre = this.state.subgenre || this.state.genre;
+    const newGenre = this.state.subgenre || this.state.genre;
     this.props.addGenre(newGenre);
     this.resetForm();
   }
