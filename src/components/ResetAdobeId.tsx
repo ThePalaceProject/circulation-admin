@@ -63,9 +63,8 @@ export class ResetAdobeId extends React.Component<
           </Alert>
         )}
         <p>
-          You should reset a patron&apos;s Adobe ID only if the patron is
-          receiving an error message similar to &quot;Too many devices have been
-          registered&quot;.
+          You should reset a patron's Adobe ID only if the patron is receiving
+          an error message similar to "Too many devices have been registered".
         </p>
         <p>
           Instruct the patron to sign out on their device before you reset their
@@ -86,8 +85,8 @@ export class ResetAdobeId extends React.Component<
                     patron.personal_name ||
                     patron.authorization_identifier)}{" "}
                 will lose access to any existing loans. Loans will still appear
-                in the patron&apos;s book list until they expire, but the patron
-                will be unable to read or return them.
+                in the patron's book list until they expire, but the patron will
+                be unable to read or return them.
               </b>
             </p>
             {responseBody && (

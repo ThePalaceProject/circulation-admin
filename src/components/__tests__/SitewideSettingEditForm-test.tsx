@@ -11,20 +11,20 @@ import { Button, Form } from "library-simplified-reusable-components";
 describe("SitewideSettingEditForm", () => {
   let wrapper;
   let save;
-  let settingData = {
+  const settingData = {
     key: "test_key",
     value: "value",
   };
-  let settingDataWithDescription = {
+  const settingDataWithDescription = {
     key: "other_key1",
     value: "label1",
     description: "some description",
   };
-  let settingDataWithSelect = {
+  const settingDataWithSelect = {
     key: "other_key2",
     value: "label2",
   };
-  let allSettings = [
+  const allSettings = [
     { key: "test_key", label: "label" },
     { key: "other_key1", label: "label1", description: "some description" },
     {
@@ -36,18 +36,18 @@ describe("SitewideSettingEditForm", () => {
         { key: "select_key2", label: "select label2" },
         { key: "select_key3", label: "select label3" },
         { key: "select_key4", label: "select label4" },
-      ]
-    }
+      ],
+    },
   ];
-  let settingsData = {
+  const settingsData = {
     settings: [settingData],
-    all_settings: allSettings
+    all_settings: allSettings,
   };
 
-  let editableInputByName = (name) => {
-    let inputs = wrapper.find(EditableInput);
+  const editableInputByName = (name) => {
+    const inputs = wrapper.find(EditableInput);
     if (inputs.length >= 1) {
-      return inputs.filterWhere(input => input.props().name === name);
+      return inputs.filterWhere((input) => input.props().name === name);
     }
     return [];
   };
@@ -62,14 +62,14 @@ describe("SitewideSettingEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="settings"
-          />
+        />
       );
     });
 
     it("renders message if there are no remaining fields", () => {
-      let data = {
+      const data = {
         settings: [settingData],
-        all_settings: [allSettings[0]]
+        all_settings: [allSettings[0]],
       };
       wrapper = shallow(
         <SitewideSettingEditForm
@@ -78,12 +78,12 @@ describe("SitewideSettingEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="settings"
-          />
+        />
       );
-      let message = wrapper.find("p");
+      const message = wrapper.find("p");
       expect(wrapper.text()).to.contain("All sitewide settings");
-
-      let input = wrapper.find("input[name=\"csrf_token\"]");
+      // prettier-ignore
+      const input = wrapper.find("input[name=\"csrf_token\"]");
       expect(input.length).to.equal(0);
     });
 
@@ -116,15 +116,17 @@ describe("SitewideSettingEditForm", () => {
     it("should render a description", () => {
       wrapper.setProps({ item: settingDataWithDescription });
       const description = wrapper.find(Form).find(".description").at(1);
-      expect(description.prop("dangerouslySetInnerHTML")).to.eql({ __html: "some description" });
+      expect(description.prop("dangerouslySetInnerHTML")).to.eql({
+        __html: "some description",
+      });
     });
 
     it("should render a select value option", () => {
       wrapper.setProps({ item: settingDataWithSelect });
       wrapper.setState({ inputKey: "other_key2" });
 
-      let firstSelect = editableInputByName("key");
-      let dynamicSelect = editableInputByName("value");
+      const firstSelect = editableInputByName("key");
+      const dynamicSelect = editableInputByName("value");
       expect(firstSelect.props().value).to.equal("other_key2");
       expect(dynamicSelect.props().value).to.equal("label2");
     });
@@ -132,7 +134,9 @@ describe("SitewideSettingEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      save = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       wrapper = mount(
         <SitewideSettingEditForm
           data={settingsData}
@@ -140,18 +144,18 @@ describe("SitewideSettingEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="settings"
-          />
+        />
       );
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
 
     it("calls save when the form is submitted directly", () => {
-      let form = wrapper.find(Form);
+      const form = wrapper.find(Form);
       form.prop("onSubmit")();
       expect(save.callCount).to.equal(1);
     });
@@ -159,22 +163,22 @@ describe("SitewideSettingEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: settingData });
 
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);
-      let formData = save.args[0][0];
+      const formData = save.args[0][0];
       expect(formData.get("key")).to.equal("test_key");
       expect(formData.get("value")).to.equal("value");
     });
 
-    let fillOutFormFields = () => {
+    const fillOutFormFields = () => {
       wrapper.setProps({ item: settingData });
-      let input = wrapper.find("input[name='value']");
+      const input = wrapper.find("input[name='value']");
       // For input elements, use `getDOMNode`. The previous API method,
       // .get(0), outputs the following error message:
       // Cannot add property value, object is not extensible
-      let inputElement = input.getDOMNode();
+      const inputElement = input.getDOMNode();
       inputElement.value = "new setting";
       input.simulate("change");
     };
@@ -188,14 +192,13 @@ describe("SitewideSettingEditForm", () => {
       expect(input.props().value).to.equal("new setting");
 
       wrapper.find("form").simulate("submit");
-      let newProps = { responseBody: "new setting", ...wrapper.props() };
+      const newProps = { responseBody: "new setting", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       input = wrapper.find("input[name='value']");
       select = wrapper.find("select[name='key']");
       expect(input.props().value).to.equal("");
       expect(select.props().value).to.equal("");
-
     });
 
     it("doesn't clear the form if there's an error message", () => {
@@ -207,7 +210,7 @@ describe("SitewideSettingEditForm", () => {
       expect(input.props().value).to.equal("new setting");
 
       wrapper.find("form").simulate("submit");
-      let newProps = { fetchError: "ERROR", ...wrapper.props() };
+      const newProps = { fetchError: "ERROR", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       input = wrapper.find("input[name='value']");

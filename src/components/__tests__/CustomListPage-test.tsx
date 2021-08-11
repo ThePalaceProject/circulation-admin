@@ -17,24 +17,19 @@ describe("CustomListPage", () => {
     store = buildStore();
     context = {
       editorStore: store,
-      csrfToken: "token"
+      csrfToken: "token",
     };
-    let params = {
+    const params = {
       library: "library",
       editOrCreate: "edit",
-      identifier: "identifier"
+      identifier: "identifier",
     };
 
-    wrapper = shallow(
-      <CustomListPage
-        params={params}
-        />,
-      { context }
-    );
+    wrapper = shallow(<CustomListPage params={params} />, { context });
   });
 
   it("shows custom lists with info from params", () => {
-    let customLists = wrapper.find(CustomLists);
+    const customLists = wrapper.find(CustomLists);
     expect(customLists).to.be.ok;
     expect(customLists.props().library).to.equal("library");
     expect(customLists.props().editOrCreate).to.equal("edit");

@@ -17,17 +17,14 @@ describe("SetupPage", () => {
     store = buildStore();
     context = {
       editorStore: store,
-      csrfToken: "token"
+      csrfToken: "token",
     };
 
-    wrapper = shallow(
-      <SetupPage />,
-      { context }
-    );
+    wrapper = shallow(<SetupPage />, { context });
   });
 
   it("shows individual admins create form", () => {
-    let individualAdmins = wrapper.find(IndividualAdmins);
+    const individualAdmins = wrapper.find(IndividualAdmins);
     expect(individualAdmins).to.be.ok;
     expect(individualAdmins.props().store).to.equal(store);
     expect(individualAdmins.props().csrfToken).to.equal("token");

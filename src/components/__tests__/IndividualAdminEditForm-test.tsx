@@ -12,30 +12,36 @@ import { Button, Form, Panel } from "library-simplified-reusable-components";
 describe("IndividualAdminEditForm", () => {
   let wrapper;
   let save;
-  let adminData = {
+  const adminData = {
     email: "test@nypl.org",
-    password: "password"
+    password: "password",
   };
-  let allLibraries = [
-    { short_name: "nypl" },
-    { short_name: "bpl" }
+  const allLibraries = [{ short_name: "nypl" }, { short_name: "bpl" }];
+
+  const systemAdmin = [{ role: "system" }];
+  const managerAll = [{ role: "manager-all" }];
+  const librarianAll = [{ role: "librarian-all" }];
+  const nyplManager = [{ role: "manager", library: "nypl" }];
+  const bplManager = [{ role: "manager", library: "bpl" }];
+  const bothManager = [
+    { role: "manager", library: "nypl" },
+    { role: "manager", library: "bpl" },
+  ];
+  const nyplLibrarian = [{ role: "librarian", library: "nypl" }];
+  const bplLibrarian = [{ role: "librarian", library: "bpl" }];
+  const bothLibrarian = [
+    { role: "librarian", library: "nypl" },
+    { role: "librarian", library: "bpl" },
+  ];
+  const nyplManagerLibrarianAll = [
+    { role: "manager", library: "nypl" },
+    { role: "librarian-all" },
   ];
 
-  let systemAdmin = [{ role: "system" }];
-  let managerAll = [{ role: "manager-all" }];
-  let librarianAll = [{ role: "librarian-all" }];
-  let nyplManager = [{ role: "manager", library: "nypl" }];
-  let bplManager = [{ role: "manager", library: "bpl" }];
-  let bothManager = [{ role: "manager", library: "nypl" }, { role: "manager", library: "bpl" }];
-  let nyplLibrarian = [{ role: "librarian", library: "nypl" }];
-  let bplLibrarian = [{ role: "librarian", library: "bpl" }];
-  let bothLibrarian = [{ role: "librarian", library: "nypl" }, { role: "librarian", library: "bpl" }];
-  let nyplManagerLibrarianAll = [{ role: "manager", library: "nypl" }, { role: "librarian-all" }];
-
-  let editableInputByName = (name) => {
-    let inputs = wrapper.find(EditableInput);
+  const editableInputByName = (name) => {
+    const inputs = wrapper.find(EditableInput);
     if (inputs.length >= 1) {
-      return inputs.filterWhere(input => input.props().name === name);
+      return inputs.filterWhere((input) => input.props().name === name);
     }
     return [];
   };
@@ -50,8 +56,8 @@ describe("IndividualAdminEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="admins"
-          />,
-        { context: { admin: new Admin(systemAdmin) }}
+        />,
+        { context: { admin: new Admin(systemAdmin) } }
       );
     });
 
@@ -65,15 +71,19 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("renders password if admin is allowed to edit it", () => {
-      let input = editableInputByName("password");
+      const input = editableInputByName("password");
       expect(input.props().value).not.to.be.ok;
 
-      const expectPasswordEditable = (targetAdminRoles, editingAdminRoles, editable: boolean = true) => {
-        let targetAdmin = new Admin(targetAdminRoles);
-        let editingAdmin = new Admin(editingAdminRoles);
+      const expectPasswordEditable = (
+        targetAdminRoles,
+        editingAdminRoles,
+        editable: boolean = true
+      ) => {
+        const targetAdmin = new Admin(targetAdminRoles);
+        const editingAdmin = new Admin(editingAdminRoles);
         wrapper.setProps({ item: targetAdmin });
         wrapper.setContext({ admin: editingAdmin });
-        let input = editableInputByName("password");
+        const input = editableInputByName("password");
         if (editable) {
           expect(input.length).to.equal(1);
           // The old password isn't shown even if it's editable.
@@ -155,15 +165,22 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("has a save button", () => {
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       expect(saveButton.length).to.equal(1);
     });
 
     describe("roles", () => {
-      const expectRole = (startingRoles, role, shouldBeChecked: boolean, shouldBeEnabled: boolean = true) => {
-        let adminDataWithRoles = Object.assign({}, adminData, { roles: startingRoles });
+      const expectRole = (
+        startingRoles,
+        role,
+        shouldBeChecked: boolean,
+        shouldBeEnabled: boolean = true
+      ) => {
+        const adminDataWithRoles = Object.assign({}, adminData, {
+          roles: startingRoles,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
-        let input = editableInputByName(role);
+        const input = editableInputByName(role);
         expect(input.props().checked).to.equal(shouldBeChecked);
         expect(input.props().disabled).to.equal(!shouldBeEnabled);
       };
@@ -359,8 +376,14 @@ describe("IndividualAdminEditForm", () => {
 
       it("does not render roles when setting up first admin", () => {
         wrapper.setContext({ settingUp: true });
-        for (const role of ["system", "manager-all", "librarian-all", "manager-nypl", "librarian-nypl"]) {
-          let input = editableInputByName(role);
+        for (const role of [
+          "system",
+          "manager-all",
+          "librarian-all",
+          "manager-nypl",
+          "librarian-nypl",
+        ]) {
+          const input = editableInputByName(role);
           expect(input.length).to.equal(0);
         }
       });
@@ -382,7 +405,9 @@ describe("IndividualAdminEditForm", () => {
 
   describe("behavior", () => {
     beforeEach(() => {
-      save = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       wrapper = mount(
         <IndividualAdminEditForm
           data={{ individualAdmins: [adminData], allLibraries }}
@@ -390,24 +415,36 @@ describe("IndividualAdminEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="admins"
-          />,
-        { context: { admin: new Admin(systemAdmin) }}
+        />,
+        { context: { admin: new Admin(systemAdmin) } }
       );
     });
 
     describe("roles", () => {
       let input;
       let adminDataWithRoles;
-      const allRoles = ["system", "manager-all", "librarian-all", "manager-nypl", "manager-bpl", "librarian-nypl", "librarian-bpl"];
+      const allRoles = [
+        "system",
+        "manager-all",
+        "librarian-all",
+        "manager-nypl",
+        "manager-bpl",
+        "librarian-nypl",
+        "librarian-bpl",
+      ];
       const expectRoles = (expected) => {
         for (const role of allRoles) {
-          let shouldBeChecked = expected.includes(role);
-          expect(editableInputByName(role).props().checked).to.equal(shouldBeChecked);
+          const shouldBeChecked = expected.includes(role);
+          expect(editableInputByName(role).props().checked).to.equal(
+            shouldBeChecked
+          );
         }
       };
 
       it("changes system admin role", () => {
-        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManagerLibrarianAll });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: nyplManagerLibrarianAll,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
 
         input = editableInputByName("system");
@@ -421,20 +458,38 @@ describe("IndividualAdminEditForm", () => {
       it("changes manager all role", () => {
         input = editableInputByName("manager-all");
         input.find("input").simulate("change");
-        expectRoles(["manager-all", "librarian-all", "manager-nypl", "manager-bpl", "librarian-nypl", "librarian-bpl"]);
+        expectRoles([
+          "manager-all",
+          "librarian-all",
+          "manager-nypl",
+          "manager-bpl",
+          "librarian-nypl",
+          "librarian-bpl",
+        ]);
 
         input.find("input").simulate("change");
         expectRoles(["librarian-all", "librarian-nypl", "librarian-bpl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: systemAdmin,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["librarian-all", "librarian-nypl", "librarian-bpl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManagerLibrarianAll });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: nyplManagerLibrarianAll,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
-        expectRoles(["manager-all", "librarian-all", "manager-nypl", "manager-bpl", "librarian-nypl", "librarian-bpl"]);
+        expectRoles([
+          "manager-all",
+          "librarian-all",
+          "manager-nypl",
+          "manager-bpl",
+          "librarian-nypl",
+          "librarian-bpl",
+        ]);
       });
 
       it("changes librarian all role", () => {
@@ -445,24 +500,30 @@ describe("IndividualAdminEditForm", () => {
         input.find("input").simulate("change");
         expectRoles([]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: systemAdmin,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles([]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManagerLibrarianAll });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: nyplManagerLibrarianAll,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["manager-nypl", "librarian-nypl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplLibrarian });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: nyplLibrarian,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["librarian-all", "librarian-nypl", "librarian-bpl"]);
       });
 
       it("changes manager role for each library", () => {
-        let role = "manager-nypl";
+        const role = "manager-nypl";
         input = editableInputByName(role);
         input.find("input").simulate("change");
         expectRoles(["manager-nypl", "librarian-nypl"]);
@@ -470,27 +531,47 @@ describe("IndividualAdminEditForm", () => {
         input.find("input").simulate("change");
         expectRoles(["librarian-nypl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: systemAdmin,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
-        expectRoles(["librarian-all", "manager-bpl", "librarian-nypl", "librarian-bpl"]);
+        expectRoles([
+          "librarian-all",
+          "manager-bpl",
+          "librarian-nypl",
+          "librarian-bpl",
+        ]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: managerAll,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
-        expectRoles(["librarian-all", "manager-bpl", "librarian-nypl", "librarian-bpl"]);
+        expectRoles([
+          "librarian-all",
+          "manager-bpl",
+          "librarian-nypl",
+          "librarian-bpl",
+        ]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManagerLibrarianAll });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: nyplManagerLibrarianAll,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["librarian-all", "librarian-nypl", "librarian-bpl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplLibrarian });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: nyplLibrarian,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["manager-nypl", "librarian-nypl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: bplLibrarian });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: bplLibrarian,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["manager-nypl", "librarian-nypl", "librarian-bpl"]);
@@ -504,22 +585,30 @@ describe("IndividualAdminEditForm", () => {
         input.find("input").simulate("change");
         expectRoles([]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: systemAdmin });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: systemAdmin,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["manager-bpl", "librarian-bpl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: managerAll });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: managerAll,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["manager-bpl", "librarian-bpl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: nyplManagerLibrarianAll });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: nyplManagerLibrarianAll,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["librarian-bpl"]);
 
-        adminDataWithRoles = Object.assign({}, adminData, { roles: bplLibrarian });
+        adminDataWithRoles = Object.assign({}, adminData, {
+          roles: bplLibrarian,
+        });
         wrapper.setProps({ item: adminDataWithRoles });
         input.find("input").simulate("change");
         expectRoles(["librarian-nypl", "librarian-bpl"]);
@@ -527,7 +616,7 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -537,23 +626,23 @@ describe("IndividualAdminEditForm", () => {
       expect(save.callCount).to.equal(1);
     });
 
-    let fillOutFormFields = () => {
+    const fillOutFormFields = () => {
       // Filling out the form is the preliminary step for the next 5 tests;
       // might as well write it out just once!
 
-      let emailInput = wrapper.find("input[name='email']");
-      let emailInputElement = emailInput.getDOMNode();
+      const emailInput = wrapper.find("input[name='email']");
+      const emailInputElement = emailInput.getDOMNode();
       emailInputElement.value = "newEmail";
       emailInput.simulate("change");
 
-      let pwInput = wrapper.find("input[name='password']");
-      let pwInputElement = pwInput.getDOMNode();
+      const pwInput = wrapper.find("input[name='password']");
+      const pwInputElement = pwInput.getDOMNode();
       pwInputElement.value = "newPassword";
       pwInput.simulate("change");
     };
 
     it("calls handleData", () => {
-      let handleData = spy(wrapper.instance(), "handleData");
+      const handleData = spy(wrapper.instance(), "handleData");
       fillOutFormFields();
 
       wrapper.find(Form).find(Button).simulate("click");
@@ -566,18 +655,23 @@ describe("IndividualAdminEditForm", () => {
 
     it("submits data", () => {
       fillOutFormFields();
-      let librarianAllInput = editableInputByName("librarian-all");
+      const librarianAllInput = editableInputByName("librarian-all");
       librarianAllInput.find("input").simulate("change");
-      let managerNyplInput = editableInputByName("manager-nypl");
+      const managerNyplInput = editableInputByName("manager-nypl");
       managerNyplInput.find("input").simulate("change");
 
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
-      let formData = save.args[0][0];
+      const formData = save.args[0][0];
       expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
-      expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "librarian-all" }, { role: "manager", library: "nypl" }]));
+      expect(formData.get("roles")).to.equal(
+        JSON.stringify([
+          { role: "librarian-all" },
+          { role: "manager", library: "nypl" },
+        ])
+      );
       expect(save.callCount).to.equal(1);
     });
 
@@ -586,7 +680,7 @@ describe("IndividualAdminEditForm", () => {
       let emailInput = wrapper.find("input[name='email']");
       expect(emailInput.props().value).to.contain("newEmail");
 
-      let newProps = {responseBody: "new admin", ...wrapper.props()};
+      const newProps = { responseBody: "new admin", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       emailInput = wrapper.find("input[name='email']");
@@ -595,10 +689,10 @@ describe("IndividualAdminEditForm", () => {
 
     it("doesn't clear the form if there's an error message", () => {
       fillOutFormFields();
-      let emailInput = wrapper.find("input[name='email']");
+      const emailInput = wrapper.find("input[name='email']");
       expect(emailInput.props().value).to.contain("newEmail");
 
-      let newProps = {fetchError: "ERROR", ...wrapper.props()};
+      const newProps = { fetchError: "ERROR", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       expect(emailInput.props().value).to.contain("newEmail");
@@ -608,14 +702,16 @@ describe("IndividualAdminEditForm", () => {
       wrapper.setContext({ settingUp: true });
       fillOutFormFields();
 
-      let saveButton = wrapper.find(Button);
+      const saveButton = wrapper.find(Button);
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);
-      let formData = save.args[0][0];
+      const formData = save.args[0][0];
       expect(formData.get("email")).to.equal("newEmail");
       expect(formData.get("password")).to.equal("newPassword");
-      expect(formData.get("roles")).to.equal(JSON.stringify([{ role: "system" }]));
+      expect(formData.get("roles")).to.equal(
+        JSON.stringify([{ role: "system" }])
+      );
     });
   });
 });

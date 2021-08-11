@@ -5,6 +5,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { mount } from "enzyme";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const CirculationWeb = require("../index");
 import SetupPage from "../components/SetupPage";
 import { Router } from "react-router";

@@ -11,10 +11,10 @@ describe("LaneCustomListsEditor", () => {
   let wrapper;
   let onUpdate;
 
-  let allCustomListsData = [
+  const allCustomListsData = [
     { id: 1, name: "list 1", entry_count: 0 },
     { id: 2, name: "list 2", entry_count: 2 },
-    { id: 3, name: "list 3", entry_count: 0 }
+    { id: 3, name: "list 3", entry_count: 0 },
   ];
 
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
-        />
+      />
     );
     let container = wrapper.find(".available-lists");
     expect(container.length).to.equal(1);
@@ -48,7 +48,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 3]}
-        />
+      />
     );
 
     container = wrapper.find(".available-lists");
@@ -69,7 +69,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
-        />
+      />
     );
     let container = wrapper.find(".current-lists");
     expect(container.length).to.equal(1);
@@ -84,7 +84,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[2, 3]}
-        />
+      />
     );
 
     container = wrapper.find(".current-lists");
@@ -103,62 +103,62 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("prevents dragging within available lists", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
-        />
+      />
     );
 
     // simulate starting a drag from available lists
     (wrapper.instance() as LaneCustomListsEditor).onDragStart({
       draggableId: 1,
       source: {
-        droppableId: "available-lists"
-      }
+        droppableId: "available-lists",
+      },
     });
 
-    let container = wrapper.find(".available-lists");
-    let droppable = container.find(Droppable);
+    const container = wrapper.find(".available-lists");
+    const droppable = container.find(Droppable);
     expect(droppable.prop("isDropDisabled")).to.equal(true);
   });
 
   it("prevents dragging within current lists", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
-        />
+      />
     );
 
     // simulate starting a drag from current lists
     (wrapper.instance() as LaneCustomListsEditor).onDragStart({
       draggableId: 1,
       source: {
-        droppableId: "current-lists"
-      }
+        droppableId: "current-lists",
+      },
     });
 
-    let container = wrapper.find(".current-lists");
-    let droppable = container.find(Droppable);
+    const container = wrapper.find(".current-lists");
+    const droppable = container.find(Droppable);
     expect(droppable.prop("isDropDisabled")).to.equal(true);
   });
 
   it("drags from available lists to current lists", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
         onUpdate={onUpdate}
-        />
+      />
     );
 
     // simulate starting a drag from available lists
     (wrapper.instance() as LaneCustomListsEditor).onDragStart({
       draggableId: 2,
       source: {
-        droppableId: "available-lists"
-      }
+        droppableId: "available-lists",
+      },
     });
     wrapper.update();
 
@@ -170,18 +170,18 @@ describe("LaneCustomListsEditor", () => {
     (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
       draggableId: 2,
       source: {
-        droppableId: "available-lists"
+        droppableId: "available-lists",
       },
       destination: {
-        droppableId: "current-lists"
-      }
+        droppableId: "current-lists",
+      },
     });
     wrapper.update();
 
     currentContainer = wrapper.find(".current-lists");
     droppable = currentContainer.find(Droppable);
     // The dropped item has been added to the current lists.
-    let lists = droppable.find(Draggable);
+    const lists = droppable.find(Draggable);
     expect(lists.length).to.equal(2);
     expect(lists.at(0).text()).to.contain("list 1");
     expect(lists.at(1).text()).to.contain("list 2");
@@ -190,19 +190,19 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("shows message in place of available lists when dragging from current lists", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
-        />
+      />
     );
 
     // simulate starting a drag from current lists
     (wrapper.instance() as LaneCustomListsEditor).onDragStart({
       draggableId: 1,
       source: {
-        droppableId: "current-lists"
-      }
+        droppableId: "current-lists",
+      },
     });
     wrapper.update();
 
@@ -218,8 +218,8 @@ describe("LaneCustomListsEditor", () => {
     (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
       draggableId: 1,
       source: {
-        droppableId: "current-lists"
-      }
+        droppableId: "current-lists",
+      },
     });
     wrapper.update();
 
@@ -231,24 +231,24 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("drags from current lists to available lists", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
         onUpdate={onUpdate}
-        />
+      />
     );
 
     // simulate starting a drag from current lists
     (wrapper.instance() as LaneCustomListsEditor).onDragStart({
       draggableId: 1,
       source: {
-        droppableId: "current-lists"
-      }
+        droppableId: "current-lists",
+      },
     });
     wrapper.update();
 
-    let availableContainer = wrapper.find(".available-lists");
+    const availableContainer = wrapper.find(".available-lists");
     let droppable = availableContainer.find(Droppable);
     expect(droppable.prop("isDropDisabled")).to.equal(false);
 
@@ -256,19 +256,19 @@ describe("LaneCustomListsEditor", () => {
     (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
       draggableId: 1,
       source: {
-        droppableId: "current-lists"
+        droppableId: "current-lists",
       },
       destination: {
-        droppableId: "available-lists"
-      }
+        droppableId: "available-lists",
+      },
     });
     wrapper.update();
     wrapper.setProps({ customListIds: onUpdate.args[0][0] });
 
     // the dropped item has been removed from the current lists
-    let currentContainer = wrapper.find(".current-lists");
+    const currentContainer = wrapper.find(".current-lists");
     droppable = currentContainer.find(Droppable);
-    let lists = droppable.find(Draggable);
+    const lists = droppable.find(Draggable);
 
     expect(lists.length).to.equal(1);
     expect(lists.at(0).text()).to.contain("list 2");
@@ -277,21 +277,21 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("adds a list to the lane", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[2]}
         onUpdate={onUpdate}
-        />
+      />
     );
 
-    let addLink = wrapper.find(".available-lists .links button");
+    const addLink = wrapper.find(".available-lists .links button");
     addLink.at(0).simulate("click");
 
     // the item has been added to the current lists
-    let currentContainer = wrapper.find(".current-lists");
-    let droppable = currentContainer.find(Droppable);
-    let lists = droppable.find(Draggable);
+    const currentContainer = wrapper.find(".current-lists");
+    const droppable = currentContainer.find(Droppable);
+    const lists = droppable.find(Draggable);
     expect(lists.length).to.equal(2);
     expect(lists.at(0).text()).to.contain("list 1");
     expect(onUpdate.callCount).to.equal(1);
@@ -300,21 +300,21 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("removes a list from the lane", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
         onUpdate={onUpdate}
-        />
+      />
     );
 
-    let deleteLink = wrapper.find(".current-lists .links button");
+    const deleteLink = wrapper.find(".current-lists .links button");
     deleteLink.at(0).simulate("click");
-    wrapper.setProps({customListIds: onUpdate.args[0][0]});
+    wrapper.setProps({ customListIds: onUpdate.args[0][0] });
     // this list has been removed from the current lists
-    let currentContainer = wrapper.find(".current-lists");
-    let droppable = currentContainer.find(Droppable);
-    let lists = droppable.find(Draggable);
+    const currentContainer = wrapper.find(".current-lists");
+    const droppable = currentContainer.find(Droppable);
+    const lists = droppable.find(Draggable);
     expect(lists.length).to.equal(1);
     expect(lists.at(0).text()).to.contain("list 2");
     expect(onUpdate.callCount).to.equal(1);
@@ -322,56 +322,64 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("resets", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
         onUpdate={onUpdate}
-        />
+      />
     );
 
     // simulate dropping a list on the current lists
     (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
       draggableId: 2,
       source: {
-        droppableId: "available-lists"
+        droppableId: "available-lists",
       },
       destination: {
-        droppableId: "current-lists"
-      }
+        droppableId: "current-lists",
+      },
     });
 
     // Set customListIds to the new array of list IDs for this lane ([1, 2]), which got passed to
     // onUpdate when we added list 2 to the current lists
-    wrapper.setProps({customListIds: onUpdate.args[0][0]});
-    expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(2);
+    wrapper.setProps({ customListIds: onUpdate.args[0][0] });
+    expect(
+      (wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length
+    ).to.equal(2);
     expect(onUpdate.callCount).to.equal(1);
     (wrapper.instance() as LaneCustomListsEditor).reset([1]);
     // Calling reset passes the original array of list IDs ([1]) to onUpdate
-    wrapper.setProps({customListIds: onUpdate.args[1][0]});
-    expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(1);
+    wrapper.setProps({ customListIds: onUpdate.args[1][0] });
+    expect(
+      (wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length
+    ).to.equal(1);
     expect(onUpdate.callCount).to.equal(2);
 
     // simulate dropping a list on the available lists
     (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
       draggableId: 1,
       source: {
-        droppableId: "current-lists"
+        droppableId: "current-lists",
       },
       destination: {
-        droppableId: "available-lists"
-      }
+        droppableId: "available-lists",
+      },
     });
 
     // Set customListIds to the new array of list IDs for this lane ([]), which got passed to
     // onUpdate when we removed list 1 from the current lists
-    wrapper.setProps({customListIds: onUpdate.args[2][0]});
-    expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(0);
+    wrapper.setProps({ customListIds: onUpdate.args[2][0] });
+    expect(
+      (wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length
+    ).to.equal(0);
     expect(onUpdate.callCount).to.equal(3);
     (wrapper.instance() as LaneCustomListsEditor).reset([1]);
     // Calling reset passes the original array of list IDs ([1]) to onUpdate
-    wrapper.setProps({customListIds: onUpdate.args[3][0]});
-    expect((wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length).to.equal(1);
+    wrapper.setProps({ customListIds: onUpdate.args[3][0] });
+    expect(
+      (wrapper.instance() as LaneCustomListsEditor).getCustomListIds().length
+    ).to.equal(1);
     expect(onUpdate.callCount).to.equal(4);
   });
 });

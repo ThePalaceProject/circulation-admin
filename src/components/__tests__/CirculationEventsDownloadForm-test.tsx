@@ -12,21 +12,19 @@ describe("CirculationEventsDownloadForm", () => {
 
   beforeEach(() => {
     hide = stub();
-    wrapper = mount(
-      <CirculationEventsDownloadForm show={true} hide={hide} />
-    );
+    wrapper = mount(<CirculationEventsDownloadForm show={true} hide={hide} />);
   });
 
   it("renders a select element", () => {
-    let select = wrapper.find("select");
-    let textInput = wrapper.find("input[name='locations']");
+    const select = wrapper.find("select");
+    const textInput = wrapper.find("input[name='locations']");
 
     expect(select.length).to.equal(1);
     expect(textInput.length).to.equal(0);
   });
 
   it("renders a text input when 'locations' is selected", () => {
-    let select = wrapper.find("select");
+    const select = wrapper.find("select");
     let textInput = wrapper.find("input[name='locations']");
 
     expect(textInput.length).to.equal(0);
@@ -53,14 +51,14 @@ describe("CirculationEventsDownloadForm", () => {
   });
 
   it("renders start date and end date inputs", () => {
-    let dates = wrapper.find("input[type='date']");
+    const dates = wrapper.find("input[type='date']");
     expect(dates.length).to.equal(2);
     expect(dates.at(0).props().name).to.equal("dateStart");
     expect(dates.at(1).props().name).to.equal("dateEnd");
   });
 
   it("renders download and close buttons", () => {
-    let buttons = wrapper.find(Button);
+    const buttons = wrapper.find(Button);
     expect(buttons.length).to.equal(2);
     expect(buttons.at(0).prop("content")).to.equal("Download");
     expect(buttons.at(1).prop("content")).to.equal("Close");

@@ -4,35 +4,35 @@ import { OPDSEntry } from "opds-feed-parser";
 /** Extract metadata and links from an OPDS entry for use on the
     book details page. */
 export default function adapter(data: OPDSEntry): BookData {
-  let hideLink = data.links.find(link => {
+  const hideLink = data.links.find((link) => {
     return link.rel === "http://librarysimplified.org/terms/rel/hide";
   });
 
-  let restoreLink = data.links.find(link => {
+  const restoreLink = data.links.find((link) => {
     return link.rel === "http://librarysimplified.org/terms/rel/restore";
   });
 
-  let refreshLink = data.links.find(link => {
+  const refreshLink = data.links.find((link) => {
     return link.rel === "http://librarysimplified.org/terms/rel/refresh";
   });
 
-  let editLink = data.links.find(link => {
+  const editLink = data.links.find((link) => {
     return link.rel === "edit";
   });
 
-  let issuesLink = data.links.find(link => {
+  const issuesLink = data.links.find((link) => {
     return link.rel === "issues";
   });
 
-  let changeCoverLink = data.links.find(link => {
+  const changeCoverLink = data.links.find((link) => {
     return link.rel === "http://librarysimplified.org/terms/rel/change_cover";
   });
 
-  let audience = data.categories.find(category => {
+  const audience = data.categories.find((category) => {
     return category.scheme === "http://schema.org/audience";
   });
 
-  let targetAgeCategory = data.categories.find(category => {
+  const targetAgeCategory = data.categories.find((category) => {
     return category.scheme === "http://schema.org/typicalAgeRange";
   });
   let targetAgeRange = [];
@@ -40,15 +40,15 @@ export default function adapter(data: OPDSEntry): BookData {
     targetAgeRange = targetAgeCategory.term.split("-");
   }
 
-  let fictionCategory = data.categories.find(category => {
+  const fictionCategory = data.categories.find((category) => {
     return category.scheme === "http://librarysimplified.org/terms/fiction/";
   });
   let fiction;
   if (fictionCategory) {
-    fiction = (fictionCategory.label === "Fiction");
+    fiction = fictionCategory.label === "Fiction";
   }
 
-  let categories = data.categories.map(category => category.label);
+  const categories = data.categories.map((category) => category.label);
 
   let medium;
   try {
@@ -64,16 +64,19 @@ export default function adapter(data: OPDSEntry): BookData {
     imprint = null;
   }
 
-  let authors = [];
-  for (let author of data.authors) {
+  const authors = [];
+  for (const author of data.authors) {
     authors.push(Object.assign({}, author, { role: "aut" }));
   }
 
   let rating;
   try {
-    let ratings = data.unparsed["schema:Rating"];
-    for (let ratingTag of ratings) {
-      if (ratingTag["$"]["schema:additionalType"]["value"] === "http://schema.org/ratingValue") {
+    const ratings = data.unparsed["schema:Rating"];
+    for (const ratingTag of ratings) {
+      if (
+        ratingTag["$"]["schema:additionalType"]["value"] ===
+        "http://schema.org/ratingValue"
+      ) {
         rating = ratingTag["$"]["schema:ratingValue"]["value"];
         break;
       }
@@ -82,7 +85,7 @@ export default function adapter(data: OPDSEntry): BookData {
     rating = null;
   }
 
-  let imageLink = data.links.find(link => {
+  const imageLink = data.links.find((link) => {
     return link.rel === "http://opds-spec.org/image";
   });
   let coverUrl;
@@ -115,6 +118,6 @@ export default function adapter(data: OPDSEntry): BookData {
     imprint: imprint,
     issued: data.issued,
     rating: rating,
-    coverUrl: coverUrl
+    coverUrl: coverUrl,
   };
 }

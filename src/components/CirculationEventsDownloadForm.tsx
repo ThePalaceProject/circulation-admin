@@ -4,7 +4,8 @@ import { Button, Form } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import * as qs from "qs";
 
-export interface CirculationEventsDownloadFormProps extends React.Props<CirculationEventsDownloadForm> {
+export interface CirculationEventsDownloadFormProps
+  extends React.Props<CirculationEventsDownloadForm> {
   show: boolean;
   hide: () => void;
   library?: string;
@@ -15,7 +16,10 @@ export interface CirculationEventsDownloadFormState {
 }
 
 /** Form for downloading CirculationEvents for a particular date. */
-export default class CirculationEventsDownloadForm extends React.Component<CirculationEventsDownloadFormProps, CirculationEventsDownloadFormState> {
+export default class CirculationEventsDownloadForm extends React.Component<
+  CirculationEventsDownloadFormProps,
+  CirculationEventsDownloadFormState
+> {
   private type = React.createRef<HTMLSelectElement>();
   private dateStart = React.createRef<EditableInput>();
   private dateEnd = React.createRef<EditableInput>();
@@ -42,11 +46,13 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
         <Modal.Header>
           <Modal.Title>Download CSV</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          {this.renderForm()}
-        </Modal.Body>
+        <Modal.Body>{this.renderForm()}</Modal.Body>
         <Modal.Footer>
-          <Button className="inverted left-align" callback={this.props.hide} content="Close" />
+          <Button
+            className="inverted left-align"
+            callback={this.props.hide}
+            content="Close"
+          />
         </Modal.Footer>
       </Modal>
     );
@@ -89,12 +95,14 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
       { id: "locations", label: "Events by Location" },
     ];
     // date inputs require YYYY-MM-DD format
-    let today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
 
     return (
       <>
         <fieldset>
-          <legend className="control-label visuallyHidden">Configuration</legend>
+          <legend className="control-label visuallyHidden">
+            Configuration
+          </legend>
           <label htmlFor="event-select">
             Event Type
             <select
@@ -105,29 +113,29 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
               onChange={this.toggleLocationsInput}
               onBlur={this.toggleLocationsInput}
             >
-              {
-                eventTypes.map(event =>
-                  <option key={`${event.id}-option`} value={event.id} aria-selected={false}>
-                    {event.label}
-                  </option>
-                )
-              }
+              {eventTypes.map((event) => (
+                <option
+                  key={`${event.id}-option`}
+                  value={event.id}
+                  aria-selected={false}
+                >
+                  {event.label}
+                </option>
+              ))}
             </select>
           </label>
-          {
-            this.state.showLocationsInput && (
-              <EditableInput
-                ref={this.locations}
-                className=""
-                label="Locations"
-                description="Comma-separated list of locations (e.g. ZIP codes or library branch codes) to focus on."
-                name="locations"
-                id="locations"
-                optionalText={false}
-                placeholder="10001,10002,10003"
-              />
-            )
-          }
+          {this.state.showLocationsInput && (
+            <EditableInput
+              ref={this.locations}
+              className=""
+              label="Locations"
+              description="Comma-separated list of locations (e.g. ZIP codes or library branch codes) to focus on."
+              name="locations"
+              id="locations"
+              optionalText={false}
+              placeholder="10001,10002,10003"
+            />
+          )}
           <EditableInput
             ref={this.dateStart}
             name="dateStart"
@@ -156,7 +164,7 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
    */
   getRefValue(ref: React.RefObject<EditableInput>) {
     const current = ref.current || null;
-    const value = current && current.getValue() || null;
+    const value = (current && current.getValue()) || null;
     return value;
   }
 
@@ -175,13 +183,13 @@ export default class CirculationEventsDownloadForm extends React.Component<Circu
     }
 
     let url = library + "/admin/bulk_circulation_events";
-    let params = qs.stringify(paramValues, { skipNulls: true });
+    const params = qs.stringify(paramValues, { skipNulls: true });
 
     if (params) {
       url += "?" + params;
     }
 
-    let link = document.createElement("a");
+    const link = document.createElement("a");
     link.href = url;
     link.target = "_blank";
     document.body.appendChild(link);

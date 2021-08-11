@@ -16,14 +16,14 @@ describe("ClassificationsForm", () => {
   let bookData;
   let editClassifications;
 
-  let editableInputByName = (name) => {
-    let inputs = wrapper.find(EditableInput);
-    return inputs.filterWhere(input => input.props().name === name);
+  const editableInputByName = (name) => {
+    const inputs = wrapper.find(EditableInput);
+    return inputs.filterWhere((input) => input.props().name === name);
   };
 
-  let editableInputByValue = (value) => {
-    let inputs = wrapper.find(EditableInput);
-    return inputs.filterWhere(input => input.props().value === value);
+  const editableInputByValue = (value) => {
+    const inputs = wrapper.find(EditableInput);
+    return inputs.filterWhere((input) => input.props().value === value);
   };
 
   describe("rendering without classification values", () => {
@@ -34,7 +34,7 @@ describe("ClassificationsForm", () => {
         audience: undefined,
         targetAgeRange: ["12", "16"],
         fiction: undefined,
-        categories: ["Space Opera"]
+        categories: ["Space Opera"],
       };
       editClassifications = stub();
       confirmStub = stub(window, "confirm").returns(true);
@@ -43,7 +43,7 @@ describe("ClassificationsForm", () => {
           book={bookData}
           genreTree={genreData}
           editClassifications={editClassifications}
-          />
+        />
       );
       instance = wrapper.instance();
     });
@@ -53,23 +53,23 @@ describe("ClassificationsForm", () => {
     });
 
     it("should have no values displayed for the audience or fiction classifications", () => {
-      let select = editableInputByName("audience");
+      const select = editableInputByName("audience");
       expect(select.props().label).to.equal("Audience");
       expect(select.props().value).to.equal("None");
 
-      let options = select.find("select").children();
+      const options = select.find("select").children();
       expect(options.length).to.equal(7);
 
       // This only gets rendered without an initial fiction classification:
-      let noFictionSelectedRadio = wrapper
+      const noFictionSelectedRadio = wrapper
         .find(EditableInput)
-        .filterWhere(input => input.props().value === "none");
-      let fictionRadio = wrapper
+        .filterWhere((input) => input.props().value === "none");
+      const fictionRadio = wrapper
         .find(EditableInput)
-        .filterWhere(input => input.props().value === "fiction");
-      let nonfictionRadio = wrapper
+        .filterWhere((input) => input.props().value === "fiction");
+      const nonfictionRadio = wrapper
         .find(EditableInput)
-        .filterWhere(input => input.props().value === "nonfiction");
+        .filterWhere((input) => input.props().value === "nonfiction");
 
       expect(noFictionSelectedRadio.props().type).to.equal("radio");
       expect(noFictionSelectedRadio.props().label).to.equal("None");
@@ -87,21 +87,26 @@ describe("ClassificationsForm", () => {
       expect(nonfictionRadio.props().name).to.equal("fiction");
     });
 
-    it("should not allow you to submit if you didn't select an audience or a fiction classification",
-      () => {
-        let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
-        button.simulate("click");
+    it("should not allow you to submit if you didn't select an audience or a fiction classification", () => {
+      const button = wrapper
+        .find("button")
+        .findWhere((button) => button.text() === "Save")
+        .at(0);
+      button.simulate("click");
 
-        expect(wrapper.state().audience).to.equal("None");
-        expect(wrapper.state().fiction).to.equal(undefined);
-        expect(editClassifications.callCount).to.equal(0);
-      });
+      expect(wrapper.state().audience).to.equal("None");
+      expect(wrapper.state().fiction).to.equal(undefined);
+      expect(editClassifications.callCount).to.equal(0);
+    });
 
     it("should render error messages without an audience or a fiction classification", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
+      const button = wrapper
+        .find("button")
+        .findWhere((button) => button.text() === "Save")
+        .at(0);
 
       button.simulate("click");
-      let alert = wrapper.find(".alert-danger");
+      const alert = wrapper.find(".alert-danger");
 
       expect(editClassifications.callCount).to.equal(0);
       expect(alert.length).to.equal(1);
@@ -111,7 +116,10 @@ describe("ClassificationsForm", () => {
     });
 
     it("should not allow you to submit if you didn't select an audience", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
+      const button = wrapper
+        .find("button")
+        .findWhere((button) => button.text() === "Save")
+        .at(0);
       let alert;
       wrapper.setState({ fiction: true });
 
@@ -120,8 +128,8 @@ describe("ClassificationsForm", () => {
       expect(editClassifications.callCount).to.equal(0);
       expect(alert.length).to.equal(1);
 
-      let select = wrapper.find("select[name='audience']") as any;
-      let selectElement = select.getDOMNode();
+      const select = wrapper.find("select[name='audience']") as any;
+      const selectElement = select.getDOMNode();
       selectElement.value = "Adult";
       select.simulate("change");
       button.simulate("click");
@@ -133,14 +141,17 @@ describe("ClassificationsForm", () => {
     });
 
     it("should not allow you to submit if you didn't select a fiction classification", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
+      const button = wrapper
+        .find("button")
+        .findWhere((button) => button.text() === "Save")
+        .at(0);
       wrapper.setState({ audience: "Adult" });
 
       button.simulate("click");
       expect(editClassifications.callCount).to.equal(0);
 
-      let nonfictionInput = wrapper.find("input[value='nonfiction']");
-      let nonfictionElement = nonfictionInput.getDOMNode();
+      const nonfictionInput = wrapper.find("input[value='nonfiction']");
+      const nonfictionElement = nonfictionInput.getDOMNode();
       expect((nonfictionElement as any).checked).to.equal(false);
 
       (nonfictionElement as any).checked = true;
@@ -158,7 +169,7 @@ describe("ClassificationsForm", () => {
         audience: "Young Adult",
         targetAgeRange: ["12", "16"],
         fiction: true,
-        categories: ["Space Opera"]
+        categories: ["Space Opera"],
       };
       editClassifications = stub();
       wrapper = mount(
@@ -166,17 +177,17 @@ describe("ClassificationsForm", () => {
           book={bookData}
           genreTree={genreData}
           editClassifications={editClassifications}
-          />
+        />
       );
       instance = wrapper.instance();
     });
 
     it("shows editable select with audience options", () => {
-      let select = editableInputByName("audience");
+      const select = editableInputByName("audience");
       expect(select.props().label).to.equal("Audience");
       expect(select.props().value).to.equal("Young Adult");
 
-      let options = select.find("select").children();
+      const options = select.find("select").children();
       // The "None" select Audience value should not be rendered.
       expect(options.length).to.equal(6);
     });
@@ -192,12 +203,12 @@ describe("ClassificationsForm", () => {
     });
 
     it("shows editable radio buttons with fiction status", () => {
-      let fictionRadio = wrapper
+      const fictionRadio = wrapper
         .find(EditableInput)
-        .filterWhere(input => input.props().value === "fiction");
-      let nonfictionRadio = wrapper
+        .filterWhere((input) => input.props().value === "fiction");
+      const nonfictionRadio = wrapper
         .find(EditableInput)
-        .filterWhere(input => input.props().value === "nonfiction");
+        .filterWhere((input) => input.props().value === "nonfiction");
 
       expect(fictionRadio.props().type).to.equal("radio");
       expect(fictionRadio.props().label).to.equal("Fiction");
@@ -211,30 +222,40 @@ describe("ClassificationsForm", () => {
     });
 
     it("shows the book's full genres with remove buttons", () => {
-      let genres = wrapper.find(WithRemoveButton);
+      const genres = wrapper.find(WithRemoveButton);
       expect(genres.length).to.equal(1);
-      expect(genres.props().children).to.contain("Science Fiction > Space Opera");
+      expect(genres.props().children).to.contain(
+        "Science Fiction > Space Opera"
+      );
     });
 
     it("shows the book's full genres with remove buttons even if inconsistent with fiction status", () => {
-      let inconsistentBookData = Object.assign({}, bookData, { fiction: false });
+      const inconsistentBookData = Object.assign({}, bookData, {
+        fiction: false,
+      });
       wrapper.setProps({ book: inconsistentBookData });
 
-      let genres = wrapper.find(WithRemoveButton);
+      const genres = wrapper.find(WithRemoveButton);
       expect(genres.length).to.equal(1);
-      expect(genres.props().children).to.contain("Science Fiction > Space Opera");
+      expect(genres.props().children).to.contain(
+        "Science Fiction > Space Opera"
+      );
     });
 
     it("shows genre form", () => {
-      let form = wrapper.find(GenreForm);
+      const form = wrapper.find(GenreForm);
       expect(form.length).to.equal(1);
       expect(form.props().disabled).not.to.be.ok;
       expect(form.props().genreOptions).to.deep.equal(instance.genreOptions());
-      expect(form.props().bookGenres).to.deep.equal(instance.bookGenres(bookData));
+      expect(form.props().bookGenres).to.deep.equal(
+        instance.bookGenres(bookData)
+      );
     });
 
     it("shows submit button", () => {
-      let button = wrapper.find("button").filterWhere(button => button.text() === "Save");
+      const button = wrapper
+        .find("button")
+        .filterWhere((button) => button.text() === "Save");
       expect(button.length).to.equal(1);
     });
   });
@@ -249,7 +270,7 @@ describe("ClassificationsForm", () => {
         audience: "Young Adult",
         targetAgeRange: ["12", "16"],
         fiction: true,
-        categories: ["Space Opera"]
+        categories: ["Space Opera"],
       };
       editClassifications = stub();
       wrapper = mount(
@@ -257,7 +278,7 @@ describe("ClassificationsForm", () => {
           book={bookData}
           genreTree={genreData}
           editClassifications={editClassifications}
-          />
+        />
       );
       instance = wrapper.instance();
     });
@@ -272,8 +293,8 @@ describe("ClassificationsForm", () => {
       expect(minAgeInput.length).to.equal(1);
       expect(maxAgeInput.length).to.equal(1);
 
-      let select = wrapper.find("select[name='audience']") as any;
-      let selectElement = select.getDOMNode();
+      const select = wrapper.find("select[name='audience']") as any;
+      const selectElement = select.getDOMNode();
       selectElement.value = "Adult";
       select.simulate("change");
       minAgeInput = editableInputByName("target_age_min");
@@ -290,13 +311,13 @@ describe("ClassificationsForm", () => {
     });
 
     it("changes both fiction status radio buttons", () => {
-      let fictionInput = wrapper.find("input[value='fiction']");
-      let nonfictionInput = wrapper.find("input[value='nonfiction']");
+      const fictionInput = wrapper.find("input[value='fiction']");
+      const nonfictionInput = wrapper.find("input[value='nonfiction']");
       expect(fictionInput.length).to.equal(1);
       expect(nonfictionInput.length).to.equal(1);
 
-      let fictionElement = fictionInput.getDOMNode();
-      let nonfictionElement = nonfictionInput.getDOMNode();
+      const fictionElement = fictionInput.getDOMNode();
+      const nonfictionElement = nonfictionInput.getDOMNode();
       expect((fictionElement as any).checked).to.equal(true);
       expect((nonfictionElement as any).checked).to.equal(false);
 
@@ -320,9 +341,11 @@ describe("ClassificationsForm", () => {
     it("adds genre to list of selected genres after validating against audience", () => {
       // can't add Erotica to book with Young Adult audience
       instance.addGenre("Erotica");
-      let newGenres = wrapper.find(WithRemoveButton).map(name => name.text());
+      let newGenres = wrapper.find(WithRemoveButton).map((name) => name.text());
       expect(newGenres.length).to.equal(1);
-      expect(newGenres[0]).to.contain(instance.fullGenre(bookData.categories[0]) + "Delete");
+      expect(newGenres[0]).to.contain(
+        instance.fullGenre(bookData.categories[0]) + "Delete"
+      );
       expect(newGenres[0]).not.to.contain("Erotica");
 
       instance.validateAudience = stub().returns(true);
@@ -331,25 +354,30 @@ describe("ClassificationsForm", () => {
       wrapper.update();
 
       expect(instance.validateAudience.callCount).to.equal(1);
-      newGenres = wrapper.find(WithRemoveButton).map(name => name.text());
-      expect(newGenres[0]).to.contain(instance.fullGenre("Folklore") + "Delete");
+      newGenres = wrapper.find(WithRemoveButton).map((name) => name.text());
+      expect(newGenres[0]).to.contain(
+        instance.fullGenre("Folklore") + "Delete"
+      );
     });
 
     it("removes genre when remove button is clicked", () => {
-      let button = wrapper.find(WithRemoveButton);
-      let onRemove = button.props().onRemove;
+      const button = wrapper.find(WithRemoveButton);
+      const onRemove = button.props().onRemove;
       onRemove();
       wrapper.update();
 
-      let newGenres = wrapper.find(WithRemoveButton);
+      const newGenres = wrapper.find(WithRemoveButton);
       expect(newGenres.length).to.equal(0);
     });
 
     it("submits data when submit button is clicked", () => {
-      let button = wrapper.find("button").findWhere(button => button.text() === "Save").at(0);
+      const button = wrapper
+        .find("button")
+        .findWhere((button) => button.text() === "Save")
+        .at(0);
       button.simulate("click");
 
-      let formData = new (window as any).FormData();
+      const formData = new (window as any).FormData();
       formData.append("csrf_token", "token");
       formData.append("audience", "Young Adult");
       formData.append("target_age_min", "12");
@@ -362,10 +390,10 @@ describe("ClassificationsForm", () => {
     });
 
     it("updates state upon receiving new state-related props", () => {
-      let newBookData = Object.assign({}, bookData, {
+      const newBookData = Object.assign({}, bookData, {
         audience: "Adult",
         fiction: false,
-        categories: ["Cooking"]
+        categories: ["Cooking"],
       });
       wrapper.setProps({ book: newBookData });
 

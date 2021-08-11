@@ -20,7 +20,10 @@ export interface ContextProviderProps extends React.Props<{}> {
 
 /** Provides a redux store, configuration options, and a function to create URLs
     as context to admin interface pages. */
-export default class ContextProvider extends React.Component<ContextProviderProps, {}> {
+export default class ContextProvider extends React.Component<
+  ContextProviderProps,
+  {}
+> {
   store: Store<State>;
   admin: Admin;
   pathFor: PathFor;
@@ -31,14 +34,10 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     this.admin = new Admin(props.roles || [], props.email || null);
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
       let path = "/admin/web";
-      path +=
-        collectionUrl ?
-        `/collection/${this.prepareCollectionUrl(collectionUrl)}` :
-        "";
-      path +=
-        bookUrl ?
-        `/book/${this.prepareBookUrl(bookUrl)}` :
-        "";
+      path += collectionUrl
+        ? `/collection/${this.prepareCollectionUrl(collectionUrl)}`
+        : "";
+      path += bookUrl ? `/book/${this.prepareBookUrl(bookUrl)}` : "";
       path += tab ? `/tab/${tab}` : "";
       return path;
     };
@@ -46,7 +45,10 @@ export default class ContextProvider extends React.Component<ContextProviderProp
 
   prepareCollectionUrl(url: string): string {
     return encodeURIComponent(
-      url.replace(document.location.origin + "/", "").replace(/\/$/, "").replace(/^\//, "")
+      url
+        .replace(document.location.origin + "/", "")
+        .replace(/\/$/, "")
+        .replace(/^\//, "")
     );
   }
 
@@ -56,9 +58,7 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     if (match) {
       const library = match[1];
       const work = match[2];
-      return encodeURIComponent(
-        library + "/" + work
-      );
+      return encodeURIComponent(library + "/" + work);
     } else {
       return url;
     }
@@ -69,7 +69,7 @@ export default class ContextProvider extends React.Component<ContextProviderProp
     csrfToken: PropTypes.string.isRequired,
     showCircEventsDownload: PropTypes.bool.isRequired,
     settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired,
   };
 
   getChildContext() {
@@ -78,7 +78,7 @@ export default class ContextProvider extends React.Component<ContextProviderProp
       csrfToken: this.props.csrfToken,
       showCircEventsDownload: this.props.showCircEventsDownload || false,
       settingUp: this.props.settingUp || false,
-      admin: this.admin
+      admin: this.admin,
     };
   }
 

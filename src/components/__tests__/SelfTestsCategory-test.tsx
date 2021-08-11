@@ -29,10 +29,10 @@ describe("SelfTestsCategory", () => {
             name: "Initial setup.",
             result: null,
             start: "2018-08-07T19:34:54Z",
-            success: true
+            success: true,
           },
-        ]
-      }
+        ],
+      },
     },
     {
       id: 2,
@@ -50,45 +50,60 @@ describe("SelfTestsCategory", () => {
             name: "Initial setup.",
             result: null,
             start: "2018-08-07T19:34:54Z",
-            success: true
+            success: true,
           },
           {
             duration: 0,
             end: "2018-08-07T19:34:55Z",
             exception: {
               class: "IntegrationException",
-              debug_message: "Add the collection to a library that has a patron authentication service.",
-              message: "Collection is not associated with any libraries."
+              debug_message:
+                "Add the collection to a library that has a patron authentication service.",
+              message: "Collection is not associated with any libraries.",
             },
             name: "Acquiring test patron credentials.",
             result: null,
             start: "2018-08-07T19:34:55Z",
-            success: false
-          }
-        ]
-      }
+            success: false,
+          },
+        ],
+      },
     },
     {
       id: 3,
       name: "collection with no results",
-      protocol: "protocol"
-    }
+      protocol: "protocol",
+    },
   ];
 
   beforeEach(() => {
     store = buildStore();
-    wrapper = mount(<SelfTestsCategory type="collection" linkName="collections" csrfToken="token" items={collections} store={store} />);
+    wrapper = mount(
+      <SelfTestsCategory
+        type="collection"
+        linkName="collections"
+        csrfToken="token"
+        items={collections}
+        store={store}
+      />
+    );
   });
 
   it("renders a list of items", () => {
-    expect(wrapper.find("div").first().hasClass("self-tests-category")).to.be.true;
-    expect(wrapper.find("div").first().hasClass("has-additional-content")).to.be.true;
-    let listItems = wrapper.find("ul").first().find(Panel);
+    expect(wrapper.find("div").first().hasClass("self-tests-category")).to.be
+      .true;
+    expect(wrapper.find("div").first().hasClass("has-additional-content")).to.be
+      .true;
+    const listItems = wrapper.find("ul").first().find(Panel);
     expect(listItems.length).to.equal(3);
-    let itemNames = listItems.map(i => i.find(".panel-title").text());
-    expect(itemNames).to.eql(["collection with success", "collection with failure", "collection with no results"]);
+    const itemNames = listItems.map((i) => i.find(".panel-title").text());
+    expect(itemNames).to.eql([
+      "collection with success",
+      "collection with failure",
+      "collection with no results",
+    ]);
     listItems.forEach((item, idx) => {
-      let selfTests = item.find(SelfTests);
+      const selfTests = item.find(SelfTests);
       expect(selfTests.length).to.equal(1);
       expect(selfTests.prop("type")).to.equal(wrapper.prop("type"));
       expect(selfTests.prop("item")).to.equal(collections[idx]);
@@ -96,29 +111,38 @@ describe("SelfTestsCategory", () => {
   });
 
   it("color-codes", () => {
-    let listItems = wrapper.find("ul").first().find(Panel);
-    let success = listItems.at(0);
+    const listItems = wrapper.find("ul").first().find(Panel);
+    const success = listItems.at(0);
     expect(success.prop("style")).to.equal("success");
-    let failure = listItems.at(1);
+    const failure = listItems.at(1);
     expect(failure.prop("style")).to.equal("danger");
-    let noResults = listItems.at(2);
+    const noResults = listItems.at(2);
     expect(noResults.prop("style")).to.equal("default");
   });
 
   it("opens the panel by default if there's only one", () => {
-    let listItems = wrapper.find("ul").first().find(Panel);
-    expect(listItems.some(i => i.prop("openByDefault"))).to.be.false;
+    const listItems = wrapper.find("ul").first().find(Panel);
+    expect(listItems.some((i) => i.prop("openByDefault"))).to.be.false;
     wrapper.setProps({ items: [collections[0]] });
-    let singleItem = wrapper.find("ul").first().find(Panel);
+    const singleItem = wrapper.find("ul").first().find(Panel);
     expect(singleItem.prop("openByDefault")).to.be.true;
   });
 
   it("passes the sortByCollection prop to SelfTests", () => {
     let selfTests = wrapper.find(SelfTests).at(0);
     expect(selfTests.prop("sortByCollection")).to.be.false;
-    let inner = {...collections[0].self_test_results.results, ...{collection: "sort!"}};
-    let outer = {...collections[0].self_test_results, ...{results: [inner]}};
-    let withCollection = {...collections[0], ...({self_test_results: outer})};
+    const inner = {
+      ...collections[0].self_test_results.results,
+      ...{ collection: "sort!" },
+    };
+    const outer = {
+      ...collections[0].self_test_results,
+      ...{ results: [inner] },
+    };
+    const withCollection = {
+      ...collections[0],
+      ...{ self_test_results: outer },
+    };
     (collections as any).unshift(withCollection);
     wrapper.setProps({ items: collections });
     selfTests = wrapper.find(SelfTests).at(0);
@@ -126,29 +150,37 @@ describe("SelfTestsCategory", () => {
   });
 
   it("handles unnamed items", () => {
-    let nameless = {
-        id: 1,
-        name: null,
-        protocol: "protocol",
-        self_test_results: {
-          duration: 1.75,
-          start: "2018-08-07T19:34:54Z",
-          end: "2018-08-07T19:34:55Z",
-          results: [
-            {
-              duration: 0.000119,
-              end: "2018-08-07T19:34:54Z",
-              exception: null,
-              name: "Initial setup.",
-              result: null,
-              start: "2018-08-07T19:34:54Z",
-              success: true
-            },
-          ]
-        }
-      };
-    wrapper = mount(<SelfTestsCategory type="collection" linkName="collections" csrfToken="token" items={[nameless]} store={store} />);
-    let panel = wrapper.find(Panel);
+    const nameless = {
+      id: 1,
+      name: null,
+      protocol: "protocol",
+      self_test_results: {
+        duration: 1.75,
+        start: "2018-08-07T19:34:54Z",
+        end: "2018-08-07T19:34:55Z",
+        results: [
+          {
+            duration: 0.000119,
+            end: "2018-08-07T19:34:54Z",
+            exception: null,
+            name: "Initial setup.",
+            result: null,
+            start: "2018-08-07T19:34:54Z",
+            success: true,
+          },
+        ],
+      },
+    };
+    wrapper = mount(
+      <SelfTestsCategory
+        type="collection"
+        linkName="collections"
+        csrfToken="token"
+        items={[nameless]}
+        store={store}
+      />
+    );
+    const panel = wrapper.find(Panel);
     expect(panel.prop("id")).to.equal("Unnamedcollection-1");
     expect(panel.prop("headerText")).to.equal("Unnamed collection");
   });

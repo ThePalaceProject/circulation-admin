@@ -13,35 +13,59 @@ export interface AnnouncementsSectionState {
   editing?: AnnouncementData | null;
 }
 
-export default class AnnouncementsSection extends React.Component<AnnouncementsSectionProps, AnnouncementsSectionState> {
+export default class AnnouncementsSection extends React.Component<
+  AnnouncementsSectionProps,
+  AnnouncementsSectionState
+> {
   constructor(props: AnnouncementsSectionProps) {
     super(props);
     this.addAnnouncement = this.addAnnouncement.bind(this);
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
     this.editAnnouncement = this.editAnnouncement.bind(this);
     this.getValue = this.getValue.bind(this);
-    this.state = { currentAnnouncements: Array.isArray(this.props.value) ? this.props.value : [], editing: null };
+    this.state = {
+      currentAnnouncements: Array.isArray(this.props.value)
+        ? this.props.value
+        : [],
+      editing: null,
+    };
   }
   addAnnouncement(announcement: AnnouncementData) {
-    let announcements = this.state.currentAnnouncements;
+    const announcements = this.state.currentAnnouncements;
     // If the announcement hasn't been saved yet, it does not have an ID; the ID is assigned by the server code.  But editing
     // announcements involves finding them by their ID, so we give the new announcement a temporary ID just so that we'll be able
     // to edit it.  The temporary ID gets blanked out before the announcement goes to the server, so the permanent ID will still get
     // assigned on the back end.
     if (!announcement.id) {
-      let tempId = ["temp_1", "temp_2", "temp_3"].find(x => !announcements.map(a => a.id).includes(x));
+      const tempId = ["temp_1", "temp_2", "temp_3"].find(
+        (x) => !announcements.map((a) => a.id).includes(x)
+      );
       announcement.id = tempId;
     }
-    this.setState({ currentAnnouncements: announcements.concat(announcement), editing: null });
+    this.setState({
+      currentAnnouncements: announcements.concat(announcement),
+      editing: null,
+    });
   }
   deleteAnnouncement(id: string) {
-    if (window.confirm("This will remove this announcement from your list. Are you sure you want to continue?")) {
-      this.setState({ currentAnnouncements: this.state.currentAnnouncements.filter(a => a.id !== id), editing: null});
+    if (
+      window.confirm(
+        "This will remove this announcement from your list. Are you sure you want to continue?"
+      )
+    ) {
+      this.setState({
+        currentAnnouncements: this.state.currentAnnouncements.filter(
+          (a) => a.id !== id
+        ),
+        editing: null,
+      });
     }
   }
   editAnnouncement(id: string): void {
-    let editing = this.state.currentAnnouncements.find(a => a.id === id);
-    let currentAnnouncements = this.state.currentAnnouncements.filter(a => a.id !== id);
+    const editing = this.state.currentAnnouncements.find((a) => a.id === id);
+    let currentAnnouncements = this.state.currentAnnouncements.filter(
+      (a) => a.id !== id
+    );
     if (this.state.editing && this.state.editing.id !== id) {
       // Switch between editing two announcements without making the first one disappear.
       currentAnnouncements = currentAnnouncements.concat(this.state.editing);
@@ -62,7 +86,7 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
     );
   }
   renderList(): JSX.Element {
-    let compareStartDate = (x, y) => {
+    const compareStartDate = (x, y) => {
       if (x.start < y.start) {
         return -1;
       } else if (x.start > y.start) {
@@ -74,13 +98,10 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
         <h4>Scheduled Announcements:</h4>
         <p>You can have a maximum of 3 announcements.</p>
         <hr />
-        {
-          Array.isArray(this.state.currentAnnouncements) && this.state.currentAnnouncements.sort(compareStartDate).map(a =>
-              <li key={a.id}>
-                {this.renderAnnouncement(a)}
-              </li>
-          )
-        }
+        {Array.isArray(this.state.currentAnnouncements) &&
+          this.state.currentAnnouncements
+            .sort(compareStartDate)
+            .map((a) => <li key={a.id}>{this.renderAnnouncement(a)}</li>)}
       </ul>
     );
   }
@@ -98,15 +119,21 @@ export default class AnnouncementsSection extends React.Component<AnnouncementsS
   render(): JSX.Element {
     return (
       <div className="announcements-section">
-        { this.state.currentAnnouncements.length > 0 && this.renderList() }
-        { this.state.currentAnnouncements.length < 3 && this.renderForm() }
+        {this.state.currentAnnouncements.length > 0 && this.renderList()}
+        {this.state.currentAnnouncements.length < 3 && this.renderForm()}
       </div>
     );
   }
   getValue(): Array<AnnouncementData> {
     // If there are any new announcements, blank out their temporary IDs so that the server wil assign them permanent ones.
-    return this.state.currentAnnouncements.map(a =>
-      a.id.match(/temp_/) ? ({content: a.content, start: a.start, finish: a.finish} as AnnouncementData) : a
+    return this.state.currentAnnouncements.map((a) =>
+      a.id.match(/temp_/)
+        ? ({
+            content: a.content,
+            start: a.start,
+            finish: a.finish,
+          } as AnnouncementData)
+        : a
     );
   }
 }

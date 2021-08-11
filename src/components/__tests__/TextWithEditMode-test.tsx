@@ -16,7 +16,7 @@ describe("TextWithEditMode", () => {
   });
 
   it("renders text", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <TextWithEditMode
         text="test"
         placeholder="editable thing"
@@ -32,19 +32,19 @@ describe("TextWithEditMode", () => {
   });
 
   it("starts in edit mode if there's no text", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <TextWithEditMode placeholder="editable thing" aria-label="label" />
     );
-    let input = wrapper.find(EditableInput);
+    const input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
     expect(input.prop("placeholder")).to.equal("editable thing");
     expect(input.prop("value")).to.equal("");
-    let button = wrapper.find(Button);
+    const button = wrapper.find(Button);
     expect(button.text()).to.contain("Save editable thing");
   });
 
   it("switches to edit mode", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <TextWithEditMode
         text="test"
         placeholder="editable thing"
@@ -53,20 +53,20 @@ describe("TextWithEditMode", () => {
     );
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
-    let editButton = wrapper.find(Button);
+    const editButton = wrapper.find(Button);
     editButton.simulate("click");
     input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
     expect(input.prop("placeholder")).to.equal("editable thing");
     expect(input.prop("value")).to.equal("test");
 
-    let saveButton = wrapper.find(Button);
+    const saveButton = wrapper.find(Button);
     expect(saveButton.text()).to.contain("Save");
     expect(saveButton.text()).not.to.contain("Edit");
   });
 
   it("switches out of edit mode", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <TextWithEditMode
         placeholder="editable thing"
         onUpdate={onUpdate}
@@ -76,9 +76,11 @@ describe("TextWithEditMode", () => {
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
 
-    let getValueStub = stub(EditableInput.prototype, "getValue").returns("new value");
+    const getValueStub = stub(EditableInput.prototype, "getValue").returns(
+      "new value"
+    );
 
-    let saveButton = wrapper.find(Button);
+    const saveButton = wrapper.find(Button);
     saveButton.simulate("click");
     input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
@@ -87,7 +89,7 @@ describe("TextWithEditMode", () => {
 
     expect(wrapper.text()).to.contain("new value");
 
-    let editButton = wrapper.find(Button);
+    const editButton = wrapper.find(Button);
     expect(editButton.text()).to.contain("Edit");
     expect(editButton.text()).not.to.contain("Save");
 
@@ -105,20 +107,26 @@ describe("TextWithEditMode", () => {
     expect((wrapper.instance() as TextWithEditMode).getText()).to.equal("test");
 
     // From edit mode, it returns the current input value and exists edit mode.
-    let getValueStub = stub(EditableInput.prototype, "getValue").returns("new value");
+    const getValueStub = stub(EditableInput.prototype, "getValue").returns(
+      "new value"
+    );
     wrapper = mount(
       <TextWithEditMode placeholder="editable thing" aria-label="label" />
     );
-    expect((wrapper.instance() as TextWithEditMode).getText()).to.equal("new value");
+    expect((wrapper.instance() as TextWithEditMode).getText()).to.equal(
+      "new value"
+    );
     wrapper.update();
-    let input = wrapper.find(EditableInput);
+    const input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
 
     getValueStub.restore();
   });
 
   it("resets", () => {
-    let getValueStub = stub(EditableInput.prototype, "getValue").returns("new value");
+    const getValueStub = stub(EditableInput.prototype, "getValue").returns(
+      "new value"
+    );
     let wrapper = mount(
       <TextWithEditMode
         placeholder="editable thing"
@@ -134,7 +142,7 @@ describe("TextWithEditMode", () => {
     (wrapper.instance() as TextWithEditMode).reset();
     wrapper.update();
     expect(wrapper.text()).not.to.contain("new value");
-    let input = wrapper.find(EditableInput);
+    const input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
     expect(onUpdate.callCount).to.equal(2);
     expect(onUpdate.args[1][0]).to.be.undefined;
@@ -147,7 +155,7 @@ describe("TextWithEditMode", () => {
         aria-label="label"
       />
     );
-    let editButton = wrapper.find(Button);
+    const editButton = wrapper.find(Button);
     editButton.simulate("click");
     saveButton = wrapper.find(Button);
     saveButton.simulate("click");
@@ -166,7 +174,7 @@ describe("TextWithEditMode", () => {
   });
 
   it("optionally disables the save button if the text is blank", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <TextWithEditMode
         placeholder="editable thing"
         aria-label="label"
@@ -181,17 +189,14 @@ describe("TextWithEditMode", () => {
   });
 
   it("updates the text state", () => {
-    let wrapper = mount(
-      <TextWithEditMode
-        placeholder="editable thing"
-        aria-label="label"
-      />
+    const wrapper = mount(
+      <TextWithEditMode placeholder="editable thing" aria-label="label" />
     );
-    let spySetText = spy(wrapper.instance(), "setText");
+    const spySetText = spy(wrapper.instance(), "setText");
     wrapper.setProps({ setText: spySetText });
     expect(spySetText.callCount).to.equal(0);
     expect(wrapper.state().text).to.equal("");
-    let input = wrapper.find("input");
+    const input = wrapper.find("input");
     input.getDOMNode().value = "test";
     input.simulate("change");
     expect(spySetText.callCount).to.equal(1);

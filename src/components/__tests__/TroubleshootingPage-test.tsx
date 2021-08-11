@@ -17,16 +17,19 @@ describe("TroubleshootingPage", () => {
   beforeEach(() => {
     store = buildStore();
     context = { editorStore: store, csrfToken: "token" };
-    wrapper = shallow(<TroubleshootingPage params={{tab: "", subtab: ""}}/>, { context });
+    wrapper = shallow(
+      <TroubleshootingPage params={{ tab: "", subtab: "" }} />,
+      { context }
+    );
   });
 
   it("renders a header", () => {
-    let header = wrapper.find(Header);
+    const header = wrapper.find(Header);
     expect(header.length).to.equal(1);
   });
 
   it("renders a heading", () => {
-    let heading = wrapper.find("h2");
+    const heading = wrapper.find("h2");
     expect(heading.text()).to.equal("Troubleshooting");
   });
 
@@ -37,22 +40,26 @@ describe("TroubleshootingPage", () => {
   it("switches tabs", () => {
     it("switches tabs", () => {
       expect(wrapper.state()["tab"]).to.equal("diagnostics");
-      expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal("diagnostics");
+      expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal(
+        "diagnostics"
+      );
 
       wrapper.instance().goToTab("self-tests");
 
       expect(wrapper.state()["tab"]).to.equal("self-tests");
-      expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal("self-tests");
+      expect(wrapper.find(TroubleshootingTabContainer).prop("tab")).to.equal(
+        "self-tests"
+      );
     });
   });
 
   it("sets the document title", () => {
-    let title = (global as any).window.document.title;
+    const title = (global as any).window.document.title;
     expect(title).to.equal("Circulation Manager - Troubleshooting");
   });
 
   it("shows Footer", () => {
-    let footer = wrapper.find(Footer);
+    const footer = wrapper.find(Footer);
     expect(footer.length).to.equal(1);
   });
 });

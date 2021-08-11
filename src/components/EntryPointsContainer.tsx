@@ -5,12 +5,19 @@ import Collection from "opds-web-client/lib/components/Collection";
 
 /** Wrapper for `EntryPointsTabs`. This component is passed into the
     OPDSCatalog from opds-web-client. */
-export default class EntryPointsContainer extends React.Component<CollectionContainerProps, {}> {
+export default class EntryPointsContainer extends React.Component<
+  CollectionContainerProps,
+  {}
+> {
   render(): JSX.Element {
-    const child = React.Children.only(this.props.children) as React.ReactElement<any>;
+    const child = React.Children.only(
+      this.props.children
+    ) as React.ReactElement<any>;
     const collectionCopy = JSON.parse(JSON.stringify(child.props.collection));
-    const facetGroups = collectionCopy && collectionCopy.facetGroups ?
-      collectionCopy.facetGroups : [];
+    const facetGroups =
+      collectionCopy && collectionCopy.facetGroups
+        ? collectionCopy.facetGroups
+        : [];
     const newProps = Object.assign({}, child.props);
 
     let facets = [];

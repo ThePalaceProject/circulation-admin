@@ -11,74 +11,76 @@ describe("LoggingServices", () => {
   let wrapper;
   let fetchData;
   let editItem;
-  let data = {
-    "logging_services": [
+  const data = {
+    logging_services: [
       {
         id: 1,
-        "label": "loggly",
-        "name": "loggly",
-        "protocol": "loggly",
-        "sitewide": true
-      }
+        label: "loggly",
+        name: "loggly",
+        protocol: "loggly",
+        sitewide: true,
+      },
     ],
-    "protocols": [
+    protocols: [
       {
-        "label": "loggly",
-        "name": "loggly",
-        "settings": [
+        label: "loggly",
+        name: "loggly",
+        settings: [
           {
-            "key": "user",
-            "label": "Username"
+            key: "user",
+            label: "Username",
           },
           {
-            "key": "password",
-            "label": "Password"
+            key: "password",
+            label: "Password",
           },
           {
-            "key": "url",
-            "label": "URL"
-          }
+            key: "url",
+            label: "URL",
+          },
         ],
-        "sitewide": true
+        sitewide: true,
       },
       {
-        "label": "sysLog",
-        "name": "sysLog",
-        "settings": [
+        label: "sysLog",
+        name: "sysLog",
+        settings: [
           {
-            "key": "log_format",
-            "label": "Log Format",
-            "options": [
+            key: "log_format",
+            label: "Log Format",
+            options: [
               {
-                "key": "json",
-                "label": "json"
+                key: "json",
+                label: "json",
               },
               {
-                "key": "text",
-                "label": "text"
-              }
+                key: "text",
+                label: "text",
+              },
             ],
-            "type": "select"
+            type: "select",
           },
           {
-            "key": "message_template",
-            "label": "template"
-          }
+            key: "message_template",
+            label: "template",
+          },
         ],
-        "sitewide": true
-      }
-    ]
+        sitewide: true,
+      },
+    ],
   };
 
   const pause = () => {
-    return new Promise<void>(resolve => setTimeout(resolve, 0));
+    return new Promise<void>((resolve) => setTimeout(resolve, 0));
   };
 
   beforeEach(() => {
     const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
 
     fetchData = stub();
-    editItem = stub().returns(new Promise<void>(resolve => resolve()));
+    editItem = stub().returns(
+      new Promise<void>((resolve) => resolve())
+    );
 
     wrapper = mount(
       <LoggingServices
@@ -87,16 +89,18 @@ describe("LoggingServices", () => {
         editItem={editItem}
         csrfToken="token"
         isFetching={false}
-        />,
-        { context: { admin: systemAdmin }}
+      />,
+      { context: { admin: systemAdmin } }
     );
   });
 
   it("shows logging service list", () => {
-    let loggingService = wrapper.find("li");
+    const loggingService = wrapper.find("li");
     expect(loggingService.length).to.equal(1);
-    expect(loggingService.at(0).text()).to.contain("Edit Pencil IconlogglyDeleteTrash Icon");
-    let editLink = loggingService.at(0).find("a").at(0);
+    expect(loggingService.at(0).text()).to.contain(
+      "Edit Pencil IconlogglyDeleteTrash Icon"
+    );
+    const editLink = loggingService.at(0).find("a").at(0);
     expect(editLink.props().href).to.equal("/admin/web/config/logging/edit/1");
   });
 });

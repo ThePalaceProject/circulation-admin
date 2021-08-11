@@ -17,7 +17,7 @@ const initialState: ComplaintsState = {
   isFetching: false,
   fetchError: null,
   postError: null,
-  resolveError: null
+  resolveError: null,
 };
 
 export default (state: ComplaintsState = initialState, action) => {
@@ -28,31 +28,31 @@ export default (state: ComplaintsState = initialState, action) => {
       return Object.assign({}, state, {
         url: action.url,
         isFetching: true,
-        fetchError: null
+        fetchError: null,
       });
 
     case ActionCreator.COMPLAINTS_FAILURE:
       return Object.assign({}, state, {
         fetchError: action.error,
-        isFetching: false
+        isFetching: false,
       });
 
     case ActionCreator.POST_COMPLAINT_FAILURE:
       return Object.assign({}, state, {
         postError: action.error,
-        isFetching: false
+        isFetching: false,
       });
 
     case ActionCreator.RESOLVE_COMPLAINTS_FAILURE:
       return Object.assign({}, state, {
         resolveError: action.error,
-        isFetching: false
+        isFetching: false,
       });
 
     case ActionCreator.COMPLAINTS_LOAD:
       return Object.assign({}, state, {
         data: action.data.complaints,
-        isFetching: false
+        isFetching: false,
       });
 
     default:

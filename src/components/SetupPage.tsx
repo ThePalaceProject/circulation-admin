@@ -30,7 +30,7 @@ export default class SetupPage extends React.Component<{}, {}> {
         csrfToken={this.context.csrfToken}
         settingUp={true}
         editOrCreate="create"
-        />
+      />
     );
   }
 }

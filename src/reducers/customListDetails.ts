@@ -1,6 +1,8 @@
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import ActionCreator from "../actions";
-import createFetchEditReducer, { FetchEditState } from "./createFetchEditReducer";
+import createFetchEditReducer, {
+  FetchEditState,
+} from "./createFetchEditReducer";
 
 const loadRequest = (state, action) => {
   return Object.assign({}, state, {
@@ -14,7 +16,7 @@ const loadCB = (state, action) => {
   return Object.assign({}, state, {
     data: Object.assign({}, state.data, {
       books: Object.assign([], state.data.books).concat(action.data.books),
-      nextPageUrl: action.data.nextPageUrl
+      nextPageUrl: action.data.nextPageUrl,
     }),
     isFetchingMoreEntries: false,
     isLoaded: true,
@@ -33,5 +35,5 @@ export interface FetchMoreCustomListDetails<T> extends FetchEditState<T> {
 export default createFetchEditReducer<CollectionData>(
   ActionCreator.CUSTOM_LIST_DETAILS,
   null,
-  extraActions,
+  extraActions
 );

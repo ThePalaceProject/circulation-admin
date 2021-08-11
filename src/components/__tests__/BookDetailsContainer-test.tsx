@@ -20,10 +20,10 @@ describe("BookDetailsContainer", () => {
   let store;
   let context;
   let refreshCatalog;
-  let bookData = {
+  const bookData = {
     id: "book id",
     url: "book url",
-    title: "book title"
+    title: "book title",
   };
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe("BookDetailsContainer", () => {
       editorStore: store,
       tab: "tab",
       csrfToken: "token",
-      library: stub()
+      library: stub(),
     };
     refreshCatalog = stub();
 
@@ -41,24 +41,22 @@ describe("BookDetailsContainer", () => {
         book={bookData}
         bookUrl="book url"
         collectionUrl="collection url"
-        refreshCatalog={refreshCatalog}>
-        <DefaultBookDetails
-         book={bookData}
-         anotherProp="anotherProp"
-         />
-     </BookDetailsContainer>,
+        refreshCatalog={refreshCatalog}
+      >
+        <DefaultBookDetails book={bookData} anotherProp="anotherProp" />
+      </BookDetailsContainer>,
       { context }
     );
   });
 
   it("renders BookDetails with its child's props", () => {
-    let bookDetails = wrapper.find(BookDetails);
+    const bookDetails = wrapper.find(BookDetails);
     expect(bookDetails.prop("book")).to.equal(bookData);
     expect(bookDetails.prop("anotherProp")).to.equal("anotherProp");
   });
 
   it("shows a tab container with initial tab", () => {
-    let tabContainer = wrapper.find(BookDetailsTabContainer);
+    const tabContainer = wrapper.find(BookDetailsTabContainer);
     expect(tabContainer).to.be.ok;
     expect(tabContainer.props().bookUrl).to.equal("book url");
     expect(tabContainer.props().collectionUrl).to.equal("collection url");

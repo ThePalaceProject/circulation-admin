@@ -18,13 +18,17 @@ describe("Classifications", () => {
   let instance;
   let bookData;
   let store;
-  let refreshCatalog, fetchGenreTree, fetchClassifications, fetchBook, editClassifications;
+  let refreshCatalog,
+    fetchGenreTree,
+    fetchClassifications,
+    fetchBook,
+    editClassifications;
 
   beforeEach(() => {
     bookData = {
       title: "title",
       fiction: true,
-      categories: ["Space Opera"]
+      categories: ["Space Opera"],
     };
     store = buildStore();
     refreshCatalog = stub();
@@ -46,14 +50,14 @@ describe("Classifications", () => {
         fetchClassifications={fetchClassifications}
         fetchBook={fetchBook}
         editClassifications={editClassifications}
-        />
+      />
     );
     instance = wrapper.instance() as any;
   });
 
   describe("rendering", () => {
     it("shows book title", () => {
-      let title = wrapper.find("h2");
+      const title = wrapper.find("h2");
       expect(title.text()).to.equal(bookData.title);
     });
 
@@ -73,21 +77,23 @@ describe("Classifications", () => {
       let error = wrapper.find(ErrorMessage);
       expect(error.length).to.equal(0);
 
-      let errorData = { status: 500, url: "url", response: "error" };
+      const errorData = { status: 500, url: "url", response: "error" };
       wrapper.setProps({ fetchError: errorData });
       error = wrapper.find(ErrorMessage);
       expect(error.props().error).to.equal(errorData);
     });
 
     it("shows classifications form", () => {
-      let form = wrapper.find(ClassificationsForm);
+      const form = wrapper.find(ClassificationsForm);
       expect(form.props().book).to.equal(bookData);
       expect(form.props().genreTree).to.equal(genreData);
-      expect(form.props().editClassifications).to.equal(instance.editClassifications);
+      expect(form.props().editClassifications).to.equal(
+        instance.editClassifications
+      );
     });
 
     it("shows classifications table", () => {
-      let table = wrapper.find(ClassificationsTable);
+      const table = wrapper.find(ClassificationsTable);
       expect(table.props().classifications).to.equal(classificationsData);
     });
   });
@@ -97,20 +103,28 @@ describe("Classifications", () => {
       expect(fetchGenreTree.callCount).to.equal(1);
       expect(fetchGenreTree.args[0][0]).to.equal("/admin/genres");
       expect(fetchClassifications.callCount).to.equal(1);
-      expect(fetchClassifications.args[0][0]).to.equal(instance.classificationsUrl());
+      expect(fetchClassifications.args[0][0]).to.equal(
+        instance.classificationsUrl()
+      );
     });
 
     it("refreshes book, classifications, and Catalog after editing classifications", (done) => {
-      let formData = new (window as any).FormData();
-      editClassifications.returns(new Promise((resolve, reject) => resolve()));
-      instance.editClassifications(formData).then(response => {
+      const formData = new (window as any).FormData();
+      editClassifications.returns(
+        new Promise<void>((resolve, reject) => resolve())
+      );
+      instance.editClassifications(formData).then((response) => {
         expect(editClassifications.callCount).to.equal(1);
-        expect(editClassifications.args[0][0]).to.equal(instance.editClassificationsUrl());
+        expect(editClassifications.args[0][0]).to.equal(
+          instance.editClassificationsUrl()
+        );
         expect(editClassifications.args[0][1]).to.equal(formData);
         expect(fetchBook.callCount).to.equal(1);
         expect(fetchBook.args[0][0]).to.equal("book admin url");
         expect(fetchClassifications.callCount).to.equal(2); // already called on mount
-        expect(fetchClassifications.args[1][0]).to.equal(instance.classificationsUrl());
+        expect(fetchClassifications.args[1][0]).to.equal(
+          instance.classificationsUrl()
+        );
         expect(refreshCatalog.callCount).to.equal(1);
         done();
       });

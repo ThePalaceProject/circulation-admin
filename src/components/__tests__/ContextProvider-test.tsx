@@ -20,7 +20,7 @@ describe("ContextProvider", () => {
     wrapper = shallow(
       <ContextProvider
         csrfToken="token"
-        roles={ [{ "role": "system" }] }
+        roles={[{ role: "system" }]}
         email="email"
       >
         <FakeChild />
@@ -31,7 +31,7 @@ describe("ContextProvider", () => {
   });
 
   it("provides child context", () => {
-    let context = instance.getChildContext();
+    const context = instance.getChildContext();
     expect(context.editorStore.getState().editor).to.be.ok;
     expect(context.editorStore.getState().catalog).to.be.ok;
     expect(context.csrfToken).to.equal("token");
@@ -42,13 +42,13 @@ describe("ContextProvider", () => {
   });
 
   it("renders child", () => {
-    let children = wrapper.find(FakeChild);
+    const children = wrapper.find(FakeChild);
     expect(children.length).to.equal(1);
   });
 
   it("should pass down the pathFor function down to the child as context", () => {
     const hasAccess = "has access to pathFor context";
-    let pathForStub = stub();
+    const pathForStub = stub();
     class MockContextProvider extends ContextProvider {
       constructor(props) {
         super(props);
@@ -58,19 +58,17 @@ describe("ContextProvider", () => {
 
     class Child extends React.Component<{}, {}> {
       static contextTypes = {
-        pathFor: PropTypes.func.isRequired
+        pathFor: PropTypes.func.isRequired,
       };
       render() {
         const hasContext = this.context && this.context.pathFor === pathForStub;
         return (
-          <div>
-            {hasContext ? hasAccess : "doesn't have access to context"}
-          </div>
+          <div>{hasContext ? hasAccess : "doesn't have access to context"}</div>
         );
       }
     }
 
-    let mockProvider = mount(
+    const mockProvider = mount(
       <MockContextProvider csrfToken="token">
         <Child />
       </MockContextProvider>
@@ -80,62 +78,77 @@ describe("ContextProvider", () => {
   });
 
   describe("class methods", () => {
-    let collectionUrl = "collection/url";
-    let bookUrl = "book/url";
-    let tab = "tab";
+    const collectionUrl = "collection/url";
+    const bookUrl = "book/url";
+    const tab = "tab";
 
     describe("prepareCollectionUrl", () => {
       it("prepares collection url", () => {
-        let host = "http://example.com";
+        const host = "http://example.com";
         (jsdom as any).changeURL(window, host + "/test");
-        let url = host + "/groups/eng/Adult%20Fiction";
-        expect(instance.prepareCollectionUrl(url)).to.equal("groups%2Feng%2FAdult%2520Fiction");
+        const url = host + "/groups/eng/Adult%20Fiction";
+        expect(instance.prepareCollectionUrl(url)).to.equal(
+          "groups%2Feng%2FAdult%2520Fiction"
+        );
       });
     });
 
     describe("prepareBookUrl", () => {
       it("prepares book url", () => {
-        let host = "http://example.com";
+        const host = "http://example.com";
         (jsdom as any).changeURL(window, host + "/test");
-        let url = host + "/library/works/Axis%20360/Axis%20360%20ID/0016201449";
-        expect(instance.prepareBookUrl(url)).to.equal("library%2FAxis%2520360%2FAxis%2520360%2520ID%2F0016201449");
+        const url =
+          host + "/library/works/Axis%20360/Axis%20360%20ID/0016201449";
+        expect(instance.prepareBookUrl(url)).to.equal(
+          "library%2FAxis%2520360%2FAxis%2520360%2520ID%2F0016201449"
+        );
       });
     });
 
     describe("pathFor", () => {
       it("returns a path with collection, book, and tab", () => {
-        let path = pathFor(collectionUrl, bookUrl, tab);
+        const path = pathFor(collectionUrl, bookUrl, tab);
         expect(path).to.equal(
-          `/admin/web/collection/${instance.prepareCollectionUrl(collectionUrl)}` +
-          `/book/${instance.prepareBookUrl(bookUrl)}/tab/${tab}`
+          `/admin/web/collection/${instance.prepareCollectionUrl(
+            collectionUrl
+          )}` + `/book/${instance.prepareBookUrl(bookUrl)}/tab/${tab}`
         );
       });
 
       it("returns a path with collection and book", () => {
-        let path = pathFor(collectionUrl, bookUrl, null);
+        const path = pathFor(collectionUrl, bookUrl, null);
         expect(path).to.equal(
-          `/admin/web/collection/${instance.prepareCollectionUrl(collectionUrl)}` +
-          `/book/${instance.prepareBookUrl(bookUrl)}`
+          `/admin/web/collection/${instance.prepareCollectionUrl(
+            collectionUrl
+          )}` + `/book/${instance.prepareBookUrl(bookUrl)}`
         );
       });
 
       it("returns a path with only collection", () => {
-        let path = pathFor(collectionUrl, null, null);
-        expect(path).to.equal(`/admin/web/collection/${instance.prepareCollectionUrl(collectionUrl)}`);
+        const path = pathFor(collectionUrl, null, null);
+        expect(path).to.equal(
+          `/admin/web/collection/${instance.prepareCollectionUrl(
+            collectionUrl
+          )}`
+        );
       });
 
       it("returns a path with only book", () => {
-        let path = pathFor(null, bookUrl, null);
-        expect(path).to.equal(`/admin/web/book/${instance.prepareBookUrl(bookUrl)}`);
+        const path = pathFor(null, bookUrl, null);
+        expect(path).to.equal(
+          `/admin/web/book/${instance.prepareBookUrl(bookUrl)}`
+        );
       });
 
       it("returns a path with book and tab", () => {
-        let path = pathFor(null, bookUrl, tab);
-        expect(path).to.equal(`/admin/web/book/${instance.prepareBookUrl(bookUrl)}/tab/${tab}`);
+        const path = pathFor(null, bookUrl, tab);
+        expect(path).to.equal(
+          `/admin/web/book/${instance.prepareBookUrl(bookUrl)}/tab/${tab}`
+        );
       });
 
       it("returns a path with no collection, book, or tab", () => {
-        let path = pathFor(null, null, null);
+        const path = pathFor(null, null, null);
         expect(path).to.equal(`/admin/web`);
       });
     });

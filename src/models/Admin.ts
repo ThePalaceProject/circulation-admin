@@ -7,7 +7,7 @@ export default class Admin {
   private sitewideLibraryManager: boolean = false;
   private sitewideLibrarian: boolean = false;
   private manager: boolean = false;
-  private libraryRoles: {[library: string]: string} = {};
+  private libraryRoles: { [library: string]: string } = {};
 
   constructor(roles: AdminRoleData[], email?: string) {
     this.roles = roles;
@@ -17,10 +17,12 @@ export default class Admin {
         case "system": {
           this.systemAdmin = true;
         }
+        // eslint-disable-next-line no-fallthrough
         case "manager-all": {
           this.sitewideLibraryManager = true;
           this.manager = true;
         }
+        // eslint-disable-next-line no-fallthrough
         case "librarian-all": {
           this.sitewideLibrarian = true;
           break;
@@ -73,11 +75,17 @@ export default class Admin {
   }
 
   isLibraryManager(library: string) {
-    return this.sitewideLibraryManager || this.libraryRoles[library] === "manager";
+    return (
+      this.sitewideLibraryManager || this.libraryRoles[library] === "manager"
+    );
   }
 
   isLibrarian(library: string) {
-    return this.isLibraryManager(library) || this.sitewideLibrarian || this.libraryRoles[library] === "librarian";
+    return (
+      this.isLibraryManager(library) ||
+      this.sitewideLibrarian ||
+      this.libraryRoles[library] === "librarian"
+    );
   }
 
   isLibraryManagerOfSomeLibrary() {

@@ -21,5 +21,5 @@ const extraActions = {
 export default createFetchEditReducer<PatronData>(
   ActionCreator.PATRON_LOOKUP,
   ActionCreator.RESET_ADOBE_ID,
-  extraActions,
+  extraActions
 );

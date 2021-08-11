@@ -5,7 +5,7 @@ import {
   ContentState,
   RichUtils,
   convertFromHTML,
-  compositeDecorator
+  compositeDecorator,
 } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import { Button } from "library-simplified-reusable-components";
@@ -20,9 +20,12 @@ interface EditorFieldProps {
   disabled: boolean;
 }
 
-export default class EditorField extends React.Component<EditorFieldProps, EditorFieldState> {
+export default class EditorField extends React.Component<
+  EditorFieldProps,
+  EditorFieldState
+> {
   static defaultProps = {
-    defaultContent: "<p>Update the content for this field.</p>"
+    defaultContent: "<p>Update the content for this field.</p>",
   };
 
   constructor(props) {
@@ -31,8 +34,10 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     // summary is empty. This value, however, breaks when trying to create
     // a contentState from `ContentState.createFromBlockArray` since
     // `blocksFromHTML.contentBlocks` is an empty array.
-    let content = (!props.content || props.content === "<p></p>" || props.content === "") ?
-      props.defaultContent : props.content;
+    const content =
+      !props.content || props.content === "<p></p>" || props.content === ""
+        ? props.defaultContent
+        : props.content;
     let blocksFromHTML;
 
     try {
@@ -42,9 +47,14 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     }
     const contentState = ContentState.createFromBlockArray(
       blocksFromHTML.contentBlocks,
-      blocksFromHTML.entityMap,
+      blocksFromHTML.entityMap
     );
-    this.state = { editorState: EditorState.createWithContent(contentState, compositeDecorator) };
+    this.state = {
+      editorState: EditorState.createWithContent(
+        contentState,
+        compositeDecorator
+      ),
+    };
 
     this.onChange = this.onChange.bind(this);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
@@ -58,23 +68,31 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
   }
 
   handleKeyCommand(command, editorState) {
-   const newState = RichUtils.handleKeyCommand(editorState, command);
-   if (newState) {
-     this.onChange(newState);
-     return "handled";
-   }
-   return "not-handled";
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      this.onChange(newState);
+      return "handled";
+    }
+    return "not-handled";
   }
 
   renderButton(style: string): JSX.Element {
-    let buttonContent = React.createElement(style[0].toLowerCase(), null, style);
-    let isActive = this.state.editorState.getSelection().getHasFocus() && this.state.editorState.getCurrentInlineStyle().has(style.toUpperCase());
+    const buttonContent = React.createElement(
+      style[0].toLowerCase(),
+      null,
+      style
+    );
+    const isActive =
+      this.state.editorState.getSelection().getHasFocus() &&
+      this.state.editorState.getCurrentInlineStyle().has(style.toUpperCase());
     return (
       <Button
         content={buttonContent}
         mouseDown={true}
         key={style}
-        callback={(e) => { this.changeStyle(e, style.toUpperCase()); }}
+        callback={(e) => {
+          this.changeStyle(e, style.toUpperCase());
+        }}
         className={`btn inline squared${isActive ? " active" : ""}`}
         disabled={this.props.disabled}
         type="button"
@@ -95,7 +113,7 @@ export default class EditorField extends React.Component<EditorFieldProps, Edito
     const styles = ["Bold", "Italic", "Underline"];
     return (
       <div className="editor-field">
-        <ul>{ styles.map(style => this.renderButton(style)) }</ul>
+        <ul>{styles.map((style) => this.renderButton(style))}</ul>
         <Editor
           editorState={this.state.editorState}
           onChange={this.onChange}

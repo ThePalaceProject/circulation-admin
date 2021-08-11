@@ -2,33 +2,95 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import adapter from "../editorAdapter";
-import { OPDSEntry, Contributor, Series, Category, Summary } from "opds-feed-parser";
+import {
+  OPDSEntry,
+  Contributor,
+  Series,
+  Category,
+  Summary,
+} from "opds-feed-parser";
 
 describe("editorAdapter", () => {
   it("adapts valid OPDS entry", () => {
-    let entry = new OPDSEntry({
+    const entry = new OPDSEntry({
       id: "id",
       updated: "updated",
       title: "title",
       authors: [new Contributor({ name: "name", uri: "uri", role: "role" })],
       subtitle: "subtitle",
-      contributors: [new Contributor({ name: "name2", uri: "uri2", role: "role2" })],
+      contributors: [
+        new Contributor({ name: "name2", uri: "uri2", role: "role2" }),
+      ],
       series: new Series({ name: "series", position: 2 }),
       categories: [
         new Category({ term: "term", scheme: "scheme", label: "label" }),
-        new Category({ term: "13-16", scheme: "http://schema.org/typicalAgeRange", label: "age" }),
-        new Category({ term: "ya", scheme: "http://schema.org/audience", label: "ya" }),
-        new Category({ term: "fiction", scheme: "http://librarysimplified.org/terms/fiction/", label: "Fiction" })
+        new Category({
+          term: "13-16",
+          scheme: "http://schema.org/typicalAgeRange",
+          label: "age",
+        }),
+        new Category({
+          term: "ya",
+          scheme: "http://schema.org/audience",
+          label: "ya",
+        }),
+        new Category({
+          term: "fiction",
+          scheme: "http://librarysimplified.org/terms/fiction/",
+          label: "Fiction",
+        }),
       ],
       identifiers: [],
       links: [
-        { href: "hide", rel: "http://librarysimplified.org/terms/rel/hide", type: "type", title: "title", role: "role" },
-        { href: "restore", rel: "http://librarysimplified.org/terms/rel/restore", type: "type", title: "title", role: "role" },
-        { href: "refresh", rel: "http://librarysimplified.org/terms/rel/refresh", type: "type", title: "title", role: "role" },
-        { href: "edit", rel: "edit", type: "type", title: "title", role: "role" },
-        { href: "issues", rel: "issues", type: "type", title: "title", role: "role" },
-        { href: "change-cover", rel: "http://librarysimplified.org/terms/rel/change_cover", type: "type", title: "title", role: "role" },
-        { href: "cover", rel: "http://opds-spec.org/image", type: "image/png", title: "title", role: "role" },
+        {
+          href: "hide",
+          rel: "http://librarysimplified.org/terms/rel/hide",
+          type: "type",
+          title: "title",
+          role: "role",
+        },
+        {
+          href: "restore",
+          rel: "http://librarysimplified.org/terms/rel/restore",
+          type: "type",
+          title: "title",
+          role: "role",
+        },
+        {
+          href: "refresh",
+          rel: "http://librarysimplified.org/terms/rel/refresh",
+          type: "type",
+          title: "title",
+          role: "role",
+        },
+        {
+          href: "edit",
+          rel: "edit",
+          type: "type",
+          title: "title",
+          role: "role",
+        },
+        {
+          href: "issues",
+          rel: "issues",
+          type: "type",
+          title: "title",
+          role: "role",
+        },
+        {
+          href: "change-cover",
+          rel: "http://librarysimplified.org/terms/rel/change_cover",
+          type: "type",
+          title: "title",
+          role: "role",
+        },
+        {
+          href: "cover",
+          rel: "http://opds-spec.org/image",
+          type: "image/png",
+          title: "title",
+          role: "role",
+        },
       ],
       issued: "issued",
       language: "language",
@@ -37,23 +99,37 @@ describe("editorAdapter", () => {
       published: "published",
       summary: new Summary({ content: "content", link: "link" }),
       unparsed: {
-        "schema:alternativeHeadline": [{ "_": "subtitle" }],
-        "$": {
-          "schema:additionalType": { value: "medium" }
+        "schema:alternativeHeadline": [{ _: "subtitle" }],
+        $: {
+          "schema:additionalType": { value: "medium" },
         },
-        "bib:publisherImprint": [{ "_": "imprint" }],
+        "bib:publisherImprint": [{ _: "imprint" }],
         "schema:Rating": [
-          { "$": { "schema:ratingValue": { value: "0.3" },
-                   "schema:additionalType": { value: "http://librarysimplified.org/terms/rel/quality" }}},
-          { "$": { "schema:ratingValue": { value: "4" },
-                   "schema:additionalType": { value: "http://schema.org/ratingValue" }}}
-        ]
-      }
+          {
+            $: {
+              "schema:ratingValue": { value: "0.3" },
+              "schema:additionalType": {
+                value: "http://librarysimplified.org/terms/rel/quality",
+              },
+            },
+          },
+          {
+            $: {
+              "schema:ratingValue": { value: "4" },
+              "schema:additionalType": {
+                value: "http://schema.org/ratingValue",
+              },
+            },
+          },
+        ],
+      },
     });
 
-    let adapted = adapter(entry);
+    const adapted = adapter(entry);
     expect(adapted.title).to.equal("title");
-    expect(adapted.authors).to.deep.equal([{ name: "name", uri: "uri", role: "aut" }]);
+    expect(adapted.authors).to.deep.equal([
+      { name: "name", uri: "uri", role: "aut" },
+    ]);
     expect(adapted.contributors).to.deep.equal(entry.contributors);
     expect(adapted.subtitle).to.equal("subtitle");
     expect(adapted.summary).to.equal("content");
@@ -79,7 +155,7 @@ describe("editorAdapter", () => {
   });
 
   it("doesn't crash when expected data is missing", () => {
-    let entry = new OPDSEntry({
+    const entry = new OPDSEntry({
       id: "id",
       updated: "updated",
       title: "title",
@@ -96,10 +172,10 @@ describe("editorAdapter", () => {
       publisher: "publisher",
       published: "published",
       summary: new Summary({ content: "content", link: "link" }),
-      unparsed: {}
+      unparsed: {},
     });
 
-    let adapted = adapter(entry);
+    const adapted = adapter(entry);
     expect(adapted.title).to.equal("title");
   });
 });

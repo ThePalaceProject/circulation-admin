@@ -17,7 +17,7 @@ describe("Footer", () => {
     );
   });
   it("displays a link", () => {
-    let linkElement = wrapper.find("p").find("a");
+    const linkElement = wrapper.find("p").find("a");
     expect(linkElement.length).to.equal(1);
     expect(linkElement.text()).to.equal("Terms of Service Text");
     expect(linkElement.prop("href")).to.equal("terms_of_service");

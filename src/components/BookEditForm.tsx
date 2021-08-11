@@ -113,10 +113,10 @@ export default class BookEditForm extends React.Component<
           value={mediumValue}
         >
           {this.props.media &&
-            Object.values(this.props.media).map((medium) => (
+            Object.values(this.props.media).map((medium, idx) => (
               <option
+                key={`${medium}-${idx}`}
                 value={medium}
-                key={medium}
                 aria-selected={mediumValue === medium}
               >
                 {medium}

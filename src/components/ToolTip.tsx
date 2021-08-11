@@ -13,26 +13,35 @@ export interface ToolTipProps {
 /**
  * Displays a tooltip helper displaying additional information.
  */
-export default class ToolTip extends React.Component <ToolTipProps, ToolTipState> {
-
+export default class ToolTip extends React.Component<
+  ToolTipProps,
+  ToolTipState
+> {
   constructor(props) {
     super(props);
     this.state = {
-      show: false
+      show: false,
     };
     this.showToolTip = this.showToolTip.bind(this);
     this.hideToolTip = this.hideToolTip.bind(this);
   }
 
   render(): JSX.Element {
-    return(
-      <div className="tool-tip-container" onMouseEnter={this.showToolTip} onMouseLeave={this.hideToolTip}>
-        { this.props.trigger }
+    return (
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+      <div
+        className="tool-tip-container"
+        onMouseEnter={this.showToolTip}
+        onMouseLeave={this.hideToolTip}
+        role="tooltip"
+      >
+        {this.props.trigger}
         <span
-          className={`tool-tip ${this.state.show ? "" : "hide"} ${this.props.direction ? this.props.direction : ""}`}
-          dangerouslySetInnerHTML={{__html: this.props.text}}
-        >
-        </span>
+          className={`tool-tip ${this.state.show ? "" : "hide"} ${
+            this.props.direction ? this.props.direction : ""
+          }`}
+          dangerouslySetInnerHTML={{ __html: this.props.text }}
+        ></span>
       </div>
     );
   }

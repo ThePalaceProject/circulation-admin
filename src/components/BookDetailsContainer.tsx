@@ -17,19 +17,24 @@ export interface BookDetailsContainerContext {
 /** Wrapper for `BookDetailsTabContainer` that extracts parameters from its context
     and converts them into props. This component is passed into the OPDSCatalog from
     opds-web-client to replace the body of the book details page. */
-export default class BookDetailsContainer extends React.Component<BookDetailsContainerProps, {}> {
+export default class BookDetailsContainer extends React.Component<
+  BookDetailsContainerProps,
+  {}
+> {
   context: BookDetailsContainerContext;
 
   static contextTypes = {
     csrfToken: PropTypes.string.isRequired,
     tab: PropTypes.string,
     editorStore: PropTypes.object.isRequired,
-    library: PropTypes.func.isRequired
+    library: PropTypes.func.isRequired,
   };
 
   render(): JSX.Element {
-    let child = React.Children.only(this.props.children) as React.ReactElement<BookDetails>;
-    let book = React.createElement(BookDetails, child.props);
+    const child = React.Children.only(
+      this.props.children
+    ) as React.ReactElement<BookDetails>;
+    const book = React.createElement(BookDetails, child.props);
 
     return (
       <div className="book-details-container">
@@ -41,8 +46,9 @@ export default class BookDetailsContainer extends React.Component<BookDetailsCon
           tab={this.context.tab}
           library={this.context.library}
           store={this.context.editorStore}
-          csrfToken={this.context.csrfToken}>
-          { book }
+          csrfToken={this.context.csrfToken}
+        >
+          {book}
         </BookDetailsTabContainer>
       </div>
     );
