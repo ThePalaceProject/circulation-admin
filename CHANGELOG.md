@@ -1,15 +1,11 @@
 ## Changelog
 
-### 08/10/2021
+### v0.5.3
 
-#### Updated (to be included in next version)
+#### Updated
 
-- Addressed linter errors throughout repo and used prettier to format code conistently.
-
-### 08/06/2021
-
-#### Updated (to be included in next version)
-
+- Added a value attribute to the book cover URL's `EditableInput` in `BookCoverEditor` so that the existing URL pulls through for the user to start.
+- Addressed linter errors throughout repo and used prettier to format code consistently.
 - Prepended all deprecated React lifecycle methods (componentWillMount and componentWillReceiveProps) with UNSAFE\_.
 
 ### v0.5.2
