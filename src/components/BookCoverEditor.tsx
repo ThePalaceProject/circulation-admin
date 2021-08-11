@@ -148,6 +148,7 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 label="URL for cover image"
                 ref={this.coverUrlRef}
                 optionalText={false}
+                value={this.props.book.coverUrl}
               />
               <EditableInput
                 elementType="input"
