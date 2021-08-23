@@ -5,34 +5,35 @@ on:
 
   workflow_dispatch:
 
-
 jobs:
   sync_with_nypl:
     runs-on: ubuntu-latest
 
     env:
-      REMOTE_ORG: NYPL-Simplified
-      REMOTE_REPO: circulation-web
-      REMOTE_BRANCH: main
-      LOCAL_BRANCH: nypl/main
+      UPSTREAM_ORG: NYPL-Simplified
+      UPSTREAM_REPO: circulation-web
+      UPSTREAM_BRANCH: main
+      ORIGIN_BRANCH: nypl/main
 
     steps:
-    - name: Checkout local branch
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.LOCAL_BRANCH }}
+      - name: Checkout repo to sync
+        uses: actions/checkout@v2
+        with:
+          path: code
 
-    - name: Fetch remote repo
-      id: fetch
-      run: |
-        git remote add upstream https://github.com/${{ env.REMOTE_ORG }}/${{ env.REMOTE_REPO }}.git
-        git fetch upstream ${{ env.REMOTE_BRANCH }}
-        echo "::set-output name=LOCAL_COMMIT::$(git rev-parse refs/heads/${{ env.LOCAL_BRANCH }})"
-        echo "::set-output name=REMOTE_COMMIT::$(git rev-parse refs/remotes/upstream/${{ env.REMOTE_BRANCH }})"
+      - name: Checkout CI scripts
+        uses: actions/checkout@v2
+        with:
+          repository: 'ThePalaceProject/ci-scripts'
+          path: ci
 
-    - name: Sync
-      if: steps.fetch.outputs.LOCAL_COMMIT != steps.fetch.outputs.REMOTE_COMMIT
-      run: |
-        git pull --no-edit --ff-only upstream ${{ env.REMOTE_BRANCH }}
-        git push origin ${{ env.LOCAL_BRANCH }}
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
+      - name: Install Python requirements
+        run: pip install -r ci/sync-requirements.txt
+
+      - name: Sync branch with upstream
+        run: python ci/sync.py code
