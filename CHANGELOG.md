@@ -1,6 +1,14 @@
 ## Changelog
 
+### v0.5.4
+
+#### Updated
+
+- Updated the version of opds-web-client after successfully testing the version below.
+
 ### v0.5.4-test
+
+#### Updated
 
 - Updated the version of opds-web-client in order to test a fix for bugs affecting the List Manager.
 
