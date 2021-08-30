@@ -146,9 +146,13 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
                 disabled={this.props.isFetching}
                 name="cover_url"
                 label="URL for cover image"
+                description={
+                  this.props.book.coverUrl
+                    ? `Current URL: ${this.props.book.coverUrl}`
+                    : ""
+                }
                 ref={this.coverUrlRef}
                 optionalText={false}
-                value={this.props.book.coverUrl}
               />
               <EditableInput
                 elementType="input"

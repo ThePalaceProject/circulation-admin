@@ -1,5 +1,11 @@
 ## Changelog
 
+### 08/30/21 (to be included in future release)
+
+#### Updated
+
+- Updated the book cover editor so that the current cover URL pulls through not as a value in the input (as described in v0.5.3), but as a description beneath the input.
+
 ### v0.5.4
 
 #### Updated
