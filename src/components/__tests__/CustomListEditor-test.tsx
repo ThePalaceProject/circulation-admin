@@ -718,21 +718,25 @@ describe("CustomListEditor", () => {
       expect(hasChanges).to.equal(true);
     });
   });
-  it("should know whether the list title is blank", () => {
-    // There is a list property with a title
-    expect(wrapper.instance().isTitleEmpty()).to.be.false;
+  it("should know whether the list title is blank, or there are no entries", () => {
+    // There is a list property with a title and entries
+    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.false;
     wrapper.setProps({ list: null });
+    wrapper.setState({ entries: [] });
     wrapper.setState({ title: null });
     // New list, no title
-    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
     // New list, title is still just the placeholder
     wrapper.setState({ title: "list title" });
-    expect(wrapper.instance().isTitleEmpty()).to.be.true;
+    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
     // New list, placeholder has been deleted.
     wrapper.setState({ title: "" });
-    expect(wrapper.instance().isTitleEmpty()).to.be.true;
-    // Adding a title...
+    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
+    // Adding a title, but no entries...
     wrapper.setState({ title: "testing..." });
-    expect(wrapper.instance().isTitleEmpty()).to.be.false;
+    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
+    // Adding entries...
+    wrapper.setState({ entries: [{ id: "1234", title: "a", authors: [] }] });
+    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.false;
   });
 });
