@@ -74,7 +74,7 @@ export default class CustomListEditor extends React.Component<
     const hasChanges = this.hasChanges();
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
-    const disableSave = this.isTitleEmpty() || !hasChanges;
+    const disableSave = this.isTitleOrEntriesEmpty() || !hasChanges;
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -228,14 +228,20 @@ export default class CustomListEditor extends React.Component<
     }
   }
 
-  isTitleEmpty(): boolean {
-    if (this.props.list?.title) {
+  isTitleOrEntriesEmpty(): boolean {
+    // Checks if the list is in a saveable state (aka, has a title and books).
+    if (
+      (this.props.list?.title || this.state.title) &&
+      this.state.title !== "list title" &&
+      this.state.entries.length
+    ) {
       return false;
     } else {
       return (
         !this.state.title ||
         this.state.title === "list title" ||
-        this.state.title === ""
+        this.state.title === "" ||
+        this.state.entries.length === 0
       );
     }
   }
