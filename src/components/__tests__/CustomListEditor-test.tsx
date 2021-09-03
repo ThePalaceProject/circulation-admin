@@ -246,7 +246,7 @@ describe("CustomListEditor", () => {
     getEntriesStub.restore();
   });
 
-  it("shouldn't allow you to save unless the list has a title", () => {
+  it("shouldn't allow you to save unless the list has a title and entries", () => {
     wrapper = mount(
       <CustomListEditor
         library={library}
@@ -267,6 +267,14 @@ describe("CustomListEditor", () => {
     expect(saveButton.props().disabled).to.equal(true);
 
     wrapper.setState({ title: "new list title" });
+    saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
+
+    expect(saveButton.props().disabled).to.equal(true);
+
+    wrapper.setState({
+      title: "new list title",
+      entries: [{ id: "1234", title: "a", authors: [] }],
+    });
     saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
 
     expect(saveButton.props().disabled).to.equal(false);
@@ -304,7 +312,7 @@ describe("CustomListEditor", () => {
       "getEntries"
     ).returns(newEntries);
     const saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
-    wrapper.setState({ title: "new list title" });
+    wrapper.setState({ title: "new list title", entries: newEntries });
     saveButton.simulate("click");
 
     expect(editCustomList.callCount).to.equal(1);
