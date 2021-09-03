@@ -4,7 +4,7 @@
 
 #### Updated
 
-- Updated CustomListEditor so that the "Save this list" button is disabled if either title or entries are absent, and enabled if both are present.
+- Updated `CustomListEditor` so that the "Save this list" button is disabled if either title or entries are absent, and enabled if both are present.
 - Updated the book cover editor so that the current cover URL pulls through not as a value in the input (as described in v0.5.3), but as a description beneath the input.
 
 ### v0.5.4
