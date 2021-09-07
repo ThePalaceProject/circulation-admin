@@ -182,13 +182,7 @@ export default class CustomListEditor extends React.Component<
     // state of the component can already have updates that need to be taken
     // into account.
     if (!nextProps.list && !this.props.list) {
-      // This is no current or previous list, so this is a new list.
-      if (!this.state.title) {
-        this.setState({ title: "", entries: [], collections: [] });
-      } else {
-        // This is a new list, but the user has already entered a title.
-        this.setState({ entries: [], collections: [] });
-      }
+      this.setState({ entries: [], collections: [] });
     } else if (nextProps.list && nextProps.listId !== this.props.listId) {
       // Update the state with the next list to edit.
       this.setState({
