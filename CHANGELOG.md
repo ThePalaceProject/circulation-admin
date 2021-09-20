@@ -1,5 +1,11 @@
 ## Changelog
 
+### September 17, 2021
+
+#### Updated
+
+- Updated node-sass and sass-loader dependency versions to reduce the number of high risk vulnerabilities.
+
 ### v0.5.5
 
 #### Updated
