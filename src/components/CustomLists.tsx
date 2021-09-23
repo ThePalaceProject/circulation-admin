@@ -69,7 +69,7 @@ export interface CustomListsProps
     CustomListsOwnProps {}
 
 export interface CustomListsState {
-  sort: string;
+  sort: "asc" | "desc";
 }
 
 /** Body of the custom lists page, with all a library's lists shown in a left sidebar and

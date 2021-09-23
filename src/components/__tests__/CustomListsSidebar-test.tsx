@@ -104,7 +104,7 @@ describe("CustomListsSidebar", () => {
     let firstListEdit = wrapper.find(".custom-list-buttons").at(0).find(Link);
     expect(firstListEdit.hasClass("disabled")).to.be.false;
     expect(firstListEdit.text()).to.equal("EditPencil Icon");
-    wrapper.setProps({ identifier: 1 });
+    wrapper.setProps({ identifier: "1" });
     firstListEdit = wrapper
       .find(".custom-list-buttons")
       .at(0)

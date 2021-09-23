@@ -2,7 +2,7 @@ import * as React from "react";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
 import { Button } from "library-simplified-reusable-components";
-import { CustomListData, LibraryData } from "../interfaces";
+import { CustomListData } from "../interfaces";
 import EditableInput from "./EditableInput";
 import { Link } from "react-router";
 
@@ -13,51 +13,32 @@ export interface CustomListsSidebarProps {
   isLibraryManager: boolean;
   deleteCustomList: (list: CustomListData) => Promise<void>;
   changeSort: () => void;
-  sortOrder: string;
+  sortOrder: "asc" | "desc";
 }
 
-export default class CustomListsSidebar extends React.Component<
-  CustomListsSidebarProps,
-  {}
-> {
-  render(): JSX.Element {
-    return (
-      <div className="custom-lists-sidebar">
-        <h2>List Manager</h2>
-        <Link
-          className="btn create-button"
-          to={"/admin/web/lists/" + this.props.library + "/create"}
-        >
-          Create New List
-        </Link>
-
-        {this.props.lists && this.props.lists.length > 0 && (
-          <div>
-            {this.renderSortButtons()}
-            <ul>{this.props.lists.map((list) => this.renderListInfo(list))}</ul>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  renderSortButtons(): JSX.Element {
-    const sortOrders = [
-      ["A-Z", "asc"],
-      ["Z-A", "desc"],
-    ];
+export default function CustomListsSidebar({
+  lists,
+  library,
+  identifier,
+  isLibraryManager,
+  deleteCustomList,
+  changeSort,
+  sortOrder,
+}: CustomListsSidebarProps): JSX.Element {
+  const renderSortButtons = () => {
+    const sortOrders = ["asc", "desc"];
     return (
       <fieldset>
         <legend className="visuallyHidden">Select list sort type</legend>
         {sortOrders.map((order) => {
-          const isChecked = this.props.sortOrder === order[1];
+          const isChecked = sortOrder === order;
           return (
             <EditableInput
-              key={order[1]}
+              key={order}
               type="radio"
-              label={`Sort ${order[0]}`}
+              label={order === "asc" ? "Sort A-Z" : "Sort Z-A"}
               name="sort"
-              onChange={this.props.changeSort}
+              onChange={changeSort}
               checked={isChecked}
               disabled={false}
             />
@@ -65,12 +46,11 @@ export default class CustomListsSidebar extends React.Component<
         })}
       </fieldset>
     );
-  }
+  };
 
-  renderListInfo(list: CustomListData): JSX.Element {
-    const isActive =
-      this.props.identifier &&
-      this.props.identifier.toString() === list.id.toString();
+  const renderListInfo = (list: CustomListData) => {
+    const isActive = identifier === list.id.toString();
+
     return (
       <li key={list.id} className={isActive ? "active" : ""}>
         <div className="custom-list-info">
@@ -87,7 +67,7 @@ export default class CustomListsSidebar extends React.Component<
             />
           ) : (
             <Link
-              to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
+              to={"/admin/web/lists/" + library + "/edit/" + list.id}
               className="btn left-align small"
             >
               <span>
@@ -96,9 +76,9 @@ export default class CustomListsSidebar extends React.Component<
               </span>
             </Link>
           )}
-          {this.props.isLibraryManager && (
+          {isLibraryManager && (
             <Button
-              callback={() => this.props.deleteCustomList(list)}
+              callback={() => deleteCustomList(list)}
               content={
                 <span>
                   Delete
@@ -111,5 +91,24 @@ export default class CustomListsSidebar extends React.Component<
         </div>
       </li>
     );
-  }
+  };
+
+  return (
+    <div className="custom-lists-sidebar">
+      <h2>List Manager</h2>
+      <Link
+        className="btn create-button"
+        to={"/admin/web/lists/" + library + "/create"}
+      >
+        Create New List
+      </Link>
+
+      {lists && lists.length > 0 && (
+        <div>
+          {renderSortButtons()}
+          <ul>{lists.map((list) => renderListInfo(list))}</ul>
+        </div>
+      )}
+    </div>
+  );
 }
