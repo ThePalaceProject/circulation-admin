@@ -19,14 +19,15 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         checked={true}
-        value="initial value">
+        value="initial value"
+      >
         <option aria-selected={false}>option</option>
       </EditableInput>
     );
   });
 
   it("should not show the error display style", () => {
-    let fieldError = wrapper.find(".field-error");
+    const fieldError = wrapper.find(".field-error");
 
     expect(fieldError.length).to.equal(0);
   });
@@ -35,30 +36,30 @@ describe("EditableInput", () => {
     let label = wrapper.find("label");
     expect(label.text()).to.contain("label");
 
-    wrapper.setProps({ "type": "checkbox" });
+    wrapper.setProps({ type: "checkbox" });
     label = wrapper.find("label");
     expect(label.text()).to.contain("label");
 
-    wrapper.setProps({ "type": "radio" });
+    wrapper.setProps({ type: "radio" });
     label = wrapper.find("label");
     expect(label.text()).to.contain("label");
   });
 
   it("shows description from props", () => {
-    let description = wrapper.find(".description");
+    const description = wrapper.find(".description");
     expect(description.html()).to.contain("<p>description</p>");
   });
 
   it("shows initial value from props", () => {
     expect(wrapper.state().value).to.equal("initial value");
-    let input = wrapper.find("input");
+    const input = wrapper.find("input");
     expect(input.prop("value")).to.equal("initial value");
     expect(input.prop("checked")).to.equal(true);
   });
 
   it("shows initial checked from props", () => {
     expect(wrapper.state("checked")).to.equal(true);
-    let input = wrapper.find("input");
+    const input = wrapper.find("input");
     expect(input.prop("checked")).to.equal(true);
   });
 
@@ -74,12 +75,12 @@ describe("EditableInput", () => {
   });
 
   it("shows children from props", () => {
-    let option = wrapper.find("option");
+    const option = wrapper.find("option");
     expect(option.text()).to.equal("option");
   });
 
   it("directly sets a new value", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <EditableInput
         elementType="input"
         type="text"
@@ -100,7 +101,7 @@ describe("EditableInput", () => {
     wrapper.setProps({ value: "new value", checked: false });
     expect(wrapper.state().value).to.equal("new value");
     expect(wrapper.state().checked).to.equal(false);
-    let input = wrapper.find("input");
+    const input = wrapper.find("input");
     expect(input.prop("value")).to.equal("new value");
     expect(input.prop("checked")).to.equal(false);
   });
@@ -114,7 +115,7 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         value="initial value"
-        />
+      />
     );
     let input = wrapper.find("input");
     let inputElement = input.getDOMNode();
@@ -131,7 +132,7 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         checked={true}
-        />
+      />
     );
     input = wrapper.find("input");
     inputElement = input.getDOMNode();
@@ -148,7 +149,7 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         checked={true}
-        />
+      />
     );
     input = wrapper.find("input");
     inputElement = input.getDOMNode();
@@ -158,7 +159,7 @@ describe("EditableInput", () => {
   });
 
   it("disables", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <EditableInput
         elementType="input"
         type="text"
@@ -166,15 +167,15 @@ describe("EditableInput", () => {
         name="name"
         disabled={true}
         value="initial value"
-        />
+      />
     );
-    let input = wrapper.find("input");
+    const input = wrapper.find("input");
     expect(input.prop("disabled")).to.equal(true);
   });
 
   it("calls provided onChange", () => {
-    let onChange = stub();
-    let wrapper = mount(
+    const onChange = stub();
+    const wrapper = mount(
       <EditableInput
         elementType="input"
         type="text"
@@ -183,11 +184,11 @@ describe("EditableInput", () => {
         disabled={true}
         value="initial value"
         onChange={onChange}
-        />
+      />
     );
 
-    let input = wrapper.find("input");
-    let inputElement = input.getDOMNode();
+    const input = wrapper.find("input");
+    const inputElement = input.getDOMNode();
     inputElement.value = "new value";
     input.simulate("change");
     expect(onChange.callCount).to.equal(1);
@@ -202,13 +203,13 @@ describe("EditableInput", () => {
         name="name"
         disabled={false}
         value="initial value"
-        />
+      />
     );
 
     (wrapper.instance() as EditableInput).clear();
     expect(wrapper.state("value")).to.equal("");
     expect(wrapper.state("checked")).to.equal(false);
-    let inputElement = wrapper.find("input").getDOMNode();
+    const inputElement = wrapper.find("input").getDOMNode();
     expect(inputElement.value).to.equal("");
     expect(inputElement.checked).to.equal(false);
   });

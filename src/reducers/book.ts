@@ -15,7 +15,7 @@ const initialState: BookState = {
   data: null,
   isFetching: false,
   fetchError: null,
-  editError: null
+  editError: null,
 };
 
 export default (state: BookState = initialState, action) => {
@@ -28,32 +28,32 @@ export default (state: BookState = initialState, action) => {
         url: action.url,
         isFetching: true,
         fetchError: null,
-        editError: null
+        editError: null,
       });
 
     case ActionCreator.EDIT_BOOK_REQUEST:
       return Object.assign({}, state, {
         isFetching: true,
-        editError: null
+        editError: null,
       });
 
     case ActionCreator.BOOK_ADMIN_LOAD:
       return Object.assign({}, state, {
         url: action.url,
         data: action.data,
-        isFetching: false
+        isFetching: false,
       });
 
     case ActionCreator.BOOK_ADMIN_FAILURE:
       return Object.assign({}, state, {
         fetchError: action.error,
-        isFetching: false
+        isFetching: false,
       });
 
     case ActionCreator.EDIT_BOOK_FAILURE:
       return Object.assign({}, state, {
         editError: action.error,
-        isFetching: false
+        isFetching: false,
       });
 
     default:

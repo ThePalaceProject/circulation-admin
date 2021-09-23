@@ -17,24 +17,19 @@ describe("ConfigPage", () => {
     store = buildStore();
     context = {
       editorStore: store,
-      csrfToken: "token"
+      csrfToken: "token",
     };
-    let params = {
+    const params = {
       tab: "libraries",
       editOrCreate: "edit",
-      identifier: "identifier"
+      identifier: "identifier",
     };
 
-    wrapper = shallow(
-      <ConfigPage
-        params={params}
-        />,
-      { context }
-    );
+    wrapper = shallow(<ConfigPage params={params} />, { context });
   });
 
   it("shows a tab container with tab from params", () => {
-    let tabContainer = wrapper.find(ConfigTabContainer);
+    const tabContainer = wrapper.find(ConfigTabContainer);
     expect(tabContainer).to.be.ok;
     expect(tabContainer.props().tab).to.equal("libraries");
     expect(tabContainer.props().editOrCreate).to.equal("edit");

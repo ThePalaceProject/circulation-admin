@@ -16,26 +16,26 @@ describe("PairedMenus", () => {
       label: "Input List",
       default: ["a", "b", "c"],
       options: [
-        {key: "a", label: "A"},
-        {key: "b", label: "B"},
-        {key: "c", label: "C"},
-        {key: "d", label: "D"},
-        {key: "e", label: "E"}
+        { key: "a", label: "A" },
+        { key: "b", label: "B" },
+        { key: "c", label: "C" },
+        { key: "d", label: "D" },
+        { key: "e", label: "E" },
       ],
-      paired: "dropdown"
+      paired: "dropdown",
     };
     dropdownSetting = {
       key: "dropdown",
       label: "Dropdown",
       default: "b",
       options: [
-        {key: "a", label: "A"},
-        {key: "b", label: "B"},
-        {key: "c", label: "C"},
-        {key: "d", label: "D"},
-        {key: "e", label: "E"}
+        { key: "a", label: "A" },
+        { key: "b", label: "B" },
+        { key: "c", label: "C" },
+        { key: "d", label: "D" },
+        { key: "e", label: "E" },
       ],
-      type: "select"
+      type: "select",
     };
     wrapper = mount(
       <PairedMenus
@@ -45,29 +45,40 @@ describe("PairedMenus", () => {
       />
     );
   });
-  let menuOptions = () => {
-    return inputListSetting.options.map(o => <option key={o.key} value={o.label} aria-selected={false} />);
+  const menuOptions = () => {
+    return inputListSetting.options.map((o) => (
+      <option key={o.key} value={o.label} aria-selected={false} />
+    ));
   };
   it("renders a fieldset with an InputList and a dropdown", () => {
-    let fieldset = wrapper.find("fieldset");
+    const fieldset = wrapper.find("fieldset");
     expect(fieldset.length).to.equal(1);
     expect(fieldset.find(InputList).length).to.equal(1);
     expect(fieldset.find("select").at(1).prop("name")).to.equal("dropdown");
   });
   it("passes down the inputListSetting prop", () => {
-    let inputList = wrapper.find(InputList);
-    let modifiedSetting = {...inputListSetting, ...{"format": "narrow", "type": "menu", "menuOptions": menuOptions}};
-    Object.keys(inputList.prop("setting")).forEach(k =>
-      k !== "menuOptions" && expect(inputList.prop("setting")[k]).to.eql(modifiedSetting[k])
+    const inputList = wrapper.find(InputList);
+    const modifiedSetting = {
+      ...inputListSetting,
+      ...{ format: "narrow", type: "menu", menuOptions: menuOptions },
+    };
+    Object.keys(inputList.prop("setting")).forEach(
+      (k) =>
+        k !== "menuOptions" &&
+        expect(inputList.prop("setting")[k]).to.eql(modifiedSetting[k])
     );
-    inputList.find("input").forEach(x => expect(x.props().readOnly).to.be.true);
+    inputList
+      .find("input")
+      .forEach((x) => expect(x.props().readOnly).to.be.true);
     menuOptions().forEach((o, idx) => {
       expect(o.key).to.equal(inputList.prop("setting").menuOptions[idx].key);
-      expect(o.value).to.equal(inputList.prop("setting").menuOptions[idx].value);
+      expect(o.value).to.equal(
+        inputList.prop("setting").menuOptions[idx].value
+      );
     });
   });
   it("passes down the dropdownSetting prop", () => {
-    let dropdown = wrapper.find("select").at(1);
+    const dropdown = wrapper.find("select").at(1);
     expect(dropdown.prop("name")).to.equal(dropdownSetting.key);
     expect(dropdown.prop("value")).to.equal(dropdownSetting.default);
     menuOptions().forEach((o, idx) => {
@@ -75,7 +86,9 @@ describe("PairedMenus", () => {
         return;
       }
       expect(o.key).to.equal(dropdown.children().at(idx).props().value);
-      expect(o.props.value).to.equal(dropdown.children().at(idx).props().children);
+      expect(o.props.value).to.equal(
+        dropdown.children().at(idx).props().children
+      );
     });
   });
   it("optionally disables the InputList's button", () => {
@@ -90,37 +103,52 @@ describe("PairedMenus", () => {
     expect(wrapper.state().dropdownValue).to.equal(dropdownSetting.default);
   });
   it("takes an optional item prop", () => {
-    let item = {
+    const item = {
       name: "Library",
       short_name: "lib",
       uuid: "123",
       settings: {
         input: ["c", "d", "e"],
-        dropdown: "d"
-      }
+        dropdown: "d",
+      },
     };
-    wrapper = mount(<PairedMenus inputListSetting={inputListSetting} dropdownSetting={dropdownSetting} disabled={false} item={item} />);
+    wrapper = mount(
+      <PairedMenus
+        inputListSetting={inputListSetting}
+        dropdownSetting={dropdownSetting}
+        disabled={false}
+        item={item}
+      />
+    );
     expect(wrapper.state().inputListValues).to.eql(item.settings.input);
     expect(wrapper.state().dropdownValue).to.equal(item.settings.dropdown);
 
-    let inputList = wrapper.find(InputList);
-    expect(inputList.find("input").map(x => x.props().value)).to.eql(item.settings.input.map(x => x.toUpperCase()));
-    expect(inputList.find("input").map(x => x.props().name)).to.eql(item.settings.input.map(x => `input_${x}`));
+    const inputList = wrapper.find(InputList);
+    expect(inputList.find("input").map((x) => x.props().value)).to.eql(
+      item.settings.input.map((x) => x.toUpperCase())
+    );
+    expect(inputList.find("input").map((x) => x.props().name)).to.eql(
+      item.settings.input.map((x) => `input_${x}`)
+    );
 
-    let dropdown = wrapper.find("select").at(1);
+    const dropdown = wrapper.find("select").at(1);
     expect(dropdown.props().value).to.equal(item.settings.dropdown);
   });
   it("updates the InputList", () => {
-    let spyUpdateInputList = spy(wrapper.instance(), "updateInputList");
+    const spyUpdateInputList = spy(wrapper.instance(), "updateInputList");
     wrapper.setProps({ updateInputList: spyUpdateInputList });
-    wrapper.find(InputList).prop("onChange")({ listItems: ["a", "b", "c", "d"] });
+    wrapper.find(InputList).prop("onChange")({
+      listItems: ["a", "b", "c", "d"],
+    });
     expect(spyUpdateInputList.callCount).to.equal(1);
-    expect(spyUpdateInputList.args[0][0]).to.eql({listItems: ["a", "b", "c", "d"]});
+    expect(spyUpdateInputList.args[0][0]).to.eql({
+      listItems: ["a", "b", "c", "d"],
+    });
     expect(wrapper.state().inputListValues).to.eql(["a", "b", "c", "d"]);
     spyUpdateInputList.restore();
   });
   it("updates the dropdown", () => {
-    let spyOnDropdownChange = spy(wrapper.instance(), "onDropdownChange");
+    const spyOnDropdownChange = spy(wrapper.instance(), "onDropdownChange");
     wrapper.setProps({ onDropdownChange: spyOnDropdownChange });
     wrapper.find("select").at(1).getDOMNode().value = "c";
     wrapper.find("select").at(1).simulate("change");
@@ -130,17 +158,27 @@ describe("PairedMenus", () => {
     spyOnDropdownChange.restore();
   });
   it("calculates the dropdown options based on the InputList values", () => {
-    let dropdownOptions = wrapper.find("select").at(1).find("option").map(o => o.text());
+    let dropdownOptions = wrapper
+      .find("select")
+      .at(1)
+      .find("option")
+      .map((o) => o.text());
     expect(dropdownOptions).to.eql(["A", "B", "C"]);
     wrapper.instance().updateInputList({ listItems: ["d", "e"] });
     wrapper.update();
-    dropdownOptions = wrapper.find("select").at(1).find("option").map(o => o.text());
+    dropdownOptions = wrapper
+      .find("select")
+      .at(1)
+      .find("option")
+      .map((o) => o.text());
     expect(dropdownOptions).to.eql(["D", "E"]);
   });
   it("displays a message if there are no values available in the dropdown", () => {
     wrapper.setState({ inputListValues: [] });
     expect(wrapper.find("select").length).to.equal(1);
     expect(wrapper.find(".bg-warning").length).to.equal(1);
-    expect(wrapper.find(".bg-warning").text()).to.equal("In order to set this value, you must add at least one option from the menu above.");
+    expect(wrapper.find(".bg-warning").text()).to.equal(
+      "In order to set this value, you must add at least one option from the menu above."
+    );
   });
 });

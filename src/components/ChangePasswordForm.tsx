@@ -23,14 +23,20 @@ export interface ChangePasswordFormOwnProps {
   csrfToken: string;
 }
 
-export interface ChangePasswordFormProps extends ChangePasswordFormStateProps, ChangePasswordFormDispatchProps, ChangePasswordFormOwnProps {}
+export interface ChangePasswordFormProps
+  extends ChangePasswordFormStateProps,
+    ChangePasswordFormDispatchProps,
+    ChangePasswordFormOwnProps {}
 
 export interface ChangePasswordState {
   success: boolean;
   error: string | null;
 }
 
-export class ChangePasswordForm extends React.Component<ChangePasswordFormProps, ChangePasswordState> {
+export class ChangePasswordForm extends React.Component<
+  ChangePasswordFormProps,
+  ChangePasswordState
+> {
   private passwordRef = React.createRef<EditableInput>();
   private confirmRef = React.createRef<EditableInput>();
   constructor(props) {
@@ -40,7 +46,7 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
   }
 
   render(): JSX.Element {
-    let formContent = (
+    const formContent = (
       <fieldset key="change-password">
         <legend className="visuallyHidden">Change admin's password</legend>
         <EditableInput
@@ -74,7 +80,12 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
           buttonClass="left-align"
           className="border change-password-form"
           successText={this.state.success && "Password changed successfully"}
-          errorText={(this.props.fetchError && <ErrorMessage error={this.props.fetchError} />) || this.state.error}
+          errorText={
+            (this.props.fetchError && (
+              <ErrorMessage error={this.props.fetchError} />
+            )) ||
+            this.state.error
+          }
           loadingText={this.props.isFetching && <LoadingIndicator />}
         ></Form>
       </main>
@@ -96,19 +107,25 @@ export class ChangePasswordForm extends React.Component<ChangePasswordFormProps,
 
 function mapStateToProps(state, ownProps) {
   return {
-    fetchError: state.editor.changePassword && state.editor.changePassword.fetchError,
-    isFetching: state.editor.changePassword && state.editor.changePassword.isFetching
+    fetchError:
+      state.editor.changePassword && state.editor.changePassword.fetchError,
+    isFetching:
+      state.editor.changePassword && state.editor.changePassword.isFetching,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    changePassword: (data: FormData) => dispatch(actions.changePassword(data))
+    changePassword: (data: FormData) => dispatch(actions.changePassword(data)),
   };
 }
 
-const ConnectedChangePasswordForm = connect<ChangePasswordFormStateProps, ChangePasswordFormDispatchProps, ChangePasswordFormOwnProps>(
+const ConnectedChangePasswordForm = connect<
+  ChangePasswordFormStateProps,
+  ChangePasswordFormDispatchProps,
+  ChangePasswordFormOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(ChangePasswordForm);

@@ -4,28 +4,30 @@ import reducer, { ClassificationsState } from "../classifications";
 import ActionCreator from "../../actions";
 
 describe("classifications reducer", () => {
-  let genreData = {
+  const genreData = {
     Fiction: {},
-    Nonfiction: {}
+    Nonfiction: {},
   };
 
-  let classificationsData = [ {
-    type: "type",
-    name: "name",
-    source: "source",
-    weight: "weight"
-  } ];
+  const classificationsData = [
+    {
+      type: "type",
+      name: "name",
+      source: "source",
+      weight: "weight",
+    },
+  ];
 
-  let initState: ClassificationsState = {
+  const initState: ClassificationsState = {
     genreTree: null,
     classifications: null,
     isFetchingGenreTree: false,
     isEditingClassifications: false,
     isFetchingClassifications: false,
-    fetchError: null
+    fetchError: null,
   };
 
-  let errorState: ClassificationsState = {
+  const errorState: ClassificationsState = {
     genreTree: null,
     classifications: null,
     isFetchingGenreTree: false,
@@ -39,102 +41,120 @@ describe("classifications reducer", () => {
   });
 
   it("handles GENRE_TREE_REQUEST", () => {
-    let action = { type: ActionCreator.GENRE_TREE_REQUEST, url: "test url" };
+    const action = { type: ActionCreator.GENRE_TREE_REQUEST, url: "test url" };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetchingGenreTree: true
+      isFetchingGenreTree: true,
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetchingGenreTree: true,
-      fetchError: null
+      fetchError: null,
     });
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles GENRE_TREE_FAILURE", () => {
-    let action = { type: ActionCreator.GENRE_TREE_FAILURE, error: "test error" };
-    let oldState = Object.assign({}, initState, { isFetching: true });
-    let newState = Object.assign({}, oldState, {
+    const action = {
+      type: ActionCreator.GENRE_TREE_FAILURE,
+      error: "test error",
+    };
+    const oldState = Object.assign({}, initState, { isFetching: true });
+    const newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isFetchingGenreTree: false
+      isFetchingGenreTree: false,
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles GENRE_TREE_LOAD", () => {
-    let action = { type: ActionCreator.GENRE_TREE_LOAD, data: genreData };
-    let newState = Object.assign({}, initState, {
+    const action = { type: ActionCreator.GENRE_TREE_LOAD, data: genreData };
+    const newState = Object.assign({}, initState, {
       genreTree: genreData,
-      isFetchingGenreTree: false
+      isFetchingGenreTree: false,
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
   });
 
   it("handles EDIT_CLASSIFICATIONS_REQUEST", () => {
-    let action = { type: ActionCreator.EDIT_CLASSIFICATIONS_REQUEST, url: "test url" };
+    const action = {
+      type: ActionCreator.EDIT_CLASSIFICATIONS_REQUEST,
+      url: "test url",
+    };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isEditingClassifications: true
+      isEditingClassifications: true,
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isEditingClassifications: true,
-      fetchError: null
+      fetchError: null,
     });
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles EDIT_CLASSIFICATIONS_FAILURE", () => {
-    let action = { type: ActionCreator.EDIT_CLASSIFICATIONS_FAILURE, error: "test error" };
-    let oldState = Object.assign({}, initState, {
-      isEditingClassifications: true
+    const action = {
+      type: ActionCreator.EDIT_CLASSIFICATIONS_FAILURE,
+      error: "test error",
+    };
+    const oldState = Object.assign({}, initState, {
+      isEditingClassifications: true,
     });
-    let newState = Object.assign({}, oldState, {
+    const newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isEditingClassifications: false
+      isEditingClassifications: false,
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles CLASSIFICATIONS_REQUEST", () => {
-    let action = { type: ActionCreator.CLASSIFICATIONS_REQUEST, url: "test url" };
+    const action = {
+      type: ActionCreator.CLASSIFICATIONS_REQUEST,
+      url: "test url",
+    };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetchingClassifications: true
+      isFetchingClassifications: true,
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetchingClassifications: true,
-      fetchError: null
+      fetchError: null,
     });
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles CLASSIFICATIONS_FAILURE", () => {
-    let action = { type: ActionCreator.CLASSIFICATIONS_FAILURE, error: "test error" };
-    let oldState = Object.assign({}, initState, { isFetching: true });
-    let newState = Object.assign({}, oldState, {
+    const action = {
+      type: ActionCreator.CLASSIFICATIONS_FAILURE,
+      error: "test error",
+    };
+    const oldState = Object.assign({}, initState, { isFetching: true });
+    const newState = Object.assign({}, oldState, {
       fetchError: "test error",
-      isFetchingClassifications: false
+      isFetchingClassifications: false,
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles CLASSIFICATIONS_LOAD", () => {
-    let action = { type: ActionCreator.CLASSIFICATIONS_LOAD, data: { classifications: classificationsData } };
-    let newState = Object.assign({}, initState, {
+    const action = {
+      type: ActionCreator.CLASSIFICATIONS_LOAD,
+      data: { classifications: classificationsData },
+    };
+    const newState = Object.assign({}, initState, {
       classifications: classificationsData,
-      isFetchingClassifications: false
+      isFetchingClassifications: false,
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
   });

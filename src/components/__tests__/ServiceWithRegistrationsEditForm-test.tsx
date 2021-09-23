@@ -10,39 +10,45 @@ import LibraryRegistration from "../LibraryRegistration";
 import EditableInput from "../EditableInput";
 
 describe("ServiceWithRegistrationsEditForm", () => {
-  class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<DiscoveryServicesData> {}
+  class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<
+    DiscoveryServicesData
+  > {}
 
   let wrapper;
   let save;
   let registerLibrary;
-  let serviceData = {
+  const serviceData = {
     id: 1,
-    protocol: "protocol 1"
+    protocol: "protocol 1",
   };
-  let protocolsData = [{
-    name: "protocol 1",
-    label: "protocol 1 label",
-    supports_registration: true,
-    settings: [],
-    library_settings: []
-  }];
-  let allLibraries = [
-    { "short_name": "nypl", name: "New York Public Library" },
-    { "short_name": "bpl", name: "Brooklyn Public Library" },
-    { "short_name": "qpl", name: "Queens Public Library" }
+  const protocolsData = [
+    {
+      name: "protocol 1",
+      label: "protocol 1 label",
+      supports_registration: true,
+      settings: [],
+      library_settings: [],
+    },
   ];
-  let libraryRegistrationsData = [{
-    id: 1,
-    libraries: [
-      { short_name: "nypl", status: "success", stage: "production" },
-      { short_name: "bpl", status: "failure", stage: "testing" },
-    ]
-  }];
-  let servicesData = {
+  const allLibraries = [
+    { short_name: "nypl", name: "New York Public Library" },
+    { short_name: "bpl", name: "Brooklyn Public Library" },
+    { short_name: "qpl", name: "Queens Public Library" },
+  ];
+  const libraryRegistrationsData = [
+    {
+      id: 1,
+      libraries: [
+        { short_name: "nypl", status: "success", stage: "production" },
+        { short_name: "bpl", status: "failure", stage: "testing" },
+      ],
+    },
+  ];
+  const servicesData = {
     discovery_services: [serviceData],
     protocols: protocolsData,
     allLibraries: allLibraries,
-    libraryRegistrations: libraryRegistrationsData
+    libraryRegistrations: libraryRegistrationsData,
   };
 
   describe("rendering", () => {
@@ -56,13 +62,13 @@ describe("ServiceWithRegistrationsEditForm", () => {
           save={save}
           urlBase="url base"
           listDataKey="discovery_services"
-          />,
+        />,
         { registerLibrary: registerLibrary }
       );
     });
 
     it("passes all props to the LibraryRegistration component", () => {
-      let libraryRegistration = wrapper.find(LibraryRegistration);
+      const libraryRegistration = wrapper.find(LibraryRegistration);
 
       expect(libraryRegistration.props().protocol).to.equal("protocol 1");
       expect(libraryRegistration.props().item).to.equal(undefined);
@@ -70,7 +76,9 @@ describe("ServiceWithRegistrationsEditForm", () => {
       expect(libraryRegistration.props().disabled).to.equal(false);
       expect(libraryRegistration.props().save).to.equal(save);
       expect(libraryRegistration.props().urlBase).to.equal("url base");
-      expect(libraryRegistration.props().listDataKey).to.equal("discovery_services");
+      expect(libraryRegistration.props().listDataKey).to.equal(
+        "discovery_services"
+      );
       expect(libraryRegistration.props().editedIdentifier).to.equal(undefined);
     });
   });

@@ -8,11 +8,12 @@ export interface LoadButtonProps {
 function UpdatingLoader(props: LoadButtonProps) {
   return (
     <div className="updating-loader-container">
-      { props.show &&
+      {props.show && (
         <div className="updating-loader">
-          {props.text || "Updating"}<i className="fa fa-spinner fa-spin"></i>
+          {props.text || "Updating"}
+          <i className="fa fa-spinner fa-spin"></i>
         </div>
-      }
+      )}
     </div>
   );
 }

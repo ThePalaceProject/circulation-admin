@@ -19,7 +19,9 @@ export interface TabContainerContext {
 /** Renders a list of navigation tabs and the content of the current tab.
     Subclasses must define the tabs and the method to call when a new tab
     is clicked. */
-export abstract class TabContainer<T extends TabContainerProps> extends React.Component<T, any> {
+export abstract class TabContainer<
+  T extends TabContainerProps
+> extends React.Component<T, any> {
   context: TabContainerContext;
 
   constructor(props) {
@@ -35,30 +37,34 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
 
   static contextTypes: React.ValidationMap<TabContainerContext> = {
     router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired
+    pathFor: PropTypes.func.isRequired,
   };
 
   render(): JSX.Element {
-    let className = this.props.class ? `tab-container ${this.props.class}` : "tab-container";
+    const className = this.props.class
+      ? `tab-container ${this.props.class}`
+      : "tab-container";
     return (
       <div className={className}>
         <ul className="nav nav-tabs">
-          { Object.keys(this.tabs()).map(name =>
+          {Object.keys(this.tabs()).map((name) => (
             <li key={name} role="presentation" className={this.tabClass(name)}>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a
                 href="javascript:void(0)"
                 onClick={this.handleSelect}
-                data-tabkey={name}>
+                data-tabkey={name}
+              >
                 {this.tabDisplayName(name)}
               </a>
             </li>
-          ) }
+          ))}
         </ul>
 
         <div className="tab-content">
-          { Object.keys(this.tabs()).map(name =>
+          {Object.keys(this.tabs()).map((name) =>
             this.renderTab(name, this.tabs()[name])
-          ) }
+          )}
         </div>
       </div>
     );
@@ -85,10 +91,10 @@ export abstract class TabContainer<T extends TabContainerProps> extends React.Co
   }
 
   renderTab(name, children) {
-    let display = this.currentTab() === name ? "block" : "none";
+    const display = this.currentTab() === name ? "block" : "none";
     return (
       <div style={{ display }} key={name}>
-        { children }
+        {children}
       </div>
     );
   }

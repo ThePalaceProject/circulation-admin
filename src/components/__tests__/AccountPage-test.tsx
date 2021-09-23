@@ -21,18 +21,18 @@ describe("AccountPage", () => {
   });
 
   it("shows Header", () => {
-    let header = wrapper.find(Header);
+    const header = wrapper.find(Header);
     expect(header.length).to.equal(1);
   });
 
   it("shows ChangePasswordForm", () => {
-    let form = wrapper.find(ChangePasswordForm);
+    const form = wrapper.find(ChangePasswordForm);
     expect(form.prop("store")).to.equal(store);
     expect(form.prop("csrfToken")).to.equal("token");
   });
 
   it("shows Footer", () => {
-    let footer = wrapper.find(Footer);
+    const footer = wrapper.find(Footer);
     expect(footer.length).to.equal(1);
   });
 });

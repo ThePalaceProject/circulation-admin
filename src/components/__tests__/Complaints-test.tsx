@@ -14,13 +14,13 @@ describe("Complaints", () => {
     let postComplaint;
     let complaintsData;
     let wrapper;
-    let bookData = {
+    const bookData = {
       id: "id",
       title: "test title",
       issuesLink: {
         href: "issues url",
-        rel: "issues"
-      }
+        rel: "issues",
+      },
     };
 
     beforeEach(() => {
@@ -29,7 +29,7 @@ describe("Complaints", () => {
       complaintsData = {
         "http://librarysimplified.org/terms/problem/test-type": 5,
         "http://librarysimplified.org/terms/problem/other-type": 3,
-        "http://librarysimplified.org/terms/problem/last-type": 1
+        "http://librarysimplified.org/terms/problem/last-type": 1,
       };
       wrapper = shallow(
         <Complaints
@@ -40,49 +40,55 @@ describe("Complaints", () => {
           fetchComplaints={fetchComplaints}
           postComplaint={postComplaint}
           refreshCatalog={stub()}
-          />
+        />
       );
     });
 
     it("shows book title", () => {
-      let title = wrapper.find("h2");
+      const title = wrapper.find("h2");
       expect(title.text()).to.equal("test title");
     });
 
     it("shows complaints", () => {
-      let instance =  wrapper.instance() as any;
-      let complaintsKeys = Object.keys(complaintsData);
-      let types = wrapper.find(".complaint-type").map(type => type.text());
-      let counts = wrapper.find(".complaint-count").map(count => parseInt(count.text()));
-      expect(types).to.deep.equal(complaintsKeys.map(type => instance.readableComplaintType(type)));
-      expect(counts).to.deep.equal(complaintsKeys.map(key => complaintsData[key]));
+      const instance = wrapper.instance() as any;
+      const complaintsKeys = Object.keys(complaintsData);
+      const types = wrapper.find(".complaint-type").map((type) => type.text());
+      const counts = wrapper
+        .find(".complaint-count")
+        .map((count) => parseInt(count.text()));
+      expect(types).to.deep.equal(
+        complaintsKeys.map((type) => instance.readableComplaintType(type))
+      );
+      expect(counts).to.deep.equal(
+        complaintsKeys.map((key) => complaintsData[key])
+      );
     });
 
     it("shows simplified complaint types", () => {
-      let types = wrapper.find(".complaint-type").map(type => type.text());
+      const types = wrapper.find(".complaint-type").map((type) => type.text());
       expect(types).to.deep.equal(["Test type", "Other type", "Last type"]);
     });
 
     it("shows resolve button for each complaint type", () => {
-      let buttons = wrapper.find(Button);
+      const buttons = wrapper.find(Button);
       expect(buttons.length).to.equal(Object.keys(complaintsData).length);
-      buttons.forEach(button => {
+      buttons.forEach((button) => {
         expect(button.props().disabled).not.to.be.ok;
         expect(button.prop("content")).to.equal("Resolve");
       });
     });
 
     it("shows complaint form", () => {
-      let form = wrapper.find(ComplaintForm);
+      const form = wrapper.find(ComplaintForm);
       expect(form.props().disabled).not.to.be.ok;
       expect(form.props().complaintUrl).to.equal(bookData.issuesLink.href);
       expect(form.props().postComplaint).to.equal(postComplaint);
     });
 
     it("shows fetch error", () => {
-      let fetchComplaints = stub();
-      let fetchError = { status: 401, response: "test", url: "test url" };
-      let wrapper = shallow(
+      const fetchComplaints = stub();
+      const fetchError = { status: 401, response: "test", url: "test url" };
+      const wrapper = shallow(
         <Complaints
           csrfToken="token"
           bookUrl="book url"
@@ -91,11 +97,11 @@ describe("Complaints", () => {
           fetchComplaints={fetchComplaints}
           postComplaint={stub()}
           refreshCatalog={stub()}
-          />
+        />
       );
-      let complaintsUrl = (wrapper.instance() as any).complaintsUrl();
+      const complaintsUrl = (wrapper.instance() as any).complaintsUrl();
 
-      let error = wrapper.find(ErrorMessage);
+      const error = wrapper.find(ErrorMessage);
       expect(error.prop("error")).to.equal(fetchError);
 
       error.prop("tryAgain")();
@@ -108,8 +114,8 @@ describe("Complaints", () => {
     let wrapper;
     let instance;
     let fetchComplaints, resolveComplaints, refreshCatalog;
-    let complaintsData = {
-      "http://librarysimplified.org/terms/problem/test-type": 2
+    const complaintsData = {
+      "http://librarysimplified.org/terms/problem/test-type": 2,
     };
     let confirmStub;
 
@@ -117,9 +123,11 @@ describe("Complaints", () => {
       confirmStub = stub(window, "confirm").returns(true);
       refreshCatalog = stub();
       fetchComplaints = stub();
-      resolveComplaints = stub().returns(new Promise((resolve, reject) => {
-        resolve();
-      }));
+      resolveComplaints = stub().returns(
+        new Promise<void>((resolve, reject) => {
+          resolve();
+        })
+      );
       wrapper = mount(
         <Complaints
           csrfToken="token"
@@ -129,9 +137,9 @@ describe("Complaints", () => {
           fetchComplaints={fetchComplaints}
           refreshCatalog={refreshCatalog}
           resolveComplaints={resolveComplaints}
-          />
+        />
       );
-      instance = (wrapper.instance() as any);
+      instance = wrapper.instance() as any;
     });
 
     afterEach(() => {
@@ -139,7 +147,7 @@ describe("Complaints", () => {
     });
 
     it("fetches complaints on mount", () => {
-      let complaintsUrl = instance.complaintsUrl();
+      const complaintsUrl = instance.complaintsUrl();
       expect(fetchComplaints.callCount).to.equal(1);
       expect(fetchComplaints.args[0][0]).to.equal(complaintsUrl);
     });
@@ -147,16 +155,18 @@ describe("Complaints", () => {
     it("should call resolve()", () => {
       instance.resolve = stub();
 
-      let resolveUrl = (wrapper.instance() as any).resolveComplaintsUrl();
-      let input = wrapper.find(Button);
+      const resolveUrl = (wrapper.instance() as any).resolveComplaintsUrl();
+      const input = wrapper.find(Button);
       input.simulate("click");
 
       expect(instance.resolve.callCount).to.equal(1);
-      expect(instance.resolve.args[0][0]).to.equal(Object.keys(complaintsData)[0]);
+      expect(instance.resolve.args[0][0]).to.equal(
+        Object.keys(complaintsData)[0]
+      );
     });
 
     it("should fetch and refresh Catalog when resolve() is called", (done) => {
-      let resolveUrl = instance.resolveComplaintsUrl();
+      const resolveUrl = instance.resolveComplaintsUrl();
       instance.resolve("wrong-author").then(() => {
         expect(resolveComplaints.callCount).to.equal(1);
         expect(resolveComplaints.args[0][0]).to.equal(resolveUrl);

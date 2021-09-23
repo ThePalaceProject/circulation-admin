@@ -2,23 +2,35 @@ import * as React from "react";
 import { ServiceEditFormProps } from "./ServiceEditForm";
 import EditableInput from "./EditableInput";
 import LibraryRegistrationForm from "./LibraryRegistrationForm";
-import { ServicesWithRegistrationsData, LibraryDataWithStatus, LibraryRegistrationData, LibraryData } from "../interfaces";
+import {
+  ServicesWithRegistrationsData,
+  LibraryDataWithStatus,
+  LibraryRegistrationData,
+  LibraryData,
+} from "../interfaces";
 
 export interface LibraryRegistrationState {
   registration_stage?: { [key: string]: string } | null;
   protocol: string;
 }
 
-export interface LibraryRegistrationProps extends ServiceEditFormProps<ServicesWithRegistrationsData> {
+export interface LibraryRegistrationProps
+  extends ServiceEditFormProps<ServicesWithRegistrationsData> {
   registerLibrary: (library, registration_stage) => void;
   protocol: string;
 }
 
-export default class LibraryRegistration extends React.Component<LibraryRegistrationProps, LibraryRegistrationState> {
+export default class LibraryRegistration extends React.Component<
+  LibraryRegistrationProps,
+  LibraryRegistrationState
+> {
   MESSAGES = {
-      "success": { statusText: "Registered", buttonText: "Update registration" },
-      "warning": { statusText: "Not registered", buttonText: "Register" },
-      "failure": { statusText: "Registration failed", buttonText: "Retry registration" }
+    success: { statusText: "Registered", buttonText: "Update registration" },
+    warning: { statusText: "Not registered", buttonText: "Register" },
+    failure: {
+      statusText: "Registration failed",
+      buttonText: "Retry registration",
+    },
   };
 
   constructor(props) {
@@ -44,13 +56,20 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
   }
 
   render(): JSX.Element {
-    if (this.props.item && this.protocolSupportsType("supports_registration") &&
-      this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.length > 0) {
+    if (
+      this.props.item &&
+      this.protocolSupportsType("supports_registration") &&
+      this.props.data &&
+      this.props.data.allLibraries &&
+      this.props.data.allLibraries.length > 0
+    ) {
       return (
         <div>
           <h2>Register libraries</h2>
           <ul>
-          { this.props.data.allLibraries.map((library, idx) => this.libraryRegistrationItem(library, idx)) }
+            {this.props.data.allLibraries.map((library, idx) =>
+              this.libraryRegistrationItem(library, idx)
+            )}
           </ul>
         </div>
       );
@@ -60,25 +79,39 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
 
   register(library: LibraryDataWithStatus): void {
     const registration_stage =
-      (this.state.registration_stage && this.state.registration_stage[library.short_name]) || "testing";
-    let stage = this.getLibraryProp(library, "stage") === "production" ? "production" : registration_stage;
+      (this.state.registration_stage &&
+        this.state.registration_stage[library.short_name]) ||
+      "testing";
+    const stage =
+      this.getLibraryProp(library, "stage") === "production"
+        ? "production"
+        : registration_stage;
     this.props.registerLibrary(library, stage);
   }
 
   getStatus(library: LibraryData): string {
-    const libraryRegistrationStatus = this.getLibraryProp(library, "status") || "warning";
+    const libraryRegistrationStatus =
+      this.getLibraryProp(library, "status") || "warning";
     return libraryRegistrationStatus;
   }
 
   libraryRegistrationItem(library: LibraryData, idx: number): JSX.Element {
-    let statusString = this.getStatus(library);
+    const statusString = this.getStatus(library);
     return (
-      <li className="service-with-registrations-library" key={library.short_name}>
-        { this.name(library) }
+      <li
+        className="service-with-registrations-library"
+        key={library.short_name}
+      >
+        {this.name(library)}
         <div className="library-registration-info">
-          { this.currentStage(library, statusString) }
-          { this.statusSpan(statusString) }
-          { this.libraryRegistrationForm(library, statusString, this.props.data.libraryRegistrations && this.props.data.libraryRegistrations[idx]) }
+          {this.currentStage(library, statusString)}
+          {this.statusSpan(statusString)}
+          {this.libraryRegistrationForm(
+            library,
+            statusString,
+            this.props.data.libraryRegistrations &&
+              this.props.data.libraryRegistrations[idx]
+          )}
         </div>
       </li>
     );
@@ -95,29 +128,36 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
   }
 
   statusSpan(status: string): JSX.Element {
-    let className = status === "failure" ? "bg-danger" : `bg-${status}`;
+    const className = status === "failure" ? "bg-danger" : `bg-${status}`;
     return (
       <span className={className}>{this.MESSAGES[status].statusText}</span>
     );
   }
 
-  currentStage(library: LibraryData, libraryRegistrationStatus: string): JSX.Element | null {
+  currentStage(
+    library: LibraryData,
+    libraryRegistrationStatus: string
+  ): JSX.Element | null {
     if (this.protocolSupportsType("supports_staging")) {
       const currentRegistryStage = this.getLibraryProp(library, "stage");
       return (
         <div className="current-stage">
-          { (currentRegistryStage && libraryRegistrationStatus !== "failure") ?
-            <span>Current Stage: {currentRegistryStage}</span> :
+          {currentRegistryStage && libraryRegistrationStatus !== "failure" ? (
+            <span>Current Stage: {currentRegistryStage}</span>
+          ) : (
             <span>No current stage</span>
-          }
-          { this.registrationStageDropdown(library, currentRegistryStage) }
+          )}
+          {this.registrationStageDropdown(library, currentRegistryStage)}
         </div>
       );
     }
     return null;
   }
 
-  registrationStageDropdown(library: LibraryData, currentRegistryStage: string): JSX.Element | null {
+  registrationStageDropdown(
+    library: LibraryData,
+    currentRegistryStage: string
+  ): JSX.Element | null {
     if (currentRegistryStage === "production") {
       return null;
     }
@@ -130,13 +170,27 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
         ref={`stage-${library.short_name}`}
         onChange={() => this.updateRegistrationStage(library)}
       >
-        <option value="testing" aria-selected={currentRegistryStage === "testing"}>Testing</option>
-        <option value="production" aria-selected={currentRegistryStage === "production"}>Production</option>
+        <option
+          value="testing"
+          aria-selected={currentRegistryStage === "testing"}
+        >
+          Testing
+        </option>
+        <option
+          value="production"
+          aria-selected={currentRegistryStage === "production"}
+        >
+          Production
+        </option>
       </EditableInput>
     );
   }
 
-  libraryRegistrationForm(library: LibraryData, status: string, registrationData: LibraryRegistrationData): JSX.Element {
+  libraryRegistrationForm(
+    library: LibraryData,
+    status: string,
+    registrationData: LibraryRegistrationData
+  ): JSX.Element {
     return (
       <LibraryRegistrationForm
         library={library}
@@ -150,18 +204,21 @@ export default class LibraryRegistration extends React.Component<LibraryRegistra
   }
 
   updateRegistrationStage(library: LibraryData): void {
-    const registration_stage = (this.refs[`stage-${library.short_name}`] as any).getValue();
+    const registration_stage = (this.refs[
+      `stage-${library.short_name}`
+    ] as any).getValue();
     this.setState({
-      registration_stage: Object.assign(
-        {}, this.state.registration_stage, { [library.short_name]: registration_stage }
-      ),
+      registration_stage: Object.assign({}, this.state.registration_stage, {
+        [library.short_name]: registration_stage,
+      }),
       protocol: this.state.protocol,
     });
   }
 
   getLibraryInfo(library: LibraryData): LibraryDataWithStatus | null {
     const serviceId = this.props.item && this.props.item.id;
-    const libraryRegistrations = this.props.data && this.props.data.libraryRegistrations || [];
+    const libraryRegistrations =
+      (this.props.data && this.props.data.libraryRegistrations) || [];
     for (const serviceInfo of libraryRegistrations) {
       if (serviceInfo.id === serviceId) {
         for (const libraryInfo of serviceInfo.libraries) {

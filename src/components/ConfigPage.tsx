@@ -26,7 +26,7 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
 
   static contextTypes: React.ValidationMap<ConfigPageContext> = {
     editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired
+    csrfToken: PropTypes.string.isRequired,
   };
 
   render(): JSX.Element {
@@ -48,7 +48,7 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     document.title = "Circulation Manager - Configuration";
   }
 }

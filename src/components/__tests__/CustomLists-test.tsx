@@ -26,30 +26,49 @@ describe("CustomLists", () => {
   let fetchLanes;
   let fetchLanguages;
 
-  let listsData = [
+  const listsData = [
     { id: 1, name: "a list", entry_count: 0, collections: [] },
-    { id: 2, name: "z list", entry_count: 1,
-      collections: [{id: 3, name: "collection 3", protocol: "protocol" }] }
+    {
+      id: 2,
+      name: "z list",
+      entry_count: 1,
+      collections: [{ id: 3, name: "collection 3", protocol: "protocol" }],
+    },
   ];
 
-  let entry = { pwid: "1", title: "title", authors: [] };
+  const entry = { pwid: "1", title: "title", authors: [] };
 
-  let searchResults = {
+  const searchResults = {
     id: "id",
     url: "url",
     title: "title",
     lanes: [],
     books: [],
-    navigationLinks: []
+    navigationLinks: [],
   };
 
-  let collections = [
-    { id: 1, name: "collection 1", protocol: "protocol", libraries: [{ short_name: "other library" }] },
-    { id: 2, name: "collection 2", protocol: "protocol", libraries: [{ short_name: "library" }] },
-    { id: 3, name: "collection 3", protocol: "protocol", libraries: [{ short_name: "library" }] }
+  const collections = [
+    {
+      id: 1,
+      name: "collection 1",
+      protocol: "protocol",
+      libraries: [{ short_name: "other library" }],
+    },
+    {
+      id: 2,
+      name: "collection 2",
+      protocol: "protocol",
+      libraries: [{ short_name: "library" }],
+    },
+    {
+      id: 3,
+      name: "collection 3",
+      protocol: "protocol",
+      libraries: [{ short_name: "library" }],
+    },
   ];
 
-  let libraries = [
+  const libraries = [
     {
       short_name: "library",
       settings: {
@@ -64,42 +83,63 @@ describe("CustomLists", () => {
     },
   ];
 
-  let languages = {
-    "eng": ["English"],
-    "spa": ["Spanish", "Castilian"],
-    "fre": ["French"]
+  const languages = {
+    eng: ["English"],
+    spa: ["Spanish", "Castilian"],
+    fre: ["French"],
   };
 
   const lane1: LaneData = {
-    id: 1, display_name: "lane 1", visible: false, count: 1, sublanes: [],
-    custom_list_ids: [2], inherit_parent_restrictions: false
+    id: 1,
+    display_name: "lane 1",
+    visible: false,
+    count: 1,
+    sublanes: [],
+    custom_list_ids: [2],
+    inherit_parent_restrictions: false,
   };
   const lane2: LaneData = {
-    id: 2, display_name: "lane 2", visible: false, count: 1, sublanes: [],
-    custom_list_ids: [2], inherit_parent_restrictions: false
+    id: 2,
+    display_name: "lane 2",
+    visible: false,
+    count: 1,
+    sublanes: [],
+    custom_list_ids: [2],
+    inherit_parent_restrictions: false,
   };
   const lane3: LaneData = {
-    id: 3, display_name: "lane 2", visible: false, count: 1, sublanes: [],
-    custom_list_ids: [], inherit_parent_restrictions: false
+    id: 3,
+    display_name: "lane 2",
+    visible: false,
+    count: 1,
+    sublanes: [],
+    custom_list_ids: [],
+    inherit_parent_restrictions: false,
   };
   const allLanes = [lane1, lane2, lane3];
   const lanesToDelete = [lane1, lane2];
 
-  const libraryManager = new Admin([{ "role": "manager", "library": "library" }]);
-  const librarian = new Admin([{ "role": "librarian", "library": "library" }]);
+  const libraryManager = new Admin([{ role: "manager", library: "library" }]);
+  const librarian = new Admin([{ role: "librarian", library: "library" }]);
 
   describe("on mount", () => {
     beforeEach(() => {
       fetchCustomLists = stub();
       fetchCustomListDetails = stub();
-      editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
-      deleteCustomList = stub().returns(new Promise<void>(resolve => resolve()));
+      editCustomList = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
+      deleteCustomList = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       search = stub();
       loadMoreSearchResults = stub();
       loadMoreEntries = stub();
       fetchCollections = stub();
       fetchLibraries = stub();
-      fetchLanes = stub().returns(new Promise<void>(resolve => resolve()));
+      fetchLanes = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       fetchLanguages = stub();
 
       wrapper = mount(
@@ -126,7 +166,7 @@ describe("CustomLists", () => {
           libraries={libraries}
           languages={languages}
         />,
-        { context: { admin: libraryManager }}
+        { context: { admin: libraryManager } }
       );
     });
 
@@ -139,7 +179,9 @@ describe("CustomLists", () => {
       let error = wrapper.find(ErrorMessage);
       expect(error.length).to.equal(0);
 
-      wrapper.setProps({ fetchError: { status: 500, response: "Error", url: "url" } });
+      wrapper.setProps({
+        fetchError: { status: 500, response: "Error", url: "url" },
+      });
       error = wrapper.find(ErrorMessage);
       expect(error.length).to.equal(1);
     });
@@ -156,7 +198,10 @@ describe("CustomLists", () => {
     it("navigates to create or edit page on initial load", () => {
       // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
       // Start on the lists page, without edit or create.
-      Object.defineProperty(window.location, "href", { writable: true, value: "/admin/web/lists/library" });
+      Object.defineProperty(window.location, "href", {
+        writable: true,
+        value: "/admin/web/lists/library",
+      });
 
       wrapper = mount(
         <CustomLists
@@ -181,7 +226,7 @@ describe("CustomLists", () => {
           fetchLanguages={fetchLanguages}
           languages={languages}
         />,
-        { context: { admin: libraryManager }}
+        { context: { admin: libraryManager } }
       );
       wrapper.setProps({ lists: [] });
       expect(window.location.href).to.contain("create");
@@ -209,7 +254,7 @@ describe("CustomLists", () => {
           fetchLanguages={fetchLanguages}
           languages={languages}
         />,
-        { context: { admin: libraryManager }}
+        { context: { admin: libraryManager } }
       );
       wrapper.setProps({ lists: listsData });
       expect(window.location.href).to.contain("edit");
@@ -240,7 +285,7 @@ describe("CustomLists", () => {
           fetchLanguages={fetchLanguages}
           languages={languages}
         />,
-        { context: { admin: libraryManager }}
+        { context: { admin: libraryManager } }
       );
       let radioButtons = wrapper.find(EditableInput);
       let ascendingButton = radioButtons.at(0);
@@ -301,30 +346,36 @@ describe("CustomLists", () => {
           fetchLanguages={fetchLanguages}
           languages={languages}
         />,
-        { context: { admin: librarian }}
+        { context: { admin: librarian } }
       );
-      let lists = wrapper.find("li");
+      const lists = wrapper.find("li");
       expect(lists.length).to.equal(2);
 
-      let listAButtons = lists.at(0).find(".custom-list-buttons");
-      let listAEditLink = listAButtons.find("Link");
-      let listZButtons = lists.at(1).find(".custom-list-buttons");
-      let listZEditLink = listZButtons.find("Link");
+      const listAButtons = lists.at(0).find(".custom-list-buttons");
+      const listAEditLink = listAButtons.find("Link");
+      const listZButtons = lists.at(1).find(".custom-list-buttons");
+      const listZEditLink = listZButtons.find("Link");
       expect(listAEditLink.length).to.equal(1);
       expect(listAEditLink.text()).to.include("Edit");
-      expect(listAEditLink.prop("to")).to.equal("/admin/web/lists/library/edit/1");
+      expect(listAEditLink.prop("to")).to.equal(
+        "/admin/web/lists/library/edit/1"
+      );
       expect(listZEditLink.length).to.equal(1);
       expect(listZEditLink.text()).to.include("Edit");
-      expect(listZEditLink.prop("to")).to.equal("/admin/web/lists/library/edit/2");
+      expect(listZEditLink.prop("to")).to.equal(
+        "/admin/web/lists/library/edit/2"
+      );
 
-      let listADeleteButton = listAButtons.find("button");
-      let listZDeleteButton = listZButtons.find("button");
+      const listADeleteButton = listAButtons.find("button");
+      const listZDeleteButton = listZButtons.find("button");
       expect(listADeleteButton.length).to.equal(0);
       expect(listZDeleteButton.length).to.equal(0);
     });
 
     it("fetches lanes to be deleted", async () => {
-      let deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(listsData[1].id);
+      let deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(
+        listsData[1].id
+      );
       // There are no lanes so fetch them.
       expect(fetchLanes.callCount).to.equal(1);
 
@@ -332,7 +383,9 @@ describe("CustomLists", () => {
       // call count should still remain at 1.
       wrapper.setProps({ lanes: allLanes });
 
-      deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(listsData[1].id);
+      deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(
+        listsData[1].id
+      );
 
       expect(fetchLanes.callCount).to.equal(1);
       expect(deletedLanes.length).to.equal(2);
@@ -341,9 +394,13 @@ describe("CustomLists", () => {
     });
 
     it("outputs a list of lanes that will be deleted when a list is deleted", () => {
-      let prompt = (wrapper.instance() as CustomLists).deletedLaneNames(lanesToDelete);
-      expect(prompt).to.equal("Deleting this list will delete the following lanes:\n" +
-        "\nLane name: lane 1\nLane name: lane 2");
+      const prompt = (wrapper.instance() as CustomLists).deletedLaneNames(
+        lanesToDelete
+      );
+      expect(prompt).to.equal(
+        "Deleting this list will delete the following lanes:\n" +
+          "\nLane name: lane 1\nLane name: lane 2"
+      );
     });
 
     it("edits a list", () => {
@@ -364,15 +421,20 @@ describe("CustomLists", () => {
       expect(editor.props().library).to.eql(libraries[0]);
       expect(editor.props().list).to.be.undefined;
       expect(editor.props().search).to.equal(search);
-      expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
+      expect(editor.props().loadMoreSearchResults).to.equal(
+        loadMoreSearchResults
+      );
       expect(editor.props().searchResults).to.equal(searchResults);
       expect(editor.props().responseBody).to.be.undefined;
       expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
-      expect(editor.props().collections).to.deep.equal([collections[1], collections[2]]);
+      expect(editor.props().collections).to.deep.equal([
+        collections[1],
+        collections[2],
+      ]);
       expect(editor.props().languages).to.eql(languages);
 
       expect(fetchCustomLists.callCount).to.equal(1);
-      let editCustomListProp = editor.props().editCustomList;
+      const editCustomListProp = editor.props().editCustomList;
       await editCustomListProp();
       expect(editCustomList.callCount).to.equal(1);
       expect(fetchCustomLists.callCount).to.equal(2);
@@ -386,24 +448,29 @@ describe("CustomLists", () => {
       let editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(0);
 
-      let listDetails = Object.assign({}, listsData[1], { entries: [entry] });
+      const listDetails = Object.assign({}, listsData[1], { entries: [entry] });
       wrapper.setProps({ editOrCreate: "edit", identifier: "2", listDetails });
       editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(1);
       expect(editor.props().list).to.deep.equal(listDetails);
       expect(editor.props().library).to.eql(libraries[0]);
       expect(editor.props().search).to.equal(search);
-      expect(editor.props().loadMoreSearchResults).to.equal(loadMoreSearchResults);
+      expect(editor.props().loadMoreSearchResults).to.equal(
+        loadMoreSearchResults
+      );
       expect(editor.props().searchResults).to.equal(searchResults);
       expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
-      expect(editor.props().collections).to.deep.equal([collections[1], collections[2]]);
+      expect(editor.props().collections).to.deep.equal([
+        collections[1],
+        collections[2],
+      ]);
       expect(editor.props().languages).to.eql(languages);
 
       expect(fetchCustomListDetails.callCount).to.equal(1);
 
       // When the component switches to a different list, it fetches the new
       // list details.
-      let newListDetails = Object.assign({}, listsData[0], { entries: [] });
+      const newListDetails = Object.assign({}, listsData[0], { entries: [] });
       wrapper.setProps({ identifier: "1", listDetails: newListDetails });
       editor = wrapper.find(CustomListEditor);
       expect(editor.props().list).to.deep.equal(newListDetails);
@@ -411,7 +478,7 @@ describe("CustomLists", () => {
     });
 
     it("gets the correct entry points list from the right library", () => {
-      let entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
+      const entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
 
       expect(entryPoints.length).to.equal(2);
       expect(entryPoints).to.eql(["Book", "Audio"]);
@@ -441,10 +508,10 @@ describe("CustomLists", () => {
           fetchLanguages={fetchLanguages}
           languages={languages}
         />,
-        { context: { admin: librarian }}
+        { context: { admin: librarian } }
       );
 
-      let entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
+      const entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
 
       expect(entryPoints.length).to.equal(1);
       expect(entryPoints).to.eql(["Audio"]);
@@ -463,14 +530,20 @@ describe("CustomLists", () => {
       confirmStub = stub(window, "confirm");
       fetchCustomLists = stub();
       fetchCustomListDetails = stub();
-      editCustomList = stub().returns(new Promise<void>(resolve => resolve()));
-      deleteCustomList = stub().returns(new Promise<void>(resolve => resolve()));
+      editCustomList = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
+      deleteCustomList = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       search = stub();
       loadMoreSearchResults = stub();
       loadMoreEntries = stub();
       fetchCollections = stub();
       fetchLibraries = stub();
-      fetchLanes = stub().returns(new Promise<void>(resolve => resolve()));
+      fetchLanes = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
 
       wrapper = shallow(
         <CustomLists
@@ -495,7 +568,7 @@ describe("CustomLists", () => {
           fetchLanguages={fetchLanguages}
           languages={languages}
         />,
-        { context: { admin: librarian }}
+        { context: { admin: librarian } }
       );
 
       deleteCustomListFn = (wrapper.instance() as CustomLists).deleteCustomList;
@@ -512,8 +585,12 @@ describe("CustomLists", () => {
     // and check if the prop was called and with what arguments.
     it("deletes a list", async () => {
       confirmStub.returns(false);
-      let getDeletedLanes = stub((wrapper.instance() as CustomLists), "getDeletedLanes")
-        .returns(new Promise<void>(resolve => resolve()));
+      const getDeletedLanes = stub(
+        wrapper.instance() as CustomLists,
+        "getDeletedLanes"
+      ).returns(
+        new Promise<void>((resolve) => resolve())
+      );
 
       // The instance's `deleteCustomList` function needs a CustomListData
       // list which is one sorted object from full list of lists. The first
@@ -536,14 +613,18 @@ describe("CustomLists", () => {
       confirmStub.returns(true);
 
       await deleteCustomListFn(listDataSort[0]);
+      // prettier-ignore
+      /* eslint-disable */
       expect(confirmStub.args[0][0]).to.equal("Delete list \"a list\"? ");
 
       // Continuining from the previous test, this second list corresponds
       // to the second "button" that is being clicked.
       await deleteCustomListFn(listDataSort[1]);
+      // prettier-ignore
       expect(confirmStub.args[1][0]).to.equal("Delete list \"z list\"? " +
         "Deleting this list will delete the following lanes:\n" +
-        "\nLane name: lane 1\nLane name: lane 2");
+          "\nLane name: lane 1\nLane name: lane 2"
+      );
     });
   });
 });

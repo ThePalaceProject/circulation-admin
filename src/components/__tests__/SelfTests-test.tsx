@@ -5,10 +5,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import { SelfTests } from "../SelfTests";
-import {
-  CheckSoloIcon,
-  XIcon,
-} from "@nypl/dgx-svg-icons";
+import { CheckSoloIcon, XIcon } from "@nypl/dgx-svg-icons";
 
 // SelfTests can take more than just a collection (an integration can have
 // self tests), but just testing collection data right now.
@@ -33,10 +30,10 @@ const collections = [
           name: "Initial setup.",
           result: null,
           start: "2018-08-07T19:34:54Z",
-          success: true
+          success: true,
         },
-      ]
-    }
+      ],
+    },
   },
   {
     id: 1,
@@ -58,23 +55,24 @@ const collections = [
           name: "Initial setup.",
           result: null,
           start: "2018-08-07T19:34:54Z",
-          success: true
+          success: true,
         },
         {
           duration: 0,
           end: "2018-08-07T19:34:55Z",
           exception: {
             class: "IntegrationException",
-            debug_message: "Add the collection to a library that has a patron authentication service.",
-            message: "Collection is not associated with any libraries."
+            debug_message:
+              "Add the collection to a library that has a patron authentication service.",
+            message: "Collection is not associated with any libraries.",
           },
           name: "Acquiring test patron credentials.",
           result: null,
           start: "2018-08-07T19:34:55Z",
-          success: false
-        }
-      ]
-    }
+          success: false,
+        },
+      ],
+    },
   },
   {
     id: 1,
@@ -90,7 +88,7 @@ const collections = [
       start: "",
       end: "",
       results: [],
-    }
+    },
   },
 ];
 
@@ -114,12 +112,11 @@ const updatedCollection = {
         name: "Initial setup.",
         result: null,
         start: "2018-08-07T20:34:54Z",
-        success: true
+        success: true,
       },
-    ]
-  }
+    ],
+  },
 };
-
 
 describe("SelfTests", () => {
   let wrapper;
@@ -144,24 +141,39 @@ describe("SelfTests", () => {
   });
 
   it("should disable the button if the tests cannot be run", () => {
-    let selfTestResultsWithException = {...collections[0].self_test_results, ...{ exception: "Exception!", disabled: true }};
-    let collectionWithException = {...collections[0], ...{self_test_results: selfTestResultsWithException}};
+    const selfTestResultsWithException = {
+      ...collections[0].self_test_results,
+      ...{ exception: "Exception!", disabled: true },
+    };
+    const collectionWithException = {
+      ...collections[0],
+      ...{ self_test_results: selfTestResultsWithException },
+    };
     wrapper = mount(
-      <SelfTests item={collectionWithException} type="collection" getSelfTests={stub()} />
+      <SelfTests
+        item={collectionWithException}
+        type="collection"
+        getSelfTests={stub()}
+      />
     );
     expect(wrapper.find("button").props().disabled).to.be.true;
   });
 
   it("should render the SelfTests component for new services", () => {
-    let exception = "This integration has no attribute 'prior_test_results'";
-    let self_test_results = {...collections[0].self_test_results, ...{exception}};
-    let item = {...collections[0], ...{self_test_results}};
+    const exception = "This integration has no attribute 'prior_test_results'";
+    const self_test_results = {
+      ...collections[0].self_test_results,
+      ...{ exception },
+    };
+    const item = { ...collections[0], ...{ self_test_results } };
     wrapper = shallow(
       <SelfTests item={item} type="collection" getSelfTests={stub()} />
     );
     expect(wrapper.render().hasClass("integration-selftests")).to.equal(true);
     expect(wrapper.find("ul").length).to.equal(0);
-    expect(wrapper.find(".description").text()).to.equal("There are no self test results yet.");
+    expect(wrapper.find(".description").text()).to.equal(
+      "There are no self test results yet."
+    );
   });
 
   it("should render the SelfTests component with results", () => {
@@ -170,15 +182,17 @@ describe("SelfTests", () => {
   });
 
   it("should format the date and duration of the most recent tests", () => {
-    expect(wrapper.instance().formatDate(collections[0])).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
+    expect(wrapper.instance().formatDate(collections[0])).to.equal(
+      "Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s."
+    );
   });
 
   it("should handle new props", () => {
     expect(wrapper.state()["mostRecent"]).to.equal(wrapper.prop("item"));
-    wrapper.setProps({ "item": updatedCollection });
+    wrapper.setProps({ item: updatedCollection });
     // The new item has a more recent start time, so the state gets updated.
     expect(wrapper.state()["mostRecent"]).to.equal(updatedCollection);
-    wrapper.setProps({ "item": collections[1] });
+    wrapper.setProps({ item: collections[1] });
     // This is not a new result.  Nothing happens.
     expect(wrapper.state()["mostRecent"]).to.equal(updatedCollection);
   });
@@ -193,7 +207,9 @@ describe("SelfTests", () => {
       expect(failSVGIcon.length).to.equal(0);
       expect(passSVGIcon.length).to.equal(1);
 
-      expect(description.text().trim()).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
+      expect(description.text().trim()).to.equal(
+        "Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s."
+      );
     });
 
     it("should display detail information for each self test result for the collection", () => {
@@ -210,7 +226,9 @@ describe("SelfTests", () => {
     beforeEach(() => {
       wrapper = mount(
         <SelfTests
-          item={collections[1]} type="collection" getSelfTests={stub()}
+          item={collections[1]}
+          type="collection"
+          getSelfTests={stub()}
         />
       );
     });
@@ -218,13 +236,17 @@ describe("SelfTests", () => {
     it("should display the base error message when attempting to run self tests", () => {
       wrapper = shallow(
         <SelfTests
-          item={collections[2]} type="collection" getSelfTests={stub()}
+          item={collections[2]}
+          type="collection"
+          getSelfTests={stub()}
         />
       );
 
       const description = wrapper.find(".description");
 
-      expect(description.text().trim()).to.equal("Exception getting self-test results for collection ...");
+      expect(description.text().trim()).to.equal(
+        "Exception getting self-test results for collection ..."
+      );
     });
 
     it("should display information about the whole self test result", () => {
@@ -236,7 +258,9 @@ describe("SelfTests", () => {
       expect(failSVGIcon.length).to.equal(1);
       expect(passSVGIcon.length).to.equal(0);
 
-      expect(description.text().trim()).to.equal("Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s.");
+      expect(description.text().trim()).to.equal(
+        "Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s."
+      );
     });
 
     it("should display detail information for each self test result for the collection", () => {
@@ -246,13 +270,21 @@ describe("SelfTests", () => {
       expect(selfTestResults.length).to.equal(2);
       expect(list.childAt(1).find("li").hasClass("success")).to.equal(true);
       expect(list.childAt(1).find("h4").text()).to.equal("Initial setup.");
-      expect(list.childAt(1).find(".success-description").text()).to.equal("success: true");
+      expect(list.childAt(1).find(".success-description").text()).to.equal(
+        "success: true"
+      );
       expect(list.childAt(1).find(".exception-description").length).to.equal(0);
 
       expect(list.childAt(2).find("li").hasClass("failure")).to.equal(true);
-      expect(list.childAt(2).find("h4").text()).to.equal("Acquiring test patron credentials.");
-      expect(list.childAt(2).find(".success-description").text()).to.equal("success: false");
-      expect(list.childAt(2).find(".exception-description").text()).to.equal("exception: Collection is not associated with any libraries.");
+      expect(list.childAt(2).find("h4").text()).to.equal(
+        "Acquiring test patron credentials."
+      );
+      expect(list.childAt(2).find(".success-description").text()).to.equal(
+        "success: false"
+      );
+      expect(list.childAt(2).find(".exception-description").text()).to.equal(
+        "exception: Collection is not associated with any libraries."
+      );
     });
   });
 
@@ -261,8 +293,12 @@ describe("SelfTests", () => {
     let getSelfTests;
 
     beforeEach(() => {
-      runSelfTests = stub().returns(new Promise<void>(resolve => resolve()));
-      getSelfTests = stub().returns(new Promise<void>(resolve => resolve()));
+      runSelfTests = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
+      getSelfTests = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       wrapper = mount(
         <SelfTests
           item={collections[0]}
@@ -274,7 +310,10 @@ describe("SelfTests", () => {
     });
 
     it("should run new self tests", async () => {
-      const runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests").at(0);
+      const runSelfTestsBtn = wrapper
+        .find("button")
+        .findWhere((el) => el.text() === "Run tests")
+        .at(0);
 
       expect(runSelfTests.callCount).to.equal(0);
 
@@ -289,8 +328,12 @@ describe("SelfTests", () => {
         response: "Failed to run new tests.",
         url: "/admin/collection_self_tests/12",
       };
-      runSelfTests = stub().returns(new Promise<void>((resolve, reject) => reject(error)));
-      getSelfTests = stub().returns(new Promise<void>(resolve => resolve()));
+      runSelfTests = stub().returns(
+        new Promise<void>((resolve, reject) => reject(error))
+      );
+      getSelfTests = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       wrapper = mount(
         <SelfTests
           item={collections[0]}
@@ -299,7 +342,10 @@ describe("SelfTests", () => {
           getSelfTests={getSelfTests}
         />
       );
-      let runSelfTestsBtn = wrapper.find("button").findWhere(el => el.text() === "Run tests").at(0);
+      const runSelfTestsBtn = wrapper
+        .find("button")
+        .findWhere((el) => el.text() === "Run tests")
+        .at(0);
       let alert = wrapper.find(".alert");
 
       expect(runSelfTests.callCount).to.equal(0);
@@ -309,7 +355,7 @@ describe("SelfTests", () => {
       runSelfTestsBtn.simulate("click");
 
       const pause = (): Promise<void> => {
-        return new Promise<void>(resolve => setTimeout(resolve, 0));
+        return new Promise<void>((resolve) => setTimeout(resolve, 0));
       };
       await pause();
 
@@ -323,19 +369,26 @@ describe("SelfTests", () => {
   describe("Handle metadata test results", () => {
     const collectionNames = ["A", "B", "C"];
     const baseResult = collections[0].self_test_results.results[0];
-    let results = [];
-    let makeResult = (c: string, success = true) => {
-      return {...baseResult, ...{
-        collection: c,
-        name: `Test ${results.length < collectionNames.length ? 1 : 2}`,
-        success: success
-      }};
+    const results = [];
+    const makeResult = (c: string, success = true) => {
+      return {
+        ...baseResult,
+        ...{
+          collection: c,
+          name: `Test ${results.length < collectionNames.length ? 1 : 2}`,
+          success: success,
+        },
+      };
     };
-    let display = (results) => wrapper.instance().displayByCollection(results, false);
+    const display = (results) =>
+      wrapper.instance().displayByCollection(results, false);
     it("should call displayMetadata", () => {
-      let spyDisplayByCollection = spy(wrapper.instance(), "displayByCollection");
+      const spyDisplayByCollection = spy(
+        wrapper.instance(),
+        "displayByCollection"
+      );
       expect(spyDisplayByCollection.callCount).to.equal(0);
-      let integration = {...collections[0], ...{goal: "metadata"}};
+      const integration = { ...collections[0], ...{ goal: "metadata" } };
       wrapper.setState({ mostRecent: integration });
       wrapper.setProps({ sortByCollection: true });
       expect(spyDisplayByCollection.callCount).to.equal(1);
@@ -344,13 +397,13 @@ describe("SelfTests", () => {
     });
     it("should sort metadata test results by their collection", () => {
       while (results.length < collectionNames.length * 2) {
-        collectionNames.map(c => results.push(makeResult(c)));
+        collectionNames.map((c) => results.push(makeResult(c)));
       }
-      let collectionPanels = display(results);
+      const collectionPanels = display(results);
       expect(collectionPanels.length).to.equal(collectionNames.length);
       collectionPanels.map((panel: JSX.Element, idx: number) => {
-        let collectionName = collectionNames[idx];
-        let { headerText, style, content } = panel.props;
+        const collectionName = collectionNames[idx];
+        const { headerText, style, content } = panel.props;
         expect(headerText).to.equal(collectionName);
         expect(style).to.equal("success");
         content.map((x: JSX.Element, idx: number) => {
@@ -360,14 +413,14 @@ describe("SelfTests", () => {
       });
     });
     it("should display the result of the initial setup test", () => {
-      let initialResult = makeResult("undefined");
-      let panel = display([initialResult])[0];
+      const initialResult = makeResult("undefined");
+      const panel = display([initialResult])[0];
       expect(panel.props.headerText).to.equal("Initial Setup");
     });
     it("should add the 'danger' class if not all the tests for the collection succeeded", () => {
-      let errorResult = makeResult("With Error", false);
-      let successResult = makeResult("With Error");
-      let panel = display([errorResult, successResult])[0];
+      const errorResult = makeResult("With Error", false);
+      const successResult = makeResult("With Error");
+      const panel = display([errorResult, successResult])[0];
       expect(panel.props.style).to.equal("danger");
     });
   });

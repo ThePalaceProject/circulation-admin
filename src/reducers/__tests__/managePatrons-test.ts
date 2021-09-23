@@ -4,7 +4,7 @@ import ManagePatrons from "../managePatrons";
 import ActionCreator from "../../actions";
 
 describe("ManagePatrons reducer", () => {
-  let initState = {
+  const initState = {
     data: null,
     isFetching: false,
     isEditing: false,
@@ -20,11 +20,11 @@ describe("ManagePatrons reducer", () => {
   });
 
   it("handles CLEAR_PATRON_DATA_LOAD", () => {
-    let action = {
+    const action = {
       type: `${ActionCreator.CLEAR_PATRON_DATA}_LOAD`,
       data: null,
     };
-    let oldPatronState = {
+    const oldPatronState = {
       url: "test url",
       data: {
         authorization_expires: "",
@@ -41,7 +41,7 @@ describe("ManagePatrons reducer", () => {
       isLoaded: true,
       isEditing: false,
     };
-    let oldErrorState = {
+    const oldErrorState = {
       url: "test url",
       data: null,
       isFetching: true,
@@ -55,12 +55,12 @@ describe("ManagePatrons reducer", () => {
       isEditing: false,
     };
 
-    let newPatronState = Object.assign({}, oldPatronState, {
+    const newPatronState = Object.assign({}, oldPatronState, {
       data: null,
       isFetching: false,
       isLoaded: true,
     });
-    let newErrorState = Object.assign({}, oldErrorState, {
+    const newErrorState = Object.assign({}, oldErrorState, {
       data: null,
       isFetching: false,
       isLoaded: true,

@@ -11,21 +11,21 @@ describe("ToolTip", () => {
 
   beforeEach(() => {
     trigger = <h1>Hover</h1>;
-    wrapper = shallow(
-      <ToolTip trigger={trigger} text="ToolTip Content" />
-    );
+    wrapper = shallow(<ToolTip trigger={trigger} text="ToolTip Content" />);
   });
 
   it("renders the trigger element", () => {
-    let trigger = wrapper.find("h1");
+    const trigger = wrapper.find("h1");
     expect(trigger.length).to.equal(1);
     expect(trigger.text()).to.equal("Hover");
   });
 
   it("renders the tooltip", () => {
-    let tooltip = wrapper.find(".tool-tip");
+    const tooltip = wrapper.find(".tool-tip");
     expect(tooltip.length).to.equal(1);
-    expect(tooltip.prop("dangerouslySetInnerHTML")["__html"]).to.equal("ToolTip Content");
+    expect(tooltip.prop("dangerouslySetInnerHTML")["__html"]).to.equal(
+      "ToolTip Content"
+    );
     expect(tooltip.html()).to.include("ToolTip Content");
   });
 
@@ -35,7 +35,7 @@ describe("ToolTip", () => {
   });
 
   it("shows the tooltip on mouseEnter", () => {
-    let spyShowToolTip = spy(wrapper.instance(), "showToolTip");
+    const spyShowToolTip = spy(wrapper.instance(), "showToolTip");
     wrapper.setProps({ show: spyShowToolTip });
 
     wrapper.simulate("mouseEnter");
@@ -51,7 +51,7 @@ describe("ToolTip", () => {
     wrapper.setState({ show: true });
     expect(wrapper.find(".tool-tip").hasClass("hide")).to.be.false;
 
-    let spyHideToolTip = spy(wrapper.instance(), "hideToolTip");
+    const spyHideToolTip = spy(wrapper.instance(), "hideToolTip");
     wrapper.setProps({ hide: spyHideToolTip });
 
     wrapper.simulate("mouseLeave");

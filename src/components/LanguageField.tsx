@@ -11,10 +11,17 @@ export interface LanguageFieldProps {
   onChange?: () => void;
 }
 
-export default class LanguageField extends React.Component<LanguageFieldProps, {}> {
+export default class LanguageField extends React.Component<
+  LanguageFieldProps,
+  {}
+> {
   autocompleteRef = React.createRef<Autocomplete>();
   render() {
-    let value = (this.props.languages && this.props.languages[this.props.value] && this.props.languages[this.props.value][0]) || this.props.value;
+    const value =
+      (this.props.languages &&
+        this.props.languages[this.props.value] &&
+        this.props.languages[this.props.value][0]) ||
+      this.props.value;
     return (
       <Autocomplete
         autocompleteValues={this.uniqueLanguageNames()}
@@ -30,8 +37,8 @@ export default class LanguageField extends React.Component<LanguageFieldProps, {
 
   uniqueLanguageNames() {
     const languageNames = [];
-    for (let nameList of Object.values(this.props.languages || {})) {
-      for (let name of nameList) {
+    for (const nameList of Object.values(this.props.languages || {})) {
+      for (const name of nameList) {
         if (languageNames.indexOf(name) === -1) {
           languageNames.push(name);
         }

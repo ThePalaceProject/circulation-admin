@@ -11,24 +11,30 @@ export interface DiagnosticsServiceTypeState {
   tab: string;
 }
 
-export default class DiagnosticsServiceType extends React.Component<DiagnosticsServiceTypeProps, DiagnosticsServiceTypeState> {
-
+export default class DiagnosticsServiceType extends React.Component<
+  DiagnosticsServiceTypeProps,
+  DiagnosticsServiceTypeState
+> {
   constructor(props) {
     super(props);
     // Start out with the first tab selected.
-    let tab = this.props.services ? Object.keys(this.props.services)[0] : "";
+    const tab = this.props.services ? Object.keys(this.props.services)[0] : "";
     this.state = { tab };
     this.goToTab = this.goToTab.bind(this);
   }
 
   render(): JSX.Element {
-    let serviceTabs = this.props.services ?
+    const serviceTabs = this.props.services ? (
       <DiagnosticsServiceTabs
         content={this.props.services}
         tab={this.state.tab}
         goToTab={this.goToTab}
-      /> :
-      <span>There are currently no {this.props.type.split("_").join(" ")} services.</span>;
+      />
+    ) : (
+      <span>
+        There are currently no {this.props.type.split("_").join(" ")} services.
+      </span>
+    );
 
     return <div className="config services">{serviceTabs}</div>;
   }

@@ -12,7 +12,7 @@ export interface CustomListPageProps extends React.Props<CustomListPageProps> {
     editOrCreate?: string;
     identifier?: string;
   };
-  location?: { [key: string]: string | {[key: string]: string }};
+  location?: { [key: string]: string | { [key: string]: string } };
 }
 
 export interface CustomListPageContext {
@@ -21,21 +21,24 @@ export interface CustomListPageContext {
 }
 
 /** Page that shows all lists for a library and allows creating and editing lists. */
-export default class CustomListPage extends React.Component<CustomListPageProps, CustomListPageContext> {
+export default class CustomListPage extends React.Component<
+  CustomListPageProps,
+  CustomListPageContext
+> {
   context: CustomListPageContext;
 
   static contextTypes: React.ValidationMap<CustomListPageContext> = {
     editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired
+    csrfToken: PropTypes.string.isRequired,
   };
 
   static childContextTypes: React.ValidationMap<any> = {
-    library: PropTypes.func
+    library: PropTypes.func,
   };
 
   getChildContext() {
     return {
-      library: () => this.props.params.library
+      library: () => this.props.params.library,
     };
   }
 

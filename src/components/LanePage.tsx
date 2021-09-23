@@ -19,21 +19,24 @@ export interface LanePageContext {
   csrfToken: string;
 }
 
-export default class LanePage extends React.Component<LanePageProps, LanePageContext> {
+export default class LanePage extends React.Component<
+  LanePageProps,
+  LanePageContext
+> {
   context: LanePageContext;
 
   static contextTypes: React.ValidationMap<LanePageContext> = {
     editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired
+    csrfToken: PropTypes.string.isRequired,
   };
 
   static childContextTypes: React.ValidationMap<any> = {
-    library: PropTypes.func
+    library: PropTypes.func,
   };
 
   getChildContext() {
     return {
-      library: () => this.props.params.library
+      library: () => this.props.params.library,
     };
   }
 

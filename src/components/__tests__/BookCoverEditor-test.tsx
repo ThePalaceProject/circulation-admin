@@ -10,38 +10,38 @@ import ErrorMessage from "../ErrorMessage";
 import { BookData, RightsStatusData } from "../../interfaces";
 
 describe("BookCoverEditor", () => {
-  let rightsStatuses: RightsStatusData = {
+  const rightsStatuses: RightsStatusData = {
     "http://creativecommons.org/licenses/by/4.0/": {
-      "allows_derivatives": true,
-      "name": "Creative Commons Attribution (CC BY)",
-      "open_access": true
+      allows_derivatives: true,
+      name: "Creative Commons Attribution (CC BY)",
+      open_access: true,
     },
     "http://librarysimplified.org/terms/rights-status/in-copyright": {
-      "allows_derivatives": false,
-      "name": "In Copyright",
-      "open_access": false
+      allows_derivatives: false,
+      name: "In Copyright",
+      open_access: false,
     },
     "https://creativecommons.org/licenses/by-nd/4.0": {
-      "allows_derivatives": false,
-      "name": "Creative Commons Attribution-NoDerivs (CC BY-ND)",
-      "open_access": true
-    }
+      allows_derivatives: false,
+      name: "Creative Commons Attribution-NoDerivs (CC BY-ND)",
+      open_access: true,
+    },
   };
 
-  let bookData: BookData = {
+  const bookData: BookData = {
     id: "id",
     title: "title",
     coverUrl: "/cover",
     changeCoverLink: {
       href: "/change_cover",
-      rel: "http://librarysimplified.org/terms/rel/change_cover"
-    }
+      rel: "http://librarysimplified.org/terms/rel/change_cover",
+    },
   };
 
   let wrapper;
-  let editableInputByName = (name) => {
-    let inputs = wrapper.find(EditableInput);
-    return inputs.filterWhere(input => input.props().name === name);
+  const editableInputByName = (name) => {
+    const inputs = wrapper.find(EditableInput);
+    return inputs.filterWhere((input) => input.props().name === name);
   };
 
   describe("rendering", () => {
@@ -59,12 +59,12 @@ describe("BookCoverEditor", () => {
     });
 
     it("shows book title", () => {
-      let title = wrapper.find("h2");
+      const title = wrapper.find("h2");
       expect(title.text()).to.equal(bookData.title);
     });
 
     it("shows updating message", () => {
-      let updatingContainer = wrapper.find(".updating-loader-container");
+      const updatingContainer = wrapper.find(".updating-loader-container");
       let updating = wrapper.find(".updating-loader");
       expect(updatingContainer.length).to.equal(2);
       expect(updating.length).to.equal(0);
@@ -79,27 +79,27 @@ describe("BookCoverEditor", () => {
     });
 
     it("shows current cover", () => {
-      let cover = wrapper.find(".current-cover");
+      const cover = wrapper.find(".current-cover");
       expect(cover.length).to.equal(1);
       expect(cover.props().src).to.equal(bookData.coverUrl);
       expect(cover.props().alt).to.equal("Current book cover");
     });
 
     it("shows cover URL and cover file inputs", () => {
-      let coverUrl = editableInputByName("cover_url");
+      const coverUrl = editableInputByName("cover_url");
       expect(coverUrl.props().label).to.equal("URL for cover image");
 
-      let coverFile = editableInputByName("cover_file");
+      const coverFile = editableInputByName("cover_file");
       expect(coverFile.props().label).to.equal("Or upload cover image");
       expect(coverFile.props().type).to.equal("file");
       expect(coverFile.props().accept).to.equal("image/*");
     });
 
     it("shows title position input", () => {
-      let input = editableInputByName("title_position");
+      const input = editableInputByName("title_position");
       expect(input.props().elementType).to.equal("select");
       expect(input.props().label).to.equal("Title and Author Position");
-      let options = input.find("option");
+      const options = input.find("option");
       expect(options.length).to.equal(4);
       expect(options.at(0).props().value).to.equal("none");
       expect(options.at(1).props().value).to.equal("top");
@@ -134,21 +134,29 @@ describe("BookCoverEditor", () => {
     });
 
     it("shows rights inputs", () => {
-      let rightsStatusInput = editableInputByName("rights_status");
+      const rightsStatusInput = editableInputByName("rights_status");
       expect(rightsStatusInput.length).to.equal(1);
       expect(rightsStatusInput.props().elementType).to.equal("select");
       expect(rightsStatusInput.props().label).to.equal("License");
 
-      let children = rightsStatusInput.find("option");
+      const children = rightsStatusInput.find("option");
       expect(children.length).to.equal(3);
-      expect(children.at(0).props().value).to.equal("http://creativecommons.org/licenses/by/4.0/");
-      expect(children.at(0).text()).to.equal("Creative Commons Attribution (CC BY)");
-      expect(children.at(1).props().value).to.equal("http://librarysimplified.org/terms/rights-status/in-copyright");
+      expect(children.at(0).props().value).to.equal(
+        "http://creativecommons.org/licenses/by/4.0/"
+      );
+      expect(children.at(0).text()).to.equal(
+        "Creative Commons Attribution (CC BY)"
+      );
+      expect(children.at(1).props().value).to.equal(
+        "http://librarysimplified.org/terms/rights-status/in-copyright"
+      );
       expect(children.at(1).text()).to.equal("In Copyright");
-      expect(children.at(2).props().value).to.equal("http://librarysimplified.org/terms/rights-status/unknown");
+      expect(children.at(2).props().value).to.equal(
+        "http://librarysimplified.org/terms/rights-status/unknown"
+      );
       expect(children.at(2).text()).to.equal("Other");
 
-      let explanationInput = editableInputByName("rights_explanation");
+      const explanationInput = editableInputByName("rights_explanation");
       expect(explanationInput.length).to.equal(1);
       expect(explanationInput.props().label).to.equal("Explanation of rights");
     });
@@ -157,7 +165,7 @@ describe("BookCoverEditor", () => {
       let error = wrapper.find(ErrorMessage);
       expect(error.length).to.equal(0);
 
-      let errorData = { status: 500, url: "url", response: "error" };
+      const errorData = { status: 500, url: "url", response: "error" };
       wrapper.setProps({ fetchError: errorData });
       error = wrapper.find(ErrorMessage);
       expect(error.props().error).to.equal(errorData);
@@ -167,14 +175,14 @@ describe("BookCoverEditor", () => {
       let error = wrapper.find(ErrorMessage);
       expect(error.length).to.equal(0);
 
-      let errorData = { status: 500, url: "url", response: "error" };
+      const errorData = { status: 500, url: "url", response: "error" };
       wrapper.setProps({ previewFetchError: errorData });
       error = wrapper.find(ErrorMessage);
       expect(error.props().error).to.equal(errorData);
     });
 
     it("shows save button", () => {
-      let buttons = wrapper.find("button");
+      const buttons = wrapper.find("button");
       // Counting the two buttons that are coming from the Panel component:
       expect(buttons.length).to.equal(4);
       let save = buttons.at(3);
@@ -198,7 +206,9 @@ describe("BookCoverEditor", () => {
       fetchBook = stub();
       fetchPreview = stub();
       clearPreview = stub();
-      editCover = stub().returns(new Promise<void>(resolve => resolve()));
+      editCover = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       fetchRightsStatuses = stub();
       refreshCatalog = stub();
       wrapper = mount(
@@ -230,23 +240,27 @@ describe("BookCoverEditor", () => {
       expect(fetchPreview.callCount).to.equal(0);
       expect(clearPreview.callCount).to.equal(1);
 
-      let previewButton = wrapper.find("button").at(1);
-      let coverUrl = editableInputByName("cover_url");
+      const previewButton = wrapper.find("button").at(1);
+      const coverUrl = editableInputByName("cover_url");
       coverUrl.setState({ value: "http://example.com" });
       previewButton.simulate("click");
 
       expect(fetchPreview.callCount).to.equal(1);
-      expect(fetchPreview.args[0][0]).to.equal("/admin/book/preview_book_cover");
+      expect(fetchPreview.args[0][0]).to.equal(
+        "/admin/book/preview_book_cover"
+      );
       let formData = fetchPreview.args[0][1];
       expect(formData.get("cover_url")).to.equal("http://example.com");
       expect(formData.get("title_position")).to.equal("none");
 
-      let titlePosition = editableInputByName("title_position");
+      const titlePosition = editableInputByName("title_position");
       titlePosition.setState({ value: "center" });
       previewButton.simulate("click");
 
       expect(fetchPreview.callCount).to.equal(2);
-      expect(fetchPreview.args[1][0]).to.equal("/admin/book/preview_book_cover");
+      expect(fetchPreview.args[1][0]).to.equal(
+        "/admin/book/preview_book_cover"
+      );
       formData = fetchPreview.args[1][1];
       expect(formData.get("cover_url")).to.equal("http://example.com");
       expect(formData.get("cover_file")).to.equal("");
@@ -257,12 +271,14 @@ describe("BookCoverEditor", () => {
       expect(fetchPreview.callCount).to.equal(2);
       expect(clearPreview.callCount).to.equal(2);
 
-      let coverFile = editableInputByName("cover_file");
+      const coverFile = editableInputByName("cover_file");
       coverFile.setState({ value: "c://file.png" });
       previewButton.simulate("click");
 
       expect(fetchPreview.callCount).to.equal(3);
-      expect(fetchPreview.args[2][0]).to.equal("/admin/book/preview_book_cover");
+      expect(fetchPreview.args[2][0]).to.equal(
+        "/admin/book/preview_book_cover"
+      );
       formData = fetchPreview.args[2][1];
       expect(formData.get("cover_url")).to.equal("");
       expect(formData.get("title_position")).to.equal("center");
@@ -274,36 +290,40 @@ describe("BookCoverEditor", () => {
       expect(refreshCatalog.callCount).to.equal(0);
       wrapper.setProps({ preview: "image data" });
 
-      let coverUrl = editableInputByName("cover_url");
+      const coverUrl = editableInputByName("cover_url");
       coverUrl.at(0).setState({ value: "http://example.com" });
 
-      let titlePosition = editableInputByName("title_position");
+      const titlePosition = editableInputByName("title_position");
       titlePosition.at(0).setState({ value: "center" });
 
-      let rightsStatus = editableInputByName("rights_status");
-      rightsStatus.at(0).setState({ value: "http://creativecommons.org/licenses/by/4.0/" });
+      const rightsStatus = editableInputByName("rights_status");
+      rightsStatus
+        .at(0)
+        .setState({ value: "http://creativecommons.org/licenses/by/4.0/" });
 
-      let rightsExplanation = editableInputByName("rights_explanation");
+      const rightsExplanation = editableInputByName("rights_explanation");
       rightsExplanation.at(0).setState({ value: "explanation" });
 
-      let saveButton = wrapper.find("button").at(3);
+      const saveButton = wrapper.find("button").at(3);
       saveButton.simulate("click");
 
       expect(editCover.callCount).to.equal(1);
       expect(editCover.args[0][0]).to.equal("/change_cover");
-      let formData = editCover.args[0][1];
+      const formData = editCover.args[0][1];
       expect(formData.get("cover_url")).to.equal("http://example.com");
       expect(formData.get("title_position")).to.equal("center");
-      expect(formData.get("rights_status")).to.equal("http://creativecommons.org/licenses/by/4.0/");
+      expect(formData.get("rights_status")).to.equal(
+        "http://creativecommons.org/licenses/by/4.0/"
+      );
       expect(formData.get("rights_explanation")).to.equal("explanation");
 
       const pause = (): Promise<void> => {
-        return new Promise<void>(resolve => setTimeout(resolve, 0));
+        return new Promise<void>((resolve) => setTimeout(resolve, 0));
       };
       await pause();
 
       expect(fetchBook.callCount).to.equal(1);
       expect(refreshCatalog.callCount).to.equal(1);
-   });
+    });
   });
 });

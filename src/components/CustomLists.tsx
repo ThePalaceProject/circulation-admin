@@ -171,7 +171,7 @@ export class CustomLists extends React.Component<
     return <CustomListEditor {...{ ...editorProps, ...extraProps }} />;
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.fetchCustomLists) {
       this.props.fetchCustomLists();
     }
@@ -188,7 +188,7 @@ export class CustomLists extends React.Component<
     this.props.fetchLanguages();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // If we've fetched lists but we're not on the edit or create page,
     // redirect to the edit page for the first list, or the create page
     // if there are no lists.

@@ -26,54 +26,70 @@ export interface EditableInputState {
     because if the element gets its value from a prop, the user won't be able to make any changes.
     This component keeps an updated value in its state. This also handles rendering an optional
     label and description for the input. */
-export default class EditableInput extends React.Component<EditableInputProps, EditableInputState> {
+export default class EditableInput extends React.Component<
+  EditableInputProps,
+  EditableInputState
+> {
   private elementRef = React.createRef<HTMLInputElement>();
   static defaultProps = {
     optionalText: true,
-    readOnly: false
+    readOnly: false,
   };
 
   constructor(props) {
     super(props);
     this.state = {
       value: props.value || "",
-      checked: props.checked || false
+      checked: props.checked || false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
   render() {
     const {
-      type, elementType, optionalText, required, description, clientError, error,
-      label, extraContent,
+      type,
+      elementType,
+      optionalText,
+      required,
+      description,
+      clientError,
+      error,
+      label,
+      extraContent,
     } = this.props;
     const checkboxOrRadioOrSelect = !!(
-      type === "checkbox" || type === "radio" || elementType === "select"
+      type === "checkbox" ||
+      type === "radio" ||
+      elementType === "select"
     );
-    const optionalTextStr = (optionalText && !required && !checkboxOrRadioOrSelect)
-      ? "(Optional) " : "";
+    const optionalTextStr =
+      optionalText && !required && !checkboxOrRadioOrSelect
+        ? "(Optional) "
+        : "";
     const descriptionText = description ? description : "";
     const descriptionStr = `${optionalTextStr}${descriptionText}`;
-    const errorClass = clientError ||
-      (error && error.status >= 400 && !this.state.value && required) ?
-      "field-error" : "";
+    const errorClass =
+      clientError ||
+      (error && error.status >= 400 && !this.state.value && required)
+        ? "field-error"
+        : "";
     return (
       <div className={`form-group ${errorClass} ${this.props.className}`}>
-        { label &&
+        {label && (
           <label className="control-label">
-            { type !== "checkbox" && type !== "radio" && label }
-            { required && <span className="required-field">Required</span>}
-            { this.renderElement() }
-            { type === "checkbox" && label }
-            { type === "radio" && <span>{label}</span> }
+            {type !== "checkbox" && type !== "radio" && label}
+            {required && <span className="required-field">Required</span>}
+            {this.renderElement()}
+            {type === "checkbox" && label}
+            {type === "radio" && <span>{label}</span>}
           </label>
-        }
-        { (extraContent || !label) &&
+        )}
+        {(extraContent || !label) && (
           <div className={extraContent ? "with-add-on" : ""}>
             {extraContent}
             {!label && this.renderElement()}
           </div>
-        }
+        )}
         {descriptionStr.trim() && this.renderDescription(descriptionStr)}
       </div>
     );
@@ -81,37 +97,61 @@ export default class EditableInput extends React.Component<EditableInputProps, E
 
   renderElement() {
     const {
-      type, elementType, placeholder, accept, list, min, max, children,
-      disabled, readOnly, name, validation, style, minLength, maxLength
-    } = this.props;
-    return React.createElement(elementType || "input", {
-      className: ((type !== "checkbox" && type !== "radio") ? "form-control" : ""),
-      ref: this.elementRef,
-      value: this.state.value,
-      checked: this.state.checked,
-      onKeyPress: validation && validation === "number" && this.validateNumber,
-      onChange: this.handleChange,
       type,
-      disabled,
-      readOnly,
-      name,
-      style,
+      elementType,
       placeholder,
       accept,
       list,
       min,
       max,
+      children,
+      disabled,
+      readOnly,
+      name,
+      validation,
+      style,
       minLength,
       maxLength,
-      ["aria-label"]: this.props["aria-label"]
-    }, children);
+    } = this.props;
+    return React.createElement(
+      elementType || "input",
+      {
+        className:
+          type !== "checkbox" && type !== "radio" ? "form-control" : "",
+        ref: this.elementRef,
+        value: this.state.value,
+        checked: this.state.checked,
+        onKeyPress:
+          validation && validation === "number" && this.validateNumber,
+        onChange: this.handleChange,
+        type,
+        disabled,
+        readOnly,
+        name,
+        style,
+        placeholder,
+        accept,
+        list,
+        min,
+        max,
+        minLength,
+        maxLength,
+        ["aria-label"]: this.props["aria-label"],
+      },
+      children
+    );
   }
 
   renderDescription(description: string) {
-    return <p className="description" dangerouslySetInnerHTML={{__html: description}} />;
+    return (
+      <p
+        className="description"
+        dangerouslySetInnerHTML={{ __html: description }}
+      />
+    );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let value = this.state.value;
     let checked = this.state.checked;
     let changed = false;
@@ -129,7 +169,10 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   handleChange() {
-    if (!this.props.readOnly && (!this.props.onChange || this.props.onChange(this.getValue()) !== false)) {
+    if (
+      !this.props.readOnly &&
+      (!this.props.onChange || this.props.onChange(this.getValue()) !== false)
+    ) {
       let value = this.state.value;
       let checked = this.state.checked;
       if (this.props.type === "checkbox" || this.props.type === "radio") {
@@ -142,7 +185,20 @@ export default class EditableInput extends React.Component<EditableInputProps, E
   }
 
   validateNumber(e) {
-    const validChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "Enter"];
+    const validChars = [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      ".",
+      "Enter",
+    ];
     if (validChars.indexOf(e.key) < 0) {
       e.preventDefault();
     }

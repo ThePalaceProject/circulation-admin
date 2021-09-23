@@ -17,21 +17,24 @@ const initialState: ClassificationsState = {
   isFetchingGenreTree: false,
   isEditingClassifications: false,
   isFetchingClassifications: false,
-  fetchError: null
+  fetchError: null,
 };
 
-export default (state: ClassificationsState = initialState, action): ClassificationsState => {
+export default (
+  state: ClassificationsState = initialState,
+  action
+): ClassificationsState => {
   switch (action.type) {
     case ActionCreator.GENRE_TREE_REQUEST:
       return Object.assign({}, state, {
         isFetchingGenreTree: true,
-        fetchError: null
+        fetchError: null,
       });
 
     case ActionCreator.GENRE_TREE_FAILURE:
       return Object.assign({}, state, {
         fetchError: action.error,
-        isFetchingGenreTree: false
+        isFetchingGenreTree: false,
       });
 
     case ActionCreator.GENRE_TREE_LOAD:
@@ -43,38 +46,38 @@ export default (state: ClassificationsState = initialState, action): Classificat
     case ActionCreator.EDIT_CLASSIFICATIONS_REQUEST:
       return Object.assign({}, state, {
         isEditingClassifications: true,
-        fetchError: null
+        fetchError: null,
       });
 
     case ActionCreator.EDIT_CLASSIFICATIONS_SUCCESS:
       return Object.assign({}, state, {
         isEditingClassifications: false,
-        fetchError: null
+        fetchError: null,
       });
 
     case ActionCreator.EDIT_CLASSIFICATIONS_FAILURE:
       return Object.assign({}, state, {
         fetchError: action.error,
-        isEditingClassifications: false
+        isEditingClassifications: false,
       });
 
     case ActionCreator.CLASSIFICATIONS_REQUEST:
       return Object.assign({}, state, {
         classifications: null,
         isFetchingClassifications: true,
-        fetchError: null
+        fetchError: null,
       });
 
     case ActionCreator.CLASSIFICATIONS_FAILURE:
       return Object.assign({}, state, {
         fetchError: action.error,
-        isFetchingClassifications: false
+        isFetchingClassifications: false,
       });
 
     case ActionCreator.CLASSIFICATIONS_LOAD:
       return Object.assign({}, state, {
         classifications: action.data.classifications,
-        isFetchingClassifications: false
+        isFetchingClassifications: false,
       });
 
     default:

@@ -15,49 +15,74 @@ import AnnouncementsSection from "../AnnouncementsSection";
 describe("LibraryEditForm", () => {
   let wrapper;
   let save;
-  let libraryData = {
+  const libraryData = {
     uuid: "uuid",
     name: "name",
     short_name: "short_name",
+    // prettier-ignore
     settings: {
       "privacy-policy": "http://privacy",
       "copyright": "http://copyright",
       "featured_lane_size": "20",
       "announcements": "[{\"content\": \"Announcement #1\", \"start\": \"2020-06-15\", \"finish\": \"2020-08-15\", \"id\": \"1\"}]"
-    }
+    },
   };
-  let settingFields = [
+  const settingFields = [
     { key: "name", label: "Name", category: "Basic Information", level: 3 },
-    { key: "short_name", label: "Short Name", category: "Basic Information", level: 3 },
+    {
+      key: "short_name",
+      label: "Short Name",
+      category: "Basic Information",
+      level: 3,
+    },
     { key: "privacy-policy", label: "Privacy Policy", category: "Links" },
     { key: "copyright", label: "Copyright", category: "Links" },
     { key: "logo", label: "Logo", category: "Client Interface Customization" },
     { key: "large_collections", label: "Languages", category: "Languages" },
-    { key: "featured_lane_size", label: "Maximum number of books in the 'featured' lanes", category: "Lanes & Filters", type: "number"},
-    { key: "service_area", label: "Service Area", category: "Geographic Areas", type: "list" },
-    { key: "announcements", label: "Announcements", category: "Announcements", type: "announcements" }
+    {
+      key: "featured_lane_size",
+      label: "Maximum number of books in the 'featured' lanes",
+      category: "Lanes & Filters",
+      type: "number",
+    },
+    {
+      key: "service_area",
+      label: "Service Area",
+      category: "Geographic Areas",
+      type: "list",
+    },
+    {
+      key: "announcements",
+      label: "Announcements",
+      category: "Announcements",
+      type: "announcements",
+    },
   ];
 
-  let editableInputByName = (name) => {
-    let inputs = wrapper.find(EditableInput);
+  const editableInputByName = (name) => {
+    const inputs = wrapper.find(EditableInput);
     if (inputs.length >= 1) {
-      return inputs.filterWhere(input => input.props().name === name);
+      return inputs.filterWhere((input) => input.props().name === name);
     }
     return [];
   };
 
-  let protocolFormFieldByKey = (key) => {
-    let formFields = wrapper.find(ProtocolFormField);
+  const protocolFormFieldByKey = (key) => {
+    const formFields = wrapper.find(ProtocolFormField);
     if (formFields.length >= 1) {
-      return formFields.filterWhere(formField => formField.props().setting.key === key);
+      return formFields.filterWhere(
+        (formField) => formField.props().setting.key === key
+      );
     }
     return [];
   };
 
-  let collapsibleByName = (name: string) => {
-    let collapsibles = wrapper.find(Panel);
+  const collapsibleByName = (name: string) => {
+    const collapsibles = wrapper.find(Panel);
     if (collapsibles.length >= 1) {
-      return collapsibles.filterWhere(collapsible => collapsible.find(".panel-heading").text().startsWith(name));
+      return collapsibles.filterWhere((collapsible) =>
+        collapsible.find(".panel-heading").text().startsWith(name)
+      );
     }
     return [];
   };
@@ -78,10 +103,12 @@ describe("LibraryEditForm", () => {
     });
 
     it("renders hidden uuid", () => {
+      // prettier-ignore
       let input = wrapper.find("input[name=\"uuid\"]");
       expect(input.props().value).not.to.be.ok;
 
       wrapper.setProps({ item: libraryData });
+      // prettier-ignore
       input = wrapper.find("input[name=\"uuid\"]");
       expect(input.props().value).to.equal("uuid");
     });
@@ -121,32 +148,59 @@ describe("LibraryEditForm", () => {
 
     it("does not render settings with the skip attribute", () => {
       expect(wrapper.find(ProtocolFormField).length).to.equal(8);
-      let settings = wrapper.prop("data").settings.concat([{ key: "skip", label: "Skip this setting!", skip: true }]);
-      wrapper.setProps({ data: {...wrapper.prop("data"), ...{settings}}});
+      const settings = wrapper
+        .prop("data")
+        .settings.concat([
+          { key: "skip", label: "Skip this setting!", skip: true },
+        ]);
+      wrapper.setProps({ data: { ...wrapper.prop("data"), ...{ settings } } });
       expect(wrapper.find(ProtocolFormField).length).to.equal(8);
       expect(protocolFormFieldByKey("skip").length).to.equal(0);
     });
 
     it("renders the PairedMenus component", () => {
-      let inputListSetting = { key: "inputList", label: "Input List", paired: "dropdown", options: [], default: ["opt_1"], level: 2 };
-      let dropdownSetting = { key: "dropdown", label: "Dropdown List", options: [{key: "opt_1", label: "Option 1"}, {key: "opt_2", label: "Option 2"}], type: "select", level: 2 };
-      wrapper.setProps({ data: {...wrapper.prop("data"), ...{ settings: [inputListSetting, dropdownSetting]}}});
+      const inputListSetting = {
+        key: "inputList",
+        label: "Input List",
+        paired: "dropdown",
+        options: [],
+        default: ["opt_1"],
+        level: 2,
+      };
+      const dropdownSetting = {
+        key: "dropdown",
+        label: "Dropdown List",
+        options: [
+          { key: "opt_1", label: "Option 1" },
+          { key: "opt_2", label: "Option 2" },
+        ],
+        type: "select",
+        level: 2,
+      };
+      wrapper.setProps({
+        data: {
+          ...wrapper.prop("data"),
+          ...{ settings: [inputListSetting, dropdownSetting] },
+        },
+      });
       let pairedMenus = wrapper.find(PairedMenus);
       expect(pairedMenus.length).to.equal(1);
       expect(pairedMenus.prop("readOnly")).not.to.be.true;
 
-      let inputList = pairedMenus.find(InputList);
+      const inputList = pairedMenus.find(InputList);
       expect(inputList.length).to.equal(1);
       expect(inputList.prop("setting")).to.eql({
         ...inputListSetting,
-        ...{ format: "narrow", menuOptions: [], type: "menu" }
+        ...{ format: "narrow", menuOptions: [], type: "menu" },
       });
 
-      let dropdown = pairedMenus.find("select");
+      const dropdown = pairedMenus.find("select");
       expect(dropdown.length).to.equal(1);
       expect(dropdown.prop("name")).to.equal("dropdown");
       expect(dropdown.children().length).to.equal(1);
-      expect(dropdown.children().at(0).prop("value")).to.equal(inputListSetting.default[0]);
+      expect(dropdown.children().at(0).prop("value")).to.equal(
+        inputListSetting.default[0]
+      );
 
       // If the admin isn't authorized to make changes to the setting represented by the PairedMenus component,
       // PairedMenus should be read-only.
@@ -156,8 +210,18 @@ describe("LibraryEditForm", () => {
     });
 
     it("renders the InputList component", () => {
-      let inputListSetting = { key: "inputList", label: "Input List", options: [], default: ["opt_1"], level: 2,  menuOptions: [], type: "menu" };
-      wrapper.setProps({ data: {...wrapper.prop("data"), ...{ settings: [inputListSetting]}}});
+      const inputListSetting = {
+        key: "inputList",
+        label: "Input List",
+        options: [],
+        default: ["opt_1"],
+        level: 2,
+        menuOptions: [],
+        type: "menu",
+      };
+      wrapper.setProps({
+        data: { ...wrapper.prop("data"), ...{ settings: [inputListSetting] } },
+      });
       let inputList = wrapper.find(InputList);
       expect(inputList.length).to.equal(1);
       expect(inputList.prop("setting")).to.eql(inputListSetting);
@@ -174,52 +238,75 @@ describe("LibraryEditForm", () => {
 
     it("renders the Announcements component", () => {
       wrapper.setProps({ item: libraryData });
-      let announcements = wrapper.find(AnnouncementsSection);
+      const announcements = wrapper.find(AnnouncementsSection);
       expect(announcements.length).to.equal(1);
       expect(announcements.props().setting.key).to.equal("announcements");
-      expect(announcements.props().value).to.eql(JSON.parse(libraryData.settings.announcements));
+      expect(announcements.props().value).to.eql(
+        JSON.parse(libraryData.settings.announcements)
+      );
     });
 
     it("subdivides fields", () => {
-      let collapsible = wrapper.find(".panel");
+      const collapsible = wrapper.find(".panel");
       expect(collapsible.length).to.equal(7);
 
-      let basic = collapsible.at(0).find(".panel-heading");
+      const basic = collapsible.at(0).find(".panel-heading");
       expect(basic.text()).to.contain("Basic Information");
 
-      let other = collapsible.slice(1, collapsible.length);
+      const other = collapsible.slice(1, collapsible.length);
       other.map((form) => {
-        let title = form.find(".panel-heading").text();
+        const title = form.find(".panel-heading").text();
         expect(title).to.contain("(Optional)");
       });
 
-      expect(collapsibleByName("Links").find(ProtocolFormField).length).to.equal(2);
-      expect(collapsibleByName("Languages").find(ProtocolFormField).length).to.equal(1);
-      expect(collapsibleByName("Client Interface Customization").find(ProtocolFormField).length).to.equal(1);
+      expect(
+        collapsibleByName("Links").find(ProtocolFormField).length
+      ).to.equal(2);
+      expect(
+        collapsibleByName("Languages").find(ProtocolFormField).length
+      ).to.equal(1);
+      expect(
+        collapsibleByName("Client Interface Customization").find(
+          ProtocolFormField
+        ).length
+      ).to.equal(1);
 
-      let geographic = collapsibleByName("Geographic Areas");
+      const geographic = collapsibleByName("Geographic Areas");
       expect(geographic.find(ProtocolFormField).length).to.equal(1);
-      let addListItems = geographic.find(".add-list-item").hostNodes();
+      const addListItems = geographic.find(".add-list-item").hostNodes();
       expect(addListItems.length).to.equal(2);
       expect(addListItems.at(0).type()).to.equal("span");
       expect(addListItems.at(1).type()).to.equal("button");
     });
 
     it("has a save button", () => {
-      let form = wrapper.find(Form);
-      let saveButton = form.find(Button).last();
+      const form = wrapper.find(Form);
+      const saveButton = form.find(Button).last();
       expect(saveButton.text()).to.equal("Submit");
       expect(form.prop("onSubmit")).to.equal(wrapper.instance().submit);
     });
 
     it("disables some fields if the user isn't a system admin", () => {
-      let sysAdminOnly = { key: "level-3", label: "Level 3", category: "Basic Information", level: 3 };
-      let sysAdminAndLibMgr = { key: "level-2", label: "Level 2", category: "Basic Information", level: 2 };
-      let data = {libraries: [libraryData], settings: settingFields.concat([sysAdminOnly, sysAdminAndLibMgr]) };
+      const sysAdminOnly = {
+        key: "level-3",
+        label: "Level 3",
+        category: "Basic Information",
+        level: 3,
+      };
+      const sysAdminAndLibMgr = {
+        key: "level-2",
+        label: "Level 2",
+        category: "Basic Information",
+        level: 2,
+      };
+      const data = {
+        libraries: [libraryData],
+        settings: settingFields.concat([sysAdminOnly, sysAdminAndLibMgr]),
+      };
       let fields = wrapper.find(EditableInput);
 
       // System admin
-      fields.forEach(x => {
+      fields.forEach((x) => {
         if (!["Name", "Short name"].includes(x.prop("label"))) {
           expect(x.prop("readOnly")).to.be.false;
         }
@@ -228,22 +315,28 @@ describe("LibraryEditForm", () => {
       // Library manager
       wrapper.setProps({ adminLevel: 2, data });
       fields = wrapper.find(EditableInput);
-      fields.forEach(x => {
-        expect(x.prop("readOnly")).to.equal(["Name", "Short Name", "Level 3"].includes(x.prop("label")));
+      fields.forEach((x) => {
+        expect(x.prop("readOnly")).to.equal(
+          ["Name", "Short Name", "Level 3"].includes(x.prop("label"))
+        );
       });
 
       // Librarian
       wrapper.setProps({ adminLevel: 1 });
       fields = wrapper.find(EditableInput);
-      fields.forEach(x => {
-        expect(x.prop("readOnly")).to.equal(["Name", "Short Name", "Level 3", "Level 2"].includes(x.prop("label")));
+      fields.forEach((x) => {
+        expect(x.prop("readOnly")).to.equal(
+          ["Name", "Short Name", "Level 3", "Level 2"].includes(x.prop("label"))
+        );
       });
     });
   });
 
   describe("behavior", () => {
     beforeEach(() => {
-      save = stub().returns(new Promise<void>(resolve => resolve()));
+      save = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       wrapper = mount(
         <LibraryEditForm
           data={{ libraries: [libraryData], settings: settingFields }}
@@ -256,7 +349,7 @@ describe("LibraryEditForm", () => {
     });
 
     it("calls save when the save button is clicked", () => {
-      let saveButton = wrapper.find(Button).last();
+      const saveButton = wrapper.find(Button).last();
       saveButton.simulate("click");
       expect(save.callCount).to.equal(1);
     });
@@ -269,11 +362,11 @@ describe("LibraryEditForm", () => {
     it("submits data", () => {
       wrapper.setProps({ item: libraryData });
 
-      let saveButton = wrapper.find(Button).last();
+      const saveButton = wrapper.find(Button).last();
       saveButton.simulate("click");
 
       expect(save.callCount).to.equal(1);
-      let formData = save.args[0][0];
+      const formData = save.args[0][0];
       expect(formData.get("uuid")).to.equal("uuid");
       expect(formData.get("name")).to.equal("name");
       expect(formData.get("short_name")).to.equal("short_name");
@@ -281,9 +374,9 @@ describe("LibraryEditForm", () => {
       expect(formData.get("copyright")).to.equal("http://copyright");
     });
 
-    let fillOutFormFields = () => {
-      let nameInput = wrapper.find("input[name='name']");
-      let nameInputElement = nameInput.getDOMNode();
+    const fillOutFormFields = () => {
+      const nameInput = wrapper.find("input[name='name']");
+      const nameInputElement = nameInput.getDOMNode();
       nameInputElement.value = "new name";
       nameInput.simulate("change");
     };
@@ -294,7 +387,7 @@ describe("LibraryEditForm", () => {
       expect(nameInput.props().value).to.equal("new name");
 
       wrapper.simulate("submit");
-      let newProps = { responseBody: "new library", ...wrapper.props() };
+      const newProps = { responseBody: "new library", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       nameInput = wrapper.find("input[name='name']");
@@ -307,12 +400,11 @@ describe("LibraryEditForm", () => {
       expect(nameInput.props().value).to.equal("new name");
 
       wrapper.simulate("submit");
-      let newProps = { fetchError: "ERROR", ...wrapper.props() };
+      const newProps = { fetchError: "ERROR", ...wrapper.props() };
       wrapper.setProps(newProps);
 
       nameInput = wrapper.find("input[name='name']");
       expect(nameInput.props().value).to.equal("new name");
     });
-
   });
 });

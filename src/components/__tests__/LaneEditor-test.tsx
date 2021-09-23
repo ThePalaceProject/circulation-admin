@@ -18,32 +18,38 @@ describe("LaneEditor", () => {
   let findParentOfLane;
   let toggleLaneVisibility;
 
-  let customListsData = [
-    { id: 1, name: "list 1", entries: [] },
-  ];
+  const customListsData = [{ id: 1, name: "list 1", entries: [] }];
 
-  let laneData = {
+  const laneData = {
     id: 1,
     display_name: "lane",
     visible: true,
     count: 5,
-    sublanes: [{
-      id: 2,
-      display_name: "sublane",
-      visible: true,
-      count: 3,
-      sublanes: [],
-      custom_list_ids: [1],
-      inherit_parent_restrictions: false
-    }],
+    sublanes: [
+      {
+        id: 2,
+        display_name: "sublane",
+        visible: true,
+        count: 3,
+        sublanes: [],
+        custom_list_ids: [1],
+        inherit_parent_restrictions: false,
+      },
+    ],
     custom_list_ids: [1],
-    inherit_parent_restrictions: true
+    inherit_parent_restrictions: true,
   };
 
   beforeEach(() => {
-    editLane = stub().returns(new Promise<void>(resolve => resolve()));
-    deleteLane = stub().returns(new Promise<void>(resolve => resolve()));
-    hideLane = stub().returns(new Promise<void>(resolve => resolve()));
+    editLane = stub().returns(
+      new Promise<void>((resolve) => resolve())
+    );
+    deleteLane = stub().returns(
+      new Promise<void>((resolve) => resolve())
+    );
+    hideLane = stub().returns(
+      new Promise<void>((resolve) => resolve())
+    );
     findParentOfLane = stub().returns(laneData);
     toggleLaneVisibility = stub();
     wrapper = shallow(
@@ -60,14 +66,14 @@ describe("LaneEditor", () => {
   });
 
   it("shows lane name", () => {
-    let name = wrapper.find(TextWithEditMode);
+    const name = wrapper.find(TextWithEditMode);
     expect(name.length).to.equal(1);
     expect(name.props().text).to.equal("lane");
     expect(name.props().placeholder).to.equal("name");
   });
 
   it("shows lane id", () => {
-    let laneId = wrapper.find(".lane-editor-header h4");
+    const laneId = wrapper.find(".lane-editor-header h4");
     expect(laneId.length).to.be.at.least(1);
     expect(laneId.at(0).text()).to.contain("1");
   });
@@ -78,7 +84,7 @@ describe("LaneEditor", () => {
     expect(info.text()).to.contain("visible");
     expect(info.text()).not.to.contain("hidden");
 
-    let hiddenLane = Object.assign({}, laneData, { visible: false });
+    const hiddenLane = Object.assign({}, laneData, { visible: false });
     wrapper.setProps({ lane: hiddenLane });
     info = wrapper.find(".lane-details");
     expect(info.length).to.equal(1);
@@ -107,7 +113,7 @@ describe("LaneEditor", () => {
 
   it("doesn't show the inherit parent restrictions setting on a new lane", () => {
     wrapper.setProps({ findParentOfLane: stub().returns(null) });
-    let input = wrapper.find(EditableInput);
+    const input = wrapper.find(EditableInput);
     expect(input.length).to.equal(0);
   });
 
@@ -127,7 +133,7 @@ describe("LaneEditor", () => {
     expect(input.props().checked).to.be.true;
     expect(input.props().label).to.contain("restrictions");
 
-    let onChange = input.props().onChange;
+    const onChange = input.props().onChange;
     onChange();
     wrapper.update();
     input = wrapper.find(EditableInput);
@@ -135,7 +141,7 @@ describe("LaneEditor", () => {
   });
 
   it("shows custom lists editor", () => {
-    let listsEditor = wrapper.find(LaneCustomListsEditor);
+    const listsEditor = wrapper.find(LaneCustomListsEditor);
     expect(listsEditor.length).to.equal(1);
     expect(listsEditor.props().allCustomLists).to.deep.equal(customListsData);
     expect(listsEditor.props().customListIds).to.deep.equal([1]);
@@ -178,13 +184,17 @@ describe("LaneEditor", () => {
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );
-    let toggle = stub().returns(() => wrapper.setProps({lane: {...laneData, ...{visible: !laneData.visible}}}));
+    const toggle = stub().returns(() =>
+      wrapper.setProps({
+        lane: { ...laneData, ...{ visible: !laneData.visible } },
+      })
+    );
     wrapper.setProps({ toggleLaneVisibility: toggle });
 
     let showButton = wrapper.find(Button).at(2);
     expect(showButton.hasClass("show-lane")).to.be.false;
 
-    let hiddenLane = Object.assign({}, laneData, { visible: false });
+    const hiddenLane = Object.assign({}, laneData, { visible: false });
     wrapper.setProps({ lane: hiddenLane });
     showButton = wrapper.find(Button).at(2);
     expect(showButton.hasClass("show-lane")).to.be.true;
@@ -194,7 +204,10 @@ describe("LaneEditor", () => {
     expect(toggle.callCount).to.equal(1);
     expect(toggle.args[0][0]).to.deep.equal(hiddenLane);
 
-    let hiddenParent = Object.assign({}, hiddenLane, { id : 5, display_name: "parent" });
+    const hiddenParent = Object.assign({}, hiddenLane, {
+      id: 5,
+      display_name: "parent",
+    });
     wrapper.setProps({ findParentOfLane: stub().returns(hiddenParent) });
     showButton = wrapper.find(".show-lane");
     expect(showButton.length).to.equal(0);
@@ -212,7 +225,11 @@ describe("LaneEditor", () => {
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );
-    let toggle = stub().returns(() => wrapper.setProps({lane: {...laneData, ...{visible: !laneData.visible}}}));
+    const toggle = stub().returns(() =>
+      wrapper.setProps({
+        lane: { ...laneData, ...{ visible: !laneData.visible } },
+      })
+    );
     wrapper.setProps({ toggleLaneVisibility: toggle });
 
     let hideButton = wrapper.find(Button).at(2);
@@ -222,7 +239,7 @@ describe("LaneEditor", () => {
     expect(toggle.callCount).to.equal(1);
     expect(toggle.args[0][0]).to.deep.equal(laneData);
 
-    let hiddenLane = Object.assign({}, laneData, { visible: false });
+    const hiddenLane = Object.assign({}, laneData, { visible: false });
     wrapper.setProps({ findParentOfLane: stub().returns(hiddenLane) });
     hideButton = wrapper.find(".hide-lane");
     expect(hideButton.length).to.equal(0);
@@ -239,17 +256,22 @@ describe("LaneEditor", () => {
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );
-    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new lane name");
-    let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
+    const getTextStub = stub(TextWithEditMode.prototype, "getText").returns(
+      "new lane name"
+    );
+    const getCustomListIdsStub = stub(
+      LaneCustomListsEditor.prototype,
+      "getCustomListIds"
+    ).returns([1, 2]);
     (wrapper.instance() as LaneEditor).changeInheritParentRestrictions();
 
     // .hostNodes() retrieves only the DOM node instead of the DOM node
     // and the React class component.
-    let saveButton = wrapper.find(".save-lane").hostNodes();
+    const saveButton = wrapper.find(".save-lane").hostNodes();
     saveButton.simulate("click");
 
     expect(editLane.callCount).to.equal(1);
-    let formData = editLane.args[0][0];
+    const formData = editLane.args[0][0];
     expect(formData.get("id")).to.equal("1");
     expect(formData.get("parent_id")).to.equal("1");
     expect(formData.get("display_name")).to.equal("new lane name");
@@ -263,7 +285,10 @@ describe("LaneEditor", () => {
   it("navigates to edit page after a new lane is created", async () => {
     // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
     // Start on the create page.
-    Object.defineProperty(window.location, "href", { writable: true, value: "/admin/web/lanes/library/create" });
+    Object.defineProperty(window.location, "href", {
+      writable: true,
+      value: "/admin/web/lanes/library/create",
+    });
 
     wrapper = mount(
       <LaneEditor
@@ -274,10 +299,15 @@ describe("LaneEditor", () => {
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );
-    let getTextStub = stub(TextWithEditMode.prototype, "getText").returns("new lane name");
-    let getCustomListIdsStub = stub(LaneCustomListsEditor.prototype, "getCustomListIds").returns([1, 2]);
+    const getTextStub = stub(TextWithEditMode.prototype, "getText").returns(
+      "new lane name"
+    );
+    const getCustomListIdsStub = stub(
+      LaneCustomListsEditor.prototype,
+      "getCustomListIds"
+    ).returns([1, 2]);
 
-    let saveButton = wrapper.find(".save-lane").hostNodes();
+    const saveButton = wrapper.find(".save-lane").hostNodes();
     saveButton.simulate("click");
     expect(editLane.callCount).to.equal(1);
     getTextStub.restore();
@@ -286,7 +316,7 @@ describe("LaneEditor", () => {
     wrapper.setProps({ responseBody: 5 });
     // Let the call stack clear so the callback after editLane will run.
     const pause = (): Promise<void> => {
-        return new Promise<void>(resolve => setTimeout(resolve, 0));
+      return new Promise<void>((resolve) => setTimeout(resolve, 0));
     };
     await pause();
     expect(window.location.href).to.contain("edit");
@@ -294,8 +324,8 @@ describe("LaneEditor", () => {
   });
 
   it("cancels changes", () => {
-    let nameResetStub = stub(TextWithEditMode.prototype, "reset");
-    let customListsResetStub = stub(LaneCustomListsEditor.prototype, "reset");
+    const nameResetStub = stub(TextWithEditMode.prototype, "reset");
+    const customListsResetStub = stub(LaneCustomListsEditor.prototype, "reset");
 
     wrapper = mount(
       <LaneEditor
@@ -335,7 +365,9 @@ describe("LaneEditor", () => {
     expect(nameResetStub.callCount).to.equal(2);
     expect(customListsResetStub.callCount).to.equal(2);
 
-    (wrapper.instance() as LaneEditor).changeCustomLists(laneData.custom_list_ids);
+    (wrapper.instance() as LaneEditor).changeCustomLists(
+      laneData.custom_list_ids
+    );
     wrapper.update();
     cancelButton = wrapper.find(".cancel-changes").hostNodes();
     expect(cancelButton.length).to.equal(0);

@@ -5,7 +5,7 @@ import { CirculationEventData } from "../../interfaces";
 import ActionCreator from "../../actions";
 
 describe("circulation events reducer", () => {
-  let eventsData: CirculationEventData[] = [
+  const eventsData: CirculationEventData[] = [
     {
       id: 1,
       type: "check_in",
@@ -13,8 +13,8 @@ describe("circulation events reducer", () => {
       time: "Wed, 01 Jun 2016 16:49:17 GMT",
       book: {
         title: "book 1 title",
-        url: "book 1 url"
-      }
+        url: "book 1 url",
+      },
     },
     {
       id: 2,
@@ -23,23 +23,23 @@ describe("circulation events reducer", () => {
       time: "Wed, 01 Jun 2016 12:00:00 GMT",
       book: {
         title: "book 2 title",
-        url: "book 2 url"
-      }
+        url: "book 2 url",
+      },
     },
   ];
 
-  let initState: CirculationEventsState = {
+  const initState: CirculationEventsState = {
     data: null,
     isFetching: false,
     fetchError: null,
-    isLoaded: false
+    isLoaded: false,
   };
 
-  let errorState: CirculationEventsState = {
+  const errorState: CirculationEventsState = {
     data: null,
     isFetching: false,
     fetchError: { status: 401, response: "test error", url: "test url" },
-    isLoaded: true
+    isLoaded: true,
   };
 
   it("returns initial state for unrecognized action", () => {
@@ -47,39 +47,48 @@ describe("circulation events reducer", () => {
   });
 
   it("handles CIRCULATION_EVENTS_REQUEST", () => {
-    let action = { type: ActionCreator.CIRCULATION_EVENTS_REQUEST, url: "test url" };
+    const action = {
+      type: ActionCreator.CIRCULATION_EVENTS_REQUEST,
+      url: "test url",
+    };
 
     // start with empty state
     let newState = Object.assign({}, initState, {
-      isFetching: true
+      isFetching: true,
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isFetching: true,
-      fetchError: null
+      fetchError: null,
     });
     expect(reducer(errorState, action)).to.deep.equal(newState);
   });
 
   it("handles CIRCULATION_EVENTS_FAILURE", () => {
-    let action = { type: ActionCreator.CIRCULATION_EVENTS_FAILURE, error: "test error" };
-    let oldState = Object.assign({}, initState, { isFetching: true });
-    let newState = Object.assign({}, oldState, {
+    const action = {
+      type: ActionCreator.CIRCULATION_EVENTS_FAILURE,
+      error: "test error",
+    };
+    const oldState = Object.assign({}, initState, { isFetching: true });
+    const newState = Object.assign({}, oldState, {
       fetchError: "test error",
       isFetching: false,
-      isLoaded: true
+      isLoaded: true,
     });
     expect(reducer(oldState, action)).to.deep.equal(newState);
   });
 
   it("handles CIRCULATION_EVENTS_LOAD", () => {
-    let action = { type: ActionCreator.CIRCULATION_EVENTS_LOAD, data: { circulation_events: eventsData } };
-    let newState = Object.assign({}, initState, {
+    const action = {
+      type: ActionCreator.CIRCULATION_EVENTS_LOAD,
+      data: { circulation_events: eventsData },
+    };
+    const newState = Object.assign({}, initState, {
       data: eventsData,
       isFetching: false,
-      isLoaded: true
+      isLoaded: true,
     });
     expect(reducer(initState, action)).to.deep.equal(newState);
   });

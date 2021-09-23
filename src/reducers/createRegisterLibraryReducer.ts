@@ -10,30 +10,33 @@ export interface RegisterLibraryReducer {
   (state: RegisterLibraryState, action): RegisterLibraryState;
 }
 
-export default<T>(registerPrefix: string): RegisterLibraryReducer => {
+export default <T>(registerPrefix: string): RegisterLibraryReducer => {
   const initialState: RegisterLibraryState = {
     isFetching: false,
-    fetchError: null
+    fetchError: null,
   };
 
-  const registerLibraryReducer = (state: RegisterLibraryState = initialState, action): RegisterLibraryState => {
+  const registerLibraryReducer = (
+    state: RegisterLibraryState = initialState,
+    action
+  ): RegisterLibraryState => {
     switch (action.type) {
       case `${registerPrefix}_${ActionCreator.REQUEST}`:
         return Object.assign({}, state, {
           isFetching: true,
-          fetchError: null
+          fetchError: null,
         });
 
       case `${registerPrefix}_${ActionCreator.FAILURE}`:
         return Object.assign({}, state, {
           isFetching: false,
-          fetchError: action.error
+          fetchError: action.error,
         });
 
       case `${registerPrefix}_${ActionCreator.SUCCESS}`:
         return Object.assign({}, state, {
           isFetching: false,
-          fetchError: null
+          fetchError: null,
         });
 
       default:

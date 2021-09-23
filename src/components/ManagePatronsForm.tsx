@@ -26,10 +26,15 @@ export interface ManagePatronsFormOwnProps {
   library: string;
 }
 
-export interface ManagePatronsFormProps extends ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps {}
+export interface ManagePatronsFormProps
+  extends ManagePatronsFormStateProps,
+    ManagePatronsFormDispatchProps,
+    ManagePatronsFormOwnProps {}
 
-
-export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {}> {
+export class ManagePatronsForm extends React.Component<
+  ManagePatronsFormProps,
+  {}
+> {
   private identifierRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
@@ -42,7 +47,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {
 
   render(): JSX.Element {
     const { patron, fetchError } = this.props;
-    const patronExists = !!(patron);
+    const patronExists = !!patron;
 
     return (
       <div className="manage-patrons-form">
@@ -62,10 +67,16 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {
               error={fetchError}
             />
           }
-          errorText={(fetchError && !patronExists) && <ErrorMessage error={fetchError} />}
-          successText={(!fetchError && patronExists) && `Patron found: ${patron.authorization_identifier}`}
+          errorText={
+            fetchError && !patronExists && <ErrorMessage error={fetchError} />
+          }
+          successText={
+            !fetchError &&
+            patronExists &&
+            `Patron found: ${patron.authorization_identifier}`
+          }
         />
-        { (!fetchError && patronExists) && <PatronInfo patron={patron} /> }
+        {!fetchError && patronExists && <PatronInfo patron={patron} />}
       </div>
     );
   }
@@ -76,7 +87,8 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps, {
 }
 
 function mapStateToProps(state, ownProps) {
-  const patronManager = state.editor.patronManager && state.editor.patronManager;
+  const patronManager =
+    state.editor.patronManager && state.editor.patronManager;
   return {
     patron: patronManager && patronManager.data,
     fetchError: patronManager && patronManager.fetchError,
@@ -84,14 +96,19 @@ function mapStateToProps(state, ownProps) {
 }
 
 export function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
-    patronLookup: (data: FormData, library: string) => dispatch(actions.patronLookup(data, library)),
+    patronLookup: (data: FormData, library: string) =>
+      dispatch(actions.patronLookup(data, library)),
     clearPatronData: () => dispatch(actions.clearPatronData()),
   };
 }
 
-const ConnectedManagePatronsForm = connect<ManagePatronsFormStateProps, ManagePatronsFormDispatchProps, ManagePatronsFormOwnProps>(
+const ConnectedManagePatronsForm = connect<
+  ManagePatronsFormStateProps,
+  ManagePatronsFormDispatchProps,
+  ManagePatronsFormOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(ManagePatronsForm);

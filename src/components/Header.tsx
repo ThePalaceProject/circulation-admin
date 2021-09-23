@@ -115,7 +115,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       { label: "Dashboard", href: "dashboard/", auth: isSiteWide },
       {
         label: "System Configuration",
-        href: "config/"
+        href: "config/",
       },
       {
         label: "Troubleshooting",
@@ -200,7 +200,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.fetchLibraries) {
       this.props.fetchLibraries();
     }

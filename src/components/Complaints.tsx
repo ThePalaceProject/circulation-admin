@@ -32,7 +32,10 @@ export interface ComplaintsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ComplaintsProps extends ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps {}
+export interface ComplaintsProps
+  extends ComplaintsStateProps,
+    ComplaintsDispatchProps,
+    ComplaintsOwnProps {}
 
 /** Tab on the book details page that shows existing complaints and lets an admin resolve
     complaints or add new complaints. */
@@ -46,21 +49,20 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
   render(): JSX.Element {
     return (
       <div className="complaints">
-        { this.props.book &&
+        {this.props.book && (
           <div>
-            <h2>
-              {this.props.book.title}
-            </h2>
+            <h2>{this.props.book.title}</h2>
             <UpdatingLoader show={this.props.isFetching} />
           </div>
-        }
+        )}
 
-        { this.props.fetchError &&
+        {this.props.fetchError && (
           <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
-        }
+        )}
 
         <h3>Complaints</h3>
-        { this.props.complaints && Object.keys(this.props.complaints).length > 0 ?
+        {this.props.complaints &&
+        Object.keys(this.props.complaints).length > 0 ? (
           <table className="table">
             <thead>
               <tr>
@@ -70,10 +72,14 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
               </tr>
             </thead>
             <tbody>
-              { Object.keys(this.props.complaints).map(type =>
+              {Object.keys(this.props.complaints).map((type) => (
                 <tr key={type} className="complaint">
-                  <td className="complaint-type">{this.readableComplaintType(type)}</td>
-                  <td className="complaint-count">{this.props.complaints[type]}</td>
+                  <td className="complaint-type">
+                    {this.readableComplaintType(type)}
+                  </td>
+                  <td className="complaint-count">
+                    {this.props.complaints[type]}
+                  </td>
                   <td className="complaint-resolve">
                     <Button
                       className="btn-sm top-align"
@@ -83,26 +89,30 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
                     />
                   </td>
                 </tr>
-              ) }
+              ))}
             </tbody>
-          </table> :
-          <div><strong>None found.</strong></div>
-        }
+          </table>
+        ) : (
+          <div>
+            <strong>None found.</strong>
+          </div>
+        )}
 
         <br />
 
-        { this.props.book && this.props.book.issuesLink &&
+        {this.props.book && this.props.book.issuesLink && (
           <ComplaintForm
             disabled={this.props.isFetching}
             complaintUrl={this.props.book.issuesLink.href}
             postComplaint={this.props.postComplaint}
-            refreshComplaints={this.refresh} />
-        }
+            refreshComplaints={this.refresh}
+          />
+        )}
       </div>
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.bookUrl) {
       this.props.fetchComplaints(this.complaintsUrl());
     }
@@ -113,11 +123,13 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
   }
 
   resolveComplaintsUrl() {
-    return this.props.bookUrl.replace("works", "admin/works") + "/resolve_complaints";
+    return (
+      this.props.bookUrl.replace("works", "admin/works") + "/resolve_complaints"
+    );
   }
 
   readableComplaintType(type: string) {
-    let match = type.match(/\/terms\/problem\/(.+)$/);
+    const match = type.match(/\/terms\/problem\/(.+)$/);
     if (match) {
       return formatString(match[1], ["-"]);
     } else {
@@ -131,10 +143,12 @@ export class Complaints extends React.Component<ComplaintsProps, {}> {
   }
 
   resolve(type: string) {
-    let readableType = this.readableComplaintType(type);
-    if (window.confirm(`Resolve all "${readableType}" complaints for this book?`)) {
-      let url = this.resolveComplaintsUrl();
-      let data = new (window as any).FormData();
+    const readableType = this.readableComplaintType(type);
+    if (
+      window.confirm(`Resolve all "${readableType}" complaints for this book?`)
+    ) {
+      const url = this.resolveComplaintsUrl();
+      const data = new (window as any).FormData();
       data.append("type", type);
       return this.props.resolveComplaints(url, data).then(this.refresh);
     }
@@ -145,21 +159,26 @@ function mapStateToProps(state, ownProps) {
   return {
     complaints: state.editor.complaints.data,
     isFetching: state.editor.complaints.isFetching,
-    fetchError: state.editor.complaints.fetchError
+    fetchError: state.editor.complaints.fetchError,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let fetcher = new DataFetcher();
-  let actions = new ActionCreator(fetcher, ownProps.csrfToken);
+  const fetcher = new DataFetcher();
+  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchComplaints: (url) => dispatch(actions.fetchComplaints(url)),
     postComplaint: (url, data) => dispatch(actions.postComplaint(url, data)),
-    resolveComplaints: (url, data) => dispatch(actions.resolveComplaints(url, data))
+    resolveComplaints: (url, data) =>
+      dispatch(actions.resolveComplaints(url, data)),
   };
 }
 
-const ConnectedComplaints = connect<ComplaintsStateProps, ComplaintsDispatchProps, ComplaintsOwnProps>(
+const ConnectedComplaints = connect<
+  ComplaintsStateProps,
+  ComplaintsDispatchProps,
+  ComplaintsOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(Complaints);

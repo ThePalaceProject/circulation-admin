@@ -24,20 +24,28 @@ export interface PairedMenusState {
  * Renders an InputList component and a dropdown menu.  The values in the dropdown menu
  * are filtered to reflect the current InputList values--i.e. you can only add a value from
  * the dropdown if it has already been added to the InputList.
-*/
+ */
 
-export default class PairedMenus extends React.Component<PairedMenusProps, PairedMenusState> {
+export default class PairedMenus extends React.Component<
+  PairedMenusProps,
+  PairedMenusState
+> {
   constructor(props: PairedMenusProps) {
     super(props);
-    let existingInput = this.existingInput();
-    this.state = { inputListValues: existingInput, dropdownValue: this.props.dropdownSetting ? (this.getValueFromItem(this.props.dropdownSetting) as string) : "" };
+    const existingInput = this.existingInput();
+    this.state = {
+      inputListValues: existingInput,
+      dropdownValue: this.props.dropdownSetting
+        ? (this.getValueFromItem(this.props.dropdownSetting) as string)
+        : "",
+    };
     this.updateInputList = this.updateInputList.bind(this);
     this.renderDropdown = this.renderDropdown.bind(this);
   }
 
   existingInput(): string[] {
-    let item = this.props.item;
-    let key = this.props.inputListSetting.key;
+    const item = this.props.item;
+    const key = this.props.inputListSetting.key;
     if (item && item.settings[key]) {
       return item.settings[key] as string[];
     } else {
@@ -55,16 +63,21 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
   }
 
   updateInputList(currentList) {
-    this.setState({...this.state, ...{inputListValues: currentList.listItems}});
+    this.setState({
+      ...this.state,
+      ...{ inputListValues: currentList.listItems },
+    });
   }
 
   onDropdownChange(value: string) {
-    this.setState({...this.state, ...{dropdownValue: value}});
+    this.setState({ ...this.state, ...{ dropdownValue: value } });
   }
 
   getValueFromItem(setting: SettingData) {
-    let value = this.props.item && this.props.item.settings ?
-      this.props.item.settings[setting.key] : setting.default;
+    const value =
+      this.props.item && this.props.item.settings
+        ? this.props.item.settings[setting.key]
+        : setting.default;
     return value;
   }
 
@@ -72,10 +85,21 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
     // The readOnly prop indicates that admins should never be able to enter new values for existing list items, since that
     // would create a mismatch between the list items in the InputList and the list items in the dropdown.
     // The disableButton prop is just to tell the InputList whether this particular admin is authorized to add and remove list items.
-    let makeOption = (x: SettingData) => <option value={x.key} key={x.key} aria-selected={false}>{x.label}</option>;
+    const makeOption = (x: SettingData) => (
+      <option value={x.key} key={x.key} aria-selected={false}>
+        {x.label}
+      </option>
+    );
     return (
       <ProtocolFormField
-        setting={{...this.props.inputListSetting, ...{type: "menu", format: "narrow", menuOptions: options.map(o => makeOption(o))}}}
+        setting={{
+          ...this.props.inputListSetting,
+          ...{
+            type: "menu",
+            format: "narrow",
+            menuOptions: options.map((o) => makeOption(o)),
+          },
+        }}
         value={this.state.inputListValues}
         disabled={this.props.disabled}
         onChange={this.updateInputList}
@@ -87,14 +111,19 @@ export default class PairedMenus extends React.Component<PairedMenusProps, Paire
   }
 
   renderDropdown() {
-    let setting = {...this.props.dropdownSetting};
-    let available = this.state.inputListValues && setting.options.filter(o => this.state.inputListValues.includes(o.key));
+    let setting = { ...this.props.dropdownSetting };
+    const available =
+      this.state.inputListValues &&
+      setting.options.filter((o) => this.state.inputListValues.includes(o.key));
     if (available && available.length === 0) {
       return (
-        <p className="bg-warning">In order to set this value, you must add at least one option from the menu above.</p>
+        <p className="bg-warning">
+          In order to set this value, you must add at least one option from the
+          menu above.
+        </p>
       );
     }
-    setting = {...setting, ...{options: available}};
+    setting = { ...setting, ...{ options: available } };
     return (
       <ProtocolFormField
         key={setting.key}

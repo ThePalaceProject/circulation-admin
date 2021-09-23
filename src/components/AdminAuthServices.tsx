@@ -1,4 +1,8 @@
-import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
+import EditableConfigList, {
+  EditableConfigListStateProps,
+  EditableConfigListDispatchProps,
+  EditableConfigListOwnProps,
+} from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { AdminAuthServicesData, AdminAuthServiceData } from "../interfaces";
@@ -7,7 +11,10 @@ import ServiceEditForm from "./ServiceEditForm";
 /** Right panel for admin authentication services on the system configuration page.
     Shows a list of current admin authentication services and allows creating a new
     service or editing or deleting an existing service. */
-export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData, AdminAuthServiceData> {
+export class AdminAuthServices extends EditableConfigList<
+  AdminAuthServicesData,
+  AdminAuthServiceData
+> {
   EditForm = ServiceEditForm;
   listDataKey = "admin_auth_services";
   itemTypeName = "admin authentication service";
@@ -18,7 +25,10 @@ export class AdminAuthServices extends EditableConfigList<AdminAuthServicesData,
 }
 
 function mapStateToProps(state, ownProps) {
-  const data = Object.assign({}, state.editor.adminAuthServices && state.editor.adminAuthServices.data);
+  const data = Object.assign(
+    {},
+    state.editor.adminAuthServices && state.editor.adminAuthServices.data
+  );
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
@@ -26,23 +36,32 @@ function mapStateToProps(state, ownProps) {
   // submission of the create/edit form.
   return {
     data,
-    responseBody: state.editor.adminAuthServices && state.editor.adminAuthServices.successMessage,
+    responseBody:
+      state.editor.adminAuthServices &&
+      state.editor.adminAuthServices.successMessage,
     fetchError: state.editor.adminAuthServices.fetchError,
     formError: state.editor.adminAuthServices.formError,
-    isFetching: state.editor.adminAuthServices.isFetching || state.editor.adminAuthServices.isEditing
+    isFetching:
+      state.editor.adminAuthServices.isFetching ||
+      state.editor.adminAuthServices.isEditing,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchAdminAuthServices()),
     editItem: (data: FormData) => dispatch(actions.editAdminAuthService(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deleteAdminAuthService(identifier))
+    deleteItem: (identifier: string | number) =>
+      dispatch(actions.deleteAdminAuthService(identifier)),
   };
 }
 
-const ConnectedAdminAuthServices = connect<EditableConfigListStateProps<AdminAuthServicesData>, EditableConfigListDispatchProps<AdminAuthServicesData>, EditableConfigListOwnProps>(
+const ConnectedAdminAuthServices = connect<
+  EditableConfigListStateProps<AdminAuthServicesData>,
+  EditableConfigListDispatchProps<AdminAuthServicesData>,
+  EditableConfigListOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(AdminAuthServices);

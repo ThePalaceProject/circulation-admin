@@ -11,10 +11,10 @@ import ColorPicker from "../ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 
 describe("ProtocolFormField", () => {
-  let setting = {
+  const setting = {
     key: "setting",
     label: "label",
-    description: "<p>description</p>"
+    description: "<p>description</p>",
   };
   let wrapper;
 
@@ -36,7 +36,7 @@ describe("ProtocolFormField", () => {
     input = wrapper.find(EditableInput);
     expect(input.prop("disabled")).to.equal(true);
     expect(input.prop("value")).to.equal("test");
-    let inputElement = input.find("input").getDOMNode();
+    const inputElement = input.find("input").getDOMNode();
     expect(inputElement.value).to.equal("test");
 
     (wrapper.instance() as ProtocolFormField).clear();
@@ -44,11 +44,11 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders optional setting", () => {
-    const optionalSetting = {...setting, ...{optional: true}};
+    const optionalSetting = { ...setting, ...{ optional: true } };
     wrapper.setProps({ setting, optionalSetting });
 
-    let input = wrapper.find(EditableInput);
-    let description = wrapper.find(".description");
+    const input = wrapper.find(EditableInput);
+    const description = wrapper.find(".description");
     expect(input.length).to.equal(1);
     expect(input.prop("disabled")).to.equal(false);
     expect(input.prop("name")).to.equal("setting");
@@ -57,7 +57,7 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders randomizable setting", () => {
-    let randomizableSetting = {...setting, ...{randomizable: true}};
+    const randomizableSetting = { ...setting, ...{ randomizable: true } };
     wrapper.setProps({ setting: randomizableSetting });
 
     let input = wrapper.find(EditableInput);
@@ -72,7 +72,9 @@ describe("ProtocolFormField", () => {
 
     button.simulate("click");
     expect((wrapper.instance() as ProtocolFormField).getValue()).to.be.ok;
-    expect((wrapper.instance() as ProtocolFormField).getValue().length).to.equal(32);
+    expect(
+      (wrapper.instance() as ProtocolFormField).getValue().length
+    ).to.equal(32);
 
     wrapper.setProps({ value: "test" });
     input = wrapper.find(EditableInput);
@@ -83,7 +85,7 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders setting with default", () => {
-    let defaultSetting = {...setting, ...{default: "default"}};
+    const defaultSetting = { ...setting, ...{ default: "default" } };
     wrapper.setProps({ setting: defaultSetting });
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
@@ -96,7 +98,7 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders number setting", () => {
-    let numberSetting = {...setting, ...{"type": "number"}};
+    const numberSetting = { ...setting, ...{ type: "number" } };
     wrapper.setProps({ setting: numberSetting });
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
@@ -113,16 +115,25 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders select setting", () => {
-    let selectSetting = {...setting, ...{type: "select", options: [{ key: "option1", label: "option 1" }, { key: "option2", label: "option 2" }]}};
+    const selectSetting = {
+      ...setting,
+      ...{
+        type: "select",
+        options: [
+          { key: "option1", label: "option 1" },
+          { key: "option2", label: "option 2" },
+        ],
+      },
+    };
     wrapper.setProps({ setting: selectSetting });
 
-    let input = wrapper.find(EditableInput);
+    const input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
     expect(input.prop("disabled")).to.equal(false);
     expect(input.prop("name")).to.equal("setting");
     expect(input.prop("label")).to.equal("label");
     expect(input.prop("value")).to.be.undefined;
-    let children = input.find("option");
+    const children = input.find("option");
     expect(children.length).to.equal(2);
     expect(children.at(0).prop("value")).to.equal("option1");
     expect(children.at(0).text()).to.contain("option 1");
@@ -131,12 +142,15 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders textarea setting", () => {
-    let textareaSetting = {...setting, ...{type: "textarea", description: "<p>Textarea</p>"}};
+    const textareaSetting = {
+      ...setting,
+      ...{ type: "textarea", description: "<p>Textarea</p>" },
+    };
     wrapper.setProps({ setting: textareaSetting });
 
     let input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
-    let inputElement = input.find("textarea").at(0) as any;
+    const inputElement = input.find("textarea").at(0) as any;
     expect(inputElement.length).to.equal(1);
     expect(inputElement.text()).to.equal("");
     expect(input.prop("type")).to.equal("text");
@@ -158,11 +172,24 @@ describe("ProtocolFormField", () => {
   it("renders menu setting", () => {
     let inputList = wrapper.find(InputList);
     expect(inputList.length).to.equal(0);
-    let menuSetting = {...setting, ...{
-      type: "menu",
-      menuOptions: ["A", "B", "C"].map(x => <option role="option" aria-selected={false}>{x}</option>)
-    }};
-    wrapper.setProps({ setting: menuSetting, value: [], altValue: "Alternate", readOnly: true, disableButton: true });
+    const menuSetting = {
+      ...setting,
+      ...{
+        type: "menu",
+        menuOptions: ["A", "B", "C"].map((x) => (
+          <option key={x} aria-selected={false}>
+            {x}
+          </option>
+        )),
+      },
+    };
+    wrapper.setProps({
+      setting: menuSetting,
+      value: [],
+      altValue: "Alternate",
+      readOnly: true,
+      disableButton: true,
+    });
     inputList = wrapper.find(InputList);
     expect(inputList.length).to.equal(1);
     expect(inputList.prop("setting")).to.equal(menuSetting);
@@ -173,7 +200,7 @@ describe("ProtocolFormField", () => {
   });
 
   it("renders image setting", () => {
-    let imageSetting = {...setting, ...{type: "image"}};
+    const imageSetting = { ...setting, ...{ type: "image" } };
     wrapper.setProps({ setting: imageSetting });
 
     let input = wrapper.find(EditableInput);
@@ -193,19 +220,22 @@ describe("ProtocolFormField", () => {
     expect(input.prop("value")).to.be.undefined;
     label = wrapper.find("label");
     expect(label.text()).to.equal("label");
-    let img = wrapper.find("img");
+    const img = wrapper.find("img");
     expect(img.prop("src")).to.equal("image data");
   });
 
   it("renders color picker setting", () => {
-    let colorPickerSetting = {...setting, ...{type: "color-picker", default: "#aaaaaa"}};
+    const colorPickerSetting = {
+      ...setting,
+      ...{ type: "color-picker", default: "#aaaaaa" },
+    };
     wrapper.setProps({ setting: colorPickerSetting });
 
     let picker = wrapper.find(ColorPicker);
     expect(picker.length).to.equal(1);
     expect(picker.prop("setting")).to.equal(colorPickerSetting);
     expect(picker.prop("value")).to.equal("#aaaaaa");
-    let label = wrapper.find("label").at(0);
+    const label = wrapper.find("label").at(0);
     expect(label.text()).to.equal("label");
 
     wrapper.setProps({ value: "#222222" });
@@ -214,40 +244,51 @@ describe("ProtocolFormField", () => {
   });
 
   it("gets value of list setting without options", () => {
-    wrapper.setProps({ setting: {...setting, ...{type: "list"}}, value: ["item 1", "item 2"] });
-    expect((wrapper.instance() as ProtocolFormField).getValue()).to.deep.equal(["item 1", "item 2"]);
+    wrapper.setProps({
+      setting: { ...setting, ...{ type: "list" } },
+      value: ["item 1", "item 2"],
+    });
+    expect((wrapper.instance() as ProtocolFormField).getValue()).to.deep.equal([
+      "item 1",
+      "item 2",
+    ]);
   });
 
   it("optionally renders instructions", () => {
-    let instructionsSetting = {...setting, ...{instructions: "<ul><li>Step 1</li></ul>", type: "list"}};
+    const instructionsSetting = {
+      ...setting,
+      ...{ instructions: "<ul><li>Step 1</li></ul>", type: "list" },
+    };
     wrapper.setProps({ setting: instructionsSetting });
 
-    let instructions = wrapper.find(".well");
+    const instructions = wrapper.find(".well");
     expect(instructions.length).to.equal(1);
     expect(instructions.hasClass("description")).to.be.true;
     expect(instructions.text()).to.equal("Step 1");
   });
 
   it("optionally accepts an onChange prop", () => {
-    let onChange = stub();
+    const onChange = stub();
     wrapper.setProps({ onChange });
-    let element = wrapper.find(EditableInput);
+    const element = wrapper.find(EditableInput);
     expect(element.prop("onChange")).to.equal(onChange);
-    let setting = {...wrapper.prop("setting"), ...{type: "list"}};
+    const setting = { ...wrapper.prop("setting"), ...{ type: "list" } };
     wrapper.setProps({ setting });
-    let inputList = wrapper.find(InputList);
+    const inputList = wrapper.find(InputList);
     expect(inputList.prop("onChange")).to.equal(onChange);
   });
 
   it("optionally accepts a readOnly prop", () => {
-    let setting = {...wrapper.prop("setting"), ...{type: "list"}};
+    const setting = { ...wrapper.prop("setting"), ...{ type: "list" } };
     wrapper.setProps({ setting: setting, readOnly: true });
-    let inputList = wrapper.find(InputList);
+    const inputList = wrapper.find(InputList);
     expect(inputList.prop("readOnly")).to.be.true;
   });
 
   it("gets value of text setting", () => {
     wrapper.setProps({ value: "test" });
-    expect((wrapper.instance() as ProtocolFormField).getValue()).to.equal("test");
+    expect((wrapper.instance() as ProtocolFormField).getValue()).to.equal(
+      "test"
+    );
   });
 });

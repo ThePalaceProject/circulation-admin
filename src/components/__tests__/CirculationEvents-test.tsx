@@ -13,7 +13,7 @@ import { Button } from "library-simplified-reusable-components";
 import { CirculationEventData } from "../../interfaces";
 
 describe("CirculationEvents", () => {
-  let eventsData: CirculationEventData[] = [
+  const eventsData: CirculationEventData[] = [
     {
       id: 1,
       type: "check_in",
@@ -21,8 +21,8 @@ describe("CirculationEvents", () => {
       time: "Wed, 01 Jun 2016 16:49:17 GMT",
       book: {
         title: "book 1 title",
-        url: "book 1 url"
-      }
+        url: "book 1 url",
+      },
     },
     {
       id: 2,
@@ -31,20 +31,20 @@ describe("CirculationEvents", () => {
       time: "Wed, 01 Jun 2016 12:00:00 GMT",
       book: {
         title: "book 2 title",
-        url: "book 2 url"
-      }
+        url: "book 2 url",
+      },
     },
   ];
 
   describe("rendering", () => {
     let wrapper;
-    let fetchError = { status: 401, response: "test", url: "test url" };
+    const fetchError = { status: 401, response: "test", url: "test url" };
     let fetchCirculationEvents;
-    let context = { showCircEventsDownload: true };
+    const context = { showCircEventsDownload: true };
 
     beforeEach(() => {
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
 
       wrapper = shallow(
@@ -62,12 +62,12 @@ describe("CirculationEvents", () => {
     });
 
     it("shows header", () => {
-      let header = wrapper.find("h2");
+      const header = wrapper.find("h2");
       expect(header.text()).to.equal("Circulation Events");
     });
 
     it("shows CirculationEventsDownloadForm", () => {
-      let form = wrapper.find(CirculationEventsDownloadForm);
+      const form = wrapper.find(CirculationEventsDownloadForm);
       expect(form.length).to.equal(1);
       expect(form.prop("show")).to.equal(false);
       expect(form.prop("hide")).to.equal(wrapper.instance().hideDownloadForm);
@@ -82,18 +82,18 @@ describe("CirculationEvents", () => {
     });
 
     it("shows table data since there is no library", () => {
-      let instance = wrapper.instance();
-      let table = wrapper.find("table").find("tbody");
-      let rows = table.find("tr");
+      const instance = wrapper.instance();
+      const table = wrapper.find("table").find("tbody");
+      const rows = table.find("tr");
 
       rows.forEach((row, i) => {
-        let data = eventsData[i];
-        let link = row.find(CatalogLink);
+        const data = eventsData[i];
+        const link = row.find(CatalogLink);
         expect(link.prop("bookUrl")).to.equal(data.book.url);
         expect(link.children().text()).to.equal(data.book.title);
-        let type = row.find("td").at(1);
+        const type = row.find("td").at(1);
         expect(type.text()).to.equal(instance.formatType(data.type));
-        let time = row.find("td").at(2);
+        const time = row.find("td").at(2);
         expect(time.text()).to.equal(instance.formatTime(data.time));
       });
     });
@@ -111,7 +111,7 @@ describe("CirculationEvents", () => {
       wrapper.instance().componentWillUnmount();
 
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
       // Not making a real request so isLoaded is true.
       wrapper = shallow(
@@ -124,7 +124,7 @@ describe("CirculationEvents", () => {
         { context }
       );
 
-      let table = wrapper.find("table");
+      const table = wrapper.find("table");
       expect(table.length).to.equal(0);
 
       wrapper.instance().componentWillUnmount();
@@ -134,11 +134,11 @@ describe("CirculationEvents", () => {
   describe("behavior", () => {
     let wrapper;
     let fetchCirculationEvents;
-    let context = { showCircEventsDownload: true };
+    const context = { showCircEventsDownload: true };
 
     beforeEach(() => {
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
 
       wrapper = shallow(
@@ -146,7 +146,7 @@ describe("CirculationEvents", () => {
           events={eventsData}
           fetchCirculationEvents={fetchCirculationEvents}
           wait={1}
-          />,
+        />,
         { context }
       );
     });
@@ -156,8 +156,8 @@ describe("CirculationEvents", () => {
     });
 
     it("fetches and queues on mount", () => {
-      let fetchAndQueue = stub(wrapper.instance(), "fetchAndQueue");
-      wrapper.instance().componentWillMount();
+      const fetchAndQueue = stub(wrapper.instance(), "fetchAndQueue");
+      wrapper.instance().UNSAFE_componentWillMount();
       expect(fetchAndQueue.callCount).to.equal(1);
       fetchAndQueue.restore();
     });
@@ -166,7 +166,7 @@ describe("CirculationEvents", () => {
       wrapper.instance().componentWillUnmount();
 
       fetchCirculationEvents = stub().returns(
-        new Promise((resolve, reject) => resolve())
+        new Promise<void>((resolve, reject) => resolve())
       );
 
       wrapper = shallow(
@@ -175,14 +175,14 @@ describe("CirculationEvents", () => {
           fetchCirculationEvents={fetchCirculationEvents}
           wait={1}
           library="NYPL"
-          />,
+        />,
         { context }
       );
 
-      let fetchAndQueue = stub(wrapper.instance(), "fetchAndQueue");
+      const fetchAndQueue = stub(wrapper.instance(), "fetchAndQueue");
       expect(fetchAndQueue.callCount).to.equal(0);
       fetchAndQueue.restore();
-      wrapper.instance().componentWillMount();
+      wrapper.instance().UNSAFE_componentWillMount();
     });
 
     describe("fetchAndQueue", () => {
@@ -214,22 +214,22 @@ describe("CirculationEvents", () => {
         />,
         { context }
       );
-      let fakeTimer = useFakeTimers();
+      const fakeTimer = useFakeTimers();
       await wrapper.instance().fetchAndQueue();
-      let button = wrapper.find(Button);
+      const button = wrapper.find(Button);
       expect(button.length).to.equal(1);
       expect(button.prop("content")).to.equal("Download CSV");
       expect(wrapper.state("showDownloadForm")).to.equal(false);
       button.simulate("click");
       expect(wrapper.state("showDownloadForm")).to.equal(true);
-      let form = wrapper.find(CirculationEventsDownloadForm);
+      const form = wrapper.find(CirculationEventsDownloadForm);
       expect(form.prop("show")).to.equal(true);
       fakeTimer.restore();
     });
 
     it("hides download form", () => {
       wrapper.setState({ showDownloadForm: true });
-      let form = wrapper.find(CirculationEventsDownloadForm);
+      const form = wrapper.find(CirculationEventsDownloadForm);
       form.prop("hide")();
       expect(wrapper.state("showDownloadForm")).to.equal(false);
     });

@@ -11,7 +11,7 @@ import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
 import { Button } from "library-simplified-reusable-components";
 
-let patrons = [
+const patrons = [
   {
     authorization_expires: "",
     username: "User Name",
@@ -41,7 +41,6 @@ describe("ResetAdobeId", () => {
   let wrapper;
 
   describe("rendering without patron", () => {
-
     beforeEach(() => {
       store = buildStore();
       wrapper = mount(
@@ -59,17 +58,17 @@ describe("ResetAdobeId", () => {
     });
 
     it("has a header", () => {
-      let header = wrapper.find("h3");
+      const header = wrapper.find("h3");
       expect(header.text()).to.equal("Reset Adobe ID");
     });
 
     it("doesn't have a .patron-info section", () => {
-      let patronInfo = wrapper.find(".patron-info");
+      const patronInfo = wrapper.find(".patron-info");
       expect(patronInfo.length).to.equal(0);
     });
 
     it("should display message to search for patron to begin", () => {
-      let instructions = wrapper.find("p").at(2);
+      const instructions = wrapper.find("p").at(2);
       expect(instructions.text()).to.equal("Search for a patron to begin.");
     });
   });
@@ -98,14 +97,15 @@ describe("ResetAdobeId", () => {
       const button = wrapper.find(".reset-adobe-id button");
       expect(button.hasClass("danger")).to.equal(true);
     });
-
   });
 
   describe("Behavior", () => {
     let resetAdobeId;
 
     beforeEach(() => {
-      resetAdobeId = stub().returns(new Promise<void>(resolve => resolve()));
+      resetAdobeId = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       store = buildStore();
       wrapper = mount(
         <ResetAdobeId
@@ -175,10 +175,14 @@ describe("ResetAdobeId", () => {
       wrapper.setProps({ responseBody: "Adobe ID for patron has been reset." });
 
       alert = wrapper.find(Alert);
-      expect(wrapper.props().responseBody).to.equal("Adobe ID for patron has been reset.");
+      expect(wrapper.props().responseBody).to.equal(
+        "Adobe ID for patron has been reset."
+      );
       expect(alert.length).to.equal(1);
       expect(alert.render().hasClass("alert-success")).to.equal(true);
-      expect(alert.text()).to.equal("Adobe ID for patron has been reset.Please instruct the patron to sign back into their account.");
+      expect(alert.text()).to.equal(
+        "Adobe ID for patron has been reset.Please instruct the patron to sign back into their account."
+      );
     });
 
     it("should hide the checkbox and the reset button if the reset is successful", () => {
@@ -197,8 +201,9 @@ describe("ResetAdobeId", () => {
 
     it("should show a failure alert message if the reset fails", async () => {
       const fetchError = { status: 400, response: "", url: "" };
-      resetAdobeId = stub()
-        .returns(new Promise<void>((resolve, reject) => reject(fetchError)));
+      resetAdobeId = stub().returns(
+        new Promise<void>((resolve, reject) => reject(fetchError))
+      );
       wrapper = mount(
         <ResetAdobeId
           store={store}
@@ -221,7 +226,9 @@ describe("ResetAdobeId", () => {
       expect(wrapper.props().fetchError).to.eql(fetchError);
       expect(alert.length).to.equal(1);
       expect(alert.render().hasClass("alert-danger")).to.equal(true);
-      expect(alert.text()).to.equal("Error: failed to reset Adobe ID for patron 1234");
+      expect(alert.text()).to.equal(
+        "Error: failed to reset Adobe ID for patron 1234"
+      );
     });
 
     it("should update the warning message if a new patron was searched and found", () => {

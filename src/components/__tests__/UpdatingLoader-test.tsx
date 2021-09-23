@@ -7,9 +7,7 @@ import UpdatingLoader from "../UpdatingLoader";
 
 describe("UpdatingLoader", () => {
   it("should only render a container", () => {
-    const wrapper = mount(
-      <UpdatingLoader show={false} />
-    );
+    const wrapper = mount(<UpdatingLoader show={false} />);
 
     const container = wrapper.find(".updating-loader-container");
     const loader = wrapper.find(".updating-loader");
@@ -18,9 +16,7 @@ describe("UpdatingLoader", () => {
   });
 
   it("should render a container and the updating message", () => {
-    const wrapper = mount(
-      <UpdatingLoader show={true} />
-    );
+    const wrapper = mount(<UpdatingLoader show={true} />);
 
     const container = wrapper.find(".updating-loader-container");
     const loader = wrapper.find(".updating-loader");
@@ -41,9 +37,7 @@ describe("UpdatingLoader", () => {
   });
 
   it("should render a spinner loader", () => {
-    const wrapper = mount(
-      <UpdatingLoader show={true} />
-    );
+    const wrapper = mount(<UpdatingLoader show={true} />);
     const spinner = wrapper.find("i");
 
     // The spinner is based on Font Awesome.
