@@ -78,12 +78,6 @@ export class CustomLists extends React.Component<
   CustomListsProps,
   CustomListsState
 > {
-  context: { admin: Admin };
-
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
     this.editCustomList = this.editCustomList.bind(this);
@@ -129,9 +123,6 @@ export class CustomLists extends React.Component<
         lists={this.sortedLists()}
         library={this.props.library}
         identifier={this.props.identifier}
-        isLibraryManager={this.context.admin.isLibraryManager(
-          this.props.library
-        )}
         deleteCustomList={this.deleteCustomList}
         changeSort={this.changeSort}
         sortOrder={this.state.sort}

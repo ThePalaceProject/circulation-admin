@@ -25,7 +25,6 @@ describe("CustomListsSidebar", () => {
         lists={lists}
         library="library_name"
         identifier="123"
-        isLibraryManager={true}
         deleteCustomList={deleteCustomList}
         changeSort={changeSort}
         sortOrder="asc"
@@ -117,7 +116,7 @@ describe("CustomListsSidebar", () => {
   it("displays the delete button only to library managers", () => {
     let deleteButtons = wrapper.find(".custom-list-buttons button");
     expect(deleteButtons.length).to.equal(2);
-    wrapper.setProps({ isLibraryManager: false });
+    // wrapper.setProps({ isLibraryManager: false });
     deleteButtons = wrapper.find(".custom-list-buttons button");
     expect(deleteButtons.length).to.equal(0);
   });

@@ -5,12 +5,12 @@ import { Button } from "library-simplified-reusable-components";
 import { CustomListData } from "../interfaces";
 import EditableInput from "./EditableInput";
 import { Link } from "react-router";
+import { ListManagerContext } from "./ListManagerContext";
 
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
   library: string;
   identifier?: string;
-  isLibraryManager: boolean;
   deleteCustomList: (list: CustomListData) => Promise<void>;
   changeSort: () => void;
   sortOrder: "asc" | "desc";
@@ -20,11 +20,11 @@ export default function CustomListsSidebar({
   lists,
   library,
   identifier,
-  isLibraryManager,
   deleteCustomList,
   changeSort,
   sortOrder,
 }: CustomListsSidebarProps): JSX.Element {
+  const admin = React.useContext(ListManagerContext);
   const renderSortButtons = () => {
     const sortOrders = ["asc", "desc"];
     return (
@@ -76,7 +76,7 @@ export default function CustomListsSidebar({
               </span>
             </Link>
           )}
-          {isLibraryManager && (
+          {admin && admin.isLibraryManager(library) && (
             <Button
               callback={() => deleteCustomList(list)}
               content={
