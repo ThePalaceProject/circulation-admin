@@ -10,30 +10,38 @@ import WithRemoveButton from "../WithRemoveButton";
 import Contributors from "../Contributors";
 import LanguageField from "../LanguageField";
 import { Form } from "library-simplified-reusable-components";
-import { BookData, RolesData, MediaData, LanguagesData } from "../../interfaces";
+import {
+  BookData,
+  RolesData,
+  MediaData,
+  LanguagesData,
+} from "../../interfaces";
 
 describe("BookEditForm", () => {
-  let roles: RolesData = {
-    "aut": "Author",
-    "nar": "Narrator"
+  const roles: RolesData = {
+    aut: "Author",
+    nar: "Narrator",
   };
 
-  let media: MediaData = {
+  const media: MediaData = {
     "http://schema.org/AudioObject": "Audio",
-    "http://schema.org/Book": "Book"
+    "http://schema.org/Book": "Book",
   };
 
-  let languages: LanguagesData = {
-    "eng": ["English"],
-    "spa": ["Spanish", "Castilian"]
+  const languages: LanguagesData = {
+    eng: ["English"],
+    spa: ["Spanish", "Castilian"],
   };
 
-  let bookData: BookData = {
+  const bookData: BookData = {
     id: "id",
     title: "title",
     subtitle: "subtitle",
     authors: [{ name: "An Author", role: "aut" }],
-    contributors: [{ name: "A Narrator", role: "nar" }, { name: "Another Narrator", role: "nar" }],
+    contributors: [
+      { name: "A Narrator", role: "nar" },
+      { name: "Another Narrator", role: "nar" },
+    ],
     fiction: true,
     audience: "Young Adult",
     targetAgeRange: ["12", "16"],
@@ -48,18 +56,18 @@ describe("BookEditForm", () => {
     rating: 4,
     editLink: {
       href: "href",
-      rel: "edit"
-    }
+      rel: "edit",
+    },
   };
 
   let wrapper;
-  let editableInputByName = (name) => {
-    let inputs = wrapper.find(EditableInput);
-    return inputs.filterWhere(input => input.props().name === name);
+  const editableInputByName = (name) => {
+    const inputs = wrapper.find(EditableInput);
+    return inputs.filterWhere((input) => input.props().name === name);
   };
-  let editableInputByValue = (value) => {
-    let inputs = wrapper.find(EditableInput);
-    return inputs.filterWhere(input => input.props().value === value);
+  const editableInputByValue = (value) => {
+    const inputs = wrapper.find(EditableInput);
+    return inputs.filterWhere((input) => input.props().value === value);
   };
 
   describe("rendering", () => {
@@ -78,20 +86,20 @@ describe("BookEditForm", () => {
     });
 
     it("shows editable input with title", () => {
-      let input = editableInputByName("title");
+      const input = editableInputByName("title");
       expect(input.props().label).to.equal("Title");
       expect(input.props().value).to.equal("title");
     });
 
     it("shows editable input with subtitle", () => {
-      let input = editableInputByName("subtitle");
+      const input = editableInputByName("subtitle");
       expect(input.props().label).to.equal("Subtitle");
       expect(input.props().value).to.equal("subtitle");
     });
 
     it("shows authors and contributors", () => {
-      let contributorNames = editableInputByName("contributor-name");
-      let contributorRoles = editableInputByName("contributor-role");
+      const contributorNames = editableInputByName("contributor-name");
+      const contributorRoles = editableInputByName("contributor-role");
       expect(contributorNames.length).to.equal(4);
       expect(contributorRoles.length).to.equal(4);
       expect(contributorNames.at(0).props().value).to.equal("An Author");
@@ -104,11 +112,11 @@ describe("BookEditForm", () => {
       // The last inputs are for adding a new contributor.
       expect(contributorNames.at(3).props().value).to.be.undefined;
       expect(contributorRoles.at(3).props().value).to.equal("Author");
-      let addButton = wrapper.find("button.add-contributor");
+      const addButton = wrapper.find("button.add-contributor");
       expect(addButton.length).to.equal(1);
 
       // Existing authors and contributors are removable.
-      let removables = wrapper.find(WithRemoveButton);
+      const removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(3);
 
       // All roles inputs have the same options.
@@ -123,19 +131,19 @@ describe("BookEditForm", () => {
     });
 
     it("shows editable input with series", () => {
-      let input = editableInputByName("series");
+      const input = editableInputByName("series");
       expect(input.props().label).not.to.be.ok;
       expect(input.props().value).to.equal("series");
     });
 
     it("shows editable input with series position", () => {
-      let input = editableInputByName("series_position");
+      const input = editableInputByName("series_position");
       expect(input.props().label).not.to.be.ok;
       expect(input.props().value).to.equal("3");
     });
 
     it("shows editable input with medium", () => {
-      let input = editableInputByName("medium");
+      const input = editableInputByName("medium");
       expect(input.props().label).to.equal("Medium");
       expect(input.props().value).to.equal("Audio");
     });
@@ -145,7 +153,9 @@ describe("BookEditForm", () => {
       expect(languageField.prop("name")).to.equal("language");
       expect(languageField.prop("label")).to.equal("Language");
       expect(languageField.prop("value")).to.equal("eng");
-      expect(languageField.prop("languages")).to.equal(wrapper.prop("languages"));
+      expect(languageField.prop("languages")).to.equal(
+        wrapper.prop("languages")
+      );
 
       wrapper.setProps({ language: "fre" });
       languageField = wrapper.find(LanguageField);
@@ -153,38 +163,38 @@ describe("BookEditForm", () => {
     });
 
     it("shows editable input with publisher", () => {
-      let input = editableInputByName("publisher");
+      const input = editableInputByName("publisher");
       expect(input.props().label).to.equal("Publisher");
       expect(input.props().value).to.equal("publisher");
     });
 
     it("shows editable input with imprint", () => {
-      let input = editableInputByName("imprint");
+      const input = editableInputByName("imprint");
       expect(input.props().label).to.equal("Imprint");
       expect(input.props().value).to.equal("imprint");
     });
 
     it("shows editable input with publication date", () => {
-      let input = editableInputByName("issued");
+      const input = editableInputByName("issued");
       expect(input.props().label).to.equal("Publication Date");
       expect(input.props().value).to.equal("2017-04-03");
     });
 
     it("shows editable input with rating", () => {
-      let input = editableInputByName("rating");
+      const input = editableInputByName("rating");
       expect(input.props().label).to.contain("Rating");
       expect(input.props().value).to.equal("4");
     });
 
     it("shows editable textarea with summary", () => {
-      let editor = wrapper.find(".editor");
+      const editor = wrapper.find(".editor");
       expect(editor.find("label").text()).to.equal("Summary");
       expect(editor.find(".DraftEditor-root").text()).to.equal("summary");
     });
   });
 
   it("removes a contributor", () => {
-    let editBook = stub();
+    const editBook = stub();
     wrapper = mount(
       <BookEditForm
         {...bookData}
@@ -199,8 +209,8 @@ describe("BookEditForm", () => {
 
     let removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(3);
-    let firstNarrator = removables.at(1);
-    let onRemove = firstNarrator.prop("onRemove");
+    const firstNarrator = removables.at(1);
+    const onRemove = firstNarrator.prop("onRemove");
 
     onRemove();
     wrapper.update();
@@ -208,8 +218,8 @@ describe("BookEditForm", () => {
     removables = wrapper.find(WithRemoveButton);
     expect(removables.length).to.equal(2);
 
-    let contributorNames = editableInputByName("contributor-name");
-    let contributorRoles = editableInputByName("contributor-role");
+    const contributorNames = editableInputByName("contributor-name");
+    const contributorRoles = editableInputByName("contributor-role");
     expect(contributorNames.length).to.equal(3);
     expect(contributorRoles.length).to.equal(3);
     expect(contributorNames.at(0).props().value).to.equal("An Author");
@@ -221,7 +231,7 @@ describe("BookEditForm", () => {
   });
 
   it("adds a contributor", () => {
-    let editBook = stub();
+    const editBook = stub();
     wrapper = mount(
       <BookEditForm
         {...bookData}
@@ -239,13 +249,13 @@ describe("BookEditForm", () => {
     expect(contributorNames.length).to.equal(4);
     expect(contributorRoles.length).to.equal(4);
 
-    let addContributorName = contributorNames.at(3);
-    let addContributorRole = contributorRoles.at(3);
-    let addButton = wrapper.find("button.add-contributor");
+    const addContributorName = contributorNames.at(3);
+    const addContributorRole = contributorRoles.at(3);
+    const addButton = wrapper.find("button.add-contributor");
 
     addContributorName.at(0).setState({ value: "New Author" });
     addContributorRole.at(0).setState({ value: "Author" });
-    wrapper.find(Contributors).setState({ "disabled": false });
+    wrapper.find(Contributors).setState({ disabled: false });
     addButton.simulate("click");
 
     contributorNames = editableInputByName("contributor-name");
@@ -266,10 +276,11 @@ describe("BookEditForm", () => {
   });
 
   it("calls editBook on submit", () => {
-
-    let editBook = stub().returns(new Promise((resolve, reject) => {
-      resolve();
-    }));
+    const editBook = stub().returns(
+      new Promise<void>((resolve, reject) => {
+        resolve();
+      })
+    );
     wrapper = mount(
       <BookEditForm
         {...bookData}
@@ -282,7 +293,7 @@ describe("BookEditForm", () => {
       />
     );
 
-    let form = wrapper.find(Form);
+    const form = wrapper.find(Form);
     form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
 
     expect(editBook.callCount).to.equal(1);
@@ -293,11 +304,23 @@ describe("BookEditForm", () => {
     // The last contributor field is the empty one for adding a new contributor.
     // If the user had filled it in without clicking "Add", it would still be submitted.
 
-    expect(editBook.args[0][1].getAll("contributor-name")).to.deep.equal(["An Author", "A Narrator", "Another Narrator", ""]);
-    expect(editBook.args[0][1].getAll("contributor-role")).to.deep.equal(["Author", "Narrator", "Narrator", "Author"]);
+    expect(editBook.args[0][1].getAll("contributor-name")).to.deep.equal([
+      "An Author",
+      "A Narrator",
+      "Another Narrator",
+      "",
+    ]);
+    expect(editBook.args[0][1].getAll("contributor-role")).to.deep.equal([
+      "Author",
+      "Narrator",
+      "Narrator",
+      "Author",
+    ]);
 
     expect(editBook.args[0][1].get("series")).to.equal(bookData.series);
-    expect(editBook.args[0][1].get("series_position")).to.equal(String(bookData.seriesPosition));
+    expect(editBook.args[0][1].get("series_position")).to.equal(
+      String(bookData.seriesPosition)
+    );
     expect(editBook.args[0][1].get("medium")).to.equal("Audio");
     expect(editBook.args[0][1].get("language")).to.equal("English");
     expect(editBook.args[0][1].get("publisher")).to.equal(bookData.publisher);
@@ -308,12 +331,16 @@ describe("BookEditForm", () => {
   });
 
   it("refreshes book after editing", async () => {
-    let editBook = stub().returns(new Promise((resolve, reject) => {
-      resolve();
-    }));
-    let refreshStub = stub().returns(new Promise((resolve, reject) => {
-      resolve();
-    }));
+    const editBook = stub().returns(
+      new Promise<void>((resolve, reject) => {
+        resolve();
+      })
+    );
+    const refreshStub = stub().returns(
+      new Promise<void>((resolve, reject) => {
+        resolve();
+      })
+    );
     wrapper = mount(
       <BookEditForm
         {...bookData}
@@ -326,18 +353,24 @@ describe("BookEditForm", () => {
       />
     );
 
-    let form = wrapper.find(Form);
-    await form.prop("onSubmit")(new (window as any).FormData(form.getDOMNode()));
+    const form = wrapper.find(Form);
+    await form.prop("onSubmit")(
+      new (window as any).FormData(form.getDOMNode())
+    );
     expect(refreshStub.callCount).to.equal(1);
   });
 
   it("only adds updated summary content if it's not empty", async () => {
-    let editBook = stub().returns(new Promise((resolve, reject) => {
-      resolve();
-    }));
-    let refreshStub = stub().returns(new Promise((resolve, reject) => {
-      resolve();
-    }));
+    const editBook = stub().returns(
+      new Promise<void>((resolve, reject) => {
+        resolve();
+      })
+    );
+    const refreshStub = stub().returns(
+      new Promise<void>((resolve, reject) => {
+        resolve();
+      })
+    );
     // Since we are adding an empty string, there should be no `summary` value
     // in the FormData object that gets passed to the `editBook` function.
     const emptySummaryData = { ...bookData, summary: "<p></p>" };
@@ -355,8 +388,8 @@ describe("BookEditForm", () => {
       />
     );
 
-    let form = wrapper.find(Form);
-    let data = new (window as any).FormData(form.getDOMNode());
+    const form = wrapper.find(Form);
+    const data = new (window as any).FormData(form.getDOMNode());
     await form.prop("onSubmit")(data);
 
     expect(editBook.args[0][1].get("summary")).to.equal(null);
@@ -374,11 +407,11 @@ describe("BookEditForm", () => {
         editBook={stub()}
       />
     );
-    let inputs = wrapper.find(EditableInput);
-    inputs.forEach(input => {
+    const inputs = wrapper.find(EditableInput);
+    inputs.forEach((input) => {
       expect(input.prop("disabled")).to.equal(true);
     });
-    let languageField = wrapper.find(LanguageField);
+    const languageField = wrapper.find(LanguageField);
     expect(languageField.prop("disabled")).to.equal(true);
   });
 });

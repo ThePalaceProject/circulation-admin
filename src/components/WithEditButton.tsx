@@ -8,14 +8,19 @@ export interface WithEditButtonProps {
 }
 
 /** When wrapped around an element, renders an edit button next to the element. */
-export default class WithEditButton extends React.Component<WithEditButtonProps, {}> {
+export default class WithEditButton extends React.Component<
+  WithEditButtonProps,
+  {}
+> {
   render(): JSX.Element {
-    const editContent = <span>Edit <PencilIcon title="Edit library" /></span>;
+    const editContent = (
+      <span>
+        Edit <PencilIcon title="Edit library" />
+      </span>
+    );
     return (
       <div className="with-edit-button">
-        <span>
-          { this.props.children }
-        </span>
+        <span>{this.props.children}</span>
         <Button
           className="edit-btn small"
           callback={this.onClick.bind(this)}

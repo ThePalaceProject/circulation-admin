@@ -3,4 +3,6 @@ import { DiagnosticsData } from "../interfaces";
 
 import createFetchEditReducer from "./createFetchEditReducer";
 
-export default createFetchEditReducer<DiagnosticsData>(ActionCreator.DIAGNOSTICS);
+export default createFetchEditReducer<DiagnosticsData>(
+  ActionCreator.DIAGNOSTICS
+);

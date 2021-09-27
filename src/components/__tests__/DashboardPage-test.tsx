@@ -22,7 +22,7 @@ describe("DashboardPage", () => {
   });
 
   it("shows Header", () => {
-    let header = wrapper.find(Header);
+    const header = wrapper.find(Header);
     expect(header.length).to.equal(1);
   });
 
@@ -50,7 +50,7 @@ describe("DashboardPage", () => {
   });
 
   it("shows Footer", () => {
-    let footer = wrapper.find(Footer);
+    const footer = wrapper.find(Footer);
     expect(footer.length).to.equal(1);
   });
 });

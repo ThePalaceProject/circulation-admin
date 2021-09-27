@@ -6,5 +6,5 @@ import createFetchEditReducer from "./createFetchEditReducer";
 export default createFetchEditReducer<CollectionsData>(
   ActionCreator.COLLECTIONS,
   ActionCreator.EDIT_COLLECTION,
-  extraActions,
+  extraActions
 );

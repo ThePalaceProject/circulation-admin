@@ -14,7 +14,11 @@ import StorageServices from "./StorageServices";
 import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
 import LoggingServices from "./LoggingServices";
-import { TabContainer, TabContainerProps, TabContainerContext } from "./TabContainer";
+import {
+  TabContainer,
+  TabContainerProps,
+  TabContainerContext,
+} from "./TabContainer";
 import Admin from "../models/Admin";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
@@ -29,12 +33,14 @@ export interface ConfigTabContainerContext extends TabContainerContext {
 
 /** Body of the system configuration page, with a tab for each type of
     service that can be configured. */
-export default class ConfigTabContainer extends TabContainer<ConfigTabContainerProps> {
+export default class ConfigTabContainer extends TabContainer<
+  ConfigTabContainerProps
+> {
   context: ConfigTabContainerContext;
   static contextTypes: React.ValidationMap<ConfigTabContainerContext> = {
     router: PropTypes.object.isRequired,
     pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>
+    admin: PropTypes.object.isRequired as React.Validator<Admin>,
   };
 
   COMPONENT_CLASSES = {
@@ -51,7 +57,7 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     search: SearchServices,
     storage: StorageServices,
     catalogServices: CatalogServices,
-    discovery: DiscoveryServices
+    discovery: DiscoveryServices,
   };
 
   LIBRARIAN_TABS = ["libraries", "analytics"];
@@ -64,14 +70,14 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
     patronAuth: "Patron Authentication",
     sitewideSettings: "Sitewide Settings",
     cdn: "CDN",
-    catalogServices: "External Catalogs"
+    catalogServices: "External Catalogs",
   };
 
   tabs() {
     const tabs = {};
-    let makeTabs = (tabNames) => {
-      for (let tab of tabNames) {
-        let ComponentClass = this.COMPONENT_CLASSES[tab];
+    const makeTabs = (tabNames) => {
+      for (const tab of tabNames) {
+        const ComponentClass = this.COMPONENT_CLASSES[tab];
         tabs[tab] = (
           <ComponentClass
             store={this.props.store}
@@ -95,7 +101,7 @@ export default class ConfigTabContainer extends TabContainer<ConfigTabContainerP
   }
 
   handleSelect(event) {
-    let tab = event.target.dataset.tabkey;
+    const tab = event.target.dataset.tabkey;
     if (this.context.router) {
       this.context.router.push("/admin/web/config/" + tab);
     }

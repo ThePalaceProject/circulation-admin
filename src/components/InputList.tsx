@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as React from "react";
 import WithRemoveButton from "./WithRemoveButton";
 import LanguageField from "./LanguageField";
@@ -42,7 +41,7 @@ export default class InputList extends React.Component<
   private addListItemRef = React.createRef<LanguageField>();
   constructor(props: InputListProps) {
     super(props);
-    let isMenu = props.setting.type === "menu";
+    const isMenu = props.setting.type === "menu";
     this.state = {
       listItems:
         (props.value as string[]) || (props.setting.default as string[]) || [],
@@ -57,7 +56,7 @@ export default class InputList extends React.Component<
     this.capitalize = this.capitalize.bind(this);
   }
 
-  componentWillReceiveProps(newProps: InputListProps) {
+  UNSAFE_componentWillReceiveProps(newProps: InputListProps) {
     // Update the list of existing items with value from new props
     if (
       this.state.listItems &&
@@ -83,12 +82,13 @@ export default class InputList extends React.Component<
   render(): JSX.Element {
     const setting = this.props.setting as any;
     // Hide the "Add" button if there are no options left
-    let showButton = !this.state.options || this.state.options.length > 0;
-    let hasListItems = this.state.listItems && this.state.listItems.length > 0;
+    const showButton = !this.state.options || this.state.options.length > 0;
+    const hasListItems =
+      this.state.listItems && this.state.listItems.length > 0;
     let element: string | JSX.Element;
     // Disable the button if 1) the whole component is supposed to be disabled,
     // 2) the admin isn't authorized to add items to the list, or 3) the input field is blank.
-    let disableButton =
+    const disableButton =
       this.props.disabled ||
       this.props.disableButton ||
       (setting.type !== "menu" && !this.state.newItem.length);
@@ -146,7 +146,7 @@ export default class InputList extends React.Component<
         {listItems
           .filter((listItem) => listItem)
           .map((listItem) => {
-            let value =
+            const value =
               typeof listItem === "string"
                 ? listItem
                 : Object.keys(listItem)[0];
@@ -158,7 +158,7 @@ export default class InputList extends React.Component<
 
   renderListItem(setting: SettingData, value: string, listItem) {
     let item: JSX.Element;
-    let label = setting.options
+    const label = setting.options
       ? setting.options.find((o) => o.key === value)?.label
       : value;
     if (setting.format === "language-code") {
@@ -188,7 +188,7 @@ export default class InputList extends React.Component<
     }
     // Disable the delete button in the WithRemoveButton component if 1) the whole InputList is supposed to be disabled,
     // or 2) the admin isn't authorized to delete items from the list
-    let disableRemoveButton = this.props.disabled || this.props.disableButton;
+    const disableRemoveButton = this.props.disabled || this.props.disableButton;
     return (
       <li className="input-list-item" key={value}>
         <WithRemoveButton
@@ -202,7 +202,7 @@ export default class InputList extends React.Component<
   }
 
   renderMenu(setting: CustomListsSetting) {
-    let choices = this.state.options;
+    const choices = this.state.options;
     // If there are no available options, don't show the menu
     if (choices && choices.length > 0) {
       return this.props.createEditableInput(
@@ -262,18 +262,18 @@ export default class InputList extends React.Component<
       }
     }
     // Items that have already been selected, and should be eliminated from the menu.
-    let listItems = this.state
+    const listItems = this.state
       ? this.state.listItems
       : this.props.value || this.props.setting.default;
     // Items that haven't been selected yet.
-    let remainingOptions = listItems
+    const remainingOptions = listItems
       ? allOptions.filter((o) => listItems.indexOf(o.props.value) < 0)
       : [];
     return remainingOptions;
   }
 
   updateNewItem() {
-    let ref =
+    const ref =
       this.props.setting.format === "language-code"
         ? this.addListItemRef.current.autocompleteRef.current
         : this.addListItemRef.current;
@@ -294,7 +294,7 @@ export default class InputList extends React.Component<
   }
 
   async addListItem() {
-    let ref =
+    const ref =
       this.props.setting.format === "language-code"
         ? this.addListItemRef.current.autocompleteRef.current
         : this.addListItemRef.current;

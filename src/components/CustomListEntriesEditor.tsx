@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
@@ -67,14 +66,14 @@ export default class CustomListEntriesEditor extends React.Component<
   }
 
   render(): JSX.Element {
-    let {
+    const {
       entries,
       deleted,
       added,
       draggingFrom,
       totalVisibleEntries,
     } = this.state;
-    let {
+    const {
       searchResults,
       isFetchingMoreSearchResults,
       isFetchingMoreCustomListEntries,
@@ -82,7 +81,7 @@ export default class CustomListEntriesEditor extends React.Component<
       entryCount,
     } = this.props;
     let entryListDisplay = "No books in this list";
-    let totalEntriesServer = parseInt(entryCount, 10);
+    const totalEntriesServer = parseInt(entryCount, 10);
     let displayTotal;
     let entriesCount;
     let booksText;
@@ -113,7 +112,7 @@ export default class CustomListEntriesEditor extends React.Component<
         entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
       }
     }
-    let resultsToDisplay = searchResults && this.searchResultsNotInEntries();
+    const resultsToDisplay = searchResults && this.searchResultsNotInEntries();
     return (
       <DragDropContext
         onDragStart={this.onDragStart}
@@ -302,10 +301,10 @@ export default class CustomListEntriesEditor extends React.Component<
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let deleted = this.state.deleted;
     let added = this.state.added;
-    let totalVisibleEntries = this.state.totalVisibleEntries;
+    const totalVisibleEntries = this.state.totalVisibleEntries;
     // We need to reset the deleted and added entries if we are moving to a new list.
     if (this.props.listId !== nextProps.listId) {
       deleted = [];
@@ -422,11 +421,11 @@ export default class CustomListEntriesEditor extends React.Component<
   }
 
   searchResultsNotInEntries() {
-    let entryIds =
+    const entryIds =
       this.state.entries && this.state.entries.length
         ? this.state.entries.map((entry) => entry.id)
         : [];
-    let books =
+    const books =
       this.props.searchResults.books && this.props.searchResults.books.length
         ? this.props.searchResults.books.filter((book) => {
             for (const entryId of entryIds) {
@@ -485,7 +484,7 @@ export default class CustomListEntriesEditor extends React.Component<
   }
 
   add(id: string) {
-    let entries = this.state.entries ? this.state.entries.slice(0) : [];
+    const entries = this.state.entries ? this.state.entries.slice(0) : [];
     let entry;
     for (const result of this.props.searchResults.books) {
       if (result.id === id) {
@@ -503,10 +502,10 @@ export default class CustomListEntriesEditor extends React.Component<
       }
     }
 
-    let added = this.state.added.filter((entry) => entry.id !== id);
-    let inDeleted = this.state.deleted.filter((entry) => entry.id === id);
-    let deleted = this.state.deleted.filter((entry) => entry.id !== id);
-    let propEntries = this.props.entries
+    const added = this.state.added.filter((entry) => entry.id !== id);
+    const inDeleted = this.state.deleted.filter((entry) => entry.id === id);
+    const deleted = this.state.deleted.filter((entry) => entry.id !== id);
+    const propEntries = this.props.entries
       ? this.props.entries.filter((entry) => entry.id === id)
       : [];
     this.setState({
@@ -522,10 +521,10 @@ export default class CustomListEntriesEditor extends React.Component<
 
   delete(id: string) {
     let entries = this.state.entries.slice(0);
-    let deleted = this.state.deleted.filter((entry) => entry.id !== id);
-    let deletedEntry = this.state.entries.filter((entry) => entry.id === id);
-    let added = this.state.added.filter((entry) => entry.id !== id);
-    let inAdded =
+    const deleted = this.state.deleted.filter((entry) => entry.id !== id);
+    const deletedEntry = this.state.entries.filter((entry) => entry.id === id);
+    const added = this.state.added.filter((entry) => entry.id !== id);
+    const inAdded =
       this.props.entries && this.props.entries.length
         ? this.props.entries.filter((entry) => entry.id === id)
         : [];
@@ -555,7 +554,7 @@ export default class CustomListEntriesEditor extends React.Component<
   }
 
   addAll() {
-    let entries = [];
+    const entries = [];
     for (const result of this.searchResultsNotInEntries()) {
       const medium = getMedium(result);
       const language = this.getLanguage(result);
@@ -568,11 +567,11 @@ export default class CustomListEntriesEditor extends React.Component<
         language,
       });
     }
-    let existingPropEntriesIds = this.props.entries
+    const existingPropEntriesIds = this.props.entries
       ? this.props.entries.map((entry) => entry.id)
       : [];
-    let newEntriesIds = entries.map((entry) => entry.id);
-    let newlyAdded = entries.filter((book) => {
+    const newEntriesIds = entries.map((entry) => entry.id);
+    const newlyAdded = entries.filter((book) => {
       for (const newEntriesId of existingPropEntriesIds) {
         if (newEntriesId === book.id) {
           return false;
@@ -580,7 +579,7 @@ export default class CustomListEntriesEditor extends React.Component<
       }
       return true;
     });
-    let deleted = this.state.deleted.filter((book) => {
+    const deleted = this.state.deleted.filter((book) => {
       for (const newEntriesId of newEntriesIds) {
         if (newEntriesId === book.id) {
           return false;
@@ -588,7 +587,7 @@ export default class CustomListEntriesEditor extends React.Component<
       }
       return true;
     });
-    let added = this.state.added.concat(newlyAdded);
+    const added = this.state.added.concat(newlyAdded);
 
     for (const entry of this.state.entries) {
       entries.push(entry);
@@ -606,11 +605,11 @@ export default class CustomListEntriesEditor extends React.Component<
   }
 
   deleteAll() {
-    let entries = this.state.entries.slice(0);
-    let propEntriesId = this.props.entries
+    const entries = this.state.entries.slice(0);
+    const propEntriesId = this.props.entries
       ? this.props.entries.map((entry) => entry.id)
       : [];
-    let newlyDeleted = entries.filter((book) => {
+    const newlyDeleted = entries.filter((book) => {
       for (const propEntryId of propEntriesId) {
         if (propEntryId === book.id) {
           return true;
@@ -632,14 +631,14 @@ export default class CustomListEntriesEditor extends React.Component<
 
   loadMore() {
     if (this.props.searchResults && !this.props.isFetchingMoreSearchResults) {
-      let nextPageUrl = this.props.searchResults.nextPageUrl;
+      const nextPageUrl = this.props.searchResults.nextPageUrl;
       this.props.loadMoreSearchResults(nextPageUrl);
     }
   }
 
   loadMoreEntries() {
     if (this.props.entries && !this.props.isFetchingMoreCustomListEntries) {
-      let nextPageUrl = this.props.nextPageUrl;
+      const nextPageUrl = this.props.nextPageUrl;
       this.props.loadMoreEntries(nextPageUrl);
     }
   }

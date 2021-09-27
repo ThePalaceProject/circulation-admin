@@ -1,7 +1,43 @@
 ## Changelog
 
-#### (Prerelease) Updated
+### September 17, 2021
 
+#### Updated
+
+- Updated node-sass and sass-loader dependency versions to reduce the number of high risk vulnerabilities.
+
+### v0.5.5
+
+#### Updated
+
+- Updated `CustomListEditor` so that the "Save this list" button is disabled if either title or entries are absent, and enabled if both are present.
+- Updated the book cover editor so that the current cover URL pulls through not as a value in the input (as described in v0.5.3), but as a description beneath the input.
+
+### v0.5.4
+
+#### Updated
+
+- Updated the version of opds-web-client after successfully testing the version below.
+
+### v0.5.4-test
+
+#### Updated
+
+- Updated the version of opds-web-client in order to test a fix for bugs affecting the List Manager.
+
+### v0.5.3
+
+#### Updated
+
+- Added a value attribute to the book cover URL's `EditableInput` in `BookCoverEditor` so that the existing URL pulls through for the user to start.
+- Addressed linter errors throughout repo and used prettier to format code consistently.
+- Prepended all deprecated React lifecycle methods (componentWillMount and componentWillReceiveProps) with UNSAFE\_.
+
+### v0.5.2
+
+#### Updated
+
+- Updated CI from Travis to GitHub Actions.
 - Updated the README.
 - Added a Github pull request template.
 

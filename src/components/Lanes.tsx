@@ -201,8 +201,8 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         <h2>Reset all lanes</h2>
         <p>
           This will delete all lanes for the library and automatically generate
-          new lanes based on the library&apos;s language configuration or the
-          languages in the library&apos;s collection.
+          new lanes based on the library's language configuration or the
+          languages in the library's collection.
         </p>
         <p>
           Any lanes based on lists will be removed and will need to be created
@@ -211,8 +211,8 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
         <hr />
         <p>This cannot be undone.</p>
         <p>
-          If you&apos;re sure you want to reset the lanes, type
-          &quot;RESET&quot; below and click Reset.
+          If you're sure you want to reset the lanes, type "RESET" below and
+          click Reset.
         </p>
         <EditableInput
           type="text"
@@ -240,7 +240,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.lanes && !this.props.lanes) {
       const lanes = this.copyLanes(nextProps.lanes);
       this.setState({
@@ -252,7 +252,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.fetchLanes) {
       this.props.fetchLanes();
     }

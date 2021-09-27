@@ -15,7 +15,10 @@ export interface NeighborhoodAnalyticsFormState {
   selected?: string;
 }
 
-export default class NeighborhoodAnalyticsForm extends React.Component<NeighborhoodAnalyticsFormProps, NeighborhoodAnalyticsFormState> {
+export default class NeighborhoodAnalyticsForm extends React.Component<
+  NeighborhoodAnalyticsFormProps,
+  NeighborhoodAnalyticsFormState
+> {
   constructor(props: NeighborhoodAnalyticsFormProps) {
     super(props);
     this.state = { selected: props.currentValue || "" };
@@ -26,7 +29,9 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
   render(): JSX.Element {
     return (
       <Panel
-        headerText={`Patron Neighborhood Analytics: ${this.isEnabled() ? "En" : "Dis"}abled`}
+        headerText={`Patron Neighborhood Analytics: ${
+          this.isEnabled() ? "En" : "Dis"
+        }abled`}
         content={this.renderNeighborhoodForm()}
         id="neighborhood"
       />
@@ -34,7 +39,7 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
   }
 
   isEnabled(): boolean {
-    return (this.state.selected && this.state.selected !== "disabled");
+    return this.state.selected && this.state.selected !== "disabled";
   }
 
   handleNeighborhoodChange(choice: string) {
@@ -42,12 +47,14 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
   }
 
   renderNeighborhoodForm(): JSX.Element {
-    let setting: SettingData = this.props.setting;
-    let [url, name]: string[] = this.getPairedService(setting);
+    const setting: SettingData = this.props.setting;
+    const [url, name]: string[] = this.getPairedService(setting);
     return (
       <fieldset>
-        <legend className="visuallyHidden">Patron Neighborhood Analytics</legend>
-        <p dangerouslySetInnerHTML={{__html: setting.description}}/>
+        <legend className="visuallyHidden">
+          Patron Neighborhood Analytics
+        </legend>
+        <p dangerouslySetInnerHTML={{ __html: setting.description }} />
         <EditableInput
           key={setting.key}
           label={setting.label}
@@ -57,27 +64,36 @@ export default class NeighborhoodAnalyticsForm extends React.Component<Neighborh
           error={this.props.error}
           onChange={this.handleNeighborhoodChange}
         >
-        { setting.options.map(o =>
-            <option key={o.key} value={o.key} aria-selected={o.key === this.props.currentValue}>
+          {setting.options.map((o) => (
+            <option
+              key={o.key}
+              value={o.key}
+              aria-selected={o.key === this.props.currentValue}
+            >
               {o.label}
             </option>
-          )
-        }
+          ))}
         </EditableInput>
-        {
-          this.isEnabled() &&
-          <p className="bg-warning">This feature will work only if it is also enabled in your <a href={url}>{name}</a>.</p>
-        }
+        {this.isEnabled() && (
+          <p className="bg-warning">
+            This feature will work only if it is also enabled in your{" "}
+            <a href={url}>{name}</a>.
+          </p>
+        )}
       </fieldset>
     );
   }
 
   getPairedService(setting: SettingData): string[] {
     // Whichever type of service we're currently dealing with--patron authentication or analytics--we need to provide a link to the other one.
-    const services = { "patronAuth": "patron authentication", "analytics": "local analytics" };
-    let targetService = setting.key === "location_source" ? "patronAuth" : "analytics";
-    let url = "/admin/web/config/" + targetService;
-    let name = services[targetService] + " service configuration settings";
+    const services = {
+      patronAuth: "patron authentication",
+      analytics: "local analytics",
+    };
+    const targetService =
+      setting.key === "location_source" ? "patronAuth" : "analytics";
+    const url = "/admin/web/config/" + targetService;
+    const name = services[targetService] + " service configuration settings";
     return [url, name];
   }
 

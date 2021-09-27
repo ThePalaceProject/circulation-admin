@@ -16,40 +16,43 @@ export interface CustomListsSidebarProps {
   sortOrder: string;
 }
 
-
-export default class CustomListsSidebar extends React.Component<CustomListsSidebarProps, {}> {
+export default class CustomListsSidebar extends React.Component<
+  CustomListsSidebarProps,
+  {}
+> {
   render(): JSX.Element {
-    return(
+    return (
       <div className="custom-lists-sidebar">
         <h2>List Manager</h2>
         <Link
           className="btn create-button"
-          to={"/admin/web/lists/" + this.props.library + "/create"}>
-            Create New List
+          to={"/admin/web/lists/" + this.props.library + "/create"}
+        >
+          Create New List
         </Link>
 
-        {
-          this.props.lists && this.props.lists.length > 0 &&
+        {this.props.lists && this.props.lists.length > 0 && (
           <div>
             {this.renderSortButtons()}
-            <ul>
-              {this.props.lists.map(list => this.renderListInfo(list))}
-            </ul>
+            <ul>{this.props.lists.map((list) => this.renderListInfo(list))}</ul>
           </div>
-        }
+        )}
       </div>
     );
   }
 
   renderSortButtons(): JSX.Element {
-    let sortOrders = [["A-Z", "asc"], ["Z-A", "desc"]];
-    return(
+    const sortOrders = [
+      ["A-Z", "asc"],
+      ["Z-A", "desc"],
+    ];
+    return (
       <fieldset>
         <legend className="visuallyHidden">Select list sort type</legend>
-        {
-          sortOrders.map((order) => {
-            let isChecked = this.props.sortOrder === order[1];
-            return (<EditableInput
+        {sortOrders.map((order) => {
+          const isChecked = this.props.sortOrder === order[1];
+          return (
+            <EditableInput
               key={order[1]}
               type="radio"
               label={`Sort ${order[0]}`}
@@ -57,41 +60,54 @@ export default class CustomListsSidebar extends React.Component<CustomListsSideb
               onChange={this.props.changeSort}
               checked={isChecked}
               disabled={false}
-            />);
-          })
-        }
+            />
+          );
+        })}
       </fieldset>
     );
   }
 
   renderListInfo(list: CustomListData): JSX.Element {
-    let isActive = this.props.identifier && this.props.identifier.toString() === list.id.toString();
+    const isActive =
+      this.props.identifier &&
+      this.props.identifier.toString() === list.id.toString();
     return (
-      <li key={list.id} className={isActive ? "active" : "" }>
+      <li key={list.id} className={isActive ? "active" : ""}>
         <div className="custom-list-info">
-          <p>{ list.name }</p>
-          <p>Books in list: { list.entry_count }</p>
-          <p>ID-{ list.id }</p>
+          <p>{list.name}</p>
+          <p>Books in list: {list.entry_count}</p>
+          <p>ID-{list.id}</p>
         </div>
-        <div className = "custom-list-buttons">
-          {
-            isActive ?
-              <Button disabled={true} content="Editing" className="left-align small" /> :
-              <Link
-                to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
-                className="btn left-align small"
-              >
-                <span>Edit<PencilIcon /></span>
-              </ Link>
-          }
-          {
-            this.props.isLibraryManager &&
-              <Button
-                callback={() => this.props.deleteCustomList(list)}
-                content={<span>Delete<TrashIcon /></span>}
-                className="right-align small danger"
-              />
-          }
+        <div className="custom-list-buttons">
+          {isActive ? (
+            <Button
+              disabled={true}
+              content="Editing"
+              className="left-align small"
+            />
+          ) : (
+            <Link
+              to={"/admin/web/lists/" + this.props.library + "/edit/" + list.id}
+              className="btn left-align small"
+            >
+              <span>
+                Edit
+                <PencilIcon />
+              </span>
+            </Link>
+          )}
+          {this.props.isLibraryManager && (
+            <Button
+              callback={() => this.props.deleteCustomList(list)}
+              content={
+                <span>
+                  Delete
+                  <TrashIcon />
+                </span>
+              }
+              className="right-align small danger"
+            />
+          )}
         </div>
       </li>
     );

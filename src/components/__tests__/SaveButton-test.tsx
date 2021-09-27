@@ -9,16 +9,11 @@ import SaveButton from "../SaveButton";
 describe("SaveButton", () => {
   let wrapper;
   let submit;
-  let data = {key: "value"};
+  const data = { key: "value" };
 
   beforeEach(() => {
     submit = stub();
-    wrapper = mount(
-      <SaveButton
-        disabled={false}
-        submit={submit}
-      />
-    );
+    wrapper = mount(<SaveButton disabled={false} submit={submit} />);
   });
 
   it("should say 'Save' if no text prop has been passed in", () => {
@@ -40,5 +35,4 @@ describe("SaveButton", () => {
     wrapper.simulate("click");
     expect(submit.callCount).to.equal(0);
   });
-
 });

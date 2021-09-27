@@ -13,17 +13,21 @@ export default class Footer extends React.Component<FooterProps, {}> {
   static contextType = TOSContext;
 
   render() {
-    let [text, href] = this.context;
+    const [text, href] = this.context;
     return (
       <footer className={this.props.className}>
-          <p><a href={href} target="_blank">{this.decode(text)}</a></p>
+        <p>
+          <a href={href} target="_blank" rel="noreferrer">
+            {this.decode(text)}
+          </a>
+        </p>
       </footer>
     );
   }
   decode(text) {
     // The current Terms of Service link text has an apostrophe in it.  If we don't go through
     // this extra step, the browser renders the HTML entity code for the apostrophe.
-    let element = document.createElement("textarea");
+    const element = document.createElement("textarea");
     element.innerHTML = text;
     return element.value;
   }

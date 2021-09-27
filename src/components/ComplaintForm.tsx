@@ -12,7 +12,10 @@ export interface ComplaintFormProps {
 }
 
 /** Form for adding a new complaint to a book, from the complaints tab of the book detail page. */
-export default class ComplaintForm extends React.Component<ComplaintFormProps, any> {
+export default class ComplaintForm extends React.Component<
+  ComplaintFormProps,
+  any
+> {
   private typeRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
@@ -21,7 +24,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
   }
 
   render(): JSX.Element {
-    let complaintTypes = [
+    const complaintTypes = [
       "cannot-issue-loan",
       "cannot-render",
       "wrong-title",
@@ -33,7 +36,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       "bad-cover-image",
       "wrong-medium",
       "wrong-age-range",
-      "wrong-genre"
+      "wrong-genre",
     ];
 
     return (
@@ -44,9 +47,8 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
           className="edit-form"
           disableButton={this.props.disabled}
           errorText={
-            !!this.state.errors.length && this.state.errors.map((error, i) =>
-              <div key={i}>{error}</div>
-            )
+            !!this.state.errors.length &&
+            this.state.errors.map((error, i) => <div key={i}>{error}</div>)
           }
           content={
             <fieldset key="add-complaint">
@@ -59,8 +61,14 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
                 aria-label="Select a complaint type"
                 disabled={this.props.disabled}
               >
-                <option value="" aria-selected={false}>Complaint type</option>
-                { complaintTypes.map(type => <option key={type} value={type} aria-selected={false}>{formatString(type, ["-"])}</option>) }
+                <option value="" aria-selected={false}>
+                  Complaint type
+                </option>
+                {complaintTypes.map((type) => (
+                  <option key={type} value={type} aria-selected={false}>
+                    {formatString(type, ["-"])}
+                  </option>
+                ))}
               </EditableInput>
             </fieldset>
           }
@@ -70,7 +78,7 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
   }
 
   post(complaint) {
-    let value = complaint.get("type");
+    const value = complaint.get("type");
 
     if (value) {
       this.setState({ errors: [] });
@@ -79,16 +87,19 @@ export default class ComplaintForm extends React.Component<ComplaintFormProps, a
       return;
     }
 
-    let data = {
-      type: "http://librarysimplified.org/terms/problem/" + value
+    const data = {
+      type: "http://librarysimplified.org/terms/problem/" + value,
     };
 
-    this.props.postComplaint(this.props.complaintUrl, data).then(response => {
-      this.props.refreshComplaints();
-      this.clear();
-    }).catch(err => {
-      this.showPostError();
-    });
+    this.props
+      .postComplaint(this.props.complaintUrl, data)
+      .then((response) => {
+        this.props.refreshComplaints();
+        this.clear();
+      })
+      .catch((err) => {
+        this.showPostError();
+      });
   }
 
   showPostError() {

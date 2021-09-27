@@ -9,13 +9,14 @@ import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../ErrorMessage";
 import EditableInput from "../EditableInput";
 
-
 describe("ChangePasswordForm", () => {
   let wrapper;
   let changePassword;
 
   beforeEach(() => {
-    changePassword = stub().returns(new Promise<void>(resolve => resolve()));
+    changePassword = stub().returns(
+      new Promise<void>((resolve) => resolve())
+    );
     wrapper = mount(
       <ChangePasswordForm
         isFetching={false}
@@ -28,10 +29,10 @@ describe("ChangePasswordForm", () => {
   it("shows ErrorMessage on request error", () => {
     let error = wrapper.find(ErrorMessage);
     expect(error.length).to.equal(0);
-    let fetchError = {
+    const fetchError = {
       status: 500,
       response: "response",
-      url: ""
+      url: "",
     };
     wrapper.setProps({ fetchError });
     error = wrapper.find(ErrorMessage);
@@ -68,7 +69,7 @@ describe("ChangePasswordForm", () => {
   });
 
   it("shows password inputs", () => {
-    let inputs = wrapper.find(EditableInput);
+    const inputs = wrapper.find(EditableInput);
     expect(inputs.length).to.equal(2);
     expect(inputs.at(0).prop("label")).to.contain("New Password");
     expect(inputs.at(1).prop("label")).to.contain("Confirm New Password");
@@ -80,11 +81,15 @@ describe("ChangePasswordForm", () => {
     const formData = new (window as any).FormData();
     wrapper.instance().save(formData);
     expect(changePassword.callCount).to.equal(0);
-    expect(wrapper.instance().state.error).to.contain("Fields cannot be blank.");
+    expect(wrapper.instance().state.error).to.contain(
+      "Fields cannot be blank."
+    );
     formData.append("password", "newPassword");
     wrapper.instance().save(formData);
     expect(changePassword.callCount).to.equal(0);
-    expect(wrapper.instance().state.error).to.contain("Fields cannot be blank.");
+    expect(wrapper.instance().state.error).to.contain(
+      "Fields cannot be blank."
+    );
   });
 
   it("checks if passwords match", () => {
@@ -119,12 +124,12 @@ describe("ChangePasswordForm", () => {
     wrapper.instance().save(formData);
 
     expect(changePassword.callCount).to.equal(1);
-    let calledWith = changePassword.args[0][0];
+    const calledWith = changePassword.args[0][0];
     expect(calledWith.get("password")).to.equal("newPassword");
 
     // Let the call stack clear so the callback after editItem will run.
     const pause = (): Promise<void> => {
-      return new Promise<void>(resolve => setTimeout(resolve, 0));
+      return new Promise<void>((resolve) => setTimeout(resolve, 0));
     };
     await pause();
     expect(wrapper.instance().state.success).to.equal(true);

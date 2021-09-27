@@ -8,7 +8,7 @@ import { Panel } from "library-simplified-reusable-components";
 
 describe("Timestamp", () => {
   let wrapper;
-  let ts = {
+  const ts = {
     service: "test_service",
     id: "1",
     start: "start_time_string",
@@ -18,20 +18,18 @@ describe("Timestamp", () => {
 
   describe("rendering", () => {
     beforeEach(() => {
-      wrapper = mount(
-        <Timestamp timestamp={ts} />
-      );
+      wrapper = mount(<Timestamp timestamp={ts} />);
     });
 
     it("renders a panel", () => {
-      let panel = wrapper.find(Panel);
+      const panel = wrapper.find(Panel);
       expect(panel.length).to.equal(1);
       expect(panel.prop("style")).to.equal("success");
       expect(panel.prop("collapsible")).to.be.false;
     });
 
     it("renders the start time", () => {
-      let title = wrapper.find(".panel-title");
+      const title = wrapper.find(".panel-title");
       expect(title.length).to.equal(1);
       expect(title.text()).to.equal("start_time_string");
     });
@@ -45,15 +43,15 @@ describe("Timestamp", () => {
 
   describe("rendering with achievements", () => {
     beforeEach(() => {
-      let tsWithAchievements = Object.assign(ts, { achievements: "Ran a script" });
-      wrapper = mount(
-        <Timestamp timestamp={tsWithAchievements} />
-      );
+      const tsWithAchievements = Object.assign(ts, {
+        achievements: "Ran a script",
+      });
+      wrapper = mount(<Timestamp timestamp={tsWithAchievements} />);
     });
 
     it("renders achievements", () => {
       expect(wrapper.find("ul li").length).to.equal(2);
-      let achievements = wrapper.find(".well").find("pre");
+      const achievements = wrapper.find(".well").find("pre");
       expect(achievements.length).to.equal(1);
       expect(achievements.text()).to.contain("Ran a script");
     });
@@ -61,19 +59,17 @@ describe("Timestamp", () => {
 
   describe("rendering with exception", () => {
     beforeEach(() => {
-      let tsWithException = Object.assign(ts, { exception: "Stack trace" });
-      wrapper = mount(
-        <Timestamp timestamp={tsWithException} />
-      );
+      const tsWithException = Object.assign(ts, { exception: "Stack trace" });
+      wrapper = mount(<Timestamp timestamp={tsWithException} />);
     });
 
     it("determines style based on whether there is an exception", () => {
-      let panel = wrapper.find(Panel);
+      const panel = wrapper.find(Panel);
       expect(panel.prop("style")).to.equal("danger");
     });
 
     it("renders an exception", () => {
-      let exception = wrapper.find(".exception").find("pre");
+      const exception = wrapper.find(".exception").find("pre");
       expect(exception.length).to.equal(1);
       expect(exception.text()).to.equal("Stack trace");
     });

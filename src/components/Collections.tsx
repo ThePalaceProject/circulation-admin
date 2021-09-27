@@ -1,24 +1,42 @@
 import * as React from "react";
-import { GenericEditableConfigList, EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
+import {
+  GenericEditableConfigList,
+  EditableConfigListStateProps,
+  EditableConfigListDispatchProps,
+  EditableConfigListOwnProps,
+} from "./EditableConfigList";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import ActionCreator from "../actions";
-import { CollectionsData, CollectionData, LibraryData, LibraryRegistrationsData, ServiceData } from "../interfaces";
+import {
+  CollectionsData,
+  CollectionData,
+  LibraryData,
+  LibraryRegistrationsData,
+  ServiceData,
+} from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import TrashIcon from "./icons/TrashIcon";
 
-export interface CollectionsStateProps extends EditableConfigListStateProps<CollectionsData> {
+export interface CollectionsStateProps
+  extends EditableConfigListStateProps<CollectionsData> {
   isFetchingLibraryRegistrations?: boolean;
 }
 
-export interface CollectionsDispatchProps extends EditableConfigListDispatchProps<CollectionsData> {
+export interface CollectionsDispatchProps
+  extends EditableConfigListDispatchProps<CollectionsData> {
   registerLibrary: (data: FormData) => Promise<void>;
   fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
 }
 
-export interface CollectionsProps extends CollectionsStateProps, CollectionsDispatchProps, EditableConfigListOwnProps {}
+export interface CollectionsProps
+  extends CollectionsStateProps,
+    CollectionsDispatchProps,
+    EditableConfigListOwnProps {}
 
-class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsData> {}
+class CollectionEditForm extends ServiceWithRegistrationsEditForm<
+  CollectionsData
+> {}
 
 /**
  * Right panel for collections on the system configuration page.
@@ -30,7 +48,11 @@ class CollectionEditForm extends ServiceWithRegistrationsEditForm<CollectionsDat
  * <Collections />
  * ```
  */
-export class Collections extends GenericEditableConfigList<CollectionsData, CollectionData, CollectionsProps> {
+export class Collections extends GenericEditableConfigList<
+  CollectionsData,
+  CollectionData,
+  CollectionsProps
+> {
   EditForm = CollectionEditForm;
   listDataKey = "collections";
   itemTypeName = "collection";
@@ -56,23 +78,25 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
             }
           });
         }
-      }
+      },
     };
   }
 
-  componentWillMount() {
-    super.componentWillMount();
+  UNSAFE_componentWillMount() {
+    super.UNSAFE_componentWillMount();
     if (this.props.fetchLibraryRegistrations) {
       this.props.fetchLibraryRegistrations();
     }
   }
 
-  renderLinks(): {[key: string]: JSX.Element} {
-    let linkBase = "/admin/web/troubleshooting/self-tests/collections";
-    let linkElement = <a href={linkBase}>the troubleshooting page</a>;
+  renderLinks(): { [key: string]: JSX.Element } {
+    const linkBase = "/admin/web/troubleshooting/self-tests/collections";
+    const linkElement = <a href={linkBase}>the troubleshooting page</a>;
     return {
-      "info": <>Self-tests for the collections have been moved to {linkElement}</>,
-      "footer": <>Problems with your collections?  Please visit {linkElement}.</>
+      info: (
+        <>Self-tests for the collections have been moved to {linkElement}</>
+      ),
+      footer: <>Problems with your collections? Please visit {linkElement}.</>,
     };
   }
 
@@ -82,8 +106,10 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
         <li className="deleted-collection" key={index}>
           <TrashIcon />
           <h4>{this.label(item)}</h4>
-          <p>This collection cannot be edited and is currently being deleted.
-            The deletion process is gradual and this collection will be removed once it is complete.
+          <p>
+            This collection cannot be edited and is currently being deleted. The
+            deletion process is gradual and this collection will be removed once
+            it is complete.
           </p>
         </li>
       );
@@ -92,10 +118,13 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
   }
 
   async delete(item: CollectionData): Promise<void> {
-    const deleteInfo = "This action cannot be undone. Deletion will not happen " +
+    const deleteInfo =
+      "This action cannot be undone. Deletion will not happen " +
       "immediately but gradually. Until the collection is completely deleted, " +
       "it will remain in the list and will be uneditable.";
-    if (window.confirm(`Set "${this.label(item)}" for deletion? ${deleteInfo}`)) {
+    if (
+      window.confirm(`Set "${this.label(item)}" for deletion? ${deleteInfo}`)
+    ) {
       await this.props.deleteItem(item[this.identifierKey]);
       this.props.fetchData();
     }
@@ -103,40 +132,62 @@ export class Collections extends GenericEditableConfigList<CollectionsData, Coll
 }
 
 function mapStateToProps(state, ownProps) {
-  const data = Object.assign({}, state.editor.collections && state.editor.collections.data || {});
+  const data = Object.assign(
+    {},
+    (state.editor.collections && state.editor.collections.data) || {}
+  );
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
-  if (state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.data) {
-    data.libraryRegistrations = state.editor.collectionLibraryRegistrations.data.library_registrations;
+  if (
+    state.editor.collectionLibraryRegistrations &&
+    state.editor.collectionLibraryRegistrations.data
+  ) {
+    data.libraryRegistrations =
+      state.editor.collectionLibraryRegistrations.data.library_registrations;
   }
   // fetchError = an error involving loading the list of collections; formError = an error upon
   // submission of the create/edit form (including upon submitting a change to a library's registration).
   return {
     data: data,
-    responseBody: state.editor.collections && state.editor.collections.successMessage,
+    responseBody:
+      state.editor.collections && state.editor.collections.successMessage,
     fetchError: state.editor.collections.fetchError,
-    formError: state.editor.collections.formError || (state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.fetchError) || (state.editor.registerLibraryWithCollection && state.editor.registerLibraryWithCollection.fetchError),
-    isFetching: state.editor.collections.isFetching || state.editor.collections.isEditing,
-    isFetchingLibraryRegistrations: state.editor.collectionLibraryRegistrations && state.editor.collectionLibraryRegistrations.isFetching
+    formError:
+      state.editor.collections.formError ||
+      (state.editor.collectionLibraryRegistrations &&
+        state.editor.collectionLibraryRegistrations.fetchError) ||
+      (state.editor.registerLibraryWithCollection &&
+        state.editor.registerLibraryWithCollection.fetchError),
+    isFetching:
+      state.editor.collections.isFetching || state.editor.collections.isEditing,
+    isFetchingLibraryRegistrations:
+      state.editor.collectionLibraryRegistrations &&
+      state.editor.collectionLibraryRegistrations.isFetching,
   };
 }
 
-
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchCollections()),
     editItem: (data: FormData) => dispatch(actions.editCollection(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deleteCollection(identifier)),
-    registerLibrary: (data: FormData) => dispatch(actions.registerLibraryWithCollection(data)),
-    fetchLibraryRegistrations: () => dispatch(actions.fetchCollectionLibraryRegistrations())
+    deleteItem: (identifier: string | number) =>
+      dispatch(actions.deleteCollection(identifier)),
+    registerLibrary: (data: FormData) =>
+      dispatch(actions.registerLibraryWithCollection(data)),
+    fetchLibraryRegistrations: () =>
+      dispatch(actions.fetchCollectionLibraryRegistrations()),
   };
 }
 
-const ConnectedCollections = connect<EditableConfigListStateProps<CollectionsData>, EditableConfigListDispatchProps<CollectionsData>, EditableConfigListOwnProps>(
+const ConnectedCollections = connect<
+  EditableConfigListStateProps<CollectionsData>,
+  EditableConfigListDispatchProps<CollectionsData>,
+  EditableConfigListOwnProps
+>(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Collections);
 
 export default ConnectedCollections;

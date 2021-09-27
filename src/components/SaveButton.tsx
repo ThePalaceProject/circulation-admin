@@ -8,22 +8,22 @@ export interface SaveButtonProps {
 }
 
 export default class SaveButton extends React.Component<SaveButtonProps, {}> {
-
   constructor(props) {
     super(props);
   }
 
   render(): JSX.Element {
-   let text = this.props.text || "Save";
-   let type = this.props.type || "submit";
-   return (
-     <button
-       type={type}
-       className="btn btn-default"
-       disabled={this.props.disabled}
-       onClick={this.props.submit}
-    >{text}</button>
-   );
- }
-
+    const text = this.props.text || "Save";
+    const type = this.props.type || "submit";
+    return (
+      <button
+        type={type}
+        className="btn btn-default"
+        disabled={this.props.disabled}
+        onClick={this.props.submit}
+      >
+        {text}
+      </button>
+    );
+  }
 }

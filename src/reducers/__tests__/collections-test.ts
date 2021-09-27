@@ -4,7 +4,7 @@ import collections from "../collections";
 import ActionCreator from "../../actions";
 
 describe("collections reducer", () => {
-  let initState = {
+  const initState = {
     data: null,
     isFetching: false,
     isEditing: false,
@@ -12,7 +12,7 @@ describe("collections reducer", () => {
     formError: null,
     responseBody: null,
     isLoaded: false,
-    successMessage: null
+    successMessage: null,
   };
 
   it("returns initial state for unrecognized action", () => {
@@ -20,18 +20,21 @@ describe("collections reducer", () => {
   });
 
   it("handles COLLECTIONS_REQUEST", () => {
-    let action = { type: `${ActionCreator.COLLECTIONS}_REQUEST`, url: "test url" };
+    const action = {
+      type: `${ActionCreator.COLLECTIONS}_REQUEST`,
+      url: "test url",
+    };
 
     // start with empty state
-    let newState = Object.assign({}, initState, {
-      isFetching: true
+    const newState = Object.assign({}, initState, {
+      isFetching: true,
     });
     expect(collections(initState, action)).to.deep.equal(newState);
   });
 
   it("handles EDIT_COLLECTION_REQUEST", () => {
-    let action = { type: `${ActionCreator.EDIT_COLLECTION}_REQUEST` };
-    let newState = Object.assign({}, initState, {
+    const action = { type: `${ActionCreator.EDIT_COLLECTION}_REQUEST` };
+    const newState = Object.assign({}, initState, {
       fetchError: null,
       isFetching: false,
       isEditing: true,
@@ -40,26 +43,35 @@ describe("collections reducer", () => {
   });
 
   it("handles GET_SELF_TESTS_LOAD", () => {
-    let emptySelfTestData = {
+    const emptySelfTestData = {
       duration: null,
       start: "",
       end: "",
       results: [],
     };
-    let selfTestData = {
+    const selfTestData = {
       duration: 0.12,
       start: "start",
       end: "end",
       results: [],
     };
-    let action = {
+    const action = {
       type: `${ActionCreator.GET_SELF_TESTS}_LOAD`,
-      data: { self_test_results: { id: 1, self_test_results: selfTestData, protocol: "" } }
+      data: {
+        self_test_results: {
+          id: 1,
+          self_test_results: selfTestData,
+          protocol: "",
+        },
+      },
     };
-    let oldState = {
+    const oldState = {
       url: "test url",
       data: {
-        collections: [{ id: 1, self_test_results: emptySelfTestData, protocol: "" }, { id: 2, protocol: "" }],
+        collections: [
+          { id: 1, self_test_results: emptySelfTestData, protocol: "" },
+          { id: 2, protocol: "" },
+        ],
         protocols: [],
       },
       isFetching: true,
@@ -69,9 +81,12 @@ describe("collections reducer", () => {
       isEditing: false,
     };
 
-    let newState = Object.assign({}, oldState, {
+    const newState = Object.assign({}, oldState, {
       data: {
-        collections: [{ id: 1, self_test_results: selfTestData, protocol: "" }, { id: 2, protocol: "" }],
+        collections: [
+          { id: 1, self_test_results: selfTestData, protocol: "" },
+          { id: 2, protocol: "" },
+        ],
         protocols: [],
       },
       isFetching: false,

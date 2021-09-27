@@ -4,7 +4,7 @@ import customListDetails from "../customListDetails";
 import ActionCreator from "../../actions";
 
 describe("customListDetails reducer", () => {
-  let initState = {
+  const initState = {
     data: null,
     isFetching: false,
     isEditing: false,
@@ -20,21 +20,24 @@ describe("customListDetails reducer", () => {
   });
 
   it("handles CUSTOM_LIST_DETAILS_REQUEST", () => {
-    let action = { type: `${ActionCreator.CUSTOM_LIST_DETAILS}_REQUEST`, url: "test url" };
+    const action = {
+      type: `${ActionCreator.CUSTOM_LIST_DETAILS}_REQUEST`,
+      url: "test url",
+    };
 
     // start with empty state
-    let newState = Object.assign({}, initState, {
+    const newState = Object.assign({}, initState, {
       isFetching: true,
     });
     expect(customListDetails(initState, action)).to.deep.equal(newState);
   });
 
   it("handles CUSTOM_LIST_DETAILS_MORE_REQUEST", () => {
-    let action = {
+    const action = {
       type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_REQUEST`,
-      url: "test url"
+      url: "test url",
     };
-    let oldState = {
+    const oldState = {
       url: "test url",
       data: null,
       isFetching: false,
@@ -45,7 +48,7 @@ describe("customListDetails reducer", () => {
       isEditing: false,
     };
 
-    let newState = Object.assign({}, oldState, {
+    const newState = Object.assign({}, oldState, {
       isFetchingMoreEntries: true,
       isLoaded: false,
     });
@@ -54,24 +57,32 @@ describe("customListDetails reducer", () => {
   });
 
   it("handles CUSTOM_LIST_DETAILS_MORE_LOAD", () => {
-    let action = {
+    const action = {
       type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_LOAD`,
       data: {
         id: "1",
         url: "url",
-        books: [{ id: "4", title: "4" }, { id: "5", title: "5" }, { id: "6", title: "6" }],
+        books: [
+          { id: "4", title: "4" },
+          { id: "5", title: "5" },
+          { id: "6", title: "6" },
+        ],
         nextPageUrl: "nextpage?after=100",
         navigationLinks: [],
         lanes: [],
-      }
+      },
     };
-    let oldState = {
+    const oldState = {
       url: "test url",
       data: {
         id: "1",
         url: "url",
         title: "custom list",
-        books: [{ id: "1", title: "1" }, { id: "2", title: "2" }, { id: "3", title: "3" }],
+        books: [
+          { id: "1", title: "1" },
+          { id: "2", title: "2" },
+          { id: "3", title: "3" },
+        ],
         nextPageUrl: "nextpage?after=50",
         navigationLinks: [],
         lanes: [],
@@ -84,14 +95,18 @@ describe("customListDetails reducer", () => {
       isEditing: false,
     };
 
-    let newState = Object.assign({}, oldState, {
+    const newState = Object.assign({}, oldState, {
       data: {
         id: "1",
         url: "url",
         title: "custom list",
         books: [
-          { id: "1", title: "1" }, { id: "2", title: "2" }, { id: "3", title: "3" },
-          { id: "4", title: "4" }, { id: "5", title: "5" }, { id: "6", title: "6" },
+          { id: "1", title: "1" },
+          { id: "2", title: "2" },
+          { id: "3", title: "3" },
+          { id: "4", title: "4" },
+          { id: "5", title: "5" },
+          { id: "6", title: "6" },
         ],
         nextPageUrl: "nextpage?after=100",
         navigationLinks: [],

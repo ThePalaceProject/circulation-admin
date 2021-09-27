@@ -1,6 +1,10 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import EditableConfigList, { EditableConfigListStateProps, EditableConfigListDispatchProps, EditableConfigListOwnProps } from "./EditableConfigList";
+import EditableConfigList, {
+  EditableConfigListStateProps,
+  EditableConfigListDispatchProps,
+  EditableConfigListOwnProps,
+} from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
@@ -10,7 +14,10 @@ import IndividualAdminEditForm from "./IndividualAdminEditForm";
 /** Right panel for individual admin configuration on the system configuration page.
     Shows a list of current individual admins and allows create a new admin or
     editing or deleting an existing admin. */
-export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, IndividualAdminData> {
+export class IndividualAdmins extends EditableConfigList<
+  IndividualAdminsData,
+  IndividualAdminData
+> {
   EditForm = IndividualAdminEditForm;
   listDataKey = "individualAdmins";
   itemTypeName = "individual admin";
@@ -20,7 +27,7 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
 
   context: { admin: Admin };
   static contextTypes = {
-    admin: PropTypes.object.isRequired
+    admin: PropTypes.object.isRequired,
   };
 
   canDelete() {
@@ -28,13 +35,17 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
   }
 
   getHeaders() {
-    let h2 = this.props.settingUp ? "Welcome!" : "Individual admin configuration";
-    let h3 = this.props.settingUp ? "Set up your system admin account" : "Create a new individual admin";
+    const h2 = this.props.settingUp
+      ? "Welcome!"
+      : "Individual admin configuration";
+    const h3 = this.props.settingUp
+      ? "Set up your system admin account"
+      : "Create a new individual admin";
     return { h2, h3 };
   }
 
-  getClassName() {
-    let className = this.props.settingUp ? "set-up" : "";
+  getClassName(): string {
+    const className = this.props.settingUp ? "set-up" : "";
     return className;
   }
 
@@ -43,15 +54,18 @@ export class IndividualAdmins extends EditableConfigList<IndividualAdminsData, I
       // If we're setting up an admin for the first time, refresh the page
       // to go to login.
       if (this.props.settingUp) {
-       window.location.reload();
-       return;
-     }
+        window.location.reload();
+        return;
+      }
     });
   }
 }
 
 function mapStateToProps(state, ownProps) {
-  const data = Object.assign({}, state.editor.individualAdmins && state.editor.individualAdmins.data || {});
+  const data = Object.assign(
+    {},
+    (state.editor.individualAdmins && state.editor.individualAdmins.data) || {}
+  );
   if (state.editor.libraries && state.editor.libraries.data) {
     data.allLibraries = state.editor.libraries.data.libraries;
   }
@@ -59,23 +73,32 @@ function mapStateToProps(state, ownProps) {
   // create/edit form.
   return {
     data: data,
-    responseBody: state.editor.individualAdmins && state.editor.individualAdmins.successMessage,
+    responseBody:
+      state.editor.individualAdmins &&
+      state.editor.individualAdmins.successMessage,
     fetchError: state.editor.individualAdmins.fetchError,
     formError: state.editor.individualAdmins.formError,
-    isFetching: state.editor.individualAdmins.isFetching || state.editor.individualAdmins.isEditing
+    isFetching:
+      state.editor.individualAdmins.isFetching ||
+      state.editor.individualAdmins.isEditing,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  let actions = new ActionCreator(null, ownProps.csrfToken);
+  const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchIndividualAdmins()),
     editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data)),
-    deleteItem: (identifier: string | number) => dispatch(actions.deleteIndividualAdmin(identifier)),
+    deleteItem: (identifier: string | number) =>
+      dispatch(actions.deleteIndividualAdmin(identifier)),
   };
 }
 
-const ConnectedIndividualAdmins = connect<EditableConfigListStateProps<IndividualAdminsData>, EditableConfigListDispatchProps<IndividualAdminsData>, EditableConfigListOwnProps>(
+const ConnectedIndividualAdmins = connect<
+  EditableConfigListStateProps<IndividualAdminsData>,
+  EditableConfigListDispatchProps<IndividualAdminsData>,
+  EditableConfigListOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(IndividualAdmins);

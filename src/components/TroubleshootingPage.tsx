@@ -6,7 +6,6 @@ import Footer from "./Footer";
 import { State } from "../reducers/index";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 
-
 export interface TroubleshootingPageContext {
   editorStore: Store<State>;
   csrfToken: string;
@@ -17,24 +16,33 @@ export interface TroubleshootingPageState {
   subtab: string;
 }
 
-export interface TroubleshootingPageProps extends React.Props<TroubleshootingPageProps> {
+export interface TroubleshootingPageProps
+  extends React.Props<TroubleshootingPageProps> {
   params: {
     tab?: string;
     subtab?: string;
   };
 }
 
-export default class TroubleshootingPage extends React.Component<TroubleshootingPageProps, TroubleshootingPageState> {
+export default class TroubleshootingPage extends React.Component<
+  TroubleshootingPageProps,
+  TroubleshootingPageState
+> {
   context: TroubleshootingPageContext;
 
   static contextTypes: React.ValidationMap<TroubleshootingPageContext> = {
     editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired
+    csrfToken: PropTypes.string.isRequired,
   };
 
   CATEGORIES = {
-    "diagnostics": ["coverage_provider", "script", "monitor", "other"],
-    "self-tests": ["collections", "patronAuthServices", "searchServices", "metadataServices"]
+    diagnostics: ["coverage_provider", "script", "monitor", "other"],
+    "self-tests": [
+      "collections",
+      "patronAuthServices",
+      "searchServices",
+      "metadataServices",
+    ],
   };
 
   constructor(props) {
@@ -43,15 +51,18 @@ export default class TroubleshootingPage extends React.Component<Troubleshooting
     this.goToTab = this.goToTab.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     document.title = "Circulation Manager - Troubleshooting";
   }
 
   render(): JSX.Element {
-    let tab = this.props.params.tab || this.state.tab;
+    const tab = this.props.params.tab || this.state.tab;
     let subtab = this.props.params.subtab || this.state.subtab;
-    subtab = this.CATEGORIES[tab].indexOf(subtab) >= 0 ? subtab : this.CATEGORIES[tab][0];
-    return(
+    subtab =
+      this.CATEGORIES[tab].indexOf(subtab) >= 0
+        ? subtab
+        : this.CATEGORIES[tab][0];
+    return (
       <div className="troubleshooting-page">
         <Header />
         <div className="body">
@@ -72,5 +83,4 @@ export default class TroubleshootingPage extends React.Component<Troubleshooting
   goToTab(tab: string) {
     this.setState({ tab, subtab: this.props.params.subtab });
   }
-
 }

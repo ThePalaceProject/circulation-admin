@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { expect } from "chai";
 import { stub } from "sinon";
 import * as PropTypes from "prop-types";
@@ -50,7 +49,7 @@ describe("Header", () => {
       let select = wrapper.find(EditableInput);
       expect(select.length).to.equal(0);
 
-      let libraries = [
+      const libraries = [
         { short_name: "nypl", name: "NYPL" },
         { short_name: "bpl" },
       ];
@@ -86,17 +85,17 @@ describe("Header", () => {
 
       expect(navItems.length).to.equal(3);
 
-      let mainNavItem = navItems.at(0);
+      const mainNavItem = navItems.at(0);
       expect(mainNavItem.prop("href")).to.contain("/nypl%2Fgroups");
       expect(mainNavItem.children().text()).to.equal("Catalog");
 
-      let complaintsLink = navItems.at(1);
+      const complaintsLink = navItems.at(1);
       expect(complaintsLink.prop("href")).to.contain(
         "/nypl%2Fadmin%2Fcomplaints"
       );
       expect(complaintsLink.children().text()).to.equal("Complaints");
 
-      let hiddenLink = navItems.at(2);
+      const hiddenLink = navItems.at(2);
       expect(hiddenLink.prop("href")).to.contain("/nypl%2Fadmin%2Fsuppressed");
       expect(hiddenLink.children().text()).to.equal("Hidden Books");
 
@@ -109,11 +108,11 @@ describe("Header", () => {
       let links = wrapper.find(Link);
       expect(links.length).to.equal(5);
 
-      let listsLink = links.at(0);
+      const listsLink = links.at(0);
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
       expect(listsLink.children().text()).to.equal("Lists");
 
-      let lanesLink = links.at(1);
+      const lanesLink = links.at(1);
       expect(lanesLink.prop("to")).to.equal("/admin/web/lanes/nypl");
       expect(lanesLink.children().text()).to.equal("Lanes");
 
@@ -121,7 +120,7 @@ describe("Header", () => {
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
 
-      let patronManagerLink = links.at(3);
+      const patronManagerLink = links.at(3);
       expect(patronManagerLink.prop("to")).to.equal("/admin/web/patrons/nypl");
       expect(patronManagerLink.children().text()).to.equal("Patrons");
 
@@ -142,18 +141,18 @@ describe("Header", () => {
     it("shows sitewide, system configuration, and non-catalog library links for librarian", () => {
       wrapper.setContext({ library: () => "nypl", admin: librarian });
 
-      let links = wrapper.find(Link);
+      const links = wrapper.find(Link);
       expect(links.length).to.equal(3);
 
-      let listsLink = links.at(0);
+      const listsLink = links.at(0);
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
       expect(listsLink.children().text()).to.equal("Lists");
 
-      let dashboardLink = links.at(1);
+      const dashboardLink = links.at(1);
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
 
-      let sysConfigLink = links.at(2);
+      const sysConfigLink = links.at(2);
       expect(sysConfigLink.prop("to")).to.equal("/admin/web/config/");
       expect(sysConfigLink.children().text()).to.equal("System Configuration");
     });
@@ -164,7 +163,7 @@ describe("Header", () => {
         "admin@nypl.org"
       );
       wrapper.setContext({ library: () => "nypl", admin: admin, router });
-      let emailBtn = wrapper.find(".account-dropdown-toggle").render();
+      const emailBtn = wrapper.find(".account-dropdown-toggle").render();
       expect(emailBtn.length).to.equal(1);
       expect(emailBtn.text()).to.contain("admin@nypl.org");
     });
@@ -172,7 +171,7 @@ describe("Header", () => {
     describe("patron manager display", () => {
       it("does not show Patron Manager link for librarian", () => {
         wrapper.setContext({ library: () => "nypl", admin: librarian });
-        let links = wrapper.find(Link);
+        const links = wrapper.find(Link);
         expect(links.length).to.equal(3);
         links.forEach((link) => {
           expect(link.children().text()).to.not.equal("Patrons");
@@ -180,15 +179,15 @@ describe("Header", () => {
       });
       it("shows Patron Manager link for library manager", () => {
         wrapper.setContext({ library: () => "nypl", admin: libraryManager });
-        let links = wrapper.find(Link);
+        const links = wrapper.find(Link);
         expect(links.length).to.equal(5);
-        let patronManagerLink = links.at(3);
+        const patronManagerLink = links.at(3);
         expect(patronManagerLink.children().text()).to.equal("Patrons");
       });
       it("shows Patron Manager link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
-        let links = wrapper.find(Link);
-        let patronManagerLink = links.at(3);
+        const links = wrapper.find(Link);
+        const patronManagerLink = links.at(3);
         expect(links.length).to.equal(6);
         expect(patronManagerLink.children().text()).to.equal("Patrons");
       });
@@ -196,7 +195,7 @@ describe("Header", () => {
     describe("troubleshooting display", () => {
       it("does not show Troubleshooting link for librarian", () => {
         wrapper.setContext({ library: () => "nypl", admin: librarian });
-        let links = wrapper.find(Link);
+        const links = wrapper.find(Link);
         expect(links.length).to.equal(3);
         links.forEach((link) => {
           expect(link.children().text()).to.not.equal("Troubleshooting");
@@ -204,7 +203,7 @@ describe("Header", () => {
       });
       it("does not show Troubleshooting link for library manager", () => {
         wrapper.setContext({ library: () => "nypl", admin: libraryManager });
-        let links = wrapper.find(Link);
+        const links = wrapper.find(Link);
         expect(links.length).to.equal(5);
         links.forEach((link) => {
           expect(link.children().text()).to.not.equal("Troubleshooting");
@@ -212,7 +211,7 @@ describe("Header", () => {
       });
       it("shows Troubleshooting link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
-        let links = wrapper.find(Link);
+        const links = wrapper.find(Link);
         expect(links.length).to.equal(6);
         expect(links.at(5).children().text()).to.equal("Troubleshooting");
       });
@@ -221,7 +220,7 @@ describe("Header", () => {
 
   describe("behavior", () => {
     it("fetches libraries on mount", () => {
-      let fetchLibraries = stub();
+      const fetchLibraries = stub();
       wrapper = shallow(<Header fetchLibraries={fetchLibraries} />, {
         context: { admin: libraryManager },
       });
@@ -229,11 +228,11 @@ describe("Header", () => {
     });
 
     it("changes library", async () => {
-      let libraries = [
+      const libraries = [
         { short_name: "nypl", name: "NYPL" },
         { short_name: "bpl" },
       ];
-      let fullContext = Object.assign({}, context, {
+      const fullContext = Object.assign({}, context, {
         pathFor: stub().returns("url"),
         router,
         admin: libraryManager,
@@ -242,8 +241,8 @@ describe("Header", () => {
         context: fullContext,
         childContextTypes,
       });
-      let select = wrapper.find("select") as any;
-      let selectElement = select.getDOMNode();
+      const select = wrapper.find("select") as any;
+      const selectElement = select.getDOMNode();
       selectElement.value = "bpl";
       select.simulate("change");
 
@@ -259,14 +258,14 @@ describe("Header", () => {
         "admin@nypl.org"
       );
       context = { library: () => "nypl", admin, router };
-      let fullContext = Object.assign({}, context, {
+      const fullContext = Object.assign({}, context, {
         pathFor: stub().returns("url"),
         router,
         admin,
       });
       wrapper = mount(<Header />, { context: fullContext, childContextTypes });
 
-      let toggle = wrapper.find(".account-dropdown-toggle").hostNodes();
+      const toggle = wrapper.find(".account-dropdown-toggle").hostNodes();
       let dropdownItems = wrapper.find("ul.dropdown-menu li");
       let dropdownLinks = wrapper.find("ul.dropdown-menu li a");
       expect(dropdownItems.length).to.equal(0);
@@ -278,14 +277,14 @@ describe("Header", () => {
       expect(dropdownItems.length).to.equal(3);
       expect(dropdownLinks.length).to.equal(2);
 
-      let loggedInAs = dropdownItems.at(0);
+      const loggedInAs = dropdownItems.at(0);
       expect(loggedInAs.text()).to.equal("Logged in as a librarian");
-      let changePassword = dropdownLinks.at(0);
+      const changePassword = dropdownLinks.at(0);
       expect(changePassword.parent().prop("to")).to.equal(
         "/admin/web/account/"
       );
       // The first anchor element is from the Link component.
-      let signOut = dropdownLinks.find("a").at(1);
+      const signOut = dropdownLinks.find("a").at(1);
       expect(signOut.prop("href")).to.equal("/admin/sign_out");
 
       toggle.simulate("click");
@@ -295,7 +294,7 @@ describe("Header", () => {
   });
 
   it("displays the user's level of permissions", () => {
-    let permissions = (args) =>
+    const permissions = (args) =>
       wrapper
         .instance()
         .displayPermissions(...args)

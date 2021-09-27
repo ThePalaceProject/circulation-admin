@@ -7,11 +7,13 @@ import LibraryRegistration from "./LibraryRegistration";
 /** Form for editing discovery services on the discovery service configuration tab.
     Includes the same form as other services but an addition section with a list
     of libraries and their registration statuses and buttons to register them. */
-export default class ServiceWithRegistrationsEditForm<T extends ServicesWithRegistrationsData> extends ServiceEditForm<T> {
+export default class ServiceWithRegistrationsEditForm<
+  T extends ServicesWithRegistrationsData
+> extends ServiceEditForm<T> {
   context: { registerLibrary: (library, registration_stage) => void };
 
   static contextTypes = {
-    registerLibrary: PropTypes.func
+    registerLibrary: PropTypes.func,
   };
 
   render(): JSX.Element {

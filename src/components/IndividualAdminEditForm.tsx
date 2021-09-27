@@ -29,12 +29,15 @@ export interface IndividualAdminEditFormContext {
 }
 
 /** Form for editing an individual admin from the individual admin configuration page. */
-export default class IndividualAdminEditForm extends React.Component<IndividualAdminEditFormProps, IndividualAdminEditFormState> {
+export default class IndividualAdminEditForm extends React.Component<
+  IndividualAdminEditFormProps,
+  IndividualAdminEditFormState
+> {
   context: IndividualAdminEditFormContext;
 
   static contextTypes: React.ValidationMap<IndividualAdminEditFormContext> = {
     settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>
+    admin: PropTypes.object.isRequired as React.Validator<Admin>,
   };
   private emailRef = React.createRef<EditableInput>();
   private passwordRef = React.createRef<EditableInput>();
@@ -47,7 +50,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   constructor(props) {
     super(props);
     this.state = {
-      admin: new Admin(this.props.item && this.props.item.roles || [])
+      admin: new Admin((this.props.item && this.props.item.roles) || []),
     };
     this.isSelected = this.isSelected.bind(this);
     this.handleRoleChange = this.handleRoleChange.bind(this);
@@ -57,7 +60,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     this.renderRoleForm = this.renderRoleForm.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.item && nextProps.item !== this.props.item) {
       this.setState({ admin: new Admin(nextProps.item.roles || []) });
     }
@@ -69,8 +72,8 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         this.managerAllRef,
         this.librarianAllRef,
         this.libraryManagerRef,
-        this.librarianRef
-      ].forEach(ref => clearForm(ref));
+        this.librarianRef,
+      ].forEach((ref) => clearForm(ref));
     }
   }
 
@@ -80,7 +83,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         onSubmit={this.submit}
         className="edit-form"
         disableButton={this.props.disabled}
-        content = {[
+        content={[
           <Panel
             headerText="Admin Information"
             id="admin-info"
@@ -90,15 +93,16 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             collapsible={!this.context.settingUp}
             onEnter={this.submit}
           />,
-          !this.context.settingUp &&
-          <Panel
-            id="admin-roles"
-            headerText="Admin Roles"
-            key="roles"
-            content={this.renderRoleForm()}
-            openByDefault={true}
-            onEnter={this.submit}
-          />
+          !this.context.settingUp && (
+            <Panel
+              id="admin-roles"
+              headerText="Admin Roles"
+              key="roles"
+              content={this.renderRoleForm()}
+              openByDefault={true}
+              onEnter={this.submit}
+            />
+          ),
         ]}
       />
     );
@@ -120,18 +124,18 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
           value={this.props.item && this.props.item.email}
           error={this.props.error}
         />
-        { this.canChangePassword() &&
-            <EditableInput
-              elementType="input"
-              type="text"
-              disabled={this.props.disabled}
-              name="password"
-              label="Password"
-              ref={this.passwordRef}
-              required={this.context.settingUp}
-              error={this.props.error}
-            />
-          }
+        {this.canChangePassword() && (
+          <EditableInput
+            elementType="input"
+            type="text"
+            disabled={this.props.disabled}
+            name="password"
+            label="Password"
+            ref={this.passwordRef}
+            required={this.context.settingUp}
+            error={this.props.error}
+          />
+        )}
       </fieldset>
     );
   }
@@ -156,14 +160,14 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
               <th></th>
               <th>
                 <EditableInput
-                   elementType="input"
-                   type="checkbox"
-                   disabled={this.isDisabled("manager-all")}
-                   name="manager-all"
-                   ref={this.managerAllRef}
-                   label="Library Manager"
-                   checked={this.isSelected("manager-all")}
-                   onChange={() => this.handleRoleChange("manager-all")}
+                  elementType="input"
+                  type="checkbox"
+                  disabled={this.isDisabled("manager-all")}
+                  name="manager-all"
+                  ref={this.managerAllRef}
+                  label="Library Manager"
+                  checked={this.isSelected("manager-all")}
+                  onChange={() => this.handleRoleChange("manager-all")}
                 />
               </th>
               <th>
@@ -181,39 +185,46 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             </tr>
           </thead>
           <tbody>
-            { this.props.data && this.props.data.allLibraries && this.props.data.allLibraries.map(library =>
-              <tr key={library.short_name}>
-                <td>
-                  {library.name}
-                </td>
-                <td>
-                  <EditableInput
-                    elementType="input"
-                    type="checkbox"
-                    disabled={this.isDisabled("manager", library.short_name)}
-                    name={"manager-" + library.short_name}
-                    ref={this.libraryManagerRef}
-                    label=""
-                    aria-label={`Library Manager for ${library.short_name}`}
-                    checked={this.isSelected("manager", library.short_name)}
-                    onChange={() => this.handleRoleChange("manager", library.short_name)}
-                  />
-                </td>
-                <td>
-                  <EditableInput
-                    elementType="input"
-                    type="checkbox"
-                    disabled={this.isDisabled("librarian", library.short_name)}
-                    name={"librarian-" + library.short_name}
-                    ref={this.librarianRef}
-                    label=""
-                    aria-label={`Librarian for ${library.short_name}`}
-                    checked={this.isSelected("librarian", library.short_name)}
-                    onChange={() => this.handleRoleChange("librarian", library.short_name)}
-                  />
-                </td>
-              </tr>
-            ) }
+            {this.props.data &&
+              this.props.data.allLibraries &&
+              this.props.data.allLibraries.map((library) => (
+                <tr key={library.short_name}>
+                  <td>{library.name}</td>
+                  <td>
+                    <EditableInput
+                      elementType="input"
+                      type="checkbox"
+                      disabled={this.isDisabled("manager", library.short_name)}
+                      name={"manager-" + library.short_name}
+                      ref={this.libraryManagerRef}
+                      label=""
+                      aria-label={`Library Manager for ${library.short_name}`}
+                      checked={this.isSelected("manager", library.short_name)}
+                      onChange={() =>
+                        this.handleRoleChange("manager", library.short_name)
+                      }
+                    />
+                  </td>
+                  <td>
+                    <EditableInput
+                      elementType="input"
+                      type="checkbox"
+                      disabled={this.isDisabled(
+                        "librarian",
+                        library.short_name
+                      )}
+                      name={"librarian-" + library.short_name}
+                      ref={this.librarianRef}
+                      label=""
+                      aria-label={`Librarian for ${library.short_name}`}
+                      checked={this.isSelected("librarian", library.short_name)}
+                      onChange={() =>
+                        this.handleRoleChange("librarian", library.short_name)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </fieldset>
@@ -227,7 +238,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
     if (this.props.item.roles.length === 0) {
       return this.context.admin.isLibraryManagerOfSomeLibrary();
     }
-    let targetAdmin = new Admin(this.props.item.roles || []);
+    const targetAdmin = new Admin(this.props.item.roles || []);
     if (targetAdmin.isSystemAdmin()) {
       return this.context.admin.isSystemAdmin();
     } else if (targetAdmin.isSitewideLibraryManager()) {
@@ -275,24 +286,42 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
       if (this.isSelected(role)) {
         this.setState(Object.assign({}, this.state, { admin: new Admin([]) }));
       } else {
-        this.setState(Object.assign({}, this.state, { admin: new Admin([{ role }]) }));
+        this.setState(
+          Object.assign({}, this.state, { admin: new Admin([{ role }]) })
+        );
       }
     } else if (role === "manager-all") {
       if (this.isSelected(role)) {
-        this.setState(Object.assign({}, this.state, { admin: new Admin([{ role: "librarian-all" }]) }));
+        this.setState(
+          Object.assign({}, this.state, {
+            admin: new Admin([{ role: "librarian-all" }]),
+          })
+        );
       } else {
-        this.setState(Object.assign({}, this.state, { admin: new Admin([{ role: "manager-all" }]) }));
+        this.setState(
+          Object.assign({}, this.state, {
+            admin: new Admin([{ role: "manager-all" }]),
+          })
+        );
       }
     } else if (role === "librarian-all") {
       if (this.isSelected(role)) {
         // Remove librarian-all role, but leave manager roles.
-        const roles = this.state.admin.roles.filter(stateRole => stateRole.role === "manager");
-        this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
+        const roles = this.state.admin.roles.filter(
+          (stateRole) => stateRole.role === "manager"
+        );
+        this.setState(
+          Object.assign({}, this.state, { admin: new Admin(roles) })
+        );
       } else {
         // Remove old librarian roles, but leave manager roles.
-        const roles = this.state.admin.roles.filter(stateRole => stateRole.role === "manager");
+        const roles = this.state.admin.roles.filter(
+          (stateRole) => stateRole.role === "manager"
+        );
         roles.push({ role: "librarian-all" });
-        this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
+        this.setState(
+          Object.assign({}, this.state, { admin: new Admin(roles) })
+        );
       }
     } else if (role === "manager") {
       if (this.isSelected(role, library)) {
@@ -307,22 +336,32 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
             }
           }
           roles.push({ role: "librarian-all" });
-          this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
+          this.setState(
+            Object.assign({}, this.state, { admin: new Admin(roles) })
+          );
         } else {
           // Remove the manager role for this library and add the librarian role,
           // unless librarian-all is already selected.
-          const roles = this.state.admin.roles.filter(stateRole => stateRole.library !== library);
+          const roles = this.state.admin.roles.filter(
+            (stateRole) => stateRole.library !== library
+          );
           if (!this.isSelected("librarian-all")) {
             roles.push({ role: "librarian", library: library });
           }
-          this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
+          this.setState(
+            Object.assign({}, this.state, { admin: new Admin(roles) })
+          );
         }
       } else {
         // Add the manager role for the library, and remove the librarian role if it was
         // there.
-        const roles = this.state.admin.roles.filter(stateRole => stateRole.library !== library);
+        const roles = this.state.admin.roles.filter(
+          (stateRole) => stateRole.library !== library
+        );
         roles.push({ role: "manager", library: library });
-        this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
+        this.setState(
+          Object.assign({}, this.state, { admin: new Admin(roles) })
+        );
       }
     } else if (role === "librarian") {
       if (this.isSelected(role, library)) {
@@ -330,31 +369,44 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
         // selected. If any 'all' roles were selected, remove them and add roles for
         // individual libraries.
         if (this.isSelected("librarian-all")) {
-           if (this.isSelected("manager-all")) {
-             const roles = [];
-             for (const l of this.props.data.allLibraries || []) {
-               if (l.short_name !== library) {
-                 roles.push({ role: "manager", library: l.short_name });
-               }
-             }
-             this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
-           } else if (this.isSelected("librarian-all")) {
-             const roles = this.state.admin.roles.filter(stateRole => (stateRole.role === "manager" && stateRole.library !== library));
-             for (const l of this.props.data.allLibraries || []) {
-               if (l.short_name !== library) {
-                 roles.push({ role: "librarian", library: l.short_name });
-               }
-             }
-             this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
-           }
+          if (this.isSelected("manager-all")) {
+            const roles = [];
+            for (const l of this.props.data.allLibraries || []) {
+              if (l.short_name !== library) {
+                roles.push({ role: "manager", library: l.short_name });
+              }
+            }
+            this.setState(
+              Object.assign({}, this.state, { admin: new Admin(roles) })
+            );
+          } else if (this.isSelected("librarian-all")) {
+            const roles = this.state.admin.roles.filter(
+              (stateRole) =>
+                stateRole.role === "manager" && stateRole.library !== library
+            );
+            for (const l of this.props.data.allLibraries || []) {
+              if (l.short_name !== library) {
+                roles.push({ role: "librarian", library: l.short_name });
+              }
+            }
+            this.setState(
+              Object.assign({}, this.state, { admin: new Admin(roles) })
+            );
+          }
         } else {
-          const roles = this.state.admin.roles.filter(stateRole => stateRole.library !== library);
-          this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
+          const roles = this.state.admin.roles.filter(
+            (stateRole) => stateRole.library !== library
+          );
+          this.setState(
+            Object.assign({}, this.state, { admin: new Admin(roles) })
+          );
         }
       } else {
-          const roles = this.state.admin.roles;
-          roles.push({ role, library });
-          this.setState(Object.assign({}, this.state, { admin: new Admin(roles) }));
+        const roles = this.state.admin.roles;
+        roles.push({ role, library });
+        this.setState(
+          Object.assign({}, this.state, { admin: new Admin(roles) })
+        );
       }
     }
   }
@@ -370,8 +422,7 @@ export default class IndividualAdminEditForm extends React.Component<IndividualA
   }
 
   async submit(data: FormData) {
-    let modifiedData = this.handleData(data);
+    const modifiedData = this.handleData(data);
     await this.props.save(modifiedData);
   }
-
 }

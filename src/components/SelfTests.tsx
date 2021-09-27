@@ -62,7 +62,7 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
     this.props.getSelfTests();
   }
 
-  componentWillReceiveProps(nextProps: SelfTestsProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: SelfTestsProps) {
     const newTime =
       nextProps.item &&
       nextProps.item.self_test_results &&

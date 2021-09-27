@@ -20,7 +20,11 @@ export interface ExtraActions<T> {
   [key: string]: (state: FetchEditState<T>, action: any) => FetchEditState<T>;
 }
 
-export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: ExtraActions<T>): FetchEditReducer<T> => {
+export default <T>(
+  fetchPrefix: string,
+  editPrefix?: string,
+  extraActions?: ExtraActions<T>
+): FetchEditReducer<T> => {
   const initialState: FetchEditState<T> = {
     data: null,
     isFetching: false,
@@ -29,10 +33,13 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
     formError: null,
     isLoaded: false,
     responseBody: null,
-    successMessage: null
+    successMessage: null,
   };
 
-  const fetchEditReducer = (state: FetchEditState<T> = initialState, action): FetchEditState<T> => {
+  const fetchEditReducer = (
+    state: FetchEditState<T> = initialState,
+    action
+  ): FetchEditState<T> => {
     switch (action.type) {
       case `${fetchPrefix}_${ActionCreator.REQUEST}`:
         return Object.assign({}, state, {
@@ -41,7 +48,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
           isFetching: true,
           fetchError: null,
           formError: null,
-          responseBody: null
+          responseBody: null,
         });
 
       case `${fetchPrefix}_${ActionCreator.FAILURE}`:
@@ -49,21 +56,21 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
           fetchError: action.error,
           formError: null,
           isFetching: false,
-          isLoaded: true
+          isLoaded: true,
         });
 
       case `${fetchPrefix}_${ActionCreator.SUCCESS}`:
         return Object.assign({}, state, {
           fetchError: null,
           formError: null,
-          isFetching: false
+          isFetching: false,
         });
 
       case `${fetchPrefix}_${ActionCreator.LOAD}`:
         return Object.assign({}, state, {
           data: action.data,
           isFetching: false,
-          isLoaded: true
+          isLoaded: true,
         });
 
       default:
@@ -84,7 +91,7 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
                 fetchError: null,
                 formError: null,
                 responseBody: null,
-                successMessage: null
+                successMessage: null,
               });
 
             case `${editPrefix}_${ActionCreator.SUCCESS}`:
@@ -93,20 +100,20 @@ export default<T> (fetchPrefix: string, editPrefix?: string, extraActions?: Extr
                 fetchError: null,
                 formError: null,
                 responseBody: null,
-                successMessage: null
+                successMessage: null,
               });
 
             case `${editPrefix}_${ActionCreator.FAILURE}`:
               return Object.assign({}, state, {
                 isEditing: false,
-                formError: action.error
+                formError: action.error,
               });
 
             case `${editPrefix}_${ActionCreator.LOAD}`:
               return Object.assign({}, state, {
                 responseBody: action.data,
                 successMessage: action.data,
-                formError: null
+                formError: null,
               });
 
             default:

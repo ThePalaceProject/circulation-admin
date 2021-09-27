@@ -28,9 +28,9 @@ describe("ConfigTabContainer", () => {
   let push;
   let store;
 
-  const systemAdmin = new Admin([{ "role": "system" }]);
-  const libraryManagerA = new Admin([{ "role": "manager", "library": "a" }]);
-  const sitewideLibrarian = new Admin([{ "role": "librarian-all" }]);
+  const systemAdmin = new Admin([{ role: "system" }]);
+  const libraryManagerA = new Admin([{ role: "manager", library: "a" }]);
+  const sitewideLibrarian = new Admin([{ role: "librarian-all" }]);
 
   describe("for system admin", () => {
     beforeEach(() => {
@@ -45,14 +45,14 @@ describe("ConfigTabContainer", () => {
           store={store}
           editOrCreate="edit"
           identifier="identifier"
-          />,
+        />,
         { context }
       );
     });
 
     it("shows tabs", () => {
-      let links = wrapper.find("ul.nav-tabs").find("a");
-      let linkTexts = links.map(link => link.text());
+      const links = wrapper.find("ul.nav-tabs").find("a");
+      const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Libraries");
       expect(linkTexts).to.contain("Admins");
       expect(linkTexts).to.contain("Collections");
@@ -66,11 +66,19 @@ describe("ConfigTabContainer", () => {
 
     it("shows components", () => {
       const componentClasses = [
-        Libraries, IndividualAdmins, Collections,
-        AdminAuthServices, PatronAuthServices, SitewideSettings,
-        MetadataServices, AnalyticsServices, CDNServices,
-        SearchServices, StorageServices, CatalogServices,
-        DiscoveryServices
+        Libraries,
+        IndividualAdmins,
+        Collections,
+        AdminAuthServices,
+        PatronAuthServices,
+        SitewideSettings,
+        MetadataServices,
+        AnalyticsServices,
+        CDNServices,
+        SearchServices,
+        StorageServices,
+        CatalogServices,
+        DiscoveryServices,
       ];
       for (const componentClass of componentClasses) {
         const component = wrapper.find(componentClass);
@@ -81,8 +89,10 @@ describe("ConfigTabContainer", () => {
     });
 
     it("uses router to navigate when tab is clicked", () => {
-      let tabs = wrapper.find("ul.nav-tabs").find("a");
-      tabs.at(1).simulate("click", { target : { dataset: { tabkey: "collections" } } });
+      const tabs = wrapper.find("ul.nav-tabs").find("a");
+      tabs
+        .at(1)
+        .simulate("click", { target: { dataset: { tabkey: "collections" } } });
       expect(push.callCount).to.equal(1);
       expect(push.args[0][0]).to.equal("/admin/web/config/collections");
     });
@@ -101,14 +111,14 @@ describe("ConfigTabContainer", () => {
           store={store}
           editOrCreate="edit"
           identifier="identifier"
-          />,
+        />,
         { context }
       );
     });
 
     it("shows tabs", () => {
-      let links = wrapper.find("ul.nav-tabs").find("a");
-      let linkTexts = links.map(link => link.text());
+      const links = wrapper.find("ul.nav-tabs").find("a");
+      const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Libraries");
       expect(linkTexts).not.to.contain("Admins");
       expect(linkTexts).to.contain("Analytics");
@@ -122,9 +132,7 @@ describe("ConfigTabContainer", () => {
     });
 
     it("shows components", () => {
-      const expectedComponentClasses = [
-        Libraries, AnalyticsServices
-      ];
+      const expectedComponentClasses = [Libraries, AnalyticsServices];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
         expect(component.props().csrfToken).to.equal("token");
@@ -133,10 +141,17 @@ describe("ConfigTabContainer", () => {
       }
 
       const hiddenComponentClasses = [
-        Collections, AdminAuthServices, PatronAuthServices, SitewideSettings,
-        MetadataServices, CDNServices,
-        SearchServices, StorageServices, CatalogServices,
-        DiscoveryServices, IndividualAdmins
+        Collections,
+        AdminAuthServices,
+        PatronAuthServices,
+        SitewideSettings,
+        MetadataServices,
+        CDNServices,
+        SearchServices,
+        StorageServices,
+        CatalogServices,
+        DiscoveryServices,
+        IndividualAdmins,
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);
@@ -158,23 +173,21 @@ describe("ConfigTabContainer", () => {
           store={store}
           editOrCreate="edit"
           identifier="identifier"
-          />,
+        />,
         { context }
       );
     });
 
     it("shows tabs", () => {
-      let links = wrapper.find("ul.nav-tabs").find("a");
+      const links = wrapper.find("ul.nav-tabs").find("a");
       expect(links.length).to.equal(2);
-      let linkTexts = links.map(link => link.text());
+      const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Libraries");
       expect(linkTexts).to.contain("Analytics");
     });
 
     it("shows components", () => {
-      const expectedComponentClasses = [
-        Libraries, AnalyticsServices
-      ];
+      const expectedComponentClasses = [Libraries, AnalyticsServices];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
         expect(component.props().csrfToken).to.equal("token");
@@ -182,10 +195,17 @@ describe("ConfigTabContainer", () => {
         expect(component.props().identifier).to.equal("identifier");
       }
       const hiddenComponentClasses = [
-        Collections, AdminAuthServices, PatronAuthServices, SitewideSettings,
-        MetadataServices, CDNServices,
-        SearchServices, StorageServices, CatalogServices,
-        DiscoveryServices, IndividualAdmins
+        Collections,
+        AdminAuthServices,
+        PatronAuthServices,
+        SitewideSettings,
+        MetadataServices,
+        CDNServices,
+        SearchServices,
+        StorageServices,
+        CatalogServices,
+        DiscoveryServices,
+        IndividualAdmins,
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);

@@ -10,37 +10,40 @@ export interface BookCoverPreviewState {
 const initialState: BookCoverPreviewState = {
   data: null,
   isFetching: false,
-  fetchError: null
+  fetchError: null,
 };
 
-export default (state: BookCoverPreviewState = initialState, action): BookCoverPreviewState => {
+export default (
+  state: BookCoverPreviewState = initialState,
+  action
+): BookCoverPreviewState => {
   switch (action.type) {
     case `${ActionCreator.PREVIEW_BOOK_COVER}_${ActionCreator.REQUEST}`:
       return Object.assign({}, state, {
         data: null,
         isFetching: true,
-        fetchError: null
+        fetchError: null,
       });
 
     case `${ActionCreator.PREVIEW_BOOK_COVER}_${ActionCreator.FAILURE}`:
       return Object.assign({}, state, {
         data: null,
         isFetching: false,
-        fetchError: action.error
+        fetchError: action.error,
       });
 
     case `${ActionCreator.PREVIEW_BOOK_COVER}_${ActionCreator.LOAD}`:
       return Object.assign({}, state, {
         data: action.data,
         isFetching: false,
-        fetchError: null
+        fetchError: null,
       });
 
     case `${ActionCreator.PREVIEW_BOOK_COVER}_${ActionCreator.CLEAR}`:
       return Object.assign({}, state, {
         data: null,
         isFetching: false,
-        fetchError: null
+        fetchError: null,
       });
 
     default:

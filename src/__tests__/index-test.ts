@@ -5,14 +5,15 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { mount } from "enzyme";
 
-const CirculationWeb = require("../index");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const CirculationAdmin = require("../index");
 import SetupPage from "../components/SetupPage";
 import { Router } from "react-router";
 
-describe("CirculationWeb", () => {
+describe("CirculationAdmin", () => {
   it("renders Setup", () => {
     const renderSpy = spy(ReactDOM, "render");
-    new CirculationWeb({ settingUp: true });
+    new CirculationAdmin({ settingUp: true });
     expect(renderSpy.callCount).to.equal(1);
     const component = renderSpy.args[0][0];
     const wrapper = mount(component);
@@ -23,7 +24,7 @@ describe("CirculationWeb", () => {
 
   it("renders Router", () => {
     const renderSpy = spy(ReactDOM, "render");
-    new CirculationWeb({});
+    new CirculationAdmin({});
     expect(renderSpy.callCount).to.equal(1);
     const component = renderSpy.args[0][0];
     const wrapper = mount(component);

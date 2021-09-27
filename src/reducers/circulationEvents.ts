@@ -13,7 +13,7 @@ const initialState: CirculationEventsState = {
   data: null,
   isFetching: false,
   fetchError: null,
-  isLoaded: false
+  isLoaded: false,
 };
 
 export default (state: CirculationEventsState = initialState, action) => {
@@ -21,21 +21,21 @@ export default (state: CirculationEventsState = initialState, action) => {
     case ActionCreator.CIRCULATION_EVENTS_REQUEST:
       return Object.assign({}, state, {
         isFetching: true,
-        fetchError: null
+        fetchError: null,
       });
 
     case ActionCreator.CIRCULATION_EVENTS_LOAD:
       return Object.assign({}, state, {
         data: action.data.circulation_events,
         isFetching: false,
-        isLoaded: true
+        isLoaded: true,
       });
 
     case ActionCreator.CIRCULATION_EVENTS_FAILURE:
       return Object.assign({}, state, {
         fetchError: action.error,
         isFetching: false,
-        isLoaded: true
+        isLoaded: true,
       });
 
     default:

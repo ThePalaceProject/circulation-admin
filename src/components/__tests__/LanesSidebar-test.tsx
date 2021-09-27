@@ -14,13 +14,23 @@ describe("LanesSidebar", () => {
   let drag;
   let findLaneForIdentifier;
   let findParentOfLane;
-  let subsublaneData: LaneData = {
-    id: 3, display_name: "SubSublane 1", visible: false, count: 2, sublanes: [],
-    custom_list_ids: [2], inherit_parent_restrictions: false
+  const subsublaneData: LaneData = {
+    id: 3,
+    display_name: "SubSublane 1",
+    visible: false,
+    count: 2,
+    sublanes: [],
+    custom_list_ids: [2],
+    inherit_parent_restrictions: false,
   };
-  let sublaneData: LaneData = {
-    id: 2, display_name: "Sublane 1", visible: false, count: 3, sublanes: [subsublaneData],
-    custom_list_ids: [2], inherit_parent_restrictions: false
+  const sublaneData: LaneData = {
+    id: 2,
+    display_name: "Sublane 1",
+    visible: false,
+    count: 3,
+    sublanes: [subsublaneData],
+    custom_list_ids: [2],
+    inherit_parent_restrictions: false,
   };
   let lanesData: LaneData[];
 
@@ -30,21 +40,35 @@ describe("LanesSidebar", () => {
     return wrapper.find("ul.droppable").at(0).children();
   };
   // Returns all the children lanes (including grandchildren) from the given parent lane.
-  let allChildren = (lane) => {
+  const allChildren = (lane) => {
     return lane.find("li .lane-parent");
   };
   // Returns all the draggable children lanes
   // (including grandchildren) from the given parent lane.
-  let draggableChildren = (lane) => {
+  const draggableChildren = (lane) => {
     return lane.find("li .lane-parent .draggable");
   };
 
   beforeEach(() => {
     lanesData = [
-      { id: 1, display_name: "Top Lane 1", visible: true, count: 5,
-      sublanes: [sublaneData], custom_list_ids: [1], inherit_parent_restrictions: true },
-      { id: 4, display_name: "Top Lane 2", visible: true, count: 1, sublanes: [],
-      custom_list_ids: [], inherit_parent_restrictions: false }
+      {
+        id: 1,
+        display_name: "Top Lane 1",
+        visible: true,
+        count: 5,
+        sublanes: [sublaneData],
+        custom_list_ids: [1],
+        inherit_parent_restrictions: true,
+      },
+      {
+        id: 4,
+        display_name: "Top Lane 2",
+        visible: true,
+        count: 1,
+        sublanes: [],
+        custom_list_ids: [],
+        inherit_parent_restrictions: false,
+      },
     ];
     drag = stub();
     findLaneForIdentifier = stub().returns(lanesData[1]);
@@ -57,7 +81,8 @@ describe("LanesSidebar", () => {
         library={"library"}
         findLaneForIdentifier={findLaneForIdentifier}
         findParentOfLane={findParentOfLane}
-      />);
+      />
+    );
   });
   it("renders create top-level lane link", () => {
     let create = wrapper.find(".lanes-sidebar > div").find(Link).at(0);
@@ -66,7 +91,7 @@ describe("LanesSidebar", () => {
 
     // the link is disabled if there are lane order changes
     wrapper.setProps({ orderChanged: true });
-    create =  wrapper.find(".lanes-sidebar > div").find(Link).at(0);
+    create = wrapper.find(".lanes-sidebar > div").find(Link).at(0);
     expect(create.render().hasClass("create-lane")).to.be.true;
     expect(create.prop("to")).to.be.null;
     expect(create.render().hasClass("disabled")).to.be.true;
@@ -121,36 +146,46 @@ describe("LanesSidebar", () => {
   });
 
   it("drags and drops a top-level lane", () => {
-    let topLevelLanes = getTopLevelLanes();
-    let dragTopLane2 = { draggableId: "4", source: { index: 1, droppableId: "top" }};
+    const topLevelLanes = getTopLevelLanes();
+    const dragTopLane2 = {
+      draggableId: "4",
+      source: { index: 1, droppableId: "top" },
+    };
     // pick up Top Lane 2
     wrapper.instance().onDragStart(dragTopLane2);
     expect(drag.callCount).to.equal(1);
     expect(drag.args[0][0]).to.eql({ draggableId: "4", draggingFrom: "top" });
     // drop it before Top Lane 1
-    wrapper.instance().onDragEnd({...dragTopLane2,  ...{destination: { droppableId: "top", index: 0 }}});
+    wrapper.instance().onDragEnd({
+      ...dragTopLane2,
+      ...{ destination: { droppableId: "top", index: 0 } },
+    });
     expect(drag.callCount).to.equal(2);
     expect(drag.args[1][0]).to.eql({
       draggableId: null,
       draggingFrom: null,
       lanes: [lanesData[1], lanesData[0]],
-      orderChanged: true
+      orderChanged: true,
     });
   });
 
   it("drags and drops a sublane", () => {
-    let newSublane: LaneData = {
+    const newSublane: LaneData = {
       id: 5,
       display_name: "Sublane 2",
       visible: true,
       count: 0,
       inherit_parent_restrictions: false,
-      sublanes: [], custom_list_ids: []
+      sublanes: [],
+      custom_list_ids: [],
     };
     findLaneForIdentifier.returns(newSublane);
     findParentOfLane.returns(lanesData[0]);
     lanesData[0].sublanes = [sublaneData, newSublane];
-    let dragNewSublane = { draggableId: "5", source: { index: 1, droppableId: "1" }};
+    const dragNewSublane = {
+      draggableId: "5",
+      source: { index: 1, droppableId: "1" },
+    };
     // pick up Sublane 2
     wrapper.instance().onDragStart(dragNewSublane);
     expect(drag.callCount).to.equal(1);
@@ -158,7 +193,7 @@ describe("LanesSidebar", () => {
     // drop it before Sublane 1
     wrapper.instance().onDragEnd({
       ...dragNewSublane,
-      ...{ destination: { droppableId: "1", index: 0 } }
+      ...{ destination: { droppableId: "1", index: 0 } },
     });
     expect(drag.callCount).to.equal(2);
     expect(drag.args[1][0].draggableId).to.be.null;
@@ -171,24 +206,40 @@ describe("LanesSidebar", () => {
     wrapper.instance().onDragEnd({
       draggableId: "1",
       source: { index: 0, droppableId: "top" },
-      destination: { index: 0, droppableId: "top" }
+      destination: { index: 0, droppableId: "top" },
     });
     expect(drag.callCount).to.equal(0);
   });
 
   it("renders and expands and collapses lanes and sublanes", () => {
     const expectExpanded = (lane) => {
-      let collapse = lane.find(".lane-info").at(0).find(".collapse-button").hostNodes();
+      const collapse = lane
+        .find(".lane-info")
+        .at(0)
+        .find(".collapse-button")
+        .hostNodes();
       expect(collapse.length).to.equal(1);
-      let expand = lane.find(".lane-info").at(0).find(".expand-button").hostNodes();
+      const expand = lane
+        .find(".lane-info")
+        .at(0)
+        .find(".expand-button")
+        .hostNodes();
       expect(expand.length).to.equal(0);
       return collapse;
     };
 
     const expectCollapsed = (lane) => {
-      let collapse = lane.find(".lane-info").at(0).find(".collapse-button").hostNodes();
+      const collapse = lane
+        .find(".lane-info")
+        .at(0)
+        .find(".collapse-button")
+        .hostNodes();
       expect(collapse.length).to.equal(0);
-      let expand = lane.find(".lane-info").at(0).find(".expand-button").hostNodes();
+      const expand = lane
+        .find(".lane-info")
+        .at(0)
+        .find(".expand-button")
+        .hostNodes();
       expect(expand.length).to.equal(1);
       return expand;
     };
@@ -196,7 +247,7 @@ describe("LanesSidebar", () => {
     let topLevelLanes = getTopLevelLanes();
     expect(topLevelLanes.length).to.equal(2);
     let topLane1 = topLevelLanes.at(0).find("div").at(0);
-    let topLane2 = topLevelLanes.at(1).find("div").at(0);
+    const topLane2 = topLevelLanes.at(1).find("div").at(0);
     expect(topLane1.text()).to.contain("Top Lane 1");
     expect(topLane1.text()).to.contain("(5)");
     expect(topLane2.text()).to.contain("Top Lane 2");
@@ -211,13 +262,13 @@ describe("LanesSidebar", () => {
     expect(subLane1.text()).to.contain("Sublane 1");
     expect(subLane1.text()).to.contain("(3)");
     expect(subLane1.length).to.equal(1);
-    let subLane1Expand = expectCollapsed(subLane1);
+    const subLane1Expand = expectCollapsed(subLane1);
 
     // top lane 2 has no sublanes
     // let topLane2Sublanes = topLane2.find("li > div");
     // let topLane2Draggables = topLane2.find(Droppable).find(Draggable);
-    let topLane2Sublanes = allChildren(topLane2);
-    let topLane2Draggables = draggableChildren(topLane2);
+    const topLane2Sublanes = allChildren(topLane2);
+    const topLane2Draggables = draggableChildren(topLane2);
     expect(topLane2Sublanes.length).to.equal(0);
     expect(topLane2Draggables.length).to.equal(0);
 
@@ -230,7 +281,7 @@ describe("LanesSidebar", () => {
     topLevelLanes = getTopLevelLanes();
     topLane1 = topLevelLanes.at(0).find("div").at(0);
     subLane1 = topLane1.find("li > div");
-    let subLane1Collapse = expectExpanded(subLane1);
+    const subLane1Collapse = expectExpanded(subLane1);
     subSubLane = subLane1.find("li > div");
     expect(subSubLane.text()).to.contain("SubSublane 1");
     expect(subSubLane.text()).to.contain("(2)");
@@ -246,11 +297,11 @@ describe("LanesSidebar", () => {
     expect(subSubLane.length).to.equal(0);
 
     // if we collapse lane 1, sublane 2 is hidden.
-    let topLane1Collapse = expectExpanded(topLane1);
+    const topLane1Collapse = expectExpanded(topLane1);
     topLane1Collapse.simulate("click");
     topLevelLanes = getTopLevelLanes();
     topLane1 = topLevelLanes.at(0).find("div").at(0);
-    let topLane1Expand = expectCollapsed(topLane1);
+    const topLane1Expand = expectCollapsed(topLane1);
     subLane1 = topLane1.find("li > div");
     expect(subLane1.length).to.equal(0);
 
@@ -277,38 +328,77 @@ describe("LanesSidebar", () => {
     //
     // top, 1, and 5 are the only lanes with draggable sublanes.
     // 1, 2, 4, 5, 6, and 7 should be draggable.
-    let sublaneData: LaneData = {
-      id: 2, display_name: "sublane 2", visible: false, count: 3, sublanes: [subsublaneData],
-      custom_list_ids: [2], inherit_parent_restrictions: false
+    const sublaneData: LaneData = {
+      id: 2,
+      display_name: "sublane 2",
+      visible: false,
+      count: 3,
+      sublanes: [subsublaneData],
+      custom_list_ids: [2],
+      inherit_parent_restrictions: false,
     };
 
-    let sublane8Data: LaneData = {
-      id: 8, display_name: "sublane 8", visible: true, count: 6, sublanes: [],
-      custom_list_ids: [2], inherit_parent_restrictions: false
+    const sublane8Data: LaneData = {
+      id: 8,
+      display_name: "sublane 8",
+      visible: true,
+      count: 6,
+      sublanes: [],
+      custom_list_ids: [2],
+      inherit_parent_restrictions: false,
     };
-    let sublane6Data: LaneData = {
-      id: 6, display_name: "sublane 6", visible: true, count: 6, sublanes: [sublane8Data],
-      custom_list_ids: [2], inherit_parent_restrictions: false
+    const sublane6Data: LaneData = {
+      id: 6,
+      display_name: "sublane 6",
+      visible: true,
+      count: 6,
+      sublanes: [sublane8Data],
+      custom_list_ids: [2],
+      inherit_parent_restrictions: false,
     };
-    let sublane7Data: LaneData = {
-      id: 7, display_name: "sublane 7", visible: true, count: 6, sublanes: [],
-      custom_list_ids: [2], inherit_parent_restrictions: false
+    const sublane7Data: LaneData = {
+      id: 7,
+      display_name: "sublane 7",
+      visible: true,
+      count: 6,
+      sublanes: [],
+      custom_list_ids: [2],
+      inherit_parent_restrictions: false,
     };
-    let sublane5Data: LaneData = {
-      id: 5, display_name: "sublane 5", visible: true, count: 6, sublanes: [sublane6Data, sublane7Data],
-      custom_list_ids: [2], inherit_parent_restrictions: false
+    const sublane5Data: LaneData = {
+      id: 5,
+      display_name: "sublane 5",
+      visible: true,
+      count: 6,
+      sublanes: [sublane6Data, sublane7Data],
+      custom_list_ids: [2],
+      inherit_parent_restrictions: false,
     };
     lanesData = [
-      { id: 1, display_name: "lane 1", visible: true, count: 5,
-        sublanes: [sublaneData, sublane5Data], custom_list_ids: [1], inherit_parent_restrictions: true },
-      { id: 4, display_name: "lane 4", visible: true, count: 1, sublanes: [],
-        custom_list_ids: [], inherit_parent_restrictions: false }
+      {
+        id: 1,
+        display_name: "lane 1",
+        visible: true,
+        count: 5,
+        sublanes: [sublaneData, sublane5Data],
+        custom_list_ids: [1],
+        inherit_parent_restrictions: true,
+      },
+      {
+        id: 4,
+        display_name: "lane 4",
+        visible: true,
+        count: 1,
+        sublanes: [],
+        custom_list_ids: [],
+        inherit_parent_restrictions: false,
+      },
     ];
 
-    let expand = (lane) => {
+    const expand = (lane) => {
       lane.find(".expand-button").hostNodes().at(0).props().onClick();
     };
-    let isDraggable = (lane) => {
+    const isDraggable = (lane) => {
       return lane.find(".lane-info").at(0).hasClass("draggable");
     };
 
@@ -330,7 +420,7 @@ describe("LanesSidebar", () => {
     expect(lane1Children.length).to.equal(2);
 
     /** lane 4 */
-    let lane4 = getTopLevelLanes().at(1).find(".lane-parent").at(0);
+    const lane4 = getTopLevelLanes().at(1).find(".lane-parent").at(0);
     expect(lane4.text()).to.contain("lane 4");
     expect(isDraggable(lane4)).to.be.true;
     // Lane 4 doesn't have children.
@@ -381,7 +471,7 @@ describe("LanesSidebar", () => {
     lane1 = getTopLevelLanes().at(0).find(".lane-parent").at(0);
     lane1Children = allChildren(lane1);
     sublane2 = lane1Children.at(0);
-    let sublane3 = allChildren(sublane2);
+    const sublane3 = allChildren(sublane2);
 
     expect(isDraggable(sublane3)).to.be.false;
     expect(sublane3.text()).to.contain("SubSublane 1");
@@ -392,7 +482,7 @@ describe("LanesSidebar", () => {
     // All lane 1 children are expanded:
     // at(1) corresponds to lane 3 and at(2) corresponds to lane 5
     sublane5 = lane1Children.at(2);
-    let sublane6 = allChildren(sublane5).at(0);
+    const sublane6 = allChildren(sublane5).at(0);
     expect(isDraggable(sublane6)).to.be.true;
     expand(sublane6);
     wrapper.update();
@@ -403,7 +493,7 @@ describe("LanesSidebar", () => {
     expect(draggableChildren(sublane6.render()).length).to.equal(0);
 
     /** lane 7 */
-    let sublane7 = allChildren(sublane5).at(1);
+    const sublane7 = allChildren(sublane5).at(1);
     expect(isDraggable(sublane7)).to.be.true;
     expand(sublane7);
     expect(sublane7.text()).to.contain("sublane 7");
@@ -424,7 +514,7 @@ describe("LanesSidebar", () => {
     lane1 = getTopLevelLanes().at(0).find(".lane-parent").at(0);
     lane1Children = allChildren(lane1);
     // The fourth child is the 8th lane since all lanes are expanded.
-    let sublane8 = lane1Children.at(4);
+    const sublane8 = lane1Children.at(4);
     expect(isDraggable(sublane8)).to.be.false;
     expand(sublane8);
     expect(sublane8.text()).to.contain("sublane 8");

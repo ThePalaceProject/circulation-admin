@@ -28,7 +28,10 @@ export interface CirculationEventsOwnProps {
   library?: string;
 }
 
-export interface CirculationEventsProps extends CirculationEventsStateProps, CirculationEventsDispatchProps, CirculationEventsOwnProps {}
+export interface CirculationEventsProps
+  extends CirculationEventsStateProps,
+    CirculationEventsDispatchProps,
+    CirculationEventsOwnProps {}
 
 export interface CirculationEventsState {
   showDownloadForm: boolean;
@@ -36,7 +39,10 @@ export interface CirculationEventsState {
 
 /** Shows a continuously updating list of the most recent circulation events, and
     a button to download a CSV of circulation events for a particular date. */
-export class CirculationEvents extends React.Component<CirculationEventsProps, CirculationEventsState> {
+export class CirculationEvents extends React.Component<
+  CirculationEventsProps,
+  CirculationEventsState
+> {
   timer: any;
   context: { showCircEventsDownload: boolean };
   _isMounted: boolean;
@@ -51,7 +57,7 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
   }
 
   static contextTypes: React.ValidationMap<any> = {
-    showCircEventsDownload: PropTypes.bool
+    showCircEventsDownload: PropTypes.bool,
   };
 
   render(): JSX.Element {
@@ -60,9 +66,13 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
       <div className="circulation-events">
         <h2>Circulation Events</h2>
 
-        { this.context.showCircEventsDownload &&
-            <Button callback={this.showDownloadForm} content="Download CSV" className="left-align"/>
-        }
+        {this.context.showCircEventsDownload && (
+          <Button
+            callback={this.showDownloadForm}
+            content="Download CSV"
+            className="left-align"
+          />
+        )}
 
         <CirculationEventsDownloadForm
           show={this.state.showDownloadForm}
@@ -70,45 +80,39 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
           library={library}
         />
 
-        { fetchError &&
-          <ErrorMessage error={fetchError} />
-        }
+        {fetchError && <ErrorMessage error={fetchError} />}
 
-        { (!isLoaded && !library) &&
-          <LoadingIndicator />
-        }
+        {!isLoaded && !library && <LoadingIndicator />}
 
-        {
-          !library && (
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Book</th>
-                    <th>Event</th>
-                    <th>Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  { events.map(event =>
-                    <tr key={event.id}>
-                      <td>
-                        <CatalogLink bookUrl={event.book.url}>
-                          {event.book.title}
-                        </CatalogLink>
-                      </td>
-                      <td>{this.formatType(event.type)}</td>
-                      <td>{this.formatTime(event.time)}</td>
-                    </tr>
-                  ) }
-                </tbody>
-              </table>
-            )
-        }
+        {!library && (
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Book</th>
+                <th>Event</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {events.map((event) => (
+                <tr key={event.id}>
+                  <td>
+                    <CatalogLink bookUrl={event.book.url}>
+                      {event.book.title}
+                    </CatalogLink>
+                  </td>
+                  <td>{this.formatType(event.type)}</td>
+                  <td>{this.formatTime(event.time)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this._isMounted = true;
     if (!this.props.library) {
       this.fetchAndQueue();
@@ -138,15 +142,14 @@ export class CirculationEvents extends React.Component<CirculationEventsProps, C
   }
 
   formatTime(str) {
-    let date = new Date(str);
-    let options = {
+    const date = new Date(str);
+    return date.toLocaleString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
       hour: "numeric",
-      minute: "numeric"
-    };
-    return date.toLocaleString("en-US", options);
+      minute: "numeric",
+    });
   }
 
   showDownloadForm() {
@@ -162,18 +165,22 @@ function mapStateToProps(state, ownProps) {
   return {
     events: state.editor.circulationEvents.data || [],
     fetchError: state.editor.circulationEvents.fetchError,
-    isLoaded: state.editor.circulationEvents.isLoaded
+    isLoaded: state.editor.circulationEvents.isLoaded,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  let actions = new ActionCreator();
+  const actions = new ActionCreator();
   return {
-    fetchCirculationEvents: () => dispatch(actions.fetchCirculationEvents())
+    fetchCirculationEvents: () => dispatch(actions.fetchCirculationEvents()),
   };
 }
 
-const ConnectedCirculationEvents = connect<CirculationEventsStateProps, CirculationEventsDispatchProps, CirculationEventsOwnProps>(
+const ConnectedCirculationEvents = connect<
+  CirculationEventsStateProps,
+  CirculationEventsDispatchProps,
+  CirculationEventsOwnProps
+>(
   mapStateToProps,
   mapDispatchToProps
 )(CirculationEvents);

@@ -8,10 +8,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 
 import CustomListEntriesEditor from "../CustomListEntriesEditor";
 
-import {
-  AudioHeadphoneIcon,
-  BookIcon,
-} from "@nypl/dgx-svg-icons";
+import { AudioHeadphoneIcon, BookIcon } from "@nypl/dgx-svg-icons";
 import * as PropTypes from "prop-types";
 
 describe("CustomListEntriesEditor", () => {
@@ -22,47 +19,108 @@ describe("CustomListEntriesEditor", () => {
   let childContextTypes;
   let fullContext;
 
-  let searchResultsData = {
+  const searchResultsData = {
     id: "id",
     url: "url",
     title: "title",
     lanes: [],
     navigationLinks: [],
     books: [
-      { id: "1", title: "result 1", authors: ["author 1"], url: "/some/url1", language: "eng",
+      {
+        id: "1",
+        title: "result 1",
+        authors: ["author 1"],
+        url: "/some/url1",
+        language: "eng",
         raw: {
-          "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } },
-        }
+          $: { "schema:additionalType": { value: "http://schema.org/EBook" } },
+        },
       },
-      { id: "2", title: "result 2", authors: ["author 2a", "author 2b"], url: "/some/url2", language: "eng",
-        raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" } } }},
-      { id: "3", title: "result 3", authors: ["author 3"], url: "/some/url3", language: "eng",
-        raw: { "$": { "schema:additionalType": { "value": "http://schema.org/EBook" } } }},
-    ]
+      {
+        id: "2",
+        title: "result 2",
+        authors: ["author 2a", "author 2b"],
+        url: "/some/url2",
+        language: "eng",
+        raw: {
+          $: {
+            "schema:additionalType": {
+              value: "http://bib.schema.org/Audiobook",
+            },
+          },
+        },
+      },
+      {
+        id: "3",
+        title: "result 3",
+        authors: ["author 3"],
+        url: "/some/url3",
+        language: "eng",
+        raw: {
+          $: { "schema:additionalType": { value: "http://schema.org/EBook" } },
+        },
+      },
+    ],
   };
 
-  let entriesData = [
-    { id: "A", title: "entry A", authors: ["author A"], url: "/some/urlA",
-      raw: { "$": { "schema:additionalType": { "value": "http://schema.org/EBook" }}} },
-    { id: "B", title: "entry B", authors: ["author B1", "author B2"], url: "/some/urlB",
-      raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}} },
+  const entriesData = [
+    {
+      id: "A",
+      title: "entry A",
+      authors: ["author A"],
+      url: "/some/urlA",
+      raw: {
+        $: { "schema:additionalType": { value: "http://schema.org/EBook" } },
+      },
+    },
+    {
+      id: "B",
+      title: "entry B",
+      authors: ["author B1", "author B2"],
+      url: "/some/urlB",
+      raw: {
+        $: {
+          "schema:additionalType": { value: "http://bib.schema.org/Audiobook" },
+        },
+      },
+    },
   ];
-  let entriesDataExtra = [
-    { id: "C", title: "entry C", authors: ["author C"], url: "/some/urlC",
-      raw: { "$": { "schema:additionalType": { "value": "http://schema.org/EBook" }}} },
-    { id: "D", title: "entry D", authors: ["author D1", "author D2"], url: "/some/urlD",
-      raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}} },
+  const entriesDataExtra = [
+    {
+      id: "C",
+      title: "entry C",
+      authors: ["author C"],
+      url: "/some/urlC",
+      raw: {
+        $: { "schema:additionalType": { value: "http://schema.org/EBook" } },
+      },
+    },
+    {
+      id: "D",
+      title: "entry D",
+      authors: ["author D1", "author D2"],
+      url: "/some/urlD",
+      raw: {
+        $: {
+          "schema:additionalType": { value: "http://bib.schema.org/Audiobook" },
+        },
+      },
+    },
   ];
-  let entriesNextPageUrl = "nextpage?after=50";
+  const entriesNextPageUrl = "nextpage?after=50";
 
-  const generateEntries = (num: number, offset: number = 0 ) => {
-    return Array.from(new Array(num), (x, i) => i + offset).map(n => ({
+  const generateEntries = (num: number, offset: number = 0) => {
+    return Array.from(new Array(num), (x, i) => i + offset).map((n) => ({
       id: `${n}`,
       title: `title-${n}`,
       url: "",
       authors: [],
       language: "eng",
-      raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}},
+      raw: {
+        $: {
+          "schema:additionalType": { value: "http://bib.schema.org/Audiobook" },
+        },
+      },
     }));
   };
 
@@ -75,23 +133,26 @@ describe("CustomListEntriesEditor", () => {
       pathFor: PropTypes.func.isRequired,
       router: PropTypes.object.isRequired,
     };
-    fullContext = Object.assign({}, {
-      pathFor: stub().returns("url"),
-      router: {
-        createHref: stub(),
-        push: stub(),
-        isActive: stub(),
-        replace: stub(),
-        go: stub(),
-        goBack: stub(),
-        goForward: stub(),
-        setRouteLeaveHook: stub()
+    fullContext = Object.assign(
+      {},
+      {
+        pathFor: stub().returns("url"),
+        router: {
+          createHref: stub(),
+          push: stub(),
+          isActive: stub(),
+          replace: stub(),
+          go: stub(),
+          goBack: stub(),
+          goForward: stub(),
+          setRouteLeaveHook: stub(),
+        },
       }
-    });
+    );
   });
 
   it("renders search results", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -101,13 +162,13 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const resultsContainer = wrapper.find(".custom-list-search-results");
     expect(resultsContainer.length).to.equal(1);
 
-    let droppable = resultsContainer.find(Droppable);
+    const droppable = resultsContainer.find(Droppable);
     expect(droppable.length).to.equal(1);
 
-    let results = droppable.find(Draggable);
+    const results = droppable.find(Draggable);
     expect(results.length).to.equal(3);
     expect(results.at(0).text()).to.contain("result 1");
     expect(results.at(0).text()).to.contain("author 1");
@@ -118,7 +179,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("renders a link to view each search result", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -128,25 +189,31 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const resultsContainer = wrapper.find(".custom-list-search-results");
     expect(resultsContainer.length).to.equal(1);
 
-    let droppable = resultsContainer.find(Droppable);
+    const droppable = resultsContainer.find(Droppable);
     expect(droppable.length).to.equal(1);
 
-    let results = droppable.find(Draggable);
+    const results = droppable.find(Draggable);
     expect(results.length).to.equal(3);
 
     expect(results.at(0).find("CatalogLink").text()).to.equal("View details");
-    expect(results.at(0).find("CatalogLink").prop("bookUrl")).to.equal("/some/url1");
+    expect(results.at(0).find("CatalogLink").prop("bookUrl")).to.equal(
+      "/some/url1"
+    );
     expect(results.at(1).find("CatalogLink").text()).to.equal("View details");
-    expect(results.at(1).find("CatalogLink").prop("bookUrl")).to.equal("/some/url2");
+    expect(results.at(1).find("CatalogLink").prop("bookUrl")).to.equal(
+      "/some/url2"
+    );
     expect(results.at(2).find("CatalogLink").text()).to.equal("View details");
-    expect(results.at(2).find("CatalogLink").prop("bookUrl")).to.equal("/some/url3");
+    expect(results.at(2).find("CatalogLink").prop("bookUrl")).to.equal(
+      "/some/url3"
+    );
   });
 
   it("renders SVG icons for each search results", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -156,7 +223,7 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const resultsContainer = wrapper.find(".custom-list-search-results");
     const audioSVGs = resultsContainer.find(AudioHeadphoneIcon);
     const bookSVGs = resultsContainer.find(BookIcon);
 
@@ -166,7 +233,7 @@ describe("CustomListEntriesEditor", () => {
 
   it("doesn't render any SVG icon with bad medium value", () => {
     searchResultsData.books[2].raw["$"]["schema:additionalType"].value = "";
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -176,18 +243,19 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const resultsContainer = wrapper.find(".custom-list-search-results");
     const audioSVGs = resultsContainer.find(AudioHeadphoneIcon);
     const bookSVGs = resultsContainer.find(BookIcon);
 
     expect(audioSVGs.length).to.equal(1);
     expect(bookSVGs.length).to.equal(1);
 
-    searchResultsData.books[2].raw["$"]["schema:additionalType"].value = "http://schema.org/EBook";
+    searchResultsData.books[2].raw["$"]["schema:additionalType"].value =
+      "http://schema.org/EBook";
   });
 
   it("renders list entries", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -199,13 +267,13 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let entriesContainer = wrapper.find(".custom-list-entries");
+    const entriesContainer = wrapper.find(".custom-list-entries");
     expect(entriesContainer.length).to.equal(1);
 
-    let droppable = entriesContainer.find(Droppable);
+    const droppable = entriesContainer.find(Droppable);
     expect(droppable.length).to.equal(1);
 
-    let entries = droppable.find(Draggable);
+    const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(2);
 
     expect(entries.at(0).text()).to.contain("entry A");
@@ -213,12 +281,12 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(1).text()).to.contain("entry B");
     expect(entries.at(1).text()).to.contain("author B1, author B2");
 
-    let display = wrapper.find(".custom-list-entries h4");
+    const display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
   });
 
   it("renders a link to view each entry", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -230,23 +298,27 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let entriesContainer = wrapper.find(".custom-list-entries");
+    const entriesContainer = wrapper.find(".custom-list-entries");
     expect(entriesContainer.length).to.equal(1);
 
-    let droppable = entriesContainer.find(Droppable);
+    const droppable = entriesContainer.find(Droppable);
     expect(droppable.length).to.equal(1);
 
-    let entries = droppable.find(Draggable);
+    const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(2);
 
     expect(entries.at(0).find("CatalogLink").text()).to.equal("View details");
-    expect(entries.at(0).find("CatalogLink").prop("bookUrl")).to.equal("/some/urlA");
+    expect(entries.at(0).find("CatalogLink").prop("bookUrl")).to.equal(
+      "/some/urlA"
+    );
     expect(entries.at(1).find("CatalogLink").text()).to.equal("View details");
-    expect(entries.at(1).find("CatalogLink").prop("bookUrl")).to.equal("/some/urlB");
+    expect(entries.at(1).find("CatalogLink").prop("bookUrl")).to.equal(
+      "/some/urlB"
+    );
   });
 
   it("renders SVG icons for each entry", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -257,7 +329,7 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let entriesContainer = wrapper.find(".custom-list-entries");
+    const entriesContainer = wrapper.find(".custom-list-entries");
     const audioSVGs = entriesContainer.find(AudioHeadphoneIcon);
     const bookSVGs = entriesContainer.find(BookIcon);
 
@@ -266,12 +338,23 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("doesn't include search results that are already in the list", () => {
-    let entriesData = [
-      { id: "1", title: "result 1", authors: ["author 1"], language: "eng",
-        raw: { "$": { "schema:additionalType": { "value": "http://bib.schema.org/Audiobook" }}} }
+    const entriesData = [
+      {
+        id: "1",
+        title: "result 1",
+        authors: ["author 1"],
+        language: "eng",
+        raw: {
+          $: {
+            "schema:additionalType": {
+              value: "http://bib.schema.org/Audiobook",
+            },
+          },
+        },
+      },
     ];
 
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         entries={entriesData}
@@ -284,13 +367,13 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const resultsContainer = wrapper.find(".custom-list-search-results");
     expect(resultsContainer.length).to.equal(1);
 
-    let droppable = resultsContainer.find(Droppable);
+    const droppable = resultsContainer.find(Droppable);
     expect(droppable.length).to.equal(1);
 
-    let results = droppable.find(Draggable);
+    const results = droppable.find(Draggable);
     expect(results.length).to.equal(2);
 
     expect(results.at(0).text()).to.contain("result 2");
@@ -300,7 +383,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("prevents dragging within search results", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -315,17 +398,17 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragStart({
       draggableId: "1",
       source: {
-        droppableId: "search-results"
-      }
+        droppableId: "search-results",
+      },
     });
 
-    let resultsContainer = wrapper.find(".custom-list-search-results");
-    let droppable = resultsContainer.find(Droppable);
+    const resultsContainer = wrapper.find(".custom-list-search-results");
+    const droppable = resultsContainer.find(Droppable);
     expect(droppable.prop("isDropDisabled")).to.equal(true);
   });
 
   it("prevents dragging within list entries", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -341,17 +424,17 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragStart({
       draggableId: "A",
       source: {
-        droppableId: "custom-list-entries"
-      }
+        droppableId: "custom-list-entries",
+      },
     });
 
-    let entriesContainer = wrapper.find(".custom-list-entries");
-    let droppable = entriesContainer.find(Droppable);
+    const entriesContainer = wrapper.find(".custom-list-entries");
+    const droppable = entriesContainer.find(Droppable);
     expect(droppable.prop("isDropDisabled")).to.equal(true);
   });
 
   it("drags from search results to list entries", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         entries={entriesData}
@@ -369,8 +452,8 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragStart({
       draggableId: "1",
       source: {
-        droppableId: "search-results"
-      }
+        droppableId: "search-results",
+      },
     });
     wrapper.update();
 
@@ -382,18 +465,18 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragEnd({
       draggableId: "1",
       source: {
-        droppableId: "search-results"
+        droppableId: "search-results",
       },
       destination: {
-        droppableId: "custom-list-entries"
-      }
+        droppableId: "custom-list-entries",
+      },
     });
     wrapper.update();
 
     // the dropped item has been added to entries at the beginning of the list
     entriesContainer = wrapper.find(".custom-list-entries");
     droppable = entriesContainer.find(Droppable);
-    let entries = droppable.find(Draggable);
+    const entries = droppable.find(Draggable);
 
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
@@ -404,14 +487,14 @@ describe("CustomListEntriesEditor", () => {
       authors: ["author 1"],
       medium: "http://schema.org/EBook",
       language: "eng",
-      url: "/some/url1"
+      url: "/some/url1",
     };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
   });
 
   it("shows message in place of search results when dragging from list entries", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -426,8 +509,8 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragStart({
       draggableId: "A",
       source: {
-        droppableId: "custom-list-entries"
-      }
+        droppableId: "custom-list-entries",
+      },
     });
     wrapper.update();
 
@@ -443,8 +526,8 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragEnd({
       draggableId: "A",
       source: {
-        droppableId: "custom-list-entries"
-      }
+        droppableId: "custom-list-entries",
+      },
     });
     wrapper.update();
 
@@ -456,7 +539,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("drags from list entries to search results", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         entries={entriesData}
@@ -473,12 +556,12 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragStart({
       draggableId: "A",
       source: {
-        droppableId: "custom-list-entries"
-      }
+        droppableId: "custom-list-entries",
+      },
     });
     wrapper.update();
 
-    let resultsContainer = wrapper.find(".custom-list-search-results");
+    const resultsContainer = wrapper.find(".custom-list-search-results");
     let droppable = resultsContainer.find(Droppable);
     expect(droppable.prop("isDropDisabled")).to.equal(false);
 
@@ -486,18 +569,18 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragEnd({
       draggableId: "A",
       source: {
-        droppableId: "custom-list-entries"
+        droppableId: "custom-list-entries",
       },
       destination: {
-        droppableId: "search-results"
-      }
+        droppableId: "search-results",
+      },
     });
     wrapper.update();
 
     // the dropped item has been removed from entries
-    let entriesContainer = wrapper.find(".custom-list-entries");
+    const entriesContainer = wrapper.find(".custom-list-entries");
     droppable = entriesContainer.find(Droppable);
-    let entries = droppable.find(Draggable);
+    const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(1);
     expect(entries.at(0).text()).to.contain("entry B");
     expect(onUpdate.callCount).to.equal(1);
@@ -506,7 +589,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("adds a search result to the list", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         entries={entriesData}
@@ -523,13 +606,15 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let addLink = wrapper.find(".custom-list-search-results .links").find(Button);
+    const addLink = wrapper
+      .find(".custom-list-search-results .links")
+      .find(Button);
     addLink.at(0).simulate("click");
 
     // the item has been added to entries at the beginning of the list
-    let entriesContainer = wrapper.find(".custom-list-entries");
-    let droppable = entriesContainer.find(Droppable);
-    let entries = droppable.find(Draggable);
+    const entriesContainer = wrapper.find(".custom-list-entries");
+    const droppable = entriesContainer.find(Droppable);
+    const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(3);
     expect(entries.at(0).text()).to.contain("result 1");
     expect(onUpdate.callCount).to.equal(1);
@@ -539,7 +624,7 @@ describe("CustomListEntriesEditor", () => {
       authors: ["author 1"],
       medium: "http://schema.org/EBook",
       language: "eng",
-      url: "/some/url1"
+      url: "/some/url1",
     };
     const expectedEntries = [newEntry, entriesData[0], entriesData[1]];
     expect(onUpdate.args[0][0]).to.deep.equal(expectedEntries);
@@ -549,7 +634,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("removes an entry from the list and also adds to 'deleted' state", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         entries={entriesData}
@@ -566,13 +651,13 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
+    const deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
     deleteLink.at(0).simulate("click");
 
     // the item has been removed from entries
-    let entriesContainer = wrapper.find(".custom-list-entries");
-    let droppable = entriesContainer.find(Droppable);
-    let entries = droppable.find(Draggable);
+    const entriesContainer = wrapper.find(".custom-list-entries");
+    const droppable = entriesContainer.find(Droppable);
+    const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(1);
     expect(entries.at(0).text()).to.contain("entry B");
     expect(onUpdate.callCount).to.equal(1);
@@ -603,17 +688,21 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragEnd({
       draggableId: "1",
       source: {
-        droppableId: "search-results"
+        droppableId: "search-results",
       },
       destination: {
-        droppableId: "custom-list-entries"
-      }
+        droppableId: "custom-list-entries",
+      },
     });
 
-    expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(1);
+    expect(
+      (wrapper.instance() as CustomListEntriesEditor).getEntries().length
+    ).to.equal(1);
     expect(onUpdate.callCount).to.equal(1);
     (wrapper.instance() as CustomListEntriesEditor).reset();
-    expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(0);
+    expect(
+      (wrapper.instance() as CustomListEntriesEditor).getEntries().length
+    ).to.equal(0);
     expect(onUpdate.callCount).to.equal(2);
 
     wrapper = mount(
@@ -633,22 +722,26 @@ describe("CustomListEntriesEditor", () => {
     (wrapper.instance() as CustomListEntriesEditor).onDragEnd({
       draggableId: "A",
       source: {
-        droppableId: "custom-list-entries"
+        droppableId: "custom-list-entries",
       },
       destination: {
-        droppableId: "search-results"
-      }
+        droppableId: "search-results",
+      },
     });
 
-    expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(1);
+    expect(
+      (wrapper.instance() as CustomListEntriesEditor).getEntries().length
+    ).to.equal(1);
     expect(onUpdate.callCount).to.equal(3);
     (wrapper.instance() as CustomListEntriesEditor).reset();
-    expect((wrapper.instance() as CustomListEntriesEditor).getEntries().length).to.equal(2);
+    expect(
+      (wrapper.instance() as CustomListEntriesEditor).getEntries().length
+    ).to.equal(2);
     expect(onUpdate.callCount).to.equal(4);
   });
 
   it("hides add all button when there are no search results", () => {
-    let wrapper = shallow(
+    const wrapper = shallow(
       <CustomListEntriesEditor
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -658,12 +751,12 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let button = wrapper.find(".add-all-button");
+    const button = wrapper.find(".add-all-button");
     expect(button.length).to.equal(0);
   });
 
   it("adds all search results to list", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         entries={entriesData}
@@ -679,12 +772,12 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let button = wrapper.find(".add-all-button").at(0);
+    const button = wrapper.find(".add-all-button").at(0);
     button.simulate("click");
 
-    let entriesContainer = wrapper.find(".custom-list-entries");
-    let droppable = entriesContainer.find(Droppable);
-    let entries = droppable.find(Draggable);
+    const entriesContainer = wrapper.find(".custom-list-entries");
+    const droppable = entriesContainer.find(Droppable);
+    const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(5);
 
     expect(entries.at(0).text()).to.contain("result 1");
@@ -700,7 +793,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("hides delete all button when there are no entries", () => {
-    let wrapper = shallow(
+    const wrapper = shallow(
       <CustomListEntriesEditor
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -710,12 +803,12 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let button = wrapper.find(".delete-all-button");
+    const button = wrapper.find(".delete-all-button");
     expect(button.length).to.equal(0);
   });
 
   it("deletes all entries from list", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         onUpdate={onUpdate}
@@ -730,11 +823,11 @@ describe("CustomListEntriesEditor", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
 
-    let button = wrapper.find(".delete-all-button").at(0);
+    const button = wrapper.find(".delete-all-button").at(0);
     button.simulate("click");
-    let entriesContainer = wrapper.find(".custom-list-entries");
-    let droppable = entriesContainer.find(Droppable);
-    let entries = droppable.find(Draggable);
+    const entriesContainer = wrapper.find(".custom-list-entries");
+    const droppable = entriesContainer.find(Droppable);
+    const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(0);
     expect(onUpdate.callCount).to.equal(1);
     expect(onUpdate.args[0][0].length).to.equal(0);
@@ -744,7 +837,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("hides load more button when there's no next link for search results", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         onUpdate={onUpdate}
@@ -766,7 +859,7 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("hides load more button when there's no next link for a list's entries", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         onUpdate={onUpdate}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -787,10 +880,10 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("disables load more button when loading more search results", () => {
-    let searchResultsWithNext = Object.assign({}, searchResultsData, {
-      nextPageUrl: "next"
+    const searchResultsWithNext = Object.assign({}, searchResultsData, {
+      nextPageUrl: "next",
     });
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsWithNext}
         entries={entriesData}
@@ -802,19 +895,23 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let button = wrapper.find(".custom-list-search-results .load-more-button").hostNodes();
+    let button = wrapper
+      .find(".custom-list-search-results .load-more-button")
+      .hostNodes();
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).not.to.be.true;
 
     wrapper.setProps({ isFetchingMoreSearchResults: true });
 
-    button = wrapper.find(".custom-list-search-results .load-more-button").hostNodes();
+    button = wrapper
+      .find(".custom-list-search-results .load-more-button")
+      .hostNodes();
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).to.equal(true);
   });
 
   it("disables load more button when loading more entries for a list", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         nextPageUrl={entriesNextPageUrl}
@@ -826,7 +923,9 @@ describe("CustomListEntriesEditor", () => {
       />,
       { context: fullContext, childContextTypes }
     );
-    let button = wrapper.find(".custom-list-entries .load-more-button").hostNodes();
+    let button = wrapper
+      .find(".custom-list-entries .load-more-button")
+      .hostNodes();
     expect(button.length).to.equal(1);
     expect(button.prop("disabled")).not.to.be.true;
 
@@ -838,10 +937,10 @@ describe("CustomListEntriesEditor", () => {
   });
 
   it("loads more search results", () => {
-    let searchResultsWithNext = Object.assign({}, searchResultsData, {
-      nextPageUrl: "next"
+    const searchResultsWithNext = Object.assign({}, searchResultsData, {
+      nextPageUrl: "next",
     });
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         searchResults={searchResultsWithNext}
         entries={entriesData}
@@ -854,13 +953,15 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let button = wrapper.find(".custom-list-search-results .load-more-button").at(0);
+    const button = wrapper
+      .find(".custom-list-search-results .load-more-button")
+      .at(0);
     button.simulate("click");
     expect(loadMoreSearchResults.callCount).to.equal(1);
   });
 
   it("loads more entries in a list", () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
         nextPageUrl={entriesNextPageUrl}
@@ -873,7 +974,7 @@ describe("CustomListEntriesEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let button = wrapper.find(".custom-list-entries .load-more-button").at(0);
+    const button = wrapper.find(".custom-list-entries .load-more-button").at(0);
     button.simulate("click");
     expect(loadMoreEntries.callCount).to.equal(1);
   });
@@ -907,7 +1008,9 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("No books in this list");
 
-    let addLink = wrapper.find(".custom-list-search-results .links").find(Button);
+    const addLink = wrapper
+      .find(".custom-list-search-results .links")
+      .find(Button);
     addLink.at(0).simulate("click");
 
     expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
@@ -918,8 +1021,8 @@ describe("CustomListEntriesEditor", () => {
     expect(display.text()).to.equal("Displaying 1 - 3 of 3 Books");
 
     // Adding more to the entries and search results:
-    let newEntriesData = generateEntries(10);
-    let newSearchResultsData = generateEntries(20, 20);
+    const newEntriesData = generateEntries(10);
+    const newSearchResultsData = generateEntries(20, 20);
     searchResultsData.books = newSearchResultsData;
     wrapper = mount(
       <CustomListEntriesEditor
@@ -960,7 +1063,7 @@ describe("CustomListEntriesEditor", () => {
 
     expect(display.text()).to.equal("Displaying 1 - 26 of 26 Books");
 
-    let deleteAllBtn = wrapper.find(".delete-all-button").at(0);
+    const deleteAllBtn = wrapper.find(".delete-all-button").at(0);
     deleteAllBtn.simulate("click");
 
     expect(display.text()).to.equal("No books in this list");

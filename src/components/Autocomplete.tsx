@@ -10,7 +10,10 @@ export interface AutocompleteProps {
   onChange?: () => void;
 }
 
-export default class Autocomplete extends React.Component<AutocompleteProps, {}> {
+export default class Autocomplete extends React.Component<
+  AutocompleteProps,
+  {}
+> {
   private inputRef = React.createRef<EditableInput>();
   render(): JSX.Element {
     return (
@@ -27,13 +30,14 @@ export default class Autocomplete extends React.Component<AutocompleteProps, {}>
           optionalText={false}
           onChange={this.props.onChange}
         />
-        <datalist
-          id={this.props.name + "-autocomplete-list"}
-          >
-          { this.props.autocompleteValues.map(value =>
-              <option value={value} key={value} aria-selected={this.props.value === value}></option>
-            )
-          }
+        <datalist id={this.props.name + "-autocomplete-list"}>
+          {this.props.autocompleteValues.map((value) => (
+            <option
+              value={value}
+              key={value}
+              aria-selected={this.props.value === value}
+            ></option>
+          ))}
         </datalist>
       </div>
     );

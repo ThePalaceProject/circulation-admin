@@ -11,7 +11,10 @@ export interface ColorPickerState {
   value?: string;
 }
 
-export default class ColorPicker extends React.Component<ColorPickerProps, ColorPickerState> {
+export default class ColorPicker extends React.Component<
+  ColorPickerProps,
+  ColorPickerState
+> {
   constructor(props) {
     super(props);
     this.state = { value: this.props.value };
@@ -26,12 +29,12 @@ export default class ColorPicker extends React.Component<ColorPickerProps, Color
           triangle="hide"
           width="500px"
           onChangeComplete={this.handleChange}
-          />
+        />
         <input
           type="hidden"
           name={this.props.setting.key}
           value={this.state.value}
-          />
+        />
       </div>
     );
   }

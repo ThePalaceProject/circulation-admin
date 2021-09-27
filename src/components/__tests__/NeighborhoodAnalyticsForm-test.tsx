@@ -17,37 +17,49 @@ describe("NeighborhoodAnalyticsForm", () => {
     patronAuthSetting = {
       key: "neighborhood_mode",
       label: "Patron Auth",
-      options: [{"key": "disabled", "label": "Off"}, {"key": "choice1", "label": "Choice 1" }, {"key": "choice2", "label": "Choice 2" }]
+      options: [
+        { key: "disabled", label: "Off" },
+        { key: "choice1", label: "Choice 1" },
+        { key: "choice2", label: "Choice 2" },
+      ],
     };
     analyticsSetting = {
       key: "location_source",
       label: "Analytics",
-      options: [{"key": "disabled", "label": "Off"}, {"key": "choice1", "label": "Choice 1" }, {"key": "choice2", "label": "Choice 2" }]
+      options: [
+        { key: "disabled", label: "Off" },
+        { key: "choice1", label: "Choice 1" },
+        { key: "choice2", label: "Choice 2" },
+      ],
     };
     wrapper = mount(<NeighborhoodAnalyticsForm setting={patronAuthSetting} />);
   });
 
-  let chooseOption = (option: string) => {
-    let select = wrapper.find("select") as any;
-    let selectElement = select.getDOMNode();
+  const chooseOption = (option: string) => {
+    const select = wrapper.find("select") as any;
+    const selectElement = select.getDOMNode();
     selectElement.value = option;
     select.simulate("change");
     wrapper.update();
   };
 
   it("renders a panel", () => {
-    let panel = wrapper.find(Panel);
+    const panel = wrapper.find(Panel);
     expect(panel.length).to.equal(1);
-    expect(panel.prop("headerText")).to.contain("Patron Neighborhood Analytics");
+    expect(panel.prop("headerText")).to.contain(
+      "Patron Neighborhood Analytics"
+    );
   });
 
   it("renders an EditableInput component", () => {
-    let input = wrapper.find(EditableInput);
+    const input = wrapper.find(EditableInput);
     expect(input.length).to.equal(1);
-    let select = input.find("select");
+    const select = input.find("select");
     expect(select.length).to.equal(1);
     select.find("option").map((o, idx) => {
-      expect(o.prop("value")).to.equal(wrapper.prop("setting").options[idx].key);
+      expect(o.prop("value")).to.equal(
+        wrapper.prop("setting").options[idx].key
+      );
       expect(o.text()).to.equal(wrapper.prop("setting").options[idx].label);
     });
   });
@@ -61,14 +73,22 @@ describe("NeighborhoodAnalyticsForm", () => {
     chooseOption("choice1");
     warning = wrapper.find(".bg-warning");
     expect(warning.length).to.equal(1);
-    expect(warning.text()).to.equal("This feature will work only if it is also enabled in your local analytics service configuration settings.");
-    expect(warning.find("a").prop("href")).to.equal("/admin/web/config/analytics");
+    expect(warning.text()).to.equal(
+      "This feature will work only if it is also enabled in your local analytics service configuration settings."
+    );
+    expect(warning.find("a").prop("href")).to.equal(
+      "/admin/web/config/analytics"
+    );
 
     wrapper.setProps({ setting: analyticsSetting });
     warning = wrapper.find(".bg-warning");
     expect(warning.length).to.equal(1);
-    expect(warning.text()).to.equal("This feature will work only if it is also enabled in your patron authentication service configuration settings.");
-    expect(warning.find("a").prop("href")).to.equal("/admin/web/config/patronAuth");
+    expect(warning.text()).to.equal(
+      "This feature will work only if it is also enabled in your patron authentication service configuration settings."
+    );
+    expect(warning.find("a").prop("href")).to.equal(
+      "/admin/web/config/patronAuth"
+    );
   });
 
   it("updates the state when an option is chosen", () => {
@@ -78,7 +98,12 @@ describe("NeighborhoodAnalyticsForm", () => {
   });
 
   it("updates the state to match the currentValue prop", () => {
-    wrapper = mount(<NeighborhoodAnalyticsForm setting={patronAuthSetting} currentValue={"choice1"} />);
+    wrapper = mount(
+      <NeighborhoodAnalyticsForm
+        setting={patronAuthSetting}
+        currentValue={"choice1"}
+      />
+    );
     expect(wrapper.state()["selected"]).to.equal("choice1");
   });
 
@@ -107,8 +132,14 @@ describe("NeighborhoodAnalyticsForm", () => {
   });
 
   it("provides the name of the paired service", () => {
-    expect(wrapper.instance().getPairedService(patronAuthSetting)).to.eql(["/admin/web/config/analytics", "local analytics service configuration settings"]);
-    expect(wrapper.instance().getPairedService(analyticsSetting)).to.eql(["/admin/web/config/patronAuth", "patron authentication service configuration settings"]);
+    expect(wrapper.instance().getPairedService(patronAuthSetting)).to.eql([
+      "/admin/web/config/analytics",
+      "local analytics service configuration settings",
+    ]);
+    expect(wrapper.instance().getPairedService(analyticsSetting)).to.eql([
+      "/admin/web/config/patronAuth",
+      "patron authentication service configuration settings",
+    ]);
   });
 
   it("returns the value of the currently selected option", () => {

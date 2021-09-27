@@ -1,23 +1,34 @@
 import * as React from "react";
-import DefaultBookDetails, { BookDetailsProps as DefaultBookDetailsProps } from "opds-web-client/lib/components/BookDetails";
+import DefaultBookDetails, {
+  BookDetailsProps as DefaultBookDetailsProps,
+} from "opds-web-client/lib/components/BookDetails";
 
-export default class BookDetails extends DefaultBookDetails<DefaultBookDetailsProps> {
-
+export default class BookDetails extends DefaultBookDetails<
+  DefaultBookDetailsProps
+> {
   fieldNames() {
-    return ["Published", "Publisher", "Audience", "Categories", "Distributed By"];
+    return [
+      "Published",
+      "Publisher",
+      "Audience",
+      "Categories",
+      "Distributed By",
+    ];
   }
 
   fields() {
-    let fields = super.fields();
-    let categoriesIndex = fields.findIndex(field => field.name === "Categories");
+    const fields = super.fields();
+    const categoriesIndex = fields.findIndex(
+      (field) => field.name === "Categories"
+    );
     fields[categoriesIndex].value = this.categories();
     fields.push({
       name: "Audience",
-      value: this.audience()
+      value: this.audience(),
     });
     fields.push({
       name: "Distributed By",
-      value: this.distributor()
+      value: this.distributor(),
     });
     return fields;
   }
@@ -27,14 +38,16 @@ export default class BookDetails extends DefaultBookDetails<DefaultBookDetailsPr
       return null;
     }
 
-    let categories = this.props.book.raw.category;
+    const categories = this.props.book.raw.category;
 
     if (!categories) {
       return null;
     }
 
-    let audience = categories.find(category =>
-      category["$"]["scheme"] && category["$"]["scheme"]["value"] === "http://schema.org/audience"
+    const audience = categories.find(
+      (category) =>
+        category["$"]["scheme"] &&
+        category["$"]["scheme"]["value"] === "http://schema.org/audience"
     );
 
     if (!audience) {
@@ -47,12 +60,15 @@ export default class BookDetails extends DefaultBookDetails<DefaultBookDetailsPr
       return audienceStr;
     }
 
-    let targetAge = categories.find(category =>
-      category["$"]["scheme"] && category["$"]["scheme"]["value"] === "http://schema.org/typicalAgeRange"
+    const targetAge = categories.find(
+      (category) =>
+        category["$"]["scheme"] &&
+        category["$"]["scheme"]["value"] === "http://schema.org/typicalAgeRange"
     );
 
     if (targetAge) {
-      let targetAgeStr = targetAge["$"]["label"] && targetAge["$"]["label"]["value"];
+      const targetAgeStr =
+        targetAge["$"]["label"] && targetAge["$"]["label"]["value"];
       audienceStr += " (age " + targetAgeStr + ")";
     }
 
@@ -64,24 +80,33 @@ export default class BookDetails extends DefaultBookDetails<DefaultBookDetailsPr
       return null;
     }
 
-    let audienceSchemas = [
+    const audienceSchemas = [
       "http://schema.org/audience",
-      "http://schema.org/typicalAgeRange"
+      "http://schema.org/typicalAgeRange",
     ];
-    let fictionScheme = "http://librarysimplified.org/terms/fiction/";
-    let rawCategories = this.props.book.raw.category || [];
+    const fictionScheme = "http://librarysimplified.org/terms/fiction/";
+    const rawCategories = this.props.book.raw.category || [];
 
-    let categories = rawCategories.filter(category =>
-      category["$"]["label"] && category["$"]["scheme"] &&
-          audienceSchemas.concat([fictionScheme])
-              .indexOf(category["$"]["scheme"]["value"]) === -1
-    ).map(category => category["$"]["label"]["value"]);
+    let categories = rawCategories
+      .filter(
+        (category) =>
+          category["$"]["label"] &&
+          category["$"]["scheme"] &&
+          audienceSchemas
+            .concat([fictionScheme])
+            .indexOf(category["$"]["scheme"]["value"]) === -1
+      )
+      .map((category) => category["$"]["label"]["value"]);
 
     if (!categories.length) {
-      categories = rawCategories.filter(category =>
-        category["$"]["label"] && category["$"]["scheme"] &&
+      categories = rawCategories
+        .filter(
+          (category) =>
+            category["$"]["label"] &&
+            category["$"]["scheme"] &&
             category["$"]["scheme"]["value"] === fictionScheme
-      ).map(category => category["$"]["label"]["value"]);
+        )
+        .map((category) => category["$"]["label"]["value"]);
     }
 
     return categories.length > 0 ? categories.join(", ") : null;
@@ -92,12 +117,12 @@ export default class BookDetails extends DefaultBookDetails<DefaultBookDetailsPr
       return null;
     }
 
-    let rawDistributionTags = this.props.book.raw["bibframe:distribution"];
+    const rawDistributionTags = this.props.book.raw["bibframe:distribution"];
     if (!rawDistributionTags || rawDistributionTags.length < 1) {
       return null;
     }
 
-    let distributor = rawDistributionTags[0]["$"]["bibframe:ProviderName"];
+    const distributor = rawDistributionTags[0]["$"]["bibframe:ProviderName"];
     if (!distributor) {
       return null;
     }

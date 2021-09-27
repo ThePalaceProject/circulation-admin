@@ -8,17 +8,22 @@ export interface WithRemoveButtonProps {
 }
 
 /** When wrapped around an element, renders a remove button next to the element. */
-export default class WithRemoveButton extends React.Component<WithRemoveButtonProps, {}> {
+export default class WithRemoveButton extends React.Component<
+  WithRemoveButtonProps,
+  {}
+> {
   static defaultProps = {
-    disabled: false
+    disabled: false,
   };
   render(): JSX.Element {
-    const removeContent = <span>Delete <TrashIcon /></span>;
+    const removeContent = (
+      <span>
+        Delete <TrashIcon />
+      </span>
+    );
     return (
       <div className="with-remove-button">
-        <span>
-          { this.props.children }
-        </span>
+        <span>{this.props.children}</span>
         <Button
           className="remove-btn danger small"
           callback={this.onClick.bind(this)}

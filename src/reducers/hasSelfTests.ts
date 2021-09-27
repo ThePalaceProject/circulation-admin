@@ -4,13 +4,13 @@ import ActionCreator from "../actions";
 
 const loadCB = (state, action) => {
   const data = JSON.parse(JSON.stringify(state.data));
-  let dataType = Object.keys(data)[0];
+  const dataType = Object.keys(data)[0];
 
   if (!data[dataType].length) {
     return {};
   }
 
-  data[dataType].forEach(x => {
+  data[dataType].forEach((x) => {
     if (x.id === action.data.self_test_results.id) {
       x.self_test_results = action.data.self_test_results.self_test_results;
     }
