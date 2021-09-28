@@ -81,6 +81,7 @@
 
   .available-lists, .current-lists {
     display: flex;
+    min-width: 20em;
     flex-direction: column;
     flex-basis: 44%;
     margin-top: 15px;
@@ -109,6 +110,7 @@
 
       .available-list, .current-list {
         display: flex;
+        min-width: 20em;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
