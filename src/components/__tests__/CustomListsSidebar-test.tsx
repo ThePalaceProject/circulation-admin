@@ -8,6 +8,7 @@ import CustomListsSidebar from "../CustomListsSidebar";
 import EditableInput from "../EditableInput";
 import { Link } from "react-router";
 import { Button } from "library-simplified-reusable-components";
+import { ListManagerProvider } from "../ListManagerContext";
 
 describe("CustomListsSidebar", () => {
   let wrapper: Enzyme.CommonWrapper<any, any, {}>;
@@ -21,14 +22,19 @@ describe("CustomListsSidebar", () => {
       { id: 2, name: "Second List", entry_count: 10 },
     ];
     wrapper = Enzyme.mount(
-      <CustomListsSidebar
-        lists={lists}
-        library="library_name"
-        identifier="123"
-        deleteCustomList={deleteCustomList}
-        changeSort={changeSort}
-        sortOrder="asc"
-      />
+      <ListManagerProvider
+        email="test@test.com"
+        roles={[{ library: "OWL", role: "system" }]}
+      >
+        <CustomListsSidebar
+          lists={lists}
+          library="library_name"
+          identifier="123"
+          deleteCustomList={deleteCustomList}
+          changeSort={changeSort}
+          sortOrder="asc"
+        />
+      </ListManagerProvider>
     );
   });
 
@@ -43,21 +49,11 @@ describe("CustomListsSidebar", () => {
   });
 
   it("renders sort buttons", () => {
-    let sortButtons = wrapper.find("fieldset");
-    let asc = sortButtons.find(".form-group").at(0);
-    let desc = sortButtons.find(".form-group").at(1);
-    expect(asc.text()).to.equal("Sort A-Z");
-    expect(asc.find("input").prop("checked")).to.be.true;
-    expect(desc.text()).to.equal("Sort Z-A");
-    expect(desc.find("input").prop("checked")).to.be.false;
-
-    wrapper.setProps({ sortOrder: "desc" });
-    sortButtons = wrapper.find("fieldset");
-    asc = sortButtons.find(".form-group").at(0);
-    desc = sortButtons.find(".form-group").at(1);
-
-    expect(desc.find("input").prop("checked")).to.be.true;
-    expect(asc.find("input").prop("checked")).to.be.false;
+    const sortButtons = wrapper.find(EditableInput);
+    const ascendingButton = sortButtons.at(0);
+    const descendingButton = sortButtons.at(1);
+    expect(ascendingButton.text()).to.equal("Sort A-Z");
+    expect(descendingButton.text()).to.equal("Sort Z-A");
   });
 
   it("renders a list of custom list info items", () => {
@@ -103,7 +99,18 @@ describe("CustomListsSidebar", () => {
     let firstListEdit = wrapper.find(".custom-list-buttons").at(0).find(Link);
     expect(firstListEdit.hasClass("disabled")).to.be.false;
     expect(firstListEdit.text()).to.equal("EditPencil Icon");
-    wrapper.setProps({ identifier: "1" });
+    wrapper.setProps({
+      children: (
+        <CustomListsSidebar
+          lists={lists}
+          library="library_name"
+          identifier="1"
+          deleteCustomList={deleteCustomList}
+          changeSort={changeSort}
+          sortOrder="asc"
+        />
+      ),
+    });
     firstListEdit = wrapper
       .find(".custom-list-buttons")
       .at(0)
@@ -114,10 +121,27 @@ describe("CustomListsSidebar", () => {
   });
 
   it("displays the delete button only to library managers", () => {
-    let deleteButtons = wrapper.find(".custom-list-buttons button");
+    const deleteButtons = wrapper.find(".custom-list-buttons button");
     expect(deleteButtons.length).to.equal(2);
-    // wrapper.setProps({ isLibraryManager: false });
-    deleteButtons = wrapper.find(".custom-list-buttons button");
+  });
+
+  it("does not display the delete button to non-managers", () => {
+    wrapper = Enzyme.mount(
+      <ListManagerProvider
+        email="test@test.com"
+        roles={[{ library: "OWL", role: "librarian" }]}
+      >
+        <CustomListsSidebar
+          lists={lists}
+          library="library_name"
+          identifier="123"
+          deleteCustomList={deleteCustomList}
+          changeSort={changeSort}
+          sortOrder="asc"
+        />
+      </ListManagerProvider>
+    );
+    const deleteButtons = wrapper.find(".custom-list-buttons button");
     expect(deleteButtons.length).to.equal(0);
   });
 });

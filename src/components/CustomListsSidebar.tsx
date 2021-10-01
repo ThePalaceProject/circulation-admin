@@ -28,7 +28,7 @@ export default function CustomListsSidebar({
   const renderSortButtons = () => {
     const sortOrders = ["asc", "desc"];
     return (
-      <fieldset>
+      <fieldset className="sort-options">
         <legend className="visuallyHidden">Select list sort type</legend>
         {sortOrders.map((order) => {
           const isChecked = sortOrder === order;
