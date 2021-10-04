@@ -82,9 +82,9 @@ class CirculationWeb {
           <TOSContextProvider
             value={...[config.tos_link_text, config.tos_link_href]}
           >
-            {/* ListManagerContext is only needed 
-            by the components within the CustomListPage route, 
-            but only works when wrapped around the entire Router */}
+            {/** ListManagerContext is only used by the components within the
+             * CustomListPage route. However, the Provider only works when wrapped
+             * around the entire Router. */}
             <ListManagerProvider email={config.email} roles={config.roles}>
               <Router history={browserHistory}>
                 <Route path={catalogEditorPath} component={CatalogPage} />

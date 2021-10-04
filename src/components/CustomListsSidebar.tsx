@@ -1,12 +1,8 @@
 import * as React from "react";
-import PencilIcon from "./icons/PencilIcon";
-import TrashIcon from "./icons/TrashIcon";
-import { Button } from "library-simplified-reusable-components";
 import { CustomListData } from "../interfaces";
-import EditableInput from "./EditableInput";
 import { Link } from "react-router";
-import { ListManagerContext } from "./ListManagerContext";
-
+import SortButtons from "./SortButtons";
+import ListInfo from "./ListInfo";
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
   library: string;
@@ -24,75 +20,6 @@ export default function CustomListsSidebar({
   changeSort,
   sortOrder,
 }: CustomListsSidebarProps): JSX.Element {
-  const admin = React.useContext(ListManagerContext);
-  const renderSortButtons = () => {
-    const sortOrders = ["asc", "desc"];
-    return (
-      <fieldset className="sort-options">
-        <legend className="visuallyHidden">Select list sort type</legend>
-        {sortOrders.map((order) => {
-          const isChecked = sortOrder === order;
-          return (
-            <EditableInput
-              key={order}
-              type="radio"
-              label={order === "asc" ? "Sort A-Z" : "Sort Z-A"}
-              name="sort"
-              onChange={changeSort}
-              checked={isChecked}
-              disabled={false}
-            />
-          );
-        })}
-      </fieldset>
-    );
-  };
-
-  const renderListInfo = (list: CustomListData) => {
-    const isActive = identifier === list.id.toString();
-
-    return (
-      <li key={list.id} className={isActive ? "active" : ""}>
-        <div className="custom-list-info">
-          <p>{list.name}</p>
-          <p>Books in list: {list.entry_count}</p>
-          <p>ID-{list.id}</p>
-        </div>
-        <div className="custom-list-buttons">
-          {isActive ? (
-            <Button
-              disabled={true}
-              content="Editing"
-              className="left-align small"
-            />
-          ) : (
-            <Link
-              to={"/admin/web/lists/" + library + "/edit/" + list.id}
-              className="btn left-align small"
-            >
-              <span>
-                Edit
-                <PencilIcon />
-              </span>
-            </Link>
-          )}
-          {admin && admin.isLibraryManager(library) && (
-            <Button
-              callback={() => deleteCustomList(list)}
-              content={
-                <span>
-                  Delete
-                  <TrashIcon />
-                </span>
-              }
-              className="right-align small danger"
-            />
-          )}
-        </div>
-      </li>
-    );
-  };
-
   return (
     <div className="custom-lists-sidebar">
       <h2>List Manager</h2>
@@ -102,11 +29,20 @@ export default function CustomListsSidebar({
       >
         Create New List
       </Link>
-
       {lists && lists.length > 0 && (
         <div>
-          {renderSortButtons()}
-          <ul>{lists.map((list) => renderListInfo(list))}</ul>
+          <SortButtons changeSort={changeSort} sortOrder={sortOrder} />
+          <ul>
+            {lists.map((list, idx) => (
+              <ListInfo
+                key={idx}
+                list={list}
+                identifier={identifier}
+                deleteCustomList={deleteCustomList}
+                library={library}
+              />
+            ))}
+          </ul>
         </div>
       )}
     </div>

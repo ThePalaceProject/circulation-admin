@@ -17,7 +17,6 @@ import {
   LanesData,
   LanguagesData,
 } from "../interfaces";
-import Admin from "../models/Admin";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
