@@ -3,8 +3,8 @@ import { CustomListData } from "../interfaces";
 import { Link } from "react-router";
 import SortButtons from "./SortButtons";
 import CustomListInfo from "./CustomListInfo";
+import { SortOrder } from "./CustomLists";
 
-export type SortOrder = "asc" | "desc";
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
   library: string;

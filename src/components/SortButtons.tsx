@@ -1,6 +1,6 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { SortOrder } from "./CustomListsSidebar";
+import { SortOrder } from "./CustomLists";
 
 export interface SortButtonsProps {
   changeSort: () => void;

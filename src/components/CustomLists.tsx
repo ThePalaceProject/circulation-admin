@@ -52,6 +52,8 @@ export interface CustomListsDispatchProps {
   fetchLanguages: () => void;
 }
 
+export type SortOrder = "asc" | "desc";
+
 export interface CustomListsOwnProps {
   store?: Store<State>;
   library: string;
@@ -68,7 +70,7 @@ export interface CustomListsProps
     CustomListsOwnProps {}
 
 export interface CustomListsState {
-  sort: "asc" | "desc";
+  sort: SortOrder;
 }
 
 /** Body of the custom lists page, with all a library's lists shown in a left sidebar and
