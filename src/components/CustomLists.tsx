@@ -16,8 +16,8 @@ import {
   LaneData,
   LanesData,
   LanguagesData,
+  SortOrder,
 } from "../interfaces";
-import Admin from "../models/Admin";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
@@ -69,7 +69,7 @@ export interface CustomListsProps
     CustomListsOwnProps {}
 
 export interface CustomListsState {
-  sort: string;
+  sort: SortOrder;
 }
 
 /** Body of the custom lists page, with all a library's lists shown in a left sidebar and
@@ -78,12 +78,6 @@ export class CustomLists extends React.Component<
   CustomListsProps,
   CustomListsState
 > {
-  context: { admin: Admin };
-
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
     this.editCustomList = this.editCustomList.bind(this);
@@ -129,9 +123,6 @@ export class CustomLists extends React.Component<
         lists={this.sortedLists()}
         library={this.props.library}
         identifier={this.props.identifier}
-        isLibraryManager={this.context.admin.isLibraryManager(
-          this.props.library
-        )}
         deleteCustomList={this.deleteCustomList}
         changeSort={this.changeSort}
         sortOrder={this.state.sort}

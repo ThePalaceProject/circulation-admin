@@ -1,10 +1,14 @@
 ## Changelog
 
-### September 17, 2021
+### v0.5.6
 
 #### Updated
 
 - Updated node-sass and sass-loader dependency versions to reduce the number of high risk vulnerabilities.
+
+#### Refactored
+
+- Refactored the `CustomListsSidebar` component to bring it up-to-date with current best practices. Added/edited tests where needed.
 
 ### v0.5.5
 
