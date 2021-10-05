@@ -8,7 +8,7 @@
 
 #### Refactored
 
-- Refactored the `CustomListsSidebar` component to bring up-to-date with current best practices. Added/edited tests where needed.
+- Refactored the `CustomListsSidebar` component to bring it up-to-date with current best practices. Added/edited tests where needed.
 
 ### v0.5.5
 

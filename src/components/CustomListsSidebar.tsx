@@ -3,14 +3,23 @@ import { CustomListData } from "../interfaces";
 import { Link } from "react-router";
 import SortButtons from "./SortButtons";
 import CustomListInfo from "./CustomListInfo";
+
+export type SortOrder = "asc" | "desc";
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
   library: string;
   identifier?: string;
   deleteCustomList: (list: CustomListData) => Promise<void>;
   changeSort: () => void;
-  sortOrder: "asc" | "desc";
+  sortOrder: SortOrder;
 }
+
+/**
+ * A child of CustomLists, the CustomListsSidebar is responsible for
+ * the List Manager’s left-hand sidebar, which contains the “Create New List”
+ * button followed by a preview of the existing lists – sorted A-Z or Z-A –
+ * each containing an “Edit” and a “Delete” button.
+ */
 
 export default function CustomListsSidebar({
   lists,

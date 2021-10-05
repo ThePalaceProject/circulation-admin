@@ -1,9 +1,10 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
+import { SortOrder } from "./CustomListsSidebar";
 
 export interface SortButtonsProps {
   changeSort: () => void;
-  sortOrder: "asc" | "desc";
+  sortOrder: SortOrder;
 }
 
 export default function SortButtons({
