@@ -450,3 +450,5 @@ export interface AnnouncementData {
   start: string;
   finish: string;
 }
+
+export type SortOrder = "asc" | "desc";

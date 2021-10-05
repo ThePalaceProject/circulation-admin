@@ -1,10 +1,8 @@
 import * as React from "react";
-import { CustomListData } from "../interfaces";
+import { CustomListData, SortOrder } from "../interfaces";
 import { Link } from "react-router";
 import SortButtons from "./SortButtons";
 import CustomListInfo from "./CustomListInfo";
-import { SortOrder } from "./CustomLists";
-
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
   library: string;

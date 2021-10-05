@@ -16,6 +16,7 @@ import {
   LaneData,
   LanesData,
   LanguagesData,
+  SortOrder,
 } from "../interfaces";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
@@ -51,8 +52,6 @@ export interface CustomListsDispatchProps {
   fetchLibraries: () => void;
   fetchLanguages: () => void;
 }
-
-export type SortOrder = "asc" | "desc";
 
 export interface CustomListsOwnProps {
   store?: Store<State>;
