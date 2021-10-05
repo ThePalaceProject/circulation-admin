@@ -2,7 +2,7 @@ import * as React from "react";
 import { CustomListData } from "../interfaces";
 import { Link } from "react-router";
 import SortButtons from "./SortButtons";
-import ListInfo from "./ListInfo";
+import CustomListInfo from "./CustomListInfo";
 export interface CustomListsSidebarProps {
   lists: CustomListData[];
   library: string;
@@ -34,7 +34,7 @@ export default function CustomListsSidebar({
           <SortButtons changeSort={changeSort} sortOrder={sortOrder} />
           <ul>
             {lists.map((list, idx) => (
-              <ListInfo
+              <CustomListInfo
                 key={idx}
                 list={list}
                 identifier={identifier}

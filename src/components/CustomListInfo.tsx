@@ -13,7 +13,7 @@ export interface ListInfoProps {
   library: string;
 }
 
-export default function ListInfo({
+export default function CustomListInfo({
   list,
   identifier,
   deleteCustomList,

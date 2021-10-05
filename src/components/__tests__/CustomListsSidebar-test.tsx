@@ -1,9 +1,7 @@
 import { expect } from "chai";
-import { stub, spy } from "sinon";
-
+import { stub } from "sinon";
 import * as React from "react";
 import * as Enzyme from "enzyme";
-
 import CustomListsSidebar from "../CustomListsSidebar";
 import EditableInput from "../EditableInput";
 import { Link } from "react-router";
@@ -46,14 +44,6 @@ describe("CustomListsSidebar", () => {
     expect(createButton.prop("to")).to.equal(
       "/admin/web/lists/library_name/create"
     );
-  });
-
-  it("renders sort buttons", () => {
-    const sortButtons = wrapper.find(EditableInput);
-    const ascendingButton = sortButtons.at(0);
-    const descendingButton = sortButtons.at(1);
-    expect(ascendingButton.text()).to.equal("Sort A-Z");
-    expect(descendingButton.text()).to.equal("Sort Z-A");
   });
 
   it("renders a list of custom list info items", () => {
