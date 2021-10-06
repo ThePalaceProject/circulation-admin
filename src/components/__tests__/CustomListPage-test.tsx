@@ -1,40 +1,37 @@
 import { expect } from "chai";
-import { stub } from "sinon";
-
 import * as React from "react";
-import { shallow } from "enzyme";
-
-import buildStore from "../../store";
+import * as Enzyme from "enzyme";
 import CustomListPage from "../CustomListPage";
 import CustomLists from "../CustomLists";
+import { ListManagerProvider } from "../ListManagerContext";
+import { Header } from "../Header";
+import Footer from "../Footer";
 
 describe("CustomListPage", () => {
   let wrapper;
-  let store;
-  let context;
+  let params;
 
   beforeEach(() => {
-    store = buildStore();
-    context = {
-      editorStore: store,
-      csrfToken: "token",
-    };
-    const params = {
+    params = {
       library: "library",
       editOrCreate: "edit",
       identifier: "identifier",
     };
 
-    wrapper = shallow(<CustomListPage params={params} />, { context });
+    wrapper = Enzyme.shallow(
+      <ListManagerProvider
+        email="test@test.com"
+        roles={[{ library: "OWL", role: "system" }]}
+        csrfToken="token"
+      >
+        <CustomListPage params={params} />
+      </ListManagerProvider>
+    );
   });
 
-  it("shows custom lists with info from params", () => {
-    const customLists = wrapper.find(CustomLists);
-    expect(customLists).to.be.ok;
-    expect(customLists.props().library).to.equal("library");
-    expect(customLists.props().editOrCreate).to.equal("edit");
-    expect(customLists.props().identifier).to.equal("identifier");
-    expect(customLists.props().store).to.equal(store);
-    expect(customLists.props().csrfToken).to.equal("token");
+  it("renders Header, Footer, and CustomLists components", () => {
+    expect(wrapper.find(Header)).to.be.ok;
+    expect(wrapper.find(CustomLists)).to.be.ok;
+    expect(wrapper.find(Footer)).to.be.ok;
   });
 });

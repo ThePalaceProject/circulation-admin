@@ -85,7 +85,11 @@ class CirculationWeb {
             {/** ListManagerContext is only used by the components within the
              * CustomListPage route. However, the Provider only works when wrapped
              * around the entire Router. */}
-            <ListManagerProvider email={config.email} roles={config.roles}>
+            <ListManagerProvider
+              email={config.email}
+              roles={config.roles}
+              csrfToken={config.csrfToken}
+            >
               <Router history={browserHistory}>
                 <Route path={catalogEditorPath} component={CatalogPage} />
                 <Route path={customListPagePath} component={CustomListPage} />
