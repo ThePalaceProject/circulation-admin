@@ -26,6 +26,7 @@ describe("CustomLists", () => {
   let fetchLibraries;
   let fetchLanes;
   let fetchLanguages;
+  let customListsProps;
 
   const listsData = [
     { id: 1, name: "a list", entry_count: 0, collections: [] },
@@ -143,35 +144,37 @@ describe("CustomLists", () => {
       );
       fetchLanguages = stub();
 
+      customListsProps = {
+        csrfToken: "token",
+        library: "library",
+        lists: listsData,
+        searchResults: searchResults,
+        collections: collections,
+        isFetching: false,
+        isFetchingMoreSearchResults: false,
+        isFetchingMoreCustomListEntries: false,
+        fetchLanguages: fetchLanguages,
+        fetchCustomLists: fetchCustomLists,
+        fetchCustomListDetails: fetchCustomListDetails,
+        editCustomList: editCustomList,
+        deleteCustomList: deleteCustomList,
+        search: search,
+        loadMoreSearchResults: loadMoreSearchResults,
+        loadMoreEntries: loadMoreEntries,
+        fetchCollections: fetchCollections,
+        fetchLibraries: fetchLibraries,
+        fetchLanes: fetchLanes,
+        libraries: libraries,
+        languages: languages,
+      };
+
       wrapper = mount(
         <ListManagerProvider
           email="test@test.com"
-          roles={[{ library: "OWL", role: "libraryManager" }]}
+          roles={[{ library: "library", role: "libraryManager" }]}
           csrfToken="token"
         >
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={false}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchLanguages={fetchLanguages}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            libraries={libraries}
-            languages={languages}
-          />
+          <CustomLists {...customListsProps} />
         </ListManagerProvider>
       );
     });
@@ -188,27 +191,7 @@ describe("CustomLists", () => {
       wrapper.setProps({
         children: (
           <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={false}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchLanguages={fetchLanguages}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            libraries={libraries}
-            languages={languages}
+            {...customListsProps}
             fetchError={{ status: 500, response: "Error", url: "url" }}
           />
         ),
@@ -222,31 +205,7 @@ describe("CustomLists", () => {
       expect(loading.length).to.equal(0);
 
       wrapper.setProps({
-        children: (
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={true}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchLanguages={fetchLanguages}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            libraries={libraries}
-            languages={languages}
-          />
-        ),
+        children: <CustomLists {...customListsProps} isFetching={true} />,
       });
       loading = wrapper.find(LoadingIndicator);
       expect(loading.length).to.equal(1);
@@ -263,118 +222,28 @@ describe("CustomLists", () => {
       wrapper = mount(
         <ListManagerProvider
           email="test@test.com"
-          roles={[{ library: "OWL", role: "libraryManager" }]}
+          roles={[{ library: "library", role: "libraryManager" }]}
           csrfToken="token"
         >
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={undefined}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={false}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            fetchLanguages={fetchLanguages}
-            languages={languages}
-          />
+          <CustomLists {...customListsProps} />
         </ListManagerProvider>
       );
       wrapper.setProps({
-        children: (
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={[]}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={true}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchLanguages={fetchLanguages}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            libraries={libraries}
-            languages={languages}
-          />
-        ),
+        children: <CustomLists {...customListsProps} lists={[]} />,
       });
       expect(window.location.href).to.contain("create");
 
       wrapper = mount(
         <ListManagerProvider
           email="test@test.com"
-          roles={[{ library: "OWL", role: "libraryManager" }]}
+          roles={[{ library: "library", role: "libraryManager" }]}
           csrfToken="token"
         >
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={undefined}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={false}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            fetchLanguages={fetchLanguages}
-            languages={languages}
-          />
+          <CustomLists {...customListsProps} />
         </ListManagerProvider>
       );
       wrapper.setProps({
-        children: (
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={true}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchLanguages={fetchLanguages}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            libraries={libraries}
-            languages={languages}
-          />
-        ),
+        children: <CustomLists {...customListsProps} lists={listsData} />,
       });
       expect(window.location.href).to.contain("edit");
       expect(window.location.href).to.contain("1");
@@ -384,31 +253,10 @@ describe("CustomLists", () => {
       wrapper = mount(
         <ListManagerProvider
           email="test@test.com"
-          roles={[{ library: "OWL", role: "libraryManager" }]}
+          roles={[{ library: "library", role: "libraryManager" }]}
           csrfToken="token"
         >
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={false}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            fetchLanguages={fetchLanguages}
-            languages={languages}
-          />
+          <CustomLists {...customListsProps} />
         </ListManagerProvider>
       );
       let radioButtons = wrapper.find(EditableInput);
@@ -450,31 +298,10 @@ describe("CustomLists", () => {
       wrapper = mount(
         <ListManagerProvider
           email="test@test.com"
-          roles={[{ library: "OWL", role: "librarian" }]}
+          roles={[{ library: "library", role: "librarian" }]}
           csrfToken="token"
         >
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={false}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            fetchLanguages={fetchLanguages}
-            languages={languages}
-          />
+          <CustomLists {...customListsProps} />
         </ListManagerProvider>
       );
       const lists = wrapper.find("li");
@@ -501,76 +328,56 @@ describe("CustomLists", () => {
       expect(listZDeleteButton.length).to.equal(0);
     });
 
-    // it("fetches lanes to be deleted", async () => {
-    //   let deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(
-    //     listsData[1].id
-    //   );
-    //   // There are no lanes so fetch them.
-    //   expect(fetchLanes.callCount).to.equal(1);
+    it("fetches lanes to be deleted", async () => {
+      let deletedLanes = await (wrapper
+        .children(0)
+        .instance() as CustomLists).getDeletedLanes(listsData[1].id);
+      // There are no lanes so fetch them.
+      expect(fetchLanes.callCount).to.equal(1);
 
-    //   // But now manually setting the lanes so the fetchLanes
-    //   // call count should still remain at 1.
-    //   wrapper.setProps({ lanes: allLanes });
+      // But now manually setting the lanes so the fetchLanes
+      // call count should still remain at 1.
+      wrapper.setProps({
+        children: <CustomLists {...customListsProps} lanes={allLanes} />,
+      });
 
-    //   deletedLanes = await (wrapper.instance() as CustomLists).getDeletedLanes(
-    //     listsData[1].id
-    //   );
+      deletedLanes = await (wrapper
+        .children(0)
+        .instance() as CustomLists).getDeletedLanes(listsData[1].id);
 
-    //   expect(fetchLanes.callCount).to.equal(1);
-    //   expect(deletedLanes.length).to.equal(2);
-    //   expect(deletedLanes[0]).to.equal(lane1);
-    //   expect(deletedLanes[1]).to.equal(lane2);
-    // });
+      expect(fetchLanes.callCount).to.equal(1);
+      expect(deletedLanes.length).to.equal(2);
+      expect(deletedLanes[0]).to.equal(lane1);
+      expect(deletedLanes[1]).to.equal(lane2);
+    });
 
-    // it("outputs a list of lanes that will be deleted when a list is deleted", () => {
-    //   const prompt = (wrapper.instance() as CustomLists).deletedLaneNames(
-    //     lanesToDelete
-    //   );
-    //   expect(prompt).to.equal(
-    //     "Deleting this list will delete the following lanes:\n" +
-    //       "\nLane name: lane 1\nLane name: lane 2"
-    //   );
-    // });
+    it("outputs a list of lanes that will be deleted when a list is deleted", () => {
+      const prompt = (wrapper
+        .children(0)
+        .instance() as CustomLists).deletedLaneNames(lanesToDelete);
+      expect(prompt).to.equal(
+        "Deleting this list will delete the following lanes:\n" +
+          "\nLane name: lane 1\nLane name: lane 2"
+      );
+    });
 
-    // it("edits a list", () => {
-    //   const testData = new (window as any).FormData();
-    //   (wrapper.instance() as CustomLists).editCustomList(testData, "id");
-    //   expect(editCustomList.callCount).to.equal(1);
-    //   expect(editCustomList.args[0][0]).to.equal(testData);
-    //   expect(editCustomList.args[0][1]).to.equal("id");
-    // });
+    it("edits a list", () => {
+      const testData = new (window as any).FormData();
+      (wrapper.children(0).instance() as CustomLists).editCustomList(
+        testData,
+        "id"
+      );
+      expect(editCustomList.callCount).to.equal(1);
+      expect(editCustomList.args[0][0]).to.equal(testData);
+      expect(editCustomList.args[0][1]).to.equal("id");
+    });
 
-    it.only("renders create form", async () => {
+    it("renders create form", async () => {
       let editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(0);
 
       wrapper.setProps({
-        children: (
-          <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={true}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchLanguages={fetchLanguages}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            libraries={libraries}
-            languages={languages}
-            editOrCreate="create"
-          />
-        ),
+        children: <CustomLists {...customListsProps} editOrCreate="create" />,
       });
       editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(1);
@@ -598,31 +405,13 @@ describe("CustomLists", () => {
       wrapper.setProps({
         children: (
           <CustomLists
-            csrfToken="token"
-            library="library"
-            lists={listsData}
-            searchResults={searchResults}
-            collections={collections}
-            isFetching={true}
-            isFetchingMoreSearchResults={false}
-            isFetchingMoreCustomListEntries={false}
-            fetchLanguages={fetchLanguages}
-            fetchCustomLists={fetchCustomLists}
-            fetchCustomListDetails={fetchCustomListDetails}
-            editCustomList={editCustomList}
-            deleteCustomList={deleteCustomList}
-            search={search}
-            loadMoreSearchResults={loadMoreSearchResults}
-            loadMoreEntries={loadMoreEntries}
-            fetchCollections={fetchCollections}
-            fetchLibraries={fetchLibraries}
-            fetchLanes={fetchLanes}
-            libraries={libraries}
-            languages={languages}
+            {...customListsProps}
             responseBody="5"
+            editOrCreate="create"
           />
         ),
       });
+
       editor = wrapper.find(CustomListEditor);
       expect(editor.props().responseBody).to.equal("5");
     });
@@ -632,7 +421,16 @@ describe("CustomLists", () => {
       expect(editor.length).to.equal(0);
 
       const listDetails = Object.assign({}, listsData[1], { entries: [entry] });
-      wrapper.setProps({ editOrCreate: "edit", identifier: "2", listDetails });
+      wrapper.setProps({
+        children: (
+          <CustomLists
+            {...customListsProps}
+            editOrCreate="edit"
+            identifier="2"
+            listDetails={listDetails}
+          />
+        ),
+      });
       editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(1);
       expect(editor.props().list).to.deep.equal(listDetails);
@@ -654,14 +452,26 @@ describe("CustomLists", () => {
       // When the component switches to a different list, it fetches the new
       // list details.
       const newListDetails = Object.assign({}, listsData[0], { entries: [] });
-      wrapper.setProps({ identifier: "1", listDetails: newListDetails });
+      wrapper.setProps({
+        children: (
+          <CustomLists
+            {...customListsProps}
+            editOrCreate="edit"
+            identifier="1"
+            listDetails={newListDetails}
+          />
+        ),
+      });
       editor = wrapper.find(CustomListEditor);
       expect(editor.props().list).to.deep.equal(newListDetails);
       expect(fetchCustomListDetails.callCount).to.equal(2);
     });
 
     it("gets the correct entry points list from the right library", () => {
-      const entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
+      const entryPoints = wrapper
+        .children(0)
+        .instance()
+        .getEnabledEntryPoints(libraries);
 
       expect(entryPoints.length).to.equal(2);
       expect(entryPoints).to.eql(["Book", "Audio"]);
@@ -669,32 +479,19 @@ describe("CustomLists", () => {
 
     it("gets the correct entry points list from the second available library", () => {
       wrapper = mount(
-        <CustomLists
+        <ListManagerProvider
+          email="test@test.com"
+          roles={[{ library: "another library", role: "librarian" }]}
           csrfToken="token"
-          library="another library"
-          lists={listsData}
-          searchResults={searchResults}
-          collections={collections}
-          isFetching={false}
-          isFetchingMoreSearchResults={false}
-          isFetchingMoreCustomListEntries={false}
-          fetchCustomLists={fetchCustomLists}
-          fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
-          deleteCustomList={deleteCustomList}
-          search={search}
-          loadMoreSearchResults={loadMoreSearchResults}
-          loadMoreEntries={loadMoreEntries}
-          fetchCollections={fetchCollections}
-          fetchLibraries={fetchLibraries}
-          fetchLanes={fetchLanes}
-          fetchLanguages={fetchLanguages}
-          languages={languages}
-        />,
-        { context: { admin: librarian } }
+        >
+          <CustomLists {...customListsProps} library="another library" />
+        </ListManagerProvider>
       );
 
-      const entryPoints = wrapper.instance().getEnabledEntryPoints(libraries);
+      const entryPoints = wrapper
+        .children(0)
+        .instance()
+        .getEnabledEntryPoints(libraries);
 
       expect(entryPoints.length).to.equal(1);
       expect(entryPoints).to.eql(["Audio"]);
