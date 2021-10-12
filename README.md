@@ -10,9 +10,9 @@ To see screenshots, read in-depth documentation, and find out more about the pro
 
 ## Set Up
 
-This package is meant to be used with the Library Simplified [Circulation Manager](https://github.com/NYPL-Simplified/circulation), and cannot be run in isolation. Please follow the Circulation Manager README instructions before setting up this repository.
+This package may be used in a local build of the Palace Project [Circulation Manager](https://github.com/ThePalaceProject/circulation), or it may be run against a remote Circulation Manager.
 
-#### Use npm Version
+#### Use npm-Published Version in a Local Circulation Manager
 
 Suggested local folder setup:
 
@@ -20,23 +20,42 @@ Suggested local folder setup:
 
 To use the published version with your circulation manager, run `npm install` from `api/admin` in the `circulation` local installed repository.
 
-#### Use Local Development Version
+#### Use Local Development Version in a Local Circulation Manager
+
+Follow the Circulation Manager README instructions before setting up this repository.
 
 Suggested local folder setup:
 
 - `/[path to project folder]/circulation`
-- `/[path to project folder]/circulation-web`
+- `/[path to project folder]/circulation-admin`
 
 If you're working on the administrative interface and want to test local changes, you can link your local clone of this repository to your local circulation manager. These steps will allow you to work on the front-end administrative interface and see updates while developing.
 
-1. Run `npm link` in this `circulation-web` repository,
-2. run `npm link simplified-circulation-web` from `api/admin` in the `circulation` repository (which is where package.json is located),
+1. Run `npm link` in this `circulation-admin` repository,
+2. run `npm link @thepalaceproject/circulation-admin` from `api/admin` in the `circulation` repository (which is where package.json is located),
 3. run the circulation manager using `python app.py` at the root in the `circulation` repository,
-4. run the web interface using `npm run dev` at the root of this `circulation-web` repository,
+4. run the web interface using `npm run dev` at the root of this `circulation-admin` repository,
 5. run the Elasticsearch server using `./bin/elasticsearch` in the elasticsearch-[version] directory,
 6. visit `localhost:6500/admin/`.
 
-Webpack will take care of compiling and updating any new changes made locally for development. Just hard refresh the page (command + shift + R) to see updates without having to restart either the `circulation` or `circulation-web` servers.
+Webpack will take care of compiling and updating any new changes made locally for development. Just hard refresh the page (command + shift + R) to see updates without having to restart either the `circulation` or `circulation-admin` servers.
+
+#### Use Local Development Version with a Remote Circulation Manager
+
+This front-end may be run locally in development against a remote Circulation Manager back-end. This removes the need to build a local Circulation Manager from source in order to work on the front-end.
+
+1. Run `npm run dev-server -- --env=backend=[url]` in this `circulation-admin` repository.
+
+   Example: `npm run dev-server -- --env=backend=https://gorgon.tpp-qa.lyrasistechnology.org`
+
+   Note: The tortured syntax here results from going through npm and webpack. The first `--` separates arguments intended for npm from arguments intended for the script that npm runs. In this case the script executes webpack, which allows an environment object to be supplied on the command line using `--env`. Properties of the environment object are specified using the `--env=[property]=[value]` syntax.
+
+1. Visit `http://localhost:8080/admin/`.
+1. Log in using credentials for the CM back-end. Content from that Circulation Manager should appear.
+
+This works by running a local proxy server. HTML pages received from the Circulaton Manager that load assets from the `circulation-admin` package on jsdelivr are rewritten to load them from the local webpack build instead.
+
+Webpack will take care of compiling and updating any new changes made locally for development. Hot module replacement and live reloading are enabled, so the browser will automatically update as changes are made.
 
 ## Web Catalog
 
