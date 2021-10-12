@@ -6,7 +6,10 @@ import { PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 import Admin from "../models/Admin";
 import PathForProvider from "opds-web-client/lib/components/context/PathForContext";
-import { ListManagerProvider } from "./ListManagerContext";
+import {
+  ListManagerProvider,
+  ListManagerProviderProps,
+} from "./ListManagerContext";
 
 export interface ContextProviderProps extends React.Props<{}> {
   csrfToken: string;
@@ -17,7 +20,7 @@ export interface ContextProviderProps extends React.Props<{}> {
     role: string;
     library?: string;
   }[];
-  listManagerProps?: any;
+  listManagerProps?: ListManagerProviderProps;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -29,7 +32,7 @@ export default class ContextProvider extends React.Component<
   store: Store<State>;
   admin: Admin;
   pathFor: PathFor;
-  listManagerProps: any;
+  listManagerProps: ListManagerProviderProps;
 
   constructor(props) {
     super(props);

@@ -34,7 +34,7 @@ export default function CustomListPage({
 
   let startingTitle;
   if (location && location.state) {
-    startingTitle = (location.state as any).bookTitle;
+    startingTitle = (location.state as { [key: string]: string }).bookTitle;
   }
 
   return (
