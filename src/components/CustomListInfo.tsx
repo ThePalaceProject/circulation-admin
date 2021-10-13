@@ -19,7 +19,8 @@ export default function CustomListInfo({
   deleteCustomList,
   library,
 }: ListInfoProps) {
-  const admin = React.useContext(ListManagerContext);
+  const { admin } = React.useContext(ListManagerContext);
+
   const isActive = identifier === list.id.toString();
   const { id, name, entry_count } = list;
   return (
