@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.5.7
+
+#### Refactored
+
+- Refactored the `CustomListPage` component to bring it up-to-date with current best practices. Added/edited tests where needed.
+
 ### v0.5.6
 
 #### Updated

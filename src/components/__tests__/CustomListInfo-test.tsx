@@ -19,6 +19,7 @@ describe("CustomListsInfo", () => {
       <ListManagerProvider
         email="test@test.com"
         roles={[{ library: "OWL", role: "system" }]}
+        csrfToken="token"
       >
         <CustomListInfo
           list={list}

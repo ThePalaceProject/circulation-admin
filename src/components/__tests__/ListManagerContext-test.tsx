@@ -7,10 +7,11 @@ import { ListManagerContext, ListManagerProvider } from "../ListManagerContext";
 describe("ListManagerContext", () => {
   let wrapper: Enzyme.CommonWrapper<any, any, {}>;
   let library;
-  let admin;
+  let testAdmin;
   beforeEach(() => {
     const TestComponent = () => {
-      admin = React.useContext(ListManagerContext);
+      const { admin, csrfToken } = React.useContext(ListManagerContext);
+      testAdmin = admin;
       library = admin.roles[0].library;
       return (
         <div className="context-test">
@@ -24,6 +25,7 @@ describe("ListManagerContext", () => {
           {admin.isLibraryManagerOfSomeLibrary() && (
             <p>User is a library manager of some library.</p>
           )}
+          <p>{`The csrfToken is ${csrfToken}.`}</p>
         </div>
       );
     };
@@ -31,6 +33,7 @@ describe("ListManagerContext", () => {
       <ListManagerProvider
         email="test@test.com"
         roles={[{ library: "OWL", role: "librarian-all" }]}
+        csrfToken="token"
       >
         <TestComponent />
       </ListManagerProvider>
@@ -38,7 +41,7 @@ describe("ListManagerContext", () => {
   });
 
   it("stores the email passed to it", () => {
-    expect(admin.email).to.equal("test@test.com");
+    expect(testAdmin.email).to.equal("test@test.com");
   });
 
   it("correctly handles the system role", () => {
@@ -46,12 +49,12 @@ describe("ListManagerContext", () => {
       roles: [{ library: "OWL", role: "system" }],
     });
     const library = wrapper.props().roles[0].library;
-    expect(admin.isSystemAdmin()).to.equal(true);
-    expect(admin.isSitewideLibraryManager()).to.equal(true);
-    expect(admin.isSitewideLibrarian()).to.equal(true);
-    expect(admin.isLibraryManager(library)).to.equal(true);
-    expect(admin.isLibrarian(library)).to.equal(true);
-    expect(admin.isLibraryManagerOfSomeLibrary()).to.equal(true);
+    expect(testAdmin.isSystemAdmin()).to.equal(true);
+    expect(testAdmin.isSitewideLibraryManager()).to.equal(true);
+    expect(testAdmin.isSitewideLibrarian()).to.equal(true);
+    expect(testAdmin.isLibraryManager(library)).to.equal(true);
+    expect(testAdmin.isLibrarian(library)).to.equal(true);
+    expect(testAdmin.isLibraryManagerOfSomeLibrary()).to.equal(true);
   });
 
   it("correctly handles the manager-all role", () => {
@@ -59,22 +62,22 @@ describe("ListManagerContext", () => {
       roles: [{ library: "OWL", role: "manager-all" }],
     });
     const library = wrapper.props().roles[0].library;
-    expect(admin.isSystemAdmin()).to.equal(false);
-    expect(admin.isSitewideLibraryManager()).to.equal(true);
-    expect(admin.isSitewideLibrarian()).to.equal(true);
-    expect(admin.isLibraryManager(library)).to.equal(true);
-    expect(admin.isLibrarian(library)).to.equal(true);
-    expect(admin.isLibraryManagerOfSomeLibrary()).to.equal(true);
+    expect(testAdmin.isSystemAdmin()).to.equal(false);
+    expect(testAdmin.isSitewideLibraryManager()).to.equal(true);
+    expect(testAdmin.isSitewideLibrarian()).to.equal(true);
+    expect(testAdmin.isLibraryManager(library)).to.equal(true);
+    expect(testAdmin.isLibrarian(library)).to.equal(true);
+    expect(testAdmin.isLibraryManagerOfSomeLibrary()).to.equal(true);
   });
 
   it("correctly handles the librarian-all role", () => {
     const library = wrapper.props().roles[0].library;
-    expect(admin.isSystemAdmin()).to.equal(false);
-    expect(admin.isSitewideLibraryManager()).to.equal(false);
-    expect(admin.isSitewideLibrarian()).to.equal(true);
-    expect(admin.isLibraryManager(library)).to.equal(false);
-    expect(admin.isLibrarian(library)).to.equal(true);
-    expect(admin.isLibraryManagerOfSomeLibrary()).to.equal(false);
+    expect(testAdmin.isSystemAdmin()).to.equal(false);
+    expect(testAdmin.isSitewideLibraryManager()).to.equal(false);
+    expect(testAdmin.isSitewideLibrarian()).to.equal(true);
+    expect(testAdmin.isLibraryManager(library)).to.equal(false);
+    expect(testAdmin.isLibrarian(library)).to.equal(true);
+    expect(testAdmin.isLibraryManagerOfSomeLibrary()).to.equal(false);
   });
 
   it("correctly handles the manager role", () => {
@@ -82,12 +85,12 @@ describe("ListManagerContext", () => {
       roles: [{ library: "OWL", role: "manager" }],
     });
     const library = wrapper.props().roles[0].library;
-    expect(admin.isSystemAdmin()).to.equal(false);
-    expect(admin.isSitewideLibraryManager()).to.equal(false);
-    expect(admin.isSitewideLibrarian()).to.equal(false);
-    expect(admin.isLibraryManager(library)).to.equal(true);
-    expect(admin.isLibrarian(library)).to.equal(true);
-    expect(admin.isLibraryManagerOfSomeLibrary()).to.equal(true);
+    expect(testAdmin.isSystemAdmin()).to.equal(false);
+    expect(testAdmin.isSitewideLibraryManager()).to.equal(false);
+    expect(testAdmin.isSitewideLibrarian()).to.equal(false);
+    expect(testAdmin.isLibraryManager(library)).to.equal(true);
+    expect(testAdmin.isLibrarian(library)).to.equal(true);
+    expect(testAdmin.isLibraryManagerOfSomeLibrary()).to.equal(true);
   });
 
   it("correctly handles the librarian role", () => {
@@ -95,12 +98,12 @@ describe("ListManagerContext", () => {
       roles: [{ library: "OWL", role: "librarian" }],
     });
     const library = wrapper.props().roles[0].library;
-    expect(admin.isSystemAdmin()).to.equal(false);
-    expect(admin.isSitewideLibraryManager()).to.equal(false);
-    expect(admin.isSitewideLibrarian()).to.equal(false);
-    expect(admin.isLibraryManager(library)).to.equal(false);
-    expect(admin.isLibrarian(library)).to.equal(true);
-    expect(admin.isLibraryManagerOfSomeLibrary()).to.equal(false);
+    expect(testAdmin.isSystemAdmin()).to.equal(false);
+    expect(testAdmin.isSitewideLibraryManager()).to.equal(false);
+    expect(testAdmin.isSitewideLibrarian()).to.equal(false);
+    expect(testAdmin.isLibraryManager(library)).to.equal(false);
+    expect(testAdmin.isLibrarian(library)).to.equal(true);
+    expect(testAdmin.isLibraryManagerOfSomeLibrary()).to.equal(false);
   });
 
   it("correctly handles a case where there is an invalid role provided", () => {
@@ -108,27 +111,37 @@ describe("ListManagerContext", () => {
       roles: [{ library: "OWL", role: "" }],
     });
     const library = wrapper.props().roles[0].library;
-    expect(admin.isSystemAdmin()).to.equal(false);
-    expect(admin.isSitewideLibraryManager()).to.equal(false);
-    expect(admin.isSitewideLibrarian()).to.equal(false);
-    expect(admin.isLibraryManager(library)).to.equal(false);
-    expect(admin.isLibrarian(library)).to.equal(false);
-    expect(admin.isLibraryManagerOfSomeLibrary()).to.equal(false);
+    expect(testAdmin.isSystemAdmin()).to.equal(false);
+    expect(testAdmin.isSitewideLibraryManager()).to.equal(false);
+    expect(testAdmin.isSitewideLibrarian()).to.equal(false);
+    expect(testAdmin.isLibraryManager(library)).to.equal(false);
+    expect(testAdmin.isLibrarian(library)).to.equal(false);
+    expect(testAdmin.isLibraryManagerOfSomeLibrary()).to.equal(false);
   });
 
   it("provides context to its children", () => {
     let testRender = wrapper.find(".context-test").children();
-    expect(testRender.length).to.equal(2);
-    let text = wrapper.find(".context-test").children().at(0);
-    expect(text.find("p").at(0).text()).to.equal(
+    expect(testRender.length).to.equal(3);
+    let firstParagraph = testRender.at(0);
+    let lastParagraph = testRender.at(2);
+    expect(firstParagraph.find("p").at(0).text()).to.equal(
       "User is a sitewide librarian."
+    );
+    expect(lastParagraph.find("p").at(0).text()).to.equal(
+      "The csrfToken is token."
     );
     wrapper.setProps({
       roles: [{ library: "OWL", role: "system" }],
     });
     testRender = wrapper.find(".context-test").children();
-    expect(testRender.length).to.equal(6);
-    text = wrapper.find(".context-test").children().at(0);
-    expect(text.find("p").at(0).text()).to.equal("User is a system admin.");
+    expect(testRender.length).to.equal(7);
+    firstParagraph = testRender.at(0);
+    lastParagraph = testRender.at(6);
+    expect(firstParagraph.find("p").at(0).text()).to.equal(
+      "User is a system admin."
+    );
+    expect(lastParagraph.find("p").at(0).text()).to.equal(
+      "The csrfToken is token."
+    );
   });
 });

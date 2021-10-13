@@ -4,6 +4,7 @@ import * as React from "react";
 import * as Enzyme from "enzyme";
 import CustomListsSidebar from "../CustomListsSidebar";
 import { Link } from "react-router";
+import { ListManagerProvider } from "../ListManagerContext";
 
 describe("CustomListsSidebar", () => {
   let wrapper: Enzyme.CommonWrapper<any, any, {}>;
@@ -17,14 +18,20 @@ describe("CustomListsSidebar", () => {
       { id: 2, name: "Second List", entry_count: 10 },
     ];
     wrapper = Enzyme.mount(
-      <CustomListsSidebar
-        lists={lists}
-        library="library_name"
-        identifier="123"
-        deleteCustomList={deleteCustomList}
-        changeSort={changeSort}
-        sortOrder="asc"
-      />
+      <ListManagerProvider
+        email="test@test.com"
+        roles={[{ library: "OWL", role: "system" }]}
+        csrfToken="token"
+      >
+        <CustomListsSidebar
+          lists={lists}
+          library="library_name"
+          identifier="123"
+          deleteCustomList={deleteCustomList}
+          changeSort={changeSort}
+          sortOrder="asc"
+        />
+      </ListManagerProvider>
     );
   });
 
