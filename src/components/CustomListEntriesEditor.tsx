@@ -23,7 +23,7 @@ export interface CustomListEntriesEditorProps
   searchResults?: CollectionData;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
-  onUpdate?: (entries: Entry[]) => void;
+  onUpdate?: (entries: Entry[], deletedEntries: Entry[]) => void;
   isFetchingMoreSearchResults: boolean;
   isFetchingMoreCustomListEntries: boolean;
   opdsFeedUrl?: string;
@@ -408,16 +408,20 @@ export default class CustomListEntriesEditor extends React.Component<
   }
 
   reset() {
-    this.setState({
-      draggingFrom: null,
-      entries: this.props.entries,
-      deleted: [],
-      added: [],
-      totalVisibleEntries: this.props.entries ? this.props.entries.length : 0,
-    });
-    if (this.props.onUpdate) {
-      this.props.onUpdate(this.props.entries || []);
-    }
+    this.setState(
+      {
+        draggingFrom: null,
+        entries: this.props.entries,
+        deleted: [],
+        added: [],
+        totalVisibleEntries: this.props.entries ? this.props.entries.length : 0,
+      },
+      () => {
+        if (this.props.onUpdate) {
+          this.props.onUpdate(this.state.entries || [], this.state.deleted);
+        }
+      }
+    );
   }
 
   searchResultsNotInEntries() {
@@ -515,7 +519,7 @@ export default class CustomListEntriesEditor extends React.Component<
       added: propEntries.length ? added : added.concat([entry]),
     });
     if (this.props.onUpdate) {
-      this.props.onUpdate(entries);
+      this.props.onUpdate(entries, deleted);
     }
   }
 
@@ -529,28 +533,36 @@ export default class CustomListEntriesEditor extends React.Component<
         ? this.props.entries.filter((entry) => entry.id === id)
         : [];
     entries = entries.filter((entry) => entry.id !== id);
-    this.setState({
-      draggingFrom: null,
-      entries,
-      deleted: inAdded.length ? deleted.concat(deletedEntry) : deleted,
-      added,
-    });
-    if (this.props.onUpdate) {
-      this.props.onUpdate(entries);
-    }
+    this.setState(
+      {
+        draggingFrom: null,
+        entries,
+        deleted: inAdded.length ? deleted.concat(deletedEntry) : deleted,
+        added,
+      },
+      () => {
+        if (this.props.onUpdate) {
+          this.props.onUpdate(entries, this.state.deleted);
+        }
+      }
+    );
   }
 
   clearState() {
-    this.setState({
-      draggingFrom: null,
-      entries: this.state.entries,
-      deleted: [],
-      added: [],
-      totalVisibleEntries: this.state.entries ? this.state.entries.length : 0,
-    });
-    if (this.props.onUpdate) {
-      this.props.onUpdate(this.state.entries);
-    }
+    this.setState(
+      {
+        draggingFrom: null,
+        entries: this.state.entries,
+        deleted: [],
+        added: [],
+        totalVisibleEntries: this.state.entries ? this.state.entries.length : 0,
+      },
+      () => {
+        if (this.props.onUpdate) {
+          this.props.onUpdate(this.state.entries, this.state.deleted);
+        }
+      }
+    );
   }
 
   addAll() {
@@ -600,7 +612,7 @@ export default class CustomListEntriesEditor extends React.Component<
       added,
     });
     if (this.props.onUpdate) {
-      this.props.onUpdate(entries);
+      this.props.onUpdate(entries, deleted);
     }
   }
 
@@ -618,15 +630,19 @@ export default class CustomListEntriesEditor extends React.Component<
       return false;
     });
 
-    this.setState({
-      draggingFrom: null,
-      entries: [],
-      deleted: this.state.deleted.concat(newlyDeleted),
-      added: [],
-    });
-    if (this.props.onUpdate) {
-      this.props.onUpdate([]);
-    }
+    this.setState(
+      {
+        draggingFrom: null,
+        entries: [],
+        deleted: this.state.deleted.concat(newlyDeleted),
+        added: [],
+      },
+      () => {
+        if (this.props.onUpdate) {
+          this.props.onUpdate(this.state.entries, this.state.deleted);
+        }
+      }
+    );
   }
 
   loadMore() {
