@@ -122,7 +122,7 @@ module.exports = (env) => {
   };
 
   /**
-   * Rewrites an HTML response. This changes jsdelivr CDN URLs in the page to point to the webapack
+   * Rewrites an HTML response. This changes jsdelivr CDN URLs in the page to point to the webpack
    * assets on the local server instead. This is a simple find-and-replace.
    *
    * @param responseBuffer A buffer containing the response body.
