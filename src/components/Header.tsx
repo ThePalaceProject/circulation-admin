@@ -24,6 +24,10 @@ export interface HeaderDispatchProps {
 
 export interface HeaderOwnProps {
   store?: Store<State>;
+  /** libraryProp stores the library's short name and is passed to `Header`
+   * only when its parent is a functional component using the useContext hook
+   * (as seen in `CustomListPage`). */
+  libraryProp?: string;
 }
 
 export interface HeaderProps
@@ -91,7 +95,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         this.context.router.getCurrentLocation() &&
         this.context.router.getCurrentLocation().pathname) ||
       "";
-    let currentLibrary = this.context.library && this.context.library();
+    let currentLibrary =
+      this.props.libraryProp ||
+      (this.context.library && this.context.library());
     let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
     let isSystemAdmin = this.context.admin.isSystemAdmin();
     let isSiteWide = !this.context.library || !currentLibrary;
@@ -320,7 +326,10 @@ const ConnectedHeader = connect<
 
 /** HeaderWithStore is a wrapper component to pass the store as a prop to the
     ConnectedHeader, since it's not in the regular place in the context. */
-export default class HeaderWithStore extends React.Component<{}, {}> {
+export default class HeaderWithStore extends React.Component<
+  { libraryProp?: string },
+  {}
+> {
   context: { editorStore: Store<State> };
 
   static contextTypes = {
@@ -328,6 +337,11 @@ export default class HeaderWithStore extends React.Component<{}, {}> {
   };
 
   render(): JSX.Element {
-    return <ConnectedHeader store={this.context.editorStore} />;
+    return (
+      <ConnectedHeader
+        store={this.context.editorStore}
+        libraryProp={this.props.libraryProp}
+      />
+    );
   }
 }
