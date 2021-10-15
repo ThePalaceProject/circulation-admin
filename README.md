@@ -80,6 +80,10 @@ There are end-to-end tests that run on Nightwatch. This selenium-based test runn
 
 To set up credentials and run the tests, check out the [README](/tests/README.md) in `/tests/.
 
+## Debugging
+
+The [Redux DevTools browser extension](https://github.com/reduxjs/redux-devtools/tree/main/extension) may be used to easily inspect app states and state transitions.
+
 ## License
 
 ```
