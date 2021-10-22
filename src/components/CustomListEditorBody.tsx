@@ -19,15 +19,18 @@ export interface CustomListEditorBodyProps {
   languages: LanguagesData;
   library: LibraryData;
   list?: CollectionData;
+  listCollections?: AdminCollectionData[];
   listId?: string | number;
   searchResults?: CollectionData;
   startingTitle?: string;
   draftTitle?: string;
   draftEntries?: Entry[];
+  draftCollections?: AdminCollectionData[];
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   search: (url: string) => Promise<CollectionData>;
   setDeletedListEntries: (entries: Entry[]) => void;
+  setDraftCollections: (collections) => void;
   setDraftEntries: (entries: Entry[]) => void;
 }
 
@@ -45,24 +48,39 @@ export default function CustomListEditorBody({
   startingTitle,
   draftTitle,
   draftEntries,
+  draftCollections,
   loadMoreEntries,
   loadMoreSearchResults,
   search,
   setDeletedListEntries,
+  setDraftCollections,
   setDraftEntries,
 }: CustomListEditorBodyProps) {
   const [entryPointSelected, setEntryPointSelected] = React.useState<string>(
     "all"
   );
 
-  //   const hasCollection = (collection: AdminCollectionData) => {
-  //     for (const stateCollection of this.state.collections) {
-  //       if (stateCollection.id === collection.id) {
-  //         return true;
-  //       }
-  //     }
-  //     return false;
-  //   };
+  const hasCollection = (collection: AdminCollectionData) => {
+    for (const listCollection of draftCollections) {
+      if (listCollection.id === collection.id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const changeCollection = (collection: AdminCollectionData) => {
+    let newCollections;
+    if (hasCollection(collection)) {
+      newCollections = draftCollections.filter(
+        (listCollection) => listCollection.id !== collection.id
+      );
+    } else {
+      newCollections = draftCollections.slice(0);
+      newCollections.push(collection);
+    }
+    setDraftCollections(newCollections);
+  };
 
   const getEntryPointsElms = (entryPoints) => {
     const entryPointsElms = [];
@@ -144,12 +162,12 @@ export default function CustomListEditorBody({
                       key={collection.id}
                       type="checkbox"
                       name="collection"
-                      //   checked={hasCollection(collection)}
+                      checked={hasCollection(collection)}
                       label={collection.name}
                       value={String(collection.id)}
-                      //   onChange={() => {
-                      //     changeCollection(collection);
-                      //   }}
+                      onChange={() => {
+                        changeCollection(collection);
+                      }}
                     />
                   ))}
                 </div>

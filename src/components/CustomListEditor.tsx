@@ -52,16 +52,21 @@ export default function CustomListEditor({
   const [deletedListEntries, setDeletedListEntries] = React.useState<Entry[]>(
     []
   );
+  const [draftCollections, setDraftCollections] = React.useState<
+    AdminCollectionData[]
+  >([]);
   const [showSaveError, setShowSaveError] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (list) {
       setDraftTitle(list.title);
       setDraftEntries(list.books);
+      setDraftCollections(listCollections);
     } else {
       /** If the list is new, set the draft state to empty. */
       setDraftTitle("");
       setDraftEntries([]);
+      setDraftCollections([]);
     }
   }, [list]);
 
@@ -77,7 +82,8 @@ export default function CustomListEditor({
       data.append("name", draftTitle);
       data.append("entries", JSON.stringify(draftEntries));
       data.append("deletedEntries", JSON.stringify(deletedListEntries));
-      //   data.append("collections", JSON.stringify(collections));
+      const collections = draftCollections.map((collection) => collection.id);
+      data.append("collections", JSON.stringify(collections));
 
       editCustomList(data, listId && String(listId));
     }
@@ -94,11 +100,34 @@ export default function CustomListEditor({
    * list's title, collections, or entries to determine whether the
    * "Save this list" button should be enabled or not. */
   const hasListInfoChanged = (): boolean => {
+    /** Check if list's title changed by comparing the draft to list.title
+     * if it is an existing list, or to an empty string if it's a new list.*/
     const titleChanged = list ? draftTitle !== list.title : draftTitle !== "";
     if (titleChanged) {
       return true;
     }
-    if ((list && list.books.length) !== draftEntries.length) {
+    /** Check if list's collections changed by comparing the draft to listCollections
+     * if it is an existing list (first checking if length is the same,
+     * then checking the ids), or to an empty array if it's a new list.*/
+    if (list && listCollections.length !== draftCollections.length) {
+      return true;
+    } else {
+      const propsIds = ((list && listCollections) || [])
+        .map((collection) => collection.id)
+        .sort();
+      const stateIds = draftCollections
+        ?.map((collection) => collection.id)
+        .sort();
+      for (let i = 0; i < propsIds.length; i++) {
+        if (propsIds[i] !== stateIds[i]) {
+          return true;
+        }
+      }
+    }
+    /** Check if list's entries changed by comparing the draft to list.books
+     * if it is an existing list (first checking if length is the same,
+     * then checking the ids), or to an empty array if it's a new list.*/
+    if (list && list.books.length !== draftEntries.length) {
       return true;
     } else {
       const propsIds = ((list && list.books) || [])
@@ -149,7 +178,9 @@ export default function CustomListEditor({
         search={search}
         setDeletedListEntries={setDeletedListEntries}
         setDraftEntries={setDraftEntries}
+        setDraftCollections={setDraftCollections}
         draftEntries={draftEntries}
+        draftCollections={draftCollections}
       />
     </div>
   );
