@@ -6,8 +6,9 @@ import CustomListEditor from "../CustomListEditor";
 import CustomListEditorHeader from "../CustomListEditorHeader";
 import CustomListEditorBody from "../CustomListEditorBody";
 import EditableInput from "../EditableInput";
+import TextWithEditMode from "../TextWithEditMode";
 
-describe.only("CustomListEditor", () => {
+describe("CustomListEditor", () => {
   let wrapper;
   const languages = {
     eng: ["English"],
@@ -61,19 +62,29 @@ describe.only("CustomListEditor", () => {
     console.log("wrapper -->", wrapper.debug());
     const input = wrapper.find("input[type='text']");
     expect(input.props().value).to.equal("");
-    input.simulate("change", {
-      target: { name: "title", value: "new title" },
-    });
-    const saveTitleButton = wrapper.find(".btn.inverted.inline").at(0);
-    // saveTitleButton.simulate("click");
+    input.invoke("onChange", {
+      target: { value: "new title" },
+    })();
 
     // expect(input.props().value).to.equal("new title");
+    // let editableInput = wrapper.find(EditableInput).at(0);
 
-    // input.getElement().value = "new title";
+    // input.getDOMNode().value = "new title";
+    // const saveTitleButton = wrapper.find(".inverted.inline").at(0);
+    // saveTitleButton.invoke("onClick")();
+
+    // expect(editableInput.props().value).to.equal("new title");
+
     // input = wrapper.find("input[type='text']");
-    // expect(input.get(0).value).to.equal("new title");
+
+    // // expect(editableInput.get(0).value).to.equal("new title");
+    // expect(editableInput.props().value).to.equal("new title");
+
+    // // input.getElement().value = "new title";
+    // // input = wrapper.find("input[type='text']");
+    // // expect(input.get(0).value).to.equal("new title");
     // header = wrapper.find(CustomListEditorHeader);
-    expect(header.props().hasListInfoChanged).to.equal(true);
+    // expect(header.props().hasListInfoChanged).to.equal(true);
   });
 
   it("it switches to the edit form after a new form is saved", () => {
