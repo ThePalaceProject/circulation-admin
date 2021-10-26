@@ -5,9 +5,10 @@ import * as Enzyme from "enzyme";
 import CustomListEditor from "../CustomListEditor";
 import CustomListEditorHeader from "../CustomListEditorHeader";
 import CustomListEditorBody from "../CustomListEditorBody";
+import EditableInput from "../EditableInput";
 import { Button } from "library-simplified-reusable-components";
 
-describe.only("CustomListEditor", () => {
+describe("CustomListEditor", () => {
   let wrapper;
   const languages = {
     eng: ["English"],
@@ -149,7 +150,6 @@ describe.only("CustomListEditor", () => {
   });
 
   it("cancels changes", () => {
-    console.log(wrapper.debug());
     let listTitle = wrapper.find("h3").at(0);
     expect(listTitle.text()).to.include("original list title");
     let saveEditTitleButton = wrapper.find(".btn.inverted.inline");
@@ -161,8 +161,6 @@ describe.only("CustomListEditor", () => {
     saveEditTitleButton.simulate("click");
     listTitle = wrapper.find("h3").at(0);
     expect(listTitle.text()).to.include("new list title");
-
-    console.log(wrapper.debug());
     const cancelChangesButton = wrapper
       .find(".save-or-cancel-list")
       .find(Button)
