@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.5.8
+
+#### Refactored
+
+- Refactored the `CustomListEditor` component to bring it up-to-date with current best practices. Added `CustomListEditorHeader` and `CustomListEditorBody`. Added/edited tests where needed.
+
 ### v0.5.7
 
 #### Refactored
