@@ -50,6 +50,7 @@ class CirculationAdmin {
   constructor(config: ConfigurationSettings) {
     const div = document.createElement("div");
     div.id = "opds-catalog";
+    div.className = "palace";
     document.getElementsByTagName("body")[0].appendChild(div);
 
     const catalogEditorPath =
