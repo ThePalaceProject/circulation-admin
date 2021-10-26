@@ -21,7 +21,7 @@ describe("CustomListEditorHeader", () => {
     list = {
       id: "1",
       url: "some url",
-      title: "list",
+      title: "original list title",
       lanes: [],
       books: [
         {
@@ -64,7 +64,7 @@ describe("CustomListEditorHeader", () => {
   it("shows list title", () => {
     const title = wrapper.find(TextWithEditMode);
     expect(title.length).to.equal(1);
-    expect(title.props().text).to.equal("list");
+    expect(title.props().text).to.equal("original list title");
     expect(title.props().placeholder).to.equal("list title");
     expect(title.props().disableIfBlank).to.be.true;
   });
@@ -87,7 +87,7 @@ describe("CustomListEditorHeader", () => {
     saveListButton = wrapper.find(".save-or-cancel-list").children().at(0);
     expect(saveListButton.props().disabled).to.equal(true);
     wrapper.setProps({
-      draftTitle: "list",
+      draftTitle: "original list title",
       listEntries: [],
     });
     saveListButton = wrapper.find(".save-or-cancel-list").children().at(0);

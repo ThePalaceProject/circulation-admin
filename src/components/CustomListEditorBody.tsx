@@ -19,7 +19,6 @@ export interface CustomListEditorBodyProps {
   languages: LanguagesData;
   library: LibraryData;
   list?: CollectionData;
-  listCollections?: AdminCollectionData[];
   listId?: string | number;
   searchResults?: CollectionData;
   startingTitle?: string;
@@ -108,7 +107,7 @@ export default function CustomListEditorBody({
           }
           label={entryPoint}
           value={entryPoint}
-          onChange={(e) => setEntryPointSelected(e.target.value)}
+          onChange={() => setEntryPointSelected(entryPoint)}
         />
       )
     );

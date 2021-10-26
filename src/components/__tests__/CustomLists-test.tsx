@@ -29,10 +29,11 @@ describe("CustomLists", () => {
   let customListsProps;
 
   const listsData = [
-    { id: 1, name: "a list", entry_count: 0, collections: [] },
+    { id: 1, name: "a list", title: "a list", entry_count: 0, collections: [] },
     {
       id: 2,
       name: "z list",
+      title: "z list",
       entry_count: 1,
       collections: [{ id: 3, name: "collection 3", protocol: "protocol" }],
     },
@@ -420,14 +421,16 @@ describe("CustomLists", () => {
       let editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(0);
 
-      const listDetails = Object.assign({}, listsData[1], { entries: [entry] });
+      const listDetails = Object.assign({}, listsData[1], { books: [entry] });
       wrapper.setProps({
         children: (
           <CustomLists
             {...customListsProps}
             editOrCreate="edit"
             identifier="2"
+            entryCount={listDetails.entry_count}
             listDetails={listDetails}
+            listCollections={listDetails.collections}
           />
         ),
       });
@@ -451,14 +454,16 @@ describe("CustomLists", () => {
 
       // When the component switches to a different list, it fetches the new
       // list details.
-      const newListDetails = Object.assign({}, listsData[0], { entries: [] });
+      const newListDetails = Object.assign({}, listsData[0], { books: [] });
       wrapper.setProps({
         children: (
           <CustomLists
             {...customListsProps}
             editOrCreate="edit"
             identifier="1"
+            entryCount={newListDetails.entry_count}
             listDetails={newListDetails}
+            listCollections={newListDetails.collections}
           />
         ),
       });
