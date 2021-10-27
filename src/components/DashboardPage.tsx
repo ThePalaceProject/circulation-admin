@@ -57,6 +57,6 @@ export default class DashboardPage extends React.Component<
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Circulation Manager - Dashboard";
+    document.title = "Palace Collection Manager - Dashboard";
   }
 }

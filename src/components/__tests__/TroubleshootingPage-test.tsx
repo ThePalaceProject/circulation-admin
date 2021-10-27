@@ -55,7 +55,7 @@ describe("TroubleshootingPage", () => {
 
   it("sets the document title", () => {
     const title = (global as any).window.document.title;
-    expect(title).to.equal("Circulation Manager - Troubleshooting");
+    expect(title).to.equal("Palace Collection Manager - Troubleshooting");
   });
 
   it("shows Footer", () => {

@@ -49,6 +49,6 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Circulation Manager - Configuration";
+    document.title = "Palace Collection Manager - Configuration";
   }
 }

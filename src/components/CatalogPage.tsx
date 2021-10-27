@@ -52,7 +52,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
 
     let pageTitleTemplate = (collectionTitle, bookTitle) => {
       let details = bookTitle || collectionTitle;
-      return "Circulation Manager" + (details ? " - " + details : "");
+      return "Palace Collection Manager" + (details ? " - " + details : "");
     };
 
     const fetcher = new DataFetcher({ adapter });

@@ -34,6 +34,6 @@ export default class AccountPage extends React.Component<{}, {}> {
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Circulation Manager - Account";
+    document.title = "Palace Collection Manager - Account";
   }
 }

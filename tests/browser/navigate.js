@@ -110,23 +110,23 @@ module.exports = {
             .verify.noError()
             .verify.urlEquals(bookUrl)
             .verify.containsText(bookTitleSelector, bookTitle)
-            
+
             // go to the edit tab
             .click(editTabSelector)
             .waitForElementPresent(titleInputSelector, 5000)
             .verify.urlContains("tab/edit")
             .verify.value(titleInputSelector, bookTitle)
-            
+
             // go to the classifications tab
             .click(classificationsTabSelector)
             .waitForElementPresent(genreInputSelector, 5000)
             .verify.urlContains("tab/classifications")
-            
+
             // go to the image cover tab
             .click(coverTabSelector)
             .waitForElementPresent(coverInputSelector, 5000)
             .verify.urlContains("tab/cover")
-            
+
             // go to the complaints tab
             .click(complaintsTabSelector)
             .waitForElementPresent(complaintInputSelector, 5000)
@@ -140,7 +140,7 @@ module.exports = {
             .click(listsTabSelector)
             .waitForElementPresent(listInputSelector, 5000)
             .verify.urlContains("tab/list")
-            
+
             // go back to the complaints tab
             .back()
             // go back to the cover tab
@@ -217,7 +217,7 @@ module.exports = {
       circulationAllStatsSelector,
     } = catalogPage.elements;
     const { nthBreadcrumbSelector } = catalogPage;
-    
+
     browser
       .goHome()
       .getAttribute(nthBreadcrumbSelector(1), "title", function(result) {
@@ -233,7 +233,7 @@ module.exports = {
               .assert.noError()
               .verify.elementPresent(circulationLibraryStatsSelector)
               .verify.elementPresent(circulationAllStatsSelector)
-              .verify.titleContains("Circulation Manager - Dashboard")
+              .verify.titleContains("Palace Collection Manager - Dashboard")
 
               // click the main navigation link
               .click(catalogSelector)
@@ -241,7 +241,7 @@ module.exports = {
               .assert.noError()
               .verify.elementPresent(nthBreadcrumbSelector(1))
               .verify.urlEquals(catalogUrl)
-              .verify.titleContains(`Circulation Manager - ${libraryName}`);
+              .verify.titleContains(`Palace Collection Manager - ${libraryName}`);
           });
         });
       });

@@ -52,7 +52,7 @@ export default class TroubleshootingPage extends React.Component<
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Circulation Manager - Troubleshooting";
+    document.title = "Palace Collection Manager - Troubleshooting";
   }
 
   render(): JSX.Element {

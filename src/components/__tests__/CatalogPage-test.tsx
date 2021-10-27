@@ -14,8 +14,6 @@ import BookDetailsContainer from "../BookDetailsContainer";
 describe("CatalogPage", () => {
   let wrapper;
   let params;
-  let context;
-  let child;
   const host = "http://example.com";
 
   beforeEach(() => {
@@ -41,10 +39,10 @@ describe("CatalogPage", () => {
     expect(catalog.prop("computeBreadcrumbs")).to.be.ok;
     const pageTitleTemplate = catalog.prop("pageTitleTemplate");
     expect(pageTitleTemplate("Collection", "Book")).to.equal(
-      "Circulation Manager - Book"
+      "Palace Collection Manager - Book"
     );
     expect(pageTitleTemplate("Collection", null)).to.equal(
-      "Circulation Manager - Collection"
+      "Palace Collection Manager - Collection"
     );
   });
 
