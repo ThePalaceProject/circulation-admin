@@ -35,19 +35,37 @@
   }
 }
 
-.btn:not(.inverted), .btn.btn-default, .btn.danger {
+.btn:not(.inverted), .btn.btn-default {
+  background: $blue;
   color: $white;
   &:hover {
     color: $white;
   }
 }
-.btn.inverted:hover {
+
+.btn.danger {
   color: $white;
+  &:hover {
+    color: $white;
+  }
+}
+
+button.btn.inverted, a.btn.inverted {
+  color: $blue;
+  border-color: $blue;
+  &:hover {
+    color: $white;
+  }
+  svg {
+    fill: $blue;
+  }
 }
 
 .breadcrumbs-or-search-wrapper {
   a {
-    color: $blue;
+    &:not(:hover) {
+      color: $blue;
+    }
     &:hover {
       color: $blue-dark;
     }

@@ -1,4 +1,4 @@
-// Some NYPL specific colors: https://nypl.github.io/design-toolkit/sections/color.html.
+// Some Palace specific colors.
 $green-tint: #F3F7E6;
 $green-bright: #008918;
 $red: #D0343A;
@@ -12,6 +12,10 @@ $dark-gray: #080807;
 $gray-tint: #F5F5F4;
 $gray-border: #CCCCCC;
 $white: #FFF;
-$blue: #1B7FA7;
-$blue-dark: #135772;
+// Palace logo light blue
+$blue-light: #46BBE5;
+// Palace logo dark blue
+$blue-dark: #242DAB;
+// A lighter shade of the Palace logo dark blue
+$blue: tint($blue-dark, 35%);
 $yellow: #FEE24A;

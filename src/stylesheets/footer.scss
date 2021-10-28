@@ -2,7 +2,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: $blue-dark;
+  background: $blue-light;
   width: 100%;
   padding: 15px 0;
   z-index: 1;
@@ -12,9 +12,9 @@ footer {
   p {
     margin: 2px 0;
     a, a:visited, a:link {
-      color: $white;
+      color: black;
       &:hover {
-        color: $white;
+        color: inherit;
         text-decoration: underline;
       }
     }

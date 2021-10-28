@@ -1,4 +1,12 @@
 .tab-container {
+  .nav {
+    a {
+      color: $blue;
+      &:hover {
+        color: $blue-dark;
+      }
+    }
+  }
   .tab-content {
     .has-additional-content {
       & > div > ul {
