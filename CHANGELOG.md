@@ -1,9 +1,10 @@
 ## Changelog
 
-### September 17, 2021
+### October 28, 2021
 
 #### Updated
 
+- Updated branding and styling for The Palace Project.
 - Updated node-sass and sass-loader dependency versions to reduce the number of high risk vulnerabilities.
 
 ### v0.5.5
