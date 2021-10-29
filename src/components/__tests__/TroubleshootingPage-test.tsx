@@ -8,6 +8,7 @@ import TroubleshootingTabContainer from "../TroubleshootingTabContainer";
 import Header from "../Header";
 import Footer from "../Footer";
 import buildStore from "../../store";
+import title from "../../utils/title";
 
 describe("TroubleshootingPage", () => {
   let wrapper;
@@ -54,8 +55,8 @@ describe("TroubleshootingPage", () => {
   });
 
   it("sets the document title", () => {
-    const title = (global as any).window.document.title;
-    expect(title).to.equal("Palace Collection Manager - Troubleshooting");
+    const documentTitle = (global as any).window.document.title;
+    expect(documentTitle).to.equal(title("Troubleshooting"));
   });
 
   it("shows Footer", () => {

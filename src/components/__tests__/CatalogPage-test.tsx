@@ -10,6 +10,7 @@ import Header from "../Header";
 import Footer from "../Footer";
 import WelcomePage from "../WelcomePage";
 import BookDetailsContainer from "../BookDetailsContainer";
+import title from "../../utils/title";
 
 describe("CatalogPage", () => {
   let wrapper;
@@ -38,12 +39,8 @@ describe("CatalogPage", () => {
     expect(catalog.prop("Header").name).to.equal(Header.name);
     expect(catalog.prop("computeBreadcrumbs")).to.be.ok;
     const pageTitleTemplate = catalog.prop("pageTitleTemplate");
-    expect(pageTitleTemplate("Collection", "Book")).to.equal(
-      "Palace Collection Manager - Book"
-    );
-    expect(pageTitleTemplate("Collection", null)).to.equal(
-      "Palace Collection Manager - Collection"
-    );
+    expect(pageTitleTemplate("Collection", "Book")).to.equal(title("Book"));
+    expect(pageTitleTemplate("Collection", null)).to.equal(title("Collection"));
   });
 
   it("handles the case in which the URL already contains a query string", () => {

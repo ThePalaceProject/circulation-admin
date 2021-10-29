@@ -5,6 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { State } from "../reducers/index";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
+import title from "../utils/title";
 
 export interface TroubleshootingPageContext {
   editorStore: Store<State>;
@@ -52,7 +53,7 @@ export default class TroubleshootingPage extends React.Component<
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Palace Collection Manager - Troubleshooting";
+    document.title = title("Troubleshooting");
   }
 
   render(): JSX.Element {

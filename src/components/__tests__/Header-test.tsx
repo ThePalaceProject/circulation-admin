@@ -9,6 +9,7 @@ import EditableInput from "../EditableInput";
 import { NavItem } from "react-bootstrap";
 import { Link } from "react-router";
 import Admin from "../../models/Admin";
+import title from "../../utils/title";
 
 describe("Header", () => {
   let wrapper;
@@ -42,9 +43,9 @@ describe("Header", () => {
 
   describe("rendering", () => {
     it("shows the brand name", () => {
-      expect(
-        wrapper.containsMatchingElement(<img alt="Palace Collection Manager" />)
-      ).to.equal(true);
+      expect(wrapper.containsMatchingElement(<img alt={title()} />)).to.equal(
+        true
+      );
     });
 
     it("shows library dropdown when libraries are available", () => {

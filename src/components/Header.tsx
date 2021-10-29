@@ -14,6 +14,7 @@ import { Router } from "opds-web-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import * as palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";
+import title from "../utils/title";
 
 export interface HeaderStateProps {
   libraries?: LibraryData[];
@@ -129,7 +130,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
-          <img src={palaceLogoUrl} alt="Palace Collection Manager" />
+          <img src={palaceLogoUrl} alt={title()} />
           {this.props.libraries && this.props.libraries.length > 0 && (
             <EditableInput
               elementType="select"

@@ -13,6 +13,8 @@ import WelcomePage from "./WelcomePage";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import ActionsCreator from "opds-web-client/lib/actions";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
+import title from "../utils/title";
+
 export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
     collectionUrl: string;
@@ -52,7 +54,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
 
     let pageTitleTemplate = (collectionTitle, bookTitle) => {
       let details = bookTitle || collectionTitle;
-      return "Palace Collection Manager" + (details ? " - " + details : "");
+      return title(details);
     };
 
     const fetcher = new DataFetcher({ adapter });
