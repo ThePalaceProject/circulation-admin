@@ -1,9 +1,11 @@
 .collection-container {
   .book a {
+    color: $blue;
     .item-icon svg {
       fill: $blue;
     }
     &:hover {
+      color: $blue-dark;
       .item-icon svg {
         fill: $blue-dark;
       }

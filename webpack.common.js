@@ -5,6 +5,7 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 module.exports = {
@@ -28,6 +29,10 @@ module.exports = {
     // for testing AXE in development mode.
     new webpack.DefinePlugin({
       "process.env.TEST_AXE": JSON.stringify(process.env.TEST_AXE),
+    }),
+    // Publish the logo to dist.
+    new CopyPlugin({
+      patterns: ["src/images/PalaceCollectionManagerLogo.svg"],
     }),
   ],
   optimization: {

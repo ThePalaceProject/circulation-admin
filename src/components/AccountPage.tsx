@@ -5,6 +5,7 @@ import ChangePasswordForm from "./ChangePasswordForm";
 import { State } from "../reducers/index";
 import Header from "./Header";
 import Footer from "./Footer";
+import title from "../utils/title";
 
 export interface AccountPageContext {
   editorStore: Store<State>;
@@ -34,6 +35,6 @@ export default class AccountPage extends React.Component<{}, {}> {
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Circulation Manager - Account";
+    document.title = title("Account");
   }
 }

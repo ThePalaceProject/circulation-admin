@@ -112,6 +112,9 @@ fieldset.search-options.well {
   display: block;
   width: unset;
   padding-bottom: 20px;
+  legend {
+    background-color: $blue;
+  }
   ul, section {
     list-style: none;
     width: 100%;
@@ -152,6 +155,22 @@ fieldset.search-options.well {
   width: 100%;
   .panel {
     margin: 5px 0 10px 0;
+  }
+  .panel-instruction {
+    .panel-heading {
+      span {
+        color: $white;
+      }
+      svg {
+        fill: $white;
+      }
+      &:not(:hover) {
+        background: $blue;
+      }
+      &:hover {
+        background: $blue-dark;
+      }
+    }
   }
   br {
     display: none;

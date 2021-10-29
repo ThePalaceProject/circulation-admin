@@ -49,9 +49,11 @@
             .btn {
               color: $blue;
               border-color: $blue;
+              background-color: $white;
               margin: 5px 10px;
               &:hover {
                 color: $white;
+                background-color: $blue;
               }
             }
           }

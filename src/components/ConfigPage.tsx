@@ -5,6 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import ConfigTabContainer from "./ConfigTabContainer";
 import { State } from "../reducers/index";
+import title from "../utils/title";
 
 export interface ConfigPageProps extends React.Props<ConfigPageProps> {
   params: {
@@ -49,6 +50,6 @@ export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Circulation Manager - Configuration";
+    document.title = title("Configuration");
   }
 }

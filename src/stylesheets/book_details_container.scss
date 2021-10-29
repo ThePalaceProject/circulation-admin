@@ -21,6 +21,10 @@
         border-radius: .25em;
         border: 1px solid darken($gray-tint, 5);
         padding-left: 8px;
+        color: $blue;
+        &:hover {
+          color: $blue-dark;
+        }
       }
       .add-list-item-container {
         margin-top: 48px;
@@ -47,6 +51,10 @@
           margin-bottom: 8px;
           border-bottom: 1px solid $blue;
           font-weight: bold;
+          color: $blue;
+          &:hover {
+            color: $blue-dark;
+          }
         }
         p {
           font-size: .9em;

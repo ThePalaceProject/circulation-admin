@@ -1,21 +1,43 @@
+.palace {
+  .navbar-default, .navbar-collapse {
+    background-color: $white;
+    color: $dark;
+  }
+
+  .navbar-nav > li {
+    & > a,
+    & > button {
+      color: $dark;
+
+      &:hover, &:focus {
+        color: $dark;
+      }
+    }
+  }
+}
+
 .navbar-default {
   padding: 3px 0;
   border-radius: 0;
 
-  .navbar-brand, .navbar-brand:hover {
-    color: $pagecolorlight;
-    font-size: 1.8em;
-  }
-
   .container-fluid {
-    padding-right: 0;
+    padding: 24px 0 15px 15px;
   }
 
   .navbar-header {
+    padding-left: 10px;
+
+    > img {
+      height: 64px;
+      width: auto;
+      margin: -12px 20px 0 0;
+      vertical-align: top;
+    }
+
     .form-group {
       display: inline-block;
-      margin-top: 7px;
-      margin-bottom: 9px;
+      margin-top: 6px;
+      margin-bottom: 0;
     }
 
     .form-control {
@@ -29,26 +51,25 @@
 
     .dropdown {
       > button {
-        color: $white;
+        color: $dark;
         padding: 13px 10px;
         margin: 0;
 
         svg {
           transform: rotate(270deg);
-          fill: $white;
+          fill: $dark;
           height: 0.9em;
         }
 
         &:focus {
           @include basic-focus;
-          outline-color: $white;
         }
       }
     }
 
     .dropdown-menu {
       display: block;
-      background-color: $dark-gray;
+      background-color: $pagecolorlight;
       left: auto;
       right: 0;
       padding-bottom: 0;
@@ -58,12 +79,10 @@
       }
 
       a {
-        background-color: $dark;
-        color: $pagecolorlight;
+        background-color: $white;
 
         &:focus {
           @include basic-focus;
-          outline-color: $white;
         }
 
         &:hover, &:active, &:focus {
@@ -76,10 +95,6 @@
   .menu .header-link a {
     padding-left: 5px;
     padding-right: 5px;
-
-    &:focus {
-      outline-color: $white;
-    }
   }
 
   .pull-right {

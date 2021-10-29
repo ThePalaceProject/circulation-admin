@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
 import { State } from "../reducers/index";
+import title from "../utils/title";
 
 export interface DashboardPageProps extends React.Props<DashboardPageProps> {
   params: {
@@ -57,6 +58,6 @@ export default class DashboardPage extends React.Component<
   }
 
   UNSAFE_componentWillMount() {
-    document.title = "Circulation Manager - Dashboard";
+    document.title = title("Dashboard");
   }
 }
