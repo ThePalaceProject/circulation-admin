@@ -30,13 +30,9 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.TEST_AXE": JSON.stringify(process.env.TEST_AXE),
     }),
+    // Publish the logo to dist.
     new CopyPlugin({
-      patterns: [
-        {
-          from: "src/images",
-          to: "images",
-        },
-      ],
+      patterns: ["src/images/PalaceCollectionManagerLogo.svg"],
     }),
   ],
   optimization: {
