@@ -13,7 +13,7 @@ import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { Router } from "opds-web-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
-import PalaceLogo from "./PalaceLogo";
+import * as palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";
 
 export interface HeaderStateProps {
   libraries?: LibraryData[];
@@ -129,7 +129,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     return (
       <Navbar fluid={true}>
         <Navbar.Header>
-          <PalaceLogo />
+          <img src={palaceLogoUrl} alt="Palace Collection Manager" />
           {this.props.libraries && this.props.libraries.length > 0 && (
             <EditableInput
               elementType="select"
