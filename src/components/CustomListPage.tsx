@@ -39,7 +39,7 @@ export default function CustomListPage({
 
   return (
     <div className="custom-list-page">
-      <Header />
+      <Header libraryProp={library} />
       <CustomLists
         library={library}
         editOrCreate={editOrCreate}

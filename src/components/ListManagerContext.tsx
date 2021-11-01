@@ -14,6 +14,7 @@ export interface ListManagerProviderProps {
   email?: string;
   csrfToken?: string;
   editorStore?: Store<State>;
+  library?: any;
 }
 
 export function ListManagerProvider({
@@ -22,10 +23,13 @@ export function ListManagerProvider({
   email,
   csrfToken,
   editorStore,
+  library,
 }: ListManagerProviderProps): JSX.Element {
   const admin = new Admin(roles || [], email || null);
   return (
-    <ListManagerContext.Provider value={{ admin, csrfToken, editorStore }}>
+    <ListManagerContext.Provider
+      value={{ admin, csrfToken, editorStore, library }}
+    >
       {children}
     </ListManagerContext.Provider>
   );

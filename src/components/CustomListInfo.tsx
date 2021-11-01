@@ -4,10 +4,12 @@ import TrashIcon from "./icons/TrashIcon";
 import { Button } from "library-simplified-reusable-components";
 import { ListManagerContext } from "./ListManagerContext";
 import { CustomListData } from "../interfaces";
-import { Link } from "react-router";
+import { Link, browserHistory } from "react-router";
 
 export interface ListInfoProps {
   list: CustomListData;
+  lists?: CustomListData[];
+  idx?: number;
   identifier?: string;
   deleteCustomList: (list: CustomListData) => Promise<void>;
   library: string;
@@ -15,6 +17,8 @@ export interface ListInfoProps {
 
 export default function CustomListInfo({
   list,
+  lists,
+  idx,
   identifier,
   deleteCustomList,
   library,
@@ -23,6 +27,16 @@ export default function CustomListInfo({
 
   const isActive = identifier === list.id.toString();
   const { id, name, entry_count } = list;
+
+  const deleteList = async (list) => {
+    await deleteCustomList(list);
+    lists[idx - 1]
+      ? browserHistory.push(
+          "/admin/web/lists/" + library + "/edit/" + lists[idx - 1].id
+        )
+      : browserHistory.push("/admin/web/lists/" + library + "/create");
+  };
+
   return (
     <li key={id} className={isActive ? "active" : ""}>
       <div className="custom-list-info">
@@ -50,7 +64,7 @@ export default function CustomListInfo({
         )}
         {admin && admin.isLibraryManager(library) && (
           <Button
-            callback={() => deleteCustomList(list)}
+            callback={() => deleteList(list)}
             content={
               <span>
                 Delete

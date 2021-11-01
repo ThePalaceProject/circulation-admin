@@ -43,10 +43,12 @@ export default function CustomListsSidebar({
             {lists.map((list, idx) => (
               <CustomListInfo
                 key={idx}
+                idx={idx}
                 list={list}
                 identifier={identifier}
                 deleteCustomList={deleteCustomList}
                 library={library}
+                lists={lists}
               />
             ))}
           </ul>
