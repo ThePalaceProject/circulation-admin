@@ -15,6 +15,7 @@ describe("CustomListEditorBody", () => {
   let search;
   let setDeletedListEntries;
   let setDraftCollections;
+  let setAddedListEntries;
   let setDraftEntries;
   const languages = {
     eng: ["English"],
@@ -94,6 +95,7 @@ describe("CustomListEditorBody", () => {
     search = stub();
     loadMoreSearchResults = stub();
     loadMoreEntries = stub();
+    setAddedListEntries = stub();
     wrapper = Enzyme.mount(
       <CustomListEditorBody
         isFetchingMoreCustomListEntries={false}
@@ -108,6 +110,7 @@ describe("CustomListEditorBody", () => {
         searchResults={searchResults}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
+        setAddedListEntries={setAddedListEntries}
         setDeletedListEntries={setDeletedListEntries}
         setDraftCollections={setDraftCollections}
         setDraftEntries={setDraftEntries}

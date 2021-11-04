@@ -13,10 +13,15 @@ describe("CustomListEditorHeader", () => {
   let setDraftEntries;
   let saveFormData;
   let list;
+  let setDeletedListEntries;
+  let setAddedListEntries;
 
   beforeEach(() => {
     setDraftTitle = stub();
     setDraftEntries = stub();
+    setDeletedListEntries = stub();
+    setAddedListEntries = stub();
+
     saveFormData = stub();
     list = {
       id: "1",
@@ -56,6 +61,8 @@ describe("CustomListEditorHeader", () => {
         hasListInfoChanged={false}
         setDraftTitle={setDraftTitle}
         setDraftEntries={setDraftEntries}
+        setDeletedListEntries={setDeletedListEntries}
+        setAddedListEntries={setAddedListEntries}
         saveFormData={saveFormData}
       />
     );

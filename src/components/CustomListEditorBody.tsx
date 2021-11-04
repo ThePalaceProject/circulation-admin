@@ -11,7 +11,12 @@ import CustomListSearch from "./CustomListSearch";
 import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
 
 export interface CustomListEditorBodyProps {
+  addedListEntries?: Entry[];
   collections?: AdminCollectionData[];
+  deletedListEntries?: Entry[];
+  draftCollections?: AdminCollectionData[];
+  draftEntries?: Entry[];
+  draftTitle?: string;
   entryCount?: string;
   entryPoints?: string[];
   isFetchingMoreCustomListEntries: boolean;
@@ -22,19 +27,24 @@ export interface CustomListEditorBodyProps {
   listId?: string | number;
   searchResults?: CollectionData;
   startingTitle?: string;
-  draftTitle?: string;
-  draftEntries?: Entry[];
-  draftCollections?: AdminCollectionData[];
+  addAll: (resultsToAdd: Entry[]) => void;
+  addEntry: (id: string) => void;
+  deleteEntry: (id: string) => void;
+  deleteAll: () => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   search: (url: string) => Promise<CollectionData>;
-  setDeletedListEntries: (entries: Entry[]) => void;
   setDraftCollections: (collections) => void;
-  setDraftEntries: (entries: Entry[]) => void;
+  setLoadedMoreEntries: (clicked: boolean) => void;
 }
 
 export default function CustomListEditorBody({
+  addedListEntries,
   collections,
+  deletedListEntries,
+  draftCollections,
+  draftEntries,
+  draftTitle,
   entryCount,
   entryPoints,
   isFetchingMoreCustomListEntries,
@@ -42,18 +52,17 @@ export default function CustomListEditorBody({
   languages,
   library,
   list,
-  listId,
   searchResults,
   startingTitle,
-  draftTitle,
-  draftEntries,
-  draftCollections,
+  addAll,
+  addEntry,
+  deleteAll,
+  deleteEntry,
   loadMoreEntries,
   loadMoreSearchResults,
   search,
-  setDeletedListEntries,
   setDraftCollections,
-  setDraftEntries,
+  setLoadedMoreEntries,
 }: CustomListEditorBodyProps) {
   const [entryPointSelected, setEntryPointSelected] = React.useState<string>(
     "all"
@@ -134,11 +143,6 @@ export default function CustomListEditorBody({
     search(url);
   };
 
-  const changeEntries = (entries: Entry[], deletedEntries: Entry[]) => {
-    setDraftEntries(entries);
-    setDeletedListEntries(deletedEntries);
-  };
-
   const crawlable = `${draftTitle ? `lists/${draftTitle}/` : ""}crawlable`;
   const opdsFeedUrl = `${library?.short_name}/${crawlable}`;
 
@@ -184,17 +188,22 @@ export default function CustomListEditorBody({
         )}
       </section>
       <CustomListEntriesEditor
+        addEntry={addEntry}
+        deleteEntry={deleteEntry}
+        addAll={addAll}
+        deleteAll={deleteAll}
         searchResults={searchResults}
         entries={draftEntries}
+        deletedListEntries={deletedListEntries}
+        addedListEntries={addedListEntries}
         nextPageUrl={list && list.nextPageUrl}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
-        onUpdate={changeEntries}
         isFetchingMoreSearchResults={isFetchingMoreSearchResults}
         isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
         opdsFeedUrl={opdsFeedUrl}
         entryCount={entryCount}
-        listId={listId}
+        setLoadedMoreEntries={setLoadedMoreEntries}
       />
     </div>
   );
