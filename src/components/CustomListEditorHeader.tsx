@@ -7,7 +7,7 @@ export interface CustomListEditorHeaderProps {
   draftTitle: string;
   listId?: string | number;
   hasListInfoChanged: boolean;
-  listEntries: Entry[];
+  draftEntries: Entry[];
   cancelClicked: () => void;
   setDraftTitle: (title) => void;
   saveFormData: () => void;
@@ -20,18 +20,10 @@ export default function CustomListEditorHeader({
   setDraftTitle,
   cancelClicked,
   saveFormData,
-  listEntries,
+  draftEntries,
 }: CustomListEditorHeaderProps) {
-  const titleOrEntriesIsBlank = (): boolean => {
-    if (
-      draftTitle === "" ||
-      draftTitle === "list title" ||
-      !listEntries.length
-    ) {
-      return true;
-    }
-    return false;
-  };
+  const titleOrEntriesIsBlank = (): boolean =>
+    draftTitle === "" || draftTitle === "list title" || !draftEntries.length;
 
   const setNewTitleOnState = (newTitle): void => {
     setDraftTitle(newTitle);

@@ -356,7 +356,7 @@ export default function CustomListEditor({
         listId={listId && listId}
         saveFormData={saveFormData}
         hasListInfoChanged={hasListInfoChanged()}
-        listEntries={draftEntries}
+        draftEntries={draftEntries}
         cancelClicked={cancelClicked}
       />
       <CustomListEditorBody
