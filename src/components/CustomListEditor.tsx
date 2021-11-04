@@ -346,7 +346,7 @@ export default function CustomListEditor({
   return (
     <div className="custom-list-editor">
       {showSaveError && (
-        <p style={{ color: "#d13439" }}>
+        <p className="save-list-error">
           To be saved, a list must have a title and contain books.
         </p>
       )}

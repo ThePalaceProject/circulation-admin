@@ -34,7 +34,7 @@ export interface CustomListEditorBodyProps {
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   search: (url: string) => Promise<CollectionData>;
-  setDraftCollections: (collections) => void;
+  setDraftCollections: (collections: AdminCollectionData[]) => void;
   setLoadedMoreEntries: (clicked: boolean) => void;
 }
 

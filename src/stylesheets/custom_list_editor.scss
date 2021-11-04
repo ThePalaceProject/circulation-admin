@@ -25,6 +25,11 @@
       padding-top: 20px;
     }
 
+    // TODO: update to NYPL error color
+    .save-list-error {
+      color: $red-error;
+    }
+
     .custom-list-filters {
       display: flex;
       flex-direction: column;
@@ -102,8 +107,8 @@
     svg {
       float: unset;
       vertical-align: unset;
-      height: .9em;
-      margin-left: .5em;
+      height: 0.9em;
+      margin-left: 0.5em;
     }
   }
 }
@@ -112,7 +117,8 @@ fieldset.search-options.well {
   display: block;
   width: unset;
   padding-bottom: 20px;
-  ul, section {
+  ul,
+  section {
     list-style: none;
     width: 100%;
     margin: auto;
