@@ -68,7 +68,6 @@ export default function CustomListEntries({
    * If the server associates books with this list...
    */
   if (totalEntriesServer) {
-    console.log("in first if");
     /**
      * And there are visible entries...
      */
@@ -81,7 +80,6 @@ export default function CustomListEntries({
       booksText = entriesCount === 1 ? "Book" : "Books";
       entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
     } else if (totalEntriesServer - deletedListEntries.length !== 0) {
-      console.log("in second if");
       /**
        * There are entries on the server, but none are visible,
        * which means the "Delete all" button was recently clicked.
@@ -98,7 +96,6 @@ export default function CustomListEntries({
       entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
     }
   } else {
-    console.log("in third if");
     /**
      * totalEntriesServer is falsey, which means this is a new list
      * a user has begun adding books to.

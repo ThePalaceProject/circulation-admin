@@ -10,18 +10,13 @@ import TextWithEditMode from "../TextWithEditMode";
 describe("CustomListEditorHeader", () => {
   let wrapper;
   let setDraftTitle;
-  let setDraftEntries;
   let saveFormData;
   let list;
-  let setDeletedListEntries;
-  let setAddedListEntries;
+  let cancelClicked;
 
   beforeEach(() => {
     setDraftTitle = stub();
-    setDraftEntries = stub();
-    setDeletedListEntries = stub();
-    setAddedListEntries = stub();
-
+    cancelClicked = stub();
     saveFormData = stub();
     list = {
       id: "1",
@@ -55,14 +50,11 @@ describe("CustomListEditorHeader", () => {
     wrapper = Enzyme.mount(
       <CustomListEditorHeader
         draftTitle={list.title}
-        list={list}
         listId={list.id}
-        listEntries={list.books}
+        draftEntries={list.books}
+        cancelClicked={cancelClicked}
         hasListInfoChanged={false}
         setDraftTitle={setDraftTitle}
-        setDraftEntries={setDraftEntries}
-        setDeletedListEntries={setDeletedListEntries}
-        setAddedListEntries={setAddedListEntries}
         saveFormData={saveFormData}
       />
     );
@@ -95,7 +87,7 @@ describe("CustomListEditorHeader", () => {
     expect(saveListButton.props().disabled).to.equal(true);
     wrapper.setProps({
       draftTitle: "original list title",
-      listEntries: [],
+      draftEntries: [],
     });
     saveListButton = wrapper.find(".save-or-cancel-list").children().at(0);
     expect(saveListButton.props().disabled).to.equal(true);

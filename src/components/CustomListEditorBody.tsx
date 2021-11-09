@@ -23,8 +23,8 @@ export interface CustomListEditorBodyProps {
   isFetchingMoreSearchResults: boolean;
   languages: LanguagesData;
   library: LibraryData;
-  list?: CollectionData;
   listId?: string | number;
+  nextPageUrl?: string;
   searchResults?: CollectionData;
   startingTitle?: string;
   addAll: (resultsToAdd: Entry[]) => void;
@@ -51,7 +51,7 @@ export default function CustomListEditorBody({
   isFetchingMoreSearchResults,
   languages,
   library,
-  list,
+  nextPageUrl,
   searchResults,
   startingTitle,
   addAll,
@@ -196,7 +196,7 @@ export default function CustomListEditorBody({
         entries={draftEntries}
         deletedListEntries={deletedListEntries}
         addedListEntries={addedListEntries}
-        nextPageUrl={list && list.nextPageUrl}
+        nextPageUrl={nextPageUrl}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={isFetchingMoreSearchResults}

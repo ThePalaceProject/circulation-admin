@@ -307,8 +307,9 @@ export default function CustomListEditor({
      */
     const totalEntriesServer = parseInt(entryCount, 10);
     if (
+      entryCount &&
       totalEntriesServer !==
-      totalEntriesServer - deletedListEntries.length + addedListEntries.length
+        totalEntriesServer - deletedListEntries.length + addedListEntries.length
     )
       return true;
 
@@ -367,8 +368,8 @@ export default function CustomListEditor({
         isFetchingMoreSearchResults={isFetchingMoreSearchResults}
         languages={languages}
         library={library}
-        list={list}
         listId={listId}
+        nextPageUrl={list && list.nextPageUrl}
         searchResults={searchResults}
         startingTitle={startingTitle}
         deletedListEntries={deletedListEntries}

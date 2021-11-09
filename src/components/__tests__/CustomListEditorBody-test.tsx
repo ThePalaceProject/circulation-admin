@@ -10,13 +10,15 @@ import CustomListSearch from "../CustomListSearch";
 
 describe("CustomListEditorBody", () => {
   let wrapper;
+  let search;
+  let setDraftCollections;
+  let addAll;
+  let addEntry;
+  let deleteAll;
+  let deleteEntry;
   let loadMoreEntries;
   let loadMoreSearchResults;
-  let search;
-  let setDeletedListEntries;
-  let setDraftCollections;
-  let setAddedListEntries;
-  let setDraftEntries;
+  let setLoadedMoreEntries;
   const languages = {
     eng: ["English"],
     spa: ["Spanish", "Castilian"],
@@ -93,27 +95,39 @@ describe("CustomListEditorBody", () => {
   ];
   beforeEach(() => {
     search = stub();
-    loadMoreSearchResults = stub();
+    addAll = stub();
+    addEntry = stub();
+    deleteAll = stub();
+    deleteEntry = stub();
     loadMoreEntries = stub();
-    setAddedListEntries = stub();
+    loadMoreSearchResults = stub();
+    setLoadedMoreEntries = stub();
     wrapper = Enzyme.mount(
       <CustomListEditorBody
+        addedListEntries={[]}
+        collections={collections}
+        deletedListEntries={[]}
+        draftCollections={draftCollections}
+        draftEntries={listData.books}
+        draftTitle={listData.title}
+        entryCount="2"
+        entryPoints={entryPoints}
         isFetchingMoreCustomListEntries={false}
         isFetchingMoreSearchResults={false}
         languages={languages}
         library={library}
-        draftEntries={listData.books}
-        collections={collections}
-        entryPoints={entryPoints}
-        draftCollections={draftCollections}
-        search={search}
+        listId={listData.id}
         searchResults={searchResults}
-        loadMoreSearchResults={loadMoreSearchResults}
+        startingTitle=""
+        addAll={addAll}
+        addEntry={addEntry}
+        deleteAll={deleteAll}
+        deleteEntry={deleteEntry}
         loadMoreEntries={loadMoreEntries}
-        setAddedListEntries={setAddedListEntries}
-        setDeletedListEntries={setDeletedListEntries}
+        loadMoreSearchResults={loadMoreSearchResults}
+        search={search}
         setDraftCollections={setDraftCollections}
-        setDraftEntries={setDraftEntries}
+        setLoadedMoreEntries={setLoadedMoreEntries}
       />
     );
   });
