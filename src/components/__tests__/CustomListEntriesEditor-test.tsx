@@ -105,4 +105,45 @@ describe("CustomListEntriesEditor", () => {
     expect(wrapper.find(CustomListSearchResults)).to.be.ok;
     expect(wrapper.find(CustomListEntries)).to.be.ok;
   });
+
+  // Skipping tests related to drag-and-drop functionality until the
+  // react-beautiful-dnd dependency in this repository is updated from
+  // v2.3.1 to the current, v13+, or whatever the highest version is
+  // that still works.
+
+  it.skip("prevents dragging within search results", () => {
+    // simulate starting a drag from search results
+    // find search results container and check that isDropDisabled is true
+  });
+
+  it.skip("prevents dragging within list entries", () => {
+    // simulate starting a drag from entries
+    // find entries container and check that isDropDisabled is true
+  });
+
+  it.skip("drags from search results to list entries", () => {
+    // simulate starting a drag from search results
+    // find entries container and check that isDropDisabled is false
+    // simulate dropping on the entries
+    // check entries for new entry
+    // check entry has been removed from search results
+  });
+
+  it.skip("drags from list entries to search results, assuming entry is from current results", () => {
+    // simulate starting a drag from entries
+    // find search results container and check that isDropDisabled is false
+    // simulate dropping on the search results
+    // check search results for result
+    // check search result has been removed from entries
+  });
+
+  it.skip("shows message in place of search results when dragging from list entries", () => {
+    // simulate starting a drag from entries
+    // find search results container and check that isDropDisabled is false
+    // expect message to equal "Drag books here to remove them from the list."
+    // if you drop anywhere on the page, the message goes away
+    // simulate dropping outside a droppable (no destination)
+    // find search results container and check that isDropDisabled is true
+    // message length should be 0
+  });
 });
