@@ -62,6 +62,10 @@ export default function CustomListEditor({
     false
   );
 
+  console.log("deletedListEntries -->", deletedListEntries);
+  console.log("addedListEntries -->", addedListEntries);
+  console.log("draftEntries -->", draftEntries);
+
   React.useEffect(() => {
     if (list) {
       setDraftTitle(list.title);
@@ -172,19 +176,23 @@ export default function CustomListEditor({
   };
 
   const deleteEntry = (id: string) => {
-    const newEntries = draftEntries.slice().filter((entry) => entry.id !== id);
+    const newEntries = draftEntries.filter((entry) => entry.id !== id);
     setDraftEntries(newEntries);
     /**
      * Create an array containing just the deletedEntry.
      */
     const deletedEntry = draftEntries.filter((entry) => entry.id === id);
     /**
-     * Create an array containing the deleted entries, without the most recent deletedEntry.
-     * Then, combine the arrays.
+     * If the book is one from the server, create an array containing the deleted
+     * entries, without the most recent deletedEntry. Then, combine the arrays.
+     * If the book was just added and is not one from the server, we can remove it
+     * from the draftEntries without adding it to the deleted array.
      */
-    const prevDeleted = deletedListEntries.filter((entry) => entry.id !== id);
-    const newDeleted = [...prevDeleted, ...deletedEntry];
-    setDeletedListEntries(newDeleted);
+    if (list.books.filter((book) => book.id === id).length) {
+      const prevDeleted = deletedListEntries.filter((entry) => entry.id !== id);
+      const newDeleted = [...prevDeleted, ...deletedEntry];
+      setDeletedListEntries(newDeleted);
+    }
     /**
      * Set the "added" value, on state, to a new array without the deletedEntry.
      */

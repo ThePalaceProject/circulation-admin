@@ -4,8 +4,8 @@
 
 #### Refactored
 
-- Refactored the `CustomListEntriesEditor` component to bring it up-to-date with current best practices. Added `CustomListSearchResults` and `CustomListEntries`. Added/edited tests where needed.
 - Refactored the `CustomListEditor` component to bring it up-to-date with current best practices. Added `CustomListEditorHeader` and `CustomListEditorBody`. Added/edited tests where needed.
+- Refactored the `CustomListEntriesEditor` component to bring it up-to-date with current best practices. Added `CustomListSearchResults` and `CustomListEntries`. Added/edited tests where needed.
 
 ### v0.5.7
 
