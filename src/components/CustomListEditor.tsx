@@ -62,10 +62,6 @@ export default function CustomListEditor({
     false
   );
 
-  console.log("deletedListEntries -->", deletedListEntries);
-  console.log("addedListEntries -->", addedListEntries);
-  console.log("draftEntries -->", draftEntries);
-
   React.useEffect(() => {
     if (list) {
       setDraftTitle(list.title);
