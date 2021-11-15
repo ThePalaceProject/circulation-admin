@@ -158,10 +158,10 @@ export default function CustomListEditor({
       }
     }
     /**
-     * Create an array containing the added entries, without the most recent added entry.
+     * Set addedListEntries to an array containing the added entries
+     * and the most recent added entry.
      */
-    const prevAdded = addedListEntries.filter((entry) => entry.id !== id);
-    const newAdded = prevAdded.concat(entry);
+    const newAdded = addedListEntries.concat(entry);
     setAddedListEntries(newAdded);
     /**
      * Set deleted entries to array containing all except the one being added.
@@ -179,14 +179,13 @@ export default function CustomListEditor({
      */
     const deletedEntry = draftEntries.filter((entry) => entry.id === id);
     /**
-     * If the book is one from the server, create an array containing the deleted
-     * entries, without the most recent deletedEntry. Then, combine the arrays.
      * If the book was just added and is not one from the server, we can remove it
-     * from the draftEntries without adding it to the deleted array.
+     * from the draftEntries without adding it to the deleted array. If the book is
+     * one from the server, set deletedListEntries to an array containing the deleted
+     * entries and the most recent deletedEntry.
      */
     if (list.books.filter((book) => book.id === id).length) {
-      const prevDeleted = deletedListEntries.filter((entry) => entry.id !== id);
-      const newDeleted = [...prevDeleted, ...deletedEntry];
+      const newDeleted = [...deletedListEntries, ...deletedEntry];
       setDeletedListEntries(newDeleted);
     }
     /**
