@@ -6,41 +6,38 @@ import CustomListSearchResults from "../CustomListSearchResults";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AudioHeadphoneIcon, BookIcon } from "@nypl/dgx-svg-icons";
 import * as PropTypes from "prop-types";
-import { CollectionData } from "opds-web-client/lib/interfaces";
+import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import LoadButton from "../LoadButton";
+
+export interface Entry extends BookData {
+  medium?: string;
+}
 
 describe("CustomListSearchResults", () => {
   let wrapper;
 
-  const listData = {
-    id: "1",
-    url: "some url",
-    title: "original list title",
-    lanes: [],
-    books: [
-      {
-        id: "A",
-        title: "entry A",
-        authors: ["author 1"],
-        raw: {
-          $: {
-            "schema:additionalType": { value: "http://schema.org/EBook" },
-          },
+  const entriesData: Entry[] = [
+    {
+      id: "A",
+      title: "entry A",
+      authors: ["author 1"],
+      raw: {
+        $: {
+          "schema:additionalType": { value: "http://schema.org/EBook" },
         },
       },
-      {
-        id: "B",
-        title: "entry B",
-        authors: ["author 2a", "author 2b"],
-        raw: {
-          $: {
-            "schema:additionalType": { value: "http://schema.org/EBook" },
-          },
+    },
+    {
+      id: "B",
+      title: "entry B",
+      authors: ["author 2a", "author 2b"],
+      raw: {
+        $: {
+          "schema:additionalType": { value: "http://schema.org/EBook" },
         },
       },
-    ],
-    navigationLinks: [],
-  };
+    },
+  ];
 
   let searchResultsData: CollectionData = {
     id: "id",
@@ -116,7 +113,7 @@ describe("CustomListSearchResults", () => {
       <DragDropContext>
         <CustomListSearchResults
           draggingFrom={null}
-          entries={listData}
+          entries={entriesData}
           isFetchingMoreSearchResults={false}
           opdsFeedUrl="opdsFeedUrl"
           searchResults={searchResultsData}
@@ -232,7 +229,7 @@ describe("CustomListSearchResults", () => {
       children: (
         <CustomListSearchResults
           draggingFrom={null}
-          entries={listData}
+          entries={entriesData}
           isFetchingMoreSearchResults={false}
           opdsFeedUrl="opdsFeedUrl"
           searchResults={searchResultsData}
@@ -305,10 +302,9 @@ describe("CustomListSearchResults", () => {
       children: (
         <CustomListSearchResults
           draggingFrom={null}
-          entries={listData}
+          entries={entriesData}
           isFetchingMoreSearchResults={false}
           opdsFeedUrl="opdsFeedUrl"
-          searchResults={[]}
           addAll={addAll}
           addEntry={addEntry}
           loadMoreSearchResults={loadMoreSearchResults}
@@ -329,7 +325,7 @@ describe("CustomListSearchResults", () => {
       children: (
         <CustomListSearchResults
           draggingFrom={null}
-          entries={listData}
+          entries={entriesData}
           isFetchingMoreSearchResults={false}
           opdsFeedUrl="opdsFeedUrl"
           // search results with next link
@@ -350,7 +346,7 @@ describe("CustomListSearchResults", () => {
       children: (
         <CustomListSearchResults
           draggingFrom={null}
-          entries={listData}
+          entries={entriesData}
           isFetchingMoreSearchResults={false}
           opdsFeedUrl="opdsFeedUrl"
           // search results with next link
@@ -372,7 +368,7 @@ describe("CustomListSearchResults", () => {
       children: (
         <CustomListSearchResults
           draggingFrom={null}
-          entries={listData}
+          entries={entriesData}
           // set isFetchingMoreSearchResults to true
           isFetchingMoreSearchResults={true}
           opdsFeedUrl="opdsFeedUrl"
@@ -397,7 +393,7 @@ describe("CustomListSearchResults", () => {
       children: (
         <CustomListSearchResults
           draggingFrom={null}
-          entries={listData}
+          entries={entriesData}
           isFetchingMoreSearchResults={false}
           opdsFeedUrl="opdsFeedUrl"
           // search results with next link

@@ -13,7 +13,7 @@ export interface Entry extends BookData {
   medium?: string;
 }
 
-export interface CustomListEntriesEditorProps {
+export interface CustomListSearchResultsProps {
   draggingFrom: string | null;
   entries?: Entry[];
   isFetchingMoreSearchResults: boolean;
@@ -22,7 +22,7 @@ export interface CustomListEntriesEditorProps {
   addAll: (resultsToAdd: Entry[]) => void;
   addEntry?: (id: string) => void;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  setDraggingFrom: () => void;
+  setDraggingFrom: (className: string | null) => void;
 }
 
 export default function CustomListSearchResults({
@@ -35,7 +35,7 @@ export default function CustomListSearchResults({
   addEntry,
   loadMoreSearchResults,
   setDraggingFrom,
-}) {
+}: CustomListSearchResultsProps) {
   const searchResultsNotInEntries = () => {
     const entryIds =
       entries && entries.length ? entries.map((entry) => entry.id) : [];
