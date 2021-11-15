@@ -6,7 +6,7 @@ import CustomListSearchResults from "../CustomListSearchResults";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AudioHeadphoneIcon, BookIcon } from "@nypl/dgx-svg-icons";
 import * as PropTypes from "prop-types";
-import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
+import { BookData } from "opds-web-client/lib/interfaces";
 import LoadButton from "../LoadButton";
 
 export interface Entry extends BookData {
@@ -39,7 +39,7 @@ describe("CustomListSearchResults", () => {
     },
   ];
 
-  let searchResultsData: CollectionData = {
+  let searchResultsData = {
     id: "id",
     url: "url",
     title: "title - search",
