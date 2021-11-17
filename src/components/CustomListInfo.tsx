@@ -27,12 +27,16 @@ export default function CustomListInfo({
 
   const isActive = identifier === list.id.toString();
   const { id, name, entry_count } = list;
-
+  /**
+   * After deleteList deletes the current list, it navigates the user
+   * to the edit form of the next list down in the sidebar. If there is
+   * no next list, it navigates the user to the create form.
+   */
   const deleteList = async (list) => {
     await deleteCustomList(list);
-    lists[idx - 1]
+    lists[idx + 1]
       ? browserHistory.push(
-          "/admin/web/lists/" + library + "/edit/" + lists[idx - 1].id
+          "/admin/web/lists/" + library + "/edit/" + lists[idx + 1].id
         )
       : browserHistory.push("/admin/web/lists/" + library + "/create");
   };

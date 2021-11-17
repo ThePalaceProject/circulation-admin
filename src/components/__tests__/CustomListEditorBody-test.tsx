@@ -4,18 +4,21 @@ import { stub } from "sinon";
 import * as React from "react";
 import * as Enzyme from "enzyme";
 import CustomListEditorBody from "../CustomListEditorBody";
-import CustomListEntriesEditor from "../CustomListEntriesEditor";
+import CustomListBuilder from "../CustomListBuilder";
 import EditableInput from "../EditableInput";
 import CustomListSearch from "../CustomListSearch";
 
 describe("CustomListEditorBody", () => {
   let wrapper;
+  let search;
+  let setDraftCollections;
+  let addAll;
+  let addEntry;
+  let deleteAll;
+  let deleteEntry;
   let loadMoreEntries;
   let loadMoreSearchResults;
-  let search;
-  let setDeletedListEntries;
-  let setDraftCollections;
-  let setDraftEntries;
+  let setLoadedMoreEntries;
   const languages = {
     eng: ["English"],
     spa: ["Spanish", "Castilian"],
@@ -92,31 +95,45 @@ describe("CustomListEditorBody", () => {
   ];
   beforeEach(() => {
     search = stub();
-    loadMoreSearchResults = stub();
+    addAll = stub();
+    addEntry = stub();
+    deleteAll = stub();
+    deleteEntry = stub();
     loadMoreEntries = stub();
+    loadMoreSearchResults = stub();
+    setLoadedMoreEntries = stub();
     wrapper = Enzyme.mount(
       <CustomListEditorBody
+        addedListEntries={[]}
+        collections={collections}
+        deletedListEntries={[]}
+        draftCollections={draftCollections}
+        draftEntries={listData.books}
+        draftTitle={listData.title}
+        entryCount="2"
+        entryPoints={entryPoints}
         isFetchingMoreCustomListEntries={false}
         isFetchingMoreSearchResults={false}
         languages={languages}
         library={library}
-        draftEntries={listData.books}
-        collections={collections}
-        entryPoints={entryPoints}
-        draftCollections={draftCollections}
-        search={search}
+        listId={listData.id}
         searchResults={searchResults}
-        loadMoreSearchResults={loadMoreSearchResults}
+        startingTitle=""
+        addAll={addAll}
+        addEntry={addEntry}
+        deleteAll={deleteAll}
+        deleteEntry={deleteEntry}
         loadMoreEntries={loadMoreEntries}
-        setDeletedListEntries={setDeletedListEntries}
+        loadMoreSearchResults={loadMoreSearchResults}
+        search={search}
         setDraftCollections={setDraftCollections}
-        setDraftEntries={setDraftEntries}
+        setLoadedMoreEntries={setLoadedMoreEntries}
       />
     );
   });
 
   it("shows entries editor with list entries and search results", () => {
-    const entriesEditor = wrapper.find(CustomListEntriesEditor);
+    const entriesEditor = wrapper.find(CustomListBuilder);
     expect(entriesEditor.length).to.equal(1);
     expect(entriesEditor.props().entries).to.equal(listData.books);
     expect(entriesEditor.props().searchResults).to.equal(searchResults);

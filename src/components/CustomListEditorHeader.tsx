@@ -1,48 +1,32 @@
 import * as React from "react";
 import TextWithEditMode from "./TextWithEditMode";
-import { CollectionData } from "opds-web-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
-import { Entry } from "./CustomListEntriesEditor";
+import { Entry } from "./CustomListBuilder";
 
 export interface CustomListEditorHeaderProps {
   draftTitle: string;
-  list?: CollectionData;
   listId?: string | number;
   hasListInfoChanged: boolean;
-  listEntries: Entry[];
+  draftEntries: Entry[];
+  cancelClicked: () => void;
   setDraftTitle: (title) => void;
-  setDraftEntries: (entries) => void;
   saveFormData: () => void;
 }
 
 export default function CustomListEditorHeader({
   draftTitle,
-  list,
   listId,
   hasListInfoChanged,
   setDraftTitle,
-  setDraftEntries,
+  cancelClicked,
   saveFormData,
-  listEntries,
+  draftEntries,
 }: CustomListEditorHeaderProps) {
-  const titleOrEntriesIsBlank = (): boolean => {
-    if (
-      draftTitle === "" ||
-      draftTitle === "list title" ||
-      !listEntries.length
-    ) {
-      return true;
-    }
-    return false;
-  };
+  const titleOrEntriesIsBlank = (): boolean =>
+    draftTitle === "" || draftTitle === "list title" || !draftEntries.length;
 
   const setNewTitleOnState = (newTitle): void => {
     setDraftTitle(newTitle);
-  };
-
-  const resetState = (): void => {
-    setDraftTitle(list ? list.title : "");
-    setDraftEntries(list ? list.books : []);
   };
 
   return (
@@ -68,7 +52,7 @@ export default function CustomListEditorHeader({
         />
         <Button
           className="inverted"
-          callback={resetState}
+          callback={cancelClicked}
           disabled={!hasListInfoChanged}
           content="Cancel Changes"
         />
