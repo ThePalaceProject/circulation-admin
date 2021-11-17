@@ -4,13 +4,13 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import CustomListEntriesEditor from "../CustomListEntriesEditor";
+import CustomListBuilder from "../CustomListBuilder";
 
 import * as PropTypes from "prop-types";
 import CustomListSearchResults from "../CustomListSearchResults";
 import CustomListEntries from "../CustomListEntries";
 
-describe("CustomListEntriesEditor", () => {
+describe("CustomListBuilder", () => {
   let wrapper;
   let loadMoreSearchResults;
   let loadMoreEntries;
@@ -85,7 +85,7 @@ describe("CustomListEntriesEditor", () => {
     );
 
     wrapper = mount(
-      <CustomListEntriesEditor
+      <CustomListBuilder
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}

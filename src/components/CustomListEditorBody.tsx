@@ -8,7 +8,7 @@ import { CollectionData } from "opds-web-client/lib/interfaces";
 import { Panel } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import CustomListSearch from "./CustomListSearch";
-import CustomListEntriesEditor, { Entry } from "./CustomListEntriesEditor";
+import CustomListBuilder, { Entry } from "./CustomListBuilder";
 
 export interface CustomListEditorBodyProps {
   addedListEntries?: Entry[];
@@ -187,7 +187,7 @@ export default function CustomListEditorBody({
           </div>
         )}
       </section>
-      <CustomListEntriesEditor
+      <CustomListBuilder
         addEntry={addEntry}
         deleteEntry={deleteEntry}
         addAll={addAll}

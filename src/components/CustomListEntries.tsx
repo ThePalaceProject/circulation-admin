@@ -12,7 +12,7 @@ export interface Entry extends BookData {
   medium?: string;
 }
 
-export interface CustomListEntriesEditorProps {
+export interface CustomListEntriesProps {
   addedListEntries: Entry[];
   deletedListEntries: Entry[];
   draggingFrom: string | null;
@@ -42,7 +42,7 @@ export default function CustomListEntries({
   loadMoreEntries,
   setDraggingFrom,
   setLoadedMoreEntries,
-}: CustomListEntriesEditorProps) {
+}: CustomListEntriesProps) {
   const [totalVisibleEntries, setTotalVisibleEntries] = React.useState(0);
 
   React.useEffect(() => {
@@ -77,6 +77,11 @@ export default function CustomListEntries({
         deletedListEntries.length +
         addedListEntries.length;
       displayTotal = `1 - ${entries.length} of ${entriesCount}`;
+      console.log("totalEntriesServer -->", totalEntriesServer);
+      console.log("- deletedListEntries.length -->", deletedListEntries.length);
+      console.log("+ addedListEntries.length -->", addedListEntries.length);
+      console.log("= entriesCount -->", entriesCount);
+      console.log("-----------");
       booksText = entriesCount === 1 ? "Book" : "Books";
       entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
     } else if (totalEntriesServer - deletedListEntries.length !== 0) {
