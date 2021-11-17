@@ -1,7 +1,7 @@
 import * as React from "react";
 import TextWithEditMode from "./TextWithEditMode";
 import { Button } from "library-simplified-reusable-components";
-import { Entry } from "./CustomListEntriesEditor";
+import { Entry } from "./CustomListBuilder";
 
 export interface CustomListEditorHeaderProps {
   draftTitle: string;

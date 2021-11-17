@@ -12,7 +12,7 @@ export interface Entry extends BookData {
   medium?: string;
 }
 
-export interface CustomListEntriesEditorProps {
+export interface CustomListEntriesProps {
   addedListEntries: Entry[];
   deletedListEntries: Entry[];
   draggingFrom: string | null;
@@ -42,7 +42,7 @@ export default function CustomListEntries({
   loadMoreEntries,
   setDraggingFrom,
   setLoadedMoreEntries,
-}: CustomListEntriesEditorProps) {
+}: CustomListEntriesProps) {
   const [totalVisibleEntries, setTotalVisibleEntries] = React.useState(0);
 
   React.useEffect(() => {

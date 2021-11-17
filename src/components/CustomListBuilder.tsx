@@ -7,7 +7,7 @@ export interface Entry extends BookData {
   medium?: string;
 }
 
-export interface CustomListEntriesEditorProps {
+export interface CustomListBuilderProps {
   addedListEntries?: Entry[];
   deletedListEntries?: Entry[];
   entries?: Entry[];
@@ -26,7 +26,7 @@ export interface CustomListEntriesEditorProps {
   setLoadedMoreEntries: (clicked: boolean) => void;
 }
 
-export default function CustomListEntriesEditor({
+export default function CustomListBuilder({
   addedListEntries,
   deletedListEntries,
   entries,
@@ -43,7 +43,7 @@ export default function CustomListEntriesEditor({
   loadMoreEntries,
   loadMoreSearchResults,
   setLoadedMoreEntries,
-}: CustomListEntriesEditorProps): JSX.Element {
+}: CustomListBuilderProps): JSX.Element {
   const [draggingFrom, setDraggingFrom] = React.useState(null);
 
   const onDragStart = (initial) => {

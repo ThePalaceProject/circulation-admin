@@ -7,7 +7,7 @@ import {
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditorHeader from "./CustomListEditorHeader";
 import CustomListEditorBody from "./CustomListEditorBody";
-import { Entry } from "./CustomListEntriesEditor";
+import { Entry } from "./CustomListBuilder";
 import { getMedium } from "opds-web-client/lib/utils/book";
 export interface CustomListEditorProps {
   languages: LanguagesData;
@@ -114,7 +114,7 @@ export default function CustomListEditor({
 
   React.useEffect(() => {
     /**
-     * If the addedListEntries changed as a result of the setAddedListEntries() above,
+     * If the addedListEntries changed and loadedMoreEntries is true,
      * merge the new list of books with the new added list, and then set the result to draftEntries.
      */
     if (loadedMoreEntries) {
@@ -249,13 +249,22 @@ export default function CustomListEditor({
   };
 
   const deleteAll = () => {
+    const newlyDeleted = [];
     /**
-     * Create a copy of the draftEntries.
+     * Like in deleteEntry, the only entries we want to add to the
+     * deletedListEntries array are the ones that were previously saved
+     * to the server. Those that were recently added, but never saved,
+     * can simply be removed from the draftEntries.
      */
-    const entriesToDelete = draftEntries.slice();
-
+    list.books.forEach((book) =>
+      draftEntries.map((entry) => {
+        if (entry.id === book.id) {
+          newlyDeleted.push(entry);
+        }
+      })
+    );
     setDraftEntries([]);
-    setDeletedListEntries(deletedListEntries.concat(entriesToDelete));
+    setDeletedListEntries([...deletedListEntries, ...newlyDeleted]);
     setAddedListEntries([]);
   };
 
