@@ -1,5 +1,13 @@
 ## Changelog
 
+### v0.5.10
+
+#### Refactored
+
+- Refactored the `CustomListSearch` component to bring it up-to-date with current best practices.
+- Added `CustomListSearchFormContent` and `CustomListSearchAdvancedOptions` to make components smaller.
+- Added/edited tests where needed.
+
 ### v0.5.9
 
 #### Bugfix
