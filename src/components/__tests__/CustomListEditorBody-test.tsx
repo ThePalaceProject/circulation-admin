@@ -133,18 +133,16 @@ describe("CustomListEditorBody", () => {
   });
 
   it("shows entries editor with list entries and search results", () => {
-    const entriesEditor = wrapper.find(CustomListBuilder);
-    expect(entriesEditor.length).to.equal(1);
-    expect(entriesEditor.props().entries).to.equal(listData.books);
-    expect(entriesEditor.props().searchResults).to.equal(searchResults);
-    expect(entriesEditor.props().loadMoreSearchResults).to.equal(
+    const builder = wrapper.find(CustomListBuilder);
+    expect(builder.length).to.equal(1);
+    expect(builder.props().entries).to.equal(listData.books);
+    expect(builder.props().searchResults).to.equal(searchResults);
+    expect(builder.props().loadMoreSearchResults).to.equal(
       loadMoreSearchResults
     );
-    expect(entriesEditor.props().loadMoreEntries).to.equal(loadMoreEntries);
-    expect(entriesEditor.props().isFetchingMoreSearchResults).to.equal(false);
-    expect(entriesEditor.props().isFetchingMoreCustomListEntries).to.equal(
-      false
-    );
+    expect(builder.props().loadMoreEntries).to.equal(loadMoreEntries);
+    expect(builder.props().isFetchingMoreSearchResults).to.equal(false);
+    expect(builder.props().isFetchingMoreCustomListEntries).to.equal(false);
   });
 
   it("shows collections", () => {

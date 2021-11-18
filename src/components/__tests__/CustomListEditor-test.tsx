@@ -10,7 +10,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import * as PropTypes from "prop-types";
 import CustomListBuilder from "../CustomListBuilder";
 
-describe.only("CustomListEditor", () => {
+describe("CustomListEditor", () => {
   let wrapper;
   const languages = {
     eng: ["English"],
@@ -208,8 +208,8 @@ describe.only("CustomListEditor", () => {
     display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 3 of 3 Books");
     expect(entries.at(0).text()).to.contain("result 1");
-    const EntriesEditor = wrapper.find(CustomListBuilder);
-    expect(EntriesEditor.props().addedListEntries.length).to.equal(1);
+    const builder = wrapper.find(CustomListBuilder);
+    expect(builder.props().addedListEntries.length).to.equal(1);
   });
 
   it("removes an entry from the list, and adds to deletedListEntries", () => {
@@ -225,8 +225,8 @@ describe.only("CustomListEditor", () => {
     const entries = droppable.find(Draggable);
     expect(entries.length).to.equal(1);
     expect(entries.at(0).text()).to.contain("entry B");
-    const EntriesEditor = wrapper.find(CustomListBuilder);
-    expect(EntriesEditor.props().deletedListEntries.length).to.equal(1);
+    const builder = wrapper.find(CustomListBuilder);
+    expect(builder.props().deletedListEntries.length).to.equal(1);
 
     display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
