@@ -48,7 +48,7 @@ describe("CustomListSearch", () => {
     );
   });
 
-  it("searches for a language", () => {
+  it("searches with a language selected", () => {
     const input = wrapper.find(".form-control") as any;
     input.simulate("change", { target: { value: "test" } });
 
