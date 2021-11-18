@@ -1,12 +1,18 @@
 ## Changelog
 
+### v0.5.9
+
+#### Bugfix
+
+- Fixed issue where the "Delete all" button didn't work for new lists.
+
 ### v0.5.8
 
 #### Refactored
 
 - Refactored the `CustomListEditor` component to bring it up-to-date with current best practices. Added `CustomListEditorHeader` and `CustomListEditorBody`. Added/edited tests where needed.
 - Refactored the `CustomListEntriesEditor` component to bring it up-to-date with current best practices. Added `CustomListSearchResults` and `CustomListEntries`. Added/edited tests where needed.
-- Renames `CustomListEntriesEditor` to `CustomListBuilder` for increased clarity.
+- Renamed `CustomListEntriesEditor` to `CustomListBuilder` for increased clarity.
 
 ### v0.5.7
 

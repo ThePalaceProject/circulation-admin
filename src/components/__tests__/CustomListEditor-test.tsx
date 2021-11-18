@@ -10,7 +10,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import * as PropTypes from "prop-types";
 import CustomListBuilder from "../CustomListBuilder";
 
-describe("CustomListEditor", () => {
+describe.only("CustomListEditor", () => {
   let wrapper;
   const languages = {
     eng: ["English"],
@@ -254,9 +254,47 @@ describe("CustomListEditor", () => {
     expect(display.text()).to.equal("Displaying 1 - 5 of 5 Books");
   });
 
-  it("deletes all entries from list", () => {
+  it("deletes all entries from an existing list", () => {
     let display = wrapper.find(".custom-list-entries h4");
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
+
+    const button = wrapper.find(".delete-all-button").at(0);
+    button.simulate("click");
+    const entriesContainer = wrapper.find(".custom-list-entries");
+    const droppable = entriesContainer.find(Droppable);
+    const entries = droppable.find(Draggable);
+    expect(entries.length).to.equal(0);
+
+    display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("No books in this list");
+  });
+
+  it("deletes all entries from a new list", () => {
+    wrapper = Enzyme.mount(
+      <CustomListEditor
+        languages={languages}
+        library={library}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        searchResults={searchResultsData}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    let display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("No books in this list");
+
+    const addLink = wrapper
+      .find(".custom-list-search-results .links")
+      .find(Button);
+    addLink.at(0).simulate("click");
+
+    display = wrapper.find(".custom-list-entries h4");
+    expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
 
     const button = wrapper.find(".delete-all-button").at(0);
     button.simulate("click");
