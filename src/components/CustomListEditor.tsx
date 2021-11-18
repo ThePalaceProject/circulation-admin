@@ -256,7 +256,7 @@ export default function CustomListEditor({
      * to the server. Those that were recently added, but never saved,
      * can simply be removed from the draftEntries.
      */
-    list.books.forEach((book) =>
+    list?.books?.forEach((book) =>
       draftEntries.map((entry) => {
         if (entry.id === book.id) {
           newlyDeleted.push(entry);
