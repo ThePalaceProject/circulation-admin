@@ -67,22 +67,19 @@ describe("CustomListBuilder", () => {
       pathFor: PropTypes.func.isRequired,
       router: PropTypes.object.isRequired,
     };
-    fullContext = Object.assign(
-      {},
-      {
-        pathFor: stub().returns("url"),
-        router: {
-          createHref: stub(),
-          push: stub(),
-          isActive: stub(),
-          replace: stub(),
-          go: stub(),
-          goBack: stub(),
-          goForward: stub(),
-          setRouteLeaveHook: stub(),
-        },
-      }
-    );
+    fullContext = {
+      pathFor: stub().returns("url"),
+      router: {
+        createHref: stub(),
+        push: stub(),
+        isActive: stub(),
+        replace: stub(),
+        go: stub(),
+        goBack: stub(),
+        goForward: stub(),
+        setRouteLeaveHook: stub(),
+      },
+    };
 
     wrapper = mount(
       <CustomListBuilder
