@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.5.9
+
+#### Bugfix
+
+- Fixed issue where the "Delete all" button didn't work for new lists.
+
 ### v0.5.8
 
 #### Refactored
