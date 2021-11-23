@@ -375,7 +375,7 @@ describe("CustomListEditor", () => {
     expect(window.location.href).to.contain("1");
   });
 
-  it("should properly display how many books are in the entry list", () => {
+  it("properly displays how many books are in the entry list", () => {
     let display = wrapper.find(".custom-list-entries h4");
 
     expect(display.text()).to.equal("Displaying 1 - 2 of 2 Books");
@@ -384,6 +384,8 @@ describe("CustomListEditor", () => {
     deleteLink.at(0).simulate("click");
 
     expect(display.text()).to.equal("Displaying 1 - 1 of 1 Book");
+
+    deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
 
     deleteLink.at(0).simulate("click");
 
@@ -421,7 +423,7 @@ describe("CustomListEditor", () => {
     let addAllBtn = wrapper.find(".add-all-button").at(0);
     addAllBtn.simulate("click");
 
-    // // All search results were added to the entries.
+    // All search results were added to the entries.
     searchEntries = wrapper.find(".custom-list-search-results li");
     expect(searchEntries.length).to.equal(0);
     expect(display.text()).to.equal("Displaying 1 - 30 of 30 Books");
