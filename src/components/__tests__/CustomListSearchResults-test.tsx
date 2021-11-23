@@ -93,21 +93,18 @@ describe("CustomListSearchResults", () => {
     router: PropTypes.object.isRequired,
   };
   const fullContext = {
-    ...{
-      pathFor: stub().returns("url"),
-      router: {
-        createHref: stub(),
-        push: stub(),
-        isActive: stub(),
-        replace: stub(),
-        go: stub(),
-        goBack: stub(),
-        goForward: stub(),
-        setRouteLeaveHook: stub(),
-      },
+    pathFor: stub().returns("url"),
+    router: {
+      createHref: stub(),
+      push: stub(),
+      isActive: stub(),
+      replace: stub(),
+      go: stub(),
+      goBack: stub(),
+      goForward: stub(),
+      setRouteLeaveHook: stub(),
     },
   };
-
   beforeEach(() => {
     wrapper = Enzyme.mount(
       <DragDropContext>
