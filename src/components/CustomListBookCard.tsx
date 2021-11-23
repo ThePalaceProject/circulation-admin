@@ -27,17 +27,16 @@ export default function CustomListBookCard({
   handleAddEntry,
   handleDeleteEntry,
 }: CustomListBookCardProps) {
+  const isSearchResult = typeOfCard === "searchResult";
+
   return (
     <Draggable key={book.id} draggableId={book.id}>
       {(provided, snapshot) => (
         <li>
           <div
-            className={
-              (typeOfCard === "searchResult"
-                ? "search-result"
-                : "custom-list-entry") +
-              (snapshot.isDragging ? " dragging" : "")
-            }
+            className={`${
+              isSearchResult ? "search-result" : "custom-list-entry"
+            } ${snapshot.isDragging && " dragging"}`}
             ref={provided.innerRef}
             style={provided.draggableStyle}
             {...provided.dragHandleProps}
@@ -60,7 +59,7 @@ export default function CustomListBookCard({
                   View details
                 </CatalogLink>
               )}
-              {typeOfCard === "searchResult" ? (
+              {isSearchResult ? (
                 <Button
                   callback={() => handleAddEntry(book.id)}
                   className="right-align"
