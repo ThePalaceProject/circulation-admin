@@ -1,5 +1,11 @@
 ## Changelog
 
+### 11/23/2021
+
+#### Refactored
+
+- Created reusable component `CustomListBookCard` to reduce repetitive code in `CustomListSearchResults` and `CustomListEntries`.
+
 ### v0.5.9
 
 #### Bugfix
