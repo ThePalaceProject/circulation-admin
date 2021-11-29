@@ -105,7 +105,6 @@ describe("CustomListSearchResults", () => {
       setRouteLeaveHook: stub(),
     },
   };
-
   beforeEach(() => {
     wrapper = Enzyme.mount(
       <DragDropContext>
