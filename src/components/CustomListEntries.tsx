@@ -1,12 +1,10 @@
 import * as React from "react";
-import { Droppable, Draggable } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import LoadButton from "./LoadButton";
 import TrashIcon from "./icons/TrashIcon";
-import GrabIcon from "./icons/GrabIcon";
 import { Button } from "library-simplified-reusable-components";
-import CatalogLink from "opds-web-client/lib/components/CatalogLink";
-import { getMedium, getMediumSVG } from "opds-web-client/lib/utils/book";
+import CustomListBookCard from "./CustomListBookCard";
 
 export interface Entry extends BookData {
   medium?: string;
@@ -147,55 +145,14 @@ export default function CustomListEntries({
             }
           >
             {entries &&
-              entries.map((book, i) => (
-                <Draggable key={i} draggableId={book.id}>
-                  {(provided, snapshot) => (
-                    <li>
-                      <div
-                        className={
-                          "custom-list-entry" +
-                          (snapshot.isDragging ? " dragging" : "")
-                        }
-                        ref={provided.innerRef}
-                        style={provided.draggableStyle}
-                        {...provided.dragHandleProps}
-                      >
-                        <GrabIcon />
-                        <div>
-                          <div className="title">{book.title}</div>
-                          <div className="authors">
-                            {book.authors.join(", ")}
-                          </div>
-                        </div>
-                        {getMediumSVG(getMedium(book))}
-                        <div className="links">
-                          {book.url && (
-                            <CatalogLink
-                              collectionUrl={opdsFeedUrl}
-                              bookUrl={book.url}
-                              title={book.title}
-                              target="_blank"
-                              className="btn inverted left-align small top-align"
-                            >
-                              View details
-                            </CatalogLink>
-                          )}
-                          <Button
-                            className="small right-align"
-                            callback={() => handleDeleteEntry(book.id)}
-                            content={
-                              <span>
-                                Remove from list
-                                <TrashIcon />
-                              </span>
-                            }
-                          />
-                        </div>
-                      </div>
-                      {provided.placeholder}
-                    </li>
-                  )}
-                </Draggable>
+              entries.map((book) => (
+                <CustomListBookCard
+                  key={book.id}
+                  typeOfCard="entry"
+                  book={book}
+                  opdsFeedUrl={opdsFeedUrl}
+                  handleDeleteEntry={handleDeleteEntry}
+                />
               ))}
             {provided.placeholder}
           </ul>
