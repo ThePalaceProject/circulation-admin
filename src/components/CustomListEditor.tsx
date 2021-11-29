@@ -9,6 +9,7 @@ import CustomListEditorHeader from "./CustomListEditorHeader";
 import CustomListEditorBody from "./CustomListEditorBody";
 import { Entry } from "./CustomListBuilder";
 import { getMedium } from "opds-web-client/lib/utils/book";
+import { EntryPoint } from "./CustomListSearch";
 export interface CustomListEditorProps {
   languages: LanguagesData;
   library: LibraryData;

@@ -48,15 +48,15 @@ export default function CustomListSearchAdvancedOptions({
         <fieldset key="sortBy" className="well search-options">
           <legend>Sort by:</legend>
           <ul>
-            {Object.keys(sortByOptions).map((x) => (
-              <li key={sortByOptions[x]}>
+            {Object.keys(sortByOptions).map((option) => (
+              <li key={sortByOptions[option]}>
                 <EditableInput
                   type="radio"
-                  name={sortByOptions[x]}
-                  value={sortByOptions[x]}
-                  label={x}
-                  checked={sortByOptions[x] === sortBy}
-                  onChange={() => setSortBy(sortByOptions[x])}
+                  name={sortByOptions[option]}
+                  value={sortByOptions[option]}
+                  label={option}
+                  checked={sortByOptions[option] === sortBy}
+                  onChange={() => setSortBy(sortByOptions[option])}
                 />
               </li>
             ))}

@@ -9,6 +9,7 @@ import { Panel } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import CustomListSearch from "./CustomListSearch";
 import CustomListBuilder, { Entry } from "./CustomListBuilder";
+import { EntryPoint } from "./CustomListSearch";
 
 export interface CustomListEditorBodyProps {
   addedListEntries?: Entry[];

@@ -2,10 +2,11 @@ import * as React from "react";
 import { LanguagesData, LibraryData } from "../interfaces";
 import CustomListSearchAdvancedOptions from "./CustomListSearchAdvancedOptions";
 import EditableInput from "./EditableInput";
+import { EntryPoint } from "./CustomListSearch";
 
 export interface CustomListSearchFormContentProps {
   entryPoints?: string[];
-  setSelectedEntryPoint?: (entryPoint: string) => void;
+  setSelectedEntryPoint?: (entryPoint: EntryPoint) => void;
   selectedEntryPoint: string;
   languages: LanguagesData;
   searchTerms: string;
@@ -57,7 +58,9 @@ export default function CustomListSearchFormContent({
                   checked={entryPoint === selectedEntryPoint}
                   label={entryPoint}
                   value={entryPoint}
-                  onChange={() => setSelectedEntryPoint(entryPoint)}
+                  onChange={() =>
+                    setSelectedEntryPoint(entryPoint as EntryPoint)
+                  }
                 />
               ))}
             </div>

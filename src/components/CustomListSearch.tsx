@@ -5,6 +5,7 @@ import { LanguagesData, LibraryData } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 
+export type EntryPoint = "All" | "Book" | "Audio";
 export interface CustomListSearchProps {
   search: (url: string) => Promise<CollectionData>;
   entryPoints?: string[];
@@ -16,18 +17,18 @@ export interface CustomListSearchProps {
 export default function CustomListSearch({
   search,
   entryPoints,
-  startingTitle,
+  startingTitle = "",
   library,
   languages,
 }: CustomListSearchProps): JSX.Element {
-  const [searchTerms, setSearchTerms] = React.useState(
-    startingTitle ? startingTitle : ""
-  );
+  const [searchTerms, setSearchTerms] = React.useState(startingTitle);
   const [sortBy, setSortBy] = React.useState(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState("all");
-  const [selectedEntryPoint, setSelectedEntryPoint] = React.useState<string>(
-    "All"
-  );
+  const [selectedEntryPoint, setSelectedEntryPoint] = React.useState<
+    EntryPoint
+  >("All");
+
+  console.log("entryPoints -->", entryPoints);
 
   const getSearchQueries = (sortBy: string, language: string) => {
     let query = "";
@@ -50,7 +51,7 @@ export default function CustomListSearch({
    * If there is an existing search term, then search should be called after mounting.
    */
   React.useEffect(() => {
-    if (searchTerms === startingTitle) {
+    if (searchTerms.trim()) {
       submitSearch();
     }
   }, []);
@@ -87,7 +88,7 @@ export default function CustomListSearch({
               <SearchIcon />
             </span>
           }
-          disableButton={!searchTerms}
+          disableButton={!searchTerms.trim()}
           className="search-titles"
         />
       }
