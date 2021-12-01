@@ -86,7 +86,7 @@ export default function CustomListSearchAdvancedOptions({
                 All
               </option>
               {languagesToMap.length &&
-                languagesToMap.map((x) => (
+                languagesToMap.map((x: string) => (
                   <option key={x} value={x} aria-selected={false}>
                     {getLanguageName(x)}
                   </option>

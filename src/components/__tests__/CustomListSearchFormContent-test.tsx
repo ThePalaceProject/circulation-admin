@@ -5,7 +5,7 @@ import { mount } from "enzyme";
 import CustomListSearchFormContent from "../CustomListSearchFormContent";
 import CustomListSearchAdvancedOptions from "../CustomListSearchAdvancedOptions";
 
-describe("CustomListSearchFormContent", () => {
+describe.only("CustomListSearchFormContent", () => {
   let wrapper;
   let setSortBy;
   let setSearchTerms;
@@ -88,5 +88,17 @@ describe("CustomListSearchFormContent", () => {
     expect(advancedSearch.length).to.equal(1);
     expect(advancedSearch.props().languages).to.eql(wrapper.props().languages);
     expect(advancedSearch.prop("library")).to.eql(wrapper.props().library);
+  });
+
+  it("sets a search term", () => {
+    const searchTermInput = wrapper.find(".form-control");
+    searchTermInput.simulate("change", { target: { value: "a" } });
+    expect(setSearchTerms.callCount).to.equal(1);
+  });
+
+  it("sets an entry point", () => {
+    const entryPointInputs = wrapper.find(".entry-points-selection");
+    entryPointInputs.simulate("change");
+    expect(setSearchTerms.callCount).to.equal(1);
   });
 });

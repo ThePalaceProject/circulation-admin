@@ -39,6 +39,8 @@ export default function CustomListSearchFormContent({
           <div className="entry-points">
             <span>Select the entry point to search for:</span>
             <div className="entry-points-selection">
+              {/* We always want to display "All" as an entrypoint,
+              even if it's not selected on the backend */}
               {!entryPoints.includes("All") && (
                 <EditableInput
                   key="All"

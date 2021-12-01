@@ -87,4 +87,28 @@ describe("CustomListSearchAdvancedOptions", () => {
     expect(options.at(3).prop("value")).to.equal("spa");
     expect(options.at(3).text()).to.equal("Spanish; Castilian");
   });
+
+  it("sets a sort by option", () => {
+    const sortOptions = wrapper.find(".search-options").find(".form-group");
+
+    const relevance = sortOptions.at(0);
+    const relevanceRadio = relevance.find("input");
+    relevanceRadio.simulate("change");
+    expect(setSortBy.callCount).to.equal(1);
+
+    const title = sortOptions.at(1);
+    const titleRadio = title.find("input");
+    titleRadio.simulate("change");
+    expect(setSortBy.callCount).to.equal(2);
+  });
+
+  it("sets a language", () => {
+    const languageFieldset = wrapper.find("fieldset").at(1);
+    const languageMenu = languageFieldset.find("select");
+    const options = languageMenu.find("option");
+    options.at(1).simulate("change");
+    expect(setSelectedLanguage.callCount).to.equal(1);
+    options.at(2).simulate("change");
+    expect(setSelectedLanguage.callCount).to.equal(2);
+  });
 });

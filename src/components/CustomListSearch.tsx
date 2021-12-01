@@ -28,8 +28,6 @@ export default function CustomListSearch({
     EntryPoint
   >("All");
 
-  console.log("entryPoints -->", entryPoints);
-
   const getSearchQueries = (sortBy: string, language: string) => {
     let query = "";
     if (selectedEntryPoint && selectedEntryPoint !== "All") {
