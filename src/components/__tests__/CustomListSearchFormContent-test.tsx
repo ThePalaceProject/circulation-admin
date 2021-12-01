@@ -5,7 +5,7 @@ import { mount } from "enzyme";
 import CustomListSearchFormContent from "../CustomListSearchFormContent";
 import CustomListSearchAdvancedOptions from "../CustomListSearchAdvancedOptions";
 
-describe.only("CustomListSearchFormContent", () => {
+describe("CustomListSearchFormContent", () => {
   let wrapper;
   let setSortBy;
   let setSearchTerms;
@@ -97,8 +97,12 @@ describe.only("CustomListSearchFormContent", () => {
   });
 
   it("sets an entry point", () => {
-    const entryPointInputs = wrapper.find(".entry-points-selection");
-    entryPointInputs.simulate("change");
-    expect(setSearchTerms.callCount).to.equal(1);
+    const entryPointsFieldset = wrapper
+      .find(".entry-points-selection")
+      .children();
+    const audio = entryPointsFieldset.at(2);
+    const audioRadio = audio.find("input");
+    audioRadio.simulate("change");
+    expect(setSelectedEntryPoint.callCount).to.equal(1);
   });
 });
