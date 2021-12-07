@@ -9,6 +9,7 @@ import { Panel } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import CustomListSearch from "./CustomListSearch";
 import CustomListBuilder, { Entry } from "./CustomListBuilder";
+import { EntryPoint } from "./CustomListSearch";
 
 export interface CustomListEditorBodyProps {
   addedListEntries?: Entry[];
@@ -64,10 +65,6 @@ export default function CustomListEditorBody({
   setDraftCollections,
   setLoadedMoreEntries,
 }: CustomListEditorBodyProps) {
-  const [entryPointSelected, setEntryPointSelected] = React.useState<string>(
-    "all"
-  );
-
   const hasCollection = (collection: AdminCollectionData) => {
     for (const listCollection of draftCollections) {
       if (listCollection.id === collection.id) {
@@ -88,59 +85,6 @@ export default function CustomListEditorBody({
       newCollections.push(collection);
     }
     setDraftCollections(newCollections);
-  };
-
-  const getEntryPointsElms = (entryPoints) => {
-    const entryPointsElms = [];
-    !entryPoints.includes("All") &&
-      entryPointsElms.push(
-        <EditableInput
-          key="all"
-          type="radio"
-          name="entry-points-selection"
-          checked={"all" === entryPointSelected}
-          label="All"
-          value="all"
-          onChange={() => setEntryPointSelected("all")}
-        />
-      );
-    entryPoints.forEach((entryPoint) =>
-      entryPointsElms.push(
-        <EditableInput
-          key={entryPoint}
-          type="radio"
-          name="entry-points-selection"
-          checked={
-            entryPoint === entryPointSelected ||
-            entryPoint.toLowerCase() === entryPointSelected
-          }
-          label={entryPoint}
-          value={entryPoint}
-          onChange={() => setEntryPointSelected(entryPoint)}
-        />
-      )
-    );
-    return entryPointsElms;
-  };
-
-  const getSearchQueries = (sortBy: string, language: string) => {
-    let query = "";
-    if (entryPointSelected && entryPointSelected !== "all") {
-      query += `&entrypoint=${encodeURIComponent(entryPointSelected)}`;
-    }
-    sortBy && (query += `&order=${encodeURIComponent(sortBy)}`);
-    language && (query += `&language=${[language]}`);
-    return query;
-  };
-
-  const executeSearch = (
-    searchTerms: string,
-    sortBy: string,
-    language: string
-  ) => {
-    const searchQueries = getSearchQueries(sortBy, language);
-    const url = `/${library.short_name}/search?q=${searchTerms}${searchQueries}`;
-    search(url);
   };
 
   const crawlable = `${draftTitle ? `lists/${draftTitle}/` : ""}crawlable`;
@@ -177,9 +121,8 @@ export default function CustomListEditorBody({
               }
             />
             <CustomListSearch
-              search={executeSearch}
+              search={search}
               entryPoints={entryPoints}
-              getEntryPointsElms={getEntryPointsElms}
               startingTitle={startingTitle}
               library={library}
               languages={languages}

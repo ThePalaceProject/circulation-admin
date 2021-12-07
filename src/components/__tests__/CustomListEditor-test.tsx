@@ -136,6 +136,7 @@ describe("CustomListEditor", () => {
       pathFor: PropTypes.func.isRequired,
       router: PropTypes.object.isRequired,
     };
+
     fullContext = {
       pathFor: stub().returns("url"),
       router: {

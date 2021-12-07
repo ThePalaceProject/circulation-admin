@@ -159,19 +159,6 @@ describe("CustomListEditorBody", () => {
     expect(inputs.at(2).props().checked).to.equal(false);
   });
 
-  it("shows entry point options", () => {
-    const inputs = wrapper.find(EditableInput);
-    expect(inputs.at(3).props().label).to.equal("All");
-    expect(inputs.at(3).props().value).to.equal("all");
-    expect(inputs.at(3).props().checked).to.equal(true);
-    expect(inputs.at(4).props().label).to.equal("Book");
-    expect(inputs.at(4).props().value).to.equal("Book");
-    expect(inputs.at(4).props().checked).to.equal(false);
-    expect(inputs.at(5).props().label).to.equal("Audio");
-    expect(inputs.at(5).props().value).to.equal("Audio");
-    expect(inputs.at(5).props().checked).to.equal(false);
-  });
-
   it("has a search component", () => {
     let search = wrapper.find(CustomListSearch);
     expect(search.length).to.equal(1);
@@ -181,53 +168,5 @@ describe("CustomListEditorBody", () => {
     expect(search.props().startingTitle).to.equal("test");
     expect(search.prop("library")).to.eql(library);
     expect(search.prop("languages")).to.eql(languages);
-  });
-
-  it("searches for a language", () => {
-    const input = wrapper.find(".form-control") as any;
-    input.getDOMNode().value = "test";
-
-    let searchForm = wrapper.find("form");
-    searchForm.simulate("submit");
-    // The default language is "all"
-    expect(search.callCount).to.equal(1);
-    expect(search.args[0][0]).to.equal("/library/search?q=test&language=all");
-
-    const select = wrapper.find(".search-options select") as any;
-    select.getDOMNode().value = "eng";
-    select.simulate("change");
-
-    searchForm = wrapper.find("form");
-    searchForm.simulate("submit");
-    expect(search.callCount).to.equal(2);
-    expect(search.args[1][0]).to.equal("/library/search?q=test&language=eng");
-  });
-
-  it("searches with ebooks selected as an entrypoint", () => {
-    const textInput = wrapper.find(".form-control") as any;
-    textInput.getDOMNode().value = "harry potter";
-    const searchForm = wrapper.find("form");
-    const radioInput = wrapper.find(".entry-points-selection input") as any;
-    const bookInput = radioInput.at(1);
-    bookInput.simulate("change");
-    searchForm.simulate("submit");
-    expect(search.callCount).to.equal(1);
-    expect(search.args[0][0]).to.equal(
-      "/library/search?q=harry%20potter&entrypoint=Book&language=all"
-    );
-  });
-
-  it("searches with audiobooks selected as an entrypoint", () => {
-    const textInput = wrapper.find(".form-control") as any;
-    textInput.getDOMNode().value = "oliver twist";
-    const searchForm = wrapper.find("form");
-    const radioInput = wrapper.find(".entry-points-selection input") as any;
-    const bookInput = radioInput.at(2);
-    bookInput.simulate("change");
-    searchForm.simulate("submit");
-    expect(search.callCount).to.equal(1);
-    expect(search.args[0][0]).to.equal(
-      "/library/search?q=oliver%20twist&entrypoint=Audio&language=all"
-    );
   });
 });
