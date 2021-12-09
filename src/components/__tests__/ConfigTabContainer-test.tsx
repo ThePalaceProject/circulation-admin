@@ -120,8 +120,8 @@ describe("ConfigTabContainer", () => {
       const links = wrapper.find("ul.nav-tabs").find("a");
       const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Libraries");
-      expect(linkTexts).not.to.contain("Admins");
-      expect(linkTexts).to.contain("Analytics");
+      expect(linkTexts).to.contain("Admins");
+      expect(linkTexts).not.to.contain("Analytics");
       expect(linkTexts).not.to.contain("Collections");
       expect(linkTexts).not.to.contain("Admin Authentication");
       expect(linkTexts).not.to.contain("Patron Authentication");
@@ -132,7 +132,7 @@ describe("ConfigTabContainer", () => {
     });
 
     it("shows components", () => {
-      const expectedComponentClasses = [Libraries, AnalyticsServices];
+      const expectedComponentClasses = [Libraries, IndividualAdmins];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
         expect(component.props().csrfToken).to.equal("token");
@@ -151,7 +151,7 @@ describe("ConfigTabContainer", () => {
         StorageServices,
         CatalogServices,
         DiscoveryServices,
-        IndividualAdmins,
+        AnalyticsServices,
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);
@@ -183,11 +183,11 @@ describe("ConfigTabContainer", () => {
       expect(links.length).to.equal(2);
       const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Libraries");
-      expect(linkTexts).to.contain("Analytics");
+      expect(linkTexts).to.contain("Admins");
     });
 
     it("shows components", () => {
-      const expectedComponentClasses = [Libraries, AnalyticsServices];
+      const expectedComponentClasses = [Libraries, IndividualAdmins];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
         expect(component.props().csrfToken).to.equal("token");
@@ -205,7 +205,7 @@ describe("ConfigTabContainer", () => {
         StorageServices,
         CatalogServices,
         DiscoveryServices,
-        IndividualAdmins,
+        AnalyticsServices,
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);
