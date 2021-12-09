@@ -1,9 +1,9 @@
 .tab-container {
   .nav {
     a {
-      color: $blue;
+      color: $blue-dark;
       &:hover {
-        color: $blue-dark;
+        color: $blue;
       }
     }
   }
@@ -15,9 +15,9 @@
         }
       }
       a {
-        color: $blue;
+        color: $blue-dark;
         &:hover {
-          color: $blue-dark;
+          color: $blue;
         }
       }
       .integration-selftests {

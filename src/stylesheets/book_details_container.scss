@@ -9,7 +9,7 @@
     margin: 0 0 20px;
 
     svg {
-      fill: $blue;
+      fill: $blue-dark;
     }
   }
   .custom-list-for-book {
@@ -21,9 +21,9 @@
         border-radius: .25em;
         border: 1px solid darken($gray-tint, 5);
         padding-left: 8px;
-        color: $blue;
+        color: $blue-dark;
         &:hover {
-          color: $blue-dark;
+          color: $blue;
         }
       }
       .add-list-item-container {
@@ -49,11 +49,11 @@
           width: 100%;
           padding-bottom: 6px;
           margin-bottom: 8px;
-          border-bottom: 1px solid $blue;
+          border-bottom: 1px solid $blue-dark;
           font-weight: bold;
-          color: $blue;
+          color: $blue-dark;
           &:hover {
-            color: $blue-dark;
+            color: $blue;
           }
         }
         p {

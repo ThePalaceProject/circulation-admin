@@ -1,11 +1,11 @@
 .collection-container {
   .book a {
-    color: $blue;
+    color: $blue-dark;
     .item-icon svg {
-      fill: $blue;
+      fill: $blue-dark;
     }
     &:hover {
-      color: $blue-dark;
+      color: $blue;
       .item-icon svg {
         fill: $blue-dark;
       }
@@ -15,14 +15,14 @@
     }
   }
   .more-link div {
-    color: $blue;
+    color: $blue-dark;
     svg {
-      fill: $blue;
+      fill: $blue-dark;
     }
     &:hover {
-      color: $blue-dark;
+      color: $blue;
       svg {
-        fill: $blue-dark;
+        fill: $blue;
       }
     }
   }

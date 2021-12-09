@@ -1,6 +1,6 @@
 .announcements-section {
   ul.announcements-ul {
-    border: 1px solid $blue-dark;
+    border: 1px solid $blue;
     padding: 16px 16px 6px 16px;
     list-style: none;
     > h4 {
@@ -11,7 +11,7 @@
       margin-bottom: 0;
     }
     > hr {
-      border-color: $blue-dark;
+      border-color: $blue;
       margin-top: 1vh;
     }
     .announcement {
@@ -30,8 +30,8 @@
         }
         span {
           padding: 16px 12px;
-          border-left: 1px solid $blue-dark;
-          border-right: 1px solid $blue-dark;
+          border-left: 1px solid $blue;
+          border-right: 1px solid $blue;
         }
         .dates {
           display: block;
@@ -43,14 +43,14 @@
       }
       hr {
         width: 96%;
-        border-color: $blue-dark;
+        border-color: $blue;
         margin: 0 auto;
       }
       .buttons {
         padding: 10px 8px 0 10px;
-        border-left: 1px solid $blue-dark;
-        border-right: 1px solid $blue-dark;
-        border-bottom: 1px solid $blue-dark;
+        border-left: 1px solid $blue;
+        border-right: 1px solid $blue;
+        border-bottom: 1px solid $blue;
       }
     }
   }

@@ -4,16 +4,16 @@
   padding: 0 15px;
   .lane {
     a.title {
-      color: $blue;
+      color: $blue-dark;
       &:hover {
-        color: $blue-dark;
+        color: $blue;
       }
     }
     .lane-books-container {
       .scroll-button {
-        background: $blue;
+        background: $blue-dark;
         &:hover {
-          background: $blue-dark;
+          background: $blue;
           color: $white;
           transition: background .5s;
         }
@@ -37,9 +37,9 @@
   .entry-points-list {
     li {
       a {
-        color: $blue;
+        color: $blue-dark;
         svg {
-          fill: $blue;
+          fill: $blue-dark;
         }
         &:hover {
           color: $blue-dark;

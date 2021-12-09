@@ -36,10 +36,11 @@
 }
 
 .btn:not(.inverted), .btn.btn-default {
-  background: $blue;
+  background: $blue-dark;
   color: $white;
   &:hover {
     color: $white;
+    background: $blue;
   }
 }
 
@@ -51,23 +52,23 @@
 }
 
 button.btn.inverted, a.btn.inverted {
-  color: $blue;
-  border-color: $blue;
+  color: $blue-dark;
+  border-color: $blue-dark;
   &:hover {
     color: $white;
   }
   svg {
-    fill: $blue;
+    fill: $blue-dark;
   }
 }
 
 .breadcrumbs-or-search-wrapper {
   a {
     &:not(:hover) {
-      color: $blue;
+      color: $blue-dark;
     }
     &:hover {
-      color: $blue-dark;
+      color: $blue;
     }
   }
   .search {
