@@ -12,7 +12,7 @@ export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
   item?: IndividualAdminData;
   disabled: boolean;
-  save: (data: FormData) => void;
+  save?: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -83,6 +83,7 @@ export default class IndividualAdminEditForm extends React.Component<
         onSubmit={this.submit}
         className="edit-form"
         disableButton={this.props.disabled}
+        withoutButton={!this.props.save}
         content={[
           <Panel
             headerText="Admin Information"
@@ -422,7 +423,9 @@ export default class IndividualAdminEditForm extends React.Component<
   }
 
   async submit(data: FormData) {
-    const modifiedData = this.handleData(data);
-    await this.props.save(modifiedData);
+    if (this.props.save) {
+      const modifiedData = this.handleData(data);
+      await this.props.save(modifiedData);
+    }
   }
 }
