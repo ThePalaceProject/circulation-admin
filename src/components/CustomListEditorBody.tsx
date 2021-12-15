@@ -87,6 +87,12 @@ export default function CustomListEditorBody({
     setDraftCollections(newCollections);
   };
 
+  // const encodedTitle = draftTitle
+  //   ? encodeURIComponent(draftTitle).replace(/!/g, "%21")
+  //   : "";
+
+  // const crawlable = `lists/${encodedTitle}/crawlable`;
+
   const crawlable = `${draftTitle ? `lists/${draftTitle}/` : ""}crawlable`;
   const opdsFeedUrl = `${library?.short_name}/${crawlable}`;
 
