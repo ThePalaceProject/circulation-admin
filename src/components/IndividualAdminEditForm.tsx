@@ -166,7 +166,7 @@ export default class IndividualAdminEditForm extends React.Component<
                   disabled={this.isDisabled("manager-all")}
                   name="manager-all"
                   ref={this.managerAllRef}
-                  label="Library Manager"
+                  label="Administrator"
                   checked={this.isSelected("manager-all")}
                   onChange={() => this.handleRoleChange("manager-all")}
                 />
@@ -178,7 +178,7 @@ export default class IndividualAdminEditForm extends React.Component<
                   disabled={this.isDisabled("librarian-all")}
                   name="librarian-all"
                   ref={this.librarianAllRef}
-                  label="Librarian"
+                  label="User"
                   checked={this.isSelected("librarian-all")}
                   onChange={() => this.handleRoleChange("librarian-all")}
                 />
@@ -199,7 +199,7 @@ export default class IndividualAdminEditForm extends React.Component<
                       name={"manager-" + library.short_name}
                       ref={this.libraryManagerRef}
                       label=""
-                      aria-label={`Library Manager for ${library.short_name}`}
+                      aria-label={`Administrator of ${library.short_name}`}
                       checked={this.isSelected("manager", library.short_name)}
                       onChange={() =>
                         this.handleRoleChange("manager", library.short_name)
@@ -217,7 +217,7 @@ export default class IndividualAdminEditForm extends React.Component<
                       name={"librarian-" + library.short_name}
                       ref={this.librarianRef}
                       label=""
-                      aria-label={`Librarian for ${library.short_name}`}
+                      aria-label={`User of ${library.short_name}`}
                       checked={this.isSelected("librarian", library.short_name)}
                       onChange={() =>
                         this.handleRoleChange("librarian", library.short_name)
