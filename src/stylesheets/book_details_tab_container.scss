@@ -2,7 +2,7 @@
   .nav-tabs {
     li {
       a {
-        color: $blue;
+        color: $blue-dark;
         &:active,
         &:visited,
         &:hover {
@@ -45,15 +45,15 @@
           margin: auto;
           .circulation-links {
             padding-bottom: 1em;
-            border-bottom: 1px solid $blue;
+            border-bottom: 1px solid $blue-dark;
             .btn {
-              color: $blue;
-              border-color: $blue;
+              color: $blue-dark;
+              border-color: $blue-dark;
               background-color: $white;
               margin: 5px 10px;
               &:hover {
                 color: $white;
-                background-color: $blue;
+                background-color: $blue-dark;
               }
             }
           }

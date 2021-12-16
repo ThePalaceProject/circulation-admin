@@ -9,8 +9,8 @@
     & > button {
       color: $dark;
 
-      &:hover, &:focus {
-        color: $dark;
+      &:hover, &:active, &:focus {
+        @include headerNavLink;
       }
     }
   }
