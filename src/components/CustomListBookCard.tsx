@@ -50,7 +50,6 @@ export default function CustomListBookCard({
             <div className="links">
               {book.url && (
                 <CatalogLink
-                  // collectionUrl={opdsFeedUrl}
                   bookUrl={book.url}
                   title={book.title}
                   target="_blank"
