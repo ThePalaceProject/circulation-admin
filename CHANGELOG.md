@@ -1,6 +1,6 @@
 ## Changelog
 
-### December 14, 2021
+### December 16, 2021
 
 #### Updated
 
@@ -8,6 +8,7 @@
 - Updated node-sass and sass-loader dependency versions to reduce the number of high risk vulnerabilities.
 - Removed Analytics tab from System Configuration for librarians and library managers, and added Admins tab.
 - Relabeled "library manager" role to "administrator", and "librarian" role to "user".
+- Removed redundant requests to retrieve libraries when opening the system configuration screen.
 
 ### v0.5.5
 
