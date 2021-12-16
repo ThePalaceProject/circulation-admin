@@ -4,7 +4,7 @@
 
 #### Bugfix
 
-- Fixed issue where the "View Details" button did not work in the List Manager.
+- Fixed issue where the "View Details" button in the List Manager caused an error.
 
 ### v0.5.10
 
