@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.5.11
+
+#### Bugfix
+
+- Fixed issue where the "View Details" button did not work in the List Manager.
+
 ### v0.5.10
 
 #### Refactored
