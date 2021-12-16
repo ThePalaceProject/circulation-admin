@@ -19,7 +19,7 @@ export interface ServiceEditFormProps<T> {
   data: T;
   item?: ServiceData;
   disabled: boolean;
-  save: (data: FormData) => void;
+  save?: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -670,7 +670,9 @@ export default class ServiceEditForm<
   }
 
   async submit(data: FormData) {
-    const modifiedData = this.handleData(data);
-    await this.props.save(modifiedData);
+    if (this.props.save) {
+      const modifiedData = this.handleData(data);
+      await this.props.save(modifiedData);
+    }
   }
 }

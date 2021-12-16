@@ -12,7 +12,7 @@ export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;
   item?: IndividualAdminData;
   disabled: boolean;
-  save: (data: FormData) => void;
+  save?: (data: FormData) => void;
   urlBase: string;
   listDataKey: string;
   responseBody?: string;
@@ -83,6 +83,7 @@ export default class IndividualAdminEditForm extends React.Component<
         onSubmit={this.submit}
         className="edit-form"
         disableButton={this.props.disabled}
+        withoutButton={!this.props.save}
         content={[
           <Panel
             headerText="Admin Information"
@@ -165,7 +166,7 @@ export default class IndividualAdminEditForm extends React.Component<
                   disabled={this.isDisabled("manager-all")}
                   name="manager-all"
                   ref={this.managerAllRef}
-                  label="Library Manager"
+                  label="Administrator"
                   checked={this.isSelected("manager-all")}
                   onChange={() => this.handleRoleChange("manager-all")}
                 />
@@ -177,7 +178,7 @@ export default class IndividualAdminEditForm extends React.Component<
                   disabled={this.isDisabled("librarian-all")}
                   name="librarian-all"
                   ref={this.librarianAllRef}
-                  label="Librarian"
+                  label="User"
                   checked={this.isSelected("librarian-all")}
                   onChange={() => this.handleRoleChange("librarian-all")}
                 />
@@ -198,7 +199,7 @@ export default class IndividualAdminEditForm extends React.Component<
                       name={"manager-" + library.short_name}
                       ref={this.libraryManagerRef}
                       label=""
-                      aria-label={`Library Manager for ${library.short_name}`}
+                      aria-label={`Administrator of ${library.short_name}`}
                       checked={this.isSelected("manager", library.short_name)}
                       onChange={() =>
                         this.handleRoleChange("manager", library.short_name)
@@ -216,7 +217,7 @@ export default class IndividualAdminEditForm extends React.Component<
                       name={"librarian-" + library.short_name}
                       ref={this.librarianRef}
                       label=""
-                      aria-label={`Librarian for ${library.short_name}`}
+                      aria-label={`User of ${library.short_name}`}
                       checked={this.isSelected("librarian", library.short_name)}
                       onChange={() =>
                         this.handleRoleChange("librarian", library.short_name)
@@ -422,7 +423,9 @@ export default class IndividualAdminEditForm extends React.Component<
   }
 
   async submit(data: FormData) {
-    const modifiedData = this.handleData(data);
-    await this.props.save(modifiedData);
+    if (this.props.save) {
+      const modifiedData = this.handleData(data);
+      await this.props.save(modifiedData);
+    }
   }
 }

@@ -131,6 +131,7 @@ export abstract class GenericEditableConfigList<
     const EditForm = this.EditForm;
     const ExtraFormSection = this.ExtraFormSection;
     const itemToEdit = this.itemToEdit();
+    const canEditItem = itemToEdit && this.canEdit(itemToEdit);
     return (
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
@@ -188,13 +189,16 @@ export abstract class GenericEditableConfigList<
 
         {itemToEdit && (
           <div>
-            <h3>Edit {this.label(itemToEdit)}</h3>
+            <h3>
+              {canEditItem ? "Edit " : ""}
+              {this.label(itemToEdit)}
+            </h3>
             <EditForm
               item={itemToEdit}
               data={this.props.data}
               additionalData={this.props.additionalData}
-              disabled={this.props.isFetching}
-              save={this.save}
+              disabled={!canEditItem || this.props.isFetching}
+              save={canEditItem ? this.save : undefined}
               urlBase={this.urlBase}
               listDataKey={this.listDataKey}
               responseBody={this.props.responseBody}

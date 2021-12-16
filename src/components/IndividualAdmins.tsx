@@ -30,8 +30,20 @@ export class IndividualAdmins extends EditableConfigList<
     admin: PropTypes.object.isRequired,
   };
 
+  canCreate() {
+    return (
+      this.context.admin && this.context.admin.isLibraryManagerOfSomeLibrary()
+    );
+  }
+
   canDelete() {
     return this.context.admin && this.context.admin.isSystemAdmin();
+  }
+
+  canEdit() {
+    return (
+      this.context.admin && this.context.admin.isLibraryManagerOfSomeLibrary()
+    );
   }
 
   getHeaders() {

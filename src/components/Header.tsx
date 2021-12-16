@@ -80,11 +80,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
   displayPermissions(isSystemAdmin: boolean, isLibraryManager: boolean) {
     let permissions = isSystemAdmin
-      ? "system admin"
+      ? "a system admin"
       : isLibraryManager
-      ? "library manager"
-      : "librarian";
-    return <li className="permissions">Logged in as a {permissions}</li>;
+      ? "an administrator"
+      : "a user";
+    return <li className="permissions">Logged in as {permissions}</li>;
   }
 
   render(): JSX.Element {

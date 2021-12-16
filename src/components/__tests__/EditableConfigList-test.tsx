@@ -64,6 +64,7 @@ describe("EditableConfigList", () => {
 
   let canCreate: boolean;
   let canDelete: boolean;
+  let canEdit: boolean;
 
   class ThingEditableConfigList extends EditableConfigList<Things, Thing> {
     EditForm = ThingEditForm;
@@ -83,6 +84,10 @@ describe("EditableConfigList", () => {
 
     canDelete() {
       return canDelete;
+    }
+
+    canEdit() {
+      return canEdit;
     }
   }
 
@@ -144,6 +149,7 @@ describe("EditableConfigList", () => {
     );
     canCreate = true;
     canDelete = true;
+    canEdit = true;
 
     wrapper = mount(
       <ThingEditableConfigList
@@ -333,6 +339,7 @@ describe("EditableConfigList", () => {
   });
 
   it("displays a view button instead of an edit button if canEdit returns false", () => {
+    canEdit = false;
     const viewableThing = { id: 6, label: "View Only", level: 3 };
     wrapper = shallow(
       <ThingEditableConfigList
@@ -419,11 +426,19 @@ describe("EditableConfigList", () => {
     expect(form.props().listDataKey).to.equal("things");
   });
 
-  it("shows correct header on edit form", () => {
+  it("shows correct header on edit form for an item that can be edited", () => {
     wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
     const formHeader = wrapper.find("h3");
     expect(formHeader.length).to.equal(1);
     expect(formHeader.text()).to.equal("Edit test label");
+  });
+
+  it("shows correct header on edit form for an item that can not be edited", () => {
+    canEdit = false;
+    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
+    const formHeader = wrapper.find("h3");
+    expect(formHeader.length).to.equal(1);
+    expect(formHeader.text()).to.equal("test label");
   });
 
   it("updates header on edit form", () => {
@@ -436,6 +451,20 @@ describe("EditableConfigList", () => {
     wrapper.setProps({ data: newThingsData });
 
     expect(formHeader.text()).to.equal("Edit test new thing!");
+  });
+
+  it("does not supply a save function to the edit form if canEdit returns false", () => {
+    canEdit = false;
+    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
+    const editForm = wrapper.find(ThingEditForm);
+    expect(editForm.props().save).to.equal(undefined);
+  });
+
+  it("disables the edit form if canEdit returns false", () => {
+    canEdit = false;
+    wrapper.setProps({ editOrCreate: "edit", identifier: "5" });
+    const editForm = wrapper.find(ThingEditForm);
+    expect(editForm.props().disabled).to.equal(true);
   });
 
   it("fetches data on mount and passes save function to form", () => {

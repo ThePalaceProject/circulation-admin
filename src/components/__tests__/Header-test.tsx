@@ -281,7 +281,7 @@ describe("Header", () => {
       expect(dropdownLinks.length).to.equal(2);
 
       const loggedInAs = dropdownItems.at(0);
-      expect(loggedInAs.text()).to.equal("Logged in as a librarian");
+      expect(loggedInAs.text()).to.equal("Logged in as a user");
       const changePassword = dropdownLinks.at(0);
       expect(changePassword.parent().prop("to")).to.equal(
         "/admin/web/account/"
@@ -305,8 +305,8 @@ describe("Header", () => {
     expect(permissions([true, true])).to.equal("Logged in as a system admin");
     expect(permissions([true, false])).to.equal("Logged in as a system admin");
     expect(permissions([false, true])).to.equal(
-      "Logged in as a library manager"
+      "Logged in as an administrator"
     );
-    expect(permissions([false, false])).to.equal("Logged in as a librarian");
+    expect(permissions([false, false])).to.equal("Logged in as a user");
   });
 });

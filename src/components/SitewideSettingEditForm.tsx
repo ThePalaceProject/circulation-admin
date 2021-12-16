@@ -171,7 +171,9 @@ export default class SitewideSettingEditForm extends React.Component<
   }
 
   async submit(data: FormData) {
-    await this.props.save(data);
+    if (this.props.save) {
+      await this.props.save(data);
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

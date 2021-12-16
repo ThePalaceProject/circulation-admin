@@ -164,9 +164,15 @@ describe("IndividualAdminEditForm", () => {
       expectPasswordEditable(nyplManagerLibrarianAll, nyplManagerLibrarianAll);
     });
 
-    it("has a save button", () => {
+    it("has a save button if a save function is supplied", () => {
       const saveButton = wrapper.find(Button);
       expect(saveButton.length).to.equal(1);
+    });
+
+    it("does not have a save button if no save function is supplied", () => {
+      wrapper.setProps({ save: undefined });
+      const saveButton = wrapper.find(Button);
+      expect(saveButton.length).to.equal(0);
     });
 
     describe("roles", () => {

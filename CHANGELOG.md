@@ -1,11 +1,13 @@
 ## Changelog
 
-### October 28, 2021
+### December 14, 2021
 
 #### Updated
 
 - Updated branding and styling for The Palace Project.
 - Updated node-sass and sass-loader dependency versions to reduce the number of high risk vulnerabilities.
+- Removed Analytics tab from System Configuration for librarians and library managers, and added Admins tab.
+- Relabeled "library manager" role to "administrator", and "librarian" role to "user".
 
 ### v0.5.5
 
