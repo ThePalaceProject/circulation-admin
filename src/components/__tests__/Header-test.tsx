@@ -230,6 +230,19 @@ describe("Header", () => {
       expect(fetchLibraries.callCount).to.equal(1);
     });
 
+    it("does not fetch libraries on mount if a fetch is already in progress", () => {
+      const fetchLibraries = stub();
+
+      wrapper = shallow(
+        <Header fetchLibraries={fetchLibraries} isFetchingLibraries />,
+        {
+          context: { admin: libraryManager },
+        }
+      );
+
+      expect(fetchLibraries.callCount).to.equal(0);
+    });
+
     it("changes library", async () => {
       const libraries = [
         { short_name: "nypl", name: "NYPL" },

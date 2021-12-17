@@ -478,6 +478,26 @@ describe("EditableConfigList", () => {
     expect(editItem.callCount).to.equal(1);
   });
 
+  it("does not fetch data on mount if a fetch is already in progress", () => {
+    // Expect one pre-existing call to fetchData from the component mounted in beforeEach()...
+    expect(fetchData.callCount).to.equal(1);
+
+    wrapper = shallow(
+      <ThingEditableConfigList
+        data={thingsData}
+        fetchData={fetchData}
+        editItem={editItem}
+        deleteItem={deleteItem}
+        csrfToken="token"
+        isFetching
+      />,
+      { context: { admin: systemAdmin } }
+    );
+
+    // ...but no more!
+    expect(fetchData.callCount).to.equal(1);
+  });
+
   it("fetches data again on save", async () => {
     wrapper.setProps({ editOrCreate: "create" });
     const form = wrapper.find(ThingEditForm);

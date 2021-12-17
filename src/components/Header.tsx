@@ -17,6 +17,7 @@ import * as palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";
 import title from "../utils/title";
 
 export interface HeaderStateProps {
+  isFetchingLibraries?: boolean;
   libraries?: LibraryData[];
 }
 
@@ -203,8 +204,10 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   UNSAFE_componentWillMount() {
-    if (this.props.fetchLibraries) {
-      this.props.fetchLibraries();
+    const { fetchLibraries, isFetchingLibraries } = this.props;
+
+    if (fetchLibraries && !isFetchingLibraries) {
+      fetchLibraries();
     }
   }
 
@@ -297,10 +300,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
 function mapStateToProps(state, ownProps) {
   return {
-    libraries:
-      state.editor.libraries &&
-      state.editor.libraries.data &&
-      state.editor.libraries.data.libraries,
+    isFetchingLibraries: state.editor.libraries?.isFetching,
+    libraries: state.editor.libraries?.data?.libraries,
   };
 }
 

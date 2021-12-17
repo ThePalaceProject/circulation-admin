@@ -115,8 +115,10 @@ export abstract class GenericEditableConfigList<
   }
 
   UNSAFE_componentWillMount() {
-    if (this.props.fetchData) {
-      this.props.fetchData();
+    const { fetchData, isFetching } = this.props;
+
+    if (fetchData && !isFetching) {
+      fetchData();
     }
   }
 
