@@ -9,7 +9,6 @@ import CustomListEditorHeader from "./CustomListEditorHeader";
 import CustomListEditorBody from "./CustomListEditorBody";
 import { Entry } from "./CustomListBuilder";
 import { getMedium } from "opds-web-client/lib/utils/book";
-import { EntryPoint } from "./CustomListSearch";
 export interface CustomListEditorProps {
   languages: LanguagesData;
   library: LibraryData;
@@ -68,6 +67,12 @@ export default function CustomListEditor({
       setDraftTitle(list.title);
       setDraftEntries(list.books);
       setDraftCollections(listCollections);
+      /**
+       * Whenever the user navigates to a new list,
+       * we want to set the deleted and added buckets back to empty.
+       */
+      setDeletedListEntries([]);
+      setAddedListEntries([]);
     } else {
       /**
        * If the list is new, set the draft state to empty.
@@ -75,6 +80,8 @@ export default function CustomListEditor({
       setDraftTitle("");
       setDraftEntries([]);
       setDraftCollections([]);
+      setDeletedListEntries([]);
+      setAddedListEntries([]);
     }
     /**
      * If the user has clicked the "Load more" button at the base of the entries list...
