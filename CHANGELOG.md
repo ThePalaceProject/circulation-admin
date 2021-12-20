@@ -1,9 +1,10 @@
 ## Changelog
 
-### 12/8/2021
+### v0.5.11
 
 #### Bugfix
 
+- Fixed issue where the "View Details" button in the List Manager caused an error.
 - Fixed bug wherein if a user added or deleted books from a list, then navigated to a new list without saving, the deletedListEntries and addedListEntries would not be reset to empty and therefore would cause the displayed number of books in a list to be wrong.
 
 ### v0.5.10
