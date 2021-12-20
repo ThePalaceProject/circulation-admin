@@ -55,6 +55,15 @@ describe("CustomListEditor", () => {
     navigationLinks: [],
   };
 
+  const listData2 = {
+    id: "2",
+    url: "some url 2",
+    title: "original list title 2",
+    lanes: [],
+    books: [],
+    navigationLinks: [],
+  };
+
   const searchResultsData = {
     id: "id",
     url: "url",
@@ -465,5 +474,36 @@ describe("CustomListEditor", () => {
     // All the search results should be back in the search result list.
     searchEntries = wrapper.find(".custom-list-search-results li");
     expect(searchEntries.length).to.equal(newSearchResultsData.length);
+  });
+
+  it("resets deletedListEntries and addedListEntries if user navigates to new list", () => {
+    let editorBody = wrapper.find(CustomListEditorBody);
+    expect(editorBody.props().deletedListEntries.length).to.equal(0);
+    expect(editorBody.props().addedListEntries.length).to.equal(0);
+
+    const deleteLink = wrapper.find(".custom-list-entries .links").find(Button);
+    deleteLink.at(0).simulate("click");
+
+    editorBody = wrapper.find(CustomListEditorBody);
+    expect(editorBody.props().deletedListEntries.length).to.equal(1);
+
+    const addLink = wrapper
+      .find(".custom-list-search-results .links")
+      .find(Button);
+    addLink.at(0).simulate("click");
+
+    editorBody = wrapper.find(CustomListEditorBody);
+    expect(editorBody.props().addedListEntries.length).to.equal(1);
+
+    wrapper.setProps({
+      list: listData2,
+      listId: "2",
+    });
+
+    wrapper.update();
+
+    editorBody = wrapper.find(CustomListEditorBody);
+    expect(editorBody.props().deletedListEntries.length).to.equal(0);
+    expect(editorBody.props().addedListEntries.length).to.equal(0);
   });
 });
