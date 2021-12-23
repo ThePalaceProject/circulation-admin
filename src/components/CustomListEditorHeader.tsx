@@ -1,30 +1,18 @@
 import * as React from "react";
 import TextWithEditMode from "./TextWithEditMode";
-import { Button } from "library-simplified-reusable-components";
 import { Entry } from "./CustomListBuilder";
 
 export interface CustomListEditorHeaderProps {
   draftTitle: string;
   listId?: string | number;
-  hasListInfoChanged: boolean;
-  draftEntries: Entry[];
-  cancelClicked: () => void;
   setDraftTitle: (title) => void;
-  saveFormData: () => void;
 }
 
 export default function CustomListEditorHeader({
   draftTitle,
   listId,
-  hasListInfoChanged,
   setDraftTitle,
-  cancelClicked,
-  saveFormData,
-  draftEntries,
 }: CustomListEditorHeaderProps) {
-  const titleOrEntriesIsBlank = (): boolean =>
-    draftTitle === "" || draftTitle === "list title" || !draftEntries.length;
-
   const setNewTitleOnState = (newTitle): void => {
     setDraftTitle(newTitle);
   };
@@ -43,19 +31,6 @@ export default function CustomListEditorHeader({
           />
         </fieldset>
         {listId && <h4>ID-{listId}</h4>}
-      </div>
-      <div className="save-or-cancel-list">
-        <Button
-          callback={saveFormData}
-          disabled={titleOrEntriesIsBlank() || !hasListInfoChanged}
-          content="Save this list"
-        />
-        <Button
-          className="inverted"
-          callback={cancelClicked}
-          disabled={!hasListInfoChanged}
-          content="Cancel Changes"
-        />
       </div>
     </div>
   );

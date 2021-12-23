@@ -2,7 +2,6 @@
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -248,10 +247,6 @@ export class CustomLists extends React.Component<
 
   async editCustomList(data: FormData, listId?: string): Promise<void> {
     await this.props.editCustomList(data, listId);
-    this.props.fetchCustomLists();
-    if (listId) {
-      this.props.fetchCustomListDetails(listId);
-    }
   }
 
   async deleteCustomList(list: CustomListData): Promise<void> {

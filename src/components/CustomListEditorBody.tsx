@@ -9,16 +9,13 @@ import { Panel } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import CustomListSearch from "./CustomListSearch";
 import CustomListBuilder, { Entry } from "./CustomListBuilder";
-import { EntryPoint } from "./CustomListSearch";
 
 export interface CustomListEditorBodyProps {
-  addedListEntries?: Entry[];
   collections?: AdminCollectionData[];
-  deletedListEntries?: Entry[];
   draftCollections?: AdminCollectionData[];
-  draftEntries?: Entry[];
+  entries?: Entry[];
   draftTitle?: string;
-  entryCount?: string;
+  entryCount?: number;
   entryPoints?: string[];
   isFetchingMoreCustomListEntries: boolean;
   isFetchingMoreSearchResults: boolean;
@@ -27,24 +24,19 @@ export interface CustomListEditorBodyProps {
   listId?: string | number;
   nextPageUrl?: string;
   searchResults?: CollectionData;
+  showSaveError: boolean;
   startingTitle?: string;
-  addAll: (resultsToAdd: Entry[]) => void;
-  addEntry: (id: string) => void;
-  deleteEntry: (id: string) => void;
-  deleteAll: () => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  saveFormData: (action: string, books: string | Entry[]) => void;
   search: (url: string) => Promise<CollectionData>;
   setDraftCollections: (collections: AdminCollectionData[]) => void;
-  setLoadedMoreEntries: (clicked: boolean) => void;
 }
 
 export default function CustomListEditorBody({
-  addedListEntries,
   collections,
-  deletedListEntries,
   draftCollections,
-  draftEntries,
+  entries,
   draftTitle,
   entryCount,
   entryPoints,
@@ -54,16 +46,13 @@ export default function CustomListEditorBody({
   library,
   nextPageUrl,
   searchResults,
+  showSaveError,
   startingTitle,
-  addAll,
-  addEntry,
-  deleteAll,
-  deleteEntry,
+  saveFormData,
   loadMoreEntries,
   loadMoreSearchResults,
   search,
   setDraftCollections,
-  setLoadedMoreEntries,
 }: CustomListEditorBodyProps) {
   const hasCollection = (collection: AdminCollectionData) => {
     for (const listCollection of draftCollections) {
@@ -131,14 +120,9 @@ export default function CustomListEditorBody({
         )}
       </section>
       <CustomListBuilder
-        addEntry={addEntry}
-        deleteEntry={deleteEntry}
-        addAll={addAll}
-        deleteAll={deleteAll}
+        saveFormData={saveFormData}
         searchResults={searchResults}
-        entries={draftEntries}
-        deletedListEntries={deletedListEntries}
-        addedListEntries={addedListEntries}
+        entries={entries}
         nextPageUrl={nextPageUrl}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -146,7 +130,7 @@ export default function CustomListEditorBody({
         isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
         opdsFeedUrl={opdsFeedUrl}
         entryCount={entryCount}
-        setLoadedMoreEntries={setLoadedMoreEntries}
+        showSaveError={showSaveError}
       />
     </div>
   );

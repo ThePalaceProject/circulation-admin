@@ -11,109 +11,63 @@ export interface Entry extends BookData {
 }
 
 export interface CustomListEntriesProps {
-  addedListEntries: Entry[];
-  deletedListEntries: Entry[];
   draggingFrom: string | null;
   entries?: Entry[];
-  entryCount?: string;
+  entryCount?: number;
   isFetchingMoreCustomListEntries: boolean;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
-  deleteAll: () => void;
-  deleteEntry?: (id: string) => void;
+  showSaveError: boolean;
+  saveFormData: (action: string, books?: string | Entry[]) => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   setDraggingFrom: (dragging: string | null) => void;
-  setLoadedMoreEntries: (clicked: boolean) => void;
 }
 
 export default function CustomListEntries({
-  addedListEntries,
-  deletedListEntries,
   draggingFrom,
   entries,
   entryCount,
   isFetchingMoreCustomListEntries,
   nextPageUrl,
   opdsFeedUrl,
-  deleteAll,
-  deleteEntry,
+  showSaveError,
+  saveFormData,
   loadMoreEntries,
   setDraggingFrom,
-  setLoadedMoreEntries,
 }: CustomListEntriesProps) {
-  const [totalVisibleEntries, setTotalVisibleEntries] = React.useState(0);
-
-  React.useEffect(() => {
-    entries && setTotalVisibleEntries(entries.length);
-  }, [entries]);
-
   const handleDeleteEntry = (id: string) => {
-    deleteEntry(id);
+    saveFormData("delete", id);
     setDraggingFrom(null);
   };
 
   const handleDeleteAll = () => {
-    deleteAll();
+    saveFormData("delete");
     setDraggingFrom(null);
   };
 
   let entryListDisplay = "No books in this list";
-  const totalEntriesServer = parseInt(entryCount, 10);
   let displayTotal;
-  let entriesCount;
   let booksText;
-  /**
-   * If the server associates books with this list...
-   */
-  if (totalEntriesServer) {
-    /**
-     * And there are visible entries...
-     */
-    if (totalVisibleEntries) {
-      entriesCount =
-        totalEntriesServer -
-        deletedListEntries.length +
-        addedListEntries.length;
-      displayTotal = `1 - ${entries.length} of ${entriesCount}`;
-      booksText = entriesCount === 1 ? "Book" : "Books";
-      entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
-    } else if (totalEntriesServer - deletedListEntries.length !== 0) {
-      /**
-       * There are entries on the server, but none are visible,
-       * which means the "Delete all" button was recently clicked.
-       * If the number of entries on the server minus the number of
-       * deleted entries on the frontend doesn't equal 0, there may
-       * be more entries on the backend to tell the user about.
-       */
-      entriesCount =
-        totalEntriesServer > deletedListEntries.length
-          ? totalEntriesServer - deletedListEntries.length
-          : 0;
-      displayTotal = `0 - 0 of ${entriesCount}`;
-      booksText = entriesCount === 1 ? "Book" : "Books";
-      entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
-    }
-  } else {
-    /**
-     * totalEntriesServer is falsey, which means this is a new list
-     * a user has begun adding books to.
-     */
-    if (entries && entries.length) {
-      displayTotal = `1 - ${entries.length} of ${entries.length}`;
-      booksText = entries.length === 1 ? "Book" : "Books";
-      entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
-    }
+
+  if (entryCount) {
+    displayTotal = `1 - ${entries.length} of ${entryCount}`;
+    booksText = entries.length === 1 ? "Book" : "Books";
+    entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
   }
 
   const onLoadMore = () => {
     if (entries && !isFetchingMoreCustomListEntries) {
       loadMoreEntries(nextPageUrl);
-      setLoadedMoreEntries(true);
     }
   };
   return (
     <div className="custom-list-entries">
       <div className="droppable-header">
+        {showSaveError && (
+          <p style={{ color: "red" }}>
+            Please title this list before adding books.
+          </p>
+        )}
         <h4>{entryListDisplay}</h4>
         {entries && entries.length > 0 && (
           <div>

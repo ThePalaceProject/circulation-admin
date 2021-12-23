@@ -8,27 +8,20 @@ export interface Entry extends BookData {
 }
 
 export interface CustomListBuilderProps {
-  addedListEntries?: Entry[];
-  deletedListEntries?: Entry[];
   entries?: Entry[];
-  entryCount?: string;
+  entryCount?: number;
   isFetchingMoreCustomListEntries: boolean;
   isFetchingMoreSearchResults: boolean;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
-  addAll: (resultsToAdd: Entry[]) => void;
-  addEntry: (id: string) => void;
-  deleteAll: () => void;
-  deleteEntry: (id: string) => void;
+  showSaveError: boolean;
+  saveFormData: (action: string, books: string | Entry[]) => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  setLoadedMoreEntries: (clicked: boolean) => void;
 }
 
 export default function CustomListBuilder({
-  addedListEntries,
-  deletedListEntries,
   entries,
   entryCount,
   isFetchingMoreCustomListEntries,
@@ -36,13 +29,10 @@ export default function CustomListBuilder({
   nextPageUrl,
   opdsFeedUrl,
   searchResults,
-  addAll,
-  addEntry,
-  deleteAll,
-  deleteEntry,
+  saveFormData,
+  showSaveError,
   loadMoreEntries,
   loadMoreSearchResults,
-  setLoadedMoreEntries,
 }: CustomListBuilderProps): JSX.Element {
   const [draggingFrom, setDraggingFrom] = React.useState(null);
 
@@ -60,13 +50,13 @@ export default function CustomListBuilder({
       destination &&
       destination.droppableId === "custom-list-entries"
     ) {
-      addEntry(draggableId);
+      saveFormData("add", draggableId);
     } else if (
       source.droppableId === "custom-list-entries" &&
       destination &&
       destination.droppableId === "search-results"
     ) {
-      deleteEntry(draggableId);
+      saveFormData("delete", draggableId);
     } else {
       setDraggingFrom(null);
     }
@@ -82,25 +72,21 @@ export default function CustomListBuilder({
           draggingFrom={draggingFrom}
           opdsFeedUrl={opdsFeedUrl}
           isFetchingMoreSearchResults={isFetchingMoreSearchResults}
-          addEntry={addEntry}
-          addAll={addAll}
+          saveFormData={saveFormData}
           setDraggingFrom={setDraggingFrom}
           loadMoreSearchResults={loadMoreSearchResults}
         />
         <CustomListEntries
           entryCount={entryCount}
           entries={entries}
-          deleteEntry={deleteEntry}
-          deleteAll={deleteAll}
-          deletedListEntries={deletedListEntries}
+          saveFormData={saveFormData}
           draggingFrom={draggingFrom}
-          addedListEntries={addedListEntries}
           opdsFeedUrl={opdsFeedUrl}
+          showSaveError={showSaveError}
           setDraggingFrom={setDraggingFrom}
           isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
           nextPageUrl={nextPageUrl}
           loadMoreEntries={loadMoreEntries}
-          setLoadedMoreEntries={setLoadedMoreEntries}
         />
       </div>
     </DragDropContext>

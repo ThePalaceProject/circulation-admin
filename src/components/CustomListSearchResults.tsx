@@ -15,8 +15,7 @@ export interface CustomListSearchResultsProps {
   isFetchingMoreSearchResults: boolean;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
-  addAll: (resultsToAdd: Entry[]) => void;
-  addEntry?: (id: string) => void;
+  saveFormData: (action: string, books: string | Entry[]) => void;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   setDraggingFrom: (className: string | null) => void;
 }
@@ -27,8 +26,7 @@ export default function CustomListSearchResults({
   isFetchingMoreSearchResults,
   opdsFeedUrl,
   searchResults,
-  addAll,
-  addEntry,
+  saveFormData,
   loadMoreSearchResults,
   setDraggingFrom,
 }: CustomListSearchResultsProps) {
@@ -50,13 +48,13 @@ export default function CustomListSearchResults({
   };
 
   const handleAddEntry = (id: string) => {
-    addEntry(id);
+    saveFormData("add", id);
     setDraggingFrom(null);
   };
 
   const handleAddAll = () => {
     const resultsToAdd = searchResultsNotInEntries();
-    addAll(resultsToAdd);
+    saveFormData("add", resultsToAdd);
     setDraggingFrom(null);
   };
 
