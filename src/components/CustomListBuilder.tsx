@@ -9,9 +9,10 @@ export interface Entry extends BookData {
 
 export interface CustomListBuilderProps {
   entries?: Entry[];
-  entryCount?: number;
+  totalListEntries?: number;
   isFetchingMoreCustomListEntries: boolean;
   isFetchingMoreSearchResults: boolean;
+  listId?: string | number;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
@@ -23,9 +24,10 @@ export interface CustomListBuilderProps {
 
 export default function CustomListBuilder({
   entries,
-  entryCount,
+  totalListEntries,
   isFetchingMoreCustomListEntries,
   isFetchingMoreSearchResults,
+  listId,
   nextPageUrl,
   opdsFeedUrl,
   searchResults,
@@ -77,7 +79,7 @@ export default function CustomListBuilder({
           loadMoreSearchResults={loadMoreSearchResults}
         />
         <CustomListEntries
-          entryCount={entryCount}
+          totalListEntries={totalListEntries}
           entries={entries}
           saveFormData={saveFormData}
           draggingFrom={draggingFrom}
@@ -86,6 +88,7 @@ export default function CustomListBuilder({
           setDraggingFrom={setDraggingFrom}
           isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
           nextPageUrl={nextPageUrl}
+          listId={listId}
           loadMoreEntries={loadMoreEntries}
         />
       </div>

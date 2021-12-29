@@ -23,29 +23,41 @@ export default function CustomListInfo({
   deleteCustomList,
   library,
 }: ListInfoProps) {
-  const { admin } = React.useContext(ListManagerContext);
+  const { admin, entryCountInContext } = React.useContext(ListManagerContext);
 
   const isActive = identifier === list.id.toString();
   const { id, name, entry_count } = list;
+
   /**
-   * After deleteList deletes the current list, it navigates the user
+   * If user deletes the active list, they will be navigated
    * to the edit form of the next list down in the sidebar. If there is
-   * no next list, it navigates the user to the create form.
+   * no next list, they will be navigated to the create form.
    */
   const deleteList = async (list) => {
     await deleteCustomList(list);
-    lists[idx + 1]
-      ? browserHistory.push(
-          "/admin/web/lists/" + library + "/edit/" + lists[idx + 1].id
-        )
-      : browserHistory.push("/admin/web/lists/" + library + "/create");
+    if (isActive) {
+      lists[idx + 1]
+        ? browserHistory.push(
+            "/admin/web/lists/" + library + "/edit/" + lists[idx + 1].id
+          )
+        : browserHistory.push("/admin/web/lists/" + library + "/create");
+    }
   };
 
   return (
     <li key={id} className={isActive ? "active" : ""}>
       <div className="custom-list-info">
         <p>{name}</p>
-        <p>Books in list: {entry_count}</p>
+        {/*
+         * If the number of books in a list is stored in context,
+         * use that number. Otherwise, use entry_count.
+         */}
+        <p>
+          Books in list:{" "}
+          {entryCountInContext[String(id)]
+            ? entryCountInContext[String(id)]
+            : entry_count}
+        </p>
         <p>ID-{id}</p>
       </div>
       <div className="custom-list-buttons">

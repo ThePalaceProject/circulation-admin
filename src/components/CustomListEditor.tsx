@@ -52,10 +52,20 @@ export default function CustomListEditor({
   const [draftCollections, setDraftCollections] = React.useState<
     AdminCollectionData[]
   >([]);
+  /**
+   * draftEntries is an array of recently added entries.
+   * These entries have been saved to the server,
+   * but the list has not been fetched since. We need a
+   * draftEntries array to display these newly added books
+   * to the user.
+   */
   const [draftEntries, setDraftEntries] = React.useState<Entry[]>([]);
-  const [totalEntriesNumber, setTotalEntriesNumber] = React.useState<number>(
-    entryCount ? parseInt(entryCount, 10) : 0
-  );
+  /**
+   * totalListEntries references the total number of entries in the list.
+   * This includes all the currently displayed entries, plus any additional
+   * entries on the server.
+   */
+  const [totalListEntries, setTotalListEntries] = React.useState<number>(0);
 
   const [showSaveError, setShowSaveError] = React.useState<boolean>(false);
 
@@ -72,7 +82,7 @@ export default function CustomListEditor({
       setDraftCollections([]);
       setDraftEntries([]);
     }
-    setTotalEntriesNumber(entryCount ? parseInt(entryCount, 10) : 0);
+    setTotalListEntries(entryCount ? parseInt(entryCount, 10) : 0);
   }, [list]);
 
   React.useEffect(() => {
@@ -114,7 +124,7 @@ export default function CustomListEditor({
           }
         }
         setDraftEntries((prevState) => [...itemsToAdd, ...prevState]);
-        setTotalEntriesNumber((prevState) => prevState + 1);
+        setTotalListEntries((prevState) => prevState + 1);
       } else {
         itemsToAdd = [];
         for (const result of books) {
@@ -130,7 +140,7 @@ export default function CustomListEditor({
           });
         }
         setDraftEntries((prevState) => [...itemsToAdd, ...prevState]);
-        setTotalEntriesNumber((prevState) => prevState + itemsToAdd.length);
+        setTotalListEntries((prevState) => prevState + itemsToAdd.length);
       }
     } else {
       itemsToAdd = [];
@@ -139,12 +149,12 @@ export default function CustomListEditor({
         setDraftEntries((prevState) =>
           prevState.filter((entry) => entry.id !== books)
         );
-        setTotalEntriesNumber((prevState) => prevState - 1);
+        setTotalListEntries((prevState) => prevState - 1);
       } else {
         itemsToDelete = [];
-        list?.books?.forEach((book) => itemsToDelete.push(book));
+        draftEntries.forEach((book) => itemsToDelete.push(book));
         setDraftEntries([]);
-        setTotalEntriesNumber((prevState) => prevState - itemsToDelete.length);
+        setTotalListEntries((prevState) => prevState - itemsToDelete.length);
       }
     }
     const data = new (window as any).FormData();
@@ -169,7 +179,7 @@ export default function CustomListEditor({
       />
       <CustomListEditorBody
         collections={collections}
-        entryCount={totalEntriesNumber}
+        totalListEntries={totalListEntries}
         entryPoints={entryPoints}
         entries={draftEntries}
         isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}

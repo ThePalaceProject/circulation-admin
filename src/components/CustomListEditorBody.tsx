@@ -15,7 +15,7 @@ export interface CustomListEditorBodyProps {
   draftCollections?: AdminCollectionData[];
   entries?: Entry[];
   draftTitle?: string;
-  entryCount?: number;
+  totalListEntries?: number;
   entryPoints?: string[];
   isFetchingMoreCustomListEntries: boolean;
   isFetchingMoreSearchResults: boolean;
@@ -38,12 +38,13 @@ export default function CustomListEditorBody({
   draftCollections,
   entries,
   draftTitle,
-  entryCount,
+  totalListEntries,
   entryPoints,
   isFetchingMoreCustomListEntries,
   isFetchingMoreSearchResults,
   languages,
   library,
+  listId,
   nextPageUrl,
   searchResults,
   showSaveError,
@@ -124,12 +125,13 @@ export default function CustomListEditorBody({
         searchResults={searchResults}
         entries={entries}
         nextPageUrl={nextPageUrl}
+        listId={listId}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingMoreSearchResults={isFetchingMoreSearchResults}
         isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
         opdsFeedUrl={opdsFeedUrl}
-        entryCount={entryCount}
+        totalListEntries={totalListEntries}
         showSaveError={showSaveError}
       />
     </div>

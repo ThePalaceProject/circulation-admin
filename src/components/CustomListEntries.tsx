@@ -5,6 +5,7 @@ import LoadButton from "./LoadButton";
 import TrashIcon from "./icons/TrashIcon";
 import { Button } from "library-simplified-reusable-components";
 import CustomListBookCard from "./CustomListBookCard";
+import { ListManagerContext } from "./ListManagerContext";
 
 export interface Entry extends BookData {
   medium?: string;
@@ -13,8 +14,9 @@ export interface Entry extends BookData {
 export interface CustomListEntriesProps {
   draggingFrom: string | null;
   entries?: Entry[];
-  entryCount?: number;
+  totalListEntries?: number;
   isFetchingMoreCustomListEntries: boolean;
+  listId?: string | number;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
   showSaveError: boolean;
@@ -26,8 +28,9 @@ export interface CustomListEntriesProps {
 export default function CustomListEntries({
   draggingFrom,
   entries,
-  entryCount,
+  totalListEntries,
   isFetchingMoreCustomListEntries,
+  listId,
   nextPageUrl,
   opdsFeedUrl,
   showSaveError,
@@ -45,15 +48,34 @@ export default function CustomListEntries({
     setDraggingFrom(null);
   };
 
-  let entryListDisplay = "No books in this list";
-  let displayTotal;
-  let booksText;
+  const { entryCountInContext, setEntryCountInContext } = React.useContext(
+    ListManagerContext
+  );
 
-  if (entryCount) {
-    displayTotal = `1 - ${entries.length} of ${entryCount}`;
-    booksText = entries.length === 1 ? "Book" : "Books";
-    entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
-  }
+  const [entryListDisplay, setEntryListDisplay] = React.useState<string>("");
+
+  React.useEffect(() => {
+    setEntryCountInContext((prevState) => ({
+      ...prevState,
+      [listId]: totalListEntries,
+    }));
+  }, [entries.length]);
+
+  React.useEffect(() => {
+    if (totalListEntries) {
+      let displayTotal;
+      if (totalListEntries > 50) {
+        displayTotal = `1 - ${entries.length} of ${totalListEntries}`;
+      } else {
+        displayTotal = `1 - ${entries.length} of ${entries.length}`;
+      }
+
+      const booksText = entries.length === 1 ? "Book" : "Books";
+      setEntryListDisplay(`Displaying ${displayTotal} ${booksText}`);
+    } else {
+      setEntryListDisplay("No books in this list");
+    }
+  }, [totalListEntries, entryCountInContext]);
 
   const onLoadMore = () => {
     if (entries && !isFetchingMoreCustomListEntries) {
