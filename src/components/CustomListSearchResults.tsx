@@ -17,7 +17,6 @@ export interface CustomListSearchResultsProps {
   searchResults?: CollectionData;
   saveFormData: (action: string, books: string | Entry[]) => void;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  setDraggingFrom: (className: string | null) => void;
 }
 
 export default function CustomListSearchResults({
@@ -28,7 +27,6 @@ export default function CustomListSearchResults({
   searchResults,
   saveFormData,
   loadMoreSearchResults,
-  setDraggingFrom,
 }: CustomListSearchResultsProps) {
   const searchResultsNotInEntries = () => {
     const entryIds =
@@ -49,13 +47,11 @@ export default function CustomListSearchResults({
 
   const handleAddEntry = (id: string) => {
     saveFormData("add", id);
-    setDraggingFrom(null);
   };
 
   const handleAddAll = () => {
     const resultsToAdd = searchResultsNotInEntries();
     saveFormData("add", resultsToAdd);
-    setDraggingFrom(null);
   };
 
   const resultsToDisplay = searchResults && searchResultsNotInEntries();
@@ -84,6 +80,7 @@ export default function CustomListSearchResults({
           />
         )}
       </div>
+      <p>Drag books here to remove them from the list.</p>
       <Droppable
         droppableId="search-results"
         isDropDisabled={draggingFrom !== "custom-list-entries"}
@@ -95,9 +92,6 @@ export default function CustomListSearchResults({
               snapshot.isDraggingOver ? "droppable dragging-over" : "droppable"
             }
           >
-            {draggingFrom === "custom-list-entries" && (
-              <p>Drag books here to remove them from the list.</p>
-            )}
             {draggingFrom !== "custom-list-entries" &&
               searchResults &&
               resultsToDisplay.map((book) => (

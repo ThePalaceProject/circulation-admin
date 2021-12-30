@@ -62,6 +62,7 @@ export default function CustomListBuilder({
     } else {
       setDraggingFrom(null);
     }
+    setDraggingFrom(null);
     document.body.classList.remove("dragging");
   };
 
@@ -75,7 +76,6 @@ export default function CustomListBuilder({
           opdsFeedUrl={opdsFeedUrl}
           isFetchingMoreSearchResults={isFetchingMoreSearchResults}
           saveFormData={saveFormData}
-          setDraggingFrom={setDraggingFrom}
           loadMoreSearchResults={loadMoreSearchResults}
         />
         <CustomListEntries
@@ -85,7 +85,6 @@ export default function CustomListBuilder({
           draggingFrom={draggingFrom}
           opdsFeedUrl={opdsFeedUrl}
           showSaveError={showSaveError}
-          setDraggingFrom={setDraggingFrom}
           isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
           nextPageUrl={nextPageUrl}
           listId={listId}

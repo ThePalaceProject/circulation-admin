@@ -22,7 +22,6 @@ export interface CustomListEntriesProps {
   showSaveError: boolean;
   saveFormData: (action: string, books?: string | Entry[]) => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
-  setDraggingFrom: (dragging: string | null) => void;
 }
 
 export default function CustomListEntries({
@@ -36,16 +35,13 @@ export default function CustomListEntries({
   showSaveError,
   saveFormData,
   loadMoreEntries,
-  setDraggingFrom,
 }: CustomListEntriesProps) {
   const handleDeleteEntry = (id: string) => {
     saveFormData("delete", id);
-    setDraggingFrom(null);
   };
 
   const handleDeleteAll = () => {
     saveFormData("delete");
-    setDraggingFrom(null);
   };
 
   const { entryCountInContext, setEntryCountInContext } = React.useContext(
