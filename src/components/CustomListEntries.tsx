@@ -82,7 +82,7 @@ export default function CustomListEntries({
     <div className="custom-list-entries">
       <div className="droppable-header">
         {showSaveError && (
-          <p style={{ color: "red" }}>
+          <p className="save-list-error">
             Please title this list before adding books.
           </p>
         )}

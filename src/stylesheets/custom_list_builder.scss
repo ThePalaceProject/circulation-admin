@@ -6,7 +6,8 @@
   justify-content: space-between;
 }
 
-.custom-list-search-results, .custom-list-entries {
+.custom-list-search-results,
+.custom-list-entries {
   display: flex;
   border: 1px solid $medium-gray;
   padding: 12px 24px 24px 24px;
@@ -27,6 +28,11 @@
       margin: 0;
       padding: 12px;
     }
+  }
+
+  // TODO: update to NYPL error color
+  .save-list-error {
+    color: crimson;
   }
 
   .droppable-header {
@@ -51,7 +57,8 @@
       border-color: $pagetextcolor;
     }
 
-    .search-result, .custom-list-entry {
+    .search-result,
+    .custom-list-entry {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -83,7 +90,7 @@
         flex-basis: 10%;
 
         &:first-child {
-          flex-basis: 3%
+          flex-basis: 3%;
         }
       }
 
