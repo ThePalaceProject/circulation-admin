@@ -7,6 +7,8 @@ import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import * as PropTypes from "prop-types";
 import { BookData } from "opds-web-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
+import CustomListEntries from "../CustomListEntries";
+import CustomListSearchResults from "../CustomListSearchResults";
 
 export interface Entry extends BookData {
   medium?: string;
@@ -15,27 +17,65 @@ export interface Entry extends BookData {
 describe("CustomListBookCard", () => {
   let wrapper;
 
-  const entry: Entry = {
-    id: "A",
-    title: "entry A",
-    authors: ["author 1"],
-    raw: {
-      $: {
-        "schema:additionalType": { value: "http://schema.org/EBook" },
+  const listData = {
+    id: "1",
+    url: "some url",
+    title: "original list title",
+    lanes: [],
+    books: [
+      {
+        id: "A",
+        title: "entry A",
+        authors: ["author 1"],
+        url: "/some/urlA",
+        raw: {
+          $: {
+            "schema:additionalType": {
+              value: "http://bib.schema.org/Audiobook",
+            },
+          },
+        },
       },
-    },
+    ],
+    navigationLinks: [],
   };
 
-  const searchResult: Entry = {
-    id: "1",
-    title: "result 1",
-    authors: ["author 1"],
-    url: "/some/url1",
-    language: "eng",
-    raw: {
-      $: { "schema:additionalType": { value: "http://schema.org/EBook" } },
-    },
+  const searchResultsData = {
+    id: "id",
+    url: "url",
+    title: "title - search",
+    lanes: [],
+    navigationLinks: [],
+    books: [
+      {
+        id: "2",
+        title: "result 2",
+        authors: ["author 2a", "author 2b"],
+        url: "/some/url2",
+        language: "eng",
+        raw: {
+          $: {
+            "schema:additionalType": {
+              value: "http://bib.schema.org/Audiobook",
+            },
+          },
+        },
+      },
+    ],
   };
+
+  const entriesNextPageUrl = "nextpage?after=50";
+
+  const deleteAll = stub();
+  const loadMoreEntries = stub();
+  const deleteEntry = stub();
+  const setLoadedMoreEntries = stub();
+  const handleDeleteEntry = stub();
+  const handleAddEntry = stub();
+  const onDragEnd = stub();
+  const addAll = stub();
+  const loadMoreSearchResults = stub();
+  const addEntry = stub();
 
   const childContextTypes = {
     pathFor: PropTypes.func.isRequired,
@@ -55,47 +95,75 @@ describe("CustomListBookCard", () => {
     },
   };
 
-  const handleDeleteEntry = stub();
-  const handleAddEntry = stub();
-
-  beforeEach(() => {
+  it("renders a single entry", () => {
+    // Must include CustomListBookCard's parent because
+    // CustomListBookCard includes a Draggable and Draggables
+    // must always be inside a Droppable.
     wrapper = Enzyme.mount(
-      <DragDropContext>
-        <CustomListBookCard
-          typeOfCard="entry"
-          book={entry}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <CustomListEntries
+          addedListEntries={[]}
+          deletedListEntries={[]}
+          entries={listData.books}
+          entryCount="2"
+          isFetchingMoreCustomListEntries={false}
+          nextPageUrl={entriesNextPageUrl}
           opdsFeedUrl="opdsFeedUrl"
-          handleDeleteEntry={handleDeleteEntry}
-        />
+          deleteAll={deleteAll}
+          deleteEntry={deleteEntry}
+          loadMoreEntries={loadMoreEntries}
+          setLoadedMoreEntries={setLoadedMoreEntries}
+        >
+          <CustomListBookCard
+            index={0}
+            typeOfCard="entry"
+            book={listData.books[0]}
+            opdsFeedUrl="opdsFeedUrl"
+            handleDeleteEntry={handleDeleteEntry}
+          />
+        </CustomListEntries>
       </DragDropContext>,
       { context: fullContext, childContextTypes }
     );
-  });
-
-  it("renders a single entry", () => {
     const result = wrapper.find(Draggable);
     expect(result.length).to.equal(1);
     expect(result.at(0).text()).to.contain("entry A");
-    expect(result.at(0).text()).to.contain("author 1e");
+    expect(result.at(0).text()).to.contain("author 1");
     const button = result.find(Button);
     expect(button.text()).to.contain("Remove from list");
   });
 
   it("renders a single search result", () => {
-    wrapper.setProps({
-      children: (
-        <CustomListBookCard
-          typeOfCard="searchResult"
-          book={searchResult}
+    // Must include CustomListBookCard's parent because
+    // CustomListBookCard includes a Draggable and Draggables
+    // must always be inside a Droppable.
+    wrapper = Enzyme.mount(
+      <DragDropContext onDragEnd={onDragEnd}>
+        <CustomListSearchResults
+          entries={listData.books}
+          isFetchingMoreSearchResults={false}
           opdsFeedUrl="opdsFeedUrl"
-          handleDeleteEntry={handleAddEntry}
-        />
-      ),
-    });
+          searchResults={searchResultsData}
+          addAll={addAll}
+          addEntry={addEntry}
+          loadMoreSearchResults={loadMoreSearchResults}
+        >
+          <CustomListBookCard
+            index={0}
+            typeOfCard="searchResult"
+            book={searchResultsData.books[0]}
+            opdsFeedUrl="opdsFeedUrl"
+            handleDeleteEntry={handleAddEntry}
+          />
+        </CustomListSearchResults>
+      </DragDropContext>,
+      { context: fullContext, childContextTypes }
+    );
+
     const result = wrapper.find(Draggable);
     expect(result.length).to.equal(1);
-    expect(result.at(0).text()).to.contain("result 1");
-    expect(result.at(0).text()).to.contain("author 1");
+    expect(result.at(0).text()).to.contain("result 2");
+    expect(result.at(0).text()).to.contain("author 2");
     const button = result.find(Button);
     expect(button.text()).to.contain("Add to list");
   });

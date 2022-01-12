@@ -13,6 +13,7 @@ export interface Entry extends BookData {
 }
 
 export interface CustomListBookCardProps {
+  index: number;
   typeOfCard: "searchResult" | "entry";
   opdsFeedUrl?: string;
   book: Entry;
@@ -21,6 +22,7 @@ export interface CustomListBookCardProps {
 }
 
 export default function CustomListBookCard({
+  index,
   typeOfCard,
   opdsFeedUrl,
   book,
@@ -30,62 +32,63 @@ export default function CustomListBookCard({
   const isSearchResult = typeOfCard === "searchResult";
 
   return (
-    <Draggable key={book.id} draggableId={book.id}>
-      {(provided, snapshot) => (
-        <li>
-          <div
-            className={`${
-              isSearchResult ? "search-result" : "custom-list-entry"
-            } ${snapshot.isDragging && " dragging"}`}
-            ref={provided.innerRef}
-            style={provided.draggableStyle}
-            {...provided.dragHandleProps}
-          >
-            <GrabIcon />
-            <div>
-              <div className="title">{book.title}</div>
-              <div className="authors">{book.authors.join(", ")}</div>
+    <Draggable key={book.id} draggableId={String(book.id)} index={index}>
+      {(provided, snapshot) => {
+        return (
+          <li>
+            <div
+              className={`${
+                isSearchResult ? "search-result" : "custom-list-entry"
+              } ${snapshot.isDragging && " dragging"}`}
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              <GrabIcon />
+              <div>
+                <div className="title">{book.title}</div>
+                <div className="authors">{book.authors.join(", ")}</div>
+              </div>
+              {getMediumSVG(getMedium(book))}
+              <div className="links">
+                {book.url && (
+                  <CatalogLink
+                    bookUrl={book.url}
+                    title={book.title}
+                    target="_blank"
+                    className="btn inverted left-align small top-align"
+                  >
+                    View details
+                  </CatalogLink>
+                )}
+                {isSearchResult ? (
+                  <Button
+                    callback={() => handleAddEntry(book.id)}
+                    className="right-align"
+                    content={
+                      <span>
+                        Add to list
+                        <AddIcon />
+                      </span>
+                    }
+                  />
+                ) : (
+                  <Button
+                    className="small right-align"
+                    callback={() => handleDeleteEntry(book.id)}
+                    content={
+                      <span>
+                        Remove from list
+                        <TrashIcon />
+                      </span>
+                    }
+                  />
+                )}
+              </div>
             </div>
-            {getMediumSVG(getMedium(book))}
-            <div className="links">
-              {book.url && (
-                <CatalogLink
-                  bookUrl={book.url}
-                  title={book.title}
-                  target="_blank"
-                  className="btn inverted left-align small top-align"
-                >
-                  View details
-                </CatalogLink>
-              )}
-              {isSearchResult ? (
-                <Button
-                  callback={() => handleAddEntry(book.id)}
-                  className="right-align"
-                  content={
-                    <span>
-                      Add to list
-                      <AddIcon />
-                    </span>
-                  }
-                />
-              ) : (
-                <Button
-                  className="small right-align"
-                  callback={() => handleDeleteEntry(book.id)}
-                  content={
-                    <span>
-                      Remove from list
-                      <TrashIcon />
-                    </span>
-                  }
-                />
-              )}
-            </div>
-          </div>
-          {provided.placeholder}
-        </li>
-      )}
+          </li>
+        );
+      }}
     </Draggable>
   );
 }

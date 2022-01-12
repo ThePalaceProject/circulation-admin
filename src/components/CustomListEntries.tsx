@@ -13,32 +13,32 @@ export interface Entry extends BookData {
 export interface CustomListEntriesProps {
   addedListEntries: Entry[];
   deletedListEntries: Entry[];
-  draggingFrom: string | null;
   entries?: Entry[];
   entryCount?: string;
   isFetchingMoreCustomListEntries: boolean;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
+  searchResults?: CollectionData;
   deleteAll: () => void;
   deleteEntry?: (id: string) => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
-  setDraggingFrom: (dragging: string | null) => void;
   setLoadedMoreEntries: (clicked: boolean) => void;
+  // Including for test purposes
+  children?: any;
 }
 
 export default function CustomListEntries({
   addedListEntries,
   deletedListEntries,
-  draggingFrom,
   entries,
   entryCount,
   isFetchingMoreCustomListEntries,
   nextPageUrl,
   opdsFeedUrl,
+  searchResults,
   deleteAll,
   deleteEntry,
   loadMoreEntries,
-  setDraggingFrom,
   setLoadedMoreEntries,
 }: CustomListEntriesProps) {
   const [totalVisibleEntries, setTotalVisibleEntries] = React.useState(0);
@@ -49,12 +49,10 @@ export default function CustomListEntries({
 
   const handleDeleteEntry = (id: string) => {
     deleteEntry(id);
-    setDraggingFrom(null);
   };
 
   const handleDeleteAll = () => {
     deleteAll();
-    setDraggingFrom(null);
   };
 
   let entryListDisplay = "No books in this list";
@@ -131,11 +129,10 @@ export default function CustomListEntries({
           </div>
         )}
       </div>
-      <p>Drag search results here to add them to the list.</p>
-      <Droppable
-        droppableId="custom-list-entries"
-        isDropDisabled={draggingFrom !== "search-results"}
-      >
+      {searchResults && (
+        <p>Drag search results here to add them to the list.</p>
+      )}
+      <Droppable droppableId="custom-list-entries">
         {(provided, snapshot) => (
           <ul
             ref={provided.innerRef}
@@ -145,8 +142,9 @@ export default function CustomListEntries({
             }
           >
             {entries &&
-              entries.map((book) => (
+              entries.map((book, index) => (
                 <CustomListBookCard
+                  index={index}
                   key={book.id}
                   typeOfCard="entry"
                   book={book}

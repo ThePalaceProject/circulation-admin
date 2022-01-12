@@ -39,7 +39,7 @@ describe("CustomLists", () => {
     },
   ];
 
-  const entry = { pwid: "1", title: "title", authors: [] };
+  const entry = { id: "1", title: "title", authors: [] };
 
   const searchResults = {
     id: "id",
@@ -420,7 +420,6 @@ describe("CustomLists", () => {
     it("renders edit form", () => {
       let editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(0);
-
       const listDetails = Object.assign({}, listsData[1], { books: [entry] });
       wrapper.setProps({
         children: (
@@ -434,6 +433,7 @@ describe("CustomLists", () => {
           />
         ),
       });
+
       editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(1);
       expect(editor.props().list).to.deep.equal(listDetails);
