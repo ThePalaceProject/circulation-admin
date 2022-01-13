@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1/12/22
+
+#### Updated
+
+- Updated the react-beautiful-dnd library from v2.3.1 to v11.0.2, and made necessary changes to the code and tests.
+
 ### v0.5.11
 
 #### Bugfix

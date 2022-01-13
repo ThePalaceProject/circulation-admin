@@ -44,17 +44,12 @@ export default function CustomListBuilder({
   loadMoreSearchResults,
   setLoadedMoreEntries,
 }: CustomListBuilderProps): JSX.Element {
-  const [draggingFrom, setDraggingFrom] = React.useState(null);
-
-  const onDragStart = (initial) => {
+  const onDragStart = () => {
     document.body.classList.add("dragging");
-    const { source } = initial;
-    setDraggingFrom(source.droppableId);
   };
 
   const onDragEnd = (result) => {
     const { draggableId, source, destination } = result;
-
     if (
       source.droppableId === "search-results" &&
       destination &&
@@ -67,8 +62,6 @@ export default function CustomListBuilder({
       destination.droppableId === "search-results"
     ) {
       deleteEntry(draggableId);
-    } else {
-      setDraggingFrom(null);
     }
     document.body.classList.remove("dragging");
   };
@@ -79,12 +72,10 @@ export default function CustomListBuilder({
         <CustomListSearchResults
           entries={entries}
           searchResults={searchResults}
-          draggingFrom={draggingFrom}
           opdsFeedUrl={opdsFeedUrl}
           isFetchingMoreSearchResults={isFetchingMoreSearchResults}
           addEntry={addEntry}
           addAll={addAll}
-          setDraggingFrom={setDraggingFrom}
           loadMoreSearchResults={loadMoreSearchResults}
         />
         <CustomListEntries
@@ -93,10 +84,9 @@ export default function CustomListBuilder({
           deleteEntry={deleteEntry}
           deleteAll={deleteAll}
           deletedListEntries={deletedListEntries}
-          draggingFrom={draggingFrom}
           addedListEntries={addedListEntries}
           opdsFeedUrl={opdsFeedUrl}
-          setDraggingFrom={setDraggingFrom}
+          searchResults={searchResults}
           isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
           nextPageUrl={nextPageUrl}
           loadMoreEntries={loadMoreEntries}

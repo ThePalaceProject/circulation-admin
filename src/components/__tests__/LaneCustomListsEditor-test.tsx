@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import LaneCustomListsEditor from "../LaneCustomListsEditor";
@@ -102,48 +102,6 @@ describe("LaneCustomListsEditor", () => {
     expect(lists.at(1).text()).to.contain("Items in list: 0");
   });
 
-  it("prevents dragging within available lists", () => {
-    const wrapper = mount(
-      <LaneCustomListsEditor
-        allCustomLists={allCustomListsData}
-        customListIds={[]}
-      />
-    );
-
-    // simulate starting a drag from available lists
-    (wrapper.instance() as LaneCustomListsEditor).onDragStart({
-      draggableId: 1,
-      source: {
-        droppableId: "available-lists",
-      },
-    });
-
-    const container = wrapper.find(".available-lists");
-    const droppable = container.find(Droppable);
-    expect(droppable.prop("isDropDisabled")).to.equal(true);
-  });
-
-  it("prevents dragging within current lists", () => {
-    const wrapper = mount(
-      <LaneCustomListsEditor
-        allCustomLists={allCustomListsData}
-        customListIds={[1, 2]}
-      />
-    );
-
-    // simulate starting a drag from current lists
-    (wrapper.instance() as LaneCustomListsEditor).onDragStart({
-      draggableId: 1,
-      source: {
-        droppableId: "current-lists",
-      },
-    });
-
-    const container = wrapper.find(".current-lists");
-    const droppable = container.find(Droppable);
-    expect(droppable.prop("isDropDisabled")).to.equal(true);
-  });
-
   it("drags from available lists to current lists", () => {
     const wrapper = mount(
       <LaneCustomListsEditor
@@ -153,21 +111,15 @@ describe("LaneCustomListsEditor", () => {
       />
     );
 
-    // simulate starting a drag from available lists
-    (wrapper.instance() as LaneCustomListsEditor).onDragStart({
-      draggableId: 2,
-      source: {
-        droppableId: "available-lists",
-      },
-    });
-    wrapper.update();
-
     let currentContainer = wrapper.find(".current-lists");
     let droppable = currentContainer.find(Droppable);
-    expect(droppable.prop("isDropDisabled")).to.equal(false);
+    let lists = droppable.find(Draggable);
 
-    // simulate dropping on the current lists
-    (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
+    expect(lists.length).to.equal(1);
+    expect(lists.at(0).text()).to.contain("list 1");
+
+    // simulate dropping a book on the current lists
+    wrapper.instance().onDragEnd({
       draggableId: 2,
       source: {
         droppableId: "available-lists",
@@ -176,58 +128,22 @@ describe("LaneCustomListsEditor", () => {
         droppableId: "current-lists",
       },
     });
+
+    expect(onUpdate.callCount).to.equal(1);
+    expect(onUpdate.args[0][0]).to.deep.equal([1, 2]);
+
+    wrapper.setProps();
     wrapper.update();
+
+    expect(wrapper.props().customListIds).to.deep.equal([1, 2]);
 
     currentContainer = wrapper.find(".current-lists");
     droppable = currentContainer.find(Droppable);
-    // The dropped item has been added to the current lists.
-    const lists = droppable.find(Draggable);
+    lists = droppable.find(Draggable);
+
     expect(lists.length).to.equal(2);
     expect(lists.at(0).text()).to.contain("list 1");
     expect(lists.at(1).text()).to.contain("list 2");
-    expect(onUpdate.callCount).to.equal(1);
-    expect(onUpdate.args[0][0]).to.deep.equal([1, 2]);
-  });
-
-  it("shows message in place of available lists when dragging from current lists", () => {
-    const wrapper = mount(
-      <LaneCustomListsEditor
-        allCustomLists={allCustomListsData}
-        customListIds={[1]}
-      />
-    );
-
-    // simulate starting a drag from current lists
-    (wrapper.instance() as LaneCustomListsEditor).onDragStart({
-      draggableId: 1,
-      source: {
-        droppableId: "current-lists",
-      },
-    });
-    wrapper.update();
-
-    let availableContainer = wrapper.find(".available-lists");
-    let droppable = availableContainer.find(Droppable);
-    let message = droppable.find("p");
-    expect(droppable.prop("isDropDisabled")).to.equal(false);
-    expect(message.length).to.equal(1);
-    expect(message.text()).to.contain("here to remove");
-
-    // if you drop anywhere on the page, the mssage goes away.
-    // simulate dropping outside a droppable (no destination)
-    (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
-      draggableId: 1,
-      source: {
-        droppableId: "current-lists",
-      },
-    });
-    wrapper.update();
-
-    availableContainer = wrapper.find(".available-lists");
-    droppable = availableContainer.find(Droppable);
-    message = droppable.find("p");
-    expect(droppable.prop("isDropDisabled")).to.equal(true);
-    expect(message.length).to.equal(0);
   });
 
   it("drags from current lists to available lists", () => {
@@ -240,18 +156,11 @@ describe("LaneCustomListsEditor", () => {
     );
 
     // simulate starting a drag from current lists
-    (wrapper.instance() as LaneCustomListsEditor).onDragStart({
-      draggableId: 1,
-      source: {
-        droppableId: "current-lists",
-      },
-    });
+    (wrapper.instance() as LaneCustomListsEditor).onDragStart();
     wrapper.update();
 
     const availableContainer = wrapper.find(".available-lists");
     let droppable = availableContainer.find(Droppable);
-    expect(droppable.prop("isDropDisabled")).to.equal(false);
-
     // simulate dropping on the available lists
     (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
       draggableId: 1,
@@ -287,6 +196,9 @@ describe("LaneCustomListsEditor", () => {
 
     const addLink = wrapper.find(".available-lists .links button");
     addLink.at(0).simulate("click");
+
+    wrapper.setProps();
+    wrapper.update();
 
     // the item has been added to the current lists
     const currentContainer = wrapper.find(".current-lists");
