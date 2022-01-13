@@ -5,7 +5,7 @@ import * as Enzyme from "enzyme";
 import CustomListBookCard from "../CustomListBookCard";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import * as PropTypes from "prop-types";
-import { BookData } from "opds-web-client/lib/interfaces";
+import { CollectionData, BookData } from "opds-web-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import CustomListEntries from "../CustomListEntries";
 import CustomListSearchResults from "../CustomListSearchResults";
@@ -17,7 +17,7 @@ export interface Entry extends BookData {
 describe("CustomListBookCard", () => {
   let wrapper;
 
-  const listData = {
+  const listData: CollectionData = {
     id: "1",
     url: "some url",
     title: "original list title",
@@ -40,7 +40,7 @@ describe("CustomListBookCard", () => {
     navigationLinks: [],
   };
 
-  const searchResultsData = {
+  const searchResultsData: CollectionData = {
     id: "id",
     url: "url",
     title: "title - search",

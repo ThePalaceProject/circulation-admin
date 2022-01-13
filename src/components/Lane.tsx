@@ -58,8 +58,9 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
             (active ? "active" : "")
           }
           ref={provided && provided.innerRef}
-          {...(provided ? provided.draggableProps : {})}
-          {...(provided ? provided.dragHandleProps : {})}
+          {...(provided
+            ? { ...provided.draggableProps, ...provided.dragHandleProps }
+            : {})}
         >
           <div className={"lane-info" + (provided ? " draggable" : "")}>
             <span>
