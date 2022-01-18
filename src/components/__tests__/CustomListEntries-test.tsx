@@ -49,9 +49,9 @@
 
 //   const deleteAll = stub();
 //   const loadMoreEntries = stub();
-//   const setDraggingFrom = stub();
 //   const deleteEntry = stub();
 //   const setLoadedMoreEntries = stub();
+//   const onDragEnd = stub();
 
 //   const childContextTypes = {
 //     pathFor: PropTypes.func.isRequired,
@@ -73,11 +73,10 @@
 
 //   beforeEach(() => {
 //     wrapper = Enzyme.mount(
-//       <DragDropContext>
+//       <DragDropContext onDragEnd={onDragEnd}>
 //         <CustomListEntries
 //           addedListEntries={[]}
 //           deletedListEntries={[]}
-//           draggingFrom={null}
 //           entries={listData.books}
 //           entryCount="2"
 //           isFetchingMoreCustomListEntries={false}
@@ -86,7 +85,6 @@
 //           deleteAll={deleteAll}
 //           deleteEntry={deleteEntry}
 //           loadMoreEntries={loadMoreEntries}
-//           setDraggingFrom={setDraggingFrom}
 //           setLoadedMoreEntries={setLoadedMoreEntries}
 //         />
 //       </DragDropContext>,
@@ -154,7 +152,6 @@
 //         <CustomListEntries
 //           addedListEntries={[]}
 //           deletedListEntries={[]}
-//           draggingFrom={null}
 //           entries={listData.books}
 //           entryCount="2"
 //           // set isFetchingMoreCustomListEntries to true
@@ -164,7 +161,6 @@
 //           deleteAll={deleteAll}
 //           deleteEntry={deleteEntry}
 //           loadMoreEntries={loadMoreEntries}
-//           setDraggingFrom={setDraggingFrom}
 //           setLoadedMoreEntries={setLoadedMoreEntries}
 //         />
 //       ),
@@ -181,7 +177,6 @@
 //         <CustomListEntries
 //           addedListEntries={[]}
 //           deletedListEntries={[]}
-//           draggingFrom={null}
 //           entries={[]}
 //           entryCount="0"
 //           isFetchingMoreCustomListEntries={false}
@@ -190,7 +185,6 @@
 //           deleteAll={deleteAll}
 //           deleteEntry={deleteEntry}
 //           loadMoreEntries={loadMoreEntries}
-//           setDraggingFrom={setDraggingFrom}
 //           setLoadedMoreEntries={setLoadedMoreEntries}
 //         />
 //       ),
@@ -212,7 +206,6 @@
 //         <CustomListEntries
 //           addedListEntries={[]}
 //           deletedListEntries={[]}
-//           draggingFrom={null}
 //           entries={[]}
 //           entryCount="0"
 //           isFetchingMoreCustomListEntries={false}
@@ -220,7 +213,6 @@
 //           deleteAll={deleteAll}
 //           deleteEntry={deleteEntry}
 //           loadMoreEntries={loadMoreEntries}
-//           setDraggingFrom={setDraggingFrom}
 //           setLoadedMoreEntries={setLoadedMoreEntries}
 //         />
 //       ),
@@ -235,7 +227,6 @@
 //         <CustomListEntries
 //           addedListEntries={[]}
 //           deletedListEntries={[]}
-//           draggingFrom={null}
 //           entries={listData.books}
 //           entryCount="2"
 //           isFetchingMoreCustomListEntries={false}
@@ -243,7 +234,6 @@
 //           deleteAll={deleteAll}
 //           deleteEntry={deleteEntry}
 //           loadMoreEntries={loadMoreEntries}
-//           setDraggingFrom={setDraggingFrom}
 //           setLoadedMoreEntries={setLoadedMoreEntries}
 //         />
 //       ),

@@ -2,11 +2,9 @@ import { expect } from "chai";
 import { stub } from "sinon";
 import { LaneData } from "../../interfaces";
 import * as React from "react";
-import { shallow, mount } from "enzyme";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { mount } from "enzyme";
 
 import LanesSidebar from "../LanesSidebar";
-import Lane from "../Lane";
 import { Link } from "react-router";
 
 describe("LanesSidebar", () => {
@@ -39,6 +37,7 @@ describe("LanesSidebar", () => {
   const getTopLevelLanes = () => {
     return wrapper.find("ul.droppable").at(0).children();
   };
+
   // Returns all the children lanes (including grandchildren) from the given parent lane.
   const allChildren = (lane) => {
     return lane.find("li .lane-parent");
@@ -245,13 +244,17 @@ describe("LanesSidebar", () => {
     };
 
     let topLevelLanes = getTopLevelLanes();
-    expect(topLevelLanes.length).to.equal(2);
+    // Two are actually top level lanes, the third is a component from react-beautiful-dnd.
+    expect(topLevelLanes.length).to.equal(3);
     let topLane1 = topLevelLanes.at(0).find("div").at(0);
     const topLane2 = topLevelLanes.at(1).find("div").at(0);
+    const topLane3 = topLevelLanes.at(2);
+
     expect(topLane1.text()).to.contain("Top Lane 1");
     expect(topLane1.text()).to.contain("(5)");
     expect(topLane2.text()).to.contain("Top Lane 2");
     expect(topLane2.text()).to.contain("(1)");
+    expect(topLane3.props().shouldAnimate).to.equal(true);
 
     // both top-level lanes are expanded to start.
     expectExpanded(topLane1);

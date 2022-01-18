@@ -89,6 +89,7 @@ export class CustomLists extends React.Component<
   }
 
   render(): JSX.Element {
+    console.log("editorcreate -->", this.props.editOrCreate);
     let listCollections = [];
     let entryCount;
 
@@ -179,13 +180,17 @@ export class CustomLists extends React.Component<
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log("in component will receive props");
     // If we've fetched lists but we're not on the edit or create page,
     // redirect to the edit page for the first list, or the create page
     // if there are no lists.
     if (!nextProps.editOrCreate && nextProps.lists && !nextProps.fetchError) {
+      console.log("in first if");
       if (nextProps.lists.length === 0) {
+        console.log("in second if");
         window.location.href += "/create";
       } else {
+        console.log("in else");
         const firstList = this.sortedLists(nextProps.lists)[0];
         window.location.href += "/edit/" + firstList.id;
       }
@@ -197,6 +202,7 @@ export class CustomLists extends React.Component<
       nextProps.fetchCustomListDetails &&
       nextProps.identifier !== this.props.identifier
     ) {
+      console.log("in third if");
       nextProps.fetchCustomListDetails(nextProps.identifier);
     }
   }

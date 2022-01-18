@@ -1,21 +1,43 @@
 import * as React from "react";
 import TextWithEditMode from "./TextWithEditMode";
-import { Entry } from "./CustomListBuilder";
+import { ListManagerContext } from "./ListManagerContext";
+import { BookData } from "opds-web-client/lib/interfaces";
+
+export interface Entry extends BookData {
+  medium?: string;
+}
 
 export interface CustomListEditorHeaderProps {
   draftTitle: string;
   listId?: string | number;
-  setDraftTitle: (title) => void;
+  saveFormData: (action: string, data?: string | Entry[]) => void;
+  setDraftTitle: (title: string) => void;
 }
 
 export default function CustomListEditorHeader({
   draftTitle,
   listId,
   setDraftTitle,
+  saveFormData,
 }: CustomListEditorHeaderProps) {
-  const setNewTitleOnState = (newTitle): void => {
+  const { setTitleInContext } = React.useContext(ListManagerContext);
+
+  const setNewTitleOnState = (newTitle) => {
     setDraftTitle(newTitle);
   };
+
+  /**
+   *  Add title to context so sidebar's title can be updated as well.
+   */
+  React.useEffect(() => {
+    if (draftTitle) {
+      setTitleInContext((prevState) => ({
+        ...prevState,
+        [listId]: draftTitle,
+      }));
+      saveFormData("saveTitle");
+    }
+  }, [draftTitle]);
 
   return (
     <div className="custom-list-editor-header">

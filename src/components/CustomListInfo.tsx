@@ -23,7 +23,9 @@ export default function CustomListInfo({
   deleteCustomList,
   library,
 }: ListInfoProps) {
-  const { admin, entryCountInContext } = React.useContext(ListManagerContext);
+  const { admin, entryCountInContext, titleInContext } = React.useContext(
+    ListManagerContext
+  );
 
   const isActive = identifier === list.id.toString();
   const { id, name, entry_count } = list;
@@ -47,7 +49,7 @@ export default function CustomListInfo({
   return (
     <li key={id} className={isActive ? "active" : ""}>
       <div className="custom-list-info">
-        <p>{name}</p>
+        <p>{titleInContext[String(id)] ? titleInContext[String(id)] : name}</p>
         {/*
          * If the number of books in a list is stored in context,
          * use that number. Otherwise, use entry_count.

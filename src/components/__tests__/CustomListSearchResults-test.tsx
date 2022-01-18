@@ -85,8 +85,8 @@
 
 //   const addAll = stub();
 //   const loadMoreSearchResults = stub();
-//   const setDraggingFrom = stub();
 //   const addEntry = stub();
+//   const onDragEnd = stub();
 
 //   const childContextTypes = {
 //     pathFor: PropTypes.func.isRequired,
@@ -107,9 +107,8 @@
 //   };
 //   beforeEach(() => {
 //     wrapper = Enzyme.mount(
-//       <DragDropContext>
+//       <DragDropContext onDragEnd={onDragEnd}>
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           isFetchingMoreSearchResults={false}
 //           opdsFeedUrl="opdsFeedUrl"
@@ -117,7 +116,6 @@
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       </DragDropContext>,
 //       { context: fullContext, childContextTypes }
@@ -225,7 +223,6 @@
 //     wrapper.setProps({
 //       children: (
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           isFetchingMoreSearchResults={false}
 //           opdsFeedUrl="opdsFeedUrl"
@@ -233,7 +230,6 @@
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       ),
 //     });
@@ -266,7 +262,6 @@
 //     wrapper.setProps({
 //       children: (
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           isFetchingMoreSearchResults={false}
 //           opdsFeedUrl="opdsFeedUrl"
@@ -274,7 +269,6 @@
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       ),
 //     });
@@ -298,14 +292,12 @@
 //     wrapper.setProps({
 //       children: (
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           isFetchingMoreSearchResults={false}
 //           opdsFeedUrl="opdsFeedUrl"
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       ),
 //     });
@@ -321,7 +313,6 @@
 //     wrapper.setProps({
 //       children: (
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           isFetchingMoreSearchResults={false}
 //           opdsFeedUrl="opdsFeedUrl"
@@ -330,7 +321,6 @@
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       ),
 //     });
@@ -342,7 +332,6 @@
 //     wrapper.setProps({
 //       children: (
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           isFetchingMoreSearchResults={false}
 //           opdsFeedUrl="opdsFeedUrl"
@@ -351,7 +340,6 @@
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       ),
 //     });
@@ -364,7 +352,6 @@
 //     wrapper.setProps({
 //       children: (
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           // set isFetchingMoreSearchResults to true
 //           isFetchingMoreSearchResults={true}
@@ -373,7 +360,6 @@
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       ),
 //     });
@@ -389,7 +375,6 @@
 //     wrapper.setProps({
 //       children: (
 //         <CustomListSearchResults
-//           draggingFrom={null}
 //           entries={entriesData}
 //           isFetchingMoreSearchResults={false}
 //           opdsFeedUrl="opdsFeedUrl"
@@ -398,7 +383,6 @@
 //           addAll={addAll}
 //           addEntry={addEntry}
 //           loadMoreSearchResults={loadMoreSearchResults}
-//           setDraggingFrom={setDraggingFrom}
 //         />
 //       ),
 //     });

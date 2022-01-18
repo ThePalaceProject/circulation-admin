@@ -27,12 +27,15 @@ export function ListManagerProvider({
 }: ListManagerProviderProps): JSX.Element {
   const admin = new Admin(roles || [], email || null);
   const [entryCountInContext, setEntryCountInContext] = React.useState({});
+  const [titleInContext, setTitleInContext] = React.useState("");
 
   return (
     <ListManagerContext.Provider
       value={{
         entryCountInContext,
         setEntryCountInContext,
+        titleInContext,
+        setTitleInContext,
         admin,
         csrfToken,
         editorStore,

@@ -42,8 +42,6 @@
       margin: 15px 0px;
     }
 
-
-
     h4 {
       color: lighten($pagetextcolor, 40%);
       svg {
@@ -79,7 +77,8 @@
     flex-grow: 1;
   }
 
-  .available-lists, .current-lists {
+  .available-lists,
+  .current-lists {
     display: flex;
     flex-direction: column;
     flex-basis: 44%;
@@ -100,14 +99,14 @@
       border: 1px solid $medium-gray;
       padding: 10px;
       flex: 1;
-      overflow-y: scroll;
       margin-bottom: 15px;
 
       &.dragging-over {
         border-color: $pagetextcolor;
       }
 
-      .available-list, .current-list {
+      .available-list,
+      .current-list {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -117,7 +116,8 @@
         cursor: grab;
         cursor: -webkit-grab;
 
-        &:hover, &.dragging {
+        &:hover,
+        &.dragging {
           border: 1px solid $pagetextcolor;
           background-color: $pagecolorlight;
         }
@@ -136,17 +136,18 @@
         }
 
         button {
-          font-size: .8em;
+          font-size: 0.8em;
 
           svg {
             margin: 0 0 0 5px;
             float: unset;
             vertical-align: unset;
-            height: .8em;
+            height: 0.8em;
           }
         }
 
-        .list-name, .list-id {
+        .list-name,
+        .list-id {
           font-weight: bold;
         }
 

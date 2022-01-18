@@ -6,28 +6,18 @@ import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
 import { Button } from "library-simplified-reusable-components";
 
-export interface LaneCustomListsEditorProps
-  extends React.Props<LaneCustomListsEditor> {
+export interface LaneCustomListsEditorProps {
   allCustomLists: CustomListData[];
   customListIds: number[];
   onUpdate?: (customListIds: number[]) => void;
 }
 
-export interface LaneCustomListsEditorState {
-  draggingFrom: string | null;
-}
-
 /** Drag and drop interface for adding custom lists to a lane. */
 export default class LaneCustomListsEditor extends React.Component<
-  LaneCustomListsEditorProps,
-  LaneCustomListsEditorState
+  LaneCustomListsEditorProps
 > {
   constructor(props) {
     super(props);
-    this.state = {
-      draggingFrom: null,
-    };
-
     this.onDragStart = this.onDragStart.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
   }
@@ -43,10 +33,7 @@ export default class LaneCustomListsEditor extends React.Component<
             <div className="droppable-header">
               <h4>Available Lists ({this.listsNotInLane().length})</h4>
             </div>
-            <Droppable
-              droppableId="available-lists"
-              isDropDisabled={this.state.draggingFrom !== "current-lists"}
-            >
+            <Droppable droppableId="available-lists">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
@@ -56,50 +43,50 @@ export default class LaneCustomListsEditor extends React.Component<
                       : "droppable"
                   }
                 >
-                  {this.state.draggingFrom === "current-lists" && (
+                  {snapshot.isDraggingOver && (
                     <p>Drag lists here to remove them from the lane.</p>
                   )}
-                  {this.state.draggingFrom !== "current-lists" &&
-                    this.listsNotInLane().map((list) => (
-                      <Draggable key={list.id} draggableId={list.id}>
-                        {(provided, snapshot) => (
-                          <div>
-                            <div
-                              className={
-                                "available-list" +
-                                (snapshot.isDragging ? " dragging" : "")
-                              }
-                              ref={provided.innerRef}
-                              style={provided.draggableStyle}
-                              {...provided.dragHandleProps}
-                            >
-                              <GrabIcon />
-                              <div className="list-info">
-                                <div className="list-name">{list.name}</div>
-                                <div className="list-count">
-                                  Items in list: {list.entry_count}
-                                </div>
-                                <div className="list-id">ID-{list.id}</div>
-                              </div>
-                              <div className="links">
-                                <Button
-                                  className="inverted"
-                                  callback={() => {
-                                    this.add(list.id);
-                                  }}
-                                  content={
-                                    <span>
-                                      Add to lane <AddIcon />
-                                    </span>
-                                  }
-                                />
-                              </div>
+                  {this.listsNotInLane().map((list, index) => (
+                    <Draggable
+                      key={list.id}
+                      draggableId={list.id}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          className={
+                            "available-list" +
+                            (snapshot.isDragging ? " dragging" : "")
+                          }
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <GrabIcon />
+                          <div className="list-info">
+                            <div className="list-name">{list.name}</div>
+                            <div className="list-count">
+                              Items in list: {list.entry_count}
                             </div>
-                            {provided.placeholder}
+                            <div className="list-id">ID-{list.id}</div>
                           </div>
-                        )}
-                      </Draggable>
-                    ))}
+                          <div className="links">
+                            <Button
+                              className="inverted"
+                              callback={() => {
+                                this.add(list.id);
+                              }}
+                              content={
+                                <span>
+                                  Add to lane <AddIcon />
+                                </span>
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
                   {provided.placeholder}
                 </div>
               )}
@@ -110,56 +97,56 @@ export default class LaneCustomListsEditor extends React.Component<
             <div className="droppable-header">
               <h4>Lists in this Lane ({this.listsInLane().length})</h4>
             </div>
-            <Droppable
-              droppableId="current-lists"
-              isDropDisabled={this.state.draggingFrom !== "available-lists"}
-            >
+            <Droppable droppableId="current-lists">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
                   className={
                     snapshot.isDraggingOver
-                      ? " droppable dragging-over"
+                      ? "droppable dragging-over"
                       : "droppable"
                   }
                 >
-                  <p>Drag lists here to add them to the lane.</p>
-                  {this.listsInLane().map((list) => (
-                    <Draggable key={list.id} draggableId={list.id}>
+                  {snapshot.isDraggingOver && (
+                    <p>Drag lists here to add them to the lane.</p>
+                  )}
+                  {this.listsInLane().map((list, index) => (
+                    <Draggable
+                      key={list.id}
+                      draggableId={list.id}
+                      index={index}
+                    >
                       {(provided, snapshot) => (
-                        <div>
-                          <div
-                            className={
-                              "current-list" +
-                              (snapshot.isDragging ? " dragging" : "")
-                            }
-                            ref={provided.innerRef}
-                            style={provided.draggableStyle}
-                            {...provided.dragHandleProps}
-                          >
-                            <GrabIcon />
-                            <div className="list-info">
-                              <div className="list-name">{list.name}</div>
-                              <div className="list-count">
-                                Items in list: {list.entry_count}
-                              </div>
-                              <div className="list-id">ID-{list.id}</div>
+                        <div
+                          className={
+                            "current-list" +
+                            (snapshot.isDragging ? " dragging" : "")
+                          }
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <GrabIcon />
+                          <div className="list-info">
+                            <div className="list-name">{list.name}</div>
+                            <div className="list-count">
+                              Items in list: {list.entry_count}
                             </div>
-                            <div className="links">
-                              <Button
-                                className="danger"
-                                callback={() => {
-                                  this.remove(list.id);
-                                }}
-                                content={
-                                  <span>
-                                    Remove from lane <TrashIcon />
-                                  </span>
-                                }
-                              />
-                            </div>
+                            <div className="list-id">ID-{list.id}</div>
                           </div>
-                          {provided.placeholder}
+                          <div className="links">
+                            <Button
+                              className="danger"
+                              callback={() => {
+                                this.remove(list.id);
+                              }}
+                              content={
+                                <span>
+                                  Remove from lane <TrashIcon />
+                                </span>
+                              }
+                            />
+                          </div>
                         </div>
                       )}
                     </Draggable>
@@ -205,8 +192,7 @@ export default class LaneCustomListsEditor extends React.Component<
 
   add(listId) {
     const customListIds = this.getCustomListIds();
-    customListIds.push(parseInt(String(listId), 10));
-    this.setState({ draggingFrom: null });
+    customListIds.push(parseInt(listId, 10));
     if (this.props.onUpdate) {
       this.props.onUpdate(customListIds);
     }
@@ -215,16 +201,12 @@ export default class LaneCustomListsEditor extends React.Component<
   remove(listId) {
     let customListIds = this.getCustomListIds();
     customListIds = customListIds.filter((id) => id !== listId);
-    this.setState({ draggingFrom: null });
     if (this.props.onUpdate) {
       this.props.onUpdate(customListIds);
     }
   }
 
   reset(ids: number[]) {
-    this.setState({
-      draggingFrom: null,
-    });
     if (this.props.onUpdate) {
       this.props.onUpdate(ids);
     }
@@ -234,10 +216,8 @@ export default class LaneCustomListsEditor extends React.Component<
     return this.props.customListIds || [];
   }
 
-  onDragStart(initial) {
+  onDragStart() {
     document.body.classList.add("dragging");
-    const source = initial.source;
-    this.setState({ draggingFrom: source.droppableId });
   }
 
   onDragEnd(result) {
@@ -257,8 +237,6 @@ export default class LaneCustomListsEditor extends React.Component<
       destination.droppableId === "available-lists"
     ) {
       this.remove(draggableId);
-    } else {
-      this.setState({ draggingFrom: null });
     }
 
     document.body.classList.remove("dragging");

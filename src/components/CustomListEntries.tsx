@@ -12,20 +12,21 @@ export interface Entry extends BookData {
 }
 
 export interface CustomListEntriesProps {
-  draggingFrom: string | null;
   entries?: Entry[];
   totalListEntries?: number;
   isFetchingMoreCustomListEntries: boolean;
   listId?: string | number;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
+  searchResults?: CollectionData;
   showSaveError: boolean;
   saveFormData: (action: string, books?: string | Entry[]) => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
+  // Including for test purposes
+  children?: any;
 }
 
 export default function CustomListEntries({
-  draggingFrom,
   entries,
   totalListEntries,
   isFetchingMoreCustomListEntries,
@@ -34,6 +35,7 @@ export default function CustomListEntries({
   opdsFeedUrl,
   showSaveError,
   saveFormData,
+  searchResults,
   loadMoreEntries,
 }: CustomListEntriesProps) {
   const handleDeleteEntry = (id: string) => {
@@ -103,11 +105,10 @@ export default function CustomListEntries({
           </div>
         )}
       </div>
-      <p>Drag search results here to add them to the list.</p>
-      <Droppable
-        droppableId="custom-list-entries"
-        isDropDisabled={draggingFrom !== "search-results"}
-      >
+      {searchResults && (
+        <p>Drag search results here to add them to the list.</p>
+      )}
+      <Droppable droppableId="custom-list-entries">
         {(provided, snapshot) => (
           <ul
             ref={provided.innerRef}
@@ -117,8 +118,9 @@ export default function CustomListEntries({
             }
           >
             {entries &&
-              entries.map((book) => (
+              entries.map((book, index) => (
                 <CustomListBookCard
+                  index={index}
                   key={book.id}
                   typeOfCard="entry"
                   book={book}
