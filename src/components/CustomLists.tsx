@@ -2,7 +2,6 @@
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -70,6 +69,7 @@ export interface CustomListsProps
 
 export interface CustomListsState {
   sort: SortOrder;
+  responseBodyState: string;
 }
 
 /** Body of the custom lists page, with all a library's lists shown in a left sidebar and
@@ -84,8 +84,10 @@ export class CustomLists extends React.Component<
     this.deleteCustomList = this.deleteCustomList.bind(this);
     this.changeSort = this.changeSort.bind(this);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
+    this.resetResponseBodyState = this.resetResponseBodyState.bind(this);
     this.state = {
       sort: "asc",
+      responseBodyState: "",
     };
   }
 
@@ -117,6 +119,10 @@ export class CustomLists extends React.Component<
     );
   }
 
+  resetResponseBodyState() {
+    this.setState({ responseBodyState: "" });
+  }
+
   renderSidebar(): JSX.Element {
     return (
       <CustomListsSidebar
@@ -126,6 +132,7 @@ export class CustomLists extends React.Component<
         deleteCustomList={this.deleteCustomList}
         changeSort={this.changeSort}
         sortOrder={this.state.sort}
+        resetResponseBodyState={this.resetResponseBodyState}
       />
     );
   }
@@ -150,7 +157,7 @@ export class CustomLists extends React.Component<
     const extraProps =
       this.props.editOrCreate === "create"
         ? {
-            responseBody: this.props.responseBody,
+            responseBody: this.state.responseBodyState,
             startingTitle: this.props.startingTitle,
           }
         : {
@@ -248,9 +255,8 @@ export class CustomLists extends React.Component<
 
   async editCustomList(data: FormData, listId?: string): Promise<void> {
     await this.props.editCustomList(data, listId);
-    this.props.fetchCustomLists();
-    if (listId) {
-      this.props.fetchCustomListDetails(listId);
+    if (this.props.responseBody) {
+      this.setState({ responseBodyState: this.props.responseBody });
     }
   }
 

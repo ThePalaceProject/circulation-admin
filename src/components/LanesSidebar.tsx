@@ -105,13 +105,19 @@ export default class LanesSidebar extends React.Component<
                   : "droppable"
               }
             >
-              {lanes.map((lane) => (
-                <Draggable draggableId={String(lane.id)} key={lane.id}>
-                  {(provided, snapshot) =>
-                    this.renderLane(lane, parent, provided, snapshot)
-                  }
-                </Draggable>
-              ))}
+              {lanes.map((lane, index) => {
+                return (
+                  <Draggable
+                    draggableId={String(lane.id)}
+                    key={lane.id}
+                    index={index}
+                  >
+                    {(provided, snapshot) =>
+                      this.renderLane(lane, parent, provided, snapshot)
+                    }
+                  </Draggable>
+                );
+              })}
               {provided.placeholder}
             </ul>
           )}

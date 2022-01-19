@@ -10,27 +10,23 @@ export interface Entry extends BookData {
   medium?: string;
 }
 export interface CustomListSearchResultsProps {
-  draggingFrom: string | null;
   entries?: Entry[];
   isFetchingMoreSearchResults: boolean;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
-  addAll: (resultsToAdd: Entry[]) => void;
-  addEntry?: (id: string) => void;
+  saveFormData: (action: string, books: string | Entry[]) => void;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  setDraggingFrom: (className: string | null) => void;
+  // Including for test purposes
+  children?: any;
 }
 
 export default function CustomListSearchResults({
-  draggingFrom,
   entries,
   isFetchingMoreSearchResults,
   opdsFeedUrl,
   searchResults,
-  addAll,
-  addEntry,
+  saveFormData,
   loadMoreSearchResults,
-  setDraggingFrom,
 }: CustomListSearchResultsProps) {
   const searchResultsNotInEntries = () => {
     const entryIds =
@@ -50,14 +46,12 @@ export default function CustomListSearchResults({
   };
 
   const handleAddEntry = (id: string) => {
-    addEntry(id);
-    setDraggingFrom(null);
+    saveFormData("add", id);
   };
 
   const handleAddAll = () => {
     const resultsToAdd = searchResultsNotInEntries();
-    addAll(resultsToAdd);
-    setDraggingFrom(null);
+    saveFormData("add", resultsToAdd);
   };
 
   const resultsToDisplay = searchResults && searchResultsNotInEntries();
@@ -73,23 +67,24 @@ export default function CustomListSearchResults({
       <div className="droppable-header">
         <h4>Search Results</h4>
         {searchResults && resultsToDisplay.length > 0 && (
-          <Button
-            key="addAll"
-            className="add-all-button"
-            callback={handleAddAll}
-            content={
-              <span>
-                Add all to list
-                <ApplyIcon />
-              </span>
-            }
-          />
+          <div>
+            <span>Add all currently visible items from list:</span>
+            <Button
+              key="addAll"
+              className="add-all-button"
+              callback={handleAddAll}
+              content={
+                <span>
+                  Add all to list
+                  <ApplyIcon />
+                </span>
+              }
+            />
+          </div>
         )}
       </div>
-      <Droppable
-        droppableId="search-results"
-        isDropDisabled={draggingFrom !== "custom-list-entries"}
-      >
+      {entries && <p>Drag books here to remove them from the list.</p>}
+      <Droppable droppableId="search-results">
         {(provided, snapshot) => (
           <ul
             ref={provided.innerRef}
@@ -97,14 +92,11 @@ export default function CustomListSearchResults({
               snapshot.isDraggingOver ? "droppable dragging-over" : "droppable"
             }
           >
-            {draggingFrom === "custom-list-entries" && (
-              <p>Drag books here to remove them from the list.</p>
-            )}
-            {draggingFrom !== "custom-list-entries" &&
-              searchResults &&
-              resultsToDisplay.map((book) => (
+            {searchResults &&
+              resultsToDisplay.map((book, index) => (
                 <CustomListBookCard
                   key={book.id}
+                  index={index}
                   typeOfCard="searchResult"
                   book={book}
                   opdsFeedUrl={opdsFeedUrl}
