@@ -10,20 +10,34 @@ export interface Entry extends BookData {
 export interface CustomListEditorHeaderProps {
   draftTitle: string;
   listId?: string | number;
-  saveFormData: (action: string, data?: string | Entry[]) => void;
   setDraftTitle: (title: string) => void;
+  editCustomList: (data: FormData, listId?: string) => Promise<void>;
 }
 
 export default function CustomListEditorHeader({
   draftTitle,
   listId,
   setDraftTitle,
-  saveFormData,
+  editCustomList,
 }: CustomListEditorHeaderProps) {
   const { setTitleInContext } = React.useContext(ListManagerContext);
 
+  const saveFormTitle = (title: string) => {
+    const formData = new (window as any).FormData();
+    if (listId) {
+      formData.append("id", listId);
+    }
+    formData.append("name", title);
+    formData.append("entries", JSON.stringify([]));
+    formData.append("deletedEntries", JSON.stringify([]));
+    formData.append("collections", JSON.stringify([]));
+
+    editCustomList(formData, listId && String(listId));
+  };
+
   const setNewTitleOnState = (newTitle) => {
     setDraftTitle(newTitle);
+    saveFormTitle(newTitle);
   };
 
   /**
@@ -35,7 +49,6 @@ export default function CustomListEditorHeader({
         ...prevState,
         [listId]: draftTitle,
       }));
-      saveFormData("saveTitle");
     }
   }, [draftTitle]);
 

@@ -69,6 +69,7 @@ export interface CustomListsProps
 
 export interface CustomListsState {
   sort: SortOrder;
+  responseBodyState: string;
 }
 
 /** Body of the custom lists page, with all a library's lists shown in a left sidebar and
@@ -83,13 +84,14 @@ export class CustomLists extends React.Component<
     this.deleteCustomList = this.deleteCustomList.bind(this);
     this.changeSort = this.changeSort.bind(this);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
+    this.resetResponseBodyState = this.resetResponseBodyState.bind(this);
     this.state = {
       sort: "asc",
+      responseBodyState: "",
     };
   }
 
   render(): JSX.Element {
-    console.log("editorcreate -->", this.props.editOrCreate);
     let listCollections = [];
     let entryCount;
 
@@ -117,6 +119,10 @@ export class CustomLists extends React.Component<
     );
   }
 
+  resetResponseBodyState() {
+    this.setState({ responseBodyState: "" });
+  }
+
   renderSidebar(): JSX.Element {
     return (
       <CustomListsSidebar
@@ -126,6 +132,7 @@ export class CustomLists extends React.Component<
         deleteCustomList={this.deleteCustomList}
         changeSort={this.changeSort}
         sortOrder={this.state.sort}
+        resetResponseBodyState={this.resetResponseBodyState}
       />
     );
   }
@@ -150,7 +157,7 @@ export class CustomLists extends React.Component<
     const extraProps =
       this.props.editOrCreate === "create"
         ? {
-            responseBody: this.props.responseBody,
+            responseBody: this.state.responseBodyState,
             startingTitle: this.props.startingTitle,
           }
         : {
@@ -180,17 +187,13 @@ export class CustomLists extends React.Component<
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log("in component will receive props");
     // If we've fetched lists but we're not on the edit or create page,
     // redirect to the edit page for the first list, or the create page
     // if there are no lists.
     if (!nextProps.editOrCreate && nextProps.lists && !nextProps.fetchError) {
-      console.log("in first if");
       if (nextProps.lists.length === 0) {
-        console.log("in second if");
         window.location.href += "/create";
       } else {
-        console.log("in else");
         const firstList = this.sortedLists(nextProps.lists)[0];
         window.location.href += "/edit/" + firstList.id;
       }
@@ -202,7 +205,6 @@ export class CustomLists extends React.Component<
       nextProps.fetchCustomListDetails &&
       nextProps.identifier !== this.props.identifier
     ) {
-      console.log("in third if");
       nextProps.fetchCustomListDetails(nextProps.identifier);
     }
   }
@@ -253,6 +255,9 @@ export class CustomLists extends React.Component<
 
   async editCustomList(data: FormData, listId?: string): Promise<void> {
     await this.props.editCustomList(data, listId);
+    if (this.props.responseBody) {
+      this.setState({ responseBodyState: this.props.responseBody });
+    }
   }
 
   async deleteCustomList(list: CustomListData): Promise<void> {

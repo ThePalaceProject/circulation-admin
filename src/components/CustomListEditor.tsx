@@ -69,14 +69,6 @@ export default function CustomListEditor({
 
   const [showSaveError, setShowSaveError] = React.useState<boolean>(false);
 
-  const [responseBodyState, setResponseBodyState] = React.useState<string>("");
-
-  // console.log("responseBodyState -->", responseBodyState);
-
-  React.useEffect(() => {
-    setResponseBodyState(responseBody);
-  }, [responseBody]);
-
   React.useEffect(() => {
     if (list) {
       setDraftTitle(list.title);
@@ -94,11 +86,11 @@ export default function CustomListEditor({
   }, [list]);
 
   React.useEffect(() => {
-    if (!list && responseBodyState) {
+    if (!list && responseBody) {
       window.location.href =
-        "/admin/web/lists/" + library.short_name + "/edit/" + responseBodyState;
+        "/admin/web/lists/" + library.short_name + "/edit/" + responseBody;
     }
-  }, [responseBodyState]);
+  }, [responseBody]);
 
   const getLanguage = (book) => {
     return book.language || "";
@@ -110,7 +102,6 @@ export default function CustomListEditor({
       return;
     }
     setShowSaveError(false);
-    console.log("running saveform", action);
     let itemsToAdd;
     let itemsToDelete;
     if (action === "add") {
@@ -165,9 +156,6 @@ export default function CustomListEditor({
         setDraftEntries([]);
         setTotalListEntries((prevState) => prevState - itemsToDelete.length);
       }
-    } else {
-      itemsToAdd = [];
-      itemsToDelete = [];
     }
     const formData = new (window as any).FormData();
     if (list) {
@@ -182,19 +170,13 @@ export default function CustomListEditor({
     editCustomList(formData, listId && String(listId));
   };
 
-  React.useEffect(() => {
-    if (draftTitle) {
-      saveFormData("saveTitle");
-    }
-  }, [draftTitle]);
-
   return (
     <div className="custom-list-editor">
       <CustomListEditorHeader
         draftTitle={draftTitle}
-        saveFormData={saveFormData}
         setDraftTitle={setDraftTitle}
         listId={listId && listId}
+        editCustomList={editCustomList}
       />
       <CustomListEditorBody
         collections={collections}
