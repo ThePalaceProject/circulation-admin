@@ -10,6 +10,7 @@ export interface CustomListsSidebarProps {
   deleteCustomList: (list: CustomListData) => Promise<void>;
   changeSort: () => void;
   sortOrder: SortOrder;
+  resetResponseBodyState: () => void;
 }
 
 /**
@@ -26,13 +27,19 @@ export default function CustomListsSidebar({
   deleteCustomList,
   changeSort,
   sortOrder,
+  resetResponseBodyState,
 }: CustomListsSidebarProps): JSX.Element {
+  const startNewList = () => {
+    resetResponseBodyState();
+  };
+
   return (
     <div className="custom-lists-sidebar">
       <h2>List Manager</h2>
       <Link
         className="btn create-button"
         to={"/admin/web/lists/" + library + "/create"}
+        onClick={startNewList}
       >
         Create New List
       </Link>

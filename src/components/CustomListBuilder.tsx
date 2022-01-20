@@ -8,41 +8,33 @@ export interface Entry extends BookData {
 }
 
 export interface CustomListBuilderProps {
-  addedListEntries?: Entry[];
-  deletedListEntries?: Entry[];
   entries?: Entry[];
-  entryCount?: string;
+  totalListEntries?: number;
   isFetchingMoreCustomListEntries: boolean;
   isFetchingMoreSearchResults: boolean;
+  listId?: string | number;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
-  addAll: (resultsToAdd: Entry[]) => void;
-  addEntry: (id: string) => void;
-  deleteAll: () => void;
-  deleteEntry: (id: string) => void;
+  showSaveError: boolean;
+  saveFormData: (action: string, books: string | Entry[]) => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
   loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  setLoadedMoreEntries: (clicked: boolean) => void;
 }
 
 export default function CustomListBuilder({
-  addedListEntries,
-  deletedListEntries,
   entries,
-  entryCount,
+  totalListEntries,
   isFetchingMoreCustomListEntries,
   isFetchingMoreSearchResults,
+  listId,
   nextPageUrl,
   opdsFeedUrl,
   searchResults,
-  addAll,
-  addEntry,
-  deleteAll,
-  deleteEntry,
+  saveFormData,
+  showSaveError,
   loadMoreEntries,
   loadMoreSearchResults,
-  setLoadedMoreEntries,
 }: CustomListBuilderProps): JSX.Element {
   const onDragStart = () => {
     document.body.classList.add("dragging");
@@ -55,13 +47,13 @@ export default function CustomListBuilder({
       destination &&
       destination.droppableId === "custom-list-entries"
     ) {
-      addEntry(draggableId);
+      saveFormData("add", draggableId);
     } else if (
       source.droppableId === "custom-list-entries" &&
       destination &&
       destination.droppableId === "search-results"
     ) {
-      deleteEntry(draggableId);
+      saveFormData("delete", draggableId);
     }
     document.body.classList.remove("dragging");
   };
@@ -74,23 +66,19 @@ export default function CustomListBuilder({
           searchResults={searchResults}
           opdsFeedUrl={opdsFeedUrl}
           isFetchingMoreSearchResults={isFetchingMoreSearchResults}
-          addEntry={addEntry}
-          addAll={addAll}
+          saveFormData={saveFormData}
           loadMoreSearchResults={loadMoreSearchResults}
         />
         <CustomListEntries
-          entryCount={entryCount}
+          totalListEntries={totalListEntries}
           entries={entries}
-          deleteEntry={deleteEntry}
-          deleteAll={deleteAll}
-          deletedListEntries={deletedListEntries}
-          addedListEntries={addedListEntries}
+          saveFormData={saveFormData}
           opdsFeedUrl={opdsFeedUrl}
-          searchResults={searchResults}
+          showSaveError={showSaveError}
           isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
           nextPageUrl={nextPageUrl}
+          listId={listId}
           loadMoreEntries={loadMoreEntries}
-          setLoadedMoreEntries={setLoadedMoreEntries}
         />
       </div>
     </DragDropContext>

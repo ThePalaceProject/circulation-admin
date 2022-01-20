@@ -11,6 +11,7 @@ describe("CustomListsSidebar", () => {
   let lists;
   const deleteCustomList = stub();
   const changeSort = stub();
+  const resetResponseBodyState = stub();
 
   beforeEach(() => {
     lists = [
@@ -30,6 +31,7 @@ describe("CustomListsSidebar", () => {
           deleteCustomList={deleteCustomList}
           changeSort={changeSort}
           sortOrder="asc"
+          resetResponseBodyState={resetResponseBodyState}
         />
       </ListManagerProvider>
     );

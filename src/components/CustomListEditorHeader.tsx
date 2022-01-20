@@ -1,33 +1,56 @@
 import * as React from "react";
 import TextWithEditMode from "./TextWithEditMode";
-import { Button } from "library-simplified-reusable-components";
-import { Entry } from "./CustomListBuilder";
+import { ListManagerContext } from "./ListManagerContext";
+import { BookData } from "opds-web-client/lib/interfaces";
+
+export interface Entry extends BookData {
+  medium?: string;
+}
 
 export interface CustomListEditorHeaderProps {
   draftTitle: string;
   listId?: string | number;
-  hasListInfoChanged: boolean;
-  draftEntries: Entry[];
-  cancelClicked: () => void;
-  setDraftTitle: (title) => void;
-  saveFormData: () => void;
+  setDraftTitle: (title: string) => void;
+  editCustomList: (data: FormData, listId?: string) => Promise<void>;
 }
 
 export default function CustomListEditorHeader({
   draftTitle,
   listId,
-  hasListInfoChanged,
   setDraftTitle,
-  cancelClicked,
-  saveFormData,
-  draftEntries,
+  editCustomList,
 }: CustomListEditorHeaderProps) {
-  const titleOrEntriesIsBlank = (): boolean =>
-    draftTitle === "" || draftTitle === "list title" || !draftEntries.length;
+  const { setTitleInContext } = React.useContext(ListManagerContext);
 
-  const setNewTitleOnState = (newTitle): void => {
-    setDraftTitle(newTitle);
+  const saveFormTitle = (title: string) => {
+    const formData = new (window as any).FormData();
+    if (listId) {
+      formData.append("id", listId);
+    }
+    formData.append("name", title);
+    formData.append("entries", JSON.stringify([]));
+    formData.append("deletedEntries", JSON.stringify([]));
+    formData.append("collections", JSON.stringify([]));
+
+    editCustomList(formData, listId && String(listId));
   };
+
+  const setNewTitleOnState = (newTitle) => {
+    setDraftTitle(newTitle);
+    saveFormTitle(newTitle);
+  };
+
+  /**
+   *  Add title to context so sidebar's title can be updated as well.
+   */
+  React.useEffect(() => {
+    if (draftTitle) {
+      setTitleInContext((prevState) => ({
+        ...prevState,
+        [listId]: draftTitle,
+      }));
+    }
+  }, [draftTitle]);
 
   return (
     <div className="custom-list-editor-header">
@@ -43,19 +66,6 @@ export default function CustomListEditorHeader({
           />
         </fieldset>
         {listId && <h4>ID-{listId}</h4>}
-      </div>
-      <div className="save-or-cancel-list">
-        <Button
-          callback={saveFormData}
-          disabled={titleOrEntriesIsBlank() || !hasListInfoChanged}
-          content="Save this list"
-        />
-        <Button
-          className="inverted"
-          callback={cancelClicked}
-          disabled={!hasListInfoChanged}
-          content="Cancel Changes"
-        />
       </div>
     </div>
   );

@@ -5,113 +5,89 @@ import LoadButton from "./LoadButton";
 import TrashIcon from "./icons/TrashIcon";
 import { Button } from "library-simplified-reusable-components";
 import CustomListBookCard from "./CustomListBookCard";
+import { ListManagerContext } from "./ListManagerContext";
 
 export interface Entry extends BookData {
   medium?: string;
 }
 
 export interface CustomListEntriesProps {
-  addedListEntries: Entry[];
-  deletedListEntries: Entry[];
   entries?: Entry[];
-  entryCount?: string;
+  totalListEntries?: number;
   isFetchingMoreCustomListEntries: boolean;
+  listId?: string | number;
   nextPageUrl?: string;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
-  deleteAll: () => void;
-  deleteEntry?: (id: string) => void;
+  showSaveError: boolean;
+  saveFormData: (action: string, books?: string | Entry[]) => void;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
-  setLoadedMoreEntries: (clicked: boolean) => void;
   // Including for test purposes
   children?: any;
 }
 
 export default function CustomListEntries({
-  addedListEntries,
-  deletedListEntries,
   entries,
-  entryCount,
+  totalListEntries,
   isFetchingMoreCustomListEntries,
+  listId,
   nextPageUrl,
   opdsFeedUrl,
+  showSaveError,
+  saveFormData,
   searchResults,
-  deleteAll,
-  deleteEntry,
   loadMoreEntries,
-  setLoadedMoreEntries,
 }: CustomListEntriesProps) {
-  const [totalVisibleEntries, setTotalVisibleEntries] = React.useState(0);
-
-  React.useEffect(() => {
-    entries && setTotalVisibleEntries(entries.length);
-  }, [entries]);
-
   const handleDeleteEntry = (id: string) => {
-    deleteEntry(id);
+    saveFormData("delete", id);
   };
 
   const handleDeleteAll = () => {
-    deleteAll();
+    saveFormData("delete");
   };
 
-  let entryListDisplay = "No books in this list";
-  const totalEntriesServer = parseInt(entryCount, 10);
-  let displayTotal;
-  let entriesCount;
-  let booksText;
-  /**
-   * If the server associates books with this list...
-   */
-  if (totalEntriesServer) {
-    /**
-     * And there are visible entries...
-     */
-    if (totalVisibleEntries) {
-      entriesCount =
-        totalEntriesServer -
-        deletedListEntries.length +
-        addedListEntries.length;
-      displayTotal = `1 - ${entries.length} of ${entriesCount}`;
-      booksText = entriesCount === 1 ? "Book" : "Books";
-      entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
-    } else if (totalEntriesServer - deletedListEntries.length !== 0) {
-      /**
-       * There are entries on the server, but none are visible,
-       * which means the "Delete all" button was recently clicked.
-       * If the number of entries on the server minus the number of
-       * deleted entries on the frontend doesn't equal 0, there may
-       * be more entries on the backend to tell the user about.
-       */
-      entriesCount =
-        totalEntriesServer > deletedListEntries.length
-          ? totalEntriesServer - deletedListEntries.length
-          : 0;
-      displayTotal = `0 - 0 of ${entriesCount}`;
-      booksText = entriesCount === 1 ? "Book" : "Books";
-      entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
+  const { entryCountInContext, setEntryCountInContext } = React.useContext(
+    ListManagerContext
+  );
+
+  const [entryListDisplay, setEntryListDisplay] = React.useState<string>("");
+
+  React.useEffect(() => {
+    setEntryCountInContext((prevState) => ({
+      ...prevState,
+      [listId]: totalListEntries,
+    }));
+  }, [entries.length]);
+
+  React.useEffect(() => {
+    if (totalListEntries) {
+      let displayTotal;
+      if (totalListEntries > 50) {
+        displayTotal = `1 - ${entries.length} of ${totalListEntries}`;
+      } else {
+        displayTotal = `1 - ${entries.length} of ${entries.length}`;
+      }
+
+      const booksText = entries.length === 1 ? "Book" : "Books";
+      setEntryListDisplay(`Displaying ${displayTotal} ${booksText}`);
+    } else {
+      setEntryListDisplay("No books in this list");
     }
-  } else {
-    /**
-     * totalEntriesServer is falsey, which means this is a new list
-     * a user has begun adding books to.
-     */
-    if (entries && entries.length) {
-      displayTotal = `1 - ${entries.length} of ${entries.length}`;
-      booksText = entries.length === 1 ? "Book" : "Books";
-      entryListDisplay = `Displaying ${displayTotal} ${booksText}`;
-    }
-  }
+  }, [totalListEntries, entryCountInContext]);
 
   const onLoadMore = () => {
     if (entries && !isFetchingMoreCustomListEntries) {
       loadMoreEntries(nextPageUrl);
-      setLoadedMoreEntries(true);
     }
   };
   return (
     <div className="custom-list-entries">
       <div className="droppable-header">
+        {showSaveError && (
+          <p className="save-list-error">
+            Please title this list before adding books.
+          </p>
+        )}
         <h4>{entryListDisplay}</h4>
         {entries && entries.length > 0 && (
           <div>

@@ -401,20 +401,6 @@ describe("CustomLists", () => {
       const editCustomListProp = editor.props().editCustomList;
       await editCustomListProp();
       expect(editCustomList.callCount).to.equal(1);
-      expect(fetchCustomLists.callCount).to.equal(2);
-
-      wrapper.setProps({
-        children: (
-          <CustomLists
-            {...customListsProps}
-            responseBody="5"
-            editOrCreate="create"
-          />
-        ),
-      });
-
-      editor = wrapper.find(CustomListEditor);
-      expect(editor.props().responseBody).to.equal("5");
     });
 
     it("renders edit form", () => {
