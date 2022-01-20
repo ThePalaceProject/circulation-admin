@@ -1,6 +1,13 @@
 ## Changelog
 
-### 1/12/22
+### v0.5.13
+
+#### Updated
+
+- Updated the List Manager so that a POST request is made every time a user saves a title, adds a book, or deletes a book.
+- Because of the aforementioned change, the "Save" button is no longer needed, so it has been removed.
+
+### v0.5.12
 
 #### Updated
 
