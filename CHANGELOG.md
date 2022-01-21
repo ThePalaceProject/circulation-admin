@@ -2,7 +2,7 @@
 
 ### v0.5.14
 
-#### Updated
+#### Bugfix
 
 - Fixed bug that caused deleting books from a list to not function correctly.
 
