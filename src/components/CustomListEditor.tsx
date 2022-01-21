@@ -97,6 +97,8 @@ export default function CustomListEditor({
   };
 
   const saveFormData = (action, data?) => {
+    console.log("action -->", action);
+    console.log("data -->", data);
     if (!draftTitle) {
       setShowSaveError(true);
       return;
@@ -145,7 +147,7 @@ export default function CustomListEditor({
     } else if (action === "delete") {
       itemsToAdd = [];
       if (typeof data === "string") {
-        itemsToDelete = list.books.filter((entry) => entry.id === data);
+        itemsToDelete = draftEntries.filter((entry) => entry.id === data);
         setDraftEntries((prevState) =>
           prevState.filter((entry) => entry.id !== data)
         );
