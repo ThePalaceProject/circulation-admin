@@ -97,8 +97,6 @@ export default function CustomListEditor({
   };
 
   const saveFormData = (action, data?) => {
-    console.log("action -->", action);
-    console.log("data -->", data);
     if (!draftTitle) {
       setShowSaveError(true);
       return;
@@ -106,8 +104,10 @@ export default function CustomListEditor({
     setShowSaveError(false);
     let itemsToAdd;
     let itemsToDelete;
+    // If the user is adding books to a list from the search results...
     if (action === "add") {
       itemsToDelete = [];
+      // If it is only one book...
       if (typeof data === "string") {
         for (const result of searchResults.books) {
           if (result.id === data) {
@@ -128,6 +128,7 @@ export default function CustomListEditor({
         setDraftEntries((prevState) => [...itemsToAdd, ...prevState]);
         setTotalListEntries((prevState) => prevState + 1);
       } else {
+        // If the user clicked "Add all to list"...
         itemsToAdd = [];
         for (const result of data) {
           const medium = getMedium(result);
@@ -144,14 +145,17 @@ export default function CustomListEditor({
         setDraftEntries((prevState) => [...itemsToAdd, ...prevState]);
         setTotalListEntries((prevState) => prevState + itemsToAdd.length);
       }
+      // If the user is deleting books from the list...
     } else if (action === "delete") {
       itemsToAdd = [];
+      // If it is only one book...
       if (typeof data === "string") {
         itemsToDelete = draftEntries.filter((entry) => entry.id === data);
         setDraftEntries((prevState) =>
           prevState.filter((entry) => entry.id !== data)
         );
         setTotalListEntries((prevState) => prevState - 1);
+        // If the user clicked "Delete"...
       } else {
         itemsToDelete = [];
         draftEntries.forEach((book) => itemsToDelete.push(book));
