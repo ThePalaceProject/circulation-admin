@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1/25/22
+
+#### Updated
+
+- Installed Jest and configured it to run alongside Mocha.
+
 ### v0.5.14
 
 #### Bugfix
