@@ -389,7 +389,7 @@ describe("CustomLists", () => {
         loadMoreSearchResults
       );
       expect(editor.props().searchResults).to.equal(searchResults);
-      expect(editor.props().responseBody).to.be.undefined;
+      expect(editor.props().responseBody).to.equal("");
       expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
       expect(editor.props().collections).to.deep.equal([
         collections[1],
