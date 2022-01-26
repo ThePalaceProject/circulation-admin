@@ -1,10 +1,11 @@
 ## Changelog
 
-### 1/25/22
+### v0.5.15
 
-#### Updated
+#### Updated/Bugfix
 
 - Installed Jest and configured it to run alongside Mocha.
+- Fixed two bugs: one in which an error message in the List Manager didn't reset when a user moved to a new list, and another in which the updated entry count would not come through for a new list that the user added books to, navigated away from, and then navigated back to.
 
 ### v0.5.14
 
