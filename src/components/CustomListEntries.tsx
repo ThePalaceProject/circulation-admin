@@ -60,15 +60,9 @@ export default function CustomListEntries({
   }, [entries.length]);
 
   React.useEffect(() => {
-    if (totalListEntries || entries.length) {
-      let displayTotal;
-      if (totalListEntries > 50) {
-        displayTotal = `1 - ${entries.length} of ${totalListEntries}`;
-      } else {
-        displayTotal = `1 - ${entries.length} of ${entries.length}`;
-      }
-
-      const booksText = entries.length === 1 ? "Book" : "Books";
+    if (totalListEntries) {
+      const displayTotal = `1 - ${entries.length} of ${totalListEntries}`;
+      const booksText = totalListEntries === 1 ? "Book" : "Books";
       setEntryListDisplay(`Displaying ${displayTotal} ${booksText}`);
     } else {
       setEntryListDisplay("No books in this list");
