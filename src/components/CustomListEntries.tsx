@@ -60,7 +60,7 @@ export default function CustomListEntries({
   }, [entries.length]);
 
   React.useEffect(() => {
-    if (totalListEntries) {
+    if (totalListEntries || entries.length) {
       let displayTotal;
       if (totalListEntries > 50) {
         displayTotal = `1 - ${entries.length} of ${totalListEntries}`;

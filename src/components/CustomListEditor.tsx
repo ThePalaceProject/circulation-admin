@@ -83,6 +83,7 @@ export default function CustomListEditor({
       setDraftEntries([]);
     }
     setTotalListEntries(entryCount ? parseInt(entryCount, 10) : 0);
+    setShowSaveError(false);
   }, [list]);
 
   React.useEffect(() => {
