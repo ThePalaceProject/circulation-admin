@@ -1,10 +1,11 @@
 ## Changelog
 
-### 1/25/22
+### 2/1/22
 
 #### Updated
 
 - Installed Jest and configured it to run alongside Mocha.
+- Set up React Testing Library and added a testUtils.jsx file to give tests access to React context.
 
 ### v0.5.14
 
