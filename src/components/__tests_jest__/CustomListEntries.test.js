@@ -43,8 +43,6 @@ const listData = {
   navigationLinks: [],
 };
 
-const library = { short_name: "OWL" };
-
 const searchResults = {
   id: "id",
   url: "url",
@@ -58,7 +56,7 @@ const saveFormData = stub();
 const loadMoreEntries = stub();
 const onDragEnd = stub();
 
-test("renders header", () => {
+test.only("renders header", () => {
   render(
     <DragDropContext onDragEnd={onDragEnd}>
       <CustomListEntries
