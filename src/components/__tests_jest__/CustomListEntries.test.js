@@ -58,7 +58,7 @@ const saveFormData = stub();
 const loadMoreEntries = stub();
 const onDragEnd = stub();
 
-test.only("renders header", () => {
+test("renders header", () => {
   render(
     <DragDropContext onDragEnd={onDragEnd}>
       <CustomListEntries
