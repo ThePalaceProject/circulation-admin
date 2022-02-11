@@ -205,6 +205,7 @@ export class CustomLists extends React.Component<
       nextProps.fetchCustomListDetails &&
       nextProps.identifier !== this.props.identifier
     ) {
+      nextProps.fetchCustomLists();
       nextProps.fetchCustomListDetails(nextProps.identifier);
     }
   }

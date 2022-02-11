@@ -1,5 +1,12 @@
 ## Changelog
 
+
+### v0.5.15
+
+#### Updated/Bugfix
+
+- Fixed two bugs: one in which an error message in the List Manager didn't reset when a user moved to a new list, and another in which the updated entry count would not come through for a new list that the user added books to, navigated away from, and then navigated back to.
+
 ### 2/1/22
 
 #### Updated
