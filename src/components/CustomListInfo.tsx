@@ -73,6 +73,7 @@ export default function CustomListInfo({
           <Link
             to={"/admin/web/lists/" + library + "/edit/" + list.id}
             className="btn left-align small"
+            role="button"
           >
             <span>
               Edit

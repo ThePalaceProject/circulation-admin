@@ -75,7 +75,11 @@ export default function CustomListEntries({
     }
   };
   return (
-    <div className="custom-list-entries">
+    <div
+      role="region"
+      aria-label="List Entries"
+      className="custom-list-entries"
+    >
       <div className="droppable-header">
         {showSaveError && (
           <p className="save-list-error">

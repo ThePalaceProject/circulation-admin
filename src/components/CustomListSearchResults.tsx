@@ -63,7 +63,11 @@ export default function CustomListSearchResults({
   };
 
   return (
-    <div className="custom-list-search-results">
+    <div
+      role="region"
+      aria-label="Search Results"
+      className="custom-list-search-results"
+    >
       <div className="droppable-header">
         <h4>Search Results</h4>
         {searchResults && resultsToDisplay.length > 0 && (

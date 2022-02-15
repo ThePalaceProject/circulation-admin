@@ -4,8 +4,8 @@ import { BookData } from "opds-web-client/lib/interfaces";
 import GrabIcon from "./icons/GrabIcon";
 import TrashIcon from "./icons/TrashIcon";
 import AddIcon from "./icons/AddIcon";
+import CatalogLink from "./CatalogLink";
 import { Button } from "library-simplified-reusable-components";
-import CatalogLink from "opds-web-client/lib/components/CatalogLink";
 import { getMedium, getMediumSVG } from "opds-web-client/lib/utils/book";
 
 export interface Entry extends BookData {
@@ -24,7 +24,6 @@ export interface CustomListBookCardProps {
 export default function CustomListBookCard({
   index,
   typeOfCard,
-  opdsFeedUrl,
   book,
   handleAddEntry,
   handleDeleteEntry,
@@ -53,13 +52,10 @@ export default function CustomListBookCard({
               <div className="links">
                 {book.url && (
                   <CatalogLink
-                    bookUrl={book.url}
+                    url={book.url}
                     title={book.title}
-                    target="_blank"
-                    className="btn inverted left-align small top-align"
-                  >
-                    View details
-                  </CatalogLink>
+                    label="View Details"
+                  />
                 )}
                 {isSearchResult ? (
                   <Button

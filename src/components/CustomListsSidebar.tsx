@@ -38,6 +38,7 @@ export default function CustomListsSidebar({
       <h2>List Manager</h2>
       <Link
         className="btn create-button"
+        role="button"
         to={"/admin/web/lists/" + library + "/create"}
         onClick={startNewList}
       >
