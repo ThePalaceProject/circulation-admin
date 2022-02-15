@@ -1,8 +1,14 @@
 import * as React from "react";
 import { Link } from "react-router";
 
-export default function CatalogLink({ url, title, label }) {
-  const prepareBookUrl = (url: string): string => {
+interface CatalogLinkProps {
+  url: string;
+  title: string;
+  label: string;
+}
+
+export default function CatalogLink({ url, title, label }: CatalogLinkProps) {
+  const prepareBookUrl = (url): string => {
     const regexp = new RegExp(document.location.origin + "/(.*)/works/(.*)");
     const match = regexp.exec(url);
     if (match) {
@@ -14,7 +20,7 @@ export default function CatalogLink({ url, title, label }) {
     }
   };
 
-  const pathFor = (bookUrl: string) => {
+  const pathFor = (bookUrl) => {
     let path = "/admin/web";
     path += bookUrl ? `/book/${prepareBookUrl(bookUrl)}` : "";
     return path;
