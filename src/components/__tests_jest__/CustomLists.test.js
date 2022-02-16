@@ -107,6 +107,9 @@ beforeEach(() => {
   utils = render(<CustomLists {...customListsProps} />);
 });
 
+// Skipping this test for now. Tests for this component fail because the store cannot be found.
+// However, the store should be created in the context, which I wrapped around all test components
+// in testUtils. This will need further investigation to resolve.
 test.skip("calls fetchCustomLists and fetchCustomListDetails when a list's edit button is clicked", () => {
   const editButtonListA = waitFor(
     () => getAllByRole("button", { name: "Edit" })[0]

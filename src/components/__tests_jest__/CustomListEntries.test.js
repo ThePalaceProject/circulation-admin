@@ -3,7 +3,7 @@
  * */
 
 import React from "react";
-import { screen, waitFor } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { render } from "../../testUtils/testUtils";
 import { stub } from "sinon";
 import CustomListEntries from "../CustomListEntries";
