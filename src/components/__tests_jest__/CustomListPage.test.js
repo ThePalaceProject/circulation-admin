@@ -2,8 +2,8 @@
  * The following is an example test meant to check that testUtils.jsx is working as expected.
  * */
 
+import { fireEvent } from "@testing-library/react";
 import React from "react";
-import { screen, waitFor } from "@testing-library/react";
 import { render } from "../../testUtils/testUtils";
 import CustomListPage from "../CustomListPage";
 
@@ -13,13 +13,18 @@ const params = {
   identifier: "identifier",
 };
 
-test("renders header", () => {
-  render(<CustomListPage params={params} />);
-  waitFor(() => screen.getByText(/hidden books/i));
+let utils;
+
+beforeEach(() => {
+  utils = render(<CustomListPage params={params} />);
 });
 
-test("renders footer", () => {
-  render(<CustomListPage params={params} />);
+test("renders header and footer", () => {
+  const header = utils.getByText(/hidden books/i);
 
-  waitFor(() => screen.getByText(/terms of service/i));
+  expect(header).toBeInTheDocument();
+
+  const footer = utils.getByText(/terms of service/i);
+
+  expect(footer).toBeInTheDocument();
 });

@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.5.16
+
+#### Updated
+
+- Removed the router from the testUtils render function, which was causing testing issues with the RTL/Jest tests.
+- Created a new CatalogLink component that doesn't rely on the ContextProvider (related to the issue above). This component is currently only used in the List Manager.
+- Wrote tests using RTL for two main components in the List Manager, CustomListEditorHeader and CustomListEditorBody.
 
 ### v0.5.15
 

@@ -2,8 +2,6 @@ import React from "react";
 import { render } from "@testing-library/react";
 import ContextProvider from "../components/ContextProvider";
 import { TOSContextProvider } from "../components/TOSContext";
-import { Router, Route } from "react-router";
-import { createMemoryHistory } from "history";
 
 const mockConfig = {
   csrfToken: "token",
@@ -16,15 +14,12 @@ const mockConfig = {
 };
 
 const AllTheProviders = ({ children }) => {
-  const history = createMemoryHistory();
   return (
     <ContextProvider {...mockConfig}>
       <TOSContextProvider
         value={[mockConfig.tos_link_text, mockConfig.tos_link_href]}
       >
-        <Router history={history}>
-          <Route path={"/"}>{children}</Route>
-        </Router>
+        {children}
       </TOSContextProvider>
     </ContextProvider>
   );

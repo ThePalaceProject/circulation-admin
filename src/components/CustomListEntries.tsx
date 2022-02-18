@@ -75,7 +75,7 @@ export default function CustomListEntries({
     }
   };
   return (
-    <div className="custom-list-entries">
+    <section aria-label="List Entries" className="custom-list-entries">
       <div className="droppable-header">
         {showSaveError && (
           <p className="save-list-error">
@@ -132,6 +132,6 @@ export default function CustomListEntries({
           loadMore={onLoadMore}
         />
       )}
-    </div>
+    </section>
   );
 }

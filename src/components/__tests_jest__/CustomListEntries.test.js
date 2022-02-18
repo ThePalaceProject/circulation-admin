@@ -3,7 +3,7 @@
  * */
 
 import React from "react";
-import { screen, waitFor } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { render } from "../../testUtils/testUtils";
 import { stub } from "sinon";
 import CustomListEntries from "../CustomListEntries";
@@ -56,7 +56,7 @@ const saveFormData = stub();
 const loadMoreEntries = stub();
 const onDragEnd = stub();
 
-test("renders header", () => {
+beforeAll(() => {
   render(
     <DragDropContext onDragEnd={onDragEnd}>
       <CustomListEntries
@@ -73,6 +73,10 @@ test("renders header", () => {
       />
     </DragDropContext>
   );
+});
 
-  waitFor(() => screen.getByText(/displaying/i));
+test("renders list entries", () => {
+  () => screen.getByText(/displaying/i);
+  () => screen.getByText(/entry a/i);
+  () => screen.getByText(/entry b/i);
 });
