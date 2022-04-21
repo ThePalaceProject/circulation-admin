@@ -43,13 +43,12 @@ describe("BookDetailsTabContainer", () => {
     expect(details).to.be.ok;
   });
 
-  it("shows details, edit, classifications, and complaints tabs", () => {
+  it("shows details, edit, and classifications tabs", () => {
     const links = wrapper.find("ul.nav-tabs").find("a");
     const linkTexts = links.map((link) => link.text());
     expect(linkTexts).to.contain("Details");
     expect(linkTexts).to.contain("Edit");
     expect(linkTexts).to.contain("Classifications");
-    expect(linkTexts).to.contain("Complaints");
   });
 
   it("only shows cover tab when the book data has a change cover link", () => {
@@ -81,11 +80,6 @@ describe("BookDetailsTabContainer", () => {
     expect(classifications.props().bookUrl).to.equal("book url");
   });
 
-  it("shows Complaints", () => {
-    const complaints = wrapper.find(Complaints);
-    expect(complaints.props().bookUrl).to.equal("book url");
-  });
-
   it("shows lists", () => {
     const lists = wrapper.find(CustomListsForBook);
     expect(lists.props().bookUrl).to.equal("book url");
@@ -100,14 +94,6 @@ describe("BookDetailsTabContainer", () => {
     expect(push.args[0][0]).to.equal(
       context.pathFor("collection url", "book url", label)
     );
-  });
-
-  it("shows complaints count", () => {
-    wrapper.setProps({ complaintsCount: 5 });
-
-    const links = wrapper.find("ul.nav-tabs").find("a");
-    const linkTexts = links.map((link) => link.text());
-    expect(linkTexts).to.contain("Complaints (5)");
   });
 
   it("clears book data when receiving new book url", () => {
