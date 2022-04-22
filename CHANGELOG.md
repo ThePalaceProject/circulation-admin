@@ -1,6 +1,12 @@
 ## Changelog
 
-### December 16, 2021
+### v0.0.8
+
+#### Updated
+
+- Added display of item count to system configuration lists.
+
+### v0.0.7
 
 #### Updated
 
