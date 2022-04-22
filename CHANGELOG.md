@@ -1,6 +1,12 @@
 ## Changelog
 
-### December 16, 2021
+### v0.0.8
+
+#### Updated
+
+- Limited visibility of Patrons link in header to system administrators.
+
+### v0.0.7
 
 #### Updated
 

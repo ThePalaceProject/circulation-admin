@@ -107,9 +107,9 @@ describe("Header", () => {
       expect(navItems.length).to.equal(0);
     });
 
-    it("shows sitewide links, non-catalog library links, patron manager link, and system configuration link for library manager", () => {
+    it("shows sitewide links, non-catalog library links, and system configuration link for library manager", () => {
       let links = wrapper.find(Link);
-      expect(links.length).to.equal(5);
+      expect(links.length).to.equal(4);
 
       const listsLink = links.at(0);
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
@@ -123,11 +123,7 @@ describe("Header", () => {
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
 
-      const patronManagerLink = links.at(3);
-      expect(patronManagerLink.prop("to")).to.equal("/admin/web/patrons/nypl");
-      expect(patronManagerLink.children().text()).to.equal("Patrons");
-
-      let settingsLink = links.at(4);
+      let settingsLink = links.at(3);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config/");
       expect(settingsLink.children().text()).to.equal("System Configuration");
 
@@ -180,12 +176,13 @@ describe("Header", () => {
           expect(link.children().text()).to.not.equal("Patrons");
         });
       });
-      it("shows Patron Manager link for library manager", () => {
+      it("does not show Patron Manager link for library manager", () => {
         wrapper.setContext({ library: () => "nypl", admin: libraryManager });
         const links = wrapper.find(Link);
-        expect(links.length).to.equal(5);
-        const patronManagerLink = links.at(3);
-        expect(patronManagerLink.children().text()).to.equal("Patrons");
+        expect(links.length).to.equal(4);
+        links.forEach((link) => {
+          expect(link.children().text()).to.not.equal("Patrons");
+        });
       });
       it("shows Patron Manager link for system admin", () => {
         wrapper.setContext({ library: () => "nypl", admin: systemAdmin });
@@ -207,7 +204,7 @@ describe("Header", () => {
       it("does not show Troubleshooting link for library manager", () => {
         wrapper.setContext({ library: () => "nypl", admin: libraryManager });
         const links = wrapper.find(Link);
-        expect(links.length).to.equal(5);
+        expect(links.length).to.equal(4);
         links.forEach((link) => {
           expect(link.children().text()).to.not.equal("Troubleshooting");
         });
