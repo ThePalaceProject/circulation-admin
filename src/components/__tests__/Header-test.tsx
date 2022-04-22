@@ -105,17 +105,17 @@ describe("Header", () => {
       let links = wrapper.find(Link);
       expect(links.length).to.equal(4);
 
-      const listsLink = links.at(0);
+      let dashboardLink = links.at(0);
+      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
+      expect(dashboardLink.children().text()).to.equal("Dashboard");
+
+      const listsLink = links.at(1);
       expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
       expect(listsLink.children().text()).to.equal("Lists");
 
-      const lanesLink = links.at(1);
+      const lanesLink = links.at(2);
       expect(lanesLink.prop("to")).to.equal("/admin/web/lanes/nypl");
       expect(lanesLink.children().text()).to.equal("Lanes");
-
-      let dashboardLink = links.at(2);
-      expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
-      expect(dashboardLink.children().text()).to.equal("Dashboard");
 
       let settingsLink = links.at(3);
       expect(settingsLink.prop("to")).to.equal("/admin/web/config/");
@@ -137,13 +137,13 @@ describe("Header", () => {
       const links = wrapper.find(Link);
       expect(links.length).to.equal(3);
 
-      const listsLink = links.at(0);
-      expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
-      expect(listsLink.children().text()).to.equal("Lists");
-
-      const dashboardLink = links.at(1);
+      const dashboardLink = links.at(0);
       expect(dashboardLink.prop("to")).to.equal("/admin/web/dashboard/nypl");
       expect(dashboardLink.children().text()).to.equal("Dashboard");
+
+      const listsLink = links.at(1);
+      expect(listsLink.prop("to")).to.equal("/admin/web/lists/nypl");
+      expect(listsLink.children().text()).to.equal("Lists");
 
       const sysConfigLink = links.at(2);
       expect(sysConfigLink.prop("to")).to.equal("/admin/web/config/");

@@ -7,6 +7,7 @@
 - Removed Complaints tab from header and book details screen.
 - Added display of item count to system configuration lists.
 - Limited visibility of Patrons link in header to system administrators.
+- Moved Dashboard to be the first link in the header.
 
 ### v0.0.7
 
