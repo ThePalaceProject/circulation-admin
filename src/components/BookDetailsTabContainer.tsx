@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
 import BookCoverEditor from "./BookCoverEditor";
-import Complaints from "./Complaints";
 import CustomListsForBook from "./CustomListsForBook";
 import { BookData } from "../interfaces";
 import { TabContainer, TabContainerProps } from "./TabContainer";
@@ -67,15 +66,6 @@ export class BookDetailsTabContainer extends TabContainer<
         />
       );
     }
-    tabs["complaints"] = (
-      <Complaints
-        store={this.props.store}
-        csrfToken={this.props.csrfToken}
-        bookUrl={this.props.bookUrl}
-        book={this.props.bookData}
-        refreshCatalog={this.props.refreshCatalog}
-      />
-    );
     tabs["lists"] = (
       <CustomListsForBook
         store={this.props.store}

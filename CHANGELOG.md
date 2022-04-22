@@ -1,6 +1,12 @@
 ## Changelog
 
-### December 16, 2021
+### v0.0.8
+
+#### Updated
+
+- Removed Complaints tab from header and book details screen.
+
+### v0.0.7
 
 #### Updated
 
