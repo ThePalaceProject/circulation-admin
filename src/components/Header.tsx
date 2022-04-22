@@ -100,16 +100,18 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let isSiteWide = !this.context.library || !currentLibrary;
     let isSomeLibraryManager = this.context.admin.isLibraryManagerOfSomeLibrary();
 
+    // Dashboard link that will be rendered in a Link router component.
+    const dashboardLinkItem = { label: "Dashboard", href: "dashboard/" };
+
     // Links that will be rendered in a NavItem Bootstrap component.
     const libraryNavItems = [
       { label: "Catalog", href: "%2Fgroups?max_cache_age=0" },
       { label: "Hidden Books", href: "%2Fadmin%2Fsuppressed" },
     ];
-    // Links that will be rendered in a Link router component and are library specific.
+    // Other links that will be rendered in a Link router component and are library specific.
     const libraryLinkItems = [
       { label: "Lists", href: "lists/" },
       { label: "Lanes", href: "lanes/", auth: isLibraryManager },
-      { label: "Dashboard", href: "dashboard/" },
       { label: "Patrons", href: "patrons/", auth: isSystemAdmin },
     ];
     // Links that will be rendered in a Link router component and are sitewide.
@@ -159,6 +161,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         <Navbar.Collapse className="menu">
           {currentLibrary && (
             <Nav>
+              {this.renderLinkItem(
+                dashboardLinkItem,
+                currentPathname,
+                currentLibrary
+              )}
               {libraryNavItems.map((item) =>
                 this.renderNavItem(item, currentPathname, currentLibrary)
               )}
