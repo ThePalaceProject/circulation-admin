@@ -5,6 +5,7 @@
 #### Updated
 
 - Removed Complaints tab from header and book details screen.
+- Added display of item count to system configuration lists.
 
 ### v0.0.7
 

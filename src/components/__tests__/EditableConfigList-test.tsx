@@ -274,6 +274,12 @@ describe("EditableConfigList", () => {
     expect(editLink.prop("href")).to.equal("/admin/things/edit/5");
   });
 
+  it("shows the count of things in the list", () => {
+    const things = wrapper.find(".list-container header div");
+    expect(things.length).to.equal(1);
+    expect(things.at(0).text()).to.equal("1 configured");
+  });
+
   it("updates thing list", () => {
     const newThing = { id: 6, label: "another thing" };
     const newThingsData = { things: [thingData, newThing] };
