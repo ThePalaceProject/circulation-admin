@@ -151,17 +151,20 @@ export abstract class GenericEditableConfigList<
         )}
         {this.props.isFetching && <LoadingIndicator />}
         {canListAllData && (
-          <div>
-            {(!this.limitOne ||
-              this.props.data[this.listDataKey].length === 0) &&
-              this.canCreate() && (
-                <a
-                  className="btn btn-default create-item"
-                  href={this.urlBase + "create"}
-                >
-                  Create new {this.itemTypeName}
-                </a>
-              )}
+          <div className="list-container">
+            <header>
+              {(!this.limitOne ||
+                this.props.data[this.listDataKey].length === 0) &&
+                this.canCreate() && (
+                  <a
+                    className="btn btn-default create-item"
+                    href={this.urlBase + "create"}
+                  >
+                    Create new {this.itemTypeName}
+                  </a>
+                )}
+              <div>{this.props.data[this.listDataKey].length} configured</div>
+            </header>
             <ul>
               {this.props.data[this.listDataKey].map((item, index) =>
                 this.renderLi(item, index)

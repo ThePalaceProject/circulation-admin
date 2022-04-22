@@ -86,19 +86,13 @@ describe("Header", () => {
     it("shows catalog links when there's a library", () => {
       let navItems = wrapper.find(NavItem);
 
-      expect(navItems.length).to.equal(3);
+      expect(navItems.length).to.equal(2);
 
       const mainNavItem = navItems.at(0);
       expect(mainNavItem.prop("href")).to.contain("/nypl%2Fgroups");
       expect(mainNavItem.children().text()).to.equal("Catalog");
 
-      const complaintsLink = navItems.at(1);
-      expect(complaintsLink.prop("href")).to.contain(
-        "/nypl%2Fadmin%2Fcomplaints"
-      );
-      expect(complaintsLink.children().text()).to.equal("Complaints");
-
-      const hiddenLink = navItems.at(2);
+      const hiddenLink = navItems.at(1);
       expect(hiddenLink.prop("href")).to.contain("/nypl%2Fadmin%2Fsuppressed");
       expect(hiddenLink.children().text()).to.equal("Hidden Books");
 

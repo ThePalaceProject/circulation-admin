@@ -37,6 +37,21 @@ $dangercolor: #D9534F;
       width: 73%;
       padding: 40px 50px;
 
+      .list-container {
+        max-width: 600px;
+
+        header {
+          display: flex;
+          align-items: baseline;
+          margin: 12px 0;
+
+          div {
+            flex: 1 1 auto;
+            text-align: right;
+          }
+        }
+      }
+
       ul:not(.input-list-ul):not(.announcements-ul) {
         padding-left: 10px;
         li:not(.panel):not(.announcement) {
@@ -44,7 +59,6 @@ $dangercolor: #D9534F;
           flex-direction: row;
           justify-content: space-between;
           align-items: center;
-          max-width: 600px;
           margin: 20px 0px;
           padding-bottom: 5px;
           border-bottom: 1px solid $pagetextcolor;
@@ -59,7 +73,7 @@ $dangercolor: #D9534F;
 
       a.btn-default, a.danger {
         display: unset;
-        margin: 12px 12px 12px 0;
+        margin: 0 12px 0 0;
         color: $pagecolor;
         svg {
           height: 0.7em;
