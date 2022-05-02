@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.0.9
+
+#### Updated
+
+- Removed circulation buttons (Borrow, Download, Read) from book details screen.
+
 ### v0.0.8
 
 #### Updated
