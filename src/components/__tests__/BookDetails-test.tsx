@@ -117,4 +117,9 @@ describe("BookDetails", () => {
     const distributor = wrapper.find(".distributed-by");
     expect(distributor.text()).to.equal("Distributed By: Overdrive");
   });
+
+  it("doesn't render any circulation link content", () => {
+    const circulationLinks = wrapper.find(".circulation-links");
+    expect(circulationLinks.text()).to.equal("");
+  });
 });

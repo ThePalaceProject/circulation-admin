@@ -129,4 +129,8 @@ export default class BookDetails extends DefaultBookDetails<
 
     return distributor.value;
   }
+
+  circulationLinks() {
+    return null;
+  }
 }
