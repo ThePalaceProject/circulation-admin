@@ -25,6 +25,16 @@ describe("CustomListSearch", () => {
     terms: "foo bar",
     sort: "title",
     language: "English",
+    advanced: {
+      include: {
+        query: null,
+        selectedQueryId: null,
+      },
+      exclude: {
+        query: null,
+        selectedQueryId: null,
+      },
+    },
   };
 
   const languages = {

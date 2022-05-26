@@ -90,6 +90,16 @@ describe("CustomListEditor", () => {
     terms: "",
     sort: null,
     language: "all",
+    advanced: {
+      include: {
+        query: null,
+        selectedQueryId: null,
+      },
+      exclude: {
+        query: null,
+        selectedQueryId: null,
+      },
+    },
   };
 
   beforeEach(() => {

@@ -1,4 +1,5 @@
 import {
+  AdvancedSearchQuery,
   BookData,
   ComplaintsData,
   GenreTree,
@@ -124,6 +125,16 @@ export default class ActionCreator extends BaseActionCreator {
     "TOGGLE_CUSTOM_LIST_EDITOR_COLLECTION";
   static readonly UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM =
     "UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM";
+  static readonly ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY =
+    "ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY";
+  static readonly UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN =
+    "UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN";
+  static readonly MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY =
+    "MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY";
+  static readonly REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY =
+    "REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY";
+  static readonly SELECT_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY =
+    "SELECT_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY";
   static readonly ADD_CUSTOM_LIST_EDITOR_ENTRY = "ADD_CUSTOM_LIST_EDITOR_ENTRY";
   static readonly ADD_ALL_CUSTOM_LIST_EDITOR_ENTRIES =
     "ADD_ALL_CUSTOM_LIST_EDITOR_ENTRIES";
@@ -914,6 +925,59 @@ export default class ActionCreator extends BaseActionCreator {
     };
   }
 
+  addCustomListEditorAdvSearchQuery(
+    builderName: string,
+    query: AdvancedSearchQuery
+  ) {
+    return {
+      type: ActionCreator.ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
+      builderName,
+      query,
+    };
+  }
+
+  updateCustomListEditorAdvSearchQueryBoolean(
+    builderName: string,
+    id: string,
+    bool: string
+  ) {
+    return {
+      type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN,
+      builderName,
+      id,
+      bool,
+    };
+  }
+
+  moveCustomListEditorAdvSearchQuery(
+    builderName: string,
+    id: string,
+    targetId: string
+  ) {
+    return {
+      type: ActionCreator.MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
+      builderName,
+      id,
+      targetId,
+    };
+  }
+
+  removeCustomListEditorAdvSearchQuery(builderName: string, id: string) {
+    return {
+      type: ActionCreator.REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
+      builderName,
+      id,
+    };
+  }
+
+  selectCustomListEditorAdvSearchQuery(builderName: string, id: string) {
+    return {
+      type: ActionCreator.SELECT_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
+      builderName,
+      id,
+    };
+  }
+
   addCustomListEditorEntry(id: string) {
     return (dispatch, getState) =>
       dispatch({
@@ -953,7 +1017,6 @@ export default class ActionCreator extends BaseActionCreator {
   saveCustomListEditor(library: string) {
     return (dispatch, getState) => {
       const { customListEditor } = getState().editor;
-
       const { id } = customListEditor;
 
       return dispatch(
@@ -975,10 +1038,11 @@ export default class ActionCreator extends BaseActionCreator {
   executeCustomListEditorSearch(library: string) {
     return (dispatch, getState) => {
       const { customListEditor } = getState().editor;
-
       const url = getCustomListEditorSearchUrl(customListEditor, library);
 
-      return dispatch(this.fetchCollection(url));
+      if (url) {
+        return dispatch(this.fetchCollection(url));
+      }
     };
   }
 

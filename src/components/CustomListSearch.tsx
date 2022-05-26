@@ -1,8 +1,10 @@
 import * as React from "react";
-import { Panel, Form } from "library-simplified-reusable-components";
-import { LanguagesData, LibraryData } from "../interfaces";
+import { Panel } from "library-simplified-reusable-components";
+import { AdvancedSearchQuery, LanguagesData, LibraryData } from "../interfaces";
 import { CustomListEditorSearchParams } from "../reducers/customListEditor";
 import SearchIcon from "./icons/SearchIcon";
+import AdvancedSearchBuilder from "./AdvancedSearchBuilder";
+import CustomListSearchQueryViewer from "./CustomListSearchQueryViewer";
 import EditableInput from "./EditableInput";
 
 export interface CustomListSearchProps {
@@ -13,20 +15,49 @@ export interface CustomListSearchProps {
   startingTitle?: string;
   search: () => void;
   updateSearchParam?: (name: string, value) => void;
+  addAdvSearchQuery?: (builderName: string, query: AdvancedSearchQuery) => void;
+  updateAdvSearchQueryBoolean?: (
+    builderName: string,
+    id: string,
+    bool: string
+  ) => void;
+  moveAdvSearchQuery?: (
+    builderName: string,
+    id: string,
+    targetId: string
+  ) => void;
+  removeAdvSearchQuery?: (builderName: string, id: string) => void;
+  selectAdvSearchQuery?: (builderName: string, id: string) => void;
 }
+
+const sorts = [
+  { value: null, label: "Relevance" },
+  { value: "title", label: "Title" },
+  { value: "author", label: "Author" },
+];
 
 const CustomListSearch = ({
   entryPoints,
-  languages,
+  // languages,
   library,
   searchParams,
   startingTitle,
   updateSearchParam,
   search,
+  addAdvSearchQuery,
+  updateAdvSearchQueryBoolean,
+  moveAdvSearchQuery,
+  removeAdvSearchQuery,
+  selectAdvSearchQuery,
 }: CustomListSearchProps) => {
   React.useEffect(() => {
     if (startingTitle) {
-      updateSearchParam?.("terms", startingTitle);
+      addAdvSearchQuery?.("include", {
+        key: "title",
+        op: "eq",
+        value: startingTitle,
+      });
+
       search?.();
     }
   }, []);
@@ -37,139 +68,107 @@ const CustomListSearch = ({
 
   const selectedEntryPoint = searchParams.entryPoint.toLowerCase();
 
-  const searchBox = (
-    <fieldset key="search">
-      <legend className="visuallyHidden">Search for titles</legend>
+  const renderAdvancedSearchBuilder = (name: string) => {
+    const builder = searchParams.advanced[name];
 
-      {entryPointsWithAll.length > 0 && (
-        <div className="entry-points">
-          <span>Select the entry point to search for:</span>
-
-          <div className="entry-points-selection">
-            {entryPointsWithAll.map((entryPoint) => (
-              <EditableInput
-                key={entryPoint}
-                type="radio"
-                name="entry-points-selection"
-                checked={entryPoint.toLowerCase() === selectedEntryPoint}
-                label={entryPoint}
-                value={entryPoint}
-                onChange={() => updateSearchParam?.("entryPoint", entryPoint)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <input
-        aria-label="Search for a book title"
-        className="form-control"
-        type="text"
-        placeholder="Enter a search term"
-        value={startingTitle || searchParams.terms}
-        onChange={(event) => updateSearchParam?.("terms", event.target.value)}
+    return (
+      <AdvancedSearchBuilder
+        name={name}
+        query={builder.query}
+        selectedQueryId={builder.selectedQueryId}
+        addQuery={addAdvSearchQuery}
+        updateQueryBoolean={updateAdvSearchQueryBoolean}
+        moveQuery={moveAdvSearchQuery}
+        removeQuery={removeAdvSearchQuery}
+        selectQuery={selectAdvSearchQuery}
       />
-    </fieldset>
-  );
+    );
+  };
 
-  const librarySettings = library?.settings || {};
+  const canSearch =
+    searchParams.terms ||
+    searchParams.advanced.include.query ||
+    searchParams.advanced.exclude.query;
 
-  const languageCodes = Object.entries(librarySettings)
-    .filter(([key]) => key.match(/_collections/))
-    .flatMap(([, value]) => value as string[]);
+  const searchForm = (
+    <div className="search-titles">
+      <div className="entry-points" key="entry-point-options">
+        <span>Search for:</span>
 
-  const languageOptions = (
-    <fieldset key="languages" className="well search-options">
-      <legend>Filter by language:</legend>
-
-      <section>
-        <select
-          value={searchParams.language}
-          onBlur={(event) =>
-            updateSearchParam?.("language", event.target.value)
-          }
-          onChange={(event) =>
-            updateSearchParam?.("language", event.target.value)
-          }
-        >
-          <option value="all" aria-selected={false}>
-            All
-          </option>
-
-          {languageCodes.map((code) => (
-            <option key={code} value={code} aria-selected={false}>
-              {languages?.[code].join("; ")}
-            </option>
-          ))}
-        </select>
-      </section>
-    </fieldset>
-  );
-
-  const sorts = [
-    ["Relevance (default)", null],
-    ["Title", "title"],
-    ["Author", "author"],
-  ];
-
-  const sortOptions = (
-    <fieldset key="sortBy" className="well search-options">
-      <legend>Sort by:</legend>
-
-      <ul>
-        {sorts.map(([label, value]) => (
-          <li key={value}>
+        <div className="entry-points-selection">
+          {entryPointsWithAll.map((entryPoint) => (
             <EditableInput
+              key={entryPoint}
               type="radio"
-              name={value}
+              name="entry-points-selection"
+              checked={entryPoint.toLowerCase() === selectedEntryPoint}
+              label={entryPoint}
+              value={entryPoint}
+              onChange={() => updateSearchParam?.("entryPoint", entryPoint)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="search-options" key="sort-options">
+        <span>Sort by:</span>
+
+        <div className="search-options-selection">
+          {sorts.map(({ value, label }) => (
+            <EditableInput
+              key={value}
+              type="radio"
+              name="sort-selection"
               value={value}
               label={label}
               checked={value === searchParams.sort}
               onChange={() => updateSearchParam?.("sort", value)}
             />
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
 
-      <p>
-        <i>
-          Note: currently, you can sort only by attributes which you have
-          enabled in this library's Lanes & Filters configuration.
-        </i>
-      </p>
+        <aside>
+          Note: Results can be sorted by attributes that are enabled in this
+          library's Lanes &amp; Filters configuration. Selecting "Title" or
+          "Author" will automatically filter out less relevant results.
+        </aside>
+      </div>
 
-      <p>
-        <i>
-          Selecting "Title" or "Author" will automatically filter out less
-          relevant results.
-        </i>
-      </p>
-    </fieldset>
-  );
+      <div className="search-builders">
+        <Panel
+          headerText="Works to include"
+          id="search-filters-include"
+          openByDefault={true}
+          content={renderAdvancedSearchBuilder("include")}
+        />
 
-  const searchOptions = (
-    <Panel
-      id="advanced-search-options"
-      key="advanced-search-options"
-      style="instruction"
-      headerText="Advanced search options"
-      content={[sortOptions, languageOptions]}
-    />
-  );
+        <Panel
+          headerText="Works to exclude"
+          id="search-filters-exclude"
+          openByDefault={false}
+          content={renderAdvancedSearchBuilder("exclude")}
+        />
+      </div>
 
-  const searchForm = (
-    <Form
-      onSubmit={search}
-      content={[searchBox, searchOptions]}
-      buttonClass="left-align"
-      buttonContent={
+      <div key="query-viewer">
+        <CustomListSearchQueryViewer
+          library={library?.short_name}
+          searchParams={searchParams}
+        />
+      </div>
+
+      <button
+        className="btn left-align"
+        disabled={!canSearch}
+        type="button"
+        onClick={search}
+      >
         <span>
           Search
           <SearchIcon />
         </span>
-      }
-      className="search-titles"
-    />
+      </button>
+    </div>
   );
 
   return (

@@ -1,0 +1,144 @@
+.advanced-search {
+  .advanced-search-filter-input {
+    > div {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    input[type="text"] {
+      width: 40em;
+    }
+
+    .filter-key-options {
+      .form-group {
+        margin: 5px 20px 0 2px;;
+      }
+    }
+  }
+
+  .advanced-search-filter-tree {
+    display: flex;
+    flex: 1 1 auto;
+    border-top: 1px solid $medium-gray;
+    padding-top: 10px;
+    align-items: baseline;
+
+    > span {
+      margin: 4px;
+    }
+  }
+
+  .advanced-search-boolean-filter {
+    flex-basis: 100%;
+    border-radius: 5px;
+    border: 1px solid $medium-gray;
+    background: white;
+
+    header {
+      display: flex;
+
+      div {
+        flex: 1 0 auto;
+        padding-top: 4px;
+      }
+
+      select {
+        background-color: transparent;
+        border-color: $medium-gray;
+        border-width: 1px 1px 1px 0;
+      }
+
+      button {
+        border: none;
+        border-radius: 0 5px 0 0;
+        padding: 4px 8px;
+        background-color: inherit;
+      }
+    }
+
+    > ul {
+      display: flex;
+      list-style: none;
+      padding: 6px;
+      margin: 0;
+      align-items: baseline;
+      flex-flow: row wrap;
+
+      li {
+        display: flex;
+        margin: 4px;
+        align-items: baseline;
+
+        > span {
+          margin-right: 4px;
+        }
+      }
+    }
+
+    &.selected {
+      outline: 1px solid black;
+      outline-offset: -1px;
+    }
+
+    &.drag-drop {
+      background-color: #FC844357;
+      outline: 1px dotted black;
+    }
+  }
+
+  .advanced-search-value-filter {
+    background-color: #F5F5F5;
+    border-radius: 5px;
+
+    span {
+      padding: 4px 2px 4px 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 0 5px 5px 0;
+      padding: 4px 8px;
+      background-color: inherit;
+    }
+
+    &.selected {
+      outline: 1px solid black;
+      outline-offset: -1px;
+    }
+
+    &.drag-drop {
+      background-color: #FC844357;
+      outline: 1px dotted black;
+    }
+  }
+
+  .advanced-search-filter-code {
+    flex: 0 0 auto;
+    position: relative;
+    font: 9pt monospace;
+
+    > button {
+      border: 1px solid #DDD;
+      border-radius: 5px;
+      padding: 0;
+      position: absolute;
+      right: -36px;
+      top: 10px;
+      width: 32px;
+      height: 32px;
+      background: white;
+      color: black;
+    }
+
+    > pre {
+      margin: 10px 0 0 4px;
+      border-radius: 5px;
+      border: 1px solid #DDD;
+      padding: 4px 16px 4px 4px;
+      background: inherit;
+      min-height: 41px;
+      max-height: 400px;
+    }
+  }
+}

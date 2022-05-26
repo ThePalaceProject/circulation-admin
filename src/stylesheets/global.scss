@@ -33,6 +33,8 @@
   &:focus {
     @include basic-focus;
   }
+
+  padding: 0 6px;
 }
 
 .btn:not(.inverted), .btn.btn-default {

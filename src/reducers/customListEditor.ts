@@ -2,6 +2,7 @@ import produce from "immer";
 import { BookData } from "opds-web-client/lib/interfaces";
 import { getMedium } from "opds-web-client/lib/utils/book";
 import ActionCreator from "../actions";
+import { AdvancedSearchQuery } from "../interfaces";
 
 export interface Entry extends BookData {
   medium?: string;
@@ -91,6 +92,39 @@ export interface CustomListEditorTrackedProperties {
 }
 
 /**
+ * Data that describes an advanced search builder.
+ */
+export interface CustomListEditorAdvancedSearchBuilderData {
+  /**
+   * The ID of the currently selected advanced search query. This could be the root query, or any
+   * query nested under the root query.
+   */
+  selectedQueryId: string;
+
+  /**
+   * The root advanced search query.
+   */
+  query: AdvancedSearchQuery;
+}
+
+/**
+ * Data desribing the advanced search builders on the custom list editor.
+ */
+export interface CustomListEditorAdvancedSearchBuilders {
+  /**
+   * Describes the advanced search builder that builds the query to find books to include in the
+   * list.
+   */
+  include: CustomListEditorAdvancedSearchBuilderData;
+
+  /**
+   * Describes the advanced search builder that builds the query to find books to exclude from the
+   * list.
+   */
+  exclude: CustomListEditorAdvancedSearchBuilderData;
+}
+
+/**
  * Search parameters.
  */
 export interface CustomListEditorSearchParams {
@@ -113,6 +147,11 @@ export interface CustomListEditorSearchParams {
    * The desired language of search results.
    */
   language: string;
+
+  /**
+   * Advanced search builder information.
+   */
+  advanced: CustomListEditorAdvancedSearchBuilders;
 }
 
 /**
@@ -179,6 +218,16 @@ export const initialState: CustomListEditorState = {
     terms: "",
     sort: null,
     language: "all",
+    advanced: {
+      include: {
+        query: null,
+        selectedQueryId: null,
+      },
+      exclude: {
+        query: null,
+        selectedQueryId: null,
+      },
+    },
   },
   entries: {
     baseline: [],
@@ -268,13 +317,18 @@ const validatedHandler = (handler) => (state: CustomListEditorState, action?) =>
 /**
  * Generates the initial state for a previously saved list.
  *
- * @param id   The id of the list.
- * @param data The data received from a call to the custom_lists endpoint in the CM. This contains
- *             basic information about all the lists in the library. If a list with the given id
- *             exists in the data, the initial state is populated with the data for that list.
- * @returns    The initial state for the list.
+ * @param id    The id of the list.
+ * @param data  The data received from a call to the custom_lists endpoint in the CM. This contains
+ *              basic information about all the lists in the library. If a list with the given id
+ *              exists in the data, the initial state is populated with the data for that list.
+ * @param state The current state.
+ * @returns     The next state, representing the initial state for the list.
  */
-const initialStateForList = (id: number, data): CustomListEditorState => {
+const initialStateForList = (
+  id: number,
+  data,
+  state: CustomListEditorState
+): CustomListEditorState => {
   let customList = null;
   let error = null;
 
@@ -300,6 +354,9 @@ const initialStateForList = (id: number, data): CustomListEditorState => {
 
       draftState.entries.baselineTotalCount = customList.entry_count;
     }
+
+    // Carry over the search parameters from the current state.
+    draftState.searchParams = state.searchParams;
 
     draftState.error = error;
   });
@@ -360,7 +417,7 @@ const handleCustomListEditorOpen = (
 ): CustomListEditorState => {
   const { id, data } = action;
 
-  return initialStateForList(id ? parseInt(id, 10) : null, data);
+  return initialStateForList(id ? parseInt(id, 10) : null, data, state);
 };
 
 /**
@@ -382,7 +439,7 @@ const handleCustomListsLoad = (
   const { id } = state;
   const { data } = action;
 
-  return initialStateForList(id, data);
+  return initialStateForList(id, data, state);
 };
 
 /**
@@ -493,6 +550,433 @@ const handleUpdateCustomListEditorSearchParam = (
 
   return produce(state, (draftState) => {
     draftState.searchParams[name] = value;
+  });
+};
+
+/**
+ * A counter for generating unique IDs for advanced search queries.
+ */
+let queryIdCounter = 0;
+
+/**
+ * Generate a new, unique advanced search query ID.
+ *
+ * @returns The query ID
+ */
+const newQueryId = (): string => {
+  const id = queryIdCounter.toString();
+
+  queryIdCounter += 1;
+
+  return id;
+};
+
+/**
+ * Add an advanced search query to a given query tree.
+ *
+ * @param query         The root of the query tree.
+ * @param targetId      The ID of the node in the query tree where the new query should be added.
+ *                      This is expected to be the ID of the root query, or some descendant of the
+ *                      root query. If the target is an boolean (and/or) query, the new query is
+ *                      added as a child of the target. If the target is a leaf query, a new
+ *                      boolean query is created at the location of the target, the target is made
+ *                      a child of the new boolean, and the new query is added as another child of
+ *                      the new boolean. If the new boolean query is the child of a boolean query,
+ *                      its operator is set to the opposite of the parent. Otherwise (if it is the
+ *                      root query), its operator is set to the preferredBool argument.
+ * @param newQuery      The query to add to the tree
+ * @param preferredBool If boolean operator ("and" or "or") to use when creating a boolean query
+ *                      at the root of the tree.
+ * @returns             A query tree that is the result of adding the new query to the given
+ *                      query at the target. If no query with the target ID is found in the given
+ *                      query, it is returned unchanged.
+ */
+const addDescendantQuery = (
+  query: AdvancedSearchQuery,
+  targetId: string,
+  newQuery: AdvancedSearchQuery,
+  preferredBool: string
+): AdvancedSearchQuery => {
+  if (query.and || query.or) {
+    const bool = query.and ? "and" : "or";
+    const children = query[bool];
+
+    if (query.id === targetId) {
+      return {
+        id: query.id,
+        [bool]: [...children, newQuery],
+      };
+    }
+
+    const oppositeBool = bool === "and" ? "or" : "and";
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+
+      const updatedChild = addDescendantQuery(
+        child,
+        targetId,
+        newQuery,
+        oppositeBool
+      );
+
+      if (updatedChild !== child) {
+        const newChildren = [...children];
+
+        newChildren[i] = updatedChild;
+
+        return {
+          id: query.id,
+          [bool]: newChildren,
+        };
+      }
+    }
+
+    return query;
+  }
+
+  if (query.id === targetId) {
+    return {
+      id: query.id,
+      [preferredBool]: [
+        {
+          ...query,
+          id: newQueryId(),
+        },
+        newQuery,
+      ],
+    };
+  }
+
+  return query;
+};
+
+/**
+ * Remove an advanced search query from a given query tree.
+ *
+ * @param query    The root of the query tree.
+ * @param targetId The ID of the query to remove. This is expected to be the ID of the root query,
+ *                 or some descendant of the root query.
+ * @returns        A query tree that is the result of removing the specified query from the given
+ *                 query. If the target ID identifies the root query, null is returned. If no query
+ *                 with the target ID is found in the given query, it is returned unchanged.
+ */
+const removeDescendantQuery = (
+  query: AdvancedSearchQuery,
+  targetId: string
+): AdvancedSearchQuery => {
+  if (query.id === targetId) {
+    return null;
+  }
+
+  if (query.and || query.or) {
+    const bool = query.and ? "and" : "or";
+    const children = query[bool];
+    const updatedChildren = children.filter((child) => child.id !== targetId);
+
+    if (updatedChildren.length !== children.length) {
+      if (updatedChildren.length === 1) {
+        return { ...updatedChildren[0] };
+      }
+
+      return {
+        id: query.id,
+        [bool]: updatedChildren,
+      };
+    }
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      const updatedChild = removeDescendantQuery(child, targetId);
+
+      if (updatedChild !== child) {
+        const newChildren = [...children];
+
+        newChildren[i] = updatedChild;
+
+        return {
+          id: query.id,
+          [bool]: newChildren,
+        };
+      }
+    }
+  }
+
+  return query;
+};
+
+/**
+ * Find the path to an advanced search query in a given query tree.
+ *
+ * @param query    The root of the query tree.
+ * @param targetId The ID of the query to find. This is expected to be the ID of the root query,
+ *                 or some descendant of the root query.
+ * @returns        An array of query IDs, starting with the root query, and ending with the target
+ *                 ID. If no query with the target ID is found in the given query, null is
+ *                 returned.
+ */
+const findDescendantQueryPath = (
+  query: AdvancedSearchQuery,
+  targetId: string
+): string[] => {
+  if (query.id === targetId) {
+    return [query.id];
+  }
+
+  if (query.and || query.or) {
+    const bool = query.and ? "and" : "or";
+    const children = query[bool];
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      const path = findDescendantQueryPath(child, targetId);
+
+      if (path) {
+        return [query.id, ...path];
+      }
+    }
+  }
+
+  return null;
+};
+
+/**
+ * Find an advanced search query in a given query tree.
+ *
+ * @param query    The root of the query tree.
+ * @param targetId The ID of the query to find. This is expected to be the ID of the root query,
+ *                 or some descendant of the root query.
+ * @returns        The query with the target ID, if it exists in the query tree. Otherwise, null is
+ *                 returned.
+ */
+const findDescendantQuery = (
+  query: AdvancedSearchQuery,
+  targetId: string
+): AdvancedSearchQuery => {
+  if (query.id === targetId) {
+    return query;
+  }
+
+  if (query.and || query.or) {
+    const bool = query.and ? "and" : "or";
+    const children = query[bool];
+    const targetQuery = children.find((child) => child.id === targetId);
+
+    if (targetQuery) {
+      return targetQuery;
+    }
+
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      const targetQuery = findDescendantQuery(child, targetId);
+
+      if (targetQuery) {
+        return targetQuery;
+      }
+    }
+  }
+
+  return null;
+};
+
+/**
+ * Get the default boolean operator for a given advanced search query builder.
+ *
+ * @param builderName The name of the query builder.
+ * @returns           The default boolean operator, which is "and" for the "include" query builder,
+ *                    and "or" for the "exclude" query builder.
+ */
+const getDefaultBooleanOperator = (builderName: string) => {
+  return builderName === "include" ? "and" : "or";
+};
+
+/**
+ * Handle the ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY action. This action is fired when the user
+ * adds a new filter to an advanced search query builder.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - builderName: The name of the query builder.
+ *               - query:       The new query.
+ * @returns      The next state
+ */
+const handleAddCustomListEditorAdvSearchQuery = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  return produce(state, (draftState) => {
+    const { builderName, query } = action;
+    const builder = draftState.searchParams.advanced[builderName];
+    const { query: currentQuery, selectedQueryId } = builder;
+
+    const newQuery = {
+      ...query,
+      id: newQueryId(),
+    };
+
+    if (!currentQuery) {
+      builder.query = newQuery;
+      builder.selectedQueryId = newQuery.id;
+    } else {
+      builder.query = addDescendantQuery(
+        currentQuery,
+        selectedQueryId || currentQuery.id,
+        newQuery,
+        getDefaultBooleanOperator(builderName)
+      );
+    }
+  });
+};
+
+/**
+ * Handle the UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN action. This action is fired when
+ * the user changes the boolean operator (and/or) on a filter in an advanced search query builder.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - builderName: The name of the query builder.
+ *               - id:          The ID of the query to update.
+ *               - bool:        The new boolean operator for the query ("and" or "or").
+ * @returns      The next state
+ */
+const handleUpdateCustomListEditorAdvSearchQueryBoolean = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  return produce(state, (draftState) => {
+    const { builderName, id, bool } = action;
+    const builder = draftState.searchParams.advanced[builderName];
+    const { query: currentQuery } = builder;
+    const targetQuery = findDescendantQuery(currentQuery, id);
+
+    if (
+      targetQuery &&
+      (targetQuery.and || targetQuery.or) &&
+      !targetQuery[bool]
+    ) {
+      const oppositeBool = bool === "and" ? "or" : "and";
+      const children = targetQuery[oppositeBool];
+
+      delete targetQuery[oppositeBool];
+
+      targetQuery[bool] = children;
+    }
+  });
+};
+
+/**
+ * Handle the MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY action. This action is fired when the user
+ * moves a filter to another filter in an advanced search query builder, typically through a
+ * drag-and-drop.
+ *
+ * Note: If a boolean has two filters, and one is dropped on the other, this results in the boolean
+ * operator being swapped. A move operation is really an add followed by a remove, and this is the
+ * result of the normal rules for adding and removing queries. When a new boolean group is created
+ * by the add operation, it is set to the opposite boolean operator of the parent; and when the
+ * remove operation leaves the original parent with only one child, the remaining child (now with
+ * the opposite boolean operator of the original parent) is lifted up, and the original parent is
+ * deleted.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - builderName: The name of the query builder.
+ *               - id:          The ID of the query to move.
+ *               - targetId:    The ID of query to which to move the specified query.
+ * @returns      The next state
+ */
+const handleMoveCustomListEditorAdvSearchQuery = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  return produce(state, (draftState) => {
+    const { builderName, id, targetId } = action;
+    const builder = draftState.searchParams.advanced[builderName];
+    const { query: currentQuery } = builder;
+    const query = findDescendantQuery(currentQuery, id);
+
+    const newQuery = {
+      ...query,
+      id: newQueryId(),
+    };
+
+    const afterAddQuery = addDescendantQuery(
+      currentQuery,
+      targetId,
+      newQuery,
+      getDefaultBooleanOperator(builderName)
+    );
+
+    const afterRemoveQuery = removeDescendantQuery(afterAddQuery, id);
+
+    builder.query = afterRemoveQuery;
+    builder.selectedQueryId = targetId;
+  });
+};
+
+/**
+ * Handle the REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY action. This action is fired when the user
+ * removes a filter in an advanced search builder.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - builderName: The name of the query builder.
+ *               - id:          The ID of the query to remove.
+ * @returns      The next state
+ */
+const handleRemoveCustomListEditorAdvSearchQuery = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  return produce(state, (draftState) => {
+    const { builderName, id } = action;
+    const builder = draftState.searchParams.advanced[builderName];
+    const { query: currentQuery } = builder;
+
+    const afterRemoveQuery = removeDescendantQuery(currentQuery, id);
+
+    if (afterRemoveQuery !== currentQuery) {
+      builder.query = afterRemoveQuery;
+
+      // It is possible that removeDescendantQuery removed more than just the one query; for
+      // example, if the removed query was the child of an and/or query, and removing it left only
+      // one other child query, then the remaining child would have been lifted out of the parent,
+      // and the parent would have been deleted as well. For this reason, we can't assume that the
+      // parent of the removed query still exists; we have to find the nearest ancestor of the
+      // removed query that remains in the tree, to make that the new selected query.
+
+      const path = findDescendantQueryPath(currentQuery, id);
+
+      path.pop();
+      path.reverse();
+
+      const ancestorId = path.find((id) =>
+        findDescendantQuery(afterRemoveQuery, id)
+      );
+
+      builder.selectedQueryId = ancestorId;
+    }
+  });
+};
+
+/**
+ * Handle the SELECT_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY action. This action is fired when the user
+ * clicks on a filter in an advanced search query builder.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - builderName: The name of the query builder.
+ *               - id:          The ID of the query to select.
+ * @returns      The next state
+ */
+const handleSelectCustomListEditorAdvSearchQuery = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  return produce(state, (draftState) => {
+    const { builderName, id } = action;
+    const builder = draftState.searchParams.advanced[builderName];
+
+    builder.selectedQueryId = id;
   });
 };
 
@@ -677,6 +1161,16 @@ export default (
       return handleToggleCustomListEditorCollection(state, action);
     case ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM:
       return handleUpdateCustomListEditorSearchParam(state, action);
+    case ActionCreator.ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY:
+      return handleAddCustomListEditorAdvSearchQuery(state, action);
+    case ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN:
+      return handleUpdateCustomListEditorAdvSearchQueryBoolean(state, action);
+    case ActionCreator.MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY:
+      return handleMoveCustomListEditorAdvSearchQuery(state, action);
+    case ActionCreator.REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY:
+      return handleRemoveCustomListEditorAdvSearchQuery(state, action);
+    case ActionCreator.SELECT_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY:
+      return handleSelectCustomListEditorAdvSearchQuery(state, action);
     case ActionCreator.ADD_CUSTOM_LIST_EDITOR_ENTRY:
       return handleAddCustomListEditorEntry(state, action);
     case ActionCreator.ADD_ALL_CUSTOM_LIST_EDITOR_ENTRIES:
@@ -732,20 +1226,81 @@ export const getCustomListEditorFormData = (
   return data;
 };
 
-/**
- * Converts search parameters in a custom list editor state to a search query URL.
- *
- * @param state   The custom list editor state
- * @param library The short name of the library that contains the list being edited
- * @returns
- */
-export const getCustomListEditorSearchUrl = (
-  state: CustomListEditorState,
+export const buildAdvSearchQuery = (
+  searchParams: CustomListEditorSearchParams
+): AdvancedSearchQuery => {
+  const { include, exclude } = searchParams.advanced;
+
+  const includeQuery = include.query;
+  const excludeQuery = exclude.query;
+
+  if (excludeQuery) {
+    const notQuery = {
+      not: [
+        {
+          ...excludeQuery,
+        },
+      ],
+    };
+
+    if (!includeQuery) {
+      return notQuery;
+    }
+
+    return {
+      and: [
+        {
+          ...includeQuery,
+        },
+        notQuery,
+      ],
+    };
+  }
+
+  if (includeQuery) {
+    return includeQuery;
+  }
+
+  return null;
+};
+
+export const buildAdvSearchQueryString = (
+  searchParams: CustomListEditorSearchParams,
+  indentSpaces: number = 0,
+  encode: boolean = true
+): string => {
+  const query = buildAdvSearchQuery(searchParams);
+
+  if (!query) {
+    return "";
+  }
+
+  const queryString = JSON.stringify(
+    { query },
+    (key, value) => {
+      if (key === "id") {
+        return undefined;
+      }
+
+      if (key === "op" && value === "eq") {
+        return undefined;
+      }
+
+      return value;
+    },
+    indentSpaces
+  );
+
+  return encode ? encodeURIComponent(queryString) : queryString;
+};
+
+export const buildSearchUrl = (
+  searchParams: CustomListEditorSearchParams,
   library: string
 ): string => {
-  const { entryPoint, terms, sort, language } = state.searchParams;
+  const { entryPoint, terms, sort } = searchParams;
 
-  const queryParams = [`q=${encodeURIComponent(terms)}`];
+  const queryParams = [];
 
   if (entryPoint !== "All") {
     queryParams.push(`entrypoint=${encodeURIComponent(entryPoint)}`);
@@ -755,9 +1310,36 @@ export const getCustomListEditorSearchUrl = (
     queryParams.push(`order=${encodeURIComponent(sort)}`);
   }
 
-  if (language) {
-    queryParams.push(`language=${encodeURIComponent(language)}`);
+  const advSearchQuery = buildAdvSearchQueryString(searchParams);
+
+  if (advSearchQuery) {
+    queryParams.push("search_type=json");
+    queryParams.push(`q=${advSearchQuery}`);
+  } else {
+    queryParams.push(`q=${encodeURIComponent(terms)}`);
   }
 
   return `/${library}/search?${queryParams.join("&")}`;
+};
+
+/**
+ * Converts search parameters in a custom list editor state to a search query URL.
+ *
+ * @param state   The custom list editor state
+ * @param library The short name of the library that contains the list being edited
+ * @returns       The URL, or null if the custom list editor state does not contain either query
+ *                terms or an advanced search query.
+ */
+export const getCustomListEditorSearchUrl = (
+  state: CustomListEditorState,
+  library: string
+): string => {
+  const { searchParams } = state;
+  const { terms, advanced } = searchParams;
+
+  if (terms || advanced.include.query || advanced.exclude.query) {
+    return buildSearchUrl(searchParams, library);
+  }
+
+  return null;
 };
