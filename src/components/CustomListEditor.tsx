@@ -25,7 +25,9 @@ type CustomListEditorProps = {
   entries?: CustomListEditorEntriesData;
   entryPoints?: string[];
   isFetchingMoreCustomListEntries: boolean;
+  isFetchingSearchResults: boolean;
   isFetchingMoreSearchResults: boolean;
+  isLoaded?: boolean;
   isModified?: boolean;
   isValid?: boolean;
   languages: LanguagesData;
@@ -67,7 +69,9 @@ export default function CustomListEditor({
   entries,
   entryPoints,
   isFetchingMoreCustomListEntries,
+  isFetchingSearchResults,
   isFetchingMoreSearchResults,
+  isLoaded,
   isModified,
   isValid,
   languages,
@@ -96,6 +100,13 @@ export default function CustomListEditor({
   selectAdvSearchQuery,
 }: CustomListEditorProps) {
   const { collections: listCollections, name } = properties;
+
+  // Automatically execute the search when the list being edited changes, or finishes loading
+  // (which means a stored query may have been loaded).
+
+  React.useEffect(() => {
+    search?.();
+  }, [listId, isLoaded]);
 
   return (
     <div className="custom-list-editor">
@@ -164,7 +175,9 @@ export default function CustomListEditor({
           )}
 
           <CustomListSearch
+            autoUpdate={properties.autoUpdate}
             searchParams={searchParams}
+            updateAutoUpdate={(value) => updateProperty?.("autoUpdate", value)}
             updateSearchParam={updateSearchParam}
             search={search}
             entryPoints={entryPoints}
@@ -180,10 +193,12 @@ export default function CustomListEditor({
         </section>
 
         <CustomListEntriesEditor
+          autoUpdate={properties.autoUpdate}
           searchResults={searchResults}
           entries={entries.current}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
+          isFetchingSearchResults={isFetchingSearchResults}
           isFetchingMoreSearchResults={isFetchingMoreSearchResults}
           isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
           opdsFeedUrl={`${library?.short_name}/${
@@ -195,6 +210,7 @@ export default function CustomListEditor({
           addAllEntries={addAllEntries}
           deleteEntry={deleteEntry}
           deleteAllEntries={deleteAllEntries}
+          refreshResults={search}
         />
       </div>
     </div>

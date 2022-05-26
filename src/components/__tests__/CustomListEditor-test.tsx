@@ -83,6 +83,7 @@ describe("CustomListEditor", () => {
   const properties = {
     name: "Listy McList",
     collections: [2],
+    autoUpdate: false,
   };
 
   const searchParams = {
@@ -143,6 +144,7 @@ describe("CustomListEditor", () => {
         entries={entries}
         entryPoints={entryPoints}
         isFetchingMoreCustomListEntries={false}
+        isFetchingSearchResults={false}
         isFetchingMoreSearchResults={false}
         isModified={true}
         isValid={true}
@@ -190,6 +192,7 @@ describe("CustomListEditor", () => {
       loadMoreSearchResults
     );
     expect(entriesEditor.props().loadMoreEntries).to.equal(loadMoreEntries);
+    expect(entriesEditor.props().isFetchingSearchResults).to.equal(false);
     expect(entriesEditor.props().isFetchingMoreSearchResults).to.equal(false);
     expect(entriesEditor.props().isFetchingMoreCustomListEntries).to.equal(
       false

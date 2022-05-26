@@ -57,6 +57,7 @@ describe("custom list editor reducer", () => {
       expect(nextState.properties.baseline).to.deep.equal({
         name: "Baker & Taylor Axis360 Test",
         collections: [16],
+        autoUpdate: false,
       });
 
       expect(nextState.error).to.equal(null);
@@ -141,6 +142,7 @@ describe("custom list editor reducer", () => {
       expect(nextState.properties.baseline).to.deep.equal({
         name: "New BiblioBoard",
         collections: [14],
+        autoUpdate: false,
       });
 
       expect(nextState.error).to.equal(null);
@@ -418,7 +420,7 @@ describe("custom list editor reducer", () => {
         value: "Book",
       });
 
-      expect(nextState.searchParams.entryPoint).to.equal("Book");
+      expect(nextState.searchParams.current.entryPoint).to.equal("Book");
 
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
@@ -426,7 +428,7 @@ describe("custom list editor reducer", () => {
         value: "foo bar",
       });
 
-      expect(nextState.searchParams.terms).to.equal("foo bar");
+      expect(nextState.searchParams.current.terms).to.equal("foo bar");
 
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
@@ -434,7 +436,7 @@ describe("custom list editor reducer", () => {
         value: "title",
       });
 
-      expect(nextState.searchParams.sort).to.equal("title");
+      expect(nextState.searchParams.current.sort).to.equal("title");
 
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
@@ -442,7 +444,7 @@ describe("custom list editor reducer", () => {
         value: "eng",
       });
 
-      expect(nextState.searchParams.language).to.equal("eng");
+      expect(nextState.searchParams.current.language).to.equal("eng");
     });
   });
 
@@ -458,26 +460,29 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    key: "title",
-                    value: "foo",
-                  },
-                  {
-                    id: "92",
-                    key: "title",
-                    value: "bar",
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      key: "title",
+                      value: "foo",
+                    },
+                    {
+                      id: "92",
+                      key: "title",
+                      value: "bar",
+                    },
+                  ],
+                },
+                selectedQueryId: "90",
               },
-              selectedQueryId: "90",
             },
           },
         },
@@ -489,7 +494,9 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "90",
         and: [
           {
@@ -509,9 +516,9 @@ describe("custom list editor reducer", () => {
         ],
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        "90"
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal("90");
     });
 
     it("should add the query as the root query and select it, if there is no existing root query", () => {
@@ -525,14 +532,16 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "1",
         ...valueQuery,
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        "1"
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal("1");
     });
 
     it("should add the query to the root query, if there is no selected query", () => {
@@ -540,24 +549,27 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    key: "title",
-                    value: "foo",
-                  },
-                  {
-                    id: "92",
-                    key: "title",
-                    value: "bar",
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      key: "title",
+                      value: "foo",
+                    },
+                    {
+                      id: "92",
+                      key: "title",
+                      value: "bar",
+                    },
+                  ],
+                },
               },
             },
           },
@@ -570,7 +582,9 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "90",
         and: [
           {
@@ -590,9 +604,9 @@ describe("custom list editor reducer", () => {
         ],
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        null
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal(null);
     });
 
     it("should create a boolean AND query if a new query is added to a non-boolean root query in the include builder", () => {
@@ -600,16 +614,19 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "91",
-                key: "title",
-                value: "foo",
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "91",
+                  key: "title",
+                  value: "foo",
+                },
+                selectedQueryId: "91",
               },
-              selectedQueryId: "91",
             },
           },
         },
@@ -621,7 +638,9 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "91",
         and: [
           {
@@ -636,9 +655,9 @@ describe("custom list editor reducer", () => {
         ],
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        "91"
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal("91");
     });
 
     it("should create a boolean OR query if a new query is added to a non-boolean root query in the exclude builder", () => {
@@ -646,16 +665,19 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            exclude: {
-              ...initialState.searchParams.advanced.exclude,
-              query: {
-                id: "91",
-                key: "title",
-                value: "foo",
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              exclude: {
+                ...initialState.searchParams.current.advanced.exclude,
+                query: {
+                  id: "91",
+                  key: "title",
+                  value: "foo",
+                },
+                selectedQueryId: "91",
               },
-              selectedQueryId: "91",
             },
           },
         },
@@ -667,7 +689,9 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
-      expect(nextState.searchParams.advanced.exclude.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.exclude.query
+      ).to.deep.equal({
         id: "91",
         or: [
           {
@@ -682,9 +706,9 @@ describe("custom list editor reducer", () => {
         ],
       });
 
-      expect(nextState.searchParams.advanced.exclude.selectedQueryId).to.equal(
-        "91"
-      );
+      expect(
+        nextState.searchParams.current.advanced.exclude.selectedQueryId
+      ).to.equal("91");
     });
 
     it("should create a boolean query that is the opposite of the parent if a new query is added to a non-booean query", () => {
@@ -692,26 +716,29 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    key: "title",
-                    value: "foo",
-                  },
-                  {
-                    id: "92",
-                    key: "title",
-                    value: "bar",
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      key: "title",
+                      value: "foo",
+                    },
+                    {
+                      id: "92",
+                      key: "title",
+                      value: "bar",
+                    },
+                  ],
+                },
+                selectedQueryId: "92",
               },
-              selectedQueryId: "92",
             },
           },
         },
@@ -723,7 +750,9 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "90",
         and: [
           {
@@ -748,37 +777,54 @@ describe("custom list editor reducer", () => {
         ],
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        "92"
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal("92");
     });
   });
 
   context("on UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN", () => {
+    const include = {
+      query: {
+        id: "90",
+        and: [
+          {
+            id: "91",
+            key: "title",
+            value: "foo",
+          },
+          {
+            id: "92",
+            key: "title",
+            value: "bar",
+          },
+        ],
+      },
+      selectedQueryId: "92",
+    };
+
     const state = {
       ...initialState,
       searchParams: {
         ...initialState.searchParams,
-        advanced: {
-          ...initialState.searchParams.advanced,
-          include: {
-            ...initialState.searchParams.advanced.include,
-            query: {
-              id: "90",
-              and: [
-                {
-                  id: "91",
-                  key: "title",
-                  value: "foo",
-                },
-                {
-                  id: "92",
-                  key: "title",
-                  value: "bar",
-                },
-              ],
+        baseline: {
+          ...initialState.searchParams.baseline,
+          advanced: {
+            ...initialState.searchParams.baseline.advanced,
+            include: {
+              ...initialState.searchParams.baseline.advanced.include,
+              ...include,
             },
-            selectedQueryId: "92",
+          },
+        },
+        current: {
+          ...initialState.searchParams.current,
+          advanced: {
+            ...initialState.searchParams.current.advanced,
+            include: {
+              ...initialState.searchParams.current.advanced.include,
+              ...include,
+            },
           },
         },
       },
@@ -792,7 +838,9 @@ describe("custom list editor reducer", () => {
         bool: "or",
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "90",
         or: [
           {
@@ -838,51 +886,54 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    or: [
-                      {
-                        id: "92",
-                        key: "title",
-                        value: "foo",
-                      },
-                      {
-                        id: "93",
-                        key: "title",
-                        value: "bar",
-                      },
-                      {
-                        id: "94",
-                        key: "title",
-                        value: "baz",
-                      },
-                    ],
-                  },
-                  {
-                    id: "95",
-                    or: [
-                      {
-                        id: "96",
-                        key: "author",
-                        value: "alice",
-                      },
-                      {
-                        id: "97",
-                        key: "author",
-                        value: "ben",
-                      },
-                    ],
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      or: [
+                        {
+                          id: "92",
+                          key: "title",
+                          value: "foo",
+                        },
+                        {
+                          id: "93",
+                          key: "title",
+                          value: "bar",
+                        },
+                        {
+                          id: "94",
+                          key: "title",
+                          value: "baz",
+                        },
+                      ],
+                    },
+                    {
+                      id: "95",
+                      or: [
+                        {
+                          id: "96",
+                          key: "author",
+                          value: "alice",
+                        },
+                        {
+                          id: "97",
+                          key: "author",
+                          value: "ben",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                selectedQueryId: "92",
               },
-              selectedQueryId: "92",
             },
           },
         },
@@ -895,7 +946,9 @@ describe("custom list editor reducer", () => {
         targetId: "95",
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "90",
         and: [
           {
@@ -944,31 +997,34 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    key: "title",
-                    value: "foo",
-                  },
-                  {
-                    id: "92",
-                    key: "title",
-                    value: "bar",
-                  },
-                  {
-                    id: "93",
-                    key: "title",
-                    value: "baz",
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      key: "title",
+                      value: "foo",
+                    },
+                    {
+                      id: "92",
+                      key: "title",
+                      value: "bar",
+                    },
+                    {
+                      id: "93",
+                      key: "title",
+                      value: "baz",
+                    },
+                  ],
+                },
+                selectedQueryId: "92",
               },
-              selectedQueryId: "92",
             },
           },
         },
@@ -980,7 +1036,9 @@ describe("custom list editor reducer", () => {
         id: "92",
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "90",
         and: [
           {
@@ -996,9 +1054,9 @@ describe("custom list editor reducer", () => {
         ],
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        "90"
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal("90");
     });
 
     it("should remove the parent boolean, if there is only one remaining child after the specified query is removed", () => {
@@ -1006,26 +1064,29 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    key: "title",
-                    value: "foo",
-                  },
-                  {
-                    id: "92",
-                    key: "title",
-                    value: "bar",
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      key: "title",
+                      value: "foo",
+                    },
+                    {
+                      id: "92",
+                      key: "title",
+                      value: "bar",
+                    },
+                  ],
+                },
+                selectedQueryId: "92",
               },
-              selectedQueryId: "92",
             },
           },
         },
@@ -1037,15 +1098,17 @@ describe("custom list editor reducer", () => {
         id: "92",
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "91",
         key: "title",
         value: "foo",
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        undefined
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal(undefined);
     });
   });
 
@@ -1055,26 +1118,29 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    key: "title",
-                    value: "foo",
-                  },
-                  {
-                    id: "92",
-                    key: "title",
-                    value: "bar",
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      key: "title",
+                      value: "foo",
+                    },
+                    {
+                      id: "92",
+                      key: "title",
+                      value: "bar",
+                    },
+                  ],
+                },
+                selectedQueryId: "92",
               },
-              selectedQueryId: "92",
             },
           },
         },
@@ -1086,9 +1152,9 @@ describe("custom list editor reducer", () => {
         id: "91",
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        "91"
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal("91");
     });
 
     it("should remove the parent boolean, if there is only one remaining child after the specified query is removed", () => {
@@ -1096,26 +1162,29 @@ describe("custom list editor reducer", () => {
         ...initialState,
         searchParams: {
           ...initialState.searchParams,
-          advanced: {
-            ...initialState.searchParams.advanced,
-            include: {
-              ...initialState.searchParams.advanced.include,
-              query: {
-                id: "90",
-                and: [
-                  {
-                    id: "91",
-                    key: "title",
-                    value: "foo",
-                  },
-                  {
-                    id: "92",
-                    key: "title",
-                    value: "bar",
-                  },
-                ],
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "90",
+                  and: [
+                    {
+                      id: "91",
+                      key: "title",
+                      value: "foo",
+                    },
+                    {
+                      id: "92",
+                      key: "title",
+                      value: "bar",
+                    },
+                  ],
+                },
+                selectedQueryId: "92",
               },
-              selectedQueryId: "92",
             },
           },
         },
@@ -1127,15 +1196,17 @@ describe("custom list editor reducer", () => {
         id: "92",
       });
 
-      expect(nextState.searchParams.advanced.include.query).to.deep.equal({
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
         id: "91",
         key: "title",
         value: "foo",
       });
 
-      expect(nextState.searchParams.advanced.include.selectedQueryId).to.equal(
-        undefined
-      );
+      expect(
+        nextState.searchParams.current.advanced.include.selectedQueryId
+      ).to.equal(undefined);
     });
   });
 
@@ -1263,6 +1334,7 @@ describe("custom list editor reducer", () => {
           current: {
             ...initialState.properties.current,
             name: "Awesome List",
+            autoUpdate: false,
           },
         },
         isValid: false,
@@ -1417,6 +1489,7 @@ describe("custom list editor reducer", () => {
           current: {
             ...initialState.properties.current,
             name: "Awesome List",
+            autoUpdate: false,
           },
         },
         isValid: false,
@@ -1781,6 +1854,7 @@ describe("custom list editor reducer", () => {
             ...initialState.properties.current,
             name: "My New List",
             collections: [1, 2],
+            autoUpdate: false,
           },
         },
         entries: {
@@ -1818,18 +1892,21 @@ describe("custom list editor reducer", () => {
       const state = {
         ...initialState,
         searchParams: {
-          entryPoint: "Book",
-          terms: "foo bar baz",
-          sort: "title",
-          language: "eng",
-          advanced: {
-            include: {
-              query: null,
-              selectedQueryId: null,
-            },
-            exclude: {
-              query: null,
-              selectedQueryId: null,
+          ...initialState.searchParams,
+          current: {
+            entryPoint: "Book",
+            terms: "foo bar baz",
+            sort: "title",
+            language: "eng",
+            advanced: {
+              include: {
+                query: null,
+                selectedQueryId: null,
+              },
+              exclude: {
+                query: null,
+                selectedQueryId: null,
+              },
             },
           },
         },
@@ -1847,18 +1924,21 @@ describe("custom list editor reducer", () => {
       const state = {
         ...initialState,
         searchParams: {
-          entryPoint: "All",
-          terms: "foo bar baz",
-          sort: "title",
-          language: "eng",
-          advanced: {
-            include: {
-              query: null,
-              selectedQueryId: null,
-            },
-            exclude: {
-              query: null,
-              selectedQueryId: null,
+          ...initialState.searchParams,
+          current: {
+            entryPoint: "All",
+            terms: "foo bar baz",
+            sort: "title",
+            language: "eng",
+            advanced: {
+              include: {
+                query: null,
+                selectedQueryId: null,
+              },
+              exclude: {
+                query: null,
+                selectedQueryId: null,
+              },
             },
           },
         },
@@ -1874,18 +1954,21 @@ describe("custom list editor reducer", () => {
       const state = {
         ...initialState,
         searchParams: {
-          entryPoint: "All",
-          terms: "foo bar baz",
-          sort: null,
-          language: "eng",
-          advanced: {
-            include: {
-              query: null,
-              selectedQueryId: null,
-            },
-            exclude: {
-              query: null,
-              selectedQueryId: null,
+          ...initialState.searchParams,
+          current: {
+            entryPoint: "All",
+            terms: "foo bar baz",
+            sort: null,
+            language: "eng",
+            advanced: {
+              include: {
+                query: null,
+                selectedQueryId: null,
+              },
+              exclude: {
+                query: null,
+                selectedQueryId: null,
+              },
             },
           },
         },
@@ -1901,18 +1984,21 @@ describe("custom list editor reducer", () => {
       const state = {
         ...initialState,
         searchParams: {
-          entryPoint: "All",
-          terms: "foo bar baz",
-          sort: null,
-          language: null,
-          advanced: {
-            include: {
-              query: null,
-              selectedQueryId: null,
-            },
-            exclude: {
-              query: null,
-              selectedQueryId: null,
+          ...initialState.searchParams,
+          current: {
+            entryPoint: "All",
+            terms: "foo bar baz",
+            sort: null,
+            language: null,
+            advanced: {
+              include: {
+                query: null,
+                selectedQueryId: null,
+              },
+              exclude: {
+                query: null,
+                selectedQueryId: null,
+              },
             },
           },
         },

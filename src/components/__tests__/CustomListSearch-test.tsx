@@ -61,14 +61,6 @@ describe("CustomListSearch", () => {
     );
   });
 
-  it("calls search when the search button is clicked", () => {
-    const searchButton = wrapper.find(".search-titles > button");
-
-    searchButton.simulate("click");
-
-    expect(search.callCount).to.equal(1);
-  });
-
   it("renders a radio button for each entry point", () => {
     const entryPointOptions = wrapper.find(".entry-points").find(".form-group");
 
