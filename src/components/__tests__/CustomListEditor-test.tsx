@@ -246,7 +246,7 @@ describe("CustomListEditor", () => {
     getEntriesStub.restore();
   });
 
-  it("shouldn't allow you to save unless the list has a title and entries", () => {
+  it("enables the save button when the list has changes and is valid", () => {
     wrapper = mount(
       <CustomListEditor
         library={library}
@@ -263,21 +263,65 @@ describe("CustomListEditor", () => {
       { context: fullContext, childContextTypes }
     );
 
-    let saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
-    expect(saveButton.props().disabled).to.equal(true);
+    wrapper.instance().hasChanges = () => true;
+    wrapper.instance().isValid = () => true;
 
-    wrapper.setState({ title: "new list title" });
-    saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
+    wrapper.setProps({});
 
-    expect(saveButton.props().disabled).to.equal(true);
-
-    wrapper.setState({
-      title: "new list title",
-      entries: [{ id: "1234", title: "a", authors: [] }],
-    });
-    saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
-
+    const saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
     expect(saveButton.props().disabled).to.equal(false);
+  });
+
+  it("disables the save button when the list does not have changes", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library={library}
+        languages={languages}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryPoints={entryPoints}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    wrapper.instance().hasChanges = () => false;
+    wrapper.instance().isValid = () => true;
+
+    wrapper.setProps({});
+
+    const saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
+    expect(saveButton.props().disabled).to.equal(true);
+  });
+
+  it("disables the save button when the list is invalid", () => {
+    wrapper = mount(
+      <CustomListEditor
+        library={library}
+        languages={languages}
+        searchResults={searchResults}
+        editCustomList={editCustomList}
+        search={search}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryPoints={entryPoints}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    wrapper.instance().hasChanges = () => true;
+    wrapper.instance().isValid = () => false;
+
+    wrapper.setProps({});
+
+    const saveButton = wrapper.find(".save-or-cancel-list").find(Button).at(0);
+    expect(saveButton.props().disabled).to.equal(true);
   });
 
   it("navigates to edit page after a new list is created", async () => {
@@ -726,25 +770,86 @@ describe("CustomListEditor", () => {
       expect(hasChanges).to.equal(true);
     });
   });
-  it("should know whether the list title is blank, or there are no entries", () => {
-    // There is a list property with a title and entries
-    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.false;
-    wrapper.setProps({ list: null });
-    wrapper.setState({ entries: [] });
-    wrapper.setState({ title: null });
-    // New list, no title
-    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
-    // New list, title is still just the placeholder
-    wrapper.setState({ title: "list title" });
-    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
-    // New list, placeholder has been deleted.
-    wrapper.setState({ title: "" });
-    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
-    // Adding a title, but no entries...
-    wrapper.setState({ title: "testing..." });
-    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.true;
-    // Adding entries...
-    wrapper.setState({ entries: [{ id: "1234", title: "a", authors: [] }] });
-    expect(wrapper.instance().isTitleOrEntriesEmpty()).to.be.false;
+
+  describe("isValid", () => {
+    it("should return false if the title is blank", () => {
+      wrapper.setState({
+        title: "",
+        entries: [{ id: "1234", title: "a", authors: [] }],
+        collections: [{ id: 2, name: "collection 2", protocol: "protocol" }],
+      });
+
+      expect(wrapper.instance().isValid()).to.be.false;
+    });
+
+    it("should return false if the title is null", () => {
+      wrapper.setState({
+        title: null,
+        entries: [{ id: "1234", title: "a", authors: [] }],
+        collections: [{ id: 2, name: "collection 2", protocol: "protocol" }],
+      });
+
+      expect(wrapper.instance().isValid()).to.be.false;
+    });
+
+    it("should return false if the title is undefined", () => {
+      wrapper.setState({
+        title: undefined,
+        entries: [{ id: "1234", title: "a", authors: [] }],
+        collections: [{ id: 2, name: "collection 2", protocol: "protocol" }],
+      });
+
+      expect(wrapper.instance().isValid()).to.be.false;
+    });
+
+    it("should return false if entries and collections are both null", () => {
+      wrapper.setState({
+        title: "List 1",
+        entries: null,
+        collections: null,
+      });
+
+      expect(wrapper.instance().isValid()).to.be.false;
+    });
+
+    it("should return false if entries and collections are both undefined", () => {
+      wrapper.setState({
+        title: "List 1",
+        entries: undefined,
+        collections: undefined,
+      });
+
+      expect(wrapper.instance().isValid()).to.be.false;
+    });
+
+    it("should return false if entries and collections are both empty", () => {
+      wrapper.setState({
+        title: "List 1",
+        entries: [],
+        collections: [],
+      });
+
+      expect(wrapper.instance().isValid()).to.be.false;
+    });
+
+    it("should return true if title is not blank and entries is not empty", () => {
+      wrapper.setState({
+        title: "List 1",
+        entries: [{ id: "1234", title: "a", authors: [] }],
+        collections: [],
+      });
+
+      expect(wrapper.instance().isValid()).to.be.true;
+    });
+
+    it("should return true if title is not blank and collections is not empty", () => {
+      wrapper.setState({
+        title: "List 1",
+        entries: [],
+        collections: [{ id: 2, name: "collection 2", protocol: "protocol" }],
+      });
+
+      expect(wrapper.instance().isValid()).to.be.true;
+    });
   });
 });

@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.0.10
+
+#### Fixed
+
+- When editing lists, the save button is now correctly enabled when a collection is selected, even if no books have been added.
+
 ### v0.0.9
 
 #### Updated
