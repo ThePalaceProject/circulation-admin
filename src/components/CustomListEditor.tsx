@@ -74,7 +74,7 @@ export default class CustomListEditor extends React.Component<
     const hasChanges = this.hasChanges();
     // The "save this list" button should be disabled if there are no changes
     // or if the list's title is empty.
-    const disableSave = this.isTitleOrEntriesEmpty() || !hasChanges;
+    const disableSave = !hasChanges || !this.isValid();
     return (
       <div className="custom-list-editor">
         <div className="custom-list-editor-header">
@@ -222,22 +222,17 @@ export default class CustomListEditor extends React.Component<
     }
   }
 
-  isTitleOrEntriesEmpty(): boolean {
-    // Checks if the list is in a saveable state (aka, has a title and books).
-    if (
-      (this.props.list?.title || this.state.title) &&
-      this.state.title !== "list title" &&
-      this.state.entries.length
-    ) {
-      return false;
-    } else {
-      return (
-        !this.state.title ||
-        this.state.title === "list title" ||
-        this.state.title === "" ||
-        this.state.entries.length === 0
-      );
-    }
+  /**
+   * Determines if the list being edited is valid. The list is considered valid if:
+   * - The title is not empty
+   * - At least one collection is selected, or at least one book has been added
+   *
+   * @returns true if the list is valid, false otherwise
+   */
+  isValid(): boolean {
+    const { collections, entries, title } = this.state;
+
+    return !!(title && (collections?.length || entries?.length));
   }
 
   hasChanges(): boolean {
@@ -246,7 +241,7 @@ export default class CustomListEditor extends React.Component<
     let entriesChanged =
       this.props.list &&
       !!this.props.list.books &&
-      this.props.list.books.length !== this.state.entries.length;
+      this.props.list.books.length !== this.state.entries?.length;
     // If the current list is new then this.props.list will be undefined, but
     // the state for the entries or title can be populated so there's a need to check.
     if (!this.props.list) {
@@ -269,14 +264,14 @@ export default class CustomListEditor extends React.Component<
     let collectionsChanged = false;
     if (
       this.props.listCollections &&
-      this.props.listCollections.length !== this.state.collections.length
+      this.props.listCollections.length !== this.state.collections?.length
     ) {
       collectionsChanged = true;
     } else {
       const propsIds = (this.props.listCollections || [])
         .map((collection) => collection.id)
         .sort();
-      const stateIds = this.state.collections
+      const stateIds = (this.state.collections || [])
         .map((collection) => collection.id)
         .sort();
       for (let i = 0; i < propsIds.length; i++) {
@@ -306,13 +301,13 @@ export default class CustomListEditor extends React.Component<
     });
   }
 
-  hasCollection(collection: AdminCollectionData) {
-    for (const stateCollection of this.state.collections) {
-      if (stateCollection.id === collection.id) {
-        return true;
-      }
-    }
-    return false;
+  hasCollection(collection: AdminCollectionData): boolean {
+    const { collections } = this.state;
+
+    return !!(
+      collections &&
+      collections.find((candidate) => candidate.id === collection.id)
+    );
   }
 
   changeCollection(collection: AdminCollectionData) {
