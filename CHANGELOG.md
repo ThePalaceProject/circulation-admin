@@ -6,12 +6,15 @@
 
 - When editing lists, the save button is now correctly enabled when a collection is selected, even if no books have been added.
 
+#### Updated
+
+- Removed Admins tab from System Configuration screen for non-admin users.
+
 ### v0.0.9
 
 #### Updated
 
 - Removed circulation buttons (Borrow, Download, Read) from book details screen.
-- Removed Admins tab from System Configuration screen for non-admin users.
 
 ### v0.0.8
 
