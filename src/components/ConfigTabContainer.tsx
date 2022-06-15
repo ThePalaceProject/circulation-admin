@@ -60,8 +60,8 @@ export default class ConfigTabContainer extends TabContainer<
     discovery: DiscoveryServices,
   };
 
-  LIBRARIAN_TABS = ["libraries", "individualAdmins"];
-  LIBRARY_MANAGER_TABS = this.LIBRARIAN_TABS;
+  LIBRARIAN_TABS = ["libraries"];
+  LIBRARY_MANAGER_TABS = [...this.LIBRARIAN_TABS, "individualAdmins"];
   SYSTEM_ADMIN_TABS = Object.keys(this.COMPONENT_CLASSES);
 
   DISPLAY_NAMES = {

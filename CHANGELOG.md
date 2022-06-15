@@ -11,6 +11,7 @@
 #### Updated
 
 - Removed circulation buttons (Borrow, Download, Read) from book details screen.
+- Removed Admins tab from System Configuration screen for non-admin users.
 
 ### v0.0.8
 

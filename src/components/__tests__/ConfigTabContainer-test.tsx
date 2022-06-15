@@ -180,14 +180,13 @@ describe("ConfigTabContainer", () => {
 
     it("shows tabs", () => {
       const links = wrapper.find("ul.nav-tabs").find("a");
-      expect(links.length).to.equal(2);
+      expect(links.length).to.equal(1);
       const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Libraries");
-      expect(linkTexts).to.contain("Admins");
     });
 
     it("shows components", () => {
-      const expectedComponentClasses = [Libraries, IndividualAdmins];
+      const expectedComponentClasses = [Libraries];
       for (const componentClass of expectedComponentClasses) {
         const component = wrapper.find(componentClass);
         expect(component.props().csrfToken).to.equal("token");
@@ -196,6 +195,7 @@ describe("ConfigTabContainer", () => {
       }
       const hiddenComponentClasses = [
         Collections,
+        IndividualAdmins,
         AdminAuthServices,
         PatronAuthServices,
         SitewideSettings,
