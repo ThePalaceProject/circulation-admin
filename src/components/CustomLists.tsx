@@ -18,6 +18,11 @@ import {
   LanguagesData,
 } from "../interfaces";
 import Admin from "../models/Admin";
+import {
+  CustomListEditorProperties,
+  CustomListEditorEntriesData,
+  CustomListEditorSearchParams,
+} from "../reducers/customListEditor";
 import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
@@ -25,10 +30,14 @@ import ErrorMessage from "./ErrorMessage";
 import CustomListsSidebar from "./CustomListsSidebar";
 
 export interface CustomListsStateProps {
+  customListEditorProperties?: CustomListEditorProperties;
+  customListEditorSearchParams?: CustomListEditorSearchParams;
+  customListEditorEntries?: CustomListEditorEntriesData;
+  customListEditorIsValid?: boolean;
+  customListEditorIsModified?: boolean;
   lists: CustomListData[];
   listDetails?: CollectionData;
   collections: AdminCollectionData[];
-  responseBody?: string;
   searchResults: CollectionData;
   fetchError?: FetchErrorData;
   isFetching: boolean;
@@ -43,11 +52,20 @@ export interface CustomListsDispatchProps {
   fetchLanes: () => Promise<LanesData>;
   fetchCustomLists: () => Promise<CustomListsData>;
   fetchCustomListDetails: (listId: string) => Promise<CollectionData>;
-  editCustomList: (data: FormData, listId?: string) => Promise<void>;
+  openCustomListEditor: (listId: string) => void;
+  saveCustomListEditor: () => Promise<void>;
+  resetCustomListEditor?: () => void;
+  executeCustomListEditorSearch?: () => void;
+  updateCustomListEditorProperty?: (name: string, value) => void;
+  toggleCustomListEditorCollection?: (id: number) => void;
+  updateCustomListEditorSearchParam?: (name: string, value) => void;
+  addCustomListEditorEntry?: (id: string) => void;
+  addAllCustomListEditorEntries?: () => void;
+  deleteCustomListEditorEntry?: (id: string) => void;
+  deleteAllCustomListEditorEntries?: () => void;
   deleteCustomList: (listId: string) => Promise<void>;
-  search: (url: string) => Promise<CollectionData>;
-  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  loadMoreEntries: (url: string) => Promise<CollectionData>;
+  loadMoreSearchResults: () => void;
+  loadMoreEntries: () => void;
   fetchCollections: () => Promise<CollectionsData>;
   fetchLibraries: () => void;
   fetchLanguages: () => void;
@@ -86,7 +104,7 @@ export class CustomLists extends React.Component<
 
   constructor(props) {
     super(props);
-    this.editCustomList = this.editCustomList.bind(this);
+    this.saveCustomListEditor = this.saveCustomListEditor.bind(this);
     this.deleteCustomList = this.deleteCustomList.bind(this);
     this.changeSort = this.changeSort.bind(this);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
@@ -96,18 +114,6 @@ export class CustomLists extends React.Component<
   }
 
   render(): JSX.Element {
-    let listCollections = [];
-    let entryCount;
-
-    if (this.props.lists) {
-      this.props.lists.forEach((list) => {
-        if (list.id === parseInt(this.props.identifier, 10)) {
-          entryCount = list.entry_count;
-          listCollections = list.collections;
-        }
-      });
-    }
-
     return (
       <main className="custom-lists-container">
         {this.props.fetchError && (
@@ -116,8 +122,7 @@ export class CustomLists extends React.Component<
         {this.props.isFetching && <LoadingIndicator />}
         <div className="custom-lists">
           {this.renderSidebar()}
-          {this.props.editOrCreate &&
-            this.renderEditor(entryCount, listCollections)}
+          {this.props.editOrCreate && this.renderEditor()}
         </div>
       </main>
     );
@@ -139,10 +144,16 @@ export class CustomLists extends React.Component<
     );
   }
 
-  renderEditor(entryCount, listCollections): JSX.Element {
+  renderEditor(): JSX.Element {
     const editorProps = {
       collections: this.collectionsForLibrary(),
-      editCustomList: this.editCustomList,
+      properties: this.props.customListEditorProperties,
+      searchParams: this.props.customListEditorSearchParams,
+      isValid: this.props.customListEditorIsValid,
+      isModified: this.props.customListEditorIsModified,
+      entries: this.props.customListEditorEntries,
+      save: this.saveCustomListEditor,
+      reset: this.props.resetCustomListEditor,
       entryPoints: this.getEnabledEntryPoints(this.props.libraries),
       isFetchingMoreCustomListEntries: this.props
         .isFetchingMoreCustomListEntries,
@@ -151,63 +162,82 @@ export class CustomLists extends React.Component<
       library: this.props.libraries?.find(
         (l) => l.short_name === this.props.library
       ),
-      loadMoreEntries: this.props.loadMoreEntries,
-      loadMoreSearchResults: this.props.loadMoreSearchResults,
-      search: this.props.search,
+      loadMoreEntries:
+        this.props.listDetails?.nextPageUrl && this.props.loadMoreEntries,
+      loadMoreSearchResults:
+        this.props.searchResults?.nextPageUrl &&
+        this.props.loadMoreSearchResults,
+      search: this.props.executeCustomListEditorSearch,
       searchResults: this.props.searchResults,
+      updateProperty: this.props.updateCustomListEditorProperty,
+      toggleCollection: this.props.toggleCustomListEditorCollection,
+      updateSearchParam: this.props.updateCustomListEditorSearchParam,
+      addEntry: this.props.addCustomListEditorEntry,
+      addAllEntries: this.props.addAllCustomListEditorEntries,
+      deleteEntry: this.props.deleteCustomListEditorEntry,
+      deleteAllEntries: this.props.deleteAllCustomListEditorEntries,
     };
     const extraProps =
       this.props.editOrCreate === "create"
-        ? {
-            responseBody: this.props.responseBody,
-            startingTitle: this.props.startingTitle,
-          }
-        : {
-            entryCount: entryCount,
-            list: this.props.listDetails,
-            listCollections: listCollections,
-            listId: this.props.identifier,
-          };
+        ? { startingTitle: this.props.startingTitle }
+        : { listId: this.props.identifier };
+
     return <CustomListEditor {...{ ...editorProps, ...extraProps }} />;
   }
 
   UNSAFE_componentWillMount() {
-    if (this.props.fetchCustomLists) {
-      this.props.fetchCustomLists();
+    const {
+      editOrCreate,
+      fetchCollections,
+      fetchCustomListDetails,
+      fetchCustomLists,
+      fetchLibraries,
+      fetchLanguages,
+      identifier,
+      openCustomListEditor,
+    } = this.props;
+
+    fetchCustomLists?.();
+    openCustomListEditor?.(identifier);
+
+    if (editOrCreate === "edit") {
+      fetchCustomListDetails?.(identifier);
     }
-    if (
-      this.props.editOrCreate === "edit" &&
-      this.props.fetchCustomListDetails
-    ) {
-      this.props.fetchCustomListDetails(this.props.identifier);
-    }
-    if (this.props.fetchCollections) {
-      this.props.fetchCollections();
-    }
-    this.props.fetchLibraries();
-    this.props.fetchLanguages();
+
+    fetchCollections?.();
+    fetchLibraries?.();
+    fetchLanguages?.();
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     // If we've fetched lists but we're not on the edit or create page,
     // redirect to the edit page for the first list, or the create page
     // if there are no lists.
-    if (!nextProps.editOrCreate && nextProps.lists && !nextProps.fetchError) {
-      if (nextProps.lists.length === 0) {
+
+    const { editOrCreate, fetchError, lists } = nextProps;
+
+    if (!editOrCreate && lists && !fetchError) {
+      if (lists.length === 0) {
         window.location.href += "/create";
       } else {
-        const firstList = this.sortedLists(nextProps.lists)[0];
+        const firstList = this.sortedLists(lists)[0];
         window.location.href += "/edit/" + firstList.id;
       }
     }
 
+    const {
+      identifier,
+      fetchCustomListDetails,
+      openCustomListEditor,
+    } = nextProps;
+
     // If we switched lists, fetch the details for the new list.
-    if (
-      nextProps.identifier &&
-      nextProps.fetchCustomListDetails &&
-      nextProps.identifier !== this.props.identifier
-    ) {
-      nextProps.fetchCustomListDetails(nextProps.identifier);
+    if (identifier !== this.props.identifier) {
+      openCustomListEditor?.(identifier);
+
+      if (identifier) {
+        fetchCustomListDetails?.(identifier);
+      }
     }
   }
 
@@ -255,9 +285,13 @@ export class CustomLists extends React.Component<
     return library.settings.enabled_entry_points || [];
   }
 
-  async editCustomList(data: FormData, listId?: string): Promise<void> {
-    await this.props.editCustomList(data, listId);
+  async saveCustomListEditor() {
+    const { identifier: listId } = this.props;
+
+    await this.props.saveCustomListEditor();
+
     this.props.fetchCustomLists();
+
     if (listId) {
       this.props.fetchCustomListDetails(listId);
     }
@@ -334,6 +368,12 @@ export class CustomLists extends React.Component<
 
 function mapStateToProps(state, ownProps) {
   return {
+    customListEditorProperties:
+      state.editor.customListEditor.properties.current,
+    customListEditorSearchParams: state.editor.customListEditor.searchParams,
+    customListEditorEntries: state.editor.customListEditor.entries,
+    customListEditorIsValid: state.editor.customListEditor.isValid,
+    customListEditorIsModified: state.editor.customListEditor.isModified,
     lists:
       state.editor.customLists &&
       state.editor.customLists.data &&
@@ -343,8 +383,6 @@ function mapStateToProps(state, ownProps) {
     isFetchingMoreCustomListEntries:
       state.editor.customListDetails &&
       state.editor.customListDetails.isFetchingMoreEntries,
-    responseBody:
-      state.editor.customLists && state.editor.customLists.successMessage,
     fetchError:
       state.editor.customLists.fetchError ||
       state.editor.collections.fetchError,
@@ -378,18 +416,36 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(actions.fetchCustomLists(ownProps.library)),
     fetchCustomListDetails: (listId: string) =>
       dispatch(actions.fetchCustomListDetails(ownProps.library, listId)),
-    editCustomList: (data: FormData, listId?: string) =>
-      dispatch(actions.editCustomList(ownProps.library, data, listId)),
+    saveCustomListEditor: () =>
+      dispatch(actions.saveCustomListEditor(ownProps.library)),
+    resetCustomListEditor: () => dispatch(actions.resetCustomListEditor()),
+    executeCustomListEditorSearch: () =>
+      dispatch(actions.executeCustomListEditorSearch(ownProps.library)),
+    loadMoreSearchResults: () =>
+      dispatch(actions.fetchMoreCustomListEditorSearchResults()),
     deleteCustomList: (listId: string) =>
       dispatch(actions.deleteCustomList(ownProps.library, listId)),
-    search: (url: string) => dispatch(actions.fetchCollection(url)),
-    loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),
-    loadMoreEntries: (url: string) =>
-      dispatch(actions.fetchMoreCustomListEntries(url)),
+    openCustomListEditor: (listId: string) =>
+      dispatch(actions.openCustomListEditor(listId)),
+    loadMoreEntries: () => dispatch(actions.fetchMoreCustomListEntries()),
     fetchCollections: () => dispatch(actions.fetchCollections()),
     fetchLibraries: () => dispatch(actions.fetchLibraries()),
     fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
     fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    updateCustomListEditorProperty: (name: string, value) =>
+      dispatch(actions.updateCustomListEditorProperty(name, value)),
+    toggleCustomListEditorCollection: (id: number) =>
+      dispatch(actions.toggleCustomListEditorCollection(id)),
+    updateCustomListEditorSearchParam: (name: string, value) =>
+      dispatch(actions.updateCustomListEditorSearchParam(name, value)),
+    addCustomListEditorEntry: (id: string) =>
+      dispatch(actions.addCustomListEditorEntry(id)),
+    addAllCustomListEditorEntries: () =>
+      dispatch(actions.addAllCustomListEditorEntries()),
+    deleteCustomListEditorEntry: (id: string) =>
+      dispatch(actions.deleteCustomListEditorEntry(id)),
+    deleteAllCustomListEditorEntries: () =>
+      dispatch(actions.deleteAllCustomListEditorEntries()),
   };
 }
 

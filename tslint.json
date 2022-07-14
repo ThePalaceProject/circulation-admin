@@ -22,7 +22,8 @@
         ],
         "quotemark": [
             true,
-            "double"
+            "double",
+            "avoid-escape"
         ],
         "semicolon": true,
         "triple-equals": [

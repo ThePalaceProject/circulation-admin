@@ -30,6 +30,7 @@ import customLists from "./customLists";
 import customListDetails, {
   FetchMoreCustomListDetails,
 } from "./customListDetails";
+import customListEditor, { CustomListEditorState } from "./customListEditor";
 import lanes from "./lanes";
 import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
@@ -106,6 +107,7 @@ export interface State {
   collectionLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
   customListDetails: FetchMoreCustomListDetails<CollectionData>;
+  customListEditor: CustomListEditorState;
   collection: CollectionState;
   lanes: FetchEditState<LanesData>;
   laneVisibility: FetchEditState<void>;
@@ -150,6 +152,7 @@ export default combineReducers<State>({
   collectionLibraryRegistrations,
   customLists,
   customListDetails,
+  customListEditor,
   collection,
   lanes,
   laneVisibility,
