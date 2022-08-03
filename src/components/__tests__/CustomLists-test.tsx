@@ -16,15 +16,37 @@ describe("CustomLists", () => {
   let wrapper;
   let fetchCustomLists;
   let fetchCustomListDetails;
-  let editCustomList;
   let deleteCustomList;
-  let search;
+  let openCustomListEditor;
+  let saveCustomListEditor;
+  let executeCustomListEditorSearch;
   let loadMoreSearchResults;
   let loadMoreEntries;
   let fetchCollections;
   let fetchLibraries;
   let fetchLanes;
   let fetchLanguages;
+
+  const customListEditorProperties = {
+    name: "",
+    collections: [],
+  };
+
+  const customListEditorEntries = {
+    baseline: [],
+    baselineTotalCount: 0,
+    added: {},
+    removed: {},
+    current: [],
+    currentTotalCount: 0,
+  };
+
+  const customListEditorSearchParams = {
+    entryPoint: "All",
+    terms: "",
+    sort: null,
+    language: "all",
+  };
 
   const listsData = [
     { id: 1, name: "a list", entry_count: 0, collections: [] },
@@ -45,6 +67,7 @@ describe("CustomLists", () => {
     lanes: [],
     books: [],
     navigationLinks: [],
+    nextPageUrl: "http://next.page",
   };
 
   const collections = [
@@ -125,25 +148,23 @@ describe("CustomLists", () => {
   describe("on mount", () => {
     beforeEach(() => {
       fetchCustomLists = stub();
+      openCustomListEditor = stub();
       fetchCustomListDetails = stub();
-      editCustomList = stub().returns(
-        new Promise<void>((resolve) => resolve())
-      );
-      deleteCustomList = stub().returns(
-        new Promise<void>((resolve) => resolve())
-      );
-      search = stub();
+      saveCustomListEditor = stub().returns(Promise.resolve());
+      deleteCustomList = stub().returns(Promise.resolve());
+      executeCustomListEditorSearch = stub();
       loadMoreSearchResults = stub();
       loadMoreEntries = stub();
       fetchCollections = stub();
       fetchLibraries = stub();
-      fetchLanes = stub().returns(
-        new Promise<void>((resolve) => resolve())
-      );
+      fetchLanes = stub().returns(Promise.resolve());
       fetchLanguages = stub();
 
       wrapper = mount(
         <CustomLists
+          customListEditorProperties={customListEditorProperties}
+          customListEditorEntries={customListEditorEntries}
+          customListEditorSearchParams={customListEditorSearchParams}
           csrfToken="token"
           library="library"
           lists={listsData}
@@ -155,9 +176,10 @@ describe("CustomLists", () => {
           fetchLanguages={fetchLanguages}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
+          saveCustomListEditor={saveCustomListEditor}
           deleteCustomList={deleteCustomList}
-          search={search}
+          executeCustomListEditorSearch={executeCustomListEditorSearch}
+          openCustomListEditor={openCustomListEditor}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
           fetchCollections={fetchCollections}
@@ -215,9 +237,9 @@ describe("CustomLists", () => {
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
+          saveCustomListEditor={saveCustomListEditor}
           deleteCustomList={deleteCustomList}
-          search={search}
+          openCustomListEditor={openCustomListEditor}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
           fetchCollections={fetchCollections}
@@ -243,9 +265,9 @@ describe("CustomLists", () => {
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
+          saveCustomListEditor={saveCustomListEditor}
           deleteCustomList={deleteCustomList}
-          search={search}
+          openCustomListEditor={openCustomListEditor}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
           fetchCollections={fetchCollections}
@@ -274,9 +296,9 @@ describe("CustomLists", () => {
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
+          saveCustomListEditor={saveCustomListEditor}
           deleteCustomList={deleteCustomList}
-          search={search}
+          openCustomListEditor={openCustomListEditor}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
           fetchCollections={fetchCollections}
@@ -335,9 +357,9 @@ describe("CustomLists", () => {
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
+          saveCustomListEditor={saveCustomListEditor}
           deleteCustomList={deleteCustomList}
-          search={search}
+          openCustomListEditor={openCustomListEditor}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
           fetchCollections={fetchCollections}
@@ -403,12 +425,9 @@ describe("CustomLists", () => {
       );
     });
 
-    it("edits a list", () => {
-      const testData = new (window as any).FormData();
-      (wrapper.instance() as CustomLists).editCustomList(testData, "id");
-      expect(editCustomList.callCount).to.equal(1);
-      expect(editCustomList.args[0][0]).to.equal(testData);
-      expect(editCustomList.args[0][1]).to.equal("id");
+    it("saves a list", async () => {
+      (wrapper.instance() as CustomLists).saveCustomListEditor();
+      expect(saveCustomListEditor.callCount).to.equal(1);
     });
 
     it("renders create form", async () => {
@@ -420,12 +439,11 @@ describe("CustomLists", () => {
       expect(editor.length).to.equal(1);
       expect(editor.props().library).to.eql(libraries[0]);
       expect(editor.props().list).to.be.undefined;
-      expect(editor.props().search).to.equal(search);
+      expect(editor.props().search).to.equal(executeCustomListEditorSearch);
       expect(editor.props().loadMoreSearchResults).to.equal(
         loadMoreSearchResults
       );
       expect(editor.props().searchResults).to.equal(searchResults);
-      expect(editor.props().responseBody).to.be.undefined;
       expect(editor.props().isFetchingMoreSearchResults).to.equal(false);
       expect(editor.props().collections).to.deep.equal([
         collections[1],
@@ -434,14 +452,10 @@ describe("CustomLists", () => {
       expect(editor.props().languages).to.eql(languages);
 
       expect(fetchCustomLists.callCount).to.equal(1);
-      const editCustomListProp = editor.props().editCustomList;
-      await editCustomListProp();
-      expect(editCustomList.callCount).to.equal(1);
+      const save = editor.props().save;
+      await save();
+      expect(saveCustomListEditor.callCount).to.equal(1);
       expect(fetchCustomLists.callCount).to.equal(2);
-
-      wrapper.setProps({ responseBody: "5" });
-      editor = wrapper.find(CustomListEditor);
-      expect(editor.props().responseBody).to.equal("5");
     });
 
     it("renders edit form", () => {
@@ -452,9 +466,8 @@ describe("CustomLists", () => {
       wrapper.setProps({ editOrCreate: "edit", identifier: "2", listDetails });
       editor = wrapper.find(CustomListEditor);
       expect(editor.length).to.equal(1);
-      expect(editor.props().list).to.deep.equal(listDetails);
       expect(editor.props().library).to.eql(libraries[0]);
-      expect(editor.props().search).to.equal(search);
+      expect(editor.props().search).to.equal(executeCustomListEditorSearch);
       expect(editor.props().loadMoreSearchResults).to.equal(
         loadMoreSearchResults
       );
@@ -471,9 +484,7 @@ describe("CustomLists", () => {
       // When the component switches to a different list, it fetches the new
       // list details.
       const newListDetails = Object.assign({}, listsData[0], { entries: [] });
-      wrapper.setProps({ identifier: "1", listDetails: newListDetails });
-      editor = wrapper.find(CustomListEditor);
-      expect(editor.props().list).to.deep.equal(newListDetails);
+      wrapper.setProps({ identifier: "1" });
       expect(fetchCustomListDetails.callCount).to.equal(2);
     });
 
@@ -497,9 +508,9 @@ describe("CustomLists", () => {
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
+          saveCustomListEditor={saveCustomListEditor}
           deleteCustomList={deleteCustomList}
-          search={search}
+          openCustomListEditor={openCustomListEditor}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
           fetchCollections={fetchCollections}
@@ -529,21 +540,16 @@ describe("CustomLists", () => {
     beforeEach(() => {
       confirmStub = stub(window, "confirm");
       fetchCustomLists = stub();
+      openCustomListEditor = stub();
       fetchCustomListDetails = stub();
-      editCustomList = stub().returns(
-        new Promise<void>((resolve) => resolve())
-      );
-      deleteCustomList = stub().returns(
-        new Promise<void>((resolve) => resolve())
-      );
-      search = stub();
+      saveCustomListEditor = stub().returns(Promise.resolve());
+      deleteCustomList = stub().returns(Promise.resolve());
+      executeCustomListEditorSearch = stub();
       loadMoreSearchResults = stub();
       loadMoreEntries = stub();
       fetchCollections = stub();
       fetchLibraries = stub();
-      fetchLanes = stub().returns(
-        new Promise<void>((resolve) => resolve())
-      );
+      fetchLanes = stub().returns(Promise.resolve());
 
       wrapper = shallow(
         <CustomLists
@@ -557,9 +563,9 @@ describe("CustomLists", () => {
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
           fetchCustomListDetails={fetchCustomListDetails}
-          editCustomList={editCustomList}
+          saveCustomListEditor={saveCustomListEditor}
           deleteCustomList={deleteCustomList}
-          search={search}
+          openCustomListEditor={openCustomListEditor}
           loadMoreSearchResults={loadMoreSearchResults}
           loadMoreEntries={loadMoreEntries}
           fetchCollections={fetchCollections}
@@ -588,9 +594,7 @@ describe("CustomLists", () => {
       const getDeletedLanes = stub(
         wrapper.instance() as CustomLists,
         "getDeletedLanes"
-      ).returns(
-        new Promise<void>((resolve) => resolve())
-      );
+      ).returns(Promise.resolve());
 
       // The instance's `deleteCustomList` function needs a CustomListData
       // list which is one sorted object from full list of lists. The first

@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.0.11
+
+#### Fixed
+
+- When editing lists, the Save and Cancel buttons are now correctly disabled when a new list is opened, before any changes have been made.
+
 ### v0.0.10
 
 #### Fixed

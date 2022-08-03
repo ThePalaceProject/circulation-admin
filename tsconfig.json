@@ -4,7 +4,7 @@
     "module": "commonjs",
     "target": "es5",
     "outDir": "lib",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2019", "dom"],
     "rootDir": "src",
     "types": ["mocha", "node"],
     "jsx": "react"

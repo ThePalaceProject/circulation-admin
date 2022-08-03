@@ -941,13 +941,33 @@ describe("actions", () => {
   describe("fetchMoreCustomListEntries", () => {
     it("dispatches request and load", async () => {
       const dispatch = stub();
+
+      const getState = stub().returns({
+        editor: {
+          customListDetails: {
+            data: {
+              nextPageUrl: "url",
+            },
+            isFetchingMoreEntries: false,
+          },
+        },
+      });
+
       const customListDetailsData = {
         title: "custom list",
       };
       fetcher.testData = customListDetailsData;
       fetcher.resolve = true;
 
-      const data = await actions.fetchMoreCustomListEntries("url")(dispatch);
+      // FIXME: This is a bit of a hack that requires knowing that the implementation of
+      // fetchMoreCustomListEntries calls dispatch internally on another action creator.
+      // These tests should all be refactored at some point to account for this case.
+      const outerDispatch = (action) => action(dispatch);
+
+      const data = await actions.fetchMoreCustomListEntries()(
+        outerDispatch,
+        getState
+      );
 
       expect(dispatch.callCount).to.equal(3);
       expect(dispatch.args[0][0].type).to.equal(
