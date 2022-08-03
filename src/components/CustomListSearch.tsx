@@ -38,7 +38,6 @@ const sorts = [
 
 const CustomListSearch = ({
   entryPoints,
-  // languages,
   library,
   searchParams,
   startingTitle,
