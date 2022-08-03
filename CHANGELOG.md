@@ -6,6 +6,10 @@
 
 - When editing lists, the Save and Cancel buttons are now correctly disabled when a new list is opened, before any changes have been made.
 
+#### Updated
+
+- Advanced searches can now be executed to select books to add to lists, including the ability to filter on specific fields using various operators, and to combine multiple filters.
+
 ### v0.0.10
 
 #### Fixed
