@@ -90,6 +90,16 @@ describe("CustomListEditor", () => {
     terms: "",
     sort: null,
     language: "all",
+    advanced: {
+      include: {
+        query: null,
+        selectedQueryId: null,
+      },
+      exclude: {
+        query: null,
+        selectedQueryId: null,
+      },
+    },
   };
 
   beforeEach(() => {
@@ -187,9 +197,10 @@ describe("CustomListEditor", () => {
   });
 
   it("shows collections", () => {
-    const inputs = wrapper.find(EditableInput);
+    const collectionsPanel = wrapper.find("#add-from-collections-panel");
+    const inputs = collectionsPanel.find(EditableInput);
 
-    expect(inputs.length).to.equal(9);
+    expect(inputs.length).to.equal(3);
 
     expect(inputs.at(0).props().label).to.equal("collection 1");
     expect(inputs.at(0).props().value).to.equal(1);

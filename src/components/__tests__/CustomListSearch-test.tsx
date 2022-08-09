@@ -6,6 +6,7 @@ import CustomListSearch from "../CustomListSearch";
 
 describe("CustomListSearch", () => {
   let wrapper;
+  let addAdvSearchQuery;
   let search;
   let updateSearchParam;
 
@@ -25,6 +26,16 @@ describe("CustomListSearch", () => {
     terms: "foo bar",
     sort: "title",
     language: "English",
+    advanced: {
+      include: {
+        query: null,
+        selectedQueryId: null,
+      },
+      exclude: {
+        query: null,
+        selectedQueryId: null,
+      },
+    },
   };
 
   const languages = {
@@ -34,6 +45,7 @@ describe("CustomListSearch", () => {
   };
 
   beforeEach(() => {
+    addAdvSearchQuery = stub();
     search = stub();
     updateSearchParam = stub();
 
@@ -49,10 +61,10 @@ describe("CustomListSearch", () => {
     );
   });
 
-  it("calls search when the form is submitted", () => {
-    const searchForm = wrapper.find("form");
+  it("calls search when the search button is clicked", () => {
+    const searchButton = wrapper.find(".search-titles > button");
 
-    searchForm.simulate("submit");
+    searchButton.simulate("click");
 
     expect(search.callCount).to.equal(1);
   });
@@ -106,22 +118,6 @@ describe("CustomListSearch", () => {
     expect(updateSearchParam.args[0]).to.deep.equal(["entryPoint", "Audio"]);
   });
 
-  it("renders a text input for the search terms", () => {
-    const input = wrapper.find(".form-control") as any;
-
-    expect(input.getDOMNode().value).equals("foo bar");
-  });
-
-  it("calls updateSearchParam when the value of the search terms input changes", () => {
-    const input = wrapper.find(".form-control") as any;
-
-    input.getDOMNode().value = "baz";
-    input.simulate("change");
-
-    expect(updateSearchParam.callCount).to.equal(1);
-    expect(updateSearchParam.args[0]).to.deep.equal(["terms", "baz"]);
-  });
-
   it("renders a radio button for each sort option", () => {
     const sortOptions = wrapper.find(".search-options").find(".form-group");
 
@@ -129,12 +125,12 @@ describe("CustomListSearch", () => {
 
     const relevance = sortOptions.at(0);
 
-    expect(relevance.text()).to.equal("Relevance (default)");
+    expect(relevance.text()).to.equal("Relevance");
 
     const relevanceRadio = relevance.find("input");
 
     expect(relevanceRadio.props().type).to.equal("radio");
-    expect(relevanceRadio.props().name).to.be.null;
+    expect(relevanceRadio.props().name).to.equal("sort-selection");
     expect(relevanceRadio.props().value).to.equal("");
     expect(relevanceRadio.props().checked).to.be.false;
 
@@ -145,7 +141,7 @@ describe("CustomListSearch", () => {
     const titleRadio = title.find("input");
 
     expect(titleRadio.props().type).to.equal("radio");
-    expect(titleRadio.props().name).to.equal("title");
+    expect(titleRadio.props().name).to.equal("sort-selection");
     expect(titleRadio.props().value).to.equal("title");
     expect(titleRadio.props().checked).to.be.true;
 
@@ -156,7 +152,7 @@ describe("CustomListSearch", () => {
     const authorRadio = author.find("input");
 
     expect(authorRadio.props().type).to.equal("radio");
-    expect(authorRadio.props().name).to.equal("author");
+    expect(authorRadio.props().name).to.equal("sort-selection");
     expect(authorRadio.props().value).to.equal("author");
     expect(authorRadio.props().checked).to.be.false;
   });
@@ -171,41 +167,7 @@ describe("CustomListSearch", () => {
     expect(updateSearchParam.args[0]).to.deep.equal(["sort", "author"]);
   });
 
-  it("renders a dropdown with an option for each language", () => {
-    const languageFieldset = wrapper.find("fieldset").at(2);
-
-    expect(languageFieldset.find("legend").text()).to.equal(
-      "Filter by language:"
-    );
-
-    const languageMenu = languageFieldset.find("select");
-    const options = languageMenu.find("option");
-
-    expect(options.at(0).prop("value")).to.equal("all");
-    expect(options.at(0).text()).to.equal("All");
-
-    expect(options.at(1).prop("value")).to.equal("eng");
-    expect(options.at(1).text()).to.equal("English");
-
-    expect(options.at(2).prop("value")).to.equal("fre");
-    expect(options.at(2).text()).to.equal("French");
-
-    expect(options.at(3).prop("value")).to.equal("spa");
-    expect(options.at(3).text()).to.equal("Spanish; Castilian");
-  });
-
-  it("calls updateSearchParam when the value of the language dropdown changes", () => {
-    const languageFieldset = wrapper.find("fieldset").at(2);
-    const languageMenu = languageFieldset.find("select");
-
-    languageMenu.getDOMNode().value = "fre";
-    languageMenu.simulate("change");
-
-    expect(updateSearchParam.callCount).to.equal(1);
-    expect(updateSearchParam.args[0]).to.deep.equal(["language", "fre"]);
-  });
-
-  it("calls updateSearchParam and search when mounted if there is a startingTitle", () => {
+  it("calls addAdvSearchQuery and search when mounted if there is a startingTitle", () => {
     wrapper = mount(
       <CustomListSearch
         entryPoints={entryPoints}
@@ -214,12 +176,20 @@ describe("CustomListSearch", () => {
         search={search}
         searchParams={searchParams}
         startingTitle="test"
-        updateSearchParam={updateSearchParam}
+        addAdvSearchQuery={addAdvSearchQuery}
       />
     );
 
-    expect(updateSearchParam.callCount).to.equal(1);
-    expect(updateSearchParam.args[0]).to.deep.equal(["terms", "test"]);
+    expect(addAdvSearchQuery.callCount).to.equal(1);
+
+    expect(addAdvSearchQuery.args[0]).to.deep.equal([
+      "include",
+      {
+        key: "title",
+        op: "eq",
+        value: "test",
+      },
+    ]);
 
     expect(search.callCount).to.equal(1);
   });

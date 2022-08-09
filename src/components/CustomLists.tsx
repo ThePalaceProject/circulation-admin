@@ -8,6 +8,7 @@ import ActionCreator from "../actions";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
 import {
+  AdvancedSearchQuery,
   CustomListData,
   CustomListsData,
   CollectionsData,
@@ -59,6 +60,28 @@ export interface CustomListsDispatchProps {
   updateCustomListEditorProperty?: (name: string, value) => void;
   toggleCustomListEditorCollection?: (id: number) => void;
   updateCustomListEditorSearchParam?: (name: string, value) => void;
+  addCustomListEditorAdvSearchQuery?: (
+    builderName: string,
+    query: AdvancedSearchQuery
+  ) => void;
+  updateCustomListEditorAdvSearchQueryBoolean?: (
+    builderName: string,
+    id: string,
+    bool: string
+  ) => void;
+  moveCustomListEditorAdvSearchQuery?: (
+    builderName: string,
+    id: string,
+    targetId: string
+  ) => void;
+  removeCustomListEditorAdvSearchQuery?: (
+    builderName: string,
+    id: string
+  ) => void;
+  selectCustomListEditorAdvSearchQuery?: (
+    builderName: string,
+    id: string
+  ) => void;
   addCustomListEditorEntry?: (id: string) => void;
   addAllCustomListEditorEntries?: () => void;
   deleteCustomListEditorEntry?: (id: string) => void;
@@ -172,6 +195,12 @@ export class CustomLists extends React.Component<
       updateProperty: this.props.updateCustomListEditorProperty,
       toggleCollection: this.props.toggleCustomListEditorCollection,
       updateSearchParam: this.props.updateCustomListEditorSearchParam,
+      addAdvSearchQuery: this.props.addCustomListEditorAdvSearchQuery,
+      updateAdvSearchQueryBoolean: this.props
+        .updateCustomListEditorAdvSearchQueryBoolean,
+      moveAdvSearchQuery: this.props.moveCustomListEditorAdvSearchQuery,
+      removeAdvSearchQuery: this.props.removeCustomListEditorAdvSearchQuery,
+      selectAdvSearchQuery: this.props.selectCustomListEditorAdvSearchQuery,
       addEntry: this.props.addCustomListEditorEntry,
       addAllEntries: this.props.addAllCustomListEditorEntries,
       deleteEntry: this.props.deleteCustomListEditorEntry,
@@ -438,6 +467,35 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(actions.toggleCustomListEditorCollection(id)),
     updateCustomListEditorSearchParam: (name: string, value) =>
       dispatch(actions.updateCustomListEditorSearchParam(name, value)),
+    addCustomListEditorAdvSearchQuery: (
+      builderName: string,
+      query: AdvancedSearchQuery
+    ) =>
+      dispatch(actions.addCustomListEditorAdvSearchQuery(builderName, query)),
+    updateCustomListEditorAdvSearchQueryBoolean: (
+      builderName: string,
+      id: string,
+      bool: string
+    ) =>
+      dispatch(
+        actions.updateCustomListEditorAdvSearchQueryBoolean(
+          builderName,
+          id,
+          bool
+        )
+      ),
+    moveCustomListEditorAdvSearchQuery: (
+      builderName: string,
+      id: string,
+      targetId: string
+    ) =>
+      dispatch(
+        actions.moveCustomListEditorAdvSearchQuery(builderName, id, targetId)
+      ),
+    removeCustomListEditorAdvSearchQuery: (builderName: string, id: string) =>
+      dispatch(actions.removeCustomListEditorAdvSearchQuery(builderName, id)),
+    selectCustomListEditorAdvSearchQuery: (builderName: string, id: string) =>
+      dispatch(actions.selectCustomListEditorAdvSearchQuery(builderName, id)),
     addCustomListEditorEntry: (id: string) =>
       dispatch(actions.addCustomListEditorEntry(id)),
     addAllCustomListEditorEntries: () =>
