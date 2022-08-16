@@ -87,18 +87,25 @@ button.btn.inverted, a.btn.inverted {
   }
 }
 
-// body > div is the outer #opds-catalog div
-body > div > div:first-child {
-  position: relative;
-  min-height: 100vh;
-  block-size: fit-content;
-  &:not(.config) main {
-    padding-bottom: 56px;
-    max-height: 78.5%;
+body > div {
+  height: unset;
+}
+
+body > #opds-catalog {
+  height: 100%;
+
+  > div:first-child {
+    position: relative;
+    min-height: 100vh;
     block-size: fit-content;
-  }
-  &.config main {
-    block-size: fit-content;
+    &:not(.config) main {
+      padding-bottom: 56px;
+      max-height: 78.5%;
+      block-size: fit-content;
+    }
+    &.config main {
+      block-size: fit-content;
+    }
   }
 }
 
