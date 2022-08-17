@@ -87,11 +87,14 @@ button.btn.inverted, a.btn.inverted {
   }
 }
 
+// Overwrite the rule from opds-web-client that sets all top-level divs to 100% height. This works
+// around the LastPass extension inserting a top-level div that then takes up the whole screen.
+
 body > div {
   height: unset;
 }
 
-body > #opds-catalog {
+body > div.palace {
   height: 100%;
 
   > div:first-child {
