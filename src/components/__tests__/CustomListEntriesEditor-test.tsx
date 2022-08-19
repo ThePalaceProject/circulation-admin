@@ -17,6 +17,7 @@ describe("CustomListEntriesEditor", () => {
   let deleteEntry;
   let loadMoreSearchResults;
   let loadMoreEntries;
+  let refreshResults;
   let childContextTypes;
   let fullContext;
 
@@ -94,6 +95,7 @@ describe("CustomListEntriesEditor", () => {
     deleteEntry = stub();
     loadMoreSearchResults = stub();
     loadMoreEntries = stub();
+    refreshResults = stub();
 
     childContextTypes = {
       pathFor: PropTypes.func.isRequired,
@@ -149,6 +151,89 @@ describe("CustomListEntriesEditor", () => {
     expect(results.at(1).text()).to.contain("author 2a, author 2b");
     expect(results.at(2).text()).to.contain("result 3");
     expect(results.at(2).text()).to.contain("author 3");
+  });
+
+  it("calls refreshResults when the refresh button is clicked", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        refreshResults={refreshResults}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const refreshButton = wrapper.find(".btn.refresh-button");
+
+    refreshButton.at(0).simulate("click");
+
+    expect(refreshResults.callCount).to.equal(1);
+  });
+
+  it("disables the refresh button when isFetchingSearchResults is true", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        refreshResults={refreshResults}
+        isFetchingSearchResults={true}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const refreshButton = wrapper.find(".btn.refresh-button");
+
+    expect(refreshButton.prop("disabled")).to.equal(true);
+  });
+
+  it("disables the refresh button when isFetchingSearchResults is true", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        refreshResults={refreshResults}
+        isFetchingSearchResults={true}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const refreshButton = wrapper.find(".btn.refresh-button");
+
+    expect(refreshButton.prop("disabled")).to.equal(true);
+  });
+
+  it("shows a loading message when isFetchingSearchResults is true", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        refreshResults={refreshResults}
+        isFetchingSearchResults={true}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const loadingIndicator = wrapper.find(".list-loading");
+
+    expect(loadingIndicator.length).to.equal(1);
+    expect(loadingIndicator.text()).to.equal("Loading");
   });
 
   it("renders a link to view each search result", () => {
@@ -242,9 +327,30 @@ describe("CustomListEntriesEditor", () => {
       "http://schema.org/EBook";
   });
 
-  it("renders list entries", () => {
+  it("does not render list entries when autoUpdate is true", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
+        autoUpdate={true}
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryCount={2}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const entriesContainer = wrapper.find(".custom-list-entries");
+
+    expect(entriesContainer.length).to.equal(0);
+  });
+
+  it("renders list entries when autoUpdate is false", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        autoUpdate={false}
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -338,7 +444,7 @@ describe("CustomListEntriesEditor", () => {
     expect(bookSVGs.length).to.equal(1);
   });
 
-  it("doesn't include search results that are already in the entries list", () => {
+  it("doesn't include search results that are already in the entries list when autoUpdate is false", () => {
     const entriesData = [
       {
         id: "1",
@@ -357,6 +463,7 @@ describe("CustomListEntriesEditor", () => {
 
     const wrapper = mount(
       <CustomListEntriesEditor
+        autoUpdate={false}
         searchResults={searchResultsData}
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
@@ -385,6 +492,57 @@ describe("CustomListEntriesEditor", () => {
     expect(results.at(0).text()).to.contain("author 2a, author 2b");
     expect(results.at(1).text()).to.contain("result 3");
     expect(results.at(1).text()).to.contain("author 3");
+  });
+
+  it("shows all search results, even ones that are in the entries list, when autoUpdate is true", () => {
+    const entriesData = [
+      {
+        id: "1",
+        title: "result 1",
+        authors: ["author 1"],
+        language: "eng",
+        raw: {
+          $: {
+            "schema:additionalType": {
+              value: "http://bib.schema.org/Audiobook",
+            },
+          },
+        },
+      },
+    ];
+
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        autoUpdate={true}
+        searchResults={searchResultsData}
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryCount={2}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const resultsContainer = wrapper.find(".custom-list-search-results");
+
+    expect(resultsContainer.length).to.equal(1);
+
+    const droppable = resultsContainer.find(Droppable);
+
+    expect(droppable.length).to.equal(1);
+
+    const results = droppable.find(Draggable);
+
+    expect(results.length).to.equal(3);
+    expect(results.at(0).text()).to.contain("result 1");
+    expect(results.at(0).text()).to.contain("author 1");
+    expect(results.at(1).text()).to.contain("result 2");
+    expect(results.at(1).text()).to.contain("author 2a, author 2b");
+    expect(results.at(2).text()).to.contain("result 3");
+    expect(results.at(2).text()).to.contain("author 3");
   });
 
   // FIXME: react-beautiful-dnd does not work well in jsdom, so the following drag-and-drop tests
@@ -661,6 +819,30 @@ describe("CustomListEntriesEditor", () => {
     expect(addEntry.args[0]).to.deep.equal(["1"]);
   });
 
+  it("hides the Add to List buttons when autoUpdate is true", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        autoUpdate={true}
+        entries={entriesData}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryCount={2}
+        addEntry={addEntry}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const addButton = wrapper
+      .find(".custom-list-search-results .links")
+      .find(Button);
+
+    expect(addButton.length).to.equal(0);
+  });
+
   it("calls deleteEntry when the Remove from List button is clicked on a list entry", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
@@ -694,6 +876,25 @@ describe("CustomListEntriesEditor", () => {
   it("hides the Add All to List button when there are no search results", () => {
     const wrapper = shallow(
       <CustomListEntriesEditor
+        entries={entriesData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const button = wrapper.find(".add-all-button");
+
+    expect(button.length).to.equal(0);
+  });
+
+  it("hides the Add All to List button when autoUpdate is true", () => {
+    const wrapper = shallow(
+      <CustomListEntriesEditor
+        autoUpdate={true}
         entries={entriesData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -789,6 +990,27 @@ describe("CustomListEntriesEditor", () => {
         loadMoreSearchResults={null}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const button = wrapper.find(
+      ".custom-list-search-results .load-more-button"
+    );
+
+    expect(button.length).to.equal(0);
+  });
+
+  it("hides the Load More button in search results when isFetchingSearchResults is true", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={true}
         isFetchingMoreSearchResults={false}
         isFetchingMoreCustomListEntries={false}
       />,

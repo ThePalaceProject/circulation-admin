@@ -20,6 +20,7 @@ describe("CustomListEditor", () => {
   let toggleCollection;
   let loadMoreSearchResults;
   let loadMoreEntries;
+  let updateProperty;
   let updateSearchParam;
   let childContextTypes;
   let fullContext;
@@ -114,6 +115,7 @@ describe("CustomListEditor", () => {
 
     search = stub();
     toggleCollection = stub();
+    updateProperty = stub();
     updateSearchParam = stub();
 
     childContextTypes = {
@@ -146,6 +148,7 @@ describe("CustomListEditor", () => {
         isFetchingMoreCustomListEntries={false}
         isFetchingSearchResults={false}
         isFetchingMoreSearchResults={false}
+        isLoaded={false}
         isModified={true}
         isValid={true}
         languages={languages}
@@ -160,6 +163,7 @@ describe("CustomListEditor", () => {
         save={save}
         search={search}
         toggleCollection={toggleCollection}
+        updateProperty={updateProperty}
         updateSearchParam={updateSearchParam}
       />,
       { context: fullContext, childContextTypes }
@@ -186,12 +190,14 @@ describe("CustomListEditor", () => {
     const entriesEditor = wrapper.find(CustomListEntriesEditor);
 
     expect(entriesEditor.length).to.equal(1);
+    expect(entriesEditor.props().autoUpdate).to.equal(false);
     expect(entriesEditor.props().entries).to.equal(entries.current);
     expect(entriesEditor.props().searchResults).to.equal(searchResults);
     expect(entriesEditor.props().loadMoreSearchResults).to.equal(
       loadMoreSearchResults
     );
     expect(entriesEditor.props().loadMoreEntries).to.equal(loadMoreEntries);
+    expect(entriesEditor.props().refreshResults).to.equal(search);
     expect(entriesEditor.props().isFetchingSearchResults).to.equal(false);
     expect(entriesEditor.props().isFetchingMoreSearchResults).to.equal(false);
     expect(entriesEditor.props().isFetchingMoreCustomListEntries).to.equal(
@@ -308,6 +314,7 @@ describe("CustomListEditor", () => {
     const customListSearch = wrapper.find(CustomListSearch);
 
     expect(customListSearch.length).to.equal(1);
+    expect(customListSearch.prop("autoUpdate")).to.equal(false);
     expect(customListSearch.prop("entryPoints")).to.equal(entryPoints);
     expect(customListSearch.prop("languages")).to.equal(languages);
     expect(customListSearch.prop("library")).to.equal(library);
@@ -317,5 +324,30 @@ describe("CustomListEditor", () => {
     expect(customListSearch.prop("updateSearchParam")).to.equal(
       updateSearchParam
     );
+
+    customListSearch.prop("updateAutoUpdate")(true);
+
+    expect(updateProperty.callCount).to.equal(1);
+    expect(updateProperty.args[0]).to.deep.equal(["autoUpdate", true]);
+  });
+
+  it("calls search when listId changes", () => {
+    expect(search.callCount).to.equal(1);
+
+    wrapper.setProps({
+      listId: "2",
+    });
+
+    expect(search.callCount).to.equal(2);
+  });
+
+  it("calls search when isLoaded changes", () => {
+    expect(search.callCount).to.equal(1);
+
+    wrapper.setProps({
+      isLoaded: true,
+    });
+
+    expect(search.callCount).to.equal(2);
   });
 });

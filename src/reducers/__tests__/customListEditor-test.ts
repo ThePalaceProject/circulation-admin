@@ -119,6 +119,14 @@ describe("custom list editor reducer", () => {
           id: 18,
           name: "New BiblioBoard",
         },
+        {
+          collections: [],
+          id: 31,
+          name: "Auto Updating List",
+          auto_update: true,
+          auto_update_query:
+            '{"query":{"and":[{"and":[{"or":[{"key":"genre","value":"Horror"},{"key":"genre","value":"Fantasy"}]},{"key":"language","value":"eng"},{"key":"classification","value":"mystery"}]},{"not":[{"or":[{"key":"author","op":"contains","value":"bracken"},{"key":"title","value":"wicked appetite"}]}]}]}}',
+        },
       ],
     };
 
@@ -148,6 +156,20 @@ describe("custom list editor reducer", () => {
       expect(nextState.error).to.equal(null);
     });
 
+    it("sets isLoaded to true when a list with the current id exists in the data", () => {
+      const state = {
+        ...initialState,
+        id: 18,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+        data: listData,
+      });
+
+      expect(nextState.isLoaded).to.equal(true);
+    });
+
     it("sets an error message when no list with the current id exists in the data", () => {
       const state = {
         ...initialState,
@@ -160,6 +182,77 @@ describe("custom list editor reducer", () => {
       });
 
       expect(nextState.error).to.equal("Custom list not found for ID: 999");
+    });
+
+    it("updates the advanced search builders when there is a saved search query", () => {
+      const state = {
+        ...initialState,
+        id: 31,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+        data: listData,
+      });
+
+      expect(nextState.properties.current.autoUpdate).to.equal(true);
+
+      expect(
+        nextState.searchParams.current.advanced.include.query
+      ).to.deep.equal({
+        id: "1",
+        and: [
+          {
+            id: "2",
+            or: [
+              {
+                id: "3",
+                key: "genre",
+                op: "eq",
+                value: "Horror",
+              },
+              {
+                id: "4",
+                key: "genre",
+                op: "eq",
+                value: "Fantasy",
+              },
+            ],
+          },
+          {
+            id: "5",
+            key: "language",
+            op: "eq",
+            value: "eng",
+          },
+          {
+            id: "6",
+            key: "classification",
+            op: "eq",
+            value: "mystery",
+          },
+        ],
+      });
+
+      expect(
+        nextState.searchParams.current.advanced.exclude.query
+      ).to.deep.equal({
+        id: "8",
+        or: [
+          {
+            id: "9",
+            key: "author",
+            op: "contains",
+            value: "bracken",
+          },
+          {
+            id: "10",
+            key: "title",
+            op: "eq",
+            value: "wicked appetite",
+          },
+        ],
+      });
     });
   });
 
@@ -344,6 +437,15 @@ describe("custom list editor reducer", () => {
 
       expect(nextState.isModified).to.equal(false);
       expect(nextState.isValid).to.equal(false);
+
+      nextState = reducer(state, {
+        type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_PROPERTY,
+        name: "autoUpdate",
+        value: false,
+      });
+
+      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).to.equal(false);
     });
   });
 
@@ -446,6 +548,17 @@ describe("custom list editor reducer", () => {
 
       expect(nextState.searchParams.current.language).to.equal("eng");
     });
+
+    it("updates isValid and isModified", () => {
+      const nextState = reducer(state, {
+        type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
+        name: "entryPoint",
+        value: "Book",
+      });
+
+      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).to.equal(false);
+    });
   });
 
   context("on ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
@@ -510,7 +623,7 @@ describe("custom list editor reducer", () => {
             value: "bar",
           },
           {
-            id: "0",
+            id: "11",
             ...valueQuery,
           },
         ],
@@ -535,13 +648,13 @@ describe("custom list editor reducer", () => {
       expect(
         nextState.searchParams.current.advanced.include.query
       ).to.deep.equal({
-        id: "1",
+        id: "12",
         ...valueQuery,
       });
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("1");
+      ).to.equal("12");
     });
 
     it("should add the query to the root query, if there is no selected query", () => {
@@ -598,7 +711,7 @@ describe("custom list editor reducer", () => {
             value: "bar",
           },
           {
-            id: "2",
+            id: "13",
             ...valueQuery,
           },
         ],
@@ -644,12 +757,12 @@ describe("custom list editor reducer", () => {
         id: "91",
         and: [
           {
-            id: "4",
+            id: "15",
             key: "title",
             value: "foo",
           },
           {
-            id: "3",
+            id: "14",
             ...valueQuery,
           },
         ],
@@ -695,12 +808,12 @@ describe("custom list editor reducer", () => {
         id: "91",
         or: [
           {
-            id: "6",
+            id: "17",
             key: "title",
             value: "foo",
           },
           {
-            id: "5",
+            id: "16",
             ...valueQuery,
           },
         ],
@@ -711,7 +824,7 @@ describe("custom list editor reducer", () => {
       ).to.equal("91");
     });
 
-    it("should create a boolean query that is the opposite of the parent if a new query is added to a non-booean query", () => {
+    it("should create a boolean query that is the opposite of the parent if a new query is added to a non-boolean query", () => {
       const state = {
         ...initialState,
         searchParams: {
@@ -764,12 +877,12 @@ describe("custom list editor reducer", () => {
             id: "92",
             or: [
               {
-                id: "8",
+                id: "19",
                 key: "title",
                 value: "bar",
               },
               {
-                id: "7",
+                id: "18",
                 ...valueQuery,
               },
             ],
@@ -780,6 +893,28 @@ describe("custom list editor reducer", () => {
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
       ).to.equal("92");
+    });
+
+    it("updates isValid and isModified", () => {
+      const state = {
+        ...initialState,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            name: "List 1",
+          },
+        },
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
+        builderName: "include",
+        query: valueQuery,
+      });
+
+      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).to.equal(true);
     });
   });
 
@@ -878,67 +1013,90 @@ describe("custom list editor reducer", () => {
 
       expect(nextState).to.deep.equal(state);
     });
-  });
 
-  context("on MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
-    it("should add the specified query to the target, and remove it from its current parent", () => {
-      const state = {
-        ...initialState,
-        searchParams: {
-          ...initialState.searchParams,
+    it("updates isValid and isModified", () => {
+      const namedState = {
+        ...state,
+        properties: {
+          ...initialState.properties,
           current: {
-            ...initialState.searchParams.current,
-            advanced: {
-              ...initialState.searchParams.current.advanced,
-              include: {
-                ...initialState.searchParams.current.advanced.include,
-                query: {
-                  id: "90",
-                  and: [
-                    {
-                      id: "91",
-                      or: [
-                        {
-                          id: "92",
-                          key: "title",
-                          value: "foo",
-                        },
-                        {
-                          id: "93",
-                          key: "title",
-                          value: "bar",
-                        },
-                        {
-                          id: "94",
-                          key: "title",
-                          value: "baz",
-                        },
-                      ],
-                    },
-                    {
-                      id: "95",
-                      or: [
-                        {
-                          id: "96",
-                          key: "author",
-                          value: "alice",
-                        },
-                        {
-                          id: "97",
-                          key: "author",
-                          value: "ben",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                selectedQueryId: "92",
-              },
-            },
+            ...initialState.properties.current,
+            name: "List 1",
           },
         },
       };
 
+      const nextState = reducer(namedState, {
+        type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY_BOOLEAN,
+        builderName: "include",
+        id: "90",
+        bool: "or",
+      });
+
+      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).to.equal(true);
+    });
+  });
+
+  context("on MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY", () => {
+    const state = {
+      ...initialState,
+      searchParams: {
+        ...initialState.searchParams,
+        current: {
+          ...initialState.searchParams.current,
+          advanced: {
+            ...initialState.searchParams.current.advanced,
+            include: {
+              ...initialState.searchParams.current.advanced.include,
+              query: {
+                id: "90",
+                and: [
+                  {
+                    id: "91",
+                    or: [
+                      {
+                        id: "92",
+                        key: "title",
+                        value: "foo",
+                      },
+                      {
+                        id: "93",
+                        key: "title",
+                        value: "bar",
+                      },
+                      {
+                        id: "94",
+                        key: "title",
+                        value: "baz",
+                      },
+                    ],
+                  },
+                  {
+                    id: "95",
+                    or: [
+                      {
+                        id: "96",
+                        key: "author",
+                        value: "alice",
+                      },
+                      {
+                        id: "97",
+                        key: "author",
+                        value: "ben",
+                      },
+                    ],
+                  },
+                ],
+              },
+              selectedQueryId: "92",
+            },
+          },
+        },
+      },
+    };
+
+    it("should add the specified query to the target, and remove it from its current parent", () => {
       const nextState = reducer(state, {
         type: ActionCreator.MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
         builderName: "include",
@@ -980,7 +1138,7 @@ describe("custom list editor reducer", () => {
                 value: "ben",
               },
               {
-                id: "9",
+                id: "21",
                 key: "title",
                 value: "foo",
               },
@@ -988,6 +1146,29 @@ describe("custom list editor reducer", () => {
           },
         ],
       });
+    });
+
+    it("updates isValid and isModified", () => {
+      const namedState = {
+        ...state,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            name: "List 1",
+          },
+        },
+      };
+
+      const nextState = reducer(namedState, {
+        type: ActionCreator.MOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
+        builderName: "include",
+        id: "92",
+        targetId: "95",
+      });
+
+      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).to.equal(true);
     });
   });
 
@@ -1109,6 +1290,48 @@ describe("custom list editor reducer", () => {
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
       ).to.equal(undefined);
+    });
+
+    it("updates isValid and isModified", () => {
+      const state = {
+        ...initialState,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            name: "List 1",
+          },
+        },
+        searchParams: {
+          ...initialState.searchParams,
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "92",
+                  key: "title",
+                  value: "bar",
+                },
+                selectedQueryId: "92",
+              },
+            },
+          },
+        },
+        isModified: false,
+        isValid: true,
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.REMOVE_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,
+        builderName: "include",
+        id: "92",
+      });
+
+      expect(nextState.isModified).to.equal(true);
+      expect(nextState.isValid).to.equal(false);
     });
   });
 
@@ -1883,6 +2106,64 @@ describe("custom list editor reducer", () => {
       );
       expect(formData.get("deletedEntries")).to.equal(
         '[{"id":"book90","title":"Wuthering Heights"}]'
+      );
+    });
+
+    it("should include an auto update query if the list is auto updating", () => {
+      const state = {
+        ...initialState,
+        id: 123,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            name: "My New List",
+            collections: [1, 2],
+            autoUpdate: true,
+          },
+        },
+        searchParams: {
+          ...initialState.searchParams,
+          current: {
+            ...initialState.searchParams.current,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "0",
+                  key: "title",
+                  op: "eq",
+                  value: "Little Women",
+                },
+              },
+            },
+          },
+        },
+        entries: {
+          ...initialState.entries,
+          baseline: [
+            { id: "book91", title: "Huckleberry Finn" },
+            { id: "book90", title: "Wuthering Heights" },
+          ],
+          current: [
+            { id: "book2", title: "Little Women" },
+            { id: "book91", title: "Huckleberry Finn" },
+          ],
+          removed: {
+            book90: true as true,
+          },
+        },
+      };
+
+      const formData = getCustomListEditorFormData(state);
+
+      expect(formData.get("id")).to.equal("123");
+      expect(formData.get("name")).to.equal("My New List");
+      expect(formData.get("collections")).to.equal("[1,2]");
+      expect(formData.get("auto_update")).to.equal("true");
+      expect(formData.get("auto_update_query")).to.equal(
+        '{"query":{"key":"title","value":"Little Women"}}'
       );
     });
   });
