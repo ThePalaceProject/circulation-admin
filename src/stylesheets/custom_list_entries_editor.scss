@@ -46,6 +46,7 @@
     overflow-y: scroll;
     margin-bottom: 15px;
     height: 100%;
+    list-style: none;
 
     &.dragging-over {
       border-color: $pagetextcolor;

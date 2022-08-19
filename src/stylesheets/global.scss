@@ -87,18 +87,28 @@ button.btn.inverted, a.btn.inverted {
   }
 }
 
-// body > div is the outer #opds-catalog div
-body > div > div:first-child {
-  position: relative;
-  min-height: 100vh;
-  block-size: fit-content;
-  &:not(.config) main {
-    padding-bottom: 56px;
-    max-height: 78.5%;
+// Overwrite the rule from opds-web-client that sets all top-level divs to 100% height. This works
+// around the LastPass extension inserting a top-level div that then takes up the whole screen.
+
+body > div {
+  height: unset;
+}
+
+body > div.palace {
+  height: 100%;
+
+  > div:first-child {
+    position: relative;
+    min-height: 100vh;
     block-size: fit-content;
-  }
-  &.config main {
-    block-size: fit-content;
+    &:not(.config) main {
+      padding-bottom: 56px;
+      max-height: 78.5%;
+      block-size: fit-content;
+    }
+    &.config main {
+      block-size: fit-content;
+    }
   }
 }
 
