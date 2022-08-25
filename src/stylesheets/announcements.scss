@@ -54,6 +54,12 @@
       }
     }
   }
+
+  .announcement-form {
+    border: 1px solid $blue;
+    padding: 16px 16px 6px 16px;
+  }
+
   .form-group.wrong-length p.description {
     color: $red;
   }

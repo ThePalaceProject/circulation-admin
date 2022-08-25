@@ -153,6 +153,7 @@ export default class AnnouncementForm extends React.Component<
         />
         <Button
           callback={(e: Event) => this.add(e)}
+          content="Add"
           className="inline left-align"
           disabled={shouldDisable()}
         />

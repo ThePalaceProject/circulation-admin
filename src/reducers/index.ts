@@ -13,6 +13,7 @@ import collections from "./collections";
 import adminAuthServices from "./adminAuthServices";
 import individualAdmins from "./individualAdmins";
 import patronAuthServices from "./patronAuthServices";
+import sitewideAnnouncements from "./sitewideAnnouncements";
 import sitewideSettings from "./sitewideSettings";
 import loggingServices from "./loggingServices";
 import metadataServices from "./metadataServices";
@@ -54,6 +55,7 @@ import {
   AdminAuthServicesData,
   IndividualAdminsData,
   PatronAuthServicesData,
+  SitewideAnnouncementsData,
   SitewideSettingsData,
   LoggingServicesData,
   MetadataServicesData,
@@ -90,6 +92,7 @@ export interface State {
   adminAuthServices: FetchEditState<AdminAuthServicesData>;
   individualAdmins: FetchEditState<IndividualAdminsData>;
   patronAuthServices: FetchEditState<PatronAuthServicesData>;
+  sitewideAnnouncements: FetchEditState<SitewideAnnouncementsData>;
   sitewideSettings: FetchEditState<SitewideSettingsData>;
   loggingServices: FetchEditState<LoggingServicesData>;
   metadataServices: FetchEditState<MetadataServicesData>;
@@ -137,6 +140,7 @@ export default combineReducers<State>({
   adminAuthServices,
   individualAdmins,
   patronAuthServices,
+  sitewideAnnouncements,
   sitewideSettings,
   loggingServices,
   metadataServices,

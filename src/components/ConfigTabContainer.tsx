@@ -5,6 +5,7 @@ import Collections from "./Collections";
 import AdminAuthServices from "./AdminAuthServices";
 import IndividualAdmins from "./IndividualAdmins";
 import PatronAuthServices from "./PatronAuthServices";
+import SitewideAnnouncements from './SitewideAnnouncements';
 import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
 import AnalyticsServices from "./AnalyticsServices";
@@ -58,6 +59,7 @@ export default class ConfigTabContainer extends TabContainer<
     storage: StorageServices,
     catalogServices: CatalogServices,
     discovery: DiscoveryServices,
+    sitewideAnnouncements: SitewideAnnouncements,
   };
 
   LIBRARIAN_TABS = ["libraries"];
@@ -68,6 +70,7 @@ export default class ConfigTabContainer extends TabContainer<
     adminAuth: "Admin Authentication",
     individualAdmins: "Admins",
     patronAuth: "Patron Authentication",
+    sitewideAnnouncements: "Sitewide Announcements",
     sitewideSettings: "Sitewide Settings",
     cdn: "CDN",
     catalogServices: "External Catalogs",
