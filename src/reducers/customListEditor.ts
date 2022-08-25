@@ -86,8 +86,7 @@ export const buildSearchFacetString = (
   searchParams: CustomListEditorSearchParams
 ): string => {
   const { entryPoint, sort } = searchParams;
-
-  const facets: any = {};
+  const facets: Record<string, string> = {};
 
   if (entryPoint !== "All") {
     facets.media = entryPoint;
