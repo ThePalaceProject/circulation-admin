@@ -17,7 +17,7 @@ export interface AdvancedSearchBuilderProps {
 }
 
 export const fields = [
-  { value: "distributor", label: "distributor" },
+  { value: "data_source", label: "distributor" },
   { value: "publisher", label: "publisher" },
   { value: "published", label: "publication date" },
   { value: "genre", label: "genre" },

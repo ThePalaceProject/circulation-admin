@@ -30,6 +30,7 @@ describe("CustomLists", () => {
   const customListEditorProperties = {
     name: "",
     collections: [],
+    autoUpdate: false,
   };
 
   const customListEditorEntries = {
@@ -181,6 +182,7 @@ describe("CustomLists", () => {
           searchResults={searchResults}
           collections={collections}
           isFetching={false}
+          isFetchingSearchResults={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
           fetchLanguages={fetchLanguages}
@@ -243,6 +245,7 @@ describe("CustomLists", () => {
           searchResults={searchResults}
           collections={collections}
           isFetching={false}
+          isFetchingSearchResults={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
@@ -271,6 +274,7 @@ describe("CustomLists", () => {
           searchResults={searchResults}
           collections={collections}
           isFetching={false}
+          isFetchingSearchResults={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
@@ -302,6 +306,7 @@ describe("CustomLists", () => {
           searchResults={searchResults}
           collections={collections}
           isFetching={false}
+          isFetchingSearchResults={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
@@ -363,6 +368,7 @@ describe("CustomLists", () => {
           searchResults={searchResults}
           collections={collections}
           isFetching={false}
+          isFetchingSearchResults={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
@@ -493,7 +499,6 @@ describe("CustomLists", () => {
 
       // When the component switches to a different list, it fetches the new
       // list details.
-      const newListDetails = Object.assign({}, listsData[0], { entries: [] });
       wrapper.setProps({ identifier: "1" });
       expect(fetchCustomListDetails.callCount).to.equal(2);
     });
@@ -514,6 +519,7 @@ describe("CustomLists", () => {
           searchResults={searchResults}
           collections={collections}
           isFetching={false}
+          isFetchingSearchResults={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}
@@ -569,6 +575,7 @@ describe("CustomLists", () => {
           searchResults={searchResults}
           collections={collections}
           isFetching={false}
+          isFetchingSearchResults={false}
           isFetchingMoreSearchResults={false}
           isFetchingMoreCustomListEntries={false}
           fetchCustomLists={fetchCustomLists}

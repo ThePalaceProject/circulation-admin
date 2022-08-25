@@ -1043,6 +1043,11 @@ export default class ActionCreator extends BaseActionCreator {
       if (url) {
         return dispatch(this.fetchCollection(url));
       }
+
+      // If there isn't a viable search URL (i.e, no filters have been added to the advanced search
+      // query), just clear the results.
+
+      return dispatch(this.clear(ActionCreator.COLLECTION));
     };
   }
 

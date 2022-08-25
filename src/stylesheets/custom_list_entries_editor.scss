@@ -1,18 +1,18 @@
 .custom-list-drag-and-drop {
   display: flex;
   flex-direction: row;
+  gap: 15px;
   flex-grow: 1;
   height: 50%;
-  justify-content: space-between;
 }
 
 .custom-list-search-results, .custom-list-entries {
   display: flex;
-  border: 1px solid $medium-gray;
-  padding: 12px 24px 24px 24px;
-  border-radius: 4px;
+  flex: 1 1 50%;
   flex-direction: column;
-  flex-basis: 47%;
+  border: 1px solid $medium-gray;
+  border-radius: 4px;
+  padding: 12px 24px 24px 24px;
   margin: 15px 0;
   overflow-y: scroll;
   h4 {
@@ -26,6 +26,12 @@
       line-height: 0;
       margin: 0;
       padding: 12px;
+    }
+
+    &.refresh-button {
+      svg {
+        margin: 0;
+      }
     }
   }
 
@@ -125,4 +131,10 @@
   user-select: none;
   cursor: grabbing;
   cursor: -webkit-grabbing;
+}
+
+.list-loading {
+  border: 1px solid $pagecolorlight;
+  padding: 10px;
+  text-align: center;
 }

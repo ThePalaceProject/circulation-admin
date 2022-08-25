@@ -1,12 +1,16 @@
 ## Changelog
 
-### v0.0.12
+### v0.1.0
 
 #### Fixed
 
 - The screen no longer appears to be blank when the LastPass browser extension is enabled.
 - The advanced search input fields are now correctly aligned in Firefox.
 - Spurious bullets have been removed from the search result and list entry lists.
+
+#### Updated
+
+- Lists can now be automatically updated using the configured search parameters.
 
 ### v0.0.11
 

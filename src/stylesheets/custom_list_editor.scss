@@ -196,8 +196,27 @@
   br {
     display: none;
   }
-  button {
-    margin: 0;
+
+  .auto-update {
+    margin-top: 20px;
+
+    .auto-update-selection {
+      display: flex;
+      gap: 15px;
+
+      > div {
+        flex: 1 1 50%;
+      }
+
+      .form-group {
+        margin: 5px 0 0 0;
+      }
+    }
+
+    aside {
+      font-size: .9em;
+      font-style: italic;
+    }
   }
 }
 

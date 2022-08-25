@@ -34,6 +34,7 @@ export interface CustomListsStateProps {
   customListEditorProperties?: CustomListEditorProperties;
   customListEditorSearchParams?: CustomListEditorSearchParams;
   customListEditorEntries?: CustomListEditorEntriesData;
+  customListEditorIsLoaded?: boolean;
   customListEditorIsValid?: boolean;
   customListEditorIsModified?: boolean;
   lists: CustomListData[];
@@ -42,6 +43,7 @@ export interface CustomListsStateProps {
   searchResults: CollectionData;
   fetchError?: FetchErrorData;
   isFetching: boolean;
+  isFetchingSearchResults: boolean;
   isFetchingMoreSearchResults: boolean;
   isFetchingMoreCustomListEntries: boolean;
   libraries?: LibraryData[];
@@ -172,6 +174,7 @@ export class CustomLists extends React.Component<
       collections: this.collectionsForLibrary(),
       properties: this.props.customListEditorProperties,
       searchParams: this.props.customListEditorSearchParams,
+      isLoaded: this.props.customListEditorIsLoaded,
       isValid: this.props.customListEditorIsValid,
       isModified: this.props.customListEditorIsModified,
       entries: this.props.customListEditorEntries,
@@ -180,6 +183,7 @@ export class CustomLists extends React.Component<
       entryPoints: this.getEnabledEntryPoints(this.props.libraries),
       isFetchingMoreCustomListEntries: this.props
         .isFetchingMoreCustomListEntries,
+      isFetchingSearchResults: this.props.isFetchingSearchResults,
       isFetchingMoreSearchResults: this.props.isFetchingMoreSearchResults,
       languages: this.props.languages,
       library: this.props.libraries?.find(
@@ -399,8 +403,10 @@ function mapStateToProps(state, ownProps) {
   return {
     customListEditorProperties:
       state.editor.customListEditor.properties.current,
-    customListEditorSearchParams: state.editor.customListEditor.searchParams,
+    customListEditorSearchParams:
+      state.editor.customListEditor.searchParams.current,
     customListEditorEntries: state.editor.customListEditor.entries,
+    customListEditorIsLoaded: state.editor.customListEditor.isLoaded,
     customListEditorIsValid: state.editor.customListEditor.isValid,
     customListEditorIsModified: state.editor.customListEditor.isModified,
     lists:
@@ -421,11 +427,10 @@ function mapStateToProps(state, ownProps) {
       state.editor.customListDetails.isFetching ||
       state.editor.customListDetails.isEditing ||
       !ownProps.editOrCreate ||
-      (state.editor.collection && state.editor.collection.isFetching) ||
       state.editor.collections.isFetching,
     searchResults: state.editor.collection && state.editor.collection.data,
-    isFetchingMoreSearchResults:
-      state.editor.collection && state.editor.collection.isFetchingPage,
+    isFetchingSearchResults: state.editor.collection?.isFetching,
+    isFetchingMoreSearchResults: state.editor.collection?.isFetchingPage,
     collections:
       state.editor.collections &&
       state.editor.collections.data &&
@@ -447,7 +452,10 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(actions.fetchCustomListDetails(ownProps.library, listId)),
     saveCustomListEditor: () =>
       dispatch(actions.saveCustomListEditor(ownProps.library)),
-    resetCustomListEditor: () => dispatch(actions.resetCustomListEditor()),
+    resetCustomListEditor: () => {
+      dispatch(actions.resetCustomListEditor());
+      dispatch(actions.executeCustomListEditorSearch(ownProps.library));
+    },
     executeCustomListEditorSearch: () =>
       dispatch(actions.executeCustomListEditorSearch(ownProps.library)),
     loadMoreSearchResults: () =>
@@ -465,35 +473,45 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(actions.updateCustomListEditorProperty(name, value)),
     toggleCustomListEditorCollection: (id: number) =>
       dispatch(actions.toggleCustomListEditorCollection(id)),
-    updateCustomListEditorSearchParam: (name: string, value) =>
-      dispatch(actions.updateCustomListEditorSearchParam(name, value)),
+    updateCustomListEditorSearchParam: (name: string, value) => {
+      dispatch(actions.updateCustomListEditorSearchParam(name, value));
+      dispatch(actions.executeCustomListEditorSearch(ownProps.library));
+    },
     addCustomListEditorAdvSearchQuery: (
       builderName: string,
       query: AdvancedSearchQuery
-    ) =>
-      dispatch(actions.addCustomListEditorAdvSearchQuery(builderName, query)),
+    ) => {
+      dispatch(actions.addCustomListEditorAdvSearchQuery(builderName, query));
+      dispatch(actions.executeCustomListEditorSearch(ownProps.library));
+    },
     updateCustomListEditorAdvSearchQueryBoolean: (
       builderName: string,
       id: string,
       bool: string
-    ) =>
+    ) => {
       dispatch(
         actions.updateCustomListEditorAdvSearchQueryBoolean(
           builderName,
           id,
           bool
         )
-      ),
+      );
+      dispatch(actions.executeCustomListEditorSearch(ownProps.library));
+    },
     moveCustomListEditorAdvSearchQuery: (
       builderName: string,
       id: string,
       targetId: string
-    ) =>
+    ) => {
       dispatch(
         actions.moveCustomListEditorAdvSearchQuery(builderName, id, targetId)
-      ),
-    removeCustomListEditorAdvSearchQuery: (builderName: string, id: string) =>
-      dispatch(actions.removeCustomListEditorAdvSearchQuery(builderName, id)),
+      );
+      dispatch(actions.executeCustomListEditorSearch(ownProps.library));
+    },
+    removeCustomListEditorAdvSearchQuery: (builderName: string, id: string) => {
+      dispatch(actions.removeCustomListEditorAdvSearchQuery(builderName, id));
+      dispatch(actions.executeCustomListEditorSearch(ownProps.library));
+    },
     selectCustomListEditorAdvSearchQuery: (builderName: string, id: string) =>
       dispatch(actions.selectCustomListEditorAdvSearchQuery(builderName, id)),
     addCustomListEditorEntry: (id: string) =>
