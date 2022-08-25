@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.2.1
+
+#### Fixed
+
+- The selected media type and sort order are now correctly saved with auto updating lists.
+
 ### v0.2.0
 
 #### Updated

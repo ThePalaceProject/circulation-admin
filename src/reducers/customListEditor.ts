@@ -75,6 +75,32 @@ export const buildAdvSearchQuery = (
 };
 
 /**
+ * Build a serialized JSON string representing the search facets (media type, sort order) in some
+ * given search parameters, suitable for sending to the CM when saving an auto updating list.
+ *
+ * @param searchParams The search parameters
+ * @returns            The JSON string representing the search facets
+ */
+
+export const buildSearchFacetString = (
+  searchParams: CustomListEditorSearchParams
+): string => {
+  const { entryPoint, sort } = searchParams;
+
+  const facets: any = {};
+
+  if (entryPoint !== "All") {
+    facets.media = entryPoint;
+  }
+
+  if (sort) {
+    facets.order = sort;
+  }
+
+  return JSON.stringify(facets);
+};
+
+/**
  * Build a serialized JSON string representing the advanced search query in some given search
  * parameters, suitable for sending to the CM to execute the search.
  *
@@ -82,7 +108,7 @@ export const buildAdvSearchQuery = (
  * @param indentSpaces The number of spaces to use to indent the JSON. If > 0, the JSON is
  *                     pretty-printed on multiple lines. If 0, a single line of JSON is returned.
  * @param encode       If true, URL-encode the JSON.
- * @returns            The JSON string representingg the advanced search query
+ * @returns            The JSON string representing the advanced search query
  */
 export const buildAdvSearchQueryString = (
   searchParams: CustomListEditorSearchParams,
@@ -149,6 +175,11 @@ export const getCustomListEditorFormData = (
       "auto_update_query",
       buildAdvSearchQueryString(searchParams.current, 0, false)
     );
+
+    data.append(
+      "auto_update_facets",
+      buildSearchFacetString(searchParams.current)
+    );
   } else {
     const { baseline, current, removed } = entries;
 
@@ -185,7 +216,7 @@ export const buildSearchUrl = (
   const queryParams = [];
 
   if (entryPoint !== "All") {
-    queryParams.push(`entrypoint=${encodeURIComponent(entryPoint)}`);
+    queryParams.push(`media=${encodeURIComponent(entryPoint)}`);
   }
 
   if (sort) {
@@ -322,6 +353,20 @@ export const parseAdvancedSearchQuery = (
   }
 
   return [query, null];
+};
+
+/**
+ * Parse JSON-serialized search facets.
+ *
+ * @param json The serialized search facets
+ * @returns    An object containg facet names and values, which may be empty.
+ */
+const parseSearchFacets = (json: string): Record<string, string> => {
+  if (!json) {
+    return {};
+  }
+
+  return JSON.parse(json) || {};
 };
 
 /**
@@ -763,6 +808,18 @@ const initialStateForList = (
       draftState.searchParams.baseline.advanced.exclude.query = excludeQuery;
       draftState.searchParams.current.advanced.include.query = includeQuery;
       draftState.searchParams.current.advanced.exclude.query = excludeQuery;
+
+      const { media, order } = parseSearchFacets(customList.auto_update_facets);
+
+      if (media) {
+        draftState.searchParams.baseline.entryPoint = media;
+        draftState.searchParams.current.entryPoint = media;
+      }
+
+      if (order) {
+        draftState.searchParams.baseline.sort = order;
+        draftState.searchParams.current.sort = order;
+      }
     }
 
     draftState.error = error;
