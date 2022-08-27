@@ -31,6 +31,7 @@ import {
   SelfTestsData,
   PatronData,
   DiagnosticsData,
+  FeatureFlags,
 } from "./interfaces";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import DataFetcher from "opds-web-client/lib/DataFetcher";
@@ -44,6 +45,8 @@ import {
 /** Create redux actions to be dispatched by connected components, mostly
     to make requests to the server. */
 export default class ActionCreator extends BaseActionCreator {
+  static readonly SET_FEATURE_FLAGS = "SET_FEATURE_FLAGS";
+  static readonly UPDATE_FEATURE_FLAG = "UPDATE_FEATURE_FLAG";
   static readonly EDIT_BOOK = "EDIT_BOOK";
   static readonly BOOK_ADMIN = "BOOK_ADMIN";
   static readonly ROLES = "ROLES";
@@ -1149,5 +1152,20 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<DiagnosticsData>(ActionCreator.DIAGNOSTICS, url).bind(
       this
     );
+  }
+
+  setFeatureFlags(featureFlags: FeatureFlags) {
+    return {
+      type: ActionCreator.SET_FEATURE_FLAGS,
+      value: featureFlags,
+    };
+  }
+
+  updateFeatureFlag(name: string, value: string) {
+    return {
+      type: ActionCreator.UPDATE_FEATURE_FLAG,
+      name,
+      value,
+    };
   }
 }

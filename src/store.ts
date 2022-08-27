@@ -8,6 +8,7 @@ import {
 } from "redux";
 import catalogReducers from "opds-web-client/lib/reducers/index";
 import editorReducers, { State } from "./reducers/index";
+
 const thunk = require("redux-thunk").default;
 
 const reducers: Reducer = combineReducers({

@@ -37,6 +37,7 @@ export interface CustomListsStateProps {
   customListEditorIsLoaded?: boolean;
   customListEditorIsValid?: boolean;
   customListEditorIsModified?: boolean;
+  customListEditorIsAutoUpdateEnabled?: boolean;
   lists: CustomListData[];
   listDetails?: CollectionData;
   collections: AdminCollectionData[];
@@ -172,6 +173,7 @@ export class CustomLists extends React.Component<
   renderEditor(): JSX.Element {
     const editorProps = {
       collections: this.collectionsForLibrary(),
+      isAutoUpdateEnabled: this.props.customListEditorIsAutoUpdateEnabled,
       properties: this.props.customListEditorProperties,
       searchParams: this.props.customListEditorSearchParams,
       isLoaded: this.props.customListEditorIsLoaded,
@@ -409,6 +411,8 @@ function mapStateToProps(state, ownProps) {
     customListEditorIsLoaded: state.editor.customListEditor.isLoaded,
     customListEditorIsValid: state.editor.customListEditor.isValid,
     customListEditorIsModified: state.editor.customListEditor.isModified,
+    customListEditorIsAutoUpdateEnabled:
+      state.editor.customListEditor.isAutoUpdateEnabled,
     lists:
       state.editor.customLists &&
       state.editor.customLists.data &&

@@ -501,6 +501,11 @@ export interface CustomListEditorState {
   id: number;
 
   /**
+   * Flag indicating if the auto updating lists feature is enabled.
+   */
+  isAutoUpdateEnabled: boolean;
+
+  /**
    * The loading state of the list; true if the list data has been loaded (not including the list
    * entries), false otherwise.
    */
@@ -544,7 +549,7 @@ export interface CustomListEditorState {
 const initialProperties = {
   name: "",
   collections: [],
-  autoUpdate: true,
+  autoUpdate: false,
 };
 
 const initialSearchParams = {
@@ -569,6 +574,7 @@ const initialSearchParams = {
  */
 export const initialState: CustomListEditorState = {
   id: null,
+  isAutoUpdateEnabled: false,
   isLoaded: false,
   properties: {
     baseline: initialProperties,
@@ -703,7 +709,6 @@ const validatedHandler = (handler) => (state: CustomListEditorState, action?) =>
 const initialStateForList = (
   id: number,
   data,
-  retainSearchParams,
   state: CustomListEditorState
 ): CustomListEditorState => {
   let customList = null;
@@ -717,8 +722,17 @@ const initialStateForList = (
     }
   }
 
-  return produce(initialState, (draftState) => {
+  return produce(state, (draftState) => {
+    const { isAutoUpdateEnabled } = draftState;
+
     draftState.id = id;
+
+    // If auto update is enabled, default the autoUpdate property of a list to true.
+
+    if (isAutoUpdateEnabled) {
+      draftState.properties.baseline.autoUpdate = true;
+      draftState.properties.current.autoUpdate = true;
+    }
 
     if (customList) {
       draftState.isLoaded = true;
@@ -726,7 +740,11 @@ const initialStateForList = (
       const initialProperties = {
         name: customList.name || "",
         collections: customList.collections.map((collection) => collection.id),
-        autoUpdate: !!customList.auto_update,
+
+        // If auto update is disabled, set the autoUpdate property of the list to false, regardless
+        // of the value that was retrieved from the server. Otherwise, use the value from the
+        // server.
+        autoUpdate: isAutoUpdateEnabled && !!customList.auto_update,
       };
 
       draftState.properties.baseline = initialProperties;
@@ -742,10 +760,6 @@ const initialStateForList = (
       draftState.searchParams.baseline.advanced.exclude.query = excludeQuery;
       draftState.searchParams.current.advanced.include.query = includeQuery;
       draftState.searchParams.current.advanced.exclude.query = excludeQuery;
-    }
-
-    if (retainSearchParams) {
-      draftState.searchParams = state.searchParams;
     }
 
     draftState.error = error;
@@ -807,7 +821,11 @@ const handleCustomListEditorOpen = (
 ): CustomListEditorState => {
   const { id, data } = action;
 
-  return initialStateForList(id ? parseInt(id, 10) : null, data, false, state);
+  const openState = produce(initialState, (draftState) => {
+    draftState.isAutoUpdateEnabled = state.isAutoUpdateEnabled;
+  });
+
+  return initialStateForList(id ? parseInt(id, 10) : null, data, openState);
 };
 
 /**
@@ -829,15 +847,7 @@ const handleCustomListsLoad = (
   const { id } = state;
   const { data } = action;
 
-  return initialStateForList(
-    id,
-    data,
-    // If this is a new list, carry over the search parameters from the current state. This is
-    // needed because the new list may have been created with an initial title to search for
-    // (via the startingTitle prop).
-    id === null,
-    state
-  );
+  return initialStateForList(id, data, state);
 };
 
 /**
@@ -1518,6 +1528,32 @@ const handleResetCustomListEditor = validatedHandler(
   }
 );
 
+const handleSetFeatureFlags = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  const { value } = action;
+
+  return produce(state, (draftState) => {
+    draftState.isAutoUpdateEnabled = !!value?.enableAutoList;
+  });
+};
+
+const handleUpdateFeatureFlag = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  const { name, value } = action;
+
+  if (name === "enableAutoList") {
+    return produce(state, (draftState) => {
+      draftState.isAutoUpdateEnabled = !!value;
+    });
+  }
+
+  return state;
+};
+
 export default (
   state: CustomListEditorState = initialState,
   action
@@ -1557,6 +1593,10 @@ export default (
       return handleDeleteAllCustomListEditorEntries(state, action);
     case ActionCreator.RESET_CUSTOM_LIST_EDITOR:
       return handleResetCustomListEditor(state, action);
+    case ActionCreator.SET_FEATURE_FLAGS:
+      return handleSetFeatureFlags(state, action);
+    case ActionCreator.UPDATE_FEATURE_FLAG:
+      return handleUpdateFeatureFlag(state, action);
     default:
       return state;
   }

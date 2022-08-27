@@ -1,4 +1,9 @@
 /* eslint-disable */
+
+export interface FeatureFlags {
+  enableAutoList?: boolean;
+}
+
 export interface Navigate {
   (collectionUrl: string, bookUrl: string, tab?: string): void;
 }
