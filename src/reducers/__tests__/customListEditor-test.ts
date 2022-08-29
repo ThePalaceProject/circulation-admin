@@ -108,55 +108,6 @@ describe("custom list editor reducer", () => {
     });
   });
 
-  context("on SET_FEATURE_FLAGS", () => {
-    it("sets isAutoUpdateEnabled to true if the enableAutoList feature flag is true", () => {
-      const state = {
-        ...initialState,
-      };
-
-      const nextState = reducer(state, {
-        type: ActionCreator.SET_FEATURE_FLAGS,
-        value: {
-          enableSomethingElse: false,
-          enableAutoList: true,
-        },
-      });
-
-      expect(nextState.isAutoUpdateEnabled).to.equal(true);
-    });
-
-    it("sets isAutoUpdateEnabled to false if the enableAutoList feature flag is false", () => {
-      const state = {
-        ...initialState,
-      };
-
-      const nextState = reducer(state, {
-        type: ActionCreator.SET_FEATURE_FLAGS,
-        value: {
-          enableSomethingElse: false,
-          enableAutoList: false,
-        },
-      });
-
-      expect(nextState.isAutoUpdateEnabled).to.equal(false);
-    });
-
-    it("keeps isAutoUpdateEnabled at the default (false) if the enableAutoList feature flag is not present", () => {
-      const state = {
-        ...initialState,
-      };
-
-      const nextState = reducer(state, {
-        type: ActionCreator.SET_FEATURE_FLAGS,
-        value: {
-          enableSomethingElse: true,
-        },
-      });
-
-      expect(nextState.isAutoUpdateEnabled).to.equal(false);
-    });
-  });
-
   context("on OPEN_CUSTOM_LIST_EDITOR", () => {
     const state = undefined;
 
