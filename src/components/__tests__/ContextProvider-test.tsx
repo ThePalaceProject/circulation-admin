@@ -41,6 +41,27 @@ describe("ContextProvider", () => {
     expect(context.admin.email).to.equal("email");
   });
 
+  it("saves the enableAutoList feature flag to the store", () => {
+    wrapper = shallow(
+      <ContextProvider
+        csrfToken="token"
+        featureFlags={{
+          enableAutoList: true,
+        }}
+      >
+        <FakeChild />
+      </ContextProvider>
+    );
+
+    instance = wrapper.instance();
+
+    const context = instance.getChildContext();
+
+    expect(
+      context.editorStore.getState().editor.customListEditor.isAutoUpdateEnabled
+    ).to.equal(true);
+  });
+
   it("renders child", () => {
     const children = wrapper.find(FakeChild);
     expect(children.length).to.equal(1);

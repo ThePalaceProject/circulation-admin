@@ -599,7 +599,10 @@ export const initialState: CustomListEditorState = {
 
 /**
  * Determines if a custom list editor contains valid current data, given its state. A list is valid
- * if it has a name, and has either: at least one source collection, or at least one entry.
+ * if it has a name, and has either:
+ * - At least one source collection, or
+ * - If the list is auto updating, either an include query or an exclude query; otherwise, at least
+ *   one entry.
  *
  * @param state The custom list editor state
  * @returns     true if the editor contains valid data, false otherwise
@@ -1532,11 +1535,15 @@ const handleSetFeatureFlags = (
   state: CustomListEditorState,
   action
 ): CustomListEditorState => {
-  const { value } = action;
+  const { value = {} } = action;
 
-  return produce(state, (draftState) => {
-    draftState.isAutoUpdateEnabled = !!value?.enableAutoList;
-  });
+  if ("enableAutoList" in value) {
+    return produce(state, (draftState) => {
+      draftState.isAutoUpdateEnabled = !!value.enableAutoList;
+    });
+  }
+
+  return state;
 };
 
 const handleUpdateFeatureFlag = (

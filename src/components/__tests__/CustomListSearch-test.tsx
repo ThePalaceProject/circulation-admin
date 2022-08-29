@@ -162,43 +162,6 @@ describe("CustomListSearch", () => {
     expect(updateSearchParam.args[0]).to.deep.equal(["sort", "author"]);
   });
 
-  it("renders radio buttons for auto update on and off", () => {
-    const autoUpdateOptions = wrapper.find(".auto-update").find(".form-group");
-
-    expect(autoUpdateOptions.length).to.equal(2);
-
-    const autoUpdateOn = autoUpdateOptions.at(0);
-
-    expect(autoUpdateOn.text()).to.equal("Automatically update this list");
-
-    const autoUpdateOnRadio = autoUpdateOn.find("input");
-
-    expect(autoUpdateOnRadio.props().name).to.equal("auto-update");
-
-    const autoUpdateOff = autoUpdateOptions.at(1);
-
-    expect(autoUpdateOff.text()).to.equal("Manually select titles");
-
-    const autoUpdateOffRadio = autoUpdateOff.find("input");
-
-    expect(autoUpdateOffRadio.props().name).to.equal("auto-update");
-  });
-
-  it("calls updateAutoUpdate when an auto update radio button is changed", () => {
-    const autoUpdateOptions = wrapper
-      .find(".auto-update")
-      .find(".form-group input");
-    const autoUpdateOnRadio = autoUpdateOptions.at(0);
-    const autoUpdateOffRadio = autoUpdateOptions.at(1);
-
-    autoUpdateOffRadio.simulate("change");
-    autoUpdateOnRadio.simulate("change");
-
-    expect(updateAutoUpdate.callCount).to.equal(2);
-    expect(updateAutoUpdate.args[0]).to.deep.equal([false]);
-    expect(updateAutoUpdate.args[1]).to.deep.equal([true]);
-  });
-
   it("calls addAdvSearchQuery and search when mounted if there is a startingTitle", () => {
     wrapper = mount(
       <CustomListSearch
@@ -224,5 +187,83 @@ describe("CustomListSearch", () => {
     ]);
 
     expect(search.callCount).to.equal(1);
+  });
+
+  context("when showAutoUpdate is false", () => {
+    it("does not render radio buttons for auto update on and off", () => {
+      const autoUpdateOptions = wrapper
+        .find(".auto-update")
+        .find(".form-group");
+
+      expect(autoUpdateOptions.length).to.equal(0);
+    });
+  });
+
+  context("when showAutoUpdate is true", () => {
+    it("renders radio buttons for auto update on and off", () => {
+      wrapper = mount(
+        <CustomListSearch
+          entryPoints={entryPoints}
+          languages={languages}
+          library={library}
+          search={search}
+          searchParams={searchParams}
+          showAutoUpdate={true}
+          updateAutoUpdate={updateAutoUpdate}
+          updateSearchParam={updateSearchParam}
+        />
+      );
+
+      const autoUpdateOptions = wrapper
+        .find(".auto-update")
+        .find(".form-group");
+
+      expect(autoUpdateOptions.length).to.equal(2);
+
+      const autoUpdateOn = autoUpdateOptions.at(0);
+
+      expect(autoUpdateOn.text()).to.equal("Automatically update this list");
+
+      const autoUpdateOnRadio = autoUpdateOn.find("input");
+
+      expect(autoUpdateOnRadio.props().name).to.equal("auto-update");
+
+      const autoUpdateOff = autoUpdateOptions.at(1);
+
+      expect(autoUpdateOff.text()).to.equal("Manually select titles");
+
+      const autoUpdateOffRadio = autoUpdateOff.find("input");
+
+      expect(autoUpdateOffRadio.props().name).to.equal("auto-update");
+    });
+
+    it("calls updateAutoUpdate when an auto update radio button is changed", () => {
+      wrapper = mount(
+        <CustomListSearch
+          entryPoints={entryPoints}
+          languages={languages}
+          library={library}
+          search={search}
+          searchParams={searchParams}
+          showAutoUpdate={true}
+          updateAutoUpdate={updateAutoUpdate}
+          updateSearchParam={updateSearchParam}
+        />
+      );
+
+      const autoUpdateOptions = wrapper
+        .find(".auto-update")
+        .find(".form-group input");
+
+      const autoUpdateOnRadio = autoUpdateOptions.at(0);
+      const autoUpdateOffRadio = autoUpdateOptions.at(1);
+
+      autoUpdateOffRadio.simulate("change");
+      autoUpdateOnRadio.simulate("change");
+
+      expect(updateAutoUpdate.callCount).to.equal(2);
+      expect(updateAutoUpdate.args[0]).to.deep.equal([false]);
+      expect(updateAutoUpdate.args[1]).to.deep.equal([true]);
+    });
   });
 });

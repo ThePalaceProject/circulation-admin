@@ -136,7 +136,15 @@ module.exports = (env) => {
       return responseBuffer;
     }
 
-    const page = responseBuffer.toString("utf8");
+    let page = responseBuffer.toString("utf8");
+
+    page = page.replace(
+      "CirculationAdmin({",
+      `CirculationAdmin({
+       featureFlags: { enableAutoList: true },
+    `
+    );
+
     const packageName = process.env.npm_package_name;
     const cdnUrlPattern = `"https://cdn.jsdelivr.net/npm/${packageName}(@.*?)?/dist/(.*?)"`;
 
