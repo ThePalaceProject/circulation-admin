@@ -353,7 +353,21 @@ describe("custom list editor reducer", () => {
     });
 
     context("when auto update is enabled", () => {
-      it("sets the autoUpdate property to true the auto_update setting in the data is true", () => {
+      it("defaults the autoUpdate property to true for a new list", () => {
+        const state = {
+          ...initialState,
+          isAutoUpdateEnabled: true,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(true);
+      });
+
+      it("sets the autoUpdate property to true if the auto_update setting in the data is true", () => {
         const state = {
           ...initialState,
           id: 31,
@@ -368,10 +382,11 @@ describe("custom list editor reducer", () => {
         expect(nextState.properties.current.autoUpdate).to.equal(true);
       });
 
-      it("sets the autoUpdate property to false the auto_update setting in the data is not present", () => {
+      it("sets the autoUpdate property to false if the auto_update setting in the data is not present", () => {
         const state = {
           ...initialState,
           id: 12,
+          isAutoUpdateEnabled: true,
         };
 
         const nextState = reducer(state, {
@@ -384,7 +399,20 @@ describe("custom list editor reducer", () => {
     });
 
     context("when auto update is disabled", () => {
-      it("defaults the autoUpdate property to false when the list data does not contain an auto_update setting", () => {
+      it("defaults the autoUpdate property to false for a new list", () => {
+        const state = {
+          ...initialState,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(false);
+      });
+
+      it("sets the autoUpdate property to false if the auto_update setting in the data is not present", () => {
         const state = {
           ...initialState,
           id: 16,
@@ -398,7 +426,7 @@ describe("custom list editor reducer", () => {
         expect(nextState.properties.current.autoUpdate).to.equal(false);
       });
 
-      it("sets the autoUpdate property to false even when the list data has auto_update set to true", () => {
+      it("sets the autoUpdate property to false even if the list data has auto_update set to true", () => {
         const state = {
           ...initialState,
           id: 31,
