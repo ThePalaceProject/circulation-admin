@@ -24,6 +24,7 @@ type CustomListEditorProps = {
   collections?: AdminCollectionData[];
   entries?: CustomListEditorEntriesData;
   entryPoints?: string[];
+  isAutoUpdateEnabled?: boolean;
   isFetchingMoreCustomListEntries: boolean;
   isFetchingSearchResults: boolean;
   isFetchingMoreSearchResults: boolean;
@@ -68,6 +69,7 @@ export default function CustomListEditor({
   collections,
   entries,
   entryPoints,
+  isAutoUpdateEnabled,
   isFetchingMoreCustomListEntries,
   isFetchingSearchResults,
   isFetchingMoreSearchResults,
@@ -184,6 +186,7 @@ export default function CustomListEditor({
             startingTitle={startingTitle}
             library={library}
             languages={languages}
+            showAutoUpdate={isAutoUpdateEnabled}
             addAdvSearchQuery={addAdvSearchQuery}
             updateAdvSearchQueryBoolean={updateAdvSearchQueryBoolean}
             moveAdvSearchQuery={moveAdvSearchQuery}

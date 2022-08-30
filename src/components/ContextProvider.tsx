@@ -2,10 +2,11 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import buildStore from "../store";
-import { PathFor } from "../interfaces";
+import { FeatureFlags, PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 import Admin from "../models/Admin";
 import PathForProvider from "opds-web-client/lib/components/context/PathForContext";
+import ActionCreator from "../actions";
 
 export interface ContextProviderProps extends React.Props<{}> {
   csrfToken: string;
@@ -16,6 +17,7 @@ export interface ContextProviderProps extends React.Props<{}> {
     role: string;
     library?: string;
   }[];
+  featureFlags?: FeatureFlags;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -41,6 +43,16 @@ export default class ContextProvider extends React.Component<
       path += tab ? `/tab/${tab}` : "";
       return path;
     };
+  }
+
+  componentDidMount() {
+    this.storeConfiguration();
+  }
+
+  storeConfiguration() {
+    const actions = new ActionCreator();
+
+    this.store.dispatch(actions.setFeatureFlags(this.props.featureFlags));
   }
 
   prepareCollectionUrl(url: string): string {

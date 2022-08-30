@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.2.0
+
+#### Updated
+
+- The enableAutoList feature flag has been added as an application configuration property. It must be set to true enable the UI to view and edit automatically-updating lists. The flag is false by default.
+
 ### v0.1.0
 
 #### Fixed

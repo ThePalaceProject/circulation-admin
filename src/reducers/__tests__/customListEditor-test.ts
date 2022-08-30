@@ -9,6 +9,105 @@ import reducer, {
 import ActionCreator from "../../actions";
 
 describe("custom list editor reducer", () => {
+  context("on SET_FEATURE_FLAGS", () => {
+    it("sets isAutoUpdateEnabled to true if the enableAutoList feature flag is true", () => {
+      const state = {
+        ...initialState,
+        isAutoUpdateEnabled: false,
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.SET_FEATURE_FLAGS,
+        value: {
+          enableSomethingElse: false,
+          enableAutoList: true,
+        },
+      });
+
+      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+    });
+
+    it("sets isAutoUpdateEnabled to false if the enableAutoList feature flag is false", () => {
+      const state = {
+        ...initialState,
+        isAutoUpdateEnabled: true,
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.SET_FEATURE_FLAGS,
+        value: {
+          enableSomethingElse: false,
+          enableAutoList: false,
+        },
+      });
+
+      expect(nextState.isAutoUpdateEnabled).to.equal(false);
+    });
+
+    it("keeps isAutoUpdateEnabled at the current value if the enableAutoList feature flag is not present", () => {
+      const state = {
+        ...initialState,
+        isAutoUpdateEnabled: true,
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.SET_FEATURE_FLAGS,
+        value: {
+          enableSomethingElse: true,
+        },
+      });
+
+      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+    });
+  });
+
+  context("on UPDATE_FEATURE_FLAG", () => {
+    it("sets isAutoUpdateEnabled to true if the flag name is enableAutoList and the value is true", () => {
+      const state = {
+        ...initialState,
+        isAutoUpdateEnabled: false,
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.UPDATE_FEATURE_FLAG,
+        name: "enableAutoList",
+        value: true,
+      });
+
+      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+    });
+
+    it("sets isAutoUpdateEnabled to false if the flag name is enableAutoList and the value is false", () => {
+      const state = {
+        ...initialState,
+        isAutoUpdateEnabled: true,
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.UPDATE_FEATURE_FLAG,
+        name: "enableAutoList",
+        value: false,
+      });
+
+      expect(nextState.isAutoUpdateEnabled).to.equal(false);
+    });
+
+    it("keeps isAutoUpdateEnabled at the current value if the flag name is not enableAutoList", () => {
+      const state = {
+        ...initialState,
+        isAutoUpdateEnabled: true,
+      };
+
+      const nextState = reducer(state, {
+        type: ActionCreator.UPDATE_FEATURE_FLAG,
+        name: "enableSomethingElse",
+        value: false,
+      });
+
+      expect(nextState.isAutoUpdateEnabled).to.equal(true);
+    });
+  });
+
   context("on OPEN_CUSTOM_LIST_EDITOR", () => {
     const state = undefined;
 
@@ -195,8 +294,6 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.properties.current.autoUpdate).to.equal(true);
-
       expect(
         nextState.searchParams.current.advanced.include.query
       ).to.deep.equal({
@@ -252,6 +349,95 @@ describe("custom list editor reducer", () => {
             value: "wicked appetite",
           },
         ],
+      });
+    });
+
+    context("when auto update is enabled", () => {
+      it("defaults the autoUpdate property to true for a new list", () => {
+        const state = {
+          ...initialState,
+          isAutoUpdateEnabled: true,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(true);
+      });
+
+      it("sets the autoUpdate property to true if the auto_update setting in the data is true", () => {
+        const state = {
+          ...initialState,
+          id: 31,
+          isAutoUpdateEnabled: true,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(true);
+      });
+
+      it("sets the autoUpdate property to false if the auto_update setting in the data is not present", () => {
+        const state = {
+          ...initialState,
+          id: 12,
+          isAutoUpdateEnabled: true,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(false);
+      });
+    });
+
+    context("when auto update is disabled", () => {
+      it("defaults the autoUpdate property to false for a new list", () => {
+        const state = {
+          ...initialState,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(false);
+      });
+
+      it("sets the autoUpdate property to false if the auto_update setting in the data is not present", () => {
+        const state = {
+          ...initialState,
+          id: 16,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(false);
+      });
+
+      it("sets the autoUpdate property to false even if the list data has auto_update set to true", () => {
+        const state = {
+          ...initialState,
+          id: 31,
+        };
+
+        const nextState = reducer(state, {
+          type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+          data: listData,
+        });
+
+        expect(nextState.properties.current.autoUpdate).to.equal(false);
       });
     });
   });
@@ -441,7 +627,7 @@ describe("custom list editor reducer", () => {
       nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_PROPERTY,
         name: "autoUpdate",
-        value: false,
+        value: true,
       });
 
       expect(nextState.isModified).to.equal(true);
@@ -511,6 +697,13 @@ describe("custom list editor reducer", () => {
   context("on UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM", () => {
     const state = {
       ...initialState,
+      properties: {
+        ...initialState.properties,
+        current: {
+          ...initialState.properties.current,
+          autoUpdate: true,
+        },
+      },
     };
 
     it("updates searchParams with the name/value", () => {
@@ -571,6 +764,13 @@ describe("custom list editor reducer", () => {
     it("should add the query to the currently selected query", () => {
       const state = {
         ...initialState,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            autoUpdate: true,
+          },
+        },
         searchParams: {
           ...initialState.searchParams,
           current: {
@@ -623,7 +823,7 @@ describe("custom list editor reducer", () => {
             value: "bar",
           },
           {
-            id: "11",
+            id: "33",
             ...valueQuery,
           },
         ],
@@ -648,13 +848,13 @@ describe("custom list editor reducer", () => {
       expect(
         nextState.searchParams.current.advanced.include.query
       ).to.deep.equal({
-        id: "12",
+        id: "34",
         ...valueQuery,
       });
 
       expect(
         nextState.searchParams.current.advanced.include.selectedQueryId
-      ).to.equal("12");
+      ).to.equal("34");
     });
 
     it("should add the query to the root query, if there is no selected query", () => {
@@ -711,7 +911,7 @@ describe("custom list editor reducer", () => {
             value: "bar",
           },
           {
-            id: "13",
+            id: "35",
             ...valueQuery,
           },
         ],
@@ -757,12 +957,12 @@ describe("custom list editor reducer", () => {
         id: "91",
         and: [
           {
-            id: "15",
+            id: "37",
             key: "title",
             value: "foo",
           },
           {
-            id: "14",
+            id: "36",
             ...valueQuery,
           },
         ],
@@ -808,12 +1008,12 @@ describe("custom list editor reducer", () => {
         id: "91",
         or: [
           {
-            id: "17",
+            id: "39",
             key: "title",
             value: "foo",
           },
           {
-            id: "16",
+            id: "38",
             ...valueQuery,
           },
         ],
@@ -877,12 +1077,12 @@ describe("custom list editor reducer", () => {
             id: "92",
             or: [
               {
-                id: "19",
+                id: "41",
                 key: "title",
                 value: "bar",
               },
               {
-                id: "18",
+                id: "40",
                 ...valueQuery,
               },
             ],
@@ -903,6 +1103,7 @@ describe("custom list editor reducer", () => {
           current: {
             ...initialState.properties.current,
             name: "List 1",
+            autoUpdate: true,
           },
         },
       };
@@ -1022,6 +1223,7 @@ describe("custom list editor reducer", () => {
           current: {
             ...initialState.properties.current,
             name: "List 1",
+            autoUpdate: true,
           },
         },
       };
@@ -1138,7 +1340,7 @@ describe("custom list editor reducer", () => {
                 value: "ben",
               },
               {
-                id: "21",
+                id: "43",
                 key: "title",
                 value: "foo",
               },
@@ -1156,6 +1358,7 @@ describe("custom list editor reducer", () => {
           current: {
             ...initialState.properties.current,
             name: "List 1",
+            autoUpdate: true,
           },
         },
       };

@@ -2,7 +2,6 @@ import * as React from "react";
 import { Panel } from "library-simplified-reusable-components";
 import { AdvancedSearchQuery, LanguagesData, LibraryData } from "../interfaces";
 import { CustomListEditorSearchParams } from "../reducers/customListEditor";
-import SearchIcon from "./icons/SearchIcon";
 import AdvancedSearchBuilder from "./AdvancedSearchBuilder";
 import CustomListSearchQueryViewer from "./CustomListSearchQueryViewer";
 import EditableInput from "./EditableInput";
@@ -13,6 +12,7 @@ export interface CustomListSearchProps {
   languages: LanguagesData;
   library: LibraryData;
   searchParams: CustomListEditorSearchParams;
+  showAutoUpdate?: boolean;
   startingTitle?: string;
   updateAutoUpdate?: (value: boolean) => void;
   updateSearchParam?: (name: string, value) => void;
@@ -43,6 +43,7 @@ const CustomListSearch = ({
   entryPoints,
   library,
   searchParams,
+  showAutoUpdate,
   startingTitle,
   updateAutoUpdate,
   updateSearchParam,
@@ -155,45 +156,48 @@ const CustomListSearch = ({
         />
       </div>
 
-      <div className="auto-update">
-        <span>Use search to:</span>
+      {showAutoUpdate && (
+        <div className="auto-update">
+          <span>Use search to:</span>
 
-        <div className="auto-update-selection">
-          <div>
-            <EditableInput
-              type="radio"
-              name="auto-update"
-              checked={autoUpdate}
-              label={"Automatically update this list"}
-              onChange={() => updateAutoUpdate?.(true)}
-            />
+          <div className="auto-update-selection">
+            <div>
+              <EditableInput
+                type="radio"
+                name="auto-update"
+                checked={autoUpdate}
+                label={"Automatically update this list"}
+                onChange={() => updateAutoUpdate?.(true)}
+              />
 
-            <aside>
-              The system will periodically execute this search and automatically
-              update the list with the results. The search results below
-              represent the titles that would be in the list if it were updated
-              now, but the actual contents of the list will change over time.
-            </aside>
-          </div>
+              <aside>
+                The system will periodically execute this search and
+                automatically update the list with the results. The search
+                results below represent the titles that would be in the list if
+                it were updated now, but the actual contents of the list will
+                change over time.
+              </aside>
+            </div>
 
-          <div>
-            <EditableInput
-              type="radio"
-              name="auto-update"
-              checked={!autoUpdate}
-              label={"Manually select titles"}
-              onChange={() => updateAutoUpdate?.(false)}
-            />
+            <div>
+              <EditableInput
+                type="radio"
+                name="auto-update"
+                checked={!autoUpdate}
+                label={"Manually select titles"}
+                onChange={() => updateAutoUpdate?.(false)}
+              />
 
-            <aside>
-              Move the desired titles from the search results column on the left
-              to the column on the right to add them to the list. Titles may be
-              removed from the list automatically if they become unavailable,
-              but the list is otherwise fixed.
-            </aside>
+              <aside>
+                Move the desired titles from the search results column on the
+                left to the column on the right to add them to the list. Titles
+                may be removed from the list automatically if they become
+                unavailable, but the list is otherwise fixed.
+              </aside>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 
