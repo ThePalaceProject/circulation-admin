@@ -370,7 +370,6 @@ describe("custom list editor reducer", () => {
         data: listData,
       });
 
-      expect(nextState.properties.current.autoUpdate).to.equal(true);
       expect(nextState.searchParams.current.entryPoint).to.equal("Audio");
       expect(nextState.searchParams.current.sort).to.equal("title");
     });
