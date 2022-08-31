@@ -5,7 +5,7 @@ import Collections from "./Collections";
 import AdminAuthServices from "./AdminAuthServices";
 import IndividualAdmins from "./IndividualAdmins";
 import PatronAuthServices from "./PatronAuthServices";
-import SitewideAnnouncements from './SitewideAnnouncements';
+import SitewideAnnouncements from "./SitewideAnnouncements";
 import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
 import AnalyticsServices from "./AnalyticsServices";
