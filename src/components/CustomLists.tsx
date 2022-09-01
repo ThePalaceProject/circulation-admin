@@ -35,6 +35,9 @@ export interface CustomListsStateProps {
   customListEditorSearchParams?: CustomListEditorSearchParams;
   customListEditorEntries?: CustomListEditorEntriesData;
   customListEditorIsLoaded?: boolean;
+  customListEditorIsOwner?: boolean;
+  customListEditorIsShared?: boolean;
+  customListEditorIsSharePending?: boolean;
   customListEditorIsValid?: boolean;
   customListEditorIsModified?: boolean;
   customListEditorIsAutoUpdateEnabled?: boolean;
@@ -90,6 +93,7 @@ export interface CustomListsDispatchProps {
   deleteCustomListEditorEntry?: (id: string) => void;
   deleteAllCustomListEditorEntries?: () => void;
   deleteCustomList: (listId: string) => Promise<void>;
+  shareCustomList?: (listId: string) => Promise<void>;
   loadMoreSearchResults: () => void;
   loadMoreEntries: () => void;
   fetchCollections: () => Promise<CollectionsData>;
@@ -113,6 +117,7 @@ export interface CustomListsProps
     CustomListsOwnProps {}
 
 export interface CustomListsState {
+  filter: string;
   sort: string;
 }
 
@@ -132,9 +137,11 @@ export class CustomLists extends React.Component<
     super(props);
     this.saveCustomListEditor = this.saveCustomListEditor.bind(this);
     this.deleteCustomList = this.deleteCustomList.bind(this);
+    this.changeFilter = this.changeFilter.bind(this);
     this.changeSort = this.changeSort.bind(this);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
     this.state = {
+      filter: "owned",
       sort: "asc",
     };
   }
@@ -166,6 +173,8 @@ export class CustomLists extends React.Component<
         deleteCustomList={this.deleteCustomList}
         changeSort={this.changeSort}
         sortOrder={this.state.sort}
+        changeFilter={this.changeFilter}
+        filter={this.state.filter}
       />
     );
   }
@@ -179,6 +188,9 @@ export class CustomLists extends React.Component<
       isLoaded: this.props.customListEditorIsLoaded,
       isValid: this.props.customListEditorIsValid,
       isModified: this.props.customListEditorIsModified,
+      isOwner: this.props.customListEditorIsOwner,
+      isShared: this.props.customListEditorIsShared,
+      isSharePending: this.props.customListEditorIsSharePending,
       entries: this.props.customListEditorEntries,
       save: this.saveCustomListEditor,
       reset: this.props.resetCustomListEditor,
@@ -211,6 +223,7 @@ export class CustomLists extends React.Component<
       addAllEntries: this.props.addAllCustomListEditorEntries,
       deleteEntry: this.props.deleteCustomListEditorEntry,
       deleteAllEntries: this.props.deleteAllCustomListEditorEntries,
+      share: () => this.props.shareCustomList?.(this.props.identifier),
     };
     const extraProps =
       this.props.editOrCreate === "create"
@@ -276,18 +289,34 @@ export class CustomLists extends React.Component<
     }
   }
 
-  changeSort() {
-    const oldSort = this.state.sort;
-    if (oldSort === "asc") {
-      this.setState({ sort: "desc" });
-    } else {
-      this.setState({ sort: "asc" });
+  changeFilter(filter) {
+    this.setState({ filter });
+  }
+
+  changeSort(sort) {
+    this.setState({ sort });
+  }
+
+  filterLists(lists) {
+    const { filter } = this.state;
+
+    let selectedFilter = null;
+
+    if (filter === "owned") {
+      selectedFilter = (list) => list.is_owner;
+    } else if (filter === "shared-in") {
+      selectedFilter = (list) => !list.is_owner;
+    } else if (filter === "shared-out") {
+      selectedFilter = (list) => list.is_owner && list.is_shared;
     }
+
+    return selectedFilter ? lists.filter(selectedFilter) : lists;
   }
 
   sortedLists(lists?: CustomListData[]) {
     lists = lists || this.props.lists || [];
-    return lists.sort((a, b) => {
+
+    return this.filterLists(lists).sort((a, b) => {
       let first = a;
       let second = b;
       if (this.state.sort === "desc") {
@@ -409,6 +438,10 @@ function mapStateToProps(state, ownProps) {
       state.editor.customListEditor.searchParams.current,
     customListEditorEntries: state.editor.customListEditor.entries,
     customListEditorIsLoaded: state.editor.customListEditor.isLoaded,
+    customListEditorIsOwner: state.editor.customListEditor.isOwner,
+    customListEditorIsShared: state.editor.customListEditor.isShared,
+    customListEditorIsSharePending:
+      state.editor.customListEditor.isSharePending,
     customListEditorIsValid: state.editor.customListEditor.isValid,
     customListEditorIsModified: state.editor.customListEditor.isModified,
     customListEditorIsAutoUpdateEnabled:
@@ -466,6 +499,8 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(actions.fetchMoreCustomListEditorSearchResults()),
     deleteCustomList: (listId: string) =>
       dispatch(actions.deleteCustomList(ownProps.library, listId)),
+    shareCustomList: (listId: string) =>
+      dispatch(actions.shareCustomList(ownProps.library, listId)),
     openCustomListEditor: (listId: string) =>
       dispatch(actions.openCustomListEditor(listId)),
     loadMoreEntries: () => dispatch(actions.fetchMoreCustomListEntries()),

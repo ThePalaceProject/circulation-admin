@@ -60,12 +60,15 @@
 
     .search-result, .custom-list-entry {
       display: flex;
-      flex-direction: row;
+      gap: 6px;
       justify-content: space-between;
       border: 1px solid $pagecolorlight;
       padding: 10px;
-      cursor: grab;
-      cursor: -webkit-grab;
+
+      &[draggable] {
+        cursor: grab;
+        cursor: -webkit-grab;
+      }
 
       &.dragging {
         border: 1px solid $pagetextcolor;

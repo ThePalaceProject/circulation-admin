@@ -60,12 +60,21 @@ describe("CustomLists", () => {
   };
 
   const listsData = [
-    { id: 1, name: "a list", entry_count: 0, collections: [] },
+    {
+      id: 1,
+      name: "a list",
+      entry_count: 0,
+      collections: [],
+      is_owner: true,
+      is_shared: false,
+    },
     {
       id: 2,
       name: "z list",
       entry_count: 1,
       collections: [{ id: 3, name: "collection 3", protocol: "protocol" }],
+      is_owner: true,
+      is_shared: false,
     },
   ];
 

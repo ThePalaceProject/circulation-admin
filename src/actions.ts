@@ -124,6 +124,9 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly CUSTOM_LIST_DETAILS_MORE = "CUSTOM_LIST_DETAILS_MORE";
   static readonly EDIT_CUSTOM_LIST = "EDIT_CUSTOM_LIST";
   static readonly DELETE_CUSTOM_LIST = "DELETE_CUSTOM_LIST";
+  static readonly CUSTOM_LIST_SHARE = "CUSTOM_LIST_SHARE";
+  static readonly EDIT_CUSTOM_LIST_SHARE = "EDIT_CUSTOM_LIST_SHARE";
+  static readonly CUSTOM_LISTS_AFTER_SHARE = "CUSTOM_LISTS_AFTER_SHARE";
   static readonly OPEN_CUSTOM_LIST_EDITOR = "OPEN_CUSTOM_LIST_EDITOR";
   static readonly UPDATE_CUSTOM_LIST_EDITOR_PROPERTY =
     "UPDATE_CUSTOM_LIST_EDITOR_PROPERTY";
@@ -897,6 +900,59 @@ export default class ActionCreator extends BaseActionCreator {
       null,
       "DELETE"
     ).bind(this);
+  }
+
+  shareCustomList(library: string, listId: string) {
+    const shareUrl = "/" + library + "/admin/custom_list/" + listId + "/share";
+
+    const shareAction = this.postForm(
+      ActionCreator.EDIT_CUSTOM_LIST_SHARE,
+      shareUrl,
+      null
+    ).bind(this);
+
+    const loadUrl = "/" + library + "/admin/custom_lists";
+
+    const loadAction = this.fetchJSON<CustomListsData>(
+      ActionCreator.CUSTOM_LISTS_AFTER_SHARE,
+      loadUrl
+    ).bind(this);
+
+    return ((dispatch) => {
+      dispatch({
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.REQUEST}`,
+        listId,
+      });
+
+      return dispatch(shareAction)
+        .then(() => dispatch(loadAction))
+        .then((data) =>
+          Promise.all([
+            // Dispatch CUSTOM_LISTS_LOAD to update the sidebar.
+
+            dispatch({
+              type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+              data,
+              isAfterShare: true,
+            }),
+
+            // Dispatch CUSTOM_LIST_SHARE_SUCCESS to update the custom list editor.
+
+            dispatch({
+              type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.SUCCESS}`,
+              listId,
+              data,
+            }),
+          ])
+        )
+        .catch((error) =>
+          dispatch({
+            type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.FAILURE}`,
+            listId,
+            error,
+          })
+        );
+    }).bind(this);
   }
 
   openCustomListEditor(listId: string) {

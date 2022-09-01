@@ -9,11 +9,13 @@ export interface AdvancedSearchFilterProps {
   onSelect: (id: string) => void;
   onRemove: (id: string) => void;
   query: AdvancedSearchQuery;
+  readOnly?: boolean;
   selectedQueryId?: string;
 }
 
 export default function AdvancedSearchFilter({
   query,
+  readOnly,
   selectedQueryId,
   onBooleanChange,
   onMove,
@@ -25,6 +27,7 @@ export default function AdvancedSearchFilter({
       return (
         <AdvancedSearchBooleanFilter
           query={query}
+          readOnly={readOnly}
           selectedQueryId={selectedQueryId}
           onBooleanChange={onBooleanChange}
           onMove={onMove}
@@ -37,6 +40,7 @@ export default function AdvancedSearchFilter({
     return (
       <AdvancedSearchValueFilter
         query={query}
+        readOnly={readOnly}
         selected={query.id === selectedQueryId}
         onMove={onMove}
         onSelect={onSelect}

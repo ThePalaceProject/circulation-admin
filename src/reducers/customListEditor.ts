@@ -556,6 +556,22 @@ export interface CustomListEditorState {
   isLoaded: boolean;
 
   /**
+   * A flag indicating that the current library owns this list; true if the current library is the
+   * owner, false if the list is shared with this library, but owned by another.
+   */
+  isOwner: boolean;
+
+  /**
+   * A flag indicating that the list is shared by multiple libraries.
+   */
+  isShared: boolean;
+
+  /**
+   * A flag indicating that a share operation on the list is in progress.
+   */
+  isSharePending: boolean;
+
+  /**
    * The properties of the list.
    */
   properties: CustomListEditorTrackedProperties;
@@ -620,6 +636,9 @@ export const initialState: CustomListEditorState = {
   id: null,
   isAutoUpdateEnabled: false,
   isLoaded: false,
+  isOwner: true,
+  isShared: false,
+  isSharePending: false,
   properties: {
     baseline: initialProperties,
     current: initialProperties,
@@ -783,6 +802,8 @@ const initialStateForList = (
 
     if (customList) {
       draftState.isLoaded = true;
+      draftState.isOwner = customList.is_owner;
+      draftState.isShared = customList.is_shared;
 
       const initialProperties = {
         name: customList.name || "",
@@ -903,6 +924,14 @@ const handleCustomListsLoad = (
   state: CustomListEditorState,
   action
 ): CustomListEditorState => {
+  if (action.isAfterShare) {
+    // If this is a reload of custom list data following a share operation, we can ignore the
+    // action. The sharing state will be updated by the handler for the CUSTOM_LIST_SHARE_SUCCESS
+    // action.
+
+    return state;
+  }
+
   const { id } = state;
   const { data } = action;
 
@@ -1587,6 +1616,91 @@ const handleResetCustomListEditor = validatedHandler(
   }
 );
 
+/**
+ * Handle the CUSTOM_LIST_SHARE_REQUEST action. This action is fired when a list share operation
+ * is started.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - listId: The id of the list that is being shared.
+ * @returns      The next state
+ */
+const handleCustomListShareRequest = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  const { listId } = action;
+  const { id } = state;
+
+  if (parseInt(listId, 10) === id) {
+    return produce(state, (draftState) => {
+      draftState.isSharePending = true;
+    });
+  }
+
+  return state;
+};
+
+/**
+ * Handle the CUSTOM_LIST_SHARE_SUCCESS action. This action is fired when a list share operation
+ * completes successfully.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - data: The data received from a call to the custom_lists endpoint in the CM,
+ *                       reflecting the state of the lists after the share was completed.
+ *               - listId: The id of the list that was shared.
+ * @returns      The next state
+ */
+const handleCustomListShareSuccess = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  const { data, listId } = action;
+  const { id } = state;
+
+  if (parseInt(listId, 10) === id) {
+    const customList = data?.custom_lists.find((list) => list.id === id);
+
+    return produce(state, (draftState) => {
+      draftState.isSharePending = false;
+
+      if (customList) {
+        draftState.isShared = customList.is_shared;
+      }
+    });
+  }
+
+  return state;
+};
+
+/**
+ * Handle the CUSTOM_LIST_SHARE_FAILURE action. This action is fired when a list share operation
+ * fails.
+ *
+ * @param state  The current state
+ * @param action The action, which should contain the following properties:
+ *               - error:  The error that occurred.
+ *               - listId: The id of the list that was shared.
+ * @returns      The next state
+ */
+const handleCustomListShareFailure = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  const { error, listId } = action;
+  const { id } = state;
+
+  if (parseInt(listId, 10) === id) {
+    return produce(state, (draftState) => {
+      draftState.isSharePending = false;
+      draftState.error = error.message;
+    });
+  }
+
+  return state;
+};
+
 const handleSetFeatureFlags = (
   state: CustomListEditorState,
   action
@@ -1656,6 +1770,12 @@ export default (
       return handleDeleteAllCustomListEditorEntries(state, action);
     case ActionCreator.RESET_CUSTOM_LIST_EDITOR:
       return handleResetCustomListEditor(state, action);
+    case `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.REQUEST}`:
+      return handleCustomListShareRequest(state, action);
+    case `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.SUCCESS}`:
+      return handleCustomListShareSuccess(state, action);
+    case `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.FAILURE}`:
+      return handleCustomListShareFailure(state, action);
     case ActionCreator.SET_FEATURE_FLAGS:
       return handleSetFeatureFlags(state, action);
     case ActionCreator.UPDATE_FEATURE_FLAG:

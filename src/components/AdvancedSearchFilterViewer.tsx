@@ -4,6 +4,7 @@ import AdvancedSearchFilter from "./AdvancedSearchFilter";
 
 export interface AdvancedSearchFilterViewerProps {
   query: AdvancedSearchQuery;
+  readOnly?: boolean;
   selectedQueryId?: string;
   onBooleanChange: (id: string, bool: string) => void;
   onMove: (id: string, targetId: string) => void;
@@ -13,6 +14,7 @@ export interface AdvancedSearchFilterViewerProps {
 
 export default function AdvancedSearchFilterViewer({
   query,
+  readOnly,
   selectedQueryId,
   onBooleanChange,
   onMove,
@@ -23,6 +25,7 @@ export default function AdvancedSearchFilterViewer({
     <div className="advanced-search-filter-tree" role="tree">
       <AdvancedSearchFilter
         query={query}
+        readOnly={readOnly}
         selectedQueryId={selectedQueryId}
         onBooleanChange={onBooleanChange}
         onMove={onMove}

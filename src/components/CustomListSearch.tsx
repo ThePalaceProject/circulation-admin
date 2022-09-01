@@ -9,6 +9,7 @@ import EditableInput from "./EditableInput";
 export interface CustomListSearchProps {
   autoUpdate?: boolean;
   entryPoints: string[];
+  isOwner?: boolean;
   languages: LanguagesData;
   library: LibraryData;
   searchParams: CustomListEditorSearchParams;
@@ -41,6 +42,7 @@ const sorts = [
 const CustomListSearch = ({
   autoUpdate,
   entryPoints,
+  isOwner,
   library,
   searchParams,
   showAutoUpdate,
@@ -66,6 +68,8 @@ const CustomListSearch = ({
     }
   }, []);
 
+  const readOnly = !isOwner;
+
   const entryPointsWithAll = entryPoints.includes("All")
     ? entryPoints
     : ["All", ...entryPoints];
@@ -77,6 +81,7 @@ const CustomListSearch = ({
 
     return (
       <AdvancedSearchBuilder
+        isOwner={isOwner}
         name={name}
         query={builder.query}
         selectedQueryId={builder.selectedQueryId}
@@ -97,6 +102,7 @@ const CustomListSearch = ({
         <div className="entry-points-selection">
           {entryPointsWithAll.map((entryPoint) => (
             <EditableInput
+              disabled={readOnly}
               key={entryPoint}
               type="radio"
               name="entry-points-selection"
@@ -115,6 +121,7 @@ const CustomListSearch = ({
         <div className="search-options-selection">
           {sorts.map(({ value, label }) => (
             <EditableInput
+              disabled={readOnly}
               key={value}
               type="radio"
               name="sort-selection"
@@ -163,6 +170,7 @@ const CustomListSearch = ({
           <div className="auto-update-selection">
             <div>
               <EditableInput
+                disabled={readOnly}
                 type="radio"
                 name="auto-update"
                 checked={autoUpdate}
@@ -172,15 +180,15 @@ const CustomListSearch = ({
 
               <aside>
                 The system will periodically execute this search and
-                automatically update the list with the results. The search
-                results below represent the titles that would be in the list if
-                it were updated now, but the actual contents of the list will
-                change over time.
+                automatically update the list with the results.
+                {!readOnly &&
+                  "The search results below represent the titles that would be in the list if it were updated now, but the actual contents of the list will change over time."}
               </aside>
             </div>
 
             <div>
               <EditableInput
+                disabled={readOnly}
                 type="radio"
                 name="auto-update"
                 checked={!autoUpdate}
@@ -189,9 +197,10 @@ const CustomListSearch = ({
               />
 
               <aside>
-                Move the desired titles from the search results column on the
-                left to the column on the right to add them to the list. Titles
-                may be removed from the list automatically if they become
+                The list entries are manually selected.{" "}
+                {!readOnly &&
+                  "Move the desired titles from the search results column on the left to the column on the right to add them to the list. "}
+                Titles may be removed from the list automatically if they become
                 unavailable, but the list is otherwise fixed.
               </aside>
             </div>
