@@ -226,6 +226,13 @@ describe("custom list editor reducer", () => {
           auto_update_query:
             '{"query":{"and":[{"and":[{"or":[{"key":"genre","value":"Horror"},{"key":"genre","value":"Fantasy"}]},{"key":"language","value":"eng"},{"key":"classification","value":"mystery"}]},{"not":[{"or":[{"key":"author","op":"contains","value":"bracken"},{"key":"title","value":"wicked appetite"}]}]}]}}',
         },
+        {
+          collections: [],
+          id: 42,
+          name: "Another Auto Updating List",
+          auto_update: true,
+          auto_update_facets: '{"media":"Audio","order":"title"}',
+        },
       ],
     };
 
@@ -350,6 +357,21 @@ describe("custom list editor reducer", () => {
           },
         ],
       });
+    });
+
+    it("updates the search params when there are saved search facets", () => {
+      const state = {
+        ...initialState,
+        id: 42,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+        data: listData,
+      });
+
+      expect(nextState.searchParams.current.entryPoint).to.equal("Audio");
+      expect(nextState.searchParams.current.sort).to.equal("title");
     });
 
     context("when auto update is enabled", () => {
@@ -2369,6 +2391,125 @@ describe("custom list editor reducer", () => {
         '{"query":{"key":"title","value":"Little Women"}}'
       );
     });
+
+    it("should include auto update facets if the list is auto updating", () => {
+      const state = {
+        ...initialState,
+        id: 123,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            name: "My New List",
+            autoUpdate: true,
+          },
+        },
+        searchParams: {
+          ...initialState.searchParams,
+          current: {
+            ...initialState.searchParams.current,
+            entryPoint: "Audio",
+            sort: "title",
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "0",
+                  key: "title",
+                  op: "eq",
+                  value: "Little Women",
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const formData = getCustomListEditorFormData(state);
+
+      expect(formData.get("auto_update_facets")).to.equal(
+        '{"media":"Audio","order":"title"}'
+      );
+    });
+
+    it('should not include media in auto update facets if entryPoint is "All"', () => {
+      const state = {
+        ...initialState,
+        id: 123,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            name: "My New List",
+            autoUpdate: true,
+          },
+        },
+        searchParams: {
+          ...initialState.searchParams,
+          current: {
+            ...initialState.searchParams.current,
+            entryPoint: "All",
+            sort: "title",
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "0",
+                  key: "title",
+                  op: "eq",
+                  value: "Little Women",
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const formData = getCustomListEditorFormData(state);
+
+      expect(formData.get("auto_update_facets")).to.equal('{"order":"title"}');
+    });
+
+    it("should not include order in auto update facets if sort is null", () => {
+      const state = {
+        ...initialState,
+        id: 123,
+        properties: {
+          ...initialState.properties,
+          current: {
+            ...initialState.properties.current,
+            name: "My New List",
+            autoUpdate: true,
+          },
+        },
+        searchParams: {
+          ...initialState.searchParams,
+          current: {
+            ...initialState.searchParams.current,
+            entryPoint: "Book",
+            sort: null,
+            advanced: {
+              ...initialState.searchParams.current.advanced,
+              include: {
+                ...initialState.searchParams.current.advanced.include,
+                query: {
+                  id: "0",
+                  key: "title",
+                  op: "eq",
+                  value: "Little Women",
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const formData = getCustomListEditorFormData(state);
+
+      expect(formData.get("auto_update_facets")).to.equal('{"media":"Book"}');
+    });
   });
 
   context("getCustomListEditorSearchUrl", () => {
@@ -2400,11 +2541,11 @@ describe("custom list editor reducer", () => {
       const url = getCustomListEditorSearchUrl(state, library);
 
       expect(url).to.equal(
-        "/lib/search?entrypoint=Book&order=title&q=foo%20bar%20baz"
+        "/lib/search?media=Book&order=title&q=foo%20bar%20baz"
       );
     });
 
-    it('should omit the entrypoint param if it is "All"', () => {
+    it('should omit the media param if entryPoint is "All"', () => {
       const state = {
         ...initialState,
         searchParams: {
