@@ -1,16 +1,16 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Alert } from "react-bootstrap";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Form } from "library-simplified-reusable-components";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import ActionCreator from "../actions";
+import { SitewideAnnouncementsData, AnnouncementData } from "../interfaces";
 import EditableConfigList, {
   EditableConfigListStateProps,
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
   EditableConfigListProps,
 } from "./EditableConfigList";
-import ActionCreator from "../actions";
-import { SitewideAnnouncementsData, AnnouncementData } from "../interfaces";
 import ErrorMessage from "./ErrorMessage";
 import AnnouncementsSection from "./AnnouncementsSection";
 
@@ -19,6 +19,7 @@ export class SitewideAnnouncements extends EditableConfigList<
   SitewideAnnouncementsData,
   AnnouncementData
 > {
+  // There is no individual item edit form for an announcement.
   EditForm = null;
   listDataKey = "announcements";
   itemTypeName = "sitewide announcement";
@@ -35,14 +36,21 @@ export class SitewideAnnouncements extends EditableConfigList<
   }
 
   render() {
+    const {
+      data,
+      editOrCreate,
+      fetchError,
+      formError,
+      isFetching,
+      responseBody,
+    } = this.props;
+
     const headers = this.getHeaders();
 
     const canListAllData =
-      !this.props.isFetching &&
-      !this.props.editOrCreate &&
-      this.props.data?.[this.listDataKey];
+      !isFetching && !editOrCreate && data?.[this.listDataKey];
 
-    const canEdit = this.canEdit(this.props.data?.settings || {});
+    const canEdit = this.canEdit(data?.settings?.[0] || {});
 
     return (
       <div className={this.getClassName()}>
@@ -50,29 +58,25 @@ export class SitewideAnnouncements extends EditableConfigList<
         {canListAllData && this.links?.["info"] && (
           <Alert bsStyle="info">{this.links["info"]}</Alert>
         )}
-        {this.props.responseBody && (
+        {responseBody && (
           <Alert bsStyle="success">{this.successMessage()}</Alert>
         )}
-        {this.props.fetchError && (
-          <ErrorMessage error={this.props.fetchError} />
-        )}
-        {this.props.formError && (
-          <ErrorMessage error={this.props.formError} />
-        )}
-        {this.props.isFetching && <LoadingIndicator />}
+        {fetchError && <ErrorMessage error={fetchError} />}
+        {formError && <ErrorMessage error={formError} />}
+        {isFetching && <LoadingIndicator />}
 
         {canListAllData && (
           <Form
             onSubmit={this.submit}
             className="no-border edit-form"
-            disableButton={!canEdit || this.props.isFetching}
+            disableButton={!canEdit || isFetching}
             content={[
               <AnnouncementsSection
                 key="announcements-section"
-                setting={this.props.data.settings}
-                value={this.props.data[this.listDataKey]}
+                setting={data.settings[0]}
+                value={data[this.listDataKey]}
                 ref={this.announcementsRef}
-              />
+              />,
             ]}
           />
         )}
@@ -89,14 +93,10 @@ export class SitewideAnnouncements extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const data = {
-    ...(state.editor.sitewideAnnouncements?.data || {})
-  };
-
+function mapStateToProps(state) {
   return {
-    data,
-    responseBody: state.editor.sitewideAnnouncements?.successMessage,
+    data: state.editor.sitewideAnnouncements.data,
+    responseBody: state.editor.sitewideAnnouncements.successMessage,
     fetchError: state.editor.sitewideAnnouncements.fetchError,
     formError: state.editor.sitewideAnnouncements.formError,
     isFetching:
@@ -109,7 +109,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   const actions = new ActionCreator(null, ownProps.csrfToken);
   return {
     fetchData: () => dispatch(actions.fetchSitewideAnnouncements()),
-    editItem: (data: FormData) => dispatch(actions.editSitewideAnnouncements(data)),
+    editItem: (data: FormData) =>
+      dispatch(actions.editSitewideAnnouncements(data)),
   };
 }
 

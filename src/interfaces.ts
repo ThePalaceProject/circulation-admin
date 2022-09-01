@@ -458,7 +458,7 @@ export interface AnnouncementData {
 
 export interface SitewideAnnouncementsData {
   announcements: AnnouncementData[];
-  settings: SettingData;
+  settings: SettingData[];
 }
 
 export interface AdvancedSearchQuery {

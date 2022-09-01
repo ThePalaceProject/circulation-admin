@@ -982,4 +982,59 @@ describe("actions", () => {
       expect(data).to.eql(customListDetailsData);
     });
   });
+
+  describe("fetchSitewideAnnouncements", () => {
+    it("dispatches request, load, and success", async () => {
+      const dispatch = stub();
+      const sitewideAnnouncementsData = "sitewide announcements";
+      fetcher.testData = {
+        ok: true,
+        status: 200,
+        json: () =>
+          new Promise<any>((resolve) => {
+            resolve(sitewideAnnouncementsData);
+          }),
+      };
+      fetcher.resolve = true;
+
+      const data = await actions.fetchSitewideAnnouncements()(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.SITEWIDE_ANNOUNCEMENTS}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[0][0].url).to.equal("/admin/announcements");
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.SITEWIDE_ANNOUNCEMENTS}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.SITEWIDE_ANNOUNCEMENTS}_${ActionCreator.LOAD}`
+      );
+      expect(data).to.deep.equal(sitewideAnnouncementsData);
+    });
+  });
+
+  describe("editSitewideAnnouncements", () => {
+    it("dispatches request and success", async () => {
+      const editSitewideAnnouncementsUrl = "/admin/announcements";
+      const dispatch = stub();
+      const formData = new (window as any).FormData();
+      formData.append("announcements", "[]");
+
+      fetchMock.mock(editSitewideAnnouncementsUrl, "server response");
+      const fetchArgs = fetchMock.calls();
+
+      await actions.editSitewideAnnouncements(formData)(dispatch);
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.EDIT_SITEWIDE_ANNOUNCEMENTS}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.EDIT_SITEWIDE_ANNOUNCEMENTS}_${ActionCreator.SUCCESS}`
+      );
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(editSitewideAnnouncementsUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body).to.equal(formData);
+    });
+  });
 });

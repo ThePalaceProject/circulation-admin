@@ -83,6 +83,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly EDIT_PATRON_AUTH_SERVICE = "EDIT_PATRON_AUTH_SERVICE";
   static readonly DELETE_PATRON_AUTH_SERVICE = "DELETE_PATRON_AUTH_SERVICE";
   static readonly SITEWIDE_ANNOUNCEMENTS = "SITEWIDE_ANNOUNCEMENTS";
+  static readonly EDIT_SITEWIDE_ANNOUNCEMENTS = "EDIT_SITEWIDE_ANNOUNCEMENTS";
   static readonly SITEWIDE_SETTINGS = "SITEWIDE_SETTINGS";
   static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
   static readonly DELETE_SITEWIDE_SETTING = "DELETE_SITEWIDE_SETTING";
@@ -1166,9 +1167,11 @@ export default class ActionCreator extends BaseActionCreator {
 
   editSitewideAnnouncements(data: FormData) {
     const url = "/admin/announcements";
-    return this.postForm(ActionCreator.EDIT_SEARCH_SERVICE, url, data).bind(
-      this
-    );
+    return this.postForm(
+      ActionCreator.EDIT_SITEWIDE_ANNOUNCEMENTS,
+      url,
+      data
+    ).bind(this);
   }
 
   setFeatureFlags(featureFlags: FeatureFlags) {
