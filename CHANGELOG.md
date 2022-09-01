@@ -1,10 +1,14 @@
 ## Changelog
 
-### v0.2.1
+### v0.3.0
 
 #### Fixed
 
 - The selected media type and sort order are now correctly saved with auto updating lists.
+
+#### Updated
+
+- Added Sitewide Announcements configuration tab.
 
 ### v0.2.0
 

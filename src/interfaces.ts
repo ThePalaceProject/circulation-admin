@@ -456,6 +456,11 @@ export interface AnnouncementData {
   finish: string;
 }
 
+export interface SitewideAnnouncementsData {
+  announcements: AnnouncementData[];
+  settings: SettingData[];
+}
+
 export interface AdvancedSearchQuery {
   id?: string;
   key?: string;

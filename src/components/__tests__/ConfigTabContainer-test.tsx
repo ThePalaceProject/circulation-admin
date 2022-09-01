@@ -19,6 +19,7 @@ import SearchServices from "../SearchServices";
 import StorageServices from "../StorageServices";
 import CatalogServices from "../CatalogServices";
 import DiscoveryServices from "../DiscoveryServices";
+import SitewideAnnouncements from "../SitewideAnnouncements";
 import { mockRouterContext } from "./routing";
 import Admin from "../../models/Admin";
 
@@ -62,6 +63,7 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Metadata");
       expect(linkTexts).to.contain("CDN");
       expect(linkTexts).to.contain("External Catalogs");
+      expect(linkTexts).to.contain("Sitewide Announcements");
     });
 
     it("shows components", () => {
@@ -79,6 +81,7 @@ describe("ConfigTabContainer", () => {
         StorageServices,
         CatalogServices,
         DiscoveryServices,
+        SitewideAnnouncements,
       ];
       for (const componentClass of componentClasses) {
         const component = wrapper.find(componentClass);
@@ -152,6 +155,7 @@ describe("ConfigTabContainer", () => {
         CatalogServices,
         DiscoveryServices,
         AnalyticsServices,
+        SitewideAnnouncements,
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);
@@ -206,6 +210,7 @@ describe("ConfigTabContainer", () => {
         CatalogServices,
         DiscoveryServices,
         AnalyticsServices,
+        SitewideAnnouncements,
       ];
       for (const componentClass of hiddenComponentClasses) {
         const component = wrapper.find(componentClass);

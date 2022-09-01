@@ -48,7 +48,7 @@ describe("AnnouncementForm", () => {
   it("renders the buttons", () => {
     let buttons = wrapper.find("button");
     expect(buttons.length).to.equal(2);
-    expect(buttons.at(0).text()).to.equal("Submit");
+    expect(buttons.at(0).text()).to.equal("Add");
     expect(buttons.at(1).text()).to.equal("Cancel");
   });
   it("keeps track of whether the content is too short or too long", () => {
