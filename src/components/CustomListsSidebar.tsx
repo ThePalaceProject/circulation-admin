@@ -81,8 +81,8 @@ export default class CustomListsSidebar extends React.Component<
     const filters = [
       ["All", ""],
       ["Owned", "owned"],
-      ["Subscribed", "shared-in"],
       ["Shared", "shared-out"],
+      ["Subscribed", "shared-in"],
     ];
 
     return (

@@ -208,8 +208,8 @@ describe("CustomListsForBook", () => {
       expect(editCustomListsForBook.callCount).to.equal(1);
       const formData = editCustomListsForBook.args[0][1];
       expect(JSON.parse(formData.get("lists"))).to.deep.equal([
-        { id: "2", name: "list 2" },
-        { id: "1", name: "list 1" },
+        { id: "2", name: "list 2", is_owner: true, is_shared: false },
+        { id: "1", name: "list 1", is_owner: true, is_shared: false },
       ]);
       removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(2);

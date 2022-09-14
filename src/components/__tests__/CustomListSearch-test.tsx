@@ -54,6 +54,7 @@ describe("CustomListSearch", () => {
     wrapper = mount(
       <CustomListSearch
         entryPoints={entryPoints}
+        isOwner={true}
         languages={languages}
         library={library}
         search={search}
@@ -78,6 +79,7 @@ describe("CustomListSearch", () => {
     expect(allRadio.props().type).to.equal("radio");
     expect(allRadio.props().name).to.equal("entry-points-selection");
     expect(allRadio.props().value).to.equal("All");
+    expect(allRadio.props().disabled).to.equal(false);
     expect(allRadio.props().checked).to.be.true;
 
     const book = entryPointOptions.at(1);
@@ -89,6 +91,7 @@ describe("CustomListSearch", () => {
     expect(bookRadio.props().type).to.equal("radio");
     expect(bookRadio.props().name).to.equal("entry-points-selection");
     expect(bookRadio.props().value).to.equal("Book");
+    expect(bookRadio.props().disabled).to.equal(false);
     expect(bookRadio.props().checked).to.be.false;
 
     const audio = entryPointOptions.at(2);
@@ -100,7 +103,31 @@ describe("CustomListSearch", () => {
     expect(audioRadio.props().type).to.equal("radio");
     expect(audioRadio.props().name).to.equal("entry-points-selection");
     expect(audioRadio.props().value).to.equal("Audio");
+    expect(audioRadio.props().disabled).to.equal(false);
     expect(audioRadio.props().checked).to.be.false;
+  });
+
+  it("disables the entry point radio buttons when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const entryPointOptions = wrapper.find(".entry-points").find(".form-group");
+
+    const all = entryPointOptions.at(0);
+    const allRadio = all.find("input");
+
+    expect(allRadio.props().disabled).to.be.true;
+
+    const book = entryPointOptions.at(1);
+    const bookRadio = book.find("input");
+
+    expect(bookRadio.props().disabled).to.be.true;
+
+    const audio = entryPointOptions.at(2);
+    const audioRadio = audio.find("input");
+
+    expect(audioRadio.props().disabled).to.be.true;
   });
 
   it("calls updateSearchParam when an entry point radio button is changed", () => {
@@ -127,6 +154,7 @@ describe("CustomListSearch", () => {
     expect(relevanceRadio.props().type).to.equal("radio");
     expect(relevanceRadio.props().name).to.equal("sort-selection");
     expect(relevanceRadio.props().value).to.equal("");
+    expect(relevanceRadio.props().disabled).to.be.false;
     expect(relevanceRadio.props().checked).to.be.false;
 
     const title = sortOptions.at(1);
@@ -138,6 +166,7 @@ describe("CustomListSearch", () => {
     expect(titleRadio.props().type).to.equal("radio");
     expect(titleRadio.props().name).to.equal("sort-selection");
     expect(titleRadio.props().value).to.equal("title");
+    expect(titleRadio.props().disabled).to.be.false;
     expect(titleRadio.props().checked).to.be.true;
 
     const author = sortOptions.at(2);
@@ -149,7 +178,31 @@ describe("CustomListSearch", () => {
     expect(authorRadio.props().type).to.equal("radio");
     expect(authorRadio.props().name).to.equal("sort-selection");
     expect(authorRadio.props().value).to.equal("author");
+    expect(authorRadio.props().disabled).to.be.false;
     expect(authorRadio.props().checked).to.be.false;
+  });
+
+  it("disables the sort option radio buttons when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const sortOptions = wrapper.find(".search-options").find(".form-group");
+
+    const relevance = sortOptions.at(0);
+    const relevanceRadio = relevance.find("input");
+
+    expect(relevanceRadio.props().disabled).to.be.true;
+
+    const title = sortOptions.at(1);
+    const titleRadio = title.find("input");
+
+    expect(titleRadio.props().disabled).to.be.true;
+
+    const author = sortOptions.at(2);
+    const authorRadio = author.find("input");
+
+    expect(authorRadio.props().disabled).to.be.true;
   });
 
   it("calls updateSearchParam when a sort radio button is changed", () => {
@@ -204,6 +257,7 @@ describe("CustomListSearch", () => {
       wrapper = mount(
         <CustomListSearch
           entryPoints={entryPoints}
+          isOwner={true}
           languages={languages}
           library={library}
           search={search}
@@ -227,6 +281,7 @@ describe("CustomListSearch", () => {
       const autoUpdateOnRadio = autoUpdateOn.find("input");
 
       expect(autoUpdateOnRadio.props().name).to.equal("auto-update");
+      expect(autoUpdateOnRadio.props().disabled).to.be.false;
 
       const autoUpdateOff = autoUpdateOptions.at(1);
 
@@ -235,6 +290,37 @@ describe("CustomListSearch", () => {
       const autoUpdateOffRadio = autoUpdateOff.find("input");
 
       expect(autoUpdateOffRadio.props().name).to.equal("auto-update");
+      expect(autoUpdateOffRadio.props().disabled).to.be.false;
+    });
+
+    it("disables the radio buttons for auto update when isOwner is false", () => {
+      wrapper = mount(
+        <CustomListSearch
+          entryPoints={entryPoints}
+          isOwner={false}
+          languages={languages}
+          library={library}
+          search={search}
+          searchParams={searchParams}
+          showAutoUpdate={true}
+          updateAutoUpdate={updateAutoUpdate}
+          updateSearchParam={updateSearchParam}
+        />
+      );
+
+      const autoUpdateOptions = wrapper
+        .find(".auto-update")
+        .find(".form-group");
+
+      const autoUpdateOn = autoUpdateOptions.at(0);
+      const autoUpdateOnRadio = autoUpdateOn.find("input");
+
+      expect(autoUpdateOnRadio.props().disabled).to.be.true;
+
+      const autoUpdateOff = autoUpdateOptions.at(1);
+      const autoUpdateOffRadio = autoUpdateOff.find("input");
+
+      expect(autoUpdateOffRadio.props().disabled).to.be.true;
     });
 
     it("calls updateAutoUpdate when an auto update radio button is changed", () => {

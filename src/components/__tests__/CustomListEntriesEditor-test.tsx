@@ -124,6 +124,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -153,10 +154,31 @@ describe("CustomListEntriesEditor", () => {
     expect(results.at(2).text()).to.contain("author 3");
   });
 
+  it("does not render search results when isOwner is false", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        isOwner={false}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const resultsContainer = wrapper.find(".custom-list-search-results");
+
+    expect(resultsContainer.length).to.equal(0);
+  });
+
   it("calls refreshResults when the refresh button is clicked", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -179,6 +201,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -199,6 +222,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -219,6 +243,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -233,13 +258,14 @@ describe("CustomListEntriesEditor", () => {
     const loadingIndicator = wrapper.find(".list-loading");
 
     expect(loadingIndicator.length).to.equal(1);
-    expect(loadingIndicator.text()).to.equal("Loading");
+    expect(loadingIndicator.text()).to.contain("Loading");
   });
 
   it("renders a link to view each search result", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -282,6 +308,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -306,6 +333,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -332,6 +360,7 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         autoUpdate={true}
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -352,6 +381,7 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         autoUpdate={false}
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -381,13 +411,16 @@ describe("CustomListEntriesEditor", () => {
 
     const display = wrapper.find(".custom-list-entries h4");
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 2 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 1 - 2 of 2 books"
+    );
   });
 
   it("renders a link to view each entry", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -426,6 +459,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -466,6 +500,7 @@ describe("CustomListEntriesEditor", () => {
         autoUpdate={false}
         searchResults={searchResultsData}
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -516,6 +551,7 @@ describe("CustomListEntriesEditor", () => {
         autoUpdate={true}
         searchResults={searchResultsData}
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -555,6 +591,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -589,6 +626,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -623,6 +661,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -678,6 +717,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -739,6 +779,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -793,6 +834,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -807,7 +849,9 @@ describe("CustomListEntriesEditor", () => {
 
     const display = wrapper.find(".custom-list-entries h4");
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 2 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 1 - 2 of 2 books"
+    );
 
     const addButton = wrapper
       .find(".custom-list-search-results .links")
@@ -824,6 +868,7 @@ describe("CustomListEntriesEditor", () => {
       <CustomListEntriesEditor
         autoUpdate={true}
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -847,6 +892,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -861,7 +907,9 @@ describe("CustomListEntriesEditor", () => {
 
     const display = wrapper.find(".custom-list-entries h4");
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 2 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 1 - 2 of 2 books"
+    );
 
     const deleteButton = wrapper
       .find(".custom-list-entries .links")
@@ -873,10 +921,33 @@ describe("CustomListEntriesEditor", () => {
     expect(deleteEntry.args[0]).to.deep.equal(["A"]);
   });
 
-  it("hides the Add All to List button when there are no search results", () => {
+  it("does not render Remove from List buttons on a list entries when isOwner is false", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        isOwner={false}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryCount={2}
+        deleteEntry={deleteEntry}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const deleteButtons = wrapper.find(".custom-list-entries .links button");
+
+    expect(deleteButtons.length).to.equal(0);
+  });
+
+  it("does not render the Add All to List button when there are no search results", () => {
     const wrapper = shallow(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -891,11 +962,31 @@ describe("CustomListEntriesEditor", () => {
     expect(button.length).to.equal(0);
   });
 
-  it("hides the Add All to List button when autoUpdate is true", () => {
+  it("does not render the Add All to List button when autoUpdate is true", () => {
     const wrapper = shallow(
       <CustomListEntriesEditor
         autoUpdate={true}
         entries={entriesData}
+        isOwner={true}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const button = wrapper.find(".add-all-button");
+
+    expect(button.length).to.equal(0);
+  });
+
+  it("does not render the Add All to List button when isOwner is false", () => {
+    const wrapper = shallow(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        isOwner={false}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -914,6 +1005,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -928,7 +1020,9 @@ describe("CustomListEntriesEditor", () => {
 
     const display = wrapper.find(".custom-list-entries h4");
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 2 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 1 - 2 of 2 books"
+    );
 
     const button = wrapper.find(".add-all-button").at(0);
 
@@ -937,10 +1031,31 @@ describe("CustomListEntriesEditor", () => {
     expect(addAllEntries.callCount).to.equal(1);
   });
 
-  it("hides the Delete all button when there are no entries", () => {
+  it("does not render the Delete all button when there are no entries", () => {
     const wrapper = shallow(
       <CustomListEntriesEditor
         entries={[]}
+        isOwner={true}
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const button = wrapper.find(".delete-all-button");
+
+    expect(button.length).to.equal(0);
+  });
+
+  it("does not render the Delete all button when isOwner is false", () => {
+    const wrapper = shallow(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        isOwner={false}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -960,6 +1075,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -973,7 +1089,9 @@ describe("CustomListEntriesEditor", () => {
 
     const display = wrapper.find(".custom-list-entries h4");
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 2 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 1 - 2 of 2 books"
+    );
 
     const button = wrapper.find(".delete-all-button").at(0);
 
@@ -986,6 +1104,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={null}
         loadMoreEntries={loadMoreEntries}
@@ -1007,6 +1126,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -1028,6 +1148,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={null}
@@ -1047,6 +1168,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -1078,6 +1200,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -1106,6 +1229,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -1129,6 +1253,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
         isFetchingSearchResults={false}
@@ -1149,6 +1274,7 @@ describe("CustomListEntriesEditor", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         entries={entriesData}
+        isOwner={true}
         searchResults={searchResultsData}
         loadMoreSearchResults={loadMoreSearchResults}
         loadMoreEntries={loadMoreEntries}
@@ -1162,32 +1288,38 @@ describe("CustomListEntriesEditor", () => {
 
     const display = wrapper.find(".custom-list-entries h4");
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 2 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 1 - 2 of 2 books"
+    );
 
     wrapper.setProps({
       entries: entriesData.slice(0, 1),
       entryCount: 1,
     });
 
-    expect(display.text()).to.equal("Displaying 1 - 1 of 1 book");
+    expect(display.text()).to.equal("List Entries: Displaying 1 - 1 of 1 book");
 
     wrapper.setProps({
       entries: [],
       entryCount: 0,
     });
 
-    expect(display.text()).to.equal("No books in this list");
+    expect(display.text()).to.equal("List Entries: No books in this list");
 
     wrapper.setProps({
       entryCount: 12,
     });
 
-    expect(display.text()).to.equal("Displaying 0 - 0 of 12 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 0 - 0 of 12 books"
+    );
 
     wrapper.setProps({
       entries: entriesData,
     });
 
-    expect(display.text()).to.equal("Displaying 1 - 2 of 12 books");
+    expect(display.text()).to.equal(
+      "List Entries: Displaying 1 - 2 of 12 books"
+    );
   });
 });

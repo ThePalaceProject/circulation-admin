@@ -216,6 +216,8 @@ describe("custom list editor reducer", () => {
           ],
           entry_count: 13337,
           id: 18,
+          is_owner: true,
+          is_shared: false,
           name: "New BiblioBoard",
         },
         {
@@ -236,7 +238,7 @@ describe("custom list editor reducer", () => {
       ],
     };
 
-    it("obtains the name, collections, and baselineTotalCount from the list data for the current id", () => {
+    it("obtains the name, ownership flag, sharing flag, collections, and baselineTotalCount from the list data for the current id", () => {
       const state = {
         ...initialState,
         id: 18,
@@ -248,6 +250,8 @@ describe("custom list editor reducer", () => {
       });
 
       expect(nextState.id).to.equal(18);
+      expect(nextState.isOwner).to.equal(true);
+      expect(nextState.isShared).to.equal(false);
       expect(nextState.entries.baselineTotalCount).to.equal(13337);
       expect(nextState.properties.current).to.deep.equal(
         nextState.properties.baseline
@@ -372,6 +376,21 @@ describe("custom list editor reducer", () => {
 
       expect(nextState.searchParams.current.entryPoint).to.equal("Audio");
       expect(nextState.searchParams.current.sort).to.equal("title");
+    });
+
+    it("ignores the action if its isAfterShare property is true", () => {
+      const state = {
+        ...initialState,
+        id: 18,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+        data: listData,
+        isAfterShare: true,
+      });
+
+      expect(nextState).to.equal(state);
     });
 
     context("when auto update is enabled", () => {
@@ -2288,6 +2307,142 @@ describe("custom list editor reducer", () => {
 
       expect(nextState.isValid).to.equal(true);
       expect(nextState.isModified).to.equal(false);
+    });
+  });
+
+  context("on CUSTOM_LIST_SHARE_REQUEST", () => {
+    it("should set isSharePending to true if the listId in the action is the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.REQUEST}`,
+        listId: 24,
+      });
+
+      expect(nextState.isSharePending).to.equal(true);
+    });
+
+    it("should do nothing if the listId in the action is not the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.REQUEST}`,
+        listId: 77,
+      });
+
+      expect(nextState).to.equal(state);
+    });
+  });
+
+  context("on CUSTOM_LIST_SHARE_SUCCESS", () => {
+    it("should set isSharePending to false if the listId in the action is the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+        isSharePending: true,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.SUCCESS}`,
+        listId: 24,
+      });
+
+      expect(nextState.isSharePending).to.equal(false);
+    });
+
+    it("should set isShared to the value in the list data if the listId in the action is the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+        isSharePending: true,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.SUCCESS}`,
+        listId: 24,
+        data: {
+          custom_lists: [
+            {
+              id: 24,
+              is_shared: true,
+            },
+          ],
+        },
+      });
+
+      expect(nextState.isShared).to.equal(true);
+    });
+
+    it("should do nothing if the listId in the action is not the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+        isSharePending: true,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.SUCCESS}`,
+        listId: 77,
+      });
+
+      expect(nextState).to.equal(state);
+    });
+  });
+
+  context("on CUSTOM_LIST_SHARE_FAILURE", () => {
+    it("should set isSharePending to false if the listId in the action is the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+        isSharePending: true,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.FAILURE}`,
+        listId: 24,
+        error: {},
+      });
+
+      expect(nextState.isSharePending).to.equal(false);
+    });
+
+    it("should set error to the action's error message if listId in the action is the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+        isSharePending: true,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.FAILURE}`,
+        listId: 24,
+        error: {
+          message: "Something is very wrong",
+        },
+      });
+
+      expect(nextState.error).to.equal("Something is very wrong");
+    });
+
+    it("should do nothing if the listId in the action is not the id in state", () => {
+      const state = {
+        ...initialState,
+        id: 24,
+        isSharePending: true,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LIST_SHARE}_${ActionCreator.FAILURE}`,
+        listId: 77,
+      });
+
+      expect(nextState).to.equal(state);
     });
   });
 

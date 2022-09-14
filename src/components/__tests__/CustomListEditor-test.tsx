@@ -17,6 +17,7 @@ describe("CustomListEditor", () => {
   let reset;
   let save;
   let search;
+  let share;
   let toggleCollection;
   let loadMoreSearchResults;
   let loadMoreEntries;
@@ -114,6 +115,7 @@ describe("CustomListEditor", () => {
     );
 
     search = stub();
+    share = stub();
     toggleCollection = stub();
     updateProperty = stub();
     updateSearchParam = stub();
@@ -150,6 +152,7 @@ describe("CustomListEditor", () => {
         isFetchingMoreSearchResults={false}
         isLoaded={false}
         isModified={true}
+        isOwner={true}
         isValid={true}
         languages={languages}
         library={library}
@@ -162,6 +165,7 @@ describe("CustomListEditor", () => {
         reset={reset}
         save={save}
         search={search}
+        share={share}
         toggleCollection={toggleCollection}
         updateProperty={updateProperty}
         updateSearchParam={updateSearchParam}
@@ -170,13 +174,27 @@ describe("CustomListEditor", () => {
     );
   });
 
-  it("shows the list title", () => {
+  it("shows the list title with an edit button", () => {
     const title = wrapper.find(TextWithEditMode);
 
     expect(title.length).to.equal(1);
     expect(title.props().text).to.equal("Listy McList");
     expect(title.props().placeholder).to.equal("list title");
     expect(title.props().disableIfBlank).to.be.true;
+  });
+
+  it("shows the list title without an edit button when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const titleEdit = wrapper.find(TextWithEditMode);
+
+    expect(titleEdit.length).to.equal(0);
+
+    const title = wrapper.find("h3");
+
+    expect(title.text()).to.equal("Listy McList");
   });
 
   it("shows the list id", () => {
@@ -192,6 +210,7 @@ describe("CustomListEditor", () => {
     expect(entriesEditor.length).to.equal(1);
     expect(entriesEditor.props().autoUpdate).to.equal(false);
     expect(entriesEditor.props().entries).to.equal(entries.current);
+    expect(entriesEditor.props().isOwner).to.equal(true);
     expect(entriesEditor.props().searchResults).to.equal(searchResults);
     expect(entriesEditor.props().loadMoreSearchResults).to.equal(
       loadMoreSearchResults
@@ -222,6 +241,31 @@ describe("CustomListEditor", () => {
     expect(inputs.at(2).props().label).to.equal("collection 3");
     expect(inputs.at(2).props().value).to.equal(3);
     expect(inputs.at(2).props().checked).to.equal(false);
+  });
+
+  it("disables collection inputs when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const collectionsPanel = wrapper.find("#add-from-collections-panel");
+    const inputs = collectionsPanel.find(EditableInput);
+
+    expect(inputs.at(0).prop("disabled")).to.equal(true);
+    expect(inputs.at(1).prop("disabled")).to.equal(true);
+    expect(inputs.at(2).prop("disabled")).to.equal(true);
+  });
+
+  it("disables entry point options when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const inputs = wrapper.find(EditableInput);
+
+    expect(inputs.at(3).prop("disabled")).to.equal(true);
+    expect(inputs.at(4).prop("disabled")).to.equal(true);
+    expect(inputs.at(5).prop("disabled")).to.equal(true);
   });
 
   it("shows entry point options", () => {
@@ -299,6 +343,16 @@ describe("CustomListEditor", () => {
     expect(reset.callCount).to.equal(1);
   });
 
+  it("does not render save/cancel buttons when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const buttonContainer = wrapper.find(".save-or-cancel-list");
+
+    expect(buttonContainer.length).to.equal(0);
+  });
+
   it("calls toggleCollection when a collection checkbox is changed", () => {
     const inputs = wrapper.find(".collections input");
 
@@ -316,6 +370,7 @@ describe("CustomListEditor", () => {
     expect(customListSearch.length).to.equal(1);
     expect(customListSearch.prop("autoUpdate")).to.equal(false);
     expect(customListSearch.prop("entryPoints")).to.equal(entryPoints);
+    expect(customListSearch.prop("isOwner")).to.equal(true);
     expect(customListSearch.prop("languages")).to.equal(languages);
     expect(customListSearch.prop("library")).to.equal(library);
     expect(customListSearch.prop("searchParams")).to.equal(searchParams);
@@ -349,5 +404,35 @@ describe("CustomListEditor", () => {
     });
 
     expect(search.callCount).to.equal(2);
+  });
+
+  it("calls share when the share button is clicked", () => {
+    const shareButton = wrapper.find(".sharing-info button");
+
+    expect(shareButton.length).to.equal(1);
+
+    shareButton.simulate("click");
+
+    expect(share.callCount).to.equal(1);
+  });
+
+  it("does not render a share button when listId is undefined", () => {
+    wrapper.setProps({
+      listId: undefined,
+    });
+
+    const shareButton = wrapper.find(".sharing-info button");
+
+    expect(shareButton.length).to.equal(0);
+  });
+
+  it("does not render a share button when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const shareButton = wrapper.find(".sharing-info button");
+
+    expect(shareButton.length).to.equal(0);
   });
 });

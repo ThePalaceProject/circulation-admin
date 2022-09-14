@@ -84,6 +84,7 @@ describe("AdvancedSearchFilter", () => {
       <DndProvider backend={HTML5Backend}>
         <AdvancedSearchFilter
           query={query}
+          readOnly={true}
           selectedQueryId="90"
           onBooleanChange={onBooleanChange}
           onMove={onMove}
@@ -98,6 +99,7 @@ describe("AdvancedSearchFilter", () => {
     expect(filter.length).to.equal(1);
 
     expect(filter.prop("query")).to.equal(query);
+    expect(filter.prop("readOnly")).to.equal(true);
     expect(filter.prop("selectedQueryId")).to.equal("90");
     expect(filter.prop("onBooleanChange")).to.equal(onBooleanChange);
     expect(filter.prop("onMove")).to.equal(onMove);
@@ -116,6 +118,7 @@ describe("AdvancedSearchFilter", () => {
       <DndProvider backend={HTML5Backend}>
         <AdvancedSearchFilter
           query={query}
+          readOnly={true}
           selectedQueryId="90"
           onBooleanChange={onBooleanChange}
           onMove={onMove}
@@ -130,6 +133,7 @@ describe("AdvancedSearchFilter", () => {
     expect(filter.length).to.equal(1);
 
     expect(filter.prop("query")).to.equal(query);
+    expect(filter.prop("readOnly")).to.equal(true);
     expect(filter.prop("selected")).to.equal(false);
     expect(filter.prop("onMove")).to.equal(onMove);
     expect(filter.prop("onSelect")).to.equal(onSelect);
