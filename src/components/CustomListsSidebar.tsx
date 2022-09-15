@@ -122,7 +122,7 @@ export default class CustomListsSidebar extends React.Component<
         <div className="custom-list-info">
           <div>
             {!list.is_owner && (
-              <ShareIcon title="This list is shared by another library. It can be edited only by the owning library." />
+              <ShareIcon title="This list is shared by another library. It may be edited only by the owning library." />
             )}
             {list.name}
           </div>
