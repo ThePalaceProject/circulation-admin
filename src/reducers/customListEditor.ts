@@ -562,7 +562,7 @@ export interface CustomListEditorState {
   isOwner: boolean;
 
   /**
-   * A flag indicating that the list is shared by multiple libraries.
+   * A flag indicating that the list is shared to multiple libraries.
    */
   isShared: boolean;
 

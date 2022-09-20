@@ -179,7 +179,7 @@ export default function CustomListEditor({
                     <p>
                       {isShared
                         ? "This list has been shared with other libraries."
-                        : "This list can be shared with the other libraries that are currently registered in this Collection Manager."}{" "}
+                        : "This list can be shared with the other libraries that are currently configured in this Collection Manager."}{" "}
                       A shared list may be edited only by the owning library.
                       Each library that is subscribed to a shared list will
                       obtain only the titles that are available to that library.
