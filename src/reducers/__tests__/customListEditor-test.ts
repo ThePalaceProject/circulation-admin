@@ -783,13 +783,14 @@ describe("custom list editor reducer", () => {
       expect(nextState.searchParams.current.language).to.equal("eng");
     });
 
-    it("updates isValid and isModified", () => {
+    it("updates isValid, isModified, and isSearchModified", () => {
       const nextState = reducer(state, {
         type: ActionCreator.UPDATE_CUSTOM_LIST_EDITOR_SEARCH_PARAM,
         name: "entryPoint",
         value: "Book",
       });
 
+      expect(nextState.isSearchModified).to.equal(true);
       expect(nextState.isModified).to.equal(true);
       expect(nextState.isValid).to.equal(false);
     });
@@ -1136,7 +1137,7 @@ describe("custom list editor reducer", () => {
       ).to.equal("92");
     });
 
-    it("updates isValid and isModified", () => {
+    it("updates isValid, isModified, and isSearchModified", () => {
       const state = {
         ...initialState,
         properties: {
@@ -1155,6 +1156,7 @@ describe("custom list editor reducer", () => {
         query: valueQuery,
       });
 
+      expect(nextState.isSearchModified).to.equal(true);
       expect(nextState.isModified).to.equal(true);
       expect(nextState.isValid).to.equal(true);
     });
@@ -1256,7 +1258,7 @@ describe("custom list editor reducer", () => {
       expect(nextState).to.deep.equal(state);
     });
 
-    it("updates isValid and isModified", () => {
+    it("updates isValid, isModified, and isSearchModified", () => {
       const namedState = {
         ...state,
         properties: {
@@ -1276,6 +1278,7 @@ describe("custom list editor reducer", () => {
         bool: "or",
       });
 
+      expect(nextState.isSearchModified).to.equal(true);
       expect(nextState.isModified).to.equal(true);
       expect(nextState.isValid).to.equal(true);
     });
@@ -1391,7 +1394,7 @@ describe("custom list editor reducer", () => {
       });
     });
 
-    it("updates isValid and isModified", () => {
+    it("updates isValid, isModified, isSearchModified", () => {
       const namedState = {
         ...state,
         properties: {
@@ -1411,6 +1414,7 @@ describe("custom list editor reducer", () => {
         targetId: "95",
       });
 
+      expect(nextState.isSearchModified).to.equal(true);
       expect(nextState.isModified).to.equal(true);
       expect(nextState.isValid).to.equal(true);
     });
@@ -1536,7 +1540,7 @@ describe("custom list editor reducer", () => {
       ).to.equal(undefined);
     });
 
-    it("updates isValid and isModified", () => {
+    it("updates isValid, isModified, and isSearchModified", () => {
       const state = {
         ...initialState,
         properties: {
@@ -1548,6 +1552,21 @@ describe("custom list editor reducer", () => {
         },
         searchParams: {
           ...initialState.searchParams,
+          baseline: {
+            ...initialState.searchParams.baseline,
+            advanced: {
+              ...initialState.searchParams.baseline.advanced,
+              include: {
+                ...initialState.searchParams.baseline.advanced.include,
+                query: {
+                  id: "92",
+                  key: "title",
+                  value: "bar",
+                },
+                selectedQueryId: "92",
+              },
+            },
+          },
           current: {
             ...initialState.searchParams.current,
             advanced: {
@@ -1574,6 +1593,7 @@ describe("custom list editor reducer", () => {
         id: "92",
       });
 
+      expect(nextState.isSearchModified).to.equal(true);
       expect(nextState.isModified).to.equal(true);
       expect(nextState.isValid).to.equal(false);
     });

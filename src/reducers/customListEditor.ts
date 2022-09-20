@@ -605,6 +605,10 @@ export interface CustomListEditorState {
    */
   isModified: boolean;
 
+  /**
+   * The modified state of the search parameters; true if the search has been changed since the
+   * last save, false otherwise.
+   */
   isSearchModified: boolean;
 
   /**
@@ -712,12 +716,19 @@ const isSearchModified = (state: CustomListEditorState): boolean => {
   return baselineSearchUrl !== currentSearchUrl;
 };
 
+/**
+ * Checks if a the search parameters in a custom list editor state have been modified, and stores
+ * the result in the state.
+ *
+ * @param state The custom list editor state
+ * @returns     A new custom list editor state, with the isSearchModified property updated with the
+ *              result. All other properties of the returned state are identical to the input state.
+ */
 const checkSearchModified = (
   state: CustomListEditorState
 ): CustomListEditorState => {
   return produce(state, (draftState) => {
     draftState.isSearchModified = isSearchModified(draftState);
-    console.log("search modified: " + draftState.isSearchModified);
   });
 };
 
@@ -745,7 +756,8 @@ const isModified = (state: CustomListEditorState): boolean => {
 };
 
 /**
- * Validates the data in a custom list editor state, and checks if the data has been modified.
+ * Validates the data in a custom list editor state, and checks if the data has been modified, and
+ * stores the results in the state.
  *
  * @param state The custom list editor state
  * @returns     A new custom list editor state, with the isValid and isModified properties updated

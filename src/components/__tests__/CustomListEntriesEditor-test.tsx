@@ -355,28 +355,7 @@ describe("CustomListEntriesEditor", () => {
       "http://schema.org/EBook";
   });
 
-  it("does not render list entries when autoUpdate is true", () => {
-    const wrapper = mount(
-      <CustomListEntriesEditor
-        autoUpdate={true}
-        entries={entriesData}
-        isOwner={true}
-        loadMoreSearchResults={loadMoreSearchResults}
-        loadMoreEntries={loadMoreEntries}
-        isFetchingSearchResults={false}
-        isFetchingMoreSearchResults={false}
-        isFetchingMoreCustomListEntries={false}
-        entryCount={2}
-      />,
-      { context: fullContext, childContextTypes }
-    );
-
-    const entriesContainer = wrapper.find(".custom-list-entries");
-
-    expect(entriesContainer.length).to.equal(0);
-  });
-
-  it("renders list entries when autoUpdate is false", () => {
+  it("renders list entries", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
         autoUpdate={false}
@@ -414,6 +393,105 @@ describe("CustomListEntriesEditor", () => {
     expect(display.text()).to.equal(
       "List Entries: Displaying 1 - 2 of 2 books"
     );
+  });
+
+  it("makes list entries read only if autoUpdate is true", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        autoUpdate={true}
+        entries={entriesData}
+        isOwner={true}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryCount={2}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const entriesContainer = wrapper.find(".custom-list-entries");
+    const removeAllButton = entriesContainer.find(".droppable-header button");
+
+    expect(removeAllButton.length).to.equal(0);
+
+    const removeEntryButtons = entriesContainer.find(
+      ".custom-list-entry button"
+    );
+
+    expect(removeEntryButtons.length).to.equal(0);
+  });
+
+  it("renders an auto update status if autoUpdate is true", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        autoUpdate={true}
+        autoUpdateStatus=""
+        entries={entriesData}
+        isOwner={true}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        entryCount={2}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    let status;
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: New");
+
+    wrapper.setProps({ isSearchModified: true });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: New");
+
+    wrapper.setProps({
+      listId: "123",
+      isSearchModified: false,
+      autoUpdateStatus: "init",
+    });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: Initializing");
+
+    wrapper.setProps({ isSearchModified: true });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: Search criteria modified");
+
+    wrapper.setProps({ isSearchModified: false, autoUpdateStatus: "updated" });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: Updated");
+
+    wrapper.setProps({ isSearchModified: true });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: Search criteria modified");
+
+    wrapper.setProps({
+      isSearchModified: false,
+      autoUpdateStatus: "repopulate",
+    });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: Repopulating");
+
+    wrapper.setProps({ isSearchModified: true });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+    expect(status.text()).to.equal("Status: Search criteria modified");
+
+    wrapper.setProps({ autoUpdate: false });
+
+    status = wrapper.find(".custom-list-entries .auto-update-status-name");
+
+    expect(status.length).to.equal(0);
   });
 
   it("renders a link to view each entry", () => {
