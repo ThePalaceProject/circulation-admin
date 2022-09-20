@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CatalogServicesData | @thepalaceproject/circulation-admin</title>
+	<title>ShareButtonProps | @thepalaceproject/circulation-admin</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="catalogservicesdata.html">CatalogServicesData</a>
+					<a href="sharebuttonprops.html">ShareButtonProps</a>
 				</li>
 			</ul>
-			<h1>Interface CatalogServicesData</h1>
+			<h1>Interface ShareButtonProps</h1>
 		</div>
 	</div>
 </header>
@@ -70,12 +70,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="servicesdata.html" class="tsd-signature-type">ServicesData</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">CatalogServicesData</span>
-							</li>
-						</ul>
+						<span class="target">ShareButtonProps</span>
 					</li>
 				</ul>
 			</section>
@@ -86,9 +81,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="catalogservicesdata.html#alllibraries" class="tsd-kind-icon">all<wbr>Libraries</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="catalogservicesdata.html#catalog_services" class="tsd-kind-icon">catalog_<wbr>services</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="catalogservicesdata.html#protocols" class="tsd-kind-icon">protocols</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="sharebuttonprops.html#disabled" class="tsd-kind-icon">disabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="sharebuttonprops.html#pending" class="tsd-kind-icon">pending</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="sharebuttonprops.html#submit" class="tsd-kind-icon">submit</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="sharebuttonprops.html#text" class="tsd-kind-icon">text</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="sharebuttonprops.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -96,35 +93,53 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="alllibraries" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> all<wbr>Libraries</h3>
-					<div class="tsd-signature tsd-kind-icon">all<wbr>Libraries<span class="tsd-signature-symbol">:</span> <a href="librarydata.html" class="tsd-signature-type">LibraryData</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="disabled" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> disabled</h3>
+					<div class="tsd-signature tsd-kind-icon">disabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="servicesdata.html">ServicesData</a>.<a href="servicesdata.html#alllibraries">allLibraries</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/interfaces.ts#L279">src/interfaces.ts:279</a></li>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/components/ShareButton.tsx#L6">src/components/ShareButton.tsx:6</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="catalog_services" class="tsd-anchor"></a>
-					<h3>catalog_<wbr>services</h3>
-					<div class="tsd-signature tsd-kind-icon">catalog_<wbr>services<span class="tsd-signature-symbol">:</span> <a href="catalogservicedata.html" class="tsd-signature-type">CatalogServiceData</a><span class="tsd-signature-symbol">[]</span></div>
+					<a name="pending" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> pending</h3>
+					<div class="tsd-signature tsd-kind-icon">pending<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/interfaces.ts#L388">src/interfaces.ts:388</a></li>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/components/ShareButton.tsx#L7">src/components/ShareButton.tsx:7</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="protocols" class="tsd-anchor"></a>
-					<h3>protocols</h3>
-					<div class="tsd-signature tsd-kind-icon">protocols<span class="tsd-signature-symbol">:</span> <a href="protocoldata.html" class="tsd-signature-type">ProtocolData</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="submit" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> submit</h3>
+					<div class="tsd-signature tsd-kind-icon">submit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="servicesdata.html">ServicesData</a>.<a href="servicesdata.html#protocols">protocols</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/interfaces.ts#L278">src/interfaces.ts:278</a></li>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/components/ShareButton.tsx#L8">src/components/ShareButton.tsx:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="text" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> text</h3>
+					<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/components/ShareButton.tsx#L9">src/components/ShareButton.tsx:9</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="type" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"submit"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"reset"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"button"</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/0035819/src/components/ShareButton.tsx#L10">src/components/ShareButton.tsx:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -143,16 +158,22 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="catalogservicesdata.html" class="tsd-kind-icon">Catalog<wbr>Services<wbr>Data</a>
+						<a href="sharebuttonprops.html" class="tsd-kind-icon">Share<wbr>Button<wbr>Props</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="catalogservicesdata.html#alllibraries" class="tsd-kind-icon">all<wbr>Libraries</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="sharebuttonprops.html#disabled" class="tsd-kind-icon">disabled</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="catalogservicesdata.html#catalog_services" class="tsd-kind-icon">catalog_<wbr>services</a>
+								<a href="sharebuttonprops.html#pending" class="tsd-kind-icon">pending</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="catalogservicesdata.html#protocols" class="tsd-kind-icon">protocols</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="sharebuttonprops.html#submit" class="tsd-kind-icon">submit</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="sharebuttonprops.html#text" class="tsd-kind-icon">text</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="sharebuttonprops.html#type" class="tsd-kind-icon">type</a>
 							</li>
 						</ul>
 					</li>
