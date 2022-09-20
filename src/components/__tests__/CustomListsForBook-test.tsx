@@ -21,11 +21,13 @@ describe("CustomListsForBook", () => {
     title: "test title",
   };
   const allCustomLists = [
-    { id: "1", name: "list 1" },
-    { id: "2", name: "list 2" },
-    { id: "3", name: "list 3" },
+    { id: "1", name: "list 1", is_owner: true, is_shared: false },
+    { id: "2", name: "list 2", is_owner: true, is_shared: false },
+    { id: "3", name: "list 3", is_owner: true, is_shared: false },
   ];
-  const customListsForBook = [{ id: "2", name: "list 2" }];
+  const customListsForBook = [
+    { id: "2", name: "list 2", is_owner: true, is_shared: false },
+  ];
 
   beforeEach(() => {
     fetchAllCustomLists = stub();
@@ -96,7 +98,12 @@ describe("CustomListsForBook", () => {
       const url2 = wrapper.instance().makeURL("list 2");
       expect(url2).to.equal("/admin/web/lists/library/edit/2");
       // Making sure that it's actually using the ID, not just the number in the name...
-      const newList = { name: "new", id: "42" };
+      const newList = {
+        name: "new",
+        id: "42",
+        is_owner: true,
+        is_shared: false,
+      };
       wrapper.setProps({ allCustomLists: allCustomLists.concat([newList]) });
       const newUrl = wrapper.instance().makeURL("new");
       expect(newUrl).to.equal("/admin/web/lists/library/edit/42");
@@ -201,8 +208,8 @@ describe("CustomListsForBook", () => {
       expect(editCustomListsForBook.callCount).to.equal(1);
       const formData = editCustomListsForBook.args[0][1];
       expect(JSON.parse(formData.get("lists"))).to.deep.equal([
-        { id: "2", name: "list 2" },
-        { id: "1", name: "list 1" },
+        { id: "2", name: "list 2", is_owner: true, is_shared: false },
+        { id: "1", name: "list 1", is_owner: true, is_shared: false },
       ]);
       removables = wrapper.find(WithRemoveButton);
       expect(removables.length).to.equal(2);

@@ -20,6 +20,7 @@ export interface CustomListEntriesEditorProps {
   isFetchingMoreCustomListEntries: boolean;
   isFetchingSearchResults: boolean;
   isFetchingMoreSearchResults: boolean;
+  isOwner?: boolean;
   listId?: string | number;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
@@ -59,6 +60,7 @@ const CustomListEntriesEditor = ({
   isFetchingMoreCustomListEntries,
   isFetchingSearchResults,
   isFetchingMoreSearchResults,
+  isOwner,
   listId,
   opdsFeedUrl,
   searchResults,
@@ -130,6 +132,130 @@ const CustomListEntriesEditor = ({
     document.body.classList.remove("dragging");
   };
 
+  const readOnly = !isOwner || autoUpdate;
+
+  let searchResultList = null;
+
+  if (isOwner) {
+    searchResultList = (
+      <div className="custom-list-search-results">
+        <div className="droppable-header">
+          <h4>Search Results</h4>
+
+          <Button
+            aria-label="Refresh"
+            className="refresh-button inverted"
+            callback={refreshResults}
+            content={<RefreshIcon />}
+            disabled={isFetchingSearchResults}
+          />
+
+          {!readOnly &&
+            !isFetchingSearchResults &&
+            filteredSearchResults.length > 0 && (
+              <Button
+                className="add-all-button"
+                callback={addAllEntries}
+                content={
+                  <span>
+                    Add all to list
+                    <ApplyIcon />
+                  </span>
+                }
+              />
+            )}
+        </div>
+
+        {isFetchingSearchResults && <ListLoadingIndicator />}
+
+        {!isFetchingSearchResults && (
+          <Droppable
+            droppableId="search-results"
+            isDropDisabled={readOnly || draggingFrom !== "custom-list-entries"}
+          >
+            {(provided, snapshot) => (
+              <ul
+                ref={provided.innerRef}
+                className={
+                  snapshot.isDraggingOver
+                    ? "droppable dragging-over"
+                    : "droppable"
+                }
+              >
+                {draggingFrom === "custom-list-entries" && (
+                  <p>Drag books here to remove them from the list.</p>
+                )}
+
+                {draggingFrom !== "custom-list-entries" &&
+                  filteredSearchResults.map((book) => (
+                    <Draggable
+                      key={book.id}
+                      draggableId={book.id}
+                      isDragDisabled={readOnly}
+                    >
+                      {(provided, snapshot) => (
+                        <li>
+                          <div
+                            className={
+                              "search-result" +
+                              (snapshot.isDragging ? " dragging" : "")
+                            }
+                            ref={provided.innerRef}
+                            style={provided.draggableStyle}
+                            {...provided.dragHandleProps}
+                          >
+                            {!readOnly && <GrabIcon />}
+
+                            <div>
+                              <div className="title">{book.title}</div>
+
+                              <div className="authors">
+                                {book.authors.join(", ")}
+                              </div>
+                            </div>
+
+                            {getMediumSVG(getMedium(book))}
+
+                            <div className="links">
+                              {renderCatalogLink(book, opdsFeedUrl)}
+
+                              {!readOnly && (
+                                <Button
+                                  callback={() => addEntry?.(book.id)}
+                                  className="right-align"
+                                  content={
+                                    <span>
+                                      Add to list
+                                      <AddIcon />
+                                    </span>
+                                  }
+                                />
+                              )}
+                            </div>
+                          </div>
+
+                          {provided.placeholder}
+                        </li>
+                      )}
+                    </Draggable>
+                  ))}
+
+                {provided.placeholder}
+              </ul>
+            )}
+          </Droppable>
+        )}
+
+        {!isFetchingSearchResults && loadMoreSearchResults && (
+          <LoadButton
+            isFetching={isFetchingMoreSearchResults}
+            loadMore={loadMoreSearchResults}
+          />
+        )}
+      </div>
+    );
+  }
+
   let entryList = null;
 
   if (!autoUpdate) {
@@ -146,9 +272,9 @@ const CustomListEntriesEditor = ({
     entryList = (
       <div className="custom-list-entries">
         <div className="droppable-header">
-          <h4>{entryListDisplay}</h4>
+          <h4>List Entries: {entryListDisplay}</h4>
 
-          {entries?.length > 0 && (
+          {!readOnly && entries?.length > 0 && (
             <div>
               <span>Remove all currently visible items from list:</span>
 
@@ -166,11 +292,11 @@ const CustomListEntriesEditor = ({
           )}
         </div>
 
-        <p>Drag search results here to add them to the list.</p>
+        {!readOnly && <p>Drag search results here to add them to the list.</p>}
 
         <Droppable
           droppableId="custom-list-entries"
-          isDropDisabled={draggingFrom !== "search-results"}
+          isDropDisabled={readOnly || draggingFrom !== "search-results"}
         >
           {(provided, snapshot) => (
             <ul
@@ -183,7 +309,11 @@ const CustomListEntriesEditor = ({
               }
             >
               {entries?.map((book) => (
-                <Draggable key={book.id} draggableId={book.id}>
+                <Draggable
+                  key={book.id}
+                  draggableId={book.id}
+                  isDragDisabled={readOnly}
+                >
                   {(provided, snapshot) => (
                     <li>
                       <div
@@ -195,7 +325,7 @@ const CustomListEntriesEditor = ({
                         style={provided.draggableStyle}
                         {...provided.dragHandleProps}
                       >
-                        <GrabIcon />
+                        {!readOnly && <GrabIcon />}
 
                         <div>
                           <div className="title">{book.title}</div>
@@ -210,16 +340,18 @@ const CustomListEntriesEditor = ({
                         <div className="links">
                           {renderCatalogLink(book, opdsFeedUrl)}
 
-                          <Button
-                            className="small right-align"
-                            callback={() => deleteEntry?.(book.id)}
-                            content={
-                              <span>
-                                Remove from list
-                                <TrashIcon />
-                              </span>
-                            }
-                          />
+                          {!readOnly && (
+                            <Button
+                              className="small right-align"
+                              callback={() => deleteEntry?.(book.id)}
+                              content={
+                                <span>
+                                  Remove from list
+                                  <TrashIcon />
+                                </span>
+                              }
+                            />
+                          )}
                         </div>
                       </div>
 
@@ -247,118 +379,7 @@ const CustomListEntriesEditor = ({
   return (
     <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="custom-list-drag-and-drop">
-        <div className="custom-list-search-results">
-          <div className="droppable-header">
-            <h4>Search Results</h4>
-
-            <Button
-              aria-label="Refresh"
-              className="refresh-button inverted"
-              callback={refreshResults}
-              content={<RefreshIcon />}
-              disabled={isFetchingSearchResults}
-            />
-
-            {!autoUpdate &&
-              !isFetchingSearchResults &&
-              filteredSearchResults.length > 0 && (
-                <Button
-                  className="add-all-button"
-                  callback={addAllEntries}
-                  content={
-                    <span>
-                      Add all to list
-                      <ApplyIcon />
-                    </span>
-                  }
-                />
-              )}
-          </div>
-
-          {isFetchingSearchResults && <ListLoadingIndicator />}
-
-          {!isFetchingSearchResults && (
-            <Droppable
-              droppableId="search-results"
-              isDropDisabled={draggingFrom !== "custom-list-entries"}
-            >
-              {(provided, snapshot) => (
-                <ul
-                  ref={provided.innerRef}
-                  className={
-                    snapshot.isDraggingOver
-                      ? "droppable dragging-over"
-                      : "droppable"
-                  }
-                >
-                  {draggingFrom === "custom-list-entries" && (
-                    <p>Drag books here to remove them from the list.</p>
-                  )}
-
-                  {draggingFrom !== "custom-list-entries" &&
-                    filteredSearchResults.map((book) => (
-                      <Draggable key={book.id} draggableId={book.id}>
-                        {(provided, snapshot) => (
-                          <li>
-                            <div
-                              className={
-                                "search-result" +
-                                (snapshot.isDragging ? " dragging" : "")
-                              }
-                              ref={provided.innerRef}
-                              style={provided.draggableStyle}
-                              {...provided.dragHandleProps}
-                            >
-                              <GrabIcon />
-
-                              <div>
-                                <div className="title">{book.title}</div>
-
-                                <div className="authors">
-                                  {book.authors.join(", ")}
-                                </div>
-                              </div>
-
-                              {getMediumSVG(getMedium(book))}
-
-                              <div className="links">
-                                {renderCatalogLink(book, opdsFeedUrl)}
-
-                                {!autoUpdate && (
-                                  <Button
-                                    callback={() => addEntry?.(book.id)}
-                                    className="right-align"
-                                    content={
-                                      <span>
-                                        Add to list
-                                        <AddIcon />
-                                      </span>
-                                    }
-                                  />
-                                )}
-                              </div>
-                            </div>
-
-                            {provided.placeholder}
-                          </li>
-                        )}
-                      </Draggable>
-                    ))}
-
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          )}
-
-          {!isFetchingSearchResults && loadMoreSearchResults && (
-            <LoadButton
-              isFetching={isFetchingMoreSearchResults}
-              loadMore={loadMoreSearchResults}
-            />
-          )}
-        </div>
-
+        {searchResultList}
         {entryList}
       </div>
     </DragDropContext>

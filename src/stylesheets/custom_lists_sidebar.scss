@@ -1,17 +1,30 @@
 .custom-lists-sidebar {
-  min-width: 15em;
+  flex: 0 0 auto;
+  min-width: 16em;
   border: 1px solid $gray;
   padding: 15px;
   margin: 7px 7px 15px 7px;
   overflow-y: scroll;
+
   h2 {
     text-align: center;
   }
-  .form-group {
-    display: inline-block;
-    margin-top: 15px;
-    margin-left: 15px;
-    margin-right: 25px;
+
+  .sort-filter {
+    display: flex;
+    gap: 5px;
+
+    fieldset {
+      flex: 1 1 auto;
+    }
+
+    .form-group {
+      margin: 0;
+
+      label {
+        width: 100%;
+      }
+    }
   }
 
   ul {
@@ -20,25 +33,24 @@
   }
 
   li {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 0.9em;
     color: $pagetextcolor;
     border: 1px solid $pagecolorlight;
     border-bottom-color: $pagetextcolor;
+    padding: 10px 10px 5px 10px;
+
     &.active {
       background-color: darken($pagecolorlight, 5%);
       border-color: $pagetextcolor;
     }
+
+    svg {
+      margin-right: 4px;
+    }
+
     div {
-      display: flex;
-      justify-content: space-between;
       width: 100%;
-      padding: 5px;
 
       &:nth-child(1) {
-        flex-direction: column;
         hyphens: auto;
       }
 
@@ -47,6 +59,16 @@
           width: 50%;
         }
       }
+    }
+  }
+
+  .custom-list-buttons {
+    display: flex;
+    justify-content: space-between;
+
+    & > svg {
+      align-self: end;
+      margin-bottom: .5em;
     }
   }
 }

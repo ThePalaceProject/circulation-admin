@@ -11,6 +11,7 @@ import EditableInput from "../EditableInput";
 import CustomListEditor from "../CustomListEditor";
 import Admin from "../../models/Admin";
 import { LaneData } from "../../interfaces";
+import CustomListsSidebar from "../CustomListsSidebar";
 
 describe("CustomLists", () => {
   let wrapper;
@@ -60,12 +61,21 @@ describe("CustomLists", () => {
   };
 
   const listsData = [
-    { id: 1, name: "a list", entry_count: 0, collections: [] },
+    {
+      id: 1,
+      name: "a list",
+      entry_count: 0,
+      collections: [],
+      is_owner: true,
+      is_shared: false,
+    },
     {
       id: 2,
       name: "z list",
       entry_count: 1,
       collections: [{ id: 3, name: "collection 3", protocol: "protocol" }],
+      is_owner: true,
+      is_shared: false,
     },
   ];
 
@@ -324,39 +334,133 @@ describe("CustomLists", () => {
         />,
         { context: { admin: libraryManager } }
       );
-      let radioButtons = wrapper.find(EditableInput);
-      let ascendingButton = radioButtons.at(0);
-      let descendingButton = radioButtons.at(1);
-      expect(ascendingButton.prop("checked")).to.equal(true);
-      expect(descendingButton.prop("checked")).to.equal(false);
 
-      descendingButton.find("input").simulate("change");
-      radioButtons = wrapper.find(EditableInput);
-      ascendingButton = radioButtons.at(0);
-      descendingButton = radioButtons.at(1);
+      let sidebar;
 
-      expect(ascendingButton.prop("checked")).to.equal(false);
-      expect(descendingButton.prop("checked")).to.equal(true);
-      let sortedLists = wrapper.find("li");
-      expect(sortedLists.length).to.equal(2);
-      let firstLink = sortedLists.at(0).childAt(0);
-      let secondLink = sortedLists.at(1).childAt(0);
-      expect(firstLink.text()).to.contain("z list");
-      expect(secondLink.text()).to.contain("a list");
+      sidebar = wrapper.find(CustomListsSidebar);
 
-      descendingButton.find("input").simulate("change");
-      radioButtons = wrapper.find(EditableInput);
-      ascendingButton = radioButtons.at(0);
-      descendingButton = radioButtons.at(1);
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "a list",
+        "z list",
+      ]);
 
-      expect(ascendingButton.prop("checked")).to.equal(true);
-      expect(descendingButton.prop("checked")).to.equal(false);
-      sortedLists = wrapper.find("li");
-      expect(sortedLists.length).to.equal(2);
-      firstLink = sortedLists.at(0).childAt(0);
-      secondLink = sortedLists.at(1).childAt(0);
-      expect(firstLink.text()).to.contain("a list");
-      expect(secondLink.text()).to.contain("z list");
+      sidebar.invoke("changeSort")("desc");
+
+      sidebar = wrapper.find(CustomListsSidebar);
+
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "z list",
+        "a list",
+      ]);
+
+      sidebar.invoke("changeSort")("asc");
+
+      sidebar = wrapper.find(CustomListsSidebar);
+
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "a list",
+        "z list",
+      ]);
+    });
+
+    it("filters lists", () => {
+      const sharedListsData = [
+        {
+          id: 1,
+          name: "owned unshared",
+          entry_count: 0,
+          collections: [],
+          is_owner: true,
+          is_shared: false,
+        },
+        {
+          id: 2,
+          name: "owned shared",
+          entry_count: 1,
+          collections: [{ id: 3, name: "collection 3", protocol: "protocol" }],
+          is_owner: true,
+          is_shared: true,
+        },
+        {
+          id: 3,
+          name: "not owned",
+          entry_count: 1,
+          collections: [{ id: 3, name: "collection 3", protocol: "protocol" }],
+          is_owner: false,
+          is_shared: true,
+        },
+      ];
+
+      wrapper = mount(
+        <CustomLists
+          csrfToken="token"
+          library="library"
+          lists={sharedListsData}
+          searchResults={searchResults}
+          collections={collections}
+          isFetching={false}
+          isFetchingSearchResults={false}
+          isFetchingMoreSearchResults={false}
+          isFetchingMoreCustomListEntries={false}
+          fetchCustomLists={fetchCustomLists}
+          fetchCustomListDetails={fetchCustomListDetails}
+          saveCustomListEditor={saveCustomListEditor}
+          deleteCustomList={deleteCustomList}
+          openCustomListEditor={openCustomListEditor}
+          loadMoreSearchResults={loadMoreSearchResults}
+          loadMoreEntries={loadMoreEntries}
+          fetchCollections={fetchCollections}
+          fetchLibraries={fetchLibraries}
+          fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
+          languages={languages}
+        />,
+        { context: { admin: libraryManager } }
+      );
+
+      let sidebar;
+
+      sidebar = wrapper.find(CustomListsSidebar);
+
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "owned shared",
+        "owned unshared",
+      ]);
+
+      sidebar.invoke("changeFilter")("shared-in");
+
+      sidebar = wrapper.find(CustomListsSidebar);
+
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "not owned",
+      ]);
+
+      sidebar.invoke("changeFilter")("shared-out");
+
+      sidebar = wrapper.find(CustomListsSidebar);
+
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "owned shared",
+      ]);
+
+      sidebar.invoke("changeFilter")("");
+
+      sidebar = wrapper.find(CustomListsSidebar);
+
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "not owned",
+        "owned shared",
+        "owned unshared",
+      ]);
+
+      sidebar.invoke("changeFilter")("owned");
+
+      sidebar = wrapper.find(CustomListsSidebar);
+
+      expect(sidebar.prop("lists").map((list) => list.name)).to.deep.equal([
+        "owned shared",
+        "owned unshared",
+      ]);
     });
 
     it("renders edit link but does not render delete button for librarian", () => {

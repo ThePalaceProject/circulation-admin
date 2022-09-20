@@ -6,6 +6,7 @@ import AdvancedSearchFilter from "./AdvancedSearchFilter";
 
 export interface AdvancedSearchBooleanFilterProps {
   query: AdvancedSearchQuery;
+  readOnly?: boolean;
   selectedQueryId?: string;
   onBooleanChange: (id: string, bool: string) => void;
   onMove: (id: string, targetId: string) => void;
@@ -23,6 +24,7 @@ const renderSeparator = (query, index) => {
 
 export default function AdvancedSearchBooleanFilter({
   query,
+  readOnly,
   selectedQueryId,
   onBooleanChange,
   onMove,
@@ -92,25 +94,28 @@ export default function AdvancedSearchBooleanFilter({
     [query.id, onMove]
   );
 
+  const isSelected = !readOnly && selectedQueryId === query.id;
+
   const className = classNames({
     "advanced-search-boolean-filter": true,
     "drag-drop": dropProps.isOver && dropProps.canDrop,
-    selected: selectedQueryId === query.id,
+    selected: isSelected,
   });
 
   return (
     <div
-      aria-selected={selectedQueryId === query.id}
+      aria-selected={isSelected}
       className={className}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      ref={drop}
+      ref={readOnly ? undefined : drop}
       role="treeitem"
       tabIndex={0}
     >
       <header>
         <div>
           <select
+            disabled={readOnly}
             onBlur={handleBooleanChange}
             onChange={handleBooleanChange}
             value={query.and ? "and" : "or"}
@@ -124,7 +129,7 @@ export default function AdvancedSearchBooleanFilter({
           </select>
         </div>
 
-        <button onClick={handleRemoveButtonClick}>×</button>
+        {!readOnly && <button onClick={handleRemoveButtonClick}>×</button>}
       </header>
 
       <ul>
@@ -133,6 +138,7 @@ export default function AdvancedSearchBooleanFilter({
             {renderSeparator(query, index)}{" "}
             <AdvancedSearchFilter
               query={child}
+              readOnly={readOnly}
               selectedQueryId={selectedQueryId}
               onBooleanChange={onBooleanChange}
               onMove={onMove}

@@ -18,7 +18,9 @@ describe("LaneEditor", () => {
   let findParentOfLane;
   let toggleLaneVisibility;
 
-  const customListsData = [{ id: 1, name: "list 1", entries: [] }];
+  const customListsData = [
+    { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
+  ];
 
   const laneData = {
     id: 1,

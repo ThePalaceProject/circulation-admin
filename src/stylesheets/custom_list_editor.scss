@@ -1,28 +1,24 @@
 .custom-list-editor {
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  flex-grow: 0.9;
+  flex: 1 1 auto;
   padding: 15px;
+
   .custom-list-editor-header {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex: 0 0 auto;
-    border-bottom: 1px solid $medium-gray;
 
     .edit-custom-list-title {
-      width: 100%;
-    }
+      flex: 1 1 auto;
 
-    > div {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      h3 {
+        margin: 0;
+      }
     }
 
     .save-or-cancel-list {
-      padding-top: 20px;
+      flex: 0 0 auto;
+
+      .btn {
+        display: inline;
+      }
     }
 
     .custom-list-filters {
@@ -38,6 +34,16 @@
       .form-group {
         display: inline-block;
       }
+    }
+  }
+
+  .sharing-info {
+    .sharing-status {
+      font-weight: bold;
+    }
+
+    button.btn {
+      margin: 0;
     }
   }
 
@@ -98,7 +104,6 @@
       }
 
       aside {
-        font-size: .9em;
         font-style: italic;
       }
     }
@@ -214,7 +219,6 @@
     }
 
     aside {
-      font-size: .9em;
       font-style: italic;
     }
   }

@@ -71,6 +71,28 @@ describe("AdvancedSearchBooleanFilter", () => {
     expect(operatorOptions.at(1).getDOMNode().selected).to.equal(false);
   });
 
+  it("should disable the boolean operator select when readOnly is true", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchBooleanFilter
+          query={query}
+          readOnly={true}
+          selectedQueryId="91"
+          onBooleanChange={onBooleanChange}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
+
+    const operatorSelect = wrapper.find(
+      ".advanced-search-boolean-filter > header select"
+    );
+
+    expect(operatorSelect.prop("disabled")).to.equal(true);
+  });
+
   it("should call onBooleanChange when the boolean operator changes", () => {
     const operatorSelect = wrapper.find(
       ".advanced-search-boolean-filter > header select"
@@ -90,6 +112,28 @@ describe("AdvancedSearchBooleanFilter", () => {
 
     expect(button).to.have.length(1);
     expect(button.text()).to.equal("×");
+  });
+
+  it("should not render a remove button when readOnly is true", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchBooleanFilter
+          query={query}
+          readOnly={true}
+          selectedQueryId="91"
+          onBooleanChange={onBooleanChange}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
+
+    const button = wrapper.find(
+      ".advanced-search-boolean-filter > header button"
+    );
+
+    expect(button).to.have.length(0);
   });
 
   it("should call onRemove when the remove button is clicked", () => {
@@ -146,6 +190,30 @@ describe("AdvancedSearchBooleanFilter", () => {
     expect(filter2.prop("onRemove")).to.equal(onRemove);
   });
 
+  it("should propagate the readOnly prop to AdvancedSearchFilter children", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchBooleanFilter
+          query={query}
+          readOnly={true}
+          selectedQueryId="91"
+          onBooleanChange={onBooleanChange}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
+
+    const list = wrapper.find(".advanced-search-boolean-filter > ul");
+    const filters = list.find(AdvancedSearchFilter);
+
+    expect(filters).to.have.length(2);
+
+    expect(filters.at(0).prop("readOnly")).to.equal(true);
+    expect(filters.at(1).prop("readOnly")).to.equal(true);
+  });
+
   it('should separate child filters with "and" when the boolean operator is AND', () => {
     const separators = wrapper.find(
       ".advanced-search-boolean-filter > ul > li > span"
@@ -193,5 +261,44 @@ describe("AdvancedSearchBooleanFilter", () => {
     expect(separators).to.have.length(1);
 
     expect(separators.at(0).text()).to.equal("or");
+  });
+
+  it("should apply the selected class when the query id equals the selectedQueryId", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchBooleanFilter
+          query={query}
+          selectedQueryId="90"
+          onBooleanChange={onBooleanChange}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
+
+    expect(
+      wrapper.find(".advanced-search-boolean-filter").hasClass("selected")
+    ).to.equal(true);
+  });
+
+  it("should not apply the selected class when readOnly is true", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchBooleanFilter
+          query={query}
+          readOnly={true}
+          selectedQueryId="90"
+          onBooleanChange={onBooleanChange}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
+
+    expect(
+      wrapper.find(".advanced-search-boolean-filter").hasClass("selected")
+    ).to.equal(false);
   });
 });

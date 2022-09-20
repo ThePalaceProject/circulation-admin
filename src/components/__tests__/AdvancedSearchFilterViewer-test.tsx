@@ -31,6 +31,7 @@ describe("AdvancedSearchFilterViewer", () => {
       <DndProvider backend={HTML5Backend}>
         <AdvancedSearchFilterViewer
           query={query}
+          readOnly={false}
           selectedQueryId="0"
           onBooleanChange={onBooleanChange}
           onMove={onMove}
@@ -47,6 +48,7 @@ describe("AdvancedSearchFilterViewer", () => {
     expect(filter.length).to.equal(1);
 
     expect(filter.prop("query")).to.equal(query);
+    expect(filter.prop("readOnly")).to.equal(false);
     expect(filter.prop("selectedQueryId")).to.equal("0");
     expect(filter.prop("onBooleanChange")).to.equal(onBooleanChange);
     expect(filter.prop("onMove")).to.equal(onMove);

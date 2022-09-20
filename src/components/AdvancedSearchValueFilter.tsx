@@ -12,6 +12,7 @@ import { fields, operators } from "./AdvancedSearchBuilder";
 
 export interface AdvancedSearchValueFilterProps {
   query: AdvancedSearchQuery;
+  readOnly?: boolean;
   selected?: boolean;
   onMove: (id: string, targetId: string) => void;
   onRemove: (id: string) => void;
@@ -32,6 +33,7 @@ function getOpSymbol(value) {
 
 export default ({
   query,
+  readOnly,
   selected,
   onMove,
   onRemove,
@@ -98,21 +100,22 @@ export default ({
     [query.id, onMove]
   );
 
+  const isSelected = !readOnly && selected;
   const { key, op, value } = query;
 
   const className = classNames({
     "advanced-search-value-filter": true,
     "drag-drop": dropProps.isOver && dropProps.canDrop,
-    selected,
+    selected: isSelected,
   });
 
   return (
     <div
-      aria-selected={selected}
+      aria-selected={isSelected}
       className={className}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      ref={(node) => drag(drop(node))}
+      ref={readOnly ? undefined : (node) => drag(drop(node))}
       role="treeitem"
       tabIndex={0}
     >
@@ -120,7 +123,7 @@ export default ({
         {getFieldLabel(key)} {getOpSymbol(op)} {value}
       </span>
 
-      <button onClick={handleRemoveButtonClick}>×</button>
+      {!readOnly && <button onClick={handleRemoveButtonClick}>×</button>}
     </div>
   );
 };

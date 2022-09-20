@@ -12,9 +12,9 @@ describe("LaneCustomListsEditor", () => {
   let onUpdate;
 
   const allCustomListsData = [
-    { id: 1, name: "list 1", entry_count: 0 },
-    { id: 2, name: "list 2", entry_count: 2 },
-    { id: 3, name: "list 3", entry_count: 0 },
+    { id: 1, name: "list 1", entry_count: 0, is_owner: true, is_shared: false },
+    { id: 2, name: "list 2", entry_count: 2, is_owner: true, is_shared: false },
+    { id: 3, name: "list 3", entry_count: 0, is_owner: true, is_shared: false },
   ];
 
   beforeEach(() => {

@@ -27,11 +27,19 @@ describe("Lanes", () => {
   let changeLaneOrder;
 
   const customListsData = [
-    { id: 1, name: "list 1", entries: [] },
+    {
+      id: 1,
+      name: "list 1",
+      entries: [],
+      is_owner: true,
+      is_shared: false,
+    },
     {
       id: 2,
       name: "list 2",
       entries: [{ pwid: "1", title: "title", authors: [] }],
+      is_owner: true,
+      is_shared: false,
     },
   ];
 

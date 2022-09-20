@@ -30,11 +30,14 @@
     }
   }
 
+  .advanced-search-filter-input + .advanced-search-filter-tree {
+    border-top: 1px solid $medium-gray;
+    padding-top: 10px;
+  }
+
   .advanced-search-filter-tree {
     display: flex;
     flex: 1 1 auto;
-    border-top: 1px solid $medium-gray;
-    padding-top: 10px;
     align-items: baseline;
 
     > span {
@@ -105,10 +108,11 @@
     border-radius: 5px;
 
     span {
-      padding: 4px 2px 4px 8px;
+      padding: 4px 8px;
     }
 
     button {
+      margin-left: -8px;
       border: none;
       border-radius: 0 5px 5px 0;
       padding: 4px 8px;

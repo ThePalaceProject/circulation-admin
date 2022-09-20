@@ -420,6 +420,8 @@ export interface LibraryRegistrationsData {
 
 export interface CustomListData {
   id?: string | number;
+  is_owner: boolean;
+  is_shared: boolean;
   name: string;
   entry_count?: number;
   collections?: CollectionData[];

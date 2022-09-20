@@ -1,8 +1,10 @@
 import * as React from "react";
 import PencilIcon from "./icons/PencilIcon";
+import ShareIcon from "./icons/ShareIcon";
 import TrashIcon from "./icons/TrashIcon";
+import VisibleIcon from "./icons/VisibleIcon";
 import { Button } from "library-simplified-reusable-components";
-import { CustomListData, LibraryData } from "../interfaces";
+import { CustomListData } from "../interfaces";
 import EditableInput from "./EditableInput";
 import { Link } from "react-router";
 
@@ -11,9 +13,11 @@ export interface CustomListsSidebarProps {
   library: string;
   identifier?: string;
   isLibraryManager: boolean;
-  deleteCustomList: (list: CustomListData) => Promise<void>;
-  changeSort: () => void;
+  filter?: string;
   sortOrder: string;
+  changeFilter?: (value: string) => void;
+  changeSort: (value: string) => void;
+  deleteCustomList: (list: CustomListData) => Promise<void>;
 }
 
 export default class CustomListsSidebar extends React.Component<
@@ -31,11 +35,13 @@ export default class CustomListsSidebar extends React.Component<
           Create New List
         </Link>
 
-        {this.props.lists && this.props.lists.length > 0 && (
-          <div>
-            {this.renderSortButtons()}
-            <ul>{this.props.lists.map((list) => this.renderListInfo(list))}</ul>
-          </div>
+        <div className="sort-filter">
+          {this.renderFilterButtons()}
+          {this.renderSortButtons()}
+        </div>
+
+        {this.props.lists && (
+          <ul>{this.props.lists.map((list) => this.renderListInfo(list))}</ul>
         )}
       </div>
     );
@@ -49,40 +55,85 @@ export default class CustomListsSidebar extends React.Component<
     return (
       <fieldset>
         <legend className="visuallyHidden">Select list sort type</legend>
-        {sortOrders.map((order) => {
-          const isChecked = this.props.sortOrder === order[1];
-          return (
-            <EditableInput
-              key={order[1]}
-              type="radio"
-              label={`Sort ${order[0]}`}
-              name="sort"
-              onChange={this.props.changeSort}
-              checked={isChecked}
-              disabled={false}
-            />
-          );
-        })}
+
+        <EditableInput
+          elementType="select"
+          name="sort"
+          label="Sort"
+          value={this.props.sortOrder}
+          onChange={this.props.changeSort}
+        >
+          {sortOrders.map(([label, value]) => (
+            <option
+              key={value}
+              value={value}
+              aria-selected={this.props.sortOrder === value}
+            >
+              {label}
+            </option>
+          ))}
+        </EditableInput>
+      </fieldset>
+    );
+  }
+
+  renderFilterButtons(): JSX.Element {
+    const filters = [
+      ["All", ""],
+      ["Owned", "owned"],
+      ["Shared", "shared-out"],
+      ["Subscribed", "shared-in"],
+    ];
+
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Select filter type</legend>
+
+        <EditableInput
+          elementType="select"
+          name="filter"
+          label="Show"
+          value={this.props.filter}
+          onChange={this.props.changeFilter}
+        >
+          {filters.map(([label, value]) => (
+            <option
+              key={value}
+              value={value}
+              aria-selected={this.props.filter === value}
+            >
+              {label}
+            </option>
+          ))}
+        </EditableInput>
       </fieldset>
     );
   }
 
   renderListInfo(list: CustomListData): JSX.Element {
+    const readOnly = !list.is_owner;
+
     const isActive =
       this.props.identifier &&
       this.props.identifier.toString() === list.id.toString();
+
     return (
       <li key={list.id} className={isActive ? "active" : ""}>
         <div className="custom-list-info">
-          <p>{list.name}</p>
-          <p>Books in list: {list.entry_count}</p>
-          <p>ID-{list.id}</p>
+          <div>
+            {!list.is_owner && (
+              <ShareIcon title="This list is shared by another library. It may be edited only by the owning library." />
+            )}
+            {list.name}
+          </div>
+          <div>Books in list: {list.entry_count}</div>
+          <div>ID-{list.id}</div>
         </div>
         <div className="custom-list-buttons">
           {isActive ? (
             <Button
               disabled={true}
-              content="Editing"
+              content={readOnly ? "Viewing" : "Editing"}
               className="left-align small"
             />
           ) : (
@@ -91,12 +142,12 @@ export default class CustomListsSidebar extends React.Component<
               className="btn left-align small"
             >
               <span>
-                Edit
-                <PencilIcon />
+                {readOnly ? "View" : "Edit"}
+                {readOnly ? <VisibleIcon /> : <PencilIcon />}
               </span>
             </Link>
           )}
-          {this.props.isLibraryManager && (
+          {this.props.isLibraryManager && !readOnly && !list.is_shared && (
             <Button
               callback={() => this.props.deleteCustomList(list)}
               content={
@@ -107,6 +158,9 @@ export default class CustomListsSidebar extends React.Component<
               }
               className="right-align small danger"
             />
+          )}
+          {list.is_owner && list.is_shared && (
+            <ShareIcon title="This list is shared with other libraries. It cannot be deleted." />
           )}
         </div>
       </li>

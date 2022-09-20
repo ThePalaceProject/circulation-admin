@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.0
+
+#### Updated
+
+- Added support for list sharing.
+
 ### v0.3.0
 
 #### Fixed

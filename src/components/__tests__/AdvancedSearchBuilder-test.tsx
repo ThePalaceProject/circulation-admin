@@ -30,6 +30,7 @@ describe("AdvancedSearchBuilder", () => {
 
     wrapper = mount(
       <AdvancedSearchBuilder
+        isOwner={true}
         name="include"
         query={query}
         selectedQueryId="0"
@@ -53,6 +54,26 @@ describe("AdvancedSearchBuilder", () => {
     expect(filterViewer).to.have.length(1);
     expect(filterViewer.prop("query")).to.equal(query);
     expect(filterViewer.prop("selectedQueryId")).to.equal("0");
+  });
+
+  it("should not render an AdvancedSearchFilterInput when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    const filterInput = wrapper.find(AdvancedSearchFilterInput);
+
+    expect(filterInput).to.have.length(0);
+  });
+
+  it("should set readOnly to true on the AdvancedSearchFilterViewer when isOwner is false", () => {
+    wrapper.setProps({
+      isOwner: false,
+    });
+
+    expect(wrapper.find(AdvancedSearchFilterViewer).prop("readOnly")).to.equal(
+      true
+    );
   });
 
   it("should call addQuery with the correct name when a query is added in the AdvancedSearchFilterInput", () => {

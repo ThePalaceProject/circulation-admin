@@ -6,6 +6,7 @@ import AdvancedSearchFilterInput from "./AdvancedSearchFilterInput";
 import AdvancedSearchFilterViewer from "./AdvancedSearchFilterViewer";
 
 export interface AdvancedSearchBuilderProps {
+  isOwner?: boolean;
   name: string;
   query: AdvancedSearchQuery;
   selectedQueryId: string;
@@ -40,6 +41,7 @@ export const operators = [
 ];
 
 export default function AdvancedSearchBuilder({
+  isOwner,
   name,
   query,
   selectedQueryId,
@@ -49,16 +51,21 @@ export default function AdvancedSearchBuilder({
   removeQuery,
   selectQuery,
 }: AdvancedSearchBuilderProps) {
+  const readOnly = !isOwner;
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="advanced-search">
-        <AdvancedSearchFilterInput
-          name={name}
-          onAdd={(query) => addQuery?.(name, query)}
-        />
+        {!readOnly && (
+          <AdvancedSearchFilterInput
+            name={name}
+            onAdd={(query) => addQuery?.(name, query)}
+          />
+        )}
 
         <AdvancedSearchFilterViewer
           query={query}
+          readOnly={readOnly}
           selectedQueryId={selectedQueryId}
           onBooleanChange={(id, bool) => updateQueryBoolean?.(name, id, bool)}
           onMove={(id, targetId) => moveQuery?.(name, id, targetId)}

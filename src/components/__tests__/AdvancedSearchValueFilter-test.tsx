@@ -44,11 +44,41 @@ describe("AdvancedSearchValueFilter", () => {
     expect(filterLabel.text()).to.equal("title = foo");
   });
 
-  it("should render the field label, operator symbol, and value of the query", () => {
-    const filterLabel = wrapper.find(".advanced-search-value-filter > span");
+  it("should apply the selected class when selected is true", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchValueFilter
+          query={query}
+          selected={true}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
 
-    expect(filterLabel).to.have.length(1);
-    expect(filterLabel.text()).to.equal("title = foo");
+    expect(
+      wrapper.find(".advanced-search-value-filter").hasClass("selected")
+    ).to.equal(true);
+  });
+
+  it("should not apply the selected class when readOnly is true", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchValueFilter
+          query={query}
+          readOnly={true}
+          selected={true}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
+
+    expect(
+      wrapper.find(".advanced-search-value-filter").hasClass("selected")
+    ).to.equal(false);
   });
 
   it("should render a remove button", () => {
@@ -56,6 +86,24 @@ describe("AdvancedSearchValueFilter", () => {
 
     expect(button).to.have.length(1);
     expect(button.text()).to.equal("×");
+  });
+
+  it("should not render a remove button when readOnly is true", () => {
+    wrapper = mount(
+      <DndProvider backend={HTML5Backend}>
+        <AdvancedSearchValueFilter
+          query={query}
+          readOnly={true}
+          onMove={onMove}
+          onSelect={onSelect}
+          onRemove={onRemove}
+        />
+      </DndProvider>
+    );
+
+    const button = wrapper.find(".advanced-search-value-filter > button");
+
+    expect(button).to.have.length(0);
   });
 
   it("should call onRemove when the remove button is clicked", () => {
