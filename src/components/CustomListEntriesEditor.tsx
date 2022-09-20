@@ -15,12 +15,14 @@ import LoadButton from "./LoadButton";
 
 export interface CustomListEntriesEditorProps {
   autoUpdate?: boolean;
+  autoUpdateStatus?: string;
   entries?: Entry[];
   entryCount?: number;
   isFetchingMoreCustomListEntries: boolean;
   isFetchingSearchResults: boolean;
   isFetchingMoreSearchResults: boolean;
   isOwner?: boolean;
+  isSearchModified?: boolean;
   listId?: string | number;
   opdsFeedUrl?: string;
   searchResults?: CollectionData;
@@ -55,12 +57,14 @@ const renderCatalogLink = (book, opdsFeedUrl) => {
 
 const CustomListEntriesEditor = ({
   autoUpdate,
-  entries,
-  entryCount,
+  autoUpdateStatus,
+  entries = [],
+  entryCount = 0,
   isFetchingMoreCustomListEntries,
   isFetchingSearchResults,
   isFetchingMoreSearchResults,
   isOwner,
+  isSearchModified,
   listId,
   opdsFeedUrl,
   searchResults,
@@ -134,7 +138,7 @@ const CustomListEntriesEditor = ({
 
   const readOnly = !isOwner || autoUpdate;
 
-  let searchResultList = null;
+  let searchResultList: JSX.Element | null = null;
 
   if (isOwner) {
     searchResultList = (
@@ -210,7 +214,7 @@ const CustomListEntriesEditor = ({
                               <div className="title">{book.title}</div>
 
                               <div className="authors">
-                                {book.authors.join(", ")}
+                                {book.authors?.join(", ")}
                               </div>
                             </div>
 
@@ -256,125 +260,163 @@ const CustomListEntriesEditor = ({
     );
   }
 
-  let entryList = null;
+  const visibleEntryCount = entries.length;
+  const startNum = visibleEntryCount > 0 ? 1 : 0;
+  const endNum = visibleEntryCount;
+  const booksText = entryCount === 1 ? "book" : "books";
 
-  if (!autoUpdate) {
-    const visibleEntryCount = entries.length;
-    const startNum = visibleEntryCount > 0 ? 1 : 0;
-    const endNum = visibleEntryCount;
-    const booksText = entryCount === 1 ? "book" : "books";
+  const entryListDisplay =
+    entryCount > 0
+      ? `Displaying ${startNum} - ${endNum} of ${entryCount} ${booksText}`
+      : "No books in this list";
 
-    const entryListDisplay =
-      entryCount > 0
-        ? `Displaying ${startNum} - ${endNum} of ${entryCount} ${booksText}`
-        : "No books in this list";
+  let autoUpdateStatusName = null;
+  let autoUpdateStatusDescription = null;
 
-    entryList = (
-      <div className="custom-list-entries">
-        <div className="droppable-header">
-          <h4>List Entries: {entryListDisplay}</h4>
+  if (!listId) {
+    autoUpdateStatusName = "New";
+    autoUpdateStatusDescription =
+      "The system will begin to populate this list using the configured search criteria when it is saved, and will fully populate the list during the first scheduled update that occurs after it has been saved.";
+  } else if (isSearchModified) {
+    autoUpdateStatusName = "Search criteria modified";
+    autoUpdateStatusDescription =
+      "There are unsaved changes to the search criteria for this list. The system will repopulate the list using the new search criteria during the first scheduled update that occurs after it has been saved.";
+  } else {
+    if (autoUpdateStatus === "init") {
+      autoUpdateStatusName = "Initializing";
+      autoUpdateStatusDescription =
+        "This list was created recently. The system has partially populated the list using the configured search criteria, and will fully populate the list during the next scheduled update.";
+    } else if (autoUpdateStatus === "repopulate") {
+      autoUpdateStatusName = "Repopulating";
+      autoUpdateStatusDescription =
+        "The search criteria for this list were changed recently, but the entries have not yet been updated. The system will repopulate the list using the current search criteria during the next scheduled update.";
+    } else if (autoUpdateStatus === "updated") {
+      autoUpdateStatusName = "Updated";
+      autoUpdateStatusDescription =
+        "This list was fully populated during the last scheduled update, using the configured search criteria and the titles that were available at the time. Titles that have been acquired since the last update will be added to the list during the next scheduled update.";
+    } else if (!autoUpdateStatus) {
+      autoUpdateStatusName = "Changing to automatic";
+      autoUpdateStatusDescription =
+        "This list was populated manually, and is being changed to be updated automatically. The system will repopulate the list using the configured search criteria during the first scheduled update that occurs after it has been saved.";
+    } else {
+      autoUpdateStatusName = autoUpdateStatus;
+    }
+  }
 
-          {!readOnly && entries?.length > 0 && (
-            <div>
-              <span>Remove all currently visible items from list:</span>
+  const entryList = (
+    <div className="custom-list-entries">
+      <div className="droppable-header">
+        <h4>List Entries: {entryListDisplay}</h4>
 
-              <Button
-                className="danger delete-all-button top-align"
-                callback={deleteAllEntries}
-                content={
-                  <span>
-                    Delete
-                    <TrashIcon />
-                  </span>
-                }
-              />
+        {autoUpdate && (
+          <>
+            <div className="auto-update-status-name">
+              Status: {autoUpdateStatusName}
             </div>
-          )}
-        </div>
+            <aside className="auto-update-status-desc">
+              {autoUpdateStatusDescription}
+            </aside>
+          </>
+        )}
 
-        {!readOnly && <p>Drag search results here to add them to the list.</p>}
+        {!readOnly && entries?.length > 0 && (
+          <div>
+            <span>Remove all currently visible items from list:</span>
 
-        <Droppable
-          droppableId="custom-list-entries"
-          isDropDisabled={readOnly || draggingFrom !== "search-results"}
-        >
-          {(provided, snapshot) => (
-            <ul
-              ref={provided.innerRef}
-              id="custom-list-entries-droppable"
-              className={
-                snapshot.isDraggingOver
-                  ? " droppable dragging-over"
-                  : "droppable"
+            <Button
+              className="danger delete-all-button top-align"
+              callback={deleteAllEntries}
+              content={
+                <span>
+                  Delete
+                  <TrashIcon />
+                </span>
               }
-            >
-              {entries?.map((book) => (
-                <Draggable
-                  key={book.id}
-                  draggableId={book.id}
-                  isDragDisabled={readOnly}
-                >
-                  {(provided, snapshot) => (
-                    <li>
-                      <div
-                        className={
-                          "custom-list-entry" +
-                          (snapshot.isDragging ? " dragging" : "")
-                        }
-                        ref={provided.innerRef}
-                        style={provided.draggableStyle}
-                        {...provided.dragHandleProps}
-                      >
-                        {!readOnly && <GrabIcon />}
+            />
+          </div>
+        )}
+      </div>
 
-                        <div>
-                          <div className="title">{book.title}</div>
+      {!readOnly && <p>Drag search results here to add them to the list.</p>}
 
-                          <div className="authors">
-                            {book.authors.join(", ")}
-                          </div>
-                        </div>
+      <Droppable
+        droppableId="custom-list-entries"
+        isDropDisabled={readOnly || draggingFrom !== "search-results"}
+      >
+        {(provided, snapshot) => (
+          <ul
+            ref={provided.innerRef}
+            id="custom-list-entries-droppable"
+            className={
+              snapshot.isDraggingOver ? " droppable dragging-over" : "droppable"
+            }
+          >
+            {entries?.map((book) => (
+              <Draggable
+                key={book.id}
+                draggableId={book.id}
+                isDragDisabled={readOnly}
+              >
+                {(provided, snapshot) => (
+                  <li>
+                    <div
+                      className={
+                        "custom-list-entry" +
+                        (snapshot.isDragging ? " dragging" : "")
+                      }
+                      ref={provided.innerRef}
+                      style={provided.draggableStyle}
+                      {...provided.dragHandleProps}
+                    >
+                      {!readOnly && <GrabIcon />}
 
-                        {getMediumSVG(getMedium(book))}
+                      <div>
+                        <div className="title">{book.title}</div>
 
-                        <div className="links">
-                          {renderCatalogLink(book, opdsFeedUrl)}
-
-                          {!readOnly && (
-                            <Button
-                              className="small right-align"
-                              callback={() => deleteEntry?.(book.id)}
-                              content={
-                                <span>
-                                  Remove from list
-                                  <TrashIcon />
-                                </span>
-                              }
-                            />
-                          )}
+                        <div className="authors">
+                          {book.authors?.join(", ")}
                         </div>
                       </div>
 
-                      {provided.placeholder}
-                    </li>
-                  )}
-                </Draggable>
-              ))}
+                      {getMediumSVG(getMedium(book))}
 
-              {provided.placeholder}
-            </ul>
-          )}
-        </Droppable>
+                      <div className="links">
+                        {renderCatalogLink(book, opdsFeedUrl)}
 
-        {loadMoreEntries && (
-          <LoadButton
-            isFetching={isFetchingMoreCustomListEntries}
-            loadMore={loadMoreEntries}
-          />
+                        {!readOnly && (
+                          <Button
+                            className="small right-align"
+                            callback={() => deleteEntry?.(book.id)}
+                            content={
+                              <span>
+                                Remove from list
+                                <TrashIcon />
+                              </span>
+                            }
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    {provided.placeholder}
+                  </li>
+                )}
+              </Draggable>
+            ))}
+
+            {provided.placeholder}
+          </ul>
         )}
-      </div>
-    );
-  }
+      </Droppable>
+
+      {loadMoreEntries && (
+        <LoadButton
+          isFetching={isFetchingMoreCustomListEntries}
+          loadMore={loadMoreEntries}
+        />
+      )}
+    </div>
+  );
 
   return (
     <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>

@@ -12,6 +12,7 @@ export interface CustomListSearchProps {
   isOwner?: boolean;
   languages: LanguagesData;
   library: LibraryData;
+  listId: string;
   searchParams: CustomListEditorSearchParams;
   showAutoUpdate?: boolean;
   startingTitle?: string;
@@ -44,6 +45,7 @@ const CustomListSearch = ({
   entryPoints,
   isOwner,
   library,
+  listId,
   searchParams,
   showAutoUpdate,
   startingTitle,
@@ -170,7 +172,7 @@ const CustomListSearch = ({
           <div className="auto-update-selection">
             <div>
               <EditableInput
-                disabled={readOnly}
+                disabled={readOnly || !!listId}
                 type="radio"
                 name="auto-update"
                 checked={autoUpdate}
@@ -188,7 +190,7 @@ const CustomListSearch = ({
 
             <div>
               <EditableInput
-                disabled={readOnly}
+                disabled={readOnly || !!listId}
                 type="radio"
                 name="auto-update"
                 checked={!autoUpdate}

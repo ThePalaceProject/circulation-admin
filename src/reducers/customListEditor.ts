@@ -545,6 +545,11 @@ export interface CustomListEditorState {
   id: number;
 
   /**
+   * The update status of the list, if it is auto updating.
+   */
+  autoUpdateStatus: string;
+
+  /**
    * Flag indicating if the auto updating lists feature is enabled.
    */
   isAutoUpdateEnabled: boolean;
@@ -600,6 +605,8 @@ export interface CustomListEditorState {
    */
   isModified: boolean;
 
+  isSearchModified: boolean;
+
   /**
    * An error message, if an error has occurred.
    */
@@ -634,6 +641,7 @@ const initialSearchParams = {
  */
 export const initialState: CustomListEditorState = {
   id: null,
+  autoUpdateStatus: "",
   isAutoUpdateEnabled: false,
   isLoaded: false,
   isOwner: true,
@@ -657,6 +665,7 @@ export const initialState: CustomListEditorState = {
   },
   isValid: false,
   isModified: false,
+  isSearchModified: false,
   error: null,
 };
 
@@ -703,6 +712,15 @@ const isSearchModified = (state: CustomListEditorState): boolean => {
   return baselineSearchUrl !== currentSearchUrl;
 };
 
+const checkSearchModified = (
+  state: CustomListEditorState
+): CustomListEditorState => {
+  return produce(state, (draftState) => {
+    draftState.isSearchModified = isSearchModified(draftState);
+    console.log("search modified: " + draftState.isSearchModified);
+  });
+};
+
 /**
  * Determines if a custom list editor contains data has been modified since it was last saved,
  * given its state.
@@ -720,7 +738,7 @@ const isModified = (state: CustomListEditorState): boolean => {
     Object.keys(removed).length > 0 ||
     baseline.name !== current.name ||
     baseline.autoUpdate !== current.autoUpdate ||
-    (current.autoUpdate && isSearchModified(state)) ||
+    (current.autoUpdate && state.isSearchModified) ||
     baseline.collections.length !== current.collections.length ||
     !baseline.collections.every((id) => current.collections.includes(id))
   );
@@ -804,6 +822,11 @@ const initialStateForList = (
       draftState.isLoaded = true;
       draftState.isOwner = customList.is_owner;
       draftState.isShared = customList.is_shared;
+
+      draftState.autoUpdateStatus =
+        isAutoUpdateEnabled && !!customList.auto_update
+          ? customList.auto_update_status
+          : "";
 
       const initialProperties = {
         name: customList.name || "",
@@ -1042,9 +1065,11 @@ const handleUpdateCustomListEditorSearchParam = validatedHandler(
   (state: CustomListEditorState, action): CustomListEditorState => {
     const { name, value } = action;
 
-    return produce(state, (draftState) => {
-      draftState.searchParams.current[name] = value;
-    });
+    return checkSearchModified(
+      produce(state, (draftState) => {
+        draftState.searchParams.current[name] = value;
+      })
+    );
   }
 );
 
@@ -1279,28 +1304,30 @@ const getDefaultBooleanOperator = (builderName: string) => {
  */
 const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
   (state: CustomListEditorState, action): CustomListEditorState => {
-    return produce(state, (draftState) => {
-      const { builderName, query } = action;
-      const builder = draftState.searchParams.current.advanced[builderName];
-      const { query: currentQuery, selectedQueryId } = builder;
+    return checkSearchModified(
+      produce(state, (draftState) => {
+        const { builderName, query } = action;
+        const builder = draftState.searchParams.current.advanced[builderName];
+        const { query: currentQuery, selectedQueryId } = builder;
 
-      const newQuery = {
-        ...query,
-        id: newQueryId(),
-      };
+        const newQuery = {
+          ...query,
+          id: newQueryId(),
+        };
 
-      if (!currentQuery) {
-        builder.query = newQuery;
-        builder.selectedQueryId = newQuery.id;
-      } else {
-        builder.query = addDescendantQuery(
-          currentQuery,
-          selectedQueryId || currentQuery.id,
-          newQuery,
-          getDefaultBooleanOperator(builderName)
-        );
-      }
-    });
+        if (!currentQuery) {
+          builder.query = newQuery;
+          builder.selectedQueryId = newQuery.id;
+        } else {
+          builder.query = addDescendantQuery(
+            currentQuery,
+            selectedQueryId || currentQuery.id,
+            newQuery,
+            getDefaultBooleanOperator(builderName)
+          );
+        }
+      })
+    );
   }
 );
 
@@ -1317,25 +1344,27 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
  */
 const handleUpdateCustomListEditorAdvSearchQueryBoolean = validatedHandler(
   (state: CustomListEditorState, action): CustomListEditorState => {
-    return produce(state, (draftState) => {
-      const { builderName, id, bool } = action;
-      const builder = draftState.searchParams.current.advanced[builderName];
-      const { query: currentQuery } = builder;
-      const targetQuery = findDescendantQuery(currentQuery, id);
+    return checkSearchModified(
+      produce(state, (draftState) => {
+        const { builderName, id, bool } = action;
+        const builder = draftState.searchParams.current.advanced[builderName];
+        const { query: currentQuery } = builder;
+        const targetQuery = findDescendantQuery(currentQuery, id);
 
-      if (
-        targetQuery &&
-        (targetQuery.and || targetQuery.or) &&
-        !targetQuery[bool]
-      ) {
-        const oppositeBool = bool === "and" ? "or" : "and";
-        const children = targetQuery[oppositeBool];
+        if (
+          targetQuery &&
+          (targetQuery.and || targetQuery.or) &&
+          !targetQuery[bool]
+        ) {
+          const oppositeBool = bool === "and" ? "or" : "and";
+          const children = targetQuery[oppositeBool];
 
-        delete targetQuery[oppositeBool];
+          delete targetQuery[oppositeBool];
 
-        targetQuery[bool] = children;
-      }
-    });
+          targetQuery[bool] = children;
+        }
+      })
+    );
   }
 );
 
@@ -1361,29 +1390,31 @@ const handleUpdateCustomListEditorAdvSearchQueryBoolean = validatedHandler(
  */
 const handleMoveCustomListEditorAdvSearchQuery = validatedHandler(
   (state: CustomListEditorState, action): CustomListEditorState => {
-    return produce(state, (draftState) => {
-      const { builderName, id, targetId } = action;
-      const builder = draftState.searchParams.current.advanced[builderName];
-      const { query: currentQuery } = builder;
-      const query = findDescendantQuery(currentQuery, id);
+    return checkSearchModified(
+      produce(state, (draftState) => {
+        const { builderName, id, targetId } = action;
+        const builder = draftState.searchParams.current.advanced[builderName];
+        const { query: currentQuery } = builder;
+        const query = findDescendantQuery(currentQuery, id);
 
-      const newQuery = {
-        ...query,
-        id: newQueryId(),
-      };
+        const newQuery = {
+          ...query,
+          id: newQueryId(),
+        };
 
-      const afterAddQuery = addDescendantQuery(
-        currentQuery,
-        targetId,
-        newQuery,
-        getDefaultBooleanOperator(builderName)
-      );
+        const afterAddQuery = addDescendantQuery(
+          currentQuery,
+          targetId,
+          newQuery,
+          getDefaultBooleanOperator(builderName)
+        );
 
-      const afterRemoveQuery = removeDescendantQuery(afterAddQuery, id);
+        const afterRemoveQuery = removeDescendantQuery(afterAddQuery, id);
 
-      builder.query = afterRemoveQuery;
-      builder.selectedQueryId = targetId;
-    });
+        builder.query = afterRemoveQuery;
+        builder.selectedQueryId = targetId;
+      })
+    );
   }
 );
 
@@ -1399,35 +1430,37 @@ const handleMoveCustomListEditorAdvSearchQuery = validatedHandler(
  */
 const handleRemoveCustomListEditorAdvSearchQuery = validatedHandler(
   (state: CustomListEditorState, action): CustomListEditorState => {
-    return produce(state, (draftState) => {
-      const { builderName, id } = action;
-      const builder = draftState.searchParams.current.advanced[builderName];
-      const { query: currentQuery } = builder;
+    return checkSearchModified(
+      produce(state, (draftState) => {
+        const { builderName, id } = action;
+        const builder = draftState.searchParams.current.advanced[builderName];
+        const { query: currentQuery } = builder;
 
-      const afterRemoveQuery = removeDescendantQuery(currentQuery, id);
+        const afterRemoveQuery = removeDescendantQuery(currentQuery, id);
 
-      if (afterRemoveQuery !== currentQuery) {
-        builder.query = afterRemoveQuery;
+        if (afterRemoveQuery !== currentQuery) {
+          builder.query = afterRemoveQuery;
 
-        // It is possible that removeDescendantQuery removed more than just the one query; for
-        // example, if the removed query was the child of an and/or query, and removing it left only
-        // one other child query, then the remaining child would have been lifted out of the parent,
-        // and the parent would have been deleted as well. For this reason, we can't assume that the
-        // parent of the removed query still exists; we have to find the nearest ancestor of the
-        // removed query that remains in the tree, to make that the new selected query.
+          // It is possible that removeDescendantQuery removed more than just the one query; for
+          // example, if the removed query was the child of an and/or query, and removing it left only
+          // one other child query, then the remaining child would have been lifted out of the parent,
+          // and the parent would have been deleted as well. For this reason, we can't assume that the
+          // parent of the removed query still exists; we have to find the nearest ancestor of the
+          // removed query that remains in the tree, to make that the new selected query.
 
-        const path = findDescendantQueryPath(currentQuery, id);
+          const path = findDescendantQueryPath(currentQuery, id);
 
-        path.pop();
-        path.reverse();
+          path.pop();
+          path.reverse();
 
-        const ancestorId = path.find((id) =>
-          findDescendantQuery(afterRemoveQuery, id)
-        );
+          const ancestorId = path.find((id) =>
+            findDescendantQuery(afterRemoveQuery, id)
+          );
 
-        builder.selectedQueryId = ancestorId;
-      }
-    });
+          builder.selectedQueryId = ancestorId;
+        }
+      })
+    );
   }
 );
 
