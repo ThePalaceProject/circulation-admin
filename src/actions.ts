@@ -956,12 +956,15 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   openCustomListEditor(listId: string) {
-    return (dispatch, getState) =>
-      dispatch({
+    return (dispatch, getState) => {
+      dispatch(this.clear(ActionCreator.CUSTOM_LIST_DETAILS));
+
+      return dispatch({
         type: ActionCreator.OPEN_CUSTOM_LIST_EDITOR,
         id: listId,
         data: getState().editor.customLists.data,
       });
+    };
   }
 
   updateCustomListEditorProperty(name: string, value) {

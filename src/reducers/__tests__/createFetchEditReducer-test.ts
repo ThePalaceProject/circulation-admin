@@ -64,6 +64,17 @@ describe("fetch-edit reducer", () => {
     expect(extraActionReducer(undefined, {})).to.deep.equal(initState);
   });
 
+  it("handles clear", () => {
+    const action = { type: "TEST_FETCH_CLEAR" };
+
+    const state = Object.assign({}, initState, {
+      data: testData,
+      isLoaded: true,
+    });
+
+    expect(reducer(state, action)).to.deep.equal(initState);
+  });
+
   it("handles fetch request", () => {
     const action = { type: "TEST_FETCH_REQUEST", url: "test_url" };
 
