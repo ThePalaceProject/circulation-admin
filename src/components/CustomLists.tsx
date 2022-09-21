@@ -164,7 +164,7 @@ export class CustomLists extends React.Component<
   renderSidebar(): JSX.Element {
     return (
       <CustomListsSidebar
-        lists={this.sortedLists()}
+        lists={this.filteredSortedLists()}
         library={this.props.library}
         identifier={this.props.identifier}
         isLibraryManager={this.context.admin.isLibraryManager(
@@ -265,10 +265,12 @@ export class CustomLists extends React.Component<
     const { editOrCreate, fetchError, lists } = nextProps;
 
     if (!editOrCreate && lists && !fetchError) {
-      if (lists.length === 0) {
+      const filteredSortedLists = this.filteredSortedLists(lists);
+
+      if (filteredSortedLists.length === 0) {
         window.location.href += "/create";
       } else {
-        const firstList = this.sortedLists(lists)[0];
+        const firstList = filteredSortedLists[0];
         window.location.href += "/edit/" + firstList.id;
       }
     }
@@ -313,7 +315,7 @@ export class CustomLists extends React.Component<
     return selectedFilter ? lists.filter(selectedFilter) : lists;
   }
 
-  sortedLists(lists?: CustomListData[]) {
+  filteredSortedLists(lists?: CustomListData[]) {
     lists = lists || this.props.lists || [];
 
     return this.filterLists(lists).sort((a, b) => {

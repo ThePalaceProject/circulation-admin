@@ -305,6 +305,48 @@ describe("CustomLists", () => {
       wrapper.setProps({ lists: listsData });
       expect(window.location.href).to.contain("edit");
       expect(window.location.href).to.contain("1");
+
+      // The create page should open if there are no owned lists.
+
+      const noOwnedListsData = [
+        {
+          id: 1,
+          name: "a list",
+          entry_count: 0,
+          collections: [],
+          is_owner: false,
+          is_shared: true,
+        },
+      ];
+
+      wrapper = mount(
+        <CustomLists
+          csrfToken="token"
+          library="library"
+          lists={undefined}
+          searchResults={searchResults}
+          collections={collections}
+          isFetching={false}
+          isFetchingSearchResults={false}
+          isFetchingMoreSearchResults={false}
+          isFetchingMoreCustomListEntries={false}
+          fetchCustomLists={fetchCustomLists}
+          fetchCustomListDetails={fetchCustomListDetails}
+          saveCustomListEditor={saveCustomListEditor}
+          deleteCustomList={deleteCustomList}
+          openCustomListEditor={openCustomListEditor}
+          loadMoreSearchResults={loadMoreSearchResults}
+          loadMoreEntries={loadMoreEntries}
+          fetchCollections={fetchCollections}
+          fetchLibraries={fetchLibraries}
+          fetchLanes={fetchLanes}
+          fetchLanguages={fetchLanguages}
+          languages={languages}
+        />,
+        { context: { admin: libraryManager } }
+      );
+      wrapper.setProps({ lists: noOwnedListsData });
+      expect(window.location.href).to.contain("create");
     });
 
     it("sorts lists", () => {
@@ -699,7 +741,9 @@ describe("CustomLists", () => {
       );
 
       deleteCustomListFn = (wrapper.instance() as CustomLists).deleteCustomList;
-      listDataSort = (wrapper.instance() as CustomLists).sortedLists(listsData);
+      listDataSort = (wrapper.instance() as CustomLists).filteredSortedLists(
+        listsData
+      );
     });
 
     afterEach(() => {
