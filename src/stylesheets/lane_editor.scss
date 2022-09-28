@@ -93,8 +93,18 @@
     }
 
     .droppable-header {
+      display: flex;
+      justify-content: space-between;
       flex: 0 0 auto;
       overflow: hidden;
+
+
+      .form-group {
+        .form-control {
+          display: inline;
+          width: auto;
+        }
+      }
     }
 
     .droppable {

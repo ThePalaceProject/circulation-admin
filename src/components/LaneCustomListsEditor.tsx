@@ -4,12 +4,16 @@ import { CustomListData } from "../interfaces";
 import AddIcon from "./icons/AddIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
+import EditableInput from "./EditableInput";
 import { Button } from "library-simplified-reusable-components";
 
 export interface LaneCustomListsEditorProps
   extends React.Props<LaneCustomListsEditor> {
   allCustomLists: CustomListData[];
   customListIds: number[];
+  filter?: string;
+  filteredCustomLists?: CustomListData[];
+  changeFilter?: (value: string) => void;
   onUpdate?: (customListIds: number[]) => void;
 }
 
@@ -22,6 +26,11 @@ export default class LaneCustomListsEditor extends React.Component<
   LaneCustomListsEditorProps,
   LaneCustomListsEditorState
 > {
+  static defaultProps = {
+    filter: "owned",
+    filteredCustomLists: [],
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +39,38 @@ export default class LaneCustomListsEditor extends React.Component<
 
     this.onDragStart = this.onDragStart.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  renderFilterSelect(): JSX.Element {
+    const filters = [
+      ["All", ""],
+      ["Owned", "owned"],
+      ["Subscribed", "shared-in"],
+    ];
+
+    return (
+      <fieldset>
+        <legend className="visuallyHidden">Select filter type</legend>
+
+        <EditableInput
+          elementType="select"
+          name="filter"
+          label="Show "
+          value={this.props.filter}
+          onChange={this.props.changeFilter}
+        >
+          {filters.map(([label, value]) => (
+            <option
+              key={value}
+              value={value}
+              aria-selected={this.props.filter === value}
+            >
+              {label}
+            </option>
+          ))}
+        </EditableInput>
+      </fieldset>
+    );
   }
 
   render(): JSX.Element {
@@ -42,6 +83,7 @@ export default class LaneCustomListsEditor extends React.Component<
           <div className="available-lists">
             <div className="droppable-header">
               <h4>Available Lists ({this.listsNotInLane().length})</h4>
+              {this.renderFilterSelect()}
             </div>
             <Droppable
               droppableId="available-lists"
@@ -176,7 +218,7 @@ export default class LaneCustomListsEditor extends React.Component<
 
   listsNotInLane(): CustomListData[] {
     const lists = [];
-    for (const list of this.props.allCustomLists || []) {
+    for (const list of this.props.filteredCustomLists || []) {
       let found = false;
       for (const listId of this.getCustomListIds()) {
         if (list.id === listId) {
