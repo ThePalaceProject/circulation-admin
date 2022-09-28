@@ -40,6 +40,7 @@ type CustomListEditorProps = {
   library: LibraryData;
   listId?: string;
   properties?: CustomListEditorProperties;
+  savedName?: string;
   searchParams?: CustomListEditorSearchParams;
   searchResults?: CollectionData;
   startingTitle?: string;
@@ -89,6 +90,7 @@ export default function CustomListEditor({
   library,
   listId,
   properties,
+  savedName,
   searchParams,
   searchResults,
   startingTitle,
@@ -121,6 +123,10 @@ export default function CustomListEditor({
   }, [listId, isLoaded]);
 
   const readOnly = !isOwner;
+  const opdsFeedUrl =
+    listId && savedName
+      ? `${library?.short_name}/lists/${savedName}/crawlable`
+      : undefined;
 
   return (
     <div className="custom-list-editor">
@@ -281,9 +287,7 @@ export default function CustomListEditor({
           isFetchingSearchResults={isFetchingSearchResults}
           isFetchingMoreSearchResults={isFetchingMoreSearchResults}
           isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
-          opdsFeedUrl={`${library?.short_name}/${
-            name ? `lists/${name}/` : ""
-          }crawlable`}
+          opdsFeedUrl={opdsFeedUrl}
           entryCount={entries.currentTotalCount}
           listId={listId}
           addEntry={addEntry}
