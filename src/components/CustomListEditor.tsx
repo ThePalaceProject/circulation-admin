@@ -123,6 +123,7 @@ export default function CustomListEditor({
   }, [listId, isLoaded]);
 
   const readOnly = !isOwner;
+
   const opdsFeedUrl =
     listId && savedName
       ? `${library?.short_name}/lists/${savedName}/crawlable`
