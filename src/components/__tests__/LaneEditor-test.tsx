@@ -146,7 +146,44 @@ describe("LaneEditor", () => {
     const listsEditor = wrapper.find(LaneCustomListsEditor);
     expect(listsEditor.length).to.equal(1);
     expect(listsEditor.props().allCustomLists).to.deep.equal(customListsData);
+    expect(listsEditor.props().filteredCustomLists).to.deep.equal(
+      customListsData
+    );
     expect(listsEditor.props().customListIds).to.deep.equal([1]);
+  });
+
+  it("filters the lists passed to the custom lists editor's filteredCustomLists prop", () => {
+    const allCustomListsData = [
+      { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
+      { id: 2, name: "list 2", entries: [], is_owner: false, is_shared: true },
+    ];
+
+    wrapper.setProps({
+      customLists: allCustomListsData,
+    });
+
+    let listsEditor;
+
+    listsEditor = wrapper.find(LaneCustomListsEditor);
+
+    // The default filter is owned.
+    expect(listsEditor.props().filteredCustomLists).to.deep.equal([
+      allCustomListsData[0],
+    ]);
+
+    listsEditor.invoke("changeFilter")("shared-in");
+    listsEditor = wrapper.find(LaneCustomListsEditor);
+
+    expect(listsEditor.props().filteredCustomLists).to.deep.equal([
+      allCustomListsData[1],
+    ]);
+
+    listsEditor.invoke("changeFilter")("");
+    listsEditor = wrapper.find(LaneCustomListsEditor);
+
+    expect(listsEditor.props().filteredCustomLists).to.deep.equal(
+      allCustomListsData
+    );
   });
 
   it("deletes lane", () => {

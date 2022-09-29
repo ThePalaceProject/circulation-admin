@@ -22,12 +22,17 @@ describe("LaneCustomListsEditor", () => {
   });
 
   it("renders available lists", () => {
+    const filteredCustomListsData = [
+      allCustomListsData[0],
+      allCustomListsData[2],
+    ];
+
     let wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
-        filter="all"
-        filteredCustomLists={allCustomListsData}
+        filter="owned"
+        filteredCustomLists={filteredCustomListsData}
       />
     );
     let container = wrapper.find(".available-lists");
@@ -37,21 +42,19 @@ describe("LaneCustomListsEditor", () => {
     expect(droppable.length).to.equal(1);
 
     let lists = droppable.find(Draggable);
-    expect(lists.length).to.equal(3);
+    expect(lists.length).to.equal(2);
 
     expect(lists.at(0).text()).to.contain("list 1");
     expect(lists.at(0).text()).to.contain("Items in list: 0");
-    expect(lists.at(1).text()).to.contain("list 2");
-    expect(lists.at(1).text()).to.contain("Items in list: 2");
-    expect(lists.at(2).text()).to.contain("list 3");
-    expect(lists.at(2).text()).to.contain("Items in list: 0");
+    expect(lists.at(1).text()).to.contain("list 3");
+    expect(lists.at(1).text()).to.contain("Items in list: 0");
 
     wrapper = mount(
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
-        customListIds={[1, 3]}
-        filter="all"
-        filteredCustomLists={allCustomListsData}
+        customListIds={[1]}
+        filter="owned"
+        filteredCustomLists={filteredCustomListsData}
       />
     );
 
@@ -64,8 +67,40 @@ describe("LaneCustomListsEditor", () => {
     lists = droppable.find(Draggable);
     expect(lists.length).to.equal(1);
 
-    expect(lists.at(0).text()).to.contain("list 2");
-    expect(lists.at(0).text()).to.contain("Items in list: 2");
+    expect(lists.at(0).text()).to.contain("list 3");
+    expect(lists.at(0).text()).to.contain("Items in list: 0");
+  });
+
+  it("renders filter select", () => {
+    const changeFilter = stub();
+
+    const wrapper = mount(
+      <LaneCustomListsEditor
+        allCustomLists={allCustomListsData}
+        customListIds={[]}
+        filter="owned"
+        filteredCustomLists={allCustomListsData}
+        changeFilter={changeFilter}
+      />
+    );
+
+    const select = wrapper.find('select[name="filter"]');
+
+    expect(select.prop("value")).to.equal("owned");
+
+    const options = select.find("option");
+
+    expect(options.length).to.equal(3);
+
+    expect(options.at(0).prop("value")).to.equal("");
+    expect(options.at(1).prop("value")).to.equal("owned");
+    expect(options.at(2).prop("value")).to.equal("shared-in");
+
+    select.getDOMNode().value = "shared-in";
+    select.simulate("change");
+
+    expect(changeFilter.callCount).to.equal(1);
+    expect(changeFilter.args[0]).to.deep.equal(["shared-in"]);
   });
 
   it("renders current lists", () => {
@@ -73,7 +108,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
       />
     );
@@ -90,7 +125,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[2, 3]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
       />
     );
@@ -115,7 +150,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
       />
     );
@@ -138,7 +173,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
       />
     );
@@ -161,7 +196,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
@@ -208,7 +243,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
       />
     );
@@ -251,7 +286,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
@@ -299,7 +334,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[2]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
@@ -324,7 +359,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
@@ -348,7 +383,7 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
-        filter="all"
+        filter=""
         filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
