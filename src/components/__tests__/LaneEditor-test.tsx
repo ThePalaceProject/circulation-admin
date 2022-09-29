@@ -131,14 +131,14 @@ describe("LaneEditor", () => {
       />
     );
 
-    let input = wrapper.find(EditableInput);
+    let input = wrapper.find(".lane-details").find(EditableInput);
     expect(input.props().checked).to.be.true;
     expect(input.props().label).to.contain("restrictions");
 
     const onChange = input.props().onChange;
     onChange();
     wrapper.update();
-    input = wrapper.find(EditableInput);
+    input = wrapper.find(".lane-details").find(EditableInput);
     expect(input.props().checked).to.be.false;
   });
 

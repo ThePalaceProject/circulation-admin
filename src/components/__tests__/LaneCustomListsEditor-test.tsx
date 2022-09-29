@@ -26,6 +26,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
       />
     );
     let container = wrapper.find(".available-lists");
@@ -48,6 +50,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 3]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
       />
     );
 
@@ -69,6 +73,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
       />
     );
     let container = wrapper.find(".current-lists");
@@ -84,6 +90,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[2, 3]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
       />
     );
 
@@ -107,6 +115,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
       />
     );
 
@@ -128,6 +138,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
       />
     );
 
@@ -149,6 +161,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
     );
@@ -194,6 +208,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
       />
     );
 
@@ -235,6 +251,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
     );
@@ -281,6 +299,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[2]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
     );
@@ -304,6 +324,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1, 2]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
     );
@@ -326,6 +348,8 @@ describe("LaneCustomListsEditor", () => {
       <LaneCustomListsEditor
         allCustomLists={allCustomListsData}
         customListIds={[1]}
+        filter="all"
+        filteredCustomLists={allCustomListsData}
         onUpdate={onUpdate}
       />
     );
