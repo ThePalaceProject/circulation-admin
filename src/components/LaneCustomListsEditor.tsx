@@ -2,6 +2,7 @@ import * as React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { CustomListData } from "../interfaces";
 import AddIcon from "./icons/AddIcon";
+import ShareIcon from "./icons/ShareIcon";
 import TrashIcon from "./icons/TrashIcon";
 import GrabIcon from "./icons/GrabIcon";
 import EditableInput from "./EditableInput";
@@ -117,7 +118,12 @@ export default class LaneCustomListsEditor extends React.Component<
                             >
                               <GrabIcon />
                               <div className="list-info">
-                                <div className="list-name">{list.name}</div>
+                                <div className="list-name">
+                                  {!list.is_owner && (
+                                    <ShareIcon title="This list is shared by another library." />
+                                  )}
+                                  {list.name}
+                                </div>
                                 <div className="list-count">
                                   Items in list: {list.entry_count}
                                 </div>
@@ -181,7 +187,12 @@ export default class LaneCustomListsEditor extends React.Component<
                           >
                             <GrabIcon />
                             <div className="list-info">
-                              <div className="list-name">{list.name}</div>
+                              <div className="list-name">
+                                {!list.is_owner && (
+                                  <ShareIcon title="This list is shared by another library." />
+                                )}
+                                {list.name}
+                              </div>
                               <div className="list-count">
                                 Items in list: {list.entry_count}
                               </div>

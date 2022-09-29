@@ -141,7 +141,7 @@
           }
         }
 
-        svg {
+        > svg {
           margin-top: 6px;
           margin-right: 10px;
         }
@@ -159,6 +159,10 @@
 
         .list-name, .list-id {
           font-weight: bold;
+
+          svg {
+            margin-right: 4px;
+          }
         }
 
         .list-count {
