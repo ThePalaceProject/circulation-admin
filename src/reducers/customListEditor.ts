@@ -717,7 +717,7 @@ const isSearchModified = (state: CustomListEditorState): boolean => {
 };
 
 /**
- * Checks if a the search parameters in a custom list editor state have been modified, and stores
+ * Checks if the search parameters in a custom list editor state have been modified and stores
  * the result in the state.
  *
  * @param state The custom list editor state

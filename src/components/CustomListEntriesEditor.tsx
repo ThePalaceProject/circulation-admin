@@ -276,28 +276,28 @@ const CustomListEntriesEditor = ({
   if (!listId) {
     autoUpdateStatusName = "New";
     autoUpdateStatusDescription =
-      "The system will begin to populate this list using the configured search criteria when it is saved, and will fully populate the list during the first scheduled update that occurs after it has been saved.";
+      "This is a new list. Once the initial search criteria have been saved, the system will begin to populate its entries; however, the list might not be fully populated until the next scheduled update.";
   } else if (isSearchModified) {
     autoUpdateStatusName = "Search criteria modified";
     autoUpdateStatusDescription =
-      "There are unsaved changes to the search criteria for this list. The system will repopulate the list using the new search criteria during the first scheduled update that occurs after it has been saved.";
+      "There are unsaved changes to the search criteria for this list. Once the changes have been saved, the new search criteria will be used to repopulate the list during the next scheduled update.";
   } else {
     if (autoUpdateStatus === "init") {
       autoUpdateStatusName = "Initializing";
       autoUpdateStatusDescription =
-        "This list was created recently. The system has partially populated the list using the configured search criteria, and will fully populate the list during the next scheduled update.";
+        "This list was created recently. The system has partially populated the list using the configured search criteria and will fully populate the list during the next scheduled update.";
     } else if (autoUpdateStatus === "repopulate") {
       autoUpdateStatusName = "Repopulating";
       autoUpdateStatusDescription =
-        "The search criteria for this list were changed recently, but the entries have not yet been updated. The system will repopulate the list using the current search criteria during the next scheduled update.";
+        "The search criteria for this list were changed recently, but the entries have not yet been updated. The new search criteria will be used to repopulate the list during the next scheduled update.";
     } else if (autoUpdateStatus === "updated") {
       autoUpdateStatusName = "Updated";
       autoUpdateStatusDescription =
-        "This list was fully populated during the last scheduled update, using the configured search criteria and the titles that were available at the time. Titles that have been acquired since the last update will be added to the list during the next scheduled update.";
+        "This list was fully populated during the last scheduled update, using the configured search criteria and the titles that were available at the time. New titles matching the criteria will be added to the list during the next scheduled update.";
     } else if (!autoUpdateStatus) {
       autoUpdateStatusName = "Changing to automatic";
       autoUpdateStatusDescription =
-        "This list was populated manually, and is being changed to be updated automatically. The system will repopulate the list using the configured search criteria during the first scheduled update that occurs after it has been saved.";
+        "This list was populated manually, but is being changed to be updated automatically. The configured search criteria will be used to repopulate the list during the next scheduled update.";
     } else {
       autoUpdateStatusName = autoUpdateStatus;
     }
