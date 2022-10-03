@@ -74,6 +74,24 @@ export default class LaneCustomListsEditor extends React.Component<
     );
   }
 
+  renderListInfo(list): JSX.Element {
+    return (
+      <>
+        <GrabIcon />
+        <div className="list-info">
+          <div className="list-name">
+            {!list.is_owner && (
+              <ShareIcon title="This list is shared by another library." />
+            )}
+            {list.name}
+          </div>
+          <div className="list-count">Items in list: {list.entry_count}</div>
+          <div className="list-id">ID-{list.id}</div>
+        </div>
+      </>
+    );
+  }
+
   render(): JSX.Element {
     return (
       <DragDropContext
@@ -116,19 +134,7 @@ export default class LaneCustomListsEditor extends React.Component<
                               style={provided.draggableStyle}
                               {...provided.dragHandleProps}
                             >
-                              <GrabIcon />
-                              <div className="list-info">
-                                <div className="list-name">
-                                  {!list.is_owner && (
-                                    <ShareIcon title="This list is shared by another library." />
-                                  )}
-                                  {list.name}
-                                </div>
-                                <div className="list-count">
-                                  Items in list: {list.entry_count}
-                                </div>
-                                <div className="list-id">ID-{list.id}</div>
-                              </div>
+                              {this.renderListInfo(list)}
                               <div className="links">
                                 <Button
                                   className="inverted"
@@ -185,19 +191,7 @@ export default class LaneCustomListsEditor extends React.Component<
                             style={provided.draggableStyle}
                             {...provided.dragHandleProps}
                           >
-                            <GrabIcon />
-                            <div className="list-info">
-                              <div className="list-name">
-                                {!list.is_owner && (
-                                  <ShareIcon title="This list is shared by another library." />
-                                )}
-                                {list.name}
-                              </div>
-                              <div className="list-count">
-                                Items in list: {list.entry_count}
-                              </div>
-                              <div className="list-id">ID-{list.id}</div>
-                            </div>
+                            {this.renderListInfo(list)}
                             <div className="links">
                               <Button
                                 className="danger"
