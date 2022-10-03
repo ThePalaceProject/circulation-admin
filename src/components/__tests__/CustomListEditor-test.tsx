@@ -247,6 +247,26 @@ describe("CustomListEditor", () => {
     expect(entriesEditor.props().opdsFeedUrl).to.equal(undefined);
   });
 
+  it("sets the feed url in the entries editor to undefined when the saved list name is falsy", () => {
+    wrapper.setProps({
+      savedName: "",
+    });
+
+    let entriesEditor;
+
+    entriesEditor = wrapper.find(CustomListEntriesEditor);
+
+    expect(entriesEditor.props().opdsFeedUrl).to.equal(undefined);
+
+    wrapper.setProps({
+      savedName: null,
+    });
+
+    entriesEditor = wrapper.find(CustomListEntriesEditor);
+
+    expect(entriesEditor.props().opdsFeedUrl).to.equal(undefined);
+  });
+
   it("shows collections", () => {
     const collectionsPanel = wrapper.find("#add-from-collections-panel");
     const inputs = collectionsPanel.find(EditableInput);
