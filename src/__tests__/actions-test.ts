@@ -1037,4 +1037,36 @@ describe("actions", () => {
       expect(fetchArgs[0][1].body).to.equal(formData);
     });
   });
+
+  describe("openCustomListEditor", () => {
+    it("dispatches CUSTOM_LIST_DETAILS_CLEAR and OPEN_CUSTOM_LIST_EDITOR", async () => {
+      const dispatch = stub();
+
+      const getState = () => ({
+        editor: {
+          customLists: {
+            data: {
+              foo: "bar",
+            },
+          },
+        },
+      });
+
+      await actions.openCustomListEditor("list_id")(dispatch, getState);
+
+      expect(dispatch.callCount).to.equal(2);
+
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.CUSTOM_LIST_DETAILS}_${ActionCreator.CLEAR}`
+      );
+
+      expect(dispatch.args[1][0].type).to.equal(
+        ActionCreator.OPEN_CUSTOM_LIST_EDITOR
+      );
+      expect(dispatch.args[1][0].id).to.equal("list_id");
+      expect(dispatch.args[1][0].data).to.deep.equal(
+        getState().editor.customLists.data
+      );
+    });
+  });
 });

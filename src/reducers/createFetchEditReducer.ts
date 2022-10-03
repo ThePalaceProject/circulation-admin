@@ -73,6 +73,9 @@ export default <T>(
           isLoaded: true,
         });
 
+      case `${fetchPrefix}_${ActionCreator.CLEAR}`:
+        return initialState;
+
       default:
         if (extraActions) {
           let manipulateDataFunction;
