@@ -32,6 +32,7 @@ import CustomListsSidebar from "./CustomListsSidebar";
 
 export interface CustomListsStateProps {
   customListEditorProperties?: CustomListEditorProperties;
+  customListEditorSavedName?: string;
   customListEditorSearchParams?: CustomListEditorSearchParams;
   customListEditorEntries?: CustomListEditorEntriesData;
   customListEditorIsLoaded?: boolean;
@@ -184,6 +185,7 @@ export class CustomLists extends React.Component<
       collections: this.collectionsForLibrary(),
       isAutoUpdateEnabled: this.props.customListEditorIsAutoUpdateEnabled,
       properties: this.props.customListEditorProperties,
+      savedName: this.props.customListEditorSavedName,
       searchParams: this.props.customListEditorSearchParams,
       isLoaded: this.props.customListEditorIsLoaded,
       isValid: this.props.customListEditorIsValid,
@@ -436,6 +438,8 @@ function mapStateToProps(state, ownProps) {
   return {
     customListEditorProperties:
       state.editor.customListEditor.properties.current,
+    customListEditorSavedName:
+      state.editor.customListEditor.properties.baseline.name,
     customListEditorSearchParams:
       state.editor.customListEditor.searchParams.current,
     customListEditorEntries: state.editor.customListEditor.entries,

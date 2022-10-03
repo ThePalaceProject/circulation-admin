@@ -33,7 +33,7 @@ export interface CustomListEntriesEditorProps {
   refreshResults?: () => void;
 }
 
-const renderCatalogLink = (book, opdsFeedUrl) => {
+const renderCatalogLink = (book, opdsFeedUrl?) => {
   const { title, url } = book;
 
   if (!url) {
@@ -217,7 +217,7 @@ const CustomListEntriesEditor = ({
                             {getMediumSVG(getMedium(book))}
 
                             <div className="links">
-                              {renderCatalogLink(book, opdsFeedUrl)}
+                              {renderCatalogLink(book)}
 
                               {!readOnly && (
                                 <Button

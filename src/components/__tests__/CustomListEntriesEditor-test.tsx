@@ -304,6 +304,37 @@ describe("CustomListEntriesEditor", () => {
     );
   });
 
+  it("does not include the opds feed url in links to view search results", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        isOwner={true}
+        opdsFeedUrl="opdsFeedUrl"
+        searchResults={searchResultsData}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const results = wrapper.find(".custom-list-search-results Draggable");
+
+    expect(results.at(0).find("CatalogLink").prop("collectionUrl")).to.equal(
+      undefined
+    );
+
+    expect(results.at(1).find("CatalogLink").prop("collectionUrl")).to.equal(
+      undefined
+    );
+
+    expect(results.at(2).find("CatalogLink").prop("collectionUrl")).to.equal(
+      undefined
+    );
+  });
+
   it("renders an SVG icon for each search result", () => {
     const wrapper = mount(
       <CustomListEntriesEditor
@@ -452,6 +483,33 @@ describe("CustomListEntriesEditor", () => {
     expect(entries.at(1).find("CatalogLink").text()).to.equal("View details");
     expect(entries.at(1).find("CatalogLink").prop("bookUrl")).to.equal(
       "/some/urlB"
+    );
+  });
+
+  it("includes the opds feed url in links to view entries", () => {
+    const wrapper = mount(
+      <CustomListEntriesEditor
+        entries={entriesData}
+        isOwner={true}
+        loadMoreSearchResults={loadMoreSearchResults}
+        loadMoreEntries={loadMoreEntries}
+        isFetchingSearchResults={false}
+        isFetchingMoreSearchResults={false}
+        isFetchingMoreCustomListEntries={false}
+        opdsFeedUrl="opdsFeedUrl"
+        entryCount={2}
+      />,
+      { context: fullContext, childContextTypes }
+    );
+
+    const entries = wrapper.find(".custom-list-entries Draggable");
+
+    expect(entries.at(0).find("CatalogLink").prop("collectionUrl")).to.equal(
+      "opdsFeedUrl"
+    );
+
+    expect(entries.at(1).find("CatalogLink").prop("collectionUrl")).to.equal(
+      "opdsFeedUrl"
     );
   });
 
