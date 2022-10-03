@@ -93,8 +93,17 @@
     }
 
     .droppable-header {
+      display: flex;
+      justify-content: space-between;
       flex: 0 0 auto;
       overflow: hidden;
+
+      .form-group {
+        .form-control {
+          display: inline;
+          width: auto;
+        }
+      }
     }
 
     .droppable {
@@ -132,7 +141,7 @@
           }
         }
 
-        svg {
+        > svg {
           margin-top: 6px;
           margin-right: 10px;
         }
@@ -150,6 +159,10 @@
 
         .list-name, .list-id {
           font-weight: bold;
+
+          svg {
+            margin-right: 4px;
+          }
         }
 
         .list-count {

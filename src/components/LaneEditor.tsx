@@ -24,6 +24,7 @@ export interface LaneEditorProps extends React.Props<LaneEditor> {
 }
 
 export interface LaneEditorState {
+  filter: string;
   name: string;
   customListIds: number[];
   inheritParentRestrictions: boolean;
@@ -39,6 +40,7 @@ export default class LaneEditor extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
+      filter: "owned",
       name: this.props.lane && this.props.lane.display_name,
       customListIds: (this.props.lane && this.props.lane.custom_list_ids) || [],
       inheritParentRestrictions:
@@ -46,6 +48,7 @@ export default class LaneEditor extends React.Component<
     };
     this.changeName = this.changeName.bind(this);
     this.changeCustomLists = this.changeCustomLists.bind(this);
+    this.changeFilter = this.changeFilter.bind(this);
     this.changeInheritParentRestrictions = this.changeInheritParentRestrictions.bind(
       this
     );
@@ -54,6 +57,24 @@ export default class LaneEditor extends React.Component<
     this.reset = this.reset.bind(this);
     this.visibilityToggle = this.visibilityToggle.bind(this);
     this.renderInfo = this.renderInfo.bind(this);
+  }
+
+  filterLists(lists?: CustomListData[]) {
+    lists = lists || this.props.customLists || [];
+
+    const { filter } = this.state;
+
+    let selectedFilter = null;
+
+    if (filter === "owned") {
+      selectedFilter = (list) => list.is_owner;
+    } else if (filter === "shared-in") {
+      selectedFilter = (list) => !list.is_owner;
+    } else if (filter === "shared-out") {
+      selectedFilter = (list) => list.is_owner && list.is_shared;
+    }
+
+    return selectedFilter ? lists.filter(selectedFilter) : lists;
   }
 
   render(): JSX.Element {
@@ -116,6 +137,9 @@ export default class LaneEditor extends React.Component<
           <LaneCustomListsEditor
             allCustomLists={this.props.customLists}
             customListIds={this.state.customListIds}
+            filter={this.state.filter}
+            filteredCustomLists={this.filterLists()}
+            changeFilter={this.changeFilter}
             onUpdate={this.changeCustomLists}
             ref={this.laneCustomListsRef}
           />
@@ -203,6 +227,10 @@ export default class LaneEditor extends React.Component<
 
   changeCustomLists(customListIds: number[]) {
     this.setState(Object.assign({}, this.state, { customListIds }));
+  }
+
+  changeFilter(filter) {
+    this.setState({ filter });
   }
 
   changeInheritParentRestrictions() {
