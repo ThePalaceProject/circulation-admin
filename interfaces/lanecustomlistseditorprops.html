@@ -87,8 +87,11 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lanecustomlistseditorprops.html#allcustomlists" class="tsd-kind-icon">all<wbr>Custom<wbr>Lists</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lanecustomlistseditorprops.html#changefilter" class="tsd-kind-icon">change<wbr>Filter</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lanecustomlistseditorprops.html#children" class="tsd-kind-icon">children</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lanecustomlistseditorprops.html#customlistids" class="tsd-kind-icon">custom<wbr>List<wbr>Ids</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lanecustomlistseditorprops.html#filter" class="tsd-kind-icon">filter</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lanecustomlistseditorprops.html#filteredcustomlists" class="tsd-kind-icon">filtered<wbr>Custom<wbr>Lists</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lanecustomlistseditorprops.html#key" class="tsd-kind-icon">key</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lanecustomlistseditorprops.html#onupdate" class="tsd-kind-icon">on<wbr>Update</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lanecustomlistseditorprops.html#ref" class="tsd-kind-icon">ref</a></li>
@@ -105,9 +108,40 @@
 					<div class="tsd-signature tsd-kind-icon">all<wbr>Custom<wbr>Lists<span class="tsd-signature-symbol">:</span> <a href="customlistdata.html" class="tsd-signature-type">CustomListData</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/820b17a/src/components/LaneCustomListsEditor.tsx#L11">src/components/LaneCustomListsEditor.tsx:11</a></li>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/ce8cafe/src/components/LaneCustomListsEditor.tsx#L13">src/components/LaneCustomListsEditor.tsx:13</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="changefilter" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> change<wbr>Filter</h3>
+					<div class="tsd-signature tsd-kind-icon">change<wbr>Filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/ce8cafe/src/components/LaneCustomListsEditor.tsx#L17">src/components/LaneCustomListsEditor.tsx:17</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>value: <span class="tsd-signature-type">string</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="children" class="tsd-anchor"></a>
@@ -126,7 +160,27 @@
 					<div class="tsd-signature tsd-kind-icon">custom<wbr>List<wbr>Ids<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/820b17a/src/components/LaneCustomListsEditor.tsx#L12">src/components/LaneCustomListsEditor.tsx:12</a></li>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/ce8cafe/src/components/LaneCustomListsEditor.tsx#L14">src/components/LaneCustomListsEditor.tsx:14</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="filter" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> filter</h3>
+					<div class="tsd-signature tsd-kind-icon">filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/ce8cafe/src/components/LaneCustomListsEditor.tsx#L15">src/components/LaneCustomListsEditor.tsx:15</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="filteredcustomlists" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> filtered<wbr>Custom<wbr>Lists</h3>
+					<div class="tsd-signature tsd-kind-icon">filtered<wbr>Custom<wbr>Lists<span class="tsd-signature-symbol">:</span> <a href="customlistdata.html" class="tsd-signature-type">CustomListData</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/ce8cafe/src/components/LaneCustomListsEditor.tsx#L16">src/components/LaneCustomListsEditor.tsx:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -147,7 +201,7 @@
 					<div class="tsd-signature tsd-kind-icon">on<wbr>Update<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/820b17a/src/components/LaneCustomListsEditor.tsx#L13">src/components/LaneCustomListsEditor.tsx:13</a></li>
+							<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/ce8cafe/src/components/LaneCustomListsEditor.tsx#L18">src/components/LaneCustomListsEditor.tsx:18</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -203,11 +257,20 @@
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="lanecustomlistseditorprops.html#allcustomlists" class="tsd-kind-icon">all<wbr>Custom<wbr>Lists</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lanecustomlistseditorprops.html#changefilter" class="tsd-kind-icon">change<wbr>Filter</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="lanecustomlistseditorprops.html#children" class="tsd-kind-icon">children</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="lanecustomlistseditorprops.html#customlistids" class="tsd-kind-icon">custom<wbr>List<wbr>Ids</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lanecustomlistseditorprops.html#filter" class="tsd-kind-icon">filter</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lanecustomlistseditorprops.html#filteredcustomlists" class="tsd-kind-icon">filtered<wbr>Custom<wbr>Lists</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="lanecustomlistseditorprops.html#key" class="tsd-kind-icon">key</a>
