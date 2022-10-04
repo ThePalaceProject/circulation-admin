@@ -31,6 +31,7 @@ import ErrorMessage from "./ErrorMessage";
 import CustomListsSidebar from "./CustomListsSidebar";
 
 export interface CustomListsStateProps {
+  customListEditorAutoUpdateStatus?: string;
   customListEditorProperties?: CustomListEditorProperties;
   customListEditorSavedName?: string;
   customListEditorSearchParams?: CustomListEditorSearchParams;
@@ -41,6 +42,7 @@ export interface CustomListsStateProps {
   customListEditorIsSharePending?: boolean;
   customListEditorIsValid?: boolean;
   customListEditorIsModified?: boolean;
+  customListEditorIsSearchModified?: boolean;
   customListEditorIsAutoUpdateEnabled?: boolean;
   lists: CustomListData[];
   listDetails?: CollectionData;
@@ -183,6 +185,7 @@ export class CustomLists extends React.Component<
   renderEditor(): JSX.Element {
     const editorProps = {
       collections: this.collectionsForLibrary(),
+      autoUpdateStatus: this.props.customListEditorAutoUpdateStatus,
       isAutoUpdateEnabled: this.props.customListEditorIsAutoUpdateEnabled,
       properties: this.props.customListEditorProperties,
       savedName: this.props.customListEditorSavedName,
@@ -190,6 +193,7 @@ export class CustomLists extends React.Component<
       isLoaded: this.props.customListEditorIsLoaded,
       isValid: this.props.customListEditorIsValid,
       isModified: this.props.customListEditorIsModified,
+      isSearchModified: this.props.customListEditorIsSearchModified,
       isOwner: this.props.customListEditorIsOwner,
       isShared: this.props.customListEditorIsShared,
       isSharePending: this.props.customListEditorIsSharePending,
@@ -443,6 +447,8 @@ function mapStateToProps(state, ownProps) {
     customListEditorSearchParams:
       state.editor.customListEditor.searchParams.current,
     customListEditorEntries: state.editor.customListEditor.entries,
+    customListEditorAutoUpdateStatus:
+      state.editor.customListEditor.autoUpdateStatus,
     customListEditorIsLoaded: state.editor.customListEditor.isLoaded,
     customListEditorIsOwner: state.editor.customListEditor.isOwner,
     customListEditorIsShared: state.editor.customListEditor.isShared,
@@ -450,6 +456,8 @@ function mapStateToProps(state, ownProps) {
       state.editor.customListEditor.isSharePending,
     customListEditorIsValid: state.editor.customListEditor.isValid,
     customListEditorIsModified: state.editor.customListEditor.isModified,
+    customListEditorIsSearchModified:
+      state.editor.customListEditor.isSearchModified,
     customListEditorIsAutoUpdateEnabled:
       state.editor.customListEditor.isAutoUpdateEnabled,
     lists:

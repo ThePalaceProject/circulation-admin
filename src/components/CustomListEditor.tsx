@@ -23,6 +23,7 @@ import TextWithEditMode from "./TextWithEditMode";
 import ShareIcon from "./icons/ShareIcon";
 
 type CustomListEditorProps = {
+  autoUpdateStatus?: string;
   collections?: AdminCollectionData[];
   entries?: CustomListEditorEntriesData;
   entryPoints?: string[];
@@ -32,6 +33,7 @@ type CustomListEditorProps = {
   isFetchingMoreSearchResults: boolean;
   isLoaded?: boolean;
   isModified?: boolean;
+  isSearchModified?: boolean;
   isOwner?: boolean;
   isShared?: boolean;
   isSharePending?: boolean;
@@ -73,6 +75,7 @@ type CustomListEditorProps = {
 };
 
 export default function CustomListEditor({
+  autoUpdateStatus,
   collections,
   entries,
   entryPoints,
@@ -82,6 +85,7 @@ export default function CustomListEditor({
   isFetchingMoreSearchResults,
   isLoaded,
   isModified,
+  isSearchModified,
   isOwner,
   isShared,
   isSharePending,
@@ -261,6 +265,7 @@ export default function CustomListEditor({
           <CustomListSearch
             autoUpdate={properties.autoUpdate}
             isOwner={isOwner}
+            listId={listId}
             searchParams={searchParams}
             updateAutoUpdate={(value) => updateProperty?.("autoUpdate", value)}
             updateSearchParam={updateSearchParam}
@@ -279,8 +284,10 @@ export default function CustomListEditor({
         </section>
 
         <CustomListEntriesEditor
+          autoUpdateStatus={autoUpdateStatus}
           autoUpdate={properties.autoUpdate}
           isOwner={isOwner}
+          isSearchModified={isSearchModified}
           searchResults={searchResults}
           entries={entries.current}
           loadMoreSearchResults={loadMoreSearchResults}

@@ -57,6 +57,7 @@ describe("CustomListSearch", () => {
         isOwner={true}
         languages={languages}
         library={library}
+        listId="123"
         search={search}
         searchParams={searchParams}
         updateAutoUpdate={updateAutoUpdate}
@@ -221,6 +222,7 @@ describe("CustomListSearch", () => {
         entryPoints={entryPoints}
         languages={languages}
         library={library}
+        listId="123"
         search={search}
         searchParams={searchParams}
         startingTitle="test"
@@ -260,6 +262,7 @@ describe("CustomListSearch", () => {
           isOwner={true}
           languages={languages}
           library={library}
+          listId={null}
           search={search}
           searchParams={searchParams}
           showAutoUpdate={true}
@@ -300,6 +303,38 @@ describe("CustomListSearch", () => {
           isOwner={false}
           languages={languages}
           library={library}
+          listId={null}
+          search={search}
+          searchParams={searchParams}
+          showAutoUpdate={true}
+          updateAutoUpdate={updateAutoUpdate}
+          updateSearchParam={updateSearchParam}
+        />
+      );
+
+      const autoUpdateOptions = wrapper
+        .find(".auto-update")
+        .find(".form-group");
+
+      const autoUpdateOn = autoUpdateOptions.at(0);
+      const autoUpdateOnRadio = autoUpdateOn.find("input");
+
+      expect(autoUpdateOnRadio.props().disabled).to.be.true;
+
+      const autoUpdateOff = autoUpdateOptions.at(1);
+      const autoUpdateOffRadio = autoUpdateOff.find("input");
+
+      expect(autoUpdateOffRadio.props().disabled).to.be.true;
+    });
+
+    it("disables the radio buttons for auto update when listId is not null", () => {
+      wrapper = mount(
+        <CustomListSearch
+          entryPoints={entryPoints}
+          isOwner={false}
+          languages={languages}
+          library={library}
+          listId="123"
           search={search}
           searchParams={searchParams}
           showAutoUpdate={true}
@@ -329,6 +364,7 @@ describe("CustomListSearch", () => {
           entryPoints={entryPoints}
           languages={languages}
           library={library}
+          listId="123"
           search={search}
           searchParams={searchParams}
           showAutoUpdate={true}
