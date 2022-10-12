@@ -875,6 +875,8 @@ const initialStateForList = (
         draftState.searchParams.baseline.sort = order;
         draftState.searchParams.current.sort = order;
       }
+
+      draftState.isSearchModified = false;
     }
 
     draftState.error = error;
@@ -955,23 +957,22 @@ const handleCustomListEditorOpen = (
  *                       to the id of a list that is present in the data.
  * @returns      The next state
  */
-const handleCustomListsLoad = (
-  state: CustomListEditorState,
-  action
-): CustomListEditorState => {
-  if (action.isAfterShare) {
-    // If this is a reload of custom list data following a share operation, we can ignore the
-    // action. The sharing state will be updated by the handler for the CUSTOM_LIST_SHARE_SUCCESS
-    // action.
+const handleCustomListsLoad = validatedHandler(
+  (state: CustomListEditorState, action): CustomListEditorState => {
+    if (action.isAfterShare) {
+      // If this is a reload of custom list data following a share operation, we can ignore the
+      // action. The sharing state will be updated by the handler for the CUSTOM_LIST_SHARE_SUCCESS
+      // action.
 
-    return state;
+      return state;
+    }
+
+    const { id } = state;
+    const { data } = action;
+
+    return initialStateForList(id, data, state);
   }
-
-  const { id } = state;
-  const { data } = action;
-
-  return initialStateForList(id, data, state);
-};
+);
 
 /**
  * Handle the CUSTOM_LIST_DETAILS_LOAD action. This action is fired when a call to the

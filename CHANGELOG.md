@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.1
+
+#### Fixed
+
+- After an auto updating list is saved, the list status is now correctly updated, and the Save button is now correctly disabled.
+
 ### v0.4.0
 
 #### Updated
