@@ -393,6 +393,23 @@ describe("custom list editor reducer", () => {
       expect(nextState).to.equal(state);
     });
 
+    it("sets isSearchModified and isModified to false", () => {
+      const state = {
+        ...initialState,
+        id: 42,
+        isSearchModified: true,
+        isModified: true,
+      };
+
+      const nextState = reducer(state, {
+        type: `${ActionCreator.CUSTOM_LISTS}_${ActionCreator.LOAD}`,
+        data: listData,
+      });
+
+      expect(nextState.isSearchModified).to.equal(false);
+      expect(nextState.isModified).to.equal(false);
+    });
+
     context("when auto update is enabled", () => {
       it("defaults the autoUpdate property to true for a new list", () => {
         const state = {
