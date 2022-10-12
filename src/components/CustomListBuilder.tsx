@@ -9,7 +9,6 @@ export interface Entry extends BookData {
 
 export interface CustomListBuilderProps {
   entries?: Entry[];
-  totalListEntries?: number;
   isFetchingMoreCustomListEntries: boolean;
   isFetchingMoreSearchResults: boolean;
   listId?: string | number;
@@ -24,7 +23,6 @@ export interface CustomListBuilderProps {
 
 export default function CustomListBuilder({
   entries,
-  totalListEntries,
   isFetchingMoreCustomListEntries,
   isFetchingMoreSearchResults,
   listId,
@@ -70,7 +68,6 @@ export default function CustomListBuilder({
           loadMoreSearchResults={loadMoreSearchResults}
         />
         <CustomListEntries
-          totalListEntries={totalListEntries}
           entries={entries}
           saveFormData={saveFormData}
           opdsFeedUrl={opdsFeedUrl}

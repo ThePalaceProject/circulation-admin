@@ -1,5 +1,10 @@
 ## Changelog
 
+### v0.5.17
+
+- Added GET requests for updated lists every time a list is updated which allowed for the removal of the draft state.
+- Added new Jest/RTL tests to support new functionality.
+
 ### v0.5.16
 
 #### Updated

@@ -1,32 +1,29 @@
 import * as React from "react";
-import { CustomListData, SortOrder } from "../interfaces";
+import { CustomListData } from "../interfaces";
 import { Link } from "react-router";
 import SortButtons from "./SortButtons";
 import CustomListInfo from "./CustomListInfo";
 export interface CustomListsSidebarProps {
-  lists: CustomListData[];
-  library: string;
-  identifier?: string;
-  deleteCustomList: (list: CustomListData) => Promise<void>;
   changeSort: () => void;
-  sortOrder: SortOrder;
+  deleteCustomList: (list: CustomListData) => Promise<void>;
+  identifier?: string;
+  isSortedAtoZ: boolean;
+  library: string;
+  lists: CustomListData[];
   resetResponseBodyState: () => void;
 }
 
-/**
- * A child of CustomLists, the CustomListsSidebar is responsible for
- * the List Manager’s left-hand sidebar, which contains the “Create New List”
- * button followed by a preview of the existing lists – sorted A-Z or Z-A –
- * each containing an “Edit” and a “Delete” button.
- */
-
+// A child of CustomLists, the CustomListsSidebar is responsible for
+// the List Manager’s left-hand sidebar, which contains the “Create New List”
+// button followed by a preview of the existing lists – sorted A-Z or Z-A –
+// each containing an “Edit” and a “Delete” button.
 export default function CustomListsSidebar({
-  lists,
-  library,
-  identifier,
-  deleteCustomList,
   changeSort,
-  sortOrder,
+  deleteCustomList,
+  identifier,
+  isSortedAtoZ,
+  library,
+  lists,
   resetResponseBodyState,
 }: CustomListsSidebarProps): JSX.Element {
   const startNewList = () => {
@@ -38,24 +35,24 @@ export default function CustomListsSidebar({
       <h2>List Manager</h2>
       <Link
         className="btn create-button"
-        role="button"
-        to={"/admin/web/lists/" + library + "/create"}
         onClick={startNewList}
+        role="button"
+        to={`/admin/web/lists/${library}/create`}
       >
         Create New List
       </Link>
-      {lists && lists.length > 0 && (
+      {lists && lists.length && (
         <div>
-          <SortButtons changeSort={changeSort} sortOrder={sortOrder} />
+          <SortButtons changeSort={changeSort} isSortedAtoZ={isSortedAtoZ} />
           <ul>
             {lists.map((list, idx) => (
               <CustomListInfo
-                key={idx}
-                idx={idx}
-                list={list}
-                identifier={identifier}
                 deleteCustomList={deleteCustomList}
+                identifier={identifier}
+                idx={idx}
+                key={idx}
                 library={library}
+                list={list}
                 lists={lists}
               />
             ))}

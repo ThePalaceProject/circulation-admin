@@ -2,34 +2,33 @@ import * as React from "react";
 import { LanguagesData, LibraryData } from "../interfaces";
 import CustomListSearchAdvancedOptions from "./CustomListSearchAdvancedOptions";
 import EditableInput from "./EditableInput";
-import { EntryPoint } from "./CustomListSearch";
 
 export interface CustomListSearchFormContentProps {
   entryPoints?: string[];
-  setSelectedEntryPoint?: (entryPoint: EntryPoint) => void;
-  selectedEntryPoint: string;
   languages: LanguagesData;
-  searchTerms: string;
-  setSearchTerms: (value) => void;
-  sortBy: string | null;
-  setSortBy: (value) => void;
-  selectedLanguage: string;
-  setSelectedLanguage: (value) => void;
   library: LibraryData;
+  searchTerms: string;
+  selectedEntryPoint: string;
+  selectedLanguage: string;
+  setSearchTerms: (value) => void;
+  setSelectedEntryPoint?: (entryPoint: string) => void;
+  setSelectedLanguage: (value) => void;
+  setSortBy: (value) => void;
+  sortBy: string | null;
 }
 
 export default function CustomListSearchFormContent({
   entryPoints,
-  setSelectedEntryPoint,
-  selectedEntryPoint,
   languages,
-  searchTerms,
-  setSearchTerms,
-  sortBy,
-  setSortBy,
-  selectedLanguage,
-  setSelectedLanguage,
   library,
+  searchTerms,
+  selectedEntryPoint,
+  selectedLanguage,
+  setSearchTerms,
+  setSelectedEntryPoint,
+  setSelectedLanguage,
+  setSortBy,
+  sortBy,
 }: CustomListSearchFormContentProps): JSX.Element {
   return (
     <>
@@ -40,16 +39,16 @@ export default function CustomListSearchFormContent({
             <span>Select the entry point to search for:</span>
             <div className="entry-points-selection">
               {/* We always want to display "All" as an entrypoint,
-              even if it's not selected on the backend */}
-              {!entryPoints.includes("All") && (
+              even if it's not selected on the backend. */}
+              {!entryPoints.includes("All") && entryPoints.length > 1 && (
                 <EditableInput
+                  checked={selectedEntryPoint === "All"}
                   key="All"
-                  type="radio"
-                  name="entry-points-selection"
-                  checked={"All" === selectedEntryPoint}
                   label="All"
-                  value="All"
+                  name="entry-points-selection"
                   onChange={() => setSelectedEntryPoint("All")}
+                  type="radio"
+                  value="All"
                 />
               )}
               {entryPoints.map((entryPoint) => (
@@ -60,9 +59,7 @@ export default function CustomListSearchFormContent({
                   checked={entryPoint === selectedEntryPoint}
                   label={entryPoint}
                   value={entryPoint}
-                  onChange={() =>
-                    setSelectedEntryPoint(entryPoint as EntryPoint)
-                  }
+                  onChange={() => setSelectedEntryPoint(entryPoint)}
                 />
               ))}
             </div>

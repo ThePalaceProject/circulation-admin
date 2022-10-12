@@ -12,38 +12,35 @@ import CustomListBuilder, { Entry } from "./CustomListBuilder";
 
 export interface CustomListEditorBodyProps {
   collections?: AdminCollectionData[];
-  draftCollections?: AdminCollectionData[];
   entries?: Entry[];
   draftTitle?: string;
-  totalListEntries?: number;
   entryPoints?: string[];
   isFetchingMoreCustomListEntries: boolean;
   isFetchingMoreSearchResults: boolean;
   languages: LanguagesData;
   library: LibraryData;
+  listCollections?: AdminCollectionData[];
   listId?: string | number;
+  loadMoreEntries: (url: string) => Promise<CollectionData>;
+  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
   nextPageUrl?: string;
+  saveFormData: (action: string, books: string | Entry[]) => void;
+  search: (url: string) => Promise<CollectionData>;
   searchResults?: CollectionData;
   showSaveError: boolean;
   startingTitle?: string;
-  loadMoreEntries: (url: string) => Promise<CollectionData>;
-  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  saveFormData: (action: string, books: string | Entry[]) => void;
-  search: (url: string) => Promise<CollectionData>;
-  setDraftCollections: (collections: AdminCollectionData[]) => void;
 }
 
 export default function CustomListEditorBody({
   collections,
-  draftCollections,
   entries,
   draftTitle,
-  totalListEntries,
   entryPoints,
   isFetchingMoreCustomListEntries,
   isFetchingMoreSearchResults,
   languages,
   library,
+  listCollections,
   listId,
   nextPageUrl,
   searchResults,
@@ -53,41 +50,42 @@ export default function CustomListEditorBody({
   loadMoreEntries,
   loadMoreSearchResults,
   search,
-  setDraftCollections,
 }: CustomListEditorBodyProps) {
   const hasCollection = (collection: AdminCollectionData) => {
-    for (const listCollection of draftCollections) {
-      if (listCollection.id === collection.id) {
-        return true;
+    if (listCollections) {
+      for (const listCollection of listCollections) {
+        if (listCollection.id === collection.id) {
+          return true;
+        }
       }
+      return false;
+    } else {
+      return false;
     }
-    return false;
   };
 
   const changeCollection = (collection: AdminCollectionData) => {
     let newCollections;
     if (hasCollection(collection)) {
-      newCollections = draftCollections.filter(
+      newCollections = listCollections.filter(
         (listCollection) => listCollection.id !== collection.id
       );
     } else {
-      newCollections = draftCollections.slice(0);
+      newCollections = listCollections.slice(0);
       newCollections.push(collection);
     }
-    setDraftCollections(newCollections);
+    saveFormData("changeCollections", newCollections);
   };
 
-  const crawlable = `${draftTitle ? `lists/${draftTitle}/` : ""}crawlable`;
+  const crawlable = `${draftTitle && `lists/${draftTitle}/`}crawlable`;
   const opdsFeedUrl = `${library?.short_name}/${crawlable}`;
 
   return (
     <div className="custom-list-editor-body">
       <section>
-        {collections && collections.length > 0 && (
+        {collections && collections.length && (
           <div className="custom-list-filters">
             <Panel
-              headerText="Add from collections"
-              id="add-from-collections"
               content={
                 <div className="collections">
                   <div>
@@ -102,20 +100,20 @@ export default function CustomListEditorBody({
                       checked={hasCollection(collection)}
                       label={collection.name}
                       value={String(collection.id)}
-                      onChange={() => {
-                        changeCollection(collection);
-                      }}
+                      onChange={() => changeCollection(collection)}
                     />
                   ))}
                 </div>
               }
+              headerText="Add from collections"
+              id="add-from-collections"
             />
             <CustomListSearch
-              search={search}
               entryPoints={entryPoints}
-              startingTitle={startingTitle}
-              library={library}
               languages={languages}
+              library={library}
+              search={search}
+              startingTitle={startingTitle}
             />
           </div>
         )}
@@ -131,7 +129,6 @@ export default function CustomListEditorBody({
         isFetchingMoreSearchResults={isFetchingMoreSearchResults}
         isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
         opdsFeedUrl={opdsFeedUrl}
-        totalListEntries={totalListEntries}
         showSaveError={showSaveError}
       />
     </div>

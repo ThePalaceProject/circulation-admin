@@ -13,7 +13,6 @@ export interface Entry extends BookData {
 
 export interface CustomListEntriesProps {
   entries?: Entry[];
-  totalListEntries?: number;
   isFetchingMoreCustomListEntries: boolean;
   listId?: string | number;
   nextPageUrl?: string;
@@ -28,7 +27,6 @@ export interface CustomListEntriesProps {
 
 export default function CustomListEntries({
   entries,
-  totalListEntries,
   isFetchingMoreCustomListEntries,
   listId,
   nextPageUrl,
@@ -46,28 +44,20 @@ export default function CustomListEntries({
     saveFormData("delete");
   };
 
-  const { entryCountInContext, setEntryCountInContext } = React.useContext(
-    ListManagerContext
-  );
+  const { entryCountInContext } = React.useContext(ListManagerContext);
 
   const [entryListDisplay, setEntryListDisplay] = React.useState<string>("");
 
   React.useEffect(() => {
-    setEntryCountInContext((prevState) => ({
-      ...prevState,
-      [listId]: totalListEntries,
-    }));
-  }, [entries.length]);
-
-  React.useEffect(() => {
-    if (totalListEntries) {
+    if (entryCountInContext[listId]) {
+      const totalListEntries = entryCountInContext[listId];
       const displayTotal = `1 - ${entries.length} of ${totalListEntries}`;
       const booksText = totalListEntries === 1 ? "Book" : "Books";
       setEntryListDisplay(`Displaying ${displayTotal} ${booksText}`);
     } else {
       setEntryListDisplay("No books in this list");
     }
-  }, [totalListEntries, entryCountInContext]);
+  }, [entries.length, entryCountInContext]);
 
   const onLoadMore = () => {
     if (entries && !isFetchingMoreCustomListEntries) {

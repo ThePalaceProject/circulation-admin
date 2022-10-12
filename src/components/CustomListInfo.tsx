@@ -7,21 +7,21 @@ import { CustomListData } from "../interfaces";
 import { Link, browserHistory } from "react-router";
 
 export interface ListInfoProps {
+  deleteCustomList: (list: CustomListData) => Promise<void>;
+  identifier?: string;
+  idx?: number;
+  library: string;
   list: CustomListData;
   lists?: CustomListData[];
-  idx?: number;
-  identifier?: string;
-  deleteCustomList: (list: CustomListData) => Promise<void>;
-  library: string;
 }
 
 export default function CustomListInfo({
+  deleteCustomList,
+  identifier,
+  idx,
+  library,
   list,
   lists,
-  idx,
-  identifier,
-  deleteCustomList,
-  library,
 }: ListInfoProps) {
   const { admin, entryCountInContext, titleInContext } = React.useContext(
     ListManagerContext
@@ -30,11 +30,10 @@ export default function CustomListInfo({
   const isActive = identifier === list.id.toString();
   const { id, name, entry_count } = list;
 
-  /**
-   * If user deletes the active list, they will be navigated
-   * to the edit form of the next list down in the sidebar. If there is
-   * no next list, they will be navigated to the create form.
-   */
+  //  If user deletes the active list, they will be navigated
+  //  to the edit form of the next list down in the sidebar. If there is
+  //  no next list, they will be navigated to the create form.
+
   const deleteList = async (list) => {
     await deleteCustomList(list);
     if (isActive) {
@@ -50,10 +49,8 @@ export default function CustomListInfo({
     <li key={id} className={isActive ? "active" : ""}>
       <div className="custom-list-info">
         <p>{titleInContext[String(id)] ? titleInContext[String(id)] : name}</p>
-        {/*
-         * If the number of books in a list is stored in context,
-         * use that number. Otherwise, use entry_count.
-         */}
+        {/* If the number of books in a list is stored in context, use that number.
+        Otherwise, use entry_count. */}
         <p>
           Books in list:{" "}
           {entryCountInContext[String(id)]
