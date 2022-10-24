@@ -29,7 +29,6 @@ export default function CustomListPage({
     ListManagerContext
   );
 
-  console.log("editorStore -->", editorStore);
   const { library, editOrCreate, identifier } = params;
 
   let startingTitle;
