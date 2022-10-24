@@ -1,21 +1,19 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
-import { SortOrder } from "../interfaces";
 export interface SortButtonsProps {
   changeSort: () => void;
-  sortOrder: SortOrder;
+  isSortedAtoZ: boolean;
 }
 
 export default function SortButtons({
   changeSort,
-  sortOrder,
+  isSortedAtoZ,
 }: SortButtonsProps) {
   const sortOrders = ["asc", "desc"];
   return (
     <fieldset className="sort-options">
       <legend className="visuallyHidden">Select list sort type</legend>
       {sortOrders.map((order) => {
-        const isChecked = sortOrder === order;
         return (
           <EditableInput
             key={order}
@@ -23,7 +21,7 @@ export default function SortButtons({
             label={order === "asc" ? "Sort A-Z" : "Sort Z-A"}
             name="sort"
             onChange={changeSort}
-            checked={isChecked}
+            checked={isSortedAtoZ ? order === "asc" : order === "desc"}
             disabled={false}
           />
         );

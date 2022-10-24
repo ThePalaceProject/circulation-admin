@@ -40,9 +40,7 @@ export default function CustomListEditorHeader({
     saveFormTitle(newTitle);
   };
 
-  /**
-   *  Add title to context so sidebar's title can be updated as well.
-   */
+  //  Add title to context so sidebar's title can be updated as well.
   React.useEffect(() => {
     if (draftTitle) {
       setTitleInContext((prevState) => ({

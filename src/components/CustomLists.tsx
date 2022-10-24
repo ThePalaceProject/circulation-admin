@@ -1,64 +1,64 @@
 /* eslint-disable react/no-deprecated */
 import * as React from "react";
-import { Store } from "redux";
-import { connect } from "react-redux";
-import { State } from "../reducers/index";
-import ActionCreator from "../actions";
-import DataFetcher from "opds-web-client/lib/DataFetcher";
 import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
+import { CollectionData, FetchErrorData } from "opds-web-client/lib/interfaces";
+import { connect } from "react-redux";
+import DataFetcher from "opds-web-client/lib/DataFetcher";
+import { Store } from "redux";
+
+import ActionCreator from "../actions";
 import {
+  CollectionData as AdminCollectionData,
+  CollectionsData,
   CustomListData,
   CustomListsData,
-  CollectionsData,
-  CollectionData as AdminCollectionData,
-  LibraryData,
   LaneData,
   LanesData,
   LanguagesData,
-  SortOrder,
+  LibraryData,
 } from "../interfaces";
-import { FetchErrorData, CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditor from "./CustomListEditor";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
-import ErrorMessage from "./ErrorMessage";
 import CustomListsSidebar from "./CustomListsSidebar";
+import ErrorMessage from "./ErrorMessage";
+import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import { State } from "../reducers/index";
 
 export interface CustomListsStateProps {
-  lists: CustomListData[];
-  listDetails?: CollectionData;
   collections: AdminCollectionData[];
-  responseBody?: string;
-  searchResults: CollectionData;
   fetchError?: FetchErrorData;
   isFetching: boolean;
-  isFetchingMoreSearchResults: boolean;
   isFetchingMoreCustomListEntries: boolean;
-  libraries?: LibraryData[];
+  isFetchingMoreSearchResults: boolean;
   lanes?: LaneData[];
   languages?: LanguagesData;
+  libraries?: LibraryData[];
+  listDetails?: CollectionData;
+  lists: CustomListData[];
+  responseBody?: string;
+  searchResults: CollectionData;
 }
 
 export interface CustomListsDispatchProps {
-  fetchLanes: () => Promise<LanesData>;
-  fetchCustomLists: () => Promise<CustomListsData>;
-  fetchCustomListDetails: (listId: string) => Promise<CollectionData>;
-  editCustomList: (data: FormData, listId?: string) => Promise<void>;
   deleteCustomList: (listId: string) => Promise<void>;
-  search: (url: string) => Promise<CollectionData>;
-  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
-  loadMoreEntries: (url: string) => Promise<CollectionData>;
+  editCustomList: (data: FormData, listId?: string) => Promise<void>;
   fetchCollections: () => Promise<CollectionsData>;
-  fetchLibraries: () => void;
+  fetchCustomListDetails: (listId: string) => Promise<CollectionData>;
+  fetchCustomLists: () => Promise<CustomListsData>;
+  fetchLanes: () => Promise<LanesData>;
   fetchLanguages: () => void;
+  fetchLibraries: () => void;
+  loadMoreEntries: (url: string) => Promise<CollectionData>;
+  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  search: (url: string) => Promise<CollectionData>;
 }
 
 export interface CustomListsOwnProps {
-  store?: Store<State>;
-  library: string;
+  csrfToken: string;
   editOrCreate?: string;
   identifier?: string;
-  csrfToken: string;
+  library: string;
   startingTitle?: string;
+  store?: Store<State>;
 }
 
 export interface CustomListsProps
@@ -68,26 +68,28 @@ export interface CustomListsProps
     CustomListsOwnProps {}
 
 export interface CustomListsState {
-  sort: SortOrder;
+  currentList: CollectionData;
   responseBodyState: string;
+  isSortedAtoZ: boolean;
 }
 
-/** Body of the custom lists page, with all a library's lists shown in a left sidebar and
-    a list editor on the right. */
+// Body of the custom lists page, with all a library's lists shown in a left
+// sidebar and a list editor on the right.
 export class CustomLists extends React.Component<
   CustomListsProps,
   CustomListsState
 > {
   constructor(props) {
     super(props);
-    this.editCustomList = this.editCustomList.bind(this);
-    this.deleteCustomList = this.deleteCustomList.bind(this);
     this.changeSort = this.changeSort.bind(this);
+    this.deleteCustomList = this.deleteCustomList.bind(this);
+    this.editCustomList = this.editCustomList.bind(this);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
     this.resetResponseBodyState = this.resetResponseBodyState.bind(this);
     this.state = {
-      sort: "asc",
+      currentList: this.props.listDetails,
       responseBodyState: "",
+      isSortedAtoZ: true,
     };
   }
 
@@ -126,12 +128,12 @@ export class CustomLists extends React.Component<
   renderSidebar(): JSX.Element {
     return (
       <CustomListsSidebar
-        lists={this.sortedLists()}
-        library={this.props.library}
-        identifier={this.props.identifier}
-        deleteCustomList={this.deleteCustomList}
         changeSort={this.changeSort}
-        sortOrder={this.state.sort}
+        deleteCustomList={this.deleteCustomList}
+        identifier={this.props.identifier}
+        isSortedAtoZ={this.state.isSortedAtoZ}
+        library={this.props.library}
+        lists={this.sortedLists()}
         resetResponseBodyState={this.resetResponseBodyState}
       />
     );
@@ -162,7 +164,7 @@ export class CustomLists extends React.Component<
           }
         : {
             entryCount: entryCount,
-            list: this.props.listDetails,
+            list: this.state.currentList,
             listCollections: listCollections,
             listId: this.props.identifier,
           };
@@ -187,6 +189,9 @@ export class CustomLists extends React.Component<
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.listDetails) {
+      this.setState({ currentList: nextProps.listDetails });
+    }
     // If we've fetched lists but we're not on the edit or create page,
     // redirect to the edit page for the first list, or the create page
     // if there are no lists.
@@ -198,7 +203,6 @@ export class CustomLists extends React.Component<
         window.location.href += "/edit/" + firstList.id;
       }
     }
-
     // If we switched lists, fetch the details for the new list.
     if (
       nextProps.identifier &&
@@ -211,12 +215,9 @@ export class CustomLists extends React.Component<
   }
 
   changeSort() {
-    const oldSort = this.state.sort;
-    if (oldSort === "asc") {
-      this.setState({ sort: "desc" });
-    } else {
-      this.setState({ sort: "asc" });
-    }
+    this.state.isSortedAtoZ
+      ? this.setState({ isSortedAtoZ: false })
+      : this.setState({ isSortedAtoZ: true });
   }
 
   sortedLists(lists?: CustomListData[]) {
@@ -224,7 +225,7 @@ export class CustomLists extends React.Component<
     return lists.sort((a, b) => {
       let first = a;
       let second = b;
-      if (this.state.sort === "desc") {
+      if (!this.state.isSortedAtoZ) {
         first = b;
         second = a;
       }
@@ -255,7 +256,13 @@ export class CustomLists extends React.Component<
   }
 
   async editCustomList(data: FormData, listId?: string): Promise<void> {
-    await this.props.editCustomList(data, listId);
+    await this.props
+      .editCustomList(data, listId)
+      .then(() => listId && this.props.fetchCustomListDetails(listId))
+      .then(() => listId && this.props.fetchCustomLists())
+      .then(
+        () => listId && this.setState({ currentList: this.props.listDetails })
+      );
     if (this.props.responseBody) {
       this.setState({ responseBodyState: this.props.responseBody });
     }
@@ -332,17 +339,10 @@ export class CustomLists extends React.Component<
 
 function mapStateToProps(state, ownProps) {
   return {
-    lists:
-      state.editor.customLists &&
-      state.editor.customLists.data &&
-      state.editor.customLists.data.custom_lists,
-    listDetails:
-      state.editor.customListDetails && state.editor.customListDetails.data,
-    isFetchingMoreCustomListEntries:
-      state.editor.customListDetails &&
-      state.editor.customListDetails.isFetchingMoreEntries,
-    responseBody:
-      state.editor.customLists && state.editor.customLists.successMessage,
+    collections:
+      state.editor.collections &&
+      state.editor.collections.data &&
+      state.editor.collections.data.collections,
     fetchError:
       state.editor.customLists.fetchError ||
       state.editor.collections.fetchError,
@@ -354,17 +354,24 @@ function mapStateToProps(state, ownProps) {
       !ownProps.editOrCreate ||
       (state.editor.collection && state.editor.collection.isFetching) ||
       state.editor.collections.isFetching,
-    searchResults: state.editor.collection && state.editor.collection.data,
+    isFetchingMoreCustomListEntries:
+      state.editor.customListDetails &&
+      state.editor.customListDetails.isFetchingMoreEntries,
     isFetchingMoreSearchResults:
       state.editor.collection && state.editor.collection.isFetchingPage,
-    collections:
-      state.editor.collections &&
-      state.editor.collections.data &&
-      state.editor.collections.data.collections,
+    lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
     languages: state.editor.languages && state.editor.languages.data,
     libraries:
       state.editor.libraries.data && state.editor.libraries.data.libraries,
-    lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
+    listDetails:
+      state.editor.customListDetails && state.editor.customListDetails.data,
+    lists:
+      state.editor.customLists &&
+      state.editor.customLists.data &&
+      state.editor.customLists.data.custom_lists,
+    responseBody:
+      state.editor.customLists && state.editor.customLists.successMessage,
+    searchResults: state.editor.collection && state.editor.collection.data,
   };
 }
 
@@ -372,22 +379,22 @@ function mapDispatchToProps(dispatch, ownProps) {
   const fetcher = new DataFetcher({ adapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
-    fetchCustomLists: () =>
-      dispatch(actions.fetchCustomLists(ownProps.library)),
-    fetchCustomListDetails: (listId: string) =>
-      dispatch(actions.fetchCustomListDetails(ownProps.library, listId)),
-    editCustomList: (data: FormData, listId?: string) =>
-      dispatch(actions.editCustomList(ownProps.library, data, listId)),
     deleteCustomList: (listId: string) =>
       dispatch(actions.deleteCustomList(ownProps.library, listId)),
-    search: (url: string) => dispatch(actions.fetchCollection(url)),
-    loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),
-    loadMoreEntries: (url: string) =>
-      dispatch(actions.fetchMoreCustomListEntries(url)),
+    editCustomList: (data: FormData, listId?: string) =>
+      dispatch(actions.editCustomList(ownProps.library, data, listId)),
     fetchCollections: () => dispatch(actions.fetchCollections()),
-    fetchLibraries: () => dispatch(actions.fetchLibraries()),
+    fetchCustomListDetails: (listId: string) =>
+      dispatch(actions.fetchCustomListDetails(ownProps.library, listId)),
+    fetchCustomLists: () =>
+      dispatch(actions.fetchCustomLists(ownProps.library)),
     fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
     fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    fetchLibraries: () => dispatch(actions.fetchLibraries()),
+    loadMoreEntries: (url: string) =>
+      dispatch(actions.fetchMoreCustomListEntries(url)),
+    loadMoreSearchResults: (url: string) => dispatch(actions.fetchPage(url)),
+    search: (url: string) => dispatch(actions.fetchCollection(url)),
   };
 }
 

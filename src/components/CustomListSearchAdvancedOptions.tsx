@@ -35,7 +35,7 @@ export default function CustomListSearchAdvancedOptions({
   );
 
   const getLanguageName = (languageAbbreviation: string): string => {
-    return languages && languages[languageAbbreviation].join("; ");
+    return languages && languages[languageAbbreviation]?.join("; ");
   };
 
   return (

@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {
   LanguagesData,
   LibraryData,
@@ -7,82 +8,67 @@ import {
 import { CollectionData } from "opds-web-client/lib/interfaces";
 import CustomListEditorHeader from "./CustomListEditorHeader";
 import CustomListEditorBody from "./CustomListEditorBody";
-import { Entry } from "./CustomListBuilder";
 import { getMedium } from "opds-web-client/lib/utils/book";
+import { ListManagerContext } from "./ListManagerContext";
+
 export interface CustomListEditorProps {
+  collections?: AdminCollectionData[];
+  editCustomList: (data: FormData, listId?: string) => Promise<void>;
+  entryCount?: number;
+  entryPoints?: string[];
+  isFetchingMoreCustomListEntries: boolean;
+  isFetchingMoreSearchResults: boolean;
   languages: LanguagesData;
   library: LibraryData;
   list?: CollectionData;
-  listId?: string | number;
   listCollections?: AdminCollectionData[];
-  collections?: AdminCollectionData[];
-  responseBody?: string;
-  searchResults?: CollectionData;
-  editCustomList: (data: FormData, listId?: string) => Promise<void>;
-  search: (url: string) => Promise<CollectionData>;
-  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  listId?: string | number;
   loadMoreEntries: (url: string) => Promise<CollectionData>;
-  isFetchingMoreSearchResults: boolean;
-  isFetchingMoreCustomListEntries: boolean;
-  entryPoints?: string[];
-  entryCount?: string;
+  loadMoreSearchResults: (url: string) => Promise<CollectionData>;
+  responseBody?: string;
+  search: (url: string) => Promise<CollectionData>;
+  searchResults?: CollectionData;
   startingTitle?: string;
 }
 
 export default function CustomListEditor({
+  collections,
+  editCustomList,
+  entryCount,
+  entryPoints,
+  isFetchingMoreCustomListEntries,
+  isFetchingMoreSearchResults,
   languages,
   library,
   list,
-  listId,
   listCollections,
-  collections,
-  responseBody,
-  searchResults,
-  editCustomList,
-  search,
-  loadMoreSearchResults,
+  listId,
   loadMoreEntries,
-  isFetchingMoreSearchResults,
-  isFetchingMoreCustomListEntries,
-  entryPoints,
-  entryCount,
+  loadMoreSearchResults,
+  responseBody,
+  search,
+  searchResults,
   startingTitle,
 }: CustomListEditorProps) {
   const [draftTitle, setDraftTitle] = React.useState<string>("");
-  const [draftCollections, setDraftCollections] = React.useState<
-    AdminCollectionData[]
-  >([]);
-  /**
-   * draftEntries is an array of recently added entries.
-   * These entries have been saved to the server,
-   * but the list has not been fetched since. We need a
-   * draftEntries array to display these newly added books
-   * to the user.
-   */
-  const [draftEntries, setDraftEntries] = React.useState<Entry[]>([]);
-  /**
-   * totalListEntries references the total number of entries in the list.
-   * This includes all the currently displayed entries, plus any additional
-   * entries on the server.
-   */
-  const [totalListEntries, setTotalListEntries] = React.useState<number>(0);
-
   const [showSaveError, setShowSaveError] = React.useState<boolean>(false);
+
+  const { setEntryCountInContext } = React.useContext(ListManagerContext);
+
+  React.useEffect(() => {
+    setEntryCountInContext((prevState) => ({
+      ...prevState,
+      [listId]: entryCount,
+    }));
+  }, [entryCount]);
 
   React.useEffect(() => {
     if (list) {
       setDraftTitle(list.title);
-      setDraftCollections(listCollections);
-      setDraftEntries(list.books);
     } else {
-      /**
-       * If the list is new, set the draft state to empty.
-       */
+      // If the list is new, set the draft state to empty.
       setDraftTitle("");
-      setDraftCollections([]);
-      setDraftEntries([]);
     }
-    setTotalListEntries(entryCount ? parseInt(entryCount, 10) : 0);
     setShowSaveError(false);
   }, [list]);
 
@@ -103,11 +89,10 @@ export default function CustomListEditor({
       return;
     }
     setShowSaveError(false);
-    let itemsToAdd;
-    let itemsToDelete;
+    let itemsToAdd = [];
+    let itemsToDelete = [];
     // If the user is adding books to a list from the search results...
     if (action === "add") {
-      itemsToDelete = [];
       // If it is only one book...
       if (typeof data === "string") {
         for (const result of searchResults.books) {
@@ -126,11 +111,8 @@ export default function CustomListEditor({
             ];
           }
         }
-        setDraftEntries((prevState) => [...itemsToAdd, ...prevState]);
-        setTotalListEntries((prevState) => prevState + 1);
       } else {
         // If the user clicked "Add all to list"...
-        itemsToAdd = [];
         for (const result of data) {
           const medium = getMedium(result);
           const language = getLanguage(result);
@@ -143,25 +125,15 @@ export default function CustomListEditor({
             language,
           });
         }
-        setDraftEntries((prevState) => [...itemsToAdd, ...prevState]);
-        setTotalListEntries((prevState) => prevState + itemsToAdd.length);
       }
       // If the user is deleting books from the list...
     } else if (action === "delete") {
-      itemsToAdd = [];
       // If it is only one book...
       if (typeof data === "string") {
-        itemsToDelete = draftEntries.filter((entry) => entry.id === data);
-        setDraftEntries((prevState) =>
-          prevState.filter((entry) => entry.id !== data)
-        );
-        setTotalListEntries((prevState) => prevState - 1);
+        itemsToDelete = list.books.filter((entry) => entry.id === data);
         // If the user clicked "Delete"...
       } else {
-        itemsToDelete = [];
-        draftEntries.forEach((book) => itemsToDelete.push(book));
-        setDraftEntries([]);
-        setTotalListEntries((prevState) => prevState - itemsToDelete.length);
+        list.books.forEach((book) => itemsToDelete.push(book));
       }
     }
     const formData = new (window as any).FormData();
@@ -171,7 +143,10 @@ export default function CustomListEditor({
     formData.append("name", draftTitle);
     formData.append("entries", JSON.stringify(itemsToAdd));
     formData.append("deletedEntries", JSON.stringify(itemsToDelete));
-    const collections = draftCollections.map((collection) => collection.id);
+    const collections =
+      action === "changeCollections"
+        ? data.map((collection) => collection.id)
+        : listCollections.map((collection) => collection.id);
     formData.append("collections", JSON.stringify(collections));
 
     editCustomList(formData, listId && String(listId));
@@ -181,19 +156,19 @@ export default function CustomListEditor({
     <div className="custom-list-editor">
       <CustomListEditorHeader
         draftTitle={draftTitle}
-        setDraftTitle={setDraftTitle}
-        listId={listId && listId}
         editCustomList={editCustomList}
+        listId={listId && listId}
+        setDraftTitle={setDraftTitle}
       />
       <CustomListEditorBody
         collections={collections}
-        totalListEntries={totalListEntries}
         entryPoints={entryPoints}
-        entries={draftEntries}
+        entries={list ? list.books : []}
         isFetchingMoreCustomListEntries={isFetchingMoreCustomListEntries}
         isFetchingMoreSearchResults={isFetchingMoreSearchResults}
         languages={languages}
         library={library}
+        listCollections={listCollections}
         listId={listId}
         nextPageUrl={list && list.nextPageUrl}
         searchResults={searchResults}
@@ -204,8 +179,6 @@ export default function CustomListEditor({
         loadMoreSearchResults={loadMoreSearchResults}
         saveFormData={saveFormData}
         search={search}
-        setDraftCollections={setDraftCollections}
-        draftCollections={draftCollections}
       />
     </div>
   );

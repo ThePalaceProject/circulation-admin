@@ -20,8 +20,7 @@ export interface CustomListPageContext {
   csrfToken: string;
 }
 
-/** Page that shows all lists for a library and allows creating and editing lists. */
-
+// Page that shows all lists for a library and allows creating and editing lists.
 export default function CustomListPage({
   params,
   location,
@@ -29,6 +28,7 @@ export default function CustomListPage({
   const { editorStore, csrfToken } = React.useContext<CustomListPageContext>(
     ListManagerContext
   );
+
   const { library, editOrCreate, identifier } = params;
 
   let startingTitle;
@@ -40,12 +40,12 @@ export default function CustomListPage({
     <div className="custom-list-page">
       <Header libraryProp={library} />
       <CustomLists
-        library={library}
+        csrfToken={csrfToken}
         editOrCreate={editOrCreate}
         identifier={identifier}
-        store={editorStore}
-        csrfToken={csrfToken}
+        library={library}
         startingTitle={startingTitle}
+        store={editorStore}
       />
       <Footer />
     </div>

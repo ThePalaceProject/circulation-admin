@@ -5,28 +5,27 @@ import { LanguagesData, LibraryData } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
 import { CollectionData } from "opds-web-client/lib/interfaces";
 
-export type EntryPoint = "All" | "Book" | "Audio";
 export interface CustomListSearchProps {
-  search: (url: string) => Promise<CollectionData>;
   entryPoints?: string[];
-  startingTitle?: string;
-  library: LibraryData;
   languages: LanguagesData;
+  library: LibraryData;
+  search: (url: string) => Promise<CollectionData>;
+  startingTitle?: string;
 }
 
 export default function CustomListSearch({
-  search,
   entryPoints,
-  startingTitle = "",
-  library,
   languages,
+  library,
+  search,
+  startingTitle = "",
 }: CustomListSearchProps): JSX.Element {
-  const [searchTerms, setSearchTerms] = React.useState(startingTitle);
+  const [searchTerms, setSearchTerms] = React.useState<string>(startingTitle);
   const [sortBy, setSortBy] = React.useState(null);
-  const [selectedLanguage, setSelectedLanguage] = React.useState("all");
-  const [selectedEntryPoint, setSelectedEntryPoint] = React.useState<
-    EntryPoint
-  >("All");
+  const [selectedLanguage, setSelectedLanguage] = React.useState<string>("all");
+  const [selectedEntryPoint, setSelectedEntryPoint] = React.useState<string>(
+    entryPoints.length === 1 ? entryPoints[0] : "All"
+  );
 
   const getSearchQueries = (sortBy: string, language: string) => {
     let query = "";
@@ -45,9 +44,7 @@ export default function CustomListSearch({
     const url = `/${library.short_name}/search?q=${encodedSearchTerms}${searchQueries}`;
     search(url);
   };
-  /**
-   * If there is an existing search term, then search should be called after mounting.
-   */
+  // If there is an existing search term, then search should be called after mounting.
   React.useEffect(() => {
     if (searchTerms.trim()) {
       submitSearch();
@@ -65,18 +62,18 @@ export default function CustomListSearch({
           onSubmit={submitSearch}
           content={
             <CustomListSearchFormContent
-              key="formContent"
               entryPoints={entryPoints}
-              setSelectedEntryPoint={setSelectedEntryPoint}
-              selectedEntryPoint={selectedEntryPoint}
-              searchTerms={searchTerms}
-              setSearchTerms={setSearchTerms}
+              key="formContent"
               languages={languages}
               library={library}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
+              searchTerms={searchTerms}
+              selectedEntryPoint={selectedEntryPoint}
               selectedLanguage={selectedLanguage}
+              setSearchTerms={setSearchTerms}
+              setSelectedEntryPoint={setSelectedEntryPoint}
               setSelectedLanguage={setSelectedLanguage}
+              setSortBy={setSortBy}
+              sortBy={sortBy}
             />
           }
           buttonClass="left-align"
