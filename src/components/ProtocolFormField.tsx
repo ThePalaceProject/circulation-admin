@@ -4,7 +4,7 @@ import ColorPicker from "./ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
 import { SettingData, CustomListsSetting } from "../interfaces";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 export interface ProtocolFormFieldProps {
   setting: SettingData | CustomListsSetting;

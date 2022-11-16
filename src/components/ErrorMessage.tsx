@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Alert } from "react-bootstrap";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 
 export interface ErrorMessageProps {

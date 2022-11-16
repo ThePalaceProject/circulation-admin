@@ -34,10 +34,13 @@ import {
   FeatureFlags,
   SitewideAnnouncementsData,
 } from "./interfaces";
-import { CollectionData } from "opds-web-client/lib/interfaces";
-import DataFetcher from "opds-web-client/lib/DataFetcher";
-import { RequestError, RequestRejector } from "opds-web-client/lib/DataFetcher";
-import BaseActionCreator from "opds-web-client/lib/actions";
+import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
+import {
+  RequestError,
+  RequestRejector,
+} from "@thepalaceproject/web-opds-client/lib/DataFetcher";
+import BaseActionCreator from "@thepalaceproject/web-opds-client/lib/actions";
 import {
   getCustomListEditorFormData,
   getCustomListEditorSearchUrl,

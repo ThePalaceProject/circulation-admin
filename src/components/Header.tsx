@@ -10,7 +10,7 @@ import Admin from "../models/Admin";
 import EditableInput from "./EditableInput";
 import { Link } from "react-router";
 import { Navbar, Nav, NavItem } from "react-bootstrap";
-import { Router } from "opds-web-client/lib/interfaces";
+import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import * as palaceLogoUrl from "../images/PalaceCollectionManagerLogo.svg";

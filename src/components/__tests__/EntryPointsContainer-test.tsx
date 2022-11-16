@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import buildStore from "../../store";
 import EntryPointsContainer from "../EntryPointsContainer";
 import EntryPointsTabs from "../EntryPointsTabs";
-import { LinkData } from "opds-web-client/lib/interfaces";
+import { LinkData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { mockRouterContext } from "./routing";
 
 class DefaultCollection extends React.Component<any, any> {

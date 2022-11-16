@@ -6,7 +6,7 @@ import { shallow } from "enzyme";
 
 import { EntryPointsTabs } from "../EntryPointsTabs";
 import { mockRouterContext } from "./routing";
-import CatalogLink from "opds-web-client/lib/components/CatalogLink";
+import CatalogLink from "@thepalaceproject/web-opds-client/lib/components/CatalogLink";
 
 describe("EntryPointsTabs", () => {
   let wrapper;

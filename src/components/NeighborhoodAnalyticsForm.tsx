@@ -2,7 +2,7 @@ import * as React from "react";
 import EditableInput from "./EditableInput";
 import { Panel } from "library-simplified-reusable-components";
 import { SettingData } from "../interfaces";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 export interface NeighborhoodAnalyticsFormProps {
   setting: SettingData;

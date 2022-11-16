@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Store } from "redux";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { State } from "../reducers/index";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import { Form } from "library-simplified-reusable-components";

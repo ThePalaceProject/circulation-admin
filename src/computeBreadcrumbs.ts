@@ -1,5 +1,8 @@
-import { CollectionData, LinkData } from "opds-web-client/lib/interfaces";
-import { hierarchyComputeBreadcrumbs } from "opds-web-client/lib/components/Breadcrumbs";
+import {
+  CollectionData,
+  LinkData,
+} from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { hierarchyComputeBreadcrumbs } from "@thepalaceproject/web-opds-client/lib/components/Breadcrumbs";
 
 /** Compute the list of breadcrumbs to show above the collection page.
     If the server provides <simplified:breadcrumbs> tags, those will be used

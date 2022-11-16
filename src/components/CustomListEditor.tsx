@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button, Panel } from "library-simplified-reusable-components";
-import { CollectionData } from "opds-web-client/lib/interfaces";
+import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 import {
   AdvancedSearchQuery,

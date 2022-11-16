@@ -5,7 +5,7 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import BookDetails from "../BookDetails";
-import { BookData } from "opds-web-client/lib/interfaces";
+import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 const book: BookData = {
   id: "urn:librarysimplified.org/terms/id/3M%20ID/crrmnr9",

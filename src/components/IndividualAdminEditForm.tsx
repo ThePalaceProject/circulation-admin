@@ -6,7 +6,7 @@ import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
 import Admin from "../models/Admin";
 import { Panel, Form } from "library-simplified-reusable-components";
 
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 export interface IndividualAdminEditFormProps {
   data: IndividualAdminsData;

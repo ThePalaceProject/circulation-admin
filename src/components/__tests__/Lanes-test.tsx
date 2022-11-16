@@ -8,7 +8,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Lanes } from "../Lanes";
 import { Link } from "react-router";
 import ErrorMessage from "../ErrorMessage";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import LaneEditor from "../LaneEditor";
 import Lane from "../Lane";
 import EditableInput from "../EditableInput";

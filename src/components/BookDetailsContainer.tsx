@@ -4,7 +4,7 @@ import * as PropTypes from "prop-types";
 
 import BookDetailsTabContainer from "./BookDetailsTabContainer";
 import BookDetails from "./BookDetails";
-import { BookDetailsContainerProps } from "opds-web-client/lib/components/Root";
+import { BookDetailsContainerProps } from "@thepalaceproject/web-opds-client/lib/components/Root";
 import { State } from "../reducers/index";
 
 export interface BookDetailsContainerContext {
@@ -16,7 +16,7 @@ export interface BookDetailsContainerContext {
 
 /** Wrapper for `BookDetailsTabContainer` that extracts parameters from its context
     and converts them into props. This component is passed into the OPDSCatalog from
-    opds-web-client to replace the body of the book details page. */
+    web-opds-client to replace the body of the book details page. */
 export default class BookDetailsContainer extends React.Component<
   BookDetailsContainerProps,
   {}

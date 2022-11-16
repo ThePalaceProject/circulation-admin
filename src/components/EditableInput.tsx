@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;

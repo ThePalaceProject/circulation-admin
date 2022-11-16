@@ -2,7 +2,7 @@ import * as React from "react";
 import { expect } from "chai";
 import { stub } from "sinon";
 import { mount } from "enzyme";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import AnnouncementsSection from "../AnnouncementsSection";
 import { SitewideAnnouncements } from "../SitewideAnnouncements";
 
