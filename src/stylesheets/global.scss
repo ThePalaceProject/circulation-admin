@@ -87,7 +87,7 @@ button.btn.inverted, a.btn.inverted {
   }
 }
 
-// Overwrite the rule from opds-web-client that sets all top-level divs to 100% height. This works
+// Overwrite the rule from web-opds-client that sets all top-level divs to 100% height. This works
 // around the LastPass extension inserting a top-level div that then takes up the whole screen.
 
 body > div {
@@ -112,7 +112,7 @@ body > div.palace {
   }
 }
 
-// overwriting rules from the opds-web-client for the complaints list view
+// overwriting rules from the web-opds-client for the complaints list view
 .collection .collection-container .collection-main {
   padding-bottom: 50px;
 }

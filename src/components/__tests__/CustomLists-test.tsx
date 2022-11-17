@@ -6,7 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import { CustomLists } from "../CustomLists";
 import ErrorMessage from "../ErrorMessage";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import EditableInput from "../EditableInput";
 import CustomListEditor from "../CustomListEditor";
 import Admin from "../../models/Admin";

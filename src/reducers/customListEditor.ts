@@ -1,6 +1,6 @@
 import produce from "immer";
-import { BookData } from "opds-web-client/lib/interfaces";
-import { getMedium } from "opds-web-client/lib/utils/book";
+import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { getMedium } from "@thepalaceproject/web-opds-client/lib/utils/book";
 import ActionCreator from "../actions";
 import { AdvancedSearchQuery } from "../interfaces";
 

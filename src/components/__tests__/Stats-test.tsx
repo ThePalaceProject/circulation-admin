@@ -6,7 +6,7 @@ import { shallow } from "enzyme";
 
 import { Stats } from "../Stats";
 import ErrorMessage from "../ErrorMessage";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import LibraryStats from "../LibraryStats";
 import { StatsData, LibraryStatsData, LibraryData } from "../../interfaces";
 

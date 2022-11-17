@@ -5,17 +5,17 @@ import { Store } from "redux";
 import { connect } from "react-redux";
 import { State } from "../reducers/index";
 import ActionCreator from "../actions";
-import DataFetcher from "opds-web-client/lib/DataFetcher";
+import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import {
   LaneData,
   LanesData,
   CustomListData,
   CustomListsData,
 } from "../interfaces";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import LaneEditor from "./LaneEditor";
 import LanesSidebar from "./LanesSidebar";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import { Button } from "library-simplified-reusable-components";

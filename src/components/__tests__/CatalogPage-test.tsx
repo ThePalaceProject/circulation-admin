@@ -5,7 +5,7 @@ import { shallow } from "enzyme";
 import * as jsdom from "jsdom";
 
 import CatalogPage from "../CatalogPage";
-import OPDSCatalog from "opds-web-client/lib/components/OPDSCatalog";
+import OPDSCatalog from "@thepalaceproject/web-opds-client/lib/components/OPDSCatalog";
 import Header from "../Header";
 import Footer from "../Footer";
 import WelcomePage from "../WelcomePage";

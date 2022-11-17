@@ -5,7 +5,7 @@ import buildStore from "../store";
 import { FeatureFlags, PathFor } from "../interfaces";
 import { State } from "../reducers/index";
 import Admin from "../models/Admin";
-import PathForProvider from "opds-web-client/lib/components/context/PathForContext";
+import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
 
 export interface ContextProviderProps extends React.Props<{}> {

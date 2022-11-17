@@ -43,8 +43,8 @@ import languages from "./languages";
 import rightsStatuses from "./rightsStatuses";
 import collection, {
   CollectionState,
-} from "opds-web-client/lib/reducers/collection";
-import { CollectionData } from "opds-web-client/lib/interfaces";
+} from "@thepalaceproject/web-opds-client/lib/reducers/collection";
+import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
 import { RegisterLibraryState } from "./createRegisterLibraryReducer";

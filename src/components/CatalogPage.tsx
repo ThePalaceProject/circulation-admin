@@ -1,18 +1,18 @@
 /* eslint-disable */
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-const OPDSCatalog = require("opds-web-client");
+const OPDSCatalog = require("@thepalaceproject/web-opds-client");
 import * as PropTypes from "prop-types";
-import { ActionsProvider } from "opds-web-client/lib/components/context/ActionsContext";
+import { ActionsProvider } from "@thepalaceproject/web-opds-client/lib/components/context/ActionsContext";
 import BookDetailsContainer from "./BookDetailsContainer";
 import Header from "./Header";
 import Footer from "./Footer";
 import computeBreadcrumbs from "../computeBreadcrumbs";
 import EntryPointsContainer from "./EntryPointsContainer";
 import WelcomePage from "./WelcomePage";
-import DataFetcher from "opds-web-client/lib/DataFetcher";
-import ActionsCreator from "opds-web-client/lib/actions";
-import { adapter } from "opds-web-client/lib/OPDSDataAdapter";
+import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
+import ActionsCreator from "@thepalaceproject/web-opds-client/lib/actions";
+import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import title from "../utils/title";
 
 export interface CatalogPageProps extends React.Props<CatalogPage> {

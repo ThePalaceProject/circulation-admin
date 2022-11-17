@@ -10,7 +10,7 @@ import {
   AnnouncementData,
 } from "../interfaces";
 import { Panel, Form } from "library-simplified-reusable-components";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import PairedMenus from "./PairedMenus";
 import AnnouncementsSection from "./AnnouncementsSection";
 

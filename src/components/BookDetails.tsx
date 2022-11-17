@@ -1,7 +1,7 @@
 import * as React from "react";
 import DefaultBookDetails, {
   BookDetailsProps as DefaultBookDetailsProps,
-} from "opds-web-client/lib/components/BookDetails";
+} from "@thepalaceproject/web-opds-client/lib/components/BookDetails";
 
 export default class BookDetails extends DefaultBookDetails<
   DefaultBookDetailsProps

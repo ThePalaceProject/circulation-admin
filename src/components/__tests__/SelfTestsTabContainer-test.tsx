@@ -7,7 +7,7 @@ import buildStore from "../../store";
 
 import { SelfTestsTabContainer } from "../SelfTestsTabContainer";
 import SelfTestsCategory from "../SelfTestsCategory";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../ErrorMessage";
 
 describe("SelfTestsTabContainer", () => {

@@ -6,7 +6,7 @@ import {
   Store,
   Reducer,
 } from "redux";
-import catalogReducers from "opds-web-client/lib/reducers/index";
+import catalogReducers from "@thepalaceproject/web-opds-client/lib/reducers/index";
 import editorReducers, { State } from "./reducers/index";
 
 const thunk = require("redux-thunk").default;
@@ -20,7 +20,7 @@ const composeEnhancers =
   window["__REDUX_DEVTOOLS_EXTENSION_COMPOSE__"] || compose;
 
 /** Build a redux store with reducers specific to the admin interface
-    as well as reducers from opds-web-client. */
+    as well as reducers from web-opds-client. */
 export default function buildStore(initialState?: State): Store<State> {
   return createStore(
     reducers,

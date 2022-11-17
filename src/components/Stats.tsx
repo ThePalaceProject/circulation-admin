@@ -2,10 +2,10 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { FetchErrorData } from "opds-web-client/lib/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { StatsData, LibrariesData, LibraryData } from "../interfaces";
 import { State } from "../reducers/index";
-import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
+import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import LibraryStats from "./LibraryStats";
 

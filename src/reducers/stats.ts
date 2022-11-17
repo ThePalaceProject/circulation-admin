@@ -1,4 +1,4 @@
-import { RequestError } from "opds-web-client/lib/DataFetcher";
+import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import { StatsData } from "../interfaces";
 import ActionCreator from "../actions";
 

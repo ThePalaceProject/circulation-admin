@@ -59,7 +59,7 @@ Webpack will take care of compiling and updating any new changes made locally fo
 
 ## Web Catalog
 
-The Circulation Manager administrative interface relies on the [OPDS Web Catalog](https://github.com/NYPL-Simplified/opds-web-client) as its base React component and application. For more information, please check out that repository.
+The Circulation Manager administrative interface relies on the [OPDS Web Catalog](https://github.com/ThePalaceProject/web-opds-client) as its base React component and application. For more information, please check out that repository.
 
 ## Publishing a New Release
 
