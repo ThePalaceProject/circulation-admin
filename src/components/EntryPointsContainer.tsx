@@ -39,6 +39,7 @@ export default class EntryPointsContainer extends React.Component<
 
     collectionCopy.facetGroups = facetGroups;
     newProps.collection = collectionCopy;
+    newProps.showCirculationLinks = false;
     const collection = React.createElement(Collection, newProps);
 
     return (
