@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.4.2
+
+#### Updated
+
+- The circulation buttons (e.g. Borrow, Read) have been removed from the catalog list view.
+
 ### v0.4.1
 
 #### Fixed
