@@ -10,3 +10,4 @@ tests/browser/reports/*
 selenium-server.log
 docs
 .eslintcache
+tests_output
