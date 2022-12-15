@@ -18,7 +18,7 @@ const {
   responseInterceptor,
 } = require("http-proxy-middleware");
 
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const { URL } = require("url");
 const dev = require("./webpack.dev.config.js");
 

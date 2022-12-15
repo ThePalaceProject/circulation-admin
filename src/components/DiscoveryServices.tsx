@@ -32,7 +32,7 @@ export interface DiscoveryServicesProps
     DiscoveryServicesDispatchProps,
     EditableConfigListOwnProps {}
 
-class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<
+export class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<
   DiscoveryServicesData
 > {}
 

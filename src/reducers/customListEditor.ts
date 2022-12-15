@@ -146,7 +146,7 @@ export const buildAdvSearchQueryString = (
 
 /**
  * Converts a custom list editor state to multipart form data, suitable for posting to the
- * custom_list/{id} endpoint of the CM.
+ * custom_list/\{id\} endpoint of the CM.
  *
  * @param state The custom list editor state
  * @returns     A FormData object that represents the data in the custom list editor

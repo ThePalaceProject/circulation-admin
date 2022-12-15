@@ -10,11 +10,11 @@ import {
 import { convertToHTML } from "draft-convert";
 import { Button } from "library-simplified-reusable-components";
 
-interface EditorFieldState {
+export interface EditorFieldState {
   editorState: EditorState;
 }
 
-interface EditorFieldProps {
+export interface EditorFieldProps {
   defaultContent?: string;
   content: string;
   disabled: boolean;

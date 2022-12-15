@@ -15,7 +15,7 @@
     "tests"
   ],
   "typedocOptions": {
-    "mode": "file",
+    "entryPointStrategy": "expand",
     "out": "docs"
   }
 }
