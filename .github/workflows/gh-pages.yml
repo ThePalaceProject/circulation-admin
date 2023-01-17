@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js 💻
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 12
 
@@ -27,7 +27,7 @@ jobs:
         run: npm run build-docs
 
       - name: Deploy docs to GitHub pages 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
-          BRANCH: gh-pages
-          FOLDER: docs
+          branch: gh-pages
+          folder: docs
