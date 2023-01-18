@@ -22,7 +22,7 @@ import ShareButton from "./ShareButton";
 import TextWithEditMode from "./TextWithEditMode";
 import ShareIcon from "./icons/ShareIcon";
 
-type CustomListEditorProps = {
+export type CustomListEditorProps = {
   autoUpdateStatus?: string;
   collections?: AdminCollectionData[];
   entries?: CustomListEditorEntriesData;

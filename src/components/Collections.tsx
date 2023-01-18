@@ -34,7 +34,7 @@ export interface CollectionsProps
     CollectionsDispatchProps,
     EditableConfigListOwnProps {}
 
-class CollectionEditForm extends ServiceWithRegistrationsEditForm<
+export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
   CollectionsData
 > {}
 

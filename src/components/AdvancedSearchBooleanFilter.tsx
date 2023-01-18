@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import * as classNames from "classnames";
 import * as React from "react";
 import { ConnectDropTarget, useDrop } from "react-dnd";
 import { AdvancedSearchQuery } from "../interfaces";
