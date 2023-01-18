@@ -84,7 +84,7 @@
     "file-loader": "^6.2.0",
     "follow-redirects": "^1.7.0",
     "husky": "^4.3.0",
-    "jsdom": "^9.5.0",
+    "jsdom": "^16.5.0",
     "json-loader": "^0.5.4",
     "lint-staged": "^10.4.0",
     "mini-css-extract-plugin": "1.6.0",
