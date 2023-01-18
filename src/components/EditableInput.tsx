@@ -113,6 +113,7 @@ export default class EditableInput extends React.Component<
       minLength,
       maxLength,
     } = this.props;
+
     return React.createElement(
       elementType || "input",
       {

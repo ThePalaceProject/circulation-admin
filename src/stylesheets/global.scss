@@ -37,6 +37,12 @@
   padding: 0 6px;
 }
 
+.palace .form-control {
+  &::placeholder {
+    color: $medium-dark-gray;
+  }
+}
+
 .btn:not(.inverted), .btn.btn-default {
   background: $blue-dark;
   color: $white;

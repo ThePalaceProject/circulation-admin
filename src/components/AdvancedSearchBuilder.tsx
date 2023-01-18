@@ -20,7 +20,12 @@ export interface AdvancedSearchBuilderProps {
 export const fields = [
   { value: "data_source", label: "distributor" },
   { value: "publisher", label: "publisher" },
-  { value: "published", label: "publication date" },
+  {
+    value: "published",
+    label: "publication date",
+    helpText: "Publication dates must be entered in the format YYYY-MM-DD.",
+    placeholder: "YYYY-MM-DD",
+  },
   { value: "genre", label: "genre" },
   { value: "language", label: "language" },
   { value: "classification", label: "subject" },

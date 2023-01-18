@@ -53,6 +53,8 @@ export default function AdvancedSearchFilterInput({
     addFilter();
   };
 
+  const selectedField = fields.find((field) => field.value === filterKey);
+
   return (
     <form className="advanced-search-filter-input">
       Add filter on:
@@ -89,9 +91,11 @@ export default function AdvancedSearchFilterInput({
         </EditableInput>
 
         <EditableInput
+          description={selectedField.helpText}
           elementType="input"
           type="text"
           optionalText={false}
+          placeholder={selectedField.placeholder}
           ref={valueInput}
           value={filterValue}
           onChange={handleValueChange}
