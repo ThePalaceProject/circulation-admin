@@ -2,14 +2,13 @@ import { expect } from "chai";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import * as jsdom from "jsdom";
 
 import ContextProvider from "../ContextProvider";
 import Admin from "../../models/Admin";
 import * as PropTypes from "prop-types";
 import { stub } from "sinon";
 
-class FakeChild extends React.Component<{}, {}> {}
+class FakeChild extends React.Component<object> {}
 
 describe("ContextProvider", () => {
   let wrapper;
@@ -77,7 +76,7 @@ describe("ContextProvider", () => {
       }
     }
 
-    class Child extends React.Component<{}, {}> {
+    class Child extends React.Component<object> {
       static contextTypes = {
         pathFor: PropTypes.func.isRequired,
       };
@@ -106,7 +105,7 @@ describe("ContextProvider", () => {
     describe("prepareCollectionUrl", () => {
       it("prepares collection url", () => {
         const host = "http://example.com";
-        (jsdom as any).changeURL(window, host + "/test");
+        global.jsdom.reconfigure({ url: host + "/test" });
         const url = host + "/groups/eng/Adult%20Fiction";
         expect(instance.prepareCollectionUrl(url)).to.equal(
           "groups%2Feng%2FAdult%2520Fiction"
@@ -117,7 +116,7 @@ describe("ContextProvider", () => {
     describe("prepareBookUrl", () => {
       it("prepares book url", () => {
         const host = "http://example.com";
-        (jsdom as any).changeURL(window, host + "/test");
+        global.jsdom.reconfigure({ url: host + "/test" });
         const url =
           host + "/library/works/Axis%20360/Axis%20360%20ID/0016201449";
         expect(instance.prepareBookUrl(url)).to.equal(

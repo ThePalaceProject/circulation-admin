@@ -13,10 +13,10 @@ describe("LaneEditor", () => {
   let wrapper;
   let editLane;
   let deleteLane;
-  let showLane;
   let hideLane;
   let findParentOfLane;
   let toggleLaneVisibility;
+  let savedLocation;
 
   const customListsData = [
     { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
@@ -65,6 +65,23 @@ describe("LaneEditor", () => {
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );
+
+    // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
+    // This is a terrible hack. See https://github.com/facebook/jest/issues/890
+
+    savedLocation = window.location;
+
+    const writeableLocation = Object.assign({}, savedLocation, {
+      href: `${savedLocation.href}`,
+    });
+
+    delete window.location;
+
+    window.location = writeableLocation;
+  });
+
+  afterEach(() => {
+    window.location = savedLocation;
   });
 
   it("shows lane name", () => {
@@ -322,12 +339,7 @@ describe("LaneEditor", () => {
   });
 
   it("navigates to edit page after a new lane is created", async () => {
-    // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-    // Start on the create page.
-    Object.defineProperty(window.location, "href", {
-      writable: true,
-      value: "/admin/web/lanes/library/create",
-    });
+    window.location.href = "/admin/web/lanes/library/create";
 
     wrapper = mount(
       <LaneEditor
