@@ -126,6 +126,7 @@ export interface CirculationEventData {
 
 export interface LibraryStatsInventory {
   titles: number;
+  lendable_titles: number;
   self_hosted_titles: number;
   open_access_titles: number;
   licensed_titles: number;

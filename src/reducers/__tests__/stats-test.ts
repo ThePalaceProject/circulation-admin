@@ -6,65 +6,94 @@ import ActionCreator from "../../actions";
 
 describe("stats reducer", () => {
   const statsData: StatsData = {
-    NYPL: {
-      patrons: {
-        total: 3456,
-        with_active_loans: 55,
-        with_active_loans_or_holds: 1234,
-        loans: 100,
-        holds: 2000,
-      },
-      inventory: {
-        titles: 54321,
-        open_access_titles: 500,
-        enumerated_license_titles: 1200,
-        unlimited_license_titles: 785,
-        licenses: 123456,
-        available_licenses: 100000
-      },
+    Palace: {
       collections: {
-        Overdrive: {
-          licensed_titles: 500,
-          enumerated_license_titles: 500,
+        BiblioBoard: {
+          available_licenses: 13306,
+          enumerated_license_titles: 13306,
+          lendable_titles: 13306,
+          licensed_titles: 13306,
+          licenses: 13306,
+          open_access_titles: 0,
+          self_hosted_titles: 0,
+          titles: 13306,
           unlimited_license_titles: 0,
-          open_access_titles: 10,
-          licenses: 350,
-          available_licenses: 100
         },
         Bibliotheca: {
-          licensed_titles: 400,
-          enumerated_license_titles: 400,
-          unlimited_license_titles: 0,
+          available_licenses: 72,
+          enumerated_license_titles: 76,
+          lendable_titles: 64,
+          licensed_titles: 76,
+          licenses: 85,
           open_access_titles: 0,
-          licenses: 300,
-          available_licenses: 170
-        },
-        "Axis 360": {
-          licensed_titles: 300,
-          enumerated_license_titles: 300,
+          self_hosted_titles: 0,
+          titles: 76,
           unlimited_license_titles: 0,
-          open_access_titles: 0,
-          licenses: 280,
-          available_licenses: 260
         },
-        "Open Bookshelf" : {
+        "B&T Axis 360": {
+          available_licenses: 135,
+          enumerated_license_titles: 146,
+          lendable_titles: 134,
+          licensed_titles: 146,
+          licenses: 147,
+          open_access_titles: 0,
+          self_hosted_titles: 0,
+          titles: 146,
+          unlimited_license_titles: 0,
+        },
+        OverDrive: {
+          titles: 500,
+          lendable_titles: 90,
+          enumerated_license_titles: 490,
+          unlimited_license_titles: 0,
+          licensed_titles: 490,
+          open_access_titles: 10,
+          licenses: 350,
+          available_licenses: 100,
+          self_hosted_titles: 0,
+        },
+        "Palace Marketplace": {
+          available_licenses: 75337,
+          enumerated_license_titles: 7753,
+          lendable_titles: 7750,
+          licensed_titles: 7753,
+          licenses: 305725,
+          open_access_titles: 0,
+          self_hosted_titles: 0,
+          titles: 7753,
+          unlimited_license_titles: 0,
+        },
+        "Palace Bookshelf": {
+          available_licenses: 0,
+          enumerated_license_titles: 0,
+          lendable_titles: 7838,
           licensed_titles: 0,
-          enumerated_license_titles: 0,
+          licenses: 0,
+          open_access_titles: 7838,
+          self_hosted_titles: 0,
+          titles: 7838,
           unlimited_license_titles: 0,
-          open_access_titles: 1200,
-          licenses: 0,
-          available_licenses: 0
         },
-        "Manual Protected Collection": {
-          licensed_titles: 785,
-          enumerated_license_titles: 0,
-          unlimited_license_titles: 785,
-          open_access_titles: 0,
-          licenses: 0,
-          available_licenses: 0
-        }
-      }
-    }
+      },
+      inventory: {
+        available_licenses: 88850,
+        enumerated_license_titles: 21281,
+        lendable_titles: 29092,
+        licensed_titles: 21281,
+        licenses: 319263,
+        open_access_titles: 7838,
+        self_hosted_titles: 0,
+        titles: 29119,
+        unlimited_license_titles: 0,
+      },
+      patrons: {
+        holds: 5,
+        loans: 0,
+        total: 132,
+        with_active_loans: 0,
+        with_active_loans_or_holds: 4,
+      },
+    },
   };
 
   const initState: StatsState = {

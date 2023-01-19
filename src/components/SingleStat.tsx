@@ -1,35 +1,33 @@
 import * as React from "react";
 import * as numeral from "numeral";
+import { formatNumber } from "./LibraryStats";
 
 export interface SingleStatProps {
-    label: string;
-    value: number;
-    tooltip?: string;
+  label: string;
+  value: number;
+  tooltip?: string;
 }
 
-export default class SingleStat extends React.Component<SingleStatProps, {}> {
-  render(): JSX.Element {
-    let baseStat = (
-      <li className="single-stat">
-        <span className="stat-value">{this.humanNumber(this.props.value)}</span>
-        <span className="stat-label">{this.props.label}</span>
-      </li>
-    );
-    return !this.props.tooltip ?
-        baseStat : (
-            <span tabIndex={0} data-toggle="tooltip"
-                  title={`(${this.formatNumber(this.props.value)}) ${this.props.tooltip}`}
-            >
-                {baseStat}
-            </span>
-        );
-  }
+const humanNumber = (n: number): string =>
+  n ? numeral(n).format("0.[0]a") : "0";
 
-  humanNumber(n: number): string {
-    return n ? numeral(n).format("0.[0]a") : "0";
-  }
+const SingleStat = (props: SingleStatProps) => {
+  const baseStat = (
+    <li className="single-stat">
+      <span className="stat-value">{humanNumber(props.value)}</span>
+      <span className="stat-label">{props.label}</span>
+    </li>
+  );
+  return !props.tooltip ? (
+    baseStat
+  ) : (
+    <span
+      data-toggle="tooltip"
+      title={`(${formatNumber(props.value)}) ${props.tooltip}`}
+    >
+      {baseStat}
+    </span>
+  );
+};
 
-  formatNumber(n: number): string {
-    return Intl.NumberFormat("en-US").format(n);
-  }
-}
+export default SingleStat;

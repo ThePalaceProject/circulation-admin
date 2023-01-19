@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
@@ -32,59 +33,51 @@ export interface StatsProps
     StatsOwnProps {}
 
 /** Displays statistics about patrons, licenses, and vendors from the server. */
-export class Stats extends React.Component<StatsProps> {
-  render(): JSX.Element {
-    let libraryData: LibraryData | null = null;
-    for (const library of this.props.libraries || []) {
-      if (this.props.library && library.short_name === this.props.library) {
-        libraryData = library;
-      }
-    }
-
-    if (
-      !libraryData &&
-      this.props.libraries &&
-      this.props.libraries.length === 1
-    ) {
-      libraryData = this.props.libraries[0];
-    }
-
-    const libraryStats =
-      this.props.isLoaded &&
-      this.props.stats &&
-      libraryData &&
-      this.props.stats[libraryData.short_name];
-    const totalStats =
-      this.props.isLoaded &&
-      this.props.libraries &&
-      this.props.libraries.length > 1 &&
-      this.props.stats &&
-      this.props.stats["total"];
-
-    return (
-      <>
-        {libraryStats && (
-          <LibraryStats library={libraryData} stats={libraryStats} />
-        )}
-        {totalStats && <LibraryStats stats={totalStats} />}
-        {this.props.fetchError && (
-          <ErrorMessage error={this.props.fetchError} />
-        )}
-
-        {!this.props.isLoaded && <LoadingIndicator />}
-      </>
-    );
-  }
-
-  UNSAFE_componentWillMount() {
-    if (this.props.fetchStats) {
-      this.props.fetchStats();
-    }
-    if (this.props.fetchLibraries()) {
-      this.props.fetchLibraries();
+export const Stats = (props: StatsProps) => {
+  let libraryData: LibraryData | null = null;
+  for (const library of props.libraries || []) {
+    if (props.library && library.short_name === props.library) {
+      libraryData = library;
     }
   }
-}
+
+  if (!libraryData && props.libraries && props.libraries.length === 1) {
+    libraryData = props.libraries[0];
+  }
+
+  const libraryStats =
+    props.isLoaded &&
+    props.stats &&
+    libraryData &&
+    props.stats[libraryData.short_name];
+  const totalStats =
+    props.isLoaded &&
+    props.libraries &&
+    props.libraries.length > 1 &&
+    props.stats &&
+    props.stats["total"];
+
+  useEffect(() => {
+    if (props.fetchStats) {
+      props.fetchStats();
+    }
+    if (props.fetchLibraries()) {
+      props.fetchLibraries();
+    }
+  }, []);
+
+  return (
+    <>
+      {libraryStats && (
+        <LibraryStats library={libraryData} stats={libraryStats} />
+      )}
+      {totalStats && <LibraryStats stats={totalStats} />}
+      {props.fetchError && <ErrorMessage error={props.fetchError} />}
+
+      {!props.isLoaded && <LoadingIndicator />}
+    </>
+  );
+};
 
 function mapStateToProps(state, ownProps) {
   return {
