@@ -13,7 +13,6 @@ const { window } = jsdom;
 
 global["jsdom"] = jsdom;
 global["document"] = window.document;
-global["window"] = window;
 global["HTMLElement"] = window.HTMLElement;
 
 Object.keys(window).forEach((key) => {
