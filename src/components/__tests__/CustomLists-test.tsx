@@ -7,7 +7,6 @@ import { shallow, mount } from "enzyme";
 import { CustomLists } from "../CustomLists";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import EditableInput from "../EditableInput";
 import CustomListEditor from "../CustomListEditor";
 import Admin from "../../models/Admin";
 import { LaneData } from "../../interfaces";
@@ -167,6 +166,8 @@ describe("CustomLists", () => {
   const librarian = new Admin([{ role: "librarian", library: "library" }]);
 
   describe("on mount", () => {
+    let savedLocation;
+
     beforeEach(() => {
       fetchCustomLists = stub();
       openCustomListEditor = stub();
@@ -212,6 +213,23 @@ describe("CustomLists", () => {
         />,
         { context: { admin: libraryManager } }
       );
+
+      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
+      // This is a terrible hack. See https://github.com/facebook/jest/issues/890
+
+      savedLocation = window.location;
+
+      const writeableLocation = Object.assign({}, savedLocation, {
+        href: `${savedLocation.href}`,
+      });
+
+      delete window.location;
+
+      window.location = writeableLocation;
+    });
+
+    afterEach(() => {
+      window.location = savedLocation;
     });
 
     it("fetches libraries and languages", () => {
@@ -240,12 +258,7 @@ describe("CustomLists", () => {
     });
 
     it("navigates to create or edit page on initial load", () => {
-      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-      // Start on the lists page, without edit or create.
-      Object.defineProperty(window.location, "href", {
-        writable: true,
-        value: "/admin/web/lists/library",
-      });
+      window.location.href = "/admin/web/lists/library";
 
       wrapper = mount(
         <CustomLists

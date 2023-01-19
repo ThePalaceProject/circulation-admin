@@ -2,7 +2,6 @@ import { expect } from "chai";
 
 import * as React from "react";
 import { shallow } from "enzyme";
-import * as jsdom from "jsdom";
 
 import CatalogPage from "../CatalogPage";
 import OPDSCatalog from "@thepalaceproject/web-opds-client/lib/components/OPDSCatalog";
@@ -18,7 +17,7 @@ describe("CatalogPage", () => {
   const host = "http://example.com";
 
   beforeEach(() => {
-    (jsdom as any).changeURL(window, host + "/test");
+    global.jsdom.reconfigure({ url: host + "/test" });
     params = {
       collectionUrl: "library/collectionurl",
       bookUrl: "library/bookurl",
