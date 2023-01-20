@@ -6,13 +6,13 @@
     "outDir": "lib",
     "lib": ["es2019", "dom"],
     "rootDir": "src",
-    "types": ["mocha", "node"],
+    "types": ["mocha", "node", "jest", "@testing-library/jest-dom"],
     "jsx": "react"
   },
   "exclude": [
     "lib",
     "node_modules",
-    "tests"
+    "tests/browser"
   ],
   "typedocOptions": {
     "entryPointStrategy": "expand",
