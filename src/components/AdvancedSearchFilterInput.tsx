@@ -73,6 +73,7 @@ export default function AdvancedSearchFilterInput({
       </div>
       <div className="filter-op-value-inputs">
         <EditableInput
+          aria-label="filter operator"
           elementType="select"
           onBlur={handleOpChange}
           onChange={handleOpChange}
@@ -91,6 +92,7 @@ export default function AdvancedSearchFilterInput({
         </EditableInput>
 
         <EditableInput
+          aria-label="filter value"
           description={selectedField.helpText}
           elementType="input"
           type="text"

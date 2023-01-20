@@ -1,6 +1,12 @@
 import * as React from "react";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
+let idCounter = 0;
+
+function generateId(): string {
+  return `editableInput-${idCounter++}`;
+}
+
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   elementType?: string;
   label?: string;
@@ -67,7 +73,9 @@ export default class EditableInput extends React.Component<
         ? "(Optional) "
         : "";
     const descriptionText = description ? description : "";
-    const descriptionStr = `${optionalTextStr}${descriptionText}`;
+    const descriptionStr = `${optionalTextStr}${descriptionText}`.trim();
+    const descriptionId = descriptionStr && generateId();
+
     const errorClass =
       clientError ||
       (error && error.status >= 400 && !this.state.value && required)
@@ -87,15 +95,16 @@ export default class EditableInput extends React.Component<
         {(extraContent || !label) && (
           <div className={extraContent ? "with-add-on" : ""}>
             {extraContent}
-            {!label && this.renderElement()}
+            {!label && this.renderElement(descriptionId)}
           </div>
         )}
-        {descriptionStr.trim() && this.renderDescription(descriptionStr)}
+        {descriptionStr &&
+          this.renderDescription(descriptionId, descriptionStr)}
       </div>
     );
   }
 
-  renderElement() {
+  renderElement(descriptionId?: string) {
     const {
       type,
       elementType,
@@ -138,14 +147,16 @@ export default class EditableInput extends React.Component<
         minLength,
         maxLength,
         ["aria-label"]: this.props["aria-label"],
+        ["aria-describedby"]: descriptionId,
       },
       children
     );
   }
 
-  renderDescription(description: string) {
+  renderDescription(id: string, description: string) {
     return (
       <p
+        id={id}
         className="description"
         dangerouslySetInnerHTML={{ __html: description }}
       />
