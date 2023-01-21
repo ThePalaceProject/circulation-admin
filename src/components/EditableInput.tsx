@@ -1,10 +1,10 @@
 import * as React from "react";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
-let idCounter = 0;
+let descriptonIdCounter = 0;
 
-function generateId(): string {
-  return `editableInput-${idCounter++}`;
+function generateDescriptionId(): string {
+  return `editableInputDescription-${descriptonIdCounter++}`;
 }
 
 export interface EditableInputProps extends React.HTMLProps<EditableInput> {
@@ -74,7 +74,7 @@ export default class EditableInput extends React.Component<
         : "";
     const descriptionText = description ? description : "";
     const descriptionStr = `${optionalTextStr}${descriptionText}`.trim();
-    const descriptionId = descriptionStr && generateId();
+    const descriptionId = descriptionStr && generateDescriptionId();
 
     const errorClass =
       clientError ||
@@ -87,7 +87,7 @@ export default class EditableInput extends React.Component<
           <label className="control-label">
             {type !== "checkbox" && type !== "radio" && label}
             {required && <span className="required-field">Required</span>}
-            {this.renderElement()}
+            {this.renderElement(descriptionId)}
             {type === "checkbox" && label}
             {type === "radio" && <span>{label}</span>}
           </label>
