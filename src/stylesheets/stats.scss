@@ -14,6 +14,11 @@
     &.stat-group-wide {
       grid-column-start: 1;
       grid-column-end: -1;
+
+      .recharts-wrapper {
+        // needed for Rechart ResponsiveContainer to shrink performantly with parent
+        position: absolute !important;
+      }
     }
 
     ul {

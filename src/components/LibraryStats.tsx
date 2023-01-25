@@ -226,6 +226,7 @@ const LibraryStats = (props: LibraryStatsProps) => {
                     interval={0}
                     angle={-45}
                     textAnchor="end"
+                    tick={{ dx: -20 }}
                     padding={{ top: 0, bottom: 0 }}
                     height={175}
                     width={125}
