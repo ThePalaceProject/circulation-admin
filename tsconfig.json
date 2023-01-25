@@ -6,6 +6,10 @@
     "outDir": "lib",
     "lib": ["es2019", "dom"],
     "rootDir": ".",
+    // Mocha and jest are both used in this project. Certain globals are declared by both,
+    // such as describe, it, and test. Setting skipLibCheck to true prevents typescript from
+    // erroring when it sees duplicate variable declarations with different types.
+    "skipLibCheck": true,
     "types": ["mocha", "node", "jest", "@testing-library/jest-dom"],
     "jsx": "react"
   },
