@@ -104,7 +104,7 @@
 <a href="#unit-tests" id="unit-tests" style="color: inherit; text-decoration: none;">
   <h3>Unit Tests</h3>
 </a>
-<p>Like the codebase, all the unit tests are written in Typescript. Tests are written for all React components as well as redux and utility functions, and all can be found in their respective <code>__tests__</code> folders.</p>
+<p>Like the codebase, all the unit tests are written in Typescript. Tests are written for all React components as well as redux and utility functions. Older tests are run using mocha and these tests can be found in the <code>__tests__</code> folders littered throughout the <code>src</code> tree. All new tests should be written using jest and placed in the <code>tests/jest</code> directory. The directory structure in <code>tests/jest</code> should mirror the structure in <code>src</code>.</p>
 <p>To run the tests, perform <code>npm test</code>.</p>
 <p>We use GitHub Actions for continuous integration. Any pull requests submitted must have tests and those tests must pass on GitHub Actions.</p>
 
