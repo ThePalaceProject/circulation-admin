@@ -8,7 +8,7 @@ import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
 
-export interface ContextProviderProps extends React.Props<{}> {
+export interface ContextProviderProps extends React.Props<ContextProvider> {
   csrfToken: string;
   showCircEventsDownload?: boolean;
   settingUp?: boolean;
@@ -23,8 +23,7 @@ export interface ContextProviderProps extends React.Props<{}> {
 /** Provides a redux store, configuration options, and a function to create URLs
     as context to admin interface pages. */
 export default class ContextProvider extends React.Component<
-  ContextProviderProps,
-  {}
+  ContextProviderProps
 > {
   store: Store<State>;
   admin: Admin;
@@ -76,7 +75,7 @@ export default class ContextProvider extends React.Component<
     }
   }
 
-  static childContextTypes: React.ValidationMap<{}> = {
+  static childContextTypes: React.ValidationMap<object> = {
     editorStore: PropTypes.object.isRequired,
     csrfToken: PropTypes.string.isRequired,
     showCircEventsDownload: PropTypes.bool.isRequired,
