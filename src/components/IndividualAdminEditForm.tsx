@@ -44,8 +44,8 @@ export default class IndividualAdminEditForm extends React.Component<
   private systemRef = React.createRef<EditableInput>();
   private managerAllRef = React.createRef<EditableInput>();
   private librarianAllRef = React.createRef<EditableInput>();
-  private libraryManagerRef = React.createRef<EditableInput>();
-  private librarianRef = React.createRef<EditableInput>();
+  private libraryManagerRefs = {};
+  private librarianRefs = {};
 
   constructor(props) {
     super(props);
@@ -71,9 +71,10 @@ export default class IndividualAdminEditForm extends React.Component<
         this.systemRef,
         this.managerAllRef,
         this.librarianAllRef,
-        this.libraryManagerRef,
-        this.librarianRef,
       ].forEach((ref) => clearForm(ref));
+
+      clearForm(this.librarianRefs);
+      clearForm(this.libraryManagerRefs);
     }
   }
 
@@ -197,7 +198,11 @@ export default class IndividualAdminEditForm extends React.Component<
                       type="checkbox"
                       disabled={this.isDisabled("manager", library.short_name)}
                       name={"manager-" + library.short_name}
-                      ref={this.libraryManagerRef}
+                      ref={(componentInstance) => {
+                        this.libraryManagerRefs[
+                          library.short_name
+                        ] = componentInstance;
+                      }}
                       label=""
                       aria-label={`Administrator of ${library.short_name}`}
                       checked={this.isSelected("manager", library.short_name)}
@@ -215,7 +220,11 @@ export default class IndividualAdminEditForm extends React.Component<
                         library.short_name
                       )}
                       name={"librarian-" + library.short_name}
-                      ref={this.librarianRef}
+                      ref={(componentInstance) => {
+                        this.librarianRefs[
+                          library.short_name
+                        ] = componentInstance;
+                      }}
                       label=""
                       aria-label={`User of ${library.short_name}`}
                       checked={this.isSelected("librarian", library.short_name)}

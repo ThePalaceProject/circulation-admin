@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.5.0
+
+#### Updated
+
+- A placeholder and help text are now displayed when the Publication Date field is selected in advanced search.
+
+#### Fixed
+
+- The role checkboxes are now cleared after saving a user.
+
 ### v0.4.2
 
 #### Updated
