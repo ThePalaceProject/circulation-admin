@@ -18,7 +18,6 @@ import sitewideSettings from "./sitewideSettings";
 import loggingServices from "./loggingServices";
 import metadataServices from "./metadataServices";
 import analyticsServices from "./analyticsServices";
-import cdnServices from "./cdnServices";
 import searchServices from "./searchServices";
 import storageServices from "./storageServices";
 import catalogServices from "./catalogServices";
@@ -60,7 +59,6 @@ import {
   LoggingServicesData,
   MetadataServicesData,
   AnalyticsServicesData,
-  CDNServicesData,
   SearchServicesData,
   StorageServicesData,
   CatalogServicesData,
@@ -97,7 +95,6 @@ export interface State {
   loggingServices: FetchEditState<LoggingServicesData>;
   metadataServices: FetchEditState<MetadataServicesData>;
   analyticsServices: FetchEditState<AnalyticsServicesData>;
-  cdnServices: FetchEditState<CDNServicesData>;
   searchServices: FetchEditState<SearchServicesData>;
   storageServices: FetchEditState<StorageServicesData>;
   catalogServices: FetchEditState<CatalogServicesData>;
@@ -145,7 +142,6 @@ export default combineReducers<State>({
   loggingServices,
   metadataServices,
   analyticsServices,
-  cdnServices,
   searchServices,
   storageServices,
   catalogServices,
