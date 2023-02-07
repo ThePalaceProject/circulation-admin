@@ -5,6 +5,7 @@
 #### Updated
 
 - A placeholder and help text are now displayed when the Publication Date field is selected in advanced search.
+- Remove CDN configuration screens.
 
 #### Fixed
 
