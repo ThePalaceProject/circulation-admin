@@ -14,7 +14,6 @@ import {
   SitewideSettingsData,
   MetadataServicesData,
   AnalyticsServicesData,
-  CDNServicesData,
   SearchServicesData,
   DiscoveryServicesData,
   LibraryRegistrationsData,
@@ -99,9 +98,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly ANALYTICS_SERVICES = "ANALYTICS_SERVICES";
   static readonly EDIT_ANALYTICS_SERVICE = "EDIT_ANALYTICS_SERVICE";
   static readonly DELETE_ANALYTICS_SERVICE = "DELETE_ANALYTICS_SERVICE";
-  static readonly CDN_SERVICES = "CDN_SERVICES";
-  static readonly EDIT_CDN_SERVICE = "EDIT_CDN_SERVICE";
-  static readonly DELETE_CDN_SERVICE = "DELETE_CDN_SERVICE";
   static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
   static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
   static readonly DELETE_SEARCH_SERVICE = "DELETE_SEARCH_SERVICE";
@@ -690,29 +686,6 @@ export default class ActionCreator extends BaseActionCreator {
     const url = "/admin/analytics_service/" + identifier;
     return this.postForm(
       ActionCreator.DELETE_ANALYTICS_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchCDNServices() {
-    const url = "/admin/cdn_services";
-    return this.fetchJSON<CDNServicesData>(
-      ActionCreator.CDN_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editCDNService(data: FormData) {
-    const url = "/admin/cdn_services";
-    return this.postForm(ActionCreator.EDIT_CDN_SERVICE, url, data).bind(this);
-  }
-
-  deleteCDNService(identifier: string | number) {
-    const url = "/admin/cdn_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_CDN_SERVICE,
       url,
       null,
       "DELETE"

@@ -9,7 +9,6 @@ import SitewideAnnouncements from "./SitewideAnnouncements";
 import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
 import AnalyticsServices from "./AnalyticsServices";
-import CDNServices from "./CDNServices";
 import SearchServices from "./SearchServices";
 import StorageServices from "./StorageServices";
 import CatalogServices from "./CatalogServices";
@@ -54,7 +53,6 @@ export default class ConfigTabContainer extends TabContainer<
     logging: LoggingServices,
     metadata: MetadataServices,
     analytics: AnalyticsServices,
-    cdn: CDNServices,
     search: SearchServices,
     storage: StorageServices,
     catalogServices: CatalogServices,
@@ -72,7 +70,6 @@ export default class ConfigTabContainer extends TabContainer<
     patronAuth: "Patron Authentication",
     sitewideAnnouncements: "Sitewide Announcements",
     sitewideSettings: "Sitewide Settings",
-    cdn: "CDN",
     catalogServices: "External Catalogs",
   };
 

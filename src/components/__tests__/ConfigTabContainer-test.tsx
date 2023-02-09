@@ -14,7 +14,6 @@ import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
 import AnalyticsServices from "../AnalyticsServices";
-import CDNServices from "../CDNServices";
 import SearchServices from "../SearchServices";
 import StorageServices from "../StorageServices";
 import CatalogServices from "../CatalogServices";
@@ -61,7 +60,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Patron Authentication");
       expect(linkTexts).to.contain("Sitewide Settings");
       expect(linkTexts).to.contain("Metadata");
-      expect(linkTexts).to.contain("CDN");
       expect(linkTexts).to.contain("External Catalogs");
       expect(linkTexts).to.contain("Sitewide Announcements");
     });
@@ -76,7 +74,6 @@ describe("ConfigTabContainer", () => {
         SitewideSettings,
         MetadataServices,
         AnalyticsServices,
-        CDNServices,
         SearchServices,
         StorageServices,
         CatalogServices,
@@ -130,7 +127,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).not.to.contain("Patron Authentication");
       expect(linkTexts).not.to.contain("Sitewide Settings");
       expect(linkTexts).not.to.contain("Metadata");
-      expect(linkTexts).not.to.contain("CDN");
       expect(linkTexts).not.to.contain("External Catalogs");
     });
 
@@ -149,7 +145,6 @@ describe("ConfigTabContainer", () => {
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
-        CDNServices,
         SearchServices,
         StorageServices,
         CatalogServices,
@@ -204,7 +199,6 @@ describe("ConfigTabContainer", () => {
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
-        CDNServices,
         SearchServices,
         StorageServices,
         CatalogServices,

@@ -364,12 +364,6 @@ export interface AnalyticsServicesData extends ServicesData {
   analytics_services: AnalyticsServiceData[];
 }
 
-export interface CDNServiceData extends ServiceData {}
-
-export interface CDNServicesData extends ServicesData {
-  cdn_services: CDNServiceData[];
-}
-
 export interface SearchServiceData extends ServiceData {}
 
 export interface SearchServicesData extends ServicesData {
