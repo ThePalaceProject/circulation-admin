@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LibraryStatsData, LibraryData } from "../interfaces";
+import { LibraryStatistics } from "../interfaces";
 import {
   Bar,
   BarChart,
@@ -12,9 +12,21 @@ import DefaultTooltipContent from "recharts/lib/component/DefaultTooltipContent"
 import SingleStat from "./SingleStat";
 
 export interface LibraryStatsProps {
-  stats: LibraryStatsData;
-  library?: LibraryData;
+  stats: LibraryStatistics;
+  library?: string;
 }
+
+const inventoryKeyToLabelMap = {
+  titles: "Title Count",
+  lendable: "Lendable Titles",
+  openAccess: "Open Access Titles",
+  licensed: "Licensed Titles",
+  unlimitedLicense: "Unlimited License Titles",
+  meteredLicense: "Metered License Titles",
+  meteredLicensesOwned: "Metered Licenses Owned",
+  meteredLicensesAvailable: "Metered Licenses Available",
+  selfHosted: "Self-Hosted Titles",
+};
 
 export const formatNumber = (n: number | string | null): string => {
   // Format numbers using US conventions.
@@ -29,200 +41,185 @@ export const formatNumber = (n: number | string | null): string => {
     value = "";
   }
   return value;
-  // return !isNaN(Number(n))
-  //   ? Intl.NumberFormat("en-US").format(n)
-  //   : n === String(n)
-  //   ? n
-  //   : ""
-  // ;
+};
+
+type chartTooltipData = {
+  dataKey: string;
+  name: string;
+  value: number;
+  color: string;
 };
 
 /** Displays statistics about patrons, licenses, and collections from the server,
  for a single library or all libraries the admin has access to. */
 const LibraryStats = (props: LibraryStatsProps) => {
-  const labeledCollectionCounts =
+  const {
+    stats: {
+      name: libraryName,
+      key: libraryKey,
+      collections,
+      inventorySummary: inventory,
+      patronStatistics: patrons,
+    },
+    library,
+  } = props;
+
+  const chartItems =
     props.stats &&
     props.stats.collections &&
-    Object.entries(props.stats.collections).reduce((acc, [k, v]) => {
-      acc[k] = {
-        "Title Count": v.titles,
-        "Lendable Titles": v.lendable_titles,
-        "Open Access Titles": v.open_access_titles,
-        "Licensed Titles": v.licensed_titles,
-        "Unlimited License Titles": v.unlimited_license_titles,
-        "Enumerated License Titles": v.enumerated_license_titles,
-        "Enumerated Licenses Owned": v.licenses,
-        "Enumerated Licenses Available": v.available_licenses,
-        "Self-Hosted Titles": v.self_hosted_titles,
-      };
+    collections
+      .map(({ name, inventory }) => ({ name, ...inventory }))
+      .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
 
-      return acc;
-    }, {});
   /* Customize the Rechart tooltip to provide additional information */
   const CustomTooltip = (props) => {
     const { active, payload, label: collection } = props;
     if (!active) return null;
 
-    const color = "#A0A0A0";
-    const nonZeroPayload = payload.filter((entry) => entry.value > 0);
-    const payloadKeys = nonZeroPayload.map((entry) => entry.name);
-    const addedPayload = Object.entries(labeledCollectionCounts[collection])
-      .map(([name, value]) => {
-        return { name, value, color };
-      })
-      .filter(({ name }) => {
-        return !payloadKeys.includes(name);
-      });
+    // Nab inventory data from one of the chart payload objects.
+    const chartInventory = payload[0].payload;
+    const aboveTheLineColor = "#030303";
+    const belowTheLineColor = "#A0A0A0";
+    const aboveTheLine: chartTooltipData[] = [
+      {
+        dataKey: "titles",
+        name: inventoryKeyToLabelMap.titles,
+        value: chartInventory.titles,
+      },
+      {
+        dataKey: "lendable",
+        name: inventoryKeyToLabelMap.lendable,
+        value: chartInventory.lendable,
+      },
+      ...payload.filter(({ value }) => value > 0),
+    ].map((entry) => ({ ...entry, color: aboveTheLineColor }));
+    const aboveTheLineKeys = [
+      "name",
+      ...aboveTheLine.map(({ dataKey }) => dataKey),
+    ];
+    const belowTheLine = Object.entries(chartInventory)
+      .filter(([key]) => !aboveTheLineKeys.includes(key))
+      .map(([key, value]) => ({
+        dataKey: key,
+        name: inventoryKeyToLabelMap[key],
+        value,
+        color: belowTheLineColor,
+      }));
     const newPayload = [
-      ...nonZeroPayload,
+      ...aboveTheLine,
       {}, // blank line
-      { value: ">>> Additional Information <<<", color },
-      ...addedPayload,
+      { value: ">>> Additional Information <<<", color: belowTheLineColor },
+      ...belowTheLine,
     ];
 
-    // we render the default, but with our overridden payload
+    // We render the default, but with our overridden payload.
     return <DefaultTooltipContent {...props} payload={newPayload} />;
   };
-  const collectionCounts =
-    props.stats &&
-    props.stats.collections &&
-    Object.keys(props.stats.collections).map((collection) => {
-      const data = props.stats.collections[collection];
-      return {
-        label: collection,
-        "Enumerated License Titles": data.enumerated_license_titles,
-        "Unlimited License Titles": data.unlimited_license_titles,
-        "Open Access Titles": data.open_access_titles,
-      };
-    });
 
   return (
     <div className="library-stats">
-      {props.library ? (
-        <h2>{props.library.name || props.library.short_name} Statistics</h2>
+      {library ? (
+        <h2>{libraryName || libraryKey} Statistics</h2>
       ) : (
         <h2>Statistics for All Libraries</h2>
       )}
-      {props.stats && (
-        <ul className="stats">
-          {props.stats.patrons.total > 0 && (
-            <li className="stat-group">
-              <h3>
-                <span className="stat-grouping-label">Patrons</span>
-              </h3>
-              <ul>
-                <SingleStat
-                  label="Total Patrons"
-                  value={props.stats.patrons.total}
-                  tooltip="Total number of patrons."
-                />
-                <SingleStat
-                  label="Patrons With Active Loans"
-                  value={props.stats.patrons.with_active_loans}
-                  tooltip="Number of patron with at least one active loan."
-                />
-                <SingleStat
-                  label="Patrons With Active Loans or Holds"
-                  value={props.stats.patrons.with_active_loans_or_holds}
-                  tooltip="Number of patrons with at least one active loan or at least one hold."
-                />
-              </ul>
-            </li>
-          )}
-          {props.stats.patrons.total > 0 && (
-            <li className="stat-group">
-              <h3>
-                <span className="stat-grouping-label">Circulation</span>
-              </h3>
-              <ul>
-                <SingleStat
-                  label="Active Loans"
-                  value={props.stats.patrons.loans}
-                  tooltip="Total number of active loans for all patrons."
-                />
-                <SingleStat
-                  label="Active Holds"
-                  value={props.stats.patrons.holds}
-                  tooltip="Total number of active holds for all patrons."
-                />
-              </ul>
-            </li>
-          )}
-          <li className="stat-group">
-            <h3>
-              <span className="stat-grouping-label">Inventory</span>
-            </h3>
-            <ul>
-              <SingleStat
-                label="Titles"
-                value={props.stats.inventory.titles}
-                tooltip="Total number of titles."
-              />
-              <SingleStat
-                label="Enumerated license titles"
-                value={props.stats.inventory.enumerated_license_titles}
-                tooltip="Number of titles for which a specific number of licenses is allocated."
-              />
-              <SingleStat
-                label="Unlimited license titles"
-                value={props.stats.inventory.unlimited_license_titles}
-                tooltip="Number of titles for which there is no limit on the number of licenses."
-              />
-              <SingleStat
-                label="Open access titles"
-                value={props.stats.inventory.open_access_titles}
-                tooltip="Number of titles for which there are no limits on use."
-              />
-              <SingleStat
-                label="Self-hosted titles"
-                value={props.stats.inventory.self_hosted_titles}
-                tooltip="Number of titles hosted locally."
-              />
-            </ul>
-          </li>
-          <li className="stat-group">
-            <h3>
-              <span className="stat-grouping-label">Enumerated Licenses</span>
-            </h3>
-            <ul>
-              <SingleStat
-                label="Enumerated license titles"
-                value={props.stats.inventory.enumerated_license_titles}
-                tooltip="Number of titles for which a specific number of licenses is allocated."
-              />
-            </ul>
-            {props.stats.inventory.enumerated_license_titles > 0 && (
-              <ul>
-                <SingleStat
-                  label="Total Licenses"
-                  value={props.stats.inventory.licenses}
-                  tooltip="Total number of licenses allocated for those titles for which licenses are counted."
-                />
-                <SingleStat
-                  label="Available Licenses"
-                  value={props.stats.inventory.available_licenses}
-                  tooltip="Total number of allocated licenses that are currently available."
-                />
-              </ul>
-            )}
-          </li>
-          {collectionCounts.length > 0 && (
-            <li className="stat-group stat-group-wide">
+      <ul className="stats">
+        <li className="stat-group">
+          <h3>
+            <span className="stat-grouping-label">Patrons</span>
+          </h3>
+          <ul>
+            <SingleStat
+              label="Total Patrons"
+              value={patrons.total}
+              tooltip="Total number of patrons."
+            />
+            <SingleStat
+              label="Patrons With Active Loans"
+              value={patrons.withActiveLoan}
+              tooltip="Number of patron with at least one active loan."
+            />
+            <SingleStat
+              label="Patrons With Active Loans or Holds"
+              value={patrons.withActiveLoanOrHold}
+              tooltip="Number of patrons with at least one active loan or at least one hold."
+            />
+          </ul>
+        </li>
+        <li className="stat-group">
+          <h3>
+            <span className="stat-grouping-label">Circulation</span>
+          </h3>
+          <ul>
+            <SingleStat
+              label="Active Loans"
+              value={patrons.loans}
+              tooltip="Total number of active loans for all patrons."
+            />
+            <SingleStat
+              label="Active Holds"
+              value={patrons.holds}
+              tooltip="Total number of active holds for all patrons."
+            />
+          </ul>
+        </li>
+        <li className="stat-group">
+          <h3>
+            <span className="stat-grouping-label">Inventory</span>
+          </h3>
+          <ul>
+            <SingleStat
+              label="Titles"
+              value={inventory.titles}
+              tooltip="Total number of books."
+            />
+            <SingleStat
+              label="Lendable titles"
+              value={inventory.lendable}
+              tooltip="Number of books available for checkout."
+            />
+            <SingleStat
+              label="Metered license titles"
+              value={inventory.meteredLicense}
+              tooltip="Number of books with a metered (counted) license."
+            />
+            <SingleStat
+              label="Unlimited license titles"
+              value={inventory.unlimitedLicense}
+              tooltip="Number of books for which there is no limit on the number of loans."
+            />
+            <SingleStat
+              label="Open access titles"
+              value={inventory.openAccess}
+              tooltip="Number of books for which there are no limits on use."
+            />
+            <SingleStat
+              label="Self-hosted titles"
+              value={inventory.selfHosted}
+              tooltip="Number of books hosted locally."
+            />
+          </ul>
+        </li>
+        <li className="stat-group stat-group-wide">
+          {chartItems.length === 0 ? (
+            <h3>No associated collections.</h3>
+          ) : (
+            <>
               <h3>
                 <span className="stat-grouping-label">Collections</span>
               </h3>
               <ResponsiveContainer
-                height={collectionCounts.length * 100}
+                height={chartItems.length * 100 + 75}
                 width={"100%"}
               >
                 <BarChart
-                  data={collectionCounts}
+                  data={chartItems}
                   layout="vertical"
                   margin={{ top: 5, right: 30, left: 0, bottom: 50 }}
                 >
                   <YAxis
                     type="category"
-                    dataKey="label"
+                    dataKey="name"
                     interval={0}
                     angle={-45}
                     textAnchor="end"
@@ -243,28 +240,31 @@ const LibraryStats = (props: LibraryStatsProps) => {
                   />
                   <Bar
                     stackId="collections"
-                    dataKey="Enumerated License Titles"
+                    name={inventoryKeyToLabelMap.meteredLicense}
+                    dataKey={"meteredLicense"}
                     barSize={50}
                     fill="#606060"
                   />
                   <Bar
                     stackId="collections"
-                    dataKey="Unlimited License Titles"
+                    name={inventoryKeyToLabelMap.unlimitedLicense}
+                    dataKey={"unlimitedLicense"}
                     barSize={50}
                     fill="#404040"
                   />
                   <Bar
                     stackId="collections"
-                    dataKey="Open Access Titles"
+                    name={inventoryKeyToLabelMap.openAccess}
+                    dataKey={"openAccess"}
                     barSize={50}
                     fill="#202020"
                   />
                 </BarChart>
               </ResponsiveContainer>
-            </li>
+            </>
           )}
-        </ul>
-      )}
+        </li>
+      </ul>
     </div>
   );
 };

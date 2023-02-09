@@ -10,7 +10,7 @@ describe("stats reducer", () => {
       collections: {
         BiblioBoard: {
           available_licenses: 13306,
-          enumerated_license_titles: 13306,
+          metered_license_titles: 13306,
           lendable_titles: 13306,
           licensed_titles: 13306,
           licenses: 13306,
@@ -21,7 +21,7 @@ describe("stats reducer", () => {
         },
         Bibliotheca: {
           available_licenses: 72,
-          enumerated_license_titles: 76,
+          metered_license_titles: 76,
           lendable_titles: 64,
           licensed_titles: 76,
           licenses: 85,
@@ -32,7 +32,7 @@ describe("stats reducer", () => {
         },
         "B&T Axis 360": {
           available_licenses: 135,
-          enumerated_license_titles: 146,
+          metered_license_titles: 146,
           lendable_titles: 134,
           licensed_titles: 146,
           licenses: 147,
@@ -44,7 +44,7 @@ describe("stats reducer", () => {
         OverDrive: {
           titles: 500,
           lendable_titles: 90,
-          enumerated_license_titles: 490,
+          metered_license_titles: 490,
           unlimited_license_titles: 0,
           licensed_titles: 490,
           open_access_titles: 10,
@@ -54,7 +54,7 @@ describe("stats reducer", () => {
         },
         "Palace Marketplace": {
           available_licenses: 75337,
-          enumerated_license_titles: 7753,
+          metered_license_titles: 7753,
           lendable_titles: 7750,
           licensed_titles: 7753,
           licenses: 305725,
@@ -65,7 +65,7 @@ describe("stats reducer", () => {
         },
         "Palace Bookshelf": {
           available_licenses: 0,
-          enumerated_license_titles: 0,
+          metered_license_titles: 0,
           lendable_titles: 7838,
           licensed_titles: 0,
           licenses: 0,
@@ -77,7 +77,7 @@ describe("stats reducer", () => {
       },
       inventory: {
         available_licenses: 88850,
-        enumerated_license_titles: 21281,
+        metered_license_titles: 21281,
         lendable_titles: 29092,
         licensed_titles: 21281,
         licenses: 319263,

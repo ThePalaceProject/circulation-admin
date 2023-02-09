@@ -124,6 +124,56 @@ export interface CirculationEventData {
   };
 }
 
+interface InventoryStatistics {
+  titles: number;
+  lendable: number;
+  selfHosted: number;
+  openAccess: number;
+  licensed: number;
+  unlimitedLicense: number;
+  meteredLicense: number;
+  meteredLicensesOwned: number;
+  meteredLicensesAvailable: number;
+}
+
+interface PatronStatistics {
+  total: number;
+  withActiveLoan: number;
+  withActiveLoanOrHold: number;
+  loans: number;
+  holds: number;
+}
+
+export interface LibraryStatistics {
+  key: string;
+  name: string;
+  patronStatistics: PatronStatistics;
+  inventorySummary: InventoryStatistics;
+  collectionIds: number[];
+  collections?: CollectionInventory[];
+}
+
+export interface CollectionInventory {
+  id: number;
+  name: string;
+  inventory: InventoryStatistics;
+}
+
+export interface StatisticsData {
+  collections: CollectionInventory[];
+  collectionIds?: number[];
+  collectionIdMap?: {
+    [id: number]: CollectionInventory;
+  };
+  libraries: LibraryStatistics[];
+  libraryKeyMap?: {
+    [key: string]: LibraryStatistics;
+  };
+  inventorySummary: InventoryStatistics;
+  patronSummary: PatronStatistics;
+  summaryStatistics?: LibraryStatistics;
+}
+
 export interface LibraryStatsInventory {
   titles: number;
   lendable_titles: number;
@@ -131,7 +181,7 @@ export interface LibraryStatsInventory {
   open_access_titles: number;
   licensed_titles: number;
   unlimited_license_titles: number;
-  enumerated_license_titles: number;
+  metered_license_titles: number;
   licenses: number;
   available_licenses: number;
 }

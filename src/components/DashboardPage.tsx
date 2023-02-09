@@ -43,7 +43,7 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
       <div className="dashboard">
         <Header />
         <main className="body">
-          <Stats store={this.context.editorStore} library={library} />
+          <Stats library={library} />
           {/*<CirculationEvents*/}
           {/*  store={this.context.editorStore}*/}
           {/*  library={library}*/}

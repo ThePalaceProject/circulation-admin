@@ -1,206 +1,106 @@
 import { expect } from "chai";
-import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
-
-import { Stats } from "../Stats";
+import { mount } from "enzyme";
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
+import { Provider } from "react-redux";
+import { normalizeStatistics, Stats, StatsProps } from "../Stats";
+import LibraryStats from "../LibraryStats";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import LibraryStats from "../LibraryStats";
-import { StatsData, LibraryStatsData, LibraryData } from "../../interfaces";
+
+import { statisticsApiResponseData } from "../../../tests/__data__/statisticsApiResponseData";
+
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
+
+const statisticsData = normalizeStatistics(statisticsApiResponseData);
+const { summaryStatistics } = statisticsData;
+const libraries = statisticsData.libraries;
+const librariesDataByKey = Object.assign(
+  {},
+  ...libraries.map((l) => ({ [l.key]: l }))
+);
 
 describe("Stats", () => {
-  const libraryStatsData: LibraryStatsData = {
-    collections: {
-      OverDrive: {
-        titles: 500,
-        lendable_titles: 90,
-        enumerated_license_titles: 490,
-        unlimited_license_titles: 0,
-        licensed_titles: 490,
-        open_access_titles: 10,
-        licenses: 350,
-        available_licenses: 100,
-        self_hosted_titles: 0,
-      },
-      BiblioBoard: {
-        available_licenses: 13306,
-        enumerated_license_titles: 13306,
-        lendable_titles: 13306,
-        licensed_titles: 13306,
-        licenses: 13306,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 13306,
-        unlimited_license_titles: 0,
-      },
-      Bibliotheca: {
-        available_licenses: 72,
-        enumerated_license_titles: 76,
-        lendable_titles: 64,
-        licensed_titles: 76,
-        licenses: 85,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 76,
-        unlimited_license_titles: 0,
-      },
-      "B&T Axis 360": {
-        available_licenses: 135,
-        enumerated_license_titles: 146,
-        lendable_titles: 134,
-        licensed_titles: 146,
-        licenses: 147,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 146,
-        unlimited_license_titles: 0,
-      },
-      "Palace Marketplace": {
-        available_licenses: 75337,
-        enumerated_license_titles: 7753,
-        lendable_titles: 7750,
-        licensed_titles: 7753,
-        licenses: 305725,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 7753,
-        unlimited_license_titles: 0,
-      },
-      "Palace Bookshelf": {
-        available_licenses: 0,
-        enumerated_license_titles: 0,
-        lendable_titles: 7838,
-        licensed_titles: 0,
-        licenses: 0,
-        open_access_titles: 7838,
-        self_hosted_titles: 0,
-        titles: 7838,
-        unlimited_license_titles: 0,
-      },
-    },
-    inventory: {
-      available_licenses: 88850,
-      enumerated_license_titles: 21281,
-      lendable_titles: 29092,
-      licensed_titles: 21281,
-      licenses: 319263,
-      open_access_titles: 7838,
-      self_hosted_titles: 0,
-      titles: 29119,
-      unlimited_license_titles: 0,
-    },
-    patrons: {
-      holds: 5,
-      loans: 0,
-      total: 132,
-      with_active_loans: 0,
-      with_active_loans_or_holds: 4,
-    },
-  };
-  const totalStatsData = Object.assign({}, libraryStatsData, {
-    inventory: {
-      titles: 100000,
-      licenses: 234567,
-      available_licenses: 200000,
-    },
-  });
-
-  const statsData: StatsData = {
-    NYPL: libraryStatsData,
-    BPL: libraryStatsData,
-    total: totalStatsData,
-  };
-
-  const librariesData: LibraryData[] = [
-    { short_name: "NYPL" },
-    { short_name: "BPL" },
-  ];
+  const testLibraryKey = "lyrasis-reads";
+  const testLibraryApiData = librariesDataByKey[testLibraryKey];
+  const testLibraryStatsData = librariesDataByKey[testLibraryKey];
 
   describe("rendering", () => {
-    let wrapper;
     const fetchError = { status: 401, response: "test", url: "test url" };
-    let fetchStats;
-    let fetchLibraries;
-
-    beforeEach(() => {
-      fetchStats = stub().returns(
-        new Promise<void>((resolve, reject) => resolve())
-      );
-      fetchLibraries = stub().returns(
-        new Promise<void>((resolve, reject) => resolve())
-      );
-
-      wrapper = shallow(
-        <Stats
-          stats={statsData}
-          libraries={librariesData}
-          fetchStats={fetchStats}
-          fetchLibraries={fetchLibraries}
-          isLoaded={false}
-        />
-      );
+    const statsState = (stats: object) => ({ editor: { stats } });
+    const initialState = statsState({ isLoaded: false });
+    const loadedState = statsState({
+      data: statisticsApiResponseData,
+      isLoaded: true,
     });
+    const errorState = statsState({ fetchError });
+
+    const ReduxProvider = ({ children, store }) => {
+      return (
+        <Provider store={store ?? mockStore(statsState({}))}>
+          {children}
+        </Provider>
+      );
+    };
+
+    /** Helper function to wrap the component under test in a Redux
+     * <Provider /> component.
+     * @param state - passed to the <Provider/> component in a mock store.
+     * @param {StatsProps} props - passed to the <Stats/> component as props.
+     */
+    const mountStatsInProvider = (state?, props?) => {
+      const wrapper = mount(<Stats {...props} />, {
+        wrappingComponent: ReduxProvider,
+      });
+      const provider = wrapper.getWrappingComponent();
+      !!state && provider.setProps({ store: mockStore(state) });
+      return { wrapper, provider };
+    };
 
     it("shows error message", () => {
+      const { wrapper, provider } = mountStatsInProvider(initialState);
+
       let error = wrapper.find(ErrorMessage);
       expect(error.length).to.equal(0);
-      wrapper.setProps({ fetchError });
+
+      provider.setProps({ store: mockStore(errorState) });
       error = wrapper.find(ErrorMessage);
       expect(error.length).to.equal(1);
     });
 
     it("shows/hides loading indicator", () => {
+      const { wrapper, provider } = mountStatsInProvider(initialState);
+
       let loading = wrapper.find(LoadingIndicator);
       expect(loading.length).to.equal(1);
-      wrapper.setProps({ isLoaded: true });
+
+      provider.setProps({ store: mockStore(loadedState) });
       loading = wrapper.find(LoadingIndicator);
       expect(loading.length).to.equal(0);
     });
 
-    it("shows LibraryStats", () => {
-      wrapper.setProps({ isLoaded: true, library: "NYPL" });
-      let libraryStats = wrapper.find(LibraryStats);
-      expect(libraryStats.length).to.equal(2);
-
-      expect(libraryStats.at(0).props().stats).to.deep.equal(libraryStatsData);
-      expect(libraryStats.at(0).props().library).to.deep.equal(
-        librariesData[0]
-      );
-      expect(libraryStats.at(1).props().stats).to.deep.equal(totalStatsData);
-      expect(libraryStats.at(1).props().library).to.be.undefined;
-
-      // No total stats.
-      wrapper.setProps({ stats: { NYPL: libraryStatsData } });
-      libraryStats = wrapper.find(LibraryStats);
-      expect(libraryStats.length).to.equal(1);
-
-      expect(libraryStats.at(0).props().stats).to.deep.equal(libraryStatsData);
-      expect(libraryStats.at(0).props().library).to.deep.equal(
-        librariesData[0]
-      );
-
-      // Still no total stats, since there's only one library.
-      wrapper.setProps({
-        stats: { NYPL: libraryStatsData, total: totalStatsData },
-        libraries: [librariesData[0]],
+    it("shows stats for only specified library, if library is specified", () => {
+      const { wrapper } = mountStatsInProvider(loadedState, {
+        library: testLibraryApiData.key,
       });
-      libraryStats = wrapper.find(LibraryStats);
-      expect(libraryStats.length).to.equal(1);
 
-      expect(libraryStats.at(0).props().stats).to.deep.equal(libraryStatsData);
-      expect(libraryStats.at(0).props().library).to.deep.equal(
-        librariesData[0]
+      const libraryStats = wrapper.find(LibraryStats);
+      expect(libraryStats.length).to.equal(1);
+      expect(libraryStats.at(0).props().stats).to.deep.equal(
+        testLibraryStatsData
       );
+      expect(libraryStats.at(0).props().library).to.equal(testLibraryKey);
     });
 
     it("shows site-wide stats when no library specified", () => {
-      wrapper.setProps({ isLoaded: true, library: null });
+      const { wrapper } = mountStatsInProvider(loadedState);
+
       const libraryStats = wrapper.find(LibraryStats);
       expect(libraryStats.length).to.equal(1);
-
-      expect(libraryStats.at(0).props().stats).to.deep.equal(totalStatsData);
+      expect(libraryStats.at(0).props().stats).to.deep.equal(summaryStatistics);
       expect(libraryStats.at(0).props().library).to.be.undefined;
     });
   });

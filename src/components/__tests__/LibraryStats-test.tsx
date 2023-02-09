@@ -1,147 +1,31 @@
 import { expect } from "chai";
-import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
+import { normalizeStatistics } from "../Stats";
 import LibraryStats from "../LibraryStats";
-import { LibraryStatsData } from "../../interfaces";
-import { BarChart } from "recharts";
+import { BarChart, ResponsiveContainer } from "recharts";
+
+import {
+  statisticsApiResponseData,
+  testLibraryKey,
+  noCollectionsLibraryKey,
+  noInventoryLibraryKey,
+  noPatronsLibraryKey,
+} from "../../../tests/__data__/statisticsApiResponseData";
 
 describe("LibraryStats", () => {
-  // const statsData: LibraryStatsData = {
-  //   patrons: {
-  //     total: 3456,
-  //     with_active_loans: 55,
-  //     with_active_loans_or_holds: 1234,
-  //     loans: 100,
-  //     holds: 2000,
-  //   },
-  //   inventory: {
-  //     titles: 54321,
-  //     licenses: 123456,
-  //     available_licenses: 100000,
-  //   },
-  //   collections: {
-  //     Overdrive: {
-  //       licensed_titles: 490,
-  //       open_access_titles: 10,
-  //       licenses: 350,
-  //       available_licenses: 100,
-  //     },
-  //     Bibliotheca: {
-  //       licensed_titles: 400,
-  //       open_access_titles: 0,
-  //       licenses: 300,
-  //       available_licenses: 170,
-  //     },
-  //     "Axis 360": {
-  //       licensed_titles: 300,
-  //       open_access_titles: 0,
-  //       licenses: 280,
-  //       available_licenses: 260,
-  //     },
-  //     "Open Bookshelf": {
-  //       licensed_titles: 0,
-  //       open_access_titles: 1200,
-  //       licenses: 0,
-  //       available_licenses: 0,
-  //     },
-  //   },
-  // };
-  const statsData: LibraryStatsData = {
-    inventory: {
-      available_licenses: 88850,
-      enumerated_license_titles: 21281,
-      lendable_titles: 29092,
-      licensed_titles: 21281,
-      licenses: 319263,
-      open_access_titles: 7838,
-      self_hosted_titles: 0,
-      titles: 29119,
-      unlimited_license_titles: 0,
-    },
-    collections: {
-      OverDrive: {
-        titles: 500,
-        lendable_titles: 90,
-        enumerated_license_titles: 490,
-        unlimited_license_titles: 0,
-        licensed_titles: 490,
-        open_access_titles: 10,
-        licenses: 350,
-        available_licenses: 100,
-        self_hosted_titles: 0,
-      },
-      BiblioBoard: {
-        available_licenses: 13306,
-        enumerated_license_titles: 13306,
-        lendable_titles: 13306,
-        licensed_titles: 13306,
-        licenses: 13306,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 13306,
-        unlimited_license_titles: 0,
-      },
-      Bibliotheca: {
-        available_licenses: 72,
-        enumerated_license_titles: 76,
-        lendable_titles: 64,
-        licensed_titles: 76,
-        licenses: 85,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 76,
-        unlimited_license_titles: 0,
-      },
-      "B&T Axis 360": {
-        available_licenses: 135,
-        enumerated_license_titles: 146,
-        lendable_titles: 134,
-        licensed_titles: 146,
-        licenses: 147,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 146,
-        unlimited_license_titles: 0,
-      },
-      "Palace Marketplace": {
-        available_licenses: 75337,
-        enumerated_license_titles: 7753,
-        lendable_titles: 7750,
-        licensed_titles: 7753,
-        licenses: 305725,
-        open_access_titles: 0,
-        self_hosted_titles: 0,
-        titles: 7753,
-        unlimited_license_titles: 0,
-      },
-      "Palace Bookshelf": {
-        available_licenses: 0,
-        enumerated_license_titles: 0,
-        lendable_titles: 7838,
-        licensed_titles: 0,
-        licenses: 0,
-        open_access_titles: 7838,
-        self_hosted_titles: 0,
-        titles: 7838,
-        unlimited_license_titles: 0,
-      },
-    },
-    patrons: {
-      total: 3456,
-      with_active_loans: 55,
-      with_active_loans_or_holds: 1234,
-      loans: 100,
-      holds: 2000,
-    },
-  };
-
-  const libraryData = {
-    name: "Brooklyn Public Library",
-    short_name: "BPL",
-  };
+  // Convert from the API format to our in-app format.
+  const statisticsData = normalizeStatistics(statisticsApiResponseData);
+  const librariesStatsTestDataByKey = Object.assign(
+    {},
+    ...statisticsData.libraries.map((l) => ({ [l.key]: l }))
+  );
+  const defaultLibraryStatsTestData =
+    librariesStatsTestDataByKey[testLibraryKey];
+  const allLibrariesHeadingText = "All Libraries";
+  const noCollectionsHeadingText = "No associated collections.";
 
   const expectStats = (
     { label, value },
@@ -155,155 +39,186 @@ describe("LibraryStats", () => {
   describe("rendering", () => {
     let wrapper;
     beforeEach(() => {
-      wrapper = shallow(<LibraryStats stats={statsData} />);
+      wrapper = mount(<LibraryStats stats={defaultLibraryStatsTestData} />);
     });
 
     it("shows 'all libraries' header when there is no library", () => {
       const header = wrapper.find("h2");
-      expect(header.text()).to.contain("All Libraries");
+      expect(header.text()).to.contain(allLibrariesHeadingText);
     });
 
     it("shows library header", () => {
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ library: defaultLibraryStatsTestData.key });
       const header = wrapper.find("h2");
-      expect(header.text()).to.contain("Brooklyn Public Library");
-      expect(header.text()).not.to.contain("All Libraries");
+      expect(header.text()).to.contain(defaultLibraryStatsTestData.name);
+      expect(header.text()).not.to.contain(allLibrariesHeadingText);
     });
 
     it("shows stats data", () => {
       const groups = wrapper.find(".stat-group");
       let singleStats;
-      expect(groups.length).to.equal(5);
+      expect(groups.length).to.equal(4);
 
+      /* Patrons */
       expect(groups.at(0).text()).to.contain("Patrons");
       singleStats = groups.at(0).find("SingleStat");
       expect(singleStats.length).to.equal(3);
-      expectStats(singleStats.at(0).props(), "Total Patrons", 3456);
-      expectStats(singleStats.at(1).props(), "Patrons With Active Loans", 55);
+      expectStats(singleStats.at(0).props(), "Total Patrons", 132);
+      expectStats(singleStats.at(1).props(), "Patrons With Active Loans", 21);
       expectStats(
         singleStats.at(2).props(),
         "Patrons With Active Loans or Holds",
-        1234
+        23
       );
-      // expect(groups.at(0).text()).to.contain("3.5kTotal Patrons");
-      // expect(groups.at(0).text()).to.contain("55Patrons With Active Loans");
-      // expect(groups.at(0).text()).to.contain(
-      //   "1.2kPatrons With Active Loans or Holds"
-      // );
+      expect(groups.at(0).text()).to.contain("132Total Patrons");
+      expect(groups.at(0).text()).to.contain("21Patrons With Active Loans");
+      expect(groups.at(0).text()).to.contain(
+        "23Patrons With Active Loans or Holds"
+      );
 
+      /* Circulation */
       expect(groups.at(1).text()).to.contain("Circulation");
       singleStats = groups.at(1).find("SingleStat");
       expect(singleStats.length).to.equal(2);
-      expectStats(singleStats.at(0).props(), "Active Loans", 100);
-      expectStats(singleStats.at(1).props(), "Active Holds", 2000);
-      // expectStats(singleStats.at(0).props(), "Patrons With Active Loans or Holds", 1234);
-      // expect(groups.at(1).text()).to.contain("100Active Loans");
-      // expect(groups.at(1).text()).to.contain("2kActive Holds");
+      expectStats(singleStats.at(0).props(), "Active Loans", 87);
+      expectStats(singleStats.at(1).props(), "Active Holds", 5);
+      expect(groups.at(1).text()).to.contain("87Active Loans");
+      expect(groups.at(1).text()).to.contain("5Active Holds");
 
+      /* Inventory */
       expect(groups.at(2).text()).to.contain("Inventory");
       singleStats = groups.at(2).find("SingleStat");
-      expect(singleStats.length).to.equal(5);
+      expect(singleStats.length).to.equal(6);
       expectStats(singleStats.at(0).props(), "Titles", 29119);
-      expectStats(
-        singleStats.at(1).props(),
-        "Enumerated license titles",
-        21281
-      );
-      expectStats(singleStats.at(2).props(), "Unlimited license titles", 0);
-      expectStats(singleStats.at(3).props(), "Open access titles", 7838);
-      expectStats(singleStats.at(4).props(), "Self-hosted titles", 0);
-      // expect(groups.at(2).text()).to.contain("54.3kTitles");
-      // expect(groups.at(2).text()).to.contain("123.5kTotal Licenses");
-      // expect(groups.at(2).text()).to.contain("100kAvailable Licenses");
+      expectStats(singleStats.at(1).props(), "Lendable titles", 29092);
+      expectStats(singleStats.at(2).props(), "Metered license titles", 20658);
+      expectStats(singleStats.at(3).props(), "Unlimited license titles", 623);
+      expectStats(singleStats.at(4).props(), "Open access titles", 7838);
+      expectStats(singleStats.at(5).props(), "Self-hosted titles", 145);
+      expect(groups.at(2).text()).to.contain("29.1kTitles");
+      expect(groups.at(2).text()).to.contain("29.1kLendable titles");
+      expect(groups.at(2).text()).to.contain("20.7kMetered license titles");
+      expect(groups.at(2).text()).to.contain("623Unlimited license titles");
+      expect(groups.at(2).text()).to.contain("7.8kOpen access titles");
+      expect(groups.at(2).text()).to.contain("145Self-hosted titles");
 
-      expect(groups.at(3).text()).to.contain("Enumerated Licenses");
-      singleStats = groups.at(3).find("SingleStat");
-      expect(singleStats.length).to.equal(3);
-      expectStats(
-        singleStats.at(0).props(),
-        "Enumerated license titles",
-        21281
-      );
-      expectStats(singleStats.at(1).props(), "Total Licenses", 319263);
-      expectStats(singleStats.at(2).props(), "Available Licenses", 88850);
-      // expect(groups.at(2).text()).to.contain("54.3kTitles");
-      // expect(groups.at(2).text()).to.contain("123.5kTotal Licenses");
-      // expect(groups.at(2).text()).to.contain("100kAvailable Licenses");
-
-      expect(groups.at(4).text()).to.contain("Collections");
-      const chart = groups.at(4).find(BarChart);
+      /* Collections */
+      expect(groups.at(3).text()).to.contain("Collections");
+      const chart = groups.at(3).find(ResponsiveContainer).find(BarChart);
       expect(chart.length).to.equal(1);
       const chartData = chart.props().data;
-      expect(chartData.length).to.equal(6);
-      expect(chartData[0]).to.equal({
-        label: "Overdrive",
-        "Licensed Titles": 490,
-        "Open Access Titles": 10,
+      expect(chartData.length).to.equal(
+        defaultLibraryStatsTestData.collections.length
+      );
+      expect(chartData[0]).to.deep.equal({
+        name: "New BiblioBoard Test",
+        titles: 13306,
+        lendable: 13306,
+        selfHosted: 0,
+        openAccess: 0,
+        licensed: 13306,
+        unlimitedLicense: 0,
+        meteredLicense: 13306,
+        meteredLicensesOwned: 13306,
+        meteredLicensesAvailable: 13306,
       });
       expect(chart.props().data).to.deep.equal([
         {
-          label: "Overdrive",
-          "Licensed Titles": 490,
-          "Open Access Titles": 10,
+          name: "New BiblioBoard Test",
+          titles: 13306,
+          lendable: 13306,
+          selfHosted: 0,
+          openAccess: 0,
+          licensed: 13306,
+          unlimitedLicense: 0,
+          meteredLicense: 13306,
+          meteredLicensesOwned: 13306,
+          meteredLicensesAvailable: 13306,
         },
         {
-          label: "Bibliotheca",
-          "Licensed Titles": 400,
-          "Open Access Titles": 0,
+          name: "New Bibliotheca Test Collection",
+          titles: 76,
+          lendable: 64,
+          selfHosted: 0,
+          openAccess: 0,
+          licensed: 76,
+          unlimitedLicense: 0,
+          meteredLicense: 76,
+          meteredLicensesOwned: 85,
+          meteredLicensesAvailable: 72,
         },
-        { label: "Axis 360", "Licensed Titles": 300, "Open Access Titles": 0 },
         {
-          label: "Open Bookshelf",
-          "Licensed Titles": 0,
-          "Open Access Titles": 1200,
+          name: "Palace Bookshelf",
+          titles: 7838,
+          lendable: 7838,
+          selfHosted: 0,
+          openAccess: 7838,
+          licensed: 0,
+          unlimitedLicense: 0,
+          meteredLicense: 0,
+          meteredLicensesOwned: 0,
+          meteredLicensesAvailable: 0,
+        },
+        {
+          name: "TEST Baker & Taylor",
+          titles: 146,
+          lendable: 134,
+          selfHosted: 0,
+          openAccess: 0,
+          licensed: 146,
+          unlimitedLicense: 0,
+          meteredLicense: 146,
+          meteredLicensesOwned: 147,
+          meteredLicensesAvailable: 135,
+        },
+        {
+          name: "TEST Palace Marketplace",
+          titles: 7753,
+          lendable: 7750,
+          selfHosted: 0,
+          openAccess: 0,
+          licensed: 7753,
+          unlimitedLicense: 0,
+          meteredLicense: 7753,
+          meteredLicensesOwned: 305725,
+          meteredLicensesAvailable: 75337,
         },
       ]);
     });
 
-    it("hides patrons and circulation groups when there are no patrons", () => {
-      const noPatrons = Object.assign({}, statsData, {
-        patrons: {
-          total: 0,
-          with_active_loans: 0,
-          with_active_loans_or_holds: 0,
-          loans: 0,
-          holds: 0,
-        },
-      });
+    it("show patrons and circulation groups, even when there are no patrons", () => {
+      const noPatrons = librariesStatsTestDataByKey[noPatronsLibraryKey];
       wrapper.setProps({ stats: noPatrons });
       const groups = wrapper.find(".stat-group");
-      expect(groups.length).to.equal(2);
-
-      expect(groups.at(0).text()).to.contain("Inventory");
-      expect(groups.at(1).text()).to.contain("Collections");
-    });
-
-    it("hides licenses in inventory when there are no licenses", () => {
-      const noLicenses = Object.assign({}, statsData, {
-        inventory: {
-          titles: 54321,
-          licenses: 0,
-          available_licenses: 0,
-        },
-      });
-      wrapper.setProps({ stats: noLicenses });
-      const groups = wrapper.find(".stat-group");
       expect(groups.length).to.equal(4);
-
-      expect(groups.at(2).text()).to.contain("Inventory");
-      expect(groups.at(2).text()).to.contain("54.3kTitles");
-      expect(groups.at(2).text()).not.to.contain("Licenses");
-    });
-
-    it("hides collections section when there are no collections", () => {
-      const noCollections = Object.assign({}, statsData, { collections: {} });
-      wrapper.setProps({ stats: noCollections });
-      const groups = wrapper.find(".stat-group");
-      expect(groups.length).to.equal(3);
 
       expect(groups.at(0).text()).to.contain("Patrons");
       expect(groups.at(1).text()).to.contain("Circulation");
       expect(groups.at(2).text()).to.contain("Inventory");
+    });
+
+    it("shows inventory group, even when there is no inventory", () => {
+      const noInventory = librariesStatsTestDataByKey[noInventoryLibraryKey];
+      wrapper.setProps({ stats: noInventory });
+      const groups = wrapper.find(".stat-group");
+      expect(groups.length).to.equal(4);
+
+      expect(groups.at(0).text()).to.contain("Patrons");
+      expect(groups.at(1).text()).to.contain("Circulation");
+      expect(groups.at(2).text()).to.contain("Inventory");
+    });
+
+    it("shows appropriate message when there are no collections", () => {
+      const noCollections =
+        librariesStatsTestDataByKey[noCollectionsLibraryKey];
+      wrapper.setProps({ stats: noCollections });
+      const groups = wrapper.find(".stat-group");
+      expect(groups.length).to.equal(4);
+
+      expect(groups.at(0).text()).to.contain("Patrons");
+      expect(groups.at(1).text()).to.contain("Circulation");
+      expect(groups.at(2).text()).to.contain("Inventory");
+      expect(groups.at(3).text()).to.contain(noCollectionsHeadingText);
     });
   });
 });

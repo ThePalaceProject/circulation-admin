@@ -1,4 +1,6 @@
 import * as React from "react";
+import { Provider } from "react-redux";
+import buildStore from "./store";
 import * as ReactDOM from "react-dom";
 import buildStore from "./store";
 import { Provider } from "react-redux";
@@ -67,6 +69,7 @@ class CirculationAdmin {
 
     const store = buildStore();
     const appElement = "opds-catalog";
+    const store = buildStore();
     const app = config.settingUp ? (
       <Provider store={store}>
         <ContextProvider {...config} store={store}>

@@ -1,111 +1,100 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Store } from "redux";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ActionCreator from "../actions";
+import { stateSelector as statsStateSelector } from "../reducers/stats";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { StatsData, LibrariesData, LibraryData } from "../interfaces";
-import { RootState } from "../store";
+import { LibraryStatistics, StatisticsData } from "../interfaces";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import LibraryStats from "./LibraryStats";
 
-export interface StatsStateProps {
-  stats?: StatsData;
-  libraries?: LibraryData[];
+export interface StatsLocalState {
+  data?: StatisticsData;
   fetchError?: FetchErrorData;
   isLoaded?: boolean;
 }
 
-export interface StatsDispatchProps {
-  fetchStats?: () => Promise<StatsData>;
-  fetchLibraries?: () => Promise<LibrariesData>;
-}
 
-export interface StatsOwnProps {
-  store?: Store<RootState>;
+export interface StatsProps {
   library?: string;
 }
 
-export interface StatsProps
-  extends StatsStateProps,
-    StatsDispatchProps,
-    StatsOwnProps {}
-
-/** Displays statistics about patrons, licenses, and vendors from the server. */
+/**
+ * Displays statistics about patrons, licenses, and collections from the server.
+ * If a library prop is provided, then statistics for that library will be displayed.
+ * Otherwise, statistics for all authorized libraries will be displayed.
+ * @param {StatsProps} props
+ * @param {string} props.library - key (short name) of a library.
+ * */
 export const Stats = (props: StatsProps) => {
-  let libraryData: LibraryData | null = null;
-  for (const library of props.libraries || []) {
-    if (props.library && library.short_name === props.library) {
-      libraryData = library;
-    }
-  }
+  const { library: targetLibraryKey } = props;
+  const { data: statisticsData, fetchError, isLoaded } = useStatistics();
 
-  if (!libraryData && props.libraries && props.libraries.length === 1) {
-    libraryData = props.libraries[0];
-  }
-
-  const libraryStats =
-    props.isLoaded &&
-    props.stats &&
-    libraryData &&
-    props.stats[libraryData.short_name];
-  const totalStats =
-    props.isLoaded &&
-    props.libraries &&
-    props.libraries.length > 1 &&
-    props.stats &&
-    props.stats["total"];
-
-  useEffect(() => {
-    if (props.fetchStats) {
-      props.fetchStats();
-    }
-    if (props.fetchLibraries()) {
-      props.fetchLibraries();
-    }
-  }, []);
+  const summaryStatistics = statisticsData?.summaryStatistics;
+  const targetLibraryData = statisticsData?.libraries?.find(
+    (library) => library.key === targetLibraryKey
+  );
 
   return (
     <>
-      {libraryStats && (
-        <LibraryStats library={libraryData} stats={libraryStats} />
+      {targetLibraryData && (
+        <LibraryStats library={targetLibraryKey} stats={targetLibraryData} />
       )}
-      {totalStats && <LibraryStats stats={totalStats} />}
-      {props.fetchError && <ErrorMessage error={props.fetchError} />}
-
-      {!props.isLoaded && <LoadingIndicator />}
+      {!targetLibraryData && summaryStatistics && (
+        <LibraryStats stats={summaryStatistics} />
+      )}
+      {fetchError && <ErrorMessage error={fetchError} />}
+      {!isLoaded && <LoadingIndicator />}
     </>
   );
 };
 
-function mapStateToProps(state, ownProps) {
-  return {
-    stats: state.editor.stats.data,
-    libraries:
-      state.editor.libraries &&
-      state.editor.libraries.data &&
-      state.editor.libraries.data.libraries,
-    fetchError: state.editor.stats.fetchError,
-    isLoaded: state.editor.stats.isLoaded,
+/**
+ * Convert the fetched data from the sparse API format.
+ * - Adds a list of collections to each library, one for each collectionId.
+ * - Adds summary statistics in the form of a LibraryStatistics object.
+ * @param {StatisticsData} statistics - Statistics data fetched via API.
+ */
+export const normalizeStatistics = (statistics): StatisticsData => {
+  if (!statistics) {
+    return statistics;
+  }
+
+  const collectionIdMap = Object.assign(
+    {},
+    ...statistics.collections.map((c) => ({ [c.id]: c }))
+  );
+  const libraries = statistics.libraries.map((l) => ({
+    ...l,
+    collections: l.collectionIds.map((id) => collectionIdMap[id]),
+  }));
+  const collectionIds = statistics.collections.map((c) => c.id);
+
+  const summaryStatistics: LibraryStatistics = {
+    key: "_summary_",
+    name: "Summary Statistics",
+    patronStatistics: statistics.patronSummary,
+    inventorySummary: statistics.inventorySummary,
+    collectionIds,
+    collections: statistics.collections,
   };
-}
 
-function mapDispatchToProps(dispatch) {
-  const actions = new ActionCreator();
-  return {
-    fetchStats: () => dispatch(actions.fetchStats()),
-    fetchLibraries: () => dispatch(actions.fetchLibraries()),
-  };
-}
+  return { ...statistics, libraries, summaryStatistics };
+};
 
-const ConnectedStats = connect<
-  StatsStateProps,
-  StatsDispatchProps,
-  StatsOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(Stats);
+const useStatistics = (): StatsLocalState => {
+  const data = useSelector(statsStateSelector.data);
+  const isLoaded = useSelector(statsStateSelector.isLoaded);
+  const fetchError = useSelector(statsStateSelector.fetchError);
 
-export default ConnectedStats;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const actions = new ActionCreator();
+    dispatch(actions.fetchStatistics());
+  }, []);
+
+  return { data: normalizeStatistics(data), fetchError, isLoaded };
+};
+
+export default Stats;

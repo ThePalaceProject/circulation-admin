@@ -40,12 +40,10 @@ describe("DashboardPage", () => {
 
   it("shows Stats", () => {
     let stats = wrapper.find(Stats);
-    expect(stats.prop("store")).to.equal(store);
     expect(stats.prop("library")).to.be.undefined;
 
     wrapper.setProps({ params: { library: "NYPL" } });
     stats = wrapper.find(Stats);
-    expect(stats.prop("store")).to.equal(store);
     expect(stats.prop("library")).to.equal("NYPL");
   });
 

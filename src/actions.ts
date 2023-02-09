@@ -31,6 +31,7 @@ import {
   DiagnosticsData,
   FeatureFlags,
   SitewideAnnouncementsData,
+  StatisticsData,
 } from "./interfaces";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
@@ -463,9 +464,9 @@ export default class ActionCreator extends BaseActionCreator {
     ).bind(this);
   }
 
-  fetchStats() {
+  fetchStatistics() {
     const url = "/admin/stats";
-    return this.fetchJSON<StatsData>(ActionCreator.STATS, url).bind(this);
+    return this.fetchJSON<StatisticsData>(ActionCreator.STATS, url).bind(this);
   }
 
   fetchLibraries() {
