@@ -396,14 +396,8 @@ describe("IndividualAdminEditForm", () => {
     });
 
     it("requires the correct fields", () => {
-      // Usually, only the email field is required.
-      let required = wrapper.find(".required-field");
-      expect(required.length).to.equal(1);
-      expect(wrapper.html()).to.contain("(Optional)");
-
-      // On setup, the password is required too.
-      wrapper.setContext({ settingUp: true });
-      required = wrapper.find(".required-field");
+      // Both the email and password fields are required.
+      const required = wrapper.find(".required-field");
       expect(required.length).to.equal(2);
       expect(wrapper.html()).not.to.contain("(Optional)");
     });
