@@ -78,23 +78,26 @@ export default class LaneEditor extends React.Component<
   }
 
   render(): JSX.Element {
-    const parent = this.props.findParentOfLane(this.props.lane);
+    const { lane } = this.props;
+    const hasCustomLists = !!lane?.custom_list_ids?.length;
+    const parent = this.props.findParentOfLane(lane);
+
     return (
       <div className="lane-editor">
         <div className="lane-editor-header">
           <div>
             <div className="save-or-edit">
               <TextWithEditMode
-                text={this.props.lane && this.props.lane.display_name}
+                text={lane?.display_name}
                 placeholder="name"
                 onUpdate={this.changeName}
                 ref={this.laneNameRef}
                 aria-label="Enter a name for this lane"
               />
-              {this.props.lane && <h4>ID-{this.props.lane.id}</h4>}
+              {lane && <h4>ID-{lane.id}</h4>}
             </div>
             <span className="lane-buttons">
-              {this.props.lane && this.props.deleteLane && (
+              {lane && hasCustomLists && this.props.deleteLane && (
                 <Button
                   className="danger delete-lane"
                   callback={this.delete}
@@ -122,7 +125,7 @@ export default class LaneEditor extends React.Component<
           </div>
           <div className="lane-details">
             {this.renderInfo(parent)}
-            {parent && (
+            {hasCustomLists && parent && (
               <EditableInput
                 type="checkbox"
                 name="inherit_parent_restrictions"
@@ -133,17 +136,19 @@ export default class LaneEditor extends React.Component<
             )}
           </div>
         </div>
-        <div className="lane-editor-body">
-          <LaneCustomListsEditor
-            allCustomLists={this.props.customLists}
-            customListIds={this.state.customListIds}
-            filter={this.state.filter}
-            filteredCustomLists={this.filterLists()}
-            changeFilter={this.changeFilter}
-            onUpdate={this.changeCustomLists}
-            ref={this.laneCustomListsRef}
-          />
-        </div>
+        {(!lane || hasCustomLists) && (
+          <div className="lane-editor-body">
+            <LaneCustomListsEditor
+              allCustomLists={this.props.customLists}
+              customListIds={this.state.customListIds}
+              filter={this.state.filter}
+              filteredCustomLists={this.filterLists()}
+              changeFilter={this.changeFilter}
+              onUpdate={this.changeCustomLists}
+              ref={this.laneCustomListsRef}
+            />
+          </div>
+        )}
       </div>
     );
   }
@@ -278,8 +283,12 @@ export default class LaneEditor extends React.Component<
     }
     const name = this.laneNameRef.current.getText();
     data.append("display_name", name);
-    const listIds = this.laneCustomListsRef.current.getCustomListIds();
-    data.append("custom_list_ids", JSON.stringify(listIds));
+
+    const listIds = this.laneCustomListsRef.current?.getCustomListIds();
+    if (listIds) {
+      data.append("custom_list_ids", JSON.stringify(listIds));
+    }
+
     data.append(
       "inherit_parent_restrictions",
       this.state.inheritParentRestrictions
@@ -298,7 +307,7 @@ export default class LaneEditor extends React.Component<
 
   reset() {
     this.laneNameRef.current.reset();
-    this.laneCustomListsRef.current.reset(this.props.lane.custom_list_ids);
+    this.laneCustomListsRef.current?.reset(this.props.lane.custom_list_ids);
     const inheritParentRestrictions =
       this.props.lane && this.props.lane.inherit_parent_restrictions;
     this.setState(Object.assign({}, this.state, { inheritParentRestrictions }));
