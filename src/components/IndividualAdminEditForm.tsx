@@ -134,7 +134,7 @@ export default class IndividualAdminEditForm extends React.Component<
             name="password"
             label="Password"
             ref={this.passwordRef}
-            required={this.context.settingUp}
+            required={true}
             error={this.props.error}
           />
         )}
