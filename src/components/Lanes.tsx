@@ -170,6 +170,7 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
       library: this.props.library,
       customLists: this.props.customLists,
       editLane: this.editLane,
+      editOrCreate,
     };
     const extraProps = {
       create: {

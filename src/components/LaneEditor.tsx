@@ -10,6 +10,7 @@ import VisibleIcon from "./icons/VisibleIcon";
 import HiddenIcon from "./icons/HiddenIcon";
 
 export interface LaneEditorProps extends React.Props<LaneEditor> {
+  editOrCreate?: string;
   library: string;
   lane?: LaneData;
   customLists: CustomListData[];
@@ -77,9 +78,12 @@ export default class LaneEditor extends React.Component<
     return selectedFilter ? lists.filter(selectedFilter) : lists;
   }
 
+  hasCustomLists() {
+    return !!this.props.lane?.custom_list_ids?.length;
+  }
+
   render(): JSX.Element {
     const { lane } = this.props;
-    const hasCustomLists = !!lane?.custom_list_ids?.length;
     const parent = this.props.findParentOfLane(lane);
 
     return (
@@ -97,7 +101,7 @@ export default class LaneEditor extends React.Component<
               {lane && <h4>ID-{lane.id}</h4>}
             </div>
             <span className="lane-buttons">
-              {lane && hasCustomLists && this.props.deleteLane && (
+              {lane && this.hasCustomLists() && this.props.deleteLane && (
                 <Button
                   className="danger delete-lane"
                   callback={this.delete}
@@ -125,7 +129,7 @@ export default class LaneEditor extends React.Component<
           </div>
           <div className="lane-details">
             {this.renderInfo(parent)}
-            {hasCustomLists && parent && (
+            {this.hasCustomLists() && parent && (
               <EditableInput
                 type="checkbox"
                 name="inherit_parent_restrictions"
@@ -136,19 +140,42 @@ export default class LaneEditor extends React.Component<
             )}
           </div>
         </div>
-        {(!lane || hasCustomLists) && (
-          <div className="lane-editor-body">
-            <LaneCustomListsEditor
-              allCustomLists={this.props.customLists}
-              customListIds={this.state.customListIds}
-              filter={this.state.filter}
-              filteredCustomLists={this.filterLists()}
-              changeFilter={this.changeFilter}
-              onUpdate={this.changeCustomLists}
-              ref={this.laneCustomListsRef}
-            />
+        {this.renderCustomListsEditor()}
+      </div>
+    );
+  }
+
+  renderCustomListsEditor(): JSX.Element {
+    const { editOrCreate, lane } = this.props;
+
+    if (editOrCreate === "edit") {
+      if (!lane) {
+        // We're editing a lane, but the lane data hasn't loaded yet. Don't render anything until
+        // we know if this is a custom lane.
+        return null;
+      }
+
+      if (!this.hasCustomLists()) {
+        return (
+          <div>
+            This lane was automatically generated. Its contents cannot be
+            edited.
           </div>
-        )}
+        );
+      }
+    }
+
+    return (
+      <div className="lane-editor-body">
+        <LaneCustomListsEditor
+          allCustomLists={this.props.customLists}
+          customListIds={this.state.customListIds}
+          filter={this.state.filter}
+          filteredCustomLists={this.filterLists()}
+          changeFilter={this.changeFilter}
+          onUpdate={this.changeCustomLists}
+          ref={this.laneCustomListsRef}
+        />
       </div>
     );
   }

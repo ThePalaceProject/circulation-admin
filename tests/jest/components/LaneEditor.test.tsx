@@ -62,6 +62,7 @@ describe("LaneEditor", () => {
           library="library"
           lane={laneData}
           customLists={customListsData}
+          editOrCreate="edit"
           editLane={editLane}
           deleteLane={deleteLane}
           findParentOfLane={stub().returns(laneData)}
@@ -91,15 +92,18 @@ describe("LaneEditor", () => {
     const laneData = createLaneData("Automated Lane", true);
 
     beforeEach(() => {
-      <LaneEditor
-        library="library"
-        lane={laneData}
-        customLists={customListsData}
-        editLane={editLane}
-        deleteLane={deleteLane}
-        findParentOfLane={stub().returns(laneData)}
-        toggleLaneVisibility={toggleLaneVisibility}
-      />;
+      render(
+        <LaneEditor
+          library="library"
+          lane={laneData}
+          customLists={customListsData}
+          editOrCreate="edit"
+          editLane={editLane}
+          deleteLane={deleteLane}
+          findParentOfLane={stub().returns(laneData)}
+          toggleLaneVisibility={toggleLaneVisibility}
+        />
+      );
     });
 
     it("does not render a delete button", () => {
@@ -117,5 +121,28 @@ describe("LaneEditor", () => {
     it("does not render a custom lists editor", () => {
       expect(screen.queryByTestId("LaneCustomListsEditor")).toBeNull();
     });
+
+    it("renders an explanation that the lane contents can't be edited", () => {
+      expect(screen.getByText(/contents cannot be edited/i)).not.toBeNull();
+    });
+  });
+
+  it("doesn't render a custom lists editor while a lane is being loaded for editing", () => {
+    const laneData = null;
+
+    render(
+      <LaneEditor
+        library="library"
+        lane={laneData}
+        customLists={customListsData}
+        editOrCreate="edit"
+        editLane={editLane}
+        deleteLane={deleteLane}
+        findParentOfLane={stub().returns(laneData)}
+        toggleLaneVisibility={toggleLaneVisibility}
+      />
+    );
+
+    expect(screen.queryByTestId("LaneCustomListsEditor")).toBeNull();
   });
 });
