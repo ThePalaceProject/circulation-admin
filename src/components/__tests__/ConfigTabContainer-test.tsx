@@ -8,7 +8,6 @@ import buildStore from "../../store";
 import ConfigTabContainer from "../ConfigTabContainer";
 import Libraries from "../Libraries";
 import Collections from "../Collections";
-import AdminAuthServices from "../AdminAuthServices";
 import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
@@ -69,7 +68,6 @@ describe("ConfigTabContainer", () => {
         Libraries,
         IndividualAdmins,
         Collections,
-        AdminAuthServices,
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
@@ -141,7 +139,6 @@ describe("ConfigTabContainer", () => {
 
       const hiddenComponentClasses = [
         Collections,
-        AdminAuthServices,
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
@@ -195,7 +192,6 @@ describe("ConfigTabContainer", () => {
       const hiddenComponentClasses = [
         Collections,
         IndividualAdmins,
-        AdminAuthServices,
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,

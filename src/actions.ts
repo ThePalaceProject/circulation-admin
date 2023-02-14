@@ -8,7 +8,6 @@ import {
   StatsData,
   LibrariesData,
   CollectionsData,
-  AdminAuthServicesData,
   IndividualAdminsData,
   PatronAuthServicesData,
   SitewideSettingsData,
@@ -75,9 +74,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly COLLECTIONS = "COLLECTIONS";
   static readonly EDIT_COLLECTION = "EDIT_COLLECTION";
   static readonly DELETE_COLLECTION = "DELETE_COLLECTION";
-  static readonly ADMIN_AUTH_SERVICES = "ADMIN_AUTH_SERVICES";
-  static readonly EDIT_ADMIN_AUTH_SERVICE = "EDIT_ADMIN_AUTH_SERVICE";
-  static readonly DELETE_ADMIN_AUTH_SERVICE = "DELETE_ADMIN_AUTH_SERVICE";
   static readonly INDIVIDUAL_ADMINS = "INDIVIDUAL_ADMINS";
   static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
   static readonly DELETE_INDIVIDUAL_ADMIN = "DELETE_INDIVIDUAL_ADMIN";
@@ -509,31 +505,6 @@ export default class ActionCreator extends BaseActionCreator {
     const url = "/admin/collection/" + identifier;
     return this.postForm(
       ActionCreator.DELETE_COLLECTION,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchAdminAuthServices() {
-    const url = "/admin/admin_auth_services";
-    return this.fetchJSON<AdminAuthServicesData>(
-      ActionCreator.ADMIN_AUTH_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editAdminAuthService(data: FormData) {
-    const url = "/admin/admin_auth_services";
-    return this.postForm(ActionCreator.EDIT_ADMIN_AUTH_SERVICE, url, data).bind(
-      this
-    );
-  }
-
-  deleteAdminAuthService(identifier: string | number) {
-    const url = "/admin/admin_auth_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_ADMIN_AUTH_SERVICE,
       url,
       null,
       "DELETE"
