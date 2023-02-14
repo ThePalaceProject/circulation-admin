@@ -47,8 +47,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
   render(): JSX.Element {
     const { lane, active, snapshot, provided, renderLanes } = this.props;
     const hasSublanes = lane.sublanes && !!lane.sublanes.length;
-    const hasCustomLists =
-      lane.custom_list_ids && !!lane.custom_list_ids.length;
+
     return (
       <li key={lane.id}>
         <div
@@ -79,7 +78,7 @@ export default class Lane extends React.Component<LaneProps, LaneState> {
           </div>
           {this.state.expanded && (
             <div className="lane-buttons">
-              {hasCustomLists && this.renderButton("edit")}
+              {this.renderButton("edit")}
               {this.renderButton("create")}
             </div>
           )}

@@ -91,14 +91,6 @@ describe("Lane", () => {
     );
     expect(editSublane.hasClass("disabled")).to.be.false;
 
-    // A lane that wasn't created from custom lists should not be editable.
-    const notFromCustomLists = { ...laneData, ...{ custom_list_ids: [] } };
-    wrapper.setProps({ lane: notFromCustomLists });
-    editSublane = wrapper
-      .find(Link)
-      .filterWhere((el) => el.find("a").hasClass("edit-lane"));
-    expect(editSublane.length).to.equal(0);
-
     // The link is disabled if there are lane order changes.
     wrapper.setProps({ lane: laneData, orderChanged: true });
     editSublane = wrapper
