@@ -55,7 +55,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Libraries");
       expect(linkTexts).to.contain("Admins");
       expect(linkTexts).to.contain("Collections");
-      expect(linkTexts).to.contain("Admin Authentication");
       expect(linkTexts).to.contain("Patron Authentication");
       expect(linkTexts).to.contain("Sitewide Settings");
       expect(linkTexts).to.contain("Metadata");
@@ -121,7 +120,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Admins");
       expect(linkTexts).not.to.contain("Analytics");
       expect(linkTexts).not.to.contain("Collections");
-      expect(linkTexts).not.to.contain("Admin Authentication");
       expect(linkTexts).not.to.contain("Patron Authentication");
       expect(linkTexts).not.to.contain("Sitewide Settings");
       expect(linkTexts).not.to.contain("Metadata");
