@@ -293,12 +293,6 @@ export interface PathFor {
   (collectionUrl: string, bookUrl: string, tab?: string): string;
 }
 
-export interface AdminAuthServiceData extends ServiceData {}
-
-export interface AdminAuthServicesData extends ServicesData {
-  admin_auth_services: AdminAuthServiceData[];
-}
-
 export interface AdminRoleData {
   library?: string;
   role: string;

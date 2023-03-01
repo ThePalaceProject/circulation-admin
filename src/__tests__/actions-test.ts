@@ -702,60 +702,6 @@ describe("actions", () => {
     });
   });
 
-  describe("fetchAdminAuthServices", () => {
-    it("dispatches request, load, and success", async () => {
-      const dispatch = stub();
-      const adminAuthServicesData = "adminAuthServices";
-      fetcher.testData = {
-        ok: true,
-        status: 200,
-        json: () =>
-          new Promise<any>((resolve, reject) => {
-            resolve(adminAuthServicesData);
-          }),
-      };
-      fetcher.resolve = true;
-
-      const data = await actions.fetchAdminAuthServices()(dispatch);
-      expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(
-        `${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.REQUEST}`
-      );
-      expect(dispatch.args[1][0].type).to.equal(
-        `${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.SUCCESS}`
-      );
-      expect(dispatch.args[2][0].type).to.equal(
-        `${ActionCreator.ADMIN_AUTH_SERVICES}_${ActionCreator.LOAD}`
-      );
-      expect(data).to.deep.equal(adminAuthServicesData);
-    });
-  });
-
-  describe("editAdminAuthService", () => {
-    it("dispatches request and success", async () => {
-      const editAdminAuthServiceUrl = "/admin/admin_auth_services";
-      const dispatch = stub();
-      const formData = new (window as any).FormData();
-      formData.append("name", "new name");
-
-      fetchMock.mock(editAdminAuthServiceUrl, "server response");
-      const fetchArgs = fetchMock.calls();
-
-      await actions.editAdminAuthService(formData)(dispatch);
-      expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(
-        `${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.REQUEST}`
-      );
-      expect(dispatch.args[1][0].type).to.equal(
-        `${ActionCreator.EDIT_ADMIN_AUTH_SERVICE}_${ActionCreator.SUCCESS}`
-      );
-      expect(fetchMock.called()).to.equal(true);
-      expect(fetchArgs[0][0]).to.equal(editAdminAuthServiceUrl);
-      expect(fetchArgs[0][1].method).to.equal("POST");
-      expect(fetchArgs[0][1].body).to.equal(formData);
-    });
-  });
-
   describe("fetchIndividualAdmins", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();

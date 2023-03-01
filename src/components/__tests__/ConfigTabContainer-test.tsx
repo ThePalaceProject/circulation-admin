@@ -8,7 +8,6 @@ import buildStore from "../../store";
 import ConfigTabContainer from "../ConfigTabContainer";
 import Libraries from "../Libraries";
 import Collections from "../Collections";
-import AdminAuthServices from "../AdminAuthServices";
 import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
@@ -56,7 +55,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Libraries");
       expect(linkTexts).to.contain("Admins");
       expect(linkTexts).to.contain("Collections");
-      expect(linkTexts).to.contain("Admin Authentication");
       expect(linkTexts).to.contain("Patron Authentication");
       expect(linkTexts).to.contain("Sitewide Settings");
       expect(linkTexts).to.contain("Metadata");
@@ -69,7 +67,6 @@ describe("ConfigTabContainer", () => {
         Libraries,
         IndividualAdmins,
         Collections,
-        AdminAuthServices,
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
@@ -123,7 +120,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Admins");
       expect(linkTexts).not.to.contain("Analytics");
       expect(linkTexts).not.to.contain("Collections");
-      expect(linkTexts).not.to.contain("Admin Authentication");
       expect(linkTexts).not.to.contain("Patron Authentication");
       expect(linkTexts).not.to.contain("Sitewide Settings");
       expect(linkTexts).not.to.contain("Metadata");
@@ -141,7 +137,6 @@ describe("ConfigTabContainer", () => {
 
       const hiddenComponentClasses = [
         Collections,
-        AdminAuthServices,
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
@@ -195,7 +190,6 @@ describe("ConfigTabContainer", () => {
       const hiddenComponentClasses = [
         Collections,
         IndividualAdmins,
-        AdminAuthServices,
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,

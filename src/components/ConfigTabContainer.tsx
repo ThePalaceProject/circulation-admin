@@ -2,7 +2,6 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import Libraries from "./Libraries";
 import Collections from "./Collections";
-import AdminAuthServices from "./AdminAuthServices";
 import IndividualAdmins from "./IndividualAdmins";
 import PatronAuthServices from "./PatronAuthServices";
 import SitewideAnnouncements from "./SitewideAnnouncements";
@@ -47,7 +46,6 @@ export default class ConfigTabContainer extends TabContainer<
     libraries: Libraries,
     individualAdmins: IndividualAdmins,
     collections: Collections,
-    adminAuth: AdminAuthServices,
     patronAuth: PatronAuthServices,
     sitewideSettings: SitewideSettings,
     logging: LoggingServices,
@@ -65,7 +63,6 @@ export default class ConfigTabContainer extends TabContainer<
   SYSTEM_ADMIN_TABS = Object.keys(this.COMPONENT_CLASSES);
 
   DISPLAY_NAMES = {
-    adminAuth: "Admin Authentication",
     individualAdmins: "Admins",
     patronAuth: "Patron Authentication",
     sitewideAnnouncements: "Sitewide Announcements",

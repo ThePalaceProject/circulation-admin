@@ -10,7 +10,6 @@ import stats, { StatsState } from "./stats";
 import diagnostics from "./diagnostics";
 import libraries from "./libraries";
 import collections from "./collections";
-import adminAuthServices from "./adminAuthServices";
 import individualAdmins from "./individualAdmins";
 import patronAuthServices from "./patronAuthServices";
 import sitewideAnnouncements from "./sitewideAnnouncements";
@@ -51,7 +50,6 @@ import patronManager from "./managePatrons";
 import {
   LibrariesData,
   CollectionsData,
-  AdminAuthServicesData,
   IndividualAdminsData,
   PatronAuthServicesData,
   SitewideAnnouncementsData,
@@ -87,7 +85,6 @@ export interface State {
   diagnostics: FetchEditState<DiagnosticsData>;
   libraries: FetchEditState<LibrariesData>;
   collections: FetchEditState<CollectionsData>;
-  adminAuthServices: FetchEditState<AdminAuthServicesData>;
   individualAdmins: FetchEditState<IndividualAdminsData>;
   patronAuthServices: FetchEditState<PatronAuthServicesData>;
   sitewideAnnouncements: FetchEditState<SitewideAnnouncementsData>;
@@ -134,7 +131,6 @@ export default combineReducers<State>({
   diagnostics,
   libraries,
   collections,
-  adminAuthServices,
   individualAdmins,
   patronAuthServices,
   sitewideAnnouncements,
