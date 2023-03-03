@@ -110,6 +110,8 @@ export default function AdvancedSearchFilterInput({
           disabled={!(filterKey && filterOp && filterValue.trim())}
           type="submit"
         />
+
+        <input type="checkbox" />
       </div>
     </form>
   );
