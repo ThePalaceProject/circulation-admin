@@ -19,6 +19,7 @@ export default function AdvancedSearchFilterInput({
   const [filterKey, setFilterKey] = React.useState("genre");
   const [filterOp, setFilterOp] = React.useState("eq");
   const [filterValue, setFilterValue] = React.useState("");
+  const [clearFilters, setClearFilters] = React.useState(false);
 
   const handleKeyChange = (value) => {
     setFilterKey(value);
@@ -34,6 +35,8 @@ export default function AdvancedSearchFilterInput({
 
   const addFilter = () => {
     const filterValueTrimmed = filterValue.trim();
+
+    console.log("Should clear filters?", clearFilters);
 
     if (filterKey && filterOp && filterValueTrimmed) {
       onAdd?.({
@@ -111,7 +114,14 @@ export default function AdvancedSearchFilterInput({
           type="submit"
         />
 
-        <input type="checkbox" />
+        <input
+          id="clear-filters-on-search"
+          type="checkbox"
+          onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setClearFilters(e.target.checked);
+          }}
+        />
+        <label htmlFor="clear-filters-on-search">Clear filters on search</label>
       </div>
     </form>
   );
