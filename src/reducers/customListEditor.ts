@@ -1328,6 +1328,13 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
           id: newQueryId(),
         };
 
+        if (query.clearFilters) {
+          console.log(
+            "handleAddCustomListEditorAdvSearchQuery",
+            "TODO: Clear filters here."
+          );
+        }
+
         if (!currentQuery) {
           builder.query = newQuery;
           builder.selectedQueryId = newQuery.id;

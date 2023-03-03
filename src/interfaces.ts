@@ -459,6 +459,7 @@ export interface AdvancedSearchQuery {
   and?: AdvancedSearchQuery[];
   or?: AdvancedSearchQuery[];
   not?: AdvancedSearchQuery[];
+  clearFilters?: boolean;
 }
 
 export interface AdvancedSearchData {
