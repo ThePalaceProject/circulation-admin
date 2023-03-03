@@ -1328,14 +1328,7 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
           id: newQueryId(),
         };
 
-        if (query.clearFilters) {
-          console.log(
-            "handleAddCustomListEditorAdvSearchQuery",
-            "TODO: Clear filters here."
-          );
-        }
-
-        if (!currentQuery) {
+        if (!currentQuery || query.clearFilters) {
           builder.query = newQuery;
           builder.selectedQueryId = newQuery.id;
         } else {

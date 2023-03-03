@@ -36,8 +36,6 @@ export default function AdvancedSearchFilterInput({
   const addFilter = () => {
     const filterValueTrimmed = filterValue.trim();
 
-    console.log("Should clear filters?", clearFilters);
-
     if (filterKey && filterOp && filterValueTrimmed) {
       onAdd?.({
         key: filterKey,
