@@ -78,6 +78,7 @@ describe("AdvancedSearchFilterInput", () => {
 
     expect(onAdd.args[0]).to.deep.equal([
       {
+        clearFilters: false,
         key: "genre",
         op: "eq",
         value: "hello",
@@ -98,6 +99,7 @@ describe("AdvancedSearchFilterInput", () => {
 
     expect(onAdd.args[0]).to.deep.equal([
       {
+        clearFilters: false,
         key: "genre",
         op: "eq",
         value: "hello",
