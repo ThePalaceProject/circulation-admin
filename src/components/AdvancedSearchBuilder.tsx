@@ -10,7 +10,11 @@ export interface AdvancedSearchBuilderProps {
   name: string;
   query: AdvancedSearchQuery;
   selectedQueryId: string;
-  addQuery?: (builderName: string, query: AdvancedSearchQuery) => void;
+  addQuery?: (
+    builderName: string,
+    query: AdvancedSearchQuery,
+    clearFilters: boolean
+  ) => void;
   updateQueryBoolean?: (builderName: string, id: string, bool: string) => void;
   moveQuery?: (builderName: string, id: string, targetId: string) => void;
   removeQuery?: (builderName: string, id: string) => void;
@@ -64,7 +68,9 @@ export default function AdvancedSearchBuilder({
         {!readOnly && (
           <AdvancedSearchFilterInput
             name={name}
-            onAdd={(query) => addQuery?.(name, query)}
+            onAdd={(query, clearFilters) =>
+              addQuery?.(name, query, clearFilters)
+            }
           />
         )}
 

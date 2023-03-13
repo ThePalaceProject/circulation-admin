@@ -85,10 +85,12 @@ describe("AdvancedSearchBuilder", () => {
       value: "The Shining",
     };
 
-    onAdd(newQuery);
+    const clearFilter = false;
+
+    onAdd(newQuery, clearFilter);
 
     expect(addQuery.callCount).to.equal(1);
-    expect(addQuery.args[0]).to.deep.equal(["include", newQuery]);
+    expect(addQuery.args[0]).to.deep.equal(["include", newQuery, clearFilter]);
   });
 
   it("should call updateQueryBoolean with the correct name when a boolean query operator is changed in the AdvancedSearchFilterViewer", () => {

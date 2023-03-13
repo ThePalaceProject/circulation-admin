@@ -1319,7 +1319,7 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
   (state: CustomListEditorState, action): CustomListEditorState => {
     return checkSearchModified(
       produce(state, (draftState) => {
-        const { builderName, query } = action;
+        const { builderName, query, clearFilters } = action;
         const builder = draftState.searchParams.current.advanced[builderName];
         const { query: currentQuery, selectedQueryId } = builder;
 
@@ -1328,7 +1328,7 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
           id: newQueryId(),
         };
 
-        if (!currentQuery || query.clearFilters) {
+        if (!currentQuery || clearFilters) {
           builder.query = newQuery;
           builder.selectedQueryId = newQuery.id;
         } else {

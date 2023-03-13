@@ -74,7 +74,8 @@ export interface CustomListsDispatchProps {
   updateCustomListEditorSearchParam?: (name: string, value) => void;
   addCustomListEditorAdvSearchQuery?: (
     builderName: string,
-    query: AdvancedSearchQuery
+    query: AdvancedSearchQuery,
+    clearFilters: boolean
   ) => void;
   updateCustomListEditorAdvSearchQueryBoolean?: (
     builderName: string,
@@ -535,9 +536,16 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     addCustomListEditorAdvSearchQuery: (
       builderName: string,
-      query: AdvancedSearchQuery
+      query: AdvancedSearchQuery,
+      clearFilters: boolean
     ) => {
-      dispatch(actions.addCustomListEditorAdvSearchQuery(builderName, query));
+      dispatch(
+        actions.addCustomListEditorAdvSearchQuery(
+          builderName,
+          query,
+          clearFilters
+        )
+      );
       dispatch(actions.executeCustomListEditorSearch(ownProps.library));
     },
     updateCustomListEditorAdvSearchQueryBoolean: (

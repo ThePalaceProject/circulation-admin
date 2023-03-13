@@ -939,7 +939,8 @@ export default class ActionCreator extends BaseActionCreator {
 
   addCustomListEditorAdvSearchQuery(
     builderName: string,
-    query: AdvancedSearchQuery
+    query: AdvancedSearchQuery,
+    clearFilters: boolean
   ) {
     return {
       type: ActionCreator.ADD_CUSTOM_LIST_EDITOR_ADV_SEARCH_QUERY,

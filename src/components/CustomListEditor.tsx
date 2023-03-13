@@ -59,7 +59,11 @@ export type CustomListEditorProps = {
   toggleCollection?: (id: number) => void;
   updateProperty?: (name: string, value) => void;
   updateSearchParam?: (name: string, value) => void;
-  addAdvSearchQuery?: (builderName: string, query: AdvancedSearchQuery) => void;
+  addAdvSearchQuery?: (
+    builderName: string,
+    query: AdvancedSearchQuery,
+    clearFilters: boolean
+  ) => void;
   updateAdvSearchQueryBoolean?: (
     builderName: string,
     id: string,

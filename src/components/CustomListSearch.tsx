@@ -19,7 +19,11 @@ export interface CustomListSearchProps {
   updateAutoUpdate?: (value: boolean) => void;
   updateSearchParam?: (name: string, value) => void;
   search: () => void;
-  addAdvSearchQuery?: (builderName: string, query: AdvancedSearchQuery) => void;
+  addAdvSearchQuery?: (
+    builderName: string,
+    query: AdvancedSearchQuery,
+    clearFilters: boolean
+  ) => void;
   updateAdvSearchQueryBoolean?: (
     builderName: string,
     id: string,
@@ -60,11 +64,15 @@ const CustomListSearch = ({
 }: CustomListSearchProps) => {
   React.useEffect(() => {
     if (startingTitle) {
-      addAdvSearchQuery?.("include", {
-        key: "title",
-        op: "eq",
-        value: startingTitle,
-      });
+      addAdvSearchQuery?.(
+        "include",
+        {
+          key: "title",
+          op: "eq",
+          value: startingTitle,
+        },
+        false
+      );
 
       search?.();
     }

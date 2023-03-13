@@ -6,7 +6,7 @@ import EditableInput from "./EditableInput";
 
 export interface AdvancedSearchFilterInputProps {
   name: string;
-  onAdd: (query: AdvancedSearchQuery) => void;
+  onAdd: (query: AdvancedSearchQuery, clearFilters: boolean) => void;
 }
 
 export default function AdvancedSearchFilterInput({
@@ -37,12 +37,14 @@ export default function AdvancedSearchFilterInput({
     const filterValueTrimmed = filterValue.trim();
 
     if (filterKey && filterOp && filterValueTrimmed) {
-      onAdd?.({
-        key: filterKey,
-        op: filterOp,
-        value: filterValueTrimmed,
-        clearFilters: clearFilters,
-      });
+      onAdd?.(
+        {
+          key: filterKey,
+          op: filterOp,
+          value: filterValueTrimmed,
+        },
+        clearFilters
+      );
 
       setFilterValue("");
     }
