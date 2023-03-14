@@ -41,7 +41,6 @@ export default function AdvancedSearchFilterInput({
         key: filterKey,
         op: filterOp,
         value: filterValueTrimmed,
-        clearFilters: clearFilters,
       });
 
       setFilterValue("");
