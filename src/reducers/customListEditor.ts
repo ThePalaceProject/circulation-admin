@@ -470,6 +470,11 @@ export interface CustomListEditorAdvancedSearchBuilderData {
    * The root advanced search query.
    */
   query: AdvancedSearchQuery;
+
+  /**
+   * Whether to clear all filters on search or not.
+   */
+  clearFilters: boolean;
 }
 
 /**
@@ -632,10 +637,12 @@ const initialSearchParams = {
     include: {
       query: null,
       selectedQueryId: null,
+      clearFilters: null,
     },
     exclude: {
       query: null,
       selectedQueryId: null,
+      clearFilters: null,
     },
   },
 };
