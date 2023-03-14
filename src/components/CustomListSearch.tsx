@@ -24,6 +24,7 @@ export interface CustomListSearchProps {
     query: AdvancedSearchQuery,
     clearFilters: boolean
   ) => void;
+  clearFilters: boolean;
   updateAdvSearchQueryBoolean?: (
     builderName: string,
     id: string,
@@ -57,6 +58,7 @@ const CustomListSearch = ({
   updateSearchParam,
   search,
   addAdvSearchQuery,
+  clearFilters,
   updateAdvSearchQueryBoolean,
   moveAdvSearchQuery,
   removeAdvSearchQuery,
@@ -71,7 +73,7 @@ const CustomListSearch = ({
           op: "eq",
           value: startingTitle,
         },
-        false
+        clearFilters
       );
 
       search?.();
