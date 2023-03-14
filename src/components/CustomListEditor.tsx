@@ -64,6 +64,7 @@ export type CustomListEditorProps = {
     query: AdvancedSearchQuery,
     clearFilters: boolean
   ) => void;
+  clearFilters: boolean;
   updateAdvSearchQueryBoolean?: (
     builderName: string,
     id: string,
@@ -116,6 +117,7 @@ export default function CustomListEditor({
   updateProperty,
   updateSearchParam,
   addAdvSearchQuery,
+  clearFilters,
   updateAdvSearchQueryBoolean,
   moveAdvSearchQuery,
   removeAdvSearchQuery,
@@ -274,6 +276,7 @@ export default function CustomListEditor({
             updateAutoUpdate={(value) => updateProperty?.("autoUpdate", value)}
             updateSearchParam={updateSearchParam}
             search={search}
+            clearFilters={clearFilters}
             entryPoints={entryPoints}
             startingTitle={startingTitle}
             library={library}

@@ -59,6 +59,7 @@ describe("CustomListSearch", () => {
         library={library}
         listId="123"
         search={search}
+        clearFilters={false}
         searchParams={searchParams}
         updateAutoUpdate={updateAutoUpdate}
         updateSearchParam={updateSearchParam}

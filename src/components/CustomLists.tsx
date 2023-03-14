@@ -34,6 +34,7 @@ import ErrorMessage from "./ErrorMessage";
 import CustomListsSidebar from "./CustomListsSidebar";
 
 export interface CustomListsStateProps {
+  clearFilters: boolean;
   customListEditorAutoUpdateStatus?: string;
   customListEditorProperties?: CustomListEditorProperties;
   customListEditorSavedName?: string;
@@ -188,6 +189,7 @@ export class CustomLists extends React.Component<
 
   renderEditor(): JSX.Element {
     const editorProps = {
+      clearFilters: this.props.clearFilters,
       collections: this.collectionsForLibrary(),
       autoUpdateStatus: this.props.customListEditorAutoUpdateStatus,
       isAutoUpdateEnabled: this.props.customListEditorIsAutoUpdateEnabled,

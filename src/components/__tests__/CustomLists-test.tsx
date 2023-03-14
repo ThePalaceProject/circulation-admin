@@ -184,6 +184,7 @@ describe("CustomLists", () => {
 
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           customListEditorProperties={customListEditorProperties}
           customListEditorEntries={customListEditorEntries}
           customListEditorSearchParams={customListEditorSearchParams}
@@ -262,6 +263,7 @@ describe("CustomLists", () => {
 
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="library"
           lists={undefined}
@@ -291,6 +293,7 @@ describe("CustomLists", () => {
 
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="library"
           lists={undefined}
@@ -334,6 +337,7 @@ describe("CustomLists", () => {
 
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="library"
           lists={undefined}
@@ -365,6 +369,7 @@ describe("CustomLists", () => {
     it("sorts lists", () => {
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="library"
           lists={listsData}
@@ -448,6 +453,7 @@ describe("CustomLists", () => {
 
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="library"
           lists={sharedListsData}
@@ -521,6 +527,7 @@ describe("CustomLists", () => {
     it("renders edit link but does not render delete button for librarian", () => {
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="library"
           lists={listsData}
@@ -672,6 +679,7 @@ describe("CustomLists", () => {
     it("gets the correct entry points list from the second available library", () => {
       wrapper = mount(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="another library"
           lists={listsData}
@@ -728,6 +736,7 @@ describe("CustomLists", () => {
 
       wrapper = shallow(
         <CustomLists
+          clearFilters={false}
           csrfToken="token"
           library="another library"
           lists={listsData}

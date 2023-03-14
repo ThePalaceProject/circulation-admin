@@ -144,6 +144,7 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
+        clearFilters={false}
         collections={collections}
         entries={entries}
         entryPoints={entryPoints}
