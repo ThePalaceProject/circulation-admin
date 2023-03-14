@@ -663,6 +663,7 @@ export const initialState: CustomListEditorState = {
   isOwner: true,
   isShared: false,
   isSharePending: false,
+  isClearFiltersEnabled: false,
   properties: {
     baseline: initialProperties,
     current: initialProperties,
