@@ -560,6 +560,11 @@ export interface CustomListEditorState {
   isAutoUpdateEnabled: boolean;
 
   /**
+   * Flag indicating ifclearing filters on search is enabled.
+   */
+  isClearFiltersEnabled: boolean;
+
+  /**
    * The loading state of the list; true if the list data has been loaded (not including the list
    * entries), false otherwise.
    */
@@ -1335,8 +1340,7 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
           id: newQueryId(),
         };
 
-        // if (!currentQuery || query.clearFilters) {
-        if (!currentQuery) {
+        if (!currentQuery || draftState.isClearFiltersEnabled) {
           builder.query = newQuery;
           builder.selectedQueryId = newQuery.id;
         } else {
@@ -1785,6 +1789,17 @@ const handleUpdateFeatureFlag = (
   return state;
 };
 
+const handleUpdateClearFiltersFlag = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  const { value } = action;
+
+  return produce(state, (draftState) => {
+    draftState.isClearFiltersEnabled = !!value;
+  });
+};
+
 export default (
   state: CustomListEditorState = initialState,
   action
@@ -1834,6 +1849,8 @@ export default (
       return handleSetFeatureFlags(state, action);
     case ActionCreator.UPDATE_FEATURE_FLAG:
       return handleUpdateFeatureFlag(state, action);
+    case ActionCreator.UPDATE_CLEAR_FILTERS_FLAG:
+      return handleUpdateClearFiltersFlag(state, action);
     default:
       return state;
   }

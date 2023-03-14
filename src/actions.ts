@@ -49,6 +49,7 @@ import {
 export default class ActionCreator extends BaseActionCreator {
   static readonly SET_FEATURE_FLAGS = "SET_FEATURE_FLAGS";
   static readonly UPDATE_FEATURE_FLAG = "UPDATE_FEATURE_FLAG";
+  static readonly UPDATE_CLEAR_FILTERS_FLAG = "UPDATE_CLEAR_FILTERS_FLAG";
   static readonly EDIT_BOOK = "EDIT_BOOK";
   static readonly BOOK_ADMIN = "BOOK_ADMIN";
   static readonly ROLES = "ROLES";
@@ -1191,6 +1192,13 @@ export default class ActionCreator extends BaseActionCreator {
     return {
       type: ActionCreator.UPDATE_FEATURE_FLAG,
       name,
+      value,
+    };
+  }
+
+  updateClearFiltersFlag(value: boolean) {
+    return {
+      type: ActionCreator.UPDATE_CLEAR_FILTERS_FLAG,
       value,
     };
   }
