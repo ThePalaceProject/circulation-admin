@@ -7,11 +7,13 @@ import EditableInput from "./EditableInput";
 export interface AdvancedSearchFilterInputProps {
   name: string;
   onAdd: (query: AdvancedSearchQuery) => void;
+  onClearFiltersFlagChange: (value: boolean) => void;
 }
 
 export default function AdvancedSearchFilterInput({
   name: builderName,
   onAdd,
+  onClearFiltersFlagChange,
 }: AdvancedSearchFilterInputProps) {
   const opSelect = React.useRef(null);
   const valueInput = React.useRef(null);
@@ -19,7 +21,6 @@ export default function AdvancedSearchFilterInput({
   const [filterKey, setFilterKey] = React.useState("genre");
   const [filterOp, setFilterOp] = React.useState("eq");
   const [filterValue, setFilterValue] = React.useState("");
-  const [clearFilters, setClearFilters] = React.useState(false);
 
   const handleKeyChange = (value) => {
     setFilterKey(value);
@@ -42,7 +43,6 @@ export default function AdvancedSearchFilterInput({
         op: filterOp,
         value: filterValueTrimmed,
       });
-
       setFilterValue("");
     }
   };
@@ -52,6 +52,17 @@ export default function AdvancedSearchFilterInput({
     event.preventDefault();
 
     addFilter();
+  };
+
+  const updateClearFiltersFlag = (checked: boolean) => {
+    onClearFiltersFlagChange(checked);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    updateClearFiltersFlag(event.target.checked);
   };
 
   const selectedField = fields.find((field) => field.value === filterKey);
@@ -115,9 +126,7 @@ export default function AdvancedSearchFilterInput({
         <input
           id="clear-filters-on-search"
           type="checkbox"
-          onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setClearFilters(e.target.checked);
-          }}
+          onInput={handleInputChange}
         />
         <label htmlFor="clear-filters-on-search">Clear filters on search</label>
       </div>

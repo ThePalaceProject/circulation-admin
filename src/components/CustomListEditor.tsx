@@ -60,6 +60,7 @@ export type CustomListEditorProps = {
   updateProperty?: (name: string, value) => void;
   updateSearchParam?: (name: string, value) => void;
   addAdvSearchQuery?: (builderName: string, query: AdvancedSearchQuery) => void;
+  updateClearFiltersFlag?: (builderName: string, value: boolean) => void;
   updateAdvSearchQueryBoolean?: (
     builderName: string,
     id: string,
@@ -112,6 +113,7 @@ export default function CustomListEditor({
   updateProperty,
   updateSearchParam,
   addAdvSearchQuery,
+  updateClearFiltersFlag,
   updateAdvSearchQueryBoolean,
   moveAdvSearchQuery,
   removeAdvSearchQuery,
@@ -276,6 +278,7 @@ export default function CustomListEditor({
             languages={languages}
             showAutoUpdate={isAutoUpdateEnabled}
             addAdvSearchQuery={addAdvSearchQuery}
+            updateClearFiltersFlag={updateClearFiltersFlag}
             updateAdvSearchQueryBoolean={updateAdvSearchQueryBoolean}
             moveAdvSearchQuery={moveAdvSearchQuery}
             removeAdvSearchQuery={removeAdvSearchQuery}

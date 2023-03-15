@@ -938,6 +938,14 @@ export default class ActionCreator extends BaseActionCreator {
     };
   }
 
+  updateClearFiltersFlag(builderName: string, value: boolean) {
+    return {
+      type: ActionCreator.UPDATE_CLEAR_FILTERS_FLAG,
+      builderName,
+      value,
+    };
+  }
+
   addCustomListEditorAdvSearchQuery(
     builderName: string,
     query: AdvancedSearchQuery
@@ -1192,13 +1200,6 @@ export default class ActionCreator extends BaseActionCreator {
     return {
       type: ActionCreator.UPDATE_FEATURE_FLAG,
       name,
-      value,
-    };
-  }
-
-  updateClearFiltersFlag(value: boolean) {
-    return {
-      type: ActionCreator.UPDATE_CLEAR_FILTERS_FLAG,
       value,
     };
   }

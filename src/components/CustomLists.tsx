@@ -77,6 +77,7 @@ export interface CustomListsDispatchProps {
     builderName: string,
     query: AdvancedSearchQuery
   ) => void;
+  updateClearFiltersFlag?: (builderName: string, value: boolean) => void;
   updateCustomListEditorAdvSearchQueryBoolean?: (
     builderName: string,
     id: string,
@@ -225,6 +226,7 @@ export class CustomLists extends React.Component<
       toggleCollection: this.props.toggleCustomListEditorCollection,
       updateSearchParam: this.props.updateCustomListEditorSearchParam,
       addAdvSearchQuery: this.props.addCustomListEditorAdvSearchQuery,
+      updateClearFiltersFlag: this.props.updateClearFiltersFlag,
       updateAdvSearchQueryBoolean: this.props
         .updateCustomListEditorAdvSearchQueryBoolean,
       moveAdvSearchQuery: this.props.moveCustomListEditorAdvSearchQuery,
@@ -536,6 +538,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateCustomListEditorSearchParam: (name: string, value) => {
       dispatch(actions.updateCustomListEditorSearchParam(name, value));
       dispatch(actions.executeCustomListEditorSearch(ownProps.library));
+    },
+    updateClearFiltersFlag: (builderName: string, value: boolean) => {
+      dispatch(actions.updateClearFiltersFlag(builderName, value));
     },
     addCustomListEditorAdvSearchQuery: (
       builderName: string,
