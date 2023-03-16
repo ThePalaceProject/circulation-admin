@@ -470,11 +470,6 @@ export interface CustomListEditorAdvancedSearchBuilderData {
    * The root advanced search query.
    */
   query: AdvancedSearchQuery;
-
-  /**
-   * Whether to clear all filters on search or not.
-   */
-  clearFilters: boolean;
 }
 
 /**
@@ -560,9 +555,9 @@ export interface CustomListEditorState {
   isAutoUpdateEnabled: boolean;
 
   /**
-   * Flag indicating ifclearing filters on search is enabled.
+   * Object keyed by builderName containing boolean values of whether clearFilters is enabled for a given builder or not.
    */
-  isClearFiltersEnabled: boolean;
+  builderClearFiltersFlags: object;
 
   /**
    * The loading state of the list; true if the list data has been loaded (not including the list
@@ -663,7 +658,7 @@ export const initialState: CustomListEditorState = {
   isOwner: true,
   isShared: false,
   isSharePending: false,
-  isClearFiltersEnabled: false,
+  builderClearFiltersFlags: {},
   properties: {
     baseline: initialProperties,
     current: initialProperties,
@@ -1341,7 +1336,7 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
           id: newQueryId(),
         };
 
-        if (!currentQuery || draftState.isClearFiltersEnabled) {
+        if (!currentQuery || draftState.builderClearFiltersFlags[builderName]) {
           builder.query = newQuery;
           builder.selectedQueryId = newQuery.id;
         } else {
@@ -1794,10 +1789,10 @@ const handleUpdateClearFiltersFlag = (
   state: CustomListEditorState,
   action
 ): CustomListEditorState => {
-  const { value } = action;
+  const { builderName, value } = action;
 
   return produce(state, (draftState) => {
-    draftState.isClearFiltersEnabled = !!value;
+    draftState.builderClearFiltersFlags[builderName] = !!value;
   });
 };
 
