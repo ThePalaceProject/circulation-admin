@@ -74,7 +74,6 @@ export default function AdvancedSearchFilterInput({
             key={value}
             type="radio"
             name={`${builderName}-filter-key`}
-            id={`${builderName}-filter-key`}
             checked={value === filterKey ? true : false}
             label={label}
             value={value}

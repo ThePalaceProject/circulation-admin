@@ -560,7 +560,7 @@ export interface CustomListEditorState {
   isAutoUpdateEnabled: boolean;
 
   /**
-   * Flag indicating ifclearing filters on search is enabled.
+   * Flag indicating if clearing filters on search is enabled.
    */
   isClearFiltersEnabled: boolean;
 
