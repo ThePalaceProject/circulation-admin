@@ -17,6 +17,7 @@ export default function AdvancedSearchFilterInput({
 }: AdvancedSearchFilterInputProps) {
   const opSelect = React.useRef(null);
   const valueInput = React.useRef(null);
+  const clearFiltersInput = React.useRef(null);
 
   const [filterKey, setFilterKey] = React.useState("genre");
   const [filterOp, setFilterOp] = React.useState("eq");
@@ -58,11 +59,8 @@ export default function AdvancedSearchFilterInput({
     onClearFiltersFlagChange(checked);
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    updateClearFiltersFlag(event.target.checked);
+  const handleInputChange = () => {
+    updateClearFiltersFlag(clearFiltersInput.current?.getChecked());
   };
 
   const selectedField = fields.find((field) => field.value === filterKey);
@@ -76,6 +74,7 @@ export default function AdvancedSearchFilterInput({
             key={value}
             type="radio"
             name={`${builderName}-filter-key`}
+            id={`${builderName}-filter-key`}
             checked={value === filterKey ? true : false}
             label={label}
             value={value}
@@ -123,19 +122,13 @@ export default function AdvancedSearchFilterInput({
           type="submit"
         />
 
-        {/* 
-       <EditableInput 
-          type="checkbox" 
-          name={`clear-filters-on-search-{builderName}`} 
-          onChange={handleInputChange}
-        />  
-      */}
-
-        <input
-          name={`clear-filters-on-search-${builderName}`}
+        <EditableInput
           type="checkbox"
-          onInput={handleInputChange}
+          name={`clear-filters-on-search-${builderName}`}
+          ref={clearFiltersInput}
+          onChange={handleInputChange}
         />
+
         <label htmlFor={`clear-filters-on-search-${builderName}`}>
           Clear filters on search
         </label>
