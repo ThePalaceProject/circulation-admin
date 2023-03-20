@@ -47,7 +47,7 @@ export interface CustomListsStateProps {
   customListEditorIsModified?: boolean;
   customListEditorIsSearchModified?: boolean;
   customListEditorIsAutoUpdateEnabled?: boolean;
-  customListEditorIsClearFiltersEnabled?: boolean;
+  FiltersEnabled?: boolean;
   lists: CustomListData[];
   listDetails?: CollectionData;
   collections: AdminCollectionData[];
@@ -192,7 +192,6 @@ export class CustomLists extends React.Component<
       collections: this.collectionsForLibrary(),
       autoUpdateStatus: this.props.customListEditorAutoUpdateStatus,
       isAutoUpdateEnabled: this.props.customListEditorIsAutoUpdateEnabled,
-      isClearFiltersEnabled: this.props.customListEditorIsClearFiltersEnabled,
       properties: this.props.customListEditorProperties,
       savedName: this.props.customListEditorSavedName,
       searchParams: this.props.customListEditorSearchParams,
@@ -467,8 +466,6 @@ function mapStateToProps(state, ownProps) {
       state.editor.customListEditor.isSearchModified,
     customListEditorIsAutoUpdateEnabled:
       state.editor.customListEditor.isAutoUpdateEnabled,
-    customListEditorIsClearFiltersEnabled:
-      state.editor.customListEditor.isClearFiltersEnabled,
     lists:
       state.editor.customLists &&
       state.editor.customLists.data &&
