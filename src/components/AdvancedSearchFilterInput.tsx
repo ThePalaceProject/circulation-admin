@@ -123,12 +123,22 @@ export default function AdvancedSearchFilterInput({
           type="submit"
         />
 
+        {/* 
+       <EditableInput 
+          type="checkbox" 
+          name={`clear-filters-on-search-{builderName}`} 
+          onChange={handleInputChange}
+        />  
+      */}
+
         <input
-          id="clear-filters-on-search"
+          name={`clear-filters-on-search-${builderName}`}
           type="checkbox"
           onInput={handleInputChange}
         />
-        <label htmlFor="clear-filters-on-search">Clear filters on search</label>
+        <label htmlFor={`clear-filters-on-search-${builderName}`}>
+          Clear filters on search
+        </label>
       </div>
     </form>
   );
