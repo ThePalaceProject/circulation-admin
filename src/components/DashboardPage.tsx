@@ -5,7 +5,7 @@ import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 import Stats from "./Stats";
-// import CirculationEvents from "./CirculationEvents";
+import CirculationEvents from "./CirculationEvents";
 import title from "../utils/title";
 
 export interface DashboardPageProps extends React.Props<DashboardPageProps> {
@@ -44,10 +44,10 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
         <Header />
         <main className="body">
           <Stats library={library} />
-          {/*<CirculationEvents*/}
-          {/*  store={this.context.editorStore}*/}
-          {/*  library={library}*/}
-          {/*/>*/}
+          <CirculationEvents
+            store={this.context.editorStore}
+            library={library}
+          />
         </main>
         <Footer />
       </div>
