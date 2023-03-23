@@ -13,20 +13,24 @@ const humanNumber = (n: number): string =>
 
 const SingleStat = (props: SingleStatProps) => {
   const baseStat = (
-    <li className="single-stat">
+    <>
       <span className="stat-value">{humanNumber(props.value)}</span>
       <span className="stat-label">{props.label}</span>
-    </li>
+    </>
   );
-  return !props.tooltip ? (
-    baseStat
-  ) : (
-    <span
-      data-toggle="tooltip"
-      title={`(${formatNumber(props.value)}) ${props.tooltip}`}
-    >
-      {baseStat}
-    </span>
+  return (
+    <li className="single-stat">
+      {!props.tooltip ? (
+        baseStat
+      ) : (
+        <span
+          data-toggle="tooltip"
+          title={`(${formatNumber(props.value)}) ${props.tooltip}`}
+        >
+          {baseStat}
+        </span>
+      )}
+    </li>
   );
 };
 
