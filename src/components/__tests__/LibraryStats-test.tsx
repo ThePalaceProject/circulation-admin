@@ -56,17 +56,17 @@ describe("LibraryStats", () => {
 
     it("shows stats data", () => {
       const groups = wrapper.find(".stat-group");
-      let singleStats;
+      let statItems;
       expect(groups.length).to.equal(4);
 
       /* Patrons */
       expect(groups.at(0).text()).to.contain("Patrons");
-      singleStats = groups.at(0).find("SingleStat");
-      expect(singleStats.length).to.equal(3);
-      expectStats(singleStats.at(0).props(), "Total Patrons", 132);
-      expectStats(singleStats.at(1).props(), "Patrons With Active Loans", 21);
+      statItems = groups.at(0).find("SingleStatListItem");
+      expect(statItems.length).to.equal(3);
+      expectStats(statItems.at(0).props(), "Total Patrons", 132);
+      expectStats(statItems.at(1).props(), "Patrons With Active Loans", 21);
       expectStats(
-        singleStats.at(2).props(),
+        statItems.at(2).props(),
         "Patrons With Active Loans or Holds",
         23
       );
@@ -78,23 +78,23 @@ describe("LibraryStats", () => {
 
       /* Circulation */
       expect(groups.at(1).text()).to.contain("Circulation");
-      singleStats = groups.at(1).find("SingleStat");
-      expect(singleStats.length).to.equal(2);
-      expectStats(singleStats.at(0).props(), "Active Loans", 87);
-      expectStats(singleStats.at(1).props(), "Active Holds", 5);
+      statItems = groups.at(1).find("SingleStatListItem");
+      expect(statItems.length).to.equal(2);
+      expectStats(statItems.at(0).props(), "Active Loans", 87);
+      expectStats(statItems.at(1).props(), "Active Holds", 5);
       expect(groups.at(1).text()).to.contain("87Active Loans");
       expect(groups.at(1).text()).to.contain("5Active Holds");
 
       /* Inventory */
       expect(groups.at(2).text()).to.contain("Inventory");
-      singleStats = groups.at(2).find("SingleStat");
-      expect(singleStats.length).to.equal(6);
-      expectStats(singleStats.at(0).props(), "Titles", 29119);
-      expectStats(singleStats.at(1).props(), "Lendable titles", 29092);
-      expectStats(singleStats.at(2).props(), "Metered license titles", 20658);
-      expectStats(singleStats.at(3).props(), "Unlimited license titles", 623);
-      expectStats(singleStats.at(4).props(), "Open access titles", 7838);
-      expectStats(singleStats.at(5).props(), "Self-hosted titles", 145);
+      statItems = groups.at(2).find("SingleStatListItem");
+      expect(statItems.length).to.equal(6);
+      expectStats(statItems.at(0).props(), "Titles", 29119);
+      expectStats(statItems.at(1).props(), "Lendable titles", 29092);
+      expectStats(statItems.at(2).props(), "Metered license titles", 20658);
+      expectStats(statItems.at(3).props(), "Unlimited license titles", 623);
+      expectStats(statItems.at(4).props(), "Open access titles", 7838);
+      expectStats(statItems.at(5).props(), "Self-hosted titles", 145);
       expect(groups.at(2).text()).to.contain("29.1kTitles");
       expect(groups.at(2).text()).to.contain("29.1kLendable titles");
       expect(groups.at(2).text()).to.contain("20.7kMetered license titles");

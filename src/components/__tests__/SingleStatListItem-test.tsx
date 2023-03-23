@@ -2,10 +2,12 @@ import { expect } from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import { beforeEach } from "mocha";
 import * as React from "react";
-import SingleStat, { SingleStatProps } from "../SingleStat";
+import SingleStatListItem, {
+  SingleStatListItemProps,
+} from "../SingleStatListItem";
 
-describe("SingleStat", () => {
-  const statWithTooltip: SingleStatProps = {
+describe("SingleStatListItem", () => {
+  const statWithTooltip: SingleStatListItemProps = {
     label: "Number of Widgets",
     value: 357892,
     tooltip: "Total Widget Count",
@@ -24,7 +26,7 @@ describe("SingleStat", () => {
     let wrapper;
 
     beforeEach(() => {
-      wrapper = shallow(<SingleStat {...statWithTooltip} />);
+      wrapper = shallow(<SingleStatListItem {...statWithTooltip} />);
     });
 
     it("has a top-level list element, with or without a tooltip", () => {

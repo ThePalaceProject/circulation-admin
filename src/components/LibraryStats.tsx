@@ -9,7 +9,7 @@ import {
   YAxis,
 } from "recharts";
 import DefaultTooltipContent from "recharts/lib/component/DefaultTooltipContent";
-import SingleStat from "./SingleStat";
+import SingleStatListItem from "./SingleStatListItem";
 
 export interface LibraryStatsProps {
   stats: LibraryStatistics;
@@ -129,17 +129,17 @@ const LibraryStats = (props: LibraryStatsProps) => {
             <span className="stat-grouping-label">Patrons</span>
           </h3>
           <ul>
-            <SingleStat
+            <SingleStatListItem
               label="Total Patrons"
               value={patrons.total}
               tooltip="Total number of patrons."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Patrons With Active Loans"
               value={patrons.withActiveLoan}
               tooltip="Number of patron with at least one active loan."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Patrons With Active Loans or Holds"
               value={patrons.withActiveLoanOrHold}
               tooltip="Number of patrons with at least one active loan or at least one hold."
@@ -151,12 +151,12 @@ const LibraryStats = (props: LibraryStatsProps) => {
             <span className="stat-grouping-label">Circulation</span>
           </h3>
           <ul>
-            <SingleStat
+            <SingleStatListItem
               label="Active Loans"
               value={patrons.loans}
               tooltip="Total number of active loans for all patrons."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Active Holds"
               value={patrons.holds}
               tooltip="Total number of active holds for all patrons."
@@ -168,32 +168,32 @@ const LibraryStats = (props: LibraryStatsProps) => {
             <span className="stat-grouping-label">Inventory</span>
           </h3>
           <ul>
-            <SingleStat
+            <SingleStatListItem
               label="Titles"
               value={inventory.titles}
               tooltip="Total number of books."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Lendable titles"
               value={inventory.lendable}
               tooltip="Number of books available for checkout."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Metered license titles"
               value={inventory.meteredLicense}
               tooltip="Number of books with a metered (counted) license."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Unlimited license titles"
               value={inventory.unlimitedLicense}
               tooltip="Number of books for which there is no limit on the number of loans."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Open access titles"
               value={inventory.openAccess}
               tooltip="Number of books for which there are no limits on use."
             />
-            <SingleStat
+            <SingleStatListItem
               label="Self-hosted titles"
               value={inventory.selfHosted}
               tooltip="Number of books hosted locally."
