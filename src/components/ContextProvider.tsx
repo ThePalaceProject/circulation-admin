@@ -8,6 +8,7 @@ import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/co
 import ActionCreator from "../actions";
 
 export interface ContextProviderProps extends React.Props<ContextProvider> {
+  store?: Store<RootState>;
   csrfToken: string;
   showCircEventsDownload?: boolean;
   settingUp?: boolean;
@@ -30,7 +31,7 @@ export default class ContextProvider extends React.Component<
 
   constructor(props) {
     super(props);
-    this.store = buildStore();
+    this.store = props.store ?? buildStore();
     this.admin = new Admin(props.roles || [], props.email || null);
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
       let path = "/admin/web";
