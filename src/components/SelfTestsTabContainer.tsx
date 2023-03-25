@@ -9,7 +9,7 @@ import {
   PatronAuthServicesData,
   SearchServicesData,
 } from "../interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
@@ -26,7 +26,7 @@ export interface SelfTestsTabContainerDispatchProps {
 }
 
 export interface SelfTestsTabContainerOwnProps extends TabContainerProps {
-  store: Store<State>;
+  store: Store<RootState>;
   goToTab: (tabName: string) => void;
 }
 
@@ -132,10 +132,7 @@ function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
   };
 }
 
-function mapDispatchToProps(
-  dispatch: Function,
-  ownProps: SelfTestsTabContainerOwnProps
-) {
+function mapDispatchToProps(dispatch, ownProps: SelfTestsTabContainerOwnProps) {
   const actions = new ActionCreator();
   const itemTypes = [
     "Collections",

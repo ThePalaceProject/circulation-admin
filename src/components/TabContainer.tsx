@@ -2,10 +2,10 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import { Navigate, PathFor } from "../interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
-  store?: Store<State>;
+  store?: Store<RootState>;
   csrfToken?: string;
   tab: string;
   class?: string;

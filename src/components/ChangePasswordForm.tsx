@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Store } from "redux";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
@@ -19,7 +19,7 @@ export interface ChangePasswordFormDispatchProps {
 }
 
 export interface ChangePasswordFormOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
   csrfToken: string;
 }
 

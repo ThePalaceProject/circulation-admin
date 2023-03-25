@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import ActionCreator from "../actions";
 import { LibraryData, LibrariesData } from "../interfaces";
 import Admin from "../models/Admin";
@@ -28,7 +28,7 @@ export interface HeaderDispatchProps {
 }
 
 export interface HeaderOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
 }
 
 export interface HeaderProps
@@ -332,7 +332,7 @@ const ConnectedHeader = connect<
 /** HeaderWithStore is a wrapper component to pass the store as a prop to the
     ConnectedHeader, since it's not in the regular place in the context. */
 export default class HeaderWithStore extends React.Component<{}, {}> {
-  context: { editorStore: Store<State> };
+  context: { editorStore: Store<RootState> };
 
   static contextTypes = {
     editorStore: PropTypes.object.isRequired,

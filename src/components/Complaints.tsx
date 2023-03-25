@@ -8,7 +8,7 @@ import ComplaintForm from "./ComplaintForm";
 import { Button } from "library-simplified-reusable-components";
 import { BookData, PostComplaint } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import { formatString } from "../utils/sharedFunctions";
 import UpdatingLoader from "./UpdatingLoader";
 
@@ -27,7 +27,7 @@ export interface ComplaintsDispatchProps {
 export interface ComplaintsOwnProps {
   bookUrl: string;
   book: BookData;
-  store?: Store<State>;
+  store?: Store<RootState>;
   csrfToken: string;
   refreshCatalog: () => Promise<any>;
 }
@@ -39,7 +39,7 @@ export interface ComplaintsProps
 
 /** Tab on the book details page that shows existing complaints and lets an admin resolve
     complaints or add new complaints. */
-export class Complaints extends React.Component<ComplaintsProps, {}> {
+export class Complaints extends React.Component<ComplaintsProps> {
   constructor(props) {
     super(props);
     this.resolve = this.resolve.bind(this);

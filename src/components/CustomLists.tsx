@@ -3,7 +3,7 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import ActionCreator from "../actions";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
@@ -108,7 +108,7 @@ export interface CustomListsDispatchProps {
 }
 
 export interface CustomListsOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
   library: string;
   editOrCreate?: string;
   identifier?: string;

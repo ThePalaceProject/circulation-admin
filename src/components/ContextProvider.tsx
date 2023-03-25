@@ -1,9 +1,8 @@
 import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
-import buildStore from "../store";
+import buildStore, { RootState } from "../store";
 import { FeatureFlags, PathFor } from "../interfaces";
-import { State } from "../reducers/index";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
@@ -25,7 +24,7 @@ export interface ContextProviderProps extends React.Props<ContextProvider> {
 export default class ContextProvider extends React.Component<
   ContextProviderProps
 > {
-  store: Store<State>;
+  store: Store<RootState>;
   admin: Admin;
   pathFor: PathFor;
 

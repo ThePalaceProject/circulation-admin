@@ -3,12 +3,12 @@ import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 import title from "../utils/title";
 
 export interface TroubleshootingPageContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   csrfToken: string;
 }
 

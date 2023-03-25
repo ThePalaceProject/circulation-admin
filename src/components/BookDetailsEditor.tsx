@@ -8,7 +8,7 @@ import BookEditForm from "./BookEditForm";
 import ErrorMessage from "./ErrorMessage";
 import { BookData, RolesData, MediaData, LanguagesData } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 import UpdatingLoader from "./UpdatingLoader";
 
@@ -34,7 +34,7 @@ export interface BookDetailsEditorDispatchProps {
 export interface BookDetailsEditorOwnProps {
   bookUrl?: string;
   csrfToken: string;
-  store?: Store<State>;
+  store?: Store<RootState>;
   refreshCatalog?: () => Promise<any>;
 }
 
@@ -45,10 +45,7 @@ export interface BookDetailsEditorProps
     BookDetailsEditorOwnProps {}
 
 /** Tab for editing a book's metadata on the book details page. */
-export class BookDetailsEditor extends React.Component<
-  BookDetailsEditorProps,
-  {}
-> {
+export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
   constructor(props) {
     super(props);
     this.editBook = this.editBook.bind(this);

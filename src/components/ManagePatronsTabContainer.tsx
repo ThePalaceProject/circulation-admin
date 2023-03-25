@@ -2,7 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import ActionCreator from "../actions";
 import {
   TabContainer,
@@ -13,7 +13,7 @@ import Admin from "../models/Admin";
 import ResetAdobeId from "./ResetAdobeId";
 
 export interface ManagePatronsTabContainerProps extends TabContainerProps {
-  store: Store<State>;
+  store: Store<RootState>;
   csrfToken: string;
   library: string;
   tab: string;

@@ -3,7 +3,7 @@ import { Store } from "redux";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { SettingData } from "../interfaces";
 import { Alert } from "react-bootstrap";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -29,7 +29,7 @@ export interface EditableConfigListDispatchProps<T> {
 }
 
 export interface EditableConfigListOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
   csrfToken: string;
   editOrCreate?: string;
   identifier?: string;
@@ -57,7 +57,7 @@ export interface EditFormProps<T, U> {
 }
 
 export interface AdditionalContentProps<T, U> {
-  store?: Store<State>;
+  store?: Store<RootState>;
   csrfToken?: string;
   item?: U;
   type?: string;
@@ -80,7 +80,7 @@ export abstract class GenericEditableConfigList<
   T,
   U,
   V extends EditableConfigListProps<T>
-> extends React.Component<V, {}> {
+> extends React.Component<V> {
   context: { admin: Admin };
   static contextTypes = {
     admin: PropTypes.object.isRequired,

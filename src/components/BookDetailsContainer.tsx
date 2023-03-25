@@ -5,12 +5,12 @@ import * as PropTypes from "prop-types";
 import BookDetailsTabContainer from "./BookDetailsTabContainer";
 import BookDetails from "./BookDetails";
 import { BookDetailsContainerProps } from "@thepalaceproject/web-opds-client/lib/components/Root";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 
 export interface BookDetailsContainerContext {
   csrfToken: string;
   tab: string;
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   library: (collectionUrl: string, bookUrl: string) => string;
 }
 
@@ -18,8 +18,7 @@ export interface BookDetailsContainerContext {
     and converts them into props. This component is passed into the OPDSCatalog from
     web-opds-client to replace the body of the book details page. */
 export default class BookDetailsContainer extends React.Component<
-  BookDetailsContainerProps,
-  {}
+  BookDetailsContainerProps
 > {
   context: BookDetailsContainerContext;
 

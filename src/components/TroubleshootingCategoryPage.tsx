@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import DiagnosticsTabContainer from "./DiagnosticsTabContainer";
 import SelfTestsTabContainer from "./SelfTestsTabContainer";
 
 export interface TroubleshootingCategoryPageContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   csrfToken: string;
 }
 

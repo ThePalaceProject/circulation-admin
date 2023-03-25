@@ -4,7 +4,7 @@ import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 import Lanes from "./Lanes";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 
 export interface LanePageProps extends React.Props<LanePageProps> {
   params: {
@@ -15,7 +15,7 @@ export interface LanePageProps extends React.Props<LanePageProps> {
 }
 
 export interface LanePageContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   csrfToken: string;
 }
 

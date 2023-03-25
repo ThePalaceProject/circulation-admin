@@ -3,7 +3,7 @@ import * as React from "react";
 import { Link } from "react-router";
 import { Store } from "redux";
 import { connect } from "react-redux";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import ActionCreator from "../actions";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import {
@@ -42,7 +42,7 @@ export interface LanesDispatchProps {
 }
 
 export interface LanesOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
   library: string;
   editOrCreate?: string;
   identifier?: string;
