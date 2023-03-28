@@ -12,7 +12,9 @@ To see screenshots, read in-depth documentation, and find out more about the pro
 
 This package may be used in a local build of the Palace Project [Circulation Manager](https://github.com/ThePalaceProject/circulation), or it may be run against a remote Circulation Manager.
 
-This project uses node 18.14.2. You have a number of options for installing node. One convenient way on macOS is to use Homebrew and nvm to manage node versions.
+This project uses node 18. We recommend the latest version of node 18.
+
+You have a number of options for installing node. One convenient way on macOS is to use Homebrew and nvm to manage node versions.
 
 Install Homebrew if you have not already:
 
@@ -26,7 +28,7 @@ Install nvm using Homebrew:
 brew install nvm
 ```
 
-Install and use 18.14.2 with nvm:
+Install and use the latest version of node 18, e.g. 18.14.2 with nvm:
 
 ```
 nvm install 18.14.2
@@ -45,7 +47,7 @@ If you have different projects requiring different node versions, you can use no
 
 You can also use the `n` npm package to manage Node versions, or simply install the Node binary directly.
 
-This project uses npm 9.5.1. You can update npm with `npm update -g npm`. You can confirm the versions of node and npm you are using with `node --version` and `npm --version`.
+This project uses the latest version of npm. You can update npm with `npm update -g npm`. You can confirm the versions of node and npm you are using with `node --version` and `npm --version`.
 
 Once you have installed the correct versions of Node and npm, run `npm i` to install all dependencies.
 
