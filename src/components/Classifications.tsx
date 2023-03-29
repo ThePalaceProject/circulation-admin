@@ -9,7 +9,7 @@ import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable from "./ClassificationsTable";
 import { BookData, GenreTree, ClassificationData } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import UpdatingLoader from "./UpdatingLoader";
 
 export interface ClassificationsStateProps {
@@ -31,7 +31,7 @@ export interface ClassificationsDispatchProps {
 
 export interface ClassificationsOwnProps {
   // from parent
-  store: Store<State>;
+  store: Store<RootState>;
   csrfToken: string;
   bookUrl: string;
   book: BookData;
@@ -45,7 +45,7 @@ export interface ClassificationsProps
 
 /** Tab on the book details page with a table of a book's current classifications and
     a form for editing them. */
-export class Classifications extends React.Component<ClassificationsProps, {}> {
+export class Classifications extends React.Component<ClassificationsProps> {
   constructor(props) {
     super(props);
     this.refresh = this.refresh.bind(this);

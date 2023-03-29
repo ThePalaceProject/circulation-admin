@@ -7,7 +7,7 @@ import ErrorMessage from "./ErrorMessage";
 import ProtocolFormField from "./ProtocolFormField";
 import { BookData, CustomListData, CustomListsData } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import { Link } from "react-router";
 
 export interface CustomListsForBookStateProps {
@@ -27,7 +27,7 @@ export interface CustomListsForBookOwnProps {
   bookUrl: string;
   book: BookData;
   library: string;
-  store?: Store<State>;
+  store?: Store<RootState>;
   csrfToken: string;
   refreshCatalog: () => Promise<any>;
 }

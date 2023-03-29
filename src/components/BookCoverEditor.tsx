@@ -8,7 +8,7 @@ import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import UpdatingLoader from "./UpdatingLoader";
 
@@ -31,7 +31,7 @@ export interface BookCoverEditorDispatchProps {
 }
 
 export interface BookCoverEditorOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
   csrfToken: string;
   bookUrl: string;
   book: BookData;
@@ -44,7 +44,7 @@ export interface BookCoverEditorProps
     BookCoverEditorOwnProps {}
 
 /** Tab on the book details page for uploading a new book cover. */
-export class BookCoverEditor extends React.Component<BookCoverEditorProps, {}> {
+export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
   private formContainerRef = React.createRef<HTMLDivElement>();
   private imageFormRef = React.createRef<Form>();
   private coverUrlRef = React.createRef<EditableInput>();

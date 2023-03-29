@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { DiagnosticsData } from "../interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import DiagnosticsServiceType from "./DiagnosticsServiceType";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -16,7 +15,7 @@ export interface DiagnosticsTabContainerDispatchProps {
 }
 
 export interface DiagnosticsTabContainerOwnProps extends TabContainerProps {
-  store: Store<State>;
+  store: Store<RootState>;
   goToTab: (tabName: string) => void;
 }
 
@@ -95,7 +94,7 @@ function mapStateToProps(state, ownProps: DiagnosticsTabContainerOwnProps) {
   };
 }
 
-function mapDispatchToProps(dispatch: Function) {
+function mapDispatchToProps(dispatch) {
   const actions = new ActionCreator();
   return {
     fetchDiagnostics: () => dispatch(actions.fetchDiagnostics()),

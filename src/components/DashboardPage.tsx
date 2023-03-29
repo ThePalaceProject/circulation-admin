@@ -5,7 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import title from "../utils/title";
 
 export interface DashboardPageProps extends React.Props<DashboardPageProps> {
@@ -15,22 +15,19 @@ export interface DashboardPageProps extends React.Props<DashboardPageProps> {
 }
 
 export interface DashboardPageContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
 }
 
 /** Page that shows high-level statistics about patrons and collections
     and a list of the most recent circulation events. */
-export default class DashboardPage extends React.Component<
-  DashboardPageProps,
-  {}
-> {
+export default class DashboardPage extends React.Component<DashboardPageProps> {
   context: DashboardPageContext;
 
   static contextTypes: React.ValidationMap<DashboardPageContext> = {
     editorStore: PropTypes.object.isRequired as React.Validator<Store>,
   };
 
-  static childContextTypes: React.ValidationMap<{}> = {
+  static childContextTypes: React.ValidationMap<any> = {
     library: PropTypes.func,
   };
 

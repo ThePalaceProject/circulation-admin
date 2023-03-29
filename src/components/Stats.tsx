@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { StatsData, LibrariesData, LibraryData } from "../interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import LibraryStats from "./LibraryStats";
@@ -22,7 +22,7 @@ export interface StatsDispatchProps {
 }
 
 export interface StatsOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
   library?: string;
 }
 
@@ -32,7 +32,7 @@ export interface StatsProps
     StatsOwnProps {}
 
 /** Displays statistics about patrons, licenses, and vendors from the server. */
-export class Stats extends React.Component<StatsProps, {}> {
+export class Stats extends React.Component<StatsProps> {
   render(): JSX.Element {
     let libraryData: LibraryData | null = null;
     for (const library of this.props.libraries || []) {

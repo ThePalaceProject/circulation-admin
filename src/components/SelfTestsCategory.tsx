@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Store } from "redux";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import SelfTests from "./SelfTests";
 import {
   CollectionData,
@@ -15,12 +15,11 @@ export interface SelfTestsCategoryProps {
   linkName: string;
   csrfToken: string;
   items: CollectionData[] | PatronAuthServiceData[] | SearchServiceData[];
-  store: Store<State>;
+  store: Store<RootState>;
 }
 
 export default class SelfTestsCategory extends React.Component<
-  SelfTestsCategoryProps,
-  {}
+  SelfTestsCategoryProps
 > {
   handleUnnamed():
     | CollectionData[]

@@ -4,7 +4,7 @@ import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 import CustomLists from "./CustomLists";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 
 export interface CustomListPageProps extends React.Props<CustomListPageProps> {
   params: {
@@ -16,7 +16,7 @@ export interface CustomListPageProps extends React.Props<CustomListPageProps> {
 }
 
 export interface CustomListPageContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   csrfToken: string;
 }
 

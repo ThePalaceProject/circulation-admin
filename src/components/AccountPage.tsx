@@ -2,18 +2,18 @@ import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
 import ChangePasswordForm from "./ChangePasswordForm";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import Header from "./Header";
 import Footer from "./Footer";
 import title from "../utils/title";
 
 export interface AccountPageContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
 /** Page for configuring account settings. */
-export default class AccountPage extends React.Component<{}, {}> {
+export default class AccountPage extends React.Component<object, object> {
   context: AccountPageContext;
 
   static contextTypes: React.ValidationMap<AccountPageContext> = {

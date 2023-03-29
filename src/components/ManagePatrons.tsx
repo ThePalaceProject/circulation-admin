@@ -2,7 +2,7 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import ManagePatronsForm from "./ManagePatronsForm";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -16,11 +16,11 @@ export interface ManagePatronsProps extends React.Props<ManagePatronsProps> {
 }
 
 export interface ManagePatronsContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
-export class ManagePatrons extends React.Component<ManagePatronsProps, {}> {
+export class ManagePatrons extends React.Component<ManagePatronsProps> {
   context: ManagePatronsContext;
 
   static contextTypes: React.ValidationMap<ManagePatronsContext> = {

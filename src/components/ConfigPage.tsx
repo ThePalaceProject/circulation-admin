@@ -4,7 +4,7 @@ import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
 import ConfigTabContainer from "./ConfigTabContainer";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import title from "../utils/title";
 
 export interface ConfigPageProps extends React.Props<ConfigPageProps> {
@@ -16,13 +16,13 @@ export interface ConfigPageProps extends React.Props<ConfigPageProps> {
 }
 
 export interface ConfigPageContext {
-  editorStore: Store<State>;
+  editorStore: Store<RootState>;
   csrfToken: string;
 }
 
 /** System configuration page. Extracts parameters from its context
     and passes them to `ConfigTabContainer` as props. */
-export default class ConfigPage extends React.Component<ConfigPageProps, {}> {
+export default class ConfigPage extends React.Component<ConfigPageProps> {
   context: ConfigPageContext;
 
   static contextTypes: React.ValidationMap<ConfigPageContext> = {

@@ -9,7 +9,7 @@ import * as PropTypes from "prop-types";
 import CirculationEventsDownloadForm from "./CirculationEventsDownloadForm";
 import { CirculationEventData } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { State } from "../reducers/index";
+import { RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 
 export interface CirculationEventsStateProps {
@@ -23,7 +23,7 @@ export interface CirculationEventsDispatchProps {
 }
 
 export interface CirculationEventsOwnProps {
-  store?: Store<State>;
+  store?: Store<RootState>;
   wait?: number;
   library?: string;
 }

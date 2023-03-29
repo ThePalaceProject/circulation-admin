@@ -1,14 +1,14 @@
 import * as React from "react";
 import { Store } from "redux";
 import * as PropTypes from "prop-types";
-import buildStore from "../store";
+import buildStore, { RootState } from "../store";
 import { FeatureFlags, PathFor } from "../interfaces";
-import { State } from "../reducers/index";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
 
 export interface ContextProviderProps extends React.Props<ContextProvider> {
+  store?: Store<RootState>;
   csrfToken: string;
   showCircEventsDownload?: boolean;
   settingUp?: boolean;
@@ -25,13 +25,13 @@ export interface ContextProviderProps extends React.Props<ContextProvider> {
 export default class ContextProvider extends React.Component<
   ContextProviderProps
 > {
-  store: Store<State>;
+  store: Store<RootState>;
   admin: Admin;
   pathFor: PathFor;
 
   constructor(props) {
     super(props);
-    this.store = buildStore();
+    this.store = props.store ?? buildStore();
     this.admin = new Admin(props.roles || [], props.email || null);
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
       let path = "/admin/web";
