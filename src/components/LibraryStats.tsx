@@ -175,27 +175,27 @@ const LibraryStats = (props: LibraryStatsProps) => {
             />
             <SingleStatListItem
               label="Lendable titles"
-              value={inventory.lendable}
+              value={inventory.availableTitles}
               tooltip="Number of books available for checkout."
             />
             <SingleStatListItem
               label="Metered license titles"
-              value={inventory.meteredLicense}
+              value={inventory.meteredLicenseTitles}
               tooltip="Number of books with a metered (counted) license."
             />
             <SingleStatListItem
               label="Unlimited license titles"
-              value={inventory.unlimitedLicense}
+              value={inventory.unlimitedLicenseTitles}
               tooltip="Number of books for which there is no limit on the number of loans."
             />
             <SingleStatListItem
               label="Open access titles"
-              value={inventory.openAccess}
+              value={inventory.openAccessTitles}
               tooltip="Number of books for which there are no limits on use."
             />
             <SingleStatListItem
               label="Self-hosted titles"
-              value={inventory.selfHosted}
+              value={inventory.selfHostedTitles}
               tooltip="Number of books hosted locally."
             />
           </ul>

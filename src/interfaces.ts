@@ -126,12 +126,12 @@ export interface CirculationEventData {
 
 interface InventoryStatistics {
   titles: number;
-  lendable: number;
-  selfHosted: number;
-  openAccess: number;
-  licensed: number;
-  unlimitedLicense: number;
-  meteredLicense: number;
+  availableTitles: number;
+  selfHostedTitles: number;
+  openAccessTitles: number;
+  licensedTitles: number;
+  unlimitedLicenseTitles: number;
+  meteredLicenseTitles: number;
   meteredLicensesOwned: number;
   meteredLicensesAvailable: number;
 }
