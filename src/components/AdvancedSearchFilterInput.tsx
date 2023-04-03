@@ -126,11 +126,8 @@ export default function AdvancedSearchFilterInput({
           name={`clear-filters-on-search-${builderName}`}
           ref={clearFiltersInput}
           onChange={handleInputChange}
+          label="Clear filters on search"
         />
-
-        <label htmlFor={`clear-filters-on-search-${builderName}`}>
-          Clear filters on search
-        </label>
       </div>
     </form>
   );

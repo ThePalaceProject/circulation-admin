@@ -97,7 +97,7 @@ describe("CustomLists", () => {
     items = screen.getAllByRole("treeitem");
     expect(items).toHaveLength(3);
 
-    await user.click(screen.getByRole("checkbox"));
+    await user.click(screen.getByRole("checkbox", { name: /clear filters/i }));
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
     await user.keyboard("fantasy{enter}");
