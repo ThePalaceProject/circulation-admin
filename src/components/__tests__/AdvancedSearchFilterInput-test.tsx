@@ -8,11 +8,19 @@ import AdvancedSearchFilterInput from "../AdvancedSearchFilterInput";
 describe("AdvancedSearchFilterInput", () => {
   let wrapper;
   let onAdd;
+  let onClearFiltersFlagChange;
 
   beforeEach(() => {
     onAdd = stub();
+    onClearFiltersFlagChange = stub();
 
-    wrapper = mount(<AdvancedSearchFilterInput name="include" onAdd={onAdd} />);
+    wrapper = mount(
+      <AdvancedSearchFilterInput
+        name="include"
+        onAdd={onAdd}
+        onClearFiltersFlagChange={onClearFiltersFlagChange}
+      />
+    );
   });
 
   it("should render radio buttons for field selection", () => {

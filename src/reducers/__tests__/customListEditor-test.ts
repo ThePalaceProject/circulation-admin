@@ -534,7 +534,7 @@ describe("custom list editor reducer", () => {
               book91: { id: "book91", title: "Huckleberry Finn" },
             },
             removed: {
-              book1: true as true,
+              book1: true as const,
             },
           },
         };
@@ -606,8 +606,8 @@ describe("custom list editor reducer", () => {
               book98: { id: "book98", title: "The Bell Jar" },
             },
             removed: {
-              book1: true as true,
-              book90: true as true,
+              book1: true as const,
+              book90: true as const,
             },
           },
         };
@@ -1781,7 +1781,7 @@ describe("custom list editor reducer", () => {
         entries: {
           ...initialState.entries,
           removed: {
-            book2: true as true,
+            book2: true as const,
           },
         },
       };
@@ -1930,7 +1930,7 @@ describe("custom list editor reducer", () => {
         entries: {
           ...initialState.entries,
           removed: {
-            book2: true as true,
+            book2: true as const,
           },
         },
       };
@@ -2260,7 +2260,7 @@ describe("custom list editor reducer", () => {
             book91: { id: "book91", title: "Huckleberry Finn" },
           },
           removed: {
-            book1: true as true,
+            book1: true as const,
           },
         },
       };
@@ -2294,8 +2294,8 @@ describe("custom list editor reducer", () => {
             },
           },
           removed: {
-            book1: true as true,
-            book3: true as true,
+            book1: true as const,
+            book3: true as const,
           },
           current: [
             { id: "book2", title: "Little Women" },
@@ -2508,7 +2508,7 @@ describe("custom list editor reducer", () => {
             { id: "book91", title: "Huckleberry Finn" },
           ],
           removed: {
-            book90: true as true,
+            book90: true as const,
           },
         },
       };
@@ -2568,7 +2568,7 @@ describe("custom list editor reducer", () => {
             { id: "book91", title: "Huckleberry Finn" },
           ],
           removed: {
-            book90: true as true,
+            book90: true as const,
           },
         },
       };
@@ -2719,10 +2719,12 @@ describe("custom list editor reducer", () => {
               include: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
               exclude: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
             },
           },
@@ -2751,10 +2753,12 @@ describe("custom list editor reducer", () => {
               include: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
               exclude: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
             },
           },
@@ -2781,10 +2785,12 @@ describe("custom list editor reducer", () => {
               include: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
               exclude: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
             },
           },
@@ -2811,10 +2817,12 @@ describe("custom list editor reducer", () => {
               include: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
               exclude: {
                 query: null,
                 selectedQueryId: null,
+                clearFilters: null,
               },
             },
           },

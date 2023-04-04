@@ -102,6 +102,7 @@
     "lint-staged": "^10.4.0",
     "mini-css-extract-plugin": "1.6.0",
     "mocha": "^10.2.0",
+    "msw": "^1.2.1",
     "nightwatch": "^1.0.19",
     "node-sass": "^8.0.0",
     "prettier": "2.1.2",

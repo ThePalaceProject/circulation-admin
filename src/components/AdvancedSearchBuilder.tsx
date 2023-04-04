@@ -11,6 +11,7 @@ export interface AdvancedSearchBuilderProps {
   query: AdvancedSearchQuery;
   selectedQueryId: string;
   addQuery?: (builderName: string, query: AdvancedSearchQuery) => void;
+  updateClearFiltersFlag?: (builderName: string, value: boolean) => void;
   updateQueryBoolean?: (builderName: string, id: string, bool: string) => void;
   moveQuery?: (builderName: string, id: string, targetId: string) => void;
   removeQuery?: (builderName: string, id: string) => void;
@@ -51,6 +52,7 @@ export default function AdvancedSearchBuilder({
   query,
   selectedQueryId,
   addQuery,
+  updateClearFiltersFlag,
   updateQueryBoolean,
   moveQuery,
   removeQuery,
@@ -65,6 +67,9 @@ export default function AdvancedSearchBuilder({
           <AdvancedSearchFilterInput
             name={name}
             onAdd={(query) => addQuery?.(name, query)}
+            onClearFiltersFlagChange={(value) =>
+              updateClearFiltersFlag?.(name, value)
+            }
           />
         )}
 

@@ -97,10 +97,12 @@ describe("CustomListEditor", () => {
       include: {
         query: null,
         selectedQueryId: null,
+        clearFilters: null,
       },
       exclude: {
         query: null,
         selectedQueryId: null,
+        clearFilters: null,
       },
     },
   };

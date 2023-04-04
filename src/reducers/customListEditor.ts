@@ -470,6 +470,11 @@ export interface CustomListEditorAdvancedSearchBuilderData {
    * The root advanced search query.
    */
   query: AdvancedSearchQuery;
+
+  /**
+   * Whether to clear all filters on search or not.
+   */
+  clearFilters: boolean;
 }
 
 /**
@@ -632,10 +637,12 @@ const initialSearchParams = {
     include: {
       query: null,
       selectedQueryId: null,
+      clearFilters: null,
     },
     exclude: {
       query: null,
       selectedQueryId: null,
+      clearFilters: null,
     },
   },
 };
@@ -1321,14 +1328,14 @@ const handleAddCustomListEditorAdvSearchQuery = validatedHandler(
       produce(state, (draftState) => {
         const { builderName, query } = action;
         const builder = draftState.searchParams.current.advanced[builderName];
-        const { query: currentQuery, selectedQueryId } = builder;
+        const { query: currentQuery, selectedQueryId, clearFilters } = builder;
 
         const newQuery = {
           ...query,
           id: newQueryId(),
         };
 
-        if (!currentQuery) {
+        if (!currentQuery || clearFilters) {
           builder.query = newQuery;
           builder.selectedQueryId = newQuery.id;
         } else {
@@ -1777,6 +1784,19 @@ const handleUpdateFeatureFlag = (
   return state;
 };
 
+const handleUpdateClearFiltersFlag = (
+  state: CustomListEditorState,
+  action
+): CustomListEditorState => {
+  const { value, builderName } = action;
+
+  return produce(state, (draftState) => {
+    draftState.searchParams.current.advanced[
+      builderName
+    ].clearFilters = !!value;
+  });
+};
+
 export default (
   state: CustomListEditorState = initialState,
   action
@@ -1826,6 +1846,8 @@ export default (
       return handleSetFeatureFlags(state, action);
     case ActionCreator.UPDATE_FEATURE_FLAG:
       return handleUpdateFeatureFlag(state, action);
+    case ActionCreator.UPDATE_CLEAR_FILTERS_FLAG:
+      return handleUpdateClearFiltersFlag(state, action);
     default:
       return state;
   }
