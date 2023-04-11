@@ -1,15 +1,12 @@
 import * as React from "react";
 import * as numeral from "numeral";
-import { formatNumber } from "./LibraryStats";
+import { formatNumber, humanNumber } from "./LibraryStats";
 
 export interface SingleStatListItemProps {
   label: string;
   value: number;
   tooltip?: string;
 }
-
-const humanNumber = (n: number): string =>
-  n ? numeral(n).format("0.[0]a") : "0";
 
 const SingleStatListItem = (props: SingleStatListItemProps) => {
   const baseStat = (
@@ -24,6 +21,7 @@ const SingleStatListItem = (props: SingleStatListItemProps) => {
         baseStat
       ) : (
         <span
+          className="stat-tooltip"
           data-toggle="tooltip"
           title={`(${formatNumber(props.value)}) ${props.tooltip}`}
         >

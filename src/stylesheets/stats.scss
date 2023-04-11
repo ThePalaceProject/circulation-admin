@@ -50,6 +50,12 @@
     margin-right: .5rem;
   }
 
+  .stat-tooltip {
+    display: inherit;
+    align-items: inherit;
+    text-align: inherit;
+  }
+
   .single-stat {
     display: flex;
     align-items: center;

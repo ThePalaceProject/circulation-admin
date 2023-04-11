@@ -124,7 +124,7 @@ export interface CirculationEventData {
   };
 }
 
-interface InventoryStatistics {
+export interface InventoryStatistics {
   titles: number;
   availableTitles: number;
   selfHostedTitles: number;
@@ -136,7 +136,7 @@ interface InventoryStatistics {
   meteredLicensesAvailable: number;
 }
 
-interface PatronStatistics {
+export interface PatronStatistics {
   total: number;
   withActiveLoan: number;
   withActiveLoanOrHold: number;
