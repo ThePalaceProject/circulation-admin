@@ -23,7 +23,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">default</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L23">src/components/EditorField.tsx:23</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L23">src/components/EditorField.tsx:23</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -83,7 +83,7 @@
   EditorFieldState
 &gt;.constructor</p>
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L31">src/components/EditorField.tsx:31</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L31">src/components/EditorField.tsx:31</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="context" class="tsd-anchor"></a>
@@ -92,7 +92,7 @@
 <div class="tsd-comment tsd-typography"><p>If using the new style context, re-declare this in your class to be the
 <code>React.ContextType</code> of your <code>static contextType</code>.
 Should be used with type annotation or static contextType.</p>
-<pre><code class="language-ts"><span class="hl-0">static</span><span class="hl-1"> </span><span class="hl-0">contextType</span><span class="hl-1"> = </span><span class="hl-0">MyContext</span><br/><span class="hl-7">// For TS pre-3.7:</span><br/><span class="hl-0">context</span><span class="hl-1">!: </span><span class="hl-0">React</span><span class="hl-1">.</span><span class="hl-0">ContextType</span><span class="hl-1">&lt;</span><span class="hl-4">typeof</span><span class="hl-1"> </span><span class="hl-0">MyContext</span><span class="hl-1">&gt;</span><br/><span class="hl-7">// For TS 3.7 and above:</span><br/><span class="hl-4">declare</span><span class="hl-1"> </span><span class="hl-6">context</span><span class="hl-1">: </span><span class="hl-0">React</span><span class="hl-1">.</span><span class="hl-0">ContextType</span><span class="hl-1">&lt;</span><span class="hl-4">typeof</span><span class="hl-1"> </span><span class="hl-0">MyContext</span><span class="hl-1">&gt;</span>
+<pre><code class="language-ts"><span class="hl-1">static</span><span class="hl-0"> </span><span class="hl-1">contextType</span><span class="hl-0"> = </span><span class="hl-1">MyContext</span><br/><span class="hl-7">// For TS pre-3.7:</span><br/><span class="hl-1">context</span><span class="hl-0">!: </span><span class="hl-1">React</span><span class="hl-0">.</span><span class="hl-1">ContextType</span><span class="hl-0">&lt;</span><span class="hl-4">typeof</span><span class="hl-0"> </span><span class="hl-1">MyContext</span><span class="hl-0">&gt;</span><br/><span class="hl-7">// For TS 3.7 and above:</span><br/><span class="hl-4">declare</span><span class="hl-0"> </span><span class="hl-6">context</span><span class="hl-0">: </span><span class="hl-1">React</span><span class="hl-0">.</span><span class="hl-1">ContextType</span><span class="hl-0">&lt;</span><span class="hl-4">typeof</span><span class="hl-0"> </span><span class="hl-1">MyContext</span><span class="hl-0">&gt;</span>
 </code></pre>
 
 <h3>See</h3><p><a href="https://reactjs.org/docs/context.html">https://reactjs.org/docs/context.html</a></p>
@@ -131,7 +131,7 @@ Should be used with type annotation or static contextType.</p>
 <div class="tsd-signature">context<wbr/>Type<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">Context</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 <div class="tsd-comment tsd-typography"><p>If set, <code>this.context</code> will be set at runtime to the current value of the given Context.</p>
 <p>Usage:</p>
-<pre><code class="language-ts"><span class="hl-4">type</span><span class="hl-1"> </span><span class="hl-9">MyContext</span><span class="hl-1"> = </span><span class="hl-9">number</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-8">Ctx</span><span class="hl-1"> = </span><span class="hl-0">React</span><span class="hl-1">.</span><span class="hl-10">createContext</span><span class="hl-1">&lt;</span><span class="hl-9">MyContext</span><span class="hl-1">&gt;(</span><span class="hl-2">0</span><span class="hl-1">)</span><br/><br/><span class="hl-4">class</span><span class="hl-1"> </span><span class="hl-9">Foo</span><span class="hl-1"> </span><span class="hl-4">extends</span><span class="hl-1"> </span><span class="hl-9">React</span><span class="hl-1">.</span><span class="hl-9">Component</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">static</span><span class="hl-1"> </span><span class="hl-0">contextType</span><span class="hl-1"> = </span><span class="hl-0">Ctx</span><br/><span class="hl-1">  </span><span class="hl-0">context</span><span class="hl-1">!: </span><span class="hl-9">React</span><span class="hl-1">.</span><span class="hl-9">ContextType</span><span class="hl-1">&lt;</span><span class="hl-4">typeof</span><span class="hl-1"> </span><span class="hl-0">Ctx</span><span class="hl-1">&gt;</span><br/><span class="hl-1">  </span><span class="hl-10">render</span><span class="hl-1"> () {</span><br/><span class="hl-1">    </span><span class="hl-5">return</span><span class="hl-1"> &lt;&gt;</span><span class="hl-0">My</span><span class="hl-1"> </span><span class="hl-0">context</span><span class="hl-3">&#39;s value: {this.context}&lt;/&gt;</span><span class="hl-11">;</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span>
+<pre><code class="language-ts"><span class="hl-4">type</span><span class="hl-0"> </span><span class="hl-9">MyContext</span><span class="hl-0"> = </span><span class="hl-9">number</span><br/><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-8">Ctx</span><span class="hl-0"> = </span><span class="hl-1">React</span><span class="hl-0">.</span><span class="hl-10">createContext</span><span class="hl-0">&lt;</span><span class="hl-9">MyContext</span><span class="hl-0">&gt;(</span><span class="hl-3">0</span><span class="hl-0">)</span><br/><br/><span class="hl-4">class</span><span class="hl-0"> </span><span class="hl-9">Foo</span><span class="hl-0"> </span><span class="hl-4">extends</span><span class="hl-0"> </span><span class="hl-9">React</span><span class="hl-0">.</span><span class="hl-9">Component</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-4">static</span><span class="hl-0"> </span><span class="hl-1">contextType</span><span class="hl-0"> = </span><span class="hl-1">Ctx</span><br/><span class="hl-0">  </span><span class="hl-1">context</span><span class="hl-0">!: </span><span class="hl-9">React</span><span class="hl-0">.</span><span class="hl-9">ContextType</span><span class="hl-0">&lt;</span><span class="hl-4">typeof</span><span class="hl-0"> </span><span class="hl-1">Ctx</span><span class="hl-0">&gt;</span><br/><span class="hl-0">  </span><span class="hl-10">render</span><span class="hl-0"> () {</span><br/><span class="hl-0">    </span><span class="hl-5">return</span><span class="hl-0"> &lt;&gt;</span><span class="hl-1">My</span><span class="hl-0"> </span><span class="hl-1">context</span><span class="hl-2">&#39;s value: {this.context}&lt;/&gt;</span><span class="hl-11">;</span><br/><span class="hl-0">  }</span><br/><span class="hl-0">}</span>
 </code></pre>
 
 <h3>See</h3><p><a href="https://reactjs.org/docs/context.html#classcontexttype">https://reactjs.org/docs/context.html#classcontexttype</a></p>
@@ -148,7 +148,7 @@ Should be used with type annotation or static contextType.</p>
 <li class="tsd-parameter">
 <h5>default<wbr/>Content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L27">src/components/EditorField.tsx:27</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L27">src/components/EditorField.tsx:27</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="UNSAFE_componentWillMount" class="tsd-anchor"></a>
@@ -249,7 +249,7 @@ prevents this from being invoked.</p>
 <h5>style: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L103">src/components/EditorField.tsx:103</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L103">src/components/EditorField.tsx:103</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="componentDidCatch" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>component<wbr/>Did<wbr/>Catch</span><a href="#componentDidCatch" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
@@ -443,7 +443,7 @@ lifecycle events from running.</p>
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L108">src/components/EditorField.tsx:108</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L108">src/components/EditorField.tsx:108</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="handleKeyCommand" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>handle<wbr/>Key<wbr/>Command</span><a href="#handleKeyCommand" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -458,7 +458,7 @@ lifecycle events from running.</p>
 <h5>editorState: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">&quot;handled&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;not-handled&quot;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L70">src/components/EditorField.tsx:70</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L70">src/components/EditorField.tsx:70</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="onChange" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>on<wbr/>Change</span><a href="#onChange" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -471,7 +471,7 @@ lifecycle events from running.</p>
 <h5>editorState: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L66">src/components/EditorField.tsx:66</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L66">src/components/EditorField.tsx:66</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="render" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>render</span><a href="#render" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -480,7 +480,7 @@ lifecycle events from running.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4><aside class="tsd-sources">
 <p>Overrides React.Component.render</p>
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L112">src/components/EditorField.tsx:112</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L112">src/components/EditorField.tsx:112</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="renderButton" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>render<wbr/>Button</span><a href="#renderButton" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -493,7 +493,7 @@ lifecycle events from running.</p>
 <h5>style: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/50422f2/src/components/EditorField.tsx#L79">src/components/EditorField.tsx:79</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/ThePalaceProject/circulation-admin/blob/9409549/src/components/EditorField.tsx#L79">src/components/EditorField.tsx:79</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a id="setState" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>State</span><a href="#setState" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-external">
