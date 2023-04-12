@@ -5,7 +5,6 @@ import {
   GenreTree,
   ClassificationData,
   CirculationEventData,
-  StatsData,
   LibrariesData,
   CollectionsData,
   IndividualAdminsData,

@@ -544,13 +544,13 @@ describe("actions", () => {
   describe("fetchStats", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();
-      const statsData = "stats";
+      const statisticsApiResponseData = "stats";
       fetcher.testData = {
         ok: true,
         status: 200,
         json: () =>
           new Promise<any>((resolve, reject) => {
-            resolve(statsData);
+            resolve(statisticsApiResponseData);
           }),
       };
       fetcher.resolve = true;
@@ -560,7 +560,7 @@ describe("actions", () => {
       expect(dispatch.args[0][0].type).to.equal(ActionCreator.STATS_REQUEST);
       expect(dispatch.args[1][0].type).to.equal(ActionCreator.STATS_SUCCESS);
       expect(dispatch.args[2][0].type).to.equal(ActionCreator.STATS_LOAD);
-      expect(data).to.deep.equal(statsData);
+      expect(data).to.deep.equal(statisticsApiResponseData);
     });
   });
 

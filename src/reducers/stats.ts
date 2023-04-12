@@ -1,10 +1,10 @@
 import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import { StatsData } from "../interfaces";
+import { StatisticsData } from "../interfaces";
 import ActionCreator from "../actions";
 import { CombinedState } from "../store";
 
 export interface StatsState {
-  data: StatsData;
+  data: StatisticsData;
   isFetching: boolean;
   fetchError: RequestError;
   isLoaded: boolean;

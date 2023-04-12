@@ -1,101 +1,10 @@
 import { expect } from "chai";
 
 import reducer, { StatsState } from "../stats";
-import { StatsData } from "../../interfaces";
+import { statisticsApiResponseData } from "../../../tests/__data__/statisticsApiResponseData";
 import ActionCreator from "../../actions";
 
 describe("stats reducer", () => {
-  const statsData: StatsData = {
-    Palace: {
-      collections: {
-        BiblioBoard: {
-          available_licenses: 13306,
-          metered_license_titles: 13306,
-          lendable_titles: 13306,
-          licensed_titles: 13306,
-          licenses: 13306,
-          open_access_titles: 0,
-          self_hosted_titles: 0,
-          titles: 13306,
-          unlimited_license_titles: 0,
-        },
-        Bibliotheca: {
-          available_licenses: 72,
-          metered_license_titles: 76,
-          lendable_titles: 64,
-          licensed_titles: 76,
-          licenses: 85,
-          open_access_titles: 0,
-          self_hosted_titles: 0,
-          titles: 76,
-          unlimited_license_titles: 0,
-        },
-        "B&T Axis 360": {
-          available_licenses: 135,
-          metered_license_titles: 146,
-          lendable_titles: 134,
-          licensed_titles: 146,
-          licenses: 147,
-          open_access_titles: 0,
-          self_hosted_titles: 0,
-          titles: 146,
-          unlimited_license_titles: 0,
-        },
-        OverDrive: {
-          titles: 500,
-          lendable_titles: 90,
-          metered_license_titles: 490,
-          unlimited_license_titles: 0,
-          licensed_titles: 490,
-          open_access_titles: 10,
-          licenses: 350,
-          available_licenses: 100,
-          self_hosted_titles: 0,
-        },
-        "Palace Marketplace": {
-          available_licenses: 75337,
-          metered_license_titles: 7753,
-          lendable_titles: 7750,
-          licensed_titles: 7753,
-          licenses: 305725,
-          open_access_titles: 0,
-          self_hosted_titles: 0,
-          titles: 7753,
-          unlimited_license_titles: 0,
-        },
-        "Palace Bookshelf": {
-          available_licenses: 0,
-          metered_license_titles: 0,
-          lendable_titles: 7838,
-          licensed_titles: 0,
-          licenses: 0,
-          open_access_titles: 7838,
-          self_hosted_titles: 0,
-          titles: 7838,
-          unlimited_license_titles: 0,
-        },
-      },
-      inventory: {
-        available_licenses: 88850,
-        metered_license_titles: 21281,
-        lendable_titles: 29092,
-        licensed_titles: 21281,
-        licenses: 319263,
-        open_access_titles: 7838,
-        self_hosted_titles: 0,
-        titles: 29119,
-        unlimited_license_titles: 0,
-      },
-      patrons: {
-        holds: 5,
-        loans: 0,
-        total: 132,
-        with_active_loans: 0,
-        with_active_loans_or_holds: 4,
-      },
-    },
-  };
-
   const initState: StatsState = {
     data: null,
     isFetching: false,
@@ -143,9 +52,12 @@ describe("stats reducer", () => {
   });
 
   it("handles STATS_LOAD", () => {
-    const action = { type: ActionCreator.STATS_LOAD, data: statsData };
+    const action = {
+      type: ActionCreator.STATS_LOAD,
+      data: statisticsApiResponseData,
+    };
     const newState = Object.assign({}, initState, {
-      data: statsData,
+      data: statisticsApiResponseData,
       isFetching: false,
       isLoaded: true,
     });

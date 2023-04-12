@@ -174,36 +174,6 @@ export interface StatisticsData {
   summaryStatistics?: LibraryStatistics;
 }
 
-export interface LibraryStatsInventory {
-  titles: number;
-  lendable_titles: number;
-  self_hosted_titles: number;
-  open_access_titles: number;
-  licensed_titles: number;
-  unlimited_license_titles: number;
-  metered_license_titles: number;
-  licenses: number;
-  available_licenses: number;
-}
-
-export interface LibraryStatsData {
-  patrons: {
-    total: number;
-    with_active_loans: number;
-    with_active_loans_or_holds: number;
-    loans: number;
-    holds: number;
-  };
-  inventory: LibraryStatsInventory;
-  collections: {
-    [key: string]: LibraryStatsInventory;
-  };
-}
-
-export interface StatsData {
-  [key: string]: LibraryStatsData;
-}
-
 export interface DiagnosticsData {
   monitor?: DiagnosticsServiceData[];
   script?: DiagnosticsServiceData[];
