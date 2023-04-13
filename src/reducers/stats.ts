@@ -1,7 +1,7 @@
 import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import { StatisticsData } from "../interfaces";
 import ActionCreator from "../actions";
-import { CombinedState } from "../store";
+import { RootState } from "../store";
 
 export interface StatsState {
   data: StatisticsData;
@@ -19,10 +19,10 @@ const initialState: StatsState = {
 
 /** Map application state to StatsState properties. */
 export const stateSelector = {
-  data: (state: CombinedState) => state.editor.stats.data,
-  isLoaded: (state: CombinedState) => state.editor.stats.isLoaded,
-  isFetching: (state: CombinedState) => state.editor.stats.isFetching,
-  fetchError: (state: CombinedState) => state.editor.stats.fetchError,
+  data: (state: RootState) => state.editor.stats.data,
+  isLoaded: (state: RootState) => state.editor.stats.isLoaded,
+  isFetching: (state: RootState) => state.editor.stats.isFetching,
+  fetchError: (state: RootState) => state.editor.stats.fetchError,
 };
 
 export default (state: StatsState = initialState, action) => {

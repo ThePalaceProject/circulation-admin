@@ -15,7 +15,6 @@ export interface StatsLocalState {
   isLoaded?: boolean;
 }
 
-
 export interface StatsProps {
   library?: string;
 }
@@ -61,13 +60,13 @@ export const normalizeStatistics = (statistics): StatisticsData => {
     return statistics;
   }
 
-  const collectionIdMap = Object.assign(
-    {},
-    ...statistics.collections.map((c) => ({ [c.id]: c }))
+  const collectionsById = statistics.collections.reduce(
+    (map, collection) => ({ ...map, [collection.id]: collection }),
+    {}
   );
   const libraries = statistics.libraries.map((l) => ({
     ...l,
-    collections: l.collectionIds.map((id) => collectionIdMap[id]),
+    collections: l.collectionIds.map((id) => collectionsById[id]),
   }));
   const collectionIds = statistics.collections.map((c) => c.id);
 

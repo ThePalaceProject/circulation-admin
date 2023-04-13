@@ -17,9 +17,9 @@ import {
 describe("LibraryStats", () => {
   // Convert from the API format to our in-app format.
   const statisticsData = normalizeStatistics(statisticsApiResponseData);
-  const librariesStatsTestDataByKey = Object.assign(
-    {},
-    ...statisticsData.libraries.map((l) => ({ [l.key]: l }))
+  const librariesStatsTestDataByKey = statisticsData.libraries.reduce(
+    (map, library) => ({ ...map, [library.key]: library }),
+    {}
   );
   const defaultLibraryStatsTestData =
     librariesStatsTestDataByKey[testLibraryKey];

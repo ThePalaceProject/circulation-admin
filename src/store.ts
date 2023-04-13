@@ -12,11 +12,6 @@ import catalogReducers from "@thepalaceproject/web-opds-client/lib/reducers/inde
 import { State as CatalogState } from "@thepalaceproject/web-opds-client/lib/state";
 import editorReducers, { State as EditorState } from "./reducers/index";
 
-export interface CombinedState {
-  editor: EditorState;
-  catalog: CatalogState;
-}
-
 export interface RootState {
   editor: EditorState;
   catalog: CatalogState;
