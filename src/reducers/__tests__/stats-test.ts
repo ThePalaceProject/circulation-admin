@@ -1,53 +1,10 @@
 import { expect } from "chai";
 
 import reducer, { StatsState } from "../stats";
-import { StatsData } from "../../interfaces";
+import { statisticsApiResponseData } from "../../../tests/__data__/statisticsApiResponseData";
 import ActionCreator from "../../actions";
 
 describe("stats reducer", () => {
-  const statsData: StatsData = {
-    NYPL: {
-      patrons: {
-        total: 3456,
-        with_active_loans: 55,
-        with_active_loans_or_holds: 1234,
-        loans: 100,
-        holds: 2000,
-      },
-      inventory: {
-        titles: 54321,
-        licenses: 123456,
-        available_licenses: 100000,
-      },
-      collections: {
-        Overdrive: {
-          licensed_titles: 500,
-          open_access_titles: 10,
-          licenses: 350,
-          available_licenses: 100,
-        },
-        Bibliotheca: {
-          licensed_titles: 400,
-          open_access_titles: 0,
-          licenses: 300,
-          available_licenses: 170,
-        },
-        "Axis 360": {
-          licensed_titles: 300,
-          open_access_titles: 0,
-          licenses: 280,
-          available_licenses: 260,
-        },
-        "Open Bookshelf": {
-          licensed_titles: 0,
-          open_access_titles: 1200,
-          licenses: 0,
-          available_licenses: 0,
-        },
-      },
-    },
-  };
-
   const initState: StatsState = {
     data: null,
     isFetching: false,
@@ -95,9 +52,12 @@ describe("stats reducer", () => {
   });
 
   it("handles STATS_LOAD", () => {
-    const action = { type: ActionCreator.STATS_LOAD, data: statsData };
+    const action = {
+      type: ActionCreator.STATS_LOAD,
+      data: statisticsApiResponseData,
+    };
     const newState = Object.assign({}, initState, {
-      data: statsData,
+      data: statisticsApiResponseData,
       isFetching: false,
       isLoaded: true,
     });

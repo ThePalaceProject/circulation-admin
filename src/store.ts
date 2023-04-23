@@ -6,11 +6,11 @@ import {
   Store,
   Reducer,
 } from "redux";
-import catalogReducers from "@thepalaceproject/web-opds-client/lib/reducers";
-import { State as CatalogState } from "@thepalaceproject/web-opds-client/lib/state";
-import editorReducers, { State as EditorState } from "./reducers/index";
 
 import thunk from "redux-thunk";
+import catalogReducers from "@thepalaceproject/web-opds-client/lib/reducers/index";
+import { State as CatalogState } from "@thepalaceproject/web-opds-client/lib/state";
+import editorReducers, { State as EditorState } from "./reducers/index";
 
 export interface RootState {
   editor: EditorState;

@@ -124,31 +124,54 @@ export interface CirculationEventData {
   };
 }
 
-export interface LibraryStatsData {
-  patrons: {
-    total: number;
-    with_active_loans: number;
-    with_active_loans_or_holds: number;
-    loans: number;
-    holds: number;
-  };
-  inventory: {
-    titles: number;
-    licenses: number;
-    available_licenses: number;
-  };
-  collections: {
-    [key: string]: {
-      licensed_titles: number;
-      open_access_titles: number;
-      licenses: number;
-      available_licenses: number;
-    };
-  };
+export interface InventoryStatistics {
+  titles: number;
+  availableTitles: number;
+  selfHostedTitles: number;
+  openAccessTitles: number;
+  licensedTitles: number;
+  unlimitedLicenseTitles: number;
+  meteredLicenseTitles: number;
+  meteredLicensesOwned: number;
+  meteredLicensesAvailable: number;
 }
 
-export interface StatsData {
-  [key: string]: LibraryStatsData;
+export interface PatronStatistics {
+  total: number;
+  withActiveLoan: number;
+  withActiveLoanOrHold: number;
+  loans: number;
+  holds: number;
+}
+
+export interface LibraryStatistics {
+  key: string;
+  name: string;
+  patronStatistics: PatronStatistics;
+  inventorySummary: InventoryStatistics;
+  collectionIds: number[];
+  collections?: CollectionInventory[];
+}
+
+export interface CollectionInventory {
+  id: number;
+  name: string;
+  inventory: InventoryStatistics;
+}
+
+export interface StatisticsData {
+  collections: CollectionInventory[];
+  collectionIds?: number[];
+  collectionIdMap?: {
+    [id: number]: CollectionInventory;
+  };
+  libraries: LibraryStatistics[];
+  libraryKeyMap?: {
+    [key: string]: LibraryStatistics;
+  };
+  inventorySummary: InventoryStatistics;
+  patronSummary: PatronStatistics;
+  summaryStatistics?: LibraryStatistics;
 }
 
 export interface DiagnosticsData {

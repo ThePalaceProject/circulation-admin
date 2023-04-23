@@ -1,166 +1,218 @@
 import { expect } from "chai";
-import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
+import { normalizeStatistics } from "../Stats";
 import LibraryStats from "../LibraryStats";
-import { LibraryStatsData } from "../../interfaces";
 import { BarChart } from "recharts";
+import {
+  statisticsApiResponseData,
+  testLibraryKey,
+  noCollectionsLibraryKey,
+  noInventoryLibraryKey,
+  noPatronsLibraryKey,
+} from "../../../tests/__data__/statisticsApiResponseData";
 
 describe("LibraryStats", () => {
-  const statsData: LibraryStatsData = {
-    patrons: {
-      total: 3456,
-      with_active_loans: 55,
-      with_active_loans_or_holds: 1234,
-      loans: 100,
-      holds: 2000,
-    },
-    inventory: {
-      titles: 54321,
-      licenses: 123456,
-      available_licenses: 100000,
-    },
-    collections: {
-      Overdrive: {
-        licensed_titles: 490,
-        open_access_titles: 10,
-        licenses: 350,
-        available_licenses: 100,
-      },
-      Bibliotheca: {
-        licensed_titles: 400,
-        open_access_titles: 0,
-        licenses: 300,
-        available_licenses: 170,
-      },
-      "Axis 360": {
-        licensed_titles: 300,
-        open_access_titles: 0,
-        licenses: 280,
-        available_licenses: 260,
-      },
-      "Open Bookshelf": {
-        licensed_titles: 0,
-        open_access_titles: 1200,
-        licenses: 0,
-        available_licenses: 0,
-      },
-    },
+  // Convert from the API format to our in-app format.
+  const statisticsData = normalizeStatistics(statisticsApiResponseData);
+  const librariesStatsTestDataByKey = statisticsData.libraries.reduce(
+    (map, library) => ({ ...map, [library.key]: library }),
+    {}
+  );
+  const defaultLibraryStatsTestData =
+    librariesStatsTestDataByKey[testLibraryKey];
+  const allLibrariesHeadingText = "All Libraries";
+  const noCollectionsHeadingText = "No associated collections.";
+
+  const expectStats = (
+    { label, value },
+    expected_label: string,
+    expected_value
+  ) => {
+    expect(label).to.equal(expected_label);
+    expect(value).to.equal(expected_value);
   };
 
-  const libraryData = {
-    name: "Brooklyn Public Library",
-    short_name: "BPL",
+  const expectAllGroups = (groups) => {
+    expect(groups.length).to.equal(4);
+    expect(groups.at(0).text()).to.contain("Patrons");
+    expect(groups.at(1).text()).to.contain("Circulation");
+    expect(groups.at(2).text()).to.contain("Inventory");
   };
 
   describe("rendering", () => {
     let wrapper;
-
     beforeEach(() => {
-      wrapper = shallow(<LibraryStats stats={statsData} />);
+      wrapper = mount(<LibraryStats stats={defaultLibraryStatsTestData} />);
     });
 
     it("shows 'all libraries' header when there is no library", () => {
       const header = wrapper.find("h2");
-      expect(header.text()).to.contain("All Libraries");
+      expect(header.text()).to.contain(allLibrariesHeadingText);
     });
 
     it("shows library header", () => {
-      wrapper.setProps({ library: libraryData });
+      wrapper.setProps({ library: defaultLibraryStatsTestData.key });
       const header = wrapper.find("h2");
-      expect(header.text()).to.contain("Brooklyn Public Library");
-      expect(header.text()).not.to.contain("All Libraries");
+      expect(header.text()).to.contain(defaultLibraryStatsTestData.name);
+      expect(header.text()).not.to.contain(allLibrariesHeadingText);
+    });
+
+    it("show patrons and circulation groups, even when no patrons", () => {
+      const noPatrons = librariesStatsTestDataByKey[noPatronsLibraryKey];
+      wrapper.setProps({ stats: noPatrons });
+      const groups = wrapper.find(".stat-group");
+      expectAllGroups(groups);
+    });
+
+    it("shows inventory group, even when there is no inventory", () => {
+      const noInventory = librariesStatsTestDataByKey[noInventoryLibraryKey];
+      wrapper.setProps({ stats: noInventory });
+      const groups = wrapper.find(".stat-group");
+      expectAllGroups(groups);
+    });
+
+    it("shows appropriate message when there are no collections", () => {
+      const noCollections =
+        librariesStatsTestDataByKey[noCollectionsLibraryKey];
+      wrapper.setProps({ stats: noCollections });
+      const groups = wrapper.find(".stat-group");
+      expectAllGroups(groups);
+      expect(groups.at(3).text()).to.contain(noCollectionsHeadingText);
     });
 
     it("shows stats data", () => {
       const groups = wrapper.find(".stat-group");
+      let statItems;
       expect(groups.length).to.equal(4);
 
+      /* Patrons */
       expect(groups.at(0).text()).to.contain("Patrons");
-      expect(groups.at(0).text()).to.contain("3.5kTotal Patrons");
-      expect(groups.at(0).text()).to.contain("55Patrons With Active Loans");
+      statItems = groups.at(0).find("SingleStatListItem");
+      expect(statItems.length).to.equal(3);
+      expectStats(statItems.at(0).props(), "Total Patrons", 132);
+      expectStats(statItems.at(1).props(), "Patrons With Active Loans", 21);
+      expectStats(
+        statItems.at(2).props(),
+        "Patrons With Active Loans or Holds",
+        23
+      );
+      expect(groups.at(0).text()).to.contain("132Total Patrons");
+      expect(groups.at(0).text()).to.contain("21Patrons With Active Loans");
       expect(groups.at(0).text()).to.contain(
-        "1.2kPatrons With Active Loans or Holds"
+        "23Patrons With Active Loans or Holds"
       );
 
+      /* Circulation */
       expect(groups.at(1).text()).to.contain("Circulation");
-      expect(groups.at(1).text()).to.contain("100Active Loans");
-      expect(groups.at(1).text()).to.contain("2kActive Holds");
+      statItems = groups.at(1).find("SingleStatListItem");
+      expect(statItems.length).to.equal(2);
+      expectStats(statItems.at(0).props(), "Active Loans", 87);
+      expectStats(statItems.at(1).props(), "Active Holds", 5);
+      expect(groups.at(1).text()).to.contain("87Active Loans");
+      expect(groups.at(1).text()).to.contain("5Active Holds");
 
+      /* Inventory */
       expect(groups.at(2).text()).to.contain("Inventory");
-      expect(groups.at(2).text()).to.contain("54.3kTitles");
-      expect(groups.at(2).text()).to.contain("123.5kTotal Licenses");
-      expect(groups.at(2).text()).to.contain("100kAvailable Licenses");
+      statItems = groups.at(2).find("SingleStatListItem");
+      expect(statItems.length).to.equal(6);
+      expectStats(statItems.at(0).props(), "Titles", 29119);
+      expectStats(statItems.at(1).props(), "Available Titles", 29092);
+      expectStats(statItems.at(2).props(), "Metered License Titles", 20658);
+      expectStats(statItems.at(3).props(), "Unlimited License Titles", 623);
+      expectStats(statItems.at(4).props(), "Open Access Titles", 7838);
+      expectStats(statItems.at(5).props(), "Self-Hosted Titles", 145);
+      expect(groups.at(2).text()).to.contain("29.1kTitles");
+      expect(groups.at(2).text()).to.contain("29.1kAvailable Titles");
+      expect(groups.at(2).text()).to.contain("20.7kMetered License Titles");
+      expect(groups.at(2).text()).to.contain("623Unlimited License Titles");
+      expect(groups.at(2).text()).to.contain("7.8kOpen Access Titles");
+      expect(groups.at(2).text()).to.contain("145Self-Hosted Titles");
 
+      /* Collections */
       expect(groups.at(3).text()).to.contain("Collections");
       const chart = groups.at(3).find(BarChart);
       expect(chart.length).to.equal(1);
+      const chartData = chart.props().data;
+      expect(chartData.length).to.equal(
+        defaultLibraryStatsTestData.collections.length
+      );
+      expect(chartData[0]).to.deep.equal({
+        name: "New BiblioBoard Test",
+        titles: 13306,
+        availableTitles: 13306,
+        selfHostedTitles: 0,
+        openAccessTitles: 0,
+        licensedTitles: 13306,
+        unlimitedLicenseTitles: 0,
+        meteredLicenseTitles: 13306,
+        meteredLicensesOwned: 13306,
+        meteredLicensesAvailable: 13306,
+      });
       expect(chart.props().data).to.deep.equal([
         {
-          label: "Overdrive",
-          "Licensed Titles": 490,
-          "Open Access Titles": 10,
+          name: "New BiblioBoard Test",
+          titles: 13306,
+          availableTitles: 13306,
+          selfHostedTitles: 0,
+          openAccessTitles: 0,
+          licensedTitles: 13306,
+          unlimitedLicenseTitles: 0,
+          meteredLicenseTitles: 13306,
+          meteredLicensesOwned: 13306,
+          meteredLicensesAvailable: 13306,
         },
         {
-          label: "Bibliotheca",
-          "Licensed Titles": 400,
-          "Open Access Titles": 0,
+          name: "New Bibliotheca Test Collection",
+          titles: 76,
+          availableTitles: 64,
+          selfHostedTitles: 0,
+          openAccessTitles: 0,
+          licensedTitles: 76,
+          unlimitedLicenseTitles: 0,
+          meteredLicenseTitles: 76,
+          meteredLicensesOwned: 85,
+          meteredLicensesAvailable: 72,
         },
-        { label: "Axis 360", "Licensed Titles": 300, "Open Access Titles": 0 },
         {
-          label: "Open Bookshelf",
-          "Licensed Titles": 0,
-          "Open Access Titles": 1200,
+          name: "Palace Bookshelf",
+          titles: 7838,
+          availableTitles: 7838,
+          selfHostedTitles: 0,
+          openAccessTitles: 7838,
+          licensedTitles: 0,
+          unlimitedLicenseTitles: 0,
+          meteredLicenseTitles: 0,
+          meteredLicensesOwned: 0,
+          meteredLicensesAvailable: 0,
+        },
+        {
+          name: "TEST Baker & Taylor",
+          titles: 146,
+          availableTitles: 134,
+          selfHostedTitles: 0,
+          openAccessTitles: 0,
+          licensedTitles: 146,
+          unlimitedLicenseTitles: 0,
+          meteredLicenseTitles: 146,
+          meteredLicensesOwned: 147,
+          meteredLicensesAvailable: 135,
+        },
+        {
+          name: "TEST Palace Marketplace",
+          titles: 7753,
+          availableTitles: 7750,
+          selfHostedTitles: 0,
+          openAccessTitles: 0,
+          licensedTitles: 7753,
+          unlimitedLicenseTitles: 0,
+          meteredLicenseTitles: 7753,
+          meteredLicensesOwned: 305725,
+          meteredLicensesAvailable: 75337,
         },
       ]);
-    });
-
-    it("hides patrons and circulation groups when there are no patrons", () => {
-      const noPatrons = Object.assign({}, statsData, {
-        patrons: {
-          total: 0,
-          with_active_loans: 0,
-          with_active_loans_or_holds: 0,
-          loans: 0,
-          holds: 0,
-        },
-      });
-      wrapper.setProps({ stats: noPatrons });
-      const groups = wrapper.find(".stat-group");
-      expect(groups.length).to.equal(2);
-
-      expect(groups.at(0).text()).to.contain("Inventory");
-      expect(groups.at(1).text()).to.contain("Collections");
-    });
-
-    it("hides licenses in inventory when there are no licenses", () => {
-      const noLicenses = Object.assign({}, statsData, {
-        inventory: {
-          titles: 54321,
-          licenses: 0,
-          available_licenses: 0,
-        },
-      });
-      wrapper.setProps({ stats: noLicenses });
-      const groups = wrapper.find(".stat-group");
-      expect(groups.length).to.equal(4);
-
-      expect(groups.at(2).text()).to.contain("Inventory");
-      expect(groups.at(2).text()).to.contain("54.3kTitles");
-      expect(groups.at(2).text()).not.to.contain("Licenses");
-    });
-
-    it("hides collections section when there are no collections", () => {
-      const noCollections = Object.assign({}, statsData, { collections: {} });
-      wrapper.setProps({ stats: noCollections });
-      const groups = wrapper.find(".stat-group");
-      expect(groups.length).to.equal(3);
-
-      expect(groups.at(0).text()).to.contain("Patrons");
-      expect(groups.at(1).text()).to.contain("Circulation");
-      expect(groups.at(2).text()).to.contain("Inventory");
     });
   });
 });
