@@ -99,6 +99,29 @@ module.exports = (env) => {
   };
 
   /**
+   * Rewrites an OpenSearch description response. This changes back-end URLs in the feed to point
+   * to the local server instead. This is a simple find-and-replace.
+   *
+   * @param responseBuffer A buffer containing the response body.
+   * @param req The request.
+   * @returns
+   */
+  const rewriteOpenSearch = (responseBuffer, req) => {
+    const requestHost = req.headers.host;
+
+    if (!requestHost) {
+      return responseBuffer;
+    }
+
+    const osd = responseBuffer.toString("utf8");
+
+    return osd.replace(
+      new RegExp(backendUrl.origin, "g"),
+      `http://${requestHost}`
+    );
+  };
+
+  /**
    * Rewrites an OPDS response. This changes back-end URLs in the feed to point to the local server
    * instead. This is a simple find-and-replace.
    *
@@ -160,6 +183,10 @@ module.exports = (env) => {
 
         if (contentType.startsWith("text/html")) {
           return rewriteHTML(responseBuffer, req);
+        }
+
+        if (contentType.startsWith("application/opensearchdescription+xml")) {
+          return rewriteOpenSearch(responseBuffer, req);
         }
 
         return responseBuffer;
