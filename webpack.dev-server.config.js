@@ -99,8 +99,8 @@ module.exports = (env) => {
   };
 
   /**
-   * Rewrites an OpenSearch description response. This changes back-end URLs in the feed to point
-   * to the local server instead. This is a simple find-and-replace.
+   * Rewrites an OpenSearch description response. This changes back-end URLs in the description to
+   * point to the local server instead. This is a simple find-and-replace.
    *
    * @param responseBuffer A buffer containing the response body.
    * @param req The request.
