@@ -212,7 +212,7 @@ export const buildSearchUrl = (
 ): string => {
   const { entryPoint, terms, sort } = searchParams;
 
-  const queryParams = [];
+  const queryParams = ["language=all"];
 
   if (entryPoint !== "All") {
     queryParams.push(`media=${encodeURIComponent(entryPoint)}`);
