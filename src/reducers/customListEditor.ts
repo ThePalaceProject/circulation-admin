@@ -210,9 +210,13 @@ export const buildSearchUrl = (
   searchParams: CustomListEditorSearchParams,
   library: string
 ): string => {
-  const { entryPoint, terms, sort } = searchParams;
+  const { entryPoint, language, terms, sort } = searchParams;
 
-  const queryParams = ["language=all"];
+  const queryParams = [];
+
+  if (language) {
+    queryParams.push(`language=${encodeURIComponent(language)}`);
+  }
 
   if (entryPoint !== "All") {
     queryParams.push(`media=${encodeURIComponent(entryPoint)}`);

@@ -1,6 +1,7 @@
 import * as React from "react";
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import CustomLists from "../../../src/components/CustomLists";
@@ -104,5 +105,92 @@ describe("CustomLists", () => {
 
     items = screen.getAllByRole("treeitem");
     expect(items).toHaveLength(1);
+  });
+
+  it("sends the language=all search parameter", async () => {
+    let searchParams = null;
+
+    server.use(
+      rest.get("*/search", (req, res, ctx) => {
+        searchParams = req.url.searchParams;
+
+        res(ctx.xml("<feed />"));
+      })
+    );
+
+    const user = userEvent.setup();
+
+    const contextProviderProps = {
+      csrfToken: "",
+      roles: [{ role: "system" }],
+    };
+
+    renderWithContext(
+      <CustomLists
+        csrfToken=""
+        editOrCreate="create"
+        library="testlib"
+        store={buildStore()}
+      />,
+      contextProviderProps
+    );
+
+    await user.click(screen.getByRole("textbox", { name: "filter value" }));
+    await user.keyboard("horror{enter}");
+
+    await waitFor(() => {
+      expect(searchParams.get("language")).toEqual("all");
+
+      expect(JSON.parse(searchParams.get("q"))).toEqual({
+        query: {
+          key: "genre",
+          value: "horror",
+        },
+      });
+    });
+  });
+
+  it("sends the language=all search parameter when a language filter is added, and places the language filter in the q parameter", async () => {
+    let searchParams = null;
+
+    server.use(
+      rest.get("*/search", (req, res, ctx) => {
+        searchParams = req.url.searchParams;
+
+        res(ctx.xml("<feed />"));
+      })
+    );
+
+    const user = userEvent.setup();
+
+    const contextProviderProps = {
+      csrfToken: "",
+      roles: [{ role: "system" }],
+    };
+
+    renderWithContext(
+      <CustomLists
+        csrfToken=""
+        editOrCreate="create"
+        library="testlib"
+        store={buildStore()}
+      />,
+      contextProviderProps
+    );
+
+    await user.click(screen.getByRole("radio", { name: "language" }));
+    await user.click(screen.getByRole("textbox", { name: "filter value" }));
+    await user.keyboard("french{enter}");
+
+    await waitFor(() => {
+      expect(searchParams.get("language")).toEqual("all");
+
+      expect(JSON.parse(searchParams.get("q"))).toEqual({
+        query: {
+          key: "language",
+          value: "french",
+        },
+      });
+    });
   });
 });

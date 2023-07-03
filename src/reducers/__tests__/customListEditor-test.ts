@@ -2714,7 +2714,7 @@ describe("custom list editor reducer", () => {
             entryPoint: "Book",
             terms: "foo bar baz",
             sort: "title",
-            language: "eng",
+            language: "all",
             advanced: {
               include: {
                 query: null,
@@ -2748,7 +2748,7 @@ describe("custom list editor reducer", () => {
             entryPoint: "All",
             terms: "foo bar baz",
             sort: "title",
-            language: "eng",
+            language: "all",
             advanced: {
               include: {
                 query: null,
@@ -2782,7 +2782,7 @@ describe("custom list editor reducer", () => {
             entryPoint: "All",
             terms: "foo bar baz",
             sort: null,
-            language: "eng",
+            language: "all",
             advanced: {
               include: {
                 query: null,
@@ -2834,7 +2834,7 @@ describe("custom list editor reducer", () => {
       const library = "lib";
       const url = getCustomListEditorSearchUrl(state, library);
 
-      expect(url).to.equal("/lib/search?language=all&q=foo%20bar%20baz");
+      expect(url).to.equal("/lib/search?q=foo%20bar%20baz");
     });
   });
 });
