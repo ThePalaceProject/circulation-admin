@@ -2714,7 +2714,7 @@ describe("custom list editor reducer", () => {
             entryPoint: "Book",
             terms: "foo bar baz",
             sort: "title",
-            language: "eng",
+            language: "all",
             advanced: {
               include: {
                 query: null,
@@ -2735,7 +2735,7 @@ describe("custom list editor reducer", () => {
       const url = getCustomListEditorSearchUrl(state, library);
 
       expect(url).to.equal(
-        "/lib/search?media=Book&order=title&q=foo%20bar%20baz"
+        "/lib/search?language=all&media=Book&order=title&q=foo%20bar%20baz"
       );
     });
 
@@ -2748,7 +2748,7 @@ describe("custom list editor reducer", () => {
             entryPoint: "All",
             terms: "foo bar baz",
             sort: "title",
-            language: "eng",
+            language: "all",
             advanced: {
               include: {
                 query: null,
@@ -2768,7 +2768,9 @@ describe("custom list editor reducer", () => {
       const library = "lib";
       const url = getCustomListEditorSearchUrl(state, library);
 
-      expect(url).to.equal("/lib/search?order=title&q=foo%20bar%20baz");
+      expect(url).to.equal(
+        "/lib/search?language=all&order=title&q=foo%20bar%20baz"
+      );
     });
 
     it("should omit the order param if sort is null", () => {
@@ -2780,7 +2782,7 @@ describe("custom list editor reducer", () => {
             entryPoint: "All",
             terms: "foo bar baz",
             sort: null,
-            language: "eng",
+            language: "all",
             advanced: {
               include: {
                 query: null,
@@ -2800,7 +2802,7 @@ describe("custom list editor reducer", () => {
       const library = "lib";
       const url = getCustomListEditorSearchUrl(state, library);
 
-      expect(url).to.equal("/lib/search?q=foo%20bar%20baz");
+      expect(url).to.equal("/lib/search?language=all&q=foo%20bar%20baz");
     });
 
     it("should omit the language param if language is null", () => {
