@@ -23,8 +23,6 @@ import catalogServices from "./catalogServices";
 import discoveryServices from "./discoveryServices";
 import registerLibraryWithDiscoveryService from "./registerLibraryWithDiscoveryService";
 import discoveryServiceLibraryRegistrations from "./discoveryServiceLibraryRegistrations";
-import registerLibraryWithCollection from "./registerLibraryWithCollection";
-import collectionLibraryRegistrations from "./collectionLibraryRegistrations";
 import customLists from "./customLists";
 import customListDetails, {
   FetchMoreCustomListDetails,
@@ -100,8 +98,6 @@ export interface State {
   discoveryServiceLibraryRegistrations: FetchEditState<
     LibraryRegistrationsData
   >;
-  registerLibraryWithCollection: RegisterLibraryState;
-  collectionLibraryRegistrations: FetchEditState<LibraryRegistrationsData>;
   customLists: FetchEditState<CustomListsData>;
   customListDetails: FetchMoreCustomListDetails<CollectionData>;
   customListEditor: CustomListEditorState;
@@ -144,8 +140,6 @@ export default combineReducers<State>({
   discoveryServices,
   registerLibraryWithDiscoveryService,
   discoveryServiceLibraryRegistrations,
-  registerLibraryWithCollection,
-  collectionLibraryRegistrations,
   customLists,
   customListDetails,
   customListEditor,
