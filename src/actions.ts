@@ -111,10 +111,6 @@ export default class ActionCreator extends BaseActionCreator {
     "REGISTER_LIBRARY_WITH_DISCOVERY_SERVICE";
   static readonly DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS =
     "DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS";
-  static readonly REGISTER_LIBRARY_WITH_COLLECTION =
-    "REGISTER_LIBRARY_WITH_COLLECTION";
-  static readonly COLLECTION_LIBRARY_REGISTRATIONS =
-    "COLLECTION_LIBRARY_REGISTRATIONS";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
   static readonly CUSTOM_LIST_DETAILS = "CUSTOM_LIST_DETAILS";
   static readonly CUSTOM_LIST_DETAILS_MORE = "CUSTOM_LIST_DETAILS_MORE";
@@ -777,23 +773,6 @@ export default class ActionCreator extends BaseActionCreator {
     const url = "/admin/discovery_service_library_registrations";
     return this.fetchJSON<LibraryRegistrationsData>(
       ActionCreator.DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS,
-      url
-    ).bind(this);
-  }
-
-  registerLibraryWithCollection(data: FormData) {
-    const url = "/admin/collection_library_registrations";
-    return this.postForm(
-      ActionCreator.REGISTER_LIBRARY_WITH_COLLECTION,
-      url,
-      data
-    ).bind(this);
-  }
-
-  fetchCollectionLibraryRegistrations() {
-    const url = "/admin/collection_library_registrations";
-    return this.fetchJSON<LibraryRegistrationsData>(
-      ActionCreator.COLLECTION_LIBRARY_REGISTRATIONS,
       url
     ).bind(this);
   }
