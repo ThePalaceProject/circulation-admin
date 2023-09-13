@@ -22,7 +22,6 @@ import {
   MediaData,
   LanguagesData,
   RightsStatusData,
-  StorageServicesData,
   LoggingServicesData,
   CatalogServicesData,
   SelfTestsData,
@@ -98,9 +97,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
   static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
   static readonly DELETE_SEARCH_SERVICE = "DELETE_SEARCH_SERVICE";
-  static readonly STORAGE_SERVICES = "STORAGE_SERVICES";
-  static readonly EDIT_STORAGE_SERVICE = "EDIT_STORAGE_SERVICE";
-  static readonly DELETE_STORAGE_SERVICE = "DELETE_STORAGE_SERVICE";
   static readonly CATALOG_SERVICES = "CATALOG_SERVICES";
   static readonly EDIT_CATALOG_SERVICE = "EDIT_CATALOG_SERVICE";
   static readonly DELETE_CATALOG_SERVICE = "DELETE_CATALOG_SERVICE";
@@ -679,31 +675,6 @@ export default class ActionCreator extends BaseActionCreator {
     const url = "/admin/search_service/" + identifier;
     return this.postForm(
       ActionCreator.DELETE_SEARCH_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchStorageServices() {
-    const url = "/admin/storage_services";
-    return this.fetchJSON<StorageServicesData>(
-      ActionCreator.STORAGE_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editStorageService(data: FormData) {
-    const url = "/admin/storage_services";
-    return this.postForm(ActionCreator.EDIT_STORAGE_SERVICE, url, data).bind(
-      this
-    );
-  }
-
-  deleteStorageService(identifier: string | number) {
-    const url = "/admin/storage_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_STORAGE_SERVICE,
       url,
       null,
       "DELETE"

@@ -387,12 +387,6 @@ export interface SearchServicesData extends ServicesData {
   search_services: SearchServiceData[];
 }
 
-export interface StorageServiceData extends ServiceData {}
-
-export interface StorageServicesData extends ServicesData {
-  storage_services: StorageServiceData[];
-}
-
 export interface CatalogServiceData extends ServiceData {}
 
 export interface CatalogServicesData extends ServicesData {

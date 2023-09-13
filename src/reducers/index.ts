@@ -18,7 +18,6 @@ import loggingServices from "./loggingServices";
 import metadataServices from "./metadataServices";
 import analyticsServices from "./analyticsServices";
 import searchServices from "./searchServices";
-import storageServices from "./storageServices";
 import catalogServices from "./catalogServices";
 import discoveryServices from "./discoveryServices";
 import registerLibraryWithDiscoveryService from "./registerLibraryWithDiscoveryService";
@@ -56,7 +55,6 @@ import {
   MetadataServicesData,
   AnalyticsServicesData,
   SearchServicesData,
-  StorageServicesData,
   CatalogServicesData,
   DiscoveryServicesData,
   LibraryRegistrationsData,
@@ -91,7 +89,6 @@ export interface State {
   metadataServices: FetchEditState<MetadataServicesData>;
   analyticsServices: FetchEditState<AnalyticsServicesData>;
   searchServices: FetchEditState<SearchServicesData>;
-  storageServices: FetchEditState<StorageServicesData>;
   catalogServices: FetchEditState<CatalogServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
   registerLibraryWithDiscoveryService: RegisterLibraryState;
@@ -135,7 +132,6 @@ export default combineReducers<State>({
   metadataServices,
   analyticsServices,
   searchServices,
-  storageServices,
   catalogServices,
   discoveryServices,
   registerLibraryWithDiscoveryService,

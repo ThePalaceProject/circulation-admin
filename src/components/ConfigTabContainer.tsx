@@ -9,7 +9,6 @@ import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
 import AnalyticsServices from "./AnalyticsServices";
 import SearchServices from "./SearchServices";
-import StorageServices from "./StorageServices";
 import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
 import LoggingServices from "./LoggingServices";
@@ -52,7 +51,6 @@ export default class ConfigTabContainer extends TabContainer<
     metadata: MetadataServices,
     analytics: AnalyticsServices,
     search: SearchServices,
-    storage: StorageServices,
     catalogServices: CatalogServices,
     discovery: DiscoveryServices,
     sitewideAnnouncements: SitewideAnnouncements,
