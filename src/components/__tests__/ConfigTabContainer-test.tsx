@@ -14,7 +14,6 @@ import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
 import AnalyticsServices from "../AnalyticsServices";
 import SearchServices from "../SearchServices";
-import StorageServices from "../StorageServices";
 import CatalogServices from "../CatalogServices";
 import DiscoveryServices from "../DiscoveryServices";
 import SitewideAnnouncements from "../SitewideAnnouncements";
@@ -72,7 +71,6 @@ describe("ConfigTabContainer", () => {
         MetadataServices,
         AnalyticsServices,
         SearchServices,
-        StorageServices,
         CatalogServices,
         DiscoveryServices,
         SitewideAnnouncements,
@@ -141,7 +139,6 @@ describe("ConfigTabContainer", () => {
         SitewideSettings,
         MetadataServices,
         SearchServices,
-        StorageServices,
         CatalogServices,
         DiscoveryServices,
         AnalyticsServices,
@@ -194,7 +191,6 @@ describe("ConfigTabContainer", () => {
         SitewideSettings,
         MetadataServices,
         SearchServices,
-        StorageServices,
         CatalogServices,
         DiscoveryServices,
         AnalyticsServices,
