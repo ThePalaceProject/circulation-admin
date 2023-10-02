@@ -363,12 +363,6 @@ export interface SitewideSettingsData {
   all_settings: SettingData[];
 }
 
-export interface LoggingServiceData extends ServiceData {}
-
-export interface LoggingServicesData extends ServicesData {
-  logging_services: LoggingServiceData[];
-}
-
 export interface MetadataServiceData extends ServiceData {}
 
 export interface MetadataServicesData extends ServicesData {

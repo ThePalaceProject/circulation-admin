@@ -11,7 +11,6 @@ import AnalyticsServices from "./AnalyticsServices";
 import SearchServices from "./SearchServices";
 import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
-import LoggingServices from "./LoggingServices";
 import {
   TabContainer,
   TabContainerProps,
@@ -47,7 +46,6 @@ export default class ConfigTabContainer extends TabContainer<
     collections: Collections,
     patronAuth: PatronAuthServices,
     sitewideSettings: SitewideSettings,
-    logging: LoggingServices,
     metadata: MetadataServices,
     analytics: AnalyticsServices,
     search: SearchServices,
