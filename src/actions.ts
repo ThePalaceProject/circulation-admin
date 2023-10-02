@@ -22,7 +22,6 @@ import {
   MediaData,
   LanguagesData,
   RightsStatusData,
-  LoggingServicesData,
   CatalogServicesData,
   SelfTestsData,
   PatronData,
@@ -85,9 +84,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly SITEWIDE_SETTINGS = "SITEWIDE_SETTINGS";
   static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
   static readonly DELETE_SITEWIDE_SETTING = "DELETE_SITEWIDE_SETTING";
-  static readonly LOGGING_SERVICES = "LOGGING_SERVICES";
-  static readonly EDIT_LOGGING_SERVICE = "EDIT_LOGGING_SERVICE";
-  static readonly DELETE_LOGGING_SERVICE = "DELETE_LOGGING_SERVICE";
   static readonly METADATA_SERVICES = "METADATA_SERVICES";
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
   static readonly DELETE_METADATA_SERVICE = "DELETE_METADATA_SERVICE";
@@ -575,31 +571,6 @@ export default class ActionCreator extends BaseActionCreator {
     const url = "/admin/sitewide_setting/" + identifier;
     return this.postForm(
       ActionCreator.DELETE_SITEWIDE_SETTING,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchLoggingServices() {
-    const url = "/admin/logging_services";
-    return this.fetchJSON<LoggingServicesData>(
-      ActionCreator.LOGGING_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editLoggingService(data: FormData) {
-    const url = "/admin/logging_services";
-    return this.postForm(ActionCreator.EDIT_LOGGING_SERVICE, url, data).bind(
-      this
-    );
-  }
-
-  deleteLoggingService(identifier: string | number) {
-    const url = "/admin/logging_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_LOGGING_SERVICE,
       url,
       null,
       "DELETE"
