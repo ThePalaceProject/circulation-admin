@@ -109,6 +109,7 @@
     "prettier": "2.1.2",
     "react-axe": "^3.3.0",
     "redux-mock-store": "^1.5.4",
+    "resize-observer-polyfill": "^1.5.1",
     "sass": "^1.64.2",
     "sass-lint": "^1.13.1",
     "sass-loader": "^13.2.0",
