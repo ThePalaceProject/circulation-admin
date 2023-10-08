@@ -8,12 +8,12 @@ import {
 import {
   Bar,
   BarChart,
+  DefaultTooltipContent,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import DefaultTooltipContent from "recharts/lib/component/DefaultTooltipContent";
 import SingleStatListItem from "./SingleStatListItem";
 
 export interface LibraryStatsProps {
@@ -177,13 +177,12 @@ const renderCollectionsGroup = (chartItems) => {
         <BarChart
           data={chartItems}
           layout="vertical"
-          margin={{ top: 5, right: 30, left: 0, bottom: 50 }}
+          margin={{ top: 5, right: 30, left: 50, bottom: 50 }}
         >
           <YAxis
             type="category"
             dataKey="name"
             interval={0}
-            angle={-45}
             textAnchor="end"
             tick={{ dx: -20 }}
             padding={{ top: 0, bottom: 0 }}
