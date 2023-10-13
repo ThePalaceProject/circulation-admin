@@ -1,0 +1,52 @@
+name: Test & Publish Next
+
+on:
+  # The build will be triggered on push to main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: test-build-${{ github.ref_name }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Install Node.js 💻
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+
+      - name: Set up Python 🐍
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Set up Dunamai 🪄
+        run: pip install -r requirements-ci.txt
+
+      - name: Install locked dependencies 🔧
+        run: npm ci
+
+      - name: Version ✅
+        run: npm version --no-git-tag-version $(dunamai from git --style semver)
+
+      - name: Test 🧪
+        env:
+          TZ: America/New_York
+        run: npm test
+
+      - name: Publish 📚
+        run: npm publish --tag next --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
