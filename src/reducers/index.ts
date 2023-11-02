@@ -15,7 +15,6 @@ import patronAuthServices from "./patronAuthServices";
 import sitewideAnnouncements from "./sitewideAnnouncements";
 import sitewideSettings from "./sitewideSettings";
 import metadataServices from "./metadataServices";
-import analyticsServices from "./analyticsServices";
 import searchServices from "./searchServices";
 import catalogServices from "./catalogServices";
 import discoveryServices from "./discoveryServices";
@@ -51,7 +50,6 @@ import {
   SitewideAnnouncementsData,
   SitewideSettingsData,
   MetadataServicesData,
-  AnalyticsServicesData,
   SearchServicesData,
   CatalogServicesData,
   DiscoveryServicesData,
@@ -84,7 +82,6 @@ export interface State {
   sitewideAnnouncements: FetchEditState<SitewideAnnouncementsData>;
   sitewideSettings: FetchEditState<SitewideSettingsData>;
   metadataServices: FetchEditState<MetadataServicesData>;
-  analyticsServices: FetchEditState<AnalyticsServicesData>;
   searchServices: FetchEditState<SearchServicesData>;
   catalogServices: FetchEditState<CatalogServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
@@ -126,7 +123,6 @@ export default combineReducers<State>({
   sitewideAnnouncements,
   sitewideSettings,
   metadataServices,
-  analyticsServices,
   searchServices,
   catalogServices,
   discoveryServices,

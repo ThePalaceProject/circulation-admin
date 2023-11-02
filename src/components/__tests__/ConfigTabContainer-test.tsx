@@ -12,7 +12,6 @@ import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
-import AnalyticsServices from "../AnalyticsServices";
 import SearchServices from "../SearchServices";
 import CatalogServices from "../CatalogServices";
 import DiscoveryServices from "../DiscoveryServices";
@@ -69,7 +68,6 @@ describe("ConfigTabContainer", () => {
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
-        AnalyticsServices,
         SearchServices,
         CatalogServices,
         DiscoveryServices,
@@ -116,7 +114,6 @@ describe("ConfigTabContainer", () => {
       const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Libraries");
       expect(linkTexts).to.contain("Admins");
-      expect(linkTexts).not.to.contain("Analytics");
       expect(linkTexts).not.to.contain("Collections");
       expect(linkTexts).not.to.contain("Patron Authentication");
       expect(linkTexts).not.to.contain("Sitewide Settings");
@@ -141,7 +138,6 @@ describe("ConfigTabContainer", () => {
         SearchServices,
         CatalogServices,
         DiscoveryServices,
-        AnalyticsServices,
         SitewideAnnouncements,
       ];
       for (const componentClass of hiddenComponentClasses) {
@@ -193,7 +189,6 @@ describe("ConfigTabContainer", () => {
         SearchServices,
         CatalogServices,
         DiscoveryServices,
-        AnalyticsServices,
         SitewideAnnouncements,
       ];
       for (const componentClass of hiddenComponentClasses) {
