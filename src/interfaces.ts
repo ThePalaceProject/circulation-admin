@@ -369,12 +369,6 @@ export interface MetadataServicesData extends ServicesData {
   metadata_services: MetadataServiceData[];
 }
 
-export interface AnalyticsServiceData extends ServiceData {}
-
-export interface AnalyticsServicesData extends ServicesData {
-  analytics_services: AnalyticsServiceData[];
-}
-
 export interface SearchServiceData extends ServiceData {}
 
 export interface SearchServicesData extends ServicesData {

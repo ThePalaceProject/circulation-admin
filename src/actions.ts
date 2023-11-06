@@ -11,7 +11,6 @@ import {
   PatronAuthServicesData,
   SitewideSettingsData,
   MetadataServicesData,
-  AnalyticsServicesData,
   SearchServicesData,
   DiscoveryServicesData,
   LibraryRegistrationsData,
@@ -87,9 +86,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly METADATA_SERVICES = "METADATA_SERVICES";
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
   static readonly DELETE_METADATA_SERVICE = "DELETE_METADATA_SERVICE";
-  static readonly ANALYTICS_SERVICES = "ANALYTICS_SERVICES";
-  static readonly EDIT_ANALYTICS_SERVICE = "EDIT_ANALYTICS_SERVICE";
-  static readonly DELETE_ANALYTICS_SERVICE = "DELETE_ANALYTICS_SERVICE";
   static readonly SEARCH_SERVICES = "SEARCH_SERVICES";
   static readonly EDIT_SEARCH_SERVICE = "EDIT_SEARCH_SERVICE";
   static readonly DELETE_SEARCH_SERVICE = "DELETE_SEARCH_SERVICE";
@@ -596,31 +592,6 @@ export default class ActionCreator extends BaseActionCreator {
     const url = "/admin/metadata_service/" + identifier;
     return this.postForm(
       ActionCreator.DELETE_METADATA_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchAnalyticsServices() {
-    const url = "/admin/analytics_services";
-    return this.fetchJSON<AnalyticsServicesData>(
-      ActionCreator.ANALYTICS_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editAnalyticsService(data: FormData) {
-    const url = "/admin/analytics_services";
-    return this.postForm(ActionCreator.EDIT_ANALYTICS_SERVICE, url, data).bind(
-      this
-    );
-  }
-
-  deleteAnalyticsService(identifier: string | number) {
-    const url = "/admin/analytics_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_ANALYTICS_SERVICE,
       url,
       null,
       "DELETE"

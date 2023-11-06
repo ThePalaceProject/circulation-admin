@@ -35,7 +35,6 @@ export interface ServiceEditFormState {
   libraries: LibraryWithSettingsData[];
   expandedLibraries: string[];
   selectedLibrary: string | null;
-  analyticsOption?: string | null;
 }
 
 /** Form for editing service configuration based on protocol information from the server.
@@ -61,7 +60,6 @@ export default class ServiceEditForm<
       libraries: (this.props.item && this.props.item.libraries) || [],
       expandedLibraries: [],
       selectedLibrary: null,
-      analyticsOption: null,
     };
     this.handleProtocolChange = this.handleProtocolChange.bind(this);
     this.handleParentChange = this.handleParentChange.bind(this);
