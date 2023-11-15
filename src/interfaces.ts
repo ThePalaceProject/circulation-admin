@@ -470,3 +470,8 @@ export interface AdvancedSearchQuery {
 export interface AdvancedSearchData {
   query: AdvancedSearchQuery;
 }
+
+export interface DashboardURIData {
+  uri: string;
+}
+

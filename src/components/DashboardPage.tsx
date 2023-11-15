@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
 import title from "../utils/title";
+import QuicksightDashboard from "./QuicksightDashboard";
 
 export interface DashboardPageProps extends React.Props<DashboardPageProps> {
   params: {
@@ -48,6 +49,7 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
             store={this.context.editorStore}
             library={library}
           />
+          <QuicksightDashboard/>
         </main>
         <Footer />
       </div>
