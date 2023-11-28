@@ -136,6 +136,10 @@ export interface InventoryStatistics {
   meteredLicensesAvailable: number;
 }
 
+export interface inventoryByMedium {
+  [medium: string]: InventoryStatistics;
+}
+
 export interface PatronStatistics {
   total: number;
   withActiveLoan: number;
@@ -149,6 +153,7 @@ export interface LibraryStatistics {
   name: string;
   patronStatistics: PatronStatistics;
   inventorySummary: InventoryStatistics;
+  inventoryByMedium?: inventoryByMedium;
   collectionIds: number[];
   collections?: CollectionInventory[];
 }
@@ -157,6 +162,7 @@ export interface CollectionInventory {
   id: number;
   name: string;
   inventory: InventoryStatistics;
+  inventoryByMedium?: inventoryByMedium;
 }
 
 export interface StatisticsData {
@@ -170,6 +176,7 @@ export interface StatisticsData {
     [key: string]: LibraryStatistics;
   };
   inventorySummary: InventoryStatistics;
+  inventoryByMedium?: inventoryByMedium;
   patronSummary: PatronStatistics;
   summaryStatistics?: LibraryStatistics;
 }
