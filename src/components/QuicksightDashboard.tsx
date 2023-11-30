@@ -1,37 +1,80 @@
 import * as React from "react";
+import { LibrariesData, LibraryData } from "../interfaces";
+import { Store } from "redux";
+import { RootState } from "../store";
+import { connect } from "react-redux";
 import ActionCreator from "../actions";
 
 export interface QuicksightDashboardStateProps {
+  isFetchingLibraries?: boolean;
+  libraries?: LibraryData[];
 }
 
 export interface QuicksightDashboardDispatchProps {
-  fetchDashboardUri?: () => Promise<any>;
+  fetchLibraries?: () => Promise<LibrariesData>;
+}
+
+export interface QuicksightDashboardOwnProps {
+  store?: Store<RootState>;
+  dashboardId?: string;
 }
 
 export interface QuicksightDashboardProps
-    extends QuicksightDashboardStateProps,QuicksightDashboardDispatchProps {}
+  extends QuicksightDashboardStateProps,
+    QuicksightDashboardDispatchProps,
+    QuicksightDashboardOwnProps {}
 
 export interface QuicksightDashboardState {
-   dashboardId: string
+  embedUrl: string;
 }
 
-
-
-export class QuicksightDashboard extends React.Component <
-    QuicksightDashboardProps,
-    QuicksightDashboardState
->{
-  context: { dashboardId: boolean}
-
+export class QuicksightDashboard extends React.Component<
+  QuicksightDashboardProps,
+  QuicksightDashboardState
+> {
   constructor(props) {
     super(props);
-    this.state = {dashboardId: "library"}
+    this.state = { embedUrl: null };
   }
+  componentDidMount() {
+    if (this.state.embedUrl) {
+      return;
+    }
+
+    this.props.fetchLibraries().then((libs) => {
+      const library_uuids: string = libs.libraries.map((l) => l.uuid).join(",");
+      let library_uuids_key_pair = "library_uuids=" + library_uuids;
+      // TODO Remove next line once https://github.com/ThePalaceProject/circulation/pull/1548
+      // is merged
+      library_uuids_key_pair = "libraryIds=1";
+      try {
+        fetch(
+          "/admin/quicksight_embed/" +
+            this.props.dashboardId +
+            "?" +
+            library_uuids_key_pair
+        )
+          .then((response) => response.json())
+          .then((data) => this.setState({ embedUrl: data["embedUrl"] }))
+          .catch((error) => {
+            console.error(error);
+          });
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  }
+
   render(): JSX.Element {
     return (
       <div className="quicksight-dashboard">
         <h2>Quicksight Dashboard</h2>
-        <iframe src="https://www.amazon.com" height="800" width="1000"/>
+        <iframe
+          title="Quicksight Dashboard"
+          height="900"
+          width="1200"
+          src={this.state.embedUrl}
+        />
       </div>
     );
   }
@@ -39,17 +82,24 @@ export class QuicksightDashboard extends React.Component <
 
 function mapStateToProps(state, ownProps) {
   return {
-    events: state.editor.circulationEvents.data || [],
-    fetchError: state.editor.circulationEvents.fetchError,
-    isLoaded: state.editor.circulationEvents.isLoaded,
+    isFetchingLibraries: state.editor.libraries?.isFetching,
+    libraries: state.editor.libraries?.data?.libraries,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   const actions = new ActionCreator();
   return {
-    fetchDashboardUri: () => dispatch(actions.fetchDashboardUri(dispatch.dashboardId)),
+    fetchLibraries: () => dispatch(actions.fetchLibraries()),
   };
 }
 
-export default QuicksightDashboard;
+const ConnectedQuicksightDashboard = connect<
+  QuicksightDashboardStateProps,
+  QuicksightDashboardDispatchProps,
+  QuicksightDashboardOwnProps
+>(
+  mapStateToProps,
+  mapDispatchToProps
+)(QuicksightDashboard);
+export default ConnectedQuicksightDashboard;

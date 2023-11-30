@@ -26,7 +26,8 @@ import {
   DiagnosticsData,
   FeatureFlags,
   SitewideAnnouncementsData,
-  StatisticsData, DashboardURIData,
+  StatisticsData,
+  DashboardURIData,
 } from "./interfaces";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
@@ -190,8 +191,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
 
   static readonly DIAGNOSTICS = "DIAGNOSTICS";
-
-  static readonly DASHBOARD_URI : "DASHBOARD_URI"
+  static readonly DASHBOARD_URI: "DASHBOARD_URI";
 
   csrfToken: string;
 
@@ -1072,10 +1072,8 @@ export default class ActionCreator extends BaseActionCreator {
   fetchDashboardUri(dashboardId: string) {
     const url = "/admin/quicksight_embed/" + dashboardId;
     return this.fetchJSON<DashboardURIData>(
-        ActionCreator.DASHBOARD_URI,
-        url
+      ActionCreator.DASHBOARD_URI,
+      url
     ).bind(this);
   }
-
 }
-

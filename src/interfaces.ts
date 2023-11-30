@@ -472,6 +472,6 @@ export interface AdvancedSearchData {
 }
 
 export interface DashboardURIData {
-  uri: string;
+  embedUrl: string;
 }
 

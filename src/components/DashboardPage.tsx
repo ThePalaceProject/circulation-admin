@@ -32,11 +32,13 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
     library: PropTypes.func,
   };
 
+
   getChildContext() {
     return {
       library: () => this.props.params.library,
     };
   }
+
 
   render(): JSX.Element {
     const { library } = this.props.params;
@@ -45,11 +47,12 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
         <Header />
         <main className="body">
           <Stats library={library} />
+          <QuicksightDashboard dashboardId="library"/>
           <CirculationEvents
             store={this.context.editorStore}
             library={library}
           />
-          <QuicksightDashboard/>
+
         </main>
         <Footer />
       </div>
