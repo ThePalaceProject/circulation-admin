@@ -155,11 +155,6 @@ const renderInventoryGroup = (inventory: InventoryStatistics) => {
           value={inventory.openAccessTitles}
           tooltip="Number of books for which there are no limits on use."
         />
-        <SingleStatListItem
-          label={inventoryKeyToLabelMap.selfHostedTitles}
-          value={inventory.selfHostedTitles}
-          tooltip="Number of books hosted locally."
-        />
       </ul>
     </>
   );
