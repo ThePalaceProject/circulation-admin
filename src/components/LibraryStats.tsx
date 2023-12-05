@@ -13,7 +13,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import DefaultTooltipContent from "recharts/lib/component/DefaultTooltipContent";
+// import DefaultTooltipContent from "recharts/lib/component/DefaultTooltipContent";
 import SingleStatListItem from "./SingleStatListItem";
 
 export interface LibraryStatsProps {
@@ -33,11 +33,14 @@ const inventoryKeyToLabelMap = {
   selfHostedTitles: "Self-Hosted Titles",
 };
 
+type OneLevelStatistics = { [key: string]: number };
+type TwoLevelStatistics = { [key: string]: OneLevelStatistics };
 type chartTooltipData = {
-  dataKey: string;
-  name: string;
-  value: number;
-  color: string;
+  dataKey?: string;
+  name?: string;
+  value?: number | string;
+  color?: string;
+  perMedium?: OneLevelStatistics;
 };
 
 /** Displays statistics about patrons, licenses, and collections from the server,
@@ -53,7 +56,11 @@ const LibraryStats = (props: LibraryStatsProps) => {
   } = stats || {};
 
   const chartItems = collections
-    ?.map(({ name, inventory }) => ({ name, ...inventory }))
+    ?.map(({ name, inventory, inventoryByMedium }) => ({
+      name,
+      ...inventory,
+      _by_medium: inventoryByMedium,
+    }))
     .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
 
   return (
@@ -189,7 +196,7 @@ const renderCollectionsGroup = (chartItems) => {
 
           <Tooltip
             content={<CustomTooltip />}
-            formatter={formatNumber}
+            formatter={formatTooltip}
             labelStyle={{
               textDecoration: "underline",
               fontWeight: "bold",
@@ -225,10 +232,22 @@ const renderCollectionsGroup = (chartItems) => {
 /* Customize the Rechart tooltip to provide additional information */
 const CustomTooltip = (props) => {
   const { active, payload } = props;
-  if (!active) return null;
+  if (!active) {
+    return null;
+  }
 
   // Nab inventory data from one of the chart payload objects.
   const chartInventory = payload[0].payload;
+  const propertyCountsByMedium = chartInventory._by_medium;
+  const mediumCountsByProperty: TwoLevelStatistics = Object.entries(
+    propertyCountsByMedium
+  ).reduce((acc, [key, value]) => {
+    Object.entries(value).forEach(([innerKey, innerValue]) => {
+      acc[innerKey] = acc[innerKey] || {};
+      acc[innerKey][key] = innerValue;
+    });
+    return acc;
+  }, {});
   const aboveTheLineColor = "#030303";
   const belowTheLineColor = "#A0A0A0";
   const aboveTheLine: chartTooltipData[] = [
@@ -236,35 +255,112 @@ const CustomTooltip = (props) => {
       dataKey: "titles",
       name: inventoryKeyToLabelMap.titles,
       value: chartInventory.titles,
+      perMedium: mediumCountsByProperty["titles"],
     },
     {
       dataKey: "availableTitles",
       name: inventoryKeyToLabelMap.availableTitles,
       value: chartInventory.availableTitles,
+      perMedium: mediumCountsByProperty["availableTitles"],
     },
     ...payload.filter(({ value }) => value > 0),
-  ].map((entry) => ({ ...entry, color: aboveTheLineColor }));
+  ].map(({ dataKey, ...rest }) => ({
+    dataKey,
+    ...rest,
+    color: aboveTheLineColor,
+    perMedium: mediumCountsByProperty[dataKey],
+  }));
   const aboveTheLineKeys = [
     "name",
     ...aboveTheLine.map(({ dataKey }) => dataKey),
   ];
   const belowTheLine = Object.entries(chartInventory)
     .filter(([key]) => !aboveTheLineKeys.includes(key))
+    .filter(([key]) => !key.startsWith("_"))
     .map(([key, value]) => ({
       dataKey: key,
       name: inventoryKeyToLabelMap[key],
-      value,
+      value:
+        typeof value === "number"
+          ? value
+          : typeof value === "string"
+          ? value
+          : "",
       color: belowTheLineColor,
+      perMedium: mediumCountsByProperty[key],
     }));
-  const newPayload = [
-    ...aboveTheLine,
-    {}, // blank line
-    { value: ">>> Additional Information <<<", color: belowTheLineColor },
-    ...belowTheLine,
-  ];
-
+  // const newPayload = [
+  //   ...aboveTheLine,
+  //   // {}, // blank line
+  //   // { value: ">>> Additional Information <<<", color: belowTheLineColor },
+  //   ...belowTheLine,
+  // ];
   // We render the default, but with our overridden payload.
-  return <DefaultTooltipContent {...props} payload={newPayload} />;
+  // return <DefaultTooltipContent {...props} payload={newPayload} />;
+
+  // Render our custom tooltip.
+  return (
+    <div className="customTooltip">
+      <div className="tooltipDetails">
+        <p style={{ textDecoration: "underline", fontWeight: "bold" }}>
+          {chartInventory.name}
+        </p>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {renderChartTooltipPayload(aboveTheLine)}
+          <br />
+          <p style={{ color: belowTheLineColor }}>
+            {renderChartTooltipPayload([
+              {
+                value: ">>> Additional Information <<<",
+                color: belowTheLineColor,
+              },
+            ])}
+          </p>
+          {renderChartTooltipPayload(belowTheLine)}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+const renderChartTooltipPayload = (payload: chartTooltipData[]) => {
+  return payload.map(
+    ({ dataKey = "", name = "", value = "", color, perMedium = {} }) => (
+      <p key={dataKey} style={{ color }}>
+        {!!name && <span style={{ verticalAlign: "middle" }}>{name}:</span>}
+        <span style={{ verticalAlign: "middle" }}> {formatNumber(value)}</span>
+        {perMediumBreakdown(perMedium)}
+      </p>
+    )
+  );
+};
+
+const perMediumBreakdown = (perMedium: OneLevelStatistics) => {
+  const perMediumLabels = Object.entries(perMedium)
+    .filter(([, count]) => count > 0)
+    .map(([medium, count]) => `${medium}: ${formatNumber(count)}`);
+  return (
+    !!perMediumLabels.length && (
+      <span
+        style={{
+          fontSize: "smaller",
+          lineHeight: "100%",
+          verticalAlign: "middle",
+        }}
+      >
+        {` (${perMediumLabels.join(", ")})`}
+      </span>
+    )
+  );
+};
+
+const formatTooltip = (
+  value: string | number,
+  name: string,
+  props: { perMedium: OneLevelStatistics }
+) => {
+  const { perMedium } = props;
+  return [formatNumber(value) + perMediumBreakdown(perMedium), name];
 };
 
 export const formatNumber = (n: number | string | null): string => {
