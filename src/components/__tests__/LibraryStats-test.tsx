@@ -117,19 +117,17 @@ describe("LibraryStats", () => {
       /* Inventory */
       expect(groups.at(2).text()).to.contain("Inventory");
       statItems = groups.at(2).find("SingleStatListItem");
-      expect(statItems.length).to.equal(6);
+      expect(statItems.length).to.equal(5);
       expectStats(statItems.at(0).props(), "Titles", 29119);
       expectStats(statItems.at(1).props(), "Available Titles", 29092);
       expectStats(statItems.at(2).props(), "Metered License Titles", 20658);
       expectStats(statItems.at(3).props(), "Unlimited License Titles", 623);
       expectStats(statItems.at(4).props(), "Open Access Titles", 7838);
-      expectStats(statItems.at(5).props(), "Self-Hosted Titles", 145);
       expect(groups.at(2).text()).to.contain("29.1kTitles");
       expect(groups.at(2).text()).to.contain("29.1kAvailable Titles");
       expect(groups.at(2).text()).to.contain("20.7kMetered License Titles");
       expect(groups.at(2).text()).to.contain("623Unlimited License Titles");
       expect(groups.at(2).text()).to.contain("7.8kOpen Access Titles");
-      expect(groups.at(2).text()).to.contain("145Self-Hosted Titles");
 
       /* Collections */
       expect(groups.at(3).text()).to.contain("Collections");
@@ -150,6 +148,7 @@ describe("LibraryStats", () => {
         meteredLicenseTitles: 13306,
         meteredLicensesOwned: 13306,
         meteredLicensesAvailable: 13306,
+        _by_medium: {},
       });
       expect(chart.props().data).to.deep.equal([
         {
@@ -163,6 +162,7 @@ describe("LibraryStats", () => {
           meteredLicenseTitles: 13306,
           meteredLicensesOwned: 13306,
           meteredLicensesAvailable: 13306,
+          _by_medium: {},
         },
         {
           name: "New Bibliotheca Test Collection",
@@ -175,6 +175,7 @@ describe("LibraryStats", () => {
           meteredLicenseTitles: 76,
           meteredLicensesOwned: 85,
           meteredLicensesAvailable: 72,
+          _by_medium: {},
         },
         {
           name: "Palace Bookshelf",
@@ -187,6 +188,7 @@ describe("LibraryStats", () => {
           meteredLicenseTitles: 0,
           meteredLicensesOwned: 0,
           meteredLicensesAvailable: 0,
+          _by_medium: {},
         },
         {
           name: "TEST Baker & Taylor",
@@ -199,6 +201,7 @@ describe("LibraryStats", () => {
           meteredLicenseTitles: 146,
           meteredLicensesOwned: 147,
           meteredLicensesAvailable: 135,
+          _by_medium: {},
         },
         {
           name: "TEST Palace Marketplace",
@@ -211,6 +214,7 @@ describe("LibraryStats", () => {
           meteredLicenseTitles: 7753,
           meteredLicensesOwned: 305725,
           meteredLicensesAvailable: 75337,
+          _by_medium: {},
         },
       ]);
     });
