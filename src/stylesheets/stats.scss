@@ -71,32 +71,34 @@
     padding: 1px;
     text-align: left;
     border-radius: 12px;
-  }
 
-  .customTooltipDetails {
-    margin: 13px 13px;
-    padding: 10px;
-  }
+    .customTooltipDetail {
+      margin: 13px 13px;
+      padding: 10px;
+    }
 
-  .customTooltipHeading {
-    font-weight: bold;
-    font-size: larger;
-    text-decoration: underline;
-    margin: 0 0;
-  }
+    .customTooltipHeading {
+      font-size: larger;
+      font-weight: bold;
+      //font-size: larger;
+      text-decoration: underline;
+      margin: 0 0;
+    }
 
-  .customTooltipItem {
-    margin: 3px 0;
+    .customTooltipItem {
+      margin: 3px 0;
 
-    span {
-      vertical-align: middle;
-      line-height: 100%;
+      span {
+        vertical-align: middle;
+        line-height: 100%;
+      }
+
+      .customTooltipMediumBreakdown {
+        font-size: smaller;
+        margin: 0 .5em;
+      }
     }
   }
 
-  .customTooltipMediumBreakdown {
-    font-size: smaller;
-    margin: 0 .5em;
-  }
 
 }
