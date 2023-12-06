@@ -59,7 +59,7 @@ const LibraryStats = (props: LibraryStatsProps) => {
     ?.map(({ name, inventory, inventoryByMedium }) => ({
       name,
       ...inventory,
-      _by_medium: inventoryByMedium,
+      _by_medium: inventoryByMedium || {},
     }))
     .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
 
@@ -238,10 +238,10 @@ export const CustomTooltip = ({
   }
 
   // Nab inventory data from one of the chart payload objects.
-  // This corresponds the Barcode `data` for the current collection.
+  // This corresponds to the Barcode `data` element for the current collection.
   const chartItem = payload[0].payload;
 
-  const propertyCountsByMedium = chartItem._by_medium;
+  const propertyCountsByMedium = chartItem._by_medium || {};
   const mediumCountsByProperty: TwoLevelStatistics = Object.entries(
     propertyCountsByMedium
   ).reduce((acc, [key, value]) => {
