@@ -192,14 +192,7 @@ const renderCollectionsGroup = (chartItems) => {
             width={125}
           />
           <XAxis type="number" />
-
-          <Tooltip
-            content={<CustomTooltip />}
-            labelStyle={{
-              textDecoration: "underline",
-              fontWeight: "bold",
-            }}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Bar
             stackId="collections"
             name={inventoryKeyToLabelMap.meteredLicenseTitles}
