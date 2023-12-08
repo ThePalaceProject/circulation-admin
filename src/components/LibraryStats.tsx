@@ -10,16 +10,26 @@ import {
   BarChart,
   ResponsiveContainer,
   Tooltip,
+  TooltipProps,
   XAxis,
   YAxis,
 } from "recharts";
-import DefaultTooltipContent from "recharts/lib/component/DefaultTooltipContent";
 import SingleStatListItem from "./SingleStatListItem";
 
 export interface LibraryStatsProps {
   stats: LibraryStatistics;
   library?: string;
 }
+
+type OneLevelStatistics = { [key: string]: number };
+type TwoLevelStatistics = { [key: string]: OneLevelStatistics };
+type chartTooltipData = {
+  dataKey: string;
+  name?: string;
+  value: number | string;
+  color?: string;
+  perMedium?: OneLevelStatistics;
+};
 
 const inventoryKeyToLabelMap = {
   titles: "Titles",
@@ -31,13 +41,6 @@ const inventoryKeyToLabelMap = {
   meteredLicensesOwned: "Metered Licenses Owned",
   meteredLicensesAvailable: "Metered Licenses Available",
   selfHostedTitles: "Self-Hosted Titles",
-};
-
-type chartTooltipData = {
-  dataKey: string;
-  name: string;
-  value: number;
-  color: string;
 };
 
 /** Displays statistics about patrons, licenses, and collections from the server,
@@ -53,7 +56,11 @@ const LibraryStats = (props: LibraryStatsProps) => {
   } = stats || {};
 
   const chartItems = collections
-    ?.map(({ name, inventory }) => ({ name, ...inventory }))
+    ?.map(({ name, inventory, inventoryByMedium }) => ({
+      name,
+      ...inventory,
+      _by_medium: inventoryByMedium || {},
+    }))
     .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
 
   return (
@@ -155,11 +162,6 @@ const renderInventoryGroup = (inventory: InventoryStatistics) => {
           value={inventory.openAccessTitles}
           tooltip="Number of books for which there are no limits on use."
         />
-        <SingleStatListItem
-          label={inventoryKeyToLabelMap.selfHostedTitles}
-          value={inventory.selfHostedTitles}
-          tooltip="Number of books hosted locally."
-        />
       </ul>
     </>
   );
@@ -184,22 +186,13 @@ const renderCollectionsGroup = (chartItems) => {
             dataKey="name"
             interval={0}
             angle={-45}
-            textAnchor="end"
             tick={{ dx: -20 }}
             padding={{ top: 0, bottom: 0 }}
             height={175}
             width={125}
           />
           <XAxis type="number" />
-
-          <Tooltip
-            content={<CustomTooltip />}
-            formatter={formatNumber}
-            labelStyle={{
-              textDecoration: "underline",
-              fontWeight: "bold",
-            }}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Bar
             stackId="collections"
             name={inventoryKeyToLabelMap.meteredLicenseTitles}
@@ -228,48 +221,110 @@ const renderCollectionsGroup = (chartItems) => {
 };
 
 /* Customize the Rechart tooltip to provide additional information */
-const CustomTooltip = (props) => {
-  const { active, payload } = props;
-  if (!active) return null;
+export const CustomTooltip = ({
+  active,
+  payload,
+  label: collectionName,
+}: TooltipProps) => {
+  if (!active) {
+    return null;
+  }
 
   // Nab inventory data from one of the chart payload objects.
-  const chartInventory = payload[0].payload;
+  // This corresponds to the Barcode `data` element for the current collection.
+  const chartItem = payload[0].payload;
+
+  const propertyCountsByMedium = chartItem._by_medium || {};
+  const mediumCountsByProperty: TwoLevelStatistics = Object.entries(
+    propertyCountsByMedium
+  ).reduce((acc, [key, value]) => {
+    Object.entries(value).forEach(([innerKey, innerValue]) => {
+      acc[innerKey] = acc[innerKey] || {};
+      acc[innerKey][key] = innerValue;
+    });
+    return acc;
+  }, {});
   const aboveTheLineColor = "#030303";
   const belowTheLineColor = "#A0A0A0";
   const aboveTheLine: chartTooltipData[] = [
     {
       dataKey: "titles",
       name: inventoryKeyToLabelMap.titles,
-      value: chartInventory.titles,
+      value: chartItem.titles,
+      perMedium: mediumCountsByProperty["titles"],
     },
     {
       dataKey: "availableTitles",
       name: inventoryKeyToLabelMap.availableTitles,
-      value: chartInventory.availableTitles,
+      value: chartItem.availableTitles,
+      perMedium: mediumCountsByProperty["availableTitles"],
     },
     ...payload.filter(({ value }) => value > 0),
-  ].map((entry) => ({ ...entry, color: aboveTheLineColor }));
+  ].map(({ dataKey, name, value }) => {
+    const key = dataKey.toString();
+    const perMedium = mediumCountsByProperty[key];
+    return { dataKey: key, name, value, color: aboveTheLineColor, perMedium };
+  });
   const aboveTheLineKeys = [
     "name",
     ...aboveTheLine.map(({ dataKey }) => dataKey),
   ];
-  const belowTheLine = Object.entries(chartInventory)
+  const belowTheLine = Object.entries(chartItem)
     .filter(([key]) => !aboveTheLineKeys.includes(key))
-    .map(([key, value]) => ({
-      dataKey: key,
-      name: inventoryKeyToLabelMap[key],
-      value,
-      color: belowTheLineColor,
-    }));
-  const newPayload = [
-    ...aboveTheLine,
-    {}, // blank line
-    { value: ">>> Additional Information <<<", color: belowTheLineColor },
-    ...belowTheLine,
-  ];
+    .filter(([key]) => !key.startsWith("_"))
+    .map(([dataKey, value]) => {
+      const key = dataKey.toString();
+      const perMedium = mediumCountsByProperty[key];
+      return {
+        dataKey: key,
+        name: inventoryKeyToLabelMap[key],
+        value:
+          typeof value === "number"
+            ? value
+            : typeof value === "string"
+            ? value
+            : "",
+        color: belowTheLineColor,
+        perMedium,
+      };
+    });
 
-  // We render the default, but with our overridden payload.
-  return <DefaultTooltipContent {...props} payload={newPayload} />;
+  // Render our custom tooltip.
+  return (
+    <div className="customTooltip">
+      <div className="customTooltipDetail">
+        <h1 className="customTooltipHeading">{collectionName}</h1>
+        {renderChartTooltipPayload(aboveTheLine)}
+        <hr style={{ margin: "0.5em 0.5em" }} />
+        {renderChartTooltipPayload(belowTheLine)}
+      </div>
+    </div>
+  );
+};
+
+const renderChartTooltipPayload = (payload: Partial<chartTooltipData>[]) => {
+  return payload.map(
+    ({ dataKey = "", name = "", value = "", color, perMedium = {} }) => (
+      <p key={dataKey} style={{ color }} className="customTooltipItem">
+        {!!name && <span>{name}:</span>}
+        <span> {formatNumber(value)}</span>
+        {perMediumBreakdown(perMedium)}
+      </p>
+    )
+  );
+};
+
+const perMediumBreakdown = (perMedium: OneLevelStatistics) => {
+  const perMediumLabels = Object.entries(perMedium)
+    .filter(([, count]) => count > 0)
+    .map(([medium, count]) => `${medium}: ${formatNumber(count)}`);
+  return (
+    !!perMediumLabels.length && (
+      <span className="customTooltipMediumBreakdown">
+        {` (${perMediumLabels.join(", ")})`}
+      </span>
+    )
+  );
 };
 
 export const formatNumber = (n: number | string | null): string => {

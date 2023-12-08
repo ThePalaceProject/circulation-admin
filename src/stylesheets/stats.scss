@@ -2,7 +2,7 @@
   display: grid;
   grid-gap: 1rem 1rem;
   grid-template-columns: repeat(auto-fit, minmax(17rem,1fr));
-  padding: 0px;
+  padding: 0;
 
   .stat-group {
     display: grid;
@@ -22,7 +22,7 @@
     }
 
     ul {
-      padding: 0px;
+      padding: 0;
     }
 
     h3 {
@@ -60,9 +60,45 @@
     display: flex;
     align-items: center;
     text-align: left;
-    margin: 10px 0px;
+    margin: 10px 0;
     padding: 10px;
   }
 
-}
+  .customTooltip {
+    background: white;
+    color: #333;
+    box-shadow: 0 3px 14px rgb(0 0 0 / 40%);
+    padding: 1px;
+    text-align: left;
+    border-radius: 12px;
 
+    .customTooltipDetail {
+      margin: 13px 13px;
+      padding: 10px;
+    }
+
+    .customTooltipHeading {
+      font-size: larger;
+      font-weight: bold;
+      //font-size: larger;
+      text-decoration: underline;
+      margin: 0 0;
+    }
+
+    .customTooltipItem {
+      margin: 3px 0;
+
+      span {
+        vertical-align: middle;
+        line-height: 100%;
+      }
+
+      .customTooltipMediumBreakdown {
+        font-size: smaller;
+        margin: 0 .5em;
+      }
+    }
+  }
+
+
+}
