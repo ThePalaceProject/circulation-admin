@@ -42,17 +42,16 @@ export class QuicksightDashboard extends React.Component<
     }
 
     this.props.fetchLibraries().then((libs) => {
-      const library_uuids: string = libs.libraries.map((l) => l.uuid).join(",");
-      let library_uuids_key_pair = "library_uuids=" + library_uuids;
-      // TODO Remove next line once https://github.com/ThePalaceProject/circulation/pull/1548
-      // is merged
-      library_uuids_key_pair = "libraryIds=1";
+      const library_uuids: string = libs.libraries
+        .slice(0, 5)
+        .map((l) => l.uuid)
+        .join(",");
       try {
         fetch(
           "/admin/quicksight_embed/" +
             this.props.dashboardId +
-            "?" +
-            library_uuids_key_pair
+            "?libraryUuids=" +
+            library_uuids
         )
           .then((response) => response.json())
           .then((data) => this.setState({ embedUrl: data["embedUrl"] }))
@@ -67,15 +66,12 @@ export class QuicksightDashboard extends React.Component<
 
   render(): JSX.Element {
     return (
-      <div className="quicksight-dashboard">
-        <h2>Quicksight Dashboard</h2>
-        <iframe
-          title="Quicksight Dashboard"
-          height="900"
-          width="1200"
-          src={this.state.embedUrl}
-        />
-      </div>
+      <iframe
+        title="Quicksight Dashboard"
+        height="1200"
+        width="100%"
+        src={this.state.embedUrl}
+      />
     );
   }
 }

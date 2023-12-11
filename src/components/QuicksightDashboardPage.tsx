@@ -4,27 +4,24 @@ import { RootState } from "../store";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
 import Footer from "./Footer";
-import Stats from "./Stats";
-import CirculationEvents from "./CirculationEvents";
 import title from "../utils/title";
 import QuicksightDashboard from "./QuicksightDashboard";
 
-export interface DashboardPageProps extends React.Props<DashboardPageProps> {
+export interface QuicksightDashboardPageProps extends React.Props<QuicksightDashboardPageProps> {
   params: {
     library?: string;
   };
 }
 
-export interface DashboardPageContext {
+export interface QuicksightDashboardPageContext {
   editorStore: Store<RootState>;
 }
 
-/** Page that shows high-level statistics about patrons and collections
-    and a list of the most recent circulation events. */
-export default class DashboardPage extends React.Component<DashboardPageProps> {
-  context: DashboardPageContext;
+/** Page holds quicksight dashboards. */
+export default class DashboardPage extends React.Component<QuicksightDashboardPageProps> {
+  context: QuicksightDashboardPageContext;
 
-  static contextTypes: React.ValidationMap<DashboardPageContext> = {
+  static contextTypes: React.ValidationMap<QuicksightDashboardPageContext> = {
     editorStore: PropTypes.object.isRequired as React.Validator<Store>,
   };
 
@@ -43,15 +40,10 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
   render(): JSX.Element {
     const { library } = this.props.params;
     return (
-      <div className="dashboard">
+      <div className="quicksight-dashboard">
         <Header />
         <main className="body">
-          <Stats library={library} />
-          <CirculationEvents
-            store={this.context.editorStore}
-            library={library}
-          />
-
+          <QuicksightDashboard dashboardId="library"/>
         </main>
         <Footer />
       </div>
@@ -59,6 +51,6 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
   }
 
   UNSAFE_componentWillMount() {
-    document.title = title("Dashboard");
+    document.title = title("Quicksight Dashboard");
   }
 }
