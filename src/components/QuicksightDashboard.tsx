@@ -28,7 +28,7 @@ export interface QuicksightDashboardState {
   embedUrl: string;
 }
 
-export class QuicksightDashboard extends React.Component<
+class QuicksightDashboard extends React.Component<
   QuicksightDashboardProps,
   QuicksightDashboardState
 > {
@@ -43,7 +43,7 @@ export class QuicksightDashboard extends React.Component<
 
     this.props.fetchLibraries().then((libs) => {
       const library_uuids: string = libs.libraries
-        .slice(0, 5)
+        .slice(0, Math.min(1, 10))// TODO: remove this once  https://github.com/ThePalaceProject/circulation/pull/1577 is merged
         .map((l) => l.uuid)
         .join(",");
       try {
@@ -67,6 +67,7 @@ export class QuicksightDashboard extends React.Component<
   render(): JSX.Element {
     return (
       <iframe
+          role="iframe"
         title="Quicksight Dashboard"
         height="1200"
         width="100%"
