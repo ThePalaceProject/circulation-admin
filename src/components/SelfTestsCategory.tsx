@@ -5,7 +5,6 @@ import SelfTests from "./SelfTests";
 import {
   CollectionData,
   PatronAuthServiceData,
-  SearchServiceData,
   ServiceData,
 } from "../interfaces";
 import { Panel } from "library-simplified-reusable-components";
@@ -14,17 +13,14 @@ export interface SelfTestsCategoryProps {
   type: string;
   linkName: string;
   csrfToken: string;
-  items: CollectionData[] | PatronAuthServiceData[] | SearchServiceData[];
+  items: CollectionData[] | PatronAuthServiceData[];
   store: Store<RootState>;
 }
 
 export default class SelfTestsCategory extends React.Component<
   SelfTestsCategoryProps
 > {
-  handleUnnamed():
-    | CollectionData[]
-    | PatronAuthServiceData[]
-    | SearchServiceData[] {
+  handleUnnamed(): CollectionData[] | PatronAuthServiceData[] {
     // It's possible for older systems to have services in which the name
     // property is null, which will block the page from loading.  We check for
     // these services and assign them a placeholder name.

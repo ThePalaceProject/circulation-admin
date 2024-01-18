@@ -4,11 +4,7 @@ import * as React from "react";
 import { Store } from "redux";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import {
-  CollectionsData,
-  PatronAuthServicesData,
-  SearchServicesData,
-} from "../interfaces";
+import { CollectionsData, PatronAuthServicesData } from "../interfaces";
 import { RootState } from "../store";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
@@ -32,7 +28,7 @@ export interface SelfTestsTabContainerOwnProps extends TabContainerProps {
 
 export interface SelfTestsTabContainerStateProps {
   fetchError?: FetchErrorData;
-  items?: CollectionsData | PatronAuthServicesData | SearchServicesData;
+  items?: CollectionsData | PatronAuthServicesData;
   isLoaded?: boolean;
 }
 
@@ -54,7 +50,6 @@ export class SelfTestsTabContainer extends TabContainer<
   DISPLAY_NAMES = {
     collections: "Collections",
     patronAuthServices: "Patron Authentication",
-    searchServices: "Search Service Configuration",
     metadataServices: "Metadata Services",
   };
 
@@ -80,7 +75,7 @@ export class SelfTestsTabContainer extends TabContainer<
 
   getNames(category: string): string[] {
     // The name used to look up data in the store: "collections",
-    // "patron_auth_services", "search_services".
+    // "patron_auth_services".
     const keyName = category
       .split(/(?=[A-Z])/)
       .map((w) => w.toLowerCase())
@@ -134,12 +129,7 @@ function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
 
 function mapDispatchToProps(dispatch, ownProps: SelfTestsTabContainerOwnProps) {
   const actions = new ActionCreator();
-  const itemTypes = [
-    "Collections",
-    "PatronAuthServices",
-    "SearchServices",
-    "MetadataServices",
-  ];
+  const itemTypes = ["Collections", "PatronAuthServices", "MetadataServices"];
   return {
     fetchItems: () =>
       itemTypes.forEach((type) => dispatch(actions["fetch" + type]())),

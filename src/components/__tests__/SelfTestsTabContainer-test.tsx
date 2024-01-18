@@ -63,7 +63,7 @@ describe("SelfTestsTabContainer", () => {
     const nav = wrapper.find(".nav-tabs").at(0);
     expect(nav.length).to.equal(1);
     const tabs = nav.find("li");
-    expect(tabs.length).to.equal(4);
+    expect(tabs.length).to.equal(3);
 
     const collectionsTab = tabs.at(0);
     expect(collectionsTab.text()).to.equal("Collections");
@@ -73,22 +73,17 @@ describe("SelfTestsTabContainer", () => {
     expect(patronAuthTab.text()).to.equal("Patron Authentication");
     expect(patronAuthTab.hasClass("active")).to.be.false;
 
-    const searchTab = tabs.at(2);
-    expect(searchTab.text()).to.equal("Search Service Configuration");
-    expect(searchTab.hasClass("active")).to.be.false;
-
-    const metadataTab = tabs.at(3);
+    const metadataTab = tabs.at(2);
     expect(metadataTab.text()).to.equal("Metadata Services");
     expect(metadataTab.hasClass("active")).to.be.false;
   });
 
   it("renders tab content", () => {
     const contentComponents = wrapper.find(".tab-content > div");
-    expect(contentComponents.length).to.equal(4);
+    expect(contentComponents.length).to.equal(3);
     const [
       collectionsContent,
       patronAuthContent,
-      searchContent,
       metadataContent,
     ] = contentComponents.map((c) => c.childAt(0));
 
@@ -98,7 +93,6 @@ describe("SelfTestsTabContainer", () => {
     expect(collectionsContent.find(".self-tests-category").length).to.equal(1);
 
     expect(patronAuthContent.find(LoadingIndicator).length).to.equal(1);
-    expect(searchContent.find(LoadingIndicator).length).to.equal(1);
     expect(metadataContent.find(LoadingIndicator).length).to.equal(1);
   });
 
@@ -114,7 +108,7 @@ describe("SelfTestsTabContainer", () => {
     wrapper.setProps({ fetchError });
 
     error = wrapper.find(ErrorMessage);
-    expect(error.length).to.equal(4);
+    expect(error.length).to.equal(3);
   });
 
   it("calls goToTab", () => {
@@ -162,11 +156,6 @@ describe("SelfTestsTabContainer", () => {
       "patron_auth_services",
       "patron_auth_service",
       "patronAuth",
-    ]);
-    expect(wrapper.instance().getNames("searchServices")).to.eql([
-      "search_services",
-      "search_service",
-      "search",
     ]);
     expect(wrapper.instance().getNames("metadataServices")).to.eql([
       "metadata_services",
