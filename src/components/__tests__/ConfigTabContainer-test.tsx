@@ -12,7 +12,6 @@ import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
 import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
-import SearchServices from "../SearchServices";
 import CatalogServices from "../CatalogServices";
 import DiscoveryServices from "../DiscoveryServices";
 import SitewideAnnouncements from "../SitewideAnnouncements";
@@ -68,7 +67,6 @@ describe("ConfigTabContainer", () => {
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
-        SearchServices,
         CatalogServices,
         DiscoveryServices,
         SitewideAnnouncements,
@@ -135,7 +133,6 @@ describe("ConfigTabContainer", () => {
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
-        SearchServices,
         CatalogServices,
         DiscoveryServices,
         SitewideAnnouncements,
@@ -186,7 +183,6 @@ describe("ConfigTabContainer", () => {
         PatronAuthServices,
         SitewideSettings,
         MetadataServices,
-        SearchServices,
         CatalogServices,
         DiscoveryServices,
         SitewideAnnouncements,

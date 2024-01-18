@@ -7,7 +7,6 @@ import PatronAuthServices from "./PatronAuthServices";
 import SitewideAnnouncements from "./SitewideAnnouncements";
 import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
-import SearchServices from "./SearchServices";
 import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
 import {
@@ -46,7 +45,6 @@ export default class ConfigTabContainer extends TabContainer<
     patronAuth: PatronAuthServices,
     sitewideSettings: SitewideSettings,
     metadata: MetadataServices,
-    search: SearchServices,
     catalogServices: CatalogServices,
     discovery: DiscoveryServices,
     sitewideAnnouncements: SitewideAnnouncements,
