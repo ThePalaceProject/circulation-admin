@@ -43,15 +43,11 @@ class QuicksightDashboard extends React.Component<
 
     this.props.fetchLibraries().then((libs) => {
       const library_uuids: string = libs.libraries
-        .slice(0, Math.min(1, 10))// TODO: remove this once  https://github.com/ThePalaceProject/circulation/pull/1577 is merged
         .map((l) => l.uuid)
         .join(",");
       try {
         fetch(
-          "/admin/quicksight_embed/" +
-            this.props.dashboardId +
-            "?libraryUuids=" +
-            library_uuids
+          `/admin/quicksight_embed/${this.props.dashboardId}?libraryUuids=${library_uuids}`
         )
           .then((response) => response.json())
           .then((data) => this.setState({ embedUrl: data["embedUrl"] }))
