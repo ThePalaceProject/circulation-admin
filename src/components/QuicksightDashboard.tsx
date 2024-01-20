@@ -1,5 +1,5 @@
 import * as React from "react";
-import { LibrariesData, LibraryData } from "../interfaces";
+import { DashboardURIData, LibrariesData, LibraryData } from "../interfaces";
 import { Store } from "redux";
 import { RootState } from "../store";
 import { connect } from "react-redux";
@@ -12,6 +12,10 @@ export interface QuicksightDashboardStateProps {
 
 export interface QuicksightDashboardDispatchProps {
   fetchLibraries?: () => Promise<LibrariesData>;
+  fetchQuicksightEmbedUrl?: (
+    dashboardId: string,
+    ld: LibrariesData
+  ) => Promise<DashboardURIData>;
 }
 
 export interface QuicksightDashboardOwnProps {
@@ -41,16 +45,12 @@ class QuicksightDashboard extends React.Component<
       return;
     }
 
+    const dashboardId = this.props.dashboardId;
     this.props.fetchLibraries().then((libs) => {
-      const library_uuids: string = libs.libraries
-        .map((l) => l.uuid)
-        .join(",");
       try {
-        fetch(
-          `/admin/quicksight_embed/${this.props.dashboardId}?libraryUuids=${library_uuids}`
-        )
-          .then((response) => response.json())
-          .then((data) => this.setState({ embedUrl: data["embedUrl"] }))
+        this.props
+          .fetchQuicksightEmbedUrl(dashboardId, libs)
+          .then((data) => this.setState({ embedUrl: data.embedUrl }))
           .catch((error) => {
             console.error(error);
           });
@@ -63,7 +63,6 @@ class QuicksightDashboard extends React.Component<
   render(): JSX.Element {
     return (
       <iframe
-          role="iframe"
         title="Quicksight Dashboard"
         height="1200"
         width="100%"
@@ -84,6 +83,10 @@ function mapDispatchToProps(dispatch) {
   const actions = new ActionCreator();
   return {
     fetchLibraries: () => dispatch(actions.fetchLibraries()),
+    fetchQuicksightEmbedUrl: (
+      dashboardId: string,
+      librariesData: LibrariesData
+    ) => dispatch(actions.fetchQuicksightEmbedUri(dashboardId, librariesData)),
   };
 }
 

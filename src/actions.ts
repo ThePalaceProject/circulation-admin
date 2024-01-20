@@ -22,7 +22,6 @@ import {
   RightsStatusData,
   CatalogServicesData,
   SelfTestsData,
-  PatronData,
   DiagnosticsData,
   FeatureFlags,
   SitewideAnnouncementsData,
@@ -1069,8 +1068,9 @@ export default class ActionCreator extends BaseActionCreator {
     };
   }
 
-  fetchDashboardUri(dashboardId: string) {
-    const url = "/admin/quicksight_embed/" + dashboardId;
+  fetchQuicksightEmbedUri(dashboardId: string, ld: LibrariesData) {
+    const library_uuids: string = ld.libraries.map((l) => l.uuid).join(",");
+    const url = `/admin/quicksight_embed/${dashboardId}?libraryUuids=${library_uuids}`;
     return this.fetchJSON<DashboardURIData>(
       ActionCreator.DASHBOARD_URI,
       url
