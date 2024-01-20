@@ -41,15 +41,17 @@ class QuicksightDashboard extends React.Component<
     this.state = { embedUrl: null };
   }
   componentDidMount() {
-    if (this.state.embedUrl) {
-      return;
-    }
-
-    const dashboardId = this.props.dashboardId;
+    // Every time the component is mounted a fresh embed url must be fetched.
+    //TODO:  For whatever reason, the "this.props.libraries" variable was not being
+    // set when I tried to put this logic in the render method (nor did it work trying to access it in this method).
+    // Clearly I am missing something. Also the embed url should be set via the action/reducer pattern,
+    // but again I wasn't able to get things working following the pattern in Header.tsx so this is where I landed.
+    // It's ugly but it works.
+    // Nevertheless it should be brought into alignment before it goes into production.
     this.props.fetchLibraries().then((libs) => {
       try {
         this.props
-          .fetchQuicksightEmbedUrl(dashboardId, libs)
+          .fetchQuicksightEmbedUrl(this.props.dashboardId, libs)
           .then((data) => this.setState({ embedUrl: data.embedUrl }))
           .catch((error) => {
             console.error(error);
