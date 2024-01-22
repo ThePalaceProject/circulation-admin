@@ -1,5 +1,9 @@
 import * as React from "react";
-import { DashboardURIData, LibrariesData, LibraryData } from "../interfaces";
+import {
+  QuickSightEmbeddedURLData,
+  LibrariesData,
+  LibraryData,
+} from "../interfaces";
 import { Store } from "redux";
 import { RootState } from "../store";
 import { connect } from "react-redux";
@@ -15,7 +19,7 @@ export interface QuicksightDashboardDispatchProps {
   fetchQuicksightEmbedUrl?: (
     dashboardId: string,
     ld: LibrariesData
-  ) => Promise<DashboardURIData>;
+  ) => Promise<QuickSightEmbeddedURLData>;
 }
 
 export interface QuicksightDashboardOwnProps {
@@ -41,6 +45,9 @@ class QuicksightDashboard extends React.Component<
     this.state = { embedUrl: null };
   }
   componentDidMount() {
+    if (this.state.embedUrl) {
+      return;
+    }
     // Every time the component is mounted a fresh embed url must be fetched.
     // TODO:  For whatever reason, the "this.props.libraries" variable was not being
     // set when I tried to put this logic in the render method (nor did it work trying to access it in this method).
@@ -88,7 +95,7 @@ function mapDispatchToProps(dispatch) {
     fetchQuicksightEmbedUrl: (
       dashboardId: string,
       librariesData: LibrariesData
-    ) => dispatch(actions.fetchQuicksightEmbedUri(dashboardId, librariesData)),
+    ) => dispatch(actions.fetchQuicksightEmbedUrl(dashboardId, librariesData)),
   };
 }
 

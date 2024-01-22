@@ -471,7 +471,6 @@ export interface AdvancedSearchData {
   query: AdvancedSearchQuery;
 }
 
-export interface DashboardURIData {
+export interface QuickSightEmbeddedURLData {
   embedUrl: string;
 }
-

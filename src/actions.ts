@@ -26,7 +26,7 @@ import {
   FeatureFlags,
   SitewideAnnouncementsData,
   StatisticsData,
-  DashboardURIData,
+  QuickSightEmbeddedURLData,
 } from "./interfaces";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
@@ -190,7 +190,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
 
   static readonly DIAGNOSTICS = "DIAGNOSTICS";
-  static readonly DASHBOARD_URI: "DASHBOARD_URI";
+  static readonly QUICKSIGHT_EMBEDDED_URL: "QUICKSIGHT_EMBEDDED_URL";
 
   csrfToken: string;
 
@@ -1068,11 +1068,11 @@ export default class ActionCreator extends BaseActionCreator {
     };
   }
 
-  fetchQuicksightEmbedUri(dashboardId: string, ld: LibrariesData) {
+  fetchQuicksightEmbedUrl(dashboardId: string, ld: LibrariesData) {
     const library_uuids: string = ld.libraries.map((l) => l.uuid).join(",");
     const url = `/admin/quicksight_embed/${dashboardId}?libraryUuids=${library_uuids}`;
-    return this.fetchJSON<DashboardURIData>(
-      ActionCreator.DASHBOARD_URI,
+    return this.fetchJSON<QuickSightEmbeddedURLData>(
+      ActionCreator.QUICKSIGHT_EMBEDDED_URL,
       url
     ).bind(this);
   }

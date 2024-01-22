@@ -7,7 +7,6 @@ import Footer from "./Footer";
 import Stats from "./Stats";
 import CirculationEvents from "./CirculationEvents";
 import title from "../utils/title";
-import QuicksightDashboard from "./QuicksightDashboard";
 
 export interface DashboardPageProps extends React.Props<DashboardPageProps> {
   params: {
@@ -32,13 +31,11 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
     library: PropTypes.func,
   };
 
-
   getChildContext() {
     return {
       library: () => this.props.params.library,
     };
   }
-
 
   render(): JSX.Element {
     const { library } = this.props.params;
@@ -51,7 +48,6 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
             store={this.context.editorStore}
             library={library}
           />
-
         </main>
         <Footer />
       </div>
