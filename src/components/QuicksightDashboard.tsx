@@ -72,7 +72,7 @@ class QuicksightDashboard extends React.Component<
   render(): JSX.Element {
     return (
       <iframe
-        title="Quicksight Dashboard"
+        title="Library Dashboard"
         height="1200"
         width="100%"
         src={this.state.embedUrl}

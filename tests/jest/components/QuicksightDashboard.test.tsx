@@ -46,7 +46,10 @@ describe("QuicksightDashboard", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole("iframe")).toHaveAttribute("src", embedUrl);
+      expect(screen.getAllByTitle("Library Dashboard")[0]).toHaveAttribute(
+        "src",
+        embedUrl
+      );
     });
   });
 });
