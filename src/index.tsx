@@ -89,8 +89,8 @@ class CirculationAdmin {
                 component={DashboardPage}
               />
               <Route
-                  path="/admin/web/dashboard/quicksight(/:library)"
-                  component={QuicksightDashboardPage}
+                path="/admin/web/quicksight(/:library)"
+                component={QuicksightDashboardPage}
               />
               <Route
                 path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
