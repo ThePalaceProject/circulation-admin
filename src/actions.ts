@@ -190,7 +190,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
 
   static readonly DIAGNOSTICS = "DIAGNOSTICS";
-  static readonly QUICKSIGHT_EMBEDDED_URL: "QUICKSIGHT_EMBEDDED_URL";
+  static readonly QUICKSIGHT_EMBEDDED_URL = "QUICKSIGHT_EMBEDDED_URL";
 
   csrfToken: string;
 
