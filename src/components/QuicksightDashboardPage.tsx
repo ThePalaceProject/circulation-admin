@@ -7,7 +7,8 @@ import Footer from "./Footer";
 import title from "../utils/title";
 import QuicksightDashboard from "./QuicksightDashboard";
 
-export interface QuicksightDashboardPageProps extends React.Props<QuicksightDashboardPageProps> {
+export interface QuicksightDashboardPageProps
+  extends React.Props<QuicksightDashboardPageProps> {
   params: {
     library?: string;
   };
@@ -18,7 +19,9 @@ export interface QuicksightDashboardPageContext {
 }
 
 /** Page holds quicksight dashboards. */
-export default class DashboardPage extends React.Component<QuicksightDashboardPageProps> {
+export default class QuicksightDashboardPage extends React.Component<
+  QuicksightDashboardPageProps
+> {
   context: QuicksightDashboardPageContext;
 
   static contextTypes: React.ValidationMap<QuicksightDashboardPageContext> = {
@@ -29,13 +32,11 @@ export default class DashboardPage extends React.Component<QuicksightDashboardPa
     library: PropTypes.func,
   };
 
-
   getChildContext() {
     return {
       library: () => this.props.params.library,
     };
   }
-
 
   render(): JSX.Element {
     const { library } = this.props.params;
@@ -43,7 +44,7 @@ export default class DashboardPage extends React.Component<QuicksightDashboardPa
       <div className="quicksight-dashboard">
         <Header />
         <main className="body">
-          <QuicksightDashboard dashboardId="library"/>
+          <QuicksightDashboard dashboardId="library" />
         </main>
         <Footer />
       </div>
