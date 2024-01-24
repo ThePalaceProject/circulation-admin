@@ -9,6 +9,7 @@ import CatalogPage from "./components/CatalogPage";
 import CustomListPage from "./components/CustomListPage";
 import LanePage from "./components/LanePage";
 import DashboardPage from "./components/DashboardPage";
+import QuicksightDashboardPage from "./components/QuicksightDashboardPage";
 import ConfigPage from "./components/ConfigPage";
 import AccountPage from "./components/AccountPage";
 import SetupPage from "./components/SetupPage";
@@ -86,6 +87,10 @@ class CirculationAdmin {
               <Route
                 path="/admin/web/dashboard(/:library)"
                 component={DashboardPage}
+              />
+              <Route
+                path="/admin/web/quicksight"
+                component={QuicksightDashboardPage}
               />
               <Route
                 path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
