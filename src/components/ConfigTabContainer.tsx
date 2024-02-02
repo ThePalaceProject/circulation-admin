@@ -5,7 +5,6 @@ import Collections from "./Collections";
 import IndividualAdmins from "./IndividualAdmins";
 import PatronAuthServices from "./PatronAuthServices";
 import SitewideAnnouncements from "./SitewideAnnouncements";
-import SitewideSettings from "./SitewideSettings";
 import MetadataServices from "./MetadataServices";
 import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
@@ -43,7 +42,6 @@ export default class ConfigTabContainer extends TabContainer<
     individualAdmins: IndividualAdmins,
     collections: Collections,
     patronAuth: PatronAuthServices,
-    sitewideSettings: SitewideSettings,
     metadata: MetadataServices,
     catalogServices: CatalogServices,
     discovery: DiscoveryServices,
@@ -58,7 +56,6 @@ export default class ConfigTabContainer extends TabContainer<
     individualAdmins: "Admins",
     patronAuth: "Patron Authentication",
     sitewideAnnouncements: "Sitewide Announcements",
-    sitewideSettings: "Sitewide Settings",
     catalogServices: "External Catalogs",
   };
 

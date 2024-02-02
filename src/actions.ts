@@ -9,7 +9,6 @@ import {
   CollectionsData,
   IndividualAdminsData,
   PatronAuthServicesData,
-  SitewideSettingsData,
   MetadataServicesData,
   DiscoveryServicesData,
   LibraryRegistrationsData,
@@ -79,9 +78,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly DELETE_PATRON_AUTH_SERVICE = "DELETE_PATRON_AUTH_SERVICE";
   static readonly SITEWIDE_ANNOUNCEMENTS = "SITEWIDE_ANNOUNCEMENTS";
   static readonly EDIT_SITEWIDE_ANNOUNCEMENTS = "EDIT_SITEWIDE_ANNOUNCEMENTS";
-  static readonly SITEWIDE_SETTINGS = "SITEWIDE_SETTINGS";
-  static readonly EDIT_SITEWIDE_SETTING = "EDIT_SITEWIDE_SETTING";
-  static readonly DELETE_SITEWIDE_SETTING = "DELETE_SITEWIDE_SETTING";
   static readonly METADATA_SERVICES = "METADATA_SERVICES";
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
   static readonly DELETE_METADATA_SERVICE = "DELETE_METADATA_SERVICE";
@@ -539,31 +535,6 @@ export default class ActionCreator extends BaseActionCreator {
     const url = "/admin/patron_auth_service/" + identifier;
     return this.postForm(
       ActionCreator.DELETE_PATRON_AUTH_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchSitewideSettings() {
-    const url = "/admin/sitewide_settings";
-    return this.fetchJSON<SitewideSettingsData>(
-      ActionCreator.SITEWIDE_SETTINGS,
-      url
-    ).bind(this);
-  }
-
-  editSitewideSetting(data: FormData) {
-    const url = "/admin/sitewide_settings";
-    return this.postForm(ActionCreator.EDIT_SITEWIDE_SETTING, url, data).bind(
-      this
-    );
-  }
-
-  deleteSitewideSetting(identifier: string | number) {
-    const url = "/admin/sitewide_setting/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_SITEWIDE_SETTING,
       url,
       null,
       "DELETE"
