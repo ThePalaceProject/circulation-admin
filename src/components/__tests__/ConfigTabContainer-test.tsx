@@ -10,7 +10,6 @@ import Libraries from "../Libraries";
 import Collections from "../Collections";
 import IndividualAdmins from "../IndividualAdmins";
 import PatronAuthServices from "../PatronAuthServices";
-import SitewideSettings from "../SitewideSettings";
 import MetadataServices from "../MetadataServices";
 import CatalogServices from "../CatalogServices";
 import DiscoveryServices from "../DiscoveryServices";
@@ -53,7 +52,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Admins");
       expect(linkTexts).to.contain("Collections");
       expect(linkTexts).to.contain("Patron Authentication");
-      expect(linkTexts).to.contain("Sitewide Settings");
       expect(linkTexts).to.contain("Metadata");
       expect(linkTexts).to.contain("External Catalogs");
       expect(linkTexts).to.contain("Sitewide Announcements");
@@ -65,7 +63,6 @@ describe("ConfigTabContainer", () => {
         IndividualAdmins,
         Collections,
         PatronAuthServices,
-        SitewideSettings,
         MetadataServices,
         CatalogServices,
         DiscoveryServices,
@@ -114,7 +111,6 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).to.contain("Admins");
       expect(linkTexts).not.to.contain("Collections");
       expect(linkTexts).not.to.contain("Patron Authentication");
-      expect(linkTexts).not.to.contain("Sitewide Settings");
       expect(linkTexts).not.to.contain("Metadata");
       expect(linkTexts).not.to.contain("External Catalogs");
     });
@@ -131,7 +127,6 @@ describe("ConfigTabContainer", () => {
       const hiddenComponentClasses = [
         Collections,
         PatronAuthServices,
-        SitewideSettings,
         MetadataServices,
         CatalogServices,
         DiscoveryServices,
@@ -181,7 +176,6 @@ describe("ConfigTabContainer", () => {
         Collections,
         IndividualAdmins,
         PatronAuthServices,
-        SitewideSettings,
         MetadataServices,
         CatalogServices,
         DiscoveryServices,

@@ -358,18 +358,6 @@ export interface PatronData {
   username?: string;
 }
 
-export interface SitewideSettingData {
-  key: string;
-  value: string;
-  description?: string;
-  required?: boolean;
-}
-
-export interface SitewideSettingsData {
-  settings: SitewideSettingData[];
-  all_settings: SettingData[];
-}
-
 export interface MetadataServiceData extends ServiceData {}
 
 export interface MetadataServicesData extends ServicesData {

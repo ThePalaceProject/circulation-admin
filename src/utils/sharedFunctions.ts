@@ -21,7 +21,7 @@ export function findDefault(setting) {
 
 // Blank out the create form on successful submission, so that the user can go
 // ahead and create another new thing.  Used by IndividualAdminEditForm,
-// LibraryEditForm, SitewideSettingEditForm, and ServiceEditForm.
+// LibraryEditForm, and ServiceEditForm.
 export function clearForm(refs, useCurrent = false) {
   if (refs) {
     const keys = Object.keys(refs);
