@@ -374,6 +374,24 @@ describe("InputList", () => {
       );
       expect(wrapper.state()["listItems"].includes("Option 1")).to.be.true;
     });
+    it("doesn't lose options when nothing is selected", () => {
+      const setting = {
+        ...wrapper.prop("setting"),
+        ...{ type: "menu", default: null, format: "narrow" },
+      };
+      wrapper = mount(
+        <InputList
+          createEditableInput={createEditableInput}
+          labelAndDescription={labelAndDescription}
+          value={null}
+          setting={setting}
+          disabled={false}
+        />,
+        { context }
+      );
+      const options = wrapper.find("option");
+      expect(options.length).to.equal(3);
+    });
     it("optionally eliminates already-selected options from the menu", () => {
       let options = wrapper.find("option");
       expect(options.length).to.equal(3);
