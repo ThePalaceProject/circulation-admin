@@ -262,14 +262,15 @@ export default class InputList extends React.Component<
       }
     }
     // Items that have already been selected, and should be eliminated from the menu.
-    const listItems = this.state?.listItems
-      ? this.state.listItems
-      : this.props.value || this.props.setting.default || [];
+    const listItems =
+      this.state?.listItems ||
+      this.props.value ||
+      this.props.setting.default ||
+      [];
     // Items that haven't been selected yet.
-    const remainingOptions = listItems
+    return listItems
       ? allOptions.filter((o) => listItems.indexOf(o.props.value) < 0)
       : [];
-    return remainingOptions;
   }
 
   updateNewItem() {
