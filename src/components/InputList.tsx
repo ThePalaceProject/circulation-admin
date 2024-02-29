@@ -23,7 +23,7 @@ export interface InputListProps {
   onEmpty?: string;
   title?: string;
   capitalize?: boolean;
-  onChange?: (value: any) => unknown;
+  onChange?: (value: any) => object;
   readOnly?: boolean;
   disableButton?: boolean;
 }
@@ -268,9 +268,7 @@ export default class InputList extends React.Component<
       this.props.setting.default ||
       [];
     // Items that haven't been selected yet.
-    return listItems
-      ? allOptions.filter((o) => listItems.indexOf(o.props.value) < 0)
-      : [];
+    return allOptions.filter((o) => !listItems.includes(o.props.value));
   }
 
   updateNewItem() {
