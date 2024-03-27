@@ -33,6 +33,12 @@ export const fields = [
   { value: "audience", label: "audience" },
   { value: "author", label: "author" },
   { value: "title", label: "title" },
+  {
+    value: "fiction",
+    label: "fiction",
+    options: ["fiction", "nonfiction"],
+    operators: ["eq"],
+  },
 ];
 
 export const operators = [

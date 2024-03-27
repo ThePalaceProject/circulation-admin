@@ -25,6 +25,7 @@ export default function AdvancedSearchFilterInput({
 
   const handleKeyChange = (value) => {
     setFilterKey(value);
+    setFilterValue("");
   };
 
   const handleOpChange = () => {
@@ -64,6 +65,26 @@ export default function AdvancedSearchFilterInput({
   };
 
   const selectedField = fields.find((field) => field.value === filterKey);
+  const selectedFieldOperators =
+    selectedField.operators !== undefined
+      ? operators.filter((element) => {
+          return selectedField.operators.includes(element.value);
+        })
+      : operators;
+
+  const selectedFieldOptions = selectedField.options ?? [];
+  const selectedFieldElementType = selectedFieldOptions.length
+    ? "input"
+    : "select";
+  if (selectedFieldOptions.length !== 0) {
+    if (
+      !selectedFieldOptions.find((element) => {
+        return element === filterValue;
+      })
+    ) {
+      setFilterValue(selectedFieldOptions[0]);
+    }
+  }
 
   return (
     <form className="advanced-search-filter-input">
@@ -89,8 +110,9 @@ export default function AdvancedSearchFilterInput({
           onChange={handleOpChange}
           ref={opSelect}
           value={filterOp}
+          className="filter-operator"
         >
-          {operators.map(({ value, label }) => (
+          {selectedFieldOperators.map(({ value, label }) => (
             <option
               aria-selected={value === filterOp}
               key={value}
@@ -104,14 +126,23 @@ export default function AdvancedSearchFilterInput({
         <EditableInput
           aria-label="filter value"
           description={selectedField.helpText}
-          elementType="input"
+          elementType={selectedFieldElementType}
           type="text"
           optionalText={false}
           placeholder={selectedField.placeholder}
           ref={valueInput}
           value={filterValue}
           onChange={handleValueChange}
-        />
+          className="filter-value"
+        >
+          {selectedFieldOptions.length === 0
+            ? null
+            : selectedFieldOptions.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+        </EditableInput>
 
         <Button
           className="inverted inline"
