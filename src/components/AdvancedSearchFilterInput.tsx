@@ -25,7 +25,14 @@ export default function AdvancedSearchFilterInput({
 
   const handleKeyChange = (value) => {
     setFilterKey(value);
-    setFilterValue("");
+    const selected = fields.find((field) => field.value === value);
+
+    // Set the value to either the default option, or blank when changing the filter type
+    if (selected.options && selected.options.length) {
+      setFilterValue(selected.options[0]);
+    } else {
+      setFilterValue("");
+    }
   };
 
   const handleOpChange = () => {
@@ -74,17 +81,8 @@ export default function AdvancedSearchFilterInput({
 
   const selectedFieldOptions = selectedField.options ?? [];
   const selectedFieldElementType = selectedFieldOptions.length
-    ? "input"
-    : "select";
-  if (selectedFieldOptions.length !== 0) {
-    if (
-      !selectedFieldOptions.find((element) => {
-        return element === filterValue;
-      })
-    ) {
-      setFilterValue(selectedFieldOptions[0]);
-    }
-  }
+    ? "select"
+    : "input";
 
   return (
     <form className="advanced-search-filter-input">
