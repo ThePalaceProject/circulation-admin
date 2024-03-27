@@ -15,8 +15,16 @@
       }
     }
 
-    input[type="text"] {
-      width: 40em;
+    .filter-value {
+      input[type="text"],select {
+        width: 40em;
+      }
+    }
+
+    .filter-operator {
+      select {
+        width: 15em;
+      }
     }
 
     .filter-key-options {
