@@ -43,10 +43,94 @@ describe("AdvancedSearchFilterInput", () => {
     });
   });
 
-  it("should render a text input for value entry", () => {
-    const valueInput = wrapper.find('input[type="text"]');
+  it("should restrict the operator selection, if the filter requests it", () => {
+    const fictionRadioButton = wrapper.find(
+      'input[type="radio"][value="fiction"]'
+    );
+    fictionRadioButton.getDOMNode().checked = true;
+    fictionRadioButton.simulate("change");
 
+    const options = wrapper.find(".filter-operator select > option");
+    const fictionField = fields.find((element) => {
+      return element.value === "fiction";
+    });
+
+    expect(options).to.have.length(fictionField.operators.length);
+  });
+
+  it("should use the currently selected operator when changing filters", () => {
+    const sourceFilterButton = wrapper.find(
+      'input[type="radio"][value="data_source"]'
+    );
+    const fictionFilterButton = wrapper.find(
+      'input[type="radio"][value="fiction"]'
+    );
+    const fictionField = fields.find((element) => {
+      return element.value === "fiction";
+    });
+
+    const operatorOptions = wrapper.find(".filter-operator select");
+    operatorOptions.getDOMNode().value = "regex";
+    operatorOptions.simulate("change");
+
+    sourceFilterButton.getDOMNode().checked = true;
+    sourceFilterButton.simulate("change");
+
+    expect(operatorOptions.getDOMNode().value).to.equal("regex");
+
+    // unless the operator is not supported by the filter.
+    fictionFilterButton.getDOMNode().checked = true;
+    fictionFilterButton.simulate("change");
+
+    expect(operatorOptions.getDOMNode().value).to.equal(
+      fictionField.operators[0]
+    );
+
+    // the new operator will be persisted when changing back to source filter
+    sourceFilterButton.getDOMNode().checked = true;
+    sourceFilterButton.simulate("change");
+
+    expect(operatorOptions.getDOMNode().value).to.equal(
+      fictionField.operators[0]
+    );
+  });
+
+  it("should render a text input for value entry", () => {
+    const valueSelect = wrapper.find(".filter-value select");
+    const valueInput = wrapper.find('.filter-value input[type="text"]');
+
+    expect(valueSelect).to.have.length(0);
     expect(valueInput).to.have.length(1);
+  });
+
+  it("should render a select for value selection, if the filter requests it", () => {
+    const fictionRadioButton = wrapper.find(
+      'input[type="radio"][value="fiction"]'
+    );
+    fictionRadioButton.getDOMNode().checked = true;
+    fictionRadioButton.simulate("change");
+
+    const valueSelect = wrapper.find(".filter-value select");
+    const valueInput = wrapper.find('.filter-value input[type="text"]');
+
+    expect(valueSelect).to.have.length(1);
+    expect(valueInput).to.have.length(0);
+  });
+
+  it("should clear the current value when changing the filter", () => {
+    const valueInput = wrapper.find(".filter-value input");
+
+    valueInput.getDOMNode().value = "ABC";
+    valueInput.simulate("change");
+
+    const filterRadioButton = wrapper.find(
+      'input[type="radio"][value="data_source"]'
+    );
+
+    filterRadioButton.getDOMNode().checked = true;
+    filterRadioButton.simulate("change");
+
+    expect(valueInput.getDOMNode().value).to.equal("");
   });
 
   it("should render an Add Filter button", () => {
