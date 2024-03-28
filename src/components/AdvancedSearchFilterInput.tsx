@@ -27,11 +27,20 @@ export default function AdvancedSearchFilterInput({
     setFilterKey(value);
     const selected = fields.find((field) => field.value === value);
 
-    // Set the value to either the default option, or blank when changing the filter type
+    // Set the value to either the first option, or blank.
     if (selected.options && selected.options.length) {
       setFilterValue(selected.options[0]);
     } else {
       setFilterValue("");
+    }
+
+    // Update operator if the filter doesn't support it.
+    if (
+      selected.operators &&
+      selected.operators.length &&
+      !selected.operators.find((op) => op === filterOp)
+    ) {
+      setFilterOp(selected.operators[0]);
     }
   };
 

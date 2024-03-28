@@ -58,6 +58,43 @@ describe("AdvancedSearchFilterInput", () => {
     expect(options).to.have.length(fictionField.operators.length);
   });
 
+  it("should use the currently selected operator when changing filters", () => {
+    const sourceFilterButton = wrapper.find(
+      'input[type="radio"][value="data_source"]'
+    );
+    const fictionFilterButton = wrapper.find(
+      'input[type="radio"][value="fiction"]'
+    );
+    const fictionField = fields.find((element) => {
+      return element.value === "fiction";
+    });
+
+    const operatorOptions = wrapper.find(".filter-operator select");
+    operatorOptions.getDOMNode().value = "regex";
+    operatorOptions.simulate("change");
+
+    sourceFilterButton.getDOMNode().checked = true;
+    sourceFilterButton.simulate("change");
+
+    expect(operatorOptions.getDOMNode().value).to.equal("regex");
+
+    // unless the operator is not supported by the filter.
+    fictionFilterButton.getDOMNode().checked = true;
+    fictionFilterButton.simulate("change");
+
+    expect(operatorOptions.getDOMNode().value).to.equal(
+      fictionField.operators[0]
+    );
+
+    // the new operator will be persisted when changing back to source filter
+    sourceFilterButton.getDOMNode().checked = true;
+    sourceFilterButton.simulate("change");
+
+    expect(operatorOptions.getDOMNode().value).to.equal(
+      fictionField.operators[0]
+    );
+  });
+
   it("should render a text input for value entry", () => {
     const valueSelect = wrapper.find(".filter-value select");
     const valueInput = wrapper.find('.filter-value input[type="text"]');
