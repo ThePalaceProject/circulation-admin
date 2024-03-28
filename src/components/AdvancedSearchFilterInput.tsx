@@ -72,12 +72,9 @@ export default function AdvancedSearchFilterInput({
   };
 
   const selectedField = fields.find((field) => field.value === filterKey);
-  const selectedFieldOperators =
-    selectedField.operators !== undefined
-      ? operators.filter((element) => {
-          return selectedField.operators.includes(element.value);
-        })
-      : operators;
+  const selectedFieldOperators = selectedField.operators
+    ? operators.filter((op) => selectedField.operators.includes(op.value))
+    : operators;
 
   const selectedFieldOptions = selectedField.options ?? [];
   const selectedFieldElementType = selectedFieldOptions.length
