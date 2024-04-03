@@ -35,7 +35,7 @@ export const fields = [
   { value: "title", label: "title" },
   {
     value: "fiction",
-    label: "fiction",
+    label: "classification",
     options: ["fiction", "nonfiction"],
     operators: ["eq"],
   },
