@@ -14,13 +14,21 @@ export type InventoryReportRequestParams = {
   baseEndpointUrl?: string;
 };
 
-const defaultBaseInformationEndpointUrl = "/admin/reports/inventory_report";
-const defaultBaseGenerateEndpointUrl =
-  "/admin/reports/generate_inventory_report";
+export const defaultBaseEndpointUrl = "/admin/reports/inventory_report";
 
+/**
+ * Get information about the inventory report that would be generated for the
+ * given library, if requested.
+ *
+ * @param library -- the library for which the report information is requested.
+ * @param baseEndpointUrl -- an optional baseURL (for testing). If not provided,
+ *  the `defaultBaseEndpointUrl` will be used.
+ * @returns an object converted from the information JSON response, if successful.
+ * @throws an error, if the request is not successful.
+ */
 export const getInventoryReportInfo = async ({
   library,
-  baseEndpointUrl = defaultBaseInformationEndpointUrl,
+  baseEndpointUrl = defaultBaseEndpointUrl,
 }: InventoryReportRequestParams): Promise<InventoryReportInfo> => {
   const endpointUrl = `${baseEndpointUrl}/${library}`;
   const res = await fetch(endpointUrl);
@@ -30,9 +38,18 @@ export const getInventoryReportInfo = async ({
   return res.json();
 };
 
+/**
+ * Request an inventory report for the given library.
+ *
+ * @param library -- the library for which the report information is requested.
+ * @param baseEndpointUrl -- an optional baseURL (for testing). If not provided,
+ *  the `defaultBaseEndpointUrl` will be used.
+ * @returns an object converted from the message JSON response, if successful.
+ * @throws an error, if the request is not successful.
+ */
 export const requestInventoryReport = async ({
   library,
-  baseEndpointUrl = defaultBaseGenerateEndpointUrl,
+  baseEndpointUrl = defaultBaseEndpointUrl,
 }: InventoryReportRequestParams): Promise<InventoryReportRequestResponse> => {
   const endpointUrl = `${baseEndpointUrl}/${library}`;
   const res = await fetch(endpointUrl, { method: "POST" });
