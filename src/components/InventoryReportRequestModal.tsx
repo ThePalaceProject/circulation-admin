@@ -36,12 +36,11 @@ const InventoryReportRequestModal = (
     setResponseMessage(null);
   };
 
-  const generateReport = useMutation({
-    mutationFn: () => requestInventoryReport({ library }),
-    onMutate: () => setShowConfirmationModal(false),
-    onSuccess: (data) => setResponseMessage(`✅ ${data.message}`),
-    onError: (error) => setResponseMessage(`❌ ${error}`),
-    onSettled: () => setShowResponseModal(true),
+  const reportGenerator = useGenerateReport({
+    library,
+    setResponseMessage,
+    setShowConfirmationModal,
+    setShowResponseModal,
   });
 
   const resetForm = () => {
@@ -66,7 +65,7 @@ const InventoryReportRequestModal = (
               {collectionList(collections)}
               <Button
                 className="left-align small inline"
-                onClick={() => generateReport.mutate()}
+                onClick={() => reportGenerator.mutate()}
                 title="Confirm Report Request"
                 content="Run Report"
               />
@@ -162,11 +161,11 @@ const collectionList = (collections: InventoryReportCollectionInfo[]) => {
  * param show: Whether to show the modal or not. If false, the modal will be hidden and no information will be fetched from
  *
  */
-const useReportInfo = (
+export const useReportInfo = (
   show: boolean,
   { library, baseEndpointUrl = undefined }: InventoryReportRequestParams
 ) => {
-  const { isSuccess, isError, data, error } = useQuery({
+  const { fetchStatus, isSuccess, isError, data, error } = useQuery({
     queryKey: ["inventory_report_info", library, baseEndpointUrl],
     queryFn: () => getInventoryReportInfo({ library, baseEndpointUrl }),
     enabled: show,
@@ -179,7 +178,23 @@ const useReportInfo = (
         //  by pushing it down to the API layer.
         data.collections.sort((a, b) => (a.name > b.name ? 1 : -1))
       : [];
-  return { isSuccess, isError, error, collections };
+  return { fetchStatus, isSuccess, isError, error, collections };
+};
+
+export const useGenerateReport = ({
+  library,
+  baseEndpointUrl = undefined,
+  setShowConfirmationModal,
+  setResponseMessage,
+  setShowResponseModal,
+}) => {
+  return useMutation({
+    mutationFn: () => requestInventoryReport({ library, baseEndpointUrl }),
+    onMutate: () => setShowConfirmationModal(false),
+    onSuccess: (data) => setResponseMessage(`✅ ${data.message}`),
+    onError: (error) => setResponseMessage(`❌ ${(error as Error).message}`),
+    onSettled: () => setShowResponseModal(true),
+  });
 };
 
 export default InventoryReportRequestModal;
