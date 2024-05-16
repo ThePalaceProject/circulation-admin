@@ -1,7 +1,6 @@
-import * as React from "react";
 import { act, renderHook } from "@testing-library/react-hooks";
-// import renderWithProviders from "../testUtils/renderWithProviders";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { componentWithProviders } from "../testUtils/withProviders";
+import { QueryClient } from "@tanstack/react-query";
 // import { setupServer } from "msw/node";
 // import { rest } from "msw";
 import {
@@ -68,9 +67,8 @@ describe("InventoryReportRequestModal", () => {
       },
     });
     /* eslint-enable @typescript-eslint/no-empty-function */
-    const wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+
+    const wrapper = componentWithProviders({ queryClient });
 
     describe("get report information", () => {
       const mock_info_api = jest.spyOn(AdminAPI, "getInventoryReportInfo");
