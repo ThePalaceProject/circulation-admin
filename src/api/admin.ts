@@ -14,7 +14,7 @@ export type InventoryReportRequestParams = {
   baseEndpointUrl?: string;
 };
 
-export const defaultBaseEndpointUrl = "/admin/reports/inventory_report";
+export const DEFAULT_BASE_ENDPOINT_URL = "/admin/reports/inventory_report";
 
 /**
  * Get information about the inventory report that would be generated for the
@@ -28,7 +28,7 @@ export const defaultBaseEndpointUrl = "/admin/reports/inventory_report";
  */
 export const getInventoryReportInfo = async ({
   library,
-  baseEndpointUrl = defaultBaseEndpointUrl,
+  baseEndpointUrl = DEFAULT_BASE_ENDPOINT_URL,
 }: InventoryReportRequestParams): Promise<InventoryReportInfo> => {
   const endpointUrl = `${baseEndpointUrl}/${library}`;
   const res = await fetch(endpointUrl);
@@ -49,7 +49,7 @@ export const getInventoryReportInfo = async ({
  */
 export const requestInventoryReport = async ({
   library,
-  baseEndpointUrl = defaultBaseEndpointUrl,
+  baseEndpointUrl = DEFAULT_BASE_ENDPOINT_URL,
 }: InventoryReportRequestParams): Promise<InventoryReportRequestResponse> => {
   const endpointUrl = `${baseEndpointUrl}/${library}`;
   const res = await fetch(endpointUrl, { method: "POST" });

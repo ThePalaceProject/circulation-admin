@@ -1,5 +1,5 @@
 import {
-  defaultBaseEndpointUrl,
+  DEFAULT_BASE_ENDPOINT_URL,
   getInventoryReportInfo,
   requestInventoryReport,
 } from "../../../src/api/admin";
@@ -14,7 +14,7 @@ const libraryKey = "short-name";
 const testEndpoints = ({
   title,
   baseEndpointUrl: baseEndpointUrl = undefined,
-  expectedUrl = defaultBaseEndpointUrl,
+  expectedUrl = DEFAULT_BASE_ENDPOINT_URL,
 }) => {
   describe(title, () => {
     beforeEach(() => {
@@ -50,7 +50,7 @@ const testEndpoints = ({
 describe("Inventory report API", () => {
   testEndpoints({
     title: "default endpoints",
-    expectedUrl: `${defaultBaseEndpointUrl}/${libraryKey}`,
+    expectedUrl: `${DEFAULT_BASE_ENDPOINT_URL}/${libraryKey}`,
   });
   testEndpoints({
     title: "alternative test endpoints",
