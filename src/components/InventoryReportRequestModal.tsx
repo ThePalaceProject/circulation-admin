@@ -36,7 +36,7 @@ const InventoryReportRequestModal = (
     setResponseMessage(null);
   };
 
-  const reportGenerator = useGenerateReport({
+  const { mutate: generateReport } = useGenerateReport({
     library,
     setResponseMessage,
     setShowConfirmationModal,
@@ -51,12 +51,54 @@ const InventoryReportRequestModal = (
   const { email } = context.admin;
   const { collections } = useReportInfo(show, { library });
 
+  return componentContent({
+    show,
+    onHide: resetForm,
+    generateReport,
+    shouldShowConfirmation: showConfirmationModal,
+    shouldShowResponse: showResponseModal,
+    collections,
+    email,
+    responseMessage,
+  });
+};
+// TODO: This is needed to support legacy context provider on this component (see above).
+//  The overall approach should be replaced with another mechanism (e.g., `useContext` or
+//  `useSelector` if we move `email` to new context provider or Redux, respectively).
+InventoryReportRequestModal.contextTypes = {
+  admin: PropTypes.object.isRequired,
+};
+
+type componentContentProps = {
+  show: boolean;
+  onHide: () => void;
+  generateReport: () => void;
+  email?: string;
+  collections: InventoryReportCollectionInfo[];
+  responseMessage: React.ReactElement;
+  shouldShowConfirmation: boolean;
+  shouldShowResponse: boolean;
+};
+const componentContent = ({
+  show,
+  onHide,
+  generateReport,
+  email = undefined,
+  collections = [],
+  responseMessage,
+  shouldShowConfirmation,
+  shouldShowResponse,
+}: componentContentProps) => {
+  if (!show) {
+    return null;
+  }
+
   return (
     <>
-      {showConfirmationModal &&
+      {shouldShowConfirmation &&
         renderModal({
           show,
-          onHide: resetForm,
+          onHide: onHide,
           title: "Request Inventory Report",
           content: (
             <>
@@ -65,30 +107,30 @@ const InventoryReportRequestModal = (
               {collectionList(collections)}
               <Button
                 className="left-align small inline"
-                onClick={() => reportGenerator.mutate()}
+                onClick={generateReport}
                 title="Confirm Report Request"
                 content="Run Report"
               />
               <Button
                 className="inverted left-align small inline"
-                callback={resetForm}
+                callback={onHide}
                 title="Cancel Report Request"
                 content="Cancel"
               />
             </>
           ),
         })}
-      {showResponseModal &&
+      {shouldShowResponse &&
         renderModal({
           show,
-          onHide: resetForm,
+          onHide: onHide,
           title: "Report Request Response",
           content: (
             <>
               <p>{responseMessage}</p>
               <Button
                 className="inverted left-align small inline"
-                callback={resetForm}
+                callback={onHide}
                 title="Acknowledge Response"
                 content="Ok"
               />
@@ -97,10 +139,6 @@ const InventoryReportRequestModal = (
         })}
     </>
   );
-};
-// TODO: Needed to support legacy context provider on this component (see above).
-InventoryReportRequestModal.contextTypes = {
-  admin: PropTypes.object.isRequired,
 };
 
 const renderModal = ({
@@ -128,7 +166,7 @@ const renderModal = ({
   );
 };
 
-const reportDestinationText = (email: string) => {
+export const reportDestinationText = (email: string) => {
   return `The inventory report will be generated in the background and\
           emailed to you${email ? ` at <${email}>` : ""} when ready.`;
 };
