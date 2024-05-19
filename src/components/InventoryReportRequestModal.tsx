@@ -96,49 +96,85 @@ const componentContent = ({
   return (
     <>
       {shouldShowConfirmation &&
-        renderModal({
+        renderConfirmationModal({
           show,
-          onHide: onHide,
-          title: "Request Inventory Report",
-          content: (
-            <>
-              <p>{reportDestinationText(email)}</p>
-              <p>{reportCollectionsMessage(collections)}</p>
-              {collectionList(collections)}
-              <Button
-                className="left-align small inline"
-                onClick={generateReport}
-                title="Confirm Report Request"
-                content="Run Report"
-              />
-              <Button
-                className="inverted left-align small inline"
-                callback={onHide}
-                title="Cancel Report Request"
-                content="Cancel"
-              />
-            </>
-          ),
+          onHide,
+          email,
+          collections,
+          generateReport,
         })}
       {shouldShowResponse &&
-        renderModal({
-          show,
-          onHide: onHide,
-          title: "Report Request Response",
-          content: (
-            <>
-              <p>{responseMessage}</p>
-              <Button
-                className="inverted left-align small inline"
-                callback={onHide}
-                title="Acknowledge Response"
-                content="Ok"
-              />
-            </>
-          ),
-        })}
+        renderResponseModal({ show, onHide, responseMessage })}
     </>
   );
+};
+
+const renderResponseModal = ({ show, onHide, responseMessage }) => {
+  return renderModal({
+    show,
+    onHide: onHide,
+    title: "Report Request Response",
+    content: (
+      <>
+        <p>{responseMessage}</p>
+        <Button
+          className="inverted left-align small inline"
+          callback={onHide}
+          title="Acknowledge Response"
+          content="Ok"
+        />
+      </>
+    ),
+  });
+};
+
+const renderConfirmationModal = ({
+  show,
+  onHide,
+  email,
+  collections,
+  generateReport,
+}) => {
+  const eligibleCollections = (collections) => collections?.length !== 0;
+
+  const confirmationMessage = (collections) => {
+    return eligibleCollections(collections) ? (
+      <>
+        <p>{reportDestinationText(email)}</p>
+        <p>{reportCollectionsMessage(collections)}</p>
+        {collectionList(collections)}
+      </>
+    ) : (
+      <p>
+        Inventory reports are available for only a subset of collection types.
+        There are no eligible collections for this library.
+      </p>
+    );
+  };
+  console.log(collections, eligibleCollections(collections));
+  return renderModal({
+    show,
+    onHide: onHide,
+    title: "Request Inventory Report",
+    content: (
+      <>
+        {confirmationMessage(collections)}
+        <Button
+          className="left-align small inline"
+          onClick={generateReport}
+          title="Confirm Report Request"
+          content="Run Report"
+          disabled={!eligibleCollections(collections)}
+        />
+        <Button
+          className="inverted left-align small inline"
+          callback={onHide}
+          title="Cancel Report Request"
+          content="Cancel"
+        />
+      </>
+    ),
+  });
 };
 
 const renderModal = ({
@@ -176,7 +212,7 @@ const reportCollectionsMessage = (
 ) => {
   return collections.length > 0
     ? "The report will include titles from the following collections:"
-    : "The report will include titles from eligible collections.";
+    : "The report will include titles from all eligible collections.";
 };
 
 const collectionList = (collections: InventoryReportCollectionInfo[]) => {
@@ -215,7 +251,7 @@ export const useReportInfo = (
       ? // TODO: We could avoid repeatedly performing this transformation
         //  by pushing it down to the API layer.
         data.collections.sort((a, b) => (a.name > b.name ? 1 : -1))
-      : [];
+      : undefined;
   return { fetchStatus, isSuccess, isError, error, collections };
 };
 
