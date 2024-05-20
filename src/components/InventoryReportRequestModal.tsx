@@ -20,14 +20,22 @@ interface FormProps {
 
 export const NO_COLLECTIONS_MESSAGE = `
 Inventory reports are available for only a subset of collection types.
-There are no eligible collections for this library.
-`
+There are no eligible collections for this library.`
   .replace(/(?:\s|\r\n|\r|\n)+/g, " ")
   .trim();
 export const SOME_COLLECTIONS_MESSAGE =
   "The report will include titles from the following collections:";
 export const UNKNOWN_COLLECTIONS_MESSAGE =
   "The report will include titles from all eligible collections.";
+
+export const CONFIRMATION_MODAL_HEADING = "Request Inventory Report";
+export const ACK_RESPONSE_HEADING = "Report Request Response";
+export const CONFIRM_BUTTON_CONTENT = "Run Report";
+const CONFIRM_BUTTON_TITLE = "Confirm Report Request";
+export const CANCEL_BUTTON_CONTENT = "Cancel";
+const CANCEL_BUTTON_TITLE = "Cancel Report Request";
+export const ACK_RESPONSE_BUTTON_CONTENT = "Ok";
+const ACK_RESPONSE_BUTTON_TITLE = "Acknowledge Response";
 
 // Create a modal to request an inventory report library and email address and to report on success.
 // *** To use the legacy context here, we need to create a `contextProps` property on this function object:
@@ -124,15 +132,15 @@ const renderResponseModal = ({ show, onHide, responseMessage }) => {
   return renderModal({
     show,
     onHide: onHide,
-    title: "Report Request Response",
+    title: ACK_RESPONSE_HEADING,
     content: (
       <>
         <p>{responseMessage}</p>
         <Button
           className="inverted left-align small inline"
           callback={onHide}
-          title="Acknowledge Response"
-          content="Ok"
+          title={ACK_RESPONSE_BUTTON_TITLE}
+          content={ACK_RESPONSE_BUTTON_CONTENT}
         />
       </>
     ),
@@ -149,22 +157,22 @@ const renderConfirmationModal = ({
   return renderModal({
     show,
     onHide: onHide,
-    title: "Request Inventory Report",
+    title: CONFIRMATION_MODAL_HEADING,
     content: (
       <>
         {confirmationMessage(collections, email)}
         <Button
           className="left-align small inline"
           onClick={generateReport}
-          title="Confirm Report Request"
-          content="Run Report"
+          title={CONFIRM_BUTTON_TITLE}
+          content={CONFIRM_BUTTON_CONTENT}
           disabled={!eligibleCollections(collections)}
         />
         <Button
           className="inverted left-align small inline"
           callback={onHide}
-          title="Cancel Report Request"
-          content="Cancel"
+          title={CANCEL_BUTTON_TITLE}
+          content={CANCEL_BUTTON_CONTENT}
         />
       </>
     ),
