@@ -626,7 +626,9 @@ describe("InventoryReportRequestModal", () => {
 
       getByRole("button", { name: ACK_RESPONSE_BUTTON_CONTENT });
       const modalBody = getByRole("document").querySelector(".modal-body");
-      expect(modalBody).toHaveTextContent(GENERATE_REPORT_SUCCESS.message);
+      expect(modalBody).toHaveTextContent(
+        `✅ ${GENERATE_REPORT_SUCCESS.message}`
+      );
     });
 
     it("displays error message, when request is unsuccessful", async () => {
@@ -665,7 +667,7 @@ describe("InventoryReportRequestModal", () => {
       getByRole("button", { name: ACK_RESPONSE_BUTTON_CONTENT });
       const modalBody = getByRole("document").querySelector(".modal-body");
       expect(modalBody).toHaveTextContent(
-        "Request failed with status 404: POST"
+        "❌ Request failed with status 404: POST"
       );
     });
   });
