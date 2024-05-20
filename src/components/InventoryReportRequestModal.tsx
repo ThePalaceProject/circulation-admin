@@ -18,6 +18,17 @@ interface FormProps {
   library: string;
 }
 
+export const NO_COLLECTIONS_MESSAGE = `
+Inventory reports are available for only a subset of collection types.
+There are no eligible collections for this library.
+`
+  .replace(/(?:\s|\r\n|\r|\n)+/g, " ")
+  .trim();
+export const SOME_COLLECTIONS_MESSAGE =
+  "The report will include titles from the following collections:";
+export const UNKNOWN_COLLECTIONS_MESSAGE =
+  "The report will include titles from all eligible collections.";
+
 // Create a modal to request an inventory report library and email address and to report on success.
 // *** To use the legacy context here, we need to create a `contextProps` property on this function object:
 // ***   InventoryReportRequestModal.contextTypes = { email: PropTypes.string }
@@ -84,7 +95,7 @@ const componentContent = ({
   onHide,
   generateReport,
   email = undefined,
-  collections = [],
+  collections = undefined,
   responseMessage,
   shouldShowConfirmation,
   shouldShowResponse,
@@ -135,30 +146,13 @@ const renderConfirmationModal = ({
   collections,
   generateReport,
 }) => {
-  const eligibleCollections = (collections) => collections?.length !== 0;
-
-  const confirmationMessage = (collections) => {
-    return eligibleCollections(collections) ? (
-      <>
-        <p>{reportDestinationText(email)}</p>
-        <p>{reportCollectionsMessage(collections)}</p>
-        {collectionList(collections)}
-      </>
-    ) : (
-      <p>
-        Inventory reports are available for only a subset of collection types.
-        There are no eligible collections for this library.
-      </p>
-    );
-  };
-  console.log(collections, eligibleCollections(collections));
   return renderModal({
     show,
     onHide: onHide,
     title: "Request Inventory Report",
     content: (
       <>
-        {confirmationMessage(collections)}
+        {confirmationMessage(collections, email)}
         <Button
           className="left-align small inline"
           onClick={generateReport}
@@ -202,22 +196,42 @@ const renderModal = ({
   );
 };
 
-export const reportDestinationText = (email: string) => {
-  return `The inventory report will be generated in the background and\
-          emailed to you${email ? ` at <${email}>` : ""} when ready.`;
+const eligibleCollections = (collections) => collections?.length !== 0;
+
+const confirmationMessage = (collections, email) => {
+  return eligibleCollections(collections) ? (
+    <>
+      <p>
+        {reportDestinationText(email, {
+          disabled: !eligibleCollections(collections),
+        })}
+      </p>
+      <p>{reportCollectionsMessage(collections)}</p>
+      {collectionList(collections)}
+    </>
+  ) : (
+    <p>{NO_COLLECTIONS_MESSAGE}</p>
+  );
 };
+
+export const reportDestinationText = (email: string, { disabled = false }) =>
+  disabled
+    ? ""
+    : `The inventory report will be generated in the background and emailed to you
+    ${email ? ` at <${email}>` : ""}
+    when ready.`;
 
 const reportCollectionsMessage = (
   collections: InventoryReportCollectionInfo[]
-) => {
-  return collections.length > 0
-    ? "The report will include titles from the following collections:"
-    : "The report will include titles from all eligible collections.";
-};
-
+) =>
+  collections === undefined
+    ? UNKNOWN_COLLECTIONS_MESSAGE
+    : collections.length === 0
+    ? NO_COLLECTIONS_MESSAGE
+    : SOME_COLLECTIONS_MESSAGE;
 const collectionList = (collections: InventoryReportCollectionInfo[]) => {
   return (
-    collections.length > 0 && (
+    collections?.length > 0 && (
       <ul>
         {collections.map((c) => (
           <li key={c.id}>{c.name}</li>
@@ -247,10 +261,10 @@ export const useReportInfo = (
     retry: 0, // Currently, this information isn't that important, so we don't retry.
   });
   const collections =
+    // TODO: We could avoid repeatedly performing the transformation
+    //  here by pushing it down to the API layer.
     isSuccess && show
-      ? // TODO: We could avoid repeatedly performing this transformation
-        //  by pushing it down to the API layer.
-        data.collections.sort((a, b) => (a.name > b.name ? 1 : -1))
+      ? data.collections.sort((a, b) => (a.name > b.name ? 1 : -1))
       : undefined;
   return { fetchStatus, isSuccess, isError, error, collections };
 };
