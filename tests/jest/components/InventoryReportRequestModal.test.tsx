@@ -195,7 +195,7 @@ describe("InventoryReportRequestModal", () => {
         expect(setShowConfirmationModal).toHaveBeenCalledWith(false);
       });
 
-      it("handles api success", async () => {
+      it("handles api error", async () => {
         mock_generate_api.mockImplementation(() => {
           throw new Error("an error occurred");
         });
