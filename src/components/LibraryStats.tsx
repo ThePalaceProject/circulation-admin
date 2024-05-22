@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import * as numeral from "numeral";
 import {
   InventoryStatistics,
@@ -14,6 +15,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Button } from "library-simplified-reusable-components";
+import InventoryReportRequestModal from "./InventoryReportRequestModal";
 import SingleStatListItem from "./SingleStatListItem";
 
 export interface LibraryStatsProps {
@@ -73,7 +76,9 @@ const LibraryStats = (props: LibraryStatsProps) => {
       <ul className="stats">
         <li className="stat-group">{renderPatronsGroup(patrons)}</li>
         <li className="stat-group">{renderCirculationsGroup(patrons)}</li>
-        <li className="stat-group">{renderInventoryGroup(inventory)}</li>
+        <li className="stat-group">
+          {renderInventoryGroup(inventory, library)}
+        </li>
         <li className="stat-group stat-group-wide">
           {renderCollectionsGroup(chartItems)}
         </li>
@@ -130,11 +135,33 @@ const renderCirculationsGroup = (patrons: PatronStatistics) => {
   );
 };
 
-const renderInventoryGroup = (inventory: InventoryStatistics) => {
+const renderInventoryGroup = (
+  inventory: InventoryStatistics,
+  library?: string
+) => {
+  const [showReportForm, setShowReportForm] = useState(false);
+
   return (
     <>
+      {library && (
+        <InventoryReportRequestModal
+          show={showReportForm}
+          onHide={() => setShowReportForm(false)}
+          library={library}
+        />
+      )}
       <h3>
         <span className="stat-grouping-label">Inventory</span>
+        {library && (
+          <Button
+            callback={(() => setShowReportForm(true)) as any}
+            content="⬇︎"
+            title="Request an inventory report"
+            style={{ borderRadius: "50%", marginLeft: "10px" }}
+            className="inline small"
+            disabled={showReportForm}
+          />
+        )}
       </h3>
       <ul>
         <SingleStatListItem

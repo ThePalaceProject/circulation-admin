@@ -3,6 +3,9 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ContextProvider from "../ContextProvider";
+
 import { normalizeStatistics } from "../Stats";
 import LibraryStats from "../LibraryStats";
 import { BarChart } from "recharts";
@@ -13,6 +16,15 @@ import {
   noInventoryLibraryKey,
   noPatronsLibraryKey,
 } from "../../../tests/__data__/statisticsApiResponseData";
+
+const AllProviders = ({ children }) => {
+  const queryClient = new QueryClient();
+  return (
+    <ContextProvider csrfToken={""} email={"user@example.org"}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </ContextProvider>
+  );
+};
 
 describe("LibraryStats", () => {
   // Convert from the API format to our in-app format.
@@ -45,7 +57,9 @@ describe("LibraryStats", () => {
   describe("rendering", () => {
     let wrapper;
     beforeEach(() => {
-      wrapper = mount(<LibraryStats stats={defaultLibraryStatsTestData} />);
+      wrapper = mount(<LibraryStats stats={defaultLibraryStatsTestData} />, {
+        wrappingComponent: AllProviders,
+      });
     });
 
     it("shows 'all libraries' header when there is no library", () => {

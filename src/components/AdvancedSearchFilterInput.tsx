@@ -142,7 +142,11 @@ export default function AdvancedSearchFilterInput({
           {selectedFieldOptions.length === 0
             ? null
             : selectedFieldOptions.map((value) => (
-                <option key={value} value={value}>
+                <option
+                  key={value}
+                  value={value}
+                  aria-selected={value === filterValue}
+                >
                   {value}
                 </option>
               ))}

@@ -5,6 +5,8 @@ import { Provider } from "react-redux";
 import { Router, Route, browserHistory } from "react-router";
 import ContextProvider from "./components/ContextProvider";
 import { TOSContextProvider } from "./components/TOSContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import CatalogPage from "./components/CatalogPage";
 import CustomListPage from "./components/CustomListPage";
 import LanePage from "./components/LanePage";
@@ -66,6 +68,8 @@ class CirculationAdmin {
     const lanePagePath =
       "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
 
+    const queryClient = new QueryClient();
+
     const store = buildStore();
     const appElement = "opds-catalog";
     const app = config.settingUp ? (
@@ -80,32 +84,35 @@ class CirculationAdmin {
           <TOSContextProvider
             value={...[config.tos_link_text, config.tos_link_href]}
           >
-            <Router history={browserHistory}>
-              <Route path={catalogEditorPath} component={CatalogPage} />
-              <Route path={customListPagePath} component={CustomListPage} />
-              <Route path={lanePagePath} component={LanePage} />
-              <Route
-                path="/admin/web/dashboard(/:library)"
-                component={DashboardPage}
-              />
-              <Route
-                path="/admin/web/quicksight"
-                component={QuicksightDashboardPage}
-              />
-              <Route
-                path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
-                component={ConfigPage}
-              />
-              <Route path="/admin/web/account" component={AccountPage} />
-              <Route
-                path="/admin/web/patrons/:library(/:tab)"
-                component={ManagePatrons}
-              />
-              <Route
-                path="/admin/web/troubleshooting(/:tab)(/:subtab)"
-                component={TroubleshootingPage}
-              />
-            </Router>
+            <QueryClientProvider client={queryClient}>
+              <Router history={browserHistory}>
+                <Route path={catalogEditorPath} component={CatalogPage} />
+                <Route path={customListPagePath} component={CustomListPage} />
+                <Route path={lanePagePath} component={LanePage} />
+                <Route
+                  path="/admin/web/dashboard(/:library)"
+                  component={DashboardPage}
+                />
+                <Route
+                  path="/admin/web/quicksight"
+                  component={QuicksightDashboardPage}
+                />
+                <Route
+                  path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
+                  component={ConfigPage}
+                />
+                <Route path="/admin/web/account" component={AccountPage} />
+                <Route
+                  path="/admin/web/patrons/:library(/:tab)"
+                  component={ManagePatrons}
+                />
+                <Route
+                  path="/admin/web/troubleshooting(/:tab)(/:subtab)"
+                  component={TroubleshootingPage}
+                />
+              </Router>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
           </TOSContextProvider>
         </ContextProvider>
       </Provider>

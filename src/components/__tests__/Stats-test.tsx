@@ -5,6 +5,8 @@ import { mount } from "enzyme";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
+import ContextProvider from "../ContextProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { normalizeStatistics, Stats, StatsProps } from "../Stats";
 import LibraryStats from "../LibraryStats";
 import ErrorMessage from "../ErrorMessage";
@@ -38,10 +40,14 @@ describe("Stats", () => {
     });
     const errorState = statsState({ fetchError });
 
-    const ReduxProvider = ({ children, store }) => {
+    const AllProviders = ({ children, store }) => {
       return (
         <Provider store={store ?? mockStore(statsState({}))}>
-          {children}
+          <ContextProvider csrfToken={""} email={"user@example.org"}>
+            <QueryClientProvider client={new QueryClient()}>
+              {children}
+            </QueryClientProvider>
+          </ContextProvider>
         </Provider>
       );
     };
@@ -53,7 +59,7 @@ describe("Stats", () => {
      */
     const mountStatsInProvider = (state?, props?) => {
       const wrapper = mount(<Stats {...props} />, {
-        wrappingComponent: ReduxProvider,
+        wrappingComponent: AllProviders,
       });
       const provider = wrapper.getWrappingComponent();
       !!state && provider.setProps({ store: mockStore(state) });
