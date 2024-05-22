@@ -22,7 +22,6 @@ import InventoryReportRequestModal, {
   NO_COLLECTIONS_MESSAGE,
   SOME_COLLECTIONS_MESSAGE,
   UNKNOWN_COLLECTIONS_MESSAGE,
-  reportDestinationText,
 } from "../../../src/components/InventoryReportRequestModal";
 import userEvent from "@testing-library/user-event";
 import { InventoryReportInfo } from "../../../src/api/admin";
@@ -46,10 +45,10 @@ const API_ENDPOINT_PARAMS: AdminAPI.InventoryReportRequestParams = {
 
 const setupMockServer = () => {
   return setupServer(
-    rest.get(MOCK_SERVER_API_ENDPOINT_PATH, async (req, res, ctx) => {
+    rest.get(MOCK_SERVER_API_ENDPOINT_PATH, async (_, res, ctx) => {
       return res(ctx.status(200), ctx.json(INFO_SUCCESS_SOME_COLLECTIONS));
     }),
-    rest.post(MOCK_SERVER_API_ENDPOINT_PATH, async (req, res, ctx) => {
+    rest.post(MOCK_SERVER_API_ENDPOINT_PATH, async (_, res, ctx) => {
       return res(ctx.status(202), ctx.json(GENERATE_REPORT_SUCCESS));
     })
   );
@@ -253,7 +252,7 @@ describe("InventoryReportRequestModal", () => {
     });
     it("returns an error value for unsuccessful report info (get) requests", async () => {
       server.use(
-        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, (req, res, ctx) =>
+        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
           res(ctx.status(404))
         )
       );
@@ -272,7 +271,7 @@ describe("InventoryReportRequestModal", () => {
     });
     it("returns an error value for unsuccessful generate report (post) requests", async () => {
       server.use(
-        rest.post(MOCK_SERVER_API_ENDPOINT_PATH, (req, res, ctx) =>
+        rest.post(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
           res(ctx.status(404))
         )
       );
@@ -304,10 +303,11 @@ describe("InventoryReportRequestModal", () => {
     const EMAIL_CONTEXT_PROVIDER_PROPS = { email };
     const NO_EMAIL_CONTEXT_PROVIDER_PROPS = { email: undefined };
 
-    it("hides the modal when `show` is false", async () => {
+    it("shows the modal when `show` is true", async () => {
       const {
-        container,
+        getAllByRole,
         queryAllByRole,
+        rerender,
       } = renderWithProviders(
         <InventoryReportRequestModal
           show={false}
@@ -316,40 +316,20 @@ describe("InventoryReportRequestModal", () => {
         />,
         { queryClient }
       );
-      expect(container.querySelectorAll(".modal-content")).toHaveLength(0);
-      expect(
-        queryAllByRole("button", { name: CONFIRM_BUTTON_CONTENT })
-      ).toHaveLength(0);
-      expect(
-        queryAllByRole("button", { name: CANCEL_BUTTON_CONTENT })
-      ).toHaveLength(0);
-    });
+      expect(queryAllByRole("dialog")).toHaveLength(0);
 
-    it("displays the modal when `show` is true", async () => {
-      const {
-        container,
-        getByRole,
-      } = renderWithProviders(
+      rerender(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}
           library={LIBRARY}
-        />,
-        { queryClient }
+        />
       );
-      container.querySelector(".modal-content");
-      const modalContent = getByRole("document");
-      const heading = within(modalContent).getByRole("heading", {
-        level: MODAL_HEADING_LEVEL,
-      });
-      expect(heading).toHaveTextContent(CONFIRMATION_MODAL_HEADING);
+      getAllByRole("dialog");
     });
 
     it("initially shows a request confirmation", () => {
-      const {
-        container,
-        getByRole,
-      } = renderWithProviders(
+      const { getByRole } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}
           onHide={onHide}
@@ -357,7 +337,6 @@ describe("InventoryReportRequestModal", () => {
         />,
         { queryClient }
       );
-      container.querySelector(".modal-content");
       const modalContent = getByRole("document");
       const heading = within(modalContent).getByRole("heading", {
         level: MODAL_HEADING_LEVEL,
@@ -407,7 +386,7 @@ describe("InventoryReportRequestModal", () => {
       onHide.mockImplementation(() => (show = false));
 
       const {
-        container,
+        getAllByRole,
         getByRole,
         queryAllByRole,
         rerender,
@@ -419,6 +398,7 @@ describe("InventoryReportRequestModal", () => {
         />,
         { queryClient }
       );
+      getAllByRole("dialog");
       expect(show).toBe(true);
       expect(onHide).not.toHaveBeenCalled();
 
@@ -436,13 +416,7 @@ describe("InventoryReportRequestModal", () => {
           library={LIBRARY}
         />
       );
-      expect(container.querySelectorAll(".modal-content")).toHaveLength(0);
-      expect(
-        queryAllByRole("button", { name: CONFIRM_BUTTON_CONTENT })
-      ).toHaveLength(0);
-      expect(
-        queryAllByRole("button", { name: CANCEL_BUTTON_CONTENT })
-      ).toHaveLength(0);
+      expect(queryAllByRole("dialog")).toHaveLength(0);
     });
 
     it("updates confirmation message, if report info request arrives in time", async () => {
@@ -478,7 +452,7 @@ describe("InventoryReportRequestModal", () => {
 
     it("disables report generation, if info indicates no collections", async () => {
       server.use(
-        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, async (req, res, ctx) => {
+        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, async (_, res, ctx) => {
           return res(ctx.status(200), ctx.json(INFO_SUCCESS_NO_COLLECTIONS));
         })
       );
@@ -525,7 +499,7 @@ describe("InventoryReportRequestModal", () => {
 
     it("displays minimal confirmation message, if report info request unsuccessful", async () => {
       server.use(
-        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, (req, res, ctx) =>
+        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
           res.once(ctx.status(404))
         )
       );
@@ -633,7 +607,7 @@ describe("InventoryReportRequestModal", () => {
 
     it("displays error message, when request is unsuccessful", async () => {
       server.use(
-        rest.post(MOCK_SERVER_API_ENDPOINT_PATH, (req, res, ctx) =>
+        rest.post(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
           res(ctx.status(404))
         )
       );
