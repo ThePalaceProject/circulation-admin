@@ -2,10 +2,10 @@ import * as React from "react";
 import { screen, waitFor } from "@testing-library/react";
 
 import QuicksightDashboard from "../../../src/components/QuicksightDashboard";
-import { LibrariesData, LibraryData } from "../../../src/interfaces";
-import buildStore, { RootState } from "../../../src/store";
+import { LibrariesData } from "../../../src/interfaces";
+import buildStore from "../../../src/store";
 import { setupServer } from "msw/node";
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 import renderWithContext from "../testUtils/renderWithContext";
 
 const libraries: LibrariesData = { libraries: [{ uuid: "my-uuid" }] };
@@ -15,15 +15,15 @@ const dashboardUrlData = { embedUrl: embedUrl };
 
 describe("QuicksightDashboard", () => {
   const server = setupServer(
-    rest.get("*/admin/libraries", (req, res, ctx) => res(ctx.json(libraries))),
+    http.get("/admin/libraries", () => HttpResponse.json(libraries)),
+    http.get(`/admin/quicksight_embed/${dashboardId}`, ({ request }) => {
+      const url = new URL(request.url);
+      const libraryUuids = url.searchParams.get("libraryUuids");
 
-    rest.get(
-      "*/admin/quicksight_embed/" +
-        dashboardId +
-        "?libraryUuids=" +
-        libraries["libraries"][0]["uuid"],
-      (req, res, ctx) => res(ctx.json(dashboardUrlData))
-    )
+      if (libraryUuids === libraries["libraries"][0]["uuid"]) {
+        return HttpResponse.json(dashboardUrlData);
+      }
+    })
   );
 
   beforeAll(() => {
