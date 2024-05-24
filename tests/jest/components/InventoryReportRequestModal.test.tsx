@@ -7,7 +7,7 @@ import {
 } from "../testUtils/withProviders";
 import { QueryClient } from "@tanstack/react-query";
 import { setupServer } from "msw/node";
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 import {
   ACK_RESPONSE_BUTTON_CONTENT,
   ACK_RESPONSE_HEADING,
@@ -45,12 +45,12 @@ const API_ENDPOINT_PARAMS: AdminAPI.InventoryReportRequestParams = {
 
 const setupMockServer = () => {
   return setupServer(
-    rest.get(MOCK_SERVER_API_ENDPOINT_PATH, async (_, res, ctx) => {
-      return res(ctx.status(200), ctx.json(INFO_SUCCESS_SOME_COLLECTIONS));
-    }),
-    rest.post(MOCK_SERVER_API_ENDPOINT_PATH, async (_, res, ctx) => {
-      return res(ctx.status(202), ctx.json(GENERATE_REPORT_SUCCESS));
-    })
+    http.get(MOCK_SERVER_API_ENDPOINT_PATH, () =>
+      HttpResponse.json(INFO_SUCCESS_SOME_COLLECTIONS, { status: 200 })
+    ),
+    http.post(MOCK_SERVER_API_ENDPOINT_PATH, () =>
+      HttpResponse.json(GENERATE_REPORT_SUCCESS, { status: 202 })
+    )
   );
 };
 
@@ -252,8 +252,9 @@ describe("InventoryReportRequestModal", () => {
     });
     it("returns an error value for unsuccessful report info (get) requests", async () => {
       server.use(
-        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
-          res(ctx.status(404))
+        http.get(
+          MOCK_SERVER_API_ENDPOINT_PATH,
+          () => new HttpResponse(null, { status: 404 })
         )
       );
       let error = undefined;
@@ -271,8 +272,9 @@ describe("InventoryReportRequestModal", () => {
     });
     it("returns an error value for unsuccessful generate report (post) requests", async () => {
       server.use(
-        rest.post(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
-          res(ctx.status(404))
+        http.post(
+          MOCK_SERVER_API_ENDPOINT_PATH,
+          () => new HttpResponse(null, { status: 404 })
         )
       );
       let error = undefined;
@@ -452,9 +454,9 @@ describe("InventoryReportRequestModal", () => {
 
     it("disables report generation, if info indicates no collections", async () => {
       server.use(
-        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, async (_, res, ctx) => {
-          return res(ctx.status(200), ctx.json(INFO_SUCCESS_NO_COLLECTIONS));
-        })
+        http.get(MOCK_SERVER_API_ENDPOINT_PATH, () =>
+          HttpResponse.json(INFO_SUCCESS_NO_COLLECTIONS, { status: 200 })
+        )
       );
 
       const {
@@ -499,8 +501,9 @@ describe("InventoryReportRequestModal", () => {
 
     it("displays minimal confirmation message, if report info request unsuccessful", async () => {
       server.use(
-        rest.get(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
-          res.once(ctx.status(404))
+        http.get(
+          MOCK_SERVER_API_ENDPOINT_PATH,
+          () => new HttpResponse(null, { status: 404 })
         )
       );
 
@@ -607,8 +610,9 @@ describe("InventoryReportRequestModal", () => {
 
     it("displays error message, when request is unsuccessful", async () => {
       server.use(
-        rest.post(MOCK_SERVER_API_ENDPOINT_PATH, (_, res, ctx) =>
-          res(ctx.status(404))
+        http.post(
+          MOCK_SERVER_API_ENDPOINT_PATH,
+          () => new HttpResponse(null, { status: 404 })
         )
       );
       const user = userEvent.setup();

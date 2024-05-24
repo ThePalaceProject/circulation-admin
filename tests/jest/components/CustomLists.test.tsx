@@ -1,9 +1,8 @@
 import * as React from "react";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-
-import { rest } from "msw";
 import { setupServer } from "msw/node";
+import { http, HttpResponse } from "msw";
 import CustomLists from "../../../src/components/CustomLists";
 import renderWithContext from "../testUtils/renderWithContext";
 import buildStore from "../../../src/store";
@@ -15,8 +14,8 @@ describe("CustomLists", () => {
   Element.prototype.scrollTo = () => {};
 
   const server = setupServer(
-    rest.get("*/search", (req, res, ctx) => res(ctx.xml("<feed />"))),
-    rest.get("*", (req, res, ctx) => res(ctx.json({})))
+    http.get("*/search", () => HttpResponse.xml("<feed />")),
+    http.get("*", () => HttpResponse.json({}))
   );
 
   beforeAll(() => {
@@ -111,10 +110,10 @@ describe("CustomLists", () => {
     let searchParams = null;
 
     server.use(
-      rest.get("*/search", (req, res, ctx) => {
-        searchParams = req.url.searchParams;
-
-        res(ctx.xml("<feed />"));
+      http.get("*/search", ({ request }) => {
+        const url = new URL(request.url);
+        searchParams = url.searchParams;
+        return HttpResponse.xml("<feed />");
       })
     );
 
@@ -154,10 +153,10 @@ describe("CustomLists", () => {
     let searchParams = null;
 
     server.use(
-      rest.get("*/search", (req, res, ctx) => {
-        searchParams = req.url.searchParams;
-
-        res(ctx.xml("<feed />"));
+      http.get("*/search", ({ request }) => {
+        const url = new URL(request.url);
+        searchParams = url.searchParams;
+        return HttpResponse.xml("<feed />");
       })
     );
 
