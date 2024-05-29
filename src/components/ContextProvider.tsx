@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../store";
 import { FeatureFlags, PathFor } from "../interfaces";

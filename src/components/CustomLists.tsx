@@ -1,6 +1,6 @@
 /* eslint-disable react/no-deprecated */
 import * as React from "react";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import { RootState } from "../store";

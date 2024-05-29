@@ -4,7 +4,7 @@ import {
   LibrariesData,
   LibraryData,
 } from "../interfaces";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
