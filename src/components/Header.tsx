@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as React from "react";
 import { connect } from "react-redux";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import { RootState } from "../store";
 import ActionCreator from "../actions";

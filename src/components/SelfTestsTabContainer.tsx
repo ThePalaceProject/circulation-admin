@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import * as React from "react";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { CollectionsData, PatronAuthServicesData } from "../interfaces";

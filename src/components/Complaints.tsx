@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";

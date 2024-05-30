@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RootState } from "../store";
 import { connect } from "react-redux";

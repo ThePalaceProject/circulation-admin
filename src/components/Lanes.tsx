@@ -1,7 +1,7 @@
 /* eslint-disable react/no-deprecated */
 import * as React from "react";
 import { Link } from "react-router";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import { RootState } from "../store";
 import ActionCreator from "../actions";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Store } from "redux";
+import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import * as PropTypes from "prop-types";
 import Header from "./Header";
