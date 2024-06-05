@@ -1,5 +1,8 @@
 import * as React from "react";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { defaultValueIfMissing } from "./ProtocolFormField";
+
+const DEFAULT_VALUE = "";
 
 let descriptonIdCounter = 0;
 
@@ -45,7 +48,7 @@ export default class EditableInput extends React.Component<
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value || "",
+      value: defaultValueIfMissing(props?.value, DEFAULT_VALUE),
       checked: props.checked || false,
     };
     this.handleChange = this.handleChange.bind(this);
@@ -168,7 +171,7 @@ export default class EditableInput extends React.Component<
     let checked = this.state.checked;
     let changed = false;
     if (nextProps.value !== this.props.value) {
-      value = nextProps.value || "";
+      value = defaultValueIfMissing(nextProps.value, DEFAULT_VALUE);
       changed = true;
     }
     if (nextProps.checked !== this.props.checked) {
