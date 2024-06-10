@@ -19,6 +19,7 @@ describe("ContextProvider", () => {
     wrapper = shallow(
       <ContextProvider
         csrfToken="token"
+        featureFlags={{}}
         roles={[{ role: "system" }]}
         email="email"
       >
@@ -89,7 +90,7 @@ describe("ContextProvider", () => {
     }
 
     const mockProvider = mount(
-      <MockContextProvider csrfToken="token">
+      <MockContextProvider csrfToken="token" featureFlags={{}}>
         <Child />
       </MockContextProvider>
     );

@@ -20,7 +20,11 @@ import {
 const AllProviders = ({ children }) => {
   const queryClient = new QueryClient();
   return (
-    <ContextProvider csrfToken={""} email={"user@example.org"}>
+    <ContextProvider
+      csrfToken={""}
+      featureFlags={{}}
+      email={"user@example.org"}
+    >
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </ContextProvider>
   );

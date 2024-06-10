@@ -10,6 +10,7 @@ describe("IndividualAdminEditForm", () => {
 
     const contextProviderProps = {
       csrfToken: "",
+      featureFlags: {},
       roles: [
         {
           role: "system",
