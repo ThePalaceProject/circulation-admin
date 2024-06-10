@@ -1,12 +1,9 @@
 import { FeatureFlags } from "../interfaces";
 
 /**
- * Apply default values to each of the feature flags that we know about.
+ * Default values for our feature flags.
  */
-export const featureFlagsWithDefaults = ({
-  enableAutoList = true,
-  ...rest
-}: Partial<FeatureFlags> = {}): FeatureFlags => ({
-  enableAutoList,
-  ...rest,
-});
+export const defaultFeatureFlags: FeatureFlags = {
+  enableAutoList: true,
+  reportsOnlyForSysadmins: true,
+};

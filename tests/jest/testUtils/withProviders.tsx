@@ -4,7 +4,7 @@ import ContextProvider, {
 } from "../../../src/components/ContextProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
-import { featureFlagsWithDefaults } from "../../../src/utils/featureFlags";
+import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 export type TestProviderWrapperOptions = {
   contextProviderProps?: Partial<ContextProviderProps>;
@@ -18,7 +18,7 @@ export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
 // a default value here, so it can be easily merged with other props.
 const defaultContextProviderProps: ContextProviderProps = {
   csrfToken: "",
-  featureFlags: featureFlagsWithDefaults(),
+  featureFlags: defaultFeatureFlags,
 };
 
 /**
@@ -33,7 +33,7 @@ const defaultContextProviderProps: ContextProviderProps = {
 export const componentWithProviders = ({
   contextProviderProps = {
     csrfToken: "",
-    featureFlags: featureFlagsWithDefaults(),
+    featureFlags: defaultFeatureFlags,
   },
   queryClient = new QueryClient(),
 }: TestProviderWrapperOptions): React.FunctionComponent => {
