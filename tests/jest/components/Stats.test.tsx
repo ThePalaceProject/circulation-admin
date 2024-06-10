@@ -1,6 +1,16 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { CustomTooltip } from "../../../src/components/LibraryStats";
+import LibraryStats, {
+  CustomTooltip,
+} from "../../../src/components/LibraryStats";
+import { renderWithProviders } from "../testUtils/withProviders";
+import { ContextProviderProps } from "../../../src/components/ContextProvider";
+
+import {
+  statisticsApiResponseData,
+  testLibraryKey as sampleLibraryKey,
+} from "../../__data__/statisticsApiResponseData";
+import { normalizeStatistics } from "../../../src/components/Stats";
 
 describe("Dashboard Statistics", () => {
   // NB: This adds test to the already existing tests in:
@@ -10,6 +20,57 @@ describe("Dashboard Statistics", () => {
   //
   // Those tests should eventually be migrated here and
   // adapted to the Jest/React Testing Library paradigm.
+
+  describe("requesting inventory reports", () => {
+    // Convert from the API format to our in-app format.
+    const statisticsData = normalizeStatistics(statisticsApiResponseData);
+    const librariesStatsTestDataByKey = statisticsData.libraries.reduce(
+      (map, library) => ({ ...map, [library.key]: library }),
+      {}
+    );
+    const sampleStatsData = librariesStatsTestDataByKey[sampleLibraryKey];
+
+    const systemAdmin = [{ role: "system" }];
+    const managerAll = [{ role: "manager-all" }];
+    const librarianAll = [{ role: "librarian-all" }];
+
+    const baseContextProviderProps = {
+      csrfToken: "",
+      featureFlags: { reportsOnlyForSysadmins: false },
+    };
+
+    const renderFor = (
+      onlySysadmins: boolean,
+      roles: { role: string; library?: string }[]
+    ) => {
+      const contextProviderProps: ContextProviderProps = {
+        ...baseContextProviderProps,
+        featureFlags: { reportsOnlyForSysadmins: onlySysadmins },
+        roles,
+      };
+
+      const { container, queryByRole } = renderWithProviders(
+        <LibraryStats stats={sampleStatsData} library={sampleLibraryKey} />,
+        { contextProviderProps }
+      );
+
+      const result = queryByRole("button", { name: "⬇︎" });
+      // Clean up the container after each render.
+      document.body.removeChild(container);
+      return result;
+    };
+
+    it("shows inventory reports only for sysadmins, if feature flag set", async () => {
+      // If the feature flag is set, the button should be visible only to sysadmins.
+      expect(renderFor(true, systemAdmin)).not.toBeNull();
+      expect(renderFor(true, managerAll)).toBeNull();
+      expect(renderFor(true, librarianAll)).toBeNull();
+      // If the feature flag is false, the button should be visible to all users.
+      expect(renderFor(false, systemAdmin)).not.toBeNull();
+      expect(renderFor(false, managerAll)).not.toBeNull();
+      expect(renderFor(false, librarianAll)).not.toBeNull();
+    });
+  });
 
   describe("charting - custom tooltip", () => {
     const defaultLabel = "Collection X";
