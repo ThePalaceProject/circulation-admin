@@ -60,7 +60,7 @@ class CirculationAdmin {
     const div = document.createElement("div");
     div.id = "opds-catalog";
     div.className = "palace";
-    config.featureFlags = { ...config.featureFlags, ...defaultFeatureFlags };
+    config.featureFlags = { ...defaultFeatureFlags, ...config.featureFlags };
     document.getElementsByTagName("body")[0].appendChild(div);
 
     const catalogEditorPath =
