@@ -12,8 +12,8 @@ export interface ProtocolFormFieldProps {
   value?:
     | string
     | string[]
-    | {}[]
-    | Array<string | {} | JSX.Element>
+    | object[]
+    | Array<string | object | JSX.Element>
     | JSX.Element;
   altValue?: string;
   default?: any;
@@ -27,11 +27,17 @@ export interface ProtocolFormFieldProps {
   disableButton?: boolean;
 }
 
+const valueIsMissing = (value: any): boolean =>
+  value === undefined || value === null;
+
+export const defaultValueIfMissing = (value: any, defaultValue: any) =>
+  valueIsMissing(value) ? defaultValue : value;
+
 /** Shows a form field for editing a single setting, based on setting information
     from the server. */
 export default class ProtocolFormField extends React.Component<
   ProtocolFormFieldProps,
-  {}
+  object
 > {
   private inputListRef = React.createRef<InputList>();
   private colorPickerRef = React.createRef<ColorPicker>();
@@ -59,10 +65,10 @@ export default class ProtocolFormField extends React.Component<
     }
   }
 
-  renderSetting(setting: SettingData, customProps = null): JSX.Element {
+  renderSetting(setting: SettingData): JSX.Element {
     return (
       <div className={setting.randomizable ? "randomizable" : ""}>
-        {this.props.value && setting.type === "image" && (
+        {!valueIsMissing(this.props?.value) && setting.type === "image" && (
           <img src={String(this.props.value)} alt="" role="presentation" />
         )}
         {this.createEditableInput(setting)}
@@ -111,7 +117,7 @@ export default class ProtocolFormField extends React.Component<
       label: setting.label,
       required: setting.required,
       description: setting.description,
-      value: (this.props && this.props.value) || setting.default,
+      value: defaultValueIfMissing(this.props.value, setting.default),
       error: this.props && this.props.error,
       ref: this.elementRef,
       onChange: this.props.onChange,

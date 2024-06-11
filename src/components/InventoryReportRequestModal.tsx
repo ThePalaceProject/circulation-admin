@@ -195,9 +195,7 @@ const renderModal = ({
         </Modal.Header>
       )}
       {!!content && (
-        <Modal.Body styles={{ overflow: "wrap", color: "red" }}>
-          {content}
-        </Modal.Body>
+        <Modal.Body style={{ overflow: "wrap" }}>{content}</Modal.Body>
       )}
       {!!footer && <Modal.Footer>{footer}</Modal.Footer>}
     </Modal>

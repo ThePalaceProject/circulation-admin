@@ -50,11 +50,16 @@ describe("EditableInput", () => {
     expect(description.html()).to.contain("<p>description</p>");
   });
 
-  it("shows initial value from props", () => {
+  it("shows initial value from props, even if zero", () => {
     expect(wrapper.state().value).to.equal("initial value");
-    const input = wrapper.find("input");
+    let input = wrapper.find("input");
     expect(input.prop("value")).to.equal("initial value");
     expect(input.prop("checked")).to.equal(true);
+
+    wrapper.setProps({ value: 0});
+    expect(wrapper.state().value).to.equal(0);
+    input = wrapper.find("input");
+    expect(input.prop("value")).to.equal(0);
   });
 
   it("shows initial checked from props", () => {
