@@ -2,6 +2,7 @@
 
 export interface FeatureFlags {
   enableAutoList?: boolean;
+  reportsOnlyForSysadmins?: boolean;
 }
 
 export interface Navigate {

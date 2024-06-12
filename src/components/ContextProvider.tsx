@@ -17,7 +17,7 @@ export interface ContextProviderProps extends React.Props<ContextProvider> {
     role: string;
     library?: string;
   }[];
-  featureFlags?: FeatureFlags;
+  featureFlags: FeatureFlags;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -81,6 +81,7 @@ export default class ContextProvider extends React.Component<
     showCircEventsDownload: PropTypes.bool.isRequired,
     settingUp: PropTypes.bool.isRequired,
     admin: PropTypes.object.isRequired,
+    featureFlags: PropTypes.object.isRequired,
   };
 
   getChildContext() {
@@ -90,6 +91,7 @@ export default class ContextProvider extends React.Component<
       showCircEventsDownload: this.props.showCircEventsDownload || false,
       settingUp: this.props.settingUp || false,
       admin: this.admin,
+      featureFlags: this.props.featureFlags,
     };
   }
 

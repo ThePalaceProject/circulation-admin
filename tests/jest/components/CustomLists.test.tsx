@@ -31,6 +31,7 @@ describe("CustomLists", () => {
 
     const contextProviderProps = {
       csrfToken: "",
+      featureFlags: {},
       roles: [{ role: "system" }],
     };
 
@@ -70,6 +71,7 @@ describe("CustomLists", () => {
 
     const contextProviderProps = {
       csrfToken: "",
+      featureFlags: {},
       roles: [{ role: "system" }],
     };
 
@@ -121,6 +123,7 @@ describe("CustomLists", () => {
 
     const contextProviderProps = {
       csrfToken: "",
+      featureFlags: {},
       roles: [{ role: "system" }],
     };
 
@@ -164,6 +167,7 @@ describe("CustomLists", () => {
 
     const contextProviderProps = {
       csrfToken: "",
+      featureFlags: {},
       roles: [{ role: "system" }],
     };
 

@@ -37,8 +37,9 @@ const CANCEL_BUTTON_TITLE = "Cancel Report Request";
 export const ACK_RESPONSE_BUTTON_CONTENT = "Ok";
 const ACK_RESPONSE_BUTTON_TITLE = "Acknowledge Response";
 
-// Create a modal to request an inventory report library and email address and to report on success.
-// *** To use the legacy context here, we need to create a `contextProps` property on this function object:
+// Create a modal to request an inventory report and to describe outcome.
+// *** To use the legacy context here, we need to create a `contextTypes` property on this function object
+// ***   and add `context` types to the function definition.
 // ***   InventoryReportRequestModal.contextTypes = { email: PropTypes.string }
 // *** See: https://legacy.reactjs.org/docs/legacy-context.html#referencing-context-in-stateless-function-components
 const InventoryReportRequestModal = (

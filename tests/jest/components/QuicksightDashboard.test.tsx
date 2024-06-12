@@ -37,6 +37,7 @@ describe("QuicksightDashboard", () => {
   it("embed url is retrieved and set in iframe", async () => {
     const contextProviderProps = {
       csrfToken: "",
+      featureFlags: {},
       roles: [{ role: "system" }],
     };
 

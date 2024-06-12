@@ -43,7 +43,11 @@ describe("Stats", () => {
     const AllProviders = ({ children, store }) => {
       return (
         <Provider store={store ?? mockStore(statsState({}))}>
-          <ContextProvider csrfToken={""} email={"user@example.org"}>
+          <ContextProvider
+            csrfToken={""}
+            featureFlags={{}}
+            email={"user@example.org"}
+          >
             <QueryClientProvider client={new QueryClient()}>
               {children}
             </QueryClientProvider>

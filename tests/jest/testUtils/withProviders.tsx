@@ -4,6 +4,7 @@ import ContextProvider, {
 } from "../../../src/components/ContextProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
+import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 export type TestProviderWrapperOptions = {
   contextProviderProps?: Partial<ContextProviderProps>;
@@ -15,7 +16,10 @@ export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
 
 // The `csrfToken` context provider prop is required, so we provide
 // a default value here, so it can be easily merged with other props.
-const defaultContextProviderProps = { csrfToken: "" };
+const defaultContextProviderProps: ContextProviderProps = {
+  csrfToken: "",
+  featureFlags: defaultFeatureFlags,
+};
 
 /**
  * Returns a component, composed with our providers, that can be used to wrap
@@ -27,7 +31,10 @@ const defaultContextProviderProps = { csrfToken: "" };
  * @returns {React.FunctionComponent} A React component that wraps children with our providers
  */
 export const componentWithProviders = ({
-  contextProviderProps = { csrfToken: "" },
+  contextProviderProps = {
+    csrfToken: "",
+    featureFlags: defaultFeatureFlags,
+  },
   queryClient = new QueryClient(),
 }: TestProviderWrapperOptions): React.FunctionComponent => {
   const effectiveContextProviderProps = {
