@@ -51,8 +51,9 @@ const inventoryKeyToLabelMap = {
 
 /** Displays statistics about patrons, licenses, and collections from the server,
  for a single library or all libraries the admin has access to. */
-// *** To use the legacy context here, we need to create a `contextProps` property on this function object:
-// ***   InventoryReportRequestModal.contextTypes = { email: PropTypes.string }
+// *** To use the legacy context here, we need to create a `contextTypes` property on this function object
+// ***   and add `context` types to the function definition.
+// ***   LibraryStats.contextTypes = { email: PropTypes.string }
 // *** See: https://legacy.reactjs.org/docs/legacy-context.html#referencing-context-in-stateless-function-components
 const LibraryStats = (
   props: LibraryStatsProps,
