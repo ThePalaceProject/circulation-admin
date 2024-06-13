@@ -31,7 +31,11 @@ export default class ContextProvider extends React.Component<
 
   constructor(props) {
     super(props);
-    this.store = props.store ?? buildStore();
+    this.store =
+      props.store ??
+      buildStore({
+        csrfToken: props.csrfToken,
+      });
     this.admin = new Admin(props.roles || [], props.email || null);
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
       let path = "/admin/web";

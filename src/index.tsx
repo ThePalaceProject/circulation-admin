@@ -72,7 +72,9 @@ class CirculationAdmin {
 
     const queryClient = new QueryClient();
 
-    const store = buildStore();
+    const store = buildStore({
+      csrfToken: config.csrfToken,
+    });
     const appElement = "opds-catalog";
     const app = config.settingUp ? (
       <Provider store={store}>
