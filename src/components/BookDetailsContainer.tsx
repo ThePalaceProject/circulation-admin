@@ -26,14 +26,12 @@ const BookDetailsContainer = (
   return (
     <div className="book-details-container">
       <BookDetailsTabContainer
-        class="book-details-tab-container"
         bookUrl={props.bookUrl}
         collectionUrl={props.collectionUrl}
         refreshCatalog={props.refreshCatalog}
-        tab={context.tab}
         library={context.library}
-        store={context.editorStore}
         csrfToken={context.csrfToken}
+        store={context.editorStore}
       >
         {book}
       </BookDetailsTabContainer>

@@ -2,23 +2,39 @@ import * as React from "react";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
 import BookCoverEditor from "./BookCoverEditor";
 import CustomListsForBook from "./CustomListsForBook";
 import { BookData } from "../interfaces";
 import { TabContainer, TabContainerProps } from "./TabContainer";
+import { RootState } from "../store";
+import { Store } from "@reduxjs/toolkit";
 
-export interface BookDetailsTabContainerProps extends TabContainerProps {
+interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
-  bookData?: BookData;
   collectionUrl: string;
   refreshCatalog: () => Promise<any>;
-  complaintsCount?: number;
-  clearBook?: () => void;
   library: (collectionUrl, bookUrl) => string;
+  csrfToken: string;
+  store: Store<RootState>;
+  // from store
+  //   bookData?: BookData;
+  //   complaintsCount?: number;
+  // dispatch actions
+  //   clearBook?: () => void;
 }
+
+const connectOptions = { pure: true };
+const connector = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  connectOptions
+);
+export type BookDetailsTabContainerProps = ConnectedProps<typeof connector> &
+  BookDetailsTabContainerOwnProps;
 
 /** Wraps the book details component from OPDSWebClient with additional tabs
     for editing metadata, classifications, and complaints. */
@@ -26,6 +42,9 @@ export class BookDetailsTabContainer extends TabContainer<
   BookDetailsTabContainerProps
 > {
   componentWillUnmount() {
+    console.log(
+      "\n\nUnmounting BookDetailsTabContainer... and clearing book data\n\n"
+    );
     this.props.clearBook();
   }
 
@@ -95,7 +114,7 @@ export class BookDetailsTabContainer extends TabContainer<
     return "details";
   }
 
-  tabDisplayName(name) {
+  tabDisplayName(name: string) {
     let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
     if (
       name === "complaints" &&
@@ -107,8 +126,8 @@ export class BookDetailsTabContainer extends TabContainer<
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  let complaintsCount;
+function mapStateToProps(state: RootState) {
+  let complaintsCount: number | undefined;
 
   if (state.editor.complaints.data) {
     complaintsCount = Object.keys(state.editor.complaints.data).reduce(
@@ -135,12 +154,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const connectOptions = { pure: true };
-const ConnectedBookDetailsTabContainer = connect<any, any, any>(
-  mapStateToProps,
-  mapDispatchToProps,
-  null,
-  connectOptions
-)(BookDetailsTabContainer);
-
-export default ConnectedBookDetailsTabContainer;
+export default connector(BookDetailsTabContainer);
