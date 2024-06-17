@@ -1,4 +1,3 @@
-import * as React from "react";
 import DefaultBookDetails, {
   BookDetailsProps as DefaultBookDetailsProps,
 } from "@thepalaceproject/web-opds-client/lib/components/BookDetails";
