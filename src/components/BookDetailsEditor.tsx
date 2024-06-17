@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
@@ -38,11 +38,9 @@ export interface BookDetailsEditorOwnProps {
   refreshCatalog?: () => Promise<any>;
 }
 
-export interface BookDetailsEditorProps
-  extends React.Props<BookDetailsEditor>,
-    BookDetailsEditorStateProps,
-    BookDetailsEditorDispatchProps,
-    BookDetailsEditorOwnProps {}
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export type BookDetailsEditorProps = ConnectedProps<typeof connector> &
+  BookDetailsEditorOwnProps;
 
 /** Tab for editing a book's metadata on the book details page. */
 export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
@@ -157,10 +155,13 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(
+  state: RootState,
+  ownProps: BookDetailsEditorOwnProps
+) {
   return {
     bookAdminUrl: state.editor.book.url,
-    bookData: state.editor.book.data || ownProps.bookData,
+    bookData: state.editor.book.data,
     roles: state.editor.roles.data,
     media: state.editor.media.data,
     languages: state.editor.languages.data,
@@ -178,7 +179,7 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch, ownProps: BookDetailsEditorOwnProps) {
   const fetcher = new DataFetcher({ adapter: editorAdapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
@@ -190,13 +191,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedBookDetailsEditor = connect<
-  BookDetailsEditorStateProps,
-  BookDetailsEditorDispatchProps,
-  BookDetailsEditorOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(BookDetailsEditor);
-
-export default ConnectedBookDetailsEditor;
+export default connector(BookDetailsEditor);
