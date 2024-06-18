@@ -17,8 +17,11 @@ interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   collectionUrl: string;
   refreshCatalog: () => Promise<any>;
   library: (collectionUrl, bookUrl) => string;
-  csrfToken: string;
-  store: Store<RootState>;
+  // extended from TabContainerProps in superclass
+  //   store?: Store<RootState>;
+  //   csrfToken?: string;
+  //   tab: string;
+  //   class?: string;
   // from store
   //   bookData?: BookData;
   //   complaintsCount?: number;
