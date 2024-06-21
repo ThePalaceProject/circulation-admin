@@ -1,35 +1,35 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
+import { AsyncThunkAction, Store } from "@reduxjs/toolkit";
 import { connect, ConnectedProps } from "react-redux";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
 import BookEditForm from "./BookEditForm";
 import ErrorMessage from "./ErrorMessage";
-import { BookData, RolesData, MediaData, LanguagesData } from "../interfaces";
-import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 import UpdatingLoader from "./UpdatingLoader";
+import { getBookData } from "../features/book/bookEditorSlice";
+import { AsyncThunkConfig } from "@reduxjs/toolkit/dist/createAsyncThunk";
 
-export interface BookDetailsEditorStateProps {
-  bookData?: BookData;
-  roles?: RolesData;
-  media?: MediaData;
-  languages?: LanguagesData;
-  bookAdminUrl?: string;
-  fetchError?: FetchErrorData;
-  editError?: FetchErrorData;
-  isFetching?: boolean;
-}
+// export interface BookDetailsEditorStateProps {
+//   bookData?: BookData;
+//   roles?: RolesData;
+//   media?: MediaData;
+//   languages?: LanguagesData;
+//   bookAdminUrl?: string;
+//   fetchError?: FetchErrorData;
+//   editError?: FetchErrorData;
+//   isFetching?: boolean;
+// }
 
-export interface BookDetailsEditorDispatchProps {
-  fetchBook: (url: string) => void;
-  fetchRoles: () => void;
-  fetchMedia: () => void;
-  fetchLanguages: () => void;
-  editBook: (url: string, data: FormData | null) => Promise<any>;
-}
+// export interface BookDetailsEditorDispatchProps {
+//   fetchBook: (url: string) => void;
+//   fetchRoles: () => void;
+//   fetchMedia: () => void;
+//   fetchLanguages: () => void;
+//   editBook: (url: string, data: FormData | null) => Promise<any>;
+// }
 
 export interface BookDetailsEditorOwnProps {
   bookUrl?: string;
@@ -157,21 +157,21 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
 
 function mapStateToProps(
   state: RootState,
-  ownProps: BookDetailsEditorOwnProps
+  ownProps: BookDetailsEditorOwnProps,
 ) {
   return {
-    bookAdminUrl: state.editor.book.url,
-    bookData: state.editor.book.data,
+    bookAdminUrl: state.bookEditor.url,
+    bookData: state.bookEditor.data,
     roles: state.editor.roles.data,
     media: state.editor.media.data,
     languages: state.editor.languages.data,
     isFetching:
-      state.editor.book.isFetching ||
+      state.bookEditor.isFetching ||
       state.editor.roles.isFetching ||
       state.editor.media.isFetching ||
       state.editor.languages.isFetching,
     fetchError:
-      state.editor.book.fetchError ||
+      state.bookEditor.fetchError ||
       state.editor.roles.fetchError ||
       state.editor.media.fetchError ||
       state.editor.languages.fetchError,
@@ -184,7 +184,7 @@ function mapDispatchToProps(dispatch, ownProps: BookDetailsEditorOwnProps) {
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     editBook: (url, data) => dispatch(actions.editBook(url, data)),
-    fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
+    fetchBook: (url: string) => dispatch(getBookData(url)),  // dispatch(actions.fetchBookAdmin(url)),
     fetchRoles: () => dispatch(actions.fetchRoles()),
     fetchMedia: () => dispatch(actions.fetchMedia()),
     fetchLanguages: () => dispatch(actions.fetchLanguages()),
