@@ -67,7 +67,7 @@ module.exports = (env) => {
       return;
     }
 
-    const locationUrl = new URL(location);
+    const locationUrl = new URL(location, backendUrl);
 
     if (locationUrl.host !== backendUrl.host) {
       return;
