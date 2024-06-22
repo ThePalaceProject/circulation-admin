@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -8,26 +8,9 @@ import ErrorMessage from "./ErrorMessage";
 import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable from "./ClassificationsTable";
 import { BookData, GenreTree, ClassificationData } from "../interfaces";
-import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
 import UpdatingLoader from "./UpdatingLoader";
-
-export interface ClassificationsStateProps {
-  // from store
-  bookAdminUrl?: string;
-  genreTree?: GenreTree;
-  classifications?: ClassificationData[];
-  fetchError?: FetchErrorData;
-  isFetching?: boolean;
-}
-
-export interface ClassificationsDispatchProps {
-  // from actions
-  fetchBook?: (url: string) => Promise<any>;
-  fetchGenreTree?: (url: string) => Promise<any>;
-  fetchClassifications?: (url: string) => Promise<any>;
-  editClassifications?: (url: string, data: FormData) => Promise<any>;
-}
+import { getBookData } from "../features/book/bookEditorSlice";
 
 export interface ClassificationsOwnProps {
   // from parent
@@ -38,10 +21,9 @@ export interface ClassificationsOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface ClassificationsProps
-  extends ClassificationsStateProps,
-    ClassificationsDispatchProps,
-    ClassificationsOwnProps {}
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export type ClassificationsProps = ConnectedProps<typeof connector> &
+  ClassificationsOwnProps;
 
 /** Tab on the book details page with a table of a book's current classifications and
     a form for editing them. */
@@ -120,25 +102,28 @@ export class Classifications extends React.Component<ClassificationsProps> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState, ownProps: ClassificationsOwnProps) {
   return {
-    bookAdminUrl: state.editor.book.url,
+    bookAdminUrl: state.bookEditor.url,
     genreTree: state.editor.classifications.genreTree,
     classifications: state.editor.classifications.classifications,
     isFetching:
       state.editor.classifications.isFetchingGenreTree ||
       state.editor.classifications.isEditingClassifications ||
       state.editor.classifications.isFetchingClassifications ||
-      state.editor.book.isFetching,
+      state.bookEditor.isFetching,
     fetchError: state.editor.classifications.fetchError,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  ownProps: ClassificationsOwnProps
+) {
   const fetcher = new DataFetcher({ adapter: editorAdapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
-    fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
+    fetchBook: (url: string) => dispatch(getBookData({ url })),
     fetchGenreTree: (url: string) => dispatch(actions.fetchGenreTree(url)),
     fetchClassifications: (url: string) =>
       dispatch(actions.fetchClassifications(url)),
@@ -147,13 +132,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedClassifications = connect<
-  ClassificationsStateProps,
-  ClassificationsDispatchProps,
-  ClassificationsOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(Classifications);
-
-export default ConnectedClassifications;
+export default connector(Classifications);

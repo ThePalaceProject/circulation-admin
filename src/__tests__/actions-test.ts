@@ -4,6 +4,7 @@ import { stub } from "sinon";
 const fetchMock = require("fetch-mock");
 
 import ActionCreator from "../actions";
+import { getBookData } from "../features/book/bookEditorSlice";
 
 class MockDataFetcher {
   resolve: boolean = true;
@@ -285,30 +286,6 @@ describe("actions", () => {
           url: url,
         });
       }
-    });
-  });
-
-  describe("fetchBookAdmin", () => {
-    it("dispatches request, load, and success", async () => {
-      const dispatch = stub();
-      const bookData = {
-        title: "test title",
-      };
-      fetcher.testData = bookData;
-      fetcher.resolve = true;
-
-      const data = await actions.fetchBookAdmin("http://example.com/book")(
-        dispatch
-      );
-      expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(
-        ActionCreator.BOOK_ADMIN_REQUEST
-      );
-      expect(dispatch.args[1][0].type).to.equal(
-        ActionCreator.BOOK_ADMIN_SUCCESS
-      );
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.BOOK_ADMIN_LOAD);
-      expect(data).to.deep.equal(bookData);
     });
   });
 

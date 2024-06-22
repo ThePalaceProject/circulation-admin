@@ -2,6 +2,9 @@ import { expect } from "chai";
 
 import book from "../book";
 import ActionCreator from "../../actions";
+import bookEditorSlice, {
+  getBookData,
+} from "../../features/book/bookEditorSlice";
 
 describe("book reducer", () => {
   const initState = {
@@ -32,16 +35,16 @@ describe("book reducer", () => {
     expect(book(fetchedState, action)).to.deep.equal(initState);
   });
 
-  it("handles BOOK_ADMIN_REQUEST", () => {
-    const action = { type: ActionCreator.BOOK_ADMIN_REQUEST, url: "test url" };
-    const oldState = Object.assign({}, initState, { editError: "error" });
-    const newState = Object.assign({}, initState, {
-      url: "test url",
-      isFetching: true,
-      editError: null,
-    });
-    expect(book(initState, action)).to.deep.equal(newState);
-  });
+  // it("handles BOOK_ADMIN_REQUEST", () => {
+  //   const action = { type: ActionCreator.BOOK_ADMIN_REQUEST, url: "test url" };
+  //   const oldState = Object.assign({}, initState, { editError: "error" });
+  //   const newState = Object.assign({}, initState, {
+  //     url: "test url",
+  //     isFetching: true,
+  //     editError: null,
+  //   });
+  //   expect(book(initState, action)).to.deep.equal(newState);
+  // });
 
   it("handles EDIT_BOOK_REQUEST", () => {
     const action = { type: ActionCreator.EDIT_BOOK_REQUEST };
@@ -51,24 +54,24 @@ describe("book reducer", () => {
     expect(book(fetchedState, action)).to.deep.equal(newState);
   });
 
-  it("handles BOOK_ADMIN_FAILURE", () => {
-    const action = {
-      type: ActionCreator.BOOK_ADMIN_FAILURE,
-      error: "test error",
-    };
-    const oldState = {
-      url: "test url",
-      data: null,
-      isFetching: true,
-      fetchError: null,
-      editError: null,
-    };
-    const newState = Object.assign({}, oldState, {
-      fetchError: "test error",
-      isFetching: false,
-    });
-    expect(book(oldState, action)).to.deep.equal(newState);
-  });
+  // it("handles BOOK_ADMIN_FAILURE", () => {
+  //   const action = {
+  //     type: ActionCreator.BOOK_ADMIN_FAILURE,
+  //     error: "test error",
+  //   };
+  //   const oldState = {
+  //     url: "test url",
+  //     data: null,
+  //     isFetching: true,
+  //     fetchError: null,
+  //     editError: null,
+  //   };
+  //   const newState = Object.assign({}, oldState, {
+  //     fetchError: "test error",
+  //     isFetching: false,
+  //   });
+  //   expect(book(oldState, action)).to.deep.equal(newState);
+  // });
 
   it("handles EDIT_BOOK_FAILURE", () => {
     const action = {
@@ -89,23 +92,23 @@ describe("book reducer", () => {
     expect(book(oldState, action)).to.deep.equal(newState);
   });
 
-  it("handles BOOK_ADMIN_LOAD", () => {
-    const action = {
-      type: ActionCreator.BOOK_ADMIN_LOAD,
-      data: "test data",
-      url: "test url",
-    };
-    const oldState = {
-      url: "test url",
-      data: null,
-      isFetching: true,
-      fetchError: null,
-      editError: null,
-    };
-    const newState = Object.assign({}, oldState, {
-      data: "test data",
-      isFetching: false,
-    });
-    expect(book(oldState, action)).to.deep.equal(newState);
-  });
+  //   it("handles BOOK_ADMIN_LOAD", () => {
+  //     const action = {
+  //       type: ActionCreator.BOOK_ADMIN_LOAD,
+  //       data: "test data",
+  //       url: "test url",
+  //     };
+  //     const oldState = {
+  //       url: "test url",
+  //       data: null,
+  //       isFetching: true,
+  //       fetchError: null,
+  //       editError: null,
+  //     };
+  //     const newState = Object.assign({}, oldState, {
+  //       data: "test data",
+  //       isFetching: false,
+  //     });
+  //     expect(book(oldState, action)).to.deep.equal(newState);
+  //   });
 });

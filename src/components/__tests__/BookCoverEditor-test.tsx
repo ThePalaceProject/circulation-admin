@@ -48,12 +48,22 @@ describe("BookCoverEditor", () => {
     beforeEach(() => {
       wrapper = mount(
         <BookCoverEditor
-          bookAdminUrl="/admin/book"
-          rightsStatuses={rightsStatuses}
+          csrfToken="token"
           bookUrl="/book"
           book={bookData}
           refreshCatalog={stub()}
-          csrfToken="token"
+          bookAdminUrl="/admin/book"
+          preview={null}
+          rightsStatuses={rightsStatuses}
+          isFetching={false}
+          fetchError={null}
+          isFetchingPreview={false}
+          previewFetchError={null}
+          fetchBook={stub()}
+          fetchPreview={stub()}
+          clearPreview={stub()}
+          editCover={stub()}
+          fetchRightsStatuses={stub()}
         />
       );
     });
@@ -213,17 +223,22 @@ describe("BookCoverEditor", () => {
       refreshCatalog = stub();
       wrapper = mount(
         <BookCoverEditor
-          bookAdminUrl="/admin/book"
-          rightsStatuses={rightsStatuses}
+          csrfToken="token"
           bookUrl="/book"
           book={bookData}
-          csrfToken="token"
+          refreshCatalog={refreshCatalog}
+          bookAdminUrl="/admin/book"
+          preview={null}
+          rightsStatuses={rightsStatuses}
+          isFetching={false}
+          fetchError={null}
+          isFetchingPreview={false}
+          previewFetchError={null}
           fetchBook={fetchBook}
           fetchPreview={fetchPreview}
           clearPreview={clearPreview}
           editCover={editCover}
           fetchRightsStatuses={fetchRightsStatuses}
-          refreshCatalog={refreshCatalog}
         />
       );
     });

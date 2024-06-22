@@ -6,7 +6,7 @@ import ActionCreator from "../actions";
 import editorAdapter from "../editorAdapter";
 import BookEditForm from "./BookEditForm";
 import ErrorMessage from "./ErrorMessage";
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 import UpdatingLoader from "./UpdatingLoader";
 import { getBookData } from "../features/book/bookEditorSlice";
@@ -157,7 +157,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
 
 function mapStateToProps(
   state: RootState,
-  ownProps: BookDetailsEditorOwnProps,
+  ownProps: BookDetailsEditorOwnProps
 ) {
   return {
     bookAdminUrl: state.bookEditor.url,
@@ -179,12 +179,15 @@ function mapStateToProps(
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps: BookDetailsEditorOwnProps) {
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  ownProps: BookDetailsEditorOwnProps
+) {
   const fetcher = new DataFetcher({ adapter: editorAdapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     editBook: (url, data) => dispatch(actions.editBook(url, data)),
-    fetchBook: (url: string) => dispatch(getBookData(url)),  // dispatch(actions.fetchBookAdmin(url)),
+    fetchBook: (url: string) => dispatch(getBookData({ url })), // dispatch(actions.fetchBookAdmin(url)),
     fetchRoles: () => dispatch(actions.fetchRoles()),
     fetchMedia: () => dispatch(actions.fetchMedia()),
     fetchLanguages: () => dispatch(actions.fetchLanguages()),
