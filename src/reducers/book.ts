@@ -41,20 +41,20 @@ export default (state: BookState = initialState, action) => {
     //     isFetching: false,
     //   });
 
-    case ActionCreator.BOOK_CLEAR:
-      return initialState;
-
-    case ActionCreator.EDIT_BOOK_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        editError: null,
-      });
-
-    case ActionCreator.EDIT_BOOK_FAILURE:
-      return Object.assign({}, state, {
-        editError: action.error,
-        isFetching: false,
-      });
+    // case ActionCreator.BOOK_CLEAR:
+    //   return initialState;
+    //
+    // case ActionCreator.EDIT_BOOK_REQUEST:
+    //   return Object.assign({}, state, {
+    //     isFetching: true,
+    //     editError: null,
+    //   });
+    //
+    // case ActionCreator.EDIT_BOOK_FAILURE:
+    //   return Object.assign({}, state, {
+    //     editError: action.error,
+    //     isFetching: false,
+    //   });
 
     default:
       return state;

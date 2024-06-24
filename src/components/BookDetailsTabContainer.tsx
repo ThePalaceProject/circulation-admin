@@ -145,7 +145,7 @@ function mapStateToProps(state: RootState) {
 
   return {
     complaintsCount: complaintsCount,
-    bookData: state.editor.book.data,
+    bookData: state.bookEditor.data,
   };
 }
 

@@ -4,6 +4,8 @@ import DataFetcher, {
   RequestError,
 } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import editorAdapter from "../../editorAdapter";
+import { submitForm } from "../../api/submitForm";
+import { RootState } from "../../store";
 
 export interface BookState {
   url: string;
@@ -62,6 +64,21 @@ const bookEditorSlice = createSlice({
         state.isFetching = false;
         state.fetchError = action.payload as RequestError;
       })
+      .addCase(submitBookData.pending, (state, action) => {
+        // console.log("submitBookData.pending", { action, state });
+        state.isFetching = true;
+        state.editError = null;
+      })
+      .addCase(submitBookData.fulfilled, (state, action) => {
+        // console.log("submitBookData.fulfilled", { action, state });
+        state.isFetching = false;
+        state.editError = null;
+      })
+      .addCase(submitBookData.rejected, (state, action) => {
+        // console.log("submitBookData.rejected", { action, state });
+        state.isFetching = true;
+        state.editError = action.payload as RequestError;
+      })
       .addMatcher(
         (action) => true,
         (state, action) => {
@@ -71,17 +88,44 @@ const bookEditorSlice = createSlice({
   },
 });
 
+export type GetBookDataArgs = {
+  url: string;
+};
+
 export const getBookData = createAsyncThunk(
   bookEditorSlice.reducerPath + "/getBookData",
-  async ({ url }: { url: string }, thunkAPI) => {
-    // console.log("getBookData thunkAPI", thunkAPI);
+  async ({ url }: GetBookDataArgs, thunkAPI) => {
     const fetcher = new DataFetcher({ adapter: editorAdapter });
     try {
       const result = await fetcher.fetchOPDSData(url);
-      // console.log(bookEditorSlice.reducerPath + "/getBookData()", {url, result});
       return result;
     } catch (e) {
-      // console.log(bookEditorSlice.reducerPath + "/getBookData()", {url, e});
+      return thunkAPI.rejectWithValue(e);
+    }
+  }
+);
+
+export const submitBookData = createAsyncThunk(
+  bookEditorSlice.reducerPath + "/submitBookData",
+  async (
+    {
+      url,
+      data,
+      csrfToken = undefined,
+    }: { url: string; data: FormData; csrfToken?: string },
+    thunkAPI
+  ) => {
+    try {
+      const result = await submitForm(url, { data, csrfToken });
+      // If we've successfully submitted the form, we need to re-fetch the book data.
+      const {
+        bookEditor: { url: bookAdminUrl },
+      } = thunkAPI.getState() as RootState;
+      const reFetchBookData = getBookData({ url: bookAdminUrl });
+      thunkAPI.dispatch(reFetchBookData);
+      // And finally, we return our result for fulfillment.
+      return result;
+    } catch (e) {
       return thunkAPI.rejectWithValue(e);
     }
   }

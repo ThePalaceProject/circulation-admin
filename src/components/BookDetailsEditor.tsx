@@ -9,27 +9,7 @@ import ErrorMessage from "./ErrorMessage";
 import { AppDispatch, RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 import UpdatingLoader from "./UpdatingLoader";
-import { getBookData } from "../features/book/bookEditorSlice";
-import { AsyncThunkConfig } from "@reduxjs/toolkit/dist/createAsyncThunk";
-
-// export interface BookDetailsEditorStateProps {
-//   bookData?: BookData;
-//   roles?: RolesData;
-//   media?: MediaData;
-//   languages?: LanguagesData;
-//   bookAdminUrl?: string;
-//   fetchError?: FetchErrorData;
-//   editError?: FetchErrorData;
-//   isFetching?: boolean;
-// }
-
-// export interface BookDetailsEditorDispatchProps {
-//   fetchBook: (url: string) => void;
-//   fetchRoles: () => void;
-//   fetchMedia: () => void;
-//   fetchLanguages: () => void;
-//   editBook: (url: string, data: FormData | null) => Promise<any>;
-// }
+import { getBookData, submitBookData } from "../features/book/bookEditorSlice";
 
 export interface BookDetailsEditorOwnProps {
   bookUrl?: string;
@@ -175,7 +155,7 @@ function mapStateToProps(
       state.editor.roles.fetchError ||
       state.editor.media.fetchError ||
       state.editor.languages.fetchError,
-    editError: state.editor.book.editError,
+    editError: state.bookEditor.editError,
   };
 }
 
@@ -186,8 +166,9 @@ function mapDispatchToProps(
   const fetcher = new DataFetcher({ adapter: editorAdapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
-    editBook: (url, data) => dispatch(actions.editBook(url, data)),
-    fetchBook: (url: string) => dispatch(getBookData({ url })), // dispatch(actions.fetchBookAdmin(url)),
+    editBook: (url: string, data) =>
+      dispatch(submitBookData({ url, data, csrfToken: ownProps.csrfToken })),
+    fetchBook: (url: string) => dispatch(getBookData({ url })),
     fetchRoles: () => dispatch(actions.fetchRoles()),
     fetchMedia: () => dispatch(actions.fetchMedia()),
     fetchLanguages: () => dispatch(actions.fetchLanguages()),
