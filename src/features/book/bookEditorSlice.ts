@@ -6,6 +6,7 @@ import DataFetcher, {
 import editorAdapter from "../../editorAdapter";
 import { submitForm } from "../../api/submitForm";
 import { RootState } from "../../store";
+import ActionCreator from "../../actions";
 
 export interface BookState {
   url: string;
@@ -33,13 +34,17 @@ interface InitialState {
 const bookEditorSlice = createSlice({
   name: "bookEditor",
   initialState,
-  reducers: {
-    bookCleared(state, action) {
-      state = initialState;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(ActionCreator.BOOK_CLEAR, (state, action) => {
+        // Handle resetting the book data via actions from the web-opds-client.
+        console.log("*** Handling clear book data action ***", action.type, {
+          action,
+          state,
+        });
+        return initialState;
+      })
       .addCase(getBookData.pending, (state, action) => {
         // console.log("getBookData.pending", { action, state });
         const { url } = action.meta.arg;
@@ -49,7 +54,6 @@ const bookEditorSlice = createSlice({
         state.fetchError = null;
       })
       .addCase(getBookData.fulfilled, (state, action) => {
-        // console.log("getBookData.fulfilled", { action, state });
         const { url } = action.meta.arg;
         state.url = url;
         state.data = action.payload as BookData;
@@ -57,7 +61,6 @@ const bookEditorSlice = createSlice({
         state.fetchError = null;
       })
       .addCase(getBookData.rejected, (state, action) => {
-        // console.log("getBookData.rejected", { action, state });
         const { url } = action.meta.arg;
         state.url = url;
         state.data = null;
@@ -65,17 +68,14 @@ const bookEditorSlice = createSlice({
         state.fetchError = action.payload as RequestError;
       })
       .addCase(submitBookData.pending, (state, action) => {
-        // console.log("submitBookData.pending", { action, state });
         state.isFetching = true;
         state.editError = null;
       })
       .addCase(submitBookData.fulfilled, (state, action) => {
-        // console.log("submitBookData.fulfilled", { action, state });
         state.isFetching = false;
         state.editError = null;
       })
       .addCase(submitBookData.rejected, (state, action) => {
-        // console.log("submitBookData.rejected", { action, state });
         state.isFetching = true;
         state.editError = action.payload as RequestError;
       })

@@ -1,6 +1,5 @@
 import {
   AdvancedSearchQuery,
-  BookData,
   ComplaintsData,
   GenreTree,
   ClassificationData,
@@ -130,14 +129,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly CHANGE_LANE_VISIBILITY = "CHANGE_LANE_VISIBILITY";
   static readonly RESET_LANES = "RESET_LANES";
   static readonly CHANGE_LANE_ORDER = "CHANGE_LANE_ORDER";
-
-  // static readonly EDIT_BOOK_REQUEST = "EDIT_BOOK_REQUEST";
-  // static readonly EDIT_BOOK_SUCCESS = "EDIT_BOOK_SUCCESS";
-  // static readonly EDIT_BOOK_FAILURE = "EDIT_BOOK_FAILURE";
-  // static readonly BOOK_ADMIN_REQUEST = "BOOK_ADMIN_REQUEST";
-  // static readonly BOOK_ADMIN_SUCCESS = "BOOK_ADMIN_SUCCESS";
-  // static readonly BOOK_ADMIN_FAILURE = "BOOK_ADMIN_FAILURE";
-  // static readonly BOOK_ADMIN_LOAD = "BOOK_ADMIN_LOAD";
 
   static readonly COMPLAINTS_REQUEST = "COMPLAINTS_REQUEST";
   static readonly COMPLAINTS_SUCCESS = "COMPLAINTS_SUCCESS";
@@ -328,14 +319,6 @@ export default class ActionCreator extends BaseActionCreator {
       });
     };
   }
-
-  // fetchBookAdmin(url: string) {
-  //   return this.fetchOPDS<BookData>(ActionCreator.BOOK_ADMIN, url).bind(this);
-  // }
-
-  // editBook(url: string, data: FormData | null) {
-  //   return this.postForm(ActionCreator.EDIT_BOOK, url, data).bind(this);
-  // }
 
   fetchRoles() {
     const url = "/admin/roles";

@@ -10,6 +10,7 @@ import { store } from "../../../src/store";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import { AsyncThunkAction, Dispatch } from "@reduxjs/toolkit";
+import ActionCreator from "@thepalaceproject/web-opds-client/lib/actions";
 
 const SAMPLE_BOOK_ADMIN_DETAIL = `
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:opds="http://opds-spec.org/2010/catalog" xmlns:opf="http://www.idpf.org/2007/opf" xmlns:drm="http://librarysimplified.org/terms/drm" xmlns:schema="http://schema.org/" xmlns:simplified="http://librarysimplified.org/terms/" xmlns:bibframe="http://bibframe.org/vocab/" xmlns:bib="http://bib.schema.org/" xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:lcp="http://readium.org/lcp-specs/ns" schema:additionalType="http://schema.org/EBook">
@@ -49,6 +50,14 @@ const FETCH_OPDS_PARSE_ERROR_MESSAGE = "Failed to parse OPDS data";
 describe("Redux bookEditorSlice...", () => {
   const bookData = { id: "urn:something:something", title: "test title" };
 
+  const fetchedState = {
+    url: "test url",
+    data: { ...bookData },
+    isFetching: false,
+    fetchError: null,
+    editError: null,
+  };
+
   describe("reducers...", () => {
     it("should return the initial state from undefined, if no action is passed", () => {
       expect(reducer(undefined, { type: "unknown" })).to.deep.equal(
@@ -60,6 +69,12 @@ describe("Redux bookEditorSlice...", () => {
         initialState
       );
     });
+    it("should handle BOOK_CLEAR", () => {
+      const action = { type: ActionCreator.BOOK_CLEAR };
+
+      expect(reducer(fetchedState, action)).to.deep.equal(initialState);
+    });
+
     it("should handle getBookData.pending", () => {
       const action = {
         type: getBookData.pending.type,

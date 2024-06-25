@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
-import book from "../book";
+// import book from "../book";
+import book from "../../features/book/bookEditorSlice";
 import ActionCreator from "../../actions";
 import bookEditorSlice, {
   getBookData,
@@ -26,15 +27,16 @@ describe("book reducer", () => {
     editError: null,
   };
 
-  it("returns initial state for unrecognized action", () => {
-    expect(book(undefined, {})).to.deep.equal(initState);
-  });
+  // it("returns initial state for unrecognized action", () => {
+  //   expect(book(undefined, {})).to.deep.equal(initState);
+  // });
 
   // TODO: test clearBook
-  // it("handles CLEAR_BOOK", () => {
-  //   const action = { type: ActionCreator.BOOK_CLEAR };
-  //   expect(book(fetchedState, action)).to.deep.equal(initState);
-  // });
+  it("handles CLEAR_BOOK", () => {
+    const action = { type: ActionCreator.BOOK_CLEAR };
+    console.log("result", book(fetchedState, action));
+    expect(book(fetchedState, action)).to.deep.equal(initState);
+  });
 
   // it("handles BOOK_ADMIN_REQUEST", () => {
   //   const action = { type: ActionCreator.BOOK_ADMIN_REQUEST, url: "test url" };

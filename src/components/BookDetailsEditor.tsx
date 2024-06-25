@@ -26,7 +26,7 @@ export type BookDetailsEditorProps = ConnectedProps<typeof connector> &
 export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
   constructor(props) {
     super(props);
-    this.editBook = this.editBook.bind(this);
+    this.postWithoutPayload = this.postWithoutPayload.bind(this);
     this.hide = this.hide.bind(this);
     this.restore = this.restore.bind(this);
     this.refreshMetadata = this.refreshMetadata.bind(this);
@@ -36,7 +36,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
   UNSAFE_componentWillMount() {
     if (this.props.bookUrl) {
       const bookAdminUrl = this.props.bookUrl.replace("works", "admin/works");
-      this.props.fetchBook(bookAdminUrl);
+      this.props.fetchBookData(bookAdminUrl);
       this.props.fetchRoles();
       this.props.fetchMedia();
       this.props.fetchLanguages();
@@ -46,7 +46,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.bookUrl && nextProps.bookUrl !== this.props.bookUrl) {
       const bookAdminUrl = nextProps.bookUrl.replace("works", "admin/works");
-      this.props.fetchBook(bookAdminUrl);
+      this.props.fetchBookData(bookAdminUrl);
     }
   }
 
@@ -100,7 +100,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
                 media={this.props.media}
                 languages={this.props.languages}
                 disabled={this.props.isFetching}
-                editBook={this.props.editBook}
+                editBook={this.props.postBookData}
                 refresh={this.refresh}
               />
             )}
@@ -114,24 +114,24 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
   }
 
   hide() {
-    return this.editBook(this.props.bookData.hideLink.href);
+    return this.postWithoutPayload(this.props.bookData.hideLink.href);
   }
 
   restore() {
-    return this.editBook(this.props.bookData.restoreLink.href);
+    return this.postWithoutPayload(this.props.bookData.restoreLink.href);
   }
 
   refreshMetadata() {
-    return this.editBook(this.props.bookData.refreshLink.href);
+    return this.postWithoutPayload(this.props.bookData.refreshLink.href);
   }
 
   refresh() {
-    this.props.fetchBook(this.props.bookAdminUrl);
+    this.props.fetchBookData(this.props.bookAdminUrl);
     this.props.refreshCatalog();
   }
 
-  editBook(url) {
-    return this.props.editBook(url, null).then(this.refresh);
+  postWithoutPayload(url) {
+    return this.props.postBookData(url, null).then(this.refresh);
   }
 }
 
@@ -166,9 +166,9 @@ function mapDispatchToProps(
   const fetcher = new DataFetcher({ adapter: editorAdapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
-    editBook: (url: string, data) =>
+    postBookData: (url: string, data) =>
       dispatch(submitBookData({ url, data, csrfToken: ownProps.csrfToken })),
-    fetchBook: (url: string) => dispatch(getBookData({ url })),
+    fetchBookData: (url: string) => dispatch(getBookData({ url })),
     fetchRoles: () => dispatch(actions.fetchRoles()),
     fetchMedia: () => dispatch(actions.fetchMedia()),
     fetchLanguages: () => dispatch(actions.fetchLanguages()),
