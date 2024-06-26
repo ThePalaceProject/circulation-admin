@@ -236,7 +236,8 @@ export default class ClassificationsForm extends React.Component<
       newBook.targetAgeRange[0] !== this.props.book.targetAgeRange[0] ||
       newBook.targetAgeRange[1] !== this.props.book.targetAgeRange[1] ||
       newBook.fiction !== this.props.book.fiction ||
-      newBook.categories.sort() !== this.props.book.categories.sort()
+      newBook.categories.slice().sort().join("::") !==
+        this.props.book.categories.slice().sort().join("::")
     );
   }
 
