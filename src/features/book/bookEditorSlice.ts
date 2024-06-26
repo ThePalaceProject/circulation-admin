@@ -76,15 +76,9 @@ const bookEditorSlice = createSlice({
         state.editError = null;
       })
       .addCase(submitBookData.rejected, (state, action) => {
-        state.isFetching = true;
+        state.isFetching = false;
         state.editError = action.payload as RequestError;
-      })
-      .addMatcher(
-        (action) => true,
-        (state, action) => {
-          // console.log("Unhandled action", action.type, {action, state});
-        }
-      );
+      });
   },
 });
 

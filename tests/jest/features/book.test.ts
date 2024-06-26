@@ -130,6 +130,42 @@ describe("Redux bookEditorSlice...", () => {
       expect(state.fetchError).to.deep.equal(errorObject);
       expect(state.editError).to.be.null;
     });
+
+    it("should handle submitBookData.pending", () => {
+      const action = { type: submitBookData.pending.type };
+      const previousState = { ...fetchedState, isFetching: false };
+      const state = reducer(previousState, action);
+
+      expect(state).to.deep.equal({ ...fetchedState, isFetching: true });
+    });
+    it("should handle submitBookData.fulfilled", () => {
+      const action = {
+        type: submitBookData.fulfilled.type,
+        payload: "some value",
+      };
+      const previousState = { ...fetchedState, isFetching: true };
+      const state = reducer(previousState, action);
+
+      expect(state).to.deep.equal({
+        ...fetchedState,
+        isFetching: false,
+        editError: null,
+      });
+    });
+    it("should handle submitBookData.rejected", () => {
+      const action = {
+        type: submitBookData.rejected.type,
+        payload: "some value",
+      };
+      const previousState = { ...fetchedState, isFetching: true };
+      const state = reducer(previousState, action);
+
+      expect(state).to.deep.equal({
+        ...fetchedState,
+        isFetching: false,
+        editError: "some value",
+      });
+    });
   });
 
   describe("thunks...", () => {

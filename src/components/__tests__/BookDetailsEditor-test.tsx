@@ -10,25 +10,25 @@ import BookEditForm from "../BookEditForm";
 import ErrorMessage from "../ErrorMessage";
 
 describe("BookDetailsEditor", () => {
-  let fetchBook;
+  let fetchBookData;
   let fetchRoles;
   let fetchMedia;
   let fetchLanguages;
-  let editBook;
+  let postBookData;
   let dispatchProps;
 
   beforeEach(() => {
-    fetchBook = stub();
+    fetchBookData = stub();
     fetchRoles = stub();
     fetchMedia = stub();
     fetchLanguages = stub();
-    editBook = stub();
+    postBookData = stub();
     dispatchProps = {
-      fetchBook,
+      fetchBookData,
       fetchRoles,
       fetchMedia,
       fetchLanguages,
-      editBook,
+      postBookData,
     };
   });
 
@@ -42,8 +42,8 @@ describe("BookDetailsEditor", () => {
       />
     );
 
-    expect(fetchBook.callCount).to.equal(1);
-    expect(fetchBook.args[0][0]).to.equal("admin/works/1234");
+    expect(fetchBookData.callCount).to.equal(1);
+    expect(fetchBookData.args[0][0]).to.equal("admin/works/1234");
     expect(fetchRoles.callCount).to.equal(1);
     expect(fetchMedia.callCount).to.equal(1);
     expect(fetchLanguages.callCount).to.equal(1);
@@ -63,8 +63,8 @@ describe("BookDetailsEditor", () => {
     wrapper.setProps({ bookUrl: newPermalink });
     wrapper.update();
 
-    expect(fetchBook.callCount).to.equal(2);
-    expect(fetchBook.args[1][0]).to.equal("admin/works/5555");
+    expect(fetchBookData.callCount).to.equal(2);
+    expect(fetchBookData.args[1][0]).to.equal("admin/works/5555");
   });
 
   it("shows title", () => {
