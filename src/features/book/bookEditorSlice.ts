@@ -39,14 +39,9 @@ const bookEditorSlice = createSlice({
     builder
       .addCase(ActionCreator.BOOK_CLEAR, (state, action) => {
         // Handle resetting the book data via actions from the web-opds-client.
-        console.log("*** Handling clear book data action ***", action.type, {
-          action,
-          state,
-        });
         return initialState;
       })
       .addCase(getBookData.pending, (state, action) => {
-        // console.log("getBookData.pending", { action, state });
         const { url } = action.meta.arg;
         state.url = url;
         state.data = null;

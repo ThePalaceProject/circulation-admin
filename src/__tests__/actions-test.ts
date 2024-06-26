@@ -293,33 +293,6 @@ describe("actions", () => {
     });
   });
 
-  // TODO: add tests for editBook actions
-  // describe("editBook", () => {
-  //   it("dispatches request and success", async () => {
-  //     const editBookUrl = "http://example.com/editBook";
-  //     const dispatch = stub();
-  //     const formData = new (window as any).FormData();
-  //     formData.append("title", "title");
-  //
-  //     fetchMock.post(editBookUrl, "done");
-  //
-  //     await actions.editBook(editBookUrl, formData)(dispatch);
-  //     const fetchArgs = fetchMock.calls();
-  //
-  //     expect(dispatch.callCount).to.equal(3);
-  //     expect(dispatch.args[0][0].type).to.equal(
-  //       ActionCreator.EDIT_BOOK_REQUEST
-  //     );
-  //     expect(dispatch.args[1][0].type).to.equal(
-  //       ActionCreator.EDIT_BOOK_SUCCESS
-  //     );
-  //     expect(fetchMock.called()).to.equal(true);
-  //     expect(fetchArgs[0][0]).to.equal(editBookUrl);
-  //     expect(fetchArgs[0][1].method).to.equal("POST");
-  //     expect(fetchArgs[0][1].body).to.equal(formData);
-  //   });
-  // });
-
   describe("fetchComplaints", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();

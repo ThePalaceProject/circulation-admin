@@ -70,6 +70,7 @@ describe("Redux bookEditorSlice...", () => {
       );
     });
     it("should handle BOOK_CLEAR", () => {
+      // This is dispatched by `web-opds`client`, but we need to handle it, too.
       const action = { type: ActionCreator.BOOK_CLEAR };
 
       expect(reducer(fetchedState, action)).to.deep.equal(initialState);
@@ -284,14 +285,6 @@ describe("Redux bookEditorSlice...", () => {
         status: 400,
         detail: "There was an error saving your changes.",
       };
-
-      //   it("handles EDIT_BOOK_REQUEST", () => {
-      //     const action = { type: ActionCreator.EDIT_BOOK_REQUEST };
-      //     const newState = Object.assign({}, fetchedState, {
-      //       isFetching: true,
-      //     });
-      //     expect(book(fetchedState, action)).to.deep.equal(newState);
-      //   });
 
       const dispatch = jest.fn();
       const getState = jest.fn().mockReturnValue({

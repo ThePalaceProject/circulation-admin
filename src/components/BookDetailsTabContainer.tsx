@@ -7,10 +7,8 @@ import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
 import BookCoverEditor from "./BookCoverEditor";
 import CustomListsForBook from "./CustomListsForBook";
-import { BookData } from "../interfaces";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 import { RootState } from "../store";
-import { Store } from "@reduxjs/toolkit";
 
 interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
@@ -45,9 +43,6 @@ export class BookDetailsTabContainer extends TabContainer<
   BookDetailsTabContainerProps
 > {
   componentWillUnmount() {
-    console.log(
-      "\n\nUnmounting BookDetailsTabContainer... and clearing book data\n\n"
-    );
     this.props.clearBook();
   }
 

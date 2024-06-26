@@ -1,5 +1,4 @@
 import { combineReducers } from "redux";
-import book, { BookState } from "./book";
 import complaints, { ComplaintsState } from "./complaints";
 import classifications, { ClassificationsState } from "./classifications";
 import bookCoverPreview, { BookCoverPreviewState } from "./bookCoverPreview";
@@ -62,7 +61,6 @@ import {
 } from "../interfaces";
 
 export interface State {
-  book: BookState;
   complaints: ComplaintsState;
   classifications: ClassificationsState;
   bookCoverPreview: BookCoverPreviewState;
@@ -101,7 +99,6 @@ export interface State {
 }
 
 export default combineReducers<State>({
-  book,
   complaints,
   classifications,
   bookCoverPreview,

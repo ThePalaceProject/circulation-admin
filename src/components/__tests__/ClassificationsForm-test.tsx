@@ -402,15 +402,14 @@ describe("ClassificationsForm", () => {
       expect(wrapper.state("genres")).to.deep.equal(["Cooking"]);
     });
 
-    // TODO: Fix this test
-    // it("doesn't update state upon receiving new state-unrelated props", () => {
-    //   // state updated with new form inputs
-    //   wrapper.setState({ fiction: false, genres: ["Cooking"] });
-    //   // form submitted, disabling form
-    //   wrapper.setProps({ disabled: true });
-    //   // state should not change back to earlier book props
-    //   expect(wrapper.state("fiction")).to.equal(false);
-    //   expect(wrapper.state("genres")).to.deep.equal(["Cooking"]);
-    // });
+    it("doesn't update state upon receiving new state-unrelated props", () => {
+      // state updated with new form inputs
+      wrapper.setState({ fiction: false, genres: ["Cooking"] });
+      // form submitted, disabling form
+      wrapper.setProps({ disabled: true });
+      // state should not change back to earlier book props
+      expect(wrapper.state("fiction")).to.equal(false);
+      expect(wrapper.state("genres")).to.deep.equal(["Cooking"]);
+    });
   });
 });
