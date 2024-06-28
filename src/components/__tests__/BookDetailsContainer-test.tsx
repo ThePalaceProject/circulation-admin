@@ -30,7 +30,6 @@ describe("BookDetailsContainer", () => {
     store = buildStore();
     context = {
       editorStore: store,
-      tab: "tab",
       csrfToken: "token",
       library: stub(),
     };
@@ -60,7 +59,6 @@ describe("BookDetailsContainer", () => {
     expect(tabContainer).to.be.ok;
     expect(tabContainer.props().bookUrl).to.equal("book url");
     expect(tabContainer.props().collectionUrl).to.equal("collection url");
-    expect(tabContainer.props().tab).to.equal("tab");
     expect(tabContainer.props().library).to.equal(context.library);
     expect(tabContainer.props().csrfToken).to.equal("token");
     expect(tabContainer.props().refreshCatalog).to.equal(refreshCatalog);

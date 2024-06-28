@@ -14,42 +14,37 @@ export interface BookDetailsContainerContext {
   library: (collectionUrl: string, bookUrl: string) => string;
 }
 
-/** Wrapper for `BookDetailsTabContainer` that extracts parameters from its context
-    and converts them into props. This component is passed into the OPDSCatalog from
-    web-opds-client to replace the body of the book details page. */
-export default class BookDetailsContainer extends React.Component<
-  BookDetailsContainerProps
-> {
-  context: BookDetailsContainerContext;
+const BookDetailsContainer = (
+  props: BookDetailsContainerProps,
+  context: BookDetailsContainerContext
+) => {
+  const child = React.Children.only(props.children) as React.ReactElement<
+    BookDetails
+  >;
+  const book = React.createElement(BookDetails, child.props);
 
-  static contextTypes = {
-    csrfToken: PropTypes.string.isRequired,
-    tab: PropTypes.string,
-    editorStore: PropTypes.object.isRequired,
-    library: PropTypes.func.isRequired,
-  };
+  return (
+    <div className="book-details-container">
+      <BookDetailsTabContainer
+        class="book-details-tab-container"
+        tab={context.tab}
+        bookUrl={props.bookUrl}
+        collectionUrl={props.collectionUrl}
+        refreshCatalog={props.refreshCatalog}
+        library={context.library}
+        csrfToken={context.csrfToken}
+        store={context.editorStore}
+      >
+        {book}
+      </BookDetailsTabContainer>
+    </div>
+  );
+};
+BookDetailsContainer.contextTypes = {
+  csrfToken: PropTypes.string.isRequired,
+  tab: PropTypes.string,
+  editorStore: PropTypes.object.isRequired,
+  library: PropTypes.func.isRequired,
+};
 
-  render(): JSX.Element {
-    const child = React.Children.only(
-      this.props.children
-    ) as React.ReactElement<BookDetails>;
-    const book = React.createElement(BookDetails, child.props);
-
-    return (
-      <div className="book-details-container">
-        <BookDetailsTabContainer
-          class="book-details-tab-container"
-          bookUrl={this.props.bookUrl}
-          collectionUrl={this.props.collectionUrl}
-          refreshCatalog={this.props.refreshCatalog}
-          tab={this.context.tab}
-          library={this.context.library}
-          store={this.context.editorStore}
-          csrfToken={this.context.csrfToken}
-        >
-          {book}
-        </BookDetailsTabContainer>
-      </div>
-    );
-  }
-}
+export default BookDetailsContainer;

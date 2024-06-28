@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import editorAdapter from "../editorAdapter";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -8,27 +8,10 @@ import ErrorMessage from "./ErrorMessage";
 import EditableInput from "./EditableInput";
 import { BookData, RightsStatusData } from "../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import UpdatingLoader from "./UpdatingLoader";
-
-export interface BookCoverEditorStateProps {
-  bookAdminUrl?: string;
-  preview?: string;
-  rightsStatuses?: RightsStatusData;
-  fetchError?: FetchErrorData;
-  isFetching?: boolean;
-  previewFetchError?: FetchErrorData;
-  isFetchingPreview?: boolean;
-}
-
-export interface BookCoverEditorDispatchProps {
-  fetchBook?: (url: string) => Promise<any>;
-  fetchPreview?: (url: string, data: FormData) => Promise<any>;
-  clearPreview?: () => Promise<any>;
-  editCover?: (url: string, data: FormData) => Promise<any>;
-  fetchRightsStatuses?: () => Promise<RightsStatusData>;
-}
+import { getBookData } from "../features/book/bookEditorSlice";
 
 export interface BookCoverEditorOwnProps {
   store?: Store<RootState>;
@@ -38,10 +21,9 @@ export interface BookCoverEditorOwnProps {
   refreshCatalog: () => Promise<any>;
 }
 
-export interface BookCoverEditorProps
-  extends BookCoverEditorStateProps,
-    BookCoverEditorDispatchProps,
-    BookCoverEditorOwnProps {}
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export type BookCoverEditorProps = ConnectedProps<typeof connector> &
+  BookCoverEditorOwnProps;
 
 /** Tab on the book details page for uploading a new book cover. */
 export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
@@ -329,18 +311,18 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState) {
   return {
-    bookAdminUrl: state.editor.book.url,
+    bookAdminUrl: state.bookEditor.url,
     preview: state.editor.bookCoverPreview.data,
     rightsStatuses: state.editor.rightsStatuses.data,
     isFetching:
-      state.editor.book.isFetching ||
+      state.bookEditor.isFetching ||
       state.editor.bookCover.isFetching ||
       state.editor.rightsStatuses.isFetching ||
       state.editor.bookCover.isEditing,
     fetchError:
-      state.editor.book.fetchError ||
+      state.bookEditor.fetchError ||
       state.editor.bookCover.fetchError ||
       state.editor.rightsStatuses.fetchError,
     isFetchingPreview: state.editor.bookCoverPreview.isFetching,
@@ -348,11 +330,14 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  ownProps: BookCoverEditorOwnProps
+) {
   const fetcher = new DataFetcher({ adapter: editorAdapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
-    fetchBook: (url: string) => dispatch(actions.fetchBookAdmin(url)),
+    fetchBook: (url: string) => dispatch(getBookData({ url })),
     fetchPreview: (url: string, data: FormData) =>
       dispatch(actions.fetchBookCoverPreview(url, data)),
     clearPreview: () => dispatch(actions.clearBookCoverPreview()),
@@ -362,13 +347,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedBookCoverEditor = connect<
-  BookCoverEditorStateProps,
-  BookCoverEditorDispatchProps,
-  BookCoverEditorOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(BookCoverEditor);
-
-export default ConnectedBookCoverEditor;
+export default connector(BookCoverEditor);

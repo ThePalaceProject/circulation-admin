@@ -18,19 +18,28 @@ describe("BookDetailsTabContainer", () => {
   let push;
   let store;
 
+  const TEST_BOOK_URL = "book url";
+  const TEST_COLLECTION_URL = "collection url";
+
   beforeEach(() => {
     store = buildStore();
     push = stub();
     context = mockRouterContext(push);
     wrapper = mount(
       <BookDetailsTabContainer
-        bookUrl="book url"
-        collectionUrl="collection url"
-        tab={null}
+        bookUrl={TEST_BOOK_URL}
+        collectionUrl={TEST_COLLECTION_URL}
         csrfToken="token"
         refreshCatalog={stub()}
         store={store}
         library={(a, b) => "library"}
+        // from store
+        complaintsCount={0}
+        bookData={null}
+        // dispatch actions
+        clearBook={stub()}
+        // required by TabContainer
+        tab={null}
       >
         <div className="bookDetails">Moby Dick</div>
       </BookDetailsTabContainer>,
@@ -72,17 +81,17 @@ describe("BookDetailsTabContainer", () => {
   it("shows editor", () => {
     const editor = wrapper.find(BookDetailsEditor);
     expect(editor.props().csrfToken).to.equal("token");
-    expect(editor.props().bookUrl).to.equal("book url");
+    expect(editor.props().bookUrl).to.equal(TEST_BOOK_URL);
   });
 
   it("shows classifications", () => {
     const classifications = wrapper.find(Classifications);
-    expect(classifications.props().bookUrl).to.equal("book url");
+    expect(classifications.props().bookUrl).to.equal(TEST_BOOK_URL);
   });
 
   it("shows lists", () => {
     const lists = wrapper.find(CustomListsForBook);
-    expect(lists.props().bookUrl).to.equal("book url");
+    expect(lists.props().bookUrl).to.equal(TEST_BOOK_URL);
     expect(lists.props().library).to.equal("library");
   });
 
@@ -92,7 +101,7 @@ describe("BookDetailsTabContainer", () => {
     const label = tabs.at(1).text();
     expect(push.callCount).to.equal(1);
     expect(push.args[0][0]).to.equal(
-      context.pathFor("collection url", "book url", label)
+      context.pathFor(TEST_COLLECTION_URL, TEST_BOOK_URL, label)
     );
   });
 

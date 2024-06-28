@@ -402,7 +402,7 @@ describe("ClassificationsForm", () => {
       expect(wrapper.state("genres")).to.deep.equal(["Cooking"]);
     });
 
-    it("doesn't update state upoen receiving new state-unrelated props", () => {
+    it("doesn't update state upon receiving new state-unrelated props", () => {
       // state updated with new form inputs
       wrapper.setState({ fiction: false, genres: ["Cooking"] });
       // form submitted, disabling form
