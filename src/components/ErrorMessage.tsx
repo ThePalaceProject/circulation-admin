@@ -9,6 +9,8 @@ export interface ErrorMessageProps {
   tryAgain?: () => any;
 }
 
+export const pdString = "Remote service returned a problem detail document";
+
 /** Shows a bootstrap error message at the top of the page when there's a bad
     response from the server. */
 export default class ErrorMessage extends React.Component<ErrorMessageProps> {
@@ -39,20 +41,30 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps> {
       let response;
       try {
         response = JSON.parse(this.props.error.response).detail;
+        console.log("error response from parse", response);
       } catch (e) {
         response = this.props.error.response;
         // The response might be a problem detail document encoded as a string rather than as JSON;
         // if so, we need to parse it and display the relevant information from it
         // (rather than just displaying the entire string, which is hard to read)
-        const pdString = "Remote service returned a problem detail document";
         if (this.isProblemDetail(response, pdString)) {
           response = this.parseProblemDetail(response, pdString);
           errorMessageHeader = response.title ? response.title : "Error";
           errorMessageText = `${response.description}${response.status}: ${response.detail}`;
+          console.log("this is a problem detail", {
+            response,
+            errorMessageHeader,
+            errorMessageText,
+          });
         }
       }
       if (!errorMessageText) {
         errorMessageText = `Error: ${response}`;
+        console.log("this is not a problem detail", {
+          response,
+          errorMessageHeader,
+          errorMessageText,
+        });
       }
       alertElement = (
         <Alert bsStyle="danger">

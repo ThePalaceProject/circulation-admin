@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AsyncThunkAction, Store } from "@reduxjs/toolkit";
+import { Store } from "@reduxjs/toolkit";
 import { connect, ConnectedProps } from "react-redux";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
@@ -10,6 +10,8 @@ import { AppDispatch, RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
 import UpdatingLoader from "./UpdatingLoader";
 import { getBookData, submitBookData } from "../features/book/bookEditorSlice";
+import BookDetailsEditorSuppression from "./BookDetailsEditorSuppression";
+import { bookEditorApiEndpoints } from "../features/book/bookEditorSlice";
 
 export interface BookDetailsEditorOwnProps {
   bookUrl?: string;
@@ -24,7 +26,7 @@ export type BookDetailsEditorProps = ConnectedProps<typeof connector> &
 
 /** Tab for editing a book's metadata on the book details page. */
 export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
-  constructor(props) {
+  constructor(props: BookDetailsEditorProps) {
     super(props);
     this.postWithoutPayload = this.postWithoutPayload.bind(this);
     this.hide = this.hide.bind(this);
@@ -43,17 +45,18 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: BookDetailsEditorProps) {
     if (nextProps.bookUrl && nextProps.bookUrl !== this.props.bookUrl) {
       const bookAdminUrl = nextProps.bookUrl.replace("works", "admin/works");
       this.props.fetchBookData(bookAdminUrl);
     }
   }
 
-  render(): JSX.Element {
+  render(): React.ReactElement {
+    const { bookData } = this.props;
     return (
       <div className="book-details-editor">
-        {this.props.bookData && !this.props.fetchError && (
+        {bookData && !this.props.fetchError && (
           <>
             <h2>{this.props.bookData.title}</h2>
 
@@ -63,27 +66,73 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
               <ErrorMessage error={this.props.editError} />
             )}
 
-            {(this.props.bookData.hideLink ||
-              this.props.bookData.restoreLink ||
-              this.props.bookData.refreshLink) && (
+            {(bookData.suppressPerLibraryLink ||
+              bookData.unsuppressPerLibraryLink ||
+              bookData.refreshLink) && (
               <div className="form-group form-inline">
-                {this.props.bookData.hideLink && (
-                  <Button
+                {!!bookData.suppressPerLibraryLink && (
+                  <BookDetailsEditorSuppression
+                    link={bookData.suppressPerLibraryLink}
+                    onConfirm={() =>
+                      this.props.suppressBook(
+                        bookData.suppressPerLibraryLink.href
+                      )
+                    }
+                    onComplete={this.refresh}
+                    buttonDisabled={this.props.isFetching}
+                    buttonContent="Hide"
+                    buttonTitle="Hide availability for this library."
                     className="left-align"
-                    disabled={this.props.isFetching}
-                    content="Hide"
-                    callback={this.hide}
+                    confirmationTitle="Suppressing Availability"
+                    confirmationBody={
+                      <p>
+                        Please confirm your selection to hide this title from
+                        your library's catalog. It's important to note that this
+                        action affects only your library's catalog and won't
+                        impact the availability of the title elsewhere.
+                      </p>
+                    }
+                    confirmationButtonContent="Suppress Availability"
+                    confirmationButtonTitle="Suppress availability of this title for this library."
+                    defaultSuccessMessage={<p>Availability has been hidden.</p>}
+                    defaultFailureMessage={
+                      <p>An error occurred. Please try again.</p>
+                    }
                   />
                 )}
-                {this.props.bookData.restoreLink && (
-                  <Button
+                {!!bookData.unsuppressPerLibraryLink && (
+                  <BookDetailsEditorSuppression
+                    link={bookData.unsuppressPerLibraryLink}
+                    onConfirm={() =>
+                      this.props.unsuppressBook(
+                        bookData.unsuppressPerLibraryLink.href
+                      )
+                    }
+                    onComplete={this.refresh}
+                    buttonDisabled={this.props.isFetching}
+                    buttonContent="Restore"
+                    buttonTitle="Restore availability for this library."
                     className="left-align"
-                    disabled={this.props.isFetching}
-                    content="Restore"
-                    callback={this.restore}
+                    confirmationTitle="Restoring Availability"
+                    confirmationBody={
+                      <p>
+                        Please confirm your selection to make this title visible
+                        in your library's catalog. It's important to note that
+                        this action affects only your library's catalog and
+                        won't impact the availability of the title elsewhere.
+                      </p>
+                    }
+                    confirmationButtonContent="Restore Availability"
+                    confirmationButtonTitle="Restore availability of this title for this library."
+                    defaultSuccessMessage={
+                      <p>Availability has been restored.</p>
+                    }
+                    defaultFailureMessage={
+                      <p>An error occurred. Please try again.</p>
+                    }
                   />
                 )}
-                {this.props.bookData.refreshLink && (
+                {bookData.refreshLink && (
                   <Button
                     disabled={this.props.isFetching}
                     content="Refresh Metadata"
@@ -92,10 +141,9 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
                 )}
               </div>
             )}
-
-            {this.props.bookData.editLink && (
+            {bookData.editLink && (
               <BookEditForm
-                {...this.props.bookData}
+                {...bookData}
                 roles={this.props.roles}
                 media={this.props.media}
                 languages={this.props.languages}
@@ -130,15 +178,12 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
     this.props.refreshCatalog();
   }
 
-  postWithoutPayload(url) {
+  postWithoutPayload(url: string) {
     return this.props.postBookData(url, null).then(this.refresh);
   }
 }
 
-function mapStateToProps(
-  state: RootState,
-  ownProps: BookDetailsEditorOwnProps
-) {
+function mapStateToProps(state: RootState) {
   return {
     bookAdminUrl: state.bookEditor.url,
     bookData: state.bookEditor.data,
@@ -166,12 +211,26 @@ function mapDispatchToProps(
   const fetcher = new DataFetcher({ adapter: editorAdapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
-    postBookData: (url: string, data) =>
+    postBookData: (url: string, data: FormData | null) =>
       dispatch(submitBookData({ url, data, csrfToken: ownProps.csrfToken })),
     fetchBookData: (url: string) => dispatch(getBookData({ url })),
     fetchRoles: () => dispatch(actions.fetchRoles()),
     fetchMedia: () => dispatch(actions.fetchMedia()),
     fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    suppressBook: (url: string) =>
+      dispatch(
+        bookEditorApiEndpoints.endpoints.suppressBook.initiate({
+          url,
+          csrfToken: ownProps.csrfToken,
+        })
+      ),
+    unsuppressBook: (url: string) =>
+      dispatch(
+        bookEditorApiEndpoints.endpoints.unsuppressBook.initiate({
+          url,
+          csrfToken: ownProps.csrfToken,
+        })
+      ),
   };
 }
 
