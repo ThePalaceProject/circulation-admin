@@ -41,6 +41,8 @@ export interface BookData {
   hideLink?: LinkData;
   restoreLink?: LinkData;
   refreshLink?: LinkData;
+  suppressPerLibraryLink?: LinkData;
+  unsuppressPerLibraryLink?: LinkData;
   editLink?: LinkData;
   issuesLink?: LinkData;
   changeCoverLink?: LinkData;

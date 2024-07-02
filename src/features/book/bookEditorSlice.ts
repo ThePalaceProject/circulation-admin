@@ -7,6 +7,20 @@ import editorAdapter from "../../editorAdapter";
 import { submitForm } from "../../api/submitForm";
 import { RootState } from "../../store";
 import ActionCreator from "../../actions";
+import { api } from "../api/apiSlice";
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+  MutationActionCreatorResult,
+  MutationDefinition,
+} from "@reduxjs/toolkit/query";
+
+export const PER_LIBRARY_SUPPRESS_REL =
+  "http://palaceproject.io/terms/rel/suppress-for-library";
+export const PER_LIBRARY_UNSUPPRESS_REL =
+  "http://palaceproject.io/terms/rel/unsuppress-for-library";
 
 export interface BookState {
   url: string;
@@ -37,7 +51,7 @@ const bookEditorSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(ActionCreator.BOOK_CLEAR, (state, action) => {
+      .addCase(ActionCreator.BOOK_CLEAR, () => {
         // Handle resetting the book data via actions from the web-opds-client.
         return initialState;
       })
@@ -62,11 +76,11 @@ const bookEditorSlice = createSlice({
         state.isFetching = false;
         state.fetchError = action.payload as RequestError;
       })
-      .addCase(submitBookData.pending, (state, action) => {
+      .addCase(submitBookData.pending, (state) => {
         state.isFetching = true;
         state.editError = null;
       })
-      .addCase(submitBookData.fulfilled, (state, action) => {
+      .addCase(submitBookData.fulfilled, (state) => {
         state.isFetching = false;
         state.editError = null;
       })
@@ -94,14 +108,16 @@ export const getBookData = createAsyncThunk(
   }
 );
 
+export type SubmitBookDataArgs = {
+  url: string;
+  data: FormData;
+  csrfToken?: string;
+};
+
 export const submitBookData = createAsyncThunk(
   bookEditorSlice.reducerPath + "/submitBookData",
   async (
-    {
-      url,
-      data,
-      csrfToken = undefined,
-    }: { url: string; data: FormData; csrfToken?: string },
+    { url, data, csrfToken = undefined }: SubmitBookDataArgs,
     thunkAPI
   ) => {
     try {
@@ -119,6 +135,53 @@ export const submitBookData = createAsyncThunk(
     }
   }
 );
+
+export type SuppressionMutationMethodType = MutationActionCreatorResult<
+  MutationDefinition<
+    SuppressionMutationArg,
+    BaseQueryFn<
+      string | FetchArgs,
+      unknown,
+      FetchBaseQueryError,
+      object,
+      FetchBaseQueryMeta
+    >,
+    any,
+    SuppressionResponse,
+    "api"
+  >
+>;
+
+export type SuppressionMutationArg = {
+  url: string;
+  csrfToken?: string;
+};
+
+export type SuppressionResponse = {
+  status?: number;
+  message?: string;
+};
+
+export const bookEditorApiEndpoints = api.injectEndpoints({
+  endpoints: (build) => ({
+    suppressBook: build.mutation<SuppressionResponse, SuppressionMutationArg>({
+      query: ({ url, csrfToken }) => ({
+        url,
+        method: "POST",
+        headers: csrfToken ? { "X-CSRF-Token": csrfToken } : undefined,
+      }),
+    }),
+    unsuppressBook: build.mutation<SuppressionResponse, SuppressionMutationArg>(
+      {
+        query: ({ url, csrfToken }) => ({
+          url,
+          method: "DELETE",
+          headers: csrfToken ? { "X-CSRF-Token": csrfToken } : undefined,
+        }),
+      }
+    ),
+  }),
+});
 
 export const bookEditorActions = {
   ...bookEditorSlice.actions,

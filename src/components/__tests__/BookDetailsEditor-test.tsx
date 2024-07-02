@@ -8,6 +8,10 @@ import { BookDetailsEditor } from "../BookDetailsEditor";
 import { Button } from "library-simplified-reusable-components";
 import BookEditForm from "../BookEditForm";
 import ErrorMessage from "../ErrorMessage";
+import {
+  PER_LIBRARY_SUPPRESS_REL,
+  PER_LIBRARY_UNSUPPRESS_REL,
+} from "../../features/book/bookEditorSlice";
 
 describe("BookDetailsEditor", () => {
   let fetchBookData;
@@ -16,6 +20,8 @@ describe("BookDetailsEditor", () => {
   let fetchLanguages;
   let postBookData;
   let dispatchProps;
+  let suppressBook;
+  let unsuppressBook;
 
   beforeEach(() => {
     fetchBookData = stub();
@@ -23,12 +29,16 @@ describe("BookDetailsEditor", () => {
     fetchMedia = stub();
     fetchLanguages = stub();
     postBookData = stub();
+    suppressBook = stub();
+    unsuppressBook = stub();
     dispatchProps = {
       fetchBookData,
       fetchRoles,
       fetchMedia,
       fetchLanguages,
       postBookData,
+      suppressBook,
+      unsuppressBook,
     };
   });
 
@@ -81,34 +91,31 @@ describe("BookDetailsEditor", () => {
     expect(header.text()).to.contain("title");
   });
 
-  it("shows button form for hide link", () => {
-    const hideLink = {
+  it("shows button form for per-library hide link", () => {
+    const suppressPerLibraryLink = {
       href: "href",
-      rel: "http://librarysimplified.org/terms/rel/hide",
+      rel: PER_LIBRARY_SUPPRESS_REL,
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <BookDetailsEditor
-        bookData={{ id: "id", title: "title", hideLink: hideLink }}
+        bookData={{ id: "id", title: "title", suppressPerLibraryLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
       />
     );
-    const hide = (wrapper.instance() as any).hide;
-
     const hideButton = wrapper.find(Button);
     expect(hideButton.prop("content")).to.equal("Hide");
-    expect(hideButton.prop("callback")).to.equal(hide);
   });
 
   it("shows button form for restore link", () => {
-    const restoreLink = {
+    const unsuppressPerLibraryLink = {
       href: "href",
-      rel: "http://librarysimplified.org/terms/rel/restore",
+      rel: PER_LIBRARY_UNSUPPRESS_REL,
     };
-    const wrapper = shallow(
+    const wrapper = mount(
       <BookDetailsEditor
-        bookData={{ id: "id", title: "title", restoreLink: restoreLink }}
+        bookData={{ id: "id", title: "title", unsuppressPerLibraryLink }}
         bookUrl="url"
         csrfToken="token"
         {...dispatchProps}
@@ -118,7 +125,6 @@ describe("BookDetailsEditor", () => {
 
     const restoreButton = wrapper.find(Button);
     expect(restoreButton.prop("content")).to.equal("Restore");
-    expect(restoreButton.prop("callback")).to.equal(restore);
   });
 
   it("shows button form for refresh link", () => {
