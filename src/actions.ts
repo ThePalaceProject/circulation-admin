@@ -14,9 +14,9 @@ import {
   CustomListsData,
   LanesData,
   LaneData,
-  RolesData,
-  MediaData,
-  LanguagesData,
+  // RolesData,
+  // MediaData,
+  // LanguagesData,
   RightsStatusData,
   CatalogServicesData,
   SelfTestsData,
@@ -46,9 +46,9 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly UPDATE_CLEAR_FILTERS_FLAG = "UPDATE_CLEAR_FILTERS_FLAG";
   static readonly EDIT_BOOK = "EDIT_BOOK";
   static readonly BOOK_ADMIN = "BOOK_ADMIN";
-  static readonly ROLES = "ROLES";
-  static readonly MEDIA = "MEDIA";
-  static readonly LANGUAGES = "LANGUAGES";
+  // static readonly ROLES = "ROLES";
+  // static readonly MEDIA = "MEDIA";
+  // static readonly LANGUAGES = "LANGUAGES";
   static readonly RIGHTS_STATUSES = "RIGHTS_STATUSES";
   static readonly COMPLAINTS = "COMPLAINTS";
   static readonly POST_COMPLAINT = "POST_COMPLAINT";
@@ -320,22 +320,22 @@ export default class ActionCreator extends BaseActionCreator {
     };
   }
 
-  fetchRoles() {
-    const url = "/admin/roles";
-    return this.fetchJSON<RolesData>(ActionCreator.ROLES, url).bind(this);
-  }
-
-  fetchMedia() {
-    const url = "/admin/media";
-    return this.fetchJSON<MediaData>(ActionCreator.MEDIA, url).bind(this);
-  }
-
-  fetchLanguages() {
-    const url = "/admin/languages";
-    return this.fetchJSON<LanguagesData>(ActionCreator.LANGUAGES, url).bind(
-      this
-    );
-  }
+  // fetchRoles() {
+  //   const url = "/admin/roles";
+  //   return this.fetchJSON<RolesData>(ActionCreator.ROLES, url).bind(this);
+  // }
+  //
+  // fetchMedia() {
+  //   const url = "/admin/media";
+  //   return this.fetchJSON<MediaData>(ActionCreator.MEDIA, url).bind(this);
+  // }
+  //
+  // fetchLanguages() {
+  //   const url = "/admin/languages";
+  //   return this.fetchJSON<LanguagesData>(ActionCreator.LANGUAGES, url).bind(
+  //     this
+  //   );
+  // }
 
   fetchRightsStatuses() {
     const url = "/admin/rights_status";

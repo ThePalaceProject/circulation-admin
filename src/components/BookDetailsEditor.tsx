@@ -12,6 +12,7 @@ import UpdatingLoader from "./UpdatingLoader";
 import { getBookData, submitBookData } from "../features/book/bookEditorSlice";
 import BookDetailsEditorSuppression from "./BookDetailsEditorSuppression";
 import { bookEditorApiEndpoints } from "../features/book/bookEditorSlice";
+import { adminApi } from "../features/api/admin";
 
 export interface BookDetailsEditorOwnProps {
   bookUrl?: string;
@@ -26,6 +27,11 @@ export type BookDetailsEditorProps = ConnectedProps<typeof connector> &
 
 /** Tab for editing a book's metadata on the book details page. */
 export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
+  // RTK Query subscriptions.
+  rolesSubscription;
+  mediaSubscription;
+  languagesSubscription;
+
   constructor(props: BookDetailsEditorProps) {
     super(props);
     this.postWithoutPayload = this.postWithoutPayload.bind(this);
@@ -33,15 +39,15 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
     this.restore = this.restore.bind(this);
     this.refreshMetadata = this.refreshMetadata.bind(this);
     this.refresh = this.refresh.bind(this);
+    this.subscribe = this.subscribe.bind(this);
+    this.unsubscribe = this.unsubscribe.bind(this);
   }
 
   UNSAFE_componentWillMount() {
     if (this.props.bookUrl) {
       const bookAdminUrl = this.props.bookUrl.replace("works", "admin/works");
       this.props.fetchBookData(bookAdminUrl);
-      this.props.fetchRoles();
-      this.props.fetchMedia();
-      this.props.fetchLanguages();
+      this.subscribe();
     }
   }
 
@@ -52,8 +58,31 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
     }
   }
 
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  subscribe() {
+    // subscribe to RTK Query caches and fetch, as needed.
+    this.rolesSubscription = this.props.fetchRoles();
+    this.mediaSubscription = this.props.fetchMedia();
+    this.languagesSubscription = this.props.fetchLanguages();
+  }
+
+  unsubscribe() {
+    // Unsubscribe from the RTK Query caches.
+    this.rolesSubscription.unsubscribe();
+    this.mediaSubscription.unsubscribe();
+    this.languagesSubscription.unsubscribe();
+  }
+
   render(): React.ReactElement {
     const { bookData } = this.props;
+    const errorString =
+      "response" in this.props.fetchError &&
+      typeof this.props.fetchError.response === "string"
+        ? this.props.fetchError.response
+        : JSON.stringify(this.props.fetchError);
     return (
       <div className="book-details-editor">
         {bookData && !this.props.fetchError && (
@@ -144,9 +173,9 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
             {bookData.editLink && (
               <BookEditForm
                 {...bookData}
-                roles={this.props.roles}
-                media={this.props.media}
-                languages={this.props.languages}
+                roles={this.props.roles.data}
+                media={this.props.media.data}
+                languages={this.props.languages.data}
                 disabled={this.props.isFetching}
                 editBook={this.props.postBookData}
                 refresh={this.refresh}
@@ -155,7 +184,14 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
           </>
         )}
         {this.props.fetchError && (
-          <ErrorMessage error={this.props.fetchError} tryAgain={this.refresh} />
+          <ErrorMessage
+            error={{
+              url: this.props.bookAdminUrl,
+              response: errorString,
+              status: null,
+            }}
+            tryAgain={this.refresh}
+          />
         )}
       </div>
     );
@@ -184,22 +220,26 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
 }
 
 function mapStateToProps(state: RootState) {
+  const roles = adminApi.endpoints.getRoles.select()(state);
+  const media = adminApi.endpoints.getMedia.select()(state);
+  const languages = adminApi.endpoints.getLanguages.select()(state);
+
   return {
     bookAdminUrl: state.bookEditor.url,
     bookData: state.bookEditor.data,
-    roles: state.editor.roles.data,
-    media: state.editor.media.data,
-    languages: state.editor.languages.data,
+    roles,
+    media,
+    languages,
     isFetching:
       state.bookEditor.isFetching ||
-      state.editor.roles.isFetching ||
-      state.editor.media.isFetching ||
-      state.editor.languages.isFetching,
+      roles.isLoading ||
+      media.isLoading ||
+      languages.isLoading,
     fetchError:
       state.bookEditor.fetchError ||
-      state.editor.roles.fetchError ||
-      state.editor.media.fetchError ||
-      state.editor.languages.fetchError,
+      roles.error ||
+      media.error ||
+      languages.error,
     editError: state.bookEditor.editError,
   };
 }
@@ -214,9 +254,9 @@ function mapDispatchToProps(
     postBookData: (url: string, data: FormData | null) =>
       dispatch(submitBookData({ url, data, csrfToken: ownProps.csrfToken })),
     fetchBookData: (url: string) => dispatch(getBookData({ url })),
-    fetchRoles: () => dispatch(actions.fetchRoles()),
-    fetchMedia: () => dispatch(actions.fetchMedia()),
-    fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    fetchRoles: () => dispatch(adminApi.endpoints.getLanguages.initiate()),
+    fetchMedia: () => dispatch(adminApi.endpoints.getMedia.initiate()),
+    fetchLanguages: () => dispatch(adminApi.endpoints.getRoles.initiate()),
     suppressBook: (url: string) =>
       dispatch(
         bookEditorApiEndpoints.endpoints.suppressBook.initiate({

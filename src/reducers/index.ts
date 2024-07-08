@@ -27,9 +27,9 @@ import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
 import laneOrder from "./laneOrder";
 import selfTests from "./selfTests";
-import roles from "./roles";
-import media from "./media";
-import languages from "./languages";
+// import roles from "./roles";
+// import media from "./media";
+// import languages from "./languages";
 import rightsStatuses from "./rightsStatuses";
 import collection, {
   CollectionState,
@@ -90,9 +90,9 @@ export interface State {
   resetLanes: FetchEditState<void>;
   laneOrder: FetchEditState<void>;
   selfTests: FetchEditState<ServiceData>;
-  roles: FetchEditState<RolesData>;
-  media: FetchEditState<MediaData>;
-  languages: FetchEditState<LanguagesData>;
+  // roles: FetchEditState<RolesData>;
+  // media: FetchEditState<MediaData>;
+  // languages: FetchEditState<LanguagesData>;
   rightsStatuses: FetchEditState<RightsStatusData>;
   changePassword: FetchEditState<void>;
   patronManager: FetchEditState<PatronData>;
@@ -126,9 +126,9 @@ export default combineReducers<State>({
   resetLanes,
   laneOrder,
   selfTests,
-  roles,
-  media,
-  languages,
+  // roles,
+  // media,
+  // languages,
   rightsStatuses,
   changePassword,
   patronManager,

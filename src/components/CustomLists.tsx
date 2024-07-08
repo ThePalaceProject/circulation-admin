@@ -1,9 +1,9 @@
 /* eslint-disable react/no-deprecated */
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import * as PropTypes from "prop-types";
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
 import ActionCreator from "../actions";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
@@ -32,82 +32,85 @@ import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "./ErrorMessage";
 import CustomListsSidebar from "./CustomListsSidebar";
+import { adminApi } from "../features/api/admin";
+import { BookDetailsEditorOwnProps } from "./BookDetailsEditor";
+import { Root } from "@thepalaceproject/web-opds-client/lib/components/Root";
 
-export interface CustomListsStateProps {
-  customListEditorAutoUpdateStatus?: string;
-  customListEditorProperties?: CustomListEditorProperties;
-  customListEditorSavedName?: string;
-  customListEditorSearchParams?: CustomListEditorSearchParams;
-  customListEditorEntries?: CustomListEditorEntriesData;
-  customListEditorIsLoaded?: boolean;
-  customListEditorIsOwner?: boolean;
-  customListEditorIsShared?: boolean;
-  customListEditorIsSharePending?: boolean;
-  customListEditorIsValid?: boolean;
-  customListEditorIsModified?: boolean;
-  customListEditorIsSearchModified?: boolean;
-  customListEditorIsAutoUpdateEnabled?: boolean;
-  FiltersEnabled?: boolean;
-  lists: CustomListData[];
-  listDetails?: CollectionData;
-  collections: AdminCollectionData[];
-  searchResults: CollectionData;
-  fetchError?: FetchErrorData;
-  isFetching: boolean;
-  isFetchingSearchResults: boolean;
-  isFetchingMoreSearchResults: boolean;
-  isFetchingMoreCustomListEntries: boolean;
-  libraries?: LibraryData[];
-  lanes?: LaneData[];
-  languages?: LanguagesData;
-}
+// export interface CustomListsStateProps {
+//   customListEditorAutoUpdateStatus?: string;
+//   customListEditorProperties?: CustomListEditorProperties;
+//   customListEditorSavedName?: string;
+//   customListEditorSearchParams?: CustomListEditorSearchParams;
+//   customListEditorEntries?: CustomListEditorEntriesData;
+//   customListEditorIsLoaded?: boolean;
+//   customListEditorIsOwner?: boolean;
+//   customListEditorIsShared?: boolean;
+//   customListEditorIsSharePending?: boolean;
+//   customListEditorIsValid?: boolean;
+//   customListEditorIsModified?: boolean;
+//   customListEditorIsSearchModified?: boolean;
+//   customListEditorIsAutoUpdateEnabled?: boolean;
+//   FiltersEnabled?: boolean;
+//   lists: CustomListData[];
+//   listDetails?: CollectionData;
+//   collections: AdminCollectionData[];
+//   searchResults: CollectionData;
+//   fetchError?: FetchErrorData;
+//   isFetching: boolean;
+//   isFetchingSearchResults: boolean;
+//   isFetchingMoreSearchResults: boolean;
+//   isFetchingMoreCustomListEntries: boolean;
+//   libraries?: LibraryData[];
+//   lanes?: LaneData[];
+//   languages?: LanguagesData;
+// }
 
-export interface CustomListsDispatchProps {
-  fetchLanes: () => Promise<LanesData>;
-  fetchCustomLists: () => Promise<CustomListsData>;
-  fetchCustomListDetails: (listId: string) => Promise<CollectionData>;
-  openCustomListEditor: (listId: string) => void;
-  saveCustomListEditor: () => Promise<void>;
-  resetCustomListEditor?: () => void;
-  executeCustomListEditorSearch?: () => void;
-  updateCustomListEditorProperty?: (name: string, value) => void;
-  toggleCustomListEditorCollection?: (id: number) => void;
-  updateCustomListEditorSearchParam?: (name: string, value) => void;
-  addCustomListEditorAdvSearchQuery?: (
-    builderName: string,
-    query: AdvancedSearchQuery
-  ) => void;
-  updateClearFiltersFlag?: (builderName: string, value: boolean) => void;
-  updateCustomListEditorAdvSearchQueryBoolean?: (
-    builderName: string,
-    id: string,
-    bool: string
-  ) => void;
-  moveCustomListEditorAdvSearchQuery?: (
-    builderName: string,
-    id: string,
-    targetId: string
-  ) => void;
-  removeCustomListEditorAdvSearchQuery?: (
-    builderName: string,
-    id: string
-  ) => void;
-  selectCustomListEditorAdvSearchQuery?: (
-    builderName: string,
-    id: string
-  ) => void;
-  addCustomListEditorEntry?: (id: string) => void;
-  addAllCustomListEditorEntries?: () => void;
-  deleteCustomListEditorEntry?: (id: string) => void;
-  deleteAllCustomListEditorEntries?: () => void;
-  deleteCustomList: (listId: string) => Promise<void>;
-  shareCustomList?: (listId: string) => Promise<void>;
-  loadMoreSearchResults: () => void;
-  loadMoreEntries: () => void;
-  fetchCollections: () => Promise<CollectionsData>;
-  fetchLibraries: () => void;
-  fetchLanguages: () => void;
-}
+// export interface CustomListsDispatchProps {
+//   fetchLanes: () => Promise<LanesData>;
+//   fetchCustomLists: () => Promise<CustomListsData>;
+//   fetchCustomListDetails: (listId: string) => Promise<CollectionData>;
+//   openCustomListEditor: (listId: string) => void;
+//   saveCustomListEditor: () => Promise<void>;
+//   resetCustomListEditor?: () => void;
+//   executeCustomListEditorSearch?: () => void;
+//   updateCustomListEditorProperty?: (name: string, value) => void;
+//   toggleCustomListEditorCollection?: (id: number) => void;
+//   updateCustomListEditorSearchParam?: (name: string, value) => void;
+//   addCustomListEditorAdvSearchQuery?: (
+//     builderName: string,
+//     query: AdvancedSearchQuery
+//   ) => void;
+//   updateClearFiltersFlag?: (builderName: string, value: boolean) => void;
+//   updateCustomListEditorAdvSearchQueryBoolean?: (
+//     builderName: string,
+//     id: string,
+//     bool: string
+//   ) => void;
+//   moveCustomListEditorAdvSearchQuery?: (
+//     builderName: string,
+//     id: string,
+//     targetId: string
+//   ) => void;
+//   removeCustomListEditorAdvSearchQuery?: (
+//     builderName: string,
+//     id: string
+//   ) => void;
+//   selectCustomListEditorAdvSearchQuery?: (
+//     builderName: string,
+//     id: string
+//   ) => void;
+//   addCustomListEditorEntry?: (id: string) => void;
+//   addAllCustomListEditorEntries?: () => void;
+//   deleteCustomListEditorEntry?: (id: string) => void;
+//   deleteAllCustomListEditorEntries?: () => void;
+//   deleteCustomList: (listId: string) => Promise<void>;
+//   shareCustomList?: (listId: string) => Promise<void>;
+//   loadMoreSearchResults: () => void;
+//   loadMoreEntries: () => void;
+//   fetchCollections: () => Promise<CollectionsData>;
+//   fetchLibraries: () => void;
+//   fetchLanguages: () => void;
+// }
 
 export interface CustomListsOwnProps {
   store?: Store<RootState>;
@@ -118,16 +121,20 @@ export interface CustomListsOwnProps {
   startingTitle?: string;
 }
 
-export interface CustomListsProps
-  extends React.Props<CustomListsProps>,
-    CustomListsStateProps,
-    CustomListsDispatchProps,
-    CustomListsOwnProps {}
+// export interface CustomListsProps
+//   extends React.Props<CustomListsProps>,
+//     CustomListsStateProps,
+//     CustomListsDispatchProps,
+//     CustomListsOwnProps {}
 
 export interface CustomListsState {
   filter: string;
   sort: string;
 }
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export type CustomListsProps = ConnectedProps<typeof connector> &
+  CustomListsOwnProps;
 
 /** Body of the custom lists page, with all a library's lists shown in a left sidebar and
     a list editor on the right. */
@@ -136,6 +143,7 @@ export class CustomLists extends React.Component<
   CustomListsState
 > {
   context: { admin: Admin };
+  languagesSubscription;
 
   static contextTypes = {
     admin: PropTypes.object.isRequired,
@@ -148,10 +156,23 @@ export class CustomLists extends React.Component<
     this.changeFilter = this.changeFilter.bind(this);
     this.changeSort = this.changeSort.bind(this);
     this.getEnabledEntryPoints = this.getEnabledEntryPoints.bind(this);
+    this.subscribe = this.subscribe.bind(this);
+    this.unsubscribe = this.unsubscribe.bind(this);
+
     this.state = {
       filter: "owned",
       sort: "asc",
     };
+  }
+
+  subscribe() {
+    // Subscribe to RTK Query caches and fetch, as needed.
+    this.languagesSubscription = this.props.fetchLanguages();
+  }
+
+  unsubscribe() {
+    // Unsubscribe from RTK Query caches.
+    this.languagesSubscription.unsubscribe();
   }
 
   render(): JSX.Element {
@@ -210,7 +231,7 @@ export class CustomLists extends React.Component<
         .isFetchingMoreCustomListEntries,
       isFetchingSearchResults: this.props.isFetchingSearchResults,
       isFetchingMoreSearchResults: this.props.isFetchingMoreSearchResults,
-      languages: this.props.languages,
+      languages: this.props.languages.data,
       library: this.props.libraries?.find(
         (l) => l.short_name === this.props.library
       ),
@@ -266,7 +287,8 @@ export class CustomLists extends React.Component<
 
     fetchCollections?.();
     fetchLibraries?.();
-    fetchLanguages?.();
+
+    this.subscribe();
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -301,6 +323,10 @@ export class CustomLists extends React.Component<
         fetchCustomListDetails?.(identifier);
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   changeFilter(filter) {
@@ -444,7 +470,7 @@ export class CustomLists extends React.Component<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState, ownProps: CustomListsOwnProps) {
   return {
     customListEditorProperties:
       state.editor.customListEditor.properties.current,
@@ -492,14 +518,17 @@ function mapStateToProps(state, ownProps) {
       state.editor.collections &&
       state.editor.collections.data &&
       state.editor.collections.data.collections,
-    languages: state.editor.languages && state.editor.languages.data,
+    languages: adminApi.endpoints.getLanguages.select()(state),
     libraries:
       state.editor.libraries.data && state.editor.libraries.data.libraries,
     lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  ownProps: CustomListsOwnProps
+) {
   const fetcher = new DataFetcher({ adapter });
   const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
@@ -527,7 +556,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchCollections: () => dispatch(actions.fetchCollections()),
     fetchLibraries: () => dispatch(actions.fetchLibraries()),
     fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
-    fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    fetchLanguages: () => dispatch(adminApi.endpoints.getRoles.initiate()),
     updateCustomListEditorProperty: (name: string, value) =>
       dispatch(actions.updateCustomListEditorProperty(name, value)),
     toggleCustomListEditorCollection: (id: number) =>
@@ -587,13 +616,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-const ConnectedCustomLists = connect<
-  CustomListsStateProps,
-  CustomListsDispatchProps,
-  CustomListsOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(CustomLists as any);
-
-export default ConnectedCustomLists;
+export default connector(CustomLists as any);
