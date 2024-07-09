@@ -96,7 +96,7 @@ export default function adapter(data: OPDSEntry): BookData {
     authors.push(Object.assign({}, author, { role: "aut" }));
   }
   const contributors = data.contributors?.map((contributor) => ({
-    name: contributor.name,
+    name: contributor?.name,
     role: contributor?.role,
     uri: contributor?.uri,
   }));

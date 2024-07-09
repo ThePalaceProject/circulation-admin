@@ -2,8 +2,8 @@ import * as React from "react";
 import { Modal } from "react-bootstrap";
 import { Button } from "library-simplified-reusable-components";
 
-export const SHOW_CONFIRMATION = "requestConfirmation";
-export const SHOW_OUTCOME = "displayOutcome";
+export const SHOW_CONFIRMATION = "SHOW_CONFIRMATION";
+export const SHOW_OUTCOME = "SHOW_OUTCOME";
 export type ModalState =
   | typeof SHOW_CONFIRMATION
   | typeof SHOW_OUTCOME

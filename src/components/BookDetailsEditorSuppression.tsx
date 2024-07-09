@@ -67,11 +67,7 @@ const BookDetailsEditorSuppression = ({
         setOutcomeMessage(
           <span>
             ✅{" "}
-            {
-              (resolved?.message
-                ? resolved.message
-                : defaultSuccessMessage) as React.ReactElement
-            }
+            {(resolved?.message || defaultSuccessMessage) as React.ReactElement}
           </span>
         );
       })
