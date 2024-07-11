@@ -12,6 +12,9 @@ export interface Navigate {
 export interface LinkData {
   href: string;
   rel: string;
+  role?: string;
+  title?: string;
+  type?: string;
 }
 
 export interface CategoryData {

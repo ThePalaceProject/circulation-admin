@@ -17,7 +17,7 @@ const opdsLinkToLinkData = (link: OPDSLink | undefined): LinkData => {
     title = undefined,
     type = undefined,
   } = link;
-  return { ...link, href, rel, title, type, role };
+  return { href, rel, title, type, role };
 };
 
 /** Extract metadata and links from an OPDS entry for use on the
