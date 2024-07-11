@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import catalogReducers from "@thepalaceproject/web-opds-client/lib/reducers/index";
 import { State as CatalogState } from "@thepalaceproject/web-opds-client/lib/state";
+import { api } from "./features/api/apiSlice";
 import bookEditorSlice from "./features/book/bookEditorSlice";
 import editorReducers, { State as EditorState } from "./reducers/index";
 
@@ -18,9 +19,14 @@ export default function buildStore(initialState?: CombinedState) {
       editor: editorReducers,
       catalog: catalogReducers,
       bookEditor: bookEditorSlice,
+      [api.reducerPath]: api.reducer,
     },
     preloadedState: initialState,
     devTools: process.env.NODE_ENV !== "production",
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }).concat(api.middleware),
   });
 }
 

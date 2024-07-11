@@ -1,5 +1,24 @@
-import { BookData } from "./interfaces";
-import { OPDSEntry } from "opds-feed-parser";
+import { BookData, LinkData } from "./interfaces";
+import { OPDSEntry, OPDSLink } from "opds-feed-parser";
+import {
+  PER_LIBRARY_SUPPRESS_REL,
+  PER_LIBRARY_UNSUPPRESS_REL,
+} from "./features/book/bookEditorSlice";
+
+/** Convert an OPDS link to a LinkData object. */
+const opdsLinkToLinkData = (link: OPDSLink | undefined): LinkData => {
+  if (!link) {
+    return link;
+  }
+  const {
+    href,
+    rel,
+    role = undefined,
+    title = undefined,
+    type = undefined,
+  } = link;
+  return { href, rel, title, type, role };
+};
 
 /** Extract metadata and links from an OPDS entry for use on the
     book details page. */
@@ -10,6 +29,14 @@ export default function adapter(data: OPDSEntry): BookData {
 
   const restoreLink = data.links.find((link) => {
     return link.rel === "http://librarysimplified.org/terms/rel/restore";
+  });
+
+  const suppressPerLibraryLink = data.links.find((link) => {
+    return link.rel === PER_LIBRARY_SUPPRESS_REL;
+  });
+
+  const unsuppressPerLibraryLink = data.links.find((link) => {
+    return link.rel === PER_LIBRARY_UNSUPPRESS_REL;
   });
 
   const refreshLink = data.links.find((link) => {
@@ -68,6 +95,11 @@ export default function adapter(data: OPDSEntry): BookData {
   for (const author of data.authors) {
     authors.push(Object.assign({}, author, { role: "aut" }));
   }
+  const contributors = data.contributors?.map((contributor) => ({
+    name: contributor?.name,
+    role: contributor?.role,
+    uri: contributor?.uri,
+  }));
 
   let rating;
   try {
@@ -88,28 +120,27 @@ export default function adapter(data: OPDSEntry): BookData {
   const imageLink = data.links.find((link) => {
     return link.rel === "http://opds-spec.org/image";
   });
-  let coverUrl;
-  if (imageLink) {
-    coverUrl = imageLink.href;
-  }
+  const coverUrl: string | undefined = imageLink?.href;
 
   return {
     id: data.id,
     title: data.title,
     authors: authors,
-    contributors: data.contributors,
+    contributors: contributors,
     subtitle: data.subtitle,
     summary: data.summary.content,
     audience: audience && audience.term,
     targetAgeRange: targetAgeRange,
     fiction: fiction,
     categories: categories,
-    hideLink: hideLink,
-    restoreLink: restoreLink,
-    refreshLink: refreshLink,
-    editLink: editLink,
-    issuesLink: issuesLink,
-    changeCoverLink: changeCoverLink,
+    hideLink: opdsLinkToLinkData(hideLink),
+    restoreLink: opdsLinkToLinkData(restoreLink),
+    refreshLink: opdsLinkToLinkData(refreshLink),
+    suppressPerLibraryLink: opdsLinkToLinkData(suppressPerLibraryLink),
+    unsuppressPerLibraryLink: opdsLinkToLinkData(unsuppressPerLibraryLink),
+    editLink: opdsLinkToLinkData(editLink),
+    issuesLink: opdsLinkToLinkData(issuesLink),
+    changeCoverLink: opdsLinkToLinkData(changeCoverLink),
     series: data.series && data.series.name,
     seriesPosition: data.series && data.series.position,
     medium: medium,

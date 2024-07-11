@@ -12,6 +12,9 @@ export interface Navigate {
 export interface LinkData {
   href: string;
   rel: string;
+  role?: string;
+  title?: string;
+  type?: string;
 }
 
 export interface CategoryData {
@@ -41,6 +44,8 @@ export interface BookData {
   hideLink?: LinkData;
   restoreLink?: LinkData;
   refreshLink?: LinkData;
+  suppressPerLibraryLink?: LinkData;
+  unsuppressPerLibraryLink?: LinkData;
   editLink?: LinkData;
   issuesLink?: LinkData;
   changeCoverLink?: LinkData;
