@@ -500,29 +500,6 @@ describe("actions", () => {
     });
   });
 
-  describe("fetchStats", () => {
-    it("dispatches request, load, and success", async () => {
-      const dispatch = stub();
-      const statisticsApiResponseData = "stats";
-      fetcher.testData = {
-        ok: true,
-        status: 200,
-        json: () =>
-          new Promise<any>((resolve, reject) => {
-            resolve(statisticsApiResponseData);
-          }),
-      };
-      fetcher.resolve = true;
-
-      const data = await actions.fetchStatistics()(dispatch);
-      expect(dispatch.callCount).to.equal(3);
-      expect(dispatch.args[0][0].type).to.equal(ActionCreator.STATS_REQUEST);
-      expect(dispatch.args[1][0].type).to.equal(ActionCreator.STATS_SUCCESS);
-      expect(dispatch.args[2][0].type).to.equal(ActionCreator.STATS_LOAD);
-      expect(data).to.deep.equal(statisticsApiResponseData);
-    });
-  });
-
   describe("fetchDiagnostics", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();

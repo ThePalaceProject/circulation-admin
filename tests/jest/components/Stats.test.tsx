@@ -10,7 +10,8 @@ import {
   statisticsApiResponseData,
   testLibraryKey as sampleLibraryKey,
 } from "../../__data__/statisticsApiResponseData";
-import { normalizeStatistics } from "../../../src/components/Stats";
+
+import { normalizeStatistics } from "../../../src/features/stats/normalizeStatistics";
 
 describe("Dashboard Statistics", () => {
   // NB: This adds test to the already existing tests in:

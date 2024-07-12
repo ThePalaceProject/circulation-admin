@@ -7,12 +7,14 @@ import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import ContextProvider from "../ContextProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { normalizeStatistics, Stats, StatsProps } from "../Stats";
+import { Stats, StatsProps } from "../Stats";
 import LibraryStats from "../LibraryStats";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 
 import { statisticsApiResponseData } from "../../../tests/__data__/statisticsApiResponseData";
+
+import { normalizeStatistics } from "../../features/stats/normalizeStatistics";
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

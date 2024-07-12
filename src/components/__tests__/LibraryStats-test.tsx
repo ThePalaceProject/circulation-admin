@@ -6,7 +6,6 @@ import { mount } from "enzyme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ContextProvider from "../ContextProvider";
 
-import { normalizeStatistics } from "../Stats";
 import LibraryStats from "../LibraryStats";
 import { BarChart } from "recharts";
 import {
@@ -16,6 +15,8 @@ import {
   noInventoryLibraryKey,
   noPatronsLibraryKey,
 } from "../../../tests/__data__/statisticsApiResponseData";
+
+import { normalizeStatistics } from "../../features/stats/normalizeStatistics";
 
 const AllProviders = ({ children }) => {
   const queryClient = new QueryClient();
