@@ -12,7 +12,7 @@
   },
   "exclude": ["lib", "node_modules", "src/components/__tests_jest__", "tests"],
   "typedocOptions": {
-    "mode": "file",
+    "entryPoints": ["src/index.tsx"],
     "out": "docs"
   }
 }
