@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { stub } from "sinon";
 
-import * as React from "react";
+import React from "react";
 import { shallow, mount } from "enzyme";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 

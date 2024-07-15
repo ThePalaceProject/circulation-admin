@@ -215,7 +215,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   changeLibrary() {
     let library = this.libraryRef.current.getValue();
     if (library) {
-      this.context.router.push(
+      (this.context.router as any).push(
         "/admin/web/collection/" + library + "%2Fgroups?max_cache_age=0"
       );
       this.forceUpdate();

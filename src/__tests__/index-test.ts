@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { spy } from "sinon";
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React from "react";
+import ReactDOM from "react-dom";
 import { mount } from "enzyme";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

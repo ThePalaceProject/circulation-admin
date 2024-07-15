@@ -16,7 +16,7 @@ export interface CustomListBookCardProps {
   index: number;
   typeOfCard: "searchResult" | "entry";
   opdsFeedUrl?: string;
-  book: Entry;
+  book: any;
   handleAddEntry?: (id: string) => void;
   handleDeleteEntry?: (id: string) => void;
 }

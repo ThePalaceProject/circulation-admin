@@ -1,7 +1,7 @@
 import * as React from "react";
 import { LibraryStatsData, LibraryData } from "../interfaces";
 import { BarChart, XAxis, YAxis, Tooltip, Bar } from "recharts";
-import * as numeral from "numeral";
+import numeral from "numeral";
 
 export interface LibraryStatsProps {
   stats: LibraryStatsData;
@@ -12,7 +12,7 @@ export interface LibraryStatsProps {
     for a single library or all libraries the admin has access to. */
 export default class LibraryStats extends React.Component<
   LibraryStatsProps,
-  {}
+  any
 > {
   render(): JSX.Element {
     const collectionCounts =
