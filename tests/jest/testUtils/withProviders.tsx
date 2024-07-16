@@ -47,7 +47,7 @@ export const componentWithProviders = ({
     featureFlags: defaultFeatureFlags,
   },
   queryClient = new QueryClient(),
-}: TestProviderWrapperOptions): React.FunctionComponent => {
+}: TestProviderWrapperOptions = {}): React.FunctionComponent => {
   const effectiveContextProviderProps = {
     ...defaultContextProviderProps,
     ...contextProviderProps,
