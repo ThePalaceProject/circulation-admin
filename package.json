@@ -1,6 +1,6 @@
 {
   "name": "simplified-circulation-web",
-  "version": "0.6.0-rc3",
+  "version": "0.6.0",
   "description": "Web Front-end for Library Simplified Circulation Manager Admin Interface",
   "repository": {
     "type": "git",
@@ -18,8 +18,6 @@
     "test-list": "mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js --reporter ./testReporter.js",
     "test-file": "npm run lint && tsc && cp -r src/stylesheets lib && mocha --require lib/testHelper.js",
     "test-browser": "npm run test-chrome && npm run test-firefox",
-    "test-chrome": "node_modules/.bin/selenium-standalone install && nightwatch -e chrome",
-    "test-firefox": "node_modules/.bin/selenium-standalone install && nightwatch -e firefox",
     "dev": "webpack --watch --progress --display-modules --config webpack.dev.config",
     "dev-test-axe": "TEST_AXE=true npm run dev",
     "prod": "NODE_OPTIONS=--openssl-legacy-provider webpack -p --progress --display-modules --config webpack.prod.config",
@@ -32,8 +30,8 @@
     "draft-js": "0.11.7",
     "library-simplified-reusable-components": "1.3.18",
     "numeral": "2.0.6",
-    "opds-feed-parser": "0.1.0-rc",
-    "opds-web-client": "0.7.0-rc2",
+    "opds-feed-parser": "0.1.0",
+    "opds-web-client": "0.7.0",
     "prop-types": "15.7.2",
     "qs": "6.2.0",
     "react": "16.8.6",
@@ -46,7 +44,7 @@
     "recharts": "^1.0.1",
     "redux": "4.0.1",
     "redux-thunk": "2.3.0",
-    "request": "2.85.0",
+    "request": "2.88.2",
     "ts-node": "10.9.2"
   },
   "devDependencies": {
@@ -83,7 +81,6 @@
     "lint-staged": "15.2.7",
     "mini-css-extract-plugin": "1.3.0",
     "mocha": "10.6.0",
-    "nightwatch": "1.0.19",
     "prettier": "2.1.2",
     "react-axe": "3.3.0",
     "sass": "1.77.6",

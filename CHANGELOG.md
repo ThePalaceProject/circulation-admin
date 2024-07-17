@@ -21,7 +21,7 @@ This release includes the minimum updates required for working on Node 20 and pa
 - Updated the following npm packages:
   `@babel/present-env`, `@babel/preset-react`, `@babel/preset-typescript`, `@testing-library/jest-dom`, `@testing-library/react`, `@types/mocha`, `@types/node`, `@types/prop-types`, `@types/react`, `@types/react-redux`, `@typescript-eslint/eslint-plugin`, `babel-jest`, `bootstrap`, `colors-cli`, `css-loader`, `draft-convert`, `enzyme`, `enzyme-adapter-react-16`, `eslint`, `eslint-config-prettier`, `eslint-plugin-jsx-a11y`, `eslint-plugin-prettier`, `eslint-plugin-react`, `fetch-mock`, `file-loader`, `follow-redirects`, `husky`, `jest`, `jsdom`, `lint-staged`, `mini-css-extract-plugin`, `mocha`, `nightwatch`, `numeral`, `opds-feed-parser`, `opds-web-client`, `prop-types`, `qa`, `react`, `react-axe`, `react-beautiful-dnd`, `react-bootstrap`, `react-color`, `react-dom`, `react-redux`, `react-router`, `redux`, `redux-thunk`, `request`, `sass-lint`, `sass-loader`, `selenium-standalone`, `sinon`, `style-loader`, `terser-webpack-plugin`, `ts-loader`, `ts-node`, `typedoc`, `typescript`, `uglifyjs-webpack-plugin`, `webpack`, `webpack-cli`, `webpack-merge`
 
-### Removed
+#### Removed
 
 - Removed `tslint-react-a11y` from `tslint` configuration.
 - Removed eslint config in `lint-staged` command.
