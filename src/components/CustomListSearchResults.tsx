@@ -30,7 +30,7 @@ export default function CustomListSearchResults({
 }: CustomListSearchResultsProps) {
   const searchResultsNotInEntries = () => {
     const entryIds =
-      entries && entries.length ? entries.map((entry) => entry.id) : [];
+      entries && entries.length ? entries.map((entry: any) => entry.id) : [];
     const resultsNotInEntries =
       searchResults.books && searchResults.books.length
         ? searchResults.books.filter((book) => {

@@ -102,7 +102,7 @@ export default function CustomListEntries({
             }
           >
             {entries &&
-              entries.map((book, index) => (
+              entries.map((book: any, index) => (
                 <CustomListBookCard
                   index={index}
                   key={book.id}

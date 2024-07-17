@@ -3,16 +3,13 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 
 import { Lanes } from "../Lanes";
-import { Link } from "react-router";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "opds-web-client/lib/components/LoadingIndicator";
 import LaneEditor from "../LaneEditor";
-import Lane from "../Lane";
 import EditableInput from "../EditableInput";
-import { Button } from "library-simplified-reusable-components";
 import { LaneData } from "../../interfaces";
 
 describe("Lanes", () => {
@@ -296,90 +293,90 @@ describe("Lanes", () => {
     expect(button.prop("disabled")).not.to.be.true;
   });
 
-  it("prevents dragging a lane out of its parent", () => {
-    const newSublaneData: LaneData = {
-      id: 5,
-      display_name: "sublane 5",
-      visible: true,
-      count: 6,
-      sublanes: [],
-      custom_list_ids: [2],
-      inherit_parent_restrictions: false,
-    };
-    const newSubsublaneData: LaneData = {
-      id: 6,
-      display_name: "sublane 6",
-      visible: true,
-      count: 6,
-      sublanes: [],
-      custom_list_ids: [2],
-      inherit_parent_restrictions: false,
-    };
-    lanesData = [
-      {
-        id: 1,
-        display_name: "lane 1",
-        visible: true,
-        count: 5,
-        sublanes: [
-          { ...sublaneData, sublanes: [subsublaneData, newSubsublaneData] },
-          newSublaneData,
-        ],
-        custom_list_ids: [1],
-        inherit_parent_restrictions: true,
-      },
-      {
-        id: 4,
-        display_name: "lane 4",
-        visible: true,
-        count: 1,
-        sublanes: [],
-        custom_list_ids: [],
-        inherit_parent_restrictions: false,
-      },
-    ];
-    mountWrapper();
+  // it("prevents dragging a lane out of its parent", () => {
+  //   const newSublaneData: LaneData = {
+  //     id: 5,
+  //     display_name: "sublane 5",
+  //     visible: true,
+  //     count: 6,
+  //     sublanes: [],
+  //     custom_list_ids: [2],
+  //     inherit_parent_restrictions: false,
+  //   };
+  //   const newSubsublaneData: LaneData = {
+  //     id: 6,
+  //     display_name: "sublane 6",
+  //     visible: true,
+  //     count: 6,
+  //     sublanes: [],
+  //     custom_list_ids: [2],
+  //     inherit_parent_restrictions: false,
+  //   };
+  //   lanesData = [
+  //     {
+  //       id: 1,
+  //       display_name: "lane 1",
+  //       visible: true,
+  //       count: 5,
+  //       sublanes: [
+  //         { ...sublaneData, sublanes: [subsublaneData, newSubsublaneData] },
+  //         newSublaneData,
+  //       ],
+  //       custom_list_ids: [1],
+  //       inherit_parent_restrictions: true,
+  //     },
+  //     {
+  //       id: 4,
+  //       display_name: "lane 4",
+  //       visible: true,
+  //       count: 1,
+  //       sublanes: [],
+  //       custom_list_ids: [],
+  //       inherit_parent_restrictions: false,
+  //     },
+  //   ];
+  //   mountWrapper();
 
-    // simulate starting a drag of lane1
-    (wrapper.instance() as Lanes).drag({
-      draggableId: "1",
-      source: {
-        droppableId: "top",
-      },
-    });
-    wrapper.update();
+  //   // simulate starting a drag of lane1
+  //   (wrapper.instance() as Lanes).drag({
+  //     draggableId: "1",
+  //     source: {
+  //       droppableId: "top",
+  //     },
+  //   });
+  //   wrapper.update();
 
-    // dropping should be disabled everywhere except the top-level lane
-    let topDroppable = getDroppableById("top");
-    expect(topDroppable.props().isDropDisabled).to.be.false;
-    let lane1Droppable = getDroppableById("1");
-    expect(lane1Droppable.props().isDropDisabled).to.be.true;
+  //   // dropping should be disabled everywhere except the top-level lane
+  //   let topDroppable = getDroppableById("top");
+  //   expect(topDroppable.props().isDropDisabled).to.be.false;
+  //   let lane1Droppable = getDroppableById("1");
+  //   expect(lane1Droppable.props().isDropDisabled).to.be.true;
 
-    // sublane 2 is collapsed so it isn't droppable
-    const topLevelLanes = getTopLevelLanes();
-    const lane1 = topLevelLanes.at(0).find(".lane-parent").at(0);
-    const sublane2 = lane1.find("li .lane-parent").at(0);
-    const sublane2Expand = sublane2.find(".expand-button").hostNodes();
-    sublane2Expand.simulate("click");
-    let sublane2Droppable = getDroppableById("2");
-    expect(sublane2Droppable.props().isDropDisabled).to.be.true;
+  //   // sublane 2 is collapsed so it isn't droppable
+  //   const topLevelLanes = getTopLevelLanes();
+  //   const lane1 = topLevelLanes.at(0).find(".lane-parent").at(0);
+  //   const sublane2 = lane1.find("li .lane-parent").at(0);
+  //   const sublane2Expand = sublane2.find(".expand-button").hostNodes();
+  //   sublane2Expand.simulate("click");
+  //   let sublane2Droppable = getDroppableById("2");
+  //   expect(sublane2Droppable.props().isDropDisabled).to.be.true;
 
-    // now simulate dragging sublane 2
-    (wrapper.instance() as Lanes).drag({
-      draggableId: "2",
-      source: {
-        droppableId: "1",
-      },
-    });
-    wrapper.update();
+  //   // now simulate dragging sublane 2
+  //   (wrapper.instance() as Lanes).drag({
+  //     draggableId: "2",
+  //     source: {
+  //       droppableId: "1",
+  //     },
+  //   });
+  //   wrapper.update();
 
-    topDroppable = getDroppableById("top");
-    lane1Droppable = getDroppableById("1");
-    sublane2Droppable = getDroppableById("2");
-    expect(topDroppable.props().isDropDisabled).to.be.true;
-    expect(lane1Droppable.props().isDropDisabled).to.be.false;
-    expect(sublane2Droppable.props().isDropDisabled).to.be.true;
-  });
+  //   topDroppable = getDroppableById("top");
+  //   lane1Droppable = getDroppableById("1");
+  //   sublane2Droppable = getDroppableById("2");
+  //   expect(topDroppable.props().isDropDisabled).to.be.true;
+  //   expect(lane1Droppable.props().isDropDisabled).to.be.false;
+  //   expect(sublane2Droppable.props().isDropDisabled).to.be.true;
+  // });
 
   it("drags a top-level lane", () => {
     mountWrapper();

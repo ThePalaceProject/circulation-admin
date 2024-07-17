@@ -1,6 +1,6 @@
 import { jsdom } from "jsdom";
 import { configure } from "enzyme";
-import * as Adapter from "enzyme-adapter-react-16";
+import Adapter from "enzyme-adapter-react-16";
 
 configure({ adapter: new Adapter() });
 
@@ -11,6 +11,8 @@ const win = doc.defaultView;
 global["document"] = doc;
 global["window"] = win;
 global["HTMLElement"] = win.HTMLElement;
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+(global as any).Element = function () {};
 
 Object.keys(window).forEach((key) => {
   if (!(key in global)) {

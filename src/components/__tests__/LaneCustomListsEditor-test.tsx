@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { stub } from "sinon";
 
-import * as React from "react";
+import React from "react";
 import { mount } from "enzyme";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
@@ -28,13 +28,13 @@ describe("LaneCustomListsEditor", () => {
         customListIds={[]}
       />
     );
-    let container = wrapper.find(".available-lists");
+    let container = wrapper.find("div.available-lists");
     expect(container.length).to.equal(1);
 
-    let droppable = container.find(Droppable);
+    let droppable = container.find("div.droppable");
     expect(droppable.length).to.equal(1);
 
-    let lists = droppable.find(Draggable);
+    let lists = droppable.find("div.available-list");
     expect(lists.length).to.equal(3);
 
     expect(lists.at(0).text()).to.contain("list 1");
@@ -54,10 +54,10 @@ describe("LaneCustomListsEditor", () => {
     container = wrapper.find(".available-lists");
     expect(container.length).to.equal(1);
 
-    droppable = container.find(Droppable);
+    droppable = container.find("div.droppable");
     expect(droppable.length).to.equal(1);
 
-    lists = droppable.find(Draggable);
+    lists = droppable.find("div.available-list");
     expect(lists.length).to.equal(1);
 
     expect(lists.at(0).text()).to.contain("list 2");
@@ -74,10 +74,10 @@ describe("LaneCustomListsEditor", () => {
     let container = wrapper.find(".current-lists");
     expect(container.length).to.equal(1);
 
-    let droppable = container.find(Droppable);
+    let droppable = container.find("div.droppable");
     expect(droppable.length).to.equal(1);
 
-    let lists = droppable.find(Draggable);
+    let lists = droppable.find("div.available-list");
     expect(lists.length).to.equal(0);
 
     wrapper = mount(
@@ -90,10 +90,10 @@ describe("LaneCustomListsEditor", () => {
     container = wrapper.find(".current-lists");
     expect(container.length).to.equal(1);
 
-    droppable = container.find(Droppable);
+    droppable = container.find("div.droppable");
     expect(droppable.length).to.equal(1);
 
-    lists = droppable.find(Draggable);
+    lists = droppable.find(".current-list");
     expect(lists.length).to.equal(2);
 
     expect(lists.at(0).text()).to.contain("list 2");
@@ -112,8 +112,8 @@ describe("LaneCustomListsEditor", () => {
     );
 
     let currentContainer = wrapper.find(".current-lists");
-    let droppable = currentContainer.find(Droppable);
-    let lists = droppable.find(Draggable);
+    let droppable = currentContainer.find(".droppable");
+    let lists = droppable.find(".current-list");
 
     expect(lists.length).to.equal(1);
     expect(lists.at(0).text()).to.contain("list 1");
@@ -138,8 +138,8 @@ describe("LaneCustomListsEditor", () => {
     expect(wrapper.props().customListIds).to.deep.equal([1, 2]);
 
     currentContainer = wrapper.find(".current-lists");
-    droppable = currentContainer.find(Droppable);
-    lists = droppable.find(Draggable);
+    droppable = currentContainer.find(".droppable");
+    lists = droppable.find(".current-list");
 
     expect(lists.length).to.equal(2);
     expect(lists.at(0).text()).to.contain("list 1");
@@ -160,7 +160,7 @@ describe("LaneCustomListsEditor", () => {
     wrapper.update();
 
     const availableContainer = wrapper.find(".available-lists");
-    let droppable = availableContainer.find(Droppable);
+    let droppable = availableContainer.find(".droppable");
     // simulate dropping on the available lists
     (wrapper.instance() as LaneCustomListsEditor).onDragEnd({
       draggableId: 1,
@@ -176,8 +176,8 @@ describe("LaneCustomListsEditor", () => {
 
     // the dropped item has been removed from the current lists
     const currentContainer = wrapper.find(".current-lists");
-    droppable = currentContainer.find(Droppable);
-    const lists = droppable.find(Draggable);
+    droppable = currentContainer.find(".droppable");
+    const lists = droppable.find(".current-list");
 
     expect(lists.length).to.equal(1);
     expect(lists.at(0).text()).to.contain("list 2");
@@ -202,8 +202,8 @@ describe("LaneCustomListsEditor", () => {
 
     // the item has been added to the current lists
     const currentContainer = wrapper.find(".current-lists");
-    const droppable = currentContainer.find(Droppable);
-    const lists = droppable.find(Draggable);
+    const droppable = currentContainer.find(".droppable");
+    const lists = droppable.find(".current-list");
     expect(lists.length).to.equal(2);
     expect(lists.at(0).text()).to.contain("list 1");
     expect(onUpdate.callCount).to.equal(1);
@@ -225,8 +225,8 @@ describe("LaneCustomListsEditor", () => {
     wrapper.setProps({ customListIds: onUpdate.args[0][0] });
     // this list has been removed from the current lists
     const currentContainer = wrapper.find(".current-lists");
-    const droppable = currentContainer.find(Droppable);
-    const lists = droppable.find(Draggable);
+    const droppable = currentContainer.find(".droppable");
+    const lists = droppable.find(".current-list");
     expect(lists.length).to.equal(1);
     expect(lists.at(0).text()).to.contain("list 2");
     expect(onUpdate.callCount).to.equal(1);

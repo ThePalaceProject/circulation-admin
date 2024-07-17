@@ -1,5 +1,33 @@
 ## Changelog
 
+### v0.6.0
+
+NYPL Remediation Team update
+
+This release includes the minimum updates required for working on Node 20 and patching npm security vulnerablities.
+
+#### Added
+
+- Added an `.nvmrc` file for node 20 usage.
+- Added `NODE_OPTIONS=--openssl-legacy-provider` to the npm `prod` script command.
+- Added the following npm packages:
+  `@types/recharts`, `sass`,
+
+#### Updated
+
+- Updated Github Actions to use node 20.
+- Updated code to conform to updated Typescript version.
+- Updated a few unit tests to work with updated drag and drop package.
+- Updated the following npm packages:
+  `@babel/present-env`, `@babel/preset-react`, `@babel/preset-typescript`, `@testing-library/jest-dom`, `@testing-library/react`, `@types/mocha`, `@types/node`, `@types/prop-types`, `@types/react`, `@types/react-redux`, `@typescript-eslint/eslint-plugin`, `babel-jest`, `bootstrap`, `colors-cli`, `css-loader`, `draft-convert`, `enzyme`, `enzyme-adapter-react-16`, `eslint`, `eslint-config-prettier`, `eslint-plugin-jsx-a11y`, `eslint-plugin-prettier`, `eslint-plugin-react`, `fetch-mock`, `file-loader`, `follow-redirects`, `husky`, `jest`, `jsdom`, `lint-staged`, `mini-css-extract-plugin`, `mocha`, `nightwatch`, `numeral`, `opds-feed-parser`, `opds-web-client`, `prop-types`, `qa`, `react`, `react-axe`, `react-beautiful-dnd`, `react-bootstrap`, `react-color`, `react-dom`, `react-redux`, `react-router`, `redux`, `redux-thunk`, `request`, `sass-lint`, `sass-loader`, `selenium-standalone`, `sinon`, `style-loader`, `terser-webpack-plugin`, `ts-loader`, `ts-node`, `typedoc`, `typescript`, `uglifyjs-webpack-plugin`, `webpack`, `webpack-cli`, `webpack-merge`
+
+#### Removed
+
+- Removed `tslint-react-a11y` from `tslint` configuration.
+- Removed eslint config in `lint-staged` command.
+- Removed the following npm packages:
+  `font-awesome`, `isomorphic-fetch`, `@babel/core`, `eslint-plugin-react-hooks`, `json-loader`, `node-sass`, `tslint-react-a11y`
+
 ### v0.5.17
 
 - Added GET requests for updated lists every time a list is updated which allowed for the removal of the draft state.

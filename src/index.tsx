@@ -67,6 +67,8 @@ class CirculationWeb {
       axe(React, ReactDOM, 1000);
     }
 
+    console.log("Rendering Circulation Web 0.6.0");
+
     if (config.settingUp) {
       ReactDOM.render(
         <ContextProvider {...config}>
