@@ -80,6 +80,40 @@ describe("BookDetails", () => {
     fetchMock.restore();
   });
 
+  it("don't show hide button if not a library's admin", () => {
+    const { queryByRole } = renderWithProviders(
+      <BookDetailsEditor
+        bookData={{ id: "id", title: "title", suppressPerLibraryLink }}
+        bookUrl="url"
+        csrfToken="token"
+        canSuppress={false}
+        {...dispatchProps}
+      />
+    );
+    const hideButton = queryByRole("button", { name: "Hide" });
+    const restoreButton = queryByRole("button", { name: "Restore" });
+
+    expect(hideButton).to.be.null;
+    expect(restoreButton).to.be.null;
+  });
+
+  it("don't show restore button if not a library's admin", () => {
+    const { queryByRole } = renderWithProviders(
+      <BookDetailsEditor
+        bookData={{ id: "id", title: "title", unsuppressPerLibraryLink }}
+        bookUrl="url"
+        csrfToken="token"
+        canSuppress={false}
+        {...dispatchProps}
+      />
+    );
+    const hideButton = queryByRole("button", { name: "Hide" });
+    const restoreButton = queryByRole("button", { name: "Restore" });
+
+    expect(hideButton).to.be.null;
+    expect(restoreButton).to.be.null;
+  });
+
   it("uses modal for suppress book confirmation", async () => {
     // Configure standard constructors so that RTK Query works in tests with FetchMockJest
     Object.assign(fetchMock.config, {
