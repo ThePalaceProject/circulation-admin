@@ -96,6 +96,7 @@ describe("BookDetails", () => {
         bookData={{ id: "id", title: "title", suppressPerLibraryLink }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         {...dispatchProps}
       />
     );
@@ -154,6 +155,7 @@ describe("BookDetails", () => {
         bookData={{ id: "id", title: "title", unsuppressPerLibraryLink }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         {...dispatchProps}
       />
     );

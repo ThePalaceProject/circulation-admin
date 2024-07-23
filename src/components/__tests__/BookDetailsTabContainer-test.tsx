@@ -33,6 +33,7 @@ describe("BookDetailsTabContainer", () => {
         refreshCatalog={stub()}
         store={store}
         library={(a, b) => "library"}
+        canSuppress={true}
         // from store
         complaintsCount={0}
         bookData={null}

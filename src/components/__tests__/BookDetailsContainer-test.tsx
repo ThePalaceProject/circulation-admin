@@ -32,6 +32,7 @@ describe("BookDetailsContainer", () => {
       editorStore: store,
       csrfToken: "token",
       library: stub(),
+      admin: { isLibraryManager: () => true },
     };
     refreshCatalog = stub();
 

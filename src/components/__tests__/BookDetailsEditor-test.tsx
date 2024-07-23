@@ -49,6 +49,7 @@ describe("BookDetailsEditor", () => {
         bookUrl={permalink}
         {...dispatchProps}
         csrfToken={"token"}
+        canSuppress={true}
       />
     );
 
@@ -68,6 +69,7 @@ describe("BookDetailsEditor", () => {
         bookUrl={permalink}
         {...dispatchProps}
         csrfToken={"token"}
+        canSuppress={true}
       />
     );
     wrapper.setProps({ bookUrl: newPermalink });
@@ -83,6 +85,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ id: "id", title: "title" }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         {...dispatchProps}
       />
     );
@@ -101,6 +104,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ id: "id", title: "title", suppressPerLibraryLink }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         {...dispatchProps}
       />
     );
@@ -118,6 +122,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ id: "id", title: "title", unsuppressPerLibraryLink }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         {...dispatchProps}
       />
     );
@@ -137,6 +142,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ id: "id", title: "title", refreshLink: refreshLink }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         {...dispatchProps}
       />
     );
@@ -158,6 +164,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ id: "id", title: "title" }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         fetchError={fetchError}
         {...dispatchProps}
       />
@@ -184,6 +191,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ id: "id", title: "title", editLink: editLink }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         editError={editError}
         {...dispatchProps}
       />
@@ -217,6 +225,7 @@ describe("BookDetailsEditor", () => {
         bookData={{ id: "id", title: "title", editLink }}
         bookUrl="url"
         csrfToken="token"
+        canSuppress={true}
         {...dispatchProps}
         roles={roles}
         media={media}
