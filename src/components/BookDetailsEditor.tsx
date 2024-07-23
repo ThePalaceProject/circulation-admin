@@ -18,6 +18,7 @@ export interface BookDetailsEditorOwnProps {
   csrfToken: string;
   store?: Store<RootState>;
   refreshCatalog?: () => Promise<any>;
+  canSuppress: boolean;
 }
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -54,6 +55,14 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
 
   render(): React.ReactElement {
     const { bookData } = this.props;
+    const canSuppress =
+      !!bookData?.suppressPerLibraryLink && this.props.canSuppress;
+    const canUnsuppress =
+      !!bookData?.unsuppressPerLibraryLink && this.props.canSuppress;
+    // A button row will be present if:
+    // - There is a refresh link; or
+    // - There is a un/suppress link and the admin is allowed to use it.
+    const hasButtonRow = bookData?.refreshLink || canSuppress || canUnsuppress;
     return (
       <div className="book-details-editor">
         {bookData && !this.props.fetchError && (
@@ -66,11 +75,9 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
               <ErrorMessage error={this.props.editError} />
             )}
 
-            {(bookData.suppressPerLibraryLink ||
-              bookData.unsuppressPerLibraryLink ||
-              bookData.refreshLink) && (
+            {hasButtonRow && (
               <div className="form-group form-inline">
-                {!!bookData.suppressPerLibraryLink && (
+                {canSuppress && (
                   <BookDetailsEditorSuppression
                     link={bookData.suppressPerLibraryLink}
                     onConfirm={() =>
@@ -100,7 +107,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
                     }
                   />
                 )}
-                {!!bookData.unsuppressPerLibraryLink && (
+                {canUnsuppress && (
                   <BookDetailsEditorSuppression
                     link={bookData.unsuppressPerLibraryLink}
                     onConfirm={() =>
@@ -109,7 +116,9 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
                       )
                     }
                     onComplete={this.refresh}
-                    buttonDisabled={this.props.isFetching}
+                    buttonDisabled={
+                      this.props.isFetching || !this.props.canSuppress
+                    }
                     buttonContent="Restore"
                     buttonTitle="Restore availability for this library."
                     className="left-align"

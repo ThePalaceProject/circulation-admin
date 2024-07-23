@@ -2,12 +2,14 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 
+import Admin from "../models/Admin";
 import BookDetailsTabContainer from "./BookDetailsTabContainer";
 import BookDetails from "./BookDetails";
 import { BookDetailsContainerProps } from "@thepalaceproject/web-opds-client/lib/components/Root";
 import { RootState } from "../store";
 
 export interface BookDetailsContainerContext {
+  admin: Admin;
   csrfToken: string;
   tab: string;
   editorStore: Store<RootState>;
@@ -34,6 +36,9 @@ const BookDetailsContainer = (
         library={context.library}
         csrfToken={context.csrfToken}
         store={context.editorStore}
+        canSuppress={context.admin.isLibraryManager(
+          context.library(props.collectionUrl, props.bookUrl)
+        )}
       >
         {book}
       </BookDetailsTabContainer>
@@ -41,6 +46,7 @@ const BookDetailsContainer = (
   );
 };
 BookDetailsContainer.contextTypes = {
+  admin: PropTypes.object.isRequired,
   csrfToken: PropTypes.string.isRequired,
   tab: PropTypes.string,
   editorStore: PropTypes.object.isRequired,
