@@ -9,12 +9,14 @@ import BookCoverEditor from "./BookCoverEditor";
 import CustomListsForBook from "./CustomListsForBook";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 import { RootState } from "../store";
+import Admin from "../models/Admin";
 
 interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
   collectionUrl: string;
   refreshCatalog: () => Promise<any>;
   library: (collectionUrl, bookUrl) => string;
+  canSuppress: boolean;
   // extended from TabContainerProps in superclass
   //   store?: Store<RootState>;
   //   csrfToken?: string;
@@ -61,6 +63,7 @@ export class BookDetailsTabContainer extends TabContainer<
         csrfToken={this.props.csrfToken}
         bookUrl={this.props.bookUrl}
         refreshCatalog={this.props.refreshCatalog}
+        canSuppress={this.props.canSuppress}
       />
     );
     tabs["classifications"] = (
