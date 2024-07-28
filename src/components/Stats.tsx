@@ -22,11 +22,6 @@ export const Stats = (props: StatsProps) => {
   const { data: statisticsData, error, isLoading } = useGetStatsQuery();
   // TODO: This is to overcome a type inference problem with a RTKQ hook.
   const fetchError = error as FetchErrorData;
-  console.log("useGetStatsQuery response:", {
-    statisticsData,
-    fetchError,
-    isLoading,
-  });
 
   const summaryStatistics = statisticsData?.summaryStatistics;
   const targetLibraryData = statisticsData?.libraries?.find(

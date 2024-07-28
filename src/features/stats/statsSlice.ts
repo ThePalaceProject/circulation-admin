@@ -3,7 +3,7 @@ import { StatisticsData } from "../../interfaces";
 import { normalizeStatistics } from "./normalizeStatistics";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
-const STATS_API_ENDPOINT = "/version.json";
+export const STATS_API_ENDPOINT = "/admin/stats";
 
 export const statsApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -15,7 +15,6 @@ export const statsApi = api.injectEndpoints({
         responseBody,
         { request, response }
       ): FetchErrorData => {
-        console.log("Error transform:", responseBody, { request, response });
         return {
           url: request.url,
           status: response.status,
