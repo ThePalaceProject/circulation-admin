@@ -3,23 +3,244 @@ import { render } from "@testing-library/react";
 import LibraryStats, {
   CustomTooltip,
 } from "../../../src/components/LibraryStats";
-import { renderWithProviders } from "../testUtils/withProviders";
+import {
+  componentWithProviders,
+  renderWithProviders,
+} from "../testUtils/withProviders";
 import { ContextProviderProps } from "../../../src/components/ContextProvider";
 
 import {
   statisticsApiResponseData,
   testLibraryKey as sampleLibraryKey,
+  testLibraryName as sampleLibraryName,
 } from "../../__data__/statisticsApiResponseData";
-import { normalizeStatistics } from "../../../src/components/Stats";
+
+import { normalizeStatistics } from "../../../src/features/stats/normalizeStatistics";
+import { useGetStatsQuery } from "../../../src/features/stats/statsSlice";
+import * as fetchMock from "fetch-mock-jest";
+import { STATS_API_ENDPOINT } from "../../../src/features/stats/statsSlice";
+import Stats from "../../../src/components/Stats";
+import { renderHook } from "@testing-library/react-hooks";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { store } from "../../../src/store";
+import { api } from "../../../src/features/api/apiSlice";
+
+const normalizedData = normalizeStatistics(statisticsApiResponseData);
 
 describe("Dashboard Statistics", () => {
   // NB: This adds test to the already existing tests in:
-  // - `src/components/__tests__/Stats-test.tsx`.
   // - `src/components/__tests__/LibraryStats-test.tsx`.
   // - `src/components/__tests__/SingleStatListItem-test.tsx`.
   //
   // Those tests should eventually be migrated here and
   // adapted to the Jest/React Testing Library paradigm.
+
+  // Configure standard constructors so that RTK Query works in tests with FetchMockJest
+  Object.assign(fetchMock.config, {
+    fetch,
+    Headers,
+    Request,
+    Response,
+  });
+
+  describe("query hook correctly handles fetch responses", () => {
+    const wrapper = componentWithProviders();
+
+    beforeEach(() => {
+      store.dispatch(api.util.resetApiState());
+      fetchMock.restore();
+    });
+    afterAll(() => {
+      store.dispatch(api.util.resetApiState());
+      fetchMock.restore();
+    });
+
+    it("returns data when fetch successful", async () => {
+      fetchMock.get(
+        `path:${STATS_API_ENDPOINT}`,
+        {
+          body: JSON.stringify(statisticsApiResponseData),
+          status: 200,
+        },
+        { overwriteRoutes: true }
+      );
+
+      const { result, waitFor } = renderHook(() => useGetStatsQuery(), {
+        wrapper,
+      });
+
+      // Expect loading status immediately after first use of the hook.
+      let { isSuccess, isError, error, data } = result.current;
+      expect(isSuccess).toBe(false);
+      expect(isError).toBe(false);
+      expect(error).toBe(undefined);
+      expect(data).toEqual(undefined);
+
+      // Once loaded, we should have our data.
+      await waitFor(() => !result.current.isLoading);
+      ({ isSuccess, isError, error, data } = result.current);
+
+      expect(isSuccess).toBe(true);
+      expect(isError).toBe(false);
+      expect(error).toBe(undefined);
+      expect(data).toEqual(normalizedData);
+
+      // But if we use the hook again, we should get the data back from
+      // the cache immediately, without loading state.
+      const { result: result2 } = renderHook(() => useGetStatsQuery(), {
+        wrapper,
+      });
+      ({ isSuccess, isError, error, data } = result2.current);
+
+      expect(isSuccess).toBe(true);
+      expect(isError).toBe(false);
+      expect(error).toBe(undefined);
+      expect(data).toEqual(normalizedData);
+    });
+
+    it("returns error and no data when request fails", async () => {
+      fetchMock.get(
+        `path:${STATS_API_ENDPOINT}`,
+        {
+          status: 500,
+        },
+        {
+          overwriteRoutes: true,
+        }
+      );
+
+      const { result, waitFor } = renderHook(() => useGetStatsQuery(), {
+        wrapper,
+      });
+
+      // Expect loading status immediately after first use of the hook.
+      let { isSuccess, isError, error, data } = result.current;
+      expect(isSuccess).toBe(false);
+      expect(isError).toBe(false);
+      expect(error).toBe(undefined);
+      expect(data).toEqual(undefined);
+
+      await waitFor(() => !result.current.isLoading);
+      ({ isSuccess, isError, error, data } = result.current);
+
+      expect(isSuccess).toBe(false);
+      expect(isError).toBe(true);
+      expect(data).toBe(undefined);
+      expect((error as FetchErrorData).status).toBe(500);
+
+      // But if we use the hook again, we should get our error back from
+      // the cache immediately, without loading state.
+      const { result: result2 } = renderHook(() => useGetStatsQuery(), {
+        wrapper,
+      });
+      ({ isSuccess, isError, error, data } = result2.current);
+
+      expect(isSuccess).toBe(false);
+      expect(isError).toBe(true);
+      expect(data).toBe(undefined);
+      expect((error as FetchErrorData).status).toBe(500);
+    });
+  });
+
+  describe("rendering", () => {
+    beforeAll(() => {
+      fetchMock.get(`path:${STATS_API_ENDPOINT}`, {
+        body: JSON.stringify(statisticsApiResponseData),
+        status: 200,
+      });
+    });
+    afterAll(() => {
+      fetchMock.restore();
+    });
+    afterEach(() => {
+      fetchMock.resetHistory();
+    });
+
+    const assertLoadingState = ({ getByRole }) => {
+      getByRole("dialog", { name: "Loading" });
+      getByRole("heading", { level: 1, name: "Loading" });
+    };
+    const assertNotLoadingState = ({ queryByRole }) => {
+      const missingLoadingDialog = queryByRole("dialog", { name: "Loading" });
+      const missingLoadingHeading = queryByRole("heading", {
+        level: 1,
+        name: "Loading",
+      });
+      expect(missingLoadingDialog).not.toBeInTheDocument();
+      expect(missingLoadingHeading).not.toBeInTheDocument();
+    };
+
+    it("shows/hides the loading indicator", async () => {
+      // We haven't tried to fetch anything yet.
+      expect(fetchMock.calls()).toHaveLength(0);
+
+      const { rerender, getByRole, queryByRole } = renderWithProviders(
+        <Stats />
+      );
+
+      // We should start in the loading state.
+      assertLoadingState({ getByRole });
+
+      // Wait a tick for the statistics to render.
+      await new Promise(process.nextTick);
+      // Now we've fetched something.
+      expect(fetchMock.calls()).toHaveLength(1);
+
+      rerender(<Stats />);
+
+      // We should show our content without the loading state.
+      assertNotLoadingState({ queryByRole });
+      getByRole("heading", { level: 2, name: "Statistics for All Libraries" });
+
+      // We haven't made another call, since the response is cached.
+      expect(fetchMock.calls()).toHaveLength(1);
+    });
+
+    it("doesn't fetch again, because response is cached", async () => {
+      const { getByRole, queryByRole } = renderWithProviders(<Stats />);
+
+      // We should show our content immediately, without entering the loading state.
+      assertNotLoadingState({ queryByRole });
+      getByRole("heading", { level: 2, name: "Statistics for All Libraries" });
+
+      // We never tried to fetch anything because the result is cached.
+      expect(fetchMock.calls()).toHaveLength(0);
+    });
+
+    it("show stats for a library, if a library is specified", async () => {
+      const { getByRole, queryByRole, getByText } = renderWithProviders(
+        <Stats library={sampleLibraryKey} />
+      );
+
+      // We should show our content immediately, without entering the loading state.
+      assertNotLoadingState({ queryByRole });
+      getByRole("heading", {
+        level: 2,
+        name: `${sampleLibraryName} Statistics`,
+      });
+      getByRole("heading", { level: 3, name: "Patrons" });
+      getByText("132");
+
+      // We never tried to fetch anything because the result is cached.
+      expect(fetchMock.calls()).toHaveLength(0);
+    });
+
+    it("shows site-wide stats when no library specified", async () => {
+      const { getByRole, getByText, queryByRole } = renderWithProviders(
+        <Stats />
+      );
+
+      // We should show our content immediately, without entering the loading state.
+      assertNotLoadingState({ queryByRole });
+
+      getByRole("heading", { level: 2, name: "Statistics for All Libraries" });
+      getByRole("heading", { level: 3, name: "Patrons" });
+      getByText("145");
+
+      // We never tried to fetch anything because the result is cached.
+      expect(fetchMock.calls()).toHaveLength(0);
+    });
+  });
 
   describe("requesting inventory reports", () => {
     // Convert from the API format to our in-app format.
@@ -212,9 +433,7 @@ describe("Dashboard Statistics", () => {
         payload: defaultPayload,
       });
 
-      const { container, getByRole } = render(
-        <CustomTooltip {...tooltipProps} />
-      );
+      const { container } = render(<CustomTooltip {...tooltipProps} />);
       const tooltipContent = container.querySelectorAll(".customTooltip");
 
       expect(tooltipContent).toHaveLength(0);

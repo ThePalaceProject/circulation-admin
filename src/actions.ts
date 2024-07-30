@@ -62,7 +62,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly CUSTOM_LISTS_FOR_BOOK = "CUSTOM_LISTS_FOR_BOOK";
   static readonly EDIT_CUSTOM_LISTS_FOR_BOOK = "EDIT_CUSTOM_LISTS_FOR_BOOK";
   static readonly CIRCULATION_EVENTS = "CIRCULATION_EVENTS";
-  static readonly STATS = "STATS";
   static readonly LIBRARIES = "LIBRARIES";
   static readonly EDIT_LIBRARY = "EDIT_LIBRARY";
   static readonly DELETE_LIBRARY = "DELETE_LIBRARY";
@@ -161,11 +160,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly CIRCULATION_EVENTS_SUCCESS = "CIRCULATION_EVENTS_SUCCESS";
   static readonly CIRCULATION_EVENTS_FAILURE = "CIRCULATION_EVENTS_FAILURE";
   static readonly CIRCULATION_EVENTS_LOAD = "CIRCULATION_EVENTS_LOAD";
-
-  static readonly STATS_REQUEST = "STATS_REQUEST";
-  static readonly STATS_SUCCESS = "STATS_SUCCESS";
-  static readonly STATS_FAILURE = "STATS_FAILURE";
-  static readonly STATS_LOAD = "STATS_LOAD";
 
   static readonly CHANGE_PASSWORD = "CHANGE_PASSWORD";
 
@@ -421,11 +415,6 @@ export default class ActionCreator extends BaseActionCreator {
       ActionCreator.CIRCULATION_EVENTS,
       url
     ).bind(this);
-  }
-
-  fetchStatistics() {
-    const url = "/admin/stats";
-    return this.fetchJSON<StatisticsData>(ActionCreator.STATS, url).bind(this);
   }
 
   fetchLibraries() {

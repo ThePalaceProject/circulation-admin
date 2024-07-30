@@ -3,10 +3,8 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ContextProvider from "../ContextProvider";
+import { componentWithProviders } from "../../../tests/jest/testUtils/withProviders";
 
-import { normalizeStatistics } from "../Stats";
 import LibraryStats from "../LibraryStats";
 import { BarChart } from "recharts";
 import {
@@ -17,18 +15,9 @@ import {
   noPatronsLibraryKey,
 } from "../../../tests/__data__/statisticsApiResponseData";
 
-const AllProviders = ({ children }) => {
-  const queryClient = new QueryClient();
-  return (
-    <ContextProvider
-      csrfToken={""}
-      featureFlags={{}}
-      email={"user@example.org"}
-    >
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </ContextProvider>
-  );
-};
+import { normalizeStatistics } from "../../features/stats/normalizeStatistics";
+
+const AllProviders = componentWithProviders();
 
 describe("LibraryStats", () => {
   // Convert from the API format to our in-app format.

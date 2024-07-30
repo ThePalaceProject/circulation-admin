@@ -1,6 +1,7 @@
 import { StatisticsData } from "../../src/interfaces";
 
 export const testLibraryKey = "lyrasis-reads";
+export const testLibraryName = "LYRASIS Reads";
 export const noCollectionsLibraryKey = "unfunded-library";
 export const noInventoryLibraryKey = "unfunded-library";
 export const noPatronsLibraryKey = "unused-library";
