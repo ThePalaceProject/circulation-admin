@@ -35,7 +35,7 @@ describe("AppContext", () => {
   const wrapper = componentWithProviders({ contextProviderProps });
 
   it("provides useAppContext context hook", () => {
-    const { result, waitFor } = renderHook(() => useAppContext(), { wrapper });
+    const { result } = renderHook(() => useAppContext(), { wrapper });
     const value = result.current;
     expect(value.csrfToken).toEqual(expectedCsrfToken);
     expect(value.admin.email).toEqual(expectedEmail);
@@ -44,26 +44,26 @@ describe("AppContext", () => {
   });
 
   it("provides useAppAdmin context hook", () => {
-    const { result, waitFor } = renderHook(() => useAppAdmin(), { wrapper });
+    const { result } = renderHook(() => useAppAdmin(), { wrapper });
     const admin = result.current;
     expect(admin.email).toEqual(expectedEmail);
     expect(admin.roles).toEqual(expectedRoles);
   });
 
   it("provides useAppEmail context hook", () => {
-    const { result, waitFor } = renderHook(() => useAppEmail(), { wrapper });
+    const { result } = renderHook(() => useAppEmail(), { wrapper });
     const email = result.current;
     expect(email).toEqual(expectedEmail);
   });
 
   it("provides useCsrfToken context hook", () => {
-    const { result, waitFor } = renderHook(() => useCsrfToken(), { wrapper });
+    const { result } = renderHook(() => useCsrfToken(), { wrapper });
     const token = result.current;
     expect(token).toEqual(expectedCsrfToken);
   });
 
   it("provides useAppFeatureFlags context hook", () => {
-    const { result, waitFor } = renderHook(() => useAppFeatureFlags(), {
+    const { result } = renderHook(() => useAppFeatureFlags(), {
       wrapper,
     });
     const flags = result.current;
