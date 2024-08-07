@@ -9,8 +9,7 @@ import {
   InventoryReportCollectionInfo,
   InventoryReportRequestParams,
 } from "../api/admin";
-import Admin from "../models/Admin";
-import * as PropTypes from "prop-types";
+import { useAppEmail } from "../context/appContext";
 
 interface FormProps {
   show: boolean;
@@ -37,15 +36,7 @@ const CANCEL_BUTTON_TITLE = "Cancel Report Request";
 export const ACK_RESPONSE_BUTTON_CONTENT = "Ok";
 const ACK_RESPONSE_BUTTON_TITLE = "Acknowledge Response";
 
-// Create a modal to request an inventory report and to describe outcome.
-// *** To use the legacy context here, we need to create a `contextTypes` property on this function object
-// ***   and add `context` types to the function definition.
-// ***   InventoryReportRequestModal.contextTypes = { email: PropTypes.string }
-// *** See: https://legacy.reactjs.org/docs/legacy-context.html#referencing-context-in-stateless-function-components
-const InventoryReportRequestModal = (
-  { show, onHide, library }: FormProps,
-  context: { admin: Admin }
-) => {
+const InventoryReportRequestModal = ({ show, onHide, library }: FormProps) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(true);
   const [showResponseModal, setShowResponseModal] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
@@ -68,7 +59,7 @@ const InventoryReportRequestModal = (
     resetState();
   };
 
-  const { email } = context.admin;
+  const email = useAppEmail();
   const { collections } = useReportInfo(show, { library });
 
   return componentContent({
@@ -81,12 +72,6 @@ const InventoryReportRequestModal = (
     email,
     responseMessage,
   });
-};
-// TODO: This is needed to support legacy context provider on this component (see above).
-//  The overall approach should be replaced with another mechanism (e.g., `useContext` or
-//  `useSelector` if we move `email` to new context provider or Redux, respectively).
-InventoryReportRequestModal.contextTypes = {
-  admin: PropTypes.object.isRequired,
 };
 
 type componentContentProps = {
