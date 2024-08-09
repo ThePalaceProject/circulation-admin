@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState } from "react";
 import * as numeral from "numeral";
 import {
-  FeatureFlags,
   InventoryStatistics,
   LibraryStatistics,
   PatronStatistics,
@@ -19,8 +18,7 @@ import {
 import { Button } from "library-simplified-reusable-components";
 import InventoryReportRequestModal from "./InventoryReportRequestModal";
 import SingleStatListItem from "./SingleStatListItem";
-import * as PropTypes from "prop-types";
-import Admin from "../models/Admin";
+import { useAppAdmin, useAppFeatureFlags } from "../context/appContext";
 
 export interface LibraryStatsProps {
   stats: LibraryStatistics;
@@ -51,14 +49,10 @@ const inventoryKeyToLabelMap = {
 
 /** Displays statistics about patrons, licenses, and collections from the server,
  for a single library or all libraries the admin has access to. */
-// *** To use the legacy context here, we need to create a `contextTypes` property on this function object
-// ***   and add `context` types to the function definition.
-// ***   LibraryStats.contextTypes = { email: PropTypes.string }
-// *** See: https://legacy.reactjs.org/docs/legacy-context.html#referencing-context-in-stateless-function-components
-const LibraryStats = (
-  props: LibraryStatsProps,
-  context: { admin: Admin; featureFlags: FeatureFlags }
-) => {
+const LibraryStats = (props: LibraryStatsProps) => {
+  const admin = useAppAdmin();
+  const { reportsOnlyForSysadmins } = useAppFeatureFlags();
+
   const { stats, library } = props;
   const {
     name: libraryName,
@@ -70,8 +64,7 @@ const LibraryStats = (
 
   // A feature flag controls whether to show the inventory report form.
   const inventoryReportRequestEnabled =
-    !context.featureFlags.reportsOnlyForSysadmins ||
-    context.admin.isSystemAdmin();
+    !reportsOnlyForSysadmins || admin.isSystemAdmin();
 
   const chartItems = collections
     ?.map(({ name, inventory, inventoryByMedium }) => ({
@@ -104,13 +97,6 @@ const LibraryStats = (
       </ul>
     </div>
   );
-};
-// TODO: This is needed to support legacy context provider on this component (see above).
-//  The overall approach should be replaced with another mechanism (e.g., `useContext` or
-//  `useSelector` if we move `email` to new context provider or Redux, respectively).
-LibraryStats.contextTypes = {
-  admin: PropTypes.object.isRequired,
-  featureFlags: PropTypes.object.isRequired,
 };
 
 const renderPatronsGroup = (patrons: PatronStatistics) => {

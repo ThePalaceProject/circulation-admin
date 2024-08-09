@@ -6,6 +6,7 @@ import { FeatureFlags, PathFor } from "../interfaces";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
+import AppContextProvider from "../context/appContext";
 
 export interface ContextProviderProps extends React.Props<ContextProvider> {
   store?: Store<RootState>;
@@ -96,9 +97,17 @@ export default class ContextProvider extends React.Component<
   }
 
   render() {
+    const appContextValue = {
+      csrfToken: this.props.csrfToken,
+      settingUp: this.props.settingUp,
+      admin: this.admin,
+      featureFlags: this.props.featureFlags,
+    };
     return (
       <PathForProvider pathFor={this.pathFor}>
-        {React.Children.only(this.props.children) as JSX.Element}
+        <AppContextProvider value={appContextValue}>
+          {React.Children.only(this.props.children) as JSX.Element}
+        </AppContextProvider>
       </PathForProvider>
     );
   }
