@@ -2,6 +2,8 @@
 //  so that they stay selected when the form is cleared.  Used by LibraryEditForm
 //  and ServiceEditForm.
 
+import numeral = require("numeral");
+
 export function findDefault(setting) {
   const defaultOptions = [];
   setting.options &&
@@ -68,3 +70,27 @@ export function isEqual(array1: Array<any>, array2: Array<any>): boolean {
     array1.every((x) => array2.indexOf(x) >= 0)
   );
 }
+
+/**
+ * Format number using US conventions, if value provided is a number.
+ *
+ * If the value is a non-number string, return that value.
+ * Otherwise, return the empty string.
+ *
+ * @param n - the (possibly numeric) value to format
+ */
+export const formatNumber = (n: number | string | null): string => {
+  return !isNaN(Number(n))
+    ? Intl.NumberFormat("en-US").format(Number(n))
+    : n === String(n)
+    ? n
+    : "";
+};
+
+/**
+ * Make a number rounded to it's nearest units (ones, thousands, millions, ...).
+ * @param n - the number to round (e.g., 1,215)
+ * @return - the rounded number with its unit (e.g., "1.2k") as string.
+ */
+export const roundedNumber = (n: number): string =>
+  n ? numeral(n).format("0.[0]a") : "0";

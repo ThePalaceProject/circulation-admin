@@ -16,8 +16,14 @@ import {
 } from "../../../tests/__data__/statisticsApiResponseData";
 
 import { normalizeStatistics } from "../../features/stats/normalizeStatistics";
+import { ContextProviderProps } from "../ContextProvider";
 
-const AllProviders = componentWithProviders();
+const getAllProviders = ({ isSysAdmin = false } = {}) => {
+  const contextProviderProps: Partial<ContextProviderProps> = isSysAdmin
+    ? { roles: [{ role: "system" }] }
+    : {};
+  return componentWithProviders({ contextProviderProps });
+};
 
 describe("LibraryStats", () => {
   // Convert from the API format to our in-app format.
@@ -28,7 +34,7 @@ describe("LibraryStats", () => {
   );
   const defaultLibraryStatsTestData =
     librariesStatsTestDataByKey[testLibraryKey];
-  const allLibrariesHeadingText = "All Libraries";
+  const allLibrariesHeadingText = "All Authorized Libraries";
   const noCollectionsHeadingText = "No associated collections.";
 
   const expectStats = (
@@ -51,7 +57,7 @@ describe("LibraryStats", () => {
     let wrapper;
     beforeEach(() => {
       wrapper = mount(<LibraryStats stats={defaultLibraryStatsTestData} />, {
-        wrappingComponent: AllProviders,
+        wrappingComponent: getAllProviders(),
       });
     });
 
@@ -138,6 +144,17 @@ describe("LibraryStats", () => {
 
       /* Collections */
       expect(groups.at(3).text()).to.contain("Collections");
+    });
+
+    it("shows barchart if user is sysadmin", () => {
+      wrapper = mount(<LibraryStats stats={defaultLibraryStatsTestData} />, {
+        wrappingComponent: getAllProviders({ isSysAdmin: true }),
+      });
+
+      const groups = wrapper.find(".stat-group");
+      expect(groups.length).to.equal(4);
+
+      // Chart data will be present because we're a sysadmin.
       const chart = groups.at(3).find(BarChart);
       expect(chart.length).to.equal(1);
       const chartData = chart.props().data;
@@ -224,6 +241,42 @@ describe("LibraryStats", () => {
           _by_medium: {},
         },
       ]);
+    });
+
+    it("shows a list of collections instead of barchart, if not sysadmin", () => {
+      wrapper = mount(<LibraryStats stats={defaultLibraryStatsTestData} />, {
+        wrappingComponent: getAllProviders({ isSysAdmin: false }),
+      });
+
+      const groups = wrapper.find(".stat-group");
+      expect(groups.length).to.equal(4);
+
+      const collectionGroup = groups.at(3);
+
+      // No chart because we're not a sysadmin.
+      const chart = collectionGroup.find(BarChart);
+      expect(chart.length).to.equal(0);
+
+      // But we should still see a list with our collections.
+      const collectionNames = [
+        "New BiblioBoard Test",
+        "New Bibliotheca Test Collection",
+        "Palace Bookshelf",
+        "TEST Baker & Taylor",
+        "TEST Palace Marketplace",
+      ];
+
+      const collectionsList = collectionGroup.find("ul");
+      const listItems = collectionsList.find("li");
+      expect(collectionsList.length).to.equal(1);
+      expect(listItems.length).to.equal(collectionNames.length);
+
+      collectionNames.forEach((name: string) => {
+        expect(collectionsList.text()).to.contain(name);
+      });
+      listItems.forEach((item, index) => {
+        expect(item.text()).to.contain(collectionNames[index]);
+      });
     });
   });
 });

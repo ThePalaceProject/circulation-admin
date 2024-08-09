@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as numeral from "numeral";
-import { formatNumber, humanNumber } from "./LibraryStats";
+import { formatNumber, roundedNumber } from "../utils/sharedFunctions";
 
 export interface SingleStatListItemProps {
   label: string;
@@ -11,7 +11,7 @@ export interface SingleStatListItemProps {
 const SingleStatListItem = (props: SingleStatListItemProps) => {
   const baseStat = (
     <>
-      <span className="stat-value">{humanNumber(props.value)}</span>
+      <span className="stat-value">{roundedNumber(props.value)}</span>
       <span className="stat-label">{props.label}</span>
     </>
   );
