@@ -15,6 +15,7 @@ import {
 } from "../businessRules/roleBasedAccess";
 import StatsCollectionsBarChart from "./StatsCollectionsBarChart";
 import StatsCollectionsList from "./StatsCollectionsList";
+import StatsGroup from "./StatsGroup";
 
 export interface LibraryStatsProps {
   stats: LibraryStatistics;
@@ -81,7 +82,7 @@ const renderPatronsGroup = (patrons: PatronStatistics) => {
         <h3>
           <span className="stat-grouping-label">Patrons</span>
         </h3>
-        <div className={"stat-group-description"}>
+        <div className="stat-group-description">
           Patrons currently registered in Palace
         </div>
       </div>
@@ -107,13 +108,15 @@ const renderPatronsGroup = (patrons: PatronStatistics) => {
 };
 
 const renderCirculationsGroup = (patrons: PatronStatistics) => {
+  const description =
+    "The following circulation data displays real-time usage of the Palace system.";
   return (
     <>
       <div>
         <h3>
           <span className="stat-grouping-label">Circulation</span>
         </h3>
-        <div className={"stat-group-description"}>
+        <div className="stat-group-description">
           The following circulation data displays real-time usage of the Palace
           system.
         </div>
@@ -169,9 +172,7 @@ const renderInventoryGroup = (
             />
           )}
         </h3>
-        <div className={"stat-group-description"}>
-          Real-time item inventory.
-        </div>
+        <div className="stat-group-description">Real-time item inventory.</div>
       </div>
       <ul>
         <SingleStatListItem
@@ -222,7 +223,7 @@ const renderConfiguredCollections = (
         <h3>
           <span className="stat-grouping-label">Configured Collections</span>
         </h3>
-        <div className={"stat-group-description"}>
+        <div className="stat-group-description">
           The following collections are configured in your library's
           implementation of the Palace system and are available to your users
           through the Palace app.
