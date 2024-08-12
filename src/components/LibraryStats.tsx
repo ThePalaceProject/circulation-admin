@@ -77,15 +77,10 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
 
 const renderPatronsGroup = (patrons: PatronStatistics) => {
   return (
-    <>
-      <div>
-        <h3>
-          <span className="stat-grouping-label">Patrons</span>
-        </h3>
-        <div className="stat-group-description">
-          Patrons currently registered in Palace
-        </div>
-      </div>
+    <StatsGroup
+      heading="Patrons"
+      description="Patrons currently registered in Palace"
+    >
       <ul>
         <SingleStatListItem
           label="Total Patrons"
@@ -103,7 +98,7 @@ const renderPatronsGroup = (patrons: PatronStatistics) => {
           tooltip="Number of patrons with at least one active loan or at least one hold."
         />
       </ul>
-    </>
+    </StatsGroup>
   );
 };
 
@@ -111,16 +106,7 @@ const renderCirculationsGroup = (patrons: PatronStatistics) => {
   const description =
     "The following circulation data displays real-time usage of the Palace system.";
   return (
-    <>
-      <div>
-        <h3>
-          <span className="stat-grouping-label">Circulation</span>
-        </h3>
-        <div className="stat-group-description">
-          The following circulation data displays real-time usage of the Palace
-          system.
-        </div>
-      </div>
+    <StatsGroup heading="Circulation" description={description}>
       <ul>
         <SingleStatListItem
           label="Active Loans"
@@ -129,11 +115,11 @@ const renderCirculationsGroup = (patrons: PatronStatistics) => {
         />
         <SingleStatListItem
           label="Active Holds"
-          value={patrons.holds}
           tooltip="Total number of active holds for all patrons."
+          value={patrons.holds}
         />
       </ul>
-    </>
+    </StatsGroup>
   );
 };
 
@@ -153,10 +139,12 @@ const renderInventoryGroup = (
           library={library}
         />
       )}
-      <div>
-        <h3>
-          <span className="stat-grouping-label">Inventory</span>
-          {inventoryReportsEnabled && library && (
+      <StatsGroup
+        heading="Inventory"
+        description="Real-time item inventory."
+        headingAdditionalContent={
+          inventoryReportsEnabled &&
+          library && (
             <Button
               callback={(() => setShowReportForm(true)) as any}
               content="⬇︎"
@@ -170,37 +158,37 @@ const renderInventoryGroup = (
               className="inline small"
               disabled={showReportForm}
             />
-          )}
-        </h3>
-        <div className="stat-group-description">Real-time item inventory.</div>
-      </div>
-      <ul>
-        <SingleStatListItem
-          label={inventoryKeyToLabelMap.titles}
-          value={inventory.titles}
-          tooltip="Total number of books."
-        />
-        <SingleStatListItem
-          label={inventoryKeyToLabelMap.availableTitles}
-          value={inventory.availableTitles}
-          tooltip="Number of books available for lending."
-        />
-        <SingleStatListItem
-          label={inventoryKeyToLabelMap.meteredLicenseTitles}
-          value={inventory.meteredLicenseTitles}
-          tooltip="Number of books with a metered (counted) license."
-        />
-        <SingleStatListItem
-          label={inventoryKeyToLabelMap.unlimitedLicenseTitles}
-          value={inventory.unlimitedLicenseTitles}
-          tooltip="Number of books for which there is no limit on the number of loans."
-        />
-        <SingleStatListItem
-          label={inventoryKeyToLabelMap.openAccessTitles}
-          value={inventory.openAccessTitles}
-          tooltip="Number of books for which there are no limits on use."
-        />
-      </ul>
+          )
+        }
+      >
+        <ul>
+          <SingleStatListItem
+            label={inventoryKeyToLabelMap.titles}
+            value={inventory.titles}
+            tooltip="Total number of books."
+          />
+          <SingleStatListItem
+            label={inventoryKeyToLabelMap.availableTitles}
+            value={inventory.availableTitles}
+            tooltip="Number of books available for lending."
+          />
+          <SingleStatListItem
+            label={inventoryKeyToLabelMap.meteredLicenseTitles}
+            value={inventory.meteredLicenseTitles}
+            tooltip="Number of books with a metered (counted) license."
+          />
+          <SingleStatListItem
+            label={inventoryKeyToLabelMap.unlimitedLicenseTitles}
+            value={inventory.unlimitedLicenseTitles}
+            tooltip="Number of books for which there is no limit on the number of loans."
+          />
+          <SingleStatListItem
+            label={inventoryKeyToLabelMap.openAccessTitles}
+            value={inventory.openAccessTitles}
+            tooltip="Number of books for which there are no limits on use."
+          />
+        </ul>
+      </StatsGroup>
     </>
   );
 };
@@ -217,20 +205,15 @@ const renderConfiguredCollections = (
     ) : (
       <StatsCollectionsList collections={collections} />
     );
-  return (
-    <>
-      <div>
-        <h3>
-          <span className="stat-grouping-label">Configured Collections</span>
-        </h3>
-        <div className="stat-group-description">
+  const description = `
           The following collections are configured in your library's
           implementation of the Palace system and are available to your users
           through the Palace app.
-        </div>
-      </div>
+  `;
+  return (
+    <StatsGroup heading="Configured Collections" description={description}>
       {content}
-    </>
+    </StatsGroup>
   );
 };
 
