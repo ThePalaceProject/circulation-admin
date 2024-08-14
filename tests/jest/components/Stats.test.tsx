@@ -219,8 +219,8 @@ describe("Dashboard Statistics", () => {
         level: 2,
         name: `${sampleLibraryName} Dashboard`,
       });
-      getByRole("heading", { level: 3, name: "Patrons" });
-      getByText("132");
+      getByRole("heading", { level: 3, name: "Current Circulation Activity" });
+      getByText("623");
 
       // We never tried to fetch anything because the result is cached.
       expect(fetchMock.calls()).toHaveLength(0);
@@ -235,8 +235,8 @@ describe("Dashboard Statistics", () => {
       assertNotLoadingState({ queryByRole });
 
       getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
-      getByRole("heading", { level: 3, name: "Patrons" });
-      getByText("145");
+      getByRole("heading", { level: 3, name: "Current Circulation Activity" });
+      getByText("1.6k");
 
       // We never tried to fetch anything because the result is cached.
       expect(fetchMock.calls()).toHaveLength(0);

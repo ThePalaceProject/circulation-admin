@@ -16,6 +16,10 @@ import {
 import StatsCollectionsBarChart from "./StatsCollectionsBarChart";
 import StatsCollectionsList from "./StatsCollectionsList";
 import StatsGroup from "./StatsGroup";
+import StatsTotalCirculationsGroup from "./StatsTotalCirculationsGroup";
+import StatsPatronGroup from "./StatsPatronGroup";
+import StatsInventoryGroup from "./StatsInventoryGroup";
+import StatsCollectionsGroup from "./StatsCollectionsGroup";
 
 export interface LibraryStatsProps {
   stats: LibraryStatistics;
@@ -54,166 +58,46 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
   const dashboardTitle = library
     ? `${libraryName || libraryKey} Dashboard`
     : ALL_LIBRARIES_HEADING;
+  const libraryOrLibraries = library ? "library's" : "libraries'";
   return (
     <div className="library-stats">
       <h2>{dashboardTitle}</h2>
       <ul className="stats">
-        <li className="stat-group">{renderPatronsGroup(patrons)}</li>
-        <li className="stat-group">{renderCirculationsGroup(patrons)}</li>
         <li className="stat-group">
-          {renderInventoryGroup(
-            inventory,
-            inventoryReportRequestEnabled,
-            library
-          )}
+          <StatsPatronGroup
+            withActiveLoan={patrons.withActiveLoan}
+            withActiveLoanOrHold={patrons.withActiveLoanOrHold}
+            heading="Current Circulation Activity"
+            description="Real-time patron circulation information of the Palace System."
+          />
+        </li>
+        <li className="stat-group">
+          <StatsTotalCirculationsGroup
+            {...patrons}
+            heading="Circulation Totals"
+          />
+        </li>
+        <li className="stat-group">
+          <StatsInventoryGroup
+            library={library}
+            inventory={inventory}
+            inventoryReportsEnabled={inventoryReportRequestEnabled}
+          />
         </li>
         <li className="stat-group stat-group-wide">
-          {renderConfiguredCollections(collections, showBarChart)}
+          <StatsCollectionsGroup
+            heading={"Configured Collections"}
+            description={`
+              The following collections are configured in your ${libraryOrLibraries}
+              implementation of the Palace system and are available to your users
+              through the Palace app.
+            `}
+            collections={collections}
+            showBarChart={showBarChart}
+          />
         </li>
       </ul>
     </div>
-  );
-};
-
-const renderPatronsGroup = (patrons: PatronStatistics) => {
-  return (
-    <StatsGroup
-      heading="Patrons"
-      description="Patrons currently registered in Palace"
-    >
-      <ul>
-        <SingleStatListItem
-          label="Total Patrons"
-          value={patrons.total}
-          tooltip="Total number of patrons."
-        />
-        <SingleStatListItem
-          label="Patrons With Active Loans"
-          value={patrons.withActiveLoan}
-          tooltip="Number of patron with at least one active loan."
-        />
-        <SingleStatListItem
-          label="Patrons With Active Loans or Holds"
-          value={patrons.withActiveLoanOrHold}
-          tooltip="Number of patrons with at least one active loan or at least one hold."
-        />
-      </ul>
-    </StatsGroup>
-  );
-};
-
-const renderCirculationsGroup = (patrons: PatronStatistics) => {
-  const description =
-    "The following circulation data displays real-time usage of the Palace system.";
-  return (
-    <StatsGroup heading="Circulation" description={description}>
-      <ul>
-        <SingleStatListItem
-          label="Active Loans"
-          value={patrons.loans}
-          tooltip="Total number of active loans for all patrons."
-        />
-        <SingleStatListItem
-          label="Active Holds"
-          tooltip="Total number of active holds for all patrons."
-          value={patrons.holds}
-        />
-      </ul>
-    </StatsGroup>
-  );
-};
-
-const renderInventoryGroup = (
-  inventory: InventoryStatistics,
-  inventoryReportsEnabled: boolean,
-  library?: string
-) => {
-  const [showReportForm, setShowReportForm] = useState(false);
-
-  return (
-    <>
-      {inventoryReportsEnabled && library && (
-        <InventoryReportRequestModal
-          show={showReportForm}
-          onHide={() => setShowReportForm(false)}
-          library={library}
-        />
-      )}
-      <StatsGroup
-        heading="Inventory"
-        description="Real-time item inventory."
-        headingAdditionalContent={
-          inventoryReportsEnabled &&
-          library && (
-            <Button
-              callback={(() => setShowReportForm(true)) as any}
-              content="⬇︎"
-              title="Request an inventory report"
-              style={{
-                borderRadius: "50%",
-                marginLeft: "10px",
-                marginBottom: "0",
-                marginTop: "-0.7rem",
-              }}
-              className="inline small"
-              disabled={showReportForm}
-            />
-          )
-        }
-      >
-        <ul>
-          <SingleStatListItem
-            label={inventoryKeyToLabelMap.titles}
-            value={inventory.titles}
-            tooltip="Total number of books."
-          />
-          <SingleStatListItem
-            label={inventoryKeyToLabelMap.availableTitles}
-            value={inventory.availableTitles}
-            tooltip="Number of books available for lending."
-          />
-          <SingleStatListItem
-            label={inventoryKeyToLabelMap.meteredLicenseTitles}
-            value={inventory.meteredLicenseTitles}
-            tooltip="Number of books with a metered (counted) license."
-          />
-          <SingleStatListItem
-            label={inventoryKeyToLabelMap.unlimitedLicenseTitles}
-            value={inventory.unlimitedLicenseTitles}
-            tooltip="Number of books for which there is no limit on the number of loans."
-          />
-          <SingleStatListItem
-            label={inventoryKeyToLabelMap.openAccessTitles}
-            value={inventory.openAccessTitles}
-            tooltip="Number of books for which there are no limits on use."
-          />
-        </ul>
-      </StatsGroup>
-    </>
-  );
-};
-
-const renderConfiguredCollections = (
-  collections: CollectionInventory[],
-  showBarchart: boolean
-) => {
-  const content =
-    collections.length === 0 ? (
-      <span className="no-collections">No associated collections.</span>
-    ) : showBarchart ? (
-      <StatsCollectionsBarChart collections={collections} />
-    ) : (
-      <StatsCollectionsList collections={collections} />
-    );
-  const description = `
-          The following collections are configured in your library's
-          implementation of the Palace system and are available to your users
-          through the Palace app.
-  `;
-  return (
-    <StatsGroup heading="Configured Collections" description={description}>
-      {content}
-    </StatsGroup>
   );
 };
 

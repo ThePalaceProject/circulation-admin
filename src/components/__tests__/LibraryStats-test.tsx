@@ -102,17 +102,15 @@ describe("LibraryStats", () => {
       expect(groups.length).to.equal(4);
 
       /* Patrons */
-      expect(groups.at(0).text()).to.contain("Patrons");
+      expect(groups.at(0).text()).to.contain("Current Circulation Activity");
       statItems = groups.at(0).find("SingleStatListItem");
-      expect(statItems.length).to.equal(3);
-      expectStats(statItems.at(0).props(), "Total Patrons", 132);
-      expectStats(statItems.at(1).props(), "Patrons With Active Loans", 21);
+      expect(statItems.length).to.equal(2);
+      expectStats(statItems.at(0).props(), "Patrons With Active Loans", 21);
       expectStats(
-        statItems.at(2).props(),
+        statItems.at(1).props(),
         "Patrons With Active Loans or Holds",
         23
       );
-      expect(groups.at(0).text()).to.contain("132Total Patrons");
       expect(groups.at(0).text()).to.contain("21Patrons With Active Loans");
       expect(groups.at(0).text()).to.contain(
         "23Patrons With Active Loans or Holds"
