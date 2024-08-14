@@ -1,21 +1,9 @@
 import * as React from "react";
-import { useState } from "react";
-import {
-  CollectionInventory,
-  InventoryStatistics,
-  LibraryStatistics,
-  PatronStatistics,
-} from "../interfaces";
-import { Button } from "library-simplified-reusable-components";
-import InventoryReportRequestModal from "./InventoryReportRequestModal";
-import SingleStatListItem from "./SingleStatListItem";
+import { LibraryStatistics } from "../interfaces";
 import {
   useMayRequestInventoryReports,
   useMayViewCollectionBarChart,
 } from "../businessRules/roleBasedAccess";
-import StatsCollectionsBarChart from "./StatsCollectionsBarChart";
-import StatsCollectionsList from "./StatsCollectionsList";
-import StatsGroup from "./StatsGroup";
 import StatsTotalCirculationsGroup from "./StatsTotalCirculationsGroup";
 import StatsPatronGroup from "./StatsPatronGroup";
 import StatsInventoryGroup from "./StatsInventoryGroup";
