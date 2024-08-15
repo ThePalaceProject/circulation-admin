@@ -1,7 +1,7 @@
 .stats {
   display: grid;
   grid-gap: 1rem 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(17rem,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(27rem, 1fr));
   padding: 0;
 
   .stat-group {
@@ -19,20 +19,58 @@
         // needed for Rechart ResponsiveContainer to shrink performantly with parent
         position: absolute;
       }
+
+      ul.collection-name-list {
+        display: grid;
+        grid-gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        overflow-wrap: normal;
+      }
+
+      .no-collections {
+        margin: 10px;
+        font-style: italic;
+        color: $medium-dark-gray;
+      }
     }
+
+    .stat-group-description {
+      margin: 10px;
+      margin-top: 0px;
+      margin-bottom: 20px;
+      text-align: left;
+      font-style: italic;
+      font-size: small;
+    }
+
 
     ul {
       padding: 0;
     }
 
     h3 {
+      font-weight: bolder;
+      text-transform: uppercase;
       margin: 10px;
       margin-bottom: 2px;
     }
+    h4 {
+      margin: 10px;
+      margin-top: 0px;
+      margin-bottom: 20px;
+      text-align: left;
+      font-style: italic;
+      font-size: small;
+    }
+
   }
 
   .stat-grouping-label {
     text-align: left;
+    height: 1rem;
   }
 
   svg {
@@ -80,7 +118,6 @@
     .customTooltipHeading {
       font-size: larger;
       font-weight: bold;
-      //font-size: larger;
       text-decoration: underline;
       margin: 0 0;
     }

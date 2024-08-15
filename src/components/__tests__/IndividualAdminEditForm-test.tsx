@@ -8,6 +8,7 @@ import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
 import Admin from "../../models/Admin";
 import { Button, Form, Panel } from "library-simplified-reusable-components";
+import { AdminRoleData, AdminRole } from "../../interfaces";
 
 describe("IndividualAdminEditForm", () => {
   let wrapper;
@@ -18,22 +19,24 @@ describe("IndividualAdminEditForm", () => {
   };
   const allLibraries = [{ short_name: "nypl" }, { short_name: "bpl" }];
 
-  const systemAdmin = [{ role: "system" }];
-  const managerAll = [{ role: "manager-all" }];
-  const librarianAll = [{ role: "librarian-all" }];
-  const nyplManager = [{ role: "manager", library: "nypl" }];
-  const bplManager = [{ role: "manager", library: "bpl" }];
-  const bothManager = [
+  const systemAdmin: AdminRoleData[] = [{ role: "system" }];
+  const managerAll: AdminRoleData[] = [{ role: "manager-all" }];
+  const librarianAll: AdminRoleData[] = [{ role: "librarian-all" }];
+  const nyplManager: AdminRoleData[] = [{ role: "manager", library: "nypl" }];
+  const bplManager: AdminRoleData[] = [{ role: "manager", library: "bpl" }];
+  const bothManager: AdminRoleData[] = [
     { role: "manager", library: "nypl" },
     { role: "manager", library: "bpl" },
   ];
-  const nyplLibrarian = [{ role: "librarian", library: "nypl" }];
-  const bplLibrarian = [{ role: "librarian", library: "bpl" }];
-  const bothLibrarian = [
+  const nyplLibrarian: AdminRoleData[] = [
+    { role: "librarian", library: "nypl" },
+  ];
+  const bplLibrarian: AdminRoleData[] = [{ role: "librarian", library: "bpl" }];
+  const bothLibrarian: AdminRoleData[] = [
     { role: "librarian", library: "nypl" },
     { role: "librarian", library: "bpl" },
   ];
-  const nyplManagerLibrarianAll = [
+  const nyplManagerLibrarianAll: AdminRoleData[] = [
     { role: "manager", library: "nypl" },
     { role: "librarian-all" },
   ];

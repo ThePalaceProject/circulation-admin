@@ -1,8 +1,9 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import LibraryStats, {
-  CustomTooltip,
+  ALL_LIBRARIES_HEADING,
 } from "../../../src/components/LibraryStats";
+import { CustomTooltip } from "../../../src/components/StatsCollectionsBarChart";
 import {
   componentWithProviders,
   renderWithProviders,
@@ -190,7 +191,7 @@ describe("Dashboard Statistics", () => {
 
       // We should show our content without the loading state.
       assertNotLoadingState({ queryByRole });
-      getByRole("heading", { level: 2, name: "Statistics for All Libraries" });
+      getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
 
       // We haven't made another call, since the response is cached.
       expect(fetchMock.calls()).toHaveLength(1);
@@ -201,7 +202,7 @@ describe("Dashboard Statistics", () => {
 
       // We should show our content immediately, without entering the loading state.
       assertNotLoadingState({ queryByRole });
-      getByRole("heading", { level: 2, name: "Statistics for All Libraries" });
+      getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
 
       // We never tried to fetch anything because the result is cached.
       expect(fetchMock.calls()).toHaveLength(0);
@@ -216,10 +217,10 @@ describe("Dashboard Statistics", () => {
       assertNotLoadingState({ queryByRole });
       getByRole("heading", {
         level: 2,
-        name: `${sampleLibraryName} Statistics`,
+        name: `${sampleLibraryName} Dashboard`,
       });
-      getByRole("heading", { level: 3, name: "Patrons" });
-      getByText("132");
+      getByRole("heading", { level: 3, name: "Current Circulation Activity" });
+      getByText("623");
 
       // We never tried to fetch anything because the result is cached.
       expect(fetchMock.calls()).toHaveLength(0);
@@ -233,9 +234,9 @@ describe("Dashboard Statistics", () => {
       // We should show our content immediately, without entering the loading state.
       assertNotLoadingState({ queryByRole });
 
-      getByRole("heading", { level: 2, name: "Statistics for All Libraries" });
-      getByRole("heading", { level: 3, name: "Patrons" });
-      getByText("145");
+      getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
+      getByRole("heading", { level: 3, name: "Current Circulation Activity" });
+      getByText("1.6k");
 
       // We never tried to fetch anything because the result is cached.
       expect(fetchMock.calls()).toHaveLength(0);
