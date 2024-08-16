@@ -7,6 +7,7 @@ export type AppContextType = {
   settingUp: boolean;
   admin: Admin;
   featureFlags: FeatureFlags;
+  quicksightPagePath: string;
 };
 
 // Don't export this, since we always want the error handling behavior of our hook.

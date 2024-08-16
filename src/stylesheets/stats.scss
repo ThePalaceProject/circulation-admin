@@ -1,19 +1,51 @@
+.stats-with-library {
+  // With library, we show a two-column layout.
+  grid-template-columns: repeat(2, minmax(27rem, 1fr));
+  grid-template-areas:
+  "patrons usage-reports"
+  "collections collections"
+  ;
+}
+
+.stats-without-library {
+  // Without a library ("all libraries"), we show three columns.
+  grid-template-columns: repeat(3, minmax(27rem, 1fr));
+  grid-template-areas:
+  "patrons circulations inventory"
+  "collections collections collections"
+  ;
+}
+
 .stats {
   display: grid;
   grid-gap: 1rem 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(27rem, 1fr));
+  grid-auto-rows: auto;
   padding: 0;
 
   .stat-group {
-    display: grid;
     background-color: $pagecolorlight;
     border-radius: 20px;
     padding: 10px;    
     overflow-x: scroll;
 
-    &.stat-group-wide {
-      grid-column-start: 1;
-      grid-column-end: -1;
+    &.stat-patrons-group {
+      grid-area: patrons;
+    }
+
+    &.stat-circulations-group {
+      grid-area: circulations;
+    }
+
+    &.stat-inventory-group {
+      grid-area: inventory;
+    }
+
+    &.stat-usage-reports-group {
+      grid-area: usage-reports;
+    }
+
+    &.stat-collections-group {
+      grid-area: collections;
 
       .recharts-wrapper {
         // needed for Rechart ResponsiveContainer to shrink performantly with parent
@@ -39,13 +71,29 @@
 
     .stat-group-description {
       margin: 10px;
-      margin-top: 0px;
+      margin-top: 0;
       margin-bottom: 20px;
       text-align: left;
       font-style: italic;
       font-size: small;
     }
 
+    .stat-usage-reports {
+      display: grid;
+      grid-gap: 2rem;
+      grid-template-columns: 10fr minmax(8rem, 1fr);
+      list-style-type: none;
+    }
+
+    .stat-link {
+      margin-top: 1.5rem;
+      color: $blue-dark;
+
+      a {
+        color: $blue-dark;
+        text-decoration: underline;
+      }
+    }
 
     ul {
       padding: 0;
@@ -57,15 +105,6 @@
       margin: 10px;
       margin-bottom: 2px;
     }
-    h4 {
-      margin: 10px;
-      margin-top: 0px;
-      margin-bottom: 20px;
-      text-align: left;
-      font-style: italic;
-      font-size: small;
-    }
-
   }
 
   .stat-grouping-label {

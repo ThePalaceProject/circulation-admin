@@ -8,6 +8,8 @@ import StatsTotalCirculationsGroup from "./StatsTotalCirculationsGroup";
 import StatsPatronGroup from "./StatsPatronGroup";
 import StatsInventoryGroup from "./StatsInventoryGroup";
 import StatsCollectionsGroup from "./StatsCollectionsGroup";
+import StatsUsageReportsGroup from "./StatsUsageReportsGroup";
+import { useAppContext } from "../context/appContext";
 
 export interface LibraryStatsProps {
   stats: LibraryStatistics;
@@ -43,15 +45,23 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
   const inventoryReportRequestEnabled = useMayRequestInventoryReports({
     library,
   });
-  const dashboardTitle = library
-    ? `${libraryName || libraryKey} Dashboard`
-    : ALL_LIBRARIES_HEADING;
-  const libraryOrLibraries = library ? "library's" : "libraries'";
+  const quicksightPageUrl = useAppContext().quicksightPagePath;
+
+  let statsLayoutClass: string, dashboardTitle: string, implementation: string;
+  if (library) {
+    dashboardTitle = `${libraryName || libraryKey} Dashboard`;
+    statsLayoutClass = "stats-with-library";
+    implementation = "library's implementation";
+  } else {
+    dashboardTitle = ALL_LIBRARIES_HEADING;
+    statsLayoutClass = "stats-without-library";
+    implementation = "libraries' implementations";
+  }
   return (
     <div className="library-stats">
       <h2>{dashboardTitle}</h2>
-      <ul className="stats">
-        <li className="stat-group">
+      <ul className={`stats ${statsLayoutClass}`}>
+        <li className="stat-group stat-patrons-group">
           <StatsPatronGroup
             withActiveLoan={patrons.withActiveLoan}
             withActiveLoanOrHold={patrons.withActiveLoanOrHold}
@@ -59,26 +69,39 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
             description="Real-time patron circulation information of the Palace System."
           />
         </li>
-        <li className="stat-group">
-          <StatsTotalCirculationsGroup
-            {...patrons}
-            heading="Circulation Totals"
-          />
-        </li>
-        <li className="stat-group">
-          <StatsInventoryGroup
-            library={library}
-            inventory={inventory}
-            inventoryReportsEnabled={inventoryReportRequestEnabled}
-          />
-        </li>
-        <li className="stat-group stat-group-wide">
+        {!!library && (
+          <li className="stat-group stat-usage-reports-group">
+            <StatsUsageReportsGroup
+              library={library}
+              inventoryReportsEnabled={inventoryReportRequestEnabled}
+              usageDataTarget="_blank" // open in new tab or window
+              usageDataHref={quicksightPageUrl}
+            />
+          </li>
+        )}
+        {!library && (
+          <>
+            <li className="stat-group stat-circulation-reports-group">
+              <StatsTotalCirculationsGroup
+                {...patrons}
+                heading="Circulation Totals"
+              />
+            </li>
+            <li className="stat-group stat-inventory-reports-group">
+              <StatsInventoryGroup
+                library={library}
+                inventory={inventory}
+                inventoryReportsEnabled={inventoryReportRequestEnabled}
+              />
+            </li>
+          </>
+        )}
+        <li className="stat-group stat-collections-group">
           <StatsCollectionsGroup
             heading={"Configured Collections"}
             description={`
-              The following collections are configured in your ${libraryOrLibraries}
-              implementation of the Palace system and are available to your users
-              through the Palace app.
+              The following collections are configured in your ${implementation} of
+              the Palace system and are available to your users through the Palace app.
             `}
             collections={collections}
             showBarChart={showBarChart}

@@ -27,7 +27,6 @@ class CirculationAdmin {
     const div = document.createElement("div");
     div.id = "opds-catalog";
     div.className = "palace";
-    config.featureFlags = { ...defaultFeatureFlags, ...config.featureFlags };
     document.getElementsByTagName("body")[0].appendChild(div);
 
     const catalogEditorPath =
@@ -36,10 +35,15 @@ class CirculationAdmin {
       "/admin/web/lists(/:library)(/:editOrCreate)(/:identifier)";
     const lanePagePath =
       "/admin/web/lanes(/:library)(/:editOrCreate)(/:identifier)";
+    const quicksightPagePath = "/admin/web/quicksight";
 
     const queryClient = new QueryClient();
 
     const store = buildStore();
+
+    config.featureFlags = { ...defaultFeatureFlags, ...config.featureFlags };
+    config.quicksightPagePath = quicksightPagePath;
+
     const appElement = "opds-catalog";
     const app = config.settingUp ? (
       <Provider store={store}>
@@ -63,7 +67,7 @@ class CirculationAdmin {
                   component={DashboardPage}
                 />
                 <Route
-                  path="/admin/web/quicksight"
+                  path={quicksightPagePath}
                   component={QuicksightDashboardPage}
                 />
                 <Route
