@@ -44,6 +44,14 @@ describe("Dashboard Statistics", () => {
     Response,
   });
 
+  const statGroupToHeading = {
+    patrons: "Current Circulation Activity",
+    circulations: "Circulation Totals",
+    inventory: "Inventory",
+    usageReports: "Usage and Reports",
+    collections: "Configured Collections",
+  };
+
   describe("query hook correctly handles fetch responses", () => {
     const wrapper = componentWithProviders();
 
@@ -153,93 +161,134 @@ describe("Dashboard Statistics", () => {
     afterAll(() => {
       fetchMock.restore();
     });
-    afterEach(() => {
-      fetchMock.resetHistory();
-    });
 
-    const assertLoadingState = ({ getByRole }) => {
-      getByRole("dialog", { name: "Loading" });
-      getByRole("heading", { level: 1, name: "Loading" });
-    };
-    const assertNotLoadingState = ({ queryByRole }) => {
-      const missingLoadingDialog = queryByRole("dialog", { name: "Loading" });
-      const missingLoadingHeading = queryByRole("heading", {
-        level: 1,
-        name: "Loading",
+    describe("correctly handles fetching and caching", () => {
+      afterEach(() => {
+        fetchMock.resetHistory();
       });
-      expect(missingLoadingDialog).not.toBeInTheDocument();
-      expect(missingLoadingHeading).not.toBeInTheDocument();
-    };
 
-    it("shows/hides the loading indicator", async () => {
-      // We haven't tried to fetch anything yet.
-      expect(fetchMock.calls()).toHaveLength(0);
+      const assertLoadingState = ({ getByRole }) => {
+        getByRole("dialog", { name: "Loading" });
+        getByRole("heading", { level: 1, name: "Loading" });
+      };
+      const assertNotLoadingState = ({ queryByRole }) => {
+        const missingLoadingDialog = queryByRole("dialog", { name: "Loading" });
+        const missingLoadingHeading = queryByRole("heading", {
+          level: 1,
+          name: "Loading",
+        });
+        expect(missingLoadingDialog).not.toBeInTheDocument();
+        expect(missingLoadingHeading).not.toBeInTheDocument();
+      };
 
-      const { rerender, getByRole, queryByRole } = renderWithProviders(
-        <Stats />
-      );
+      it("shows/hides the loading indicator", async () => {
+        // We haven't tried to fetch anything yet.
+        expect(fetchMock.calls()).toHaveLength(0);
 
-      // We should start in the loading state.
-      assertLoadingState({ getByRole });
+        const { rerender, getByRole, queryByRole } = renderWithProviders(
+          <Stats />
+        );
 
-      // Wait a tick for the statistics to render.
-      await new Promise(process.nextTick);
-      // Now we've fetched something.
-      expect(fetchMock.calls()).toHaveLength(1);
+        // We should start in the loading state.
+        assertLoadingState({ getByRole });
 
-      rerender(<Stats />);
+        // Wait a tick for the statistics to render.
+        await new Promise(process.nextTick);
+        // Now we've fetched something.
+        expect(fetchMock.calls()).toHaveLength(1);
 
-      // We should show our content without the loading state.
-      assertNotLoadingState({ queryByRole });
-      getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
+        rerender(<Stats />);
 
-      // We haven't made another call, since the response is cached.
-      expect(fetchMock.calls()).toHaveLength(1);
-    });
+        // We should show our content without the loading state.
+        assertNotLoadingState({ queryByRole });
+        getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
 
-    it("doesn't fetch again, because response is cached", async () => {
-      const { getByRole, queryByRole } = renderWithProviders(<Stats />);
-
-      // We should show our content immediately, without entering the loading state.
-      assertNotLoadingState({ queryByRole });
-      getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
-
-      // We never tried to fetch anything because the result is cached.
-      expect(fetchMock.calls()).toHaveLength(0);
-    });
-
-    it("show stats for a library, if a library is specified", async () => {
-      const { getByRole, queryByRole, getByText } = renderWithProviders(
-        <Stats library={sampleLibraryKey} />
-      );
-
-      // We should show our content immediately, without entering the loading state.
-      assertNotLoadingState({ queryByRole });
-      getByRole("heading", {
-        level: 2,
-        name: `${sampleLibraryName} Dashboard`,
+        // We haven't made another call, since the response is cached.
+        expect(fetchMock.calls()).toHaveLength(1);
       });
-      getByRole("heading", { level: 3, name: "Current Circulation Activity" });
-      getByText("623");
 
-      // We never tried to fetch anything because the result is cached.
-      expect(fetchMock.calls()).toHaveLength(0);
+      it("doesn't fetch again, because response is cached", async () => {
+        const { getByRole, queryByRole } = renderWithProviders(<Stats />);
+
+        // We should show our content immediately, without entering the loading state.
+        assertNotLoadingState({ queryByRole });
+        getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
+
+        // We never tried to fetch anything because the result is cached.
+        expect(fetchMock.calls()).toHaveLength(0);
+      });
+
+      it("show stats for a library, if a library is specified", async () => {
+        const { getByRole, queryByRole, getByText } = renderWithProviders(
+          <Stats library={sampleLibraryKey} />
+        );
+
+        // We should show our content immediately, without entering the loading state.
+        assertNotLoadingState({ queryByRole });
+        getByRole("heading", {
+          level: 2,
+          name: `${sampleLibraryName} Dashboard`,
+        });
+        getByRole("heading", { level: 3, name: statGroupToHeading.patrons });
+        getByText("21");
+
+        // We never tried to fetch anything because the result is cached.
+        expect(fetchMock.calls()).toHaveLength(0);
+      });
+
+      it("shows site-wide stats when no library specified", async () => {
+        const { getByRole, getByText, queryByRole } = renderWithProviders(
+          <Stats />
+        );
+
+        // We should show our content immediately, without entering the loading state.
+        assertNotLoadingState({ queryByRole });
+
+        getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
+        getByRole("heading", {
+          level: 3,
+          name: "Current Circulation Activity",
+        });
+        getByText("1.6k");
+
+        // We never tried to fetch anything because the result is cached.
+        expect(fetchMock.calls()).toHaveLength(0);
+      });
     });
 
-    it("shows site-wide stats when no library specified", async () => {
-      const { getByRole, getByText, queryByRole } = renderWithProviders(
-        <Stats />
-      );
+    describe("has correct statistics groups", () => {
+      it("shows the right groups with a library", () => {
+        const { getAllByRole } = renderWithProviders(
+          <Stats library={sampleLibraryKey} />
+        );
 
-      // We should show our content immediately, without entering the loading state.
-      assertNotLoadingState({ queryByRole });
+        const groupHeadings = getAllByRole("heading", { level: 3 });
+        const expectedHeadings = [
+          statGroupToHeading.patrons,
+          statGroupToHeading.usageReports,
+          statGroupToHeading.collections,
+        ];
+        expect(groupHeadings).toHaveLength(3);
+        groupHeadings.forEach((heading, index) => {
+          expect(heading).toHaveTextContent(expectedHeadings[index]);
+        });
+      });
 
-      getByRole("heading", { level: 2, name: ALL_LIBRARIES_HEADING });
-      getByRole("heading", { level: 3, name: "Current Circulation Activity" });
-      getByText("1.6k");
+      it("shows the right groups without a library", () => {
+        const { getAllByRole } = renderWithProviders(<Stats />);
 
-      // We never tried to fetch anything because the result is cached.
-      expect(fetchMock.calls()).toHaveLength(0);
+        const groupHeadings = getAllByRole("heading", { level: 3 });
+        const expectedHeadings = [
+          statGroupToHeading.patrons,
+          statGroupToHeading.circulations,
+          statGroupToHeading.inventory,
+          statGroupToHeading.collections,
+        ];
+        expect(groupHeadings).toHaveLength(4);
+        groupHeadings.forEach((heading, index) => {
+          expect(heading).toHaveTextContent(expectedHeadings[index]);
+        });
+      });
     });
   });
 
@@ -256,9 +305,11 @@ describe("Dashboard Statistics", () => {
     const managerAll = [{ role: "manager-all" }];
     const librarianAll = [{ role: "librarian-all" }];
 
+    const fakeQuickSightHref = "https://example.com/fakeQS";
     const baseContextProviderProps = {
       csrfToken: "",
       featureFlags: { reportsOnlyForSysadmins: false },
+      quicksightPagePath: fakeQuickSightHref,
     };
 
     const renderFor = (
@@ -271,12 +322,21 @@ describe("Dashboard Statistics", () => {
         roles,
       };
 
-      const { container, queryByRole } = renderWithProviders(
+      const {
+        container,
+        getByRole,
+        queryByRole,
+      } = renderWithProviders(
         <LibraryStats stats={sampleStatsData} library={sampleLibraryKey} />,
         { contextProviderProps }
       );
 
-      const result = queryByRole("button", { name: "⬇︎" });
+      // We should always render a Usage reports group when a library is specified.
+      getByRole("heading", { level: 3, name: statGroupToHeading.usageReports });
+      const usageReportLink = getByRole("link", { name: /View Usage/i });
+      expect(usageReportLink).toHaveAttribute("href", fakeQuickSightHref);
+
+      const result = queryByRole("button", { name: /Request Report/i });
       // Clean up the container after each render.
       document.body.removeChild(container);
       return result;
