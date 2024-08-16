@@ -49,7 +49,11 @@ module.exports = {
         use: ["ts-loader"],
       },
       {
-        test: /\.(ttf|woff|eot|svg|png|woff2|gif|jpg)(\?[\s\S]+)?$/,
+        test: /\.(ttf|woff|eot|woff2)(\?[\s\S]+)?$/,
+        type: "asset/resource",
+      },
+      {
+        test: /\.(svg|png|gif|jpg)(\?[\s\S]+)?$/,
         use: ["url-loader?limit=100000"],
       },
     ],
@@ -60,9 +64,9 @@ module.exports = {
     },
     extensions: [".ts", ".tsx", ".js", ".scss"],
     fallback: {
-      "stream": require.resolve("stream-browserify"),
-      "timers": require.resolve("timers-browserify"),
-      "url": require.resolve("url")
-    }
+      stream: require.resolve("stream-browserify"),
+      timers: require.resolve("timers-browserify"),
+      url: require.resolve("url"),
+    },
   },
 };
