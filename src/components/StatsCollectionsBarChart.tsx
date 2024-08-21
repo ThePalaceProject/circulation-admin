@@ -1,9 +1,11 @@
 import * as React from "react";
+import { useTestingFlagEnabled } from "../context/appContext";
 import { CollectionInventory } from "../interfaces";
+import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import {
   Bar,
   BarChart,
-  ResponsiveContainer,
+  ResponsiveContainer as RechartsResponsiveContainer,
   Tooltip,
   TooltipProps,
   XAxis,
@@ -11,6 +13,20 @@ import {
 } from "recharts";
 import { inventoryKeyToLabelMap } from "./LibraryStats";
 import { formatNumber } from "../utils/sharedFunctions";
+
+// These values are needed for testing, in some cases.
+export const COLLECTION_BAR_CHART_TEST_FLAG_KEY =
+  "COLLECTION_BAR_CHART_TEST_FLAG_KEY";
+const TestResponsiveContainer = ({ children }) => (
+  <RechartsResponsiveContainer width={800} height={800}>
+    {children}
+  </RechartsResponsiveContainer>
+);
+
+type Props = {
+  collections: CollectionInventory[];
+  ResponsiveContainer?: any;
+};
 
 const StatsCollectionsBarChart = ({ collections }: Props) => {
   const chartItems = collections
@@ -21,19 +37,23 @@ const StatsCollectionsBarChart = ({ collections }: Props) => {
     }))
     .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
 
+  const ResponsiveContainer = useTestingFlagEnabled(
+    COLLECTION_BAR_CHART_TEST_FLAG_KEY
+  )
+    ? TestResponsiveContainer
+    : RechartsResponsiveContainer;
   return (
     <ResponsiveContainer height={chartItems.length * 100 + 75} width="100%">
       <BarChart
         data={chartItems}
         layout="vertical"
-        margin={{ top: 5, right: 30, left: 0, bottom: 50 }}
+        margin={{ top: 5, right: 30, left: 10, bottom: 50 }}
       >
         <YAxis
           type="category"
           dataKey="name"
           interval={0}
-          angle={-45}
-          tick={{ dx: -20 }}
+          tick={{ dx: -5 }}
           padding={{ top: 0, bottom: 0 }}
           height={175}
           width={125}
@@ -76,15 +96,12 @@ type chartTooltipData = {
   perMedium?: OneLevelStatistics;
 };
 
-type Props = {
-  collections: CollectionInventory[];
-};
 /* Customize the Rechart tooltip to provide additional information */
 export const CustomTooltip = ({
   active,
   payload,
   label: collectionName,
-}: TooltipProps) => {
+}: TooltipProps<ValueType, string>) => {
   if (!active) {
     return null;
   }

@@ -32,6 +32,14 @@ export interface ConfigurationSettings {
   /** `quickSightPagePath` contains the URL to the QuickSight dashboard page.
    Currently, this value does not change, so we can share it via fixed config. */
   quicksightPagePath: string;
+
+  /** These flags are used only during testing and are discouraged wherever
+   possible. */
+  testingFlags?: TestingFlags;
+}
+
+export interface TestingFlags {
+  [key: string]: boolean;
 }
 
 export interface FeatureFlags {

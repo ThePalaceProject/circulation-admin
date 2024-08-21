@@ -25,6 +25,8 @@ const getAllProviders = ({ isSysAdmin = false } = {}) => {
   return componentWithProviders({ contextProviderProps });
 };
 
+global.ResizeObserver = require("resize-observer-polyfill");
+
 describe("LibraryStats", () => {
   // Convert from the API format to our in-app format.
   const statisticsData = normalizeStatistics(statisticsApiResponseData);

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../store";
-import { FeatureFlags, PathFor } from "../interfaces";
+import { FeatureFlags, PathFor, TestingFlags } from "../interfaces";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
@@ -25,6 +25,7 @@ export interface ContextProviderProps extends React.Props<ContextProvider> {
   }[];
   featureFlags: FeatureFlags;
   quicksightPagePath?: string;
+  testingFlags?: TestingFlags;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -109,6 +110,7 @@ export default class ContextProvider extends React.Component<
       admin: this.admin,
       featureFlags: this.props.featureFlags,
       quicksightPagePath: this.props.quicksightPagePath,
+      testingFlags: this.props.testingFlags,
     };
     return (
       <PathForProvider pathFor={this.pathFor}>

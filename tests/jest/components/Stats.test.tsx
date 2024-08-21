@@ -1,9 +1,12 @@
 import * as React from "react";
-import { render } from "@testing-library/react";
+import { prettyDOM, render, within } from "@testing-library/react";
 import LibraryStats, {
   ALL_LIBRARIES_HEADING,
 } from "../../../src/components/LibraryStats";
-import { CustomTooltip } from "../../../src/components/StatsCollectionsBarChart";
+import StatsCollectionsBarChart, {
+  COLLECTION_BAR_CHART_TEST_FLAG_KEY,
+  CustomTooltip,
+} from "../../../src/components/StatsCollectionsBarChart";
 import {
   componentWithProviders,
   renderWithProviders,
@@ -12,7 +15,9 @@ import { ContextProviderProps } from "../../../src/components/ContextProvider";
 
 import {
   statisticsApiResponseData,
+  testLibraryKey,
   testLibraryKey as sampleLibraryKey,
+  testLibraryName,
   testLibraryName as sampleLibraryName,
 } from "../../__data__/statisticsApiResponseData";
 
@@ -27,6 +32,14 @@ import { store } from "../../../src/store";
 import { api } from "../../../src/features/api/apiSlice";
 
 const normalizedData = normalizeStatistics(statisticsApiResponseData);
+const librariesStatsTestDataByKey = normalizedData.libraries.reduce(
+  (map, library) => ({ ...map, [library.key]: library }),
+  {}
+);
+const sampleLibraryCollections =
+  librariesStatsTestDataByKey[sampleLibraryKey].collections;
+
+global.ResizeObserver = require("resize-observer-polyfill");
 
 describe("Dashboard Statistics", () => {
   // NB: This adds test to the already existing tests in:
@@ -274,7 +287,7 @@ describe("Dashboard Statistics", () => {
         });
       });
 
-      it("shows the right groups without a library", () => {
+      it("shows the right groups with/out a library", () => {
         const { getAllByRole } = renderWithProviders(<Stats />);
 
         const groupHeadings = getAllByRole("heading", { level: 3 });
@@ -290,282 +303,356 @@ describe("Dashboard Statistics", () => {
         });
       });
     });
-  });
 
-  describe("requesting inventory reports", () => {
-    // Convert from the API format to our in-app format.
-    const statisticsData = normalizeStatistics(statisticsApiResponseData);
-    const librariesStatsTestDataByKey = statisticsData.libraries.reduce(
-      (map, library) => ({ ...map, [library.key]: library }),
-      {}
-    );
-    const sampleStatsData = librariesStatsTestDataByKey[sampleLibraryKey];
+    describe("shows the correct UI with/out sysadmin role", () => {
+      const systemAdmin = [{ role: "system" }];
+      const managerAll = [{ role: "manager-all" }];
+      const librarianAll = [{ role: "librarian-all" }];
 
-    const systemAdmin = [{ role: "system" }];
-    const managerAll = [{ role: "manager-all" }];
-    const librarianAll = [{ role: "librarian-all" }];
+      const collectionNames = [
+        "New BiblioBoard Test",
+        "New Bibliotheca Test Collection",
+        "Palace Bookshelf",
+        "TEST Baker & Taylor",
+        "TEST Palace Marketplace",
+      ];
 
-    const fakeQuickSightHref = "https://example.com/fakeQS";
-    const baseContextProviderProps = {
-      csrfToken: "",
-      featureFlags: { reportsOnlyForSysadmins: false },
-      quicksightPagePath: fakeQuickSightHref,
-    };
+      it("tests BarChart component", () => {
+        const contextProviderProps: Partial<ContextProviderProps> = {
+          roles: systemAdmin,
+          // This flag is needed to force Recharts Responsive container to
+          // render its children in a manner that allows these tests.
+          testingFlags: { [COLLECTION_BAR_CHART_TEST_FLAG_KEY]: true },
+        };
+        const { container, getByRole } = renderWithProviders(
+          <Stats library={sampleLibraryKey} />,
+          { contextProviderProps }
+        );
 
-    const renderFor = (
-      onlySysadmins: boolean,
-      roles: { role: string; library?: string }[]
-    ) => {
-      const contextProviderProps: ContextProviderProps = {
-        ...baseContextProviderProps,
-        featureFlags: { reportsOnlyForSysadmins: onlySysadmins },
-        roles,
-      };
+        const collectionsHeading = getByRole("heading", {
+          level: 3,
+          name: statGroupToHeading.collections,
+        });
+        const collectionsGroup = collectionsHeading.closest(".stat-group");
+        const barChartAxisTick = collectionsGroup.querySelectorAll(
+          ".recharts-cartesian-axis-tick"
+        );
 
-      const {
-        container,
-        getByRole,
-        queryByRole,
-      } = renderWithProviders(
-        <LibraryStats stats={sampleStatsData} library={sampleLibraryKey} />,
-        { contextProviderProps }
-      );
+        // We expect the first ticks to be along the y-axis, which
+        // should have our collection names.
+        collectionNames.forEach((name, index) => {
+          expect(barChartAxisTick[index]).toHaveTextContent(name);
+        });
 
-      // We should always render a Usage reports group when a library is specified.
-      getByRole("heading", { level: 3, name: statGroupToHeading.usageReports });
-      const usageReportLink = getByRole("link", { name: /View Usage/i });
-      expect(usageReportLink).toHaveAttribute("href", fakeQuickSightHref);
+        // Clean up the container after each render.
+        document.body.removeChild(container);
+      });
 
-      const result = queryByRole("button", { name: /Request Report/i });
-      // Clean up the container after each render.
-      document.body.removeChild(container);
-      return result;
-    };
+      it("shows collection bar chart for sysadmins, but list for others", () => {
+        // We'll use this function to test multiple scenarios.
+        const testFor = (
+          expectBarChart: boolean,
+          roles: { role: string; library?: string }[]
+        ) => {
+          const contextProviderProps: Partial<ContextProviderProps> = { roles };
+          const { container, getByRole } = renderWithProviders(
+            <Stats library={sampleLibraryKey} />,
+            { contextProviderProps }
+          );
 
-    it("shows inventory reports only for sysadmins, if feature flag set", async () => {
-      // If the feature flag is set, the button should be visible only to sysadmins.
-      expect(renderFor(true, systemAdmin)).not.toBeNull();
-      expect(renderFor(true, managerAll)).toBeNull();
-      expect(renderFor(true, librarianAll)).toBeNull();
-      // If the feature flag is false, the button should be visible to all users.
-      expect(renderFor(false, systemAdmin)).not.toBeNull();
-      expect(renderFor(false, managerAll)).not.toBeNull();
-      expect(renderFor(false, librarianAll)).not.toBeNull();
-    });
-  });
+          const collectionsHeading = getByRole("heading", {
+            level: 3,
+            name: statGroupToHeading.collections,
+          });
+          const collectionsGroup = collectionsHeading.closest(".stat-group");
 
-  describe("charting - custom tooltip", () => {
-    const defaultLabel = "Collection X";
-    const summaryInventory = {
-      availableTitles: 7953,
-      licensedTitles: 7974,
-      meteredLicenseTitles: 7974,
-      meteredLicensesAvailable: 75446,
-      meteredLicensesOwned: 301541,
-      openAccessTitles: 0,
-      titles: 7974,
-      unlimitedLicenseTitles: 0,
-    };
-    const perMediumInventory = {
-      Audio: {
-        availableTitles: 148,
-        licensedTitles: 165,
-        meteredLicenseTitles: 165,
-        meteredLicensesAvailable: 221,
-        meteredLicensesOwned: 392,
-        openAccessTitles: 0,
-        titles: 165,
-        unlimitedLicenseTitles: 0,
-      },
-      Book: {
-        availableTitles: 7805,
-        licensedTitles: 7809,
-        meteredLicenseTitles: 7809,
-        meteredLicensesAvailable: 75225,
-        meteredLicensesOwned: 301149,
-        openAccessTitles: 0,
-        titles: 7809,
-        unlimitedLicenseTitles: 0,
-      },
-    };
-    const defaultChartItemWithoutPerMediumInventory = {
-      name: defaultLabel,
-      ...summaryInventory,
-    };
-    const defaultChartItemWithPerMediumInventory = {
-      ...defaultChartItemWithoutPerMediumInventory,
-      _by_medium: perMediumInventory,
-    };
-    const defaultPayload = [
-      {
-        fill: "#606060",
-        dataKey: "meteredLicenseTitles",
-        name: "Metered License Titles",
-        color: "#606060",
-        value: 7974,
-      },
-      {
-        fill: "#404040",
-        dataKey: "unlimitedLicenseTitles",
-        name: "Unlimited License Titles",
-        color: "#404040",
-        value: 0,
-      },
-      {
-        fill: "#202020",
-        dataKey: "openAccessTitles",
-        name: "Open Access Titles",
-        color: "#202020",
-        value: 0,
-      },
-    ];
+          if (expectBarChart) {
+            collectionsGroup.querySelector(".recharts-responsive-container");
+          } else {
+            const list = collectionsGroup.querySelector("ul");
+            const items = list.querySelectorAll("li");
+            expect(items.length).toBe(collectionNames.length);
 
-    const populateTooltipProps = ({
-      active = true,
-      label = defaultLabel,
-      payload = [],
-      chartItem = undefined,
-    }) => {
-      const constructedChartItem = !chartItem
-        ? chartItem
-        : {
-            ...chartItem,
-            name: label,
+            collectionNames.forEach((name: string) => {
+              expect(list).toHaveTextContent(name);
+            });
+            items.forEach((item, index) => {
+              expect(item).toHaveTextContent(collectionNames[index]);
+            });
+          }
+
+          // Clean up the container after each render.
+          document.body.removeChild(container);
+        };
+
+        // If the feature flag is set, the button should be visible only to sysadmins.
+        testFor(true, systemAdmin);
+        testFor(false, managerAll);
+        testFor(false, librarianAll);
+      });
+
+      it("shows inventory reports only for sysadmins, if sysadmin-only flag set", () => {
+        const fakeQuickSightHref = "https://example.com/fakeQS";
+
+        // We'll use this function to test multiple scenarios.
+        const renderFor = (
+          onlySysadmins: boolean,
+          roles: { role: string; library?: string }[]
+        ) => {
+          const contextProviderProps: Partial<ContextProviderProps> = {
+            featureFlags: { reportsOnlyForSysadmins: onlySysadmins },
+            roles,
+            quicksightPagePath: fakeQuickSightHref,
           };
-      const constructedPayload = payload.map((entry) => ({
-        ...entry,
-        payload: constructedChartItem,
-      }));
-      return {
-        active,
-        label,
-        payload: constructedPayload,
+          const { container, getByRole, queryByRole } = renderWithProviders(
+            <Stats library={sampleLibraryKey} />,
+            {
+              contextProviderProps,
+            }
+          );
+
+          // We should always render a Usage reports group when a library is specified.
+          getByRole("heading", {
+            level: 3,
+            name: statGroupToHeading.usageReports,
+          });
+          const usageReportLink = getByRole("link", { name: /View Usage/i });
+          expect(usageReportLink).toHaveAttribute("href", fakeQuickSightHref);
+
+          const result = queryByRole("button", { name: /Request Report/i });
+
+          // Clean up the container after each render.
+          document.body.removeChild(container);
+          return result;
+        };
+
+        // If the feature flag is set, the button should be visible only to sysadmins.
+        expect(renderFor(true, systemAdmin)).not.toBeNull();
+        expect(renderFor(true, managerAll)).toBeNull();
+        expect(renderFor(true, librarianAll)).toBeNull();
+        // If the feature flag is false, the button should be visible to all users.
+        expect(renderFor(false, systemAdmin)).not.toBeNull();
+        expect(renderFor(false, managerAll)).not.toBeNull();
+        expect(renderFor(false, librarianAll)).not.toBeNull();
+      });
+    });
+
+    describe("charting - custom tooltip", () => {
+      const defaultLabel = "Collection X";
+      const summaryInventory = {
+        availableTitles: 7953,
+        licensedTitles: 7974,
+        meteredLicenseTitles: 7974,
+        meteredLicensesAvailable: 75446,
+        meteredLicensesOwned: 301541,
+        openAccessTitles: 0,
+        titles: 7974,
+        unlimitedLicenseTitles: 0,
       };
-    };
-
-    /**
-     * Helper function to test passing tests for a tooltip
-     *
-     * @param tooltipProps - passed to the <CustomTooltip /> component
-     * @param expectedInventoryItemText - the expected inventory item text content
-     */
-    const expectPassingTestsForActiveTooltip = ({
-      tooltipProps,
-      expectedInventoryItemText,
-    }) => {
-      const { container, getByRole } = render(
-        <CustomTooltip {...tooltipProps} />
-      );
-      const tooltipContent = container.querySelector(".customTooltip");
-
-      const detail = tooltipContent.querySelector(".customTooltipDetail");
-      const detailChildren = detail.children;
-      const heading = getByRole("heading", { level: 1, name: "Collection X" });
-      const items = tooltipContent.querySelectorAll("p.customTooltipItem");
-      const divider = detail.querySelector("hr");
-
-      expect(heading).toHaveTextContent("Collection X");
-
-      // Eight (8) metrics in the following order.
-      expect(items).toHaveLength(8);
-      // The expected inventory item labels array should be the same length.
-      expect(expectedInventoryItemText).toHaveLength(items.length);
-      // And the items should contain at least the expected text.
-      Array.from(items).forEach((item, index) => {
-        expect(item).toHaveTextContent(expectedInventoryItemText[index]);
-      });
-
-      // The heading should be at the top and the divider (`hr`)
-      // should be between the third and fourth statistics.
-      expect(detailChildren).toHaveLength(10);
-      expect(heading).toEqual(detailChildren[0]);
-      expect(items[0]).toEqual(detailChildren[1]);
-      expect(items[2]).toEqual(detailChildren[3]);
-      expect(divider).toEqual(detailChildren[4]);
-      expect(items[3]).toEqual(detailChildren[5]);
-      expect(items[7]).toEqual(detailChildren[9]);
-    };
-
-    it("should not render when active is false", () => {
-      // Recharts sticks some extra props
-      const tooltipProps = populateTooltipProps({
-        active: false,
-        chartItem: defaultChartItemWithPerMediumInventory,
-        payload: defaultPayload,
-      });
-
-      const { container } = render(<CustomTooltip {...tooltipProps} />);
-      const tooltipContent = container.querySelectorAll(".customTooltip");
-
-      expect(tooltipContent).toHaveLength(0);
-    });
-    it("should render when active is true", () => {
-      const tooltipProps = populateTooltipProps({
-        active: true,
-        chartItem: defaultChartItemWithoutPerMediumInventory,
-        payload: defaultPayload,
-      });
-
-      const expectedInventoryItemText = [
-        "Titles:",
-        "Available Titles:",
-        "Metered License Titles:",
-        "Licensed Titles:",
-        "Metered Licenses Available:",
-        "Metered Licenses Owned:",
-        "Open Access Titles:",
-        "Unlimited License Titles:",
+      const perMediumInventory = {
+        Audio: {
+          availableTitles: 148,
+          licensedTitles: 165,
+          meteredLicenseTitles: 165,
+          meteredLicensesAvailable: 221,
+          meteredLicensesOwned: 392,
+          openAccessTitles: 0,
+          titles: 165,
+          unlimitedLicenseTitles: 0,
+        },
+        Book: {
+          availableTitles: 7805,
+          licensedTitles: 7809,
+          meteredLicenseTitles: 7809,
+          meteredLicensesAvailable: 75225,
+          meteredLicensesOwned: 301149,
+          openAccessTitles: 0,
+          titles: 7809,
+          unlimitedLicenseTitles: 0,
+        },
+      };
+      const defaultChartItemWithoutPerMediumInventory = {
+        name: defaultLabel,
+        ...summaryInventory,
+      };
+      const defaultChartItemWithPerMediumInventory = {
+        ...defaultChartItemWithoutPerMediumInventory,
+        _by_medium: perMediumInventory,
+      };
+      const defaultPayload = [
+        {
+          fill: "#606060",
+          dataKey: "meteredLicenseTitles",
+          name: "Metered License Titles",
+          color: "#606060",
+          value: 7974,
+        },
+        {
+          fill: "#404040",
+          dataKey: "unlimitedLicenseTitles",
+          name: "Unlimited License Titles",
+          color: "#404040",
+          value: 0,
+        },
+        {
+          fill: "#202020",
+          dataKey: "openAccessTitles",
+          name: "Open Access Titles",
+          color: "#202020",
+          value: 0,
+        },
       ];
 
-      expectPassingTestsForActiveTooltip({
+      const populateTooltipProps = ({
+        active = true,
+        label = defaultLabel,
+        payload = [],
+        chartItem = undefined,
+      }) => {
+        const constructedChartItem = !chartItem
+          ? chartItem
+          : {
+              ...chartItem,
+              name: label,
+            };
+        const constructedPayload = payload.map((entry) => ({
+          ...entry,
+          payload: constructedChartItem,
+        }));
+        return {
+          active,
+          label,
+          payload: constructedPayload,
+        };
+      };
+
+      /**
+       * Helper function to test passing tests for a tooltip
+       *
+       * @param tooltipProps - passed to the <CustomTooltip /> component
+       * @param expectedInventoryItemText - the expected inventory item text content
+       */
+      const expectPassingTestsForActiveTooltip = ({
         tooltipProps,
         expectedInventoryItemText,
-      });
-    });
-    it("should render without per-medium inventory", () => {
-      const tooltipProps = populateTooltipProps({
-        active: true,
-        chartItem: defaultChartItemWithoutPerMediumInventory,
-        payload: defaultPayload,
-      });
+      }) => {
+        const { container, getByRole } = render(
+          <CustomTooltip {...tooltipProps} />
+        );
+        const tooltipContent = container.querySelector(".customTooltip");
 
-      const expectedInventoryItemText = [
-        "Titles: 7,974",
-        "Available Titles: 7,953",
-        "Metered License Titles: 7,974",
-        "Licensed Titles: 7,974",
-        "Metered Licenses Available: 75,446",
-        "Metered Licenses Owned: 301,541",
-        "Open Access Titles: 0",
-        "Unlimited License Titles: 0",
-      ];
+        const detail = tooltipContent.querySelector(".customTooltipDetail");
+        const detailChildren = detail.children;
+        const heading = getByRole("heading", {
+          level: 1,
+          name: "Collection X",
+        });
+        const items = tooltipContent.querySelectorAll("p.customTooltipItem");
+        const divider = detail.querySelector("hr");
 
-      expectPassingTestsForActiveTooltip({
-        tooltipProps,
-        expectedInventoryItemText,
+        expect(heading).toHaveTextContent("Collection X");
+
+        // Eight (8) metrics in the following order.
+        expect(items).toHaveLength(8);
+        // The expected inventory item labels array should be the same length.
+        expect(expectedInventoryItemText).toHaveLength(items.length);
+        // And the items should contain at least the expected text.
+        Array.from(items).forEach((item, index) => {
+          expect(item).toHaveTextContent(expectedInventoryItemText[index]);
+        });
+
+        // The heading should be at the top and the divider (`hr`)
+        // should be between the third and fourth statistics.
+        expect(detailChildren).toHaveLength(10);
+        expect(heading).toEqual(detailChildren[0]);
+        expect(items[0]).toEqual(detailChildren[1]);
+        expect(items[2]).toEqual(detailChildren[3]);
+        expect(divider).toEqual(detailChildren[4]);
+        expect(items[3]).toEqual(detailChildren[5]);
+        expect(items[7]).toEqual(detailChildren[9]);
+      };
+
+      it("should not render when active is false", () => {
+        // Recharts sticks some extra props
+        const tooltipProps = populateTooltipProps({
+          active: false,
+          chartItem: defaultChartItemWithPerMediumInventory,
+          payload: defaultPayload,
+        });
+
+        const { container } = render(<CustomTooltip {...tooltipProps} />);
+        const tooltipContent = container.querySelectorAll(".customTooltip");
+
+        expect(tooltipContent).toHaveLength(0);
       });
-    });
-    it("should render additional detail with per-medium inventory", () => {
-      const tooltipProps = populateTooltipProps({
-        active: true,
-        chartItem: defaultChartItemWithPerMediumInventory,
-        payload: defaultPayload,
+      it("should render when active is true", () => {
+        const tooltipProps = populateTooltipProps({
+          active: true,
+          chartItem: defaultChartItemWithoutPerMediumInventory,
+          payload: defaultPayload,
+        });
+
+        const expectedInventoryItemText = [
+          "Titles:",
+          "Available Titles:",
+          "Metered License Titles:",
+          "Licensed Titles:",
+          "Metered Licenses Available:",
+          "Metered Licenses Owned:",
+          "Open Access Titles:",
+          "Unlimited License Titles:",
+        ];
+
+        expectPassingTestsForActiveTooltip({
+          tooltipProps,
+          expectedInventoryItemText,
+        });
       });
+      it("should render without per-medium inventory", () => {
+        const tooltipProps = populateTooltipProps({
+          active: true,
+          chartItem: defaultChartItemWithoutPerMediumInventory,
+          payload: defaultPayload,
+        });
 
-      const expectedInventoryItemText = [
-        "Titles: 7,974 (Audio: 165, Book: 7,809)",
-        "Available Titles: 7,953 (Audio: 148, Book: 7,805)",
-        "Metered License Titles: 7,974 (Audio: 165, Book: 7,809)",
-        "Licensed Titles: 7,974 (Audio: 165, Book: 7,809)",
-        "Metered Licenses Available: 75,446 (Audio: 221, Book: 75,225)",
-        "Metered Licenses Owned: 301,541 (Audio: 392, Book: 301,149)",
-        "Open Access Titles: 0",
-        "Unlimited License Titles: 0",
-      ];
+        const expectedInventoryItemText = [
+          "Titles: 7,974",
+          "Available Titles: 7,953",
+          "Metered License Titles: 7,974",
+          "Licensed Titles: 7,974",
+          "Metered Licenses Available: 75,446",
+          "Metered Licenses Owned: 301,541",
+          "Open Access Titles: 0",
+          "Unlimited License Titles: 0",
+        ];
 
-      expectPassingTestsForActiveTooltip({
-        tooltipProps,
-        expectedInventoryItemText,
+        expectPassingTestsForActiveTooltip({
+          tooltipProps,
+          expectedInventoryItemText,
+        });
+      });
+      it("should render additional detail with per-medium inventory", () => {
+        const tooltipProps = populateTooltipProps({
+          active: true,
+          chartItem: defaultChartItemWithPerMediumInventory,
+          payload: defaultPayload,
+        });
+
+        const expectedInventoryItemText = [
+          "Titles: 7,974 (Audio: 165, Book: 7,809)",
+          "Available Titles: 7,953 (Audio: 148, Book: 7,805)",
+          "Metered License Titles: 7,974 (Audio: 165, Book: 7,809)",
+          "Licensed Titles: 7,974 (Audio: 165, Book: 7,809)",
+          "Metered Licenses Available: 75,446 (Audio: 221, Book: 75,225)",
+          "Metered Licenses Owned: 301,541 (Audio: 392, Book: 301,149)",
+          "Open Access Titles: 0",
+          "Unlimited License Titles: 0",
+        ];
+
+        expectPassingTestsForActiveTooltip({
+          tooltipProps,
+          expectedInventoryItemText,
+        });
       });
     });
   });
