@@ -6,8 +6,13 @@ import { FeatureFlags, PathFor } from "../interfaces";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
-import AppContextProvider from "../context/appContext";
+import AppContextProvider, { AppContextType } from "../context/appContext";
 
+// Note: Not all elements of these props make it into the `ContextProvider`.
+//  Some are exposed only through the `AppContextProvider` component (which
+//  this component wraps.
+// TODO: We should get this interface to the point where we can just extend
+//  the `ConfigurationSettings` interface.
 export interface ContextProviderProps extends React.Props<ContextProvider> {
   store?: Store<RootState>;
   csrfToken: string;
@@ -19,6 +24,7 @@ export interface ContextProviderProps extends React.Props<ContextProvider> {
     library?: string;
   }[];
   featureFlags: FeatureFlags;
+  quicksightPagePath?: string;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -97,11 +103,12 @@ export default class ContextProvider extends React.Component<
   }
 
   render() {
-    const appContextValue = {
+    const appContextValue: AppContextType = {
       csrfToken: this.props.csrfToken,
       settingUp: this.props.settingUp,
       admin: this.admin,
       featureFlags: this.props.featureFlags,
+      quicksightPagePath: this.props.quicksightPagePath,
     };
     return (
       <PathForProvider pathFor={this.pathFor}>

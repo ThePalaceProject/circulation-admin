@@ -28,6 +28,10 @@ export interface ConfigurationSettings {
   tos_link_href?: string;
 
   featureFlags: FeatureFlags;
+
+  /** `quickSightPagePath` contains the URL to the QuickSight dashboard page.
+   Currently, this value does not change, so we can share it via fixed config. */
+  quicksightPagePath: string;
 }
 
 export interface FeatureFlags {
