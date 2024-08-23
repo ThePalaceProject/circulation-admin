@@ -3,7 +3,6 @@ import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../store";
 import {
-  AdminRoleData,
   DashboardCollectionsBarChart,
   FeatureFlags,
   PathFor,
