@@ -33,9 +33,12 @@ export interface ConfigurationSettings {
    Currently, this value does not change, so we can share it via fixed config. */
   quicksightPagePath: string;
 
-  /** These flags are used only during testing and are discouraged wherever
-   possible. */
-  testingFlags?: TestingFlags;
+  /** Configuration for dashboard collections barchart. */
+  dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
+}
+
+export interface DashboardCollectionsBarChart {
+  width?: number;
 }
 
 export interface TestingFlags {

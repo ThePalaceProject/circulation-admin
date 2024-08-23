@@ -1,11 +1,11 @@
 import * as React from "react";
-import { useTestingFlagEnabled } from "../context/appContext";
+import { useDashboardCollectionsBarChartSettings } from "../context/appContext";
 import { CollectionInventory } from "../interfaces";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import {
   Bar,
   BarChart,
-  ResponsiveContainer as RechartsResponsiveContainer,
+  ResponsiveContainer,
   Tooltip,
   TooltipProps,
   XAxis,
@@ -14,14 +14,11 @@ import {
 import { inventoryKeyToLabelMap } from "./LibraryStats";
 import { formatNumber } from "../utils/sharedFunctions";
 
-// These values are needed for testing, in some cases.
-export const COLLECTION_BAR_CHART_TEST_FLAG_KEY =
-  "COLLECTION_BAR_CHART_TEST_FLAG_KEY";
-const TestResponsiveContainer = ({ children }) => (
-  <RechartsResponsiveContainer width={800} height={800}>
-    {children}
-  </RechartsResponsiveContainer>
-);
+const stackId = "collections";
+const barSize = 50;
+const meteredColor = "#606060";
+const unlimitedColor = "#404040";
+const openAccessColor = "#202020";
 
 type Props = {
   collections: CollectionInventory[];
@@ -36,14 +33,13 @@ const StatsCollectionsBarChart = ({ collections }: Props) => {
       _by_medium: inventoryByMedium || {},
     }))
     .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
+  const chartWidth = useDashboardCollectionsBarChartSettings()?.width || "100%";
 
-  const ResponsiveContainer = useTestingFlagEnabled(
-    COLLECTION_BAR_CHART_TEST_FLAG_KEY
-  )
-    ? TestResponsiveContainer
-    : RechartsResponsiveContainer;
   return (
-    <ResponsiveContainer height={chartItems.length * 100 + 75} width="100%">
+    <ResponsiveContainer
+      height={chartItems.length * 100 + 75}
+      width={chartWidth}
+    >
       <BarChart
         data={chartItems}
         layout="vertical"
@@ -61,25 +57,25 @@ const StatsCollectionsBarChart = ({ collections }: Props) => {
         <XAxis type="number" />
         <Tooltip content={<CustomTooltip />} />
         <Bar
-          stackId="collections"
+          stackId={stackId}
           name={inventoryKeyToLabelMap.meteredLicenseTitles}
           dataKey={"meteredLicenseTitles"}
-          barSize={50}
-          fill="#606060"
+          barSize={barSize}
+          fill={meteredColor}
         />
         <Bar
-          stackId="collections"
+          stackId={stackId}
           name={inventoryKeyToLabelMap.unlimitedLicenseTitles}
           dataKey={"unlimitedLicenseTitles"}
-          barSize={50}
-          fill="#404040"
+          barSize={barSize}
+          fill={unlimitedColor}
         />
         <Bar
-          stackId="collections"
+          stackId={stackId}
           name={inventoryKeyToLabelMap.openAccessTitles}
           dataKey={"openAccessTitles"}
-          barSize={50}
-          fill="#202020"
+          barSize={barSize}
+          fill={openAccessColor}
         />
       </BarChart>
     </ResponsiveContainer>

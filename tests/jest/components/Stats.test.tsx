@@ -1,12 +1,7 @@
 import * as React from "react";
-import { prettyDOM, render, within } from "@testing-library/react";
-import LibraryStats, {
-  ALL_LIBRARIES_HEADING,
-} from "../../../src/components/LibraryStats";
-import StatsCollectionsBarChart, {
-  COLLECTION_BAR_CHART_TEST_FLAG_KEY,
-  CustomTooltip,
-} from "../../../src/components/StatsCollectionsBarChart";
+import { render } from "@testing-library/react";
+import { ALL_LIBRARIES_HEADING } from "../../../src/components/LibraryStats";
+import { CustomTooltip } from "../../../src/components/StatsCollectionsBarChart";
 import {
   componentWithProviders,
   renderWithProviders,
@@ -15,9 +10,7 @@ import { ContextProviderProps } from "../../../src/components/ContextProvider";
 
 import {
   statisticsApiResponseData,
-  testLibraryKey,
   testLibraryKey as sampleLibraryKey,
-  testLibraryName,
   testLibraryName as sampleLibraryName,
 } from "../../__data__/statisticsApiResponseData";
 
@@ -32,12 +25,6 @@ import { store } from "../../../src/store";
 import { api } from "../../../src/features/api/apiSlice";
 
 const normalizedData = normalizeStatistics(statisticsApiResponseData);
-const librariesStatsTestDataByKey = normalizedData.libraries.reduce(
-  (map, library) => ({ ...map, [library.key]: library }),
-  {}
-);
-const sampleLibraryCollections =
-  librariesStatsTestDataByKey[sampleLibraryKey].collections;
 
 global.ResizeObserver = require("resize-observer-polyfill");
 
@@ -320,9 +307,7 @@ describe("Dashboard Statistics", () => {
       it("tests BarChart component", () => {
         const contextProviderProps: Partial<ContextProviderProps> = {
           roles: systemAdmin,
-          // This flag is needed to force Recharts Responsive container to
-          // render its children in a manner that allows these tests.
-          testingFlags: { [COLLECTION_BAR_CHART_TEST_FLAG_KEY]: true },
+          dashboardCollectionsBarChart: { width: 800 },
         };
         const { container, getByRole } = renderWithProviders(
           <Stats library={sampleLibraryKey} />,
