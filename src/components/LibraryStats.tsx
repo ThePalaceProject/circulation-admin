@@ -31,7 +31,7 @@ export const inventoryKeyToLabelMap = {
 export const ALL_LIBRARIES_HEADING = "Dashboard for All Authorized Libraries";
 
 /** Displays statistics about patrons, licenses, and collections from the server,
- for a single library or all libraries the admin has access to. */
+ for a single library or all libraries to which the admin has access. */
 const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
   const {
     name: libraryName,

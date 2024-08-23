@@ -2,7 +2,11 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../store";
-import { FeatureFlags, PathFor } from "../interfaces";
+import {
+  DashboardCollectionsBarChart,
+  FeatureFlags,
+  PathFor,
+} from "../interfaces";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
@@ -10,7 +14,7 @@ import AppContextProvider, { AppContextType } from "../context/appContext";
 
 // Note: Not all elements of these props make it into the `ContextProvider`.
 //  Some are exposed only through the `AppContextProvider` component (which
-//  this component wraps.
+//  this component wraps).
 // TODO: We should get this interface to the point where we can just extend
 //  the `ConfigurationSettings` interface.
 export interface ContextProviderProps extends React.Props<ContextProvider> {
@@ -25,6 +29,7 @@ export interface ContextProviderProps extends React.Props<ContextProvider> {
   }[];
   featureFlags: FeatureFlags;
   quicksightPagePath?: string;
+  dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -109,6 +114,7 @@ export default class ContextProvider extends React.Component<
       admin: this.admin,
       featureFlags: this.props.featureFlags,
       quicksightPagePath: this.props.quicksightPagePath,
+      dashboardCollectionsBarChart: this.props.dashboardCollectionsBarChart,
     };
     return (
       <PathForProvider pathFor={this.pathFor}>

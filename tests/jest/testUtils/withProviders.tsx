@@ -23,7 +23,7 @@ const defaultReduxStore = store;
 
 // The `csrfToken` context provider prop is required, so we provide
 // a default value here, so it can be easily merged with other props.
-const defaultContextProviderProps: ContextProviderProps = {
+const requiredContextProviderProps: ContextProviderProps = {
   csrfToken: "",
   featureFlags: defaultFeatureFlags,
 };
@@ -49,7 +49,7 @@ export const componentWithProviders = ({
   queryClient = new QueryClient(),
 }: TestProviderWrapperOptions = {}): React.FunctionComponent => {
   const effectiveContextProviderProps = {
-    ...defaultContextProviderProps,
+    ...requiredContextProviderProps,
     ...contextProviderProps,
     ...reduxProviderProps.store, // Context and Redux Provider stores must match.
   };

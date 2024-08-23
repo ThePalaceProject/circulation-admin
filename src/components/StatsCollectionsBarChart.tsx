@@ -1,5 +1,7 @@
 import * as React from "react";
+import { useDashboardCollectionsBarChartSettings } from "../context/appContext";
 import { CollectionInventory } from "../interfaces";
+import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import {
   Bar,
   BarChart,
@@ -12,6 +14,17 @@ import {
 import { inventoryKeyToLabelMap } from "./LibraryStats";
 import { formatNumber } from "../utils/sharedFunctions";
 
+const stackId = "collections";
+const barSize = 50;
+const meteredColor = "#606060";
+const unlimitedColor = "#404040";
+const openAccessColor = "#202020";
+
+type Props = {
+  collections: CollectionInventory[];
+  ResponsiveContainer?: any;
+};
+
 const StatsCollectionsBarChart = ({ collections }: Props) => {
   const chartItems = collections
     ?.map(({ name, inventory, inventoryByMedium }) => ({
@@ -20,20 +33,23 @@ const StatsCollectionsBarChart = ({ collections }: Props) => {
       _by_medium: inventoryByMedium || {},
     }))
     .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1));
+  const chartWidth = useDashboardCollectionsBarChartSettings()?.width || "100%";
 
   return (
-    <ResponsiveContainer height={chartItems.length * 100 + 75} width="100%">
+    <ResponsiveContainer
+      height={chartItems.length * 100 + 75}
+      width={chartWidth}
+    >
       <BarChart
         data={chartItems}
         layout="vertical"
-        margin={{ top: 5, right: 30, left: 0, bottom: 50 }}
+        margin={{ top: 5, right: 30, left: 10, bottom: 50 }}
       >
         <YAxis
           type="category"
           dataKey="name"
           interval={0}
-          angle={-45}
-          tick={{ dx: -20 }}
+          tick={{ dx: -5 }}
           padding={{ top: 0, bottom: 0 }}
           height={175}
           width={125}
@@ -41,25 +57,25 @@ const StatsCollectionsBarChart = ({ collections }: Props) => {
         <XAxis type="number" />
         <Tooltip content={<CustomTooltip />} />
         <Bar
-          stackId="collections"
+          stackId={stackId}
           name={inventoryKeyToLabelMap.meteredLicenseTitles}
           dataKey={"meteredLicenseTitles"}
-          barSize={50}
-          fill="#606060"
+          barSize={barSize}
+          fill={meteredColor}
         />
         <Bar
-          stackId="collections"
+          stackId={stackId}
           name={inventoryKeyToLabelMap.unlimitedLicenseTitles}
           dataKey={"unlimitedLicenseTitles"}
-          barSize={50}
-          fill="#404040"
+          barSize={barSize}
+          fill={unlimitedColor}
         />
         <Bar
-          stackId="collections"
+          stackId={stackId}
           name={inventoryKeyToLabelMap.openAccessTitles}
           dataKey={"openAccessTitles"}
-          barSize={50}
-          fill="#202020"
+          barSize={barSize}
+          fill={openAccessColor}
         />
       </BarChart>
     </ResponsiveContainer>
@@ -76,15 +92,12 @@ type chartTooltipData = {
   perMedium?: OneLevelStatistics;
 };
 
-type Props = {
-  collections: CollectionInventory[];
-};
 /* Customize the Rechart tooltip to provide additional information */
 export const CustomTooltip = ({
   active,
   payload,
   label: collectionName,
-}: TooltipProps) => {
+}: TooltipProps<ValueType, string>) => {
   if (!active) {
     return null;
   }

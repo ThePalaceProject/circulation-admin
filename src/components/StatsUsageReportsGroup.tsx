@@ -1,10 +1,8 @@
 import React = require("react");
 import { Button } from "library-simplified-reusable-components";
 import StatsGroup from "./StatsGroup";
-import { InventoryStatistics } from "../interfaces";
 import InventoryReportRequestModal from "./InventoryReportRequestModal";
 import { useState } from "react";
-import { useAppContext } from "../context/appContext";
 
 type Props = {
   heading?: string;

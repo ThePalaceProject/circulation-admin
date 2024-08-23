@@ -32,6 +32,17 @@ export interface ConfigurationSettings {
   /** `quickSightPagePath` contains the URL to the QuickSight dashboard page.
    Currently, this value does not change, so we can share it via fixed config. */
   quicksightPagePath: string;
+
+  /** Configuration for dashboard collections barchart. */
+  dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
+}
+
+export interface DashboardCollectionsBarChart {
+  width?: number;
+}
+
+export interface TestingFlags {
+  [key: string]: boolean;
 }
 
 export interface FeatureFlags {

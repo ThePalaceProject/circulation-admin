@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { FeatureFlags } from "../interfaces";
+import { DashboardCollectionsBarChart, FeatureFlags } from "../interfaces";
 import Admin from "../models/Admin";
 
 export type AppContextType = {
@@ -8,6 +8,7 @@ export type AppContextType = {
   admin: Admin;
   featureFlags: FeatureFlags;
   quicksightPagePath: string;
+  dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
 };
 
 // Don't export this, since we always want the error handling behavior of our hook.
@@ -16,7 +17,9 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const useAppContext = (): AppContextType => {
   const context = useContext(AppContext);
   if (context === undefined) {
-    throw new Error("useAppContext must be used within an AppContext povider.");
+    throw new Error(
+      "useAppContext must be used within an AppContext provider."
+    );
   }
   return context;
 };
@@ -25,5 +28,7 @@ export const useCsrfToken = () => useAppContext().csrfToken;
 export const useAppAdmin = () => useAppContext().admin;
 export const useAppEmail = () => useAppAdmin().email;
 export const useAppFeatureFlags = () => useAppContext().featureFlags;
+export const useDashboardCollectionsBarChartSettings = () =>
+  useAppContext().dashboardCollectionsBarChart;
 
 export default AppContext.Provider;
