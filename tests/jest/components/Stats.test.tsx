@@ -389,12 +389,14 @@ describe("Dashboard Statistics", () => {
             roles,
             quicksightPagePath: fakeQuickSightHref,
           };
-          const { container, getByRole, queryByRole } = renderWithProviders(
-            <Stats library={sampleLibraryKey} />,
-            {
-              contextProviderProps,
-            }
-          );
+          const {
+            container,
+            getByRole,
+            queryByRole,
+            queryByText,
+          } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
+            contextProviderProps,
+          });
 
           // We should always render a Usage reports group when a library is specified.
           getByRole("heading", {
@@ -404,11 +406,23 @@ describe("Dashboard Statistics", () => {
           const usageReportLink = getByRole("link", { name: /View Usage/i });
           expect(usageReportLink).toHaveAttribute("href", fakeQuickSightHref);
 
-          const result = queryByRole("button", { name: /Request Report/i });
+          const requestButton = queryByRole("button", {
+            name: /Request Report/i,
+          });
+          const blurb = queryByText(
+            /These reports provide up-to-date data on both inventory and holds/i
+          );
+
+          // The inventory report blurb should be visible only when the button is.
+          if (requestButton) {
+            expect(blurb).not.toBeNull();
+          } else {
+            expect(blurb).toBeNull();
+          }
 
           // Clean up the container after each render.
           document.body.removeChild(container);
-          return result;
+          return requestButton;
         };
 
         // If the feature flag is set, the button should be visible only to sysadmins.

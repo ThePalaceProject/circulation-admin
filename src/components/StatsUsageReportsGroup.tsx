@@ -42,22 +42,24 @@ const StatsUsageReportsGroup = ({
           <StatsGroup heading={heading} description={description}>
             <>
               {inventoryReportsEnabled && library && (
-                <Button
-                  callback={(() => setShowReportForm(true)) as any}
-                  content={
-                    <>
-                      Request Report &nbsp;&nbsp;
-                      <i className="fa fa-regular fa-envelope" />
-                    </>
-                  }
-                  title="Request an inventory report."
-                  disabled={showReportForm}
-                />
+                <>
+                  <Button
+                    callback={(() => setShowReportForm(true)) as any}
+                    content={
+                      <>
+                        Request Report &nbsp;&nbsp;
+                        <i className="fa fa-regular fa-envelope" />
+                      </>
+                    }
+                    title="Request an inventory report."
+                    disabled={showReportForm}
+                  />
+                  <div className="stat-group-description">
+                    These reports provide up-to-date data on both inventory and
+                    holds for library at the time of the request.
+                  </div>
+                </>
               )}
-              <div className="stat-group-description">
-                These reports provide up-to-date data on both inventory and
-                holds for library at the time of the request.
-              </div>
             </>
           </StatsGroup>
         </li>
