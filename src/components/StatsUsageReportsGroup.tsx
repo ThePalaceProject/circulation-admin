@@ -8,6 +8,7 @@ type Props = {
   heading?: string;
   description?: string;
   inventoryReportsEnabled: boolean;
+  quicksightLinkEnabled: boolean;
   library?: string;
   usageDataHref?: string;
   usageDataLabel?: string;
@@ -24,6 +25,7 @@ const StatsUsageReportsGroup = ({
   usageDataLabel = "View Usage",
   usageDataTarget = "_self",
   inventoryReportsEnabled,
+  quicksightLinkEnabled,
   library = undefined,
 }: Props) => {
   const [showReportForm, setShowReportForm] = useState(false);
@@ -41,6 +43,11 @@ const StatsUsageReportsGroup = ({
         <li>
           <StatsGroup heading={heading} description={description}>
             <>
+              {!inventoryReportsEnabled && !quicksightLinkEnabled && (
+                <span className="no-content">
+                  Usage reporting is not available.
+                </span>
+              )}
               {inventoryReportsEnabled && library && (
                 <>
                   <Button
@@ -63,19 +70,21 @@ const StatsUsageReportsGroup = ({
             </>
           </StatsGroup>
         </li>
-        <li>
-          <div className="stat-link">
-            <a
-              href={usageDataHref}
-              target={usageDataTarget}
-              rel="noopener noreferrer"
-            >
-              {usageDataLabel}
-            </a>
-            &nbsp;&nbsp;
-            <i className="fa fa-external-link" />
-          </div>
-        </li>
+        {quicksightLinkEnabled && (
+          <li>
+            <div className="stat-link">
+              <a
+                href={usageDataHref}
+                target={usageDataTarget}
+                rel="noopener noreferrer"
+              >
+                {usageDataLabel}
+              </a>
+              &nbsp;&nbsp;
+              <i className="fa fa-external-link" />
+            </div>
+          </li>
+        )}
       </ul>
     </>
   );

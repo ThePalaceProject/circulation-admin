@@ -4,6 +4,7 @@ import { ContextProviderProps } from "../../../src/components/ContextProvider";
 import { ConfigurationSettings, FeatureFlags } from "../../../src/interfaces";
 import {
   useMayRequestInventoryReports,
+  useMaySeeQuickSightLink,
   useMayViewCollectionBarChart,
 } from "../../../src/businessRules/roleBasedAccess";
 
@@ -65,6 +66,98 @@ describe("Business rules for role-based access", () => {
 
     it("allows all users, if the restriction feature flag is is false", () => {
       const featureFlags: FeatureFlags = { reportsOnlyForSysadmins: false };
+
+      testAccess(true, { roles: [{ role: "system" }], featureFlags });
+
+      testAccess(true, { roles: [{ role: "manager-all" }], featureFlags });
+      testAccess(true, { roles: [{ role: "librarian-all" }], featureFlags });
+
+      testAccess(true, {
+        roles: [{ role: "manager", library: libraryMatch }],
+        featureFlags,
+      });
+      testAccess(true, {
+        roles: [{ role: "manager", library: libraryMismatch }],
+        featureFlags,
+      });
+      testAccess(true, {
+        roles: [{ role: "librarian", library: libraryMatch }],
+        featureFlags,
+      });
+      testAccess(true, {
+        roles: [{ role: "librarian", library: libraryMismatch }],
+        featureFlags,
+      });
+    });
+
+    it("allows all users, if the restriction feature flag is not set", () => {
+      const featureFlags: FeatureFlags = {};
+
+      testAccess(true, { roles: [{ role: "system" }], featureFlags });
+
+      testAccess(true, { roles: [{ role: "manager-all" }], featureFlags });
+      testAccess(true, { roles: [{ role: "librarian-all" }], featureFlags });
+
+      testAccess(true, {
+        roles: [{ role: "manager", library: libraryMatch }],
+        featureFlags,
+      });
+      testAccess(true, {
+        roles: [{ role: "manager", library: libraryMismatch }],
+        featureFlags,
+      });
+      testAccess(true, {
+        roles: [{ role: "librarian", library: libraryMatch }],
+        featureFlags,
+      });
+      testAccess(true, {
+        roles: [{ role: "librarian", library: libraryMismatch }],
+        featureFlags,
+      });
+    });
+  });
+
+  describe("controls access to the quicksight link", () => {
+    const testAccess = (
+      expectedResult: boolean,
+      config: Partial<ConfigurationSettings>
+    ) => {
+      const wrapper = setupWrapper(config);
+      const { result } = renderHook(
+        () => useMaySeeQuickSightLink({ library: libraryMatch }),
+        { wrapper }
+      );
+      expect(result.current).toBe(expectedResult);
+    };
+
+    it("restricts access to only sysadmins, if the restriction feature flag is true", () => {
+      const featureFlags: FeatureFlags = { quicksightOnlyForSysadmins: true };
+
+      testAccess(true, { roles: [{ role: "system" }], featureFlags });
+
+      testAccess(false, { roles: [{ role: "manager-all" }], featureFlags });
+      testAccess(false, { roles: [{ role: "librarian-all" }], featureFlags });
+
+      testAccess(false, {
+        roles: [{ role: "manager", library: libraryMatch }],
+        featureFlags,
+      });
+      testAccess(false, {
+        roles: [{ role: "manager", library: libraryMismatch }],
+        featureFlags,
+      });
+      testAccess(false, {
+        roles: [{ role: "librarian", library: libraryMatch }],
+        featureFlags,
+      });
+      testAccess(false, {
+        roles: [{ role: "librarian", library: libraryMismatch }],
+        featureFlags,
+      });
+    });
+
+    it("allows all users, if the restriction feature flag is is false", () => {
+      const featureFlags: FeatureFlags = { quicksightOnlyForSysadmins: false };
 
       testAccess(true, { roles: [{ role: "system" }], featureFlags });
 

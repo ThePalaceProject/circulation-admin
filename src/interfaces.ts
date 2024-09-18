@@ -48,6 +48,7 @@ export interface TestingFlags {
 export interface FeatureFlags {
   enableAutoList?: boolean;
   reportsOnlyForSysadmins?: boolean;
+  quicksightOnlyForSysadmins?: boolean;
 }
 
 export interface Navigate {

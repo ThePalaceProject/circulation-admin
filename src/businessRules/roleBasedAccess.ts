@@ -8,6 +8,14 @@ type HasLibraryKeyProps = {
   [key: string]: unknown;
 };
 
+// If the `quicksightOnlyForSysadmins` feature flag is set, only system
+// admins should see the QuickSight link.
+export const useMaySeeQuickSightLink = (_: HasLibraryKeyProps): boolean => {
+  const admin = useAppAdmin();
+  const onlyForSysAdmins = useAppFeatureFlags().quicksightOnlyForSysadmins;
+  return !onlyForSysAdmins || admin.isSystemAdmin();
+};
+
 // If the `reportsOnlyForSysadmins` feature flag is set, only system admins
 // may request inventory reports.
 export const useMayRequestInventoryReports = (

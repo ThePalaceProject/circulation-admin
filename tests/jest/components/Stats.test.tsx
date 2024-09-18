@@ -434,6 +434,53 @@ describe("Dashboard Statistics", () => {
         expect(renderFor(false, managerAll)).not.toBeNull();
         expect(renderFor(false, librarianAll)).not.toBeNull();
       });
+
+      it("shows quicksight link only for sysadmins, if sysadmin-only flag set", () => {
+        const fakeQuickSightHref = "https://example.com/fakeQS";
+
+        // We'll use this function to test multiple scenarios.
+        const renderFor = (
+          onlySysadmins: boolean,
+          roles: { role: string; library?: string }[]
+        ) => {
+          const contextProviderProps: Partial<ContextProviderProps> = {
+            featureFlags: { quicksightOnlyForSysadmins: onlySysadmins },
+            roles,
+            quicksightPagePath: fakeQuickSightHref,
+          };
+          const {
+            container,
+            getByRole,
+            queryByRole,
+            queryByText,
+          } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
+            contextProviderProps,
+          });
+
+          // We should always render a Usage reports group when a library is specified.
+          getByRole("heading", {
+            level: 3,
+            name: statGroupToHeading.usageReports,
+          });
+          const usageReportLink = queryByRole("link", { name: /View Usage/i });
+          if (usageReportLink) {
+            expect(usageReportLink).toHaveAttribute("href", fakeQuickSightHref);
+          }
+
+          // Clean up the container after each render.
+          document.body.removeChild(container);
+          return usageReportLink;
+        };
+
+        // If the feature flag is set, the link should be visible only to sysadmins.
+        expect(renderFor(true, systemAdmin)).not.toBeNull();
+        expect(renderFor(true, managerAll)).toBeNull();
+        expect(renderFor(true, librarianAll)).toBeNull();
+        // If the feature flag is false, the button should be visible to all users.
+        expect(renderFor(false, systemAdmin)).not.toBeNull();
+        expect(renderFor(false, managerAll)).not.toBeNull();
+        expect(renderFor(false, librarianAll)).not.toBeNull();
+      });
     });
 
     describe("charting - custom tooltip", () => {
