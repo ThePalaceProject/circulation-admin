@@ -6,4 +6,5 @@ import { FeatureFlags } from "../interfaces";
 export const defaultFeatureFlags: FeatureFlags = {
   enableAutoList: true,
   reportsOnlyForSysadmins: true,
+  quicksightOnlyForSysadmins: true,
 };

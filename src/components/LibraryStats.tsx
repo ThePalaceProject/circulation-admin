@@ -2,6 +2,7 @@ import * as React from "react";
 import { LibraryStatistics } from "../interfaces";
 import {
   useMayRequestInventoryReports,
+  useMaySeeQuickSightLink,
   useMayViewCollectionBarChart,
 } from "../businessRules/roleBasedAccess";
 import StatsTotalCirculationsGroup from "./StatsTotalCirculationsGroup";
@@ -45,6 +46,7 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
   const inventoryReportRequestEnabled = useMayRequestInventoryReports({
     library,
   });
+  const quicksightLinkEnabled = useMaySeeQuickSightLink({ library });
   const quicksightPageUrl = useAppContext().quicksightPagePath;
 
   let statsLayoutClass: string, dashboardTitle: string, implementation: string;
@@ -74,6 +76,7 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
             <StatsUsageReportsGroup
               library={library}
               inventoryReportsEnabled={inventoryReportRequestEnabled}
+              quicksightLinkEnabled={quicksightLinkEnabled}
               usageDataTarget="_blank" // open in new tab or window
               usageDataHref={quicksightPageUrl}
             />

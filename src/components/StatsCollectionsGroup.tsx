@@ -20,7 +20,7 @@ const StatsCollectionsGroup = ({
 }: Props) => {
   const content =
     collections.length === 0 ? (
-      <span className="no-collections">No associated collections.</span>
+      <span className="no-content">No associated collections.</span>
     ) : showBarChart ? (
       <StatsCollectionsBarChart collections={collections} />
     ) : (

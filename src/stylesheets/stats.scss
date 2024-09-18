@@ -61,12 +61,13 @@
         margin: 0;
         overflow-wrap: normal;
       }
+    }
 
-      .no-collections {
-        margin: 10px;
-        font-style: italic;
-        color: $medium-dark-gray;
-      }
+    .no-content {
+      margin: 10px;
+      font-style: italic;
+      font-weight: bolder;
+      color: $medium-dark-gray;
     }
 
     .stat-group-description {
