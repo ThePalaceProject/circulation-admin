@@ -7,6 +7,8 @@ import buildStore from "../../../src/store";
 import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
 import renderWithContext from "../testUtils/renderWithContext";
+import { renderWithProviders } from "../testUtils/withProviders";
+import QuicksightDashboardPage from "../../../src/components/QuicksightDashboardPage";
 
 const libraries: LibrariesData = { libraries: [{ uuid: "my-uuid" }] };
 const dashboardId = "test";
@@ -35,15 +37,8 @@ describe("QuicksightDashboard", () => {
   });
 
   it("embed url is retrieved and set in iframe", async () => {
-    const contextProviderProps = {
-      csrfToken: "",
-      featureFlags: {},
-      roles: [{ role: "system" }],
-    };
-
-    renderWithContext(
-      <QuicksightDashboard dashboardId={dashboardId} store={buildStore()} />,
-      contextProviderProps
+    renderWithProviders(
+      <QuicksightDashboard dashboardId={dashboardId} store={buildStore()} />
     );
 
     await waitFor(() => {
@@ -51,6 +46,22 @@ describe("QuicksightDashboard", () => {
         "src",
         embedUrl
       );
+    });
+  });
+
+  it("header renders without navigation links ", () => {
+    renderWithProviders(<QuicksightDashboardPage params={{ library: null }} />);
+
+    // Make sure we see the QuicksSight iFrame.
+    expect(screen.getByTitle("Library Dashboard")).toBeInTheDocument();
+    // Make sure we have the branding image.
+    expect(
+      screen.getByAltText("Palace Collection Manager")
+    ).toBeInTheDocument();
+
+    // Make sure we do not see other navigation links.
+    ["Dashboard", "System Configuration"].forEach((name) => {
+      expect(screen.queryByText(name)).not.toBeInTheDocument();
     });
   });
 });
