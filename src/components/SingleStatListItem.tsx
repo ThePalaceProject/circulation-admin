@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as numeral from "numeral";
 import { formatNumber, roundedNumber } from "../utils/sharedFunctions";
 
 export interface SingleStatListItemProps {
