@@ -65,6 +65,7 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
       <ul className={`stats ${statsLayoutClass}`}>
         <li className="stat-group stat-patrons-group">
           <StatsPatronGroup
+            total={patrons.total}
             withActiveLoan={patrons.withActiveLoan}
             withActiveLoanOrHold={patrons.withActiveLoanOrHold}
             heading="Current Circulation Activity"

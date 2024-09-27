@@ -24,7 +24,15 @@ const StatsPatronGroup = ({
           <SingleStatListItem
             label="Total Patrons"
             value={total}
-            tooltip="Total number of patrons in the Palace System."
+            tooltip={`
+              Total number of patrons in the Palace System.
+              Please note:
+              this number could be artificially inflated if you have an
+              Aspen integration. We are working to address the issue and
+              will update you when it’s resolved.
+              `
+              .replace(/(?:\s|\r\n|\r|\n)+/g, " ")
+              .trim()}
           />
         )}
         <SingleStatListItem
