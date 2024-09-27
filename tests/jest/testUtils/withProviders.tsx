@@ -7,10 +7,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { store } from "../../../src/store";
+import {
+  TOSContextProvider,
+  TOSContextProviderProps,
+} from "../../../src/components/TOSContext";
 
 export type TestProviderWrapperOptions = {
   reduxProviderProps?: ProviderProps;
   contextProviderProps?: Partial<ContextProviderProps>;
+  tosContextProviderProps?: TOSContextProviderProps;
   queryClient?: QueryClient;
 };
 export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
@@ -20,6 +25,13 @@ export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
 // The `store` argument is required for the Redux Provider and should
 // be the same for both the Redux Provider and the ContextProvider.
 const defaultReduxStore = store;
+
+// Setup default TOSContext provider props.
+const tosText = "Sample terms of service.";
+const tosHref = "http://example.com/terms-of-service";
+const requiredTOSContextProviderProps: TOSContextProviderProps = {
+  ...[tosText, tosHref],
+};
 
 // The `csrfToken` context provider prop is required, so we provide
 // a default value here, so it can be easily merged with other props.
@@ -35,6 +47,7 @@ const requiredContextProviderProps: ContextProviderProps = {
  * @param {TestProviderWrapperOptions} options
  * @param options.reduxProviderProps Props to pass to the Redux `Provider` wrapper
  * @param {ContextProviderProps} options.contextProviderProps Props to pass to the ContextProvider wrapper
+ * @param {TOSContextProviderProps} options.tosContextProviderProps Props to pass to the TOSContextProvider wrapper
  * @param {QueryClient} options.queryClient A `tanstack/react-query` QueryClient
  * @returns {React.FunctionComponent} A React component that wraps children with our providers
  */
@@ -46,6 +59,7 @@ export const componentWithProviders = ({
     csrfToken: "",
     featureFlags: defaultFeatureFlags,
   },
+  tosContextProviderProps = requiredTOSContextProviderProps,
   queryClient = new QueryClient(),
 }: TestProviderWrapperOptions = {}): React.FunctionComponent => {
   const effectiveContextProviderProps = {
@@ -56,9 +70,11 @@ export const componentWithProviders = ({
   const wrapper = ({ children }) => (
     <Provider {...reduxProviderProps}>
       <ContextProvider {...effectiveContextProviderProps}>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <TOSContextProvider value={tosContextProviderProps}>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </TOSContextProvider>
       </ContextProvider>
     </Provider>
   );
