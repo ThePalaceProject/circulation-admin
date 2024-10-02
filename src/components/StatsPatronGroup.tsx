@@ -25,11 +25,12 @@ const StatsPatronGroup = ({
             label="Total Patrons"
             value={total}
             tooltip={`
-              Total number of patrons in the Palace System.
-              Please note:
-              this number could be artificially inflated if you have an
-              Aspen integration. We are working to address the issue and
-              will update you when it’s resolved.
+              Total number of patron records currently cached in the Palace System.
+
+              Please note: This value does not necessarily reflect direct patron
+              interaction with the Palace applications. Use of external discovery
+              systems that interact with Palace on a patron's behalf may inflate
+              this number.
               `
               .replace(/(?:\s|\r\n|\r|\n)+/g, " ")
               .trim()}
