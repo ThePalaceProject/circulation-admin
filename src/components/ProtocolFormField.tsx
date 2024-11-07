@@ -96,6 +96,8 @@ export default class ProtocolFormField extends React.Component<
         ? setting.type
         : "input";
 
+    const type = setting.type === "date-picker" ? "date" : "text";
+
     const extraProps = {
       image: {
         accept: "image/*",
@@ -111,7 +113,7 @@ export default class ProtocolFormField extends React.Component<
     const basicProps = {
       key: setting.key,
       elementType: elementType,
-      type: "text",
+      type: type,
       disabled: this.props && this.props.disabled,
       name: setting.key,
       label: setting.label,
