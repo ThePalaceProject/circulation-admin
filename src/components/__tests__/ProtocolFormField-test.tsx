@@ -43,6 +43,29 @@ describe("ProtocolFormField", () => {
     expect(inputElement.value).to.equal("");
   });
 
+  it("renders date-picker setting", () => {
+    const datePickerSetting = { ...setting, ...{ type: "date-picker" } };
+    wrapper.setProps({ setting: datePickerSetting });
+    let input = wrapper.find(EditableInput);
+    expect(input.length).to.equal(1);
+    expect(input.prop("type")).to.equal("date");
+    expect(input.prop("disabled")).to.equal(false);
+    expect(input.prop("name")).to.equal("setting");
+    expect(input.prop("label")).to.equal("label");
+    expect(input.prop("description")).to.equal("<p>description</p>");
+    expect(input.prop("value")).to.be.undefined;
+
+    wrapper.setProps({ value: "2020-10-13", disabled: true });
+    input = wrapper.find(EditableInput);
+    expect(input.prop("disabled")).to.equal(true);
+    expect(input.prop("value")).to.equal("2020-10-13");
+    const inputElement = input.find("input").getDOMNode();
+    expect(inputElement.value).to.equal("2020-10-13");
+
+    (wrapper.instance() as ProtocolFormField).clear();
+    expect(inputElement.value).to.equal("");
+  });
+
   it("renders optional setting", () => {
     const optionalSetting = { ...setting, ...{ optional: true } };
     wrapper.setProps({ setting, optionalSetting });
