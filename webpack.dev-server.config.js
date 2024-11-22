@@ -192,11 +192,11 @@ module.exports = (env) => {
         return responseBuffer;
       }
     ),
-    proxyTimeout: 5000,
+    proxyTimeout: 120000,
     secure: false,
     selfHandleResponse: true,
     target: backend,
-    timeout: 5000,
+    timeout: 120000,
   });
 
   const config = merge(dev, {
