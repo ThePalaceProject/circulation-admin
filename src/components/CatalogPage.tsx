@@ -103,11 +103,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
   }
 
   expandCollectionUrl(url: string): string {
-    return url
-      ? `${document.location.origin}/${url}${
-          url.includes("?") ? "&" : "?"
-        }max_cache_age=0`
-      : url;
+    return url ? `${document.location.origin}/${url}` : url;
   }
 
   expandBookUrl(url: string): string {
