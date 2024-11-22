@@ -29,7 +29,7 @@ describe("CatalogPage", () => {
   it("renders OPDSCatalog", () => {
     const catalog = wrapper.find(OPDSCatalog);
     expect(catalog.prop("collectionUrl")).to.equal(
-      host + "/library/collectionurl?max_cache_age=0"
+      host + "/library/collectionurl"
     );
     expect(catalog.prop("bookUrl")).to.equal(host + "/library/works/bookurl");
     expect(catalog.prop("BookDetailsContainer").name).to.equal(
@@ -45,7 +45,7 @@ describe("CatalogPage", () => {
   it("handles the case in which the URL already contains a query string", () => {
     const queryUrl = "library/collectionurl?samplequery=test";
     expect(wrapper.instance().expandCollectionUrl(queryUrl)).to.equal(
-      host + "/library/collectionurl?samplequery=test&max_cache_age=0"
+      host + "/library/collectionurl?samplequery=test"
     );
   });
 

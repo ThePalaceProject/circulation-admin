@@ -108,7 +108,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
     // Links that will be rendered in a NavItem Bootstrap component.
     const libraryNavItems = [
-      { label: "Catalog", href: "%2Fgroups?max_cache_age=0" },
+      { label: "Catalog", href: "%2Fgroups" },
       { label: "Hidden Books", href: "%2Fadmin%2Fsuppressed" },
     ];
     // Other links that will be rendered in a Link router component and are library specific.
@@ -231,7 +231,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let library = this.libraryRef.current.getValue();
     if (library) {
       this.context.router.push(
-        "/admin/web/collection/" + library + "%2Fgroups?max_cache_age=0"
+        "/admin/web/collection/" + library + "%2Fgroups"
       );
       this.forceUpdate();
     }

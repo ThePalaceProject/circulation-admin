@@ -255,7 +255,7 @@ describe("Header", () => {
 
       expect(fullContext.router.push.callCount).to.equal(1);
       expect(fullContext.router.push.args[0][0]).to.equal(
-        "/admin/web/collection/bpl%2Fgroups?max_cache_age=0"
+        "/admin/web/collection/bpl%2Fgroups"
       );
     });
 
