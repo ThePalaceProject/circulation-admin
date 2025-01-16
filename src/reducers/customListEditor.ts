@@ -154,48 +154,68 @@ export const buildAdvSearchQueryString = (
 export const getCustomListEditorFormData = (
   state: CustomListEditorState
 ): FormData => {
-  const data = new (window as any).FormData();
-
   const { id, properties, entries, searchParams } = state;
+  const { name, collections, autoUpdate } = properties.current;
 
+  const data = new (window as any).FormData();
   if (id) {
     data.append("id", id);
   }
-
-  const { name, collections, autoUpdate } = properties.current;
-
   data.append("name", name);
   data.append("collections", JSON.stringify(collections));
 
   if (autoUpdate) {
-    data.append("auto_update", "true");
-
-    data.append(
-      "auto_update_query",
-      buildAdvSearchQueryString(searchParams.current, 0, false)
-    );
-
-    data.append(
-      "auto_update_facets",
-      buildSearchFacetString(searchParams.current)
-    );
+    updateCustomListEditorAutoUpdateFormData(data, searchParams.current);
   } else {
-    const { baseline, current, removed } = entries;
-
-    data.append("entries", JSON.stringify(current));
-
-    const entriesById = baseline.reduce((ids, entry) => {
-      ids[entry.id] = entry;
-
-      return ids;
-    }, {});
-
-    const deletedEntries = Object.keys(removed).map((id) => entriesById[id]);
-
-    data.append("deletedEntries", JSON.stringify(deletedEntries));
+    updateCustomListEditorManualUpdateFormData(data, entries);
   }
 
   return data;
+};
+
+/**
+ * Update the form data with manual update custom list properties.
+ * The data should include only the `id`s for each entry. Other properties
+ * are excluded.
+ *
+ * @param data         The form data to update
+ * @param entries      The baseline (initial), current, and removed item entries
+ */
+const updateCustomListEditorManualUpdateFormData = (
+  data: FormData,
+  { baseline, current, removed }: CustomListEditorEntriesData
+) => {
+  const baselineEntriesById = baseline.reduce((ids, entry) => {
+    ids[entry.id] = { id: entry.id };
+    return ids;
+  }, {});
+  const addedEntries = current
+    .filter((entry) => !baselineEntriesById[entry.id])
+    .map((entry) => ({ id: entry.id }));
+  const deletedEntries = Object.keys(removed).map(
+    (id) => baselineEntriesById[id]
+  );
+
+  data.append("entries", JSON.stringify(addedEntries));
+  data.append("deletedEntries", JSON.stringify(deletedEntries));
+};
+
+/**
+ * Update the form data with auto update search properties.
+ *
+ * @param data          The form data to update
+ * @param currentParams The current search parameters
+ */
+const updateCustomListEditorAutoUpdateFormData = (
+  data: FormData,
+  currentParams: CustomListEditorSearchParams
+) => {
+  data.append("auto_update", "true");
+  data.append(
+    "auto_update_query",
+    buildAdvSearchQueryString(currentParams, 0, false)
+  );
+  data.append("auto_update_facets", buildSearchFacetString(currentParams));
 };
 
 /**

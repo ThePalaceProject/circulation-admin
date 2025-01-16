@@ -2518,12 +2518,9 @@ describe("custom list editor reducer", () => {
       expect(formData.get("id")).to.equal("123");
       expect(formData.get("name")).to.equal("My New List");
       expect(formData.get("collections")).to.equal("[1,2]");
-      expect(formData.get("entries")).to.equal(
-        '[{"id":"book2","title":"Little Women"},{"id":"book91","title":"Huckleberry Finn"}]'
-      );
-      expect(formData.get("deletedEntries")).to.equal(
-        '[{"id":"book90","title":"Wuthering Heights"}]'
-      );
+      // The form data entries should have only the ids of the appropriate entries.
+      expect(formData.get("entries")).to.equal('[{"id":"book2"}]');
+      expect(formData.get("deletedEntries")).to.equal('[{"id":"book90"}]');
     });
 
     it("should include an auto update query if the list is auto updating", () => {
