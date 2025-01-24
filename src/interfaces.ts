@@ -284,6 +284,17 @@ export interface LibraryWithSettingsData {
   [key: string]: string;
 }
 
+export type SpecificSettingType =
+  | "color-picker"
+  | "date"
+  | "date-picker"
+  | "image"
+  | "list"
+  | "menu"
+  | "select"
+  | "text"
+  | "textarea";
+
 export interface SettingData {
   key: string;
   label: string;
@@ -291,7 +302,10 @@ export interface SettingData {
   default?: string | string[] | Object[];
   required?: boolean;
   randomizable?: boolean;
-  type?: string;
+  hidden?: boolean;
+  // TODO: Remove the `string` type once we've migrated all the settings
+  //  types to the new `SpecificSettingType` type.
+  type?: SpecificSettingType | string;
   options?: SettingData[];
   instructions?: string;
   format?: string;
