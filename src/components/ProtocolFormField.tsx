@@ -54,6 +54,11 @@ export default class ProtocolFormField extends React.Component<
 
   render(): JSX.Element {
     const setting = this.props.setting as SettingData | CustomListsSetting;
+    if (setting.hidden) {
+      // TODO: Hijacking for any hidden fields for now, but need to handle
+      //  some types (e.g., "menu", "list")  differently.
+      return this.renderHiddenElement(setting);
+    }
     if (setting.type === "select") {
       return this.renderSelectSetting(setting);
     } else if (setting.type === "list" || setting.type === "menu") {
@@ -63,6 +68,22 @@ export default class ProtocolFormField extends React.Component<
     } else {
       return this.renderSetting(setting);
     }
+  }
+
+  renderHiddenElement(setting: SettingData) {
+    const { value, disabled = false, error = null } = this.props;
+    const props = {
+      key: setting.key,
+      hidden: true,
+      elementType: "input",
+      type: "hidden",
+      name: setting.key,
+      value: defaultValueIfMissing(value, setting.default),
+      ref: this.elementRef,
+      disabled,
+      error,
+    };
+    return React.createElement(EditableInput, props, null);
   }
 
   renderSetting(setting: SettingData): JSX.Element {

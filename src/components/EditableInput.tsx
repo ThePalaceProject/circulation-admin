@@ -24,6 +24,7 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   className?: string;
   minLength?: number;
   maxLength?: number;
+  hidden?: boolean;
 }
 
 export interface EditableInputState {
@@ -65,7 +66,11 @@ export default class EditableInput extends React.Component<
       error,
       label,
       extraContent,
+      hidden,
     } = this.props;
+    if (hidden) {
+      return this.renderHiddenElement();
+    }
     const checkboxOrRadioOrSelect = !!(
       type === "checkbox" ||
       type === "radio" ||
@@ -90,7 +95,7 @@ export default class EditableInput extends React.Component<
           <label className="control-label">
             {type !== "checkbox" && type !== "radio" && label}
             {required && <span className="required-field">Required</span>}
-            {this.renderElement(descriptionId)}
+            {this.renderElement(this.props, descriptionId)}
             {type === "checkbox" && label}
             {type === "radio" && <span>{label}</span>}
           </label>
@@ -98,7 +103,7 @@ export default class EditableInput extends React.Component<
         {(extraContent || !label) && (
           <div className={extraContent ? "with-add-on" : ""}>
             {extraContent}
-            {!label && this.renderElement(descriptionId)}
+            {!label && this.renderElement(this.props, descriptionId)}
           </div>
         )}
         {descriptionStr &&
@@ -107,7 +112,7 @@ export default class EditableInput extends React.Component<
     );
   }
 
-  renderElement(descriptionId?: string) {
+  renderElement(props, descriptionId?: string) {
     const {
       type,
       elementType,
@@ -124,7 +129,7 @@ export default class EditableInput extends React.Component<
       style,
       minLength,
       maxLength,
-    } = this.props;
+    } = props;
 
     return React.createElement(
       elementType || "input",
@@ -154,6 +159,10 @@ export default class EditableInput extends React.Component<
       },
       children
     );
+  }
+
+  renderHiddenElement() {
+    return this.renderElement({ ...this.props, readOnly: true });
   }
 
   renderDescription(id: string, description: string) {
