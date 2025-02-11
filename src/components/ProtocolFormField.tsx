@@ -39,12 +39,14 @@ export default class ProtocolFormField extends React.Component<
   ProtocolFormFieldProps,
   object
 > {
+  static displayName = "ProtocolFormField";
   private inputListRef = React.createRef<InputList>();
   private colorPickerRef = React.createRef<ColorPicker>();
   private elementRef = React.createRef<EditableInput>();
   static defaultProps = {
     readOnly: false,
   };
+
   constructor(props: ProtocolFormFieldProps) {
     super(props);
     this.randomize = this.randomize.bind(this);
@@ -54,36 +56,32 @@ export default class ProtocolFormField extends React.Component<
 
   render(): JSX.Element {
     const setting = this.props.setting as SettingData | CustomListsSetting;
-    if (setting.hidden) {
-      // TODO: Hijacking for any hidden fields for now, but need to handle
-      //  some types (e.g., "menu", "list")  differently.
-      return this.renderHiddenElement(setting);
-    }
-    if (setting.type === "select") {
-      return this.renderSelectSetting(setting);
-    } else if (setting.type === "list" || setting.type === "menu") {
-      return this.renderListSetting(setting);
-    } else if (setting.type === "color-picker") {
-      return this.renderColorPickerSetting(setting);
-    } else {
-      return this.renderSetting(setting);
-    }
+    const element: JSX.Element =
+      setting.type === "select"
+        ? this.renderSelectSetting(setting)
+        : setting.type === "list" || setting.type === "menu"
+        ? this.renderListSetting(setting)
+        : setting.type === "color-picker"
+        ? this.renderColorPickerSetting(setting)
+        : this.renderSetting(setting);
+    // Special handling for hidden settings.
+    return setting.hidden ? this.renderHiddenElement(element) : element;
   }
 
-  renderHiddenElement(setting: SettingData) {
-    const { value, disabled = false, error = null } = this.props;
-    const props = {
-      key: setting.key,
-      hidden: true,
-      elementType: "input",
-      type: "hidden",
-      name: setting.key,
-      value: defaultValueIfMissing(value, setting.default),
-      ref: this.elementRef,
-      disabled,
-      error,
-    };
-    return React.createElement(EditableInput, props, null);
+  renderHiddenElement(element: JSX.Element): JSX.Element {
+    // Wrap hidden element in invisible div to prevent it from affecting layout.
+    return (
+      <div
+        style={{
+          visibility: "hidden",
+          position: "absolute",
+          top: "-9999px",
+          left: "-9999px",
+        }}
+      >
+        {element}
+      </div>
+    );
   }
 
   renderSetting(setting: SettingData): JSX.Element {

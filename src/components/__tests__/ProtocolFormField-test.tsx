@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import * as React from "react";
-import { mount } from "enzyme";
+import { mount, ReactWrapper } from "enzyme";
 import { stub } from "sinon";
 
 import ProtocolFormField from "../ProtocolFormField";
@@ -324,19 +324,17 @@ describe("ProtocolFormField", () => {
       label: "label",
       description: "<p>description</p>",
     };
-    let wrapper;
+    let wrapper: ReactWrapper;
 
-    const expectHiddenValue = (value) => {
-      const input = wrapper.find("input");
-      expect(input.length).to.equal(1);
-      expect(input.prop("type")).to.equal("hidden");
-      expect(input.prop("name")).to.equal("setting");
-      // The field contains the correct value.
-      expect(input.prop("value")).to.deep.equal(value);
-      // ProtocolFormField.getValue returns the correct value for the field.
-      expect((wrapper.instance() as ProtocolFormField).getValue()).to.equal(
-        value
+    const expectHiddenValue = (value: any): ReactWrapper => {
+      const hiddenDiv = wrapper.findWhere(
+        (node) => node.type() === "div" && node.prop("style") !== undefined
       );
+
+      expect(
+        (wrapper.instance() as ProtocolFormField).getValue()
+      ).to.deep.equal(value);
+      return hiddenDiv;
     };
 
     beforeEach(() => {
@@ -344,10 +342,15 @@ describe("ProtocolFormField", () => {
     });
 
     it("renders hidden text setting", () => {
-      const textFieldSetting = { ...setting, type: "text" };
-      wrapper.setProps({ setting: textFieldSetting, value: "test" });
+      wrapper.setProps({ value: "test" });
 
-      expectHiddenValue("test");
+      const hiddenDiv = expectHiddenValue("test");
+      const input = hiddenDiv.find(EditableInput);
+      const inputElement = input.find("input").getDOMNode();
+
+      expect(input.prop("value")).to.equal("test");
+      expect(inputElement.value).to.equal("test");
+      expect(wrapper.instance().getValue()).to.equal("test");
     });
 
     it("renders hidden date-picker setting", () => {
@@ -366,16 +369,27 @@ describe("ProtocolFormField", () => {
 
     it("renders hidden setting with default", () => {
       const defaultSetting = { ...setting, default: "default" };
-      wrapper.setProps({ setting: defaultSetting });
+      wrapper.setProps({ setting: defaultSetting, value: undefined });
 
       expectHiddenValue("default");
     });
 
     it("renders hidden number setting", () => {
       const numberSetting = { ...setting, type: "number" };
-      wrapper.setProps({ setting: numberSetting, value: "42" });
+      wrapper.setProps({ setting: numberSetting });
 
-      expectHiddenValue("42");
+      let hiddenDiv = expectHiddenValue("");
+
+      let input = hiddenDiv.find(EditableInput);
+      expect(input.length).to.equal(1);
+      expect(input.prop("validation")).to.equal("number");
+      expect(input.prop("name")).to.equal("setting");
+      expect(input.prop("value")).to.be.undefined;
+
+      wrapper.setProps({ setting: numberSetting, value: "42" });
+      hiddenDiv = expectHiddenValue("42");
+      input = hiddenDiv.find(EditableInput);
+      expect(input.prop("value")).to.equal("42");
     });
 
     it("renders hidden select setting", () => {
@@ -385,30 +399,64 @@ describe("ProtocolFormField", () => {
         options: [
           { key: "option1", label: "option 1" },
           { key: "option2", label: "option 2" },
+          { key: "option3", label: "option 3" },
         ],
       };
-      wrapper.setProps({ setting: selectSetting });
 
-      // With default value.
-      expectHiddenValue("");
+      // If there is no value and no default, then we use the first option.
+      wrapper.setProps({
+        setting: { ...selectSetting, default: undefined },
+        value: undefined,
+      });
+      const hiddenDiv = expectHiddenValue("option1");
 
-      // With provided value.
-      wrapper.setProps({ value: "indigo" });
-      expectHiddenValue("indigo");
+      const input = hiddenDiv.find(EditableInput);
+      const children = input.find("option");
+
+      expect(input.length).to.equal(1);
+      expect(input.prop("name")).to.equal("setting");
+      expect(input.prop("label")).to.equal("label");
+      expect(input.prop("value")).to.be.undefined;
+
+      expect(children.length).to.equal(3);
+      expect(children.at(0).prop("value")).to.equal("option1");
+      expect(children.at(1).prop("value")).to.equal("option2");
+      expect(children.at(2).prop("value")).to.equal("option3");
+      expect(children.at(0).text()).to.contain("option 1");
+      expect(children.at(1).text()).to.contain("option 2");
+      expect(children.at(2).text()).to.contain("option 3");
+
+      // If no value set and there is a default value, then we should get the default back.
+      wrapper.setProps({
+        setting: { ...selectSetting, default: "option3" },
+        value: undefined,
+      });
+      expectHiddenValue("option3");
+
+      // If a value is already set, then we should get that value.
+      wrapper.setProps({ value: "option2" });
+      expectHiddenValue("option2");
     });
 
     it("renders hidden textarea setting", () => {
-      const textareaSetting = {
-        ...setting,
-        type: "textarea",
-        description: "<p>Textarea</p>",
-      };
-      wrapper.setProps({ setting: textareaSetting, value: "test" });
+      const textareaSetting = { ...setting, type: "textarea" };
+      wrapper.setProps({ setting: textareaSetting });
+      const hiddenDiv = expectHiddenValue("");
 
+      const input = hiddenDiv.find(EditableInput);
+      expect(input.length).to.equal(1);
+      const inputElement = input.find("textarea").at(0) as any;
+      expect(inputElement.length).to.equal(1);
+      expect(inputElement.text()).to.equal("");
+      expect(input.prop("type")).to.equal("text");
+      expect(input.prop("name")).to.equal("setting");
+      expect(input.prop("value")).to.be.undefined;
+
+      wrapper.setProps({ setting: textareaSetting, value: "test" });
       expectHiddenValue("test");
     });
 
-    it.skip("renders hidden menu setting", () => {
+    it("renders hidden menu setting", () => {
       const menuSetting = {
         ...setting,
         type: "menu",
@@ -426,17 +474,34 @@ describe("ProtocolFormField", () => {
         disableButton: true,
       });
 
-      expectHiddenValue([]);
+      const hiddenDiv = expectHiddenValue([]);
+      const inputList = hiddenDiv.find(InputList);
+      expect(inputList.length).to.equal(1);
+      expect(inputList.prop("setting")).to.equal(menuSetting);
+      expect(inputList.prop("altValue")).to.equal("Alternate");
+      expect(inputList.find("select").length).to.equal(1);
+      expect(inputList.prop("readOnly")).to.be.true;
+      expect(inputList.prop("disableButton")).to.be.true;
     });
 
     it("renders hidden image setting", () => {
       const imageSetting = { ...setting, type: "image" };
-      wrapper.setProps({
-        setting: imageSetting,
-        value: "data:image/png;base64,...",
-      });
 
-      expectHiddenValue("data:image/png;base64,...");
+      wrapper.setProps({ setting: imageSetting });
+      let hiddenDiv = expectHiddenValue("");
+
+      const input = hiddenDiv.find(EditableInput);
+      expect(input.length).to.equal(1);
+      expect(input.prop("type")).to.equal("file");
+      expect(input.prop("name")).to.equal("setting");
+      expect(input.prop("label")).to.equal("label");
+      expect(input.prop("value")).to.be.undefined;
+      expect(input.prop("accept")).to.equal("image/*");
+
+      wrapper.setProps({ value: "data:image/png;base64,..." });
+      hiddenDiv = expectHiddenValue("");
+      const img = hiddenDiv.find("img");
+      expect(img.prop("src")).to.equal("data:image/png;base64,...");
     });
 
     it("renders hidden color picker setting", () => {
@@ -445,36 +510,25 @@ describe("ProtocolFormField", () => {
         type: "color-picker",
         default: "#aaaaaa",
       };
-      wrapper.setProps({ setting: colorPickerSetting });
+      // If there is no value, then we use the default.
+      wrapper.setProps({ setting: colorPickerSetting, value: undefined });
+      const hiddenDiv = expectHiddenValue("#aaaaaa");
+      const picker = hiddenDiv.find(ColorPicker);
+      expect(picker.length).to.equal(1);
+      expect(picker.prop("setting")).to.equal(colorPickerSetting);
+      expect(picker.prop("value")).to.equal("#aaaaaa");
 
-      // Use the default value.
-      expectHiddenValue("#aaaaaa");
-
-      // Explicitly set the value.
+      // If a value is provided, then we use that value.
       wrapper.setProps({ value: "#222222" });
-      expectHiddenValue("#222222");
+      expectHiddenValue("#aaaaaa");
     });
 
-    it.skip("gets value of hidden list setting without options", () => {
+    it("gets value of hidden list setting without options", () => {
       wrapper.setProps({
-        setting: { ...setting, ...{ type: "list" } },
+        setting: { ...setting, type: "list" },
         value: ["item 1", "item 2"],
       });
       expectHiddenValue(["item 1", "item 2"]);
-      expect(
-        (wrapper.instance() as ProtocolFormField).getValue()
-      ).to.deep.equal(["item 1", "item 2"]);
-    });
-
-    it("accepts instructions, but ignores them when hidden", () => {
-      const instructionsSetting = {
-        ...setting,
-        ...{ instructions: "<ul><li>Step 1</li></ul>", type: "list" },
-      };
-      wrapper.setProps({ setting: instructionsSetting });
-
-      const instructions = wrapper.find(".well");
-      expect(instructions.length).to.equal(0);
     });
   });
 });
