@@ -38,7 +38,9 @@ export default class InputList extends React.Component<
   InputListProps,
   InputListState
 > {
+  static displayName = "InputList";
   private addListItemRef = React.createRef<LanguageField>();
+
   constructor(props: InputListProps) {
     super(props);
     const isMenu = props.setting.type === "menu";

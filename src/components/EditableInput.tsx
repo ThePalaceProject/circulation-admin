@@ -24,7 +24,6 @@ export interface EditableInputProps extends React.HTMLProps<EditableInput> {
   className?: string;
   minLength?: number;
   maxLength?: number;
-  hidden?: boolean;
 }
 
 export interface EditableInputState {
@@ -41,6 +40,7 @@ export default class EditableInput extends React.Component<
   EditableInputState
 > {
   private elementRef = React.createRef<HTMLInputElement>();
+  static displayName = "EditableInput";
   static defaultProps = {
     optionalText: true,
     readOnly: false,
@@ -66,11 +66,7 @@ export default class EditableInput extends React.Component<
       error,
       label,
       extraContent,
-      hidden,
     } = this.props;
-    if (hidden) {
-      return this.renderHiddenElement();
-    }
     const checkboxOrRadioOrSelect = !!(
       type === "checkbox" ||
       type === "radio" ||
@@ -159,10 +155,6 @@ export default class EditableInput extends React.Component<
       },
       children
     );
-  }
-
-  renderHiddenElement() {
-    return this.renderElement({ ...this.props, readOnly: true });
   }
 
   renderDescription(id: string, description: string) {
