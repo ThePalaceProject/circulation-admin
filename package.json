@@ -102,6 +102,7 @@
     "eslint-plugin-react-hooks": "^4.0.0",
     "fetch-mock": "^10.0.7",
     "fetch-mock-jest": "^1.5.1",
+    "fetch-ponyfill": "^7.1.0",
     "file-loader": "^6.2.0",
     "follow-redirects": "^1.15.6",
     "husky": "^4.3.0",

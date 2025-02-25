@@ -2,11 +2,11 @@
 
 const globalThis = window;
 
-// TODO: I'm not sure why we still need to override fetch here, since
-//  `jest-fixed-jsdom` already does that. But not doing so causes one
-//  of the tests to fail, so I'm leaving it in for now.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { fetch } = require("jest-fixed-jsdom");
+const { fetch, Headers, Request, Response } = require("fetch-ponyfill")();
 Object.defineProperties(globalThis, {
-  fetch: { value: fetch },
+  fetch: { value: fetch, writable: true },
+  Headers: { value: Headers },
+  Request: { value: Request },
+  Response: { value: Response, writable: true },
 });
