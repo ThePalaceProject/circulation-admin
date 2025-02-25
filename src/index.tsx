@@ -55,7 +55,7 @@ class CirculationAdmin {
       <Provider store={store}>
         <ContextProvider {...config} store={store}>
           <TOSContextProvider
-            value={...[config.tos_link_text, config.tos_link_href]}
+            value={[config.tos_link_text, config.tos_link_href]}
           >
             <QueryClientProvider client={queryClient}>
               <Router history={browserHistory}>

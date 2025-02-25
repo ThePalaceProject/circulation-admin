@@ -131,7 +131,7 @@ export const CustomTooltip = ({
       value: chartItem.availableTitles,
       perMedium: mediumCountsByProperty["availableTitles"],
     },
-    ...payload.filter(({ value }) => value > 0),
+    ...payload.filter(({ value }) => (value as number) > 0),
   ].map(({ dataKey, name, value }) => {
     const key = dataKey.toString();
     const perMedium = mediumCountsByProperty[key];
