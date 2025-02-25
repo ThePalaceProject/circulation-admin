@@ -33,6 +33,5 @@ describe("ProtocolFormField", () => {
     await user.keyboard(`${testDate}{enter}`);
 
     expect(input.value).toBe(testDate);
-    screen.debug();
   });
 });
