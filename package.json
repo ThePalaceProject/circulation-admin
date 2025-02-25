@@ -9,8 +9,8 @@
   "author": "The Palace Project",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "scripts": {
     "prepublish": "npm run prod",
@@ -76,7 +76,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.2.6",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.11.14",
+    "@types/node": "^20.17.19",
     "@types/numeral": "^2.0.5",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.14.6",
