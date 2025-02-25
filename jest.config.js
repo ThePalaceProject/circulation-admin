@@ -6,7 +6,7 @@ module.exports = {
     "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js",
   },
   preset: "ts-jest",
-  testEnvironment: "jsdom",
+  testEnvironment: "jest-fixed-jsdom",
   testEnvironmentOptions: {
     customExportConditions: [""],
   },
