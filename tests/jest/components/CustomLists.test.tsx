@@ -51,7 +51,7 @@ describe("CustomLists", () => {
     const items = screen.getAllByRole("treeitem");
 
     expect(items).toHaveLength(1);
-    expect(items[0]).toHaveTextContent(/genre = horror/);
+    expect(items[0]).toHaveTextContent(/Genre = horror/);
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
     await user.keyboard("science fiction{enter}");
@@ -91,7 +91,7 @@ describe("CustomLists", () => {
     let items = screen.getAllByRole("treeitem");
 
     expect(items).toHaveLength(1);
-    expect(items[0]).toHaveTextContent(/genre = horror/);
+    expect(items[0]).toHaveTextContent(/Genre = horror/);
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
     await user.keyboard("science fiction{enter}");
@@ -181,7 +181,10 @@ describe("CustomLists", () => {
       contextProviderProps
     );
 
-    await user.click(screen.getByRole("radio", { name: "language" }));
+    await userEvent.selectOptions(
+      screen.getByRole("combobox", { name: "filter field key" }),
+      screen.getByRole("option", { name: "Language" })
+    );
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
     await user.keyboard("french{enter}");
 

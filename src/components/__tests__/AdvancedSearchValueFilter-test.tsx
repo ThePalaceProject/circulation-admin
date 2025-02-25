@@ -5,6 +5,7 @@ import { mount } from "enzyme";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import AdvancedSearchValueFilter from "../AdvancedSearchValueFilter";
+import { fields, operators } from "../AdvancedSearchBuilder";
 
 describe("AdvancedSearchValueFilter", () => {
   let wrapper;
@@ -40,8 +41,16 @@ describe("AdvancedSearchValueFilter", () => {
   it("should render the field label, operator symbol, and value of the query", () => {
     const filterLabel = wrapper.find(".advanced-search-value-filter > span");
 
+    const expectedField = `${
+      fields.find((field) => field.value === "title")?.label
+    }`;
+    const expectedOperator = `${
+      operators.find((op) => op.value === "eq")?.symbol
+    }`;
+    const filterLabelText = `${expectedField} ${expectedOperator} foo`;
+
     expect(filterLabel).to.have.length(1);
-    expect(filterLabel.text()).to.equal("title = foo");
+    expect(filterLabel.text()).to.equal(filterLabelText);
   });
 
   it("should apply the selected class when selected is true", () => {

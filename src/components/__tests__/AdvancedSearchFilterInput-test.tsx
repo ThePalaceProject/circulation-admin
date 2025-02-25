@@ -23,18 +23,18 @@ describe("AdvancedSearchFilterInput", () => {
     );
   });
 
-  it("should render radio buttons for field selection", () => {
-    const radioButtons = wrapper.find('input[type="radio"]');
+  it("should render select with field names for field selection", () => {
+    const fieldControl = wrapper.find(".filter-key select > option");
 
-    expect(radioButtons).to.have.length(fields.length);
+    expect(fieldControl).to.have.length(fields.length);
 
     fields.forEach((field, index) => {
-      expect(radioButtons.at(index).prop("value")).to.equal(field.value);
+      expect(fieldControl.at(index).prop("value")).to.equal(field.value);
     });
   });
 
   it("should render a select with options for operator selection", () => {
-    const options = wrapper.find("select > option");
+    const options = wrapper.find(".filter-operator select > option");
 
     expect(options).to.have.length(operators.length);
 
@@ -44,27 +44,33 @@ describe("AdvancedSearchFilterInput", () => {
   });
 
   it("should restrict the operator selection, if the filter requests it", () => {
-    const fictionRadioButton = wrapper.find(
-      'input[type="radio"][value="fiction"]'
-    );
-    fictionRadioButton.getDOMNode().checked = true;
-    fictionRadioButton.simulate("change");
+    // Select the fiction field key.
+    const filterKeyControl = wrapper.find(".filter-key select");
+    filterKeyControl.getDOMNode().value = "fiction";
+    filterKeyControl.simulate("change");
 
+    // Look up the fiction field operator values.
     const options = wrapper.find(".filter-operator select > option");
     const fictionField = fields.find((element) => {
       return element.value === "fiction";
     });
 
+    // And make sure the number of options is correct.
     expect(options).to.have.length(fictionField.operators.length);
+    options.forEach((option, index) => {
+      expect(option.prop("value")).to.equal(fictionField.operators[index]);
+    });
   });
 
   it("should use the currently selected operator when changing filters", () => {
-    const sourceFilterButton = wrapper.find(
-      'input[type="radio"][value="data_source"]'
-    );
-    const fictionFilterButton = wrapper.find(
-      'input[type="radio"][value="fiction"]'
-    );
+    const filterKeyControl = wrapper.find(".filter-key select");
+    const filterKeyDomNode = filterKeyControl.getDOMNode();
+
+    const chooseFilterKey = (value: string) => {
+      filterKeyDomNode.value = value;
+      filterKeyControl.simulate("change");
+    };
+
     const fictionField = fields.find((element) => {
       return element.value === "fiction";
     });
@@ -73,23 +79,20 @@ describe("AdvancedSearchFilterInput", () => {
     operatorOptions.getDOMNode().value = "regex";
     operatorOptions.simulate("change");
 
-    sourceFilterButton.getDOMNode().checked = true;
-    sourceFilterButton.simulate("change");
-
+    // Select data source/Distributor as the filter key.
+    chooseFilterKey("data_source");
     expect(operatorOptions.getDOMNode().value).to.equal("regex");
 
-    // unless the operator is not supported by the filter.
-    fictionFilterButton.getDOMNode().checked = true;
-    fictionFilterButton.simulate("change");
-
+    // But the "regex" operator is not supported by the "fiction" field`,
+    // so we switch to fiction's first available operator.
+    chooseFilterKey("fiction");
     expect(operatorOptions.getDOMNode().value).to.equal(
       fictionField.operators[0]
     );
 
-    // the new operator will be persisted when changing back to source filter
-    sourceFilterButton.getDOMNode().checked = true;
-    sourceFilterButton.simulate("change");
-
+    // Since data source/distributor supports fiction's first operator,
+    // we'll continue to use it when changing back to that field.
+    chooseFilterKey("data_source");
     expect(operatorOptions.getDOMNode().value).to.equal(
       fictionField.operators[0]
     );
@@ -104,11 +107,15 @@ describe("AdvancedSearchFilterInput", () => {
   });
 
   it("should render a select for value selection, if the filter requests it", () => {
-    const fictionRadioButton = wrapper.find(
-      'input[type="radio"][value="fiction"]'
-    );
-    fictionRadioButton.getDOMNode().checked = true;
-    fictionRadioButton.simulate("change");
+    const filterKeyControl = wrapper.find(".filter-key select");
+    const filterKeyDomNode = filterKeyControl.getDOMNode();
+
+    const chooseFilterKey = (value: string) => {
+      filterKeyDomNode.value = value;
+      filterKeyControl.simulate("change");
+    };
+
+    chooseFilterKey("fiction");
 
     const valueSelect = wrapper.find(".filter-value select");
     const valueInput = wrapper.find('.filter-value input[type="text"]');
@@ -118,17 +125,20 @@ describe("AdvancedSearchFilterInput", () => {
   });
 
   it("should clear the current value when changing the filter", () => {
+    const filterKeyControl = wrapper.find(".filter-key select");
+    const filterKeyDomNode = filterKeyControl.getDOMNode();
+
+    const chooseFilterKey = (value: string) => {
+      filterKeyDomNode.value = value;
+      filterKeyControl.simulate("change");
+    };
+
     const valueInput = wrapper.find(".filter-value input");
 
     valueInput.getDOMNode().value = "ABC";
     valueInput.simulate("change");
 
-    const filterRadioButton = wrapper.find(
-      'input[type="radio"][value="data_source"]'
-    );
-
-    filterRadioButton.getDOMNode().checked = true;
-    filterRadioButton.simulate("change");
+    chooseFilterKey("data_source");
 
     expect(valueInput.getDOMNode().value).to.equal("");
   });
