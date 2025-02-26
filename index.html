@@ -28,7 +28,7 @@
   <h2>Set Up</h2>
 </a>
 <p>This package may be used in a local build of the Palace Project <a href="https://github.com/ThePalaceProject/circulation">Circulation Manager</a>, or it may be run against a remote Circulation Manager.</p>
-<p>This project uses Node.js 18. We recommend the latest version of Node.js 18.</p>
+<p>This project uses Node.js 20. We recommend the latest version of Node.js 20.</p>
 <p>You have a number of options for installing Node.js. One convenient way on macOS is to use Homebrew and nvm to manage Node.js versions.</p>
 <p>Install Homebrew if you have not already:</p>
 <pre><code><span class="hl-0">/</span><span class="hl-1">bin</span><span class="hl-0">/</span><span class="hl-1">bash</span><span class="hl-0"> -</span><span class="hl-1">c</span><span class="hl-0"> </span><span class="hl-2">&quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;</span>
@@ -37,10 +37,10 @@
 <pre><code><span class="hl-1">brew</span><span class="hl-0"> </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-1">nvm</span>
 </code></pre>
 <p>Install and use the latest version of Node.js 18, e.g. 18.14.2 with nvm:</p>
-<pre><code><span class="hl-1">nvm</span><span class="hl-0"> </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-3">18.14</span><span class="hl-0">.</span><span class="hl-3">2</span><br/><span class="hl-1">nvm</span><span class="hl-0"> </span><span class="hl-1">use</span><span class="hl-0"> </span><span class="hl-3">18.14</span><span class="hl-0">.</span><span class="hl-3">2</span>
+<pre><code><span class="hl-1">nvm</span><span class="hl-0"> </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-3">20.18</span><span class="hl-0">.</span><span class="hl-3">3</span><br/><span class="hl-1">nvm</span><span class="hl-0"> </span><span class="hl-1">use</span><span class="hl-0"> </span><span class="hl-3">20.18</span><span class="hl-0">.</span><span class="hl-3">3</span>
 </code></pre>
 <p>Alternatively, you can use <code>nodenv</code> on macOS:</p>
-<pre><code><span class="hl-1">brew</span><span class="hl-0"> </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-1">nodenv</span><br/><span class="hl-1">nodenv</span><span class="hl-0"> </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-3">18.14</span><span class="hl-0">.</span><span class="hl-3">2</span><br/><span class="hl-1">nodenv</span><span class="hl-0"> </span><span class="hl-1">global</span><span class="hl-0"> </span><span class="hl-3">18.14</span><span class="hl-0">.</span><span class="hl-3">2</span>
+<pre><code><span class="hl-1">brew</span><span class="hl-0"> </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-1">nodenv</span><br/><span class="hl-1">nodenv</span><span class="hl-0"> </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-3">20.18</span><span class="hl-0">.</span><span class="hl-3">3</span><br/><span class="hl-1">nodenv</span><span class="hl-0"> </span><span class="hl-1">global</span><span class="hl-0"> </span><span class="hl-3">20.18</span><span class="hl-0">.</span><span class="hl-3">3</span>
 </code></pre>
 <p>If you have different projects requiring different Node.js versions, you can use nodenv to set a local version for the project by navigating to the root directory of circulation-admin and executing <code>nodenv local 18.14.2</code>.</p>
 <p>You can also use the <code>n</code> npm package to manage Node.js versions, or simply install the Node.js binary directly.</p>
