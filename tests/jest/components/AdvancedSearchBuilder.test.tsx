@@ -22,11 +22,10 @@ describe("AdvancedSearchBuilder", () => {
       />
     );
 
-    const publicationDateRadio = screen.getByRole("radio", {
-      name: "publication date",
-    });
-
-    await user.click(publicationDateRadio);
+    await userEvent.selectOptions(
+      screen.getByRole("combobox", { name: "filter field key" }),
+      screen.getByRole("option", { name: "Publication Date" })
+    );
 
     const filterValueField = screen.getByRole("textbox", {
       name: "filter value",

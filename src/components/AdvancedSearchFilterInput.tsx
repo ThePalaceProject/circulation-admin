@@ -93,20 +93,26 @@ export default function AdvancedSearchFilterInput({
   return (
     <form className="advanced-search-filter-input">
       Add filter on:
-      <div className="filter-key-options">
-        {fields.map(({ value, label }) => (
-          <EditableInput
-            key={value}
-            type="radio"
-            name={`${builderName}-filter-key`}
-            checked={value === filterKey ? true : false}
-            label={label}
-            value={value}
-            onChange={handleKeyChange}
-          />
-        ))}
-      </div>
-      <div className="filter-op-value-inputs">
+      <div className="filter-key-op-value-inputs">
+        <EditableInput
+          aria-label="filter field key"
+          elementType="select"
+          onBlur={handleKeyChange}
+          onChange={handleKeyChange}
+          value={filterKey}
+          className="filter-key"
+        >
+          {fields.map(({ value, label }) => (
+            <option
+              aria-selected={value === filterKey}
+              key={value}
+              value={value}
+            >
+              {label}
+            </option>
+          ))}
+        </EditableInput>
+
         <EditableInput
           aria-label="filter operator"
           elementType="select"

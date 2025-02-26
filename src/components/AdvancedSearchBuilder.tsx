@@ -18,7 +18,19 @@ export interface AdvancedSearchBuilderProps {
   selectQuery?: (builderName: string, id: string) => void;
 }
 
-export const fields = [
+const capitalizeEachWord = (str: string) =>
+  str.replace(/(?:^|\s)\S/g, (word) => word.toUpperCase());
+
+type FieldType = {
+  value: string;
+  label: string;
+  helpText?: string;
+  placeholder?: string;
+  operators?: string[];
+  options?: string[];
+};
+
+export const fields: FieldType[] = [
   { value: "data_source", label: "distributor" },
   { value: "publisher", label: "publisher" },
   {
@@ -39,7 +51,12 @@ export const fields = [
     options: ["fiction", "nonfiction"],
     operators: ["eq"],
   },
-];
+]
+  .toSorted((a: FieldType, b: FieldType) => a.label.localeCompare(b.label))
+  .map((props) => ({
+    ...props,
+    label: capitalizeEachWord(props.label),
+  }));
 
 export const operators = [
   { value: "eq", label: "equals", symbol: "=" },
@@ -50,7 +67,10 @@ export const operators = [
   { value: "gte", label: "is greater than or equals", symbol: "≥" },
   { value: "lt", label: "is less than", symbol: "<" },
   { value: "lte", label: "is less than or equals", symbol: "≤" },
-];
+].map((operator) => ({
+  ...operator,
+  label: capitalizeEachWord(operator.label),
+}));
 
 export default function AdvancedSearchBuilder({
   isOwner,
