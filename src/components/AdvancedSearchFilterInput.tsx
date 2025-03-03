@@ -92,87 +92,92 @@ export default function AdvancedSearchFilterInput({
 
   return (
     <form className="advanced-search-filter-input">
-      Add filter on:
       <div className="filter-key-op-value-inputs">
-        <EditableInput
-          aria-label="filter field key"
-          elementType="select"
-          onBlur={handleKeyChange}
-          onChange={handleKeyChange}
-          value={filterKey}
-          className="filter-key"
-        >
-          {fields.map(({ value, label }) => (
-            <option
-              aria-selected={value === filterKey}
-              key={value}
-              value={value}
-            >
-              {label}
-            </option>
-          ))}
-        </EditableInput>
+        <div className="row1">
+          <div>Add filter on:</div>
 
-        <EditableInput
-          aria-label="filter operator"
-          elementType="select"
-          onBlur={handleOpChange}
-          onChange={handleOpChange}
-          ref={opSelect}
-          value={filterOp}
-          className="filter-operator"
-        >
-          {selectedFieldOperators.map(({ value, label }) => (
-            <option
-              aria-selected={value === filterOp}
-              key={value}
-              value={value}
-            >
-              {label}
-            </option>
-          ))}
-        </EditableInput>
+          <EditableInput
+            type="checkbox"
+            name={`clear-filters-on-search-${builderName}`}
+            ref={clearFiltersInput}
+            onChange={handleInputChange}
+            label="Clear filters on search"
+          />
+        </div>
 
-        <EditableInput
-          aria-label="filter value"
-          description={selectedField.helpText}
-          elementType={selectedFieldElementType}
-          type="text"
-          optionalText={false}
-          placeholder={selectedField.placeholder}
-          ref={valueInput}
-          value={filterValue}
-          onChange={handleValueChange}
-          className="filter-value"
-        >
-          {selectedFieldOptions.length === 0
-            ? null
-            : selectedFieldOptions.map((value) => (
-                <option
-                  key={value}
-                  value={value}
-                  aria-selected={value === filterValue}
-                >
-                  {value}
-                </option>
-              ))}
-        </EditableInput>
+        <div className="row2">
+          <EditableInput
+            aria-label="filter field key"
+            elementType="select"
+            onBlur={handleKeyChange}
+            onChange={handleKeyChange}
+            value={filterKey}
+            className="filter-key"
+          >
+            {fields.map(({ value, label }) => (
+              <option
+                aria-selected={value === filterKey}
+                key={value}
+                value={value}
+              >
+                {label}
+              </option>
+            ))}
+          </EditableInput>
 
-        <Button
-          className="inverted inline"
-          callback={handleAddClick}
-          content="Add filter"
-          disabled={!(filterKey && filterOp && filterValue.trim())}
-          type="submit"
-        />
+          <EditableInput
+            aria-label="filter operator"
+            elementType="select"
+            onBlur={handleOpChange}
+            onChange={handleOpChange}
+            ref={opSelect}
+            value={filterOp}
+            className="filter-operator"
+          >
+            {selectedFieldOperators.map(({ value, label }) => (
+              <option
+                aria-selected={value === filterOp}
+                key={value}
+                value={value}
+              >
+                {label}
+              </option>
+            ))}
+          </EditableInput>
 
-        <EditableInput
-          type="checkbox"
-          name={`clear-filters-on-search-${builderName}`}
-          ref={clearFiltersInput}
-          onChange={handleInputChange}
-          label="Clear filters on search"
-        />
+          <EditableInput
+            aria-label="filter value"
+            description={selectedField?.helpText}
+            elementType={selectedFieldElementType}
+            type="text"
+            optionalText={false}
+            placeholder={selectedField?.placeholder}
+            ref={valueInput}
+            value={filterValue}
+            onChange={handleValueChange}
+            className="filter-value"
+          >
+            {selectedFieldOptions.length === 0
+              ? null
+              : selectedFieldOptions.map((value) => (
+                  <option
+                    key={value}
+                    value={value}
+                    aria-selected={value === filterValue}
+                  >
+                    {value}
+                  </option>
+                ))}
+          </EditableInput>
+
+          <Button
+            className="filter-submit inverted inline"
+            callback={handleAddClick}
+            content="Add filter"
+            disabled={!(filterKey && filterOp && filterValue.trim())}
+            type="submit"
+          />
+        </div>
       </div>
     </form>
   );

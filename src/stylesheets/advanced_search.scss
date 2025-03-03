@@ -1,9 +1,44 @@
 .advanced-search {
   .advanced-search-filter-input {
+    max-width: 80em;
+
     > div {
       display: flex;
+      flex-direction: column;
       align-items: baseline;
       gap: 4px;
+      //display: grid;
+      //grid-template-rows: auto auto auto;
+      //grid-template-columns: 1fr;
+    }
+
+    .row1 {
+      //display: grid;
+      //grid-template-columns: minmax(10em, 1fr) auto;
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .row1 > * {
+      flex: 0 0 auto;
+    }
+
+    .row2 {
+      //display: grid;
+      //grid-template-columns: auto repeat(auto-fit, minmax(10em, 1fr));
+      display: flex;
+      width: 100%;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .row2 > * {
+      flex: 0 0 auto;
+      //box-sizing: border-box;
+      //justify-content: left;
     }
 
     .form-group {
@@ -15,16 +50,26 @@
       }
     }
 
+    //.filter-key {
+    //  flex: 0 0 auto;
+    //}
+
     .filter-value {
+      flex: 1 1 auto;
+      > div {
+        width: 100%;
+      }
       input[type="text"],select {
-        width: 40em;
+        min-width: 20rem;
+        //max-width: 100%;
       }
     }
 
     .filter-operator {
-      select {
-        width: 15em;
-      }
+      //flex: 0 0 auto;
+      //select {
+      //  width: 15em;
+      //}
     }
 
     .filter-key-options {
@@ -33,8 +78,14 @@
       }
     }
 
-    .filter-op-value-inputs {
+    .filter-key-op-value-inputs {
       margin: 15px 0;
+    }
+
+    .filter-submit {
+      flex: 0 0 auto;
+      flex-wrap: wrap;
+      margin-left: auto;
     }
   }
 
