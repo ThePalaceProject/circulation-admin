@@ -1,92 +1,40 @@
 .advanced-search {
   .advanced-search-filter-input {
-    max-width: 80em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
 
-    > div {
-      display: flex;
-      flex-direction: column;
-      align-items: baseline;
-      gap: 4px;
-      //display: grid;
-      //grid-template-rows: auto auto auto;
-      //grid-template-columns: 1fr;
-    }
-
-    .row1 {
-      //display: grid;
-      //grid-template-columns: minmax(10em, 1fr) auto;
+    .filter-key-op-value-inputs {
       display: flex;
       width: 100%;
-      justify-content: space-between;
+      align-items: flex-start;
       flex-wrap: wrap;
+      gap: 1rem 1rem;
+
     }
 
-    .row1 > * {
+    .filter-key-op-value-inputs > * {
       flex: 0 0 auto;
     }
-
-    .row2 {
-      //display: grid;
-      //grid-template-columns: auto repeat(auto-fit, minmax(10em, 1fr));
-      display: flex;
-      width: 100%;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .row2 > * {
-      flex: 0 0 auto;
-      //box-sizing: border-box;
-      //justify-content: left;
-    }
-
-    .form-group {
-      display: inline-block;
-      margin: 0;
-
-      > div {
-        display: inline-block;
-      }
-    }
-
-    //.filter-key {
-    //  flex: 0 0 auto;
-    //}
 
     .filter-value {
-      flex: 1 1 auto;
+      flex: 1 0 auto;
       > div {
         width: 100%;
       }
-      input[type="text"],select {
-        min-width: 20rem;
-        //max-width: 100%;
-      }
-    }
-
-    .filter-operator {
-      //flex: 0 0 auto;
-      //select {
-      //  width: 15em;
-      //}
-    }
-
-    .filter-key-options {
-      .form-group {
-        margin: 5px 20px 0 2px;;
-      }
-    }
-
-    .filter-key-op-value-inputs {
-      margin: 15px 0;
+      input[type="text"] {
+        min-width: 20em;
+      };
     }
 
     .filter-submit {
-      flex: 0 0 auto;
-      flex-wrap: wrap;
-      margin-left: auto;
+      display: flex;
+      align-items: flex-start;
+
+      align-self: center;
     }
+
   }
 
   .advanced-search-filter-input + .advanced-search-filter-tree {
