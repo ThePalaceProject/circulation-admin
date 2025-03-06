@@ -1,41 +1,40 @@
 .advanced-search {
   .advanced-search-filter-input {
-    > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    .filter-key-op-value-inputs {
       display: flex;
-      align-items: baseline;
-      gap: 4px;
+      width: 100%;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 4px 1rem;
+
     }
 
-    .form-group {
-      display: inline-block;
-      margin: 0;
-
-      > div {
-        display: inline-block;
-      }
+    .filter-key-op-value-inputs > * {
+      flex: 0 0 auto;
     }
 
     .filter-value {
-      input[type="text"],select {
-        width: 40em;
+      flex: 1 0 auto;
+      > div {
+        width: 100%;
       }
+      input[type="text"] {
+        min-width: 20em;
+      };
     }
 
-    .filter-operator {
-      select {
-        width: 15em;
-      }
+    .filter-submit {
+      display: flex;
+      align-items: flex-start;
+
+      align-self: center;
     }
 
-    .filter-key-options {
-      .form-group {
-        margin: 5px 20px 0 2px;;
-      }
-    }
-
-    .filter-op-value-inputs {
-      margin: 15px 0;
-    }
   }
 
   .advanced-search-filter-input + .advanced-search-filter-tree {

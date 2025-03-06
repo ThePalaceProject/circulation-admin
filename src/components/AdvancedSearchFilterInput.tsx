@@ -92,7 +92,7 @@ export default function AdvancedSearchFilterInput({
 
   return (
     <form className="advanced-search-filter-input">
-      Add filter on:
+      <span>Add filter on:</span>
       <div className="filter-key-op-value-inputs">
         <EditableInput
           aria-label="filter field key"
@@ -135,11 +135,11 @@ export default function AdvancedSearchFilterInput({
 
         <EditableInput
           aria-label="filter value"
-          description={selectedField.helpText}
+          description={selectedField?.helpText}
           elementType={selectedFieldElementType}
           type="text"
           optionalText={false}
-          placeholder={selectedField.placeholder}
+          placeholder={selectedField?.placeholder || "Enter Search Term"}
           ref={valueInput}
           value={filterValue}
           onChange={handleValueChange}
@@ -158,21 +158,22 @@ export default function AdvancedSearchFilterInput({
               ))}
         </EditableInput>
 
-        <Button
-          className="inverted inline"
-          callback={handleAddClick}
-          content="Add filter"
-          disabled={!(filterKey && filterOp && filterValue.trim())}
-          type="submit"
-        />
-
-        <EditableInput
-          type="checkbox"
-          name={`clear-filters-on-search-${builderName}`}
-          ref={clearFiltersInput}
-          onChange={handleInputChange}
-          label="Clear filters on search"
-        />
+        <div className="filter-submit">
+          <Button
+            className="inverted inline"
+            callback={handleAddClick}
+            content="Add filter"
+            disabled={!(filterKey && filterOp && filterValue.trim())}
+            type="submit"
+          />
+          <EditableInput
+            type="checkbox"
+            name={`clear-filters-on-search-${builderName}`}
+            ref={clearFiltersInput}
+            onChange={handleInputChange}
+            label="Clear filters on search"
+          />
+        </div>
       </div>
     </form>
   );
