@@ -94,7 +94,6 @@ export default function AdvancedSearchFilterInput({
     <form className="advanced-search-filter-input">
       <span>Add filter on:</span>
       <div className="filter-key-op-value-inputs">
-        {/*<div className="row2">*/}
         <EditableInput
           aria-label="filter field key"
           elementType="select"
@@ -175,7 +174,6 @@ export default function AdvancedSearchFilterInput({
             label="Clear filters on search"
           />
         </div>
-        {/*</div>*/}
       </div>
     </form>
   );
