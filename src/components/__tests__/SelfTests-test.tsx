@@ -182,8 +182,15 @@ describe("SelfTests", () => {
   });
 
   it("should format the date and duration of the most recent tests", () => {
+    // Create a date object from the ISO string to account for local timezone
+    const date = new Date(collections[0].self_test_results.start);
+    const expectedDate = date.toDateString();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+    const expectedTime = `${hours}:${minutes}:${seconds}`;
     expect(wrapper.instance().formatDate(collections[0])).to.equal(
-      "Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s."
+      `Tests last ran on ${expectedDate} ${expectedTime} and lasted 1.75s.`
     );
   });
 
@@ -207,8 +214,15 @@ describe("SelfTests", () => {
       expect(failSVGIcon.length).to.equal(0);
       expect(passSVGIcon.length).to.equal(1);
 
+      // Create a date object from the ISO string to account for local timezone
+      const date = new Date(collections[1].self_test_results.start);
+      const expectedDate = date.toDateString();
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      const seconds = date.getSeconds().toString().padStart(2, "0");
+      const expectedTime = `${hours}:${minutes}:${seconds}`;
       expect(description.text().trim()).to.equal(
-        "Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s."
+        `Tests last ran on ${expectedDate} ${expectedTime} and lasted 1.75s.`
       );
     });
 
@@ -258,8 +272,15 @@ describe("SelfTests", () => {
       expect(failSVGIcon.length).to.equal(1);
       expect(passSVGIcon.length).to.equal(0);
 
+      // Create a date object from the ISO string to account for local timezone
+      const date = new Date(collections[1].self_test_results.start);
+      const expectedDate = date.toDateString();
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      const seconds = date.getSeconds().toString().padStart(2, "0");
+      const expectedTime = `${hours}:${minutes}:${seconds}`;
       expect(description.text().trim()).to.equal(
-        "Tests last ran on Tue Aug 07 2018 15:34:54 and lasted 1.75s."
+        `Tests last ran on ${expectedDate} ${expectedTime} and lasted 1.75s.`
       );
     });
 
