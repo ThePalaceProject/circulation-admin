@@ -14,7 +14,7 @@ import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionsCreator from "@thepalaceproject/web-opds-client/lib/actions";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import title from "../utils/title";
-import CustomHeaderDataFetcher from "../CustomHeaderDataFetcher";
+import NoCacheDataFetcher from "../NoCacheDataFetcher";
 
 export interface CatalogPageProps extends React.Props<CatalogPage> {
   params: {
@@ -58,10 +58,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
       return title(details);
     };
 
-    const extraHeaders = {
-      "Cache-Control": "no-cache",
-    };
-    const fetcher = new CustomHeaderDataFetcher({ adapter, extraHeaders });
+    const fetcher = new NoCacheDataFetcher({ adapter });
     const actions = new ActionsCreator(fetcher);
     return (
       <>
@@ -75,6 +72,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
             computeBreadcrumbs={computeBreadcrumbs}
             CollectionContainer={EntryPointsContainer}
             allLanguageSearch={true}
+            fetcher={fetcher}
           />
         </ActionsProvider>
         <Footer />
