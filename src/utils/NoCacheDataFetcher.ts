@@ -1,7 +1,10 @@
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 
 export default class NoCacheDataFetcher extends DataFetcher {
-  fetch(url: string, { headers = {}, ...otherOptions } = {}) {
+  fetch(
+    url: string,
+    { headers = {}, ...otherOptions }: RequestInit = {}
+  ): Promise<Response> {
     const customizedHeaders = Object.assign(
       { "Cache-Control": "no-cache" },
       headers
