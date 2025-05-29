@@ -397,7 +397,7 @@ const parseSearchFacets = (json: string): Record<string, string> => {
  */
 export interface CustomListEditorEntriesData {
   /**
-   * The visible entries in the list, when the last was last saved. This can be used to restore
+   * The visible entries in the list, when the list was last saved. This can be used to restore
    * the editor to the last save point, and to detect changes since the last save. Note that this
    * does not necessarily contain all of the entries, but only the entries in the pages that have
    * been retrieved from the CM.
@@ -1020,6 +1020,12 @@ const handleCustomListDetailsLoad = validatedHandler(
     return produce(state, (draftState) => {
       const { entries } = draftState;
 
+      // Reset local added / removed entries, since they should already
+      // be reflected in fresh state just synced from the server.
+      entries.added = {};
+      entries.removed = {};
+
+      // Update the baseline with the newly fetched entries.
       entries.baseline = action.data.books;
 
       applyEntriesDelta(entries);
