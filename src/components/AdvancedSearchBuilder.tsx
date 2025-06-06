@@ -52,9 +52,7 @@ export const fields: FieldType[] = [
     operators: ["eq"],
   },
 ]
-  // This is a work-around to get the functionality of `Array.toSorted`.
-  .slice()
-  .sort((a: FieldType, b: FieldType) => a.label.localeCompare(b.label))
+  .toSorted((a: FieldType, b: FieldType) => a.label.localeCompare(b.label))
   .map((props) => ({
     ...props,
     label: capitalizeEachWord(props.label),
