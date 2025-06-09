@@ -4,7 +4,6 @@ import classifications, { ClassificationsState } from "./classifications";
 import bookCoverPreview, { BookCoverPreviewState } from "./bookCoverPreview";
 import bookCover from "./bookCover";
 import customListsForBook from "./customListsForBook";
-import circulationEvents, { CirculationEventsState } from "./circulationEvents";
 import diagnostics from "./diagnostics";
 import libraries from "./libraries";
 import collections from "./collections";
@@ -65,7 +64,6 @@ export interface State {
   bookCoverPreview: BookCoverPreviewState;
   bookCover: FetchEditState<string>;
   customListsForBook: FetchEditState<CustomListsData>;
-  circulationEvents: CirculationEventsState;
   diagnostics: FetchEditState<DiagnosticsData>;
   libraries: FetchEditState<LibrariesData>;
   collections: FetchEditState<CollectionsData>;
@@ -102,7 +100,6 @@ export default combineReducers<State>({
   bookCoverPreview,
   bookCover,
   customListsForBook,
-  circulationEvents,
   diagnostics,
   libraries,
   collections,

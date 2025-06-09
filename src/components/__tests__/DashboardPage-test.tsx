@@ -6,9 +6,9 @@ import { shallow } from "enzyme";
 import DashboardPage from "../DashboardPage";
 import Header from "../Header";
 import Footer from "../Footer";
-import CirculationEvents from "../CirculationEvents";
 import Stats from "../Stats";
 import buildStore from "../../store";
+import CirculationEventsDownload from "../CirculationEventsDownload";
 
 describe("DashboardPage", () => {
   let wrapper;
@@ -26,14 +26,13 @@ describe("DashboardPage", () => {
     expect(header.length).to.equal(1);
   });
 
-  it("shows CirculationEvents ", () => {
-    let events = wrapper.find(CirculationEvents);
+  it("shows CirculationEventsDownload ", () => {
+    let events = wrapper.find(CirculationEventsDownload);
     expect(events.length).to.equal(1);
-    expect(events.prop("store")).to.equal(store);
     expect(events.prop("library")).to.equal(undefined);
 
     wrapper.setProps({ params: { library: "NYPL" } });
-    events = wrapper.find(CirculationEvents);
+    events = wrapper.find(CirculationEventsDownload);
     expect(events.length).to.equal(1);
     expect(events.prop("library")).to.equal("NYPL");
   });

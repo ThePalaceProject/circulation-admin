@@ -3,7 +3,6 @@ import {
   ComplaintsData,
   GenreTree,
   ClassificationData,
-  CirculationEventData,
   LibrariesData,
   CollectionsData,
   IndividualAdminsData,
@@ -61,7 +60,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly PREVIEW_BOOK_COVER = "PREVIEW_BOOK_COVER";
   static readonly CUSTOM_LISTS_FOR_BOOK = "CUSTOM_LISTS_FOR_BOOK";
   static readonly EDIT_CUSTOM_LISTS_FOR_BOOK = "EDIT_CUSTOM_LISTS_FOR_BOOK";
-  static readonly CIRCULATION_EVENTS = "CIRCULATION_EVENTS";
   static readonly LIBRARIES = "LIBRARIES";
   static readonly EDIT_LIBRARY = "EDIT_LIBRARY";
   static readonly DELETE_LIBRARY = "DELETE_LIBRARY";
@@ -406,14 +404,6 @@ export default class ActionCreator extends BaseActionCreator {
       ActionCreator.EDIT_CUSTOM_LISTS_FOR_BOOK,
       url,
       data
-    ).bind(this);
-  }
-
-  fetchCirculationEvents() {
-    const url = "/admin/circulation_events";
-    return this.fetchJSON<{ circulation_events: CirculationEventData[] }>(
-      ActionCreator.CIRCULATION_EVENTS,
-      url
     ).bind(this);
   }
 
