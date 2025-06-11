@@ -523,18 +523,21 @@ describe("custom list editor reducer", () => {
         expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
       });
 
-      it("applies the current delta to the books in the list details data", () => {
+      it("cleans up local changes, since the server already got them on save", () => {
         const state = {
           ...initialState,
           entries: {
             ...initialState.entries,
-            baselineTotalCount: 5,
+            // It doesn't really matter what the added/removed books are, in
+            // this case, just that there is something there for the reducer
+            // to clean up.
             added: {
-              book90: { id: "book90", title: "Wuthering Heights" },
-              book91: { id: "book91", title: "Huckleberry Finn" },
+              // An already saved added book.
+              book1: { id: "book1", title: "A Farewell to Arms" },
             },
             removed: {
-              book1: true as const,
+              // An already saved removed book.
+              an_already_removed_book: true as const,
             },
           },
         };
@@ -544,15 +547,12 @@ describe("custom list editor reducer", () => {
           data: listDetailsData,
         });
 
+        expect(nextState.entries.added).to.deep.equal({});
+        expect(nextState.entries.removed).to.deep.equal({});
+
         expect(nextState.entries.baseline).to.deep.equal(listDetailsData.books);
-
-        expect(nextState.entries.current).to.deep.equal([
-          { id: "book91", title: "Huckleberry Finn" },
-          { id: "book90", title: "Wuthering Heights" },
-          { id: "book2", title: "Little Women" },
-        ]);
-
-        expect(nextState.entries.currentTotalCount).to.equal(6); // 5 + 2 - 1
+        expect(nextState.entries.current).to.deep.equal(listDetailsData.books);
+        expect(nextState.entries.currentTotalCount).to.equal(2);
       });
     }
   );
