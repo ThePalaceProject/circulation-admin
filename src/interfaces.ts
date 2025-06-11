@@ -6,9 +6,8 @@ export interface ConfigurationSettings {
    requests. */
   csrfToken: string;
 
-  /** `showCircEventsDownload` controls whether the dashboard will have an
-   option to download a CSV of circulation events. This should be false if
-   circulation events are not available for download. */
+  /** DEPRECATED. Use  the `showCircEventsDownload` feature flag instead.
+   This can be removed once the backend stops sending it. */
   showCircEventsDownload: boolean;
 
   /** `settingUp` will be true if this is a new circulation manager and the
@@ -49,6 +48,10 @@ export interface FeatureFlags {
   enableAutoList?: boolean;
   reportsOnlyForSysadmins?: boolean;
   quicksightOnlyForSysadmins?: boolean;
+  /** `showCircEventsDownload` controls whether the dashboard will have an
+   option to download a CSV of circulation events. This should be false if
+   circulation events are not available for download. */
+  showCircEventsDownload?: boolean;
 }
 
 export interface Navigate {
@@ -163,17 +166,6 @@ export interface ClassificationData {
   name: string;
   source: string;
   weight: number;
-}
-
-export interface CirculationEventData {
-  id: number;
-  type: string;
-  patron_id: string;
-  time: string;
-  book: {
-    title: string;
-    url: string;
-  };
 }
 
 export interface InventoryStatistics {

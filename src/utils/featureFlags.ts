@@ -7,4 +7,5 @@ export const defaultFeatureFlags: FeatureFlags = {
   enableAutoList: true,
   reportsOnlyForSysadmins: true,
   quicksightOnlyForSysadmins: true,
+  showCircEventsDownload: false,
 };

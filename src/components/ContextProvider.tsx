@@ -90,7 +90,6 @@ export default class ContextProvider extends React.Component<
   static childContextTypes: React.ValidationMap<object> = {
     editorStore: PropTypes.object.isRequired,
     csrfToken: PropTypes.string.isRequired,
-    showCircEventsDownload: PropTypes.bool.isRequired,
     settingUp: PropTypes.bool.isRequired,
     admin: PropTypes.object.isRequired,
     featureFlags: PropTypes.object.isRequired,
@@ -100,7 +99,6 @@ export default class ContextProvider extends React.Component<
     return {
       editorStore: this.store,
       csrfToken: this.props.csrfToken,
-      showCircEventsDownload: this.props.showCircEventsDownload || false,
       settingUp: this.props.settingUp || false,
       admin: this.admin,
       featureFlags: this.props.featureFlags,
