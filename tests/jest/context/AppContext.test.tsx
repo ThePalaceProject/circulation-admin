@@ -5,6 +5,7 @@ import {
   useAppEmail,
   useAppFeatureFlags,
   useCsrfToken,
+  useTermsOfService,
 } from "../../../src/context/appContext";
 import { componentWithProviders } from "../testUtils/withProviders";
 import { ContextProviderProps } from "../../../src/components/ContextProvider";
@@ -25,12 +26,18 @@ describe("AppContext", () => {
     testFalse: false,
   };
   const expectedRoles = [{ role: "system" }];
+  const expectedTermsOfService = {
+    text: "Terms of Service",
+    href: "/terms-of-service",
+  };
 
   const contextProviderProps: ContextProviderProps = {
     csrfToken: expectedCsrfToken,
     featureFlags: expectedFeatureFlags,
     roles: expectedRoles,
     email: expectedEmail,
+    tos_link_text: expectedTermsOfService.text,
+    tos_link_href: expectedTermsOfService.href,
   };
   const wrapper = componentWithProviders({ contextProviderProps });
 
@@ -68,5 +75,16 @@ describe("AppContext", () => {
     });
     const flags = result.current;
     expect(flags).toEqual(expectedFeatureFlags);
+  });
+
+  it("provides useTermsOfService context hook", () => {
+    const { result } = renderHook(() => useTermsOfService(), {
+      wrapper,
+    });
+    const tosLink = result.current;
+    const { text, href } = tosLink;
+    expect(tosLink).toEqual(expectedTermsOfService);
+    expect(text).toEqual(expectedTermsOfService.text);
+    expect(href).toEqual(expectedTermsOfService.href);
   });
 });

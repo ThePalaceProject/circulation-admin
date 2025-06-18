@@ -27,6 +27,8 @@ export interface ContextProviderProps extends React.Props<ContextProvider> {
     role: string;
     library?: string;
   }[];
+  tos_link_text?: string;
+  tos_link_href?: string;
   featureFlags: FeatureFlags;
   quicksightPagePath?: string;
   dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
@@ -113,6 +115,8 @@ export default class ContextProvider extends React.Component<
       featureFlags: this.props.featureFlags,
       quicksightPagePath: this.props.quicksightPagePath,
       dashboardCollectionsBarChart: this.props.dashboardCollectionsBarChart,
+      tos_link_text: this.props.tos_link_text,
+      tos_link_href: this.props.tos_link_href,
     };
     return (
       <PathForProvider pathFor={this.pathFor}>
