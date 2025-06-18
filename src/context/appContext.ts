@@ -6,9 +6,16 @@ export type AppContextType = {
   csrfToken: string;
   settingUp: boolean;
   admin: Admin;
+  tos_link_text?: string;
+  tos_link_href?: string;
   featureFlags: FeatureFlags;
   quicksightPagePath: string;
   dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
+};
+
+type TermsOfServiceContext = {
+  text?: string;
+  href?: string;
 };
 
 // Don't export this, since we always want the error handling behavior of our hook.
@@ -30,5 +37,9 @@ export const useAppEmail = () => useAppAdmin().email;
 export const useAppFeatureFlags = () => useAppContext().featureFlags;
 export const useDashboardCollectionsBarChartSettings = () =>
   useAppContext().dashboardCollectionsBarChart;
+export const useTermsOfService = (): TermsOfServiceContext => ({
+  text: useAppContext().tos_link_text,
+  href: useAppContext().tos_link_href,
+});
 
 export default AppContext.Provider;

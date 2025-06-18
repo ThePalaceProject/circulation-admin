@@ -4,7 +4,6 @@ import buildStore from "./store";
 import { Provider } from "react-redux";
 import { Router, Route, browserHistory } from "react-router";
 import ContextProvider from "./components/ContextProvider";
-import { TOSContextProvider } from "./components/TOSContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import CatalogPage from "./components/CatalogPage";
@@ -54,39 +53,35 @@ class CirculationAdmin {
     ) : (
       <Provider store={store}>
         <ContextProvider {...config} store={store}>
-          <TOSContextProvider
-            value={[config.tos_link_text, config.tos_link_href]}
-          >
-            <QueryClientProvider client={queryClient}>
-              <Router history={browserHistory}>
-                <Route path={catalogEditorPath} component={CatalogPage} />
-                <Route path={customListPagePath} component={CustomListPage} />
-                <Route path={lanePagePath} component={LanePage} />
-                <Route
-                  path="/admin/web/dashboard(/:library)"
-                  component={DashboardPage}
-                />
-                <Route
-                  path={quicksightPagePath}
-                  component={QuicksightDashboardPage}
-                />
-                <Route
-                  path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
-                  component={ConfigPage}
-                />
-                <Route path="/admin/web/account" component={AccountPage} />
-                <Route
-                  path="/admin/web/patrons/:library(/:tab)"
-                  component={ManagePatrons}
-                />
-                <Route
-                  path="/admin/web/troubleshooting(/:tab)(/:subtab)"
-                  component={TroubleshootingPage}
-                />
-              </Router>
-              <ReactQueryDevtools initialIsOpen={false} />
-            </QueryClientProvider>
-          </TOSContextProvider>
+          <QueryClientProvider client={queryClient}>
+            <Router history={browserHistory}>
+              <Route path={catalogEditorPath} component={CatalogPage} />
+              <Route path={customListPagePath} component={CustomListPage} />
+              <Route path={lanePagePath} component={LanePage} />
+              <Route
+                path="/admin/web/dashboard(/:library)"
+                component={DashboardPage}
+              />
+              <Route
+                path={quicksightPagePath}
+                component={QuicksightDashboardPage}
+              />
+              <Route
+                path="/admin/web/config(/:tab)(/:editOrCreate)(/:identifier)"
+                component={ConfigPage}
+              />
+              <Route path="/admin/web/account" component={AccountPage} />
+              <Route
+                path="/admin/web/patrons/:library(/:tab)"
+                component={ManagePatrons}
+              />
+              <Route
+                path="/admin/web/troubleshooting(/:tab)(/:subtab)"
+                component={TroubleshootingPage}
+              />
+            </Router>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
         </ContextProvider>
       </Provider>
     );
