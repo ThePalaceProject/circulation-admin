@@ -21,13 +21,6 @@ export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
 // be the same for both the Redux Provider and the ContextProvider.
 const defaultReduxStore = store;
 
-// // Setup default TOSContext provider props.
-// const tosText = "Sample terms of service.";
-// const tosHref = "http://example.com/terms-of-service";
-// const requiredTOSContextProviderProps: TOSContextProviderProps = {
-//   ...[tosText, tosHref],
-// };
-
 // The `csrfToken` context provider prop is required, so we provide
 // a default value here, so it can be easily merged with other props.
 const requiredContextProviderProps: ContextProviderProps = {
