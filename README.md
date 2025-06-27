@@ -1,3 +1,5 @@
+>  The SimplyE app will be discontinued in August 2025 and the resources shared here will be retired.
+
 # circulation-web
 
 Web front-end for the Circulation Manager administrative interface.
