@@ -26,6 +26,12 @@ export interface ConfigurationSettings {
   tos_link_text?: string;
   tos_link_href?: string;
 
+  /** A URL for the application's support contact. For example:
+   * - mailto:helpdesk@example.com
+   * - https://example.com/support
+   */
+  support_contact_url?: string;
+
   featureFlags: FeatureFlags;
 
   /** `quickSightPagePath` contains the URL to the QuickSight dashboard page.

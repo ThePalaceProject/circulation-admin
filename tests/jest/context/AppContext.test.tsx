@@ -6,6 +6,7 @@ import {
   useAppFeatureFlags,
   useCsrfToken,
   useTermsOfService,
+  useSupportContactUrl,
 } from "../../../src/context/appContext";
 import { componentWithProviders } from "../testUtils/withProviders";
 import { ContextProviderProps } from "../../../src/components/ContextProvider";
@@ -30,6 +31,7 @@ describe("AppContext", () => {
     text: "Terms of Service",
     href: "/terms-of-service",
   };
+  const expectedSupportContactUrl = "helpdesk@example.com";
 
   const contextProviderProps: ContextProviderProps = {
     csrfToken: expectedCsrfToken,
@@ -38,6 +40,7 @@ describe("AppContext", () => {
     email: expectedEmail,
     tos_link_text: expectedTermsOfService.text,
     tos_link_href: expectedTermsOfService.href,
+    support_contact_url: expectedSupportContactUrl,
   };
   const wrapper = componentWithProviders({ contextProviderProps });
 
@@ -48,6 +51,7 @@ describe("AppContext", () => {
     expect(value.admin.email).toEqual(expectedEmail);
     expect(value.admin.roles).toEqual(expectedRoles);
     expect(value.featureFlags).toEqual(expectedFeatureFlags);
+    expect(value.support_contact_url).toEqual(expectedSupportContactUrl);
   });
 
   it("provides useAppAdmin context hook", () => {
@@ -86,5 +90,12 @@ describe("AppContext", () => {
     expect(tosLink).toEqual(expectedTermsOfService);
     expect(text).toEqual(expectedTermsOfService.text);
     expect(href).toEqual(expectedTermsOfService.href);
+  });
+  it("provides useSupportContactUrl context hook", () => {
+    const { result } = renderHook(() => useSupportContactUrl(), {
+      wrapper,
+    });
+    const supportContactUrl = result.current;
+    expect(supportContactUrl).toEqual(expectedSupportContactUrl);
   });
 });
