@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useTermsOfService } from "../context/appContext";
+import { useSupportContactUrl, useTermsOfService } from "../context/appContext";
 
 export interface FooterProps {
   className?: string;
@@ -10,14 +10,23 @@ that registry. Make sure to also configure the registry to provide a `terms-of-s
 process. */
 const Footer = ({ className }: FooterProps) => {
   const { text, href } = useTermsOfService();
+  const supportContactUrl = useSupportContactUrl();
 
   return (
     <footer className={className}>
-      <p>
+      <div style={{ textAlign: "center" }}>
         <a href={href} target="_blank" rel="noreferrer">
           {decode(text)}
         </a>
-      </p>
+        {supportContactUrl && (
+          <>
+            <br />
+            <a href={supportContactUrl}>
+              <strong>Need help? Contact support.</strong>
+            </a>
+          </>
+        )}
+      </div>
     </footer>
   );
 };

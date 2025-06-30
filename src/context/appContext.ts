@@ -8,6 +8,7 @@ export type AppContextType = {
   admin: Admin;
   tos_link_text?: string;
   tos_link_href?: string;
+  support_contact_url?: string;
   featureFlags: FeatureFlags;
   quicksightPagePath: string;
   dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
@@ -41,5 +42,6 @@ export const useTermsOfService = (): TermsOfServiceContext => ({
   text: useAppContext().tos_link_text,
   href: useAppContext().tos_link_href,
 });
+export const useSupportContactUrl = () => useAppContext().support_contact_url;
 
 export default AppContext.Provider;
