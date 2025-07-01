@@ -201,8 +201,7 @@ module.exports = (env) => {
 
   const config = merge(dev, {
     devServer: {
-      setupMiddlewares: (middlewares, devServer) => {
-        // devServer.app.use("/", proxyMiddleware);
+      setupMiddlewares: (middlewares, _devServer) => {
         middlewares.push(proxyMiddleware);
         return middlewares;
       },
