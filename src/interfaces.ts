@@ -26,11 +26,16 @@ export interface ConfigurationSettings {
   tos_link_text?: string;
   tos_link_href?: string;
 
-  /** A URL for the application's support contact. For example:
+  /** Settings for a support contact link.
+   * A URL for the application's support contact...
+   * For example:
    * - mailto:helpdesk@example.com
    * - https://example.com/support
    */
-  support_contact_url?: string;
+  support_contact_url?: string; // Deprecated. Use `supportContactUrl`, instead.
+  supportContactUrl?: string;
+  // ... and a label for the support contact link.
+  supportContactText?: string;
 
   featureFlags: FeatureFlags;
 

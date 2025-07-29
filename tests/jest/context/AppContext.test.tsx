@@ -6,7 +6,8 @@ import {
   useAppFeatureFlags,
   useCsrfToken,
   useTermsOfService,
-  useSupportContactUrl,
+  useSupportContact,
+  SupportContactLink,
 } from "../../../src/context/appContext";
 import { componentWithProviders } from "../testUtils/withProviders";
 import {
@@ -34,7 +35,11 @@ describe("AppContext", () => {
     text: "Terms of Service",
     href: "/terms-of-service",
   };
-  const expectedSupportContactUrl = "helpdesk@example.com";
+  const emailAddress = "helpdesk@example.com";
+  const expectedSupportContact: SupportContactLink = {
+    href: `mailto:${emailAddress}?subject=Support+request`,
+    text: `Email ${emailAddress}.`,
+  };
 
   const appConfigSettings: Partial<ConfigurationSettings> = {
     csrfToken: expectedCsrfToken,
@@ -43,7 +48,8 @@ describe("AppContext", () => {
     email: expectedEmail,
     tos_link_text: expectedTermsOfService.text,
     tos_link_href: expectedTermsOfService.href,
-    support_contact_url: expectedSupportContactUrl,
+    support_contact_url: "deprecated and should be overridden",
+    supportContactUrl: expectedSupportContact.href,
   };
   const wrapper = componentWithProviders({ appConfigSettings });
 
@@ -54,7 +60,7 @@ describe("AppContext", () => {
     expect(value.admin.email).toEqual(expectedEmail);
     expect(value.admin.roles).toEqual(expectedRoles);
     expect(value.featureFlags).toEqual(expectedFeatureFlags);
-    expect(value.support_contact_url).toEqual(expectedSupportContactUrl);
+    expect(value.supportContact).toEqual(expectedSupportContact);
   });
 
   it("provides useAppAdmin context hook", () => {
@@ -94,11 +100,14 @@ describe("AppContext", () => {
     expect(text).toEqual(expectedTermsOfService.text);
     expect(href).toEqual(expectedTermsOfService.href);
   });
-  it("provides useSupportContactUrl context hook", () => {
-    const { result } = renderHook(() => useSupportContactUrl(), {
+  it("provides useSupportContact context hook", () => {
+    const { result } = renderHook(() => useSupportContact(), {
       wrapper,
     });
-    const supportContactUrl = result.current;
-    expect(supportContactUrl).toEqual(expectedSupportContactUrl);
+    const supportContact = result.current;
+    expect(supportContact).toBeDefined();
+    const { href, text } = supportContact;
+    expect(href).toEqual(expectedSupportContact.href);
+    expect(text).toEqual(expectedSupportContact.text);
   });
 });

@@ -4,14 +4,15 @@ import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../store";
 import {
   ConfigurationSettings,
-  DashboardCollectionsBarChart,
-  FeatureFlags,
   PathFor,
 } from "../interfaces";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
-import AppContextProvider, { AppContextType } from "../context/appContext";
+import AppContextProvider, {
+  AppContextType,
+  supportContactLinkFromConfig,
+} from "../context/appContext";
 
 // Note: Not all elements of these props make it into the `ContextProvider`.
 //  Some are exposed only through the `AppContextProvider` component (which
@@ -103,15 +104,16 @@ export default class ContextProvider extends React.Component<
 
   render() {
     const appContextValue: AppContextType = {
+      admin: this.admin,
       csrfToken: this.appConfig.csrfToken,
       settingUp: this.appConfig.settingUp,
-      admin: this.admin,
       featureFlags: this.appConfig.featureFlags,
       quicksightPagePath: this.appConfig.quicksightPagePath,
       dashboardCollectionsBarChart: this.appConfig.dashboardCollectionsBarChart,
       tos_link_text: this.appConfig.tos_link_text,
       tos_link_href: this.appConfig.tos_link_href,
       support_contact_url: this.appConfig.support_contact_url,
+      supportContact: supportContactLinkFromConfig(this.appConfig)
     };
     return (
       <PathForProvider pathFor={this.pathFor}>

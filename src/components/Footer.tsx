@@ -1,28 +1,33 @@
 import * as React from "react";
-import { useSupportContactUrl, useTermsOfService } from "../context/appContext";
+import { useSupportContact, useTermsOfService } from "../context/appContext";
 
 export interface FooterProps {
   className?: string;
 }
+
+export const makeFooterSupportContactText = (text: string) =>
+  `Need help? ${text}`;
 
 /** If you run a well-known registry for circulation managers, you can add a link here to the terms of service for
 that registry. Make sure to also configure the registry to provide a `terms-of-service` link during the registration
 process. */
 const Footer = ({ className }: FooterProps) => {
   const { text, href } = useTermsOfService();
-  const supportContactUrl = useSupportContactUrl();
+  const supportContact = useSupportContact();
 
   return (
     <footer className={className}>
-      <div style={{ textAlign: "center" }}>
+      <div>
         <a href={href} target="_blank" rel="noreferrer">
           {decode(text)}
         </a>
-        {supportContactUrl && (
+        {supportContact && (
           <>
             <br />
-            <a href={supportContactUrl}>
-              <strong>Need help? Contact support.</strong>
+            <a href={supportContact.href}>
+              <strong>
+                {makeFooterSupportContactText(supportContact.text)}
+              </strong>
             </a>
           </>
         )}
