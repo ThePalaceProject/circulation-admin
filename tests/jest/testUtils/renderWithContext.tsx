@@ -10,19 +10,16 @@ import { ConfigurationSettings } from "../../../src/interfaces";
  * also wrapped, so that rerenders will have the identical context.
  *
  * @param ui                   The element to render
- * @param configSettings Props to pass to the ContextProvider wrapper
+ * @param config Props to pass to the ContextProvider wrapper
  * @param renderOptions        Options to pass through to the RTL render function
  * @returns
  */
 export default function renderWithContext(
   ui: React.ReactElement,
-  configSettings: Partial<ConfigurationSettings>,
+  config: Partial<ConfigurationSettings>,
   renderOptions?: Omit<RenderOptions, "queries">
 ): RenderResult {
-  const contextProviderProps = {
-    ...configSettings,
-    config: configSettings,
-  } as ContextProviderProps;
+  const contextProviderProps = { config } as ContextProviderProps;
   const renderResult = render(
     <ContextProvider {...contextProviderProps}>{ui}</ContextProvider>,
     renderOptions

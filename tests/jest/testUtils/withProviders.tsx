@@ -11,7 +11,7 @@ import { ConfigurationSettings } from "../../../src/interfaces";
 
 export type TestProviderWrapperOptions = {
   reduxProviderProps?: ProviderProps;
-  appConfigSettings?: Partial<ContextProviderProps>;
+  appConfigSettings?: Partial<ConfigurationSettings>;
   queryClient?: QueryClient;
 };
 export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
@@ -48,7 +48,6 @@ export const componentWithProviders = ({
 }: TestProviderWrapperOptions = {}): React.FunctionComponent => {
   const config = { ...requiredAppConfigSettings, ...appConfigSettings };
   const effectiveContextProviderProps = {
-    ...config,
     config: config as ConfigurationSettings,
     ...reduxProviderProps.store, // Context and Redux Provider stores must match.
   } as ContextProviderProps;

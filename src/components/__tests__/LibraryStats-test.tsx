@@ -16,10 +16,10 @@ import {
 } from "../../../tests/__data__/statisticsApiResponseData";
 
 import { normalizeStatistics } from "../../features/stats/normalizeStatistics";
-import { ContextProviderProps } from "../ContextProvider";
+import { ConfigurationSettings } from "../../interfaces";
 
 const getAllProviders = ({ isSysAdmin = false } = {}) => {
-  const appConfigSettings: Partial<ContextProviderProps> = isSysAdmin
+  const appConfigSettings: Partial<ConfigurationSettings> = isSysAdmin
     ? { roles: [{ role: "system" }] }
     : {};
   return componentWithProviders({ appConfigSettings });

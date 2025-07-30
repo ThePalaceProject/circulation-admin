@@ -6,8 +6,6 @@ import {
   componentWithProviders,
   renderWithProviders,
 } from "../testUtils/withProviders";
-import { ContextProviderProps } from "../../../src/components/ContextProvider";
-
 import {
   statisticsApiResponseData,
   testLibraryKey as sampleLibraryKey,
@@ -23,6 +21,11 @@ import { renderHook } from "@testing-library/react-hooks";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { store } from "../../../src/store";
 import { api } from "../../../src/features/api/apiSlice";
+import {
+  AdminRoleData,
+  ConfigurationSettings,
+  RolesData,
+} from "../../../src/interfaces";
 
 const normalizedData = normalizeStatistics(statisticsApiResponseData);
 
@@ -292,9 +295,9 @@ describe("Dashboard Statistics", () => {
     });
 
     describe("shows the correct UI with/out sysadmin role", () => {
-      const systemAdmin = [{ role: "system" }];
-      const managerAll = [{ role: "manager-all" }];
-      const librarianAll = [{ role: "librarian-all" }];
+      const systemAdmin: AdminRoleData[] = [{ role: "system" }];
+      const managerAll: AdminRoleData[] = [{ role: "manager-all" }];
+      const librarianAll: AdminRoleData[] = [{ role: "librarian-all" }];
 
       const collectionNames = [
         "New BiblioBoard Test",
@@ -305,13 +308,13 @@ describe("Dashboard Statistics", () => {
       ];
 
       it("tests BarChart component", () => {
-        const contextProviderProps: Partial<ContextProviderProps> = {
+        const appConfigSettings: Partial<ConfigurationSettings> = {
           roles: systemAdmin,
           dashboardCollectionsBarChart: { width: 800 },
         };
         const { container, getByRole } = renderWithProviders(
           <Stats library={sampleLibraryKey} />,
-          { appConfigSettings: contextProviderProps }
+          { appConfigSettings }
         );
 
         const collectionsHeading = getByRole("heading", {
@@ -335,14 +338,11 @@ describe("Dashboard Statistics", () => {
 
       it("shows collection bar chart for sysadmins, but list for others", () => {
         // We'll use this function to test multiple scenarios.
-        const testFor = (
-          expectBarChart: boolean,
-          roles: { role: string; library?: string }[]
-        ) => {
-          const contextProviderProps: Partial<ContextProviderProps> = { roles };
+        const testFor = (expectBarChart: boolean, roles: AdminRoleData[]) => {
+          const appConfigSettings: Partial<ConfigurationSettings> = { roles };
           const { container, getByRole } = renderWithProviders(
             <Stats library={sampleLibraryKey} />,
-            { appConfigSettings: contextProviderProps }
+            { appConfigSettings }
           );
 
           const collectionsHeading = getByRole("heading", {
@@ -380,11 +380,8 @@ describe("Dashboard Statistics", () => {
         const fakeQuickSightHref = "https://example.com/fakeQS";
 
         // We'll use this function to test multiple scenarios.
-        const renderFor = (
-          onlySysadmins: boolean,
-          roles: { role: string; library?: string }[]
-        ) => {
-          const contextProviderProps: Partial<ContextProviderProps> = {
+        const renderFor = (onlySysadmins: boolean, roles: AdminRoleData[]) => {
+          const appConfigSettings: Partial<ConfigurationSettings> = {
             featureFlags: { reportsOnlyForSysadmins: onlySysadmins },
             roles,
             quicksightPagePath: fakeQuickSightHref,
@@ -395,7 +392,7 @@ describe("Dashboard Statistics", () => {
             queryByRole,
             queryByText,
           } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
-            appConfigSettings: contextProviderProps,
+            appConfigSettings,
           });
 
           // We should always render a Usage reports group when a library is specified.
@@ -439,11 +436,8 @@ describe("Dashboard Statistics", () => {
         const fakeQuickSightHref = "https://example.com/fakeQS";
 
         // We'll use this function to test multiple scenarios.
-        const renderFor = (
-          onlySysadmins: boolean,
-          roles: { role: string; library?: string }[]
-        ) => {
-          const contextProviderProps: Partial<ContextProviderProps> = {
+        const renderFor = (onlySysadmins: boolean, roles: AdminRoleData[]) => {
+          const appConfigSettings: Partial<ConfigurationSettings> = {
             featureFlags: { quicksightOnlyForSysadmins: onlySysadmins },
             roles,
             quicksightPagePath: fakeQuickSightHref,
@@ -454,7 +448,7 @@ describe("Dashboard Statistics", () => {
             queryByRole,
             queryByText,
           } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
-            appConfigSettings: contextProviderProps,
+            appConfigSettings,
           });
 
           // We should always render a Usage reports group when a library is specified.

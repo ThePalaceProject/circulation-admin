@@ -1,6 +1,5 @@
 import { renderHook } from "@testing-library/react-hooks";
 import { componentWithProviders } from "../testUtils/withProviders";
-import { ContextProviderProps } from "../../../src/components/ContextProvider";
 import { ConfigurationSettings, FeatureFlags } from "../../../src/interfaces";
 import {
   useMayRequestInventoryReports,
@@ -12,7 +11,7 @@ const setupWrapper = ({
   roles,
   featureFlags,
 }: Partial<ConfigurationSettings>) => {
-  const appConfigSettings: Partial<ContextProviderProps> = {
+  const appConfigSettings: Partial<ConfigurationSettings> = {
     featureFlags,
     roles,
     email: "email",

@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import ContextProvider, { ContextProviderProps } from "../ContextProvider";
+import ContextProvider from "../ContextProvider";
 import Admin from "../../models/Admin";
 import * as PropTypes from "prop-types";
 import { stub } from "sinon";
@@ -12,29 +12,20 @@ import { ConfigurationSettings } from "../../interfaces";
 
 class FakeChild extends React.Component<object> {}
 
-const contextProviderConfigSettings = (
-  config: Partial<ConfigurationSettings>
-) => ({ ...config, config: config } as ContextProviderProps);
-
 describe("ContextProvider", () => {
   let wrapper;
   let instance;
   let pathFor;
 
-  const basicConfigSettings = {
-    csrfToken: "",
-    featureFlags: defaultFeatureFlags,
-  };
-
   beforeEach(() => {
-    const contextProviderProps = contextProviderConfigSettings({
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "token",
       featureFlags: defaultFeatureFlags,
       roles: [{ role: "system" }],
       email: "email",
-    });
+    };
     wrapper = shallow(
-      <ContextProvider {...contextProviderProps}>
+      <ContextProvider config={appConfigSettings}>
         <FakeChild />
       </ContextProvider>
     );
@@ -54,12 +45,12 @@ describe("ContextProvider", () => {
   });
 
   it("saves the enableAutoList feature flag to the store", () => {
-    const contextProviderProps = contextProviderConfigSettings({
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "token",
       featureFlags: { enableAutoList: true },
-    });
+    };
     wrapper = shallow(
-      <ContextProvider {...contextProviderProps}>
+      <ContextProvider config={appConfigSettings}>
         <FakeChild />
       </ContextProvider>
     );
@@ -100,12 +91,12 @@ describe("ContextProvider", () => {
       }
     }
 
-    const contextProviderProps = contextProviderConfigSettings({
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "token",
       featureFlags: {},
-    });
+    };
     const mockProvider = mount(
-      <MockContextProvider {...contextProviderProps}>
+      <MockContextProvider config={appConfigSettings}>
         <Child />
       </MockContextProvider>
     );

@@ -46,13 +46,13 @@ class CirculationAdmin {
     const appElement = "opds-catalog";
     const app = config.settingUp ? (
       <Provider store={store}>
-        <ContextProvider {...config} store={store} config={config}>
+        <ContextProvider config={config} store={store}>
           <SetupPage />
         </ContextProvider>
       </Provider>
     ) : (
       <Provider store={store}>
-        <ContextProvider {...config} store={store} config={config}>
+        <ContextProvider config={config} store={store}>
           <QueryClientProvider client={queryClient}>
             <Router history={browserHistory}>
               <Route path={catalogEditorPath} component={CatalogPage} />

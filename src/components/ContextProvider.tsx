@@ -21,20 +21,6 @@ import AppContextProvider, { AppContextType } from "../context/appContext";
 export interface ContextProviderProps extends React.Props<ContextProvider> {
   store?: Store<RootState>;
   config: Partial<ConfigurationSettings>;
-  csrfToken: string;
-  showCircEventsDownload?: boolean;
-  settingUp?: boolean;
-  email?: string;
-  roles?: {
-    role: string;
-    library?: string;
-  }[];
-  tos_link_text?: string;
-  tos_link_href?: string;
-  support_contact_url?: string;
-  featureFlags: FeatureFlags;
-  quicksightPagePath?: string;
-  dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -44,13 +30,13 @@ export default class ContextProvider extends React.Component<
 > {
   store: Store<RootState>;
   admin: Admin;
-  config: ConfigurationSettings;
+  appConfig: ConfigurationSettings;
   pathFor: PathFor;
 
   constructor(props) {
     super(props);
     this.store = props.store ?? buildStore();
-    this.config = props.config;
+    this.appConfig = props.config;
     this.admin = new Admin(
       props.config.roles || [],
       props.config.email || null
@@ -73,7 +59,7 @@ export default class ContextProvider extends React.Component<
   storeConfiguration() {
     const actions = new ActionCreator();
 
-    this.store.dispatch(actions.setFeatureFlags(this.config.featureFlags));
+    this.store.dispatch(actions.setFeatureFlags(this.appConfig.featureFlags));
   }
 
   prepareCollectionUrl(url: string): string {
@@ -108,24 +94,24 @@ export default class ContextProvider extends React.Component<
   getChildContext() {
     return {
       editorStore: this.store,
-      csrfToken: this.config.csrfToken,
-      settingUp: this.config.settingUp || false,
+      csrfToken: this.appConfig.csrfToken,
+      settingUp: this.appConfig.settingUp || false,
       admin: this.admin,
-      featureFlags: this.config.featureFlags,
+      featureFlags: this.appConfig.featureFlags,
     };
   }
 
   render() {
     const appContextValue: AppContextType = {
-      csrfToken: this.config.csrfToken,
-      settingUp: this.config.settingUp,
+      csrfToken: this.appConfig.csrfToken,
+      settingUp: this.appConfig.settingUp,
       admin: this.admin,
-      featureFlags: this.config.featureFlags,
-      quicksightPagePath: this.config.quicksightPagePath,
-      dashboardCollectionsBarChart: this.config.dashboardCollectionsBarChart,
-      tos_link_text: this.config.tos_link_text,
-      tos_link_href: this.config.tos_link_href,
-      support_contact_url: this.config.support_contact_url,
+      featureFlags: this.appConfig.featureFlags,
+      quicksightPagePath: this.appConfig.quicksightPagePath,
+      dashboardCollectionsBarChart: this.appConfig.dashboardCollectionsBarChart,
+      tos_link_text: this.appConfig.tos_link_text,
+      tos_link_href: this.appConfig.tos_link_href,
+      support_contact_url: this.appConfig.support_contact_url,
     };
     return (
       <PathForProvider pathFor={this.pathFor}>
