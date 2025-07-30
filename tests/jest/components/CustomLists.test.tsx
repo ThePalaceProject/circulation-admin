@@ -30,7 +30,7 @@ describe("CustomLists", () => {
   it("adds filters when new filter values are entered", async () => {
     const user = userEvent.setup();
 
-    const configSettings: Partial<ConfigurationSettings> = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -43,7 +43,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      configSettings
+      appConfigSettings
     );
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
@@ -70,7 +70,7 @@ describe("CustomLists", () => {
   it("replaces the existing filters when adding a new filter when the clear filters checkbox is checked", async () => {
     const user = userEvent.setup();
 
-    const configSettings: Partial<ConfigurationSettings> = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -83,7 +83,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      configSettings
+      appConfigSettings
     );
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
@@ -122,7 +122,7 @@ describe("CustomLists", () => {
 
     const user = userEvent.setup();
 
-    const configSettings: Partial<ConfigurationSettings> = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -135,7 +135,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      configSettings
+      appConfigSettings
     );
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
@@ -166,7 +166,7 @@ describe("CustomLists", () => {
 
     const user = userEvent.setup();
 
-    const configSettings: Partial<ConfigurationSettings> = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -179,7 +179,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      configSettings
+      appConfigSettings
     );
 
     await userEvent.selectOptions(

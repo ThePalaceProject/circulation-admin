@@ -39,21 +39,17 @@ const requiredAppConfigSettings: Partial<ConfigurationSettings> = {
  * @param {QueryClient} options.queryClient A `tanstack/react-query` QueryClient
  * @returns {React.FunctionComponent} A React component that wraps children with our providers
  */
-export const basicTestServerConfigSettings: Partial<ConfigurationSettings> = {
-  csrfToken: "",
-  featureFlags: defaultFeatureFlags,
-} as const;
 export const componentWithProviders = ({
   reduxProviderProps = {
     store: defaultReduxStore,
   },
-  appConfigSettings = requiredAppConfigSettings,
+  appConfigSettings = {},
   queryClient = new QueryClient(),
 }: TestProviderWrapperOptions = {}): React.FunctionComponent => {
+  const config = { ...requiredAppConfigSettings, ...appConfigSettings };
   const effectiveContextProviderProps = {
-    ...requiredAppConfigSettings,
-    ...appConfigSettings,
-    config: appConfigSettings as ConfigurationSettings,
+    ...config,
+    config: config as ConfigurationSettings,
     ...reduxProviderProps.store, // Context and Redux Provider stores must match.
   } as ContextProviderProps;
   const wrapper = ({ children }) => (

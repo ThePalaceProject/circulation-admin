@@ -19,7 +19,10 @@ export default function renderWithContext(
   configSettings: Partial<ConfigurationSettings>,
   renderOptions?: Omit<RenderOptions, "queries">
 ): RenderResult {
-  const contextProviderProps = configSettings as ContextProviderProps;
+  const contextProviderProps = {
+    ...configSettings,
+    config: configSettings,
+  } as ContextProviderProps;
   const renderResult = render(
     <ContextProvider {...contextProviderProps}>{ui}</ContextProvider>,
     renderOptions

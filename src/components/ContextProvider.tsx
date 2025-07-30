@@ -44,12 +44,17 @@ export default class ContextProvider extends React.Component<
 > {
   store: Store<RootState>;
   admin: Admin;
+  config: ConfigurationSettings;
   pathFor: PathFor;
 
   constructor(props) {
     super(props);
     this.store = props.store ?? buildStore();
-    this.admin = new Admin(props.roles || [], props.email || null);
+    this.config = props.config;
+    this.admin = new Admin(
+      props.config.roles || [],
+      props.config.email || null
+    );
     this.pathFor = (collectionUrl: string, bookUrl: string, tab?: string) => {
       let path = "/admin/web";
       path += collectionUrl
@@ -68,7 +73,7 @@ export default class ContextProvider extends React.Component<
   storeConfiguration() {
     const actions = new ActionCreator();
 
-    this.store.dispatch(actions.setFeatureFlags(this.props.featureFlags));
+    this.store.dispatch(actions.setFeatureFlags(this.config.featureFlags));
   }
 
   prepareCollectionUrl(url: string): string {
@@ -103,24 +108,24 @@ export default class ContextProvider extends React.Component<
   getChildContext() {
     return {
       editorStore: this.store,
-      csrfToken: this.props.csrfToken,
-      settingUp: this.props.settingUp || false,
+      csrfToken: this.config.csrfToken,
+      settingUp: this.config.settingUp || false,
       admin: this.admin,
-      featureFlags: this.props.featureFlags,
+      featureFlags: this.config.featureFlags,
     };
   }
 
   render() {
     const appContextValue: AppContextType = {
-      csrfToken: this.props.csrfToken,
-      settingUp: this.props.settingUp,
+      csrfToken: this.config.csrfToken,
+      settingUp: this.config.settingUp,
       admin: this.admin,
-      featureFlags: this.props.featureFlags,
-      quicksightPagePath: this.props.quicksightPagePath,
-      dashboardCollectionsBarChart: this.props.dashboardCollectionsBarChart,
-      tos_link_text: this.props.tos_link_text,
-      tos_link_href: this.props.tos_link_href,
-      support_contact_url: this.props.support_contact_url,
+      featureFlags: this.config.featureFlags,
+      quicksightPagePath: this.config.quicksightPagePath,
+      dashboardCollectionsBarChart: this.config.dashboardCollectionsBarChart,
+      tos_link_text: this.config.tos_link_text,
+      tos_link_href: this.config.tos_link_href,
+      support_contact_url: this.config.support_contact_url,
     };
     return (
       <PathForProvider pathFor={this.pathFor}>
