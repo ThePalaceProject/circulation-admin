@@ -311,7 +311,7 @@ describe("Dashboard Statistics", () => {
         };
         const { container, getByRole } = renderWithProviders(
           <Stats library={sampleLibraryKey} />,
-          { contextProviderProps }
+          { appConfigSettings: contextProviderProps }
         );
 
         const collectionsHeading = getByRole("heading", {
@@ -342,7 +342,7 @@ describe("Dashboard Statistics", () => {
           const contextProviderProps: Partial<ContextProviderProps> = { roles };
           const { container, getByRole } = renderWithProviders(
             <Stats library={sampleLibraryKey} />,
-            { contextProviderProps }
+            { appConfigSettings: contextProviderProps }
           );
 
           const collectionsHeading = getByRole("heading", {
@@ -395,7 +395,7 @@ describe("Dashboard Statistics", () => {
             queryByRole,
             queryByText,
           } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
-            contextProviderProps,
+            appConfigSettings: contextProviderProps,
           });
 
           // We should always render a Usage reports group when a library is specified.
@@ -454,7 +454,7 @@ describe("Dashboard Statistics", () => {
             queryByRole,
             queryByText,
           } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
-            contextProviderProps,
+            appConfigSettings: contextProviderProps,
           });
 
           // We should always render a Usage reports group when a library is specified.

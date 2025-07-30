@@ -19,10 +19,10 @@ import { normalizeStatistics } from "../../features/stats/normalizeStatistics";
 import { ContextProviderProps } from "../ContextProvider";
 
 const getAllProviders = ({ isSysAdmin = false } = {}) => {
-  const contextProviderProps: Partial<ContextProviderProps> = isSysAdmin
+  const appConfigSettings: Partial<ContextProviderProps> = isSysAdmin
     ? { roles: [{ role: "system" }] }
     : {};
-  return componentWithProviders({ contextProviderProps });
+  return componentWithProviders({ appConfigSettings });
 };
 
 global.ResizeObserver = require("resize-observer-polyfill");

@@ -3,12 +3,13 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import IndividualAdminEditForm from "../../../src/components/IndividualAdminEditForm";
 import renderWithContext from "../testUtils/renderWithContext";
+import { ConfigurationSettings } from "../../../src/interfaces";
 
 describe("IndividualAdminEditForm", () => {
   it("clears the role checkboxes after save", async () => {
     const user = userEvent.setup();
 
-    const contextProviderProps = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [
@@ -45,7 +46,7 @@ describe("IndividualAdminEditForm", () => {
 
     const { rerender } = renderWithContext(
       <IndividualAdminEditForm {...props} />,
-      contextProviderProps
+      appConfigSettings
     );
 
     const systemAdminCheckbox = screen.getByRole("checkbox", {

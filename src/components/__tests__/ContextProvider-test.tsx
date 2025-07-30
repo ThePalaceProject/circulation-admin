@@ -3,26 +3,38 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import ContextProvider from "../ContextProvider";
+import ContextProvider, { ContextProviderProps } from "../ContextProvider";
 import Admin from "../../models/Admin";
 import * as PropTypes from "prop-types";
 import { stub } from "sinon";
+import { defaultFeatureFlags } from "../../utils/featureFlags";
+import { ConfigurationSettings } from "../../interfaces";
 
 class FakeChild extends React.Component<object> {}
+
+const contextProviderConfigSettings = (
+  config: Partial<ConfigurationSettings>
+) => ({ ...config, config: config } as ContextProviderProps);
 
 describe("ContextProvider", () => {
   let wrapper;
   let instance;
   let pathFor;
 
+  const basicConfigSettings = {
+    csrfToken: "",
+    featureFlags: defaultFeatureFlags,
+  };
+
   beforeEach(() => {
+    const contextProviderProps = contextProviderConfigSettings({
+      csrfToken: "token",
+      featureFlags: defaultFeatureFlags,
+      roles: [{ role: "system" }],
+      email: "email",
+    });
     wrapper = shallow(
-      <ContextProvider
-        csrfToken="token"
-        featureFlags={{}}
-        roles={[{ role: "system" }]}
-        email="email"
-      >
+      <ContextProvider {...contextProviderProps}>
         <FakeChild />
       </ContextProvider>
     );
@@ -42,13 +54,12 @@ describe("ContextProvider", () => {
   });
 
   it("saves the enableAutoList feature flag to the store", () => {
+    const contextProviderProps = contextProviderConfigSettings({
+      csrfToken: "token",
+      featureFlags: { enableAutoList: true },
+    });
     wrapper = shallow(
-      <ContextProvider
-        csrfToken="token"
-        featureFlags={{
-          enableAutoList: true,
-        }}
-      >
+      <ContextProvider {...contextProviderProps}>
         <FakeChild />
       </ContextProvider>
     );
@@ -89,8 +100,12 @@ describe("ContextProvider", () => {
       }
     }
 
+    const contextProviderProps = contextProviderConfigSettings({
+      csrfToken: "token",
+      featureFlags: {},
+    });
     const mockProvider = mount(
-      <MockContextProvider csrfToken="token" featureFlags={{}}>
+      <MockContextProvider {...contextProviderProps}>
         <Child />
       </MockContextProvider>
     );

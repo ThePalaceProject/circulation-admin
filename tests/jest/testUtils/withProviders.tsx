@@ -7,10 +7,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { store } from "../../../src/store";
+import { ConfigurationSettings } from "../../../src/interfaces";
 
 export type TestProviderWrapperOptions = {
   reduxProviderProps?: ProviderProps;
-  contextProviderProps?: Partial<ContextProviderProps>;
+  appConfigSettings?: Partial<ContextProviderProps>;
   queryClient?: QueryClient;
 };
 export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
@@ -21,9 +22,9 @@ export type TestRenderWrapperOptions = TestProviderWrapperOptions & {
 // be the same for both the Redux Provider and the ContextProvider.
 const defaultReduxStore = store;
 
-// The `csrfToken` context provider prop is required, so we provide
-// a default value here, so it can be easily merged with other props.
-const requiredContextProviderProps: ContextProviderProps = {
+// Some config settings from the server are required, so we provide
+// default values here, so they can be easily merged with other props.
+const requiredAppConfigSettings: Partial<ConfigurationSettings> = {
   csrfToken: "",
   featureFlags: defaultFeatureFlags,
 };
@@ -34,25 +35,27 @@ const requiredContextProviderProps: ContextProviderProps = {
  *
  * @param {TestProviderWrapperOptions} options
  * @param options.reduxProviderProps Props to pass to the Redux `Provider` wrapper
- * @param {ContextProviderProps} options.contextProviderProps Props to pass to the ContextProvider wrapper
+ * @param {ConfigurationSettings} options.appConfigSettings
  * @param {QueryClient} options.queryClient A `tanstack/react-query` QueryClient
  * @returns {React.FunctionComponent} A React component that wraps children with our providers
  */
+export const basicTestServerConfigSettings: Partial<ConfigurationSettings> = {
+  csrfToken: "",
+  featureFlags: defaultFeatureFlags,
+} as const;
 export const componentWithProviders = ({
   reduxProviderProps = {
     store: defaultReduxStore,
   },
-  contextProviderProps = {
-    csrfToken: "",
-    featureFlags: defaultFeatureFlags,
-  },
+  appConfigSettings = requiredAppConfigSettings,
   queryClient = new QueryClient(),
 }: TestProviderWrapperOptions = {}): React.FunctionComponent => {
   const effectiveContextProviderProps = {
-    ...requiredContextProviderProps,
-    ...contextProviderProps,
+    ...requiredAppConfigSettings,
+    ...appConfigSettings,
+    config: appConfigSettings as ConfigurationSettings,
     ...reduxProviderProps.store, // Context and Redux Provider stores must match.
-  };
+  } as ContextProviderProps;
   const wrapper = ({ children }) => (
     <Provider {...reduxProviderProps}>
       <ContextProvider {...effectiveContextProviderProps}>

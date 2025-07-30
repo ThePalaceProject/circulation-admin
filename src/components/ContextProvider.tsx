@@ -3,6 +3,7 @@ import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../store";
 import {
+  ConfigurationSettings,
   DashboardCollectionsBarChart,
   FeatureFlags,
   PathFor,
@@ -19,6 +20,7 @@ import AppContextProvider, { AppContextType } from "../context/appContext";
 //  the `ConfigurationSettings` interface.
 export interface ContextProviderProps extends React.Props<ContextProvider> {
   store?: Store<RootState>;
+  config: Partial<ConfigurationSettings>;
   csrfToken: string;
   showCircEventsDownload?: boolean;
   settingUp?: boolean;

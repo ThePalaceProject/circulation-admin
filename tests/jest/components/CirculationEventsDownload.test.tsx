@@ -20,7 +20,7 @@ describe("CirculationEventsDownload", () => {
     const { container } = renderWithProviders(
       <CirculationEventsDownload library="testlib" />,
       {
-        contextProviderProps,
+        appConfigSettings: contextProviderProps,
       }
     );
     expect(container).toBeEmptyDOMElement();
@@ -38,7 +38,7 @@ describe("CirculationEventsDownload", () => {
 
     beforeEach(() => {
       renderWithProviders(<CirculationEventsDownload library={libraryProp} />, {
-        contextProviderProps,
+        appConfigSettings: contextProviderProps,
       });
     });
 

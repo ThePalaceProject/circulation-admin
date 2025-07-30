@@ -12,13 +12,13 @@ const setupWrapper = ({
   roles,
   featureFlags,
 }: Partial<ConfigurationSettings>) => {
-  const contextProviderProps: ContextProviderProps = {
+  const appConfigSettings: Partial<ContextProviderProps> = {
     featureFlags,
     roles,
     email: "email",
     csrfToken: "token",
   };
-  return componentWithProviders({ contextProviderProps });
+  return componentWithProviders({ appConfigSettings });
 };
 
 describe("Business rules for role-based access", () => {

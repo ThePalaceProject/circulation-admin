@@ -9,14 +9,14 @@ const expectedTosText = "Terms of Service Text";
 const expectedTosHref = "terms_of_service";
 const testSupportContactUrl = "helpdesk@example.com";
 const getFooterProviders = ({ hasSupportContactUrl = false } = {}) => {
-  const contextProviderProps = {
+  const appConfigSettings = {
     tos_link_text: expectedTosText,
     tos_link_href: expectedTosHref,
     support_contact_url: hasSupportContactUrl
       ? testSupportContactUrl
       : undefined,
   };
-  return componentWithProviders({ contextProviderProps });
+  return componentWithProviders({ appConfigSettings });
 };
 
 describe("Footer", () => {
