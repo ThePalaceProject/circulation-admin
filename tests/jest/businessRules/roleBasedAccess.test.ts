@@ -1,6 +1,5 @@
 import { renderHook } from "@testing-library/react-hooks";
 import { componentWithProviders } from "../testUtils/withProviders";
-import { ContextProviderProps } from "../../../src/components/ContextProvider";
 import { ConfigurationSettings, FeatureFlags } from "../../../src/interfaces";
 import {
   useMayRequestInventoryReports,
@@ -12,13 +11,13 @@ const setupWrapper = ({
   roles,
   featureFlags,
 }: Partial<ConfigurationSettings>) => {
-  const contextProviderProps: ContextProviderProps = {
+  const appConfigSettings: Partial<ConfigurationSettings> = {
     featureFlags,
     roles,
     email: "email",
     csrfToken: "token",
   };
-  return componentWithProviders({ contextProviderProps });
+  return componentWithProviders({ appConfigSettings });
 };
 
 describe("Business rules for role-based access", () => {

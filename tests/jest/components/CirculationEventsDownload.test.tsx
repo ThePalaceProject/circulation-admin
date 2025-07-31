@@ -3,8 +3,7 @@ import { screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import CirculationEventsDownload from "../../../src/components/CirculationEventsDownload";
-import { ContextProviderProps } from "../../../src/components/ContextProvider";
-import { FeatureFlags } from "../../../src/interfaces";
+import { ConfigurationSettings, FeatureFlags } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { renderWithProviders } from "../testUtils/withProviders";
 
@@ -14,13 +13,13 @@ describe("CirculationEventsDownload", () => {
       ...defaultFeatureFlags,
       showCircEventsDownload: false,
     };
-    const contextProviderProps: Partial<ContextProviderProps> = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       featureFlags,
     };
     const { container } = renderWithProviders(
       <CirculationEventsDownload library="testlib" />,
       {
-        contextProviderProps,
+        appConfigSettings,
       }
     );
     expect(container).toBeEmptyDOMElement();
@@ -32,13 +31,13 @@ describe("CirculationEventsDownload", () => {
       showCircEventsDownload: true,
     };
     const libraryProp = "testlib";
-    const contextProviderProps: Partial<ContextProviderProps> = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       featureFlags,
     };
 
     beforeEach(() => {
       renderWithProviders(<CirculationEventsDownload library={libraryProp} />, {
-        contextProviderProps,
+        appConfigSettings,
       });
     });
 

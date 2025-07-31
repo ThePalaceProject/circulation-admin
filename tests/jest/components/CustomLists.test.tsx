@@ -6,6 +6,7 @@ import { http, HttpResponse } from "msw";
 import CustomLists from "../../../src/components/CustomLists";
 import renderWithContext from "../testUtils/renderWithContext";
 import buildStore from "../../../src/store";
+import { ConfigurationSettings } from "../../../src/interfaces";
 
 describe("CustomLists", () => {
   // Stub scrollTo, since a component in the render tree will try to call it, and it is not
@@ -29,7 +30,7 @@ describe("CustomLists", () => {
   it("adds filters when new filter values are entered", async () => {
     const user = userEvent.setup();
 
-    const contextProviderProps = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -42,7 +43,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      contextProviderProps
+      appConfigSettings
     );
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
@@ -69,7 +70,7 @@ describe("CustomLists", () => {
   it("replaces the existing filters when adding a new filter when the clear filters checkbox is checked", async () => {
     const user = userEvent.setup();
 
-    const contextProviderProps = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -82,7 +83,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      contextProviderProps
+      appConfigSettings
     );
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
@@ -121,7 +122,7 @@ describe("CustomLists", () => {
 
     const user = userEvent.setup();
 
-    const contextProviderProps = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -134,7 +135,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      contextProviderProps
+      appConfigSettings
     );
 
     await user.click(screen.getByRole("textbox", { name: "filter value" }));
@@ -165,7 +166,7 @@ describe("CustomLists", () => {
 
     const user = userEvent.setup();
 
-    const contextProviderProps = {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
       csrfToken: "",
       featureFlags: {},
       roles: [{ role: "system" }],
@@ -178,7 +179,7 @@ describe("CustomLists", () => {
         library="testlib"
         store={buildStore()}
       />,
-      contextProviderProps
+      appConfigSettings
     );
 
     await userEvent.selectOptions(

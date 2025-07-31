@@ -16,13 +16,13 @@ import {
 } from "../../../tests/__data__/statisticsApiResponseData";
 
 import { normalizeStatistics } from "../../features/stats/normalizeStatistics";
-import { ContextProviderProps } from "../ContextProvider";
+import { ConfigurationSettings } from "../../interfaces";
 
 const getAllProviders = ({ isSysAdmin = false } = {}) => {
-  const contextProviderProps: Partial<ContextProviderProps> = isSysAdmin
+  const appConfigSettings: Partial<ConfigurationSettings> = isSysAdmin
     ? { roles: [{ role: "system" }] }
     : {};
-  return componentWithProviders({ contextProviderProps });
+  return componentWithProviders({ appConfigSettings });
 };
 
 global.ResizeObserver = require("resize-observer-polyfill");

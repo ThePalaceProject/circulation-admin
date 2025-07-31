@@ -7,6 +7,8 @@ import ContextProvider from "../ContextProvider";
 import Admin from "../../models/Admin";
 import * as PropTypes from "prop-types";
 import { stub } from "sinon";
+import { defaultFeatureFlags } from "../../utils/featureFlags";
+import { ConfigurationSettings } from "../../interfaces";
 
 class FakeChild extends React.Component<object> {}
 
@@ -16,13 +18,14 @@ describe("ContextProvider", () => {
   let pathFor;
 
   beforeEach(() => {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
+      csrfToken: "token",
+      featureFlags: defaultFeatureFlags,
+      roles: [{ role: "system" }],
+      email: "email",
+    };
     wrapper = shallow(
-      <ContextProvider
-        csrfToken="token"
-        featureFlags={{}}
-        roles={[{ role: "system" }]}
-        email="email"
-      >
+      <ContextProvider config={appConfigSettings}>
         <FakeChild />
       </ContextProvider>
     );
@@ -42,13 +45,12 @@ describe("ContextProvider", () => {
   });
 
   it("saves the enableAutoList feature flag to the store", () => {
+    const appConfigSettings: Partial<ConfigurationSettings> = {
+      csrfToken: "token",
+      featureFlags: { enableAutoList: true },
+    };
     wrapper = shallow(
-      <ContextProvider
-        csrfToken="token"
-        featureFlags={{
-          enableAutoList: true,
-        }}
-      >
+      <ContextProvider config={appConfigSettings}>
         <FakeChild />
       </ContextProvider>
     );
@@ -89,8 +91,12 @@ describe("ContextProvider", () => {
       }
     }
 
+    const appConfigSettings: Partial<ConfigurationSettings> = {
+      csrfToken: "token",
+      featureFlags: {},
+    };
     const mockProvider = mount(
-      <MockContextProvider csrfToken="token" featureFlags={{}}>
+      <MockContextProvider config={appConfigSettings}>
         <Child />
       </MockContextProvider>
     );

@@ -9,8 +9,11 @@ import {
   useSupportContactUrl,
 } from "../../../src/context/appContext";
 import { componentWithProviders } from "../testUtils/withProviders";
-import { ContextProviderProps } from "../../../src/components/ContextProvider";
-import { FeatureFlags } from "../../../src/interfaces";
+import {
+  AdminRoleData,
+  ConfigurationSettings,
+  FeatureFlags,
+} from "../../../src/interfaces";
 
 // TODO: These tests may need to be adjusted in the future.
 //  Currently, an AppContext.Provider is injected into the component tree
@@ -26,14 +29,14 @@ describe("AppContext", () => {
     testTrue: true,
     testFalse: false,
   };
-  const expectedRoles = [{ role: "system" }];
+  const expectedRoles: AdminRoleData[] = [{ role: "system" }];
   const expectedTermsOfService = {
     text: "Terms of Service",
     href: "/terms-of-service",
   };
   const expectedSupportContactUrl = "helpdesk@example.com";
 
-  const contextProviderProps: ContextProviderProps = {
+  const appConfigSettings: Partial<ConfigurationSettings> = {
     csrfToken: expectedCsrfToken,
     featureFlags: expectedFeatureFlags,
     roles: expectedRoles,
@@ -42,7 +45,7 @@ describe("AppContext", () => {
     tos_link_href: expectedTermsOfService.href,
     support_contact_url: expectedSupportContactUrl,
   };
-  const wrapper = componentWithProviders({ contextProviderProps });
+  const wrapper = componentWithProviders({ appConfigSettings });
 
   it("provides useAppContext context hook", () => {
     const { result } = renderHook(() => useAppContext(), { wrapper });

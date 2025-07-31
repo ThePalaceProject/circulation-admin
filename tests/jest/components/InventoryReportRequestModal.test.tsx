@@ -359,7 +359,7 @@ describe("InventoryReportRequestModal", () => {
           onHide={onHide}
           library={LIBRARY}
         />,
-        { queryClient, contextProviderProps: EMAIL_CONTEXT_PROVIDER_PROPS }
+        { queryClient, appConfigSettings: EMAIL_CONTEXT_PROVIDER_PROPS }
       );
       let modalBody = getByRole("document").querySelector(".modal-body");
       expect(modalBody).toHaveTextContent(
@@ -373,7 +373,7 @@ describe("InventoryReportRequestModal", () => {
           onHide={onHide}
           library={LIBRARY}
         />,
-        { queryClient, contextProviderProps: NO_EMAIL_CONTEXT_PROVIDER_PROPS }
+        { queryClient, appConfigSettings: NO_EMAIL_CONTEXT_PROVIDER_PROPS }
       ));
       modalBody = getByRole("document").querySelector(".modal-body");
       expect(modalBody).toHaveTextContent(
