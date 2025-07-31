@@ -2,10 +2,7 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../store";
-import {
-  ConfigurationSettings,
-  PathFor,
-} from "../interfaces";
+import { ConfigurationSettings, PathFor } from "../interfaces";
 import Admin from "../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 import ActionCreator from "../actions";
@@ -112,8 +109,7 @@ export default class ContextProvider extends React.Component<
       dashboardCollectionsBarChart: this.appConfig.dashboardCollectionsBarChart,
       tos_link_text: this.appConfig.tos_link_text,
       tos_link_href: this.appConfig.tos_link_href,
-      support_contact_url: this.appConfig.support_contact_url,
-      supportContact: supportContactLinkFromConfig(this.appConfig)
+      supportContact: supportContactLinkFromConfig(this.appConfig),
     };
     return (
       <PathForProvider pathFor={this.pathFor}>

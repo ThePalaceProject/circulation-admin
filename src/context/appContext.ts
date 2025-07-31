@@ -13,9 +13,6 @@ export type AppContextType = {
   tos_link_text?: string;
   tos_link_href?: string;
   supportContact?: SupportContactLink;
-  support_contact_url?: string; // Deprecated: Use `supportContactUrl`, instead.
-  supportContactUrl?: string;
-  supportContactText?: string;
   featureFlags: FeatureFlags;
   quicksightPagePath: string;
   dashboardCollectionsBarChart?: DashboardCollectionsBarChart;
