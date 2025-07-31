@@ -9,8 +9,9 @@ footer {
   position: fixed;
   bottom: 0;
   height: 56px;
-  p {
+  div {
     margin: 2px 0;
+    text-align: center;
     a, a:visited, a:link {
       color: black;
       &:hover {
