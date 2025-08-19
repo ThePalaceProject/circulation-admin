@@ -1,11 +1,13 @@
 import { expect } from "chai";
+import * as sinon from "sinon";
 import { stub } from "sinon";
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { ReactWrapper, mount } from "enzyme";
 import * as PropTypes from "prop-types";
-
+import { ProtocolData } from "../../interfaces";
 import Admin from "../../models/Admin";
-import { Collections } from "../Collections";
+import { Collections, CollectionEditForm } from "../Collections";
+import buildStore from "../../store";
 
 const collections = [
   {
@@ -27,7 +29,7 @@ const collections = [
     name: "RBDigital",
   },
 ];
-import buildStore from "../../store";
+const protocols: ProtocolData[] = [{ name: "test protocol", settings: [] }];
 
 describe("Collections", () => {
   let wrapper;
@@ -126,6 +128,75 @@ describe("Collections", () => {
       expect(firstCollection.find("button.delete-item").length).to.equal(1);
       expect(deletedCollection.find("a.edit-item").length).to.equal(0);
       expect(deletedCollection.find("button.delete-item").length).to.equal(0);
+    });
+
+    describe("confirm before disassociating libraries", () => {
+      let wrapper: ReactWrapper;
+      let confirmStub: sinon.SinonStub;
+
+      const initialLibraries = [
+        { short_name: "palace", name: "Palace" },
+        { short_name: "another-library", name: "Another Library" },
+      ] as const;
+      const collection = {
+        id: 7,
+        name: "An OPDS Collection",
+        protocol: "OPDS Import",
+
+        libraries: [...initialLibraries],
+      };
+
+      beforeEach(() => {
+        confirmStub = sinon.stub(window, "confirm");
+
+        wrapper = mount(
+          <CollectionEditForm
+            disabled={false}
+            data={{
+              collections: [collection],
+              protocols: [],
+              allLibraries: [...initialLibraries],
+            }}
+            item={collection}
+            urlBase="/collections"
+            listDataKey="collections"
+          />
+        );
+      });
+
+      afterEach(() => {
+        confirmStub.restore();
+      });
+
+      it("calls window.confirm when delete button is clicked", () => {
+        confirmStub.returns(false);
+
+        // The confirmation dialog should not be invoked before we click.
+        expect(confirmStub.calledOnce).to.be.false;
+
+        wrapper.find("button.remove-btn").at(0).simulate("click");
+        expect(confirmStub.calledOnce).to.be.true;
+        expect(confirmStub.firstCall.args.length).to.equal(1);
+        const message: string = confirmStub.firstCall.args[0];
+        expect(message).to.equal(
+          'Disassociating library "Palace" from this collection will ' +
+            "remove all loans and holds for its patrons. Do you wish to continue?"
+        );
+      });
+
+      it("does not delete library if confirmation is canceled", () => {
+        confirmStub.returns(false);
+        wrapper.find("button.remove-btn").at(0).simulate("click");
+        // We didn't delete, so we should still have the originals.
+        expect(wrapper.state("libraries")).to.deep.equal(initialLibraries);
+      });
+
+      it("deletes library if confirmation is accepted", () => {
+        confirmStub.returns(true);
+        wrapper.find("button.remove-btn").at(0).simulate("click");
+        // We deleted the first library, so it should be gone from the state.
+        expect(wrapper.state("libraries")).to.deep.equal([initialLibraries[1]]);
+      });
     });
   });
 });

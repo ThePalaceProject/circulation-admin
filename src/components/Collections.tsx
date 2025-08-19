@@ -12,8 +12,8 @@ import {
   CollectionsData,
   CollectionData,
   LibraryData,
+  LibraryWithSettingsData,
   LibraryRegistrationsData,
-  ServiceData,
 } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import TrashIcon from "./icons/TrashIcon";
@@ -36,7 +36,24 @@ export interface CollectionsProps
 
 export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
   CollectionsData
-> {}
+> {
+  /**
+   * Override to display a confirmation message before removing a library
+   * association. We display the confirmation and, if successful, call the
+   * superclass method to actually remove the library from our state.
+   * @param library
+   */
+  removeLibrary(library: LibraryWithSettingsData) {
+    const libraryData = this.getLibrary(library.short_name);
+    const libraryName = libraryData ? libraryData.name : library.short_name;
+    const confirmationMessage =
+      `Disassociating library "${libraryName}" from this collection will ` +
+      "remove all loans and holds for its patrons. Do you wish to continue?";
+    if (window.confirm(confirmationMessage)) {
+      super.removeLibrary(library);
+    }
+  }
+}
 
 /**
  * Right panel for collections on the system configuration page.
