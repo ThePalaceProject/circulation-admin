@@ -43,5 +43,27 @@ describe("WithRemoveButton", () => {
       removeBtn.simulate("click");
       expect(onRemove.callCount).to.equal(0);
     });
+
+    it("calls onRemove when confirmation returns true", () => {
+      const confirmRemoval = stub().returns(true);
+      wrapper.setProps({ confirmRemoval });
+      const removeBtn = wrapper.find(".remove-btn").hostNodes();
+
+      removeBtn.simulate("click");
+
+      expect(confirmRemoval.callCount).to.equal(1);
+      expect(onRemove.callCount).to.equal(1);
+    });
+
+    it("does not call onRemove when confirmation returns false", () => {
+      const confirmRemoval = stub().returns(false);
+      wrapper.setProps({ confirmRemoval });
+      const removeBtn = wrapper.find(".remove-btn").hostNodes();
+
+      removeBtn.simulate("click");
+
+      expect(confirmRemoval.callCount).to.equal(1);
+      expect(onRemove.callCount).to.equal(0);
+    });
   });
 });

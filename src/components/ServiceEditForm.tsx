@@ -10,7 +10,6 @@ import {
   ProtocolData,
   ServiceData,
   ServicesData,
-  SettingData,
 } from "../interfaces";
 import { clearForm } from "../utils/sharedFunctions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
@@ -27,6 +26,7 @@ export interface ServiceEditFormProps<T> {
   extraFormSection?: any;
   extraFormKey?: string;
   adminLevel?: number;
+  libraryRemovalAllowed?: (library: LibraryWithSettingsData) => boolean;
 }
 
 export interface ServiceEditFormState {
@@ -345,6 +345,7 @@ export default class ServiceEditForm<
               <WithRemoveButton
                 disabled={disabled}
                 onRemove={() => this.removeLibrary(library)}
+                confirmRemoval={() => this.isLibraryRemovalPermitted(library)}
                 ref={library.short_name}
               >
                 {this.props.data &&
@@ -588,6 +589,31 @@ export default class ServiceEditForm<
     return this.state.expandedLibraries.indexOf(library.short_name) !== -1;
   }
 
+  /**
+   * Controls whether library associations may be removed via UI interaction.
+   * Subclasses may override this method to control removal.
+   * @param library The library to remove.
+   */
+  isLibraryRemovalPermitted(library: LibraryWithSettingsData): boolean {
+    // library should be provided on every call.
+    // It is not used here, but might be in subclass implementations.
+    // Removal is permitted by default.
+    return true;
+  }
+
+  /**
+   * Removes the association with the given library from a service's state.
+   *
+   * NB: This method is used indirectly via `onRemove` by `sharedFunctions.clearForm`
+   * to clean up form state; therefore, care should be taken to avoid any side
+   * effects not needed for updating the state. Anything done by this method
+   * can happen whenever user interaction or `clearForm` triggers `onRemove`.
+   *
+   * Update or override `isLibraryRemovalPermitted` to control library removal
+   * via UI interaction.
+   *
+   * @param library
+   */
   removeLibrary(library) {
     const libraries = this.state.libraries.filter(
       (stateLibrary) => stateLibrary.short_name !== library.short_name

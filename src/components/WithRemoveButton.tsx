@@ -5,6 +5,7 @@ import TrashIcon from "./icons/TrashIcon";
 export interface WithRemoveButtonProps {
   disabled: boolean;
   onRemove: () => void;
+  confirmRemoval?: () => boolean;
 }
 
 /** When wrapped around an element, renders a remove button next to the element. */
@@ -37,6 +38,12 @@ export default class WithRemoveButton extends React.Component<
 
   onClick(e: Event) {
     e.preventDefault();
+
+    // Don't remove if confirmation function is present and returns false.
+    if (this.props.confirmRemoval && !this.props.confirmRemoval()) {
+      return;
+    }
+    // Otherwise, we can proceed with removal.
     !this.props.disabled && this.props.onRemove();
   }
 }

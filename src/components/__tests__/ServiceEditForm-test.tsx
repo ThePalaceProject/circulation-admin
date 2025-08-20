@@ -1009,4 +1009,79 @@ describe("ServiceEditForm", () => {
       expect(nameInput.props().value).to.equal("new service");
     });
   });
+
+  describe("library removal confirmation", () => {
+    let serviceEditFormInstance;
+    let isLibraryRemovalPermittedSpy;
+    let removeLibrarySpy;
+
+    beforeEach(() => {
+      save = stub().returns(new Promise<void>((resolve) => resolve()));
+      wrapper = mount(
+        <TestServiceEditForm
+          disabled={false}
+          data={servicesData}
+          save={save}
+          item={serviceData}
+          urlBase={urlBase}
+          listDataKey="services"
+        />
+      );
+      serviceEditFormInstance = wrapper.instance();
+      removeLibrarySpy = spy(serviceEditFormInstance, "removeLibrary");
+    });
+
+    afterEach(() => {
+      isLibraryRemovalPermittedSpy.restore();
+      removeLibrarySpy.restore();
+    });
+
+    const shouldRemoveLibrary = () => {
+      const libraryToRemove = serviceData.libraries[0];
+      const removeButton = wrapper.find(WithRemoveButton).at(0).find("button.remove-btn");
+
+      removeButton.simulate("click");
+
+      expect(isLibraryRemovalPermittedSpy.calledOnce).to.be.true;
+      expect(isLibraryRemovalPermittedSpy.calledWith(libraryToRemove)).to.be.true;
+      expect(isLibraryRemovalPermittedSpy.returned(true)).to.be.true;
+
+      // Library removal should be performed.
+      expect(removeLibrarySpy.calledOnce).to.be.true;
+      expect(removeLibrarySpy.calledWith(libraryToRemove)).to.be.true;
+
+      // Ensure that the library was removed from state.
+      wrapper.update();
+      expect(wrapper.state("libraries")).to.deep.equal([]);
+    };
+
+    it("should allow removal by default", () => {
+      isLibraryRemovalPermittedSpy = spy(serviceEditFormInstance, "isLibraryRemovalPermitted");
+      shouldRemoveLibrary();
+    });
+
+    it("should allow remove if isLibraryRemovalPermitted returns true", () => {
+      isLibraryRemovalPermittedSpy = stub(serviceEditFormInstance, "isLibraryRemovalPermitted").returns(true);
+      shouldRemoveLibrary();
+    });
+
+    it("should not allow remove if isLibraryRemovalPermitted returns false", () => {
+      isLibraryRemovalPermittedSpy = stub(serviceEditFormInstance, "isLibraryRemovalPermitted").returns(false);
+      const libraryToRemove = serviceData.libraries[0];
+      const removeButton = wrapper.find(WithRemoveButton).at(0).find("button.remove-btn");
+
+      removeButton.simulate("click");
+
+      expect(isLibraryRemovalPermittedSpy.calledOnce).to.be.true;
+      expect(isLibraryRemovalPermittedSpy.calledWith(libraryToRemove)).to.be.true;
+      expect(isLibraryRemovalPermittedSpy.returned(false)).to.be.true;
+
+      // Library disassociation should NOT be performed.
+      expect(removeLibrarySpy.notCalled).to.be.true;
+
+      // Ensure that the library was NOT removed from state.
+      wrapper.update();
+      expect(wrapper.state("libraries")).to.deep.equal(serviceData.libraries);
+    });
+  });
 });
