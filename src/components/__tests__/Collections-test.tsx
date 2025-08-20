@@ -133,6 +133,7 @@ describe("Collections", () => {
     describe("confirm before disassociating libraries", () => {
       let wrapper: ReactWrapper;
       let confirmStub: sinon.SinonStub;
+      let instance: CollectionEditForm;
 
       const initialLibraries = [
         { short_name: "palace", name: "Palace" },
@@ -142,13 +143,11 @@ describe("Collections", () => {
         id: 7,
         name: "An OPDS Collection",
         protocol: "OPDS Import",
-
         libraries: [...initialLibraries],
       };
 
       beforeEach(() => {
         confirmStub = sinon.stub(window, "confirm");
-
         wrapper = mount(
           <CollectionEditForm
             disabled={false}
@@ -162,21 +161,21 @@ describe("Collections", () => {
             listDataKey="collections"
           />
         );
+        instance = wrapper.instance() as CollectionEditForm;
       });
 
       afterEach(() => {
         confirmStub.restore();
       });
 
-      it("calls window.confirm when delete button is clicked", () => {
+      it("prompts for confirmation before removing a library", () => {
         confirmStub.returns(false);
 
         // The confirmation dialog should not be invoked before we click.
-        expect(confirmStub.calledOnce).to.be.false;
+        expect(confirmStub.called).to.be.false;
 
         wrapper.find("button.remove-btn").at(0).simulate("click");
         expect(confirmStub.calledOnce).to.be.true;
-        expect(confirmStub.firstCall.args.length).to.equal(1);
         const message: string = confirmStub.firstCall.args[0];
         expect(message).to.equal(
           'Disassociating library "Palace" from this collection will ' +
@@ -184,18 +183,42 @@ describe("Collections", () => {
         );
       });
 
-      it("does not delete library if confirmation is canceled", () => {
+      it("removes library if confirmation is accepted", () => {
+        confirmStub.returns(true);
+        wrapper.find("button.remove-btn").at(0).simulate("click");
+
+        // Ensure confirmation was sought.
+        expect(confirmStub.calledOnce).to.be.true;
+
+        // We deleted the first library, so it should be gone from the state.
+        expect(wrapper.state("libraries")).to.deep.equal([initialLibraries[1]]);
+      });
+
+      it("does not remove library if confirmation is canceled", () => {
         confirmStub.returns(false);
         wrapper.find("button.remove-btn").at(0).simulate("click");
+
+        // Ensure confirmation was sought.
+        expect(confirmStub.calledOnce).to.be.true;
+
         // We didn't delete, so we should still have the originals.
         expect(wrapper.state("libraries")).to.deep.equal(initialLibraries);
       });
 
-      it("deletes library if confirmation is accepted", () => {
-        confirmStub.returns(true);
+      it("uses library short_name in confirmation when full name is not available", () => {
+        const getLibraryStub = stub(instance, "getLibrary").returns(null);
+        confirmStub.returns(false);
+
         wrapper.find("button.remove-btn").at(0).simulate("click");
-        // We deleted the first library, so it should be gone from the state.
-        expect(wrapper.state("libraries")).to.deep.equal([initialLibraries[1]]);
+
+        expect(confirmStub.calledOnce).to.be.true;
+        const message: string = confirmStub.firstCall.args[0];
+        const libraryShortName = initialLibraries[0].short_name;
+        expect(message).to.equal(
+          `Disassociating library "${libraryShortName}" from this collection will ` +
+            "remove all loans and holds for its patrons. Do you wish to continue?"
+        );
+        getLibraryStub.restore();
       });
     });
   });

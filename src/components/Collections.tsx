@@ -39,19 +39,17 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
 > {
   /**
    * Override to display a confirmation message before removing a library
-   * association. We display the confirmation and, if successful, call the
-   * superclass method to actually remove the library from our state.
-   * @param library
+   * association. We display the confirmation and return `true` if the
+   * action is confirmed or `false` otherwise.
+   * @param library The library to remove.
    */
-  removeLibrary(library: LibraryWithSettingsData) {
+  isLibraryRemovalPermitted(library: LibraryWithSettingsData): boolean {
     const libraryData = this.getLibrary(library.short_name);
     const libraryName = libraryData ? libraryData.name : library.short_name;
     const confirmationMessage =
       `Disassociating library "${libraryName}" from this collection will ` +
       "remove all loans and holds for its patrons. Do you wish to continue?";
-    if (window.confirm(confirmationMessage)) {
-      super.removeLibrary(library);
-    }
+    return window.confirm(confirmationMessage);
   }
 }
 
