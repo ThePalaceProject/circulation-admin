@@ -1002,8 +1002,16 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   fetchQuicksightEmbedUrl(dashboardId: string, ld: LibrariesData) {
-    const library_uuids: string = ld.libraries.map((l) => l.uuid).join(",");
-    const url = `/admin/quicksight_embed/${dashboardId}?libraryUuids=${library_uuids}`;
+
+    /* Too many libraries will blow up the 8K cloudfront/nginx max url size limit.
+       By not sending any uuids, the client will assemble a list of libraries based
+       on the user's permissions.
+    */
+    let library_uuids: string = "";
+    if (ld.libraries.length < 100) {
+      library_uuids = `?libraryUuids=${ld.libraries.map((l) => l.uuid).join(",")}`;
+    }
+    const url = `/admin/quicksight_embed/${dashboardId}${library_uuids}`;
     return this.fetchJSON<QuickSightEmbeddedURLData>(
       ActionCreator.QUICKSIGHT_EMBEDDED_URL,
       url
