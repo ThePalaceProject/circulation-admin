@@ -102,19 +102,13 @@ The Circulation Manager administrative interface relies on the [OPDS Web Catalog
 
 ## Publishing a New Release
 
-Before publishing a new release, update the version number in package.json and add the new version number + comments about what the new version includes to CHANGELOG.md. For new version numbers, you can refer to [Semantic Versioning](https://semver.org/) (major.minor.patch). Then, run `npm install` to update the package-lock.json file to include the new version.
+This package is [published to npm](https://www.npmjs.com/package/@thepalaceproject/circulation-admin) automatically
+via a GitHub Actions workflow when a release is created.
 
-Commit your changes, push them to Github, make a PR, and request your reviewer. Once approved, you may go back to your local repository, checkout the main branch, and `git pull`.
-
-This package is [published to npm](https://www.npmjs.com/package/simplified-circulation-web). To publish a new version, you need to create an npm account and be a collaborator on the package.
-
-If you're not already logged in to npm from your terminal, you'll have to do so at this point. Run `npm login` and enter your credentials when prompted.
-
-Then, you can run `npm publish` from your local copy of the repository (ensure you are on the main branch before doing so).
-
-Afterwards, you should tag the release and add comments to Github. On the main branch, run `git tag -a v[version number] -m '[commit message]'`. Then run `git push origin v[version number]`.
-
-Go to the Github repository, click on "tags," find the tag you pushed, click on it and hit "edit." Add a release title, and a description. Then save by clicking, "Update Release."
+When you are ready to publish a release, go to the GitHub repository and create a new release. Specify the version
+number as the tag (e.g., `v1.2.3`), add a release title, and use GitHub's "Generate release notes" feature to
+automatically create documentation based on the PRs included in the release. After reviewing the generated notes,
+publish the release. The GitHub Actions workflow will automatically build, test, and publish the package to npm.
 
 ## Accessibility
 
