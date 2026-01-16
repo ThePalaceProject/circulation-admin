@@ -61,13 +61,68 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
       !!bookData?.unsuppressPerLibraryLink && this.props.canSuppress;
     // A button row will be present if:
     // - There is a refresh link; or
-    // - There is a un/suppress link and the admin is allowed to use it.
-    const hasButtonRow = bookData?.refreshLink || canSuppress || canUnsuppress;
+    // - There is a suppress link and the admin is allowed to use it.
+    const hasButtonRow = bookData?.refreshLink || canSuppress;
     return (
       <div className="book-details-editor">
         {bookData && !this.props.fetchError && (
           <>
             <h2>{this.props.bookData.title}</h2>
+
+            {(bookData.visibilityStatus === "manually-suppressed" ||
+              canUnsuppress) && (
+              <div className="visibility-status visibility-status-manually-suppressed">
+                <span>
+                  <strong>Hidden:</strong> This book was manually hidden by a
+                  librarian.
+                </span>
+                {canUnsuppress && (
+                  <BookDetailsEditorSuppression
+                    link={bookData.unsuppressPerLibraryLink}
+                    onConfirm={() =>
+                      this.props.unsuppressBook(
+                        bookData.unsuppressPerLibraryLink.href
+                      )
+                    }
+                    onComplete={this.refresh}
+                    buttonDisabled={
+                      this.props.isFetching || !this.props.canSuppress
+                    }
+                    buttonContent="Restore"
+                    buttonTitle="Restore availability for this library."
+                    className="inline-suppress-button"
+                    confirmationTitle="Restoring Availability"
+                    confirmationBody={
+                      <p>
+                        Please confirm your selection to make this title visible
+                        in your library's catalog. It's important to note that
+                        this action affects only your library's catalog and
+                        won't impact the availability of the title elsewhere.
+                      </p>
+                    }
+                    confirmationButtonContent="Restore Availability"
+                    confirmationButtonTitle="Restore availability of this title for this library."
+                    defaultSuccessMessage={
+                      <p>Availability has been restored.</p>
+                    }
+                    defaultFailureMessage={
+                      <p>An error occurred. Please try again.</p>
+                    }
+                  />
+                )}
+              </div>
+            )}
+
+            {bookData.visibilityStatus === "policy-filtered" && (
+              <div className="visibility-status visibility-status-policy-filtered">
+                <span>
+                  <strong>Hidden:</strong> This book is hidden due to library
+                  content filtering settings (audience or genre restrictions).
+                  To make it visible, adjust your library's content filtering
+                  settings.
+                </span>
+              </div>
+            )}
 
             <UpdatingLoader show={this.props.isFetching} />
 
@@ -102,40 +157,6 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
                     confirmationButtonContent="Suppress Availability"
                     confirmationButtonTitle="Suppress availability of this title for this library."
                     defaultSuccessMessage={<p>Availability has been hidden.</p>}
-                    defaultFailureMessage={
-                      <p>An error occurred. Please try again.</p>
-                    }
-                  />
-                )}
-                {canUnsuppress && (
-                  <BookDetailsEditorSuppression
-                    link={bookData.unsuppressPerLibraryLink}
-                    onConfirm={() =>
-                      this.props.unsuppressBook(
-                        bookData.unsuppressPerLibraryLink.href
-                      )
-                    }
-                    onComplete={this.refresh}
-                    buttonDisabled={
-                      this.props.isFetching || !this.props.canSuppress
-                    }
-                    buttonContent="Restore"
-                    buttonTitle="Restore availability for this library."
-                    className="left-align"
-                    confirmationTitle="Restoring Availability"
-                    confirmationBody={
-                      <p>
-                        Please confirm your selection to make this title visible
-                        in your library's catalog. It's important to note that
-                        this action affects only your library's catalog and
-                        won't impact the availability of the title elsewhere.
-                      </p>
-                    }
-                    confirmationButtonContent="Restore Availability"
-                    confirmationButtonTitle="Restore availability of this title for this library."
-                    defaultSuccessMessage={
-                      <p>Availability has been restored.</p>
-                    }
                     defaultFailureMessage={
                       <p>An error occurred. Please try again.</p>
                     }

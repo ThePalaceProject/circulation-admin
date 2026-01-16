@@ -27,3 +27,36 @@
     }
   }
 }
+
+// Shared color variables for visibility status indicators
+$visibility-warning-bg: #FCF8E3;
+$visibility-warning-border: #FAEBCC;
+$visibility-warning-text: #8A6D3B;
+
+$visibility-danger-bg: #F2DEDE;
+$visibility-danger-border: #EBCCD1;
+$visibility-danger-text: #A94442;
+
+// Visibility status banners for book details editor
+.visibility-status {
+  border: 1px solid;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+
+  &.visibility-status-manually-suppressed {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: space-between;
+    background-color: $visibility-warning-bg;
+    border-color: $visibility-warning-border;
+    color: $visibility-warning-text;
+  }
+
+  &.visibility-status-policy-filtered {
+    background-color: $visibility-danger-bg;
+    border-color: $visibility-danger-border;
+    color: $visibility-danger-text;
+  }
+}

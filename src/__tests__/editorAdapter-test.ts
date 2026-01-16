@@ -154,6 +154,65 @@ describe("editorAdapter", () => {
     expect(adapted.rating).to.equal("4");
   });
 
+  it("adapts visibility status from categories", () => {
+    const entry = new OPDSEntry({
+      id: "id",
+      updated: "updated",
+      title: "title",
+      authors: [],
+      contributors: [],
+      categories: [
+        new Category({ term: "term", scheme: "scheme", label: "label" }),
+        new Category({
+          term: "manually-suppressed",
+          scheme: "http://palaceproject.io/terms/visibility-status",
+          label: "Manually Suppressed",
+        }),
+      ],
+      identifiers: [],
+      links: [],
+      issued: "issued",
+      language: "language",
+      rights: "rights",
+      publisher: "publisher",
+      published: "published",
+      summary: new Summary({ content: "content", link: "link" }),
+      unparsed: {},
+    });
+
+    const adapted = adapter(entry);
+    expect(adapted.visibilityStatus).to.equal("manually-suppressed");
+  });
+
+  it("adapts policy-filtered visibility status", () => {
+    const entry = new OPDSEntry({
+      id: "id",
+      updated: "updated",
+      title: "title",
+      authors: [],
+      contributors: [],
+      categories: [
+        new Category({
+          term: "policy-filtered",
+          scheme: "http://palaceproject.io/terms/visibility-status",
+          label: "Policy Filtered",
+        }),
+      ],
+      identifiers: [],
+      links: [],
+      issued: "issued",
+      language: "language",
+      rights: "rights",
+      publisher: "publisher",
+      published: "published",
+      summary: new Summary({ content: "content", link: "link" }),
+      unparsed: {},
+    });
+
+    const adapted = adapter(entry);
+    expect(adapted.visibilityStatus).to.equal("policy-filtered");
+  });
+
   it("doesn't crash when expected data is missing", () => {
     const entry = new OPDSEntry({
       id: "id",
