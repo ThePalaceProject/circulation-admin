@@ -84,10 +84,12 @@ export default function adapter(data: OPDSEntry): BookData {
   const visibilityStatusCategory = data.categories.find((category) => {
     return category.scheme === VISIBILITY_STATUS_SCHEME;
   });
-  const visibilityStatus = visibilityStatusCategory?.term as
-    | "manually-suppressed"
-    | "policy-filtered"
-    | undefined;
+  const visibilityStatusTerm = visibilityStatusCategory?.term;
+  const visibilityStatus =
+    visibilityStatusTerm === "manually-suppressed" ||
+    visibilityStatusTerm === "policy-filtered"
+      ? visibilityStatusTerm
+      : undefined;
 
   let medium;
   try {

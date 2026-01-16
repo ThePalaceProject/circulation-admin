@@ -52,6 +52,11 @@ $visibility-danger-text: #A94442;
     background-color: $visibility-warning-bg;
     border-color: $visibility-warning-border;
     color: $visibility-warning-text;
+
+    .inline-suppress-button {
+      flex-shrink: 0;
+      color: $white;
+    }
   }
 
   &.visibility-status-policy-filtered {
