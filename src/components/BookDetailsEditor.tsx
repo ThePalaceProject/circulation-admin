@@ -74,7 +74,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
               <div className="visibility-status visibility-status-manually-suppressed">
                 <span>
                   <strong>Hidden:</strong> This book was manually hidden by a
-                  librarian.
+                  library staff member.
                 </span>
                 {canUnsuppress && (
                   <BookDetailsEditorSuppression
