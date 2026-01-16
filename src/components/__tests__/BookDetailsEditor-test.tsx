@@ -200,7 +200,7 @@ describe("BookDetailsEditor", () => {
     );
     expect(visibilityBanner.exists()).to.be.true;
     expect(visibilityBanner.text()).to.include(
-      "manually hidden by a librarian"
+      "manually hidden by a library staff member"
     );
 
     // But there should be NO restore button since there's no link
