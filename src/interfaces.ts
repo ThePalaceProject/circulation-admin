@@ -106,6 +106,7 @@ export interface BookData {
   refreshLink?: LinkData;
   suppressPerLibraryLink?: LinkData;
   unsuppressPerLibraryLink?: LinkData;
+  visibilityStatus?: "manually-suppressed" | "policy-filtered";
   editLink?: LinkData;
   issuesLink?: LinkData;
   changeCoverLink?: LinkData;

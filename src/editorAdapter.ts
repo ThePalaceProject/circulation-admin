@@ -5,6 +5,9 @@ import {
   PER_LIBRARY_UNSUPPRESS_REL,
 } from "./features/book/bookEditorSlice";
 
+const VISIBILITY_STATUS_SCHEME =
+  "http://palaceproject.io/terms/visibility-status";
+
 /** Convert an OPDS link to a LinkData object. */
 const opdsLinkToLinkData = (link: OPDSLink | undefined): LinkData => {
   if (!link) {
@@ -77,6 +80,17 @@ export default function adapter(data: OPDSEntry): BookData {
 
   const categories = data.categories.map((category) => category.label);
 
+  // Extract visibility status (manually-suppressed or policy-filtered)
+  const visibilityStatusCategory = data.categories.find((category) => {
+    return category.scheme === VISIBILITY_STATUS_SCHEME;
+  });
+  const visibilityStatusTerm = visibilityStatusCategory?.term;
+  const visibilityStatus =
+    visibilityStatusTerm === "manually-suppressed" ||
+    visibilityStatusTerm === "policy-filtered"
+      ? visibilityStatusTerm
+      : undefined;
+
   let medium;
   try {
     medium = data.unparsed["$"]["schema:additionalType"]["value"];
@@ -138,6 +152,7 @@ export default function adapter(data: OPDSEntry): BookData {
     refreshLink: opdsLinkToLinkData(refreshLink),
     suppressPerLibraryLink: opdsLinkToLinkData(suppressPerLibraryLink),
     unsuppressPerLibraryLink: opdsLinkToLinkData(unsuppressPerLibraryLink),
+    visibilityStatus: visibilityStatus,
     editLink: opdsLinkToLinkData(editLink),
     issuesLink: opdsLinkToLinkData(issuesLink),
     changeCoverLink: opdsLinkToLinkData(changeCoverLink),

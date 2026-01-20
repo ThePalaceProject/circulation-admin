@@ -8,6 +8,7 @@ import { BookDetailsEditor } from "../BookDetailsEditor";
 import { Button } from "library-simplified-reusable-components";
 import BookEditForm from "../BookEditForm";
 import ErrorMessage from "../ErrorMessage";
+import BookDetailsEditorSuppression from "../BookDetailsEditorSuppression";
 import {
   PER_LIBRARY_SUPPRESS_REL,
   PER_LIBRARY_UNSUPPRESS_REL,
@@ -112,24 +113,126 @@ describe("BookDetailsEditor", () => {
     expect(hideButton.prop("content")).to.equal("Hide");
   });
 
-  it("shows button form for restore link", () => {
+  it("shows button form for restore link in visibility banner", () => {
     const unsuppressPerLibraryLink = {
       href: "href",
       rel: PER_LIBRARY_UNSUPPRESS_REL,
     };
     const wrapper = mount(
       <BookDetailsEditor
-        bookData={{ id: "id", title: "title", unsuppressPerLibraryLink }}
+        bookData={{
+          id: "id",
+          title: "title",
+          unsuppressPerLibraryLink,
+          visibilityStatus: "manually-suppressed",
+        }}
         bookUrl="url"
         csrfToken="token"
         canSuppress={true}
         {...dispatchProps}
       />
     );
-    const restore = (wrapper.instance() as any).restore;
 
-    const restoreButton = wrapper.find(Button);
-    expect(restoreButton.prop("content")).to.equal("Restore");
+    // The restore button is now inside the visibility status banner
+    const visibilityBanner = wrapper.find(".visibility-status");
+    expect(visibilityBanner.exists()).to.be.true;
+
+    const suppressionComponent = wrapper.find(BookDetailsEditorSuppression);
+    expect(suppressionComponent.exists()).to.be.true;
+    expect(suppressionComponent.prop("buttonContent")).to.equal("Restore");
+  });
+
+  it("shows restore banner when unsuppress link exists without visibilityStatus", () => {
+    // This tests backward compatibility with older servers that provide
+    // unsuppressPerLibraryLink but not visibilityStatus
+    const unsuppressPerLibraryLink = {
+      href: "href",
+      rel: PER_LIBRARY_UNSUPPRESS_REL,
+    };
+    const wrapper = mount(
+      <BookDetailsEditor
+        bookData={{
+          id: "id",
+          title: "title",
+          unsuppressPerLibraryLink,
+          // Note: no visibilityStatus set
+        }}
+        bookUrl="url"
+        csrfToken="token"
+        canSuppress={true}
+        {...dispatchProps}
+      />
+    );
+
+    // The restore banner should still be shown
+    const visibilityBanner = wrapper.find(
+      ".visibility-status-manually-suppressed"
+    );
+    expect(visibilityBanner.exists()).to.be.true;
+
+    // The restore button should be present
+    const suppressionComponent = wrapper.find(BookDetailsEditorSuppression);
+    expect(suppressionComponent.exists()).to.be.true;
+    expect(suppressionComponent.prop("buttonContent")).to.equal("Restore");
+  });
+
+  it("shows manually-suppressed banner without restore button when no unsuppress link", () => {
+    // When visibilityStatus is set but there's no link to unsuppress,
+    // we show the info text but not the restore button
+    const wrapper = mount(
+      <BookDetailsEditor
+        bookData={{
+          id: "id",
+          title: "title",
+          visibilityStatus: "manually-suppressed",
+          // Note: no unsuppressPerLibraryLink
+        }}
+        bookUrl="url"
+        csrfToken="token"
+        canSuppress={true}
+        {...dispatchProps}
+      />
+    );
+
+    // The visibility banner should be shown
+    const visibilityBanner = wrapper.find(
+      ".visibility-status-manually-suppressed"
+    );
+    expect(visibilityBanner.exists()).to.be.true;
+    expect(visibilityBanner.text()).to.include(
+      "manually hidden by a library staff member"
+    );
+
+    // But there should be NO restore button since there's no link
+    const suppressionComponent = wrapper.find(BookDetailsEditorSuppression);
+    expect(suppressionComponent.exists()).to.be.false;
+  });
+
+  it("shows policy-filtered banner without restore button", () => {
+    const wrapper = mount(
+      <BookDetailsEditor
+        bookData={{
+          id: "id",
+          title: "title",
+          visibilityStatus: "policy-filtered",
+        }}
+        bookUrl="url"
+        csrfToken="token"
+        canSuppress={true}
+        {...dispatchProps}
+      />
+    );
+
+    // The visibility banner should be shown
+    const visibilityBanner = wrapper.find(".visibility-status-policy-filtered");
+    expect(visibilityBanner.exists()).to.be.true;
+
+    // The banner should contain text about library content filtering
+    expect(visibilityBanner.text()).to.include("library content filtering");
+
+    // There should be NO restore/suppression button for policy-filtered books
+    const suppressionComponent = wrapper.find(BookDetailsEditorSuppression);
+    expect(suppressionComponent.exists()).to.be.false;
   });
 
   it("shows button form for refresh link", () => {

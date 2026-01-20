@@ -186,7 +186,12 @@ describe("BookDetails", () => {
 
     const { getByRole, getByText, queryByRole } = renderWithProviders(
       <BookDetailsEditor
-        bookData={{ id: "id", title: "title", unsuppressPerLibraryLink }}
+        bookData={{
+          id: "id",
+          title: "title",
+          unsuppressPerLibraryLink,
+          visibilityStatus: "manually-suppressed",
+        }}
         bookUrl="url"
         csrfToken="token"
         canSuppress={true}
