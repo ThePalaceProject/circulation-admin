@@ -36,7 +36,7 @@ const devAssetsPublicPath = "/webpack-dev-assets/";
  * @returns The webpack configuration.
  */
 module.exports = (env) => {
-  const { backend } = env;
+  const backend = env?.backend ?? process.env.BACKEND;
 
   if (!backend) {
     console.error("Please specify the URL of a Circulation Manager back-end.");

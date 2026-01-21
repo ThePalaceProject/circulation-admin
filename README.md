@@ -83,11 +83,17 @@ Webpack will take care of compiling and updating any new changes made locally fo
 
 This front-end may be run locally in development against a remote Circulation Manager back-end. This removes the need to build a local Circulation Manager from source in order to work on the front-end.
 
-1. Run `npm run dev-server -- --env=backend=[url]` in this `circulation-admin` repository.
+1. Specify a back-end and start the dev server. You have two options:
 
-   Example: `npm run dev-server -- --env=backend=https://gorgon.tpp-qa.lyrasistechnology.org`
+   - Create an `.env` or `.env.local` file in the root of the project and assign `BACKEND=https://gorgon.tpp-qa.lyrasistechnology.org`. Run `npm run dev-server`.
 
-   Note: The tortured syntax here results from going through npm and webpack. The first `--` separates arguments intended for npm from arguments intended for the script that npm runs. In this case the script executes webpack, which allows an environment object to be supplied on the command line using `--env`. Properties of the environment object are specified using the `--env=[property]=[value]` syntax.
+     Note: `dotenv -c` loads `.env.local` then `.env` in that order and will not overwrite variables set by the previous file.
+
+   - Run `npm run dev-server -- --env=backend=[url]` in this `circulation-admin` repository. Providing `--env=backend=` will override `.env` and `.env.local`.
+
+     Example: `npm run dev-server -- --env=backend=https://gorgon.tpp-qa.lyrasistechnology.org`
+
+     Note: The tortured syntax here results from going through npm and webpack. The first `--` separates arguments intended for npm from arguments intended for the script that npm runs. In this case the script executes webpack, which allows an environment object to be supplied on the command line using `--env`. Properties of the environment object are specified using the `--env=[property]=[value]` syntax.
 
 1. Visit `http://localhost:8080/admin/`.
 1. Log in using credentials for the CM back-end. Content from that Circulation Manager should appear.
