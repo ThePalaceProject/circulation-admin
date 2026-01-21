@@ -10,3 +10,5 @@ tests/browser/reports/*
 selenium-server.log
 docs
 .eslintcache
+.env.local
+.env

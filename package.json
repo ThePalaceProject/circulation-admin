@@ -29,7 +29,7 @@
     "test-jest": "jest --verbose --roots tests/jest",
     "test-jest-file": "jest --verbose",
     "dev": "webpack --watch --progress --config webpack.dev.config",
-    "dev-server": "webpack serve --progress --hot --config webpack.dev-server.config",
+    "dev-server": "dotenv -c -- webpack serve --progress --hot --config webpack.dev-server.config",
     "dev-test-axe": "TEST_AXE=true npm run dev",
     "prod": "webpack --progress --config webpack.prod.config",
     "build-docs": "typedoc --tsconfig tsconfig.json src"
@@ -92,6 +92,7 @@
     "colors-cli": "^1.0.27",
     "copy-webpack-plugin": "6.4.0",
     "css-loader": "^6.7.2",
+    "dotenv-cli": "^11.0.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^7.0.0",
