@@ -48,9 +48,18 @@
 <a id="use-local-development-version-with-a-remote-circulation-manager" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Use Local Development Version with a Remote Circulation Manager<a href="#use-local-development-version-with-a-remote-circulation-manager" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>This front-end may be run locally in development against a remote Circulation Manager back-end. This removes the need to build a local Circulation Manager from source in order to work on the front-end.</p>
 <ol>
 <li>
-<p>Run <code>npm run dev-server -- --env=backend=[url]</code> in this <code>circulation-admin</code> repository.</p>
+<p>Specify a back-end and start the dev server. You have two options:</p>
+<ul>
+<li>
+<p>Create an <code>.env</code> or <code>.env.local</code> file in the root of the project and assign <code>BACKEND=https://gorgon.tpp-qa.lyrasistechnology.org</code>. Run <code>npm run dev-server</code>.</p>
+<p>Note: <code>dotenv -c</code> loads <code>.env.local</code> then <code>.env</code> in that order and will not overwrite variables set by the previous file.</p>
+</li>
+<li>
+<p>Run <code>npm run dev-server -- --env=backend=[url]</code> in this <code>circulation-admin</code> repository. Providing <code>--env=backend=</code> will override <code>.env</code> and <code>.env.local</code>.</p>
 <p>Example: <code>npm run dev-server -- --env=backend=https://gorgon.tpp-qa.lyrasistechnology.org</code></p>
 <p>Note: The tortured syntax here results from going through npm and webpack. The first <code>--</code> separates arguments intended for npm from arguments intended for the script that npm runs. In this case the script executes webpack, which allows an environment object to be supplied on the command line using <code>--env</code>. Properties of the environment object are specified using the <code>--env=[property]=[value]</code> syntax.</p>
+</li>
+</ul>
 </li>
 <li>
 <p>Visit <code>http://localhost:8080/admin/</code>.</p>
