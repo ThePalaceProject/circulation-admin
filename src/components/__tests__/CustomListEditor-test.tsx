@@ -18,7 +18,6 @@ describe("CustomListEditor", () => {
   let save;
   let search;
   let share;
-  let toggleCollection;
   let loadMoreSearchResults;
   let loadMoreEntries;
   let updateProperty;
@@ -34,27 +33,6 @@ describe("CustomListEditor", () => {
     books: [],
     navigationLinks: [],
   };
-
-  const collections = [
-    {
-      id: 1,
-      name: "collection 1",
-      protocol: "protocol",
-      libraries: [{ short_name: "library" }],
-    },
-    {
-      id: 2,
-      name: "collection 2",
-      protocol: "protocol",
-      libraries: [{ short_name: "library" }],
-    },
-    {
-      id: 3,
-      name: "collection 3",
-      protocol: "protocol",
-      libraries: [{ short_name: "library" }],
-    },
-  ];
 
   const entries = {
     baseline: [],
@@ -118,7 +96,6 @@ describe("CustomListEditor", () => {
 
     search = stub();
     share = stub();
-    toggleCollection = stub();
     updateProperty = stub();
     updateSearchParam = stub();
 
@@ -146,7 +123,6 @@ describe("CustomListEditor", () => {
 
     wrapper = mount(
       <CustomListEditor
-        collections={collections}
         entries={entries}
         entryPoints={entryPoints}
         isFetchingMoreCustomListEntries={false}
@@ -168,7 +144,6 @@ describe("CustomListEditor", () => {
         save={save}
         search={search}
         share={share}
-        toggleCollection={toggleCollection}
         updateProperty={updateProperty}
         updateSearchParam={updateSearchParam}
       />,
@@ -365,6 +340,7 @@ describe("CustomListEditor", () => {
 
     expect(buttonContainer.length).to.equal(0);
   });
+
   it("renders a CustomListSearch component", () => {
     wrapper.setProps({ startingTitle: "Begin the Begin" });
 
