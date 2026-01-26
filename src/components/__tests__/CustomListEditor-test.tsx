@@ -269,38 +269,6 @@ describe("CustomListEditor", () => {
     expect(entriesEditor.props().opdsFeedUrl).to.equal(undefined);
   });
 
-  it("shows collections", () => {
-    const collectionsPanel = wrapper.find("#add-from-collections-panel");
-    const inputs = collectionsPanel.find(EditableInput);
-
-    expect(inputs.length).to.equal(3);
-
-    expect(inputs.at(0).props().label).to.equal("collection 1");
-    expect(inputs.at(0).props().value).to.equal(1);
-    expect(inputs.at(0).props().checked).to.equal(false);
-
-    expect(inputs.at(1).props().label).to.equal("collection 2");
-    expect(inputs.at(1).props().value).to.equal(2);
-    expect(inputs.at(1).props().checked).to.equal(true);
-
-    expect(inputs.at(2).props().label).to.equal("collection 3");
-    expect(inputs.at(2).props().value).to.equal(3);
-    expect(inputs.at(2).props().checked).to.equal(false);
-  });
-
-  it("disables collection inputs when isOwner is false", () => {
-    wrapper.setProps({
-      isOwner: false,
-    });
-
-    const collectionsPanel = wrapper.find("#add-from-collections-panel");
-    const inputs = collectionsPanel.find(EditableInput);
-
-    expect(inputs.at(0).prop("disabled")).to.equal(true);
-    expect(inputs.at(1).prop("disabled")).to.equal(true);
-    expect(inputs.at(2).prop("disabled")).to.equal(true);
-  });
-
   it("disables entry point options when isOwner is false", () => {
     wrapper.setProps({
       isOwner: false,
@@ -316,17 +284,17 @@ describe("CustomListEditor", () => {
   it("shows entry point options", () => {
     const inputs = wrapper.find(EditableInput);
 
-    expect(inputs.at(3).props().label).to.equal("All");
-    expect(inputs.at(3).props().value).to.equal("All");
-    expect(inputs.at(3).props().checked).to.equal(true);
+    expect(inputs.at(0).props().label).to.equal("All");
+    expect(inputs.at(0).props().value).to.equal("All");
+    expect(inputs.at(0).props().checked).to.equal(true);
 
-    expect(inputs.at(4).props().label).to.equal("Book");
-    expect(inputs.at(4).props().value).to.equal("Book");
-    expect(inputs.at(4).props().checked).to.equal(false);
+    expect(inputs.at(1).props().label).to.equal("Book");
+    expect(inputs.at(1).props().value).to.equal("Book");
+    expect(inputs.at(1).props().checked).to.equal(false);
 
-    expect(inputs.at(5).props().label).to.equal("Audio");
-    expect(inputs.at(5).props().value).to.equal("Audio");
-    expect(inputs.at(5).props().checked).to.equal(false);
+    expect(inputs.at(2).props().label).to.equal("Audio");
+    expect(inputs.at(2).props().value).to.equal("Audio");
+    expect(inputs.at(2).props().checked).to.equal(false);
   });
 
   it("enables the save button when the list has changes and is valid", () => {
@@ -397,16 +365,6 @@ describe("CustomListEditor", () => {
 
     expect(buttonContainer.length).to.equal(0);
   });
-
-  it("calls toggleCollection when a collection checkbox is changed", () => {
-    const inputs = wrapper.find(".collections input");
-
-    inputs.at(1).simulate("change");
-
-    expect(toggleCollection.callCount).to.equal(1);
-    expect(toggleCollection.args[0]).to.deep.equal([2]);
-  });
-
   it("renders a CustomListSearch component", () => {
     wrapper.setProps({ startingTitle: "Begin the Begin" });
 
