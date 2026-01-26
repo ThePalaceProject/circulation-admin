@@ -234,36 +234,6 @@ export default function CustomListEditor({
             />
           )}
 
-          {collections?.length > 0 && (
-            <div className="custom-list-filters">
-              <Panel
-                headerText="Add from collections"
-                id="add-from-collections"
-                content={
-                  <div className="collections">
-                    <div>
-                      Automatically add new books from these collections to this
-                      list:
-                    </div>
-
-                    {collections.map(({ id, name }) => (
-                      <EditableInput
-                        disabled={readOnly}
-                        key={id}
-                        type="checkbox"
-                        name="collection"
-                        checked={listCollections.includes(id)}
-                        label={name}
-                        value={id}
-                        onChange={(id) => toggleCollection?.(parseInt(id))}
-                      />
-                    ))}
-                  </div>
-                }
-              />
-            </div>
-          )}
-
           <CustomListSearch
             autoUpdate={properties.autoUpdate}
             isOwner={isOwner}
