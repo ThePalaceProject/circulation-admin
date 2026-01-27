@@ -2,12 +2,7 @@ import * as React from "react";
 import { Button, Panel } from "library-simplified-reusable-components";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
-import {
-  AdvancedSearchQuery,
-  LanguagesData,
-  LibraryData,
-  CollectionData as AdminCollectionData,
-} from "../interfaces";
+import { AdvancedSearchQuery, LanguagesData, LibraryData } from "../interfaces";
 
 import {
   CustomListEditorProperties,
@@ -24,7 +19,6 @@ import ShareIcon from "./icons/ShareIcon";
 
 export type CustomListEditorProps = {
   autoUpdateStatus?: string;
-  collections?: AdminCollectionData[];
   entries?: CustomListEditorEntriesData;
   entryPoints?: string[];
   isAutoUpdateEnabled?: boolean;
@@ -56,7 +50,6 @@ export type CustomListEditorProps = {
   save: () => void;
   search: () => void;
   share?: () => Promise<void>;
-  toggleCollection?: (id: number) => void;
   updateProperty?: (name: string, value) => void;
   updateSearchParam?: (name: string, value) => void;
   addAdvSearchQuery?: (builderName: string, query: AdvancedSearchQuery) => void;
@@ -77,7 +70,6 @@ export type CustomListEditorProps = {
 
 export default function CustomListEditor({
   autoUpdateStatus,
-  collections,
   entries,
   entryPoints,
   isAutoUpdateEnabled,
@@ -109,7 +101,6 @@ export default function CustomListEditor({
   save,
   search,
   share,
-  toggleCollection,
   updateProperty,
   updateSearchParam,
   addAdvSearchQuery,
@@ -119,7 +110,7 @@ export default function CustomListEditor({
   removeAdvSearchQuery,
   selectAdvSearchQuery,
 }: CustomListEditorProps) {
-  const { collections: listCollections, name } = properties;
+  const { name } = properties;
 
   // Automatically execute the search when the list being edited changes, or finishes loading
   // (which means a stored query may have been loaded).
@@ -232,36 +223,6 @@ export default function CustomListEditor({
                 )
               }
             />
-          )}
-
-          {collections?.length > 0 && (
-            <div className="custom-list-filters">
-              <Panel
-                headerText="Add from collections"
-                id="add-from-collections"
-                content={
-                  <div className="collections">
-                    <div>
-                      Automatically add new books from these collections to this
-                      list:
-                    </div>
-
-                    {collections.map(({ id, name }) => (
-                      <EditableInput
-                        disabled={readOnly}
-                        key={id}
-                        type="checkbox"
-                        name="collection"
-                        checked={listCollections.includes(id)}
-                        label={name}
-                        value={id}
-                        onChange={(id) => toggleCollection?.(parseInt(id))}
-                      />
-                    ))}
-                  </div>
-                }
-              />
-            </div>
           )}
 
           <CustomListSearch
