@@ -134,88 +134,94 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     const logoOnly = this.props.logoOnly ?? false;
 
     return (
-      <Navbar fluid={true}>
-        <Navbar.Header>
-          <img src={palaceLogoUrl} alt={title()} />
-          {!logoOnly && (
-            <>
-              {this.props.libraries && this.props.libraries.length > 0 && (
-                <EditableInput
-                  elementType="select"
-                  ref={this.libraryRef}
-                  value={currentLibrary}
-                  onChange={this.changeLibrary}
-                  aria-label="Select a library"
-                >
-                  {(!this.context.library || !currentLibrary) && (
-                    <option aria-selected={false}>Select a library</option>
-                  )}
-                  {this.props.libraries.map((library) => (
-                    <option
-                      key={library.short_name}
-                      value={library.short_name}
-                      aria-selected={currentLibrary === library.short_name}
-                    >
-                      {library.name || library.short_name}
-                    </option>
-                  ))}
-                </EditableInput>
-              )}
-              <Navbar.Toggle />
-            </>
-          )}
-        </Navbar.Header>
+      <header>
+        <h1 className="visually-hidden">{title("")}</h1>
+        <Navbar fluid={true}>
+          <Navbar.Header>
+            <img src={palaceLogoUrl} alt={title()} />
+            {!logoOnly && (
+              <>
+                {this.props.libraries && this.props.libraries.length > 0 && (
+                  <EditableInput
+                    elementType="select"
+                    ref={this.libraryRef}
+                    value={currentLibrary}
+                    onChange={this.changeLibrary}
+                    aria-label="Select a library"
+                  >
+                    {(!this.context.library || !currentLibrary) && (
+                      <option aria-selected={false}>Select a library</option>
+                    )}
+                    {this.props.libraries.map((library) => (
+                      <option
+                        key={library.short_name}
+                        value={library.short_name}
+                        aria-selected={currentLibrary === library.short_name}
+                      >
+                        {library.name || library.short_name}
+                      </option>
+                    ))}
+                  </EditableInput>
+                )}
+                <Navbar.Toggle />
+              </>
+            )}
+          </Navbar.Header>
 
-        {!logoOnly && (
-          <Navbar.Collapse className="menu">
-            {currentLibrary && (
-              <Nav>
-                {this.renderLinkItem(
-                  dashboardLinkItem,
-                  currentPathname,
-                  currentLibrary
+          {!logoOnly && (
+            <Navbar.Collapse className="menu">
+              {currentLibrary && (
+                <Nav>
+                  {this.renderLinkItem(
+                    dashboardLinkItem,
+                    currentPathname,
+                    currentLibrary
+                  )}
+                  {libraryNavItems.map((item) =>
+                    this.renderNavItem(item, currentPathname, currentLibrary)
+                  )}
+                  {libraryLinkItems.map((item) =>
+                    this.renderLinkItem(item, currentPathname, currentLibrary)
+                  )}
+                </Nav>
+              )}
+              <Nav className="pull-right">
+                {sitewideLinkItems.map((item) =>
+                  this.renderLinkItem(item, currentPathname)
                 )}
-                {libraryNavItems.map((item) =>
-                  this.renderNavItem(item, currentPathname, currentLibrary)
-                )}
-                {libraryLinkItems.map((item) =>
-                  this.renderLinkItem(item, currentPathname, currentLibrary)
+                {this.context.admin.email && (
+                  <li className="dropdown">
+                    <Button
+                      className="account-dropdown-toggle transparent"
+                      type="button"
+                      aria-haspopup="true"
+                      aria-expanded={this.state.showAccountDropdown}
+                      callback={this.toggleAccountDropdown}
+                      content={
+                        <span>
+                          {this.context.admin.email} <GenericWedgeIcon />
+                        </span>
+                      }
+                    />
+                    {this.state.showAccountDropdown && (
+                      <ul className="dropdown-menu">
+                        {this.displayPermissions(
+                          isSystemAdmin,
+                          isLibraryManager
+                        )}
+                        {this.renderLinkItem(accountLink, currentPathname)}
+                        <li>
+                          <a href="/admin/sign_out">Sign out</a>
+                        </li>
+                      </ul>
+                    )}
+                  </li>
                 )}
               </Nav>
-            )}
-            <Nav className="pull-right">
-              {sitewideLinkItems.map((item) =>
-                this.renderLinkItem(item, currentPathname)
-              )}
-              {this.context.admin.email && (
-                <li className="dropdown">
-                  <Button
-                    className="account-dropdown-toggle transparent"
-                    type="button"
-                    aria-haspopup="true"
-                    aria-expanded={this.state.showAccountDropdown}
-                    callback={this.toggleAccountDropdown}
-                    content={
-                      <span>
-                        {this.context.admin.email} <GenericWedgeIcon />
-                      </span>
-                    }
-                  />
-                  {this.state.showAccountDropdown && (
-                    <ul className="dropdown-menu">
-                      {this.displayPermissions(isSystemAdmin, isLibraryManager)}
-                      {this.renderLinkItem(accountLink, currentPathname)}
-                      <li>
-                        <a href="/admin/sign_out">Sign out</a>
-                      </li>
-                    </ul>
-                  )}
-                </li>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        )}
-      </Navbar>
+            </Navbar.Collapse>
+          )}
+        </Navbar>
+      </header>
     );
   }
 

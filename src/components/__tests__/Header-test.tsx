@@ -42,6 +42,11 @@ describe("Header", () => {
   });
 
   describe("rendering", () => {
+    it("renders h1 heading", () => {
+      const heading = wrapper.find("h1");
+      expect(heading.text()).to.equal(title());
+    });
+
     it("shows the brand name", () => {
       expect(wrapper.containsMatchingElement(<img alt={title()} />)).to.equal(
         true

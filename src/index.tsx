@@ -27,6 +27,7 @@ class CirculationAdmin {
     div.id = "opds-catalog";
     div.className = "palace";
     document.getElementsByTagName("body")[0].appendChild(div);
+    document.documentElement.lang = "en";
 
     const catalogEditorPath =
       "/admin/web(/collection/:collectionUrl)(/book/:bookUrl)(/tab/:tab)";
