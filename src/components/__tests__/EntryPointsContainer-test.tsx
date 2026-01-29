@@ -55,7 +55,7 @@ describe("EntryPointsContainer", () => {
       {
         facets: [
           {
-            label: "eBooks",
+            label: "Ebooks",
             href:
               "http://circulation.librarysimplified.org/groups/?entrypoint=Book",
             active: false,
