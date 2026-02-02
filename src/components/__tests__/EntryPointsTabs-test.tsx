@@ -14,7 +14,7 @@ describe("EntryPointsTabs", () => {
   let push;
   let facets = [
     {
-      label: "eBooks",
+      label: "Ebooks",
       href: "http://circulation.librarysimplified.org/groups/?entrypoint=Book",
       active: true,
     },
@@ -51,7 +51,7 @@ describe("EntryPointsTabs", () => {
 
     const bookLink = catalogLinks.at(0);
     const audioLink = catalogLinks.at(1);
-    expect(bookLink.children().at(1).text()).to.equal("eBooks");
+    expect(bookLink.children().at(1).text()).to.equal("Ebooks");
     expect(audioLink.children().at(1).text()).to.equal("Audiobooks");
   });
 
@@ -62,7 +62,7 @@ describe("EntryPointsTabs", () => {
     const ebookLink = links.at(0);
     const audioBookLink = links.at(1);
 
-    expect(ebookLink.children().at(1).text()).to.equal("eBooks");
+    expect(ebookLink.children().at(1).text()).to.equal("Ebooks");
 
     expect(audioBookLink.children().at(1).text()).to.equal("Audiobooks");
   });

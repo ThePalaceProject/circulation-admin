@@ -14,7 +14,10 @@ export interface EntryPointsTabsProps {
 }
 
 /** This component renders a library's entrypoints as linked tabs. */
-export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, {}> {
+export class EntryPointsTabs extends React.Component<
+  EntryPointsTabsProps,
+  Record<string, never>
+> {
   context: EntryPointsTabsContext;
 
   constructor(props) {
@@ -34,7 +37,7 @@ export class EntryPointsTabs extends React.Component<EntryPointsTabsProps, {}> {
 
     const mapEntryPointsToSchema = {
       All: "http://schema.org/CreativeWork",
-      eBooks: "http://schema.org/EBook",
+      Ebooks: "http://schema.org/EBook",
       Audiobooks: "http://bib.schema.org/Audiobook",
     };
     const svgMediumTypes = {
