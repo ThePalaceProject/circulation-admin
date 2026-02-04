@@ -125,6 +125,7 @@ describe("SelfTestsTabContainer", () => {
     const tabs = wrapper.find("ul.nav-tabs").find("a");
     const patronAuthTab = tabs.at(1);
     patronAuthTab.simulate("click", {
+      preventDefault: stub(),
       currentTarget: { dataset: { tabkey: "patronAuthServices" } },
     });
 

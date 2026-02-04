@@ -49,10 +49,12 @@ export abstract class TabContainer<
         <ul className="nav nav-tabs">
           {Object.keys(this.tabs()).map((name) => (
             <li key={name} role="presentation" className={this.tabClass(name)}>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a
-                href="javascript:void(0)"
-                onClick={this.handleSelect}
+                href={`#${name}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  this.handleSelect(event);
+                }}
                 data-tabkey={name}
               >
                 {this.tabDisplayName(name)}
@@ -93,7 +95,7 @@ export abstract class TabContainer<
   renderTab(name, children) {
     const display = this.currentTab() === name ? "block" : "none";
     return (
-      <div style={{ display }} key={name}>
+      <div style={{ display }} key={name} id={name}>
         {children}
       </div>
     );

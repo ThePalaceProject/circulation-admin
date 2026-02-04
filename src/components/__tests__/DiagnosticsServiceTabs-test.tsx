@@ -132,6 +132,7 @@ describe("DiagnosticsServiceTabs", () => {
 
       const tab2 = wrapper.find(".nav-tabs").find("li").at(1);
       tab2.find("a").simulate("click", {
+        preventDefault: stub(),
         currentTarget: { dataset: { tabkey: "test_service_2" } },
       });
 
