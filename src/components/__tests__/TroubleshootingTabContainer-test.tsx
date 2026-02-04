@@ -36,6 +36,7 @@ describe("TroubleshootingTabContainer", () => {
     const tabs = wrapper.find("ul.nav-tabs").find("a");
     const selfTestsTab = tabs.at(1);
     selfTestsTab.simulate("click", {
+      preventDefault: stub(),
       currentTarget: { dataset: { tabkey: "self-tests" } },
     });
 

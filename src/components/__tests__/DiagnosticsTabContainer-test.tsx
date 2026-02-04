@@ -136,6 +136,7 @@ describe("DiagnosticsTabContainer", () => {
       const tabs = wrapper.find("ul.nav-tabs").find("a");
       const monitorTab = tabs.at(1);
       monitorTab.simulate("click", {
+        preventDefault: stub(),
         currentTarget: { dataset: { tabkey: "monitor" } },
       });
 
