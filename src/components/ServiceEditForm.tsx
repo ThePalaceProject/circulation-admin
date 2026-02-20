@@ -215,9 +215,16 @@ export default class ServiceEditForm<
           optionalFieldsPanel,
           extraPanel,
           librariesForm,
+          ...this.renderAdditionalContent(),
         ]}
       />
     );
+  }
+
+  /** Hook for subclasses to inject additional panels into the form content,
+   *  rendered after the libraries panel but before the submit button. */
+  renderAdditionalContent(): React.ReactNode[] {
+    return [];
   }
 
   renderRequiredFields(

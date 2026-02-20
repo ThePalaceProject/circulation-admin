@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Panel } from "library-simplified-reusable-components";
 import { CollectionData, ProtocolData } from "../interfaces";
 
 export interface CollectionImportButtonProps {
@@ -15,6 +16,7 @@ interface CollectionImportButtonState {
   force: boolean;
   importing: boolean;
   feedback: string | null;
+  success: boolean;
 }
 
 /**
@@ -31,6 +33,7 @@ export default class CollectionImportButton extends React.Component<
       force: false,
       importing: false,
       feedback: null,
+      success: false,
     };
     this.handleImport = this.handleImport.bind(this);
     this.handleForceChange = this.handleForceChange.bind(this);
@@ -42,6 +45,7 @@ export default class CollectionImportButton extends React.Component<
         force: false,
         importing: false,
         feedback: null,
+        success: false,
       });
     }
   }
@@ -60,13 +64,17 @@ export default class CollectionImportButton extends React.Component<
     this.setState({ importing: true, feedback: null });
     try {
       await importCollection(collection.id, this.state.force);
-      this.setState({ importing: false, feedback: "Import task queued." });
+      this.setState({
+        importing: false,
+        feedback: "Import task queued.",
+        success: true,
+      });
     } catch (e) {
       const message =
         e && typeof e === "object" && "response" in e
           ? String((e as { response: string }).response)
           : "Failed to queue import task.";
-      this.setState({ importing: false, feedback: message });
+      this.setState({ importing: false, feedback: message, success: false });
     }
   }
 
@@ -80,30 +88,41 @@ export default class CollectionImportButton extends React.Component<
     }
 
     const { disabled } = this.props;
-    const { force, importing, feedback } = this.state;
+    const { force, importing, feedback, success } = this.state;
+    const feedbackClass = success
+      ? "alert alert-success"
+      : "alert alert-danger";
+
+    const panelContent = (
+      <div className="collection-import">
+        {feedback && <div className={feedbackClass}>{feedback}</div>}
+        <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+          <button
+            className="btn btn-default"
+            disabled={disabled || importing}
+            onClick={this.handleImport}
+          >
+            {importing ? "Queuing..." : "Queue Import"}
+          </button>
+          <label style={{ margin: 0 }}>
+            <input
+              type="checkbox"
+              checked={force}
+              onChange={this.handleForceChange}
+              disabled={disabled || importing}
+            />{" "}
+            Force full re-import
+          </label>
+        </div>
+      </div>
+    );
 
     return (
-      <div className="collection-import">
-        <h3>Import</h3>
-        <label>
-          <input
-            type="checkbox"
-            checked={force}
-            onChange={this.handleForceChange}
-            disabled={disabled || importing}
-          />{" "}
-          Force full re-import
-        </label>
-        <br />
-        <button
-          className="btn btn-default"
-          disabled={disabled || importing}
-          onClick={this.handleImport}
-        >
-          {importing ? "Queuing..." : "Queue Import"}
-        </button>
-        {feedback && <p className="import-feedback">{feedback}</p>}
-      </div>
+      <Panel
+        id="collection-import"
+        headerText="Import"
+        content={panelContent}
+      />
     );
   }
 }

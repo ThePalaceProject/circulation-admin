@@ -70,20 +70,19 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
     return window.confirm(confirmationMessage);
   }
 
-  render(): JSX.Element {
-    return (
-      <div>
-        {super.render()}
-        {this.props.item?.id && (
-          <CollectionImportButton
-            collection={this.props.item as CollectionData}
-            protocols={this.props.data?.protocols || []}
-            importCollection={this.context.importCollection}
-            disabled={this.props.disabled}
-          />
-        )}
-      </div>
-    );
+  renderAdditionalContent(): React.ReactNode[] {
+    if (!this.props.item?.id) {
+      return [];
+    }
+    return [
+      <CollectionImportButton
+        key="import"
+        collection={this.props.item as CollectionData}
+        protocols={this.props.data?.protocols || []}
+        importCollection={this.context.importCollection}
+        disabled={this.props.disabled}
+      />,
+    ];
   }
 }
 

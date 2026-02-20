@@ -45,6 +45,11 @@ function renderButton(overrides: Partial<CollectionImportButtonProps> = {}) {
   };
 }
 
+/** Expand the collapsed Import panel by clicking its header. */
+async function expandPanel(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByText("Import"));
+}
+
 describe("CollectionImportButton", () => {
   it("does not render when protocol lacks supports_import", () => {
     const collection: CollectionData = {
@@ -61,8 +66,15 @@ describe("CollectionImportButton", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("renders button and checkbox when supported", () => {
+  it("renders panel header when supported", () => {
     renderButton();
+    expect(screen.getByText("Import")).toBeInTheDocument();
+  });
+
+  it("renders button and checkbox when panel is expanded", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await expandPanel(user);
     expect(
       screen.getByRole("button", { name: "Queue Import" })
     ).toBeInTheDocument();
@@ -73,6 +85,7 @@ describe("CollectionImportButton", () => {
   it("checkbox toggles force state", async () => {
     const user = userEvent.setup();
     renderButton();
+    await expandPanel(user);
     const checkbox = screen.getByRole("checkbox");
     expect(checkbox).not.toBeChecked();
     await user.click(checkbox);
@@ -84,6 +97,7 @@ describe("CollectionImportButton", () => {
   it("button triggers import with correct args (force=false)", async () => {
     const user = userEvent.setup();
     const { importCollection } = renderButton();
+    await expandPanel(user);
     const button = screen.getByRole("button", { name: "Queue Import" });
     await user.click(button);
     expect(importCollection).toHaveBeenCalledWith(42, false);
@@ -92,6 +106,7 @@ describe("CollectionImportButton", () => {
   it("button triggers import with force=true when checked", async () => {
     const user = userEvent.setup();
     const { importCollection } = renderButton();
+    await expandPanel(user);
     const checkbox = screen.getByRole("checkbox");
     await user.click(checkbox);
     const button = screen.getByRole("button", { name: "Queue Import" });
@@ -99,30 +114,37 @@ describe("CollectionImportButton", () => {
     expect(importCollection).toHaveBeenCalledWith(42, true);
   });
 
-  it("shows success feedback after import", async () => {
+  it("shows success feedback with alert-success styling after import", async () => {
     const user = userEvent.setup();
     renderButton();
+    await expandPanel(user);
     await user.click(screen.getByRole("button", { name: "Queue Import" }));
     await waitFor(() => {
-      expect(screen.getByText("Import task queued.")).toBeInTheDocument();
+      const feedback = screen.getByText("Import task queued.");
+      expect(feedback).toBeInTheDocument();
+      expect(feedback).toHaveClass("alert", "alert-success");
     });
   });
 
-  it("shows error feedback on failure", async () => {
+  it("shows error feedback with alert-danger styling on failure", async () => {
     const user = userEvent.setup();
     const mockImport = jest
       .fn()
       .mockRejectedValue({ response: "Something went wrong" });
     renderButton({ importCollection: mockImport });
+    await expandPanel(user);
     await user.click(screen.getByRole("button", { name: "Queue Import" }));
     await waitFor(() => {
-      expect(screen.getByText("Something went wrong")).toBeInTheDocument();
+      const feedback = screen.getByText("Something went wrong");
+      expect(feedback).toBeInTheDocument();
+      expect(feedback).toHaveClass("alert", "alert-danger");
     });
   });
 
   it("resets force checkbox and feedback when switching collections", async () => {
     const user = userEvent.setup();
     const { rerender, importCollection } = renderButton();
+    await expandPanel(user);
 
     const checkbox = screen.getByRole("checkbox");
     await user.click(checkbox);
@@ -153,8 +175,10 @@ describe("CollectionImportButton", () => {
     });
   });
 
-  it("disables button and checkbox when disabled prop is true", () => {
+  it("disables button and checkbox when disabled prop is true", async () => {
+    const user = userEvent.setup();
     renderButton({ disabled: true });
+    await expandPanel(user);
     expect(screen.getByRole("button", { name: "Queue Import" })).toBeDisabled();
     expect(screen.getByRole("checkbox")).toBeDisabled();
   });
@@ -167,6 +191,7 @@ describe("CollectionImportButton", () => {
     });
     const mockImport = jest.fn().mockReturnValue(pendingImport);
     renderButton({ importCollection: mockImport });
+    await expandPanel(user);
 
     await user.click(screen.getByRole("button", { name: "Queue Import" }));
 
