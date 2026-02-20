@@ -36,6 +36,16 @@ export default class CollectionImportButton extends React.Component<
     this.handleForceChange = this.handleForceChange.bind(this);
   }
 
+  componentDidUpdate(prevProps: CollectionImportButtonProps): void {
+    if (prevProps.collection?.id !== this.props.collection?.id) {
+      this.setState({
+        force: false,
+        importing: false,
+        feedback: null,
+      });
+    }
+  }
+
   supportsImport(): boolean {
     const { collection, protocols } = this.props;
     if (!collection?.id || !collection?.protocol) {

@@ -120,6 +120,39 @@ describe("CollectionImportButton", () => {
     });
   });
 
+  it("resets force checkbox and feedback when switching collections", async () => {
+    const user = userEvent.setup();
+    const { rerender, importCollection } = renderButton();
+
+    const checkbox = screen.getByRole("checkbox");
+    await user.click(checkbox);
+    expect(checkbox).toBeChecked();
+
+    await user.click(screen.getByRole("button", { name: "Queue Import" }));
+    await waitFor(() => {
+      expect(screen.getByText("Import task queued.")).toBeInTheDocument();
+    });
+
+    const nextCollection: CollectionData = {
+      id: 99,
+      protocol: "Boundless",
+      name: "Another Collection",
+    };
+    rerender(
+      <CollectionImportButton
+        collection={nextCollection}
+        protocols={[protocolWithImport, protocolWithoutImport]}
+        importCollection={importCollection}
+        disabled={false}
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("checkbox")).not.toBeChecked();
+      expect(screen.queryByText("Import task queued.")).not.toBeInTheDocument();
+    });
+  });
+
   it("disables button and checkbox when disabled prop is true", () => {
     renderButton({ disabled: true });
     expect(screen.getByRole("button", { name: "Queue Import" })).toBeDisabled();
