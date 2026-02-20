@@ -15,6 +15,7 @@ import {
   LibraryWithSettingsData,
   LibraryRegistrationsData,
 } from "../interfaces";
+import CollectionImportButton from "./CollectionImportButton";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import TrashIcon from "./icons/TrashIcon";
 
@@ -27,6 +28,10 @@ export interface CollectionsDispatchProps
   extends EditableConfigListDispatchProps<CollectionsData> {
   registerLibrary: (data: FormData) => Promise<void>;
   fetchLibraryRegistrations?: () => Promise<LibraryRegistrationsData>;
+  importCollection: (
+    collectionId: string | number,
+    force: boolean
+  ) => Promise<void>;
 }
 
 export interface CollectionsProps
@@ -37,6 +42,19 @@ export interface CollectionsProps
 export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
   CollectionsData
 > {
+  context: {
+    registerLibrary: (library, registration_stage) => void;
+    importCollection: (
+      collectionId: string | number,
+      force: boolean
+    ) => Promise<void>;
+  };
+
+  static contextTypes = {
+    ...ServiceWithRegistrationsEditForm.contextTypes,
+    importCollection: PropTypes.func,
+  };
+
   /**
    * Override to display a confirmation message before removing a library
    * association. We display the confirmation and return `true` if the
@@ -50,6 +68,22 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
       `Disassociating library "${libraryName}" from this collection will ` +
       "remove all loans and holds for its patrons. Do you wish to continue?";
     return window.confirm(confirmationMessage);
+  }
+
+  render(): JSX.Element {
+    return (
+      <div>
+        {super.render()}
+        {this.props.item?.id && (
+          <CollectionImportButton
+            collection={this.props.item as CollectionData}
+            protocols={this.props.data?.protocols || []}
+            importCollection={this.context.importCollection}
+            disabled={this.props.disabled}
+          />
+        )}
+      </div>
+    );
   }
 }
 
@@ -78,6 +112,7 @@ export class Collections extends GenericEditableConfigList<
 
   static childContextTypes: React.ValidationMap<any> = {
     registerLibrary: PropTypes.func,
+    importCollection: PropTypes.func,
   };
 
   getChildContext() {
@@ -93,6 +128,9 @@ export class Collections extends GenericEditableConfigList<
             }
           });
         }
+      },
+      importCollection: (collectionId: string | number, force: boolean) => {
+        return this.props.importCollection(collectionId, force);
       },
     };
   }
@@ -174,6 +212,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     editItem: (data: FormData) => dispatch(actions.editCollection(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteCollection(identifier)),
+    importCollection: (collectionId: string | number, force: boolean) =>
+      dispatch(actions.importCollection(collectionId, force)),
   };
 }
 

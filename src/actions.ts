@@ -66,6 +66,7 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly COLLECTIONS = "COLLECTIONS";
   static readonly EDIT_COLLECTION = "EDIT_COLLECTION";
   static readonly DELETE_COLLECTION = "DELETE_COLLECTION";
+  static readonly IMPORT_COLLECTION = "IMPORT_COLLECTION";
   static readonly INDIVIDUAL_ADMINS = "INDIVIDUAL_ADMINS";
   static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
   static readonly DELETE_INDIVIDUAL_ADMIN = "DELETE_INDIVIDUAL_ADMIN";
@@ -449,6 +450,13 @@ export default class ActionCreator extends BaseActionCreator {
       null,
       "DELETE"
     ).bind(this);
+  }
+
+  importCollection(collectionId: string | number, force: boolean) {
+    const url = "/admin/collection/" + collectionId + "/import";
+    const data = new FormData();
+    data.append("force", String(force));
+    return this.postForm(ActionCreator.IMPORT_COLLECTION, url, data).bind(this);
   }
 
   fetchIndividualAdmins() {
@@ -1002,14 +1010,15 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   fetchQuicksightEmbedUrl(dashboardId: string, ld: LibrariesData) {
-
     /* Too many libraries will blow up the 8K cloudfront/nginx max url size limit.
        By not sending any uuids, the client will assemble a list of libraries based
        on the user's permissions.
     */
     let library_uuids: string = "";
     if (ld.libraries.length < 100) {
-      library_uuids = `?libraryUuids=${ld.libraries.map((l) => l.uuid).join(",")}`;
+      library_uuids = `?libraryUuids=${ld.libraries
+        .map((l) => l.uuid)
+        .join(",")}`;
     }
     const url = `/admin/quicksight_embed/${dashboardId}${library_uuids}`;
     return this.fetchJSON<QuickSightEmbeddedURLData>(

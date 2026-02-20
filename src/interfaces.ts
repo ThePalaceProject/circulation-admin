@@ -329,6 +329,7 @@ export interface ProtocolData {
   sitewide?: boolean;
   supports_registration?: boolean;
   supports_staging?: boolean;
+  supports_import?: boolean;
   settings: SettingData[];
   child_settings?: SettingData[];
   library_settings?: SettingData[];
