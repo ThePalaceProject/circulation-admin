@@ -42,8 +42,7 @@ export interface CollectionsProps
 export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
   CollectionsData
 > {
-  context: {
-    registerLibrary: (library, registration_stage) => void;
+  context: ServiceWithRegistrationsEditForm<CollectionsData>["context"] & {
     importCollection: (
       collectionId: string | number,
       force: boolean
@@ -216,7 +215,8 @@ function mapDispatchToProps(dispatch, ownProps) {
 
 const ConnectedCollections = connect<
   EditableConfigListStateProps<CollectionsData>,
-  EditableConfigListDispatchProps<CollectionsData>,
+  EditableConfigListDispatchProps<CollectionsData> &
+    Pick<CollectionsDispatchProps, "importCollection">,
   EditableConfigListOwnProps
 >(
   mapStateToProps,
