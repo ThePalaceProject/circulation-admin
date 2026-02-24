@@ -128,9 +128,7 @@ export class Collections extends GenericEditableConfigList<
           });
         }
       },
-      importCollection: (collectionId: string | number, force: boolean) => {
-        return this.props.importCollection(collectionId, force);
-      },
+      importCollection: this.props.importCollection,
     };
   }
 
