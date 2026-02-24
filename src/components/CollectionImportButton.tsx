@@ -70,7 +70,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
   const panelContent = (
     <div className="collection-import">
       {feedback && <div className={feedbackClass}>{feedback}</div>}
-      <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+      <div className="collection-import-controls">
         <button
           className="btn btn-default"
           disabled={disabled || importing}
@@ -78,7 +78,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
         >
           {importing ? "Queuing..." : "Queue Import"}
         </button>
-        <label style={{ margin: 0 }}>
+        <label>
           <input
             type="checkbox"
             checked={force}

@@ -10,6 +10,18 @@
   }
 }
 
+.collection-import {
+  .collection-import-controls {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
+
+  label {
+    margin: 0;
+  }
+}
+
 .tab-container {
   li.deleted-collection {
     background: $red-error;
