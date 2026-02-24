@@ -12,117 +12,88 @@ export interface CollectionImportButtonProps {
   disabled?: boolean;
 }
 
-interface CollectionImportButtonState {
-  force: boolean;
-  importing: boolean;
-  feedback: string | null;
-  success: boolean;
-}
-
 /**
  * Renders an import button and "force" checkbox for collections
  * whose protocol supports import. Renders nothing otherwise.
  */
-export default class CollectionImportButton extends React.Component<
-  CollectionImportButtonProps,
-  CollectionImportButtonState
-> {
-  constructor(props: CollectionImportButtonProps) {
-    super(props);
-    this.state = {
-      force: false,
-      importing: false,
-      feedback: null,
-      success: false,
-    };
-    this.handleImport = this.handleImport.bind(this);
-    this.handleForceChange = this.handleForceChange.bind(this);
-  }
+const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
+  collection,
+  protocols,
+  importCollection,
+  disabled,
+}) => {
+  const [force, setForce] = React.useState(false);
+  const [importing, setImporting] = React.useState(false);
+  const [feedback, setFeedback] = React.useState<string | null>(null);
+  const [success, setSuccess] = React.useState(false);
 
-  componentDidUpdate(prevProps: CollectionImportButtonProps): void {
-    if (prevProps.collection?.id !== this.props.collection?.id) {
-      this.setState({
-        force: false,
-        importing: false,
-        feedback: null,
-        success: false,
-      });
-    }
-  }
+  React.useEffect(() => {
+    setForce(false);
+    setImporting(false);
+    setFeedback(null);
+    setSuccess(false);
+  }, [collection?.id]);
 
-  supportsImport(): boolean {
-    const { collection, protocols } = this.props;
+  const supportsImport = (): boolean => {
     if (!collection?.id || !collection?.protocol) {
       return false;
     }
     const protocol = protocols.find((p) => p.name === collection.protocol);
     return !!protocol?.supports_import;
-  }
+  };
 
-  async handleImport(): Promise<void> {
-    const { collection, importCollection } = this.props;
-    this.setState({ importing: true, feedback: null });
+  const handleImport = async (): Promise<void> => {
+    setImporting(true);
+    setFeedback(null);
     try {
-      await importCollection(collection.id, this.state.force);
-      this.setState({
-        importing: false,
-        feedback: "Import task queued.",
-        success: true,
-      });
+      await importCollection(collection.id, force);
+      setImporting(false);
+      setFeedback("Import task queued.");
+      setSuccess(true);
     } catch (e) {
       const message =
         e && typeof e === "object" && "response" in e
           ? String((e as { response: string }).response)
           : "Failed to queue import task.";
-      this.setState({ importing: false, feedback: message, success: false });
+      setImporting(false);
+      setFeedback(message);
+      setSuccess(false);
     }
+  };
+
+  if (!supportsImport()) {
+    return null;
   }
 
-  handleForceChange(e: React.ChangeEvent<HTMLInputElement>): void {
-    this.setState({ force: e.target.checked });
-  }
+  const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
 
-  render(): JSX.Element | null {
-    if (!this.supportsImport()) {
-      return null;
-    }
-
-    const { disabled } = this.props;
-    const { force, importing, feedback, success } = this.state;
-    const feedbackClass = success
-      ? "alert alert-success"
-      : "alert alert-danger";
-
-    const panelContent = (
-      <div className="collection-import">
-        {feedback && <div className={feedbackClass}>{feedback}</div>}
-        <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
-          <button
-            className="btn btn-default"
+  const panelContent = (
+    <div className="collection-import">
+      {feedback && <div className={feedbackClass}>{feedback}</div>}
+      <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+        <button
+          className="btn btn-default"
+          disabled={disabled || importing}
+          onClick={handleImport}
+        >
+          {importing ? "Queuing..." : "Queue Import"}
+        </button>
+        <label style={{ margin: 0 }}>
+          <input
+            type="checkbox"
+            checked={force}
+            onChange={(e) => setForce(e.target.checked)}
             disabled={disabled || importing}
-            onClick={this.handleImport}
-          >
-            {importing ? "Queuing..." : "Queue Import"}
-          </button>
-          <label style={{ margin: 0 }}>
-            <input
-              type="checkbox"
-              checked={force}
-              onChange={this.handleForceChange}
-              disabled={disabled || importing}
-            />{" "}
-            Force full re-import
-          </label>
-        </div>
+          />{" "}
+          Force full re-import
+        </label>
       </div>
-    );
+    </div>
+  );
 
-    return (
-      <Panel
-        id="collection-import"
-        headerText="Import"
-        content={panelContent}
-      />
-    );
-  }
-}
+  return (
+    <Panel id="collection-import" headerText="Import" content={panelContent} />
+  );
+};
+
+export default CollectionImportButton;
