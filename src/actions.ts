@@ -453,7 +453,7 @@ export default class ActionCreator extends BaseActionCreator {
   }
 
   importCollection(collectionId: string | number, force: boolean) {
-    const url = "/admin/collection/" + collectionId + "/import";
+    const url = `/admin/collection/${collectionId}/import`;
     const data = new FormData();
     data.append("force", String(force));
     return this.postForm(ActionCreator.IMPORT_COLLECTION, url, data).bind(this);
