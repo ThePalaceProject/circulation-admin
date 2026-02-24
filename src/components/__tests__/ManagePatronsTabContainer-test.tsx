@@ -46,6 +46,7 @@ describe("ManagePatronsTabContainer", () => {
       const links = wrapper.find("ul.nav-tabs").find("a");
       const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Reset Adobe ID");
+      expect(linkTexts).to.contain("Debug Authentication");
     });
 
     it("shows components", () => {
@@ -90,12 +91,13 @@ describe("ManagePatronsTabContainer", () => {
       const links = wrapper.find("ul.nav-tabs").find("a");
       const linkTexts = links.map((link) => link.text());
       expect(linkTexts).to.contain("Reset Adobe ID");
+      expect(linkTexts).to.contain("Debug Authentication");
     });
 
-    it("disables the link for the current tab", () => {
+    it("marks the current tab as active", () => {
       const tabItems = wrapper.find("ul.nav-tabs").find("li");
-      expect(tabItems.length).to.equal(1);
-      expect(tabItems.at(0).props().className).to.equal("disabled");
+      expect(tabItems.length).to.equal(2);
+      expect(tabItems.at(0).props().className).to.equal("active");
     });
 
     it("shows components", () => {
