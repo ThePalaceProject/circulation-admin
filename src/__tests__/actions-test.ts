@@ -611,6 +611,33 @@ describe("actions", () => {
     });
   });
 
+  describe("importCollection", () => {
+    it("dispatches request and success", async () => {
+      const importCollectionUrl = "/admin/collection/123/import";
+      const dispatch = stub();
+
+      fetchMock.mock(importCollectionUrl, "server response");
+
+      await actions.importCollection("123", false)(dispatch);
+      const fetchArgs = fetchMock.calls();
+
+      expect(dispatch.callCount).to.equal(3);
+      expect(dispatch.args[0][0].type).to.equal(
+        `${ActionCreator.IMPORT_COLLECTION}_${ActionCreator.REQUEST}`
+      );
+      expect(dispatch.args[1][0].type).to.equal(
+        `${ActionCreator.IMPORT_COLLECTION}_${ActionCreator.SUCCESS}`
+      );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.IMPORT_COLLECTION}_${ActionCreator.LOAD}`
+      );
+      expect(fetchMock.called()).to.equal(true);
+      expect(fetchArgs[0][0]).to.equal(importCollectionUrl);
+      expect(fetchArgs[0][1].method).to.equal("POST");
+      expect(fetchArgs[0][1].body.get("force")).to.equal("false");
+    });
+  });
+
   describe("fetchIndividualAdmins", () => {
     it("dispatches request, load, and success", async () => {
       const dispatch = stub();

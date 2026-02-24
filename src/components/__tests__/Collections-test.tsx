@@ -54,6 +54,7 @@ describe("Collections", () => {
           identifier="2"
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
+          importCollection={stub().resolves()}
         />,
         { context: { admin: systemAdmin } }
       );
@@ -92,6 +93,7 @@ describe("Collections", () => {
           data={{ collections, protocols: [] }}
           registerLibrary={registerLibrary}
           fetchLibraryRegistrations={fetchLibraryRegistrations}
+          importCollection={stub().resolves()}
         />,
         { context: { admin: systemAdmin } }
       );
