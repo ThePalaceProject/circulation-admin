@@ -628,6 +628,9 @@ describe("actions", () => {
       expect(dispatch.args[1][0].type).to.equal(
         `${ActionCreator.IMPORT_COLLECTION}_${ActionCreator.SUCCESS}`
       );
+      expect(dispatch.args[2][0].type).to.equal(
+        `${ActionCreator.IMPORT_COLLECTION}_${ActionCreator.LOAD}`
+      );
       expect(fetchMock.called()).to.equal(true);
       expect(fetchArgs[0][0]).to.equal(importCollectionUrl);
       expect(fetchArgs[0][1].method).to.equal("POST");
