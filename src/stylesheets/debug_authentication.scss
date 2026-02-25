@@ -17,13 +17,12 @@
     margin-top: 20px;
   }
 
-  // sass-lint:disable no-important
   .debug-results-list {
     list-style: none;
-    padding-left: 0 !important;
+    padding-left: 0;
 
     > li {
-      display: block !important;
+      display: block;
       padding: 10px;
       margin-bottom: 8px;
       word-wrap: break-word;

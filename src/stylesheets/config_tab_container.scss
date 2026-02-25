@@ -52,7 +52,7 @@ $dangercolor: #D9534F;
         }
       }
 
-      ul:not(.input-list-ul):not(.announcements-ul) {
+      ul:not(.input-list-ul):not(.announcements-ul):not(.debug-results-list) {
         padding-left: 10px;
         li:not(.panel):not(.announcement) {
           display: flex;
