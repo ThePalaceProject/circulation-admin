@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-  useMutation,
-} from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   AuthMethodInfo,
   PatronDebugResult,
@@ -19,23 +14,8 @@ export interface DebugAuthenticationProps {
   active?: boolean;
 }
 
-/**
- * Wrapper that ensures a QueryClientProvider is available.
- * In the full app this is redundant (index.tsx provides one), but it
- * keeps legacy Enzyme tests working. A per-mount QueryClient avoids
- * stale cache between test runs.
- */
-const DebugAuthentication: React.FC<DebugAuthenticationProps> = (props) => {
-  const [queryClient] = React.useState(() => new QueryClient());
-  return (
-    <QueryClientProvider client={queryClient}>
-      <DebugAuthenticationInner {...props} />
-    </QueryClientProvider>
-  );
-};
-
 /** Admin tool for running diagnostic authentication checks against patron auth providers. */
-const DebugAuthenticationInner: React.FC<DebugAuthenticationProps> = ({
+const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
   library,
   csrfToken,
   active = true,
@@ -61,13 +41,17 @@ const DebugAuthenticationInner: React.FC<DebugAuthenticationProps> = ({
     retry: 0,
   });
 
-  const authMethods = authMethodsData?.authMethods ?? [];
+  const authMethods = React.useMemo(() => authMethodsData?.authMethods ?? [], [
+    authMethodsData,
+  ]);
 
   // Keep selected method in sync with current library's methods.
   React.useEffect(() => {
     if (authMethods.length === 0) {
       if (selectedMethodId !== "") {
         setSelectedMethodId("");
+        setUsername("");
+        setPassword("");
         setResults(null);
       }
       return;
@@ -87,6 +71,8 @@ const DebugAuthenticationInner: React.FC<DebugAuthenticationProps> = ({
       setSelectedMethodId("");
     }
 
+    setUsername("");
+    setPassword("");
     setResults(null);
   }, [authMethods, selectedMethodId]);
 
@@ -120,6 +106,8 @@ const DebugAuthenticationInner: React.FC<DebugAuthenticationProps> = ({
 
   const handleMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedMethodId(e.target.value);
+    setUsername("");
+    setPassword("");
     setResults(null);
   };
 

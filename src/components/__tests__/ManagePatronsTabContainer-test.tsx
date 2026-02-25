@@ -3,6 +3,7 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { mount } from "enzyme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { mockRouterContext } from "./routing";
 import buildStore from "../../store";
@@ -17,6 +18,7 @@ describe("ManagePatronsTabContainer", () => {
   let push;
   let store;
   let childContextTypes;
+  let queryClient: QueryClient;
 
   const systemAdmin = new Admin([{ role: "system" }]);
   const libraryManagerNYPL = new Admin([{ role: "manager", library: "NYPL" }]);
@@ -26,18 +28,21 @@ describe("ManagePatronsTabContainer", () => {
   describe("for system admin", () => {
     beforeEach(() => {
       store = buildStore();
+      queryClient = new QueryClient();
       push = stub();
       context = mockRouterContext(push);
       context["admin"] = systemAdmin;
       childContextTypes = mockRouterContext(push);
       childContextTypes["admin"] = systemAdmin;
       wrapper = mount(
-        <ManagePatronsTabContainer
-          tab={null}
-          csrfToken="token"
-          store={store}
-          library="NYPL"
-        />,
+        <QueryClientProvider client={queryClient}>
+          <ManagePatronsTabContainer
+            tab={null}
+            csrfToken="token"
+            store={store}
+            library="NYPL"
+          />
+        </QueryClientProvider>,
         { context, childContextTypes }
       );
     });
@@ -70,6 +75,7 @@ describe("ManagePatronsTabContainer", () => {
   describe("for right library manager", () => {
     beforeEach(() => {
       store = buildStore();
+      queryClient = new QueryClient();
       push = stub();
       context = mockRouterContext(push);
       context["admin"] = libraryManagerNYPL;
@@ -77,12 +83,14 @@ describe("ManagePatronsTabContainer", () => {
       childContextTypes["admin"] = libraryManagerNYPL;
 
       wrapper = mount(
-        <ManagePatronsTabContainer
-          tab={null}
-          csrfToken="token"
-          store={store}
-          library="NYPL"
-        />,
+        <QueryClientProvider client={queryClient}>
+          <ManagePatronsTabContainer
+            tab={null}
+            csrfToken="token"
+            store={store}
+            library="NYPL"
+          />
+        </QueryClientProvider>,
         { context, childContextTypes }
       );
     });
@@ -121,6 +129,7 @@ describe("ManagePatronsTabContainer", () => {
   describe("for wrong library manager", () => {
     beforeEach(() => {
       store = buildStore();
+      queryClient = new QueryClient();
       push = stub();
       context = mockRouterContext(push);
       context["admin"] = libraryManagerA;
@@ -128,12 +137,14 @@ describe("ManagePatronsTabContainer", () => {
       childContextTypes["admin"] = libraryManagerA;
 
       wrapper = mount(
-        <ManagePatronsTabContainer
-          tab={null}
-          csrfToken="token"
-          store={store}
-          library="NYPL"
-        />,
+        <QueryClientProvider client={queryClient}>
+          <ManagePatronsTabContainer
+            tab={null}
+            csrfToken="token"
+            store={store}
+            library="NYPL"
+          />
+        </QueryClientProvider>,
         { context, childContextTypes }
       );
     });
@@ -148,6 +159,7 @@ describe("ManagePatronsTabContainer", () => {
   describe("for librarian", () => {
     beforeEach(() => {
       store = buildStore();
+      queryClient = new QueryClient();
       push = stub();
       context = mockRouterContext(push);
       context["admin"] = librarian;
@@ -155,12 +167,14 @@ describe("ManagePatronsTabContainer", () => {
       childContextTypes["admin"] = librarian;
 
       wrapper = mount(
-        <ManagePatronsTabContainer
-          tab={null}
-          csrfToken="token"
-          store={store}
-          library="NYPL"
-        />,
+        <QueryClientProvider client={queryClient}>
+          <ManagePatronsTabContainer
+            tab={null}
+            csrfToken="token"
+            store={store}
+            library="NYPL"
+          />
+        </QueryClientProvider>,
         { context, childContextTypes }
       );
     });

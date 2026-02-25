@@ -65,7 +65,7 @@ export const runPatronDebug = async (
   const formData = new FormData();
   formData.append("integration_id", String(integrationId));
   formData.append("username", username);
-  if (password) {
+  if (password !== null) {
     formData.append("password", password);
   }
   const res = await fetch(`/${library}/admin/manage_patrons/debug_auth`, {
