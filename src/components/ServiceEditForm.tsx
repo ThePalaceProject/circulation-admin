@@ -227,6 +227,25 @@ export default class ServiceEditForm<
     return [];
   }
 
+  /** Hook for subclasses to inject extra fields into the expanded per-library settings panel.
+   *  Rendered after protocol library_settings fields and before the Save button. */
+  renderExtraExpandedLibrarySettings(
+    _library: LibraryWithSettingsData,
+    _protocol: ProtocolData,
+    _disabled: boolean
+  ): React.ReactNode {
+    return null;
+  }
+
+  /** Hook for subclasses to inject extra fields into the add-new-library panel.
+   *  Rendered after protocol library_settings fields and before the Add Library button. */
+  renderExtraNewLibrarySettings(
+    _protocol: ProtocolData,
+    _disabled: boolean
+  ): React.ReactNode {
+    return null;
+  }
+
   renderRequiredFields(
     requiredFields,
     protocol: ProtocolData,
@@ -357,8 +376,7 @@ export default class ServiceEditForm<
               >
                 {this.props.data &&
                   this.props.data.protocols &&
-                  this.protocolLibrarySettings(protocol) &&
-                  this.protocolLibrarySettings(protocol).length > 0 && (
+                  this.protocolHasLibrarySettings(protocol) && (
                     <WithEditButton
                       disabled={disabled}
                       onEdit={() => this.expandLibrary(library)}
@@ -370,8 +388,7 @@ export default class ServiceEditForm<
                 {!(
                   this.props.data &&
                   this.props.data.protocols &&
-                  this.protocolLibrarySettings(protocol) &&
-                  this.protocolLibrarySettings(protocol).length > 0
+                  this.protocolHasLibrarySettings(protocol)
                 ) &&
                   this.getLibrary(library.short_name) &&
                   this.getLibrary(library.short_name).name}
@@ -390,6 +407,11 @@ export default class ServiceEditForm<
                         ref={library.short_name + "_" + setting.key}
                       />
                     ))}
+                  {this.renderExtraExpandedLibrarySettings(
+                    library,
+                    protocol,
+                    disabled
+                  )}
                   <Button
                     type="button"
                     className="edit-library"
@@ -446,6 +468,7 @@ export default class ServiceEditForm<
                       ref={setting.key}
                     />
                   ))}
+                {this.renderExtraNewLibrarySettings(protocol, disabled)}
                 <Button
                   type="button"
                   disabled={disabled}
@@ -555,6 +578,13 @@ export default class ServiceEditForm<
 
   protocolLibrarySettings(protocol: ProtocolData) {
     return (protocol && protocol.library_settings) || [];
+  }
+
+  /** Returns true when this protocol has any editable per-library settings,
+   *  either from the protocol definition or injected by a subclass.
+   *  Subclasses should override this when they add extra library-level fields. */
+  protocolHasLibrarySettings(protocol: ProtocolData): boolean {
+    return this.protocolLibrarySettings(protocol).length > 0;
   }
 
   sitewide(protocol: ProtocolData): boolean {

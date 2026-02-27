@@ -7,7 +7,7 @@ import EditableConfigList, {
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
-import ServiceEditForm from "./ServiceEditForm";
+import PatronAuthServiceEditForm from "./PatronAuthServiceEditForm";
 import NeighborhoodAnalyticsForm from "./NeighborhoodAnalyticsForm";
 
 /** Right panel for patron authentication services on the system
@@ -18,7 +18,7 @@ export class PatronAuthServices extends EditableConfigList<
   PatronAuthServicesData,
   PatronAuthServiceData
 > {
-  EditForm = ServiceEditForm;
+  EditForm = PatronAuthServiceEditForm;
   ExtraFormSection = NeighborhoodAnalyticsForm;
   extraFormKey = "neighborhood_mode";
   listDataKey = "patron_auth_services";
