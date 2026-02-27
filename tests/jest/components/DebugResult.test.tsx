@@ -4,8 +4,8 @@ import DebugResult from "../../../src/components/DebugResult";
 import { PatronDebugResult } from "../../../src/api/patronDebug";
 
 describe("DebugResult", () => {
-  const renderResult = (result: PatronDebugResult) => {
-    return render(<DebugResult result={result} />);
+  const renderResult = (result: PatronDebugResult, sequence = 0) => {
+    return render(<DebugResult result={result} sequence={sequence} />);
   };
 
   it("renders success result with string details", () => {

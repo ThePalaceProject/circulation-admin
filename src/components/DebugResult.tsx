@@ -4,6 +4,7 @@ import { PatronDebugResult, ResultDetails } from "../api/patronDebug";
 
 export interface DebugResultProps {
   result: PatronDebugResult;
+  sequence: number;
 }
 
 /** Render a single ResultDetails value as a React node. */
@@ -23,10 +24,11 @@ const renderValue = (value: ResultDetails): React.ReactNode => {
 };
 
 /** Renders a single patron debug authentication result. */
-const DebugResult: React.FC<DebugResultProps> = ({ result }) => {
+const DebugResult: React.FC<DebugResultProps> = ({ result, sequence }) => {
   const statusClass = result.success ? "success" : "failure";
   const panelStyle = result.success ? "success" : "danger";
   const statusText = result.success ? "passed" : "failed";
+  const detailId = `detail-${sequence}`;
 
   const renderDetails = () => {
     if (result.details === null || result.details === undefined) {
@@ -40,7 +42,7 @@ const DebugResult: React.FC<DebugResultProps> = ({ result }) => {
       if (result.details.includes("\n") || result.details.length > 80) {
         return (
           <Panel
-            id={`detail-${result.label.replace(/\s/g, "")}`}
+            id={detailId}
             headerText="Details"
             content={content}
             style={panelStyle}
@@ -69,7 +71,7 @@ const DebugResult: React.FC<DebugResultProps> = ({ result }) => {
       );
       return (
         <Panel
-          id={`detail-${result.label.replace(/\s/g, "")}`}
+          id={detailId}
           headerText={`Details (${result.details.length})`}
           content={content}
           style={panelStyle}
@@ -99,7 +101,7 @@ const DebugResult: React.FC<DebugResultProps> = ({ result }) => {
     );
     return (
       <Panel
-        id={`detail-${result.label.replace(/\s/g, "")}`}
+        id={detailId}
         headerText={`Details (${entries.length} fields)`}
         content={content}
         style={panelStyle}

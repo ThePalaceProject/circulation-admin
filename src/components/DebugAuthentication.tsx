@@ -210,7 +210,7 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
           <h4>Results</h4>
           <ul className="debug-results-list">
             {results.map((result, idx) => (
-              <DebugResult key={idx} result={result} />
+              <DebugResult key={idx} sequence={idx} result={result} />
             ))}
           </ul>
         </div>
