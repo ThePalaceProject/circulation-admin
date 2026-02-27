@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  AuthMethodInfo,
   PatronDebugResult,
   fetchAuthMethods,
   runPatronDebug,
@@ -11,6 +10,7 @@ import DebugResultListItem from "./DebugResultListItem";
 export interface DebugAuthenticationProps {
   library: string;
   csrfToken: string;
+  /** When false, data fetching is disabled (e.g. when this tab is not visible). */
   active?: boolean;
 }
 
@@ -178,6 +178,7 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
                   id="debug-auth-username"
                   type="text"
                   className="form-control"
+                  autoComplete="off"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -193,6 +194,7 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
                     id="debug-auth-password"
                     type="password"
                     className="form-control"
+                    autoComplete="off"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />

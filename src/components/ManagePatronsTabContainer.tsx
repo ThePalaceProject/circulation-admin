@@ -64,7 +64,7 @@ export default class ManagePatronsTabContainer extends TabContainer<
     const tab = event.target.dataset.tabkey;
     if (this.context.router) {
       this.context.router.push(
-        "/admin/web/patrons/" + this.props.library + "/" + tab
+        `/admin/web/patrons/${this.props.library}/${tab}`
       );
     }
   }
