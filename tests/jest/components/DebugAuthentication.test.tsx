@@ -245,6 +245,24 @@ describe("DebugAuthentication", () => {
     expect(queryByLabelText("Authentication Method")).not.toBeInTheDocument();
   });
 
+  it("shows warning when library has no auth methods", async () => {
+    server.use(
+      http.get(AUTH_METHODS_PATH, () =>
+        HttpResponse.json({ authMethods: [] }, { status: 200 })
+      )
+    );
+
+    const { getByText, queryByLabelText } = renderComponent();
+    await waitFor(() => {
+      expect(
+        getByText(
+          "This library has no patron authentication integrations configured."
+        )
+      ).toBeInTheDocument();
+    });
+    expect(queryByLabelText("Authentication Method")).not.toBeInTheDocument();
+  });
+
   it("handles API error on fetching auth methods", async () => {
     server.use(
       http.get(AUTH_METHODS_PATH, () => new HttpResponse(null, { status: 500 }))

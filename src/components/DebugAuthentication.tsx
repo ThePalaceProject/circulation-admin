@@ -134,7 +134,13 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
         </p>
       )}
 
-      {!isLoadingMethods && !isMethodsError && (
+      {!isLoadingMethods && !isMethodsError && authMethods.length === 0 && (
+        <div className="alert alert-warning">
+          This library has no patron authentication integrations configured.
+        </div>
+      )}
+
+      {!isLoadingMethods && !isMethodsError && authMethods.length > 0 && (
         <form className="edit-form" onSubmit={handleSubmit}>
           {authMethods.length > 1 && (
             <div className="form-group">
