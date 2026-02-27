@@ -185,7 +185,7 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
                   </label>
                   <input
                     id="debug-auth-password"
-                    type="text"
+                    type="password"
                     className="form-control"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
