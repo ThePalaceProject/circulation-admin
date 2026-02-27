@@ -6,7 +6,7 @@ import {
   fetchAuthMethods,
   runPatronDebug,
 } from "../api/patronDebug";
-import DebugResult from "./DebugResult";
+import DebugResultListItem from "./DebugResultListItem";
 
 export interface DebugAuthenticationProps {
   library: string;
@@ -210,7 +210,7 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
           <h4>Results</h4>
           <ul className="debug-results-list">
             {results.map((result, idx) => (
-              <DebugResult key={idx} sequence={idx} result={result} />
+              <DebugResultListItem key={idx} sequence={idx} result={result} />
             ))}
           </ul>
         </div>

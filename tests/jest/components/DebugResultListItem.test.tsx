@@ -1,11 +1,11 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
-import DebugResult from "../../../src/components/DebugResult";
+import DebugResultListItem from "../../../src/components/DebugResultListItem";
 import { PatronDebugResult } from "../../../src/api/patronDebug";
 
-describe("DebugResult", () => {
+describe("DebugResultListItem", () => {
   const renderResult = (result: PatronDebugResult, sequence = 0) => {
-    return render(<DebugResult result={result} sequence={sequence} />);
+    return render(<DebugResultListItem result={result} sequence={sequence} />);
   };
 
   it("renders success result with string details", () => {
