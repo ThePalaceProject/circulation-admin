@@ -36,7 +36,7 @@ const renderDetails = (
   detailId: string,
   panelStyle: string
 ): React.ReactNode => {
-  if (details === null || details === undefined) {
+  if (details === null) {
     return null;
   }
 
