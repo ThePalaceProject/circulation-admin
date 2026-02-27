@@ -6,6 +6,7 @@ import {
   runPatronDebug,
 } from "../api/patronDebug";
 import DebugResultListItem from "./DebugResultListItem";
+import PasswordInput from "./PasswordInput";
 
 export interface DebugAuthenticationProps {
   library: string;
@@ -190,9 +191,8 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
                   <label htmlFor="debug-auth-password">
                     {selectedMethod.passwordLabel}
                   </label>
-                  <input
+                  <PasswordInput
                     id="debug-auth-password"
-                    type="password"
                     className="form-control"
                     autoComplete="off"
                     value={password}
