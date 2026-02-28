@@ -1,0 +1,46 @@
+.patron-blocking-rules-editor {
+  border-top: 1px solid $gray-border;
+  margin-top: 20px;
+  padding-top: 16px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid $gray-border;
+
+  .patron-blocking-rules-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+
+    .control-label {
+      margin-bottom: 0;
+    }
+
+    .add-patron-blocking-rule {
+      margin: 0;
+    }
+  }
+
+  .no-rules-message {
+    color: $medium-dark-gray;
+    font-style: italic;
+    margin: 8px 0 0;
+  }
+
+  .patron-blocking-rules-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  .patron-blocking-rule-row {
+    border-bottom: 1px solid $medium-gray;
+    padding-bottom: 12px;
+    margin-bottom: 0;
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+}
