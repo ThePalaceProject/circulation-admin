@@ -283,9 +283,16 @@ export interface LibrariesData {
   settings?: LibrarySettingField[];
 }
 
+export interface PatronBlockingRule {
+  name: string;
+  rule: string;
+  message?: string | null;
+}
+
 export interface LibraryWithSettingsData {
   short_name: string;
-  [key: string]: string;
+  patron_blocking_rules?: PatronBlockingRule[];
+  [key: string]: string | PatronBlockingRule[] | undefined;
 }
 
 export type SpecificSettingType =
