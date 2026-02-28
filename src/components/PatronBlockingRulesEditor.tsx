@@ -94,7 +94,16 @@ export default class PatronBlockingRulesEditor extends React.Component<
 
     return (
       <div className="patron-blocking-rules-editor">
-        <label className="control-label">Patron Blocking Rules</label>
+        <div className="patron-blocking-rules-header">
+          <label className="control-label">Patron Blocking Rules</label>
+          <Button
+            type="button"
+            className="add-patron-blocking-rule"
+            disabled={disabled}
+            callback={this.addRule}
+            content="Add Rule"
+          />
+        </div>
         {rules.length === 0 && (
           <p className="no-rules-message">No patron blocking rules defined.</p>
         )}
@@ -140,8 +149,7 @@ export default class PatronBlockingRulesEditor extends React.Component<
                       }
                     />
                     <EditableInput
-                      elementType="input"
-                      type="text"
+                      elementType="textarea"
                       label="Message (optional)"
                       name={`patron_blocking_rule_message_${index}`}
                       value={rule.message || ""}
@@ -158,13 +166,6 @@ export default class PatronBlockingRulesEditor extends React.Component<
             );
           })}
         </ul>
-        <Button
-          type="button"
-          className="add-patron-blocking-rule"
-          disabled={disabled}
-          callback={this.addRule}
-          content="Add Rule"
-        />
       </div>
     );
   }
