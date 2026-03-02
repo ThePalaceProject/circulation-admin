@@ -50,23 +50,23 @@ $dangercolor: #D9534F;
             text-align: right;
           }
         }
-      }
 
-      ul:not(.input-list-ul):not(.announcements-ul):not(.debug-results-list) {
-        padding-left: 10px;
-        li:not(.panel):not(.announcement) {
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-          margin: 20px 0px;
-          padding-bottom: 5px;
-          border-bottom: 1px solid $pagetextcolor;
+        > ul {
+          padding-left: 10px;
+          li {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid $pagetextcolor;
 
-          h3 {
-            margin-right: 20px;
-            flex-grow: 1;
-            font-size: 18px;
+            h3 {
+              margin-right: 20px;
+              flex-grow: 1;
+              font-size: 18px;
+            }
           }
         }
       }
