@@ -5,6 +5,17 @@ import { PatronBlockingRule } from "../interfaces";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 
+function extractErrorMessage(error: FetchErrorData): string | null {
+  if (!error || error.status < 400) return null;
+  const resp = error.response as string;
+  if (!resp) return null;
+  try {
+    return JSON.parse(resp).detail || resp;
+  } catch {
+    return resp;
+  }
+}
+
 export interface PatronBlockingRulesEditorProps {
   value?: PatronBlockingRule[];
   disabled?: boolean;
@@ -91,6 +102,7 @@ export default class PatronBlockingRulesEditor extends React.Component<
   render(): JSX.Element {
     const { disabled, error } = this.props;
     const { rules, clientErrors } = this.state;
+    const serverErrorMessage = extractErrorMessage(error);
 
     return (
       <div className="patron-blocking-rules-editor">
@@ -104,12 +116,20 @@ export default class PatronBlockingRulesEditor extends React.Component<
             content="Add Rule"
           />
         </div>
+        {serverErrorMessage && rules.length > 0 && (
+          <p className="patron-blocking-rule-field-error text-danger">
+            {serverErrorMessage}
+          </p>
+        )}
         {rules.length === 0 && (
           <p className="no-rules-message">No patron blocking rules defined.</p>
         )}
         <ul className="patron-blocking-rules-list list-unstyled">
           {rules.map((rule, index) => {
             const rowErrors = clientErrors[index] || {};
+            const nameClientError = !!rowErrors.name;
+            const ruleClientError = !!rowErrors.rule;
+
             return (
               <li key={index} className="patron-blocking-rule-row">
                 <WithRemoveButton
@@ -117,6 +137,11 @@ export default class PatronBlockingRulesEditor extends React.Component<
                   onRemove={() => this.removeRule(index)}
                 >
                   <div className="patron-blocking-rule-fields">
+                    {nameClientError && (
+                      <p className="patron-blocking-rule-field-error text-danger">
+                        Rule Name is required.
+                      </p>
+                    )}
                     <EditableInput
                       elementType="input"
                       type="text"
@@ -133,6 +158,11 @@ export default class PatronBlockingRulesEditor extends React.Component<
                         this.updateRule(index, "name", value)
                       }
                     />
+                    {ruleClientError && (
+                      <p className="patron-blocking-rule-field-error text-danger">
+                        Rule Expression is required.
+                      </p>
+                    )}
                     <EditableInput
                       elementType="textarea"
                       label="Rule Expression"
