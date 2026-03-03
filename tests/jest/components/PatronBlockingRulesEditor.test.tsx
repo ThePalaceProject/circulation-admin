@@ -1,7 +1,9 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import PatronBlockingRulesEditor from "../../../src/components/PatronBlockingRulesEditor";
+import PatronBlockingRulesEditor, {
+  PatronBlockingRulesEditorHandle,
+} from "../../../src/components/PatronBlockingRulesEditor";
 import { PatronBlockingRule } from "../../../src/interfaces";
 
 const existingRules: PatronBlockingRule[] = [
@@ -65,7 +67,7 @@ describe("PatronBlockingRulesEditor", () => {
 
   it("getValue returns current rules including edits", async () => {
     const user = userEvent.setup();
-    const ref = React.createRef<PatronBlockingRulesEditor>();
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
     render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
@@ -89,7 +91,7 @@ describe("PatronBlockingRulesEditor", () => {
   });
 
   it("getValue returns an empty array when no rules exist", () => {
-    const ref = React.createRef<PatronBlockingRulesEditor>();
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
     render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
     expect(ref.current.getValue()).toEqual([]);
   });

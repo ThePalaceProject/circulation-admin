@@ -6,10 +6,10 @@ import {
   ProtocolData,
 } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
-import PatronBlockingRulesEditor from "./PatronBlockingRulesEditor";
+import PatronBlockingRulesEditor, {
+  PatronBlockingRulesEditorHandle,
+} from "./PatronBlockingRulesEditor";
 import { supportsPatronBlockingRules } from "../utils/patronBlockingRules";
-
-const NEW_LIBRARY_RULES_REF = "new_library_patron_blocking_rules";
 
 /** Extends ServiceEditForm with patron-blocking-rules support for protocols that
  *  support it (v1: SIP2 only). The editor is injected via the hook methods added
@@ -18,6 +18,26 @@ const NEW_LIBRARY_RULES_REF = "new_library_patron_blocking_rules";
 export default class PatronAuthServiceEditForm extends ServiceEditForm<
   PatronAuthServicesData
 > {
+  private newLibraryRulesRef = React.createRef<
+    PatronBlockingRulesEditorHandle
+  >();
+  private libraryRulesRefs = new Map<
+    string,
+    React.RefObject<PatronBlockingRulesEditorHandle>
+  >();
+
+  private getOrCreateLibraryRef(
+    shortName: string
+  ): React.RefObject<PatronBlockingRulesEditorHandle> {
+    if (!this.libraryRulesRefs.has(shortName)) {
+      this.libraryRulesRefs.set(
+        shortName,
+        React.createRef<PatronBlockingRulesEditorHandle>()
+      );
+    }
+    return this.libraryRulesRefs.get(shortName);
+  }
+
   protocolHasLibrarySettings(protocol: ProtocolData): boolean {
     return (
       super.protocolHasLibrarySettings(protocol) ||
@@ -35,7 +55,7 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     }
     return (
       <PatronBlockingRulesEditor
-        ref={`${library.short_name}_patron_blocking_rules`}
+        ref={this.getOrCreateLibraryRef(library.short_name)}
         value={(library.patron_blocking_rules as PatronBlockingRule[]) || []}
         disabled={disabled}
         error={this.props.error}
@@ -52,7 +72,7 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     }
     return (
       <PatronBlockingRulesEditor
-        ref={NEW_LIBRARY_RULES_REF}
+        ref={this.newLibraryRulesRef}
         value={[]}
         disabled={disabled}
         error={this.props.error}
@@ -79,19 +99,15 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
       }
     }
     if (supportsPatronBlockingRules(protocol && protocol.name)) {
-      const editorRef = this.refs[
-        `${library.short_name}_patron_blocking_rules`
-      ] as PatronBlockingRulesEditor | undefined;
-      if (editorRef) {
-        newLibrary.patron_blocking_rules = editorRef.getValue();
+      const editorRef = this.libraryRulesRefs.get(library.short_name);
+      if (editorRef?.current) {
+        newLibrary.patron_blocking_rules = editorRef.current.getValue();
       }
     }
     libraries.push(newLibrary);
-    const newState = Object.assign({}, this.state, {
-      libraries,
-      expandedLibraries,
-    });
-    this.setState(newState);
+    this.setState(
+      Object.assign({}, this.state, { libraries, expandedLibraries })
+    );
   }
 
   addLibrary(protocol: ProtocolData) {
@@ -105,18 +121,13 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
       (this.refs[setting.key] as any).clear();
     }
     if (supportsPatronBlockingRules(protocol && protocol.name)) {
-      const editorRef = this.refs[NEW_LIBRARY_RULES_REF] as
-        | PatronBlockingRulesEditor
-        | undefined;
-      if (editorRef) {
-        newLibrary.patron_blocking_rules = editorRef.getValue();
+      if (this.newLibraryRulesRef.current) {
+        newLibrary.patron_blocking_rules = this.newLibraryRulesRef.current.getValue();
       }
     }
     const libraries = this.state.libraries.concat(newLibrary);
-    const newState = Object.assign({}, this.state, {
-      libraries,
-      selectedLibrary: null,
-    });
-    this.setState(newState);
+    this.setState(
+      Object.assign({}, this.state, { libraries, selectedLibrary: null })
+    );
   }
 }

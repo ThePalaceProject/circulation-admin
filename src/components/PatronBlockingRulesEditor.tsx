@@ -22,181 +22,172 @@ export interface PatronBlockingRulesEditorProps {
   error?: FetchErrorData;
 }
 
-interface PatronBlockingRulesEditorState {
-  rules: PatronBlockingRule[];
-  clientErrors: { [index: number]: { name?: boolean; rule?: boolean } };
+export interface PatronBlockingRulesEditorHandle {
+  getValue: () => PatronBlockingRule[];
+  validateAndGetValue: () => PatronBlockingRule[] | null;
 }
+
+type ClientErrors = { [index: number]: { name?: boolean; rule?: boolean } };
 
 /** Protocol-agnostic editor for a list of patron blocking rules stored in library settings. */
-export default class PatronBlockingRulesEditor extends React.Component<
-  PatronBlockingRulesEditorProps,
-  PatronBlockingRulesEditorState
-> {
-  static defaultProps: Partial<PatronBlockingRulesEditorProps> = {
-    value: [],
-    disabled: false,
+const PatronBlockingRulesEditor = React.forwardRef<
+  PatronBlockingRulesEditorHandle,
+  PatronBlockingRulesEditorProps
+>(({ value = [], disabled = false, error }, ref) => {
+  const [rules, setRules] = React.useState<PatronBlockingRule[]>(() =>
+    (value || []).map((r) => ({ ...r }))
+  );
+  const [clientErrors, setClientErrors] = React.useState<ClientErrors>({});
+
+  const serverErrorMessage = extractErrorMessage(error);
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      getValue: () => rules,
+      validateAndGetValue: () => {
+        const errors: ClientErrors = {};
+        let valid = true;
+        rules.forEach((r, i) => {
+          const rowErrors: { name?: boolean; rule?: boolean } = {};
+          if (!r.name) {
+            rowErrors.name = true;
+            valid = false;
+          }
+          if (!r.rule) {
+            rowErrors.rule = true;
+            valid = false;
+          }
+          if (Object.keys(rowErrors).length > 0) {
+            errors[i] = rowErrors;
+          }
+        });
+        setClientErrors(errors);
+        return valid ? rules : null;
+      },
+    }),
+    [rules]
+  );
+
+  const addRule = () => {
+    setRules((prev) => [...prev, { name: "", rule: "", message: "" }]);
   };
 
-  constructor(props: PatronBlockingRulesEditorProps) {
-    super(props);
-    this.state = {
-      rules: (props.value || []).map((r) => ({ ...r })),
-      clientErrors: {},
-    };
-    this.addRule = this.addRule.bind(this);
-  }
-
-  /** Returns the current list of rules; called via ref by parent form logic. */
-  getValue(): PatronBlockingRule[] {
-    return this.state.rules;
-  }
-
-  addRule() {
-    const rules = [...this.state.rules, { name: "", rule: "", message: "" }];
-    this.setState({ rules });
-  }
-
-  removeRule(index: number) {
-    const rules = this.state.rules.filter((_, i) => i !== index);
-    const clientErrors = { ...this.state.clientErrors };
-    delete clientErrors[index];
-    this.setState({ rules, clientErrors });
-  }
-
-  updateRule(index: number, field: keyof PatronBlockingRule, value: string) {
-    const rules = this.state.rules.map((r, i) =>
-      i === index ? { ...r, [field]: value } : r
-    );
-    const clientErrors = { ...this.state.clientErrors };
-    if (field === "name" || field === "rule") {
-      if (clientErrors[index]) {
-        clientErrors[index] = { ...clientErrors[index], [field]: !value };
-      }
-    }
-    this.setState({ rules, clientErrors });
-  }
-
-  validateAndGetValue(): PatronBlockingRule[] | null {
-    const clientErrors: {
-      [index: number]: { name?: boolean; rule?: boolean };
-    } = {};
-    let valid = true;
-    this.state.rules.forEach((r, i) => {
-      const rowErrors: { name?: boolean; rule?: boolean } = {};
-      if (!r.name) {
-        rowErrors.name = true;
-        valid = false;
-      }
-      if (!r.rule) {
-        rowErrors.rule = true;
-        valid = false;
-      }
-      if (Object.keys(rowErrors).length > 0) {
-        clientErrors[i] = rowErrors;
-      }
+  const removeRule = (index: number) => {
+    setRules((prev) => prev.filter((_, i) => i !== index));
+    setClientErrors((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
     });
-    this.setState({ clientErrors });
-    return valid ? this.state.rules : null;
-  }
+  };
 
-  render(): JSX.Element {
-    const { disabled, error } = this.props;
-    const { rules, clientErrors } = this.state;
-    const serverErrorMessage = extractErrorMessage(error);
-
-    return (
-      <div className="patron-blocking-rules-editor">
-        <div className="patron-blocking-rules-header">
-          <label className="control-label">Patron Blocking Rules</label>
-          <Button
-            type="button"
-            className="add-patron-blocking-rule"
-            disabled={disabled}
-            callback={this.addRule}
-            content="Add Rule"
-          />
-        </div>
-        {serverErrorMessage && rules.length > 0 && (
-          <p className="patron-blocking-rule-field-error text-danger">
-            {serverErrorMessage}
-          </p>
-        )}
-        {rules.length === 0 && (
-          <p className="no-rules-message">No patron blocking rules defined.</p>
-        )}
-        <ul className="patron-blocking-rules-list list-unstyled">
-          {rules.map((rule, index) => {
-            const rowErrors = clientErrors[index] || {};
-            const nameClientError = !!rowErrors.name;
-            const ruleClientError = !!rowErrors.rule;
-
-            return (
-              <li key={index} className="patron-blocking-rule-row">
-                <WithRemoveButton
-                  disabled={disabled}
-                  onRemove={() => this.removeRule(index)}
-                >
-                  <div className="patron-blocking-rule-fields">
-                    {nameClientError && (
-                      <p className="patron-blocking-rule-field-error text-danger">
-                        Rule Name is required.
-                      </p>
-                    )}
-                    <EditableInput
-                      elementType="input"
-                      type="text"
-                      label="Rule Name"
-                      name={`patron_blocking_rule_name_${index}`}
-                      value={rule.name}
-                      required={true}
-                      disabled={disabled}
-                      readOnly={disabled}
-                      optionalText={false}
-                      clientError={rowErrors.name}
-                      error={error}
-                      onChange={(value) =>
-                        this.updateRule(index, "name", value)
-                      }
-                    />
-                    {ruleClientError && (
-                      <p className="patron-blocking-rule-field-error text-danger">
-                        Rule Expression is required.
-                      </p>
-                    )}
-                    <EditableInput
-                      elementType="textarea"
-                      label="Rule Expression"
-                      name={`patron_blocking_rule_rule_${index}`}
-                      value={rule.rule}
-                      required={true}
-                      disabled={disabled}
-                      readOnly={disabled}
-                      optionalText={false}
-                      clientError={rowErrors.rule}
-                      error={error}
-                      onChange={(value) =>
-                        this.updateRule(index, "rule", value)
-                      }
-                    />
-                    <EditableInput
-                      elementType="textarea"
-                      label="Message (optional)"
-                      name={`patron_blocking_rule_message_${index}`}
-                      value={rule.message || ""}
-                      disabled={disabled}
-                      readOnly={disabled}
-                      optionalText={false}
-                      onChange={(value) =>
-                        this.updateRule(index, "message", value)
-                      }
-                    />
-                  </div>
-                </WithRemoveButton>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+  const updateRule = (
+    index: number,
+    field: keyof PatronBlockingRule,
+    value: string
+  ) => {
+    setRules((prev) =>
+      prev.map((r, i) => (i === index ? { ...r, [field]: value } : r))
     );
-  }
-}
+    if (field === "name" || field === "rule") {
+      setClientErrors((prev) => {
+        if (!prev[index]) return prev;
+        return { ...prev, [index]: { ...prev[index], [field]: !value } };
+      });
+    }
+  };
+
+  return (
+    <div className="patron-blocking-rules-editor">
+      <div className="patron-blocking-rules-header">
+        <label className="control-label">Patron Blocking Rules</label>
+        <Button
+          type="button"
+          className="add-patron-blocking-rule"
+          disabled={disabled}
+          callback={addRule}
+          content="Add Rule"
+        />
+      </div>
+      {serverErrorMessage && rules.length > 0 && (
+        <p className="patron-blocking-rule-field-error text-danger">
+          {serverErrorMessage}
+        </p>
+      )}
+      {rules.length === 0 && (
+        <p className="no-rules-message">No patron blocking rules defined.</p>
+      )}
+      <ul className="patron-blocking-rules-list list-unstyled">
+        {rules.map((rule, index) => {
+          const rowErrors = clientErrors[index] || {};
+          const nameClientError = !!rowErrors.name;
+          const ruleClientError = !!rowErrors.rule;
+
+          return (
+            <li key={index} className="patron-blocking-rule-row">
+              <WithRemoveButton
+                disabled={disabled}
+                onRemove={() => removeRule(index)}
+              >
+                <div className="patron-blocking-rule-fields">
+                  {nameClientError && (
+                    <p className="patron-blocking-rule-field-error text-danger">
+                      Rule Name is required.
+                    </p>
+                  )}
+                  <EditableInput
+                    elementType="input"
+                    type="text"
+                    label="Rule Name"
+                    name={`patron_blocking_rule_name_${index}`}
+                    value={rule.name}
+                    required={true}
+                    disabled={disabled}
+                    readOnly={disabled}
+                    optionalText={false}
+                    clientError={rowErrors.name}
+                    error={error}
+                    onChange={(value) => updateRule(index, "name", value)}
+                  />
+                  {ruleClientError && (
+                    <p className="patron-blocking-rule-field-error text-danger">
+                      Rule Expression is required.
+                    </p>
+                  )}
+                  <EditableInput
+                    elementType="textarea"
+                    label="Rule Expression"
+                    name={`patron_blocking_rule_rule_${index}`}
+                    value={rule.rule}
+                    required={true}
+                    disabled={disabled}
+                    readOnly={disabled}
+                    optionalText={false}
+                    clientError={rowErrors.rule}
+                    error={error}
+                    onChange={(value) => updateRule(index, "rule", value)}
+                  />
+                  <EditableInput
+                    elementType="textarea"
+                    label="Message (optional)"
+                    name={`patron_blocking_rule_message_${index}`}
+                    value={rule.message || ""}
+                    disabled={disabled}
+                    readOnly={disabled}
+                    optionalText={false}
+                    onChange={(value) => updateRule(index, "message", value)}
+                  />
+                </div>
+              </WithRemoveButton>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+});
+
+PatronBlockingRulesEditor.displayName = "PatronBlockingRulesEditor";
+
+export default PatronBlockingRulesEditor;
