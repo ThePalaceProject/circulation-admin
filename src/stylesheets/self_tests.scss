@@ -123,6 +123,15 @@
       border: 0.0625rem $red-dark solid;
       color: #000;
     }
+
+    .debug-description {
+      white-space: pre-line;
+      margin-top: 5px;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
   }
 
   .warning {

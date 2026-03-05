@@ -1,8 +1,7 @@
 import { expect } from "chai";
-import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import SelfTestResult from "../SelfTestResult";
 
@@ -105,5 +104,25 @@ describe("SelfTestResult", () => {
     const testException = wrapper.find(".exception-description");
     expect(testException.length).to.equal(1);
     expect(testException.text()).to.equal("exception: Problem!");
+
+    const debugMessage = wrapper.find(".debug-description");
+    expect(debugMessage.length).to.equal(1);
+    expect(debugMessage.text()).to.equal("debug message...");
+  });
+
+  it("does not display debug_message when it is absent", () => {
+    const exception = {
+      class: "IntegrationException",
+      debug_message: "",
+      message: "Problem!",
+    };
+    const exceptionResult = {
+      ...stringResult,
+      ...{ success: false, exception: exception },
+    };
+    wrapper.setProps({ result: exceptionResult });
+
+    expect(wrapper.find(".exception-description").length).to.equal(1);
+    expect(wrapper.find(".debug-description").length).to.equal(0);
   });
 });
