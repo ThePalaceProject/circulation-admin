@@ -47,7 +47,7 @@ export default class SelfTestResult extends React.Component<
             </p>
             {this.props.result.exception.debug_message && (
               <p className="debug-description">
-                {this.props.result.exception.debug_message}
+                debug: {this.props.result.exception.debug_message}
               </p>
             )}
           </>

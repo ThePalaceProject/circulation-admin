@@ -88,7 +88,6 @@ describe("SelfTestResult", () => {
   it("displays a result with an exception", () => {
     const exception = {
       class: "IntegrationException",
-      debug_message: "debug message...",
       message: "Problem!",
     };
     const exceptionResult = {
@@ -104,16 +103,44 @@ describe("SelfTestResult", () => {
     const testException = wrapper.find(".exception-description");
     expect(testException.length).to.equal(1);
     expect(testException.text()).to.equal("exception: Problem!");
+  });
+
+  it("displays debug_message when present", () => {
+    const exception = {
+      class: "IntegrationException",
+      debug_message: "debug message...",
+      message: "Problem!",
+    };
+    const exceptionResult = {
+      ...stringResult,
+      ...{ success: false, exception: exception },
+    };
+    wrapper.setProps({ result: exceptionResult });
 
     const debugMessage = wrapper.find(".debug-description");
     expect(debugMessage.length).to.equal(1);
-    expect(debugMessage.text()).to.equal("debug message...");
+    expect(debugMessage.text()).to.equal("debug: debug message...");
+  });
+
+  it("does not display debug_message when it is empty", () => {
+    const exception = {
+      class: "IntegrationException",
+      debug_message: "",
+      message: "Problem!",
+    };
+    const exceptionResult = {
+      ...stringResult,
+      ...{ success: false, exception: exception },
+    };
+    wrapper.setProps({ result: exceptionResult });
+
+    expect(wrapper.find(".exception-description").length).to.equal(1);
+    expect(wrapper.find(".debug-description").length).to.equal(0);
   });
 
   it("does not display debug_message when it is absent", () => {
     const exception = {
       class: "IntegrationException",
-      debug_message: "",
       message: "Problem!",
     };
     const exceptionResult = {

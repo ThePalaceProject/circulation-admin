@@ -337,7 +337,7 @@ export interface ProtocolData {
 
 export interface SelfTestsException {
   class: string;
-  debug_message: string;
+  debug_message?: string;
   message: string;
 }
 
