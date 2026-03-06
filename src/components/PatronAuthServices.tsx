@@ -70,6 +70,7 @@ function mapStateToProps(state, ownProps) {
   // of the create/edit form.
   return {
     data: data,
+    additionalData: { csrfToken: ownProps.csrfToken },
     responseBody:
       state.editor.patronAuthServices &&
       state.editor.patronAuthServices.successMessage,

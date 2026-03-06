@@ -4,6 +4,7 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 import { PatronBlockingRule } from "../interfaces";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
+import { validatePatronBlockingRuleExpression } from "../api/patronBlockingRules";
 
 function extractErrorMessage(error: FetchErrorData): string | null {
   if (!error || error.status < 400) return null;
@@ -20,6 +21,8 @@ export interface PatronBlockingRulesEditorProps {
   value?: PatronBlockingRule[];
   disabled?: boolean;
   error?: FetchErrorData;
+  csrfToken?: string;
+  serviceId?: number;
 }
 
 export interface PatronBlockingRulesEditorHandle {
@@ -29,15 +32,18 @@ export interface PatronBlockingRulesEditorHandle {
 
 type RuleEntry = PatronBlockingRule & { _id: number };
 type ClientErrors = { [index: number]: { name?: boolean; rule?: boolean } };
+type ServerErrors = { [index: number]: string | null };
 
 interface RuleFormListItemProps {
   rule: RuleEntry;
   index: number;
   disabled: boolean;
   rowErrors: { name?: boolean; rule?: boolean };
+  serverRuleError?: string | null;
   error?: FetchErrorData;
   onRemove: () => void;
   onUpdate: (field: keyof PatronBlockingRule, value: string) => void;
+  onRuleBlur: () => void;
 }
 
 function RuleFormListItem({
@@ -45,9 +51,11 @@ function RuleFormListItem({
   index,
   disabled,
   rowErrors,
+  serverRuleError,
   error,
   onRemove,
   onUpdate,
+  onRuleBlur,
 }: RuleFormListItemProps) {
   const nameClientError = !!rowErrors.name;
   const ruleClientError = !!rowErrors.rule;
@@ -80,19 +88,31 @@ function RuleFormListItem({
               Rule Expression is required.
             </p>
           )}
-          <EditableInput
-            elementType="textarea"
-            label="Rule Expression"
-            name={`patron_blocking_rule_rule_${index}`}
-            value={rule.rule}
-            required={true}
-            disabled={disabled}
-            readOnly={disabled}
-            optionalText={false}
-            clientError={rowErrors.rule}
-            error={error}
-            onChange={(value) => onUpdate("rule", value)}
-          />
+          {serverRuleError && (
+            <p className="patron-blocking-rule-field-error text-danger">
+              {serverRuleError}
+            </p>
+          )}
+          {/* This div captures the focusout event that bubbles up from the
+              textarea inside it, triggering server-side rule validation on blur.
+              It is not an interactive element and has no keyboard/mouse role —
+              the textarea itself handles all user interaction. */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div onBlur={onRuleBlur}>
+            <EditableInput
+              elementType="textarea"
+              label="Rule Expression"
+              name={`patron_blocking_rule_rule_${index}`}
+              value={rule.rule}
+              required={true}
+              disabled={disabled}
+              readOnly={disabled}
+              optionalText={false}
+              clientError={rowErrors.rule}
+              error={error}
+              onChange={(value) => onUpdate("rule", value)}
+            />
+          </div>
           <EditableInput
             elementType="textarea"
             label="Message (optional)"
@@ -113,7 +133,7 @@ function RuleFormListItem({
 const PatronBlockingRulesEditor = React.forwardRef<
   PatronBlockingRulesEditorHandle,
   PatronBlockingRulesEditorProps
->(({ value = [], disabled = false, error }, ref) => {
+>(({ value = [], disabled = false, error, csrfToken, serviceId }, ref) => {
   const nextId = React.useRef(0);
   const newId = () => nextId.current++;
 
@@ -121,6 +141,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
     (value || []).map((r) => ({ ...r, _id: newId() }))
   );
   const [clientErrors, setClientErrors] = React.useState<ClientErrors>({});
+  const [serverErrors, setServerErrors] = React.useState<ServerErrors>({});
 
   const serverErrorMessage = extractErrorMessage(error);
 
@@ -166,6 +187,11 @@ const PatronBlockingRulesEditor = React.forwardRef<
       delete next[index];
       return next;
     });
+    setServerErrors((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
   };
 
   const updateRule = (
@@ -182,6 +208,22 @@ const PatronBlockingRulesEditor = React.forwardRef<
         return { ...prev, [index]: { ...prev[index], [field]: !value } };
       });
     }
+    if (field === "rule") {
+      setServerErrors((prev) => ({ ...prev, [index]: null }));
+    }
+  };
+
+  const handleRuleBlur = async (index: number) => {
+    const rule = rules[index];
+    if (!rule || !rule.rule) {
+      return;
+    }
+    const errorMessage = await validatePatronBlockingRuleExpression(
+      serviceId,
+      rule,
+      csrfToken
+    );
+    setServerErrors((prev) => ({ ...prev, [index]: errorMessage }));
   };
 
   const hasIncompleteRule = rules.some((r) => !r.name || !r.rule);
@@ -214,9 +256,11 @@ const PatronBlockingRulesEditor = React.forwardRef<
             index={index}
             disabled={disabled}
             rowErrors={clientErrors[index] || {}}
+            serverRuleError={serverErrors[index]}
             error={error}
             onRemove={() => removeRule(index)}
             onUpdate={(field, value) => updateRule(index, field, value)}
+            onRuleBlur={() => handleRuleBlur(index)}
           />
         ))}
       </ul>

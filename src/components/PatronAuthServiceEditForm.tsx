@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   LibraryWithSettingsData,
   PatronAuthServicesData,
-  PatronBlockingRule,
   ProtocolData,
 } from "../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
@@ -59,6 +58,12 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
         value={library.patron_blocking_rules || []}
         disabled={disabled}
         error={this.props.error}
+        csrfToken={this.props.additionalData?.csrfToken}
+        serviceId={
+          this.props.item?.id !== undefined
+            ? Number(this.props.item.id)
+            : undefined
+        }
       />
     );
   }
@@ -76,6 +81,12 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
         value={[]}
         disabled={disabled}
         error={this.props.error}
+        csrfToken={this.props.additionalData?.csrfToken}
+        serviceId={
+          this.props.item?.id !== undefined
+            ? Number(this.props.item.id)
+            : undefined
+        }
       />
     );
   }

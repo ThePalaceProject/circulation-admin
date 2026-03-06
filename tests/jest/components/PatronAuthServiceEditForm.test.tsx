@@ -1,12 +1,15 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as fetchMock from "fetch-mock-jest";
 import PatronAuthServiceEditForm from "../../../src/components/PatronAuthServiceEditForm";
 import {
   PatronAuthServicesData,
   PatronBlockingRule,
 } from "../../../src/interfaces";
 import { SIP2_PROTOCOL } from "../../../src/utils/patronBlockingRules";
+
+const VALIDATE_URL = "/admin/patron_auth_service_validate_patron_blocking_rule";
 
 async function expandLibrariesPanel(user: ReturnType<typeof userEvent.setup>) {
   const toggle = screen
@@ -62,6 +65,17 @@ function buildSIP2Item(rules: PatronBlockingRule[] = []) {
     ],
   };
 }
+
+// Guard: any blur on the Rule Expression textarea calls validatePatronBlockingRuleExpression.
+// All describe blocks get a default 200 mock so tests that incidentally trigger blur
+// don't fail with "only absolute URLs are supported" from the fetch polyfill.
+beforeEach(() => {
+  fetchMock.post(VALIDATE_URL, { status: 200 });
+});
+
+afterEach(() => {
+  fetchMock.mockReset();
+});
 
 describe("PatronAuthServiceEditForm – capability gating", () => {
   it("shows PatronBlockingRulesEditor in expanded library settings for SIP2", async () => {

@@ -17,6 +17,7 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 export interface ServiceEditFormProps<T> {
   data: T;
   item?: ServiceData;
+  additionalData?: any;
   disabled: boolean;
   save?: (data: FormData) => void;
   urlBase: string;
@@ -635,10 +636,7 @@ export default class ServiceEditForm<
    * Subclasses may override this method to control removal.
    * @param library The library to remove.
    */
-  isLibraryRemovalPermitted(library: LibraryWithSettingsData): boolean {
-    // library should be provided on every call.
-    // It is not used here, but might be in subclass implementations.
-    // Removal is permitted by default.
+  isLibraryRemovalPermitted(_library: LibraryWithSettingsData): boolean {
     return true;
   }
 
