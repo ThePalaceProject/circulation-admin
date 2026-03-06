@@ -7,7 +7,7 @@ import EditableConfigList, {
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
 import { PatronAuthServicesData, PatronAuthServiceData } from "../interfaces";
-import ServiceEditForm from "./ServiceEditForm";
+import PatronAuthServiceEditForm from "./PatronAuthServiceEditForm";
 import NeighborhoodAnalyticsForm from "./NeighborhoodAnalyticsForm";
 
 /** Right panel for patron authentication services on the system
@@ -18,7 +18,7 @@ export class PatronAuthServices extends EditableConfigList<
   PatronAuthServicesData,
   PatronAuthServiceData
 > {
-  EditForm = ServiceEditForm;
+  EditForm = PatronAuthServiceEditForm;
   ExtraFormSection = NeighborhoodAnalyticsForm;
   extraFormKey = "neighborhood_mode";
   listDataKey = "patron_auth_services";
@@ -70,6 +70,7 @@ function mapStateToProps(state, ownProps) {
   // of the create/edit form.
   return {
     data: data,
+    additionalData: { csrfToken: ownProps.csrfToken },
     responseBody:
       state.editor.patronAuthServices &&
       state.editor.patronAuthServices.successMessage,
