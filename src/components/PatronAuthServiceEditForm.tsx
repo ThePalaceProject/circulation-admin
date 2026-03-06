@@ -103,6 +103,9 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
       if (editorRef?.current) {
         newLibrary.patron_blocking_rules = editorRef.current.getValue();
       }
+    const editorRef = this.libraryRulesRefs.get(library.short_name);
+    if (editorRef?.current) {
+      newLibrary.patron_blocking_rules = editorRef.current.getValue();
     }
     libraries.push(newLibrary);
     this.setState(
