@@ -105,6 +105,8 @@ const PatronBlockingRulesEditor = React.forwardRef<
     }
   };
 
+  const hasIncompleteRule = rules.some((r) => !r.name || !r.rule);
+
   return (
     <div className="patron-blocking-rules-editor">
       <div className="patron-blocking-rules-header">
@@ -112,7 +114,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
         <Button
           type="button"
           className="add-patron-blocking-rule"
-          disabled={disabled}
+          disabled={disabled || hasIncompleteRule}
           callback={addRule}
           content="Add Rule"
         />

@@ -111,6 +111,33 @@ describe("PatronBlockingRulesEditor", () => {
     expect(screen.queryByText(/No patron blocking rules defined/i)).toBeNull();
   });
 
+  it("disables Add Rule button when an existing rule is missing required fields", async () => {
+    const user = userEvent.setup();
+    render(<PatronBlockingRulesEditor value={[]} />);
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    expect(screen.getByRole("button", { name: /Add Rule/i })).toBeDisabled();
+  });
+
+  it("re-enables Add Rule button once all required fields are filled", async () => {
+    const user = userEvent.setup();
+    render(<PatronBlockingRulesEditor value={[]} />);
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    expect(screen.getByRole("button", { name: /Add Rule/i })).toBeDisabled();
+
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(
+      screen.getByLabelText(/Rule Expression/i),
+      "blocked = true"
+    );
+
+    expect(
+      screen.getByRole("button", { name: /Add Rule/i })
+    ).not.toBeDisabled();
+  });
+
   it("getValue does not include internal _id field in returned rules", () => {
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
     render(<PatronBlockingRulesEditor ref={ref} value={existingRules} />);
