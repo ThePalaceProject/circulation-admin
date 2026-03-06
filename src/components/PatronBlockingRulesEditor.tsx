@@ -30,6 +30,85 @@ export interface PatronBlockingRulesEditorHandle {
 type RuleEntry = PatronBlockingRule & { _id: number };
 type ClientErrors = { [index: number]: { name?: boolean; rule?: boolean } };
 
+interface RuleFormListItemProps {
+  rule: RuleEntry;
+  index: number;
+  disabled: boolean;
+  rowErrors: { name?: boolean; rule?: boolean };
+  error?: FetchErrorData;
+  onRemove: () => void;
+  onUpdate: (field: keyof PatronBlockingRule, value: string) => void;
+}
+
+function RuleFormListItem({
+  rule,
+  index,
+  disabled,
+  rowErrors,
+  error,
+  onRemove,
+  onUpdate,
+}: RuleFormListItemProps) {
+  const nameClientError = !!rowErrors.name;
+  const ruleClientError = !!rowErrors.rule;
+
+  return (
+    <li className="patron-blocking-rule-row">
+      <WithRemoveButton disabled={disabled} onRemove={onRemove}>
+        <div className="patron-blocking-rule-fields">
+          {nameClientError && (
+            <p className="patron-blocking-rule-field-error text-danger">
+              Rule Name is required.
+            </p>
+          )}
+          <EditableInput
+            elementType="input"
+            type="text"
+            label="Rule Name"
+            name={`patron_blocking_rule_name_${index}`}
+            value={rule.name}
+            required={true}
+            disabled={disabled}
+            readOnly={disabled}
+            optionalText={false}
+            clientError={rowErrors.name}
+            error={error}
+            onChange={(value) => onUpdate("name", value)}
+          />
+          {ruleClientError && (
+            <p className="patron-blocking-rule-field-error text-danger">
+              Rule Expression is required.
+            </p>
+          )}
+          <EditableInput
+            elementType="textarea"
+            label="Rule Expression"
+            name={`patron_blocking_rule_rule_${index}`}
+            value={rule.rule}
+            required={true}
+            disabled={disabled}
+            readOnly={disabled}
+            optionalText={false}
+            clientError={rowErrors.rule}
+            error={error}
+            onChange={(value) => onUpdate("rule", value)}
+          />
+          <EditableInput
+            elementType="textarea"
+            label="Message (optional)"
+            name={`patron_blocking_rule_message_${index}`}
+            value={rule.message || ""}
+            disabled={disabled}
+            readOnly={disabled}
+            optionalText={false}
+            onChange={(value) => onUpdate("message", value)}
+          />
+        </div>
+      </WithRemoveButton>
+    </li>
+  );
+}
+
 /** Protocol-agnostic editor for a list of patron blocking rules stored in library settings. */
 const PatronBlockingRulesEditor = React.forwardRef<
   PatronBlockingRulesEditorHandle,
@@ -128,70 +207,18 @@ const PatronBlockingRulesEditor = React.forwardRef<
         <p className="no-rules-message">No patron blocking rules defined.</p>
       )}
       <ul className="patron-blocking-rules-list list-unstyled">
-        {rules.map((rule, index) => {
-          const rowErrors = clientErrors[index] || {};
-          const nameClientError = !!rowErrors.name;
-          const ruleClientError = !!rowErrors.rule;
-
-          return (
-            <li key={rule._id} className="patron-blocking-rule-row">
-              <WithRemoveButton
-                disabled={disabled}
-                onRemove={() => removeRule(index)}
-              >
-                <div className="patron-blocking-rule-fields">
-                  {nameClientError && (
-                    <p className="patron-blocking-rule-field-error text-danger">
-                      Rule Name is required.
-                    </p>
-                  )}
-                  <EditableInput
-                    elementType="input"
-                    type="text"
-                    label="Rule Name"
-                    name={`patron_blocking_rule_name_${index}`}
-                    value={rule.name}
-                    required={true}
-                    disabled={disabled}
-                    readOnly={disabled}
-                    optionalText={false}
-                    clientError={rowErrors.name}
-                    error={error}
-                    onChange={(value) => updateRule(index, "name", value)}
-                  />
-                  {ruleClientError && (
-                    <p className="patron-blocking-rule-field-error text-danger">
-                      Rule Expression is required.
-                    </p>
-                  )}
-                  <EditableInput
-                    elementType="textarea"
-                    label="Rule Expression"
-                    name={`patron_blocking_rule_rule_${index}`}
-                    value={rule.rule}
-                    required={true}
-                    disabled={disabled}
-                    readOnly={disabled}
-                    optionalText={false}
-                    clientError={rowErrors.rule}
-                    error={error}
-                    onChange={(value) => updateRule(index, "rule", value)}
-                  />
-                  <EditableInput
-                    elementType="textarea"
-                    label="Message (optional)"
-                    name={`patron_blocking_rule_message_${index}`}
-                    value={rule.message || ""}
-                    disabled={disabled}
-                    readOnly={disabled}
-                    optionalText={false}
-                    onChange={(value) => updateRule(index, "message", value)}
-                  />
-                </div>
-              </WithRemoveButton>
-            </li>
-          );
-        })}
+        {rules.map((rule, index) => (
+          <RuleFormListItem
+            key={rule._id}
+            rule={rule}
+            index={index}
+            disabled={disabled}
+            rowErrors={clientErrors[index] || {}}
+            error={error}
+            onRemove={() => removeRule(index)}
+            onUpdate={(field, value) => updateRule(index, field, value)}
+          />
+        ))}
       </ul>
     </div>
   );
