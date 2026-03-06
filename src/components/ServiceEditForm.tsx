@@ -246,6 +246,13 @@ export default class ServiceEditForm<
     return null;
   }
 
+  /** Returns true when this protocol has any editable per-library settings,
+   *  either from the protocol definition or injected by a subclass.
+   *  Subclasses should override this when they add extra library-level fields. */
+  protocolHasLibrarySettings(protocol: ProtocolData): boolean {
+    return this.protocolLibrarySettings(protocol).length > 0;
+  }
+
   renderRequiredFields(
     requiredFields,
     protocol: ProtocolData,
@@ -578,13 +585,6 @@ export default class ServiceEditForm<
 
   protocolLibrarySettings(protocol: ProtocolData) {
     return (protocol && protocol.library_settings) || [];
-  }
-
-  /** Returns true when this protocol has any editable per-library settings,
-   *  either from the protocol definition or injected by a subclass.
-   *  Subclasses should override this when they add extra library-level fields. */
-  protocolHasLibrarySettings(protocol: ProtocolData): boolean {
-    return this.protocolLibrarySettings(protocol).length > 0;
   }
 
   sitewide(protocol: ProtocolData): boolean {
