@@ -292,7 +292,6 @@ export interface PatronBlockingRule {
 export interface LibraryWithSettingsData {
   short_name: string;
   patron_blocking_rules?: PatronBlockingRule[];
-  [key: string]: string | PatronBlockingRule[] | undefined;
 }
 
 export type SpecificSettingType =

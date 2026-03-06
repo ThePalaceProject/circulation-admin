@@ -56,7 +56,7 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     return (
       <PatronBlockingRulesEditor
         ref={this.getOrCreateLibraryRef(library.short_name)}
-        value={(library.patron_blocking_rules as PatronBlockingRule[]) || []}
+        value={library.patron_blocking_rules || []}
         disabled={disabled}
         error={this.props.error}
       />
@@ -95,7 +95,9 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
         `${library.short_name}_${setting.key}`
       ] as any).getValue();
       if (value) {
-        newLibrary[setting.key] = value;
+        ((newLibrary as unknown) as Record<string, string>)[
+          setting.key
+        ] = value;
       }
     }
     if (supportsPatronBlockingRules(protocol && protocol.name)) {
@@ -119,7 +121,9 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     for (const setting of this.protocolLibrarySettings(protocol)) {
       const value = (this.refs[setting.key] as any).getValue();
       if (value) {
-        newLibrary[setting.key] = value;
+        ((newLibrary as unknown) as Record<string, string>)[
+          setting.key
+        ] = value;
       }
       (this.refs[setting.key] as any).clear();
     }

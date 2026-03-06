@@ -410,7 +410,11 @@ export default class ServiceEditForm<
                         key={setting.key}
                         setting={setting}
                         disabled={disabled}
-                        value={library[setting.key]}
+                        value={
+                          ((library as unknown) as Record<string, string>)[
+                            setting.key
+                          ]
+                        }
                         ref={library.short_name + "_" + setting.key}
                       />
                     ))}
