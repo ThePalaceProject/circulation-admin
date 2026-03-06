@@ -1,7 +1,7 @@
 import * as React from "react";
-import { PatronAuthServicesData } from "../interfaces";
 import {
   LibraryWithSettingsData,
+  PatronAuthServicesData,
   PatronBlockingRule,
   ProtocolData,
 } from "../interfaces";
@@ -105,9 +105,6 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
       if (editorRef?.current) {
         newLibrary.patron_blocking_rules = editorRef.current.getValue();
       }
-    const editorRef = this.libraryRulesRefs.get(library.short_name);
-    if (editorRef?.current) {
-      newLibrary.patron_blocking_rules = editorRef.current.getValue();
     }
     libraries.push(newLibrary);
     this.setState(
@@ -127,8 +124,10 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
       }
       (this.refs[setting.key] as any).clear();
     }
-    if (this.newLibraryRulesRef.current) {
-      newLibrary.patron_blocking_rules = this.newLibraryRulesRef.current.getValue();
+    if (supportsPatronBlockingRules(protocol && protocol.name)) {
+      if (this.newLibraryRulesRef.current) {
+        newLibrary.patron_blocking_rules = this.newLibraryRulesRef.current.getValue();
+      }
     }
     const libraries = this.state.libraries.concat(newLibrary);
     this.setState(
