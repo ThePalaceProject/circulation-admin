@@ -92,7 +92,7 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     };
     for (const setting of this.protocolLibrarySettings(protocol)) {
       const value = (this.refs[
-        library.short_name + "_" + setting.key
+        `${library.short_name}_${setting.key}`
       ] as any).getValue();
       if (value) {
         newLibrary[setting.key] = value;
