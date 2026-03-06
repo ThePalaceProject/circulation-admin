@@ -12,7 +12,7 @@ import PatronBlockingRulesEditor, {
 import { supportsPatronBlockingRules } from "../utils/patronBlockingRules";
 
 /** Extends ServiceEditForm with patron-blocking-rules support for protocols that
- *  support it (v1: SIP2 only). The editor is injected via the hook methods added
+ *  support it. The editor is injected via the hook methods added
  *  to ServiceEditForm; editLibrary and addLibrary are overridden to collect the
  *  rules from the editor ref and persist them in library state. */
 export default class PatronAuthServiceEditForm extends ServiceEditForm<
