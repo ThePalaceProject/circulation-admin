@@ -119,7 +119,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
           content="Add Rule"
         />
       </div>
-      {serverErrorMessage && rules.length > 0 && (
+      {serverErrorMessage && (
         <p className="patron-blocking-rule-field-error text-danger">
           {serverErrorMessage}
         </p>

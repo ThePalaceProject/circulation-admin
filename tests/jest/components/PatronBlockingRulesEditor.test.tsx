@@ -5,6 +5,7 @@ import PatronBlockingRulesEditor, {
   PatronBlockingRulesEditorHandle,
 } from "../../../src/components/PatronBlockingRulesEditor";
 import { PatronBlockingRule } from "../../../src/interfaces";
+import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 const existingRules: PatronBlockingRule[] = [
   { name: "Rule A", rule: "expr_a", message: "msg a" },
@@ -136,6 +137,16 @@ describe("PatronBlockingRulesEditor", () => {
     expect(
       screen.getByRole("button", { name: /Add Rule/i })
     ).not.toBeDisabled();
+  });
+
+  it("shows server error message even when there are no rules", () => {
+    const error: FetchErrorData = {
+      status: 500,
+      response: JSON.stringify({ detail: "Internal server error" }),
+      url: "",
+    };
+    render(<PatronBlockingRulesEditor value={[]} error={error} />);
+    expect(screen.getByText(/Internal server error/i)).toBeTruthy();
   });
 
   it("getValue does not include internal _id field in returned rules", () => {
