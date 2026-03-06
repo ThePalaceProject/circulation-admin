@@ -45,7 +45,7 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     );
   }
 
-  renderExtraExpandedLibrarySettings(
+  renderExtraAssociatedLibrarySettings(
     library: LibraryWithSettingsData,
     protocol: ProtocolData,
     disabled: boolean

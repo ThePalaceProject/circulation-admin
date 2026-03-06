@@ -229,7 +229,7 @@ export default class ServiceEditForm<
 
   /** Hook for subclasses to inject extra fields into the expanded per-library settings panel.
    *  Rendered after protocol library_settings fields and before the Save button. */
-  renderExtraExpandedLibrarySettings(
+  renderExtraAssociatedLibrarySettings(
     _library: LibraryWithSettingsData,
     _protocol: ProtocolData,
     _disabled: boolean
@@ -407,7 +407,7 @@ export default class ServiceEditForm<
                         ref={library.short_name + "_" + setting.key}
                       />
                     ))}
-                  {this.renderExtraExpandedLibrarySettings(
+                  {this.renderExtraAssociatedLibrarySettings(
                     library,
                     protocol,
                     disabled
