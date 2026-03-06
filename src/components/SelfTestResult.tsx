@@ -9,7 +9,7 @@ export interface SelfTestResultProps {
 
 export default class SelfTestResult extends React.Component<
   SelfTestResultProps,
-  {}
+  Record<string, never>
 > {
   constructor(props) {
     super(props);
@@ -41,9 +41,16 @@ export default class SelfTestResult extends React.Component<
           success: {`${this.props.result.success}`}
         </p>
         {!this.props.result.success && this.props.result.exception && (
-          <p className="exception-description">
-            exception: {this.props.result.exception.message}
-          </p>
+          <>
+            <p className="exception-description">
+              exception: {this.props.result.exception.message}
+            </p>
+            {this.props.result.exception.debug_message && (
+              <p className="debug-description">
+                debug: {this.props.result.exception.debug_message}
+              </p>
+            )}
+          </>
         )}
       </li>
     );
