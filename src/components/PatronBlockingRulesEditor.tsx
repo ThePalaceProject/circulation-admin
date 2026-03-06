@@ -27,6 +27,7 @@ export interface PatronBlockingRulesEditorHandle {
   validateAndGetValue: () => PatronBlockingRule[] | null;
 }
 
+type RuleEntry = PatronBlockingRule & { _id: number };
 type ClientErrors = { [index: number]: { name?: boolean; rule?: boolean } };
 
 /** Protocol-agnostic editor for a list of patron blocking rules stored in library settings. */
@@ -34,8 +35,11 @@ const PatronBlockingRulesEditor = React.forwardRef<
   PatronBlockingRulesEditorHandle,
   PatronBlockingRulesEditorProps
 >(({ value = [], disabled = false, error }, ref) => {
-  const [rules, setRules] = React.useState<PatronBlockingRule[]>(() =>
-    (value || []).map((r) => ({ ...r }))
+  const nextId = React.useRef(0);
+  const newId = () => nextId.current++;
+
+  const [rules, setRules] = React.useState<RuleEntry[]>(() =>
+    (value || []).map((r) => ({ ...r, _id: newId() }))
   );
   const [clientErrors, setClientErrors] = React.useState<ClientErrors>({});
 
@@ -44,7 +48,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
   React.useImperativeHandle(
     ref,
     () => ({
-      getValue: () => rules,
+      getValue: () => rules.map(({ _id, ...r }) => r),
       validateAndGetValue: () => {
         const errors: ClientErrors = {};
         let valid = true;
@@ -63,14 +67,17 @@ const PatronBlockingRulesEditor = React.forwardRef<
           }
         });
         setClientErrors(errors);
-        return valid ? rules : null;
+        return valid ? rules.map(({ _id, ...r }) => r) : null;
       },
     }),
     [rules]
   );
 
   const addRule = () => {
-    setRules((prev) => [...prev, { name: "", rule: "", message: "" }]);
+    setRules((prev) => [
+      ...prev,
+      { name: "", rule: "", message: "", _id: newId() },
+    ]);
   };
 
   const removeRule = (index: number) => {
@@ -125,7 +132,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
           const ruleClientError = !!rowErrors.rule;
 
           return (
-            <li key={index} className="patron-blocking-rule-row">
+            <li key={rule._id} className="patron-blocking-rule-row">
               <WithRemoveButton
                 disabled={disabled}
                 onRemove={() => removeRule(index)}

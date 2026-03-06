@@ -110,4 +110,13 @@ describe("PatronBlockingRulesEditor", () => {
     render(<PatronBlockingRulesEditor value={existingRules} />);
     expect(screen.queryByText(/No patron blocking rules defined/i)).toBeNull();
   });
+
+  it("getValue does not include internal _id field in returned rules", () => {
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
+    render(<PatronBlockingRulesEditor ref={ref} value={existingRules} />);
+    const value = ref.current.getValue();
+    value.forEach((rule) => {
+      expect(rule).not.toHaveProperty("_id");
+    });
+  });
 });
