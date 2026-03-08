@@ -45,10 +45,10 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     return this.libraryRulesRefs.get(shortName);
   }
 
-  handleRulesValidationStateChange = (
+  handleRulesValidationStateChange(
     shortName: string,
     isBlocking: boolean
-  ): void => {
+  ): void {
     if (this.rulesBlockingSave[shortName] !== isBlocking) {
       this.rulesBlockingSave = {
         ...this.rulesBlockingSave,
@@ -56,7 +56,7 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
       };
       this.forceUpdate();
     }
-  };
+  }
 
   isLibrarySaveDisabled(library: LibraryWithSettingsData): boolean {
     return !!this.rulesBlockingSave[library.short_name];
