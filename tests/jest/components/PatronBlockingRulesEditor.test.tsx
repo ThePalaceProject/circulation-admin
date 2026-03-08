@@ -28,6 +28,186 @@ const existingRules: PatronBlockingRule[] = [
  * and }} to type literal { and } characters.
  */
 
+describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)", () => {
+  beforeEach(() => {
+    fetchMock.post(VALIDATE_URL, { status: 200 });
+  });
+
+  afterEach(() => {
+    fetchMock.mockReset();
+  });
+
+  it("calls onValidationStateChange(true) when a rule is added with a known serviceId", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
+  });
+
+  it("calls onValidationStateChange(false) after successful validation on blur", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
+    await user.tab();
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+  });
+
+  it("leaves onValidationStateChange(true) after failed validation on blur", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    fetchMock.mockReset();
+    fetchMock.post(VALIDATE_URL, {
+      status: 400,
+      body: { detail: "Bad expression" },
+    });
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "bad_syntax");
+    await user.tab();
+
+    // Wait for the error to appear; the rule stays in pending so the last
+    // call must have been true (not unblocked by the failed validation).
+    await screen.findByText(/Bad expression/i);
+    expect(onChange).toHaveBeenLastCalledWith(true);
+  });
+
+  it("calls onValidationStateChange(true) when two rules have the same name", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+    const rules: PatronBlockingRule[] = [
+      { name: "Rule A", rule: "expr_a" },
+      { name: "Rule B", rule: "expr_b" },
+    ];
+
+    render(
+      <PatronBlockingRulesEditor
+        value={rules}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    // Initially not blocking (no duplicates, no pending)
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+
+    // Rename rule B to match rule A
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    await user.clear(nameInputs[1]);
+    await user.type(nameInputs[1], "Rule A");
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
+  });
+
+  it("calls onValidationStateChange(false) after a duplicate name is resolved", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+    const rules: PatronBlockingRule[] = [
+      { name: "Rule A", rule: "expr_a" },
+      { name: "Rule A", rule: "expr_b" }, // duplicate
+    ];
+
+    render(
+      <PatronBlockingRulesEditor
+        value={rules}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    // Initially blocking due to duplicate name
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
+
+    // Fix the duplicate
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    await user.clear(nameInputs[1]);
+    await user.type(nameInputs[1], "Rule B");
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+  });
+
+  it("does not call onValidationStateChange(true) when a rule is added without a serviceId", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+        // No serviceId — new service not yet saved
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    // Should be called with false — no pending server validation without a serviceId
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+    expect(onChange).not.toHaveBeenCalledWith(true);
+  });
+
+  it("removes blocking state when the pending rule is deleted", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
+
+    // Delete the only rule — blocking should clear
+    await user.click(screen.getByRole("button", { name: /Delete/i }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+  });
+});
+
 describe("PatronBlockingRulesEditor — on-blur server validation", () => {
   beforeEach(() => {
     fetchMock.post(VALIDATE_URL, { status: 200 });

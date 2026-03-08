@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as fetchMock from "fetch-mock-jest";
 import PatronAuthServiceEditForm from "../../../src/components/PatronAuthServiceEditForm";
@@ -194,12 +194,15 @@ describe("PatronAuthServiceEditForm – serialization", () => {
       "field == value"
     );
 
-    // Click "Save" to call editLibrary
+    // Tab out of the expression field to trigger blur → validation (mocked 200).
+    // The Save button is disabled until validation succeeds.
+    await user.tab();
     const saveButton = screen.getByRole("button", { name: /^Save$/i });
+    await waitFor(() => expect(saveButton).not.toBeDisabled());
+
     await user.click(saveButton);
 
     // The library should now be collapsed (indicating editLibrary was called)
-    // Verify the editor is no longer showing in expanded state
     expect(screen.queryByRole("button", { name: /Add Rule/i })).toBeNull();
   });
 
@@ -227,11 +230,67 @@ describe("PatronAuthServiceEditForm – serialization", () => {
       "some expression"
     );
 
-    // Click Add Library
+    // Tab out to trigger blur → validation (mocked 200).
+    // The Add Library button is disabled until validation succeeds.
+    await user.tab();
     const addButton = screen.getByRole("button", { name: /Add Library/i });
+    await waitFor(() => expect(addButton).not.toBeDisabled());
+
     await user.click(addButton);
 
     // After adding, the library should appear in the list, editor no longer in "new library" form
     expect(screen.queryByLabelText(/Rule Name/i)).toBeNull();
+  });
+});
+
+describe("PatronAuthServiceEditForm – save button gating", () => {
+  it("disables the per-library Save button immediately when a new rule is added", async () => {
+    const user = userEvent.setup();
+    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    const saveButton = screen.getByRole("button", { name: /^Save$/i });
+    await waitFor(() => expect(saveButton).toBeDisabled());
+  });
+
+  it("re-enables the per-library Save button once validation succeeds", async () => {
+    const user = userEvent.setup();
+    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
+    // Tab out triggers blur → server validation → 200 OK (from beforeEach mock)
+    await user.tab();
+
+    const saveButton = screen.getByRole("button", { name: /^Save$/i });
+    await waitFor(() => expect(saveButton).not.toBeDisabled());
+  });
+
+  it("keeps the per-library Save button disabled when validation fails", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockReset();
+    fetchMock.post(VALIDATE_URL, {
+      status: 400,
+      body: { detail: "Unknown placeholder" },
+    });
+
+    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "bad_syntax");
+    await user.tab();
+
+    await screen.findByText(/Unknown placeholder/i);
+    const saveButton = screen.getByRole("button", { name: /^Save$/i });
+    expect(saveButton).toBeDisabled();
   });
 });

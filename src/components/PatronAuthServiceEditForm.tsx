@@ -10,6 +10,8 @@ import PatronBlockingRulesEditor, {
 } from "./PatronBlockingRulesEditor";
 import { supportsPatronBlockingRules } from "../utils/patronBlockingRules";
 
+const NEW_LIBRARY_KEY = "__new__";
+
 /** Extends ServiceEditForm with patron-blocking-rules support for protocols that
  *  support it. The editor is injected via the hook methods added
  *  to ServiceEditForm; editLibrary and addLibrary are overridden to collect the
@@ -25,6 +27,12 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     React.RefObject<PatronBlockingRulesEditorHandle>
   >();
 
+  // Tracks whether any rule editor is currently blocking save due to pending
+  // or failed validation, or duplicate names. Updated via onValidationStateChange.
+  // Stored as an instance variable (not React state) to avoid TypeScript state
+  // type conflicts with the parent class; forceUpdate() triggers re-render.
+  private rulesBlockingSave: { [shortName: string]: boolean } = {};
+
   private getOrCreateLibraryRef(
     shortName: string
   ): React.RefObject<PatronBlockingRulesEditorHandle> {
@@ -35,6 +43,27 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
       );
     }
     return this.libraryRulesRefs.get(shortName);
+  }
+
+  handleRulesValidationStateChange = (
+    shortName: string,
+    isBlocking: boolean
+  ): void => {
+    if (this.rulesBlockingSave[shortName] !== isBlocking) {
+      this.rulesBlockingSave = {
+        ...this.rulesBlockingSave,
+        [shortName]: isBlocking,
+      };
+      this.forceUpdate();
+    }
+  };
+
+  isLibrarySaveDisabled(library: LibraryWithSettingsData): boolean {
+    return !!this.rulesBlockingSave[library.short_name];
+  }
+
+  isAddLibraryDisabled(): boolean {
+    return !!this.rulesBlockingSave[NEW_LIBRARY_KEY];
   }
 
   protocolHasLibrarySettings(protocol: ProtocolData): boolean {
@@ -64,6 +93,9 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
             ? Number(this.props.item.id)
             : undefined
         }
+        onValidationStateChange={(isBlocking) =>
+          this.handleRulesValidationStateChange(library.short_name, isBlocking)
+        }
       />
     );
   }
@@ -86,6 +118,9 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
           this.props.item?.id !== undefined
             ? Number(this.props.item.id)
             : undefined
+        }
+        onValidationStateChange={(isBlocking) =>
+          this.handleRulesValidationStateChange(NEW_LIBRARY_KEY, isBlocking)
         }
       />
     );

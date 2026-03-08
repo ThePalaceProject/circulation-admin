@@ -427,7 +427,7 @@ export default class ServiceEditForm<
                   <Button
                     type="button"
                     className="edit-library"
-                    disabled={disabled}
+                    disabled={disabled || this.isLibrarySaveDisabled(library)}
                     callback={() => this.editLibrary(library, protocol)}
                     content="Save"
                   />
@@ -483,7 +483,7 @@ export default class ServiceEditForm<
                 {this.renderExtraNewLibrarySettings(protocol, disabled)}
                 <Button
                   type="button"
-                  disabled={disabled}
+                  disabled={disabled || this.isAddLibraryDisabled()}
                   callback={() => this.addLibrary(protocol)}
                   content="Add Library"
                   className="left-align"
@@ -638,6 +638,18 @@ export default class ServiceEditForm<
    */
   isLibraryRemovalPermitted(_library: LibraryWithSettingsData): boolean {
     return true;
+  }
+
+  /** Hook for subclasses to additionally disable the per-library Save button.
+   *  Return true to keep the button disabled even when the form is otherwise enabled. */
+  isLibrarySaveDisabled(_library: LibraryWithSettingsData): boolean {
+    return false;
+  }
+
+  /** Hook for subclasses to additionally disable the Add Library button.
+   *  Return true to keep the button disabled even when the form is otherwise enabled. */
+  isAddLibraryDisabled(): boolean {
+    return false;
   }
 
   /**
