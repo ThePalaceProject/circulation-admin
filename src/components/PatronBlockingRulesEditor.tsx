@@ -6,9 +6,17 @@ import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import { validatePatronBlockingRuleExpression } from "../api/patronBlockingRules";
 
-function hasDuplicateRuleNames(rules: RuleEntry[]): boolean {
-  const names = rules.map((r) => r.name).filter((n) => n !== "");
-  return new Set(names).size < names.length;
+/** Returns the set of non-empty rule names that appear more than once. */
+function getDuplicateNameSet(rules: RuleEntry[]): Set<string> {
+  const counts: { [name: string]: number } = {};
+  rules.forEach((r) => {
+    if (r.name) counts[r.name] = (counts[r.name] || 0) + 1;
+  });
+  return new Set(
+    Object.entries(counts)
+      .filter(([, n]) => n > 1)
+      .map(([name]) => name)
+  );
 }
 
 function extractErrorMessage(error: FetchErrorData): string | null {
@@ -29,8 +37,8 @@ export interface PatronBlockingRulesEditorProps {
   csrfToken?: string;
   serviceId?: number;
   /** Called whenever the "save should be blocked" state changes.
-   *  True while any rule is awaiting or has failed server-side validation,
-   *  or while any two rules share the same name. */
+   *  True while any rule is incomplete, awaiting or has failed server-side
+   *  validation, or while any two rules share the same name. */
   onValidationStateChange?: (isBlocking: boolean) => void;
 }
 
@@ -48,6 +56,7 @@ interface RuleFormListItemProps {
   index: number;
   disabled: boolean;
   rowErrors: { name?: boolean; rule?: boolean };
+  nameDuplicateError?: boolean;
   serverRuleError?: string | null;
   error?: FetchErrorData;
   onRemove: () => void;
@@ -60,6 +69,7 @@ function RuleFormListItem({
   index,
   disabled,
   rowErrors,
+  nameDuplicateError,
   serverRuleError,
   error,
   onRemove,
@@ -76,6 +86,11 @@ function RuleFormListItem({
           {nameClientError && (
             <p className="patron-blocking-rule-field-error text-danger">
               Rule Name is required.
+            </p>
+          )}
+          {nameDuplicateError && (
+            <p className="patron-blocking-rule-field-error text-danger">
+              Rule Name must be unique within this library.
             </p>
           )}
           <EditableInput
@@ -175,8 +190,11 @@ const PatronBlockingRulesEditor = React.forwardRef<
     });
 
     React.useEffect(() => {
+      const hasIncomplete = rules.some((r) => !r.name || !r.rule);
       const isBlocking =
-        pendingValidationIds.size > 0 || hasDuplicateRuleNames(rules);
+        pendingValidationIds.size > 0 ||
+        getDuplicateNameSet(rules).size > 0 ||
+        hasIncomplete;
       onValidationStateChangeRef.current?.(isBlocking);
     }, [pendingValidationIds, rules]);
 
@@ -293,6 +311,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
     };
 
     const hasIncompleteRule = rules.some((r) => !r.name || !r.rule);
+    const duplicateNameSet = getDuplicateNameSet(rules);
 
     return (
       <div className="patron-blocking-rules-editor">
@@ -322,6 +341,9 @@ const PatronBlockingRulesEditor = React.forwardRef<
               index={index}
               disabled={disabled}
               rowErrors={clientErrors[index] || {}}
+              nameDuplicateError={
+                !!rule.name && duplicateNameSet.has(rule.name)
+              }
               serverRuleError={serverErrors[index]}
               error={error}
               onRemove={() => removeRule(index)}

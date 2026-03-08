@@ -166,7 +166,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
   });
 
-  it("does not call onValidationStateChange(true) when a rule is added without a serviceId", async () => {
+  it("calls onValidationStateChange(true) when a rule is added without a serviceId because it is incomplete", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
 
@@ -181,9 +181,27 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
 
-    // Should be called with false — no pending server validation without a serviceId
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
-    expect(onChange).not.toHaveBeenCalledWith(true);
+    // Incomplete rule (empty name + expression) still blocks save even without serviceId
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
+  });
+
+  it("calls onValidationStateChange(true) when a rule is added without a serviceId (incomplete)", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        csrfToken="tok"
+        // No serviceId — new service; server validation unavailable
+        onValidationStateChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    // Incomplete rule (empty name + expression) must block save even without serviceId
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
   });
 
   it("removes blocking state when the pending rule is deleted", async () => {
@@ -502,6 +520,51 @@ describe("PatronBlockingRulesEditor", () => {
     expect(
       screen.getByRole("button", { name: /Add Rule/i })
     ).not.toBeDisabled();
+  });
+
+  it("shows a duplicate-name error inline when two rules share the same name", async () => {
+    const user = userEvent.setup();
+    const rules: PatronBlockingRule[] = [
+      { name: "Rule A", rule: "expr_a" },
+      { name: "Rule B", rule: "expr_b" },
+    ];
+
+    render(<PatronBlockingRulesEditor value={rules} serviceId={42} />);
+
+    // Rename rule B to match rule A
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    await user.clear(nameInputs[1]);
+    await user.type(nameInputs[1], "Rule A");
+
+    await waitFor(() =>
+      expect(screen.getAllByText(/Rule Name must be unique/i)).toHaveLength(2)
+    );
+  });
+
+  it("clears the duplicate-name error once the name is made unique", async () => {
+    const user = userEvent.setup();
+    const rules: PatronBlockingRule[] = [
+      { name: "Rule A", rule: "expr_a" },
+      { name: "Rule A", rule: "expr_b" }, // duplicate
+    ];
+
+    render(<PatronBlockingRulesEditor value={rules} serviceId={42} />);
+
+    // Both rows should start with the duplicate error
+    expect(screen.getAllByText(/Rule Name must be unique/i)).toHaveLength(2);
+
+    // Fix the second rule's name
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    await user.clear(nameInputs[1]);
+    await user.type(nameInputs[1], "Rule B");
+
+    await waitFor(() =>
+      expect(screen.queryByText(/Rule Name must be unique/i)).toBeNull()
+    );
   });
 
   it("shows server error message even when there are no rules", () => {
