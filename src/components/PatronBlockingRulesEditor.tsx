@@ -187,7 +187,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
     const onValidationStateChangeRef = React.useRef(onValidationStateChange);
     React.useLayoutEffect(() => {
       onValidationStateChangeRef.current = onValidationStateChange;
-    });
+    }, [onValidationStateChange]);
 
     React.useEffect(() => {
       const hasIncomplete = rules.some((r) => !r.name || !r.rule);
