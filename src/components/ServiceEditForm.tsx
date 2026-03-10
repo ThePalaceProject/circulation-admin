@@ -17,6 +17,7 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 export interface ServiceEditFormProps<T> {
   data: T;
   item?: ServiceData;
+  additionalData?: any;
   disabled: boolean;
   save?: (data: FormData) => void;
   urlBase: string;
@@ -227,6 +228,32 @@ export default class ServiceEditForm<
     return [];
   }
 
+  /** Hook for subclasses to inject extra fields into the expanded per-library settings panel.
+   *  Rendered after protocol library_settings fields and before the Save button. */
+  renderExtraAssociatedLibrarySettings(
+    _library: LibraryWithSettingsData,
+    _protocol: ProtocolData,
+    _disabled: boolean
+  ): React.ReactNode {
+    return null;
+  }
+
+  /** Hook for subclasses to inject extra fields into the add-new-library panel.
+   *  Rendered after protocol library_settings fields and before the Add Library button. */
+  renderExtraNewLibrarySettings(
+    _protocol: ProtocolData,
+    _disabled: boolean
+  ): React.ReactNode {
+    return null;
+  }
+
+  /** Returns true when this protocol has any editable per-library settings,
+   *  either from the protocol definition or injected by a subclass.
+   *  Subclasses should override this when they add extra library-level fields. */
+  protocolHasLibrarySettings(protocol: ProtocolData): boolean {
+    return this.protocolLibrarySettings(protocol).length > 0;
+  }
+
   renderRequiredFields(
     requiredFields,
     protocol: ProtocolData,
@@ -357,8 +384,7 @@ export default class ServiceEditForm<
               >
                 {this.props.data &&
                   this.props.data.protocols &&
-                  this.protocolLibrarySettings(protocol) &&
-                  this.protocolLibrarySettings(protocol).length > 0 && (
+                  this.protocolHasLibrarySettings(protocol) && (
                     <WithEditButton
                       disabled={disabled}
                       onEdit={() => this.expandLibrary(library)}
@@ -370,8 +396,7 @@ export default class ServiceEditForm<
                 {!(
                   this.props.data &&
                   this.props.data.protocols &&
-                  this.protocolLibrarySettings(protocol) &&
-                  this.protocolLibrarySettings(protocol).length > 0
+                  this.protocolHasLibrarySettings(protocol)
                 ) &&
                   this.getLibrary(library.short_name) &&
                   this.getLibrary(library.short_name).name}
@@ -386,14 +411,23 @@ export default class ServiceEditForm<
                         key={setting.key}
                         setting={setting}
                         disabled={disabled}
-                        value={library[setting.key]}
+                        value={
+                          ((library as unknown) as Record<string, string>)[
+                            setting.key
+                          ]
+                        }
                         ref={library.short_name + "_" + setting.key}
                       />
                     ))}
+                  {this.renderExtraAssociatedLibrarySettings(
+                    library,
+                    protocol,
+                    disabled
+                  )}
                   <Button
                     type="button"
                     className="edit-library"
-                    disabled={disabled}
+                    disabled={disabled || this.isLibrarySaveDisabled(library)}
                     callback={() => this.editLibrary(library, protocol)}
                     content="Save"
                   />
@@ -446,9 +480,10 @@ export default class ServiceEditForm<
                       ref={setting.key}
                     />
                   ))}
+                {this.renderExtraNewLibrarySettings(protocol, disabled)}
                 <Button
                   type="button"
-                  disabled={disabled}
+                  disabled={disabled || this.isAddLibraryDisabled()}
                   callback={() => this.addLibrary(protocol)}
                   content="Add Library"
                   className="left-align"
@@ -601,11 +636,20 @@ export default class ServiceEditForm<
    * Subclasses may override this method to control removal.
    * @param library The library to remove.
    */
-  isLibraryRemovalPermitted(library: LibraryWithSettingsData): boolean {
-    // library should be provided on every call.
-    // It is not used here, but might be in subclass implementations.
-    // Removal is permitted by default.
+  isLibraryRemovalPermitted(_library: LibraryWithSettingsData): boolean {
     return true;
+  }
+
+  /** Hook for subclasses to additionally disable the per-library Save button.
+   *  Return true to keep the button disabled even when the form is otherwise enabled. */
+  isLibrarySaveDisabled(_library: LibraryWithSettingsData): boolean {
+    return false;
+  }
+
+  /** Hook for subclasses to additionally disable the Add Library button.
+   *  Return true to keep the button disabled even when the form is otherwise enabled. */
+  isAddLibraryDisabled(): boolean {
+    return false;
   }
 
   /**
