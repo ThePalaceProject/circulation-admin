@@ -251,13 +251,23 @@ const PatronBlockingRulesEditor = React.forwardRef<
         return next;
       });
       setClientErrors((prev) => {
-        const next = { ...prev };
-        delete next[index];
+        const next: ClientErrors = {};
+        Object.entries(prev).forEach(([key, val]) => {
+          const k = Number(key);
+          if (k < index) next[k] = val;
+          else if (k > index) next[k - 1] = val;
+          // k === index is dropped
+        });
         return next;
       });
       setServerErrors((prev) => {
-        const next = { ...prev };
-        delete next[index];
+        const next: ServerErrors = {};
+        Object.entries(prev).forEach(([key, val]) => {
+          const k = Number(key);
+          if (k < index) next[k] = val;
+          else if (k > index) next[k - 1] = val;
+          // k === index is dropped
+        });
         return next;
       });
     };

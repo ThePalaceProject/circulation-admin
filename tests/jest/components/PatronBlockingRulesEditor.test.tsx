@@ -420,6 +420,52 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
     ).toBeTruthy();
   });
 
+  it("preserves the server error on the second rule after the first rule is deleted", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockReset();
+    fetchMock.post(VALIDATE_URL, {
+      status: 400,
+      body: { detail: "Bad expression syntax" },
+    });
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[{ name: "Rule A", rule: "expr_a" }]}
+        serviceId={42}
+        csrfToken="tok"
+      />
+    );
+
+    // Add a second rule and give it an invalid expression
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    const ruleTextareas = screen.getAllByLabelText(
+      /Rule Expression/i
+    ) as HTMLTextAreaElement[];
+    await user.type(nameInputs[1], "Rule B");
+    await user.type(ruleTextareas[1], "bad_syntax");
+    await user.tab();
+
+    // Wait for the server error to appear on the second rule
+    await screen.findByText(/Bad expression syntax/i);
+
+    // Delete the first (valid) rule
+    const deleteButtons = screen.getAllByRole("button", { name: /Delete/i });
+    await user.click(deleteButtons[0]);
+
+    // Only the formerly-second rule should remain
+    const remainingNameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    expect(remainingNameInputs).toHaveLength(1);
+    expect(remainingNameInputs[0].value).toBe("Rule B");
+
+    // The server error for that rule must still be visible
+    expect(screen.getByText(/Bad expression syntax/i)).toBeTruthy();
+  });
+
   it("shows no error after a successful re-validation that follows a failure", async () => {
     const user = userEvent.setup();
     fetchMock.mockReset();
