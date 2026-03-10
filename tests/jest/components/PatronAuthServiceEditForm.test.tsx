@@ -293,4 +293,166 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
     const saveButton = screen.getByRole("button", { name: /^Save$/i });
     expect(saveButton).toBeDisabled();
   });
+
+  it("disables the Add Library button immediately when an incomplete rule is added to the new library section", async () => {
+    const user = userEvent.setup();
+    const item = {
+      id: 3,
+      protocol: SIP2_PROTOCOL,
+      settings: {},
+      libraries: [],
+    };
+    render(<PatronAuthServiceEditForm {...baseProps} item={item} />);
+
+    await expandLibrariesPanel(user);
+    const select = screen.getByRole("combobox", { name: /Add Library/i });
+    await user.selectOptions(select, LIBRARY_SHORT_NAME);
+
+    const addButton = screen.getByRole("button", { name: /Add Library/i });
+    // Before adding a rule the button is enabled
+    expect(addButton).not.toBeDisabled();
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    // Incomplete rule (empty name + expression) must block the Add Library button
+    await waitFor(() => expect(addButton).toBeDisabled());
+  });
+
+  it("disables the per-library Save button when two rules share the same name", async () => {
+    const user = userEvent.setup();
+    const existingRules = [
+      { name: "Rule A", rule: "expr_a" },
+      { name: "Rule B", rule: "expr_b" },
+    ];
+    render(
+      <PatronAuthServiceEditForm
+        {...baseProps}
+        item={buildSIP2Item(existingRules)}
+      />
+    );
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+
+    const saveButton = screen.getByRole("button", { name: /^Save$/i });
+    // Both rules are complete and unique — Save should be enabled
+    await waitFor(() => expect(saveButton).not.toBeDisabled());
+
+    // Rename rule B to match rule A → duplicate → Save must disable
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    await user.clear(nameInputs[1]);
+    await user.type(nameInputs[1], "Rule A");
+
+    await waitFor(() => expect(saveButton).toBeDisabled());
+  });
+
+  it("re-enables the per-library Save button after a duplicate name is resolved", async () => {
+    const user = userEvent.setup();
+    const existingRules = [
+      { name: "Rule A", rule: "expr_a" },
+      { name: "Rule A", rule: "expr_b" }, // starts as duplicate
+    ];
+    render(
+      <PatronAuthServiceEditForm
+        {...baseProps}
+        item={buildSIP2Item(existingRules)}
+      />
+    );
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+
+    const saveButton = screen.getByRole("button", { name: /^Save$/i });
+    await waitFor(() => expect(saveButton).toBeDisabled());
+
+    // Fix the duplicate
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    await user.clear(nameInputs[1]);
+    await user.type(nameInputs[1], "Rule B");
+
+    await waitFor(() => expect(saveButton).not.toBeDisabled());
+  });
+
+  it("re-blocks and then re-enables the Save button when an existing rule's expression is edited and re-validated", async () => {
+    const user = userEvent.setup();
+    const existingRules = [{ name: "Rule A", rule: "expr_a" }];
+    render(
+      <PatronAuthServiceEditForm
+        {...baseProps}
+        item={buildSIP2Item(existingRules)}
+      />
+    );
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+
+    const saveButton = screen.getByRole("button", { name: /^Save$/i });
+    // Existing rule is not pending — Save should be enabled
+    await waitFor(() => expect(saveButton).not.toBeDisabled());
+
+    // Edit the expression — Save must re-block
+    const ruleTextarea = screen.getByLabelText(
+      /Rule Expression/i
+    ) as HTMLTextAreaElement;
+    await user.clear(ruleTextarea);
+    await user.type(ruleTextarea, "new_expr");
+    await waitFor(() => expect(saveButton).toBeDisabled());
+
+    // Blur → 200 OK from beforeEach mock → Save re-enabled
+    await user.tab();
+    await waitFor(() => expect(saveButton).not.toBeDisabled());
+  });
+});
+
+describe("PatronAuthServiceEditForm – csrfToken / serviceId wiring", () => {
+  it("passes the csrfToken from additionalData to the validation API request", async () => {
+    const user = userEvent.setup();
+    render(
+      <PatronAuthServiceEditForm
+        {...baseProps}
+        item={buildSIP2Item()}
+        additionalData={{ csrfToken: "test-csrf-token" }}
+      />
+    );
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "expr");
+    await user.tab();
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        VALIDATE_URL,
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            "X-CSRF-Token": "test-csrf-token",
+          }),
+        })
+      )
+    );
+  });
+
+  it("passes the item id as service_id in the validation API request body", async () => {
+    const user = userEvent.setup();
+    // item.id = 1 (from buildSIP2Item)
+    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+
+    await expandLibrariesPanel(user);
+    await user.click(screen.getByRole("button", { name: /Edit/i }));
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "expr");
+    await user.tab();
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const [, options] = fetchMock.calls(VALIDATE_URL)[0];
+    const body = (options as RequestInit).body as FormData;
+    expect(body.get("service_id")).toBe("1");
+  });
 });

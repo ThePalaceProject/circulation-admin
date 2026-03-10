@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as fetchMock from "fetch-mock-jest";
 import PatronBlockingRulesEditor, {
@@ -185,25 +185,6 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
   });
 
-  it("calls onValidationStateChange(true) when a rule is added without a serviceId (incomplete)", async () => {
-    const user = userEvent.setup();
-    const onChange = jest.fn();
-
-    render(
-      <PatronBlockingRulesEditor
-        value={[]}
-        csrfToken="tok"
-        // No serviceId — new service; server validation unavailable
-        onValidationStateChange={onChange}
-      />
-    );
-
-    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
-
-    // Incomplete rule (empty name + expression) must block save even without serviceId
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
-  });
-
   it("removes blocking state when the pending rule is deleted", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
@@ -222,6 +203,94 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
     // Delete the only rule — blocking should clear
     await user.click(screen.getByRole("button", { name: /Delete/i }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+  });
+
+  it("does not block save when a rule with no serviceId has all required fields filled", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        csrfToken="tok"
+        // No serviceId — server validation skipped; only completeness matters
+        onValidationStateChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
+
+    // Both fields filled, no serviceId → not blocking
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+  });
+
+  it("keeps save blocked until every pending rule has been individually validated", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+
+    render(
+      <PatronBlockingRulesEditor
+        value={[]}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    // Add and validate the first rule
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "Rule One");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "expr_one");
+    await user.tab(); // blur → 200 OK
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+
+    // Add a second rule — save should block again
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
+
+    // Fill in and validate the second rule
+    const nameInputs = screen.getAllByLabelText(
+      /Rule Name/i
+    ) as HTMLInputElement[];
+    const ruleInputs = screen.getAllByLabelText(
+      /Rule Expression/i
+    ) as HTMLTextAreaElement[];
+    await user.type(nameInputs[1], "Rule Two");
+    await user.type(ruleInputs[1], "expr_two");
+    await user.tab(); // blur → 200 OK
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+  });
+
+  it("re-enters blocking state when an existing rule's expression is edited", async () => {
+    const user = userEvent.setup();
+    const onChange = jest.fn();
+    const rules: PatronBlockingRule[] = [{ name: "Rule A", rule: "expr_a" }];
+
+    render(
+      <PatronBlockingRulesEditor
+        value={rules}
+        serviceId={42}
+        csrfToken="tok"
+        onValidationStateChange={onChange}
+      />
+    );
+
+    // Existing rules start as non-blocking (already saved, not pending)
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+
+    // Edit the expression — should immediately re-block
+    const ruleTextarea = screen.getByLabelText(
+      /Rule Expression/i
+    ) as HTMLTextAreaElement;
+    await user.clear(ruleTextarea);
+    await user.type(ruleTextarea, "new_expr");
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
+
+    // Validate (blur → 200 OK) — should unblock again
+    await user.tab();
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
   });
 });
@@ -584,5 +653,142 @@ describe("PatronBlockingRulesEditor", () => {
     value.forEach((rule) => {
       expect(rule).not.toHaveProperty("_id");
     });
+  });
+
+  it("hides the 'no rules' message once a rule is added", async () => {
+    const user = userEvent.setup();
+    render(<PatronBlockingRulesEditor value={[]} />);
+    expect(screen.getByText(/No patron blocking rules defined/i)).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    expect(screen.queryByText(/No patron blocking rules defined/i)).toBeNull();
+  });
+});
+
+describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
+  beforeEach(() => {
+    fetchMock.post(VALIDATE_URL, { status: 200 });
+  });
+
+  afterEach(() => {
+    fetchMock.mockReset();
+  });
+
+  it("returns all rules (stripped of _id) when every rule has name and expression", () => {
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
+    render(<PatronBlockingRulesEditor ref={ref} value={existingRules} />);
+
+    let result: PatronBlockingRule[] | null;
+    act(() => {
+      result = ref.current.validateAndGetValue();
+    });
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      name: "Rule A",
+      rule: "expr_a",
+      message: "msg a",
+    });
+    expect(result[1]).toEqual({ name: "Rule B", rule: "expr_b" });
+    result.forEach((r) => expect(r).not.toHaveProperty("_id"));
+  });
+
+  it("returns null and shows a name error when a rule is missing its name", async () => {
+    const user = userEvent.setup();
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
+    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    // Leave name empty, fill only the expression
+    await user.type(screen.getByLabelText(/Rule Expression/i), "expr");
+
+    let result: PatronBlockingRule[] | null;
+    act(() => {
+      result = ref.current.validateAndGetValue();
+    });
+
+    expect(result).toBeNull();
+    expect(screen.getByText(/Rule Name is required/i)).toBeTruthy();
+    expect(screen.queryByText(/Rule Expression is required/i)).toBeNull();
+  });
+
+  it("returns null and shows an expression error when a rule is missing its expression", async () => {
+    const user = userEvent.setup();
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
+    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    // Fill only the name, leave expression empty
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+
+    let result: PatronBlockingRule[] | null;
+    act(() => {
+      result = ref.current.validateAndGetValue();
+    });
+
+    expect(result).toBeNull();
+    expect(screen.queryByText(/Rule Name is required/i)).toBeNull();
+    expect(screen.getByText(/Rule Expression is required/i)).toBeTruthy();
+  });
+
+  it("returns null and shows both errors when a rule has neither name nor expression", async () => {
+    const user = userEvent.setup();
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
+    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+
+    // Add rule but leave both fields empty
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    let result: PatronBlockingRule[] | null;
+    act(() => {
+      result = ref.current.validateAndGetValue();
+    });
+
+    expect(result).toBeNull();
+    expect(screen.getByText(/Rule Name is required/i)).toBeTruthy();
+    expect(screen.getByText(/Rule Expression is required/i)).toBeTruthy();
+  });
+
+  it("clears prior client errors on a subsequent call that succeeds", async () => {
+    const user = userEvent.setup();
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
+    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+
+    // First call: both fields empty → errors shown
+    act(() => {
+      ref.current.validateAndGetValue();
+    });
+    expect(screen.getByText(/Rule Name is required/i)).toBeTruthy();
+    expect(screen.getByText(/Rule Expression is required/i)).toBeTruthy();
+
+    // Fill in both fields
+    await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
+    await user.type(screen.getByLabelText(/Rule Expression/i), "expr");
+
+    // Second call: valid → errors gone, rules returned
+    let result: PatronBlockingRule[] | null;
+    act(() => {
+      result = ref.current.validateAndGetValue();
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe("My Rule");
+    expect(screen.queryByText(/Rule Name is required/i)).toBeNull();
+    expect(screen.queryByText(/Rule Expression is required/i)).toBeNull();
+  });
+
+  it("returns an empty array (not null) when there are no rules at all", () => {
+    const ref = React.createRef<PatronBlockingRulesEditorHandle>();
+    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+
+    let result: PatronBlockingRule[] | null;
+    act(() => {
+      result = ref.current.validateAndGetValue();
+    });
+
+    expect(result).toEqual([]);
   });
 });
