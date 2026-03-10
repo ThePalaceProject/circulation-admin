@@ -304,6 +304,11 @@ const PatronBlockingRulesEditor = React.forwardRef<
         // disabled until the user fills in the expression or removes the rule.
         return;
       }
+      // NOTE: There is a possible, though unlikely, race condition  when rendering multiple rules,
+      // each with their own onRuleBlur because there could potentially be multiple
+      // validatePatronBlockingRuleExpression fetches in flight. In that case,
+      // the last one to resolve will win, which might in correctly set the save button state.
+      // TODO: address the race condition if users see it occurring.
       const errorMessage = await validatePatronBlockingRuleExpression(
         serviceId,
         rule,
