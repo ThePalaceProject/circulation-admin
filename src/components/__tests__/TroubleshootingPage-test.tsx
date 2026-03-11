@@ -3,10 +3,10 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import TroubleshootingPage from "../TroubleshootingPage";
-import TroubleshootingTabContainer from "../TroubleshootingTabContainer";
-import Header from "../Header";
-import Footer from "../Footer";
+import TroubleshootingPage from "../diagnostics/TroubleshootingPage";
+import TroubleshootingTabContainer from "../diagnostics/TroubleshootingTabContainer";
+import Header from "../layout/Header";
+import Footer from "../layout/Footer";
 import buildStore from "../../store";
 import title from "../../utils/title";
 

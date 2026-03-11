@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import UpdatingLoader from "../UpdatingLoader";
+import UpdatingLoader from "../shared/UpdatingLoader";
 
 describe("UpdatingLoader", () => {
   it("should only render a container", () => {

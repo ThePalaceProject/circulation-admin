@@ -3,12 +3,12 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import CatalogPage from "../CatalogPage";
+import CatalogPage from "../catalog/CatalogPage";
 import OPDSCatalog from "@thepalaceproject/web-opds-client/lib/components/OPDSCatalog";
-import Header from "../Header";
-import Footer from "../Footer";
-import WelcomePage from "../WelcomePage";
-import BookDetailsContainer from "../BookDetailsContainer";
+import Header from "../layout/Header";
+import Footer from "../layout/Footer";
+import WelcomePage from "../layout/WelcomePage";
+import BookDetailsContainer from "../book/BookDetailsContainer";
 import title from "../../utils/title";
 
 describe("CatalogPage", () => {

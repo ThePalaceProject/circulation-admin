@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import ContextProvider from "../ContextProvider";
+import ContextProvider from "../layout/ContextProvider";
 import Admin from "../../models/Admin";
 import * as PropTypes from "prop-types";
 import { stub } from "sinon";

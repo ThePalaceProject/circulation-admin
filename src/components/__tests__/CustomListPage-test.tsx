@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import buildStore from "../../store";
-import CustomListPage from "../CustomListPage";
-import CustomLists from "../CustomLists";
+import CustomListPage from "../lists/CustomListPage";
+import CustomLists from "../lists/CustomLists";
 
 describe("CustomListPage", () => {
   let wrapper;

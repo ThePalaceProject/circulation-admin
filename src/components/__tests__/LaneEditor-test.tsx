@@ -4,10 +4,10 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
-import LaneEditor from "../LaneEditor";
-import TextWithEditMode from "../TextWithEditMode";
-import EditableInput from "../EditableInput";
-import LaneCustomListsEditor from "../LaneCustomListsEditor";
+import LaneEditor from "../lanes/LaneEditor";
+import TextWithEditMode from "../shared/TextWithEditMode";
+import EditableInput from "../shared/EditableInput";
+import LaneCustomListsEditor from "../lanes/LaneCustomListsEditor";
 
 describe("LaneEditor", () => {
   let wrapper;

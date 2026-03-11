@@ -5,15 +5,15 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import buildStore from "../../store";
-import ConfigTabContainer from "../ConfigTabContainer";
-import Libraries from "../Libraries";
-import Collections from "../Collections";
-import IndividualAdmins from "../IndividualAdmins";
-import PatronAuthServices from "../PatronAuthServices";
-import MetadataServices from "../MetadataServices";
-import CatalogServices from "../CatalogServices";
-import DiscoveryServices from "../DiscoveryServices";
-import SitewideAnnouncements from "../SitewideAnnouncements";
+import ConfigTabContainer from "../config/ConfigTabContainer";
+import Libraries from "../config/Libraries";
+import Collections from "../config/Collections";
+import IndividualAdmins from "../config/IndividualAdmins";
+import PatronAuthServices from "../config/PatronAuthServices";
+import MetadataServices from "../config/MetadataServices";
+import CatalogServices from "../config/CatalogServices";
+import DiscoveryServices from "../config/DiscoveryServices";
+import SitewideAnnouncements from "../announcements/SitewideAnnouncements";
 import { mockRouterContext } from "./routing";
 import Admin from "../../models/Admin";
 

@@ -3,12 +3,12 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import DashboardPage from "../DashboardPage";
-import Header from "../Header";
-import Footer from "../Footer";
-import Stats from "../Stats";
+import DashboardPage from "../dashboard/DashboardPage";
+import Header from "../layout/Header";
+import Footer from "../layout/Footer";
+import Stats from "../dashboard/Stats";
 import buildStore from "../../store";
-import CirculationEventsDownload from "../CirculationEventsDownload";
+import CirculationEventsDownload from "../dashboard/CirculationEventsDownload";
 
 describe("DashboardPage", () => {
   let wrapper;

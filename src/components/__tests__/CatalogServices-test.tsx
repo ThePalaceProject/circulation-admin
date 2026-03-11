@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import { CatalogServices } from "../CatalogServices";
+import { CatalogServices } from "../config/CatalogServices";
 
 describe("CatalogServices", () => {
   let wrapper;

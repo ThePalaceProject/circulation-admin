@@ -7,7 +7,10 @@ export interface LoadButtonProps {
   loadMore: () => any;
 }
 
-export default class LoadButton extends React.Component<LoadButtonProps, {}> {
+export default class LoadButton extends React.Component<
+  LoadButtonProps,
+  Record<string, never>
+> {
   render(): JSX.Element {
     return (
       <Button

@@ -4,10 +4,10 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import { ChangePasswordForm } from "../ChangePasswordForm";
+import { ChangePasswordForm } from "../patrons/ChangePasswordForm";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import ErrorMessage from "../ErrorMessage";
-import EditableInput from "../EditableInput";
+import ErrorMessage from "../shared/ErrorMessage";
+import EditableInput from "../shared/EditableInput";
 
 describe("ChangePasswordForm", () => {
   let wrapper;

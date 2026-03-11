@@ -4,9 +4,9 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import WelcomePage from "../WelcomePage";
-import Header from "../Header";
-import Footer from "../Footer";
+import WelcomePage from "../layout/WelcomePage";
+import Header from "../layout/Header";
+import Footer from "../layout/Footer";
 import { Jumbotron } from "react-bootstrap";
 
 describe("WelcomePage", () => {

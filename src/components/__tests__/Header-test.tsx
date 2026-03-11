@@ -4,8 +4,8 @@ import * as PropTypes from "prop-types";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import { Header } from "../Header";
-import EditableInput from "../EditableInput";
+import { Header } from "../layout/Header";
+import EditableInput from "../shared/EditableInput";
 import { NavItem } from "react-bootstrap";
 import { Link } from "react-router";
 import Admin from "../../models/Admin";

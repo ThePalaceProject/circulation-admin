@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CollectionImportButton, {
   CollectionImportButtonProps,
-} from "../../../src/components/CollectionImportButton";
+} from "../../../src/components/shared/CollectionImportButton";
 import { CollectionData, ProtocolData } from "../../../src/interfaces";
 
 const protocolWithImport: ProtocolData = {

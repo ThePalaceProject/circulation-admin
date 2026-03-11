@@ -16,13 +16,13 @@ import {
   CONFIRMATION_MODAL_HEADING,
   useGenerateReport,
   useReportInfo,
-} from "../../../src/components/InventoryReportRequestModal";
+} from "../../../src/components/dashboard/InventoryReportRequestModal";
 import * as AdminAPI from "../../../src/api/admin";
 import InventoryReportRequestModal, {
   NO_COLLECTIONS_MESSAGE,
   SOME_COLLECTIONS_MESSAGE,
   UNKNOWN_COLLECTIONS_MESSAGE,
-} from "../../../src/components/InventoryReportRequestModal";
+} from "../../../src/components/dashboard/InventoryReportRequestModal";
 import userEvent from "@testing-library/user-event";
 import { InventoryReportInfo } from "../../../src/api/admin";
 

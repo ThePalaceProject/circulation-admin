@@ -7,7 +7,7 @@ import { mount } from "enzyme";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const CirculationAdmin = require("../index");
-import SetupPage from "../components/SetupPage";
+import SetupPage from "../components/layout/SetupPage";
 import { Router } from "react-router";
 
 describe("CirculationAdmin", () => {

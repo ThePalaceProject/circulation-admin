@@ -9,8 +9,8 @@ import { mockRouterContext } from "./routing";
 import buildStore from "../../store";
 
 import Admin from "../../models/Admin";
-import ResetAdobeId from "../ResetAdobeId";
-import ManagePatronsTabContainer from "../ManagePatronsTabContainer";
+import ResetAdobeId from "../patrons/ResetAdobeId";
+import ManagePatronsTabContainer from "../patrons/ManagePatronsTabContainer";
 
 describe("ManagePatronsTabContainer", () => {
   let wrapper;

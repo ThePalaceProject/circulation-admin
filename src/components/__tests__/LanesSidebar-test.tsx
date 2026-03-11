@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import LanesSidebar from "../LanesSidebar";
-import Lane from "../Lane";
+import LanesSidebar from "../lanes/LanesSidebar";
+import Lane from "../lanes/Lane";
 import { Link } from "react-router";
 
 describe("LanesSidebar", () => {

@@ -5,9 +5,9 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import { DiscoveryServicesData } from "../../interfaces";
-import ServiceWithRegistrationsEditForm from "../ServiceWithRegistrationsEditForm";
-import LibraryRegistration from "../LibraryRegistration";
-import EditableInput from "../EditableInput";
+import ServiceWithRegistrationsEditForm from "../config/ServiceWithRegistrationsEditForm";
+import LibraryRegistration from "../config/LibraryRegistration";
+import EditableInput from "../shared/EditableInput";
 
 describe("ServiceWithRegistrationsEditForm", () => {
   class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<

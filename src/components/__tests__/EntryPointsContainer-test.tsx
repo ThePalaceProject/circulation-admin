@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import buildStore from "../../store";
-import EntryPointsContainer from "../EntryPointsContainer";
-import EntryPointsTabs from "../EntryPointsTabs";
+import EntryPointsContainer from "../shared/EntryPointsContainer";
+import EntryPointsTabs from "../shared/EntryPointsTabs";
 import { LinkData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { mockRouterContext } from "./routing";
 

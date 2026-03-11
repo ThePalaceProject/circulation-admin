@@ -3,10 +3,10 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import { Complaints } from "../Complaints";
+import { Complaints } from "../book/Complaints";
 import { Button } from "library-simplified-reusable-components";
-import ErrorMessage from "../ErrorMessage";
-import ComplaintForm from "../ComplaintForm";
+import ErrorMessage from "../shared/ErrorMessage";
+import ComplaintForm from "../book/ComplaintForm";
 
 describe("Complaints", () => {
   describe("rendering", () => {

@@ -1,5 +1,5 @@
-import LanguageField from "../LanguageField";
-import Autocomplete from "../Autocomplete";
+import LanguageField from "../shared/LanguageField";
+import Autocomplete from "../shared/Autocomplete";
 import * as React from "react";
 import { expect } from "chai";
 import { mount } from "enzyme";

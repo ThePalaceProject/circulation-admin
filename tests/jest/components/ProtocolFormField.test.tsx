@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import ProtocolFormField from "../../../src/components/ProtocolFormField";
+import ProtocolFormField from "../../../src/components/config/ProtocolFormField";
 
 // NB: This file adds / duplicates existing tests from:
 // - `src/components/__tests__/ProtocolFormField-test.tsx`.

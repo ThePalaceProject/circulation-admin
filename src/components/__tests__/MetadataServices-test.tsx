@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import { MetadataServices } from "../MetadataServices";
+import { MetadataServices } from "../config/MetadataServices";
 
 describe("MetadataServices", () => {
   let wrapper;

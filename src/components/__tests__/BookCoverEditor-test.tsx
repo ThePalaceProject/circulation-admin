@@ -4,9 +4,9 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import { BookCoverEditor } from "../BookCoverEditor";
-import EditableInput from "../EditableInput";
-import ErrorMessage from "../ErrorMessage";
+import { BookCoverEditor } from "../book/BookCoverEditor";
+import EditableInput from "../shared/EditableInput";
+import ErrorMessage from "../shared/ErrorMessage";
 import { BookData, RightsStatusData } from "../../interfaces";
 
 describe("BookCoverEditor", () => {

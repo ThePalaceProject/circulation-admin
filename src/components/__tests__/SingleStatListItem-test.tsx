@@ -4,7 +4,7 @@ import { beforeEach } from "mocha";
 import * as React from "react";
 import SingleStatListItem, {
   SingleStatListItemProps,
-} from "../SingleStatListItem";
+} from "../dashboard/SingleStatListItem";
 
 describe("SingleStatListItem", () => {
   const statWithTooltip: SingleStatListItemProps = {

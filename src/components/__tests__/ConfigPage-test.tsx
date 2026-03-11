@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import buildStore from "../../store";
-import ConfigPage from "../ConfigPage";
-import ConfigTabContainer from "../ConfigTabContainer";
+import ConfigPage from "../config/ConfigPage";
+import ConfigTabContainer from "../config/ConfigTabContainer";
 
 describe("ConfigPage", () => {
   let wrapper;

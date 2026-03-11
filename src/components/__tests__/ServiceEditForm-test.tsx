@@ -7,13 +7,13 @@ import { shallow, mount } from "enzyme";
 import ServiceEditForm, {
   ServiceEditFormProps,
   ServiceEditFormState,
-} from "../ServiceEditForm";
-import EditableInput from "../EditableInput";
-import ProtocolFormField from "../ProtocolFormField";
-import NeighborhoodAnalyticsForm from "../NeighborhoodAnalyticsForm";
+} from "../config/ServiceEditForm";
+import EditableInput from "../shared/EditableInput";
+import ProtocolFormField from "../config/ProtocolFormField";
+import NeighborhoodAnalyticsForm from "../patrons/NeighborhoodAnalyticsForm";
 import { Button, Form } from "library-simplified-reusable-components";
-import WithRemoveButton from "../WithRemoveButton";
-import WithEditButton from "../WithEditButton";
+import WithRemoveButton from "../shared/WithRemoveButton";
+import WithEditButton from "../shared/WithEditButton";
 import { ServicesData } from "../../interfaces";
 
 describe("ServiceEditForm", () => {
@@ -1016,7 +1016,9 @@ describe("ServiceEditForm", () => {
     let removeLibrarySpy;
 
     beforeEach(() => {
-      save = stub().returns(new Promise<void>((resolve) => resolve()));
+      save = stub().returns(
+        new Promise<void>((resolve) => resolve())
+      );
       wrapper = mount(
         <TestServiceEditForm
           disabled={false}
@@ -1038,12 +1040,16 @@ describe("ServiceEditForm", () => {
 
     const shouldRemoveLibrary = () => {
       const libraryToRemove = serviceData.libraries[0];
-      const removeButton = wrapper.find(WithRemoveButton).at(0).find("button.remove-btn");
+      const removeButton = wrapper
+        .find(WithRemoveButton)
+        .at(0)
+        .find("button.remove-btn");
 
       removeButton.simulate("click");
 
       expect(isLibraryRemovalPermittedSpy.calledOnce).to.be.true;
-      expect(isLibraryRemovalPermittedSpy.calledWith(libraryToRemove)).to.be.true;
+      expect(isLibraryRemovalPermittedSpy.calledWith(libraryToRemove)).to.be
+        .true;
       expect(isLibraryRemovalPermittedSpy.returned(true)).to.be.true;
 
       // Library removal should be performed.
@@ -1056,24 +1062,37 @@ describe("ServiceEditForm", () => {
     };
 
     it("should allow removal by default", () => {
-      isLibraryRemovalPermittedSpy = spy(serviceEditFormInstance, "isLibraryRemovalPermitted");
+      isLibraryRemovalPermittedSpy = spy(
+        serviceEditFormInstance,
+        "isLibraryRemovalPermitted"
+      );
       shouldRemoveLibrary();
     });
 
     it("should allow remove if isLibraryRemovalPermitted returns true", () => {
-      isLibraryRemovalPermittedSpy = stub(serviceEditFormInstance, "isLibraryRemovalPermitted").returns(true);
+      isLibraryRemovalPermittedSpy = stub(
+        serviceEditFormInstance,
+        "isLibraryRemovalPermitted"
+      ).returns(true);
       shouldRemoveLibrary();
     });
 
     it("should not allow remove if isLibraryRemovalPermitted returns false", () => {
-      isLibraryRemovalPermittedSpy = stub(serviceEditFormInstance, "isLibraryRemovalPermitted").returns(false);
+      isLibraryRemovalPermittedSpy = stub(
+        serviceEditFormInstance,
+        "isLibraryRemovalPermitted"
+      ).returns(false);
       const libraryToRemove = serviceData.libraries[0];
-      const removeButton = wrapper.find(WithRemoveButton).at(0).find("button.remove-btn");
+      const removeButton = wrapper
+        .find(WithRemoveButton)
+        .at(0)
+        .find("button.remove-btn");
 
       removeButton.simulate("click");
 
       expect(isLibraryRemovalPermittedSpy.calledOnce).to.be.true;
-      expect(isLibraryRemovalPermittedSpy.calledWith(libraryToRemove)).to.be.true;
+      expect(isLibraryRemovalPermittedSpy.calledWith(libraryToRemove)).to.be
+        .true;
       expect(isLibraryRemovalPermittedSpy.returned(false)).to.be.true;
 
       // Library disassociation should NOT be performed.

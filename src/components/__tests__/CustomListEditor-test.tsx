@@ -4,11 +4,11 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import CustomListEditor from "../CustomListEditor";
-import CustomListSearch from "../CustomListSearch";
-import TextWithEditMode from "../TextWithEditMode";
-import EditableInput from "../EditableInput";
-import CustomListEntriesEditor from "../CustomListEntriesEditor";
+import CustomListEditor from "../lists/CustomListEditor";
+import CustomListSearch from "../lists/CustomListSearch";
+import TextWithEditMode from "../shared/TextWithEditMode";
+import EditableInput from "../shared/EditableInput";
+import CustomListEntriesEditor from "../lists/CustomListEntriesEditor";
 import * as PropTypes from "prop-types";
 import { Button } from "library-simplified-reusable-components";
 

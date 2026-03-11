@@ -6,9 +6,12 @@ import { shallow, mount } from "enzyme";
 
 import buildStore from "../../store";
 
-import { mapDispatchToProps, ManagePatronsForm } from "../ManagePatronsForm";
-import EditableInput from "../EditableInput";
-import ErrorMessage from "../ErrorMessage";
+import {
+  mapDispatchToProps,
+  ManagePatronsForm,
+} from "../patrons/ManagePatronsForm";
+import EditableInput from "../shared/EditableInput";
+import ErrorMessage from "../shared/ErrorMessage";
 import { Alert } from "react-bootstrap";
 
 import ActionCreator from "../../actions";

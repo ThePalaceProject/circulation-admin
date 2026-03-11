@@ -3,10 +3,10 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import AccountPage from "../AccountPage";
-import Header from "../Header";
-import Footer from "../Footer";
-import ChangePasswordForm from "../ChangePasswordForm";
+import AccountPage from "../patrons/AccountPage";
+import Header from "../layout/Header";
+import Footer from "../layout/Footer";
+import ChangePasswordForm from "../patrons/ChangePasswordForm";
 import buildStore from "../../store";
 
 describe("AccountPage", () => {

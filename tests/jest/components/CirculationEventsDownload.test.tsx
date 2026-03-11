@@ -2,7 +2,7 @@ import * as React from "react";
 import { screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import CirculationEventsDownload from "../../../src/components/CirculationEventsDownload";
+import CirculationEventsDownload from "../../../src/components/dashboard/CirculationEventsDownload";
 import { ConfigurationSettings, FeatureFlags } from "../../../src/interfaces";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { renderWithProviders } from "../testUtils/withProviders";

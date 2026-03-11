@@ -4,10 +4,10 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
-import { CustomListsForBook } from "../CustomListsForBook";
-import ErrorMessage from "../ErrorMessage";
-import WithRemoveButton from "../WithRemoveButton";
-import InputList from "../InputList";
+import { CustomListsForBook } from "../lists/CustomListsForBook";
+import ErrorMessage from "../shared/ErrorMessage";
+import WithRemoveButton from "../shared/WithRemoveButton";
+import InputList from "../shared/InputList";
 import { Link } from "react-router";
 
 describe("CustomListsForBook", () => {

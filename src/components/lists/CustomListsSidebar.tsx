@@ -22,7 +22,7 @@ export interface CustomListsSidebarProps {
 
 export default class CustomListsSidebar extends React.Component<
   CustomListsSidebarProps,
-  {}
+  Record<string, never>
 > {
   render(): JSX.Element {
     return (

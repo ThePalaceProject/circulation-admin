@@ -6,8 +6,8 @@ import { shallow, mount } from "enzyme";
 
 import buildStore from "../../store";
 
-import { ResetAdobeId } from "../ResetAdobeId";
-import EditableInput from "../EditableInput";
+import { ResetAdobeId } from "../patrons/ResetAdobeId";
+import EditableInput from "../shared/EditableInput";
 import { Alert } from "react-bootstrap";
 import { Button } from "library-simplified-reusable-components";
 

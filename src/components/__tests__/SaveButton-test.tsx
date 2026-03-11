@@ -4,7 +4,7 @@ import { stub, spy } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import SaveButton from "../SaveButton";
+import SaveButton from "../shared/SaveButton";
 
 describe("SaveButton", () => {
   let wrapper;

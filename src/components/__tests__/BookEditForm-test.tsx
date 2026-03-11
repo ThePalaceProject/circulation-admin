@@ -4,11 +4,11 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import BookEditForm from "../BookEditForm";
-import EditableInput from "../EditableInput";
-import WithRemoveButton from "../WithRemoveButton";
-import Contributors from "../Contributors";
-import LanguageField from "../LanguageField";
+import BookEditForm from "../book/BookEditForm";
+import EditableInput from "../shared/EditableInput";
+import WithRemoveButton from "../shared/WithRemoveButton";
+import Contributors from "../book/Contributors";
+import LanguageField from "../shared/LanguageField";
 import { Form } from "library-simplified-reusable-components";
 import {
   BookData,

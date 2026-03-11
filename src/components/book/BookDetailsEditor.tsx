@@ -9,7 +9,10 @@ import ErrorMessage from "../shared/ErrorMessage";
 import { AppDispatch, RootState } from "../../store";
 import { Button } from "library-simplified-reusable-components";
 import UpdatingLoader from "../shared/UpdatingLoader";
-import { getBookData, submitBookData } from "../../features/book/bookEditorSlice";
+import {
+  getBookData,
+  submitBookData,
+} from "../../features/book/bookEditorSlice";
 import BookDetailsEditorSuppression from "./BookDetailsEditorSuppression";
 import { bookEditorApiEndpoints } from "../../features/book/bookEditorSlice";
 

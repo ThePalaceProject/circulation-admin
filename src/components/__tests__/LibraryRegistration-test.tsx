@@ -4,9 +4,9 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import LibraryRegistration from "../LibraryRegistration";
-import LibraryRegistrationForm from "../LibraryRegistrationForm";
-import EditableInput from "../EditableInput";
+import LibraryRegistration from "../config/LibraryRegistration";
+import LibraryRegistrationForm from "../config/LibraryRegistrationForm";
+import EditableInput from "../shared/EditableInput";
 
 describe("LibraryRegistration", () => {
   let wrapper;

@@ -4,7 +4,7 @@ import { spy, stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import { SelfTests } from "../SelfTests";
+import { SelfTests } from "../config/SelfTests";
 import { CheckSoloIcon, XIcon } from "@nypl/dgx-svg-icons";
 
 // SelfTests can take more than just a collection (an integration can have

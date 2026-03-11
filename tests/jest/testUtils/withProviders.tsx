@@ -2,7 +2,7 @@ import * as React from "react";
 import { Provider, ProviderProps } from "react-redux";
 import ContextProvider, {
   ContextProviderProps,
-} from "../../../src/components/ContextProvider";
+} from "../../../src/components/layout/ContextProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";

@@ -4,7 +4,7 @@ import { Button } from "library-simplified-reusable-components";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import CirculationEventsDownloadForm from "../CirculationEventsDownloadForm";
+import CirculationEventsDownloadForm from "../dashboard/CirculationEventsDownloadForm";
 
 describe("CirculationEventsDownloadForm", () => {
   let wrapper;

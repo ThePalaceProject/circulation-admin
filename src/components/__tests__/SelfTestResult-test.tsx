@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import SelfTestResult from "../SelfTestResult";
+import SelfTestResult from "../config/SelfTestResult";
 
 const stringResult = {
   duration: 0,

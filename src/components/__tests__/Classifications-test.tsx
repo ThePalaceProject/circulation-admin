@@ -4,14 +4,14 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { Classifications } from "../Classifications";
-import ErrorMessage from "../ErrorMessage";
-import ClassificationsForm from "../ClassificationsForm";
-import ClassificationsTable from "../ClassificationsTable";
+import { Classifications } from "../book/Classifications";
+import ErrorMessage from "../shared/ErrorMessage";
+import ClassificationsForm from "../book/ClassificationsForm";
+import ClassificationsTable from "../book/ClassificationsTable";
 import buildStore from "../../store";
 import genreData from "./genreData";
 import classificationsData from "./classificationsData";
-import UpdatingLoader from "../UpdatingLoader";
+import UpdatingLoader from "../shared/UpdatingLoader";
 
 describe("Classifications", () => {
   let wrapper;

@@ -4,8 +4,8 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import { PatronAuthServices } from "../PatronAuthServices";
-import NeighborhoodAnalyticsForm from "../NeighborhoodAnalyticsForm";
+import { PatronAuthServices } from "../config/PatronAuthServices";
+import NeighborhoodAnalyticsForm from "../patrons/NeighborhoodAnalyticsForm";
 
 describe("PatronAuthServices", () => {
   let wrapper;

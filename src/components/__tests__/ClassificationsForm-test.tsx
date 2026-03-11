@@ -4,10 +4,10 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import ClassificationsForm from "../ClassificationsForm";
-import EditableInput from "../EditableInput";
-import WithRemoveButton from "../WithRemoveButton";
-import GenreForm from "../GenreForm";
+import ClassificationsForm from "../book/ClassificationsForm";
+import EditableInput from "../shared/EditableInput";
+import WithRemoveButton from "../shared/WithRemoveButton";
+import GenreForm from "../book/GenreForm";
 import genreData from "./genreData";
 
 describe("ClassificationsForm", () => {

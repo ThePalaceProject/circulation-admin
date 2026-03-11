@@ -3,7 +3,7 @@ import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
 import { QueryClient } from "@tanstack/react-query";
 import { renderWithProviders } from "../testUtils/withProviders";
-import DebugAuthentication from "../../../src/components/DebugAuthentication";
+import DebugAuthentication from "../../../src/components/patrons/DebugAuthentication";
 import {
   AuthMethodsResponse,
   PatronDebugResponse,

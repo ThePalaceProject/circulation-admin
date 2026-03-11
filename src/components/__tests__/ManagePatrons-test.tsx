@@ -3,11 +3,11 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import ManagePatrons from "../ManagePatrons";
-import ManagePatronsForm from "../ManagePatronsForm";
-import ManagePatronsTabContainer from "../ManagePatronsTabContainer";
-import Header from "../Header";
-import Footer from "../Footer";
+import ManagePatrons from "../patrons/ManagePatrons";
+import ManagePatronsForm from "../patrons/ManagePatronsForm";
+import ManagePatronsTabContainer from "../patrons/ManagePatronsTabContainer";
+import Header from "../layout/Header";
+import Footer from "../layout/Footer";
 import buildStore from "../../store";
 
 describe("ManagePatrons", () => {

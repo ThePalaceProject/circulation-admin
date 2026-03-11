@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import AdvancedSearchBuilder from "../../../src/components/AdvancedSearchBuilder";
+import AdvancedSearchBuilder from "../../../src/components/lists/AdvancedSearchBuilder";
 
 describe("AdvancedSearchBuilder", () => {
   it("renders a placeholder and help text when the publication date filter is selected", async () => {

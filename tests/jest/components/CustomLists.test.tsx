@@ -3,7 +3,7 @@ import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
-import CustomLists from "../../../src/components/CustomLists";
+import CustomLists from "../../../src/components/lists/CustomLists";
 import renderWithContext from "../testUtils/renderWithContext";
 import buildStore from "../../../src/store";
 import { ConfigurationSettings } from "../../../src/interfaces";

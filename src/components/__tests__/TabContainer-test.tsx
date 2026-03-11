@@ -5,7 +5,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import buildStore from "../../store";
-import { TabContainer, TabContainerProps } from "../TabContainer";
+import { TabContainer, TabContainerProps } from "../shared/TabContainer";
 import { mockRouterContext } from "./routing";
 
 describe("TabContainer", () => {

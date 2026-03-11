@@ -5,7 +5,7 @@ import { shallow, mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-import CustomListEntriesEditor from "../CustomListEntriesEditor";
+import CustomListEntriesEditor from "../lists/CustomListEntriesEditor";
 
 import { AudioHeadphoneIcon, BookIcon } from "@nypl/dgx-svg-icons";
 import * as PropTypes from "prop-types";

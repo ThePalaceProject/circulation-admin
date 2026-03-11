@@ -5,7 +5,7 @@ import { mount } from "enzyme";
 
 import { componentWithProviders } from "../../../tests/jest/testUtils/withProviders";
 
-import LibraryStats from "../LibraryStats";
+import LibraryStats from "../dashboard/LibraryStats";
 import { BarChart } from "recharts";
 import {
   statisticsApiResponseData,

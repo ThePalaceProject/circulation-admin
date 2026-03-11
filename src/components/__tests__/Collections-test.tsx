@@ -6,7 +6,7 @@ import { ReactWrapper, mount } from "enzyme";
 import * as PropTypes from "prop-types";
 import { ProtocolData } from "../../interfaces";
 import Admin from "../../models/Admin";
-import { Collections, CollectionEditForm } from "../Collections";
+import { Collections, CollectionEditForm } from "../config/Collections";
 import buildStore from "../../store";
 
 const collections = [

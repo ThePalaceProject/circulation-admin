@@ -7,7 +7,7 @@ import Collection from "@thepalaceproject/web-opds-client/lib/components/Collect
     OPDSCatalog from web-opds-client. */
 export default class EntryPointsContainer extends React.Component<
   CollectionContainerProps,
-  {}
+  Record<string, never>
 > {
   render(): JSX.Element {
     const child = React.Children.only(

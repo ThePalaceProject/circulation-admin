@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import LoadButton from "../LoadButton";
+import LoadButton from "../shared/LoadButton";
 import MoreDotsIcon from "../icons/MoreDotsIcon";
 
 describe("LoadButton", () => {

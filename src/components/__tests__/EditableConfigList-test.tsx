@@ -10,9 +10,9 @@ import {
   EditableConfigList,
   EditFormProps,
   AdditionalContentProps,
-} from "../EditableConfigList";
-import ErrorMessage from "../ErrorMessage";
-import EditableInput from "../EditableInput";
+} from "../config/EditableConfigList";
+import ErrorMessage from "../shared/ErrorMessage";
+import EditableInput from "../shared/EditableInput";
 import { Alert } from "react-bootstrap";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 
@@ -28,7 +28,7 @@ describe("EditableConfigList", () => {
 
   class ThingEditForm extends React.Component<
     EditFormProps<Things, Thing>,
-    {}
+    Record<string, never>
   > {
     render(): JSX.Element {
       return <div>Test</div>;
@@ -37,7 +37,7 @@ describe("EditableConfigList", () => {
 
   class ThingEditFormWithInputs extends React.Component<
     EditFormProps<Things, Thing>,
-    {}
+    Record<string, never>
   > {
     render(): JSX.Element {
       return (
@@ -55,7 +55,7 @@ describe("EditableConfigList", () => {
 
   class AdditionalContent extends React.Component<
     AdditionalContentProps<Things, Thing>,
-    {}
+    Record<string, never>
   > {
     render(): JSX.Element {
       return <div>Test Additional Content</div>;

@@ -2,7 +2,11 @@ import * as React from "react";
 import { Button, Panel } from "library-simplified-reusable-components";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
-import { AdvancedSearchQuery, LanguagesData, LibraryData } from "../../interfaces";
+import {
+  AdvancedSearchQuery,
+  LanguagesData,
+  LibraryData,
+} from "../../interfaces";
 
 import {
   CustomListEditorProperties,

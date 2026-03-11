@@ -9,7 +9,7 @@ export interface ClassificationsTableProps {
     book detail page. */
 export default class ClassificationsTable extends React.Component<
   ClassificationsTableProps,
-  {}
+  Record<string, never>
 > {
   render(): JSX.Element {
     return (

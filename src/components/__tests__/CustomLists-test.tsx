@@ -4,13 +4,13 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import { CustomLists } from "../CustomLists";
-import ErrorMessage from "../ErrorMessage";
+import { CustomLists } from "../lists/CustomLists";
+import ErrorMessage from "../shared/ErrorMessage";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import CustomListEditor from "../CustomListEditor";
+import CustomListEditor from "../lists/CustomListEditor";
 import Admin from "../../models/Admin";
 import { LaneData } from "../../interfaces";
-import CustomListsSidebar from "../CustomListsSidebar";
+import CustomListsSidebar from "../lists/CustomListsSidebar";
 
 describe("CustomLists", () => {
   let wrapper;

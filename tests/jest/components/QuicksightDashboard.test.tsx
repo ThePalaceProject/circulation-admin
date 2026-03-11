@@ -1,14 +1,14 @@
 import * as React from "react";
 import { screen, waitFor } from "@testing-library/react";
 
-import QuicksightDashboard from "../../../src/components/QuicksightDashboard";
+import QuicksightDashboard from "../../../src/components/dashboard/QuicksightDashboard";
 import { LibrariesData } from "../../../src/interfaces";
 import buildStore from "../../../src/store";
 import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
 import renderWithContext from "../testUtils/renderWithContext";
 import { renderWithProviders } from "../testUtils/withProviders";
-import QuicksightDashboardPage from "../../../src/components/QuicksightDashboardPage";
+import QuicksightDashboardPage from "../../../src/components/dashboard/QuicksightDashboardPage";
 
 const libraries: LibrariesData = { libraries: [{ uuid: "my-uuid" }] };
 const dashboardId = "test";

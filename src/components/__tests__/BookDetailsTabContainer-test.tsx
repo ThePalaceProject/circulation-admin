@@ -5,11 +5,11 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import buildStore from "../../store";
-import { BookDetailsTabContainer } from "../BookDetailsTabContainer";
-import BookDetailsEditor from "../BookDetailsEditor";
-import Classifications from "../Classifications";
-import Complaints from "../Complaints";
-import CustomListsForBook from "../CustomListsForBook";
+import { BookDetailsTabContainer } from "../book/BookDetailsTabContainer";
+import BookDetailsEditor from "../book/BookDetailsEditor";
+import Classifications from "../book/Classifications";
+import Complaints from "../book/Complaints";
+import CustomListsForBook from "../lists/CustomListsForBook";
 import { mockRouterContext } from "./routing";
 
 describe("BookDetailsTabContainer", () => {

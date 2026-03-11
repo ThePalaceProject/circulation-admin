@@ -4,8 +4,8 @@ import * as React from "react";
 import { mount } from "enzyme";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import AdvancedSearchValueFilter from "../AdvancedSearchValueFilter";
-import { fields, operators } from "../AdvancedSearchBuilder";
+import AdvancedSearchValueFilter from "../lists/AdvancedSearchValueFilter";
+import { fields, operators } from "../lists/AdvancedSearchBuilder";
 
 describe("AdvancedSearchValueFilter", () => {
   let wrapper;

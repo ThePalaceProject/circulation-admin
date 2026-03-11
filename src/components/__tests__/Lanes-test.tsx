@@ -5,13 +5,13 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import { Lanes } from "../Lanes";
+import { Lanes } from "../lanes/Lanes";
 import { Link } from "react-router";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../shared/ErrorMessage";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import LaneEditor from "../LaneEditor";
-import Lane from "../Lane";
-import EditableInput from "../EditableInput";
+import LaneEditor from "../lanes/LaneEditor";
+import Lane from "../lanes/Lane";
+import EditableInput from "../shared/EditableInput";
 import { Button } from "library-simplified-reusable-components";
 import { LaneData } from "../../interfaces";
 

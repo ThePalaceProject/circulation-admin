@@ -4,8 +4,8 @@ import { stub, spy } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import IndividualAdminEditForm from "../IndividualAdminEditForm";
-import EditableInput from "../EditableInput";
+import IndividualAdminEditForm from "../config/IndividualAdminEditForm";
+import EditableInput from "../shared/EditableInput";
 import Admin from "../../models/Admin";
 import { Button, Form, Panel } from "library-simplified-reusable-components";
 import { AdminRoleData, AdminRole } from "../../interfaces";

@@ -31,7 +31,7 @@ function getOpSymbol(value) {
   return op?.symbol || value;
 }
 
-export default ({
+const AdvancedSearchValueFilter = ({
   query,
   readOnly,
   selected,
@@ -66,7 +66,11 @@ export default ({
     onRemove?.(query.id);
   };
 
-  const [, drag]: [{}, ConnectDragSource, ConnectDragPreview] = useDrag(
+  const [, drag]: [
+    Record<string, unknown>,
+    ConnectDragSource,
+    ConnectDragPreview
+  ] = useDrag(
     {
       type: "filter",
       item: {
@@ -127,3 +131,7 @@ export default ({
     </div>
   );
 };
+
+AdvancedSearchValueFilter.displayName = "AdvancedSearchValueFilter";
+
+export default AdvancedSearchValueFilter;

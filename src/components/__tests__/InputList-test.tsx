@@ -5,12 +5,12 @@ import { stub, spy } from "sinon";
 import { Button } from "library-simplified-reusable-components";
 import buildStore from "../../store";
 
-import InputList from "../InputList";
-import ProtocolFormField from "../ProtocolFormField";
-import EditableInput from "../EditableInput";
-import WithRemoveButton from "../WithRemoveButton";
-import ToolTip from "../ToolTip";
-import LanguageField from "../LanguageField";
+import InputList from "../shared/InputList";
+import ProtocolFormField from "../config/ProtocolFormField";
+import EditableInput from "../shared/EditableInput";
+import WithRemoveButton from "../shared/WithRemoveButton";
+import ToolTip from "../shared/ToolTip";
+import LanguageField from "../shared/LanguageField";
 
 describe("InputList", () => {
   let wrapper;

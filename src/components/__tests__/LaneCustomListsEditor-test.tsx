@@ -5,7 +5,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import LaneCustomListsEditor from "../LaneCustomListsEditor";
+import LaneCustomListsEditor from "../lanes/LaneCustomListsEditor";
 import ShareIcon from "../icons/ShareIcon";
 
 describe("LaneCustomListsEditor", () => {

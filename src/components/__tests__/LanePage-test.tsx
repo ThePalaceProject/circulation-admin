@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import buildStore from "../../store";
-import LanePage from "../LanePage";
-import Lanes from "../Lanes";
+import LanePage from "../lanes/LanePage";
+import Lanes from "../lanes/Lanes";
 
 describe("LanePage", () => {
   let wrapper;

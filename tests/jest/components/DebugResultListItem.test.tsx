@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
-import DebugResultListItem from "../../../src/components/DebugResultListItem";
+import DebugResultListItem from "../../../src/components/patrons/DebugResultListItem";
 import { PatronDebugResult } from "../../../src/api/patronDebug";
 
 describe("DebugResultListItem", () => {

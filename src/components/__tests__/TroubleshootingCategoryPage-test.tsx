@@ -3,9 +3,9 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import TroubleshootingCategoryPage from "../TroubleshootingCategoryPage";
-import DiagnosticsTabContainer from "../DiagnosticsTabContainer";
-import SelfTestsTabContainer from "../SelfTestsTabContainer";
+import TroubleshootingCategoryPage from "../diagnostics/TroubleshootingCategoryPage";
+import DiagnosticsTabContainer from "../diagnostics/DiagnosticsTabContainer";
+import SelfTestsTabContainer from "../config/SelfTestsTabContainer";
 import buildStore from "../../store";
 
 describe("TroubleshootingCategoryPage", () => {

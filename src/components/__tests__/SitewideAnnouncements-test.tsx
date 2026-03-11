@@ -3,8 +3,8 @@ import { expect } from "chai";
 import { stub } from "sinon";
 import { mount } from "enzyme";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import AnnouncementsSection from "../AnnouncementsSection";
-import { SitewideAnnouncements } from "../SitewideAnnouncements";
+import AnnouncementsSection from "../announcements/AnnouncementsSection";
+import { SitewideAnnouncements } from "../announcements/SitewideAnnouncements";
 
 describe("SitewideAnnouncements", () => {
   const fetchData = stub();

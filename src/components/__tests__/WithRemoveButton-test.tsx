@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import WithRemoveButton from "../WithRemoveButton";
+import WithRemoveButton from "../shared/WithRemoveButton";
 
 describe("WithRemoveButton", () => {
   let wrapper;

@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import Timestamp from "../Timestamp";
+import Timestamp from "../shared/Timestamp";
 import { Panel } from "library-simplified-reusable-components";
 
 describe("Timestamp", () => {

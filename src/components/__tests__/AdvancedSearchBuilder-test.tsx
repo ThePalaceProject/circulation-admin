@@ -2,9 +2,9 @@ import { expect } from "chai";
 import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
-import AdvancedSearchBuilder from "../AdvancedSearchBuilder";
-import AdvancedSearchFilterInput from "../AdvancedSearchFilterInput";
-import AdvancedSearchFilterViewer from "../AdvancedSearchFilterViewer";
+import AdvancedSearchBuilder from "../lists/AdvancedSearchBuilder";
+import AdvancedSearchFilterInput from "../lists/AdvancedSearchFilterInput";
+import AdvancedSearchFilterViewer from "../lists/AdvancedSearchFilterViewer";
 
 describe("AdvancedSearchBuilder", () => {
   let wrapper;

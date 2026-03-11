@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import buildStore from "../../store";
-import SetupPage from "../SetupPage";
-import IndividualAdmins from "../IndividualAdmins";
+import SetupPage from "../layout/SetupPage";
+import IndividualAdmins from "../config/IndividualAdmins";
 
 describe("SetupPage", () => {
   let wrapper;

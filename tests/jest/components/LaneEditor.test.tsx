@@ -2,7 +2,7 @@ import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import { stub } from "sinon";
 import { LaneData } from "../../../src/interfaces";
-import LaneEditor from "../../../src/components/LaneEditor";
+import LaneEditor from "../../../src/components/lanes/LaneEditor";
 
 // Mock the LaneCustomListsEditor so we can verify that it is or isn't rendered. This serves as an
 // example of how to do something analogous to Enzyme's shallow rendering, when we don't want/need
@@ -10,7 +10,7 @@ import LaneEditor from "../../../src/components/LaneEditor";
 // useful for testing components in isolation (unit testing), instead of the integration testing
 // that RTL focuses on.
 
-jest.mock("../../../src/components/LaneCustomListsEditor", () => ({
+jest.mock("../../../src/components/lanes/LaneCustomListsEditor", () => ({
   __esModule: true,
   default: (props) => <div data-testid="LaneCustomListsEditor" />,
 }));

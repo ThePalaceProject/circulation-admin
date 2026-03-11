@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import EditorField from "../EditorField";
+import EditorField from "../shared/EditorField";
 import { Editor } from "draft-js";
 
 describe("EditorField", () => {

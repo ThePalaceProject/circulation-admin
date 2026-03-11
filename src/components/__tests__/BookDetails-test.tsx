@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import BookDetails from "../BookDetails";
+import BookDetails from "../book/BookDetails";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 const book: BookData = {

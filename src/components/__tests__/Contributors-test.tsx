@@ -3,7 +3,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 import { spy } from "sinon";
 
-import Contributors from "../Contributors";
+import Contributors from "../book/Contributors";
 import { RolesData, ContributorData } from "../../interfaces";
 
 describe("Contributors", () => {

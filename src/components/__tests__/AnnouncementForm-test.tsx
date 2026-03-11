@@ -5,8 +5,8 @@ import { stub, spy } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import AnnouncementForm from "../AnnouncementForm";
-import EditableInput from "../EditableInput";
+import AnnouncementForm from "../announcements/AnnouncementForm";
+import EditableInput from "../shared/EditableInput";
 
 describe("AnnouncementForm", () => {
   let wrapper;

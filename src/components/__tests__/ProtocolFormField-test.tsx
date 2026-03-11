@@ -4,10 +4,10 @@ import * as React from "react";
 import { mount, ReactWrapper } from "enzyme";
 import { stub } from "sinon";
 
-import ProtocolFormField from "../ProtocolFormField";
-import EditableInput from "../EditableInput";
-import InputList from "../InputList";
-import ColorPicker from "../ColorPicker";
+import ProtocolFormField from "../config/ProtocolFormField";
+import EditableInput from "../shared/EditableInput";
+import InputList from "../shared/InputList";
+import ColorPicker from "../shared/ColorPicker";
 import { Button } from "library-simplified-reusable-components";
 
 describe("ProtocolFormField", () => {

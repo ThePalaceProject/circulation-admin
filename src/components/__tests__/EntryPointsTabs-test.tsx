@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { EntryPointsTabs } from "../EntryPointsTabs";
+import { EntryPointsTabs } from "../shared/EntryPointsTabs";
 import { mockRouterContext } from "./routing";
 import CatalogLink from "@thepalaceproject/web-opds-client/lib/components/CatalogLink";
 

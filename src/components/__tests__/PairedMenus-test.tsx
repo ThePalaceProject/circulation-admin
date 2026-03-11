@@ -3,8 +3,8 @@ import { spy } from "sinon";
 
 import * as React from "react";
 import { mount } from "enzyme";
-import PairedMenus from "../PairedMenus";
-import InputList from "../InputList";
+import PairedMenus from "../shared/PairedMenus";
+import InputList from "../shared/InputList";
 
 describe("PairedMenus", () => {
   let wrapper;

@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { shallow } from "enzyme";
 import { spy } from "sinon";
-import ToolTip from "../ToolTip";
+import ToolTip from "../shared/ToolTip";
 
 describe("ToolTip", () => {
   let wrapper;

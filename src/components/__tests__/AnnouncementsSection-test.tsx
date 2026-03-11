@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import AnnouncementsSection from "../AnnouncementsSection";
+import AnnouncementsSection from "../announcements/AnnouncementsSection";
 
 describe("AnnouncementsSection", () => {
   let wrapper;

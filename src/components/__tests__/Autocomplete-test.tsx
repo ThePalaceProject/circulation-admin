@@ -4,8 +4,8 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import Autocomplete from "../Autocomplete";
-import EditableInput from "../EditableInput";
+import Autocomplete from "../shared/Autocomplete";
+import EditableInput from "../shared/EditableInput";
 
 describe("Autocomplete", () => {
   let wrapper;

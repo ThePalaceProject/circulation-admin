@@ -13,7 +13,7 @@ export interface LanguageFieldProps {
 
 export default class LanguageField extends React.Component<
   LanguageFieldProps,
-  {}
+  Record<string, never>
 > {
   autocompleteRef = React.createRef<Autocomplete>();
   render() {

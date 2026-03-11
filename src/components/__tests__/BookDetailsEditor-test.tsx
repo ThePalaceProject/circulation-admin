@@ -4,11 +4,11 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import { BookDetailsEditor } from "../BookDetailsEditor";
+import { BookDetailsEditor } from "../book/BookDetailsEditor";
 import { Button } from "library-simplified-reusable-components";
-import BookEditForm from "../BookEditForm";
-import ErrorMessage from "../ErrorMessage";
-import BookDetailsEditorSuppression from "../BookDetailsEditorSuppression";
+import BookEditForm from "../book/BookEditForm";
+import ErrorMessage from "../shared/ErrorMessage";
+import BookDetailsEditorSuppression from "../book/BookDetailsEditorSuppression";
 import {
   PER_LIBRARY_SUPPRESS_REL,
   PER_LIBRARY_UNSUPPRESS_REL,

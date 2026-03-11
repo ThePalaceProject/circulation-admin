@@ -2,7 +2,7 @@ import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import { stub } from "sinon";
 import { LaneData } from "../../../src/interfaces";
-import Lane from "../../../src/components/Lane";
+import Lane from "../../../src/components/lanes/Lane";
 
 // Mock the Link component from React Router, so we can verify that it gets rendered with the
 // expected props. This serves as an example of how to do something analogous to Enzyme's shallow

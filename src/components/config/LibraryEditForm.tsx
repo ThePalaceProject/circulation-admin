@@ -31,7 +31,7 @@ export interface LibraryEditFormProps {
     system configuration page. */
 export default class LibraryEditForm extends React.Component<
   LibraryEditFormProps,
-  {}
+  Record<string, never>
 > {
   private nameRef = React.createRef<EditableInput>();
   private shortNameRef = React.createRef<EditableInput>();

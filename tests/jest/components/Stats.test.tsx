@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { ALL_LIBRARIES_HEADING } from "../../../src/components/LibraryStats";
-import { CustomTooltip } from "../../../src/components/StatsCollectionsBarChart";
+import { ALL_LIBRARIES_HEADING } from "../../../src/components/dashboard/LibraryStats";
+import { CustomTooltip } from "../../../src/components/dashboard/StatsCollectionsBarChart";
 import {
   componentWithProviders,
   renderWithProviders,
@@ -16,7 +16,7 @@ import { normalizeStatistics } from "../../../src/features/stats/normalizeStatis
 import { useGetStatsQuery } from "../../../src/features/stats/statsSlice";
 import * as fetchMock from "fetch-mock-jest";
 import { STATS_API_ENDPOINT } from "../../../src/features/stats/statsSlice";
-import Stats from "../../../src/components/Stats";
+import Stats from "../../../src/components/dashboard/Stats";
 import { renderHook } from "@testing-library/react-hooks";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { store } from "../../../src/store";

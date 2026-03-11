@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow } from "enzyme";
 
-import { DiscoveryServices } from "../DiscoveryServices";
+import { DiscoveryServices } from "../config/DiscoveryServices";
 
 describe("DiscoveryServices", () => {
   let wrapper;

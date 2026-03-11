@@ -10,7 +10,7 @@ export interface WithEditButtonProps {
 /** When wrapped around an element, renders an edit button next to the element. */
 export default class WithEditButton extends React.Component<
   WithEditButtonProps,
-  {}
+  Record<string, never>
 > {
   render(): JSX.Element {
     const editContent = (

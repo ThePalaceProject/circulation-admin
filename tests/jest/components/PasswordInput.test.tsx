@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import PasswordInput from "../../../src/components/PasswordInput";
+import PasswordInput from "../../../src/components/shared/PasswordInput";
 
 describe("PasswordInput", () => {
   it("defaults to type='password'", () => {

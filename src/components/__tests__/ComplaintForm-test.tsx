@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Button, Form } from "library-simplified-reusable-components";
 
-import ComplaintForm from "../ComplaintForm";
-import EditableInput from "../EditableInput";
+import ComplaintForm from "../book/ComplaintForm";
+import EditableInput from "../shared/EditableInput";
 
 describe("ComplaintForm", () => {
   describe("rendering", () => {

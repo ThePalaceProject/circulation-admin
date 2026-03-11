@@ -2,7 +2,7 @@ import * as React from "react";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import ContextProvider, {
   ContextProviderProps,
-} from "../../../src/components/ContextProvider";
+} from "../../../src/components/layout/ContextProvider";
 import { ConfigurationSettings } from "../../../src/interfaces";
 
 /**

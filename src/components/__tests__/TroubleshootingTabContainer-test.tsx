@@ -4,7 +4,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { stub } from "sinon";
 
-import TroubleshootingTabContainer from "../TroubleshootingTabContainer";
+import TroubleshootingTabContainer from "../diagnostics/TroubleshootingTabContainer";
 
 describe("TroubleshootingTabContainer", () => {
   let wrapper;

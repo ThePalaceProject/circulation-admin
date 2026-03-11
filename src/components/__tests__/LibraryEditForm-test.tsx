@@ -4,13 +4,13 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import LibraryEditForm from "../LibraryEditForm";
-import EditableInput from "../EditableInput";
+import LibraryEditForm from "../config/LibraryEditForm";
+import EditableInput from "../shared/EditableInput";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
-import ProtocolFormField from "../ProtocolFormField";
-import PairedMenus from "../PairedMenus";
-import InputList from "../InputList";
-import AnnouncementsSection from "../AnnouncementsSection";
+import ProtocolFormField from "../config/ProtocolFormField";
+import PairedMenus from "../shared/PairedMenus";
+import InputList from "../shared/InputList";
+import AnnouncementsSection from "../announcements/AnnouncementsSection";
 
 describe("LibraryEditForm", () => {
   let wrapper;

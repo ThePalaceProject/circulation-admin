@@ -5,8 +5,8 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
 
-import TextWithEditMode from "../TextWithEditMode";
-import EditableInput from "../EditableInput";
+import TextWithEditMode from "../shared/TextWithEditMode";
+import EditableInput from "../shared/EditableInput";
 
 describe("TextWithEditMode", () => {
   let onUpdate;

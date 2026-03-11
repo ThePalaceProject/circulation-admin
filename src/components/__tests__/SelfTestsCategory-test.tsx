@@ -5,8 +5,8 @@ import { shallow, mount } from "enzyme";
 import { stub, spy } from "sinon";
 import buildStore from "../../store";
 
-import SelfTestsCategory from "../SelfTestsCategory";
-import SelfTests from "../SelfTests";
+import SelfTestsCategory from "../config/SelfTestsCategory";
+import SelfTests from "../config/SelfTests";
 import { Panel } from "library-simplified-reusable-components";
 
 describe("SelfTestsCategory", () => {

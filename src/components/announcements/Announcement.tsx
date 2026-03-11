@@ -12,7 +12,7 @@ export interface AnnouncementProps {
 
 export default class Announcement extends React.Component<
   AnnouncementProps,
-  {}
+  Record<string, never>
 > {
   constructor(props: AnnouncementProps) {
     super(props);

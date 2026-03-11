@@ -2,8 +2,8 @@ import { expect } from "chai";
 import { stub } from "sinon";
 import * as React from "react";
 import { mount } from "enzyme";
-import { fields, operators } from "../AdvancedSearchBuilder";
-import AdvancedSearchFilterInput from "../AdvancedSearchFilterInput";
+import { fields, operators } from "../lists/AdvancedSearchBuilder";
+import AdvancedSearchFilterInput from "../lists/AdvancedSearchFilterInput";
 
 describe("AdvancedSearchFilterInput", () => {
   let wrapper;

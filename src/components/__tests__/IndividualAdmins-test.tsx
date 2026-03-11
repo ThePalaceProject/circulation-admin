@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as PropTypes from "prop-types";
 import * as React from "react";
 import { mount } from "enzyme";
-import { IndividualAdmins } from "../IndividualAdmins";
+import { IndividualAdmins } from "../config/IndividualAdmins";
 
 describe("IndividualAdmins", () => {
   let isSystemAdmin: boolean;

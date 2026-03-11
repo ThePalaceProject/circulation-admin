@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import Footer, { makeFooterSupportContactText } from "../Footer";
+import Footer, { makeFooterSupportContactText } from "../layout/Footer";
 import { componentWithProviders } from "../../../tests/jest/testUtils/withProviders";
 import {
   DEFAULT_SUPPORT_CONTACT_TEXT,

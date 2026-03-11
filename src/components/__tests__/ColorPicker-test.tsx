@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import * as React from "react";
 import { shallow } from "enzyme";
-import ColorPicker from "../ColorPicker";
+import ColorPicker from "../shared/ColorPicker";
 import { CompactPicker } from "react-color";
 
 describe("ColorPicker", () => {

@@ -12,7 +12,7 @@ export interface AutocompleteProps {
 
 export default class Autocomplete extends React.Component<
   AutocompleteProps,
-  {}
+  Record<string, never>
 > {
   private inputRef = React.createRef<EditableInput>();
   render(): JSX.Element {

@@ -5,10 +5,10 @@ import { shallow, mount } from "enzyme";
 import { stub } from "sinon";
 import buildStore from "../../store";
 
-import { DiagnosticsTabContainer } from "../DiagnosticsTabContainer";
-import DiagnosticsServiceType from "../DiagnosticsServiceType";
+import { DiagnosticsTabContainer } from "../diagnostics/DiagnosticsTabContainer";
+import DiagnosticsServiceType from "../diagnostics/DiagnosticsServiceType";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../shared/ErrorMessage";
 
 describe("DiagnosticsTabContainer", () => {
   let wrapper;

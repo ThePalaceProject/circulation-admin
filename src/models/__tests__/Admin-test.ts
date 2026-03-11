@@ -3,22 +3,25 @@ import { expect } from "chai";
 import Admin from "../Admin";
 
 describe("Admin", () => {
-
-  const systemAdmin = new Admin([{ "role": "system" }]);
-  const sitewideLibraryManager = new Admin([{ "role": "manager-all" }]);
-  const sitewideLibrarian = new Admin([{ "role": "librarian-all" }]);
-  const libraryManagerA = new Admin([{ "role": "manager", "library": "a" }]);
-  const librarianA = new Admin([{ "role": "librarian", "library": "a" }]);
-  const libraryManagerB = new Admin([{ "role": "manager", "library": "b" }]);
-  const librarianB = new Admin([{ "role": "librarian", "library": "b" }]);
-  const libraryManagerASitewideLibrarian = new Admin([{ "role": "librarian-all" },
-                                                      { "role": "manager", "library": "a" }]);
-  const libraryManagerALibrarianB = new Admin([{ "role": "manager", "library": "a" },
-                                               { "role": "librarian", "library": "b" }]);
+  const systemAdmin = new Admin([{ role: "system" }]);
+  const sitewideLibraryManager = new Admin([{ role: "manager-all" }]);
+  const sitewideLibrarian = new Admin([{ role: "librarian-all" }]);
+  const libraryManagerA = new Admin([{ role: "manager", library: "a" }]);
+  const librarianA = new Admin([{ role: "librarian", library: "a" }]);
+  const libraryManagerB = new Admin([{ role: "manager", library: "b" }]);
+  const librarianB = new Admin([{ role: "librarian", library: "b" }]);
+  const libraryManagerASitewideLibrarian = new Admin([
+    { role: "librarian-all" },
+    { role: "manager", library: "a" },
+  ]);
+  const libraryManagerALibrarianB = new Admin([
+    { role: "manager", library: "a" },
+    { role: "librarian", library: "b" },
+  ]);
 
   it("stores email", () => {
-    expect((new Admin([], "email")).email).to.equal("email");
-    expect((new Admin([])).email).not.to.be.ok;
+    expect(new Admin([], "email").email).to.equal("email");
+    expect(new Admin([]).email).not.to.be.ok;
   });
 
   it("identifies system admins", () => {
@@ -41,7 +44,8 @@ describe("Admin", () => {
     expect(librarianA.isSitewideLibraryManager()).not.to.be.ok;
     expect(libraryManagerB.isSitewideLibraryManager()).not.to.be.ok;
     expect(librarianB.isSitewideLibraryManager()).not.to.be.ok;
-    expect(libraryManagerASitewideLibrarian.isSitewideLibraryManager()).not.to.be.ok;
+    expect(libraryManagerASitewideLibrarian.isSitewideLibraryManager()).not.to
+      .be.ok;
     expect(libraryManagerALibrarianB.isSitewideLibraryManager()).not.to.be.ok;
   });
 
@@ -109,7 +113,8 @@ describe("Admin", () => {
     expect(librarianA.isLibraryManagerOfSomeLibrary()).not.to.be.ok;
     expect(libraryManagerB.isLibraryManagerOfSomeLibrary()).to.be.ok;
     expect(librarianB.isLibraryManagerOfSomeLibrary()).not.to.be.ok;
-    expect(libraryManagerASitewideLibrarian.isLibraryManagerOfSomeLibrary()).to.be.ok;
+    expect(libraryManagerASitewideLibrarian.isLibraryManagerOfSomeLibrary()).to
+      .be.ok;
     expect(libraryManagerALibrarianB.isLibraryManagerOfSomeLibrary()).to.be.ok;
   });
 
@@ -171,11 +176,13 @@ describe("Admin", () => {
     expect(librarianB.hasRole("librarian", "b")).to.be.ok;
 
     expect(libraryManagerASitewideLibrarian.hasRole("system")).not.to.be.ok;
-    expect(libraryManagerASitewideLibrarian.hasRole("manager-all")).not.to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("manager-all")).not.to.be
+      .ok;
     expect(libraryManagerASitewideLibrarian.hasRole("librarian-all")).to.be.ok;
     expect(libraryManagerASitewideLibrarian.hasRole("manager", "a")).to.be.ok;
     expect(libraryManagerASitewideLibrarian.hasRole("librarian", "a")).to.be.ok;
-    expect(libraryManagerASitewideLibrarian.hasRole("manager", "b")).not.to.be.ok;
+    expect(libraryManagerASitewideLibrarian.hasRole("manager", "b")).not.to.be
+      .ok;
     expect(libraryManagerASitewideLibrarian.hasRole("librarian", "b")).to.be.ok;
 
     expect(libraryManagerALibrarianB.hasRole("system")).not.to.be.ok;

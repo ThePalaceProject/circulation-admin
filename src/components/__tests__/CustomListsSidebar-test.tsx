@@ -4,12 +4,12 @@ import { stub } from "sinon";
 import * as React from "react";
 import * as Enzyme from "enzyme";
 
-import CustomListsSidebar from "../CustomListsSidebar";
+import CustomListsSidebar from "../lists/CustomListsSidebar";
 import { Link } from "react-router";
 import { Button } from "library-simplified-reusable-components";
 
 describe("CustomListsSidebar", () => {
-  let wrapper: Enzyme.CommonWrapper<any, any, {}>;
+  let wrapper: Enzyme.CommonWrapper<any, any, Record<string, unknown>>;
   let lists;
   const deleteCustomList = stub();
   const changeSort = stub();

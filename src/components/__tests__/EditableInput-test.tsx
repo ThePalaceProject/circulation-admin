@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 
-import EditableInput from "../EditableInput";
+import EditableInput from "../shared/EditableInput";
 
 describe("EditableInput", () => {
   let wrapper;
@@ -56,7 +56,7 @@ describe("EditableInput", () => {
     expect(input.prop("value")).to.equal("initial value");
     expect(input.prop("checked")).to.equal(true);
 
-    wrapper.setProps({ value: 0});
+    wrapper.setProps({ value: 0 });
     expect(wrapper.state().value).to.equal(0);
     input = wrapper.find("input");
     expect(input.prop("value")).to.equal(0);

@@ -3,8 +3,8 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 
-import DiagnosticsServiceType from "../DiagnosticsServiceType";
-import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
+import DiagnosticsServiceType from "../diagnostics/DiagnosticsServiceType";
+import DiagnosticsServiceTabs from "../diagnostics/DiagnosticsServiceTabs";
 
 describe("DiagnosticsServiceType", () => {
   let wrapper;

@@ -31,7 +31,7 @@ export interface LanesSidebarProps {
 
 export default class LanesSidebar extends React.Component<
   LanesSidebarProps,
-  {}
+  Record<string, never>
 > {
   constructor(props: LanesSidebarProps) {
     super(props);

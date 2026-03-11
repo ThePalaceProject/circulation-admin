@@ -6,7 +6,10 @@ import EditableConfigList, {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../../actions";
-import { PatronAuthServicesData, PatronAuthServiceData } from "../../interfaces";
+import {
+  PatronAuthServicesData,
+  PatronAuthServiceData,
+} from "../../interfaces";
 import ServiceEditForm from "./ServiceEditForm";
 import NeighborhoodAnalyticsForm from "../patrons/NeighborhoodAnalyticsForm";
 

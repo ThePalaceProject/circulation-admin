@@ -5,7 +5,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
 
-import GenreForm from "../GenreForm";
+import GenreForm from "../book/GenreForm";
 import genreData from "./genreData";
 
 describe("GenreForm", () => {

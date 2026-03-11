@@ -4,9 +4,9 @@ import * as React from "react";
 import { mount } from "enzyme";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import AdvancedSearchBooleanFilter from "../AdvancedSearchBooleanFilter";
-import AdvancedSearchValueFilter from "../AdvancedSearchValueFilter";
-import AdvancedSearchFilter from "../AdvancedSearchFilter";
+import AdvancedSearchBooleanFilter from "../lists/AdvancedSearchBooleanFilter";
+import AdvancedSearchValueFilter from "../lists/AdvancedSearchValueFilter";
+import AdvancedSearchFilter from "../lists/AdvancedSearchFilter";
 
 describe("AdvancedSearchFilter", () => {
   let onBooleanChange;

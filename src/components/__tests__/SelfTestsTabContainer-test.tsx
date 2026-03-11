@@ -5,10 +5,10 @@ import { shallow, mount } from "enzyme";
 import { stub } from "sinon";
 import buildStore from "../../store";
 
-import { SelfTestsTabContainer } from "../SelfTestsTabContainer";
-import SelfTestsCategory from "../SelfTestsCategory";
+import { SelfTestsTabContainer } from "../config/SelfTestsTabContainer";
+import SelfTestsCategory from "../config/SelfTestsCategory";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../shared/ErrorMessage";
 
 describe("SelfTestsTabContainer", () => {
   let wrapper;

@@ -6,7 +6,7 @@ import {
   PER_LIBRARY_SUPPRESS_REL,
   PER_LIBRARY_UNSUPPRESS_REL,
 } from "../../../src/features/book/bookEditorSlice";
-import { BookDetailsEditor } from "../../../src/components/BookDetailsEditor";
+import { BookDetailsEditor } from "../../../src/components/book/BookDetailsEditor";
 import { expect } from "chai";
 import { store } from "../../../src/store";
 import * as fetchMock from "fetch-mock-jest";

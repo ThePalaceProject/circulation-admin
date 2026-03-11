@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
-import EditableInput from "../../../src/components/EditableInput";
+import EditableInput from "../../../src/components/shared/EditableInput";
 
 describe("EditableInput", () => {
   it("renders an accessible description if a description prop is supplied and a label prop is supplied", () => {

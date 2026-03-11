@@ -3,7 +3,7 @@ import { stub } from "sinon";
 import { LaneData } from "../../interfaces";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import Lane from "../Lane";
+import Lane from "../lanes/Lane";
 import { Link } from "react-router";
 
 describe("Lane", () => {

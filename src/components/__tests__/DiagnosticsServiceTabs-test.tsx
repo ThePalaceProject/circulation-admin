@@ -4,10 +4,10 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { stub, spy } from "sinon";
 
-import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
+import DiagnosticsServiceTabs from "../diagnostics/DiagnosticsServiceTabs";
 import { Panel } from "library-simplified-reusable-components";
-import Timestamp from "../Timestamp";
-import ToolTip from "../ToolTip";
+import Timestamp from "../shared/Timestamp";
+import ToolTip from "../shared/ToolTip";
 
 describe("DiagnosticsServiceTabs", () => {
   let wrapper;
