@@ -12,7 +12,7 @@ import {
 } from "../patrons/ManagePatronsForm";
 import EditableInput from "../shared/EditableInput";
 import ErrorMessage from "../shared/ErrorMessage";
-import { Alert } from "react-bootstrap";
+import { Alert } from "../ui/alert";
 
 import ActionCreator from "../../actions";
 

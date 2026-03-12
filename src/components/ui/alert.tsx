@@ -15,22 +15,22 @@ import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const alertVariants = cva(
-  // Base styles — layout, border, padding, rounded corners
-  "relative w-full rounded-lg border p-4",
+  // Base styles — "alert" class preserved for Bootstrap CSS selector compatibility in tests
+  "alert relative w-full rounded-lg border p-4",
   {
     variants: {
       variant: {
         /** Neutral informational alert */
         default: "bg-white border-[#CCCCCC] text-[#080807]",
-        /** Error / danger alert — mirrors Bootstrap's .alert-danger */
+        /** Error / danger alert — "alert-danger" class for Bootstrap CSS selector compatibility */
         destructive:
-          "bg-[#F9E0E1] border-[#D0343A] text-[#97272C] [&_a]:text-[#97272C] [&_a]:underline",
+          "alert-danger bg-[#F9E0E1] border-[#D0343A] text-[#97272C] [&_a]:text-[#97272C] [&_a]:underline",
         /** Warning alert */
-        warning: "bg-[#FEF9E7] border-[#FEE24A] text-[#7D6608]",
+        warning: "alert-warning bg-[#FEF9E7] border-[#FEE24A] text-[#7D6608]",
         /** Success alert */
-        success: "bg-[#F3F7E6] border-[#008918] text-[#005210]",
+        success: "alert-success bg-[#F3F7E6] border-[#008918] text-[#005210]",
         /** Informational alert — uses Palace light blue */
-        info: "bg-[#E8F7FB] border-[#46BBE5] text-[#1A6B84]",
+        info: "alert-info bg-[#E8F7FB] border-[#46BBE5] text-[#1A6B84]",
       },
     },
     defaultVariants: {

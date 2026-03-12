@@ -12,7 +12,6 @@ import {
 import Admin from "../../models/Admin";
 import EditableInput from "../shared/EditableInput";
 import { Link } from "react-router";
-import { Navbar, Nav, NavItem } from "react-bootstrap";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Button } from "library-simplified-reusable-components";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
@@ -139,8 +138,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     return (
       <header>
         <h1 className="visually-hidden">{title("")}</h1>
-        <Navbar fluid={true}>
-          <Navbar.Header>
+        <nav className="navbar navbar-default">
+          <div className="navbar-header">
             <img src={palaceLogoUrl} alt={title()} />
             {!logoOnly && (
               <>
@@ -166,15 +165,24 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     ))}
                   </EditableInput>
                 )}
-                <Navbar.Toggle />
+                <button
+                  type="button"
+                  className="navbar-toggle collapsed"
+                  aria-label="Toggle navigation"
+                >
+                  <span className="sr-only">Toggle navigation</span>
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                </button>
               </>
             )}
-          </Navbar.Header>
+          </div>
 
           {!logoOnly && (
-            <Navbar.Collapse className="menu">
+            <div className="collapse navbar-collapse menu">
               {currentLibrary && (
-                <Nav>
+                <ul className="nav navbar-nav">
                   {this.renderLinkItem(
                     dashboardLinkItem,
                     currentPathname,
@@ -186,9 +194,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   {libraryLinkItems.map((item) =>
                     this.renderLinkItem(item, currentPathname, currentLibrary)
                   )}
-                </Nav>
+                </ul>
               )}
-              <Nav className="pull-right">
+              <ul className="nav navbar-nav navbar-right">
                 {sitewideLinkItems.map((item) =>
                   this.renderLinkItem(item, currentPathname)
                 )}
@@ -220,10 +228,10 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     )}
                   </li>
                 )}
-              </Nav>
-            </Navbar.Collapse>
+              </ul>
+            </div>
           )}
-        </Navbar>
+        </nav>
       </header>
     );
   }
@@ -268,14 +276,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     const isActive = currentPathname.indexOf(href) !== -1;
 
     return (
-      <NavItem
-        key={href}
-        className="header-link"
-        href={`${rootCatalogURL}${currentLibrary}${href}`}
-        active={isActive}
-      >
-        {label}
-      </NavItem>
+      <li key={href} className={"header-link" + (isActive ? " active" : "")}>
+        <a href={`${rootCatalogURL}${currentLibrary}${href}`}>{label}</a>
+      </li>
     );
   }
 

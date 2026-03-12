@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Alert } from "react-bootstrap";
+import { Alert } from "../ui/alert";
 import { Form } from "library-simplified-reusable-components";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import { SitewideAnnouncementsData, AnnouncementData } from "../../interfaces";
@@ -61,10 +61,10 @@ export class SitewideAnnouncements extends EditableConfigList<
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
         {canListAllData && this.links?.["info"] && (
-          <Alert bsStyle="info">{this.links["info"]}</Alert>
+          <Alert variant="info">{this.links["info"]}</Alert>
         )}
         {responseBody && (
-          <Alert bsStyle="success">{this.successMessage()}</Alert>
+          <Alert variant="success">{this.successMessage()}</Alert>
         )}
         {fetchError && <ErrorMessage error={fetchError} />}
         {formError && <ErrorMessage error={formError} />}

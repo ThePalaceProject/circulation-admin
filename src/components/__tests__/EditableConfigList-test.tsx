@@ -13,7 +13,7 @@ import {
 } from "../config/EditableConfigList";
 import ErrorMessage from "../shared/ErrorMessage";
 import EditableInput from "../shared/EditableInput";
-import { Alert } from "react-bootstrap";
+import { Alert } from "../ui/alert";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 
 describe("EditableConfigList", () => {

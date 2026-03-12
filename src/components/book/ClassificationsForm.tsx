@@ -1,11 +1,10 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import EditableInput from "../shared/EditableInput";
 import WithRemoveButton from "../shared/WithRemoveButton";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../../interfaces";
 import { Button, Panel } from "library-simplified-reusable-components";
-import { Alert } from "react-bootstrap";
+import { Alert } from "../ui/alert";
 
 export interface ClassificationsFormProps {
   book: BookData;
@@ -20,7 +19,7 @@ export default class ClassificationsForm extends React.Component<
   ClassificationsFormProps,
   any
 > {
-  private errorMessageRef = React.createRef<Alert>();
+  private errorMessageRef = React.createRef<HTMLDivElement>();
   private audienceRef = React.createRef<EditableInput>();
   private targetAgeMinRef = React.createRef<EditableInput>();
   private targetAgeMaxRef = React.createRef<EditableInput>();
@@ -56,7 +55,7 @@ export default class ClassificationsForm extends React.Component<
         <legend className="visuallyHidden">Classifications</legend>
 
         {error && (
-          <Alert bsStyle="danger" ref={this.errorMessageRef} tabIndex={-1}>
+          <Alert variant="destructive" ref={this.errorMessageRef} tabIndex={-1}>
             {Object.keys(error).map((err) => {
               return <p key={err}>{error[err]}</p>;
             })}
@@ -359,10 +358,7 @@ export default class ClassificationsForm extends React.Component<
       this.setState({ error });
       setTimeout(() => {
         if (this.errorMessageRef.current) {
-          const element = ReactDOM.findDOMNode(
-            this.errorMessageRef.current
-          ) as HTMLElement;
-          element.focus();
+          this.errorMessageRef.current.focus();
         }
       }, 500);
       return;

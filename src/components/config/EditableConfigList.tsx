@@ -2,7 +2,7 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { SettingData } from "../../interfaces";
-import { Alert } from "react-bootstrap";
+import { Alert } from "../ui/alert";
 import { RootState } from "../../store";
 import { Button } from "library-simplified-reusable-components";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
@@ -138,10 +138,10 @@ export abstract class GenericEditableConfigList<
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
         {canListAllData && this.links && this.links["info"] && (
-          <Alert bsStyle="info">{this.links["info"]}</Alert>
+          <Alert variant="info">{this.links["info"]}</Alert>
         )}
         {this.props.responseBody && this.props.editOrCreate && (
-          <Alert bsStyle="success">{this.successMessage()}</Alert>
+          <Alert variant="success">{this.successMessage()}</Alert>
         )}
         {this.props.fetchError && !this.props.editOrCreate && (
           <ErrorMessage error={this.props.fetchError} />

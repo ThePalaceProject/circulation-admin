@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Modal } from "react-bootstrap";
+import { Dialog } from "../ui/dialog";
 import { Button } from "library-simplified-reusable-components";
 import {
   getInventoryReportInfo,
@@ -174,17 +174,17 @@ const renderModal = ({
   className = "",
 }) => {
   return (
-    <Modal className={className} show={show} onHide={onHide}>
+    <Dialog className={className} show={show} onHide={onHide}>
       {!!title && (
-        <Modal.Header>
-          <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
+        <Dialog.Header>
+          <Dialog.Title>{title}</Dialog.Title>
+        </Dialog.Header>
       )}
       {!!content && (
-        <Modal.Body style={{ overflow: "wrap" }}>{content}</Modal.Body>
+        <Dialog.Body style={{ overflow: "wrap" }}>{content}</Dialog.Body>
       )}
-      {!!footer && <Modal.Footer>{footer}</Modal.Footer>}
-    </Modal>
+      {!!footer && <Dialog.Footer>{footer}</Dialog.Footer>}
+    </Dialog>
   );
 };
 

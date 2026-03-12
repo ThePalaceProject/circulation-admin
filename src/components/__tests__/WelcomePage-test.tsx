@@ -7,7 +7,6 @@ import { shallow } from "enzyme";
 import WelcomePage from "../layout/WelcomePage";
 import Header from "../layout/Header";
 import Footer from "../layout/Footer";
-import { Jumbotron } from "react-bootstrap";
 
 describe("WelcomePage", () => {
   let wrapper;
@@ -22,7 +21,7 @@ describe("WelcomePage", () => {
   });
 
   it("shows the welcome message", () => {
-    const jumbotron = wrapper.find(Jumbotron);
+    const jumbotron = wrapper.find(".jumbotron");
     expect(jumbotron.length).to.equal(1);
     const title = jumbotron.find("h2");
     expect(title.length).to.equal(1);

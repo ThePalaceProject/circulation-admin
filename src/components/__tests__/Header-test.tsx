@@ -6,7 +6,6 @@ import { shallow, mount } from "enzyme";
 
 import { Header } from "../layout/Header";
 import EditableInput from "../shared/EditableInput";
-import { NavItem } from "react-bootstrap";
 import { Link } from "react-router";
 import Admin from "../../models/Admin";
 import title from "../../utils/title";
@@ -89,20 +88,30 @@ describe("Header", () => {
     });
 
     it("shows catalog links when there's a library", () => {
-      let navItems = wrapper.find(NavItem);
+      let navItems = wrapper
+        .find("li.header-link")
+        .filterWhere(
+          (n) => n.find("a").length > 0 && n.find(Link).length === 0
+        );
 
       expect(navItems.length).to.equal(2);
 
       const mainNavItem = navItems.at(0);
-      expect(mainNavItem.prop("href")).to.contain("/nypl%2Fgroups");
-      expect(mainNavItem.children().text()).to.equal("Catalog");
+      expect(mainNavItem.find("a").prop("href")).to.contain("/nypl%2Fgroups");
+      expect(mainNavItem.find("a").text()).to.equal("Catalog");
 
       const hiddenLink = navItems.at(1);
-      expect(hiddenLink.prop("href")).to.contain("/nypl%2Fadmin%2Fsuppressed");
-      expect(hiddenLink.children().text()).to.equal("Hidden Books");
+      expect(hiddenLink.find("a").prop("href")).to.contain(
+        "/nypl%2Fadmin%2Fsuppressed"
+      );
+      expect(hiddenLink.find("a").text()).to.equal("Hidden Books");
 
       wrapper.setContext({ admin: libraryManager });
-      navItems = wrapper.find(NavItem);
+      navItems = wrapper
+        .find("li.header-link")
+        .filterWhere(
+          (n) => n.find("a").length > 0 && n.find(Link).length === 0
+        );
       expect(navItems.length).to.equal(0);
     });
 

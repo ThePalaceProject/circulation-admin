@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Modal } from "react-bootstrap";
+import { Dialog } from "../ui/dialog";
 import { Button, Form } from "library-simplified-reusable-components";
 import EditableInput from "../shared/EditableInput";
 import * as qs from "qs";
@@ -83,19 +83,19 @@ const CirculationEventsDownloadForm = ({
   };
 
   return (
-    <Modal className="circ-events-download-form" show={show} onHide={hide}>
-      <Modal.Header closeButton>
-        <Modal.Title>Download CSV</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>{renderForm()}</Modal.Body>
-      <Modal.Footer>
+    <Dialog className="circ-events-download-form" show={show} onHide={hide}>
+      <Dialog.Header closeButton onHide={hide}>
+        <Dialog.Title>Download CSV</Dialog.Title>
+      </Dialog.Header>
+      <Dialog.Body>{renderForm()}</Dialog.Body>
+      <Dialog.Footer>
         <Button
           className="inverted left-align"
           callback={hide}
           content="Close"
         />
-      </Modal.Footer>
-    </Modal>
+      </Dialog.Footer>
+    </Dialog>
   );
 };
 

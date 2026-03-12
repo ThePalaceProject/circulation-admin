@@ -8,7 +8,7 @@ import buildStore from "../../store";
 
 import { ResetAdobeId } from "../patrons/ResetAdobeId";
 import EditableInput from "../shared/EditableInput";
-import { Alert } from "react-bootstrap";
+import { Alert } from "../ui/alert";
 import { Button } from "library-simplified-reusable-components";
 
 const patrons = [
@@ -179,7 +179,7 @@ describe("ResetAdobeId", () => {
         "Adobe ID for patron has been reset."
       );
       expect(alert.length).to.equal(1);
-      expect(alert.render().hasClass("alert-success")).to.equal(true);
+      expect(alert.prop("variant")).to.equal("success");
       expect(alert.text()).to.equal(
         "Adobe ID for patron has been reset.Please instruct the patron to sign back into their account."
       );
@@ -225,7 +225,7 @@ describe("ResetAdobeId", () => {
       alert = wrapper.find(Alert);
       expect(wrapper.props().fetchError).to.eql(fetchError);
       expect(alert.length).to.equal(1);
-      expect(alert.render().hasClass("alert-danger")).to.equal(true);
+      expect(alert.prop("variant")).to.equal("destructive");
       expect(alert.text()).to.equal(
         "Error: failed to reset Adobe ID for patron 1234"
       );
