@@ -10,6 +10,12 @@ $fontfamily: 'Open Sans', sans-serif;
 @import "colors";
 @import "global";
 
+// Tailwind — components and utilities only.
+// preflight (base reset) is disabled in tailwind.config.js to avoid
+// conflicts with Bootstrap 3 which is still loaded above.
+@tailwind components;
+@tailwind utilities;
+
 @import "advanced_search";
 @import "announcements";
 @import "badge";

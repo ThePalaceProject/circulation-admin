@@ -41,7 +41,14 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        // postcss-loader runs after sass-loader converts SCSS → CSS,
+        // allowing Tailwind utilities to be processed in the same pipeline.
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+        ],
       },
       {
         test: /\.tsx?$/,
