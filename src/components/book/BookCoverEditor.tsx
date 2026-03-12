@@ -12,6 +12,7 @@ import { AppDispatch, RootState } from "../../store";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import UpdatingLoader from "../shared/UpdatingLoader";
 import { getBookData } from "../../features/book/bookEditorSlice";
+import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
 
 export interface BookCoverEditorOwnProps {
   store?: Store<RootState>;
@@ -312,19 +313,21 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
 }
 
 function mapStateToProps(state: RootState) {
+  const rightsStatusesResult =
+    referenceDataApi.endpoints.getRightsStatuses.select()(state);
   return {
     bookAdminUrl: state.bookEditor.url,
     preview: state.editor.bookCoverPreview.data,
-    rightsStatuses: state.editor.rightsStatuses.data,
+    rightsStatuses: rightsStatusesResult.data ?? null,
     isFetching:
       state.bookEditor.isFetching ||
       state.editor.bookCover.isFetching ||
-      state.editor.rightsStatuses.isFetching ||
+      rightsStatusesResult.isLoading ||
       state.editor.bookCover.isEditing,
     fetchError:
       state.bookEditor.fetchError ||
       state.editor.bookCover.fetchError ||
-      state.editor.rightsStatuses.fetchError,
+      (rightsStatusesResult.error as any), // eslint-disable-line @typescript-eslint/no-explicit-any
     isFetchingPreview: state.editor.bookCoverPreview.isFetching,
     previewFetchError: state.editor.bookCoverPreview.fetchError,
   };
@@ -343,7 +346,10 @@ function mapDispatchToProps(
     clearPreview: () => dispatch(actions.clearBookCoverPreview()),
     editCover: (url: string, data: FormData) =>
       dispatch(actions.editBookCover(url, data)),
-    fetchRightsStatuses: () => dispatch(actions.fetchRightsStatuses()),
+    fetchRightsStatuses: () =>
+      dispatch(
+        referenceDataApi.endpoints.getRightsStatuses.initiate(undefined)
+      ),
   };
 }
 

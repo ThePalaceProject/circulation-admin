@@ -25,10 +25,6 @@ import laneVisibility from "./laneVisibility";
 import resetLanes from "./resetLanes";
 import laneOrder from "./laneOrder";
 import selfTests from "./selfTests";
-import roles from "./roles";
-import media from "./media";
-import languages from "./languages";
-import rightsStatuses from "./rightsStatuses";
 import collection, {
   CollectionState,
 } from "@thepalaceproject/web-opds-client/lib/reducers/collection";
@@ -49,10 +45,6 @@ import {
   LibraryRegistrationsData,
   CustomListsData,
   LanesData,
-  RolesData,
-  MediaData,
-  LanguagesData,
-  RightsStatusData,
   PatronData,
   DiagnosticsData,
   ServiceData,
@@ -86,10 +78,6 @@ export interface State {
   resetLanes: FetchEditState<void>;
   laneOrder: FetchEditState<void>;
   selfTests: FetchEditState<ServiceData>;
-  roles: FetchEditState<RolesData>;
-  media: FetchEditState<MediaData>;
-  languages: FetchEditState<LanguagesData>;
-  rightsStatuses: FetchEditState<RightsStatusData>;
   changePassword: FetchEditState<void>;
   patronManager: FetchEditState<PatronData>;
 }
@@ -120,10 +108,6 @@ export default combineReducers<State>({
   resetLanes,
   laneOrder,
   selfTests,
-  roles,
-  media,
-  languages,
-  rightsStatuses,
   changePassword,
   patronManager,
 });

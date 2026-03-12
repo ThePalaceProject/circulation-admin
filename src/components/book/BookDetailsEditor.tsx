@@ -1,10 +1,8 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect, ConnectedProps } from "react-redux";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import ActionCreator from "../../actions";
-import editorAdapter from "../../editorAdapter";
 import BookEditForm from "./BookEditForm";
+import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
 import ErrorMessage from "../shared/ErrorMessage";
 import { AppDispatch, RootState } from "../../store";
 import { Button } from "library-simplified-reusable-components";
@@ -217,22 +215,25 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
 }
 
 function mapStateToProps(state: RootState) {
+  const rolesResult = referenceDataApi.endpoints.getRoles.select()(state);
+  const mediaResult = referenceDataApi.endpoints.getMedia.select()(state);
+  const languagesResult = referenceDataApi.endpoints.getLanguages.select()(state);
   return {
     bookAdminUrl: state.bookEditor.url,
     bookData: state.bookEditor.data,
-    roles: state.editor.roles.data,
-    media: state.editor.media.data,
-    languages: state.editor.languages.data,
+    roles: rolesResult.data ?? null,
+    media: mediaResult.data ?? null,
+    languages: languagesResult.data ?? null,
     isFetching:
       state.bookEditor.isFetching ||
-      state.editor.roles.isFetching ||
-      state.editor.media.isFetching ||
-      state.editor.languages.isFetching,
+      rolesResult.isLoading ||
+      mediaResult.isLoading ||
+      languagesResult.isLoading,
     fetchError:
       state.bookEditor.fetchError ||
-      state.editor.roles.fetchError ||
-      state.editor.media.fetchError ||
-      state.editor.languages.fetchError,
+      (rolesResult.error as any) || // eslint-disable-line @typescript-eslint/no-explicit-any
+      (mediaResult.error as any) || // eslint-disable-line @typescript-eslint/no-explicit-any
+      (languagesResult.error as any), // eslint-disable-line @typescript-eslint/no-explicit-any
     editError: state.bookEditor.editError,
   };
 }
@@ -241,15 +242,16 @@ function mapDispatchToProps(
   dispatch: AppDispatch,
   ownProps: BookDetailsEditorOwnProps
 ) {
-  const fetcher = new DataFetcher({ adapter: editorAdapter });
-  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     postBookData: (url: string, data: FormData | null) =>
       dispatch(submitBookData({ url, data, csrfToken: ownProps.csrfToken })),
     fetchBookData: (url: string) => dispatch(getBookData({ url })),
-    fetchRoles: () => dispatch(actions.fetchRoles()),
-    fetchMedia: () => dispatch(actions.fetchMedia()),
-    fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    fetchRoles: () =>
+      dispatch(referenceDataApi.endpoints.getRoles.initiate(undefined)),
+    fetchMedia: () =>
+      dispatch(referenceDataApi.endpoints.getMedia.initiate(undefined)),
+    fetchLanguages: () =>
+      dispatch(referenceDataApi.endpoints.getLanguages.initiate(undefined)),
     suppressBook: (url: string) =>
       dispatch(
         bookEditorApiEndpoints.endpoints.suppressBook.initiate({

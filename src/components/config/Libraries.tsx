@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import ActionCreator from "../../actions";
 import { LibrariesData, LibraryData, LanguagesData } from "../../interfaces";
+import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
 import Admin from "../../models/Admin";
 import LibraryEditForm from "./LibraryEditForm";
 
@@ -67,6 +68,8 @@ export class Libraries extends GenericEditableConfigList<
 }
 
 function mapStateToProps(state, ownProps) {
+  const languagesResult =
+    referenceDataApi.endpoints.getLanguages.select()(state);
   // fetchError = an error involving loading the list of libraries; formError = an error upon submission of the
   // create/edit form.
   return {
@@ -77,7 +80,7 @@ function mapStateToProps(state, ownProps) {
     formError: state.editor.libraries.formError,
     isFetching:
       state.editor.libraries.isFetching || state.editor.libraries.isEditing,
-    additionalData: state.editor.languages && state.editor.languages.data,
+    additionalData: languagesResult.data ?? null,
   };
 }
 
@@ -88,7 +91,10 @@ function mapDispatchToProps(dispatch, ownProps) {
     editItem: (data: FormData) => dispatch(actions.editLibrary(data)),
     deleteItem: (identifier: string | number) =>
       dispatch(actions.deleteLibrary(identifier)),
-    fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    fetchLanguages: () =>
+      dispatch(
+        referenceDataApi.endpoints.getLanguages.initiate(undefined)
+      ),
   };
 }
 

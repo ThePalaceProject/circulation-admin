@@ -6,6 +6,7 @@ import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
 import ActionCreator from "../../actions";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
+import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import {
   AdvancedSearchQuery,
@@ -445,6 +446,8 @@ export class CustomLists extends React.Component<
 }
 
 function mapStateToProps(state, ownProps) {
+  const languagesResult =
+    referenceDataApi.endpoints.getLanguages.select()(state);
   return {
     customListEditorProperties:
       state.editor.customListEditor.properties.current,
@@ -492,7 +495,7 @@ function mapStateToProps(state, ownProps) {
       state.editor.collections &&
       state.editor.collections.data &&
       state.editor.collections.data.collections,
-    languages: state.editor.languages && state.editor.languages.data,
+    languages: languagesResult.data ?? null,
     libraries:
       state.editor.libraries.data && state.editor.libraries.data.libraries,
     lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
@@ -527,7 +530,10 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchCollections: () => dispatch(actions.fetchCollections()),
     fetchLibraries: () => dispatch(actions.fetchLibraries()),
     fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
-    fetchLanguages: () => dispatch(actions.fetchLanguages()),
+    fetchLanguages: () =>
+      dispatch(
+        referenceDataApi.endpoints.getLanguages.initiate(undefined)
+      ),
     updateCustomListEditorProperty: (name: string, value) =>
       dispatch(actions.updateCustomListEditorProperty(name, value)),
     toggleCustomListEditorCollection: (id: number) =>
