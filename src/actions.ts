@@ -4,21 +4,12 @@ import {
   GenreTree,
   ClassificationData,
   LibrariesData,
-  CollectionsData,
-  IndividualAdminsData,
-  PatronAuthServicesData,
-  MetadataServicesData,
-  DiscoveryServicesData,
-  LibraryRegistrationsData,
   CustomListsData,
   LanesData,
   LaneData,
-  CatalogServicesData,
   SelfTestsData,
   DiagnosticsData,
   FeatureFlags,
-  SitewideAnnouncementsData,
-  StatisticsData,
   QuickSightEmbeddedURLData,
 } from "./interfaces";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
@@ -52,34 +43,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly PREVIEW_BOOK_COVER = "PREVIEW_BOOK_COVER";
   static readonly CUSTOM_LISTS_FOR_BOOK = "CUSTOM_LISTS_FOR_BOOK";
   static readonly EDIT_CUSTOM_LISTS_FOR_BOOK = "EDIT_CUSTOM_LISTS_FOR_BOOK";
-  static readonly LIBRARIES = "LIBRARIES";
-  static readonly EDIT_LIBRARY = "EDIT_LIBRARY";
-  static readonly DELETE_LIBRARY = "DELETE_LIBRARY";
-  static readonly COLLECTIONS = "COLLECTIONS";
-  static readonly EDIT_COLLECTION = "EDIT_COLLECTION";
-  static readonly DELETE_COLLECTION = "DELETE_COLLECTION";
-  static readonly IMPORT_COLLECTION = "IMPORT_COLLECTION";
-  static readonly INDIVIDUAL_ADMINS = "INDIVIDUAL_ADMINS";
-  static readonly EDIT_INDIVIDUAL_ADMIN = "EDIT_INDIVIDUAL_ADMIN";
-  static readonly DELETE_INDIVIDUAL_ADMIN = "DELETE_INDIVIDUAL_ADMIN";
-  static readonly PATRON_AUTH_SERVICES = "PATRON_AUTH_SERVICES";
-  static readonly EDIT_PATRON_AUTH_SERVICE = "EDIT_PATRON_AUTH_SERVICE";
-  static readonly DELETE_PATRON_AUTH_SERVICE = "DELETE_PATRON_AUTH_SERVICE";
-  static readonly SITEWIDE_ANNOUNCEMENTS = "SITEWIDE_ANNOUNCEMENTS";
-  static readonly EDIT_SITEWIDE_ANNOUNCEMENTS = "EDIT_SITEWIDE_ANNOUNCEMENTS";
-  static readonly METADATA_SERVICES = "METADATA_SERVICES";
-  static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
-  static readonly DELETE_METADATA_SERVICE = "DELETE_METADATA_SERVICE";
-  static readonly CATALOG_SERVICES = "CATALOG_SERVICES";
-  static readonly EDIT_CATALOG_SERVICE = "EDIT_CATALOG_SERVICE";
-  static readonly DELETE_CATALOG_SERVICE = "DELETE_CATALOG_SERVICE";
-  static readonly DISCOVERY_SERVICES = "DISCOVERY_SERVICES";
-  static readonly EDIT_DISCOVERY_SERVICE = "EDIT_DISCOVERY_SERVICE";
-  static readonly DELETE_DISCOVERY_SERVICE = "DELETE_DISCOVERY_SERVICE";
-  static readonly REGISTER_LIBRARY_WITH_DISCOVERY_SERVICE =
-    "REGISTER_LIBRARY_WITH_DISCOVERY_SERVICE";
-  static readonly DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS =
-    "DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
   static readonly CUSTOM_LIST_DETAILS = "CUSTOM_LIST_DETAILS";
   static readonly CUSTOM_LIST_DETAILS_MORE = "CUSTOM_LIST_DETAILS_MORE";
@@ -223,7 +186,7 @@ export default class ActionCreator extends BaseActionCreator {
                   dispatch(this.failure(type, err));
                   reject(err);
                 })
-                .catch((parseError) => {
+                .catch((_parseError) => {
                   err = {
                     status: response.status,
                     response: defaultErrorMessage || "Failed to save changes",
@@ -281,7 +244,7 @@ export default class ActionCreator extends BaseActionCreator {
                   dispatch(this.failure(type, err));
                   reject(err);
                 })
-                .catch((parseError) => {
+                .catch((_parseError) => {
                   err = {
                     status: response.status,
                     response: "Request failed",
@@ -372,201 +335,6 @@ export default class ActionCreator extends BaseActionCreator {
       ActionCreator.EDIT_CUSTOM_LISTS_FOR_BOOK,
       url,
       data
-    ).bind(this);
-  }
-
-  fetchLibraries() {
-    const url = "/admin/libraries";
-    return this.fetchJSON<LibrariesData>(ActionCreator.LIBRARIES, url).bind(
-      this
-    );
-  }
-
-  editLibrary(data: FormData) {
-    const url = "/admin/libraries";
-    return this.postForm(ActionCreator.EDIT_LIBRARY, url, data).bind(this);
-  }
-
-  deleteLibrary(identifier: string | number) {
-    const url = "/admin/library/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_LIBRARY,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchCollections() {
-    const url = "/admin/collections";
-    return this.fetchJSON<CollectionsData>(ActionCreator.COLLECTIONS, url).bind(
-      this
-    );
-  }
-
-  editCollection(data: FormData) {
-    const url = "/admin/collections";
-    return this.postForm(ActionCreator.EDIT_COLLECTION, url, data).bind(this);
-  }
-
-  deleteCollection(identifier: string | number) {
-    const url = "/admin/collection/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_COLLECTION,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  importCollection(collectionId: string | number, force: boolean) {
-    const url = `/admin/collection/${collectionId}/import`;
-    const data = new FormData();
-    data.append("force", String(force));
-    return this.postForm(ActionCreator.IMPORT_COLLECTION, url, data).bind(this);
-  }
-
-  fetchIndividualAdmins() {
-    const url = "/admin/individual_admins";
-    return this.fetchJSON<IndividualAdminsData>(
-      ActionCreator.INDIVIDUAL_ADMINS,
-      url
-    ).bind(this);
-  }
-
-  editIndividualAdmin(data: FormData) {
-    const url = "/admin/individual_admins";
-    return this.postForm(ActionCreator.EDIT_INDIVIDUAL_ADMIN, url, data).bind(
-      this
-    );
-  }
-
-  deleteIndividualAdmin(identifier: string | number) {
-    const url = "/admin/individual_admin/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_INDIVIDUAL_ADMIN,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchPatronAuthServices() {
-    const url = "/admin/patron_auth_services";
-    return this.fetchJSON<PatronAuthServicesData>(
-      ActionCreator.PATRON_AUTH_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editPatronAuthService(data: FormData) {
-    const url = "/admin/patron_auth_services";
-    return this.postForm(
-      ActionCreator.EDIT_PATRON_AUTH_SERVICE,
-      url,
-      data
-    ).bind(this);
-  }
-
-  deletePatronAuthService(identifier: string | number) {
-    const url = "/admin/patron_auth_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_PATRON_AUTH_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchMetadataServices() {
-    const url = "/admin/metadata_services";
-    return this.fetchJSON<MetadataServicesData>(
-      ActionCreator.METADATA_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editMetadataService(data: FormData) {
-    const url = "/admin/metadata_services";
-    return this.postForm(ActionCreator.EDIT_METADATA_SERVICE, url, data).bind(
-      this
-    );
-  }
-
-  deleteMetadataService(identifier: string | number) {
-    const url = "/admin/metadata_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_METADATA_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchCatalogServices() {
-    const url = "/admin/catalog_services";
-    return this.fetchJSON<CatalogServicesData>(
-      ActionCreator.CATALOG_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editCatalogService(data: FormData) {
-    const url = "/admin/catalog_services";
-    return this.postForm(ActionCreator.EDIT_CATALOG_SERVICE, url, data).bind(
-      this
-    );
-  }
-
-  deleteCatalogService(identifier: string | number) {
-    const url = "/admin/catalog_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_CATALOG_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  fetchDiscoveryServices() {
-    const url = "/admin/discovery_services";
-    return this.fetchJSON<DiscoveryServicesData>(
-      ActionCreator.DISCOVERY_SERVICES,
-      url
-    ).bind(this);
-  }
-
-  editDiscoveryService(data: FormData) {
-    const url = "/admin/discovery_services";
-    return this.postForm(ActionCreator.EDIT_DISCOVERY_SERVICE, url, data).bind(
-      this
-    );
-  }
-
-  deleteDiscoveryService(identifier: string | number) {
-    const url = "/admin/discovery_service/" + identifier;
-    return this.postForm(
-      ActionCreator.DELETE_DISCOVERY_SERVICE,
-      url,
-      null,
-      "DELETE"
-    ).bind(this);
-  }
-
-  registerLibraryWithDiscoveryService(data: FormData) {
-    const url = "/admin/discovery_service_library_registrations";
-    return this.postForm(
-      ActionCreator.REGISTER_LIBRARY_WITH_DISCOVERY_SERVICE,
-      url,
-      data
-    ).bind(this);
-  }
-
-  fetchDiscoveryServiceLibraryRegistrations() {
-    const url = "/admin/discovery_service_library_registrations";
-    return this.fetchJSON<LibraryRegistrationsData>(
-      ActionCreator.DISCOVERY_SERVICE_LIBRARY_REGISTRATIONS,
-      url
     ).bind(this);
   }
 
@@ -942,23 +710,6 @@ export default class ActionCreator extends BaseActionCreator {
     return this.fetchJSON<DiagnosticsData>(ActionCreator.DIAGNOSTICS, url).bind(
       this
     );
-  }
-
-  fetchSitewideAnnouncements() {
-    const url = "/admin/announcements";
-    return this.fetchJSON<SitewideAnnouncementsData>(
-      ActionCreator.SITEWIDE_ANNOUNCEMENTS,
-      url
-    ).bind(this);
-  }
-
-  editSitewideAnnouncements(data: FormData) {
-    const url = "/admin/announcements";
-    return this.postForm(
-      ActionCreator.EDIT_SITEWIDE_ANNOUNCEMENTS,
-      url,
-      data
-    ).bind(this);
   }
 
   setFeatureFlags(featureFlags: FeatureFlags) {

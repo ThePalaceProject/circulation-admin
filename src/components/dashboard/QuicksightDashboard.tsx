@@ -8,6 +8,10 @@ import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { connect } from "react-redux";
 import ActionCreator from "../../actions";
+import {
+  configServicesApi,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 
 export interface QuicksightDashboardStateProps {
   isFetchingLibraries?: boolean;
@@ -55,8 +59,9 @@ class QuicksightDashboard extends React.Component<
     // but again I wasn't able to get things working following the pattern in Header.tsx so this is where I landed.
     // It's ugly but it works.
     // Nevertheless it should be brought into alignment before it goes into production.
-    this.props.fetchLibraries().then((libs) => {
+    this.props.fetchLibraries().then((result) => {
       try {
+        const libs = (result as any).data as LibrariesData;
         this.props
           .fetchQuicksightEmbedUrl(this.props.dashboardId, libs)
           .then((data) => this.setState({ embedUrl: data.embedUrl }))
@@ -81,17 +86,21 @@ class QuicksightDashboard extends React.Component<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state, _ownProps) {
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
   return {
-    isFetchingLibraries: state.editor.libraries?.isFetching,
-    libraries: state.editor.libraries?.data?.libraries,
+    isFetchingLibraries: isResultFetching(librariesResult),
+    libraries: librariesResult.data?.libraries,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   const actions = new ActionCreator();
   return {
-    fetchLibraries: () => dispatch(actions.fetchLibraries()),
+    fetchLibraries: () =>
+      dispatch(configServicesApi.endpoints.getLibraries.initiate(undefined)),
     fetchQuicksightEmbedUrl: (
       dashboardId: string,
       librariesData: LibrariesData

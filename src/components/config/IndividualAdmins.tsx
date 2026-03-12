@@ -1,4 +1,3 @@
-import * as React from "react";
 import * as PropTypes from "prop-types";
 import EditableConfigList, {
   EditableConfigListStateProps,
@@ -6,8 +5,13 @@ import EditableConfigList, {
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
 import { connect } from "react-redux";
-import ActionCreator from "../../actions";
 import { IndividualAdminsData, IndividualAdminData } from "../../interfaces";
+import {
+  configServicesApi,
+  getLastMutation,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import Admin from "../../models/Admin";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
@@ -73,36 +77,62 @@ export class IndividualAdmins extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const data = Object.assign(
-    {},
-    (state.editor.individualAdmins && state.editor.individualAdmins.data) || {}
+function mapStateToProps(state, _ownProps) {
+  const adminsResult = configServicesApi.endpoints.getIndividualAdmins.select()(
+    state
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
+  const lastEdit = getLastMutation(state, "editIndividualAdmin");
+  const data: IndividualAdminsData = {
+    ...adminsResult.data,
+  } as IndividualAdminsData;
+  if (librariesResult.data?.libraries) {
+    data.allLibraries = librariesResult.data.libraries;
   }
   // fetchError = an error involving loading the list of individual admins; formError = an error upon submission of the
   // create/edit form.
   return {
-    data: data,
+    data,
     responseBody:
-      state.editor.individualAdmins &&
-      state.editor.individualAdmins.successMessage,
-    fetchError: state.editor.individualAdmins.fetchError,
-    formError: state.editor.individualAdmins.formError,
-    isFetching:
-      state.editor.individualAdmins.isFetching ||
-      state.editor.individualAdmins.isEditing,
+      lastEdit?.["status"] === "fulfilled"
+        ? (lastEdit["data"] as string)
+        : null,
+    fetchError: adminsResult.error
+      ? rtkErrorToFetchError(adminsResult.error)
+      : null,
+    formError:
+      lastEdit?.["status"] === "rejected"
+        ? rtkErrorToFetchError(lastEdit["error"])
+        : null,
+    isFetching: isResultFetching(adminsResult),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+  const csrfToken: string = ownProps.csrfToken;
   return {
-    fetchData: () => dispatch(actions.fetchIndividualAdmins()),
-    editItem: (data: FormData) => dispatch(actions.editIndividualAdmin(data)),
+    fetchData: () =>
+      dispatch(
+        configServicesApi.endpoints.getIndividualAdmins.initiate(undefined, {
+          forceRefetch: true,
+        })
+      ),
+    editItem: (data: FormData) =>
+      dispatch(
+        configServicesApi.endpoints.editIndividualAdmin.initiate({
+          data,
+          csrfToken,
+        })
+      ),
     deleteItem: (identifier: string | number) =>
-      dispatch(actions.deleteIndividualAdmin(identifier)),
+      dispatch(
+        configServicesApi.endpoints.deleteIndividualAdmin.initiate({
+          identifier,
+          csrfToken,
+        })
+      ),
   };
 }
 

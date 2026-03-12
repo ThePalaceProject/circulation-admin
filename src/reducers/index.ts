@@ -5,16 +5,6 @@ import bookCoverPreview, { BookCoverPreviewState } from "./bookCoverPreview";
 import bookCover from "./bookCover";
 import customListsForBook from "./customListsForBook";
 import diagnostics from "./diagnostics";
-import libraries from "./libraries";
-import collections from "./collections";
-import individualAdmins from "./individualAdmins";
-import patronAuthServices from "./patronAuthServices";
-import sitewideAnnouncements from "./sitewideAnnouncements";
-import metadataServices from "./metadataServices";
-import catalogServices from "./catalogServices";
-import discoveryServices from "./discoveryServices";
-import registerLibraryWithDiscoveryService from "./registerLibraryWithDiscoveryService";
-import discoveryServiceLibraryRegistrations from "./discoveryServiceLibraryRegistrations";
 import customLists from "./customLists";
 import customListDetails, {
   FetchMoreCustomListDetails,
@@ -31,18 +21,8 @@ import collection, {
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
-import { RegisterLibraryState } from "./createRegisterLibraryReducer";
 import patronManager from "./managePatrons";
 import {
-  LibrariesData,
-  CollectionsData,
-  IndividualAdminsData,
-  PatronAuthServicesData,
-  SitewideAnnouncementsData,
-  MetadataServicesData,
-  CatalogServicesData,
-  DiscoveryServicesData,
-  LibraryRegistrationsData,
   CustomListsData,
   LanesData,
   PatronData,
@@ -57,18 +37,6 @@ export interface State {
   bookCover: FetchEditState<string>;
   customListsForBook: FetchEditState<CustomListsData>;
   diagnostics: FetchEditState<DiagnosticsData>;
-  libraries: FetchEditState<LibrariesData>;
-  collections: FetchEditState<CollectionsData>;
-  individualAdmins: FetchEditState<IndividualAdminsData>;
-  patronAuthServices: FetchEditState<PatronAuthServicesData>;
-  sitewideAnnouncements: FetchEditState<SitewideAnnouncementsData>;
-  metadataServices: FetchEditState<MetadataServicesData>;
-  catalogServices: FetchEditState<CatalogServicesData>;
-  discoveryServices: FetchEditState<DiscoveryServicesData>;
-  registerLibraryWithDiscoveryService: RegisterLibraryState;
-  discoveryServiceLibraryRegistrations: FetchEditState<
-    LibraryRegistrationsData
-  >;
   customLists: FetchEditState<CustomListsData>;
   customListDetails: FetchMoreCustomListDetails<CollectionData>;
   customListEditor: CustomListEditorState;
@@ -89,16 +57,6 @@ export default combineReducers<State>({
   bookCover,
   customListsForBook,
   diagnostics,
-  libraries,
-  collections,
-  individualAdmins,
-  patronAuthServices,
-  sitewideAnnouncements,
-  metadataServices,
-  catalogServices,
-  discoveryServices,
-  registerLibraryWithDiscoveryService,
-  discoveryServiceLibraryRegistrations,
   customLists,
   customListDetails,
   customListEditor,

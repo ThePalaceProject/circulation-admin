@@ -7,7 +7,6 @@ import {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
-import ActionCreator from "../../actions";
 import {
   CollectionsData,
   CollectionData,
@@ -15,6 +14,12 @@ import {
   LibraryWithSettingsData,
   LibraryRegistrationsData,
 } from "../../interfaces";
+import {
+  configServicesApi,
+  getLastMutation,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import CollectionImportButton from "../shared/CollectionImportButton";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import TrashIcon from "../icons/TrashIcon";
@@ -180,36 +185,67 @@ export class Collections extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const data = Object.assign(
-    {},
-    (state.editor.collections && state.editor.collections.data) || {}
+function mapStateToProps(state, _ownProps) {
+  const collectionsResult = configServicesApi.endpoints.getCollections.select()(
+    state
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
+  const lastEdit = getLastMutation(state, "editCollection");
+  const data: CollectionsData = {
+    ...collectionsResult.data,
+  } as CollectionsData;
+  if (librariesResult.data?.libraries) {
+    data.allLibraries = librariesResult.data.libraries;
   }
   // fetchError = an error involving loading the list of collections; formError = an error upon
   // submission of the create/edit form.
   return {
-    data: data,
+    data,
     responseBody:
-      state.editor.collections && state.editor.collections.successMessage,
-    fetchError: state.editor.collections.fetchError,
-    formError: state.editor.collections.formError,
-    isFetching:
-      state.editor.collections.isFetching || state.editor.collections.isEditing,
+      lastEdit?.["status"] === "fulfilled"
+        ? (lastEdit["data"] as string)
+        : null,
+    fetchError: collectionsResult.error
+      ? rtkErrorToFetchError(collectionsResult.error)
+      : null,
+    formError:
+      lastEdit?.["status"] === "rejected"
+        ? rtkErrorToFetchError(lastEdit["error"])
+        : null,
+    isFetching: isResultFetching(collectionsResult),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+  const csrfToken: string = ownProps.csrfToken;
   return {
-    fetchData: () => dispatch(actions.fetchCollections()),
-    editItem: (data: FormData) => dispatch(actions.editCollection(data)),
+    fetchData: () =>
+      dispatch(
+        configServicesApi.endpoints.getCollections.initiate(undefined, {
+          forceRefetch: true,
+        })
+      ),
+    editItem: (data: FormData) =>
+      dispatch(
+        configServicesApi.endpoints.editCollection.initiate({ data, csrfToken })
+      ),
     deleteItem: (identifier: string | number) =>
-      dispatch(actions.deleteCollection(identifier)),
+      dispatch(
+        configServicesApi.endpoints.deleteCollection.initiate({
+          identifier,
+          csrfToken,
+        })
+      ),
     importCollection: (collectionId: string | number, force: boolean) =>
-      dispatch(actions.importCollection(collectionId, force)),
+      dispatch(
+        configServicesApi.endpoints.importCollection.initiate({
+          collectionId,
+          force,
+          csrfToken,
+        })
+      ),
   };
 }
 

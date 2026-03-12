@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   GenericEditableConfigList,
   EditableConfigListStateProps,
@@ -7,9 +6,14 @@ import {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
-import ActionCreator from "../../actions";
 import { LibrariesData, LibraryData, LanguagesData } from "../../interfaces";
 import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
+import {
+  configServicesApi,
+  getLastMutation,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import Admin from "../../models/Admin";
 import LibraryEditForm from "./LibraryEditForm";
 
@@ -67,34 +71,56 @@ export class Libraries extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const languagesResult =
-    referenceDataApi.endpoints.getLanguages.select()(state);
+function mapStateToProps(state, _ownProps) {
+  const languagesResult = referenceDataApi.endpoints.getLanguages.select()(
+    state
+  );
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
+  const lastEdit = getLastMutation(state, "editLibrary");
   // fetchError = an error involving loading the list of libraries; formError = an error upon submission of the
   // create/edit form.
   return {
-    data: state.editor.libraries && state.editor.libraries.data,
+    data: librariesResult.data ?? null,
     responseBody:
-      state.editor.libraries && state.editor.libraries.successMessage,
-    fetchError: state.editor.libraries.fetchError,
-    formError: state.editor.libraries.formError,
-    isFetching:
-      state.editor.libraries.isFetching || state.editor.libraries.isEditing,
+      lastEdit?.["status"] === "fulfilled"
+        ? (lastEdit["data"] as string)
+        : null,
+    fetchError: librariesResult.error
+      ? rtkErrorToFetchError(librariesResult.error)
+      : null,
+    formError:
+      lastEdit?.["status"] === "rejected"
+        ? rtkErrorToFetchError(lastEdit["error"])
+        : null,
+    isFetching: isResultFetching(librariesResult),
     additionalData: languagesResult.data ?? null,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+  const csrfToken: string = ownProps.csrfToken;
   return {
-    fetchData: () => dispatch(actions.fetchLibraries()),
-    editItem: (data: FormData) => dispatch(actions.editLibrary(data)),
-    deleteItem: (identifier: string | number) =>
-      dispatch(actions.deleteLibrary(identifier)),
-    fetchLanguages: () =>
+    fetchData: () =>
       dispatch(
-        referenceDataApi.endpoints.getLanguages.initiate(undefined)
+        configServicesApi.endpoints.getLibraries.initiate(undefined, {
+          forceRefetch: true,
+        })
       ),
+    editItem: (data: FormData) =>
+      dispatch(
+        configServicesApi.endpoints.editLibrary.initiate({ data, csrfToken })
+      ),
+    deleteItem: (identifier: string | number) =>
+      dispatch(
+        configServicesApi.endpoints.deleteLibrary.initiate({
+          identifier,
+          csrfToken,
+        })
+      ),
+    fetchLanguages: () =>
+      dispatch(referenceDataApi.endpoints.getLanguages.initiate(undefined)),
   };
 }
 

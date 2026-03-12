@@ -4,8 +4,13 @@ import EditableConfigList, {
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
 import { connect } from "react-redux";
-import ActionCreator from "../../actions";
 import { CatalogServicesData, CatalogServiceData } from "../../interfaces";
+import {
+  configServicesApi,
+  getLastMutation,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import ServiceEditForm from "./ServiceEditForm";
 
 /** Right panel for catalog services on the system configuration page.
@@ -32,36 +37,62 @@ export class CatalogServices extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const data = Object.assign(
-    {},
-    (state.editor.catalogServices && state.editor.catalogServices.data) || {}
+function mapStateToProps(state, _ownProps) {
+  const catalogResult = configServicesApi.endpoints.getCatalogServices.select()(
+    state
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
+  const lastEdit = getLastMutation(state, "editCatalogService");
+  const data: CatalogServicesData = {
+    ...catalogResult.data,
+  } as CatalogServicesData;
+  if (librariesResult.data?.libraries) {
+    data.allLibraries = librariesResult.data.libraries;
   }
   // fetchError = an error involving loading the list of catalog services; formError = an error upon submission
   // of the create/edit form.
   return {
-    data: data,
+    data,
     responseBody:
-      state.editor.catalogServices &&
-      state.editor.catalogServices.successMessage,
-    fetchError: state.editor.catalogServices.fetchError,
-    formError: state.editor.catalogServices.formError,
-    isFetching:
-      state.editor.catalogServices.isFetching ||
-      state.editor.catalogServices.isEditing,
+      lastEdit?.["status"] === "fulfilled"
+        ? (lastEdit["data"] as string)
+        : null,
+    fetchError: catalogResult.error
+      ? rtkErrorToFetchError(catalogResult.error)
+      : null,
+    formError:
+      lastEdit?.["status"] === "rejected"
+        ? rtkErrorToFetchError(lastEdit["error"])
+        : null,
+    isFetching: isResultFetching(catalogResult),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+  const csrfToken: string = ownProps.csrfToken;
   return {
-    fetchData: () => dispatch(actions.fetchCatalogServices()),
-    editItem: (data: FormData) => dispatch(actions.editCatalogService(data)),
+    fetchData: () =>
+      dispatch(
+        configServicesApi.endpoints.getCatalogServices.initiate(undefined, {
+          forceRefetch: true,
+        })
+      ),
+    editItem: (data: FormData) =>
+      dispatch(
+        configServicesApi.endpoints.editCatalogService.initiate({
+          data,
+          csrfToken,
+        })
+      ),
     deleteItem: (identifier: string | number) =>
-      dispatch(actions.deleteCatalogService(identifier)),
+      dispatch(
+        configServicesApi.endpoints.deleteCatalogService.initiate({
+          identifier,
+          csrfToken,
+        })
+      ),
   };
 }
 

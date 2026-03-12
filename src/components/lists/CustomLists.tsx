@@ -7,6 +7,10 @@ import { RootState } from "../../store";
 import ActionCreator from "../../actions";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
+import {
+  configServicesApi,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import {
   AdvancedSearchQuery,
@@ -446,8 +450,15 @@ export class CustomLists extends React.Component<
 }
 
 function mapStateToProps(state, ownProps) {
-  const languagesResult =
-    referenceDataApi.endpoints.getLanguages.select()(state);
+  const languagesResult = referenceDataApi.endpoints.getLanguages.select()(
+    state
+  );
+  const collectionsResult = configServicesApi.endpoints.getCollections.select()(
+    state
+  );
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
   return {
     customListEditorProperties:
       state.editor.customListEditor.properties.current,
@@ -480,24 +491,20 @@ function mapStateToProps(state, ownProps) {
       state.editor.customListDetails.isFetchingMoreEntries,
     fetchError:
       state.editor.customLists.fetchError ||
-      state.editor.collections.fetchError,
+      (collectionsResult.error ? { status: 0, response: "" } : null),
     isFetching:
       state.editor.customLists.isFetching ||
       state.editor.customLists.isEditing ||
       state.editor.customListDetails.isFetching ||
       state.editor.customListDetails.isEditing ||
       !ownProps.editOrCreate ||
-      state.editor.collections.isFetching,
+      isResultFetching(collectionsResult),
     searchResults: state.editor.collection && state.editor.collection.data,
     isFetchingSearchResults: state.editor.collection?.isFetching,
     isFetchingMoreSearchResults: state.editor.collection?.isFetchingPage,
-    collections:
-      state.editor.collections &&
-      state.editor.collections.data &&
-      state.editor.collections.data.collections,
+    collections: collectionsResult.data?.collections,
     languages: languagesResult.data ?? null,
-    libraries:
-      state.editor.libraries.data && state.editor.libraries.data.libraries,
+    libraries: librariesResult.data?.libraries,
     lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
   };
 }
@@ -527,13 +534,13 @@ function mapDispatchToProps(dispatch, ownProps) {
     openCustomListEditor: (listId: string) =>
       dispatch(actions.openCustomListEditor(listId)),
     loadMoreEntries: () => dispatch(actions.fetchMoreCustomListEntries()),
-    fetchCollections: () => dispatch(actions.fetchCollections()),
-    fetchLibraries: () => dispatch(actions.fetchLibraries()),
+    fetchCollections: () =>
+      dispatch(configServicesApi.endpoints.getCollections.initiate(undefined)),
+    fetchLibraries: () =>
+      dispatch(configServicesApi.endpoints.getLibraries.initiate(undefined)),
     fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
     fetchLanguages: () =>
-      dispatch(
-        referenceDataApi.endpoints.getLanguages.initiate(undefined)
-      ),
+      dispatch(referenceDataApi.endpoints.getLanguages.initiate(undefined)),
     updateCustomListEditorProperty: (name: string, value) =>
       dispatch(actions.updateCustomListEditorProperty(name, value)),
     toggleCustomListEditorCollection: (id: number) =>

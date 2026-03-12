@@ -11,4 +11,6 @@ selenium-server.log
 docs
 .eslintcache
 .env.local
-.env
+.env# macOS Finder duplicate files
+*[[:space:]]2.tsx
+*[[:space:]]2.ts

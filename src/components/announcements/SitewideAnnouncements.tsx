@@ -3,8 +3,13 @@ import { connect } from "react-redux";
 import { Alert } from "react-bootstrap";
 import { Form } from "library-simplified-reusable-components";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
-import ActionCreator from "../../actions";
 import { SitewideAnnouncementsData, AnnouncementData } from "../../interfaces";
+import {
+  configServicesApi,
+  getLastMutation,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import EditableConfigList, {
   EditableConfigListStateProps,
   EditableConfigListDispatchProps,
@@ -94,23 +99,44 @@ export class SitewideAnnouncements extends EditableConfigList<
 }
 
 function mapStateToProps(state) {
+  const announcementsResult = configServicesApi.endpoints.getSitewideAnnouncements.select()(
+    state
+  );
+  const lastEdit = getLastMutation(state, "editSitewideAnnouncements");
   return {
-    data: state.editor.sitewideAnnouncements.data,
-    responseBody: state.editor.sitewideAnnouncements.successMessage,
-    fetchError: state.editor.sitewideAnnouncements.fetchError,
-    formError: state.editor.sitewideAnnouncements.formError,
-    isFetching:
-      state.editor.sitewideAnnouncements.isFetching ||
-      state.editor.sitewideAnnouncements.isEditing,
+    data: announcementsResult.data ?? null,
+    responseBody:
+      lastEdit?.["status"] === "fulfilled"
+        ? (lastEdit["data"] as string)
+        : null,
+    fetchError: announcementsResult.error
+      ? rtkErrorToFetchError(announcementsResult.error)
+      : null,
+    formError:
+      lastEdit?.["status"] === "rejected"
+        ? rtkErrorToFetchError(lastEdit["error"])
+        : null,
+    isFetching: isResultFetching(announcementsResult),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+  const csrfToken: string = ownProps.csrfToken;
   return {
-    fetchData: () => dispatch(actions.fetchSitewideAnnouncements()),
+    fetchData: () =>
+      dispatch(
+        configServicesApi.endpoints.getSitewideAnnouncements.initiate(
+          undefined,
+          { forceRefetch: true }
+        )
+      ),
     editItem: (data: FormData) =>
-      dispatch(actions.editSitewideAnnouncements(data)),
+      dispatch(
+        configServicesApi.endpoints.editSitewideAnnouncements.initiate({
+          data,
+          csrfToken,
+        })
+      ),
   };
 }
 

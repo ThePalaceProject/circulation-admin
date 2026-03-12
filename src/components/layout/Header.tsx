@@ -4,8 +4,11 @@ import { connect } from "react-redux";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
-import ActionCreator from "../../actions";
 import { LibraryData, LibrariesData } from "../../interfaces";
+import {
+  configServicesApi,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import Admin from "../../models/Admin";
 import EditableInput from "../shared/EditableInput";
 import { Link } from "react-router";
@@ -321,16 +324,19 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 }
 
 function mapStateToProps(state, ownProps) {
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
   return {
-    isFetchingLibraries: state.editor.libraries?.isFetching,
-    libraries: state.editor.libraries?.data?.libraries,
+    isFetchingLibraries: isResultFetching(librariesResult),
+    libraries: librariesResult.data?.libraries,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  let actions = new ActionCreator();
   return {
-    fetchLibraries: () => dispatch(actions.fetchLibraries()),
+    fetchLibraries: () =>
+      dispatch(configServicesApi.endpoints.getLibraries.initiate(undefined)),
   };
 }
 

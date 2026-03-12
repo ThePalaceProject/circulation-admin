@@ -5,8 +5,13 @@ import EditableConfigList, {
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
 import { connect } from "react-redux";
-import ActionCreator from "../../actions";
 import { MetadataServicesData, MetadataServiceData } from "../../interfaces";
+import {
+  configServicesApi,
+  getLastMutation,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/configServices/configServicesSlice";
 import ServiceEditForm from "./ServiceEditForm";
 
 /** Right panel for metadata services on the system configuration page.
@@ -44,36 +49,62 @@ export class MetadataServices extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const data = Object.assign(
-    {},
-    (state.editor.metadataServices && state.editor.metadataServices.data) || {}
+function mapStateToProps(state, _ownProps) {
+  const metaResult = configServicesApi.endpoints.getMetadataServices.select()(
+    state
   );
-  if (state.editor.libraries && state.editor.libraries.data) {
-    data.allLibraries = state.editor.libraries.data.libraries;
+  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
+    state
+  );
+  const lastEdit = getLastMutation(state, "editMetadataService");
+  const data: MetadataServicesData = {
+    ...metaResult.data,
+  } as MetadataServicesData;
+  if (librariesResult.data?.libraries) {
+    data.allLibraries = librariesResult.data.libraries;
   }
   // fetchError = an error involving loading the list of metadata services; formError = an error upon submission of the
   // create/edit form.
   return {
-    data: data,
+    data,
     responseBody:
-      state.editor.metadataServices &&
-      state.editor.metadataServices.successMessage,
-    fetchError: state.editor.metadataServices.fetchError,
-    formError: state.editor.metadataServices.formError,
-    isFetching:
-      state.editor.metadataServices.isFetching ||
-      state.editor.metadataServices.isEditing,
+      lastEdit?.["status"] === "fulfilled"
+        ? (lastEdit["data"] as string)
+        : null,
+    fetchError: metaResult.error
+      ? rtkErrorToFetchError(metaResult.error)
+      : null,
+    formError:
+      lastEdit?.["status"] === "rejected"
+        ? rtkErrorToFetchError(lastEdit["error"])
+        : null,
+    isFetching: isResultFetching(metaResult),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+  const csrfToken: string = ownProps.csrfToken;
   return {
-    fetchData: () => dispatch(actions.fetchMetadataServices()),
-    editItem: (data: FormData) => dispatch(actions.editMetadataService(data)),
+    fetchData: () =>
+      dispatch(
+        configServicesApi.endpoints.getMetadataServices.initiate(undefined, {
+          forceRefetch: true,
+        })
+      ),
+    editItem: (data: FormData) =>
+      dispatch(
+        configServicesApi.endpoints.editMetadataService.initiate({
+          data,
+          csrfToken,
+        })
+      ),
     deleteItem: (identifier: string | number) =>
-      dispatch(actions.deleteMetadataService(identifier)),
+      dispatch(
+        configServicesApi.endpoints.deleteMetadataService.initiate({
+          identifier,
+          csrfToken,
+        })
+      ),
   };
 }
 
