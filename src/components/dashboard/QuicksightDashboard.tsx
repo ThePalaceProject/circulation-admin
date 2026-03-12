@@ -7,11 +7,11 @@ import {
 import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { connect } from "react-redux";
-import ActionCreator from "../../actions";
 import {
   configServicesApi,
   isResultFetching,
 } from "../../features/configServices/configServicesSlice";
+import { quicksightApi } from "../../features/quicksight/quicksightSlice";
 
 export interface QuicksightDashboardStateProps {
   isFetchingLibraries?: boolean;
@@ -96,15 +96,27 @@ function mapStateToProps(state, _ownProps) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  const actions = new ActionCreator();
+function mapDispatchToProps(dispatch: any) {
   return {
     fetchLibraries: () =>
       dispatch(configServicesApi.endpoints.getLibraries.initiate(undefined)),
-    fetchQuicksightEmbedUrl: (
+    fetchQuicksightEmbedUrl: async (
       dashboardId: string,
       librariesData: LibrariesData
-    ) => dispatch(actions.fetchQuicksightEmbedUrl(dashboardId, librariesData)),
+    ): Promise<QuickSightEmbeddedURLData> => {
+      let library_uuids = "";
+      if (librariesData.libraries.length < 100) {
+        library_uuids = `?libraryUuids=${librariesData.libraries
+          .map((l) => l.uuid)
+          .join(",")}`;
+      }
+      const url = `/admin/quicksight_embed/${dashboardId}${library_uuids}`;
+      const result = await dispatch(
+        quicksightApi.endpoints.getQuicksightEmbedUrl.initiate(url)
+      );
+      if ("error" in result) throw result.error;
+      return result.data;
+    },
   };
 }
 
