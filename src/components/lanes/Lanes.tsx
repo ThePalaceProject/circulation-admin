@@ -4,15 +4,16 @@ import { Link } from "react-router";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import { RootState } from "../../store";
-import ActionCreator from "../../actions";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import {
-  LaneData,
-  LanesData,
-  CustomListData,
-  CustomListsData,
-} from "../../interfaces";
+import { LaneData, CustomListData } from "../../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
+import ActionCreator from "../../actions";
+import {
+  lanesApi,
+  isResultFetching,
+  rtkErrorToFetchError,
+} from "../../features/lanes/lanesSlice";
+import { AppDispatch } from "../../store";
 import LaneEditor from "./LaneEditor";
 import LanesSidebar from "./LanesSidebar";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
@@ -24,16 +25,15 @@ import ResetIcon from "../icons/ResetIcon";
 export interface LanesStateProps {
   lanes: LaneData[];
   customLists: CustomListData[];
-  responseBody?: string;
   formError?: FetchErrorData;
   fetchError?: FetchErrorData;
   isFetching: boolean;
 }
 
 export interface LanesDispatchProps {
-  fetchLanes: () => Promise<LanesData>;
-  fetchCustomLists: () => Promise<CustomListsData>;
-  editLane: (data: FormData) => Promise<void>;
+  fetchLanes: () => void;
+  fetchCustomLists: () => void;
+  editLane: (data: FormData) => Promise<string | void>;
   deleteLane: (laneIdentifier: string) => Promise<void>;
   showLane: (laneIdentifier: string) => Promise<void>;
   hideLane: (laneIdentifier: string) => Promise<void>;
@@ -175,7 +175,6 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
     const extraProps = {
       create: {
         findParentOfLane: this.getLane,
-        responseBody: this.props.responseBody,
       },
       edit: {
         lane: this.getLane(),
@@ -363,52 +362,80 @@ export class Lanes extends React.Component<LanesProps, LanesState> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState, ownProps: LanesOwnProps) {
+  const lanesResult = lanesApi.endpoints.getLanes.select(ownProps.library)(
+    state
+  );
   return {
-    lanes:
-      state.editor.lanes &&
-      state.editor.lanes.data &&
-      state.editor.lanes.data.lanes,
-    responseBody: state.editor.lanes && state.editor.lanes.successMessage,
+    lanes: lanesResult.data?.lanes ?? null,
     customLists:
       state.editor.customLists &&
       state.editor.customLists.data &&
       state.editor.customLists.data.custom_lists,
     fetchError:
-      state.editor.lanes.fetchError ||
-      state.editor.laneVisibility.fetchError ||
-      state.editor.laneOrder.fetchError,
-    formError:
-      state.editor.lanes.formError || state.editor.laneVisibility.formError,
+      rtkErrorToFetchError(lanesResult.error) ||
+      state.editor.lanesUi.fetchError,
+    formError: state.editor.lanesUi.formError,
     isFetching:
-      state.editor.lanes.isFetching ||
-      state.editor.lanes.isEditing ||
-      state.editor.laneVisibility.isFetching ||
-      state.editor.customLists.isFetching ||
-      state.editor.resetLanes.isFetching ||
-      state.editor.laneOrder.isFetching,
+      isResultFetching(lanesResult) ||
+      state.editor.lanesUi.isMutating ||
+      state.editor.customLists.isFetching,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const fetcher = new DataFetcher();
-  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
+function mapDispatchToProps(dispatch: AppDispatch, ownProps: LanesOwnProps) {
   return {
-    fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
-    fetchCustomLists: () =>
-      dispatch(actions.fetchCustomLists(ownProps.library)),
-    editLane: (data: FormData) =>
-      dispatch(actions.editLane(ownProps.library, data)),
-    deleteLane: (identifier: string) =>
-      dispatch(actions.deleteLane(ownProps.library, identifier)),
-    showLane: (identifier: string) =>
-      dispatch(actions.showLane(ownProps.library, identifier)),
-    hideLane: (identifier: string) =>
-      dispatch(actions.hideLane(ownProps.library, identifier)),
-    resetLanes: () => dispatch(actions.resetLanes(ownProps.library)),
-    changeLaneOrder: (lanes: LaneData[]) =>
-      dispatch(actions.changeLaneOrder(ownProps.library, lanes)),
+    fetchLanes: () =>
+      dispatch(lanesApi.endpoints.getLanes.initiate(ownProps.library)),
+    fetchCustomLists: () => {
+      const fetcher = new DataFetcher();
+      const actions = new ActionCreator(fetcher, ownProps.csrfToken);
+      dispatch(actions.fetchCustomLists(ownProps.library));
+    },
+    editLane: async (data: FormData): Promise<string | void> => {
+      const result = await dispatch(
+        lanesApi.endpoints.editLane.initiate({
+          library: ownProps.library,
+          data,
+        })
+      );
+      if ("data" in result) return result.data;
+    },
+    deleteLane: async (identifier: string) => {
+      await dispatch(
+        lanesApi.endpoints.deleteLane.initiate({
+          library: ownProps.library,
+          identifier,
+        })
+      );
+    },
+    showLane: async (identifier: string) => {
+      await dispatch(
+        lanesApi.endpoints.showLane.initiate({
+          library: ownProps.library,
+          identifier,
+        })
+      );
+    },
+    hideLane: async (identifier: string) => {
+      await dispatch(
+        lanesApi.endpoints.hideLane.initiate({
+          library: ownProps.library,
+          identifier,
+        })
+      );
+    },
+    resetLanes: async () => {
+      await dispatch(lanesApi.endpoints.resetLanes.initiate(ownProps.library));
+    },
+    changeLaneOrder: async (lanes: LaneData[]) => {
+      await dispatch(
+        lanesApi.endpoints.changeLaneOrder.initiate({
+          library: ownProps.library,
+          lanes,
+        })
+      );
+    },
   };
 }
 

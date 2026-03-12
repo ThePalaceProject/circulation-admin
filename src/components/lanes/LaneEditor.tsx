@@ -5,7 +5,6 @@ import TextWithEditMode from "../shared/TextWithEditMode";
 import EditableInput from "../shared/EditableInput";
 import LaneCustomListsEditor from "./LaneCustomListsEditor";
 import TrashIcon from "../icons/TrashIcon";
-import XCloseIcon from "../icons/XCloseIcon";
 import VisibleIcon from "../icons/VisibleIcon";
 import HiddenIcon from "../icons/HiddenIcon";
 
@@ -14,8 +13,7 @@ export interface LaneEditorProps extends React.Props<LaneEditor> {
   library: string;
   lane?: LaneData;
   customLists: CustomListData[];
-  responseBody?: string;
-  editLane: (data: FormData) => Promise<void>;
+  editLane: (data: FormData) => Promise<string | void>;
   deleteLane?: (lane: LaneData) => Promise<void>;
   toggleLaneVisibility: (
     lane: LaneData,
@@ -320,14 +318,11 @@ export default class LaneEditor extends React.Component<
       "inherit_parent_restrictions",
       this.state.inheritParentRestrictions
     );
-    this.props.editLane(data).then(() => {
-      // If a new lane was created, go to its edit page.
-      if (!this.props.lane && this.props.responseBody) {
+    this.props.editLane(data).then((responseBody?: string) => {
+      // If a new lane was created, navigate to its edit page.
+      if (!this.props.lane && responseBody) {
         window.location.href =
-          "/admin/web/lanes/" +
-          this.props.library +
-          "/edit/" +
-          this.props.responseBody;
+          "/admin/web/lanes/" + this.props.library + "/edit/" + responseBody;
       }
     });
   }

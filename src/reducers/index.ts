@@ -3,6 +3,7 @@ import {
   bookCoverPreviewSlice,
   BookCoverPreviewState,
 } from "../features/bookMetadata/bookMetadataSlice";
+import { lanesUiSlice, LanesUiState } from "../features/lanes/lanesSlice";
 import customListsForBook from "./customListsForBook";
 import diagnostics from "./diagnostics";
 import customLists from "./customLists";
@@ -10,10 +11,6 @@ import customListDetails, {
   FetchMoreCustomListDetails,
 } from "./customListDetails";
 import customListEditor, { CustomListEditorState } from "./customListEditor";
-import lanes from "./lanes";
-import laneVisibility from "./laneVisibility";
-import resetLanes from "./resetLanes";
-import laneOrder from "./laneOrder";
 import selfTests from "./selfTests";
 import collection, {
   CollectionState,
@@ -24,7 +21,6 @@ import { FetchEditState } from "./createFetchEditReducer";
 import patronManager from "./managePatrons";
 import {
   CustomListsData,
-  LanesData,
   PatronData,
   DiagnosticsData,
   ServiceData,
@@ -32,16 +28,13 @@ import {
 
 export interface State {
   bookCoverPreview: BookCoverPreviewState;
+  lanesUi: LanesUiState;
   customListsForBook: FetchEditState<CustomListsData>;
   diagnostics: FetchEditState<DiagnosticsData>;
   customLists: FetchEditState<CustomListsData>;
   customListDetails: FetchMoreCustomListDetails<CollectionData>;
   customListEditor: CustomListEditorState;
   collection: CollectionState;
-  lanes: FetchEditState<LanesData>;
-  laneVisibility: FetchEditState<void>;
-  resetLanes: FetchEditState<void>;
-  laneOrder: FetchEditState<void>;
   selfTests: FetchEditState<ServiceData>;
   changePassword: FetchEditState<void>;
   patronManager: FetchEditState<PatronData>;
@@ -49,16 +42,13 @@ export interface State {
 
 export default combineReducers<State>({
   bookCoverPreview: bookCoverPreviewSlice.reducer,
+  lanesUi: lanesUiSlice.reducer,
   customListsForBook,
   diagnostics,
   customLists,
   customListDetails,
   customListEditor,
   collection,
-  lanes,
-  laneVisibility,
-  resetLanes,
-  laneOrder,
   selfTests,
   changePassword,
   patronManager,

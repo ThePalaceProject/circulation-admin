@@ -15,6 +15,7 @@ export const api = createApi({
     "SitewideAnnouncements",
     "Complaints",
     "Classifications",
+    "Lanes",
   ],
   endpoints: () => ({}),
 });

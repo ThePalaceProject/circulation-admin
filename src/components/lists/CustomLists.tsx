@@ -11,6 +11,7 @@ import {
   configServicesApi,
   isResultFetching,
 } from "../../features/configServices/configServicesSlice";
+import { lanesApi } from "../../features/lanes/lanesSlice";
 import { adapter } from "@thepalaceproject/web-opds-client/lib/OPDSDataAdapter";
 import {
   AdvancedSearchQuery,
@@ -505,7 +506,9 @@ function mapStateToProps(state, ownProps) {
     collections: collectionsResult.data?.collections,
     languages: languagesResult.data ?? null,
     libraries: librariesResult.data?.libraries,
-    lanes: state.editor.lanes.data && state.editor.lanes.data.lanes,
+    lanes:
+      lanesApi.endpoints.getLanes.select(ownProps.library)(state).data?.lanes ??
+      null,
   };
 }
 
@@ -538,7 +541,8 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(configServicesApi.endpoints.getCollections.initiate(undefined)),
     fetchLibraries: () =>
       dispatch(configServicesApi.endpoints.getLibraries.initiate(undefined)),
-    fetchLanes: () => dispatch(actions.fetchLanes(ownProps.library)),
+    fetchLanes: () =>
+      dispatch(lanesApi.endpoints.getLanes.initiate(ownProps.library)),
     fetchLanguages: () =>
       dispatch(referenceDataApi.endpoints.getLanguages.initiate(undefined)),
     updateCustomListEditorProperty: (name: string, value) =>

@@ -341,6 +341,9 @@ describe("LaneEditor", () => {
   it("navigates to edit page after a new lane is created", async () => {
     window.location.href = "/admin/web/lanes/library/create";
 
+    // Simulate editLane returning the new lane id as the response body.
+    editLane = stub().returns(Promise.resolve("5"));
+
     wrapper = mount(
       <LaneEditor
         library="library"
@@ -364,7 +367,6 @@ describe("LaneEditor", () => {
     getTextStub.restore();
     getCustomListIdsStub.restore();
 
-    wrapper.setProps({ responseBody: 5 });
     // Let the call stack clear so the callback after editLane will run.
     const pause = (): Promise<void> => {
       return new Promise<void>((resolve) => setTimeout(resolve, 0));
