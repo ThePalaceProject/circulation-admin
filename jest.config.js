@@ -6,6 +6,11 @@ module.exports = {
     "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js",
   },
   preset: "ts-jest",
+  globals: {
+    "ts-jest": {
+      tsconfig: "tsconfig.jest.json",
+    },
+  },
   testEnvironment: "jest-fixed-jsdom",
   testEnvironmentOptions: {
     customExportConditions: [""],

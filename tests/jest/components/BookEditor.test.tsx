@@ -9,7 +9,7 @@ import {
 import { BookDetailsEditor } from "../../../src/components/book/BookDetailsEditor";
 import { expect } from "chai";
 import { store } from "../../../src/store";
-import * as fetchMock from "fetch-mock-jest";
+import fetchMock from "fetch-mock-jest";
 
 describe("BookDetails", () => {
   const suppressPerLibraryLink = {

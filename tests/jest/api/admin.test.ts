@@ -3,7 +3,7 @@ import {
   getInventoryReportInfo,
   requestInventoryReport,
 } from "../../../src/api/admin";
-import * as fetchMock from "fetch-mock-jest";
+import fetchMock from "fetch-mock-jest";
 
 const sampleInfoResponseData = { collections: [] };
 const sampleGenerateResponseData = { message: "some message" };

@@ -5,7 +5,7 @@ import reducer, {
   submitBookData,
 } from "../../../src/features/book/bookEditorSlice";
 import { expect } from "chai";
-import * as fetchMock from "fetch-mock-jest";
+import fetchMock from "fetch-mock-jest";
 import { store } from "../../../src/store";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";

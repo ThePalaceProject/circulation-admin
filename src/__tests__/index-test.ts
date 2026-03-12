@@ -2,7 +2,8 @@ import { expect } from "chai";
 import { spy } from "sinon";
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const ReactDOM = require("react-dom"); // require() avoids esModuleInterop namespace wrapper so sinon can spy on .render
 import { mount } from "enzyme";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Add Jest and Testing Library types for the ts-jest test suite.
+    // Kept separate from tsconfig.json to avoid TS2403 duplicate declaration
+    // conflicts with Mocha globals (describe, it, test, beforeEach, etc.).
+    "types": ["jest", "node", "@testing-library/jest-dom"]
+  },
+  // Include source and Jest test files; exclude the Mocha test files.
+  "include": ["src/**/*", "tests/jest/**/*"],
+  "exclude": [
+    "lib",
+    "node_modules",
+    "tests/browser",
+    "src/__tests__",
+    "src/components/__tests__",
+    "src/testHelper.ts"
+  ]
+}

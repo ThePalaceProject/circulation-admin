@@ -14,7 +14,7 @@ import {
 
 import { normalizeStatistics } from "../../../src/features/stats/normalizeStatistics";
 import { useGetStatsQuery } from "../../../src/features/stats/statsSlice";
-import * as fetchMock from "fetch-mock-jest";
+import fetchMock from "fetch-mock-jest";
 import { STATS_API_ENDPOINT } from "../../../src/features/stats/statsSlice";
 import Stats from "../../../src/components/dashboard/Stats";
 import { renderHook } from "@testing-library/react-hooks";

@@ -91,7 +91,7 @@ class CirculationAdmin {
     // Running this is resource intensive and should only be used to test
     // for accessibility and not during active development.
     if (process.env.TEST_AXE === "true") {
-      import("react-axe").then((axe) => {
+      import("react-axe").then(({ default: axe }) => {
         axe(React, ReactDOM, 1000);
         ReactDOM.render(app, document.getElementById(appElement));
       });

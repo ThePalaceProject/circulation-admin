@@ -2,21 +2,28 @@
   "version": "1.8.2",
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es5",
+    "target": "es2019",
     "outDir": "lib",
-    "lib": ["es2023.array","es2019", "dom"],
+    "lib": ["es2023.array", "es2019", "dom"],
     "rootDir": ".",
-    // Mocha and jest are both used in this project. Certain globals are declared by both,
-    // such as describe, it, and test. Setting skipLibCheck to true prevents typescript from
-    // erroring when it sees duplicate variable declarations with different types.
-    "skipLibCheck": true,
-    "types": ["mocha", "node", "jest", "@testing-library/jest-dom"],
+    // Test-framework types (mocha, jest) are declared in tsconfig.mocha.json and
+    // tsconfig.jest.json respectively, to prevent duplicate global declarations
+    // between the two frameworks (TS2403: describe, it, test, beforeEach, etc.).
+    "skipLibCheck": false,
+    "esModuleInterop": true,
+    "types": ["node"],
     "jsx": "react"
   },
   "exclude": [
     "lib",
     "node_modules",
-    "tests/browser"
+    "tests/browser",
+    // Test directories each have their own tsconfig (tsconfig.mocha.json /
+    // tsconfig.jest.json) with the appropriate test-framework types.
+    // Excluding here keeps the base compilation free of mocha/jest globals.
+    "src/**/__tests__",
+    "src/testHelper.ts",
+    "tests/jest"
   ],
   "typedocOptions": {
     "entryPointStrategy": "expand",
