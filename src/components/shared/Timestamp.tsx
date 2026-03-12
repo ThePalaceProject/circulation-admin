@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TimestampData } from "../../interfaces";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 
 export interface TimestampProps {
   timestamp: TimestampData;

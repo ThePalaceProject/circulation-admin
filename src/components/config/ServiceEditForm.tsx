@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "../shared/EditableInput";
 import ProtocolFormField from "./ProtocolFormField";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "../ui";
 import WithEditButton from "../shared/WithEditButton";
 import WithRemoveButton from "../shared/WithRemoveButton";
 import {

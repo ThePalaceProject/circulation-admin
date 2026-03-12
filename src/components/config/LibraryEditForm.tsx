@@ -9,7 +9,7 @@ import {
   SettingData,
   AnnouncementData,
 } from "../../interfaces";
-import { Panel, Form } from "library-simplified-reusable-components";
+import { Panel, Form } from "../ui";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import PairedMenus from "../shared/PairedMenus";
 import AnnouncementsSection from "../announcements/AnnouncementsSection";

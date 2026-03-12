@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Alert } from "../ui/alert";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "../ui";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import { SitewideAnnouncementsData, AnnouncementData } from "../../interfaces";
 import {

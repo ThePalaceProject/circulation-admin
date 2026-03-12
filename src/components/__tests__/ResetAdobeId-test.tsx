@@ -9,7 +9,7 @@ import buildStore from "../../store";
 import { ResetAdobeId } from "../patrons/ResetAdobeId";
 import EditableInput from "../shared/EditableInput";
 import { Alert } from "../ui/alert";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 const patrons = [
   {

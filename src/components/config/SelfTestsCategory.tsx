@@ -7,7 +7,7 @@ import {
   PatronAuthServiceData,
   ServiceData,
 } from "../../interfaces";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 
 export interface SelfTestsCategoryProps {
   type: string;

@@ -4,7 +4,7 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 import { SettingData } from "../../interfaces";
 import { Alert } from "../ui/alert";
 import { RootState } from "../../store";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../shared/ErrorMessage";
 import PencilIcon from "../icons/PencilIcon";

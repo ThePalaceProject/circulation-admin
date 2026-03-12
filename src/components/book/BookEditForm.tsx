@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "../shared/EditableInput";
 import EditorField from "../shared/EditorField";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "../ui";
 import {
   BookData,
   ContributorData,

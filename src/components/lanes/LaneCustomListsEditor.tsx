@@ -6,7 +6,7 @@ import ShareIcon from "../icons/ShareIcon";
 import TrashIcon from "../icons/TrashIcon";
 import GrabIcon from "../icons/GrabIcon";
 import EditableInput from "../shared/EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export interface LaneCustomListsEditorProps
   extends React.Props<LaneCustomListsEditor> {

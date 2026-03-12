@@ -13,7 +13,7 @@ import Admin from "../../models/Admin";
 import EditableInput from "../shared/EditableInput";
 import { Link } from "react-router";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import title from "../../utils/title";
 

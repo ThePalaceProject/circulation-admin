@@ -5,7 +5,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import LibraryRegistrationForm from "../config/LibraryRegistrationForm";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 describe("LibraryRegistrationForm", () => {
   let wrapper;

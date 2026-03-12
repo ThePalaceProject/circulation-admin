@@ -1,6 +1,6 @@
 import * as React from "react";
 import EditableInput from "../shared/EditableInput";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 import { SettingData } from "../../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 

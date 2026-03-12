@@ -8,7 +8,7 @@ import { patronsApi } from "../../features/patrons/patronsSlice";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../shared/ErrorMessage";
 import EditableInput from "../shared/EditableInput";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "../ui";
 
 export interface ChangePasswordFormStateProps {
   fetchError?: FetchErrorData;

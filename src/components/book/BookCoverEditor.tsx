@@ -11,7 +11,7 @@ import ErrorMessage from "../shared/ErrorMessage";
 import EditableInput from "../shared/EditableInput";
 import { BookData } from "../../interfaces";
 import { AppDispatch, RootState } from "../../store";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "../ui";
 import UpdatingLoader from "../shared/UpdatingLoader";
 import { getBookData } from "../../features/book/bookEditorSlice";
 import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
@@ -31,11 +31,11 @@ export type BookCoverEditorProps = ConnectedProps<typeof connector> &
 /** Tab on the book details page for uploading a new book cover. */
 export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
   private formContainerRef = React.createRef<HTMLDivElement>();
-  private imageFormRef = React.createRef<Form>();
+  private imageFormRef = React.createRef<HTMLFormElement>();
   private coverUrlRef = React.createRef<EditableInput>();
   private coverFileRef = React.createRef<EditableInput>();
   private titlePositionRef = React.createRef<EditableInput>();
-  private rightsFormRef = React.createRef<Form>();
+  private rightsFormRef = React.createRef<HTMLFormElement>();
   private rightStatusRef = React.createRef<EditableInput>();
   constructor(props) {
     super(props);
@@ -209,13 +209,14 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
     return this.props.bookAdminUrl + "/preview_book_cover";
   }
 
-  preview(data: FormData) {
+  preview(_e?: React.FormEvent) {
     const file = this.coverFileRef.current.getValue();
     const url = this.coverUrlRef.current.getValue();
     if (!file && !url && this.props.clearPreview) {
       this.props.clearPreview();
     }
     if ((file || url) && this.props.fetchPreview) {
+      const data = new (window as any).FormData(this.imageFormRef.current);
       this.props.fetchPreview(this.previewUrl(), data);
     }
   }
@@ -297,13 +298,13 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
       this.props.book.changeCoverLink &&
       this.props.book.changeCoverLink.href;
 
-    const imageForm = this.imageFormRef.current.formRef.current;
+    const imageForm = this.imageFormRef.current;
     const imageFormData = new (window as any).FormData(imageForm);
     data.append("cover_file", imageFormData.get("cover_file"));
     data.append("cover_url", imageFormData.get("cover_url"));
     data.append("title_position", imageFormData.get("title_position"));
 
-    const rightsForm = this.rightsFormRef.current.formRef.current;
+    const rightsForm = this.rightsFormRef.current;
     const rightsFormData = new (window as any).FormData(rightsForm);
     data.append("rights_status", rightsFormData.get("rights_status"));
     data.append("rights_explanation", rightsFormData.get("rights_explanation"));

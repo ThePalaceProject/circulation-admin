@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dialog } from "../ui/dialog";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export const SHOW_CONFIRMATION = "SHOW_CONFIRMATION";
 export const SHOW_OUTCOME = "SHOW_OUTCOME";

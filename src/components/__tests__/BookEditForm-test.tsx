@@ -9,7 +9,7 @@ import EditableInput from "../shared/EditableInput";
 import WithRemoveButton from "../shared/WithRemoveButton";
 import Contributors from "../book/Contributors";
 import LanguageField from "../shared/LanguageField";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "../ui";
 import {
   BookData,
   RolesData,

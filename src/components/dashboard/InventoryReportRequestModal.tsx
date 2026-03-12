@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Dialog } from "../ui/dialog";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import {
   getInventoryReportInfo,
   requestInventoryReport,

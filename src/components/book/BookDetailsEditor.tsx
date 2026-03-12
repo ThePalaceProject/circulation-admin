@@ -5,7 +5,7 @@ import BookEditForm from "./BookEditForm";
 import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
 import ErrorMessage from "../shared/ErrorMessage";
 import { AppDispatch, RootState } from "../../store";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import UpdatingLoader from "../shared/UpdatingLoader";
 import {
   getBookData,
@@ -217,7 +217,9 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
 function mapStateToProps(state: RootState) {
   const rolesResult = referenceDataApi.endpoints.getRoles.select()(state);
   const mediaResult = referenceDataApi.endpoints.getMedia.select()(state);
-  const languagesResult = referenceDataApi.endpoints.getLanguages.select()(state);
+  const languagesResult = referenceDataApi.endpoints.getLanguages.select()(
+    state
+  );
   return {
     bookAdminUrl: state.bookEditor.url,
     bookData: state.bookEditor.data,

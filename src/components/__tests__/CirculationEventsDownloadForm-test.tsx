@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { stub } from "sinon";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import * as React from "react";
 import { mount } from "enzyme";
 

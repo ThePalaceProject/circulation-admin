@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Alert } from "../ui/alert";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export interface ErrorMessageProps {
   error: FetchErrorData;

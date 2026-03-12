@@ -10,7 +10,7 @@ import TextWithEditMode from "../shared/TextWithEditMode";
 import EditableInput from "../shared/EditableInput";
 import CustomListEntriesEditor from "../lists/CustomListEntriesEditor";
 import * as PropTypes from "prop-types";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 describe("CustomListEditor", () => {
   let wrapper;

@@ -8,7 +8,7 @@ import {
 } from "../../features/bookMetadata/bookMetadataSlice";
 import ErrorMessage from "../shared/ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import { BookData, PostComplaint } from "../../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RootState } from "../../store";

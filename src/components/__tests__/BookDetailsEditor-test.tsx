@@ -5,7 +5,7 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 
 import { BookDetailsEditor } from "../book/BookDetailsEditor";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import BookEditForm from "../book/BookEditForm";
 import ErrorMessage from "../shared/ErrorMessage";
 import BookDetailsEditorSuppression from "../book/BookDetailsEditorSuppression";

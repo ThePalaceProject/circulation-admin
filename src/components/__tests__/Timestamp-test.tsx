@@ -4,7 +4,7 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import Timestamp from "../shared/Timestamp";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 
 describe("Timestamp", () => {
   let wrapper;

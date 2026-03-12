@@ -1,6 +1,6 @@
 import * as React from "react";
 import { GenreData } from "../../interfaces";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export interface GenreFormProps {
   genreOptions: GenreData[];

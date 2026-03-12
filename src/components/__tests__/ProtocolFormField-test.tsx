@@ -8,7 +8,7 @@ import ProtocolFormField from "../config/ProtocolFormField";
 import EditableInput from "../shared/EditableInput";
 import InputList from "../shared/InputList";
 import ColorPicker from "../shared/ColorPicker";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 describe("ProtocolFormField", () => {
   describe("When visible...", () => {

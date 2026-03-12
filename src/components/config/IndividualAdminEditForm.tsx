@@ -4,7 +4,7 @@ import EditableInput from "../shared/EditableInput";
 import { clearForm } from "../../utils/sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../../interfaces";
 import Admin from "../../models/Admin";
-import { Panel, Form } from "library-simplified-reusable-components";
+import { Panel, Form } from "../ui";
 
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 

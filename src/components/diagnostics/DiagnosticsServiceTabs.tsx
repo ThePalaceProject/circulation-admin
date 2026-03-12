@@ -6,7 +6,7 @@ import {
 } from "../../interfaces";
 
 import { TabContainer, TabContainerProps } from "../shared/TabContainer";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 import Timestamp from "../shared/Timestamp";
 import ToolTip from "../shared/ToolTip";
 

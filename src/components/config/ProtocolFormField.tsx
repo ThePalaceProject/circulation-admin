@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "../shared/EditableInput";
 import ColorPicker from "../shared/ColorPicker";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import InputList from "../shared/InputList";
 import { SettingData, CustomListsSetting } from "../../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";

@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as React from "react";
 import { mount } from "enzyme";
 import { stub, spy } from "sinon";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import buildStore from "../../store";
 
 import InputList from "../shared/InputList";

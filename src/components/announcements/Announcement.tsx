@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export interface AnnouncementProps {
   content: string;

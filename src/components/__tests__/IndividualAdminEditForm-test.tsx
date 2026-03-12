@@ -7,7 +7,7 @@ import { shallow, mount } from "enzyme";
 import IndividualAdminEditForm from "../config/IndividualAdminEditForm";
 import EditableInput from "../shared/EditableInput";
 import Admin from "../../models/Admin";
-import { Button, Form, Panel } from "library-simplified-reusable-components";
+import { Button, Form, Panel } from "../ui";
 import { AdminRoleData, AdminRole } from "../../interfaces";
 
 describe("IndividualAdminEditForm", () => {

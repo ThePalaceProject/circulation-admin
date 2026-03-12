@@ -4,7 +4,7 @@ import { stub } from "sinon";
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Complaints } from "../book/Complaints";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import ErrorMessage from "../shared/ErrorMessage";
 import ComplaintForm from "../book/ComplaintForm";
 

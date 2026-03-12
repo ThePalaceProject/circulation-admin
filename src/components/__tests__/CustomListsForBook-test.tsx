@@ -3,7 +3,7 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { mount } from "enzyme";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import { CustomListsForBook } from "../lists/CustomListsForBook";
 import ErrorMessage from "../shared/ErrorMessage";
 import WithRemoveButton from "../shared/WithRemoveButton";

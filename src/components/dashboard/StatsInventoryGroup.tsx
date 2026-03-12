@@ -1,5 +1,5 @@
 import React = require("react");
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import StatsGroup from "./StatsGroup";
 import SingleStatListItem from "./SingleStatListItem";
 import { InventoryStatistics } from "../../interfaces";

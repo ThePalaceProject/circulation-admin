@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import CatalogLink from "@thepalaceproject/web-opds-client/lib/components/CatalogLink";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import {

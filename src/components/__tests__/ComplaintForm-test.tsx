@@ -3,7 +3,7 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import { Button, Form } from "library-simplified-reusable-components";
+import { Button, Form } from "../ui";
 
 import ComplaintForm from "../book/ComplaintForm";
 import EditableInput from "../shared/EditableInput";

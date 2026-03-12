@@ -3,7 +3,7 @@ import PencilIcon from "../icons/PencilIcon";
 import ShareIcon from "../icons/ShareIcon";
 import TrashIcon from "../icons/TrashIcon";
 import VisibleIcon from "../icons/VisibleIcon";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import { CustomListData } from "../../interfaces";
 import EditableInput from "../shared/EditableInput";
 import { Link } from "react-router";

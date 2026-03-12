@@ -7,7 +7,7 @@ import buildStore from "../../store";
 
 import SelfTestsCategory from "../config/SelfTestsCategory";
 import SelfTests from "../config/SelfTests";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 
 describe("SelfTestsCategory", () => {
   let wrapper;

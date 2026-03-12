@@ -12,7 +12,7 @@ import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/L
 import LaneEditor from "../lanes/LaneEditor";
 import Lane from "../lanes/Lane";
 import EditableInput from "../shared/EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import { LaneData } from "../../interfaces";
 
 describe("Lanes", () => {

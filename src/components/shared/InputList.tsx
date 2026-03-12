@@ -4,7 +4,7 @@ import LanguageField from "./LanguageField";
 import { SettingData, CustomListsSetting } from "../../interfaces";
 import ToolTip from "./ToolTip";
 import { LocatorIcon } from "@nypl/dgx-svg-icons";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import { isEqual, formatString } from "../../utils/sharedFunctions";
 
 export interface InputListProps {

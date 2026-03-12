@@ -7,7 +7,7 @@ import VisibleIcon from "../icons/VisibleIcon";
 import HiddenIcon from "../icons/HiddenIcon";
 import AddIcon from "../icons/AddIcon";
 import PencilIcon from "../icons/PencilIcon";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export interface LaneProps {
   lane: LaneData;

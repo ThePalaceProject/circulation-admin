@@ -5,7 +5,7 @@ import { shallow, mount } from "enzyme";
 import { stub, spy } from "sinon";
 
 import DiagnosticsServiceTabs from "../diagnostics/DiagnosticsServiceTabs";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 import Timestamp from "../shared/Timestamp";
 import ToolTip from "../shared/ToolTip";
 

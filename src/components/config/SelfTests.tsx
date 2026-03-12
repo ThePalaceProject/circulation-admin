@@ -9,7 +9,7 @@ import ErrorMessage from "../shared/ErrorMessage";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import SelfTestResult from "./SelfTestResult";
 import { selfTestsApi } from "../../features/diagnostics/diagnosticsSlice";
-import { Panel, Button } from "library-simplified-reusable-components";
+import { Panel, Button } from "../ui";
 
 import { CheckSoloIcon, XIcon } from "@nypl/dgx-svg-icons";
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dialog } from "../ui/dialog";
-import { Button, Form } from "library-simplified-reusable-components";
+import { Button, Form } from "../ui";
 import EditableInput from "../shared/EditableInput";
 import * as qs from "qs";
 

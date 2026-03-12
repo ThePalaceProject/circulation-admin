@@ -6,7 +6,7 @@ import { AppDispatch } from "../../store";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { patronsApi, clearPatron } from "../../features/patrons/patronsSlice";
 import { PatronData } from "../../interfaces";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "../ui";
 import EditableInput from "../shared/EditableInput";
 import ErrorMessage from "../shared/ErrorMessage";
 import PatronInfo from "./PatronInfo";

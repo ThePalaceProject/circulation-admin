@@ -6,7 +6,7 @@ import * as Enzyme from "enzyme";
 
 import CustomListsSidebar from "../lists/CustomListsSidebar";
 import { Link } from "react-router";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 describe("CustomListsSidebar", () => {
   let wrapper: Enzyme.CommonWrapper<any, any, Record<string, unknown>>;

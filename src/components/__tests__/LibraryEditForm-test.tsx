@@ -6,7 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import LibraryEditForm from "../config/LibraryEditForm";
 import EditableInput from "../shared/EditableInput";
-import { Panel, Button, Form } from "library-simplified-reusable-components";
+import { Panel, Button, Form } from "../ui";
 import ProtocolFormField from "../config/ProtocolFormField";
 import PairedMenus from "../shared/PairedMenus";
 import InputList from "../shared/InputList";

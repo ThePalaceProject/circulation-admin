@@ -1,7 +1,7 @@
 import * as React from "react";
 import { LibraryData, LibraryRegistrationData } from "../../interfaces";
 import EditableInput from "../shared/EditableInput";
-import { Form } from "library-simplified-reusable-components";
+import { Form } from "../ui";
 
 export interface LibraryRegistrationFormState {
   checked: boolean;

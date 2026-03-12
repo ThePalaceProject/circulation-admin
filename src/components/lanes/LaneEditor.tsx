@@ -1,6 +1,6 @@
 import * as React from "react";
 import { LaneData, CustomListData } from "../../interfaces";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import TextWithEditMode from "../shared/TextWithEditMode";
 import EditableInput from "../shared/EditableInput";
 import LaneCustomListsEditor from "./LaneCustomListsEditor";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 import { AdvancedSearchQuery } from "../../interfaces";
 import { fields, operators } from "./AdvancedSearchBuilder";
 import EditableInput from "../shared/EditableInput";

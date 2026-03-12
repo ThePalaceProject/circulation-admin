@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 import { CollectionData, ProtocolData } from "../../interfaces";
 
 export interface CollectionImportButtonProps {

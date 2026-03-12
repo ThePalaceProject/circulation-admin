@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import PencilIcon from "../icons/PencilIcon";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export interface TextWithEditModeProps extends React.Props<TextWithEditMode> {
   text?: string;

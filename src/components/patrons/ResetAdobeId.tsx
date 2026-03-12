@@ -9,7 +9,7 @@ import { PatronData } from "../../interfaces";
 import { Alert } from "../ui/alert";
 import ManagePatronsForm from "./ManagePatronsForm";
 import EditableInput from "../shared/EditableInput";
-import { Button } from "library-simplified-reusable-components";
+import { Button } from "../ui";
 
 export interface ResetAdobeIdStateProps {
   fetchError?: FetchErrorData;

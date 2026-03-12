@@ -6,7 +6,7 @@ import { shallow, mount } from "enzyme";
 
 import EditableInput from "../shared/EditableInput";
 import NeighborhoodAnalyticsForm from "../patrons/NeighborhoodAnalyticsForm";
-import { Panel } from "library-simplified-reusable-components";
+import { Panel } from "../ui";
 
 describe("NeighborhoodAnalyticsForm", () => {
   let wrapper;

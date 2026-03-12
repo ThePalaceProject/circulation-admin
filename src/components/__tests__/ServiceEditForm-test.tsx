@@ -11,7 +11,7 @@ import ServiceEditForm, {
 import EditableInput from "../shared/EditableInput";
 import ProtocolFormField from "../config/ProtocolFormField";
 import NeighborhoodAnalyticsForm from "../patrons/NeighborhoodAnalyticsForm";
-import { Button, Form } from "library-simplified-reusable-components";
+import { Button, Form } from "../ui";
 import WithRemoveButton from "../shared/WithRemoveButton";
 import WithEditButton from "../shared/WithEditButton";
 import { ServicesData } from "../../interfaces";

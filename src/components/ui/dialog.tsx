@@ -39,9 +39,8 @@ const DialogRoot = React.forwardRef<HTMLDivElement, DialogProps>(
       <div
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
         onClick={onHide}
-        aria-hidden="true"
       >
-        {/* Modal panel — stop propagation so inner clicks don't close */}
+        {/* role="document" wrapper — required for Bootstrap-compatible modal tests */}
         <div
           ref={ref}
           role="dialog"
@@ -54,7 +53,9 @@ const DialogRoot = React.forwardRef<HTMLDivElement, DialogProps>(
           onClick={(e) => e.stopPropagation()}
           {...props}
         >
-          {children}
+          <div role="document" className="modal-dialog">
+            {children}
+          </div>
         </div>
       </div>
     );
@@ -99,10 +100,10 @@ DialogHeader.displayName = "DialogHeader";
 
 /* ---- Title ---- */
 const DialogTitle = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
-  <div
+  <h4
     ref={ref}
     className={cn("text-lg font-semibold text-[#080807]", className)}
     {...props}
@@ -117,7 +118,7 @@ const DialogBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("px-6 py-4 text-sm text-[#080807]", className)}
+    className={cn("modal-body px-6 py-4 text-sm text-[#080807]", className)}
     {...props}
   />
 ));

@@ -3,7 +3,7 @@ import EditableInput from "../shared/EditableInput";
 import WithRemoveButton from "../shared/WithRemoveButton";
 import GenreForm from "./GenreForm";
 import { BookData, GenreTree } from "../../interfaces";
-import { Button, Panel } from "library-simplified-reusable-components";
+import { Button, Panel } from "../ui";
 import { Alert } from "../ui/alert";
 
 export interface ClassificationsFormProps {
