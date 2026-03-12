@@ -3,12 +3,12 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import { RootState } from "../../store";
-import ActionCreator from "../../actions";
-import { ServiceData, SelfTestsData, SelfTestsResult } from "../../interfaces";
+import { AppDispatch } from "../../store";
+import { ServiceData, SelfTestsResult } from "../../interfaces";
 import ErrorMessage from "../shared/ErrorMessage";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import SelfTestResult from "./SelfTestResult";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
+import { selfTestsApi } from "../../features/diagnostics/diagnosticsSlice";
 import { Panel, Button } from "library-simplified-reusable-components";
 
 import { CheckSoloIcon, XIcon } from "@nypl/dgx-svg-icons";
@@ -19,7 +19,7 @@ export interface SelfTestsStateProps {
 
 export interface SelfTestsDispatchProps {
   runSelfTests?: () => Promise<void>;
-  getSelfTests?: () => Promise<SelfTestsData>;
+  getSelfTests?: () => void;
 }
 
 export interface SelfTestsOwnProps {
@@ -234,36 +234,35 @@ export class SelfTests extends React.Component<SelfTestsProps, SelfTestsState> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const selfTests = state.editor.selfTests;
+function mapStateToProps(state: RootState, ownProps: SelfTestsOwnProps) {
+  const integrationId = ownProps.item?.id;
+  const url = integrationId
+    ? `/admin/${ownProps.type.replace(/ /g, "_")}_self_tests/${integrationId}`
+    : null;
+  const result = url
+    ? selfTestsApi.endpoints.getSelfTestResults.select(url)(state)
+    : { data: null };
   let item = ownProps.item;
-  if (
-    selfTests &&
-    selfTests.responseBody &&
-    selfTests.responseBody.self_test_results
-  ) {
-    if (ownProps.type.includes(selfTests.responseBody.self_test_results.goal)) {
-      const oldTime = item.self_test_results && item.self_test_results.start;
-      const newTime =
-        selfTests.responseBody.self_test_results.self_test_results &&
-        selfTests.responseBody.self_test_results.self_test_results.start;
-      if (
-        (!oldTime || newTime > oldTime) &&
-        selfTests.responseBody.self_test_results.id === item.id
-      ) {
-        item = selfTests.responseBody.self_test_results;
+  if (result.data?.self_test_results) {
+    const updatedService = result.data.self_test_results;
+    if (ownProps.type.includes(updatedService.goal ?? "")) {
+      const oldTime = item?.self_test_results?.start;
+      const newTime = updatedService.self_test_results?.start;
+      if ((!oldTime || newTime > oldTime) && updatedService.id === item?.id) {
+        item = updatedService;
       }
     }
   }
   return {
-    isFetching: selfTests.isFetching,
-    item: item,
+    isFetching: state.editor.selfTestsUi.isMutating,
+    item,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const fetcher = new DataFetcher();
-  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  ownProps: SelfTestsOwnProps
+) {
   const integrationId = ownProps.item.id;
   const url = `/admin/${ownProps.type.replace(
     / /g,
@@ -271,8 +270,14 @@ function mapDispatchToProps(dispatch, ownProps) {
   )}_self_tests/${integrationId}`;
 
   return {
-    getSelfTests: () => dispatch(actions.getSelfTests(url)),
-    runSelfTests: () => dispatch(actions.runSelfTests(url)),
+    getSelfTests: () =>
+      dispatch(selfTestsApi.endpoints.getSelfTestResults.initiate(url)),
+    runSelfTests: async () => {
+      const result = await dispatch(
+        selfTestsApi.endpoints.runSelfTests.initiate(url)
+      );
+      if ("error" in result) throw result.error;
+    },
   };
 }
 

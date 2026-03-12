@@ -1,9 +1,13 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import ActionCreator from "../../actions";
+import {
+  diagnosticsApi,
+  rtkErrorToFetchError,
+} from "../../features/diagnostics/diagnosticsSlice";
 import { DiagnosticsData } from "../../interfaces";
 import { RootState } from "../../store";
+import { AppDispatch } from "../../store";
 import DiagnosticsServiceType from "./DiagnosticsServiceType";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../shared/ErrorMessage";
@@ -11,7 +15,7 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 import { TabContainer, TabContainerProps } from "../shared/TabContainer";
 
 export interface DiagnosticsTabContainerDispatchProps {
-  fetchDiagnostics: () => Promise<any>;
+  fetchDiagnostics: () => void;
 }
 
 export interface DiagnosticsTabContainerOwnProps extends TabContainerProps {
@@ -86,18 +90,22 @@ export class DiagnosticsTabContainer extends TabContainer<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function mapStateToProps(state, ownProps: DiagnosticsTabContainerOwnProps) {
+function mapStateToProps(
+  state: RootState,
+  _ownProps: DiagnosticsTabContainerOwnProps
+) {
+  const result = diagnosticsApi.endpoints.getDiagnostics.select()(state);
   return {
-    diagnostics: state.editor.diagnostics && state.editor.diagnostics.data,
-    isLoaded: state.editor.diagnostics.isLoaded,
-    fetchError: state.editor.diagnostics.fetchError,
+    diagnostics: result.data,
+    isLoaded: result.isSuccess || result.isError,
+    fetchError: rtkErrorToFetchError(result.error),
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  const actions = new ActionCreator();
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
-    fetchDiagnostics: () => dispatch(actions.fetchDiagnostics()),
+    fetchDiagnostics: () =>
+      dispatch(diagnosticsApi.endpoints.getDiagnostics.initiate(undefined)),
   };
 }
 

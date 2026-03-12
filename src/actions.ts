@@ -2,8 +2,6 @@ import {
   AdvancedSearchQuery,
   LibrariesData,
   CustomListsData,
-  SelfTestsData,
-  DiagnosticsData,
   FeatureFlags,
   QuickSightEmbeddedURLData,
 } from "./interfaces";
@@ -70,14 +68,10 @@ export default class ActionCreator extends BaseActionCreator {
 
   static readonly CHANGE_PASSWORD = "CHANGE_PASSWORD";
 
-  static readonly GET_SELF_TESTS = "GET_SELF_TESTS";
-  static readonly RUN_SELF_TESTS = "RUN_SELF_TESTS";
-
   static readonly PATRON_LOOKUP = "PATRON_LOOKUP";
   static readonly CLEAR_PATRON_DATA = "CLEAR_PATRON_DATA";
   static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
 
-  static readonly DIAGNOSTICS = "DIAGNOSTICS";
   static readonly QUICKSIGHT_EMBEDDED_URL = "QUICKSIGHT_EMBEDDED_URL";
 
   csrfToken: string;
@@ -525,17 +519,6 @@ export default class ActionCreator extends BaseActionCreator {
     return this.postForm(ActionCreator.CHANGE_PASSWORD, url, data).bind(this);
   }
 
-  getSelfTests(url: string) {
-    return this.fetchJSON<SelfTestsData>(
-      ActionCreator.GET_SELF_TESTS,
-      url
-    ).bind(this);
-  }
-
-  runSelfTests(url: string) {
-    return this.postForm(ActionCreator.RUN_SELF_TESTS, url, null).bind(this);
-  }
-
   patronLookup(data: FormData, library: string) {
     const url = "/" + library + "/admin/manage_patrons";
     return this.postForm(
@@ -556,13 +539,6 @@ export default class ActionCreator extends BaseActionCreator {
   clearPatronData() {
     return (dispatch) =>
       dispatch(this.load<void>(ActionCreator.CLEAR_PATRON_DATA, null));
-  }
-
-  fetchDiagnostics() {
-    const url = "/admin/diagnostics";
-    return this.fetchJSON<DiagnosticsData>(ActionCreator.DIAGNOSTICS, url).bind(
-      this
-    );
   }
 
   setFeatureFlags(featureFlags: FeatureFlags) {

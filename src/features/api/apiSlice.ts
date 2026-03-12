@@ -16,6 +16,7 @@ export const api = createApi({
     "Complaints",
     "Classifications",
     "Lanes",
+    "SelfTests",
   ],
   endpoints: () => ({}),
 });
