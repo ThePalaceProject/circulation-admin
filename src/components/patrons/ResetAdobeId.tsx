@@ -2,8 +2,9 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import { RootState } from "../../store";
-import ActionCreator from "../../actions";
+import { AppDispatch } from "../../store";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { patronsApi } from "../../features/patrons/patronsSlice";
 import { PatronData } from "../../interfaces";
 import { Alert } from "react-bootstrap";
 import ManagePatronsForm from "./ManagePatronsForm";
@@ -138,22 +139,26 @@ export class ResetAdobeId extends React.Component<
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function mapStateToProps(state, ownProps) {
-  const patronManager =
-    state.editor.patronManager && state.editor.patronManager;
-
+function mapStateToProps(state: RootState, _ownProps: ResetAdobeIdOwnProps) {
+  const ui = state.editor.patronsUi;
   return {
-    fetchError: patronManager && patronManager.fetchError,
-    responseBody: patronManager && patronManager.responseBody,
-    patron: patronManager && patronManager.data,
+    fetchError: ui.adobeIdFetchError,
+    responseBody: ui.responseBody,
+    patron: ui.patron,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _ownProps: ResetAdobeIdOwnProps
+) {
   return {
-    resetAdobeId: (data: FormData, library: string) =>
-      dispatch(actions.resetAdobeId(data, library)),
+    resetAdobeId: async (data: FormData, library: string): Promise<void> => {
+      await dispatch(
+        patronsApi.endpoints.resetAdobeId.initiate({ data, library })
+      );
+    },
   };
 }
 

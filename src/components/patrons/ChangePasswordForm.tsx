@@ -2,8 +2,9 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RootState } from "../../store";
+import { AppDispatch } from "../../store";
 import { connect } from "react-redux";
-import ActionCreator from "../../actions";
+import { patronsApi } from "../../features/patrons/patronsSlice";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../shared/ErrorMessage";
 import EditableInput from "../shared/EditableInput";
@@ -105,19 +106,30 @@ export class ChangePasswordForm extends React.Component<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function mapStateToProps(
+  state: RootState,
+  _ownProps: ChangePasswordFormOwnProps
+) {
+  const cp = state.editor.patronsUi.changePassword;
   return {
-    fetchError:
-      state.editor.changePassword && state.editor.changePassword.fetchError,
-    isFetching:
-      state.editor.changePassword && state.editor.changePassword.isFetching,
+    fetchError: cp.fetchError,
+    isFetching: cp.isFetching,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _ownProps: ChangePasswordFormOwnProps
+) {
   return {
-    changePassword: (data: FormData) => dispatch(actions.changePassword(data)),
+    changePassword: async (data: FormData) => {
+      const result = await dispatch(
+        patronsApi.endpoints.changePassword.initiate(data)
+      );
+      if ("error" in result) throw result.error;
+    },
   };
 }
 

@@ -2,10 +2,11 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
 import { RootState } from "../../store";
-import ActionCreator from "../../actions";
+import { AppDispatch } from "../../store";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { patronsApi, clearPatron } from "../../features/patrons/patronsSlice";
 import { PatronData } from "../../interfaces";
-import { Button, Form } from "library-simplified-reusable-components";
+import { Form } from "library-simplified-reusable-components";
 import EditableInput from "../shared/EditableInput";
 import ErrorMessage from "../shared/ErrorMessage";
 import PatronInfo from "./PatronInfo";
@@ -83,21 +84,32 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const patronManager =
-    state.editor.patronManager && state.editor.patronManager;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function mapStateToProps(
+  state: RootState,
+  _ownProps: ManagePatronsFormOwnProps
+) {
+  const ui = state.editor.patronsUi;
   return {
-    patron: patronManager && patronManager.data,
-    fetchError: patronManager && patronManager.fetchError,
+    patron: ui.patron,
+    fetchError: ui.patronFetchError,
   };
 }
 
-export function mapDispatchToProps(dispatch, ownProps) {
-  const actions = new ActionCreator(null, ownProps.csrfToken);
+export function mapDispatchToProps(
+  dispatch: AppDispatch,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _ownProps: ManagePatronsFormOwnProps
+) {
   return {
-    patronLookup: (data: FormData, library: string) =>
-      dispatch(actions.patronLookup(data, library)),
-    clearPatronData: () => dispatch(actions.clearPatronData()),
+    patronLookup: async (data: FormData, library: string): Promise<void> => {
+      await dispatch(
+        patronsApi.endpoints.patronLookup.initiate({ data, library })
+      );
+    },
+    clearPatronData: async (): Promise<void> => {
+      dispatch(clearPatron());
+    },
   };
 }
 

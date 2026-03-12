@@ -8,6 +8,10 @@ import {
   selfTestsUiSlice,
   SelfTestsUiState,
 } from "../features/diagnostics/diagnosticsSlice";
+import {
+  patronsUiSlice,
+  PatronsUiState,
+} from "../features/patrons/patronsSlice";
 import customListsForBook from "./customListsForBook";
 import customLists from "./customLists";
 import customListDetails, {
@@ -18,10 +22,8 @@ import collection, {
   CollectionState,
 } from "@thepalaceproject/web-opds-client/lib/reducers/collection";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import changePassword from "./changePassword";
 import { FetchEditState } from "./createFetchEditReducer";
-import patronManager from "./managePatrons";
-import { CustomListsData, PatronData } from "../interfaces";
+import { CustomListsData } from "../interfaces";
 
 export interface State {
   bookCoverPreview: BookCoverPreviewState;
@@ -32,8 +34,7 @@ export interface State {
   customListDetails: FetchMoreCustomListDetails<CollectionData>;
   customListEditor: CustomListEditorState;
   collection: CollectionState;
-  changePassword: FetchEditState<void>;
-  patronManager: FetchEditState<PatronData>;
+  patronsUi: PatronsUiState;
 }
 
 export default combineReducers<State>({
@@ -45,6 +46,5 @@ export default combineReducers<State>({
   customListDetails,
   customListEditor,
   collection,
-  changePassword,
-  patronManager,
+  patronsUi: patronsUiSlice.reducer,
 });

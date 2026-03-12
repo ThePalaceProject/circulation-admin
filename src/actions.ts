@@ -66,12 +66,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly CIRCULATION_EVENTS_FAILURE = "CIRCULATION_EVENTS_FAILURE";
   static readonly CIRCULATION_EVENTS_LOAD = "CIRCULATION_EVENTS_LOAD";
 
-  static readonly CHANGE_PASSWORD = "CHANGE_PASSWORD";
-
-  static readonly PATRON_LOOKUP = "PATRON_LOOKUP";
-  static readonly CLEAR_PATRON_DATA = "CLEAR_PATRON_DATA";
-  static readonly RESET_ADOBE_ID = "RESET_ADOBE_ID";
-
   static readonly QUICKSIGHT_EMBEDDED_URL = "QUICKSIGHT_EMBEDDED_URL";
 
   csrfToken: string;
@@ -512,33 +506,6 @@ export default class ActionCreator extends BaseActionCreator {
         return dispatch(this.fetchPage(data.nextPageUrl));
       }
     };
-  }
-
-  changePassword(data: FormData) {
-    const url = "/admin/change_password";
-    return this.postForm(ActionCreator.CHANGE_PASSWORD, url, data).bind(this);
-  }
-
-  patronLookup(data: FormData, library: string) {
-    const url = "/" + library + "/admin/manage_patrons";
-    return this.postForm(
-      ActionCreator.PATRON_LOOKUP,
-      url,
-      data,
-      "POST",
-      "",
-      "JSON"
-    ).bind(this);
-  }
-
-  resetAdobeId(data: FormData, library: string) {
-    const url = "/" + library + "/admin/manage_patrons/reset_adobe_id";
-    return this.postForm(ActionCreator.RESET_ADOBE_ID, url, data).bind(this);
-  }
-
-  clearPatronData() {
-    return (dispatch) =>
-      dispatch(this.load<void>(ActionCreator.CLEAR_PATRON_DATA, null));
   }
 
   setFeatureFlags(featureFlags: FeatureFlags) {
