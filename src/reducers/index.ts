@@ -12,7 +12,6 @@ import {
   patronsUiSlice,
   PatronsUiState,
 } from "../features/patrons/patronsSlice";
-import customListsForBook from "./customListsForBook";
 import customLists from "./customLists";
 import customListDetails, {
   FetchMoreCustomListDetails,
@@ -29,7 +28,6 @@ export interface State {
   bookCoverPreview: BookCoverPreviewState;
   lanesUi: LanesUiState;
   selfTestsUi: SelfTestsUiState;
-  customListsForBook: FetchEditState<CustomListsData>;
   customLists: FetchEditState<CustomListsData>;
   customListDetails: FetchMoreCustomListDetails<CollectionData>;
   customListEditor: CustomListEditorState;
@@ -41,7 +39,6 @@ export default combineReducers<State>({
   bookCoverPreview: bookCoverPreviewSlice.reducer,
   lanesUi: lanesUiSlice.reducer,
   selfTestsUi: selfTestsUiSlice.reducer,
-  customListsForBook,
   customLists,
   customListDetails,
   customListEditor,

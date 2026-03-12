@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import ActionCreator from "../../actions";
 import { CollectionsData, PatronAuthServicesData } from "../../interfaces";
 import { RootState } from "../../store";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
@@ -16,6 +13,8 @@ import {
 } from "../shared/TabContainer";
 import SelfTestsCategory from "./SelfTestsCategory";
 import * as PropTypes from "prop-types";
+import { configServicesApi } from "../../features/configServices/configServicesSlice";
+import { rtkErrorToFetchError } from "../../features/diagnostics/diagnosticsSlice";
 
 export interface SelfTestsTabContainerDispatchProps {
   fetchItems: () => Promise<any>;
@@ -36,7 +35,7 @@ export interface SelfTestsTabContainerProps
   extends SelfTestsTabContainerDispatchProps,
     SelfTestsTabContainerStateProps,
     SelfTestsTabContainerOwnProps {}
-export interface SelfTestsTabContainerContext extends TabContainerContext {}
+export type SelfTestsTabContainerContext = TabContainerContext;
 
 export class SelfTestsTabContainer extends TabContainer<
   SelfTestsTabContainerProps
@@ -118,21 +117,41 @@ export class SelfTestsTabContainer extends TabContainer<
   }
 }
 
-function mapStateToProps(state, ownProps: SelfTestsTabContainerOwnProps) {
-  const category = ownProps.tab;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function mapStateToProps(
+  state: RootState,
+  ownProps: SelfTestsTabContainerOwnProps
+) {
+  const { tab } = ownProps;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let result: any = {};
+
+  if (tab === "collections") {
+    result = configServicesApi.endpoints.getCollections.select()(state);
+  } else if (tab === "patronAuthServices") {
+    result = configServicesApi.endpoints.getPatronAuthServices.select()(state);
+  } else if (tab === "metadataServices") {
+    result = configServicesApi.endpoints.getMetadataServices.select()(state);
+  }
+
   return {
-    items: state.editor[category] && state.editor[category].data,
-    fetchError: state.editor[category] && state.editor[category].fetchError,
-    isLoaded: state.editor[category] && state.editor[category].isLoaded,
+    items: result.data,
+    fetchError: rtkErrorToFetchError(result.error),
+    isLoaded: result.isSuccess || result.isError,
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps: SelfTestsTabContainerOwnProps) {
-  const actions = new ActionCreator();
-  const itemTypes = ["Collections", "PatronAuthServices", "MetadataServices"];
+function mapDispatchToProps(dispatch) {
   return {
-    fetchItems: () =>
-      itemTypes.forEach((type) => dispatch(actions["fetch" + type]())),
+    fetchItems: () => {
+      dispatch(configServicesApi.endpoints.getCollections.initiate(undefined));
+      dispatch(
+        configServicesApi.endpoints.getPatronAuthServices.initiate(undefined)
+      );
+      dispatch(
+        configServicesApi.endpoints.getMetadataServices.initiate(undefined)
+      );
+    },
   };
 }
 

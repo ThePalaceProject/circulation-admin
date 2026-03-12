@@ -23,8 +23,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly UPDATE_CLEAR_FILTERS_FLAG = "UPDATE_CLEAR_FILTERS_FLAG";
   static readonly EDIT_BOOK = "EDIT_BOOK";
   static readonly BOOK_ADMIN = "BOOK_ADMIN";
-  static readonly CUSTOM_LISTS_FOR_BOOK = "CUSTOM_LISTS_FOR_BOOK";
-  static readonly EDIT_CUSTOM_LISTS_FOR_BOOK = "EDIT_CUSTOM_LISTS_FOR_BOOK";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
   static readonly CUSTOM_LIST_DETAILS = "CUSTOM_LIST_DETAILS";
   static readonly CUSTOM_LIST_DETAILS_MORE = "CUSTOM_LIST_DETAILS_MORE";
@@ -203,21 +201,6 @@ export default class ActionCreator extends BaseActionCreator {
           });
       });
     };
-  }
-
-  fetchCustomListsForBook(url: string) {
-    return this.fetchJSON<CustomListsData>(
-      ActionCreator.CUSTOM_LISTS_FOR_BOOK,
-      url
-    ).bind(this);
-  }
-
-  editCustomListsForBook(url: string, data: FormData) {
-    return this.postForm(
-      ActionCreator.EDIT_CUSTOM_LISTS_FOR_BOOK,
-      url,
-      data
-    ).bind(this);
   }
 
   fetchCustomLists(library: string) {

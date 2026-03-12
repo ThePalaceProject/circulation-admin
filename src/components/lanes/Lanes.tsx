@@ -6,13 +6,12 @@ import { connect } from "react-redux";
 import { RootState } from "../../store";
 import { LaneData, CustomListData } from "../../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import ActionCreator from "../../actions";
 import {
   lanesApi,
   isResultFetching,
   rtkErrorToFetchError,
 } from "../../features/lanes/lanesSlice";
+import { customListsApi } from "../../features/customLists/customListsApiSlice";
 import { AppDispatch } from "../../store";
 import LaneEditor from "./LaneEditor";
 import LanesSidebar from "./LanesSidebar";
@@ -366,12 +365,12 @@ function mapStateToProps(state: RootState, ownProps: LanesOwnProps) {
   const lanesResult = lanesApi.endpoints.getLanes.select(ownProps.library)(
     state
   );
+  const customListsResult = customListsApi.endpoints.getCustomLists.select(
+    ownProps.library
+  )(state);
   return {
     lanes: lanesResult.data?.lanes ?? null,
-    customLists:
-      state.editor.customLists &&
-      state.editor.customLists.data &&
-      state.editor.customLists.data.custom_lists,
+    customLists: customListsResult.data?.custom_lists ?? null,
     fetchError:
       rtkErrorToFetchError(lanesResult.error) ||
       state.editor.lanesUi.fetchError,
@@ -379,7 +378,7 @@ function mapStateToProps(state: RootState, ownProps: LanesOwnProps) {
     isFetching:
       isResultFetching(lanesResult) ||
       state.editor.lanesUi.isMutating ||
-      state.editor.customLists.isFetching,
+      isResultFetching(customListsResult),
   };
 }
 
@@ -387,11 +386,10 @@ function mapDispatchToProps(dispatch: AppDispatch, ownProps: LanesOwnProps) {
   return {
     fetchLanes: () =>
       dispatch(lanesApi.endpoints.getLanes.initiate(ownProps.library)),
-    fetchCustomLists: () => {
-      const fetcher = new DataFetcher();
-      const actions = new ActionCreator(fetcher, ownProps.csrfToken);
-      dispatch(actions.fetchCustomLists(ownProps.library));
-    },
+    fetchCustomLists: () =>
+      dispatch(
+        customListsApi.endpoints.getCustomLists.initiate(ownProps.library)
+      ),
     editLane: async (data: FormData): Promise<string | void> => {
       const result = await dispatch(
         lanesApi.endpoints.editLane.initiate({

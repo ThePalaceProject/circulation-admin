@@ -1,14 +1,18 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import ActionCreator from "../../actions";
 import ErrorMessage from "../shared/ErrorMessage";
 import ProtocolFormField from "../config/ProtocolFormField";
 import { BookData, CustomListData, CustomListsData } from "../../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RootState } from "../../store";
+import { AppDispatch } from "../../store";
 import { Link } from "react-router";
+import { customListsApi } from "../../features/customLists/customListsApiSlice";
+import {
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/diagnostics/diagnosticsSlice";
 
 export interface CustomListsForBookStateProps {
   allCustomLists?: CustomListData[];
@@ -191,29 +195,52 @@ export class CustomListsForBook extends React.Component<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function mapStateToProps(
+  state: RootState,
+  ownProps: CustomListsForBookOwnProps
+) {
+  const listsUrl = ownProps.bookUrl.replace("works", "admin/works") + "/lists";
+  const allListsResult = customListsApi.endpoints.getCustomLists.select(
+    ownProps.library
+  )(state);
+  const forBookResult = customListsApi.endpoints.getCustomListsForBook.select(
+    listsUrl
+  )(state);
   return {
-    allCustomLists:
-      state.editor.customLists.data &&
-      state.editor.customLists.data.custom_lists,
-    customListsForBook:
-      state.editor.customListsForBook.data &&
-      state.editor.customListsForBook.data.custom_lists,
-    isFetching: state.editor.customListsForBook.isFetching,
-    fetchError: state.editor.customListsForBook.fetchError,
+    allCustomLists: allListsResult.data?.custom_lists ?? undefined,
+    customListsForBook: forBookResult.data?.custom_lists ?? undefined,
+    isFetching: isResultFetching(forBookResult),
+    fetchError: rtkErrorToFetchError(forBookResult.error),
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const fetcher = new DataFetcher();
-  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function mapDispatchToProps(
+  dispatch: AppDispatch,
+  ownProps: CustomListsForBookOwnProps
+) {
   return {
-    fetchAllCustomLists: () =>
-      dispatch(actions.fetchCustomLists(ownProps.library)),
-    fetchCustomListsForBook: (url) =>
-      dispatch(actions.fetchCustomListsForBook(url)),
-    editCustomListsForBook: (url, data) =>
-      dispatch(actions.editCustomListsForBook(url, data)),
+    fetchAllCustomLists: async (): Promise<CustomListsData> => {
+      const result = await dispatch(
+        customListsApi.endpoints.getCustomLists.initiate(ownProps.library)
+      );
+      return (result as any).data;
+    },
+    fetchCustomListsForBook: async (url: string): Promise<CustomListsData> => {
+      const result = await dispatch(
+        customListsApi.endpoints.getCustomListsForBook.initiate(url)
+      );
+      return (result as any).data;
+    },
+    editCustomListsForBook: async (
+      url: string,
+      data: FormData
+    ): Promise<void> => {
+      await dispatch(
+        customListsApi.endpoints.editCustomListsForBook.initiate({ url, data })
+      );
+    },
   };
 }
 

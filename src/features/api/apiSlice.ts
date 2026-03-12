@@ -17,6 +17,8 @@ export const api = createApi({
     "Classifications",
     "Lanes",
     "SelfTests",
+    "CustomLists",
+    "CustomListsForBook",
   ],
   endpoints: () => ({}),
 });
