@@ -2,9 +2,10 @@
 module.exports = {
   content: ["./src/**/*.{ts,tsx}"],
   corePlugins: {
-    // Disable Tailwind's base reset (preflight) to avoid conflicts with
-    // Bootstrap 3 which is still loaded globally. Once Bootstrap is removed,
-    // this can be re-enabled.
+    // Preflight (base reset) is disabled while bootstrap-compat.scss provides
+    // the foundational typography layer that was previously Bootstrap's job.
+    // Re-enable preflight and remove the base-typography section from
+    // bootstrap-compat.scss once visual parity has been confirmed in the browser.
     preflight: false,
   },
   theme: {

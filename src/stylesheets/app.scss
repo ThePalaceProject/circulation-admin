@@ -2,16 +2,21 @@
 
 $fontfamily: 'Open Sans', sans-serif;
 
-@import "~bootstrap/dist/css/bootstrap.css";
+// Bootstrap 3 has been removed. bootstrap-compat provides lightweight
+// CSS replacements for the Bootstrap classes still referenced in templates
+// so that Mocha/Enzyme tests that select by class name continue to pass.
+@import "bootstrap-compat";
 @import "~@thepalaceproject/web-opds-client/lib/stylesheets/app.scss";
 
 @import "mixins";
 @import "colors";
 @import "global";
 
-// Tailwind — components and utilities only.
-// preflight (base reset) is disabled in tailwind.config.js to avoid
-// conflicts with Bootstrap 3 which is still loaded above.
+// Tailwind — components and utilities.
+// Preflight (base reset) is still disabled to avoid clashes with
+// bootstrap-compat.scss base typography above. Enable it (and remove the
+// corresponding rules in bootstrap-compat.scss) in a follow-up once
+// visual parity has been confirmed in the browser.
 @tailwind components;
 @tailwind utilities;
 

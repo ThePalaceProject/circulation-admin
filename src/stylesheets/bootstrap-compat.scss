@@ -1,0 +1,586 @@
+// ============================================================================
+// bootstrap-compat.scss
+//
+// Minimal CSS replacement for Bootstrap 3.
+// Provides structural & visual parity for every Bootstrap class still
+// referenced in our templates — so Mocha/Enzyme tests that select by these
+// class names continue to pass and the UI looks the same.
+//
+// Replace the old: @import "~bootstrap/dist/css/bootstrap.css"
+//
+// Only the classes actually used by this codebase are included.
+// Once the Mocha test suite is migrated to Jest we can drop the legacy class
+// names from templates and delete this file.
+// ============================================================================
+
+// ─── Box model ───────────────────────────────────────────────────────────────
+// Bootstrap 3 globallyforces border-box. Keep it since we rely on it everywhere.
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// ─── Base typography / resets ────────────────────────────────────────────────
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #FFF;
+}
+
+a {
+  color: #337AB7;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: #23527C;
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+  }
+}
+
+// Headlines — Bootstrap 3 defaults; our custom SCSS overrides as needed.
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  font-size: 12px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+p  { margin: 0 0 10px; }
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #EEE;
+}
+
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333;
+  background-color: #F5F5F5;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+}
+
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #C7254E;
+  background-color: #F9F2F4;
+  border-radius: 4px;
+}
+
+// ─── Screen-reader only ──────────────────────────────────────────────────────
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+// ─── Clearfix ────────────────────────────────────────────────────────────────
+// (global.scss also defines this; extra definition is harmless)
+.clearfix::before,
+.clearfix::after {
+  display: table;
+  content: '';
+}
+.clearfix::after {
+  clear: both;
+}
+
+// ─── Collapse (mobile nav toggle) ────────────────────────────────────────────
+.collapse {
+  display: none;
+
+  &.in {
+    display: block;
+  }
+}
+
+// ─── Navbar ──────────────────────────────────────────────────────────────────
+.navbar {
+  position: relative;
+  min-height: 50px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+
+  // Remove the default margin when inside .palace wrapper
+  .palace & {
+    margin-bottom: 0;
+  }
+}
+
+.navbar-default {
+  background-color: #F8F8F8;
+  border-color: #E7E7E7;
+}
+
+.navbar-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.navbar-toggle {
+  display: none; // hidden on desktop; visible on mobile (see @media below)
+  padding: 9px 10px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  cursor: pointer;
+
+  .icon-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+    background-color: #888;
+
+    + .icon-bar {
+      margin-top: 4px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar-collapse.collapse {
+    display: none;
+
+    &.in {
+      display: block;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar-collapse {
+    display: block;
+    width: auto;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow-x: visible;
+  }
+
+  .navbar-header {
+    float: left;
+  }
+}
+
+.navbar-collapse {
+  overflow-x: visible;
+  padding-right: 15px;
+  padding-left: 15px;
+  border-top: 1px solid transparent;
+  -webkit-overflow-scrolling: touch;
+
+  &.in {
+    overflow-y: auto;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────────────────────────────
+.nav {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+
+  > li {
+    display: block;
+    position: relative;
+
+    > a {
+      display: block;
+      position: relative;
+      padding: 10px 15px;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+        background-color: #EEE;
+      }
+    }
+  }
+}
+
+.navbar-nav {
+  margin: 7.5px -15px;
+
+  > li {
+    > a {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar-nav {
+    float: left;
+    margin: 0;
+
+    > li {
+      float: left;
+
+      > a {
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+    }
+  }
+
+  .navbar-nav.navbar-right {
+    float: right;
+    margin-right: -15px;
+  }
+}
+
+// ─── Dropdown ────────────────────────────────────────────────────────────────
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: block;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #FFF;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+
+  > li > a {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus {
+      color: #262626;
+      text-decoration: none;
+      background-color: #F5F5F5;
+    }
+  }
+}
+
+// ─── Nav tabs ────────────────────────────────────────────────────────────────
+.nav-tabs {
+  border-bottom: 1px solid #DDD;
+
+  > li {
+    float: left;
+    margin-bottom: -1px;
+
+    > a {
+      margin-right: 2px;
+      line-height: 1.42857143;
+      border: 1px solid transparent;
+      border-radius: 4px 4px 0 0;
+
+      &:hover {
+        border-color: #EEE #EEE #DDD;
+        background-color: #EEE;
+      }
+    }
+
+    &.active > a,
+    &.active > a:hover,
+    &.active > a:focus {
+      color: #555;
+      cursor: default;
+      background-color: #FFF;
+      border: 1px solid #DDD;
+      border-bottom-color: transparent;
+    }
+  }
+
+  &::after {
+    clear: both;
+  }
+}
+
+.tab-content {
+  > .tab-pane {
+    display: none;
+  }
+  > .active {
+    display: block;
+  }
+}
+
+// ─── Forms ───────────────────────────────────────────────────────────────────
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #FFF;
+  background-image: none;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:focus {
+    border-color: #66AFE9;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  }
+}
+
+select.form-control {
+  height: 34px;
+  padding: 0 6px;
+}
+
+textarea.form-control {
+  height: auto;
+}
+
+.form-inline {
+  .form-control {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
+
+  .form-group {
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+  }
+}
+
+// ─── Input group ─────────────────────────────────────────────────────────────
+.input-group {
+  display: table;
+  position: relative;
+  border-collapse: separate;
+  width: 100%;
+}
+
+.input-group-addon {
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  color: #555;
+  text-align: center;
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+
+  &:focus,
+  &.focus {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+  }
+}
+
+// global.scss already provides colour overrides for .btn-default; this just
+// ensures the class exists as a no-op anchor so those overrides apply.
+.btn-default {
+  color: #333;
+  background-color: #FFF;
+  border-color: #CCC;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: #333;
+    background-color: #E6E6E6;
+    border-color: #ADADAD;
+  }
+}
+
+// ─── Well ────────────────────────────────────────────────────────────────────
+.well {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #F5F5F5;
+  border: 1px solid #E3E3E3;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+// ─── Jumbotron ───────────────────────────────────────────────────────────────
+// welcome_page.scss overrides all of these; provide sane defaults.
+.jumbotron {
+  padding: 30px 15px;
+  margin-bottom: 30px;
+  background-color: #EEE;
+  border-radius: 4px;
+
+  h1,
+  h2 {
+    line-height: 1;
+  }
+}
+
+// ─── Container ───────────────────────────────────────────────────────────────
+// Only used as .container (page wrapper) and .container-fluid (header).
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+
+  @media (min-width: 768px) {
+    max-width: 750px;
+  }
+
+  @media (min-width: 992px) {
+    max-width: 970px;
+  }
+
+  @media (min-width: 1200px) {
+    max-width: 1170px;
+  }
+}
+
+.container-fluid {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+// ─── Typography helpers ───────────────────────────────────────────────────────
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: #777;
+}
+
+.bg-warning {
+  background-color: #FCF8E3;
+}
+
+.bg-danger {
+  background-color: #F2DEDE;
+}
+
+.bg-success {
+  background-color: #DFF0D8;
+}
+
+// ─── Pull helpers ────────────────────────────────────────────────────────────
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
