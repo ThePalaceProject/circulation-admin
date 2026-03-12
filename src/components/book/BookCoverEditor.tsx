@@ -1,13 +1,15 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect, ConnectedProps } from "react-redux";
-import editorAdapter from "../../editorAdapter";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import ActionCreator from "../../actions";
+import {
+  bookMetadataApi,
+  clearBookCoverPreview,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/bookMetadata/bookMetadataSlice";
 import ErrorMessage from "../shared/ErrorMessage";
 import EditableInput from "../shared/EditableInput";
-import { BookData, RightsStatusData } from "../../interfaces";
-import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+import { BookData } from "../../interfaces";
 import { AppDispatch, RootState } from "../../store";
 import { Panel, Button, Form } from "library-simplified-reusable-components";
 import UpdatingLoader from "../shared/UpdatingLoader";
@@ -313,21 +315,20 @@ export class BookCoverEditor extends React.Component<BookCoverEditorProps> {
 }
 
 function mapStateToProps(state: RootState) {
-  const rightsStatusesResult =
-    referenceDataApi.endpoints.getRightsStatuses.select()(state);
+  const rightsStatusesResult = referenceDataApi.endpoints.getRightsStatuses.select()(
+    state
+  );
   return {
     bookAdminUrl: state.bookEditor.url,
     preview: state.editor.bookCoverPreview.data,
     rightsStatuses: rightsStatusesResult.data ?? null,
     isFetching:
-      state.bookEditor.isFetching ||
-      state.editor.bookCover.isFetching ||
-      rightsStatusesResult.isLoading ||
-      state.editor.bookCover.isEditing,
+      state.bookEditor.isFetching || isResultFetching(rightsStatusesResult),
     fetchError:
       state.bookEditor.fetchError ||
-      state.editor.bookCover.fetchError ||
-      (rightsStatusesResult.error as any), // eslint-disable-line @typescript-eslint/no-explicit-any
+      (rightsStatusesResult.error
+        ? rtkErrorToFetchError(rightsStatusesResult.error)
+        : null),
     isFetchingPreview: state.editor.bookCoverPreview.isFetching,
     previewFetchError: state.editor.bookCoverPreview.fetchError,
   };
@@ -335,17 +336,17 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(
   dispatch: AppDispatch,
-  ownProps: BookCoverEditorOwnProps
+  _ownProps: BookCoverEditorOwnProps
 ) {
-  const fetcher = new DataFetcher({ adapter: editorAdapter });
-  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchBook: (url: string) => dispatch(getBookData({ url })),
     fetchPreview: (url: string, data: FormData) =>
-      dispatch(actions.fetchBookCoverPreview(url, data)),
-    clearPreview: () => dispatch(actions.clearBookCoverPreview()),
+      dispatch(
+        bookMetadataApi.endpoints.previewBookCover.initiate({ url, data })
+      ),
+    clearPreview: () => dispatch(clearBookCoverPreview()),
     editCover: (url: string, data: FormData) =>
-      dispatch(actions.editBookCover(url, data)),
+      dispatch(bookMetadataApi.endpoints.editBookCover.initiate({ url, data })),
     fetchRightsStatuses: () =>
       dispatch(
         referenceDataApi.endpoints.getRightsStatuses.initiate(undefined)

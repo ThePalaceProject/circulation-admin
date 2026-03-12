@@ -1,8 +1,11 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import ActionCreator from "../../actions";
+import {
+  bookMetadataApi,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/bookMetadata/bookMetadataSlice";
 import ErrorMessage from "../shared/ErrorMessage";
 import ComplaintForm from "./ComplaintForm";
 import { Button } from "library-simplified-reusable-components";
@@ -156,21 +159,40 @@ export class Complaints extends React.Component<ComplaintsProps> {
 }
 
 function mapStateToProps(state, ownProps) {
+  const complaintsUrl = ownProps.bookUrl
+    ? ownProps.bookUrl.replace("works", "admin/works") + "/complaints"
+    : undefined;
+  const result = complaintsUrl
+    ? bookMetadataApi.endpoints.getComplaints.select(complaintsUrl)(state)
+    : { data: undefined, isLoading: false, error: undefined };
   return {
-    complaints: state.editor.complaints.data,
-    isFetching: state.editor.complaints.isFetching,
-    fetchError: state.editor.complaints.fetchError,
+    complaints: result.data?.complaints ?? null,
+    isFetching: isResultFetching(result),
+    fetchError: result.error ? rtkErrorToFetchError(result.error) : null,
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const fetcher = new DataFetcher();
-  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
+  const complaintsUrl = ownProps.bookUrl
+    ? ownProps.bookUrl.replace("works", "admin/works") + "/complaints"
+    : undefined;
+  const resolveUrl = ownProps.bookUrl
+    ? ownProps.bookUrl.replace("works", "admin/works") + "/resolve_complaints"
+    : undefined;
   return {
-    fetchComplaints: (url) => dispatch(actions.fetchComplaints(url)),
-    postComplaint: (url, data) => dispatch(actions.postComplaint(url, data)),
-    resolveComplaints: (url, data) =>
-      dispatch(actions.resolveComplaints(url, data)),
+    fetchComplaints: (_url: string) =>
+      complaintsUrl &&
+      dispatch(bookMetadataApi.endpoints.getComplaints.initiate(complaintsUrl)),
+    postComplaint: (url: string, data: { type: string }) =>
+      dispatch(bookMetadataApi.endpoints.postComplaint.initiate({ url, data })),
+    resolveComplaints: (_url: string, data: FormData) =>
+      resolveUrl &&
+      dispatch(
+        bookMetadataApi.endpoints.resolveComplaints.initiate({
+          url: resolveUrl,
+          data,
+        })
+      ),
   };
 }
 

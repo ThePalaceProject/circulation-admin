@@ -13,6 +13,8 @@ export const api = createApi({
     "DiscoveryServices",
     "DiscoveryServiceLibraryRegistrations",
     "SitewideAnnouncements",
+    "Complaints",
+    "Classifications",
   ],
   endpoints: () => ({}),
 });

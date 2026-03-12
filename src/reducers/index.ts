@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import complaints, { ComplaintsState } from "./complaints";
-import classifications, { ClassificationsState } from "./classifications";
-import bookCoverPreview, { BookCoverPreviewState } from "./bookCoverPreview";
-import bookCover from "./bookCover";
+import {
+  bookCoverPreviewSlice,
+  BookCoverPreviewState,
+} from "../features/bookMetadata/bookMetadataSlice";
 import customListsForBook from "./customListsForBook";
 import diagnostics from "./diagnostics";
 import customLists from "./customLists";
@@ -31,10 +31,7 @@ import {
 } from "../interfaces";
 
 export interface State {
-  complaints: ComplaintsState;
-  classifications: ClassificationsState;
   bookCoverPreview: BookCoverPreviewState;
-  bookCover: FetchEditState<string>;
   customListsForBook: FetchEditState<CustomListsData>;
   diagnostics: FetchEditState<DiagnosticsData>;
   customLists: FetchEditState<CustomListsData>;
@@ -51,10 +48,7 @@ export interface State {
 }
 
 export default combineReducers<State>({
-  complaints,
-  classifications,
-  bookCoverPreview,
-  bookCover,
+  bookCoverPreview: bookCoverPreviewSlice.reducer,
   customListsForBook,
   diagnostics,
   customLists,

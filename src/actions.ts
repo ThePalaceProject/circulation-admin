@@ -1,8 +1,5 @@
 import {
   AdvancedSearchQuery,
-  ComplaintsData,
-  GenreTree,
-  ClassificationData,
   LibrariesData,
   CustomListsData,
   LanesData,
@@ -32,15 +29,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly UPDATE_CLEAR_FILTERS_FLAG = "UPDATE_CLEAR_FILTERS_FLAG";
   static readonly EDIT_BOOK = "EDIT_BOOK";
   static readonly BOOK_ADMIN = "BOOK_ADMIN";
-  static readonly COMPLAINTS = "COMPLAINTS";
-  static readonly POST_COMPLAINT = "POST_COMPLAINT";
-  static readonly RESOLVE_COMPLAINTS = "RESOLVE_COMPLAINTS";
-  static readonly GENRE_TREE = "GENRE_TREE";
-  static readonly CLASSIFICATIONS = "CLASSIFICATIONS";
-  static readonly EDIT_CLASSIFICATIONS = "EDIT_CLASSIFICATIONS";
-  static readonly BOOK_COVER = "BOOK_COVER";
-  static readonly EDIT_BOOK_COVER = "EDIT_BOOK_COVER";
-  static readonly PREVIEW_BOOK_COVER = "PREVIEW_BOOK_COVER";
   static readonly CUSTOM_LISTS_FOR_BOOK = "CUSTOM_LISTS_FOR_BOOK";
   static readonly EDIT_CUSTOM_LISTS_FOR_BOOK = "EDIT_CUSTOM_LISTS_FOR_BOOK";
   static readonly CUSTOM_LISTS = "CUSTOM_LISTS";
@@ -82,33 +70,6 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly CHANGE_LANE_VISIBILITY = "CHANGE_LANE_VISIBILITY";
   static readonly RESET_LANES = "RESET_LANES";
   static readonly CHANGE_LANE_ORDER = "CHANGE_LANE_ORDER";
-
-  static readonly COMPLAINTS_REQUEST = "COMPLAINTS_REQUEST";
-  static readonly COMPLAINTS_SUCCESS = "COMPLAINTS_SUCCESS";
-  static readonly COMPLAINTS_FAILURE = "COMPLAINTS_FAILURE";
-  static readonly COMPLAINTS_LOAD = "COMPLAINTS_LOAD";
-
-  static readonly POST_COMPLAINT_REQUEST = "POST_COMPLAINT_REQUEST";
-  static readonly POST_COMPLAINT_SUCCESS = "POST_COMPLAINT_SUCCESS";
-  static readonly POST_COMPLAINT_FAILURE = "POST_COMPLAINT_FAILURE";
-
-  static readonly RESOLVE_COMPLAINTS_REQUEST = "RESOLVE_COMPLAINTS_REQUEST";
-  static readonly RESOLVE_COMPLAINTS_SUCCESS = "RESOLVE_COMPLAINTS_SUCCESS";
-  static readonly RESOLVE_COMPLAINTS_FAILURE = "RESOLVE_COMPLAINTS_FAILURE";
-
-  static readonly GENRE_TREE_REQUEST = "GENRE_TREE_REQUEST";
-  static readonly GENRE_TREE_SUCCESS = "GENRE_TREE_SUCCESS";
-  static readonly GENRE_TREE_FAILURE = "GENRE_TREE_FAILURE";
-  static readonly GENRE_TREE_LOAD = "GENRE_TREE_LOAD";
-
-  static readonly CLASSIFICATIONS_REQUEST = "CLASSIFICATIONS_REQUEST";
-  static readonly CLASSIFICATIONS_SUCCESS = "CLASSIFICATIONS_SUCCESS";
-  static readonly CLASSIFICATIONS_FAILURE = "CLASSIFICATIONS_FAILURE";
-  static readonly CLASSIFICATIONS_LOAD = "CLASSIFICATIONS_LOAD";
-
-  static readonly EDIT_CLASSIFICATIONS_REQUEST = "EDIT_CLASSIFICATIONS_REQUEST";
-  static readonly EDIT_CLASSIFICATIONS_SUCCESS = "EDIT_CLASSIFICATIONS_SUCCESS";
-  static readonly EDIT_CLASSIFICATIONS_FAILURE = "EDIT_CLASSIFICATIONS_FAILURE";
 
   static readonly CIRCULATION_EVENTS_REQUEST = "CIRCULATION_EVENTS_REQUEST";
   static readonly CIRCULATION_EVENTS_SUCCESS = "CIRCULATION_EVENTS_SUCCESS";
@@ -266,61 +227,6 @@ export default class ActionCreator extends BaseActionCreator {
           });
       });
     };
-  }
-
-  fetchComplaints(url: string) {
-    return this.fetchJSON<ComplaintsData>(ActionCreator.COMPLAINTS, url).bind(
-      this
-    );
-  }
-
-  postComplaint(url: string, data: { type: string }) {
-    return this.postJSON<{ type: string }>(
-      ActionCreator.POST_COMPLAINT,
-      url,
-      data
-    ).bind(this);
-  }
-
-  resolveComplaints(url: string, data: FormData) {
-    return this.postForm(ActionCreator.RESOLVE_COMPLAINTS, url, data).bind(
-      this
-    );
-  }
-
-  fetchGenreTree(url: string) {
-    return this.fetchJSON<GenreTree>(ActionCreator.GENRE_TREE, url).bind(this);
-  }
-
-  editClassifications(url: string, data: FormData) {
-    return this.postForm(ActionCreator.EDIT_CLASSIFICATIONS, url, data).bind(
-      this
-    );
-  }
-
-  fetchClassifications(url: string) {
-    return this.fetchJSON<{ classifications: ClassificationData[] }>(
-      ActionCreator.CLASSIFICATIONS,
-      url
-    ).bind(this);
-  }
-
-  editBookCover(url: string, data: FormData) {
-    return this.postForm(ActionCreator.EDIT_BOOK_COVER, url, data).bind(this);
-  }
-
-  fetchBookCoverPreview(url: string, data: FormData) {
-    return this.postForm(
-      ActionCreator.PREVIEW_BOOK_COVER,
-      url,
-      data,
-      "POST",
-      "Could not load preview"
-    ).bind(this);
-  }
-
-  clearBookCoverPreview() {
-    return this.clear(ActionCreator.PREVIEW_BOOK_COVER);
   }
 
   fetchCustomListsForBook(url: string) {

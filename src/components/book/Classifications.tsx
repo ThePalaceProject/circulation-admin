@@ -1,13 +1,15 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect, ConnectedProps } from "react-redux";
-import editorAdapter from "../../editorAdapter";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import ActionCreator from "../../actions";
+import {
+  bookMetadataApi,
+  rtkErrorToFetchError,
+  isResultFetching,
+} from "../../features/bookMetadata/bookMetadataSlice";
 import ErrorMessage from "../shared/ErrorMessage";
 import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable from "./ClassificationsTable";
-import { BookData, GenreTree, ClassificationData } from "../../interfaces";
+import { BookData } from "../../interfaces";
 import { AppDispatch, RootState } from "../../store";
 import UpdatingLoader from "../shared/UpdatingLoader";
 import { getBookData } from "../../features/book/bookEditorSlice";
@@ -96,39 +98,52 @@ export class Classifications extends React.Component<ClassificationsProps> {
   editClassifications(data: FormData) {
     return this.props
       .editClassifications(this.editClassificationsUrl(), data)
-      .then((response) => {
+      .then((_response) => {
         this.refresh();
       });
   }
 }
 
 function mapStateToProps(state: RootState, ownProps: ClassificationsOwnProps) {
+  const classUrl = ownProps.bookUrl
+    ? ownProps.bookUrl.replace("works", "admin/works") + "/classifications"
+    : undefined;
+  const genreResult = bookMetadataApi.endpoints.getGenreTree.select(
+    "/admin/genres"
+  )(state);
+  const classResult = classUrl
+    ? bookMetadataApi.endpoints.getClassifications.select(classUrl)(state)
+    : { data: undefined, isLoading: false, error: undefined };
   return {
     bookAdminUrl: state.bookEditor.url,
-    genreTree: state.editor.classifications.genreTree,
-    classifications: state.editor.classifications.classifications,
+    genreTree: genreResult.data ?? null,
+    classifications: classResult.data?.classifications ?? null,
     isFetching:
-      state.editor.classifications.isFetchingGenreTree ||
-      state.editor.classifications.isEditingClassifications ||
-      state.editor.classifications.isFetchingClassifications ||
+      isResultFetching(genreResult) ||
+      isResultFetching(classResult) ||
       state.bookEditor.isFetching,
-    fetchError: state.editor.classifications.fetchError,
+    fetchError:
+      (genreResult.error ? rtkErrorToFetchError(genreResult.error) : null) ??
+      (classResult.error ? rtkErrorToFetchError(classResult.error) : null),
   };
 }
 
 function mapDispatchToProps(
   dispatch: AppDispatch,
-  ownProps: ClassificationsOwnProps
+  _ownProps: ClassificationsOwnProps
 ) {
-  const fetcher = new DataFetcher({ adapter: editorAdapter });
-  const actions = new ActionCreator(fetcher, ownProps.csrfToken);
   return {
     fetchBook: (url: string) => dispatch(getBookData({ url })),
-    fetchGenreTree: (url: string) => dispatch(actions.fetchGenreTree(url)),
+    fetchGenreTree: (_url: string) =>
+      dispatch(
+        bookMetadataApi.endpoints.getGenreTree.initiate("/admin/genres")
+      ),
     fetchClassifications: (url: string) =>
-      dispatch(actions.fetchClassifications(url)),
+      dispatch(bookMetadataApi.endpoints.getClassifications.initiate(url)),
     editClassifications: (url: string, data: FormData) =>
-      dispatch(actions.editClassifications(url, data)),
+      dispatch(
+        bookMetadataApi.endpoints.editClassifications.initiate({ url, data })
+      ),
   };
 }
 

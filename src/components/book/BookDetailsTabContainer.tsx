@@ -1,7 +1,5 @@
 import * as React from "react";
-import editorAdapter from "../../editorAdapter";
-import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import ActionCreator from "../../actions";
+import { bookMetadataApi } from "../../features/bookMetadata/bookMetadataSlice";
 import { connect, ConnectedProps } from "react-redux";
 import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
@@ -9,7 +7,6 @@ import BookCoverEditor from "./BookCoverEditor";
 import CustomListsForBook from "../lists/CustomListsForBook";
 import { TabContainer, TabContainerProps } from "../shared/TabContainer";
 import { RootState } from "../../store";
-import Admin from "../../models/Admin";
 
 interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
@@ -127,14 +124,20 @@ export class BookDetailsTabContainer extends TabContainer<
   }
 }
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(
+  state: RootState,
+  ownProps: BookDetailsTabContainerOwnProps
+) {
   let complaintsCount: number | undefined;
-
-  if (state.editor.complaints.data) {
-    complaintsCount = Object.keys(state.editor.complaints.data).reduce(
-      (result, type) => {
-        return result + state.editor.complaints.data[type];
-      },
+  const complaintsUrl = ownProps.bookUrl
+    ? ownProps.bookUrl.replace("works", "admin/works") + "/complaints"
+    : undefined;
+  const complaintsResult = complaintsUrl
+    ? bookMetadataApi.endpoints.getComplaints.select(complaintsUrl)(state)
+    : undefined;
+  if (complaintsResult?.data?.complaints) {
+    complaintsCount = Object.values(complaintsResult.data.complaints).reduce(
+      (sum, count) => sum + count,
       0
     );
   } else {
@@ -148,10 +151,9 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch) {
-  const fetcher = new DataFetcher({ adapter: editorAdapter });
-  const actions = new ActionCreator(fetcher);
   return {
-    clearBook: () => dispatch(actions.clearBook()),
+    // "BOOK_CLEAR" is the stable action type from @thepalaceproject/web-opds-client BaseActionCreator
+    clearBook: () => dispatch({ type: "BOOK_CLEAR" }),
   };
 }
 
