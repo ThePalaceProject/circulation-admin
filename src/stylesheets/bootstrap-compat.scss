@@ -120,6 +120,15 @@
     overflow-x: visible;
   }
 
+  // Higher specificity (0,2,0) ensures this beats the generic .collapse { display: none }
+  // rule (0,1,0), regardless of layer/order interactions introduced by Tailwind v4 Preflight.
+  // Also overrides Tailwind's `.collapse { visibility: collapse }` utility class which
+  // conflicts with Bootstrap's `.collapse` show/hide pattern.
+  .navbar-collapse.collapse {
+    display: block;
+    visibility: visible;
+  }
+
   .navbar-header {
     float: left;
   }
