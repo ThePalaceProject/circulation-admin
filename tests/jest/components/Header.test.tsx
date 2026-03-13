@@ -1,0 +1,227 @@
+import * as React from "react";
+import PropTypes from "prop-types";
+import { render, fireEvent, screen } from "@testing-library/react";
+import { Header } from "../../../src/components/layout/Header";
+import Admin from "../../../src/models/Admin";
+import { AdminRole } from "../../../src/interfaces";
+
+const router = {
+  push: jest.fn(),
+  createHref: jest.fn(),
+  isActive: jest.fn(),
+  replace: jest.fn(),
+  go: jest.fn(),
+  goBack: jest.fn(),
+  goForward: jest.fn(),
+  setRouteLeaveHook: jest.fn(),
+  getCurrentLocation: jest.fn().mockReturnValue(null),
+};
+
+const libraryManager = new Admin([
+  { role: "manager" as AdminRole, library: "nypl" },
+]);
+const librarian = new Admin([
+  { role: "librarian" as AdminRole, library: "nypl" },
+]);
+const systemAdmin = new Admin([{ role: "system" as AdminRole }]);
+
+class HeaderContextProvider extends React.Component<{
+  children: React.ReactNode;
+  admin: Admin;
+  library?: () => string;
+}> {
+  static childContextTypes = {
+    router: PropTypes.object.isRequired,
+    pathFor: PropTypes.func.isRequired,
+    admin: PropTypes.object.isRequired,
+    library: PropTypes.func,
+  };
+  getChildContext() {
+    return {
+      router,
+      pathFor: jest.fn().mockReturnValue("url"),
+      admin: this.props.admin,
+      library: this.props.library,
+    };
+  }
+  render() {
+    return <>{this.props.children}</>;
+  }
+}
+
+function renderHeader(
+  admin: Admin,
+  library?: () => string,
+  props: Record<string, unknown> = {}
+) {
+  return render(
+    <HeaderContextProvider admin={admin} library={library}>
+      <Header {...props} />
+    </HeaderContextProvider>
+  );
+}
+
+describe("Header", () => {
+  describe("rendering", () => {
+    it("renders the brand logo", () => {
+      renderHeader(libraryManager, () => "nypl");
+      expect(screen.getByRole("img")).toBeInTheDocument();
+    });
+
+    it("shows library dropdown when libraries are available", () => {
+      const libraries = [
+        { short_name: "nypl", name: "NYPL" },
+        { short_name: "bpl" },
+      ];
+      const { container } = renderHeader(libraryManager, () => "nypl", {
+        libraries,
+      });
+      const select = container.querySelector("select");
+      expect(select).not.toBeNull();
+      const options = select.querySelectorAll("option");
+      expect(options.length).toBe(2);
+      expect((options[0] as HTMLOptionElement).value).toBe("nypl");
+      expect(options[0].textContent).toBe("NYPL");
+      expect((options[1] as HTMLOptionElement).value).toBe("bpl");
+    });
+
+    it("shows 'Select a library' option when no library is selected", () => {
+      const libraries = [
+        { short_name: "nypl", name: "NYPL" },
+        { short_name: "bpl" },
+      ];
+      // No library context function
+      const { container } = renderHeader(libraryManager, undefined, {
+        libraries,
+      });
+      const select = container.querySelector("select");
+      const options = select.querySelectorAll("option");
+      expect(options[0].textContent).toBe("Select a library");
+      expect(options.length).toBe(3);
+    });
+
+    it("does not show library dropdown when no libraries are available", () => {
+      const { container } = renderHeader(libraryManager, () => "nypl");
+      const select = container.querySelector("select");
+      expect(select).toBeNull();
+    });
+
+    it("shows Dashboard, Lists, Lanes, and System Configuration links for library manager", () => {
+      const { container } = renderHeader(libraryManager, () => "nypl");
+      const linkTexts = Array.from(
+        container.querySelectorAll("a, button")
+      ).map((el) => el.textContent.trim());
+      expect(linkTexts.some((t) => t.includes("Dashboard"))).toBe(true);
+      expect(linkTexts.some((t) => t.includes("Lists"))).toBe(true);
+      expect(linkTexts.some((t) => t.includes("Lanes"))).toBe(true);
+      expect(linkTexts.some((t) => t.includes("System Configuration"))).toBe(
+        true
+      );
+    });
+
+    it("shows Patrons and Troubleshooting links for system admin", () => {
+      const { container } = renderHeader(systemAdmin, () => "nypl");
+      const linkTexts = Array.from(
+        container.querySelectorAll("a, button")
+      ).map((el) => el.textContent.trim());
+      expect(linkTexts.some((t) => t.includes("Patrons"))).toBe(true);
+      expect(linkTexts.some((t) => t.includes("Troubleshooting"))).toBe(true);
+    });
+
+    it("does not show Patrons or Troubleshooting links for library manager", () => {
+      const { container } = renderHeader(libraryManager, () => "nypl");
+      const linkTexts = Array.from(
+        container.querySelectorAll("a, button")
+      ).map((el) => el.textContent.trim());
+      expect(linkTexts.some((t) => t === "Patrons")).toBe(false);
+      expect(linkTexts.some((t) => t === "Troubleshooting")).toBe(false);
+    });
+
+    it("does not show Patrons or Troubleshooting links for librarian", () => {
+      const { container } = renderHeader(librarian, () => "nypl");
+      const linkTexts = Array.from(
+        container.querySelectorAll("a, button")
+      ).map((el) => el.textContent.trim());
+      expect(linkTexts.some((t) => t === "Patrons")).toBe(false);
+      expect(linkTexts.some((t) => t === "Troubleshooting")).toBe(false);
+    });
+
+    it("does not show Lanes link for librarian", () => {
+      const { container } = renderHeader(librarian, () => "nypl");
+      const linkTexts = Array.from(
+        container.querySelectorAll("a, button")
+      ).map((el) => el.textContent.trim());
+      expect(linkTexts.some((t) => t === "Lanes")).toBe(false);
+    });
+
+    it("shows account dropdown button when admin has an email", () => {
+      const adminWithEmail = new Admin(
+        [{ role: "librarian" as AdminRole, library: "nypl" }],
+        "admin@nypl.org"
+      );
+      renderHeader(adminWithEmail, () => "nypl");
+      const toggle = screen.getByText(/admin@nypl\.org/);
+      expect(toggle).toBeInTheDocument();
+    });
+
+    it("does not show account dropdown button when admin has no email", () => {
+      const { container } = renderHeader(libraryManager, () => "nypl");
+      const toggle = container.querySelector(".account-dropdown-toggle");
+      expect(toggle).toBeNull();
+    });
+  });
+
+  describe("behavior", () => {
+    it("fetches libraries on mount when fetchLibraries is provided", () => {
+      const fetchLibraries = jest.fn().mockResolvedValue([]);
+      renderHeader(libraryManager, () => "nypl", { fetchLibraries });
+      expect(fetchLibraries).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not fetch libraries when isFetchingLibraries is true", () => {
+      const fetchLibraries = jest.fn().mockResolvedValue([]);
+      renderHeader(libraryManager, () => "nypl", {
+        fetchLibraries,
+        isFetchingLibraries: true,
+      });
+      expect(fetchLibraries).not.toHaveBeenCalled();
+    });
+
+    it("toggles account dropdown when toggle button is clicked", () => {
+      const adminWithEmail = new Admin(
+        [{ role: "librarian" as AdminRole, library: "nypl" }],
+        "admin@nypl.org"
+      );
+      const { container } = renderHeader(adminWithEmail, () => "nypl");
+      const toggle = container.querySelector(".account-dropdown-toggle");
+
+      // Dropdown initially hidden
+      expect(container.querySelector(".dropdown-menu")).toBeNull();
+
+      fireEvent.click(toggle);
+      expect(container.querySelector(".dropdown-menu")).not.toBeNull();
+
+      // Should show sign out link
+      const signOutLink = container.querySelector(
+        '.dropdown-menu a[href="/admin/sign_out"]'
+      );
+      expect(signOutLink).not.toBeNull();
+    });
+  });
+
+  it("displays the user's level of permissions via displayPermissions", () => {
+    const adminWithEmail = new Admin(
+      [{ role: "librarian" as AdminRole, library: "nypl" }],
+      "admin@nypl.org"
+    );
+    const { container } = renderHeader(adminWithEmail, () => "nypl");
+    const toggle = container.querySelector(".account-dropdown-toggle");
+    fireEvent.click(toggle);
+    // After clicking, dropdown shows permission text
+    expect(container.querySelector(".dropdown-menu")).not.toBeNull();
+    expect(container.querySelector(".permissions")).not.toBeNull();
+    expect(container.querySelector(".permissions").textContent).toContain(
+      "Logged in as a user"
+    );
+  });
+});
