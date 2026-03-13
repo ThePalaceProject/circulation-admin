@@ -17,4 +17,8 @@ module.exports = {
   },
   setupFiles: ["./jest.polyfills.js"],
   setupFilesAfterEnv: ["./tests/jest/jest-setup.ts"],
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "<rootDir>/src/components/__tests__/",
+  ],
 };
