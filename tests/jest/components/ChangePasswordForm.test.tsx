@@ -1,6 +1,5 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
-import { renderWithProviders } from "../testUtils/withProviders";
 import { ChangePasswordForm } from "../../../src/components/patrons/ChangePasswordForm";
 
 describe("ChangePasswordForm", () => {
