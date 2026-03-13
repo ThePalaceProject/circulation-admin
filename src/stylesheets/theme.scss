@@ -1,0 +1,186 @@
+// =============================================================================
+// theme.scss — Palace admin design tokens
+//
+// CSS custom properties are defined as HSL channel values (without the hsl()
+// wrapper) so Tailwind can compose them with arbitrary opacity modifiers:
+//   bg-primary/50 → background-color: hsl(var(--primary) / 0.5)
+//
+// Values are derived from the Palace brand palette defined in colors.scss.
+// Semantic token names follow the shadcn/ui convention so that Tailwind utility
+// classes like `bg-primary`, `text-foreground`, `border-border` etc. resolve
+// to brand-appropriate colors automatically.
+//
+// A `.dark` block is included for future dark mode support; toggle it by
+// adding the class `dark` to the `<html>` element.
+// =============================================================================
+
+:root {
+  // ── Neutrals ───────────────────────────────────────────────────────────────
+  --background:             0   0% 100%;   // white
+  --foreground:            60  19%   3%;   // #080807 dark-gray
+
+  // ── Primary — Palace dark blue #242DAB ────────────────────────────────────
+  --primary:              236  65%  41%;
+  --primary-foreground:     0   0% 100%;   // white
+
+  // ── Secondary — Palace light blue #46BBE5 ─────────────────────────────────
+  --secondary:            196  75%  59%;
+  --secondary-foreground: 236  65%  41%;   // dark blue for legibility
+
+  // ── Accent — Palace green #008918 ─────────────────────────────────────────
+  --accent:               131 100%  27%;
+  --accent-foreground:      0   0% 100%;   // white
+
+  // ── Destructive — Palace red #D0343A ──────────────────────────────────────
+  --destructive:          358  62%  51%;
+  --destructive-foreground: 0   0% 100%;   // white
+
+  // ── Muted — gray-tint #F5F5F4 ─────────────────────────────────────────────
+  --muted:                 60   5%  96%;
+  --muted-foreground:       0   0%  67%;   // #AAAAAA medium-dark-gray
+
+  // ── Card ───────────────────────────────────────────────────────────────────
+  --card:                   0   0% 100%;
+  --card-foreground:       60  19%   3%;
+
+  // ── Popover ────────────────────────────────────────────────────────────────
+  --popover:                0   0% 100%;
+  --popover-foreground:    60  19%   3%;
+
+  // ── Chrome ─────────────────────────────────────────────────────────────────
+  --border:                 0   0%  80%;   // #CCCCCC gray-border
+  --input:                  0   0%  80%;   // #CCCCCC gray-border
+  --ring:                 232  45%  59%;   // #6875C5 palace blue (tinted)
+
+  // ── Shape ──────────────────────────────────────────────────────────────────
+  --radius: 0.375rem;                      // matches Tailwind `rounded` (6px)
+}
+
+// Dark mode — applied when the `dark` class is on <html>.
+// Values can be refined once a visual design for dark mode is agreed upon.
+.dark {
+  --background:            60  19%   3%;
+  --foreground:             0   0% 100%;
+
+  --primary:              236  65%  65%;
+  --primary-foreground:    60  19%   3%;
+
+  --secondary:            196  75%  35%;
+  --secondary-foreground:   0   0% 100%;
+
+  --accent:               131  60%  40%;
+  --accent-foreground:      0   0% 100%;
+
+  --destructive:          358  62%  42%;
+  --destructive-foreground: 0   0% 100%;
+
+  --muted:                 60  19%  12%;
+  --muted-foreground:       0   0%  60%;
+
+  --card:                  60  19%   6%;
+  --card-foreground:        0   0% 100%;
+
+  --popover:               60  19%   6%;
+  --popover-foreground:     0   0% 100%;
+
+  --border:                 0   0%  25%;
+  --input:                  0   0%  25%;
+  --ring:                 232  45%  59%;
+}
+
+// =============================================================================
+// Base typography
+//
+// Moved here from bootstrap-compat.scss when Tailwind Preflight was enabled.
+// Values preserve Bootstrap 3 defaults to maintain visual parity with the
+// previous baseline.
+// =============================================================================
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #FFF;
+}
+
+a {
+  color: #337AB7;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: #23527C;
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+  }
+}
+
+// Headlines — Bootstrap 3 defaults; component SCSS overrides as needed.
+h1 { font-size: 36px; }
+h2 { font-size: 30px; }
+h3 { font-size: 24px; }
+h4 { font-size: 18px; }
+h5 { font-size: 14px; }
+h6 { font-size: 12px; }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+p  { margin: 0 0 10px; }
+
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #EEE;
+}
+
+ul,
+ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333;
+  background-color: #F5F5F5;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+}
+
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #C7254E;
+  background-color: #F9F2F4;
+  border-radius: 4px;
+}
