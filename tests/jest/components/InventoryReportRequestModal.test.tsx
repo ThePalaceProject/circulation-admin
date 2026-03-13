@@ -1,6 +1,6 @@
 import * as React from "react";
 import { act, renderHook } from "@testing-library/react-hooks";
-import { within } from "@testing-library/react";
+import { within, cleanup } from "@testing-library/react";
 import {
   componentWithProviders,
   renderWithProviders,
@@ -367,6 +367,7 @@ describe("InventoryReportRequestModal", () => {
       );
       expect(modalBody).toHaveTextContent(email);
 
+      cleanup();
       ({ getByRole } = renderWithProviders(
         <InventoryReportRequestModal
           show={true}

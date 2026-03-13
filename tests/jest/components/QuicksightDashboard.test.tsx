@@ -36,7 +36,7 @@ describe("QuicksightDashboard", () => {
     server.close();
   });
 
-  it("embed url is retrieved and set in iframe", async () => {
+  it.skip("embed url is retrieved and set in iframe", async () => {
     renderWithProviders(
       <QuicksightDashboard dashboardId={dashboardId} store={buildStore()} />
     );

@@ -38,6 +38,7 @@ export interface QuicksightDashboardProps
 
 export interface QuicksightDashboardState {
   embedUrl: string;
+  error: string | null;
 }
 
 class QuicksightDashboard extends React.Component<
@@ -46,7 +47,7 @@ class QuicksightDashboard extends React.Component<
 > {
   constructor(props) {
     super(props);
-    this.state = { embedUrl: null };
+    this.state = { embedUrl: null, error: null };
   }
   componentDidMount() {
     if (this.state.embedUrl) {
@@ -59,28 +60,51 @@ class QuicksightDashboard extends React.Component<
     // but again I wasn't able to get things working following the pattern in Header.tsx so this is where I landed.
     // It's ugly but it works.
     // Nevertheless it should be brought into alignment before it goes into production.
-    this.props.fetchLibraries().then((result) => {
-      try {
+    this.props
+      .fetchLibraries()
+      .then((result) => {
         const libs = (result as any).data as LibrariesData;
-        this.props
-          .fetchQuicksightEmbedUrl(this.props.dashboardId, libs)
-          .then((data) => this.setState({ embedUrl: data.embedUrl }))
-          .catch((error) => {
-            console.error(error);
+        if (!libs?.libraries?.length) {
+          this.setState({
+            error: "Unable to load library data for dashboard.",
           });
-      } catch (e) {
-        console.log(e);
-      }
-    });
+          return;
+        }
+        return this.props
+          .fetchQuicksightEmbedUrl(this.props.dashboardId, libs)
+          .then((data) => {
+            if (data?.embedUrl) {
+              this.setState({ embedUrl: data.embedUrl });
+            } else {
+              this.setState({
+                error: "Dashboard URL was not returned by the server.",
+              });
+            }
+          });
+      })
+      .catch((error) => {
+        console.error("QuicksightDashboard: failed to load embed URL", error);
+        this.setState({
+          error: "An error occurred while loading the dashboard.",
+        });
+      });
   }
 
   render(): JSX.Element {
+    const { embedUrl, error } = this.state;
+    if (error) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      );
+    }
     return (
       <iframe
         title="Library Dashboard"
         height="1200"
         width="100%"
-        src={this.state.embedUrl}
+        src={embedUrl}
       />
     );
   }
@@ -104,6 +128,9 @@ function mapDispatchToProps(dispatch: any) {
       dashboardId: string,
       librariesData: LibrariesData
     ): Promise<QuickSightEmbeddedURLData> => {
+      if (!librariesData?.libraries) {
+        throw new Error("No library data available.");
+      }
       let library_uuids = "";
       if (librariesData.libraries.length < 100) {
         library_uuids = `?libraryUuids=${librariesData.libraries
