@@ -100,6 +100,13 @@ body > div {
   height: unset;
 }
 
+// ─── Page-level gutter ──────────────────────────────────────────────────────
+// All <main> elements inside .palace inherit consistent side gutters and top
+// breathing room.  Pages that fully own their own layout override below.
+.palace main {
+  padding: 24px 32px;
+}
+
 body > div.palace {
   height: 100%;
 
