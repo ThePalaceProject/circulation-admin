@@ -43,7 +43,7 @@ const TOKEN_MAP: Record<string, string> = {
   "top-align": "mt-0",
   "bottom-align": "mb-0",
   // Display
-  inline: "inline-block",
+  inline: "inline-flex items-center",
   centered: "mx-auto w-[25vw] text-[1.8vw] border border-[#1B7FA7]",
   // Border radius
   squared: "rounded-none",
@@ -104,7 +104,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type={type}
         className={cn(
           // Base styles matching the original library
-          "btn block text-white bg-[#1B7FA7] m-2 rounded text-base px-3 py-1.5 font-bold min-h-6",
+          "btn inline-flex items-center justify-center text-white bg-[#1B7FA7] m-2 rounded text-base px-3 py-1.5 font-bold min-h-6",
           "transition-colors duration-500",
           "hover:bg-[#54514A] hover:text-white hover:border-[#54514A]",
           "focus:text-white",

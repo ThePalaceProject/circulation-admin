@@ -124,6 +124,35 @@
 }
 
 // ─── Forms ───────────────────────────────────────────────────────────────────
+
+// Tailwind Preflight strips all default fieldset/legend/label spacing.
+// These rules restore the visual breathing room that Bootstrap 3 provided.
+fieldset {
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  border: none;
+  min-width: 0;
+}
+
+legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: inherit;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+// Ensure form labels are block-level with a small bottom gap so they sit
+// cleanly above their input rather than running into it.
+label {
+  display: block;
+  margin-bottom: 4px;
+}
+
 .form-group {
   margin-bottom: 15px;
 }
@@ -197,7 +226,9 @@ textarea.form-control {
 
 // ─── Buttons ─────────────────────────────────────────────────────────────────
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 6px 12px;
   margin-bottom: 0;
   font-size: 14px;
@@ -205,7 +236,6 @@ textarea.form-control {
   line-height: 1.42857143;
   text-align: center;
   white-space: nowrap;
-  vertical-align: middle;
   cursor: pointer;
   user-select: none;
   background-image: none;
@@ -224,6 +254,11 @@ textarea.form-control {
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px;
   }
+}
+
+// Provide a small gap between adjacent buttons so button rows don't feel cramped.
+.btn + .btn {
+  margin-left: 8px;
 }
 
 // global.scss already provides colour overrides for .btn-default; this just
