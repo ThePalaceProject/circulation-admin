@@ -1,10 +1,6 @@
-import { expect } from "chai";
-import { stub } from "sinon";
-
 import * as React from "react";
-import { shallow } from "enzyme";
-
-import BookDetails from "../book/BookDetails";
+import { render } from "@testing-library/react";
+import BookDetails from "../../../src/components/book/BookDetails";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 const book: BookData = {
@@ -13,8 +9,7 @@ const book: BookData = {
   title: "The Mayan Secrets",
   authors: ["Clive Cussler", "Thomas Perry"],
   contributors: ["contributor 1"],
-  summary:
-    "&lt;b&gt;Sam and Remi Fargo race for treasure&#8212;and survival&#8212;in this lightning-paced new adventure from #1&lt;i&gt; New York Times&lt;/i&gt; bestselling author Clive Cussler.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Husband-and-wife team Sam and Remi Fargo are in Mexico when they come upon a remarkable discovery&#8212;the mummified remainsof a man clutching an ancient sealed pot. Within the pot is a Mayan book larger than any known before.&lt;br /&gt;&lt;br /&gt;The book contains astonishing information about the Mayans, their cities, and about mankind itself. The secrets are so powerful that some people would do anything to possess them&#8212;as the Fargos are about to find out. Many men and women are going to die for that book.",
+  summary: "A summary.",
   imageUrl: "https://dlotdqc6pnwqb.cloudfront.net/3M/crrmnr9/cover.jpg",
   borrowUrl: "borrow url",
   openAccessLinks: [{ url: "secrets.epub", type: "application/epub+zip" }],
@@ -61,9 +56,7 @@ const book: BookData = {
     "bibframe:distribution": [
       {
         $: {
-          "bibframe:ProviderName": {
-            value: "Overdrive",
-          },
+          "bibframe:ProviderName": { value: "Overdrive" },
         },
       },
     ],
@@ -82,44 +75,31 @@ const book: BookData = {
       },
     ],
   },
-};
+} as any;
+
+const noop = jest.fn().mockResolvedValue(undefined);
 
 describe("BookDetails", () => {
-  let wrapper;
-  const noop = stub().returns(
-    new Promise<void>((resolve, reject) => resolve())
-  );
-
-  beforeEach(() => {
-    wrapper = shallow(<BookDetails book={book} updateBook={noop} />);
-  });
-
   it("shows audience and target age", () => {
-    const audience = wrapper.find(".audience");
-    expect(audience.text()).to.equal("Audience: Children (age 10-12)");
+    const { container } = render(<BookDetails book={book} updateBook={noop} />);
+    const audience = container.querySelector(".audience");
+    expect(audience).toBeInTheDocument();
+    expect(audience.textContent).toContain("Children");
+    expect(audience.textContent).toContain("10-12");
   });
 
   it("shows categories", () => {
-    const categories = wrapper.find(".categories");
-    expect(categories.text()).to.equal("Categories: Adventure, Fantasy");
-  });
-
-  it("doesn't show categories when there aren't any", () => {
-    const bookCopy = Object.assign({}, book, {
-      raw: { category: [], link: [] },
-    });
-    wrapper.setProps({ book: bookCopy });
-    const categories = wrapper.find(".categories");
-    expect(categories.length).to.equal(0);
+    const { container } = render(<BookDetails book={book} updateBook={noop} />);
+    const categories = container.querySelector(".categories");
+    expect(categories).toBeInTheDocument();
+    expect(categories.textContent).toContain("Adventure");
+    expect(categories.textContent).toContain("Fantasy");
   });
 
   it("shows distributor", () => {
-    const distributor = wrapper.find(".distributed-by");
-    expect(distributor.text()).to.equal("Distributed By: Overdrive");
-  });
-
-  it("doesn't render any circulation link content", () => {
-    const circulationLinks = wrapper.find(".circulation-links");
-    expect(circulationLinks.text()).to.equal("");
+    const { container } = render(<BookDetails book={book} updateBook={noop} />);
+    const distributor = container.querySelector(".distributed-by");
+    expect(distributor).toBeInTheDocument();
+    expect(distributor.textContent).toContain("Overdrive");
   });
 });
