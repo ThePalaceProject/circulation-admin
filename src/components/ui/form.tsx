@@ -64,18 +64,16 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
     /** Internal ref to the <form> DOM node — used to collect FormData on submit. */
     const internalRef = React.useRef<HTMLFormElement>(null);
 
-    /** Forward both internal and external refs to the <form> element. */
-    const setRef = React.useCallback(
-      (node: HTMLFormElement | null) => {
-        (internalRef as React.MutableRefObject<HTMLFormElement | null>).current = node;
-        if (typeof externalRef === "function") {
-          externalRef(node);
-        } else if (externalRef) {
-          (externalRef as React.MutableRefObject<HTMLFormElement | null>).current = node;
-        }
-      },
-      [externalRef]
-    );
+    /** Forward the external ref whenever the internal ref changes. */
+    React.useEffect(() => {
+      if (!externalRef) return;
+      const node = internalRef.current;
+      if (typeof externalRef === "function") {
+        externalRef(node);
+      } else {
+        (externalRef as React.MutableRefObject<HTMLFormElement | null>).current = node;
+      }
+    });
 
     /**
      * Collect FormData from the <form> element and call onSubmit with it.
@@ -86,13 +84,26 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       if (!onSubmit) return;
       const formEl = internalRef.current;
       if (formEl) {
+        let data: FormData;
         try {
-          const data = new (window as any).FormData(formEl);
-          onSubmit(data);
+          // Modern jsdom / browsers support new FormData(formElement).
+          data = new (window as any).FormData(formEl);
         } catch (_e) {
-          // FormData unavailable (e.g. unit-test env without jsdom) — fall back.
-          onSubmit(undefined);
+          // Fallback: manually collect named form fields (older jsdom versions
+          // don't support constructing FormData from an HTMLFormElement).
+          data = new FormData();
+          const elements = formEl.elements as HTMLFormControlsCollection;
+          for (let i = 0; i < elements.length; i++) {
+            const el = elements[i] as
+              | HTMLInputElement
+              | HTMLSelectElement
+              | HTMLTextAreaElement;
+            if (el.name) {
+              data.append(el.name, (el as HTMLInputElement).value ?? "");
+            }
+          }
         }
+        onSubmit(data);
       } else {
         onSubmit(undefined);
       }
@@ -120,7 +131,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
 
     return (
       <form
-        ref={setRef}
+        ref={internalRef}
         onSubmit={handleSubmit}
         className={cn("p-4 rounded mx-5 w-[55vw]", className)}
       >
