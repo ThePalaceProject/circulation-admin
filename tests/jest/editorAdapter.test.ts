@@ -1,7 +1,4 @@
-import { expect } from "chai";
-import { stub } from "sinon";
-
-import adapter from "../editorAdapter";
+import adapter from "../../src/editorAdapter";
 import {
   OPDSEntry,
   Contributor,
@@ -126,32 +123,32 @@ describe("editorAdapter", () => {
     });
 
     const adapted = adapter(entry);
-    expect(adapted.title).to.equal("title");
-    expect(adapted.authors).to.deep.equal([
+    expect(adapted.title).toBe("title");
+    expect(adapted.authors).toEqual([
       { name: "name", uri: "uri", role: "aut" },
     ]);
-    expect(adapted.contributors).to.deep.equal(entry.contributors);
-    expect(adapted.subtitle).to.equal("subtitle");
-    expect(adapted.summary).to.equal("content");
-    expect(adapted.audience).to.equal("ya");
-    expect(adapted.targetAgeRange).to.deep.equal(["13", "16"]);
-    expect(adapted.fiction).to.equal(true);
-    expect(adapted.categories).to.deep.equal(["label", "age", "ya", "Fiction"]);
-    expect(adapted.hideLink).to.deep.equal(entry.links[0]);
-    expect(adapted.restoreLink).to.deep.equal(entry.links[1]);
-    expect(adapted.refreshLink).to.deep.equal(entry.links[2]);
-    expect(adapted.editLink).to.deep.equal(entry.links[3]);
-    expect(adapted.issuesLink).to.deep.equal(entry.links[4]);
-    expect(adapted.changeCoverLink).to.deep.equal(entry.links[5]);
-    expect(adapted.coverUrl).to.equal(entry.links[6].href);
-    expect(adapted.series).to.equal("series");
-    expect(adapted.seriesPosition).to.equal(2);
-    expect(adapted.medium).to.equal("medium");
-    expect(adapted.language).to.equal("language");
-    expect(adapted.publisher).to.equal("publisher");
-    expect(adapted.imprint).to.equal("imprint");
-    expect(adapted.issued).to.equal("issued");
-    expect(adapted.rating).to.equal("4");
+    expect(adapted.contributors).toEqual(entry.contributors);
+    expect(adapted.subtitle).toBe("subtitle");
+    expect(adapted.summary).toBe("content");
+    expect(adapted.audience).toBe("ya");
+    expect(adapted.targetAgeRange).toEqual(["13", "16"]);
+    expect(adapted.fiction).toBe(true);
+    expect(adapted.categories).toEqual(["label", "age", "ya", "Fiction"]);
+    expect(adapted.hideLink).toEqual(entry.links[0]);
+    expect(adapted.restoreLink).toEqual(entry.links[1]);
+    expect(adapted.refreshLink).toEqual(entry.links[2]);
+    expect(adapted.editLink).toEqual(entry.links[3]);
+    expect(adapted.issuesLink).toEqual(entry.links[4]);
+    expect(adapted.changeCoverLink).toEqual(entry.links[5]);
+    expect(adapted.coverUrl).toBe(entry.links[6].href);
+    expect(adapted.series).toBe("series");
+    expect(adapted.seriesPosition).toBe(2);
+    expect(adapted.medium).toBe("medium");
+    expect(adapted.language).toBe("language");
+    expect(adapted.publisher).toBe("publisher");
+    expect(adapted.imprint).toBe("imprint");
+    expect(adapted.issued).toBe("issued");
+    expect(adapted.rating).toBe("4");
   });
 
   it("adapts visibility status from categories", () => {
@@ -181,7 +178,7 @@ describe("editorAdapter", () => {
     });
 
     const adapted = adapter(entry);
-    expect(adapted.visibilityStatus).to.equal("manually-suppressed");
+    expect(adapted.visibilityStatus).toBe("manually-suppressed");
   });
 
   it("adapts policy-filtered visibility status", () => {
@@ -210,7 +207,7 @@ describe("editorAdapter", () => {
     });
 
     const adapted = adapter(entry);
-    expect(adapted.visibilityStatus).to.equal("policy-filtered");
+    expect(adapted.visibilityStatus).toBe("policy-filtered");
   });
 
   it("doesn't crash when expected data is missing", () => {
@@ -221,7 +218,6 @@ describe("editorAdapter", () => {
       subtitle: "subtitle",
       authors: [],
       contributors: [],
-      series: new Series({ name: "series", position: 2 }),
       categories: [],
       identifiers: [],
       links: [],
@@ -234,7 +230,6 @@ describe("editorAdapter", () => {
       unparsed: {},
     });
 
-    const adapted = adapter(entry);
-    expect(adapted.title).to.equal("title");
+    expect(() => adapter(entry)).not.toThrow();
   });
 });

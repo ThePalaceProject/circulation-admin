@@ -1,7 +1,5 @@
-import { expect } from "chai";
-
-import customListDetails from "../customListDetails";
-import ActionCreator from "../../actions";
+import customListDetails from "../../../src/reducers/customListDetails";
+import ActionCreator from "../../../src/actions";
 
 describe("customListDetails reducer", () => {
   const initState = {
@@ -16,7 +14,7 @@ describe("customListDetails reducer", () => {
   };
 
   it("returns initial state for unrecognized action", () => {
-    expect(customListDetails(undefined, {})).to.deep.equal(initState);
+    expect(customListDetails(undefined, {} as any)).toEqual(initState);
   });
 
   it("handles CUSTOM_LIST_DETAILS_REQUEST", () => {
@@ -25,11 +23,8 @@ describe("customListDetails reducer", () => {
       url: "test url",
     };
 
-    // start with empty state
-    const newState = Object.assign({}, initState, {
-      isFetching: true,
-    });
-    expect(customListDetails(initState, action)).to.deep.equal(newState);
+    const newState = Object.assign({}, initState, { isFetching: true });
+    expect(customListDetails(initState, action)).toEqual(newState);
   });
 
   it("handles CUSTOM_LIST_DETAILS_MORE_REQUEST", () => {
@@ -37,6 +32,7 @@ describe("customListDetails reducer", () => {
       type: `${ActionCreator.CUSTOM_LIST_DETAILS_MORE}_REQUEST`,
       url: "test url",
     };
+
     const oldState = {
       url: "test url",
       data: null,
@@ -53,7 +49,7 @@ describe("customListDetails reducer", () => {
       isLoaded: false,
     });
 
-    expect(customListDetails(oldState, action)).to.deep.equal(newState);
+    expect(customListDetails(oldState as any, action)).toEqual(newState);
   });
 
   it("handles CUSTOM_LIST_DETAILS_MORE_LOAD", () => {
@@ -72,6 +68,7 @@ describe("customListDetails reducer", () => {
         lanes: [],
       },
     };
+
     const oldState = {
       url: "test url",
       data: {
@@ -117,6 +114,6 @@ describe("customListDetails reducer", () => {
       isLoaded: true,
     });
 
-    expect(customListDetails(oldState, action)).to.deep.equal(newState);
+    expect(customListDetails(oldState as any, action)).toEqual(newState);
   });
 });

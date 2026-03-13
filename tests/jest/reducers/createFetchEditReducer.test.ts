@@ -1,8 +1,6 @@
-import { expect } from "chai";
-
 import createFetchEditReducer, {
   FetchEditState,
-} from "../createFetchEditReducer";
+} from "../../../src/reducers/createFetchEditReducer";
 
 describe("fetch-edit reducer", () => {
   interface TestData {
@@ -38,9 +36,8 @@ describe("fetch-edit reducer", () => {
   };
 
   const manipulateData = (state, action) => {
-    const data = 10;
     return Object.assign({}, state, {
-      data: data,
+      data: 10,
       isLoaded: true,
     });
   };
@@ -59,31 +56,27 @@ describe("fetch-edit reducer", () => {
   );
 
   it("returns initial state for unrecognized action", () => {
-    expect(reducer(undefined, {})).to.deep.equal(initState);
-    expect(fetchOnlyReducer(undefined, {})).to.deep.equal(initState);
-    expect(extraActionReducer(undefined, {})).to.deep.equal(initState);
+    expect(reducer(undefined, {} as any)).toEqual(initState);
+    expect(fetchOnlyReducer(undefined, {} as any)).toEqual(initState);
+    expect(extraActionReducer(undefined, {} as any)).toEqual(initState);
   });
 
   it("handles clear", () => {
     const action = { type: "TEST_FETCH_CLEAR" };
-
     const state = Object.assign({}, initState, {
       data: testData,
       isLoaded: true,
     });
-
-    expect(reducer(state, action)).to.deep.equal(initState);
+    expect(reducer(state, action)).toEqual(initState);
   });
 
   it("handles fetch request", () => {
     const action = { type: "TEST_FETCH_REQUEST", url: "test_url" };
 
     // start with empty state
-    let newState = Object.assign({}, initState, {
-      isFetching: true,
-    });
-    expect(reducer(initState, action)).to.deep.equal(newState);
-    expect(fetchOnlyReducer(initState, action)).to.deep.equal(newState);
+    let newState = Object.assign({}, initState, { isFetching: true });
+    expect(reducer(initState, action)).toEqual(newState);
+    expect(fetchOnlyReducer(initState, action)).toEqual(newState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
@@ -91,8 +84,8 @@ describe("fetch-edit reducer", () => {
       isLoaded: false,
       fetchError: null,
     });
-    expect(reducer(errorState, action)).to.deep.equal(newState);
-    expect(fetchOnlyReducer(errorState, action)).to.deep.equal(newState);
+    expect(reducer(errorState, action)).toEqual(newState);
+    expect(fetchOnlyReducer(errorState, action)).toEqual(newState);
 
     // start with loaded state
     const loadedState = Object.assign({}, initState, {
@@ -104,8 +97,8 @@ describe("fetch-edit reducer", () => {
       isLoaded: false,
       isFetching: true,
     });
-    expect(reducer(loadedState, action)).to.deep.equal(newState);
-    expect(fetchOnlyReducer(loadedState, action)).to.deep.equal(newState);
+    expect(reducer(loadedState, action)).toEqual(newState);
+    expect(fetchOnlyReducer(loadedState, action)).toEqual(newState);
   });
 
   it("handles fetch failure", () => {
@@ -116,20 +109,16 @@ describe("fetch-edit reducer", () => {
       isFetching: false,
       isLoaded: true,
     });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
-    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(newState);
+    expect(reducer(oldState, action)).toEqual(newState);
+    expect(fetchOnlyReducer(oldState, action)).toEqual(newState);
   });
 
   it("handles success", () => {
     const action = { type: "TEST_FETCH_SUCCESS", data: testData };
-    const oldState = Object.assign({}, initState, {
-      isFetching: true,
-    });
-    const newState = Object.assign({}, initState, {
-      isFetching: false,
-    });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
-    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(newState);
+    const oldState = Object.assign({}, initState, { isFetching: true });
+    const newState = Object.assign({}, initState, { isFetching: false });
+    expect(reducer(oldState, action)).toEqual(newState);
+    expect(fetchOnlyReducer(oldState, action)).toEqual(newState);
   });
 
   it("handles load", () => {
@@ -139,56 +128,48 @@ describe("fetch-edit reducer", () => {
       isFetching: false,
       isLoaded: true,
     });
-    expect(reducer(initState, action)).to.deep.equal(newState);
-    expect(fetchOnlyReducer(initState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toEqual(newState);
+    expect(fetchOnlyReducer(initState, action)).toEqual(newState);
   });
 
   it("handles edit request", () => {
     const action = { type: "TEST_EDIT_REQUEST", url: "test url" };
 
     // start with empty state
-    let newState = Object.assign({}, initState, {
-      isEditing: true,
-    });
-    expect(reducer(initState, action)).to.deep.equal(newState);
+    let newState = Object.assign({}, initState, { isEditing: true });
+    expect(reducer(initState, action)).toEqual(newState);
     // fetch only reducer does nothing
-    expect(fetchOnlyReducer(initState, action)).to.deep.equal(initState);
+    expect(fetchOnlyReducer(initState, action)).toEqual(initState);
 
     // start with error state
     newState = Object.assign({}, errorState, {
       isEditing: true,
       fetchError: null,
     });
-    expect(reducer(errorState, action)).to.deep.equal(newState);
+    expect(reducer(errorState, action)).toEqual(newState);
     // fetch only reducer does nothing
-    expect(fetchOnlyReducer(errorState, action)).to.deep.equal(errorState);
+    expect(fetchOnlyReducer(errorState, action)).toEqual(errorState);
   });
 
   it("handles edit failure", () => {
     const action = { type: "TEST_EDIT_FAILURE", error: "test error" };
-    const oldState = Object.assign({}, initState, {
-      isEditing: true,
-    });
+    const oldState = Object.assign({}, initState, { isEditing: true });
     const newState = Object.assign({}, oldState, {
       formError: "test error",
       isEditing: false,
     });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
+    expect(reducer(oldState, action)).toEqual(newState);
     // fetch only reducer does nothing
-    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(oldState);
+    expect(fetchOnlyReducer(oldState, action)).toEqual(oldState);
   });
 
   it("handles edit success", () => {
     const action = { type: "TEST_EDIT_SUCCESS" };
-    const oldState = Object.assign({}, initState, {
-      isEditing: true,
-    });
-    const newState = Object.assign({}, oldState, {
-      isEditing: false,
-    });
-    expect(reducer(oldState, action)).to.deep.equal(newState);
+    const oldState = Object.assign({}, initState, { isEditing: true });
+    const newState = Object.assign({}, oldState, { isEditing: false });
+    expect(reducer(oldState, action)).toEqual(newState);
     // fetch only reducer does nothing
-    expect(fetchOnlyReducer(oldState, action)).to.deep.equal(oldState);
+    expect(fetchOnlyReducer(oldState, action)).toEqual(oldState);
   });
 
   it("handles edit load", () => {
@@ -197,17 +178,15 @@ describe("fetch-edit reducer", () => {
       responseBody: "5",
       successMessage: "5",
     });
-    expect(reducer(initState, action)).to.deep.equal(newState);
+    expect(reducer(initState, action)).toEqual(newState);
     // fetch only reducer does nothing
-    expect(fetchOnlyReducer(initState, action)).to.deep.equal(initState);
+    expect(fetchOnlyReducer(initState, action)).toEqual(initState);
   });
 
   it("handles extra action request", () => {
     const action = { type: "EXTRA_ACTION_REQUEST", url: "test url" };
-
-    // start with empty state
     const newState = Object.assign({}, initState);
-    expect(extraActionReducer(initState, action)).to.deep.equal(newState);
+    expect(extraActionReducer(initState, action)).toEqual(newState);
   });
 
   it("handles extra action data load", () => {
@@ -216,7 +195,6 @@ describe("fetch-edit reducer", () => {
       data: 10,
       isLoaded: true,
     });
-
-    expect(extraActionReducer(initState, action)).to.deep.equal(newState);
+    expect(extraActionReducer(initState, action)).toEqual(newState);
   });
 });
