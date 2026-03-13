@@ -138,8 +138,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     return (
       <header>
         <h1 className="visually-hidden">{title("")}</h1>
-        <nav className="navbar navbar-default">
-          <div className="navbar-header">
+        <nav className="site-nav">
+          <div className="site-nav__header">
             <img src={palaceLogoUrl} alt={title()} />
             {!logoOnly && (
               <>
@@ -167,22 +167,22 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 )}
                 <button
                   type="button"
-                  className="navbar-toggle collapsed"
+                  className="site-nav__toggle"
                   aria-label="Toggle navigation"
                 >
-                  <span className="sr-only">Toggle navigation</span>
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
+                  <span className="visually-hidden">Toggle navigation</span>
+                  <span className="site-nav__toggle-bar" />
+                  <span className="site-nav__toggle-bar" />
+                  <span className="site-nav__toggle-bar" />
                 </button>
               </>
             )}
           </div>
 
           {!logoOnly && (
-            <div className="collapse navbar-collapse menu">
+            <div className="site-nav__menu">
               {currentLibrary && (
-                <ul className="nav navbar-nav">
+                <ul className="site-nav__links">
                   {this.renderLinkItem(
                     dashboardLinkItem,
                     currentPathname,
@@ -196,12 +196,12 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   )}
                 </ul>
               )}
-              <ul className="nav navbar-nav navbar-right">
+              <ul className="site-nav__links site-nav__links--right">
                 {sitewideLinkItems.map((item) =>
                   this.renderLinkItem(item, currentPathname)
                 )}
                 {this.context.admin.email && (
-                  <li className="dropdown">
+                  <li className="site-nav__dropdown">
                     <Button
                       className="account-dropdown-toggle transparent"
                       type="button"
@@ -215,7 +215,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                       }
                     />
                     {this.state.showAccountDropdown && (
-                      <ul className="dropdown-menu">
+                      <ul className="site-nav__dropdown-menu">
                         {this.displayPermissions(
                           isSystemAdmin,
                           isLibraryManager

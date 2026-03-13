@@ -196,14 +196,16 @@ describe("Header", () => {
       const toggle = container.querySelector(".account-dropdown-toggle");
 
       // Dropdown initially hidden
-      expect(container.querySelector(".dropdown-menu")).toBeNull();
+      expect(container.querySelector(".site-nav__dropdown-menu")).toBeNull();
 
       fireEvent.click(toggle);
-      expect(container.querySelector(".dropdown-menu")).not.toBeNull();
+      expect(
+        container.querySelector(".site-nav__dropdown-menu")
+      ).not.toBeNull();
 
       // Should show sign out link
       const signOutLink = container.querySelector(
-        '.dropdown-menu a[href="/admin/sign_out"]'
+        '.site-nav__dropdown-menu a[href="/admin/sign_out"]'
       );
       expect(signOutLink).not.toBeNull();
     });
@@ -218,7 +220,7 @@ describe("Header", () => {
     const toggle = container.querySelector(".account-dropdown-toggle");
     fireEvent.click(toggle);
     // After clicking, dropdown shows permission text
-    expect(container.querySelector(".dropdown-menu")).not.toBeNull();
+    expect(container.querySelector(".site-nav__dropdown-menu")).not.toBeNull();
     expect(container.querySelector(".permissions")).not.toBeNull();
     expect(container.querySelector(".permissions").textContent).toContain(
       "Logged in as a user"

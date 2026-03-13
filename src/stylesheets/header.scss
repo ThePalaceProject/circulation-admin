@@ -1,131 +1,211 @@
-.palace {
-  .navbar-default, .navbar-collapse {
-    background-color: $white;
-    color: $dark;
+// ─── Site Nav (replaces Bootstrap navbar/nav/dropdown) ───────────────────────
+
+.site-nav {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 3px 0;
+  background-color: $white;
+  color: $dark;
+  border-bottom: 1px solid #E7E7E7;
+  border-radius: 0;
+
+  .palace & {
+    margin-bottom: 0;
+  }
+}
+
+// ─── Header (logo + library picker + mobile toggle) ──────────────────────────
+
+.site-nav__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-left: 10px;
+
+  > img {
+    height: 64px;
+    width: auto;
+    margin: -12px 20px 0 0;
+    vertical-align: top;
   }
 
-  .navbar-nav > li {
-    & > a,
-    & > button {
-      color: $dark;
+  .form-group {
+    display: inline-block;
+    margin-top: 6px;
+    margin-bottom: 0;
+  }
 
-      &:hover, &:active, &:focus {
+  .form-control {
+    display: inline-block;
+    width: auto;
+  }
+}
+
+// ─── Mobile toggle button ─────────────────────────────────────────────────────
+
+.site-nav__toggle {
+  display: none; // hidden on desktop
+  padding: 9px 10px;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.site-nav__toggle-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+  background-color: #888;
+
+  + .site-nav__toggle-bar {
+    margin-top: 4px;
+  }
+}
+
+// ─── Collapsible menu area ────────────────────────────────────────────────────
+
+.site-nav__menu {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  overflow-x: visible;
+  padding: 0;
+}
+
+// ─── Nav link lists ───────────────────────────────────────────────────────────
+
+.site-nav__links {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 3px;
+
+  &.site-nav__links--right {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  > li {
+    position: relative;
+
+    > a,
+    > button {
+      display: block;
+      padding: 15px 10px;
+      color: $dark;
+      text-decoration: none;
+
+      &:hover,
+      &:active,
+      &:focus {
         @include headerNavLink;
       }
     }
   }
 }
 
-.navbar-default {
-  padding: 3px 0;
-  border-radius: 0;
+// ─── Individual link items ────────────────────────────────────────────────────
 
-  .container-fluid {
-    padding: 24px 0 15px 15px;
-  }
-
-  .navbar-header {
-    padding-left: 10px;
-
-    > img {
-      height: 64px;
-      width: auto;
-      margin: -12px 20px 0 0;
-      vertical-align: top;
-    }
-
-    .form-group {
-      display: inline-block;
-      margin-top: 6px;
-      margin-bottom: 0;
-    }
-
-    .form-control {
-      display: inline-block;
-      width: auto;
-    }
-  }
-
-  .navbar-nav {
-    margin-left: 3px;
-
-    .dropdown {
-      > button {
-        color: $dark;
-        padding: 13px 10px;
-        margin: 0;
-
-        svg {
-          transform: rotate(270deg);
-          fill: $dark;
-          height: 0.9em;
-        }
-
-        &:focus {
-          @include basic-focus;
-        }
-      }
-    }
-
-    .dropdown-menu {
-      display: block;
-      background-color: $pagecolorlight;
-      left: auto;
-      right: 0;
-      padding-bottom: 0;
-
-      .permissions, a {
-        padding: 5px;
-      }
-
-      a {
-        background-color: $white;
-
-        &:focus {
-          @include basic-focus;
-        }
-
-        &:hover, &:active, &:focus {
-          @include headerNavLink;
-        }
-      }
-    }
-  }
-
-  .menu .header-link a {
+.site-nav__links .header-link {
+  a {
     padding-left: 5px;
     padding-right: 5px;
-  }
+    text-decoration: none;
 
-  .pull-right {
-    display: flex;
-    justify-content: flex-end;
-    max-width: 50%;
-    min-width: 30%;
-  }
-
-  .navbar-collapse {
-    padding: 0;
-
-    &.in {
-      overflow-y: visible;
+    &.active-link,
+    &:hover,
+    &:focus {
+      @include headerNavLink;
     }
   }
 
-  .nav {
-    .header-link {
-      a {
-        text-decoration: none;
+  &.active a {
+    @include headerNavLink;
+  }
+}
 
-        &.active-link,
-        &:hover,
-        &:focus {
-          @include headerNavLink;
-        }
-      }
-      &.active a {
-        @include headerNavLink;
-      }
+// ─── Account dropdown ─────────────────────────────────────────────────────────
+
+.site-nav__dropdown {
+  position: relative;
+
+  > button {
+    color: $dark;
+    padding: 13px 10px;
+    margin: 0;
+
+    svg {
+      transform: rotate(270deg);
+      fill: $dark;
+      height: 0.9em;
+    }
+
+    &:focus {
+      @include basic-focus;
+    }
+  }
+}
+
+.site-nav__dropdown-menu {
+  display: block;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  min-width: 160px;
+  padding: 5px 0 0;
+  margin: 2px 0 0;
+  list-style: none;
+  background-color: $pagecolorlight;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+
+  .permissions,
+  a {
+    display: block;
+    padding: 5px;
+    white-space: nowrap;
+  }
+
+  a {
+    background-color: $white;
+    color: #333;
+    text-decoration: none;
+
+    &:focus {
+      @include basic-focus;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      @include headerNavLink;
+    }
+  }
+}
+
+// ─── Mobile breakpoint ────────────────────────────────────────────────────────
+
+@media (max-width: 767px) {
+  .site-nav__toggle {
+    display: block;
+  }
+
+  .site-nav__menu {
+    display: none;
+    width: 100%;
+
+    &.open {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 }
