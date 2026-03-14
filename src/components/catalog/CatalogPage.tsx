@@ -61,7 +61,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
     const fetcher = new NoCacheDataFetcher({ adapter });
     const actions = new ActionsCreator(fetcher);
     return (
-      <>
+      <div className="catalog-page">
         <ActionsProvider actions={actions} fetcher={fetcher}>
           <OPDSCatalog
             collectionUrl={collectionUrl}
@@ -76,7 +76,7 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
           />
         </ActionsProvider>
         <Footer />
-      </>
+      </div>
     );
   }
 

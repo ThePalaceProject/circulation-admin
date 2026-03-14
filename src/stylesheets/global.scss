@@ -1,3 +1,35 @@
+// ─── Page transition fade-in ────────────────────────────────────────────────
+//
+// Each top-level page component has a distinct root class. When react-router
+// unmounts the old route and mounts the new one, the incoming page fades in
+// over 180 ms rather than flashing into view.
+
+@keyframes palace-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard,
+.catalog-page,
+.lane-page,
+.custom-list-page,
+.config,
+.account,
+.quicksight-dashboard,
+.troubleshooting-page,
+.welcome-page,
+.manage-patrons-page {
+  animation: palace-fade-in 0.18s ease-out both;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 .visuallyHidden {
   border: 0;
   clip: rect(0 0 0 0);
