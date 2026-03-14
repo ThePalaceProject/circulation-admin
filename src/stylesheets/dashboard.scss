@@ -1,8 +1,22 @@
 .dashboard {
   .body {
     height: 100%;
-    // margin-top: 60px was a fixed-navbar relic — the page gutter on <main>
-    // now provides the top spacing.
     margin: 0;
+  }
+
+  // ─── Circulation Events section (below stat cards) ───────────────────────
+  // CirculationEventsDownload renders a bare <h2> + button; give it a
+  // card-like treatment so it doesn't float disconnected on the page.
+  main.body > h2 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 32px 0 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  main.body > .btn.left-align {
+    margin-top: 4px;
   }
 }

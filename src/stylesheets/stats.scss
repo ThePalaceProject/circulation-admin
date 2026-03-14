@@ -9,43 +9,56 @@
 
 .stats-without-library {
   // Without a library ("all libraries"), we show three columns.
-  grid-template-columns: repeat(3, minmax(27rem, 1fr));
+  grid-template-columns: repeat(3, minmax(22rem, 1fr));
   grid-template-areas:
   "patrons circulations inventory"
   "collections collections collections"
   ;
 }
 
+// ─── Dashboard page title ───────────────────────────────────────────────────
+
+.library-stats {
+  > h2 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 24px 0 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+// ─── Stats grid ─────────────────────────────────────────────────────────────
+
 .stats {
   display: grid;
-  grid-gap: 1rem 1rem;
+  grid-gap: 1.25rem;
   grid-auto-rows: auto;
   padding: 0;
+  list-style: none;
 
+  // ─── Stat card ──────────────────────────────────────────────────────────
   .stat-group {
-    background-color: $pagecolorlight;
-    border-radius: 20px;
-    padding: 10px;    
-    overflow-x: scroll;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;            // gray-200
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    padding: 20px 24px;
+    overflow-x: hidden;                   // no spurious scrollbars on metric cards
 
-    &.stat-patrons-group {
-      grid-area: patrons;
-    }
+    // Grid area assignments
+    &.stat-patrons-group            { grid-area: patrons; }
+    &.stat-circulations-group,
+    &.stat-circulation-reports-group { grid-area: circulations; }
+    &.stat-inventory-group,
+    &.stat-inventory-reports-group  { grid-area: inventory; }
+    &.stat-usage-reports-group      { grid-area: usage-reports; }
 
-    &.stat-circulations-group {
-      grid-area: circulations;
-    }
-
-    &.stat-inventory-group {
-      grid-area: inventory;
-    }
-
-    &.stat-usage-reports-group {
-      grid-area: usage-reports;
-    }
-
+    // Collections card spans full width and may contain a wide chart
     &.stat-collections-group {
       grid-area: collections;
+      overflow-x: auto;
 
       .recharts-wrapper {
         // needed for Rechart ResponsiveContainer to shrink performantly with parent
@@ -54,7 +67,7 @@
 
       ul.collection-name-list {
         display: grid;
-        grid-gap: 2rem;
+        grid-gap: 1.5rem;
         grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
         list-style-type: none;
         padding: 0;
@@ -63,108 +76,139 @@
       }
     }
 
-    .no-content {
-      margin: 10px;
-      font-style: italic;
-      font-weight: bolder;
-      color: $medium-dark-gray;
+    // ─── Card header – overline label + description ──────────────────────
+    h3 {
+      font-size: 0.6875rem;              // 11px
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      color: #9ca3af;                    // gray-400 — de-emphasised label
+      text-transform: none;
+      text-wrap: balance;
+      margin: 0 0 4px;
     }
 
     .stat-group-description {
-      margin: 10px;
-      margin-top: 0;
-      margin-bottom: 20px;
-      text-align: left;
-      font-style: italic;
-      font-size: small;
+      font-size: 0.8125rem;             // 13px
+      font-style: normal;               // no italic
+      color: #9ca3af;                   // gray-400
+      margin: 0 0 16px;
       text-wrap: balance;
+      max-width: 52ch;
     }
 
+    .no-content {
+      font-style: italic;
+      font-weight: 500;
+      color: #9ca3af;
+      font-size: 0.875rem;
+      margin-top: 8px;
+    }
+
+    // ─── Inline report / link blocks ────────────────────────────────────
     .stat-usage-reports {
-      display: grid;
-      grid-gap: 2rem;
-      grid-template-columns: 10fr minmax(8rem, 1fr);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
       list-style-type: none;
+      padding: 0;
     }
 
     .stat-link {
-      margin-top: 1.5rem;
-      color: $blue-dark;
-
+      margin-top: 1rem;
       a {
-        color: $blue-dark;
-        text-decoration: underline;
+        color: #2563eb;                  // blue-600
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
 
     ul {
       padding: 0;
-    }
-
-    h3 {
-      font-weight: bolder;
-      text-wrap: balance;
-      margin: 10px;
-      margin-bottom: 2px;
+      list-style: none;
     }
   }
 
+  // ─── Grouping label (used in some cards as secondary text) ──────────────
   .stat-grouping-label {
     text-align: left;
     height: 1rem;
   }
 
+  // ─── SVG icons ──────────────────────────────────────────────────────────
   svg {
     width: inherit;
     height: inherit;
   }
 
-  .stat-label {
-    line-height: 1rem;
-  }
-
-  .stat-value {
-    font-size: 300%;
-    line-height: 1rem;
-    margin-right: .5rem;
-  }
-
-  .stat-tooltip {
-    display: inherit;
-    align-items: inherit;
-    text-align: inherit;
-  }
+  // ─── Individual metric rows ──────────────────────────────────────────────
 
   .single-stat {
     display: flex;
     align-items: center;
-    text-align: left;
-    margin: 10px 0;
-    padding: 10px;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f3f4f6;   // gray-100 hairline
+
+    &:first-child  { padding-top: 0; }
+    &:last-child   { border-bottom: none; padding-bottom: 0; }
   }
 
+  // Big number
+  .stat-value {
+    font-size: 2.25rem;                  // 36px — predictable, not relative
+    font-weight: 700;
+    color: #111827;                      // gray-900
+    line-height: 1;
+    min-width: 3ch;                      // prevents jumpiness between 1–3 digit values
+    margin-right: 0;
+    flex-shrink: 0;
+  }
+
+  // Row label
+  .stat-label {
+    font-size: 0.875rem;                 // 14px
+    color: #6b7280;                      // gray-500
+    line-height: 1.4;
+  }
+
+  // Tooltip wrapper — inherit parent flex behaviour
+  .stat-tooltip {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+  }
+
+  // ─── Recharts custom tooltip ────────────────────────────────────────────
   .customTooltip {
     background: white;
     color: #333;
-    box-shadow: 0 3px 14px rgb(0 0 0 / 40%);
-    padding: 1px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    padding: 0;
     text-align: left;
-    border-radius: 12px;
+    border-radius: 10px;
+    overflow: hidden;
 
     .customTooltipDetail {
-      margin: 13px 13px;
-      padding: 10px;
+      margin: 12px 16px;
     }
 
     .customTooltipHeading {
-      font-size: larger;
-      font-weight: bold;
-      text-decoration: underline;
-      margin: 0 0;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-bottom: 1px solid #f3f4f6;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      text-decoration: none;
     }
 
     .customTooltipItem {
-      margin: 3px 0;
+      margin: 4px 0;
+      font-size: 0.875rem;
 
       span {
         vertical-align: middle;
@@ -172,11 +216,10 @@
       }
 
       .customTooltipMediumBreakdown {
-        font-size: smaller;
-        margin: 0 .5em;
+        font-size: 0.8125rem;
+        margin: 0 0.4em;
+        color: #6b7280;
       }
     }
   }
-
-
 }
