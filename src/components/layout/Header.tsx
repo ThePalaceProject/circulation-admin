@@ -15,6 +15,7 @@ import { Link } from "react-router";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { Button } from "../ui";
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
+import { Settings, User } from "lucide-react";
 import title from "../../utils/title";
 
 const palaceLogoUrl = require("../../images/PalaceCollectionManagerLogo.svg")
@@ -42,6 +43,7 @@ export interface HeaderProps
 
 export interface HeaderState {
   showAccountDropdown: boolean;
+  showSettingsDropdown: boolean;
 }
 
 export interface HeaderRouter extends Router {
@@ -68,18 +70,25 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
   constructor(props) {
     super(props);
-    this.state = { showAccountDropdown: false };
+    this.state = { showAccountDropdown: false, showSettingsDropdown: false };
     this.changeLibrary = this.changeLibrary.bind(this);
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
+    this.toggleSettingsDropdown = this.toggleSettingsDropdown.bind(this);
     this.renderNavItem = this.renderNavItem.bind(this);
 
     document.body.addEventListener("click", (event: MouseEvent) => {
+      const target = (event.target as any).className || "";
       if (
         this.state.showAccountDropdown &&
-        (event.target as any).className.indexOf("account-dropdown-toggle") ===
-          -1
+        target.indexOf("account-dropdown-toggle") === -1
       ) {
-        this.toggleAccountDropdown();
+        this.setState({ showAccountDropdown: false });
+      }
+      if (
+        this.state.showSettingsDropdown &&
+        target.indexOf("settings-dropdown-toggle") === -1
+      ) {
+        this.setState({ showSettingsDropdown: false });
       }
     });
   }
@@ -120,66 +129,67 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       { label: "Patrons", href: "patrons/", auth: isSystemAdmin },
     ];
     // Links that will be rendered in a Link router component and are sitewide.
+    // Dashboard only shows when no library is selected (otherwise it's in the left nav).
     const sitewideLinkItems = [
       { label: "Dashboard", href: "dashboard/", auth: isSiteWide },
-      {
-        label: "System Configuration",
-        href: "config/",
-      },
-      {
-        label: "Troubleshooting",
-        href: "troubleshooting/",
-        auth: isSystemAdmin,
-      },
     ];
+    const roleLabel = isSystemAdmin
+      ? "System Admin"
+      : isLibraryManager
+      ? "Administrator"
+      : "User";
     const accountLink = { label: "Change password", href: "account/" };
+    const configUrl = "/admin/web/config/";
+    const troubleshootingUrl = "/admin/web/troubleshooting/";
     const logoOnly = this.props.logoOnly ?? false;
 
     return (
       <header>
         <h1 className="visually-hidden">{title("")}</h1>
-        <nav className="site-nav">
-          <div className="site-nav__header">
-            <img src={palaceLogoUrl} alt={title()} />
-            {!logoOnly && (
-              <>
-                {this.props.libraries && this.props.libraries.length > 0 && (
-                  <EditableInput
-                    elementType="select"
-                    ref={this.libraryRef}
-                    value={currentLibrary}
-                    onChange={this.changeLibrary}
-                    aria-label="Select a library"
-                  >
-                    {(!this.context.library || !currentLibrary) && (
-                      <option aria-selected={false}>Select a library</option>
-                    )}
-                    {this.props.libraries.map((library) => (
-                      <option
-                        key={library.short_name}
-                        value={library.short_name}
-                        aria-selected={currentLibrary === library.short_name}
-                      >
-                        {library.name || library.short_name}
-                      </option>
-                    ))}
-                  </EditableInput>
-                )}
-                <button
-                  type="button"
-                  className="site-nav__toggle"
-                  aria-label="Toggle navigation"
-                >
-                  <span className="visually-hidden">Toggle navigation</span>
-                  <span className="site-nav__toggle-bar" />
-                  <span className="site-nav__toggle-bar" />
-                  <span className="site-nav__toggle-bar" />
-                </button>
-              </>
-            )}
-          </div>
 
-          {!logoOnly && (
+        {/* Row 1: Logo */}
+        <div className="site-nav__brand">
+          <img src={palaceLogoUrl} alt={title()} />
+        </div>
+
+        {/* Row 2: Library selector + nav links */}
+        {!logoOnly && (
+          <nav className="site-nav">
+            <div className="site-nav__header">
+              {this.props.libraries && this.props.libraries.length > 0 && (
+                <EditableInput
+                  elementType="select"
+                  ref={this.libraryRef}
+                  value={currentLibrary}
+                  onChange={this.changeLibrary}
+                  aria-label="Select a library"
+                >
+                  {(!this.context.library || !currentLibrary) && (
+                    <option aria-selected={false}>Select a library</option>
+                  )}
+                  {this.props.libraries.map((library) => (
+                    <option
+                      key={library.short_name}
+                      value={library.short_name}
+                      aria-selected={currentLibrary === library.short_name}
+                    >
+                      {library.name || library.short_name}
+                    </option>
+                  ))}
+                </EditableInput>
+              )}
+              <button
+                type="button"
+                className="site-nav__toggle"
+                aria-label="Toggle navigation"
+              >
+                <span className="visually-hidden">Toggle navigation</span>
+                <span className="site-nav__toggle-bar" />
+                <span className="site-nav__toggle-bar" />
+                <span className="site-nav__toggle-bar" />
+              </button>
+            </div>
+
             <div className="site-nav__menu">
               {currentLibrary && (
                 <ul className="site-nav__links">
@@ -200,17 +210,53 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 {sitewideLinkItems.map((item) =>
                   this.renderLinkItem(item, currentPathname)
                 )}
+
+                {/* Settings dropdown: System Configuration + Troubleshooting */}
+                <li className="site-nav__dropdown">
+                  <Button
+                    className="settings-dropdown-toggle transparent site-nav__icon-btn"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-label="Settings"
+                    aria-expanded={this.state.showSettingsDropdown}
+                    callback={this.toggleSettingsDropdown}
+                    content={<Settings size={18} strokeWidth={2} />}
+                  />
+                  {this.state.showSettingsDropdown && (
+                    <ul className="site-nav__dropdown-menu">
+                      <li>
+                        <a href={configUrl}>System Configuration</a>
+                      </li>
+                      {isSystemAdmin && (
+                        <li>
+                          <a href={troubleshootingUrl}>Troubleshooting</a>
+                        </li>
+                      )}
+                    </ul>
+                  )}
+                </li>
+
+                {/* User dropdown: role, change password, sign out */}
                 {this.context.admin.email && (
                   <li className="site-nav__dropdown">
                     <Button
-                      className="account-dropdown-toggle transparent"
+                      className="account-dropdown-toggle transparent site-nav__user-btn"
                       type="button"
                       aria-haspopup="true"
                       aria-expanded={this.state.showAccountDropdown}
                       callback={this.toggleAccountDropdown}
                       content={
-                        <span>
-                          {this.context.admin.email} <GenericWedgeIcon />
+                        <span className="site-nav__user-btn-content">
+                          <User size={16} strokeWidth={2} />
+                          <span className="site-nav__user-btn-text">
+                            <span className="site-nav__user-email">
+                              {this.context.admin.email}
+                            </span>
+                            <span className="site-nav__user-role">
+                              {roleLabel}
+                            </span>
+                          </span>
+                          <GenericWedgeIcon />
                         </span>
                       }
                     />
@@ -230,8 +276,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 )}
               </ul>
             </div>
-          )}
-        </nav>
+          </nav>
+        )}
       </header>
     );
   }
@@ -255,8 +301,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   toggleAccountDropdown() {
-    let showAccountDropdown = !this.state.showAccountDropdown;
-    this.setState({ showAccountDropdown });
+    this.setState({ showAccountDropdown: !this.state.showAccountDropdown });
+  }
+
+  toggleSettingsDropdown() {
+    this.setState({ showSettingsDropdown: !this.state.showSettingsDropdown });
   }
 
   /**

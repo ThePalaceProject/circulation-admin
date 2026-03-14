@@ -36,5 +36,11 @@ export default (
     links = hierarchyComputeBreadcrumbs(collection, history);
   }
 
+  // The first crumb is always the catalog root (library name), which is
+  // already shown in the nav library selector — drop it to avoid duplication.
+  if (links.length > 1) {
+    links = links.slice(1);
+  }
+
   return links;
 };

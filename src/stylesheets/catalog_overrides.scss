@@ -1,3 +1,12 @@
+// Match the side gutters used by .palace main so the catalog view aligns
+// with every other page. Both .breadcrumbs-or-search-wrapper and .collection
+// are rendered by web-opds-client outside <main>, so each needs its own rule.
+.palace .breadcrumbs-or-search-wrapper,
+.palace .collection {
+  padding-left: 10vw;
+  padding-right: 10vw;
+}
+
 .collection-container {
   .book a {
     color: $blue-dark;

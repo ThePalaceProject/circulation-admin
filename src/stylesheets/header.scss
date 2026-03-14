@@ -1,11 +1,28 @@
-// ─── Site Nav (replaces Bootstrap navbar/nav/dropdown) ───────────────────────
+// ─── Brand bar (logo row) ─────────────────────────────────────────────────────
+
+.site-nav__brand {
+  display: flex;
+  align-items: center;
+  padding: 16px 10vw;
+  background-color: $white;
+  border-bottom: 1px solid #E7E7E7;
+
+  > img {
+    display: block;
+    height: 53px;
+    width: auto;
+    max-width: 360px;
+  }
+}
+
+// ─── Site Nav (library selector + nav links row) ──────────────────────────────
 
 .site-nav {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  padding: 3px 0;
+  padding: 0 10vw;
   background-color: $white;
   color: $dark;
   border-bottom: 1px solid #E7E7E7;
@@ -16,31 +33,27 @@
   }
 }
 
-// ─── Header (logo + library picker + mobile toggle) ──────────────────────────
+// ─── Header (library picker + mobile toggle) ──────────────────────────────────
 
 .site-nav__header {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-left: 10px;
-
-  > img {
-    height: 64px;
-    width: auto;
-    margin: -12px 20px 0 0;
-    vertical-align: top;
-  }
+  gap: 0.75rem;
+  padding: 8px 0;
+  margin-right: 24px;
 
   .form-group {
-    display: inline-block;
-    margin-top: 6px;
-    margin-bottom: 0;
+    margin: 0;
   }
 
   .form-control {
-    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 800;
     width: auto;
+    border-color: #D0D0CE;
+    border-radius: 6px;
+    padding: 6px 10px;
   }
 }
 
@@ -128,6 +141,64 @@
   &.active a {
     @include headerNavLink;
   }
+}
+
+// ─── Settings icon button ─────────────────────────────────────────────────────
+
+.site-nav__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  color: $dark;
+
+  svg {
+    display: block;
+    pointer-events: none; // prevent click-outside from seeing SVG not the button
+  }
+
+  &:hover, &:focus {
+    color: $blue;
+  }
+}
+
+// ─── User button ──────────────────────────────────────────────────────────────
+
+.site-nav__user-btn {
+  padding: 8px 10px;
+  color: $dark;
+
+  svg { pointer-events: none; }
+}
+
+.site-nav__user-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-nav__user-btn-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.site-nav__user-email {
+  font-size: 0.8rem;
+  font-weight: 600;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-nav__user-role {
+  font-size: 0.65rem;
+  font-weight: 400;
+  opacity: 0.65;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 // ─── Account dropdown ─────────────────────────────────────────────────────────

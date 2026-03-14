@@ -108,6 +108,11 @@ describe("Header", () => {
 
     it("shows Dashboard, Lists, Lanes, and System Configuration links for library manager", () => {
       const { container } = renderHeader(libraryManager, () => "nypl");
+      // Open settings dropdown so its links are present in the DOM
+      const settingsToggle = container.querySelector(
+        ".settings-dropdown-toggle"
+      );
+      fireEvent.click(settingsToggle);
       const linkTexts = Array.from(
         container.querySelectorAll("a, button")
       ).map((el) => el.textContent.trim());
@@ -121,6 +126,11 @@ describe("Header", () => {
 
     it("shows Patrons and Troubleshooting links for system admin", () => {
       const { container } = renderHeader(systemAdmin, () => "nypl");
+      // Open settings dropdown so its links are present in the DOM
+      const settingsToggle = container.querySelector(
+        ".settings-dropdown-toggle"
+      );
+      fireEvent.click(settingsToggle);
       const linkTexts = Array.from(
         container.querySelectorAll("a, button")
       ).map((el) => el.textContent.trim());

@@ -100,11 +100,20 @@ body > div {
   height: unset;
 }
 
+// ─── Body baseline ──────────────────────────────────────────────────────────
+// This rule must live here (after web-opds-client import) so it wins the
+// cascade. Preflight resets margin/padding to 0; web-opds-client sets its
+// own body rules — both are overridden here.
+html, body {
+  padding-top: 16px !important;
+  background-color: #F8F8F7 !important;
+}
+
 // ─── Page-level gutter ──────────────────────────────────────────────────────
 // All <main> elements inside .palace inherit consistent side gutters and top
 // breathing room.  Pages that fully own their own layout override below.
 .palace main {
-  padding: 24px 32px;
+  padding: 32px 10vw;
 }
 
 body > div.palace {
