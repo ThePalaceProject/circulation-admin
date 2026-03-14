@@ -76,21 +76,21 @@
       }
     }
 
-    // ─── Card header – overline label + description ──────────────────────
+    // ─── Card header – label + description ──────────────────────────────
     h3 {
-      font-size: 0.6875rem;              // 11px
+      font-size: 0.875rem;               // 14px — legible section label
       font-weight: 700;
-      letter-spacing: 0.07em;
-      color: #374151;                    // gray-700 — readable overline label
+      letter-spacing: 0.02em;
+      color: #111827;                    // gray-900 — high contrast
       text-transform: none;
       text-wrap: balance;
-      margin: 0 0 4px;
+      margin: 0 0 6px;
     }
 
     .stat-group-description {
-      font-size: 0.8125rem;             // 13px
-      font-style: normal;               // no italic
-      color: #6b7280;                   // gray-500 — secondary text, legible
+      font-size: 0.875rem;              // 14px
+      font-style: normal;
+      color: #4b5563;                   // gray-600 — readable secondary text
       margin: 0 0 16px;
       text-wrap: balance;
       max-width: 52ch;
@@ -99,7 +99,7 @@
     .no-content {
       font-style: italic;
       font-weight: 500;
-      color: #9ca3af;
+      color: #6b7280;                   // gray-500 — dim but readable
       font-size: 0.875rem;
       margin-top: 8px;
     }
@@ -145,10 +145,10 @@
     }
   }
 
-  // ─── Grouping label (used in some cards as secondary text) ──────────────
+  // ─── Grouping label ────────────────────────────────────────────────────
   .stat-grouping-label {
     text-align: left;
-    height: 1rem;
+    // height removed — was clipping multi-word headings
   }
 
   // ─── SVG icons ──────────────────────────────────────────────────────────
@@ -184,7 +184,7 @@
   // Row label
   .stat-label {
     font-size: 0.875rem;                 // 14px
-    color: #6b7280;                      // gray-500
+    color: #374151;                      // gray-700 — sufficient contrast at 14px
     line-height: 1.4;
   }
 
