@@ -119,22 +119,22 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background-color: #1B7FA7;
+        background-color: #2563eb;       // blue-600
         color: #ffffff;
         font-size: 1rem;
         font-weight: 700;
         text-decoration: none;
         padding: 6px 12px;
         border-radius: 4px;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.15s ease;
         &:hover {
-          background-color: #54514A;
+          background-color: #1d4ed8;     // blue-700
           color: #ffffff;
           text-decoration: none;
         }
         &:focus-visible {
           outline: none;
-          box-shadow: 0 0 0 3px rgba(27,127,167,0.35);
+          box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
         }
       }
     }
