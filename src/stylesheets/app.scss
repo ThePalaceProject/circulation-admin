@@ -2,6 +2,10 @@
 
 $fontfamily: 'Open Sans', sans-serif;
 
+// Tailwind v4: explicitly declare the source files to scan for utility classes.
+// Without this, the @tailwindcss/postcss v4 JIT scanner may not find .tsx files.
+@source "../**/*.{ts,tsx}";
+
 // Tailwind base layer — Preflight reset + our CSS custom properties.
 // Must come first so that our theme overrides and component SCSS can build on it.
 @tailwind base;

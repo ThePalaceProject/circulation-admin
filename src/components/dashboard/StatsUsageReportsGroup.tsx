@@ -3,14 +3,6 @@ import StatsGroup from "./StatsGroup";
 import InventoryReportRequestModal from "./InventoryReportRequestModal";
 import { useState } from "react";
 
-// Pure Tailwind — shared by both action buttons in this card
-const actionBtn =
-  "inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 " +
-  "text-sm font-semibold text-white shadow-sm " +
-  "hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 " +
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 " +
-  "disabled:opacity-50 disabled:pointer-events-none";
-
 type Props = {
   heading?: string;
   description?: string;
@@ -62,7 +54,7 @@ const StatsUsageReportsGroup = ({
                   href={usageDataHref}
                   target={usageDataTarget}
                   rel="noopener noreferrer"
-                  className={actionBtn}
+                  className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1"
                 >
                   {usageDataLabel}
                   <i className="fa fa-external-link text-xs" aria-hidden />
@@ -79,7 +71,7 @@ const StatsUsageReportsGroup = ({
             <div className="flex flex-col gap-2">
               <div>
                 <button
-                  className={actionBtn}
+                  className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none"
                   onClick={() => setShowReportForm(true)}
                   disabled={showReportForm}
                   title="Request an inventory report."
