@@ -81,8 +81,11 @@
   text-overflow: ellipsis;
 }
 
-// ─── Site Nav (library selector + nav links row) ──────────────────────────────
-
+// ─── Site Nav base + row modifiers ───────────────────────────────────────────
+//
+//  Row 2  .site-nav.site-nav--controls  → library selector (left) + config (right)
+//  Row 3  .site-nav.site-nav--tabs      → page nav tab links only
+//
 .site-nav {
   position: relative;
   display: flex;
@@ -97,6 +100,29 @@
 
   .palace & {
     margin-bottom: 0;
+  }
+}
+
+// Row 2 modifier — no extra overrides needed; .site-nav base handles it
+.site-nav--controls {
+  align-items: center;   // center library picker + config button vertically
+}
+
+// Row 3 modifier — tabs row sits below controls row
+.site-nav--tabs {
+  min-height: 42px;
+}
+
+// ─── Controls-end: right-aligned config area in row 2 ────────────────────────
+
+.site-nav__controls-end {
+  display: flex;
+  align-items: stretch;
+  margin-left: auto;
+
+  // The ul inside controls-end should have no left margin offset
+  > .site-nav__links {
+    margin-left: 0;
   }
 }
 

@@ -180,9 +180,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           )}
         </div>
 
-        {/* Row 2: Library selector + nav links */}
+        {/* Row 2: Library selector (left) + Configuration (right) */}
         {!logoOnly && (
-          <nav className="site-nav">
+          <div className="site-nav site-nav--controls">
             <div className="site-nav__header">
               {this.props.libraries && this.props.libraries.length > 0 && (
                 <div className="site-nav__library-wrapper">
@@ -228,23 +228,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               </button>
             </div>
 
-            <div className="site-nav__menu">
-              {currentLibrary && (
-                <ul className="site-nav__links">
-                  {this.renderLinkItem(
-                    dashboardLinkItem,
-                    currentPathname,
-                    currentLibrary
-                  )}
-                  {libraryNavItems.map((item) =>
-                    this.renderNavItem(item, currentPathname, currentLibrary)
-                  )}
-                  {libraryLinkItems.map((item) =>
-                    this.renderLinkItem(item, currentPathname, currentLibrary)
-                  )}
-                </ul>
-              )}
-              <ul className="site-nav__links site-nav__links--right">
+            {/* Right side: sitewide links + configuration dropdown */}
+            <div className="site-nav__controls-end">
+              <ul className="site-nav__links">
                 {sitewideLinkItems.map((item) =>
                   this.renderLinkItem(item, currentPathname)
                 )}
@@ -276,6 +262,25 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 </li>
               </ul>
             </div>
+          </div>
+        )}
+
+        {/* Row 3: Page nav tabs — only when a library is selected */}
+        {!logoOnly && currentLibrary && (
+          <nav className="site-nav site-nav--tabs">
+            <ul className="site-nav__links">
+              {this.renderLinkItem(
+                dashboardLinkItem,
+                currentPathname,
+                currentLibrary
+              )}
+              {libraryNavItems.map((item) =>
+                this.renderNavItem(item, currentPathname, currentLibrary)
+              )}
+              {libraryLinkItems.map((item) =>
+                this.renderLinkItem(item, currentPathname, currentLibrary)
+              )}
+            </ul>
           </nav>
         )}
       </header>
