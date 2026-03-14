@@ -1,8 +1,15 @@
 import React = require("react");
-import { Button } from "../ui";
 import StatsGroup from "./StatsGroup";
 import InventoryReportRequestModal from "./InventoryReportRequestModal";
 import { useState } from "react";
+
+// Pure Tailwind — shared by both action buttons in this card
+const actionBtn =
+  "inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 " +
+  "text-sm font-semibold text-primary-foreground shadow-sm " +
+  "hover:bg-primary/80 transition-colors " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 " +
+  "disabled:opacity-50 disabled:pointer-events-none";
 
 type Props = {
   heading?: string;
@@ -39,53 +46,59 @@ const StatsUsageReportsGroup = ({
           library={library}
         />
       )}
-      <ul className="stat-usage-reports">
-        <li>
-          <StatsGroup heading={heading} description={description}>
-            <>
-              {!inventoryReportsEnabled && !quicksightLinkEnabled && (
-                <span className="no-content">
-                  Usage reporting is not available.
-                </span>
-              )}
-              {inventoryReportsEnabled && library && (
-                <>
-                  <Button
-                    callback={(() => setShowReportForm(true)) as any}
-                    content={
-                      <>
-                        Request Report &nbsp;&nbsp;
-                        <i className="fa fa-regular fa-envelope" />
-                      </>
-                    }
-                    title="Request an inventory report."
-                    disabled={showReportForm}
-                  />
-                  <div className="stat-group-description">
-                    These reports provide up-to-date data on both inventory and
-                    holds for library at the time of the request.
-                  </div>
-                </>
-              )}
-            </>
-          </StatsGroup>
-        </li>
-        {quicksightLinkEnabled && (
-          <li>
-            <div className="stat-link">
-              <a
-                href={usageDataHref}
-                target={usageDataTarget}
-                rel="noopener noreferrer"
-              >
-                {usageDataLabel}
-              </a>
-              &nbsp;&nbsp;
-              <i className="fa fa-external-link" />
+      <StatsGroup heading={heading} description={description}>
+        <div className="flex flex-col gap-6">
+          {!inventoryReportsEnabled && !quicksightLinkEnabled && (
+            <p className="text-sm italic text-gray-500">
+              Usage reporting is not available.
+            </p>
+          )}
+
+          {/* View Usage — shown first */}
+          {quicksightLinkEnabled && (
+            <div className="flex flex-col gap-2">
+              <div>
+                <a
+                  href={usageDataHref}
+                  target={usageDataTarget}
+                  rel="noopener noreferrer"
+                  className={actionBtn}
+                >
+                  {usageDataLabel}
+                  <i className="fa fa-external-link text-xs" aria-hidden />
+                </a>
+              </div>
+              <p className="text-sm text-gray-600">
+                View historical circulation and usage data for this library.
+              </p>
             </div>
-          </li>
-        )}
-      </ul>
+          )}
+
+          {/* Request Report — shown second */}
+          {inventoryReportsEnabled && library && (
+            <div className="flex flex-col gap-2">
+              <div>
+                <button
+                  className={actionBtn}
+                  onClick={() => setShowReportForm(true)}
+                  disabled={showReportForm}
+                  title="Request an inventory report."
+                >
+                  Request Report
+                  <i
+                    className="fa fa-regular fa-envelope text-xs"
+                    aria-hidden
+                  />
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">
+                These reports provide up-to-date data on both inventory and
+                holds for this library at the time of the request.
+              </p>
+            </div>
+          )}
+        </div>
+      </StatsGroup>
     </>
   );
 };

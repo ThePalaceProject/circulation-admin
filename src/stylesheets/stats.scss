@@ -104,40 +104,7 @@
       margin-top: 8px;
     }
 
-    // ─── Inline report / link blocks ────────────────────────────────────
-    .stat-usage-reports {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .stat-link {
-      margin-top: 1rem;
-      a {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background-color: #2563eb;       // blue-600
-        color: #ffffff;
-        font-size: 1rem;
-        font-weight: 700;
-        text-decoration: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        transition: background-color 0.15s ease;
-        &:hover {
-          background-color: #1d4ed8;     // blue-700
-          color: #ffffff;
-          text-decoration: none;
-        }
-        &:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
-        }
-      }
-    }
+    // Inline report / link blocks — layout now handled by Tailwind in StatsUsageReportsGroup.tsx
 
     ul {
       padding: 0;
