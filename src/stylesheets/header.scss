@@ -43,7 +43,12 @@
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.06);
+    background-color: rgba(0, 0, 0, 0.06);  // gray-900/6
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.12);  // gray-900/12 — Tailwind press depth
+    box-shadow: none;
   }
 
   &:focus-visible {
@@ -120,7 +125,16 @@
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
-  transition: box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  // :active on the wrapper fires when the invisible select is pressed
+  &:active {
+    background-color: rgba(0, 0, 0, 0.12);
+  }
 
   &:focus-within {
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
@@ -238,6 +252,13 @@
         background: transparent;
       }
 
+      &:active {
+        color: #2563eb;                  // blue-600 — confirms selection
+        border-bottom-color: #2563eb;
+        background: transparent;
+        box-shadow: none;
+      }
+
       &:focus {
         outline: none;
       }
@@ -270,6 +291,12 @@
     &:hover {
       color: #111827;
       border-bottom-color: #d1d5db;
+      background: transparent;
+    }
+
+    &:active {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
       background: transparent;
     }
 
@@ -315,6 +342,13 @@
     background: transparent;
   }
 
+  &:active {
+    color: #2563eb;                      // blue-600
+    border-bottom-color: #2563eb;
+    background: transparent;
+    box-shadow: none;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
@@ -358,6 +392,13 @@
       color: #111827;
       border-bottom-color: #d1d5db;
       background: transparent;
+    }
+
+    &:active {
+      color: #2563eb;                    // blue-600
+      border-bottom-color: #2563eb;
+      background: transparent;
+      box-shadow: none;
     }
 
     &:focus {
