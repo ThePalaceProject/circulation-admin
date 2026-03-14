@@ -5,10 +5,10 @@ import { useState } from "react";
 
 // Pure Tailwind — shared by both action buttons in this card
 const actionBtn =
-  "inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 " +
-  "text-sm font-semibold text-primary-foreground shadow-sm " +
-  "hover:bg-primary/80 transition-colors " +
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 " +
+  "inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 " +
+  "text-sm font-semibold text-white shadow-sm " +
+  "hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 " +
   "disabled:opacity-50 disabled:pointer-events-none";
 
 type Props = {
