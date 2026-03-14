@@ -1,10 +1,9 @@
 /* eslint-disable */
 /**
- * Button component — drop-in replacement for library-simplified-reusable-components Button.
+ * Button component.
  *
- * Accepts the same prop API so all consuming files only need an import path change:
- *   import { Button } from "../ui/button";
- *   import { Button } from "../ui";         // via barrel
+ * Styled with Palace semantic Tailwind tokens (bg-primary, bg-destructive, etc.)
+ * defined in theme.scss and tailwind.config.js.
  *
  * Props:
  *   content    — button label (ReactNode or string)
@@ -18,22 +17,19 @@ import * as React from "react";
 import { cn } from "../../lib/utils";
 
 /**
- * Maps the legacy modifier class tokens from library-simplified-reusable-components
- * to the equivalent Tailwind utility classes.
- * Unknown tokens are passed through unchanged (e.g. custom CSS classes).
+ * Maps the legacy modifier class tokens to Tailwind utility classes.
+ * Colors use the Palace semantic tokens defined in theme.scss / tailwind.config.js.
  */
 const TOKEN_MAP: Record<string, string> = {
   // Colour variants
   inverted:
-    "bg-white text-[#1B7FA7] border border-[#1B7FA7] " +
-    "hover:bg-[#54514A] hover:text-white hover:border-[#54514A] focus:text-[#1B7FA7]",
-  danger:
-    "bg-[#D0343A] hover:bg-white hover:text-[#D0343A] hover:border hover:border-[#D0343A]",
-  success:
-    "bg-[#008918] hover:bg-white hover:text-[#008918] hover:border hover:border-[#008918]",
+    "bg-white text-primary border border-primary " +
+    "hover:bg-primary hover:text-primary-foreground hover:border-primary",
+  danger: "bg-destructive text-white hover:bg-destructive/80",
+  success: "bg-accent text-white hover:bg-accent/80",
   transparent:
-    "bg-transparent text-[#111] font-normal p-0 border-transparent " +
-    "hover:bg-transparent hover:text-[#111] hover:border-transparent",
+    "bg-transparent text-foreground font-normal p-0 border-transparent " +
+    "hover:bg-transparent hover:text-foreground hover:border-transparent",
   // Sizes
   small: "text-sm",
   big: "text-lg",
@@ -44,7 +40,7 @@ const TOKEN_MAP: Record<string, string> = {
   "bottom-align": "mb-0",
   // Display
   inline: "inline-flex items-center",
-  centered: "mx-auto w-[25vw] text-[1.8vw] border border-[#1B7FA7]",
+  centered: "mx-auto w-[25vw] text-[1.8vw] border border-primary",
   // Border radius
   squared: "rounded-none",
   "bottom-squared": "rounded-tl rounded-tr rounded-bl-none rounded-br-none",
@@ -103,12 +99,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         className={cn(
-          // Base styles matching the original library
-          "btn inline-flex items-center justify-center text-white bg-[#1B7FA7] m-2 rounded text-base px-3 py-1.5 font-bold min-h-6",
-          "transition-colors duration-500",
-          "hover:bg-[#54514A] hover:text-white hover:border-[#54514A]",
-          "focus:text-white",
-          "disabled:pointer-events-none",
+          // Base — Palace primary blue (--primary from theme.scss)
+          "btn inline-flex items-center justify-center text-primary-foreground bg-primary m-2 rounded text-base px-3 py-1.5 font-bold min-h-6",
+          "transition-colors duration-150",
+          "hover:bg-primary/80",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+          "disabled:pointer-events-none disabled:opacity-50",
           // Resolved modifier classes override base styles via tailwind-merge
           resolveModifierClasses(className)
         )}

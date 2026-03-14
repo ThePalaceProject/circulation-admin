@@ -1,8 +1,9 @@
 /* eslint-disable */
 /**
- * Panel component — drop-in replacement for library-simplified-reusable-components Panel.
+ * Panel component.
  *
- * A collapsible section with a coloured header and optional content area.
+ * A collapsible section with a coloured header.
+ * Header colours use Tailwind utility classes; no legacy library-simplified styles.
  *
  * Props:
  *   id            — HTML id; used for aria-controls
@@ -25,7 +26,7 @@ const HEADER_STYLES: Record<PanelStyle, string> = {
   success: "bg-[#809f69] hover:bg-[#497629] text-white hover:text-white",
   warning: "bg-[#ffcd61] hover:bg-[#9d6b00] hover:text-white",
   danger: "bg-[#da5d62] hover:bg-[#aa272c] text-white hover:text-white",
-  instruction: "bg-[#acd0df] hover:bg-[#1B7FA7] hover:text-white",
+  instruction: "bg-sky-100 hover:bg-sky-600 hover:text-white",
 };
 
 export interface PanelProps {
