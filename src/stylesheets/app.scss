@@ -9,63 +9,75 @@ $fontfamily: 'Open Sans', sans-serif;
 // Theme CSS custom properties (--background, --primary, etc.)
 @import "theme";
 
-// bootstrap-compat provides structural CSS classes (navbar, grid, forms, etc.)
-// still referenced in templates. Base typography has been moved to theme.scss
-// so there is no longer any duplication with Tailwind Preflight.
-@import "bootstrap-compat";
-@import "~@thepalaceproject/web-opds-client/lib/stylesheets/app.scss";
+// ─── Legacy layer ─────────────────────────────────────────────────────────────
+// Everything below is wrapped in @layer legacy so that ALL Tailwind utility
+// classes (in @layer utilities) automatically override Bootstrap-era and
+// Library Simplified-era element resets — no !important, no specificity hacks.
+//
+// theme.scss is intentionally kept OUTSIDE this layer: its base typography
+// (body, headings, pre/code) must sit above Tailwind Preflight (@layer base)
+// so the Palace font / sizing defaults remain in effect app-wide.
+// Link colour is scoped via a:not([class*="text-"]) in theme.scss so that
+// Tailwind text-* utilities still work on <a> elements.
+@layer legacy {
+  // Bootstrap 3 structural classes (.btn, .nav-tabs, .form-control, .col-*, …)
+  @import "bootstrap-compat";
+  // Library Simplified / web-opds-client styles (includes the bare-element
+  // border-radius: 0 resets that previously fought Tailwind's rounded-* classes)
+  @import "~@thepalaceproject/web-opds-client/lib/stylesheets/app.scss";
 
-@import "mixins";
-@import "colors";
-@import "global";
+  @import "mixins";
+  @import "colors";
+  @import "global";
 
-@import "advanced_search";
-@import "announcements";
-@import "badge";
-@import "book_details_container";
-@import "book_details_tab_container";
-@import "catalog_overrides";
-@import "change_password_form";
-@import "circulation_events_download_form";
-@import "classifications_form";
-@import "classifications_table";
-@import "collection";
-@import "color_picker";
-@import "complaint_form";
-@import "config_tab_container";
-@import "custom_list_editor";
-@import "custom_list_entries_editor";
-@import "custom_lists_page";
-@import "custom_lists_sidebar";
-@import "custom_lists";
-@import "dashboard";
-@import "debug_authentication";
-@import "diagnostics";
-@import "edit_form";
-@import "editable_input";
-@import "editor";
-@import "entry_points_container";
-@import "facets";
-@import "footer";
-@import "genre_form";
-@import "header";
-@import "icon";
-@import "individual_admin_edit_form";
-@import "input_list";
-@import "lane_editor";
-@import "lanes";
-@import "lanes_sidebar";
-@import "library_registration";
-@import "manage_patrons";
-@import "paired_menu";
-@import "password_input";
-@import "protocol_form_field";
-@import "self_tests";
-@import "set_up";
-@import "stats";
-@import "tool_tip";
-@import "troubleshooting";
-@import "updating_loader";
-@import "welcome_page";
-@import "with_edit_button";
-@import "with_remove_button";
+  @import "advanced_search";
+  @import "announcements";
+  @import "badge";
+  @import "book_details_container";
+  @import "book_details_tab_container";
+  @import "catalog_overrides";
+  @import "change_password_form";
+  @import "circulation_events_download_form";
+  @import "classifications_form";
+  @import "classifications_table";
+  @import "collection";
+  @import "color_picker";
+  @import "complaint_form";
+  @import "config_tab_container";
+  @import "custom_list_editor";
+  @import "custom_list_entries_editor";
+  @import "custom_lists_page";
+  @import "custom_lists_sidebar";
+  @import "custom_lists";
+  @import "dashboard";
+  @import "debug_authentication";
+  @import "diagnostics";
+  @import "edit_form";
+  @import "editable_input";
+  @import "editor";
+  @import "entry_points_container";
+  @import "facets";
+  @import "footer";
+  @import "genre_form";
+  @import "header";
+  @import "icon";
+  @import "individual_admin_edit_form";
+  @import "input_list";
+  @import "lane_editor";
+  @import "lanes";
+  @import "lanes_sidebar";
+  @import "library_registration";
+  @import "manage_patrons";
+  @import "paired_menu";
+  @import "password_input";
+  @import "protocol_form_field";
+  @import "self_tests";
+  @import "set_up";
+  @import "stats";
+  @import "tool_tip";
+  @import "troubleshooting";
+  @import "updating_loader";
+  @import "welcome_page";
+  @import "with_edit_button";
+  @import "with_remove_button";
+}

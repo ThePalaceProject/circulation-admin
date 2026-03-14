@@ -110,7 +110,10 @@ body {
   background-color: #F8F8F7;
 }
 
-a {
+// Scope default link colour to links that don't carry an explicit Tailwind
+// text-colour utility (e.g. text-white, text-blue-600).  Without the :not()
+// guard, this unlayered rule would beat any Tailwind @layer utilities colour.
+a:not([class*="text-"]) {
   color: #337AB7;
   text-decoration: none;
 

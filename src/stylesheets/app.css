@@ -8,6 +8,17 @@
  * block is available to the SCSS pipeline.
  */
 
+/*
+ * Declare @layer legacy BEFORE Tailwind registers its own layers.
+ * CSS layer priority = last declared wins, so declaring legacy first gives it
+ * the lowest priority.  All Bootstrap / Library Simplified / opds-client styles
+ * placed in this layer are automatically overrideable by any Tailwind utility.
+ *
+ * Final priority order (highest → lowest):
+ *   utilities > components > base (Preflight) > theme > [unlayered] > legacy
+ */
+@layer legacy;
+
 /* Tell Tailwind v4's scanner where component/page source files live. */
 @source "../**/*.{ts,tsx}";
 

@@ -171,36 +171,6 @@ body > div.palace {
   padding-bottom: 50px;
 }
 
-// ─── Tailwind utility compat ─────────────────────────────────────────────────
-//
-// The third-party web-opds-client stylesheet resets border-radius to 0 and
-// does not set link colours — but our theme.scss sets a { color: #337AB7 }.
-// Both are unlayered CSS, which always beats Tailwind's @layer utilities.
-//
-// Fix: use higher-specificity selectors here (element + class = 0,1,1 vs bare
-// element = 0,0,1) so Tailwind's rounded-* and text-* utilities take effect
-// on any a or button that carries those classes.
-//
-// Add variants below as new Tailwind classes are introduced elsewhere.
-
-a, button, input, select, textarea {
-  &.rounded-sm   { border-radius: 0.125rem; }
-  &.rounded      { border-radius: 0.25rem; }
-  &.rounded-md   { border-radius: 0.375rem; }
-  &.rounded-lg   { border-radius: 0.5rem; }
-  &.rounded-xl   { border-radius: 0.75rem; }
-  &.rounded-2xl  { border-radius: 1rem; }
-  &.rounded-full { border-radius: 9999px; }
-  &.rounded-none { border-radius: 0; }
-}
-
-a {
-  &.text-white {
-    color: #fff;
-    &:hover,
-    &:focus {
-      color: #fff;
-      text-decoration: none;
-    }
-  }
-}
+// Tailwind utility compat block removed — no longer needed.
+// @layer legacy in app.scss now gives all Tailwind utilities automatic priority
+// over the web-opds-client border-radius: 0 resets and Bootstrap element rules.
