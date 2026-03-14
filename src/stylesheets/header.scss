@@ -82,7 +82,8 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
+  min-height: 48px;
   padding: 0 10vw;
   background-color: $white;
   color: $dark;
@@ -190,7 +191,7 @@
 .site-nav__menu {
   display: flex;
   flex: 1;
-  align-items: center;
+  align-items: stretch;
   overflow-x: visible;
   padding: 0;
 }
@@ -199,6 +200,7 @@
 
 .site-nav__links {
   display: flex;
+  align-items: stretch;
   list-style: none;
   padding: 0;
   margin: 0 0 0 3px;
@@ -210,17 +212,30 @@
 
   > li {
     position: relative;
+    display: flex;
+    align-items: stretch;
 
     > a,
     > button {
-      display: block;
-      padding: 15px 10px;
-      color: $dark;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      color: #6b7280;                    // gray-500 default
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
       text-decoration: none;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;               // flush with nav container bottom border
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease;
 
-      &:hover,
-      &:active {
-        @include headerNavLink;
+      &:hover {
+        color: #111827;                  // gray-900
+        border-bottom-color: #d1d5db;   // gray-300 hover indicator
+        background: transparent;
       }
 
       &:focus {
@@ -230,7 +245,6 @@
       &:focus-visible {
         outline: none;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-        border-radius: 4px;
       }
     }
   }
@@ -239,14 +253,24 @@
 // ─── Individual link items ────────────────────────────────────────────────────
 
 .site-nav__links .header-link {
+  display: flex;
+  align-items: stretch;
+
   a {
-    padding-left: 5px;
-    padding-right: 5px;
+    display: flex;
+    align-items: center;
     text-decoration: none;
 
-    &.active-link,
+    // Active tab: blue bottom border + blue text
+    &.active-link {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+
     &:hover {
-      @include headerNavLink;
+      color: #111827;
+      border-bottom-color: #d1d5db;
+      background: transparent;
     }
 
     &:focus {
@@ -256,12 +280,12 @@
     &:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-      border-radius: 4px;
     }
   }
 
   &.active a {
-    @include headerNavLink;
+    color: #2563eb;
+    border-bottom-color: #2563eb;
   }
 }
 
@@ -273,20 +297,22 @@
   gap: 6px;
   background: transparent;
   border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;                   // flush with nav bottom border
   outline: none;
   cursor: pointer;
-  padding: 12px 10px;
-  border-radius: 8px;
-  color: $dark;
-  font-size: 1rem;
-  font-weight: 400;
+  padding: 0 12px;
+  color: #6b7280;                        // gray-500
+  font-size: 0.9rem;
+  font-weight: 500;
   white-space: nowrap;
   text-decoration: none;
-  transition: background-color 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease;
 
   &:hover {
-    @include headerNavLink;
-    border-radius: 8px;
+    color: #111827;                      // gray-900
+    border-bottom-color: #d1d5db;       // gray-300
+    background: transparent;
   }
 
   &:focus-visible {
@@ -303,16 +329,35 @@
 
 .site-nav__dropdown {
   position: relative;
+  display: flex;
+  align-items: stretch;
 
   > button {
-    color: $dark;
-    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    color: #6b7280;                    // gray-500
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
 
     // Only rotate the wedge chevron; leave lucide icons alone
     svg.dgx-svg-icon {
       transform: rotate(270deg);
-      fill: $dark;
+      fill: currentColor;
       height: 0.9em;
+    }
+
+    &:hover {
+      color: #111827;
+      border-bottom-color: #d1d5db;
+      background: transparent;
     }
 
     &:focus {
@@ -322,7 +367,6 @@
     &:focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-      border-radius: 8px;
     }
   }
 }
