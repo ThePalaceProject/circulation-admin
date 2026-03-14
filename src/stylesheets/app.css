@@ -1,0 +1,15 @@
+/*
+ * Tailwind v4 entry point (plain CSS — not SCSS).
+ *
+ * This file MUST be plain CSS so that @tailwindcss/postcss can process
+ * `@import "tailwindcss"` before sass-loader touches anything.
+ *
+ * webpack loads this BEFORE app.scss so that Tailwind's @theme CSS-variable
+ * block is available to the SCSS pipeline.
+ */
+
+/* Tell Tailwind v4's scanner where component/page source files live. */
+@source "../**/*.{ts,tsx}";
+
+/* Inject Tailwind v4: @theme variables + base reset + utility classes. */
+@import "tailwindcss";

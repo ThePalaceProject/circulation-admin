@@ -2,13 +2,11 @@
 
 $fontfamily: 'Open Sans', sans-serif;
 
-// Tailwind v4: explicitly declare the source files to scan for utility classes.
-// Without this, the @tailwindcss/postcss v4 JIT scanner may not find .tsx files.
-@source "../**/*.{ts,tsx}";
+// Tailwind v4 base/components/utilities are now injected via app.css (plain CSS)
+// so that @import "tailwindcss" reaches @tailwindcss/postcss without SCSS
+// intercepting it. app.css is listed before this file in webpack.common.js.
 
-// Tailwind base layer — Preflight reset + our CSS custom properties.
-// Must come first so that our theme overrides and component SCSS can build on it.
-@tailwind base;
+// Theme CSS custom properties (--background, --primary, etc.)
 @import "theme";
 
 // bootstrap-compat provides structural CSS classes (navbar, grid, forms, etc.)
@@ -20,10 +18,6 @@ $fontfamily: 'Open Sans', sans-serif;
 @import "mixins";
 @import "colors";
 @import "global";
-
-// Tailwind component and utility layers.
-@tailwind components;
-@tailwind utilities;
 
 @import "advanced_search";
 @import "announcements";

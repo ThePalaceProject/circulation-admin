@@ -9,7 +9,13 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
-    app: ["./src/stylesheets/app.scss", "./src/index.tsx"],
+    // app.css must be listed first so Tailwind v4's @theme CSS-variable block
+    // (injected via @import "tailwindcss") is available before app.scss runs.
+    app: [
+      "./src/stylesheets/app.css",
+      "./src/stylesheets/app.scss",
+      "./src/index.tsx",
+    ],
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
@@ -39,6 +45,14 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        // Plain CSS files (e.g. app.css) — no sass-loader, just css-loader +
+        // postcss-loader so that Tailwind v4's @import "tailwindcss" directive
+        // reaches the PostCSS plugin intact.
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+      },
       {
         test: /\.scss$/,
         // postcss-loader runs after sass-loader converts SCSS → CSS,
