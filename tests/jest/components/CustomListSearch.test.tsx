@@ -61,10 +61,10 @@ function renderSearch(
 describe("CustomListSearch", () => {
   it("renders a radio button for each entry point", () => {
     const { container } = renderSearch();
-    // EditableInput wraps each radio in .form-group
+    // EditableInput wraps each radio in .editable-input-group
     const entryPointOptions = container
       .querySelector(".entry-points")!
-      .querySelectorAll<HTMLElement>(".form-group");
+      .querySelectorAll<HTMLElement>(".editable-input-group");
 
     expect(entryPointOptions.length).toBe(3);
 
@@ -109,7 +109,7 @@ describe("CustomListSearch", () => {
     const { container } = renderSearch({ updateSearchParam });
     const options = container
       .querySelector(".entry-points")!
-      .querySelectorAll<HTMLElement>(".form-group");
+      .querySelectorAll<HTMLElement>(".editable-input-group");
     const audioRadio = options[2].querySelector<HTMLInputElement>("input")!;
     fireEvent.click(audioRadio);
     expect(updateSearchParam).toHaveBeenCalledTimes(1);
@@ -120,7 +120,7 @@ describe("CustomListSearch", () => {
     const { container } = renderSearch();
     const sortOptions = container
       .querySelector(".search-options")!
-      .querySelectorAll<HTMLElement>(".form-group");
+      .querySelectorAll<HTMLElement>(".editable-input-group");
 
     expect(sortOptions.length).toBe(3);
 
@@ -164,7 +164,7 @@ describe("CustomListSearch", () => {
     const { container } = renderSearch({ updateSearchParam });
     const options = container
       .querySelector(".search-options")!
-      .querySelectorAll<HTMLElement>(".form-group");
+      .querySelectorAll<HTMLElement>(".editable-input-group");
     const authorRadio = options[2].querySelector<HTMLInputElement>("input")!;
     fireEvent.click(authorRadio);
     expect(updateSearchParam).toHaveBeenCalledTimes(1);
@@ -200,7 +200,7 @@ describe("CustomListSearch", () => {
       const { container } = renderSearch({ showAutoUpdate: false });
       const autoUpdateOptions = container
         .querySelector(".auto-update")
-        ?.querySelectorAll(".form-group");
+        ?.querySelectorAll(".editable-input-group");
       expect(autoUpdateOptions?.length ?? 0).toBe(0);
     });
   });
@@ -223,7 +223,7 @@ describe("CustomListSearch", () => {
       );
       const autoUpdateOptions = container
         .querySelector(".auto-update")!
-        .querySelectorAll<HTMLElement>(".form-group");
+        .querySelectorAll<HTMLElement>(".editable-input-group");
 
       expect(autoUpdateOptions.length).toBe(2);
 

@@ -153,9 +153,9 @@ label {
   margin-bottom: 4px;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
+// .form-group margin is now handled by the editable-input-group mb-4 Tailwind
+// class in EditableInput.tsx. Other components using .form-group directly still
+// get spacing via global.scss.
 
 .form-control {
   display: block;

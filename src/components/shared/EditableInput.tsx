@@ -86,7 +86,11 @@ export default class EditableInput extends React.Component<
         ? "field-error"
         : "";
     return (
-      <div className={`form-group ${errorClass} ${this.props.className}`}>
+      <div
+        className={`editable-input-group mb-4 ${errorClass} ${
+          this.props.className || ""
+        }`}
+      >
         {label && (
           <label className="control-label">
             {type !== "checkbox" && type !== "radio" && label}
