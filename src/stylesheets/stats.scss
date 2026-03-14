@@ -78,13 +78,13 @@
 
     // ─── Card header – label + description ──────────────────────────────
     h3 {
-      font-size: 0.875rem;               // 14px — legible section label
+      font-size: 1.125rem;               // 18px — h2-level visual weight
       font-weight: 700;
-      letter-spacing: 0.02em;
-      color: #111827;                    // gray-900 — high contrast
+      letter-spacing: normal;
+      color: #111827;                    // gray-900 — full contrast
       text-transform: none;
       text-wrap: balance;
-      margin: 0 0 6px;
+      margin: 0 0 8px;
     }
 
     .stat-group-description {
