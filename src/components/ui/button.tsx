@@ -32,6 +32,7 @@ const TOKEN_MAP: Record<string, string> = {
     "hover:bg-transparent hover:text-foreground hover:border-transparent",
   // Sizes
   small: "text-sm",
+  "btn-sm": "text-sm",
   big: "text-lg",
   // Margin / alignment  (remove the default m-2)
   "left-align": "ml-0",

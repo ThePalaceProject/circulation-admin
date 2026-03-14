@@ -74,7 +74,7 @@ $dangercolor: #D9534F;
         }
       }
 
-      a.btn-default, a.danger {
+      a.danger {
         display: unset;
         margin: 0 12px 0 0;
         color: $pagecolor;
@@ -86,9 +86,7 @@ $dangercolor: #D9534F;
           float: unset;
           vertical-align: unset;
         }
-      }
 
-      a.danger {
         &:hover {
           background-color: white;
           border-color: $dangercolor;

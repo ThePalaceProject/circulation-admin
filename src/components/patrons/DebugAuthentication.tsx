@@ -7,6 +7,7 @@ import {
 } from "../../api/patronDebug";
 import DebugResultListItem from "./DebugResultListItem";
 import PasswordInput from "../shared/PasswordInput";
+import { Button } from "../ui/button";
 
 export interface DebugAuthenticationProps {
   library: string;
@@ -201,13 +202,11 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
                 </div>
               )}
 
-              <button
+              <Button
                 type="submit"
-                className="btn btn-default"
                 disabled={!username || debugMutation.isLoading}
-              >
-                {debugMutation.isLoading ? "Running..." : "Run Debug"}
-              </button>
+                content={debugMutation.isLoading ? "Running..." : "Run Debug"}
+              />
             </>
           )}
         </form>

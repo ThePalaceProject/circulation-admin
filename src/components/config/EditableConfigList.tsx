@@ -157,7 +157,7 @@ export abstract class GenericEditableConfigList<
                 this.props.data[this.listDataKey].length === 0) &&
                 this.canCreate() && (
                   <a
-                    className="btn btn-default create-item"
+                    className="create-item inline-flex items-center justify-center px-3 py-1.5 text-sm font-bold text-primary-foreground bg-primary rounded hover:bg-primary/80 transition-colors no-underline"
                     href={this.urlBase + "create"}
                   >
                     Create new {this.itemTypeName}
@@ -225,7 +225,7 @@ export abstract class GenericEditableConfigList<
     return (
       <li key={index}>
         <a
-          className="btn small edit-item"
+          className="edit-item inline-flex items-center justify-center px-3 py-1.5 text-sm font-bold text-primary-foreground bg-primary rounded hover:bg-primary/80 transition-colors no-underline"
           href={this.urlBase + "edit/" + item[this.identifierKey]}
         >
           {this.canEdit(item) ? (

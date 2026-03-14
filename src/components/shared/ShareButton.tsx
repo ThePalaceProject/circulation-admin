@@ -1,6 +1,7 @@
 import * as React from "react";
 import LoadingIcon from "../icons/LoadingIcon";
 import ShareIcon from "../icons/ShareIcon";
+import { Button } from "../ui/button";
 
 export interface ShareButtonProps {
   disabled?: boolean;
@@ -19,12 +20,12 @@ export default function ShareButton({
 }: ShareButtonProps): JSX.Element {
   return (
     <div>
-      <button className="btn" disabled={disabled} type={type} onClick={submit}>
+      <Button disabled={disabled} type={type} onClick={submit}>
         <span>
           {text}
           {pending ? <LoadingIcon /> : <ShareIcon />}
         </span>
-      </button>
+      </Button>
     </div>
   );
 }

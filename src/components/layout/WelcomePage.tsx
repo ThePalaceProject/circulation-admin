@@ -10,7 +10,7 @@ export default class WelcomePage extends React.Component<
     return (
       <div className="welcome-page">
         <Header />
-        <div className="jumbotron">
+        <div className="welcome-hero">
           <h2>Welcome to the Circulation Admin Interface!</h2>
           <hr></hr>
           <p>

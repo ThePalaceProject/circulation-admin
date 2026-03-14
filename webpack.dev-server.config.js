@@ -82,18 +82,13 @@ module.exports = (env) => {
     locationUrl.protocol = "http";
     locationUrl.host = requestHost;
 
-    const redirectParam = locationUrl.searchParams.get("redirect");
-
-    if (redirectParam) {
-      const redirectUrl = new URL(redirectParam);
-
-      if (redirectUrl.host == backendUrl.host) {
-        redirectUrl.protocol = "http";
-        redirectUrl.host = requestHost;
-
-        locationUrl.searchParams.set("redirect", redirectUrl.href);
-      }
-    }
+    // NOTE: We intentionally do NOT rewrite the `redirect` query parameter.
+    // The CM's SanitizedRedirections check compares the redirect URL's host
+    // against flask.request.host (the CM's own host/port).  If we rewrote
+    // the redirect param to localhost:8080 here, the CM would see a
+    // different host and reject it.  Keeping it as localhost:<CM port> means
+    // the check always passes, and the CM's final post-auth redirect (which
+    // is a plain Location header) gets rewritten to localhost:8080 below.
 
     res.setHeader("location", locationUrl.href);
   };

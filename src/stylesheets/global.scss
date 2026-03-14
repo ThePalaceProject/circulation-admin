@@ -174,3 +174,16 @@ body > div.palace {
 // Tailwind utility compat block removed — no longer needed.
 // @layer legacy in app.scss now gives all Tailwind utilities automatic priority
 // over the web-opds-client border-radius: 0 resets and Bootstrap element rules.
+
+// ─── .well ───────────────────────────────────────────────────────────────────
+// Lightweight content card used by Timestamp and ProtocolFormField.
+// Replaces the Bootstrap .well definition; kept for test-selector compat.
+.well {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #F5F5F5;
+  border: 1px solid #E3E3E3;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}

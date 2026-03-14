@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Panel } from "../ui";
+import { Button } from "../ui/button";
 import { CollectionData, ProtocolData } from "../../interfaces";
 
 export interface CollectionImportButtonProps {
@@ -71,13 +72,9 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
     <div className="collection-import">
       {feedback && <div className={feedbackClass}>{feedback}</div>}
       <div className="collection-import-controls">
-        <button
-          className="btn btn-default"
-          disabled={disabled || importing}
-          onClick={handleImport}
-        >
+        <Button disabled={disabled || importing} onClick={handleImport}>
           {importing ? "Queuing..." : "Queue Import"}
-        </button>
+        </Button>
         <label>
           <input
             type="checkbox"

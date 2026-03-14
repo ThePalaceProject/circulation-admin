@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Button } from "../ui/button";
 
 export interface SaveButtonProps {
   disabled: boolean;
@@ -19,14 +20,12 @@ export default class SaveButton extends React.Component<
     const text = this.props.text || "Save";
     const type = this.props.type || "submit";
     return (
-      <button
+      <Button
         type={type}
-        className="btn btn-default"
+        content={text}
         disabled={this.props.disabled}
         onClick={this.props.submit}
-      >
-        {text}
-      </button>
+      />
     );
   }
 }
