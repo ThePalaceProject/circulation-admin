@@ -3,6 +3,7 @@
 .site-nav__brand {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 16px 10vw;
   background-color: $white;
   border-bottom: 1px solid #E7E7E7;
@@ -13,6 +14,63 @@
     width: auto;
     max-width: 360px;
   }
+}
+
+// ─── User dropdown (lives in brand bar, right side) ───────────────────────────
+
+.site-nav__brand-user {
+  position: relative;
+}
+
+.site-nav__user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: $dark;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  svg {
+    pointer-events: none;
+    fill: $dark;
+    height: 0.85em;
+  }
+}
+
+.site-nav__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #555;
+  flex-shrink: 0;
+
+  svg {
+    color: #fff;
+    stroke: #fff;
+    pointer-events: none;
+  }
+}
+
+.site-nav__user-email {
+  font-size: 0.875rem;
+  font-weight: 500;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // ─── Site Nav (library selector + nav links row) ──────────────────────────────
@@ -143,62 +201,31 @@
   }
 }
 
-// ─── Settings icon button ─────────────────────────────────────────────────────
+// ─── Configuration nav button ─────────────────────────────────────────────────
 
-.site-nav__icon-btn {
+.site-nav__config-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 10px;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 15px 10px;
   color: $dark;
+  font-size: 1rem;
+  font-weight: 400;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover,
+  &:focus {
+    @include headerNavLink;
+  }
 
   svg {
-    display: block;
-    pointer-events: none; // prevent click-outside from seeing SVG not the button
+    pointer-events: none;
   }
-
-  &:hover, &:focus {
-    color: $blue;
-  }
-}
-
-// ─── User button ──────────────────────────────────────────────────────────────
-
-.site-nav__user-btn {
-  padding: 8px 10px;
-  color: $dark;
-
-  svg { pointer-events: none; }
-}
-
-.site-nav__user-btn-content {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.site-nav__user-btn-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.2;
-}
-
-.site-nav__user-email {
-  font-size: 0.8rem;
-  font-weight: 600;
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.site-nav__user-role {
-  font-size: 0.65rem;
-  font-weight: 400;
-  opacity: 0.65;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 // ─── Account dropdown ─────────────────────────────────────────────────────────
@@ -208,10 +235,10 @@
 
   > button {
     color: $dark;
-    padding: 13px 10px;
     margin: 0;
 
-    svg {
+    // Only rotate the wedge chevron; leave lucide icons alone
+    svg.dgx-svg-icon {
       transform: rotate(270deg);
       fill: $dark;
       height: 0.9em;

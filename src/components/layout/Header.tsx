@@ -13,7 +13,7 @@ import Admin from "../../models/Admin";
 import EditableInput from "../shared/EditableInput";
 import { Link } from "react-router";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { Button } from "../ui";
+// Button from ui intentionally removed (dropdowns use native <button> for full style control)
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
 import { Settings, User } from "lucide-react";
 import title from "../../utils/title";
@@ -147,9 +147,37 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       <header>
         <h1 className="visually-hidden">{title("")}</h1>
 
-        {/* Row 1: Logo */}
+        {/* Row 1: Logo + User dropdown */}
         <div className="site-nav__brand">
           <img src={palaceLogoUrl} alt={title()} />
+          {!logoOnly && this.context.admin.email && (
+            <div className="site-nav__dropdown site-nav__brand-user">
+              <button
+                type="button"
+                className="account-dropdown-toggle site-nav__user-btn"
+                aria-haspopup="true"
+                aria-expanded={this.state.showAccountDropdown}
+                onClick={this.toggleAccountDropdown}
+              >
+                <span className="site-nav__avatar">
+                  <User size={14} strokeWidth={2.5} />
+                </span>
+                <span className="site-nav__user-email">
+                  {this.context.admin.email}
+                </span>
+                <GenericWedgeIcon />
+              </button>
+              {this.state.showAccountDropdown && (
+                <ul className="site-nav__dropdown-menu">
+                  {this.displayPermissions(isSystemAdmin, isLibraryManager)}
+                  {this.renderLinkItem(accountLink, currentPathname)}
+                  <li>
+                    <a href="/admin/sign_out">Sign out</a>
+                  </li>
+                </ul>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Row 2: Library selector + nav links */}
@@ -211,17 +239,18 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   this.renderLinkItem(item, currentPathname)
                 )}
 
-                {/* Settings dropdown: System Configuration + Troubleshooting */}
+                {/* Configuration dropdown: System Configuration + Troubleshooting */}
                 <li className="site-nav__dropdown">
-                  <Button
-                    className="settings-dropdown-toggle transparent site-nav__icon-btn"
+                  <button
                     type="button"
+                    className="settings-dropdown-toggle site-nav__config-btn"
                     aria-haspopup="true"
-                    aria-label="Settings"
                     aria-expanded={this.state.showSettingsDropdown}
-                    callback={this.toggleSettingsDropdown}
-                    content={<Settings size={18} strokeWidth={2} />}
-                  />
+                    onClick={this.toggleSettingsDropdown}
+                  >
+                    <Settings size={14} strokeWidth={2} />
+                    Configuration
+                  </button>
                   {this.state.showSettingsDropdown && (
                     <ul className="site-nav__dropdown-menu">
                       <li>
@@ -235,45 +264,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     </ul>
                   )}
                 </li>
-
-                {/* User dropdown: role, change password, sign out */}
-                {this.context.admin.email && (
-                  <li className="site-nav__dropdown">
-                    <Button
-                      className="account-dropdown-toggle transparent site-nav__user-btn"
-                      type="button"
-                      aria-haspopup="true"
-                      aria-expanded={this.state.showAccountDropdown}
-                      callback={this.toggleAccountDropdown}
-                      content={
-                        <span className="site-nav__user-btn-content">
-                          <User size={16} strokeWidth={2} />
-                          <span className="site-nav__user-btn-text">
-                            <span className="site-nav__user-email">
-                              {this.context.admin.email}
-                            </span>
-                            <span className="site-nav__user-role">
-                              {roleLabel}
-                            </span>
-                          </span>
-                          <GenericWedgeIcon />
-                        </span>
-                      }
-                    />
-                    {this.state.showAccountDropdown && (
-                      <ul className="site-nav__dropdown-menu">
-                        {this.displayPermissions(
-                          isSystemAdmin,
-                          isLibraryManager
-                        )}
-                        {this.renderLinkItem(accountLink, currentPathname)}
-                        <li>
-                          <a href="/admin/sign_out">Sign out</a>
-                        </li>
-                      </ul>
-                    )}
-                  </li>
-                )}
               </ul>
             </div>
           </nav>
