@@ -81,7 +81,7 @@
       font-size: 0.6875rem;              // 11px
       font-weight: 700;
       letter-spacing: 0.07em;
-      color: #9ca3af;                    // gray-400 — de-emphasised label
+      color: #374151;                    // gray-700 — readable overline label
       text-transform: none;
       text-wrap: balance;
       margin: 0 0 4px;
@@ -90,7 +90,7 @@
     .stat-group-description {
       font-size: 0.8125rem;             // 13px
       font-style: normal;               // no italic
-      color: #9ca3af;                   // gray-400
+      color: #6b7280;                   // gray-500 — secondary text, legible
       margin: 0 0 16px;
       text-wrap: balance;
       max-width: 52ch;
@@ -116,12 +116,25 @@
     .stat-link {
       margin-top: 1rem;
       a {
-        color: #2563eb;                  // blue-600
-        font-size: 0.875rem;
-        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #1B7FA7;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 700;
         text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
         &:hover {
-          text-decoration: underline;
+          background-color: #54514A;
+          color: #ffffff;
+          text-decoration: none;
+        }
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(27,127,167,0.35);
         }
       }
     }
