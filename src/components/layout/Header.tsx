@@ -44,6 +44,7 @@ export interface HeaderProps
 export interface HeaderState {
   showAccountDropdown: boolean;
   showSettingsDropdown: boolean;
+  showLibraryDropdown: boolean;
 }
 
 export interface HeaderRouter extends Router {
@@ -66,14 +67,17 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     router: PropTypes.object.isRequired,
     admin: PropTypes.object.isRequired,
   };
-  private libraryRef = React.createRef<HTMLSelectElement>();
-
   constructor(props) {
     super(props);
-    this.state = { showAccountDropdown: false, showSettingsDropdown: false };
+    this.state = {
+      showAccountDropdown: false,
+      showSettingsDropdown: false,
+      showLibraryDropdown: false,
+    };
     this.changeLibrary = this.changeLibrary.bind(this);
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
     this.toggleSettingsDropdown = this.toggleSettingsDropdown.bind(this);
+    this.toggleLibraryDropdown = this.toggleLibraryDropdown.bind(this);
     this.renderNavItem = this.renderNavItem.bind(this);
 
     document.body.addEventListener("click", (event: MouseEvent) => {
@@ -89,6 +93,12 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         target.indexOf("settings-dropdown-toggle") === -1
       ) {
         this.setState({ showSettingsDropdown: false });
+      }
+      if (
+        this.state.showLibraryDropdown &&
+        target.indexOf("library-dropdown-toggle") === -1
+      ) {
+        this.setState({ showLibraryDropdown: false });
       }
     });
   }
@@ -149,7 +159,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
         {/* Row 1: Logo + User dropdown */}
         <div className="site-nav__brand">
-          <img src={palaceLogoUrl} alt={title()} />
+          <img src={palaceLogoUrl} alt={title()} className="site-nav__logo" />
           {!logoOnly && this.context.admin.email && (
             <div className="site-nav__dropdown site-nav__brand-user">
               <button
@@ -185,35 +195,56 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           <div className="site-nav site-nav--controls">
             <div className="site-nav__header">
               {this.props.libraries && this.props.libraries.length > 0 && (
-                <div className="site-nav__library-wrapper">
-                  <Landmark
-                    size={16}
-                    className="site-nav__library-icon"
-                    aria-hidden="true"
-                  />
-                  <span className="site-nav__library-label">
-                    Select Library
-                  </span>
-                  <select
-                    ref={this.libraryRef}
-                    onChange={this.changeLibrary}
-                    aria-label="Select a library"
-                    defaultValue={currentLibrary || ""}
-                    className="site-nav__library-select"
+                <div className="site-nav__dropdown">
+                  <button
+                    type="button"
+                    className="library-dropdown-toggle site-nav__library-btn"
+                    aria-haspopup="listbox"
+                    aria-expanded={this.state.showLibraryDropdown}
+                    onClick={this.toggleLibraryDropdown}
                   >
-                    {!currentLibrary && (
-                      <option value="">Select a library</option>
-                    )}
-                    {this.props.libraries.map((library) => (
-                      <option
-                        key={library.short_name}
-                        value={library.short_name}
-                        aria-selected={currentLibrary === library.short_name}
-                      >
-                        {library.name || library.short_name}
-                      </option>
-                    ))}
-                  </select>
+                    <Landmark
+                      size={16}
+                      className="site-nav__library-icon"
+                      aria-hidden="true"
+                    />
+                    <span className="site-nav__library-label">
+                      {currentLibrary
+                        ? this.props.libraries.find(
+                            (l) => l.short_name === currentLibrary
+                          )?.name || currentLibrary
+                        : "Select a library"}
+                    </span>
+                    <span className="site-nav__user-caret" aria-hidden="true">
+                      &#9662;
+                    </span>
+                  </button>
+                  {this.state.showLibraryDropdown && (
+                    <ul className="site-nav__dropdown-menu" role="listbox">
+                      {this.props.libraries.map((library) => (
+                        <li
+                          key={library.short_name}
+                          role="option"
+                          aria-selected={currentLibrary === library.short_name}
+                          className={
+                            currentLibrary === library.short_name
+                              ? "active"
+                              : ""
+                          }
+                        >
+                          <button
+                            type="button"
+                            className="library-dropdown-toggle site-nav__library-option"
+                            onClick={() =>
+                              this.changeLibrary(library.short_name)
+                            }
+                          >
+                            {library.name || library.short_name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
               <button
@@ -295,14 +326,18 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     }
   }
 
-  changeLibrary() {
-    const library = this.libraryRef.current?.value;
-    if (library) {
+  changeLibrary(shortName: string) {
+    if (shortName) {
+      this.setState({ showLibraryDropdown: false });
       this.context.router.push(
-        "/admin/web/collection/" + library + "%2Fgroups"
+        "/admin/web/collection/" + shortName + "%2Fgroups"
       );
       this.forceUpdate();
     }
+  }
+
+  toggleLibraryDropdown() {
+    this.setState({ showLibraryDropdown: !this.state.showLibraryDropdown });
   }
 
   toggleAccountDropdown() {

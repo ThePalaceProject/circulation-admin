@@ -76,13 +76,10 @@ describe("Header", () => {
       const { container } = renderHeader(libraryManager, () => "nypl", {
         libraries,
       });
-      const select = container.querySelector("select");
-      expect(select).not.toBeNull();
-      const options = select.querySelectorAll("option");
-      expect(options.length).toBe(2);
-      expect((options[0] as HTMLOptionElement).value).toBe("nypl");
-      expect(options[0].textContent).toBe("NYPL");
-      expect((options[1] as HTMLOptionElement).value).toBe("bpl");
+      const btn = container.querySelector(".site-nav__library-btn");
+      expect(btn).not.toBeNull();
+      // Button label reflects the currently selected library name
+      expect(btn.textContent).toContain("NYPL");
     });
 
     it("shows 'Select a library' option when no library is selected", () => {
@@ -94,16 +91,15 @@ describe("Header", () => {
       const { container } = renderHeader(libraryManager, undefined, {
         libraries,
       });
-      const select = container.querySelector("select");
-      const options = select.querySelectorAll("option");
-      expect(options[0].textContent).toBe("Select a library");
-      expect(options.length).toBe(3);
+      const btn = container.querySelector(".site-nav__library-btn");
+      expect(btn).not.toBeNull();
+      expect(btn.textContent).toContain("Select a library");
     });
 
     it("does not show library dropdown when no libraries are available", () => {
       const { container } = renderHeader(libraryManager, () => "nypl");
-      const select = container.querySelector("select");
-      expect(select).toBeNull();
+      const btn = container.querySelector(".site-nav__library-btn");
+      expect(btn).toBeNull();
     });
 
     it("shows Dashboard, Lists, Lanes, and System Configuration links for library manager", () => {

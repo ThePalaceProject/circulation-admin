@@ -4,16 +4,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 10vw;
+  padding: 12px 10vw;
   background-color: $white;
   border-bottom: 1px solid #E7E7E7;
+}
 
-  > img {
-    display: block;
-    height: 53px;
-    width: auto;
-    max-width: 360px;
-  }
+.site-nav__logo {
+  display: block;
+  flex-shrink: 0;
+  height: 40px !important;
+  width: auto !important;
+  max-width: 280px !important;
+  max-height: 40px !important;
+  object-fit: contain;
 }
 
 // ─── User dropdown (lives in brand bar, right side) ───────────────────────────
@@ -141,28 +144,35 @@
   }
 }
 
-// ─── Library selector (custom icon+label wrapper over native select) ──────────
+// ─── Library selector dropdown button ────────────────────────────────────────
 
-.site-nav__library-wrapper {
-  position: relative;
-  display: inline-flex;
+.site-nav__library-btn {
+  display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
   cursor: pointer;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: $dark;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.06);
   }
 
-  // :active on the wrapper fires when the invisible select is pressed
   &:active {
     background-color: rgba(0, 0, 0, 0.12);
+    box-shadow: none;
   }
 
-  &:focus-within {
+  &:focus-visible {
+    outline: none;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
   }
 }
@@ -177,29 +187,51 @@
 }
 
 .site-nav__library-label {
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 0.875rem;
+  font-weight: 500;
   color: $dark;
   white-space: nowrap;
   pointer-events: none;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-// Invisible native select overlaid over the wrapper to capture clicks
-.site-nav__library-select {
-  position: absolute;
-  inset: 0;
+// Full-width option buttons inside the library dropdown menu
+.site-nav__library-option {
+  display: block;
   width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
+  padding: 6px 12px;
+  text-align: left;
+  background: $white;
   border: none;
-  background: transparent;
-  font-size: 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
 
-  // opacity:0 doesn't suppress the browser-native focus ring; kill it explicitly
+  &:hover,
+  &:active {
+    @include headerNavLink;
+  }
+
   &:focus {
     outline: none;
   }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    border-radius: 4px;
+  }
+}
+
+// Active library gets a subtle highlight in the list
+.site-nav__dropdown-menu li.active .site-nav__library-option {
+  font-weight: 600;
+  color: #2563eb;
+  background-color: #eff6ff; // blue-50
 }
 
 // ─── Mobile toggle button ─────────────────────────────────────────────────────
