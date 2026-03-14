@@ -18,8 +18,12 @@
 
 // ─── User dropdown (lives in brand bar, right side) ───────────────────────────
 
+// .site-nav__brand-user is now defined below with .site-nav__user-btn
+
 .site-nav__brand-user {
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .site-nav__user-btn {
@@ -28,9 +32,11 @@
   gap: 8px;
   background: transparent;
   border: none;
+  outline: none;
+  box-shadow: none;
   cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   color: $dark;
   font-size: 0.875rem;
   font-weight: 500;
@@ -40,28 +46,25 @@
     background-color: rgba(0, 0, 0, 0.06);
   }
 
-  svg {
-    pointer-events: none;
-    fill: $dark;
-    height: 0.85em;
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
   }
 }
 
-.site-nav__avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: #555;
+.site-nav__user-icon {
+  display: block;
   flex-shrink: 0;
+  width: 18px !important;
+  height: 18px !important;
+  pointer-events: none;
+  color: $dark;
+}
 
-  svg {
-    color: #fff;
-    stroke: #fff;
-    pointer-events: none;
-  }
+.site-nav__user-caret {
+  font-size: 0.75rem;
+  opacity: 0.55;
+  line-height: 1;
 }
 
 .site-nav__user-email {
@@ -104,14 +107,57 @@
   .form-group {
     margin: 0;
   }
+}
 
-  .form-control {
-    font-size: 1.5rem;
-    font-weight: 800;
-    width: auto;
-    border-color: #D0D0CE;
-    border-radius: 6px;
-    padding: 6px 10px;
+// ─── Library selector (custom icon+label wrapper over native select) ──────────
+
+.site-nav__library-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  }
+}
+
+.site-nav__library-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 16px !important;
+  height: 16px !important;
+  color: $dark;
+  pointer-events: none;
+}
+
+.site-nav__library-label {
+  font-size: 1rem;
+  font-weight: 400;
+  color: $dark;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+// Invisible native select overlaid over the wrapper to capture clicks
+.site-nav__library-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+
+  // opacity:0 doesn't suppress the browser-native focus ring; kill it explicitly
+  &:focus {
+    outline: none;
   }
 }
 
@@ -173,9 +219,18 @@
       text-decoration: none;
 
       &:hover,
-      &:active,
-      &:focus {
+      &:active {
         @include headerNavLink;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        border-radius: 4px;
       }
     }
   }
@@ -190,9 +245,18 @@
     text-decoration: none;
 
     &.active-link,
-    &:hover,
-    &:focus {
+    &:hover {
       @include headerNavLink;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+      border-radius: 4px;
     }
   }
 
@@ -209,18 +273,25 @@
   gap: 6px;
   background: transparent;
   border: none;
+  outline: none;
   cursor: pointer;
-  padding: 15px 10px;
+  padding: 12px 10px;
+  border-radius: 8px;
   color: $dark;
   font-size: 1rem;
   font-weight: 400;
   white-space: nowrap;
   text-decoration: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease;
 
-  &:hover,
-  &:focus {
+  &:hover {
     @include headerNavLink;
+    border-radius: 8px;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
   }
 
   svg {
@@ -245,7 +316,13 @@
     }
 
     &:focus {
-      @include basic-focus;
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+      border-radius: 8px;
     }
   }
 }
@@ -254,7 +331,7 @@
   display: block;
   position: absolute;
   top: 100%;
-  right: 0;
+  left: 0;
   z-index: 1000;
   min-width: 160px;
   padding: 5px 0 0;
@@ -278,12 +355,17 @@
     text-decoration: none;
 
     &:focus {
-      @include basic-focus;
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+      border-radius: 4px;
     }
 
     &:hover,
-    &:active,
-    &:focus {
+    &:active {
       @include headerNavLink;
     }
   }

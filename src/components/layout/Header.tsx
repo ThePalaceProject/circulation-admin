@@ -15,7 +15,7 @@ import { Link } from "react-router";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 // Button from ui intentionally removed (dropdowns use native <button> for full style control)
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
-import { Settings, User } from "lucide-react";
+import { Landmark, Settings, User } from "lucide-react";
 import title from "../../utils/title";
 
 const palaceLogoUrl = require("../../images/PalaceCollectionManagerLogo.svg")
@@ -66,7 +66,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     router: PropTypes.object.isRequired,
     admin: PropTypes.object.isRequired,
   };
-  private libraryRef = React.createRef<EditableInput>();
+  private libraryRef = React.createRef<HTMLSelectElement>();
 
   constructor(props) {
     super(props);
@@ -159,13 +159,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 aria-expanded={this.state.showAccountDropdown}
                 onClick={this.toggleAccountDropdown}
               >
-                <span className="site-nav__avatar">
-                  <User size={14} strokeWidth={2.5} />
-                </span>
+                <User className="site-nav__user-icon" aria-hidden="true" />
                 <span className="site-nav__user-email">
                   {this.context.admin.email}
                 </span>
-                <GenericWedgeIcon />
+                <span className="site-nav__user-caret" aria-hidden="true">
+                  &#9662;
+                </span>
               </button>
               {this.state.showAccountDropdown && (
                 <ul className="site-nav__dropdown-menu">
@@ -185,26 +185,36 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           <nav className="site-nav">
             <div className="site-nav__header">
               {this.props.libraries && this.props.libraries.length > 0 && (
-                <EditableInput
-                  elementType="select"
-                  ref={this.libraryRef}
-                  value={currentLibrary}
-                  onChange={this.changeLibrary}
-                  aria-label="Select a library"
-                >
-                  {(!this.context.library || !currentLibrary) && (
-                    <option aria-selected={false}>Select a library</option>
-                  )}
-                  {this.props.libraries.map((library) => (
-                    <option
-                      key={library.short_name}
-                      value={library.short_name}
-                      aria-selected={currentLibrary === library.short_name}
-                    >
-                      {library.name || library.short_name}
-                    </option>
-                  ))}
-                </EditableInput>
+                <div className="site-nav__library-wrapper">
+                  <Landmark
+                    size={16}
+                    className="site-nav__library-icon"
+                    aria-hidden="true"
+                  />
+                  <span className="site-nav__library-label">
+                    Select Library
+                  </span>
+                  <select
+                    ref={this.libraryRef}
+                    onChange={this.changeLibrary}
+                    aria-label="Select a library"
+                    defaultValue={currentLibrary || ""}
+                    className="site-nav__library-select"
+                  >
+                    {!currentLibrary && (
+                      <option value="">Select a library</option>
+                    )}
+                    {this.props.libraries.map((library) => (
+                      <option
+                        key={library.short_name}
+                        value={library.short_name}
+                        aria-selected={currentLibrary === library.short_name}
+                      >
+                        {library.name || library.short_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               )}
               <button
                 type="button"
@@ -281,7 +291,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   changeLibrary() {
-    let library = this.libraryRef.current.getValue();
+    const library = this.libraryRef.current?.value;
     if (library) {
       this.context.router.push(
         "/admin/web/collection/" + library + "%2Fgroups"

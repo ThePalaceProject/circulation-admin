@@ -7,6 +7,89 @@
   padding-right: 10vw;
 }
 
+// ─── Catalog search bar ───────────────────────────────────────────────────────
+// The Search component is rendered by web-opds-client so we override by class.
+// DOM: .search > form.form-inline > input.form-control + button.btn.btn-default
+
+.palace .search {
+  display: block;
+  width: 100%;
+  padding: 20px 0 16px;
+}
+
+.palace .search .form-inline {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.palace .search input.form-control {
+  flex: 1;
+  height: 44px;
+  padding: 0 16px;
+  font-size: 1rem;
+  border: 1.5px solid #D0D0CE;
+  border-radius: 8px;
+  box-shadow: none;
+  background-color: #fff;
+  color: #1a1a1a;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #2563EB; // Tailwind blue-600
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  }
+
+  &::placeholder {
+    color: #9CA3AF; // Tailwind gray-400
+  }
+}
+
+.palace .search button.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #2563EB; // Tailwind blue-600
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+
+  // Magnifying glass icon via CSS pseudo-element
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: #1D4ED8; // Tailwind blue-700
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  }
+
+  &:active {
+    background-color: #1E40AF; // Tailwind blue-800
+  }
+}
+
 .collection-container {
   .book a {
     color: $blue-dark;
