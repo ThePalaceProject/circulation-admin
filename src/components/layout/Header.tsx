@@ -45,6 +45,7 @@ export interface HeaderState {
   showAccountDropdown: boolean;
   showSettingsDropdown: boolean;
   showLibraryDropdown: boolean;
+  isMobileNavOpen: boolean;
 }
 
 export interface HeaderRouter extends Router {
@@ -61,6 +62,9 @@ export interface HeaderNavItem {
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, HeaderState> {
   context: { library: () => string; router: HeaderRouter; admin: Admin };
+  accountDropdownRef: React.RefObject<HTMLDivElement>;
+  settingsDropdownRef: React.RefObject<HTMLLIElement>;
+  libraryDropdownRef: React.RefObject<HTMLDivElement>;
 
   static contextTypes = {
     library: PropTypes.func,
@@ -73,34 +77,19 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       showAccountDropdown: false,
       showSettingsDropdown: false,
       showLibraryDropdown: false,
+      isMobileNavOpen: false,
     };
+    this.accountDropdownRef = React.createRef();
+    this.settingsDropdownRef = React.createRef();
+    this.libraryDropdownRef = React.createRef();
     this.changeLibrary = this.changeLibrary.bind(this);
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
     this.toggleSettingsDropdown = this.toggleSettingsDropdown.bind(this);
     this.toggleLibraryDropdown = this.toggleLibraryDropdown.bind(this);
+    this.toggleMobileNav = this.toggleMobileNav.bind(this);
+    this.handleDocumentClick = this.handleDocumentClick.bind(this);
+    this.handleDocumentKeyDown = this.handleDocumentKeyDown.bind(this);
     this.renderNavItem = this.renderNavItem.bind(this);
-
-    document.body.addEventListener("click", (event: MouseEvent) => {
-      const target = (event.target as any).className || "";
-      if (
-        this.state.showAccountDropdown &&
-        target.indexOf("account-dropdown-toggle") === -1
-      ) {
-        this.setState({ showAccountDropdown: false });
-      }
-      if (
-        this.state.showSettingsDropdown &&
-        target.indexOf("settings-dropdown-toggle") === -1
-      ) {
-        this.setState({ showSettingsDropdown: false });
-      }
-      if (
-        this.state.showLibraryDropdown &&
-        target.indexOf("library-dropdown-toggle") === -1
-      ) {
-        this.setState({ showLibraryDropdown: false });
-      }
-    });
   }
 
   displayPermissions(isSystemAdmin: boolean, isLibraryManager: boolean) {
@@ -161,10 +150,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         <div className="site-nav__brand">
           <img src={palaceLogoUrl} alt={title()} className="site-nav__logo" />
           {!logoOnly && this.context.admin.email && (
-            <div className="site-nav__dropdown site-nav__brand-user">
+            <div
+              className="site-nav__dropdown site-nav__brand-user"
+              ref={this.accountDropdownRef}
+            >
               <button
                 type="button"
-                className="account-dropdown-toggle site-nav__user-btn"
+                className="account-dropdown-toggle site-nav__dropdown-btn"
                 aria-haspopup="true"
                 aria-expanded={this.state.showAccountDropdown}
                 onClick={this.toggleAccountDropdown}
@@ -195,10 +187,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           <div className="site-nav site-nav--controls">
             <div className="site-nav__header">
               {this.props.libraries && this.props.libraries.length > 0 && (
-                <div className="site-nav__dropdown">
+                <div
+                  className="site-nav__dropdown"
+                  ref={this.libraryDropdownRef}
+                >
                   <button
                     type="button"
-                    className="library-dropdown-toggle site-nav__library-btn"
+                    className="library-dropdown-toggle site-nav__dropdown-btn"
                     aria-haspopup="listbox"
                     aria-expanded={this.state.showLibraryDropdown}
                     onClick={this.toggleLibraryDropdown}
@@ -234,7 +229,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                         >
                           <button
                             type="button"
-                            className="library-dropdown-toggle site-nav__library-option"
+                            className="library-dropdown-toggle"
                             onClick={() =>
                               this.changeLibrary(library.short_name)
                             }
@@ -251,6 +246,9 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 type="button"
                 className="site-nav__toggle"
                 aria-label="Toggle navigation"
+                aria-controls="site-nav-menu"
+                aria-expanded={this.state.isMobileNavOpen}
+                onClick={this.toggleMobileNav}
               >
                 <span className="visually-hidden">Toggle navigation</span>
                 <span className="site-nav__toggle-bar" />
@@ -267,10 +265,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                 )}
 
                 {/* Configuration dropdown: System Configuration + Troubleshooting */}
-                <li className="site-nav__dropdown">
+                <li
+                  className="site-nav__dropdown"
+                  ref={this.settingsDropdownRef}
+                >
                   <button
                     type="button"
-                    className="settings-dropdown-toggle site-nav__config-btn"
+                    className="settings-dropdown-toggle site-nav__dropdown-btn"
                     aria-haspopup="true"
                     aria-expanded={this.state.showSettingsDropdown}
                     onClick={this.toggleSettingsDropdown}
@@ -299,7 +300,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         {/* Row 3: Page nav tabs — only when a library is selected */}
         {!logoOnly && currentLibrary && (
           <nav className="site-nav site-nav--tabs">
-            <ul className="site-nav__links">
+            <ul
+              id="site-nav-menu"
+              className={
+                "site-nav__links site-nav__menu" +
+                (this.state.isMobileNavOpen ? " open" : "")
+              }
+            >
               {this.renderLinkItem(
                 dashboardLinkItem,
                 currentPathname,
@@ -318,17 +325,25 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     );
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const { fetchLibraries, isFetchingLibraries } = this.props;
 
     if (fetchLibraries && !isFetchingLibraries) {
       fetchLibraries();
     }
+
+    document.body.addEventListener("click", this.handleDocumentClick);
+    document.body.addEventListener("keydown", this.handleDocumentKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener("click", this.handleDocumentClick);
+    document.body.removeEventListener("keydown", this.handleDocumentKeyDown);
   }
 
   changeLibrary(shortName: string) {
     if (shortName) {
-      this.setState({ showLibraryDropdown: false });
+      this.setState({ showLibraryDropdown: false, isMobileNavOpen: false });
       this.context.router.push(
         "/admin/web/collection/" + shortName + "%2Fgroups"
       );
@@ -337,15 +352,75 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   toggleLibraryDropdown() {
-    this.setState({ showLibraryDropdown: !this.state.showLibraryDropdown });
+    this.setState((prev) => ({
+      showLibraryDropdown: !prev.showLibraryDropdown,
+      showAccountDropdown: false,
+      showSettingsDropdown: false,
+    }));
   }
 
   toggleAccountDropdown() {
-    this.setState({ showAccountDropdown: !this.state.showAccountDropdown });
+    this.setState((prev) => ({
+      showAccountDropdown: !prev.showAccountDropdown,
+      showLibraryDropdown: false,
+      showSettingsDropdown: false,
+    }));
   }
 
   toggleSettingsDropdown() {
-    this.setState({ showSettingsDropdown: !this.state.showSettingsDropdown });
+    this.setState((prev) => ({
+      showSettingsDropdown: !prev.showSettingsDropdown,
+      showAccountDropdown: false,
+      showLibraryDropdown: false,
+    }));
+  }
+
+  toggleMobileNav() {
+    this.setState((prev) => ({ isMobileNavOpen: !prev.isMobileNavOpen }));
+  }
+
+  handleDocumentClick(event: MouseEvent) {
+    const target = event.target as Node | null;
+    if (!target) return;
+
+    if (
+      this.state.showAccountDropdown &&
+      this.accountDropdownRef.current &&
+      !this.accountDropdownRef.current.contains(target)
+    ) {
+      this.setState({ showAccountDropdown: false });
+    }
+
+    if (
+      this.state.showSettingsDropdown &&
+      this.settingsDropdownRef.current &&
+      !this.settingsDropdownRef.current.contains(target)
+    ) {
+      this.setState({ showSettingsDropdown: false });
+    }
+
+    if (
+      this.state.showLibraryDropdown &&
+      this.libraryDropdownRef.current &&
+      !this.libraryDropdownRef.current.contains(target)
+    ) {
+      this.setState({ showLibraryDropdown: false });
+    }
+  }
+
+  handleDocumentKeyDown(event: KeyboardEvent) {
+    if (event.key !== "Escape") return;
+    if (
+      this.state.showAccountDropdown ||
+      this.state.showSettingsDropdown ||
+      this.state.showLibraryDropdown
+    ) {
+      this.setState({
+        showAccountDropdown: false,
+        showSettingsDropdown: false,
+        showLibraryDropdown: false,
+      });
+    }
   }
 
   /**

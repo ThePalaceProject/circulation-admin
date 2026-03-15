@@ -76,7 +76,7 @@ describe("Header", () => {
       const { container } = renderHeader(libraryManager, () => "nypl", {
         libraries,
       });
-      const btn = container.querySelector(".site-nav__library-btn");
+      const btn = container.querySelector(".library-dropdown-toggle");
       expect(btn).not.toBeNull();
       // Button label reflects the currently selected library name
       expect(btn.textContent).toContain("NYPL");
@@ -91,14 +91,14 @@ describe("Header", () => {
       const { container } = renderHeader(libraryManager, undefined, {
         libraries,
       });
-      const btn = container.querySelector(".site-nav__library-btn");
+      const btn = container.querySelector(".library-dropdown-toggle");
       expect(btn).not.toBeNull();
       expect(btn.textContent).toContain("Select a library");
     });
 
     it("does not show library dropdown when no libraries are available", () => {
       const { container } = renderHeader(libraryManager, () => "nypl");
-      const btn = container.querySelector(".site-nav__library-btn");
+      const btn = container.querySelector(".library-dropdown-toggle");
       expect(btn).toBeNull();
     });
 

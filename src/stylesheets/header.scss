@@ -19,9 +19,7 @@
   object-fit: contain;
 }
 
-// ─── User dropdown (lives in brand bar, right side) ───────────────────────────
-
-// .site-nav__brand-user is now defined below with .site-nav__user-btn
+// ─── Shared dropdown trigger button (user, library, config) ─────────────────
 
 .site-nav__brand-user {
   display: flex;
@@ -29,7 +27,8 @@
   gap: 4px;
 }
 
-.site-nav__user-btn {
+// Single unified style for ALL header dropdown buttons
+.site-nav__dropdown-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -38,19 +37,20 @@
   outline: none;
   box-shadow: none;
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
   color: $dark;
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.06);  // gray-900/6
+    background-color: rgba(0, 0, 0, 0.06);
   }
 
   &:active {
-    background-color: rgba(0, 0, 0, 0.12);  // gray-900/12 — Tailwind press depth
+    background-color: rgba(0, 0, 0, 0.12);
     box-shadow: none;
   }
 
@@ -60,6 +60,7 @@
   }
 }
 
+// Icon / label helpers shared across all dropdown buttons
 .site-nav__user-icon {
   display: block;
   flex-shrink: 0;
@@ -73,6 +74,7 @@
   font-size: 0.75rem;
   opacity: 0.55;
   line-height: 1;
+  margin-left: auto;   // pushes caret to far right when label is flexible
 }
 
 .site-nav__user-email {
@@ -144,38 +146,7 @@
   }
 }
 
-// ─── Library selector dropdown button ────────────────────────────────────────
-
-.site-nav__library-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  border: none;
-  outline: none;
-  box-shadow: none;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 8px;
-  color: $dark;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: background-color 0.15s ease;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.06);
-  }
-
-  &:active {
-    background-color: rgba(0, 0, 0, 0.12);
-    box-shadow: none;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-  }
-}
+// ─── Library selector icon / label helpers ───────────────────────────────────
 
 .site-nav__library-icon {
   display: block;
@@ -195,43 +166,6 @@
   max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-// Full-width option buttons inside the library dropdown menu
-.site-nav__library-option {
-  display: block;
-  width: 100%;
-  padding: 6px 12px;
-  text-align: left;
-  background: $white;
-  border: none;
-  cursor: pointer;
-  font-size: 0.875rem;
-  color: #333;
-  text-decoration: none;
-  white-space: nowrap;
-
-  &:hover,
-  &:active {
-    @include headerNavLink;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-    border-radius: 4px;
-  }
-}
-
-// Active library gets a subtle highlight in the list
-.site-nav__dropdown-menu li.active .site-nav__library-option {
-  font-weight: 600;
-  color: #2563eb;
-  background-color: #eff6ff; // blue-50
 }
 
 // ─── Mobile toggle button ─────────────────────────────────────────────────────
@@ -374,128 +308,68 @@
   }
 }
 
-// ─── Configuration nav button ─────────────────────────────────────────────────
-
-.site-nav__config-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;                   // flush with nav bottom border
-  outline: none;
-  cursor: pointer;
-  padding: 0 12px;
-  color: #6b7280;                        // gray-500
-  font-size: 0.9rem;
-  font-weight: 500;
-  white-space: nowrap;
-  text-decoration: none;
-  transition: color 0.15s ease, border-color 0.15s ease;
-
-  &:hover {
-    color: #111827;                      // gray-900
-    border-bottom-color: #d1d5db;       // gray-300
-    background: transparent;
-  }
-
-  &:active {
-    color: #2563eb;                      // blue-600
-    border-bottom-color: #2563eb;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-  }
-
-  svg {
-    pointer-events: none;
-  }
-}
-
-// ─── Account dropdown ─────────────────────────────────────────────────────────
+// ─── Dropdown wrapper + unified menu ─────────────────────────────────────────
 
 .site-nav__dropdown {
   position: relative;
   display: flex;
-  align-items: stretch;
-
-  > button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0 12px;
-    color: #6b7280;                    // gray-500
-    font-size: 0.9rem;
-    font-weight: 500;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    cursor: pointer;
-    transition: color 0.15s ease, border-color 0.15s ease;
-
-    // Only rotate the wedge chevron; leave lucide icons alone
-    svg.dgx-svg-icon {
-      transform: rotate(270deg);
-      fill: currentColor;
-      height: 0.9em;
-    }
-
-    &:hover {
-      color: #111827;
-      border-bottom-color: #d1d5db;
-      background: transparent;
-    }
-
-    &:active {
-      color: #2563eb;                    // blue-600
-      border-bottom-color: #2563eb;
-      background: transparent;
-      box-shadow: none;
-    }
-
-    &:focus {
-      outline: none;
-    }
-
-    &:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-    }
-  }
+  align-items: center;
 }
 
 .site-nav__dropdown-menu {
   display: block;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
   z-index: 1000;
-  min-width: 160px;
-  padding: 5px 0 0;
-  margin: 2px 0 0;
+  min-width: 180px;
+  padding: 4px 0;
+  margin: 0;
   list-style: none;
-  background-color: $pagecolorlight;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-color: $white;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
 
-  .permissions,
-  a {
+  // Permissions label — dimmed header row at top of account menu
+  .permissions {
     display: block;
-    padding: 5px;
+    padding: 8px 14px 6px;
+    font-size: 0.75rem;
+    color: #9ca3af;           // gray-400
     white-space: nowrap;
+    border-bottom: 1px solid #f3f4f6;
+    margin-bottom: 2px;
   }
 
-  a {
-    background-color: $white;
-    color: #333;
+  // All interactive items — links AND buttons get identical treatment
+  li > a,
+  li > button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #374151;           // gray-700
     text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    transition: background-color 0.1s ease, color 0.1s ease;
+
+    &:hover {
+      background-color: #f3f4f6;  // gray-100
+      color: #111827;             // gray-900
+    }
+
+    &:active {
+      background-color: #e5e7eb;  // gray-200
+      color: #111827;
+    }
 
     &:focus {
       outline: none;
@@ -503,14 +377,17 @@
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+      box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.4);
       border-radius: 4px;
     }
+  }
 
-    &:hover,
-    &:active {
-      @include headerNavLink;
-    }
+  // Active / selected item (e.g. currently selected library)
+  li.active > a,
+  li.active > button {
+    font-weight: 600;
+    color: #2563eb;             // blue-600
+    background-color: #eff6ff;  // blue-50
   }
 }
 
