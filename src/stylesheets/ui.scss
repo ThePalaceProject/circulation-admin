@@ -1,0 +1,48 @@
+@layer ui {
+  :root {
+    --layout-max-width: 1280px;
+    --layout-gutter: clamp(32px, 6vw, 96px);
+    --layout-top: 32px;
+  }
+
+  html,
+  body {
+    padding: 0;
+    background-color: var(--app-bg);
+    color: var(--app-fg);
+  }
+
+  body > #opds-catalog.palace {
+    min-height: 100vh;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--layout-max-width);
+    margin: var(--layout-top) auto 0;
+    padding: 28px var(--layout-gutter) 48px;
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    display: block;
+  }
+
+  // Page-level gutter (vertical rhythm only).
+  .palace main {
+    padding: 24px 0 32px;
+  }
+
+  // Dropdown spacing (library, configuration, account)
+  .site-nav__dropdown-menu {
+    padding: 12px 16px;
+  }
+
+  .site-nav__dropdown-menu li {
+    padding: 3px 0;
+  }
+
+  .site-nav__dropdown-menu li > a,
+  .site-nav__dropdown-menu li > button,
+  .site-nav__dropdown-menu li > .library-dropdown-toggle {
+    padding: 10px 14px;
+    border-radius: 8px;
+  }
+}

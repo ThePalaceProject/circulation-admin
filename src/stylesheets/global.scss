@@ -132,21 +132,7 @@ body > div {
   height: unset;
 }
 
-// ─── Body baseline ──────────────────────────────────────────────────────────
-// This rule must live here (after web-opds-client import) so it wins the
-// cascade. Preflight resets margin/padding to 0; web-opds-client sets its
-// own body rules — both are overridden here.
-html, body {
-  padding-top: 16px !important;
-  background-color: #F8F8F7 !important;
-}
-
-// ─── Page-level gutter ──────────────────────────────────────────────────────
-// All <main> elements inside .palace inherit consistent side gutters and top
-// breathing room.  Pages that fully own their own layout override below.
-.palace main {
-  padding: 32px 10vw;
-}
+// Layout baseline moved to ui.scss for predictable layering.
 
 body > div.palace {
   height: 100%;
@@ -186,6 +172,36 @@ body > div.palace {
   border: 1px solid #E3E3E3;
   border-radius: 4px;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+// ─── Table baseline ─────────────────────────────────────────────────────────
+// Applies to legacy Bootstrap tables and new UI tables for consistent density.
+.palace {
+  table,
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-soft-color);
+    vertical-align: top;
+  }
+
+  thead th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--surface-muted-bg);
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: var(--surface-muted-bg);
+  }
 }
 
 // ─── .form-group ─────────────────────────────────────────────────────────────

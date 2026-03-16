@@ -81,3 +81,6 @@ $fontfamily: 'Open Sans', sans-serif;
   @import "with_edit_button";
   @import "with_remove_button";
 }
+
+// UI layer: high-priority layout + app-level polish (sits below utilities).
+@import "ui";

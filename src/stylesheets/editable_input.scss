@@ -1,6 +1,9 @@
 .control-label {
   display: block;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
   margin-bottom: 4px;
 
   input[type="checkbox"] {
@@ -10,13 +13,40 @@
     margin-left: 5px;
   }
   .required-field {
-    color: $red-dark;
-    font-size: 0.9rem;
+    color: #B91C1C;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+}
+
+.editable-input-group {
+  .form-control {
+    height: 38px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border-color: var(--border-color);
+    background-color: var(--surface-elevated-bg);
+    color: var(--text-primary);
+    box-shadow: none;
+  }
+
+  select.form-control {
+    height: 38px;
+    padding: 0 10px;
+  }
+
+  textarea.form-control {
+    height: auto;
+    min-height: 120px;
   }
 }
 
 .description {
   font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 6px;
   &.well {
     margin-top: 10px;
   }
@@ -60,18 +90,18 @@
   input:not([type=checkbox]),
   input[type=radio] + span,
   textarea {
-    background-color: $red-error;
-    border: 1px $red-dark solid;
+    background-color: #FDECEC;
+    border: 1px solid #B91C1C;
     box-shadow: none;
 
     &:focus {
-      background-color: lighten($red-error, 5%);
-      outline-color: $red-dark;;
+      background-color: #FDF2F2;
+      outline-color: #B91C1C;
     }
   }
 
   .description {
     background: $white;
-    color: $red;
+    color: #B91C1C;
   }
 }

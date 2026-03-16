@@ -3,8 +3,12 @@
 // are rendered by web-opds-client outside <main>, so each needs its own rule.
 .palace .breadcrumbs-or-search-wrapper,
 .palace .collection {
-  padding-left: 10vw;
-  padding-right: 10vw;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.palace .breadcrumbs-or-search-wrapper {
+  background-color: transparent;
 }
 
 // ─── Catalog search bar ───────────────────────────────────────────────────────
@@ -15,10 +19,11 @@
   display: block;
   width: 100%;
   padding: 20px 0 16px;
+  background-color: transparent;
 }
 
-.palace .search .form-inline {
-  display: flex !important;
+.palace .search form.form-inline {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
@@ -35,8 +40,8 @@
   border: 1.5px solid #D0D0CE;
   border-radius: 8px;
   box-shadow: none;
-  background-color: #fff;
-  color: #1a1a1a;
+  background-color: #FFF;
+  color: #1A1A1A;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:focus {
@@ -58,7 +63,7 @@
   padding: 0 20px;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #fff;
+  color: #FFF;
   background-color: #2563EB; // Tailwind blue-600
   border: none;
   border-radius: 8px;

@@ -4,18 +4,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 10vw;
-  background-color: $white;
-  border-bottom: 1px solid #E7E7E7;
+  padding: 0;
+  background-color: var(--surface-elevated-bg);
+  border-bottom: 1px solid var(--border-soft-color);
 }
 
-.site-nav__logo {
+.site-nav__brand .site-nav__logo {
   display: block;
   flex-shrink: 0;
-  height: 40px !important;
-  width: auto !important;
-  max-width: 280px !important;
-  max-height: 40px !important;
+  height: 80px;
+  width: auto;
+  max-width: 520px;
+  max-height: 80px;
   object-fit: contain;
 }
 
@@ -37,11 +37,11 @@
   outline: none;
   box-shadow: none;
   cursor: pointer;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 8px;
-  color: $dark;
-  font-size: 0.875rem;
-  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
   white-space: nowrap;
   transition: background-color 0.15s ease;
 
@@ -61,13 +61,40 @@
 }
 
 // Icon / label helpers shared across all dropdown buttons
-.site-nav__user-icon {
+.site-nav__dropdown-btn .site-nav__user-icon {
   display: block;
   flex-shrink: 0;
-  width: 18px !important;
-  height: 18px !important;
+  width: 18px;
+  height: 18px;
   pointer-events: none;
   color: $dark;
+}
+
+.site-nav__user-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background-color: rgba(37, 99, 235, 0.12);
+  color: #1D4ED8;
+}
+
+.site-nav__user-icon-wrap .site-nav__user-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.site-nav__config-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background-color: rgba(37, 99, 235, 0.12);
+  color: #1D4ED8;
 }
 
 .site-nav__user-caret {
@@ -78,8 +105,8 @@
 }
 
 .site-nav__user-email {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
@@ -96,11 +123,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  min-height: 48px;
-  padding: 0 10vw;
-  background-color: $white;
+  min-height: 52px;
+  padding: 0;
+  background-color: var(--surface-elevated-bg);
   color: $dark;
-  border-bottom: 1px solid #E7E7E7;
+  border-bottom: 1px solid var(--border-soft-color);
   border-radius: 0;
 
   .palace & {
@@ -115,7 +142,33 @@
 
 // Row 3 modifier — tabs row sits below controls row
 .site-nav--tabs {
-  min-height: 42px;
+  min-height: 44px;
+  background-color: transparent;
+}
+
+// ─── Inner layout container (consistent side gutters) ───────────────────────
+
+.site-nav__inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.site-nav__inner--brand {
+  justify-content: space-between;
+  padding: 24px 0;
+}
+
+.site-nav__inner--controls {
+  gap: 16px;
+  padding: 14px 0;
+  justify-content: space-between;
+}
+
+.site-nav__inner--tabs {
+  padding: 12px 0;
 }
 
 // ─── Controls-end: right-aligned config area in row 2 ────────────────────────
@@ -137,9 +190,9 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  padding: 8px 0;
-  margin-right: 24px;
+  gap: 0.9rem;
+  padding: 0;
+  margin-right: 0;
 
   .form-group {
     margin: 0;
@@ -148,19 +201,48 @@
 
 // ─── Library selector icon / label helpers ───────────────────────────────────
 
-.site-nav__library-icon {
+.site-nav__dropdown-btn .site-nav__library-icon {
   display: block;
   flex-shrink: 0;
-  width: 16px !important;
-  height: 16px !important;
-  color: $dark;
+  width: 16px;
+  height: 16px;
+  color: var(--text-primary);
   pointer-events: none;
 }
 
+.site-nav__dropdown-btn--library {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+}
+
+.site-nav__dropdown-btn--library:hover {
+  background-color: var(--surface-hover-bg);
+}
+
+.site-nav__library-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background-color: rgba(37, 99, 235, 0.12);
+  color: #1D4ED8;
+}
+
+.site-nav__dropdown-btn--library .site-nav__library-icon {
+  width: 14px;
+  height: 14px;
+}
+
 .site-nav__library-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: $dark;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
   white-space: nowrap;
   pointer-events: none;
   max-width: 220px;
@@ -175,7 +257,7 @@
   padding: 9px 10px;
   background-color: transparent;
   background-image: none;
-  border: 1px solid #DDD;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   cursor: pointer;
 }
@@ -185,7 +267,7 @@
   width: 22px;
   height: 2px;
   border-radius: 1px;
-  background-color: #888;
+  background-color: #64748B;
 
   + .site-nav__toggle-bar {
     margin-top: 4px;
@@ -210,6 +292,7 @@
   list-style: none;
   padding: 0;
   margin: 0 0 0 3px;
+  gap: 8px;
 
   &.site-nav__links--right {
     margin-left: auto;
@@ -225,10 +308,10 @@
     > button {
       display: flex;
       align-items: center;
-      padding: 0 12px;
-      color: #6b7280;                    // gray-500 default
-      font-size: 0.9rem;
-      font-weight: 500;
+      padding: 0 14px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 600;
       white-space: nowrap;
       text-decoration: none;
       background: transparent;
@@ -239,14 +322,14 @@
       transition: color 0.15s ease, border-color 0.15s ease;
 
       &:hover {
-        color: #111827;                  // gray-900
-        border-bottom-color: #d1d5db;   // gray-300 hover indicator
+        color: var(--text-primary);
+        border-bottom-color: var(--border-color);
         background: transparent;
       }
 
       &:active {
-        color: #2563eb;                  // blue-600 — confirms selection
-        border-bottom-color: #2563eb;
+        color: var(--nav-link-active-fg);
+        border-bottom-color: var(--nav-link-active-border);
         background: transparent;
         box-shadow: none;
       }
@@ -255,10 +338,10 @@
         outline: none;
       }
 
-      &:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-      }
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
     }
   }
 }
@@ -276,19 +359,19 @@
 
     // Active tab: blue bottom border + blue text
     &.active-link {
-      color: #2563eb;
-      border-bottom-color: #2563eb;
+      color: var(--nav-link-active-fg);
+      border-bottom-color: var(--nav-link-active-border);
     }
 
     &:hover {
-      color: #111827;
-      border-bottom-color: #d1d5db;
+      color: var(--text-primary);
+      border-bottom-color: var(--border-color);
       background: transparent;
     }
 
     &:active {
-      color: #2563eb;
-      border-bottom-color: #2563eb;
+      color: var(--nav-link-active-fg);
+      border-bottom-color: var(--nav-link-active-border);
       background: transparent;
     }
 
@@ -303,8 +386,8 @@
   }
 
   &.active a {
-    color: #2563eb;
-    border-bottom-color: #2563eb;
+    color: var(--nav-link-active-fg);
+    border-bottom-color: var(--nav-link-active-border);
   }
 }
 
@@ -323,10 +406,10 @@
   left: 0;
   z-index: 1000;
   min-width: 180px;
-  padding: 4px 0;
+  padding: 12px 14px;
   margin: 0;
   list-style: none;
-  background-color: $white;
+  background-color: var(--surface-elevated-bg);
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
@@ -334,25 +417,30 @@
   // Permissions label — dimmed header row at top of account menu
   .permissions {
     display: block;
-    padding: 8px 14px 6px;
+    padding: 6px 10px 8px;
     font-size: 0.75rem;
-    color: #9ca3af;           // gray-400
+    color: var(--text-muted);
     white-space: nowrap;
-    border-bottom: 1px solid #f3f4f6;
-    margin-bottom: 2px;
+    border-bottom: 1px solid var(--border-soft-color);
+    margin-bottom: 6px;
   }
 
   // All interactive items — links AND buttons get identical treatment
+  li {
+    padding: 3px 0;
+  }
+
   li > a,
-  li > button {
+  li > button,
+  li > .library-dropdown-toggle {
     display: flex;
     align-items: center;
     gap: 8px;
     width: 100%;
-    padding: 8px 14px;
+    padding: 10px 14px;
     font-size: 0.875rem;
     font-weight: 400;
-    color: #374151;           // gray-700
+    color: var(--text-secondary);
     text-decoration: none;
     background: transparent;
     border: none;
@@ -360,15 +448,16 @@
     text-align: left;
     white-space: nowrap;
     transition: background-color 0.1s ease, color 0.1s ease;
+    border-radius: 8px;
 
     &:hover {
-      background-color: #f3f4f6;  // gray-100
-      color: #111827;             // gray-900
+      background-color: var(--surface-hover-bg);
+      color: var(--text-primary);
     }
 
     &:active {
-      background-color: #e5e7eb;  // gray-200
-      color: #111827;
+      background-color: var(--surface-muted-bg);
+      color: var(--text-primary);
     }
 
     &:focus {
@@ -386,8 +475,53 @@
   li.active > a,
   li.active > button {
     font-weight: 600;
-    color: #2563eb;             // blue-600
-    background-color: #eff6ff;  // blue-50
+    color: var(--nav-link-active-fg);
+    background-color: var(--nav-link-active-bg);
+  }
+}
+
+// ─── Row-specific polish ─────────────────────────────────────────────────────
+
+.site-nav--controls {
+  .site-nav__dropdown-btn {
+    background-color: var(--surface-muted-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 0 rgba(17, 24, 39, 0.04);
+
+    &:hover {
+      background-color: var(--surface-hover-bg);
+    }
+  }
+}
+
+.site-nav__brand-user .site-nav__dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+.site-nav--tabs .site-nav__links {
+  gap: 10px;
+
+  > li > a {
+    height: 38px;
+    padding: 0 20px;
+    min-width: 110px;
+    justify-content: center;
+    border-bottom-width: 3px;
+    border-radius: 9999px;
+    border: 1px solid var(--nav-link-border);
+    background-color: var(--nav-link-bg);
+  }
+
+  > li > a.active-link {
+    color: var(--nav-link-active-fg);
+    border-color: var(--nav-link-active-border);
+    background-color: var(--nav-link-active-bg);
+  }
+
+  > li > a:hover {
+    background-color: var(--nav-link-hover-bg);
+    border-color: var(--nav-link-border);
   }
 }
 

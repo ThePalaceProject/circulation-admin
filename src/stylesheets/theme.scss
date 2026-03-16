@@ -13,6 +13,7 @@
 // A `.dark` block is included for future dark mode support; toggle it by
 // adding the class `dark` to the `<html>` element.
 // =============================================================================
+// sass-lint:disable property-sort-order
 
 :root {
   // ── Neutrals ───────────────────────────────────────────────────────────────
@@ -54,6 +55,32 @@
 
   // ── Shape ──────────────────────────────────────────────────────────────────
   --radius: 0.375rem;                      // matches Tailwind `rounded` (6px)
+
+  // ── UI Theme Tokens (MeBooks-style light theme) ────────────────────────────
+  --app-bg: #FFFFFF;
+  --app-fg: #0F172A;
+  --surface-bg: rgba(255, 255, 255, 0.88);
+  --surface-elevated-bg: #FFFFFF;
+  --surface-muted-bg: rgba(226, 232, 240, 0.65);
+  --surface-hover-bg: rgba(226, 232, 240, 0.95);
+  --border-color: rgba(203, 213, 225, 0.72);
+  --border-soft-color: rgba(203, 213, 225, 0.42);
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --nav-link-bg: rgba(14, 165, 233, 0.1);
+  --nav-link-hover-bg: rgba(14, 165, 233, 0.16);
+  --nav-link-border: rgba(14, 165, 233, 0.22);
+  --nav-link-fg: #0F172A;
+  --nav-link-active-bg: rgba(14, 165, 233, 0.2);
+  --nav-link-active-border: rgba(2, 132, 199, 0.38);
+  --nav-link-active-fg: #082F49;
+  --button-primary-bg: #2563EB;
+  --button-primary-hover-bg: #1D4ED8;
+  --button-primary-fg: #EFF6FF;
+  --button-secondary-bg: #CBD5E1;
+  --button-secondary-hover-bg: #94A3B8;
+  --button-secondary-fg: #0F172A;
 }
 
 // Dark mode — applied when the `dark` class is on <html>.
@@ -107,7 +134,6 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
-  background-color: #F8F8F7;
 }
 
 // Scope default link colour to links that don't carry an explicit Tailwind

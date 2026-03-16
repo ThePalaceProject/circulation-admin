@@ -15,7 +15,7 @@ import { Link } from "react-router";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 // Button from ui intentionally removed (dropdowns use native <button> for full style control)
 import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
-import { Landmark, Settings, User } from "lucide-react";
+import { Landmark, SlidersHorizontal, User } from "lucide-react";
 import title from "../../utils/title";
 
 const palaceLogoUrl = require("../../images/PalaceCollectionManagerLogo.svg")
@@ -80,7 +80,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       isMobileNavOpen: false,
     };
     this.accountDropdownRef = React.createRef();
-    this.settingsDropdownRef = React.createRef();
+    this.settingsDropdownRef = React.createRef<HTMLLIElement>();
     this.libraryDropdownRef = React.createRef();
     this.changeLibrary = this.changeLibrary.bind(this);
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
@@ -148,151 +148,163 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
         {/* Row 1: Logo + User dropdown */}
         <div className="site-nav__brand">
-          <img src={palaceLogoUrl} alt={title()} className="site-nav__logo" />
-          {!logoOnly && this.context.admin.email && (
-            <div
-              className="site-nav__dropdown site-nav__brand-user"
-              ref={this.accountDropdownRef}
-            >
-              <button
-                type="button"
-                className="account-dropdown-toggle site-nav__dropdown-btn"
-                aria-haspopup="true"
-                aria-expanded={this.state.showAccountDropdown}
-                onClick={this.toggleAccountDropdown}
+          <div className="site-nav__inner site-nav__inner--brand">
+            <img src={palaceLogoUrl} alt={title()} className="site-nav__logo" />
+            {!logoOnly && this.context.admin.email && (
+              <div
+                className="site-nav__dropdown site-nav__brand-user"
+                ref={this.accountDropdownRef}
               >
-                <User className="site-nav__user-icon" aria-hidden="true" />
-                <span className="site-nav__user-email">
-                  {this.context.admin.email}
-                </span>
-                <span className="site-nav__user-caret" aria-hidden="true">
-                  &#9662;
-                </span>
-              </button>
-              {this.state.showAccountDropdown && (
-                <ul className="site-nav__dropdown-menu">
-                  {this.displayPermissions(isSystemAdmin, isLibraryManager)}
-                  {this.renderLinkItem(accountLink, currentPathname)}
-                  <li>
-                    <a href="/admin/sign_out">Sign out</a>
-                  </li>
-                </ul>
-              )}
-            </div>
-          )}
+                <button
+                  type="button"
+                  className="account-dropdown-toggle site-nav__dropdown-btn"
+                  aria-haspopup="true"
+                  aria-expanded={this.state.showAccountDropdown}
+                  onClick={this.toggleAccountDropdown}
+                >
+                  <span className="site-nav__user-icon-wrap">
+                    <User className="site-nav__user-icon" aria-hidden="true" />
+                  </span>
+                  <span className="site-nav__user-email">
+                    {this.context.admin.email}
+                  </span>
+                  <span className="site-nav__user-caret" aria-hidden="true">
+                    &#9662;
+                  </span>
+                </button>
+                {this.state.showAccountDropdown && (
+                  <ul className="site-nav__dropdown-menu">
+                    {this.displayPermissions(isSystemAdmin, isLibraryManager)}
+                    {this.renderLinkItem(accountLink, currentPathname)}
+                    <li>
+                      <a href="/admin/sign_out">Sign out</a>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Row 2: Library selector (left) + Configuration (right) */}
         {!logoOnly && (
           <div className="site-nav site-nav--controls">
-            <div className="site-nav__header">
-              {this.props.libraries && this.props.libraries.length > 0 && (
-                <div
-                  className="site-nav__dropdown"
-                  ref={this.libraryDropdownRef}
-                >
-                  <button
-                    type="button"
-                    className="library-dropdown-toggle site-nav__dropdown-btn"
-                    aria-haspopup="listbox"
-                    aria-expanded={this.state.showLibraryDropdown}
-                    onClick={this.toggleLibraryDropdown}
+            <div className="site-nav__inner site-nav__inner--controls">
+              <div className="site-nav__header">
+                {this.props.libraries && this.props.libraries.length > 0 && (
+                  <div
+                    className="site-nav__dropdown"
+                    ref={this.libraryDropdownRef}
                   >
-                    <Landmark
-                      size={16}
-                      className="site-nav__library-icon"
-                      aria-hidden="true"
-                    />
-                    <span className="site-nav__library-label">
-                      {currentLibrary
-                        ? this.props.libraries.find(
-                            (l) => l.short_name === currentLibrary
-                          )?.name || currentLibrary
-                        : "Select a library"}
-                    </span>
-                    <span className="site-nav__user-caret" aria-hidden="true">
-                      &#9662;
-                    </span>
-                  </button>
-                  {this.state.showLibraryDropdown && (
-                    <ul className="site-nav__dropdown-menu" role="listbox">
-                      {this.props.libraries.map((library) => (
-                        <li
-                          key={library.short_name}
-                          role="option"
-                          aria-selected={currentLibrary === library.short_name}
-                          className={
-                            currentLibrary === library.short_name
-                              ? "active"
-                              : ""
-                          }
-                        >
-                          <button
-                            type="button"
-                            className="library-dropdown-toggle"
-                            onClick={() =>
-                              this.changeLibrary(library.short_name)
+                    <button
+                      type="button"
+                      className="library-dropdown-toggle site-nav__dropdown-btn site-nav__dropdown-btn--library"
+                      aria-haspopup="listbox"
+                      aria-expanded={this.state.showLibraryDropdown}
+                      onClick={this.toggleLibraryDropdown}
+                    >
+                      <span className="site-nav__library-icon-wrap">
+                        <Landmark
+                          size={16}
+                          className="site-nav__library-icon"
+                          aria-hidden="true"
+                        />
+                      </span>
+                      <span className="site-nav__library-label">
+                        {currentLibrary
+                          ? this.props.libraries.find(
+                              (l) => l.short_name === currentLibrary
+                            )?.name || currentLibrary
+                          : "Select a library"}
+                      </span>
+                      <span className="site-nav__user-caret" aria-hidden="true">
+                        &#9662;
+                      </span>
+                    </button>
+                    {this.state.showLibraryDropdown && (
+                      <ul className="site-nav__dropdown-menu" role="listbox">
+                        {this.props.libraries.map((library) => (
+                          <li
+                            key={library.short_name}
+                            role="option"
+                            aria-selected={
+                              currentLibrary === library.short_name
+                            }
+                            className={
+                              currentLibrary === library.short_name
+                                ? "active"
+                                : ""
                             }
                           >
-                            {library.name || library.short_name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )}
-              <button
-                type="button"
-                className="site-nav__toggle"
-                aria-label="Toggle navigation"
-                aria-controls="site-nav-menu"
-                aria-expanded={this.state.isMobileNavOpen}
-                onClick={this.toggleMobileNav}
-              >
-                <span className="visually-hidden">Toggle navigation</span>
-                <span className="site-nav__toggle-bar" />
-                <span className="site-nav__toggle-bar" />
-                <span className="site-nav__toggle-bar" />
-              </button>
-            </div>
-
-            {/* Right side: sitewide links + configuration dropdown */}
-            <div className="site-nav__controls-end">
-              <ul className="site-nav__links">
-                {sitewideLinkItems.map((item) =>
-                  this.renderLinkItem(item, currentPathname)
+                            <button
+                              type="button"
+                              className="library-dropdown-toggle"
+                              onClick={() =>
+                                this.changeLibrary(library.short_name)
+                              }
+                            >
+                              {library.name || library.short_name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
-
-                {/* Configuration dropdown: System Configuration + Troubleshooting */}
-                <li
-                  className="site-nav__dropdown"
-                  ref={this.settingsDropdownRef}
+                <button
+                  type="button"
+                  className="site-nav__toggle"
+                  aria-label="Toggle navigation"
+                  aria-controls="site-nav-menu"
+                  aria-expanded={this.state.isMobileNavOpen}
+                  onClick={this.toggleMobileNav}
                 >
-                  <button
-                    type="button"
-                    className="settings-dropdown-toggle site-nav__dropdown-btn"
-                    aria-haspopup="true"
-                    aria-expanded={this.state.showSettingsDropdown}
-                    onClick={this.toggleSettingsDropdown}
-                  >
-                    <Settings size={14} strokeWidth={2} />
-                    Configuration
-                  </button>
-                  {this.state.showSettingsDropdown && (
-                    <ul className="site-nav__dropdown-menu">
-                      <li>
-                        <a href={configUrl}>System Configuration</a>
-                      </li>
-                      {isSystemAdmin && (
-                        <li>
-                          <a href={troubleshootingUrl}>Troubleshooting</a>
-                        </li>
-                      )}
-                    </ul>
+                  <span className="visually-hidden">Toggle navigation</span>
+                  <span className="site-nav__toggle-bar" />
+                  <span className="site-nav__toggle-bar" />
+                  <span className="site-nav__toggle-bar" />
+                </button>
+              </div>
+
+              {/* Right side: sitewide links + configuration dropdown */}
+              <div className="site-nav__controls-end">
+                <ul className="site-nav__links">
+                  {sitewideLinkItems.map((item) =>
+                    this.renderLinkItem(item, currentPathname)
                   )}
-                </li>
-              </ul>
+
+                  {/* Configuration dropdown: System Configuration + Troubleshooting */}
+                  <li
+                    className="site-nav__dropdown"
+                    ref={this.settingsDropdownRef}
+                  >
+                    <button
+                      type="button"
+                      className="settings-dropdown-toggle site-nav__dropdown-btn"
+                      aria-haspopup="true"
+                      aria-expanded={this.state.showSettingsDropdown}
+                      onClick={this.toggleSettingsDropdown}
+                    >
+                      <span className="site-nav__config-icon-wrap">
+                        <SlidersHorizontal size={16} strokeWidth={2} />
+                      </span>
+                      Configuration
+                    </button>
+                    {this.state.showSettingsDropdown && (
+                      <ul className="site-nav__dropdown-menu">
+                        <li>
+                          <a href={configUrl}>System Configuration</a>
+                        </li>
+                        {isSystemAdmin && (
+                          <li>
+                            <a href={troubleshootingUrl}>Troubleshooting</a>
+                          </li>
+                        )}
+                      </ul>
+                    )}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         )}
@@ -300,25 +312,27 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         {/* Row 3: Page nav tabs — only when a library is selected */}
         {!logoOnly && currentLibrary && (
           <nav className="site-nav site-nav--tabs">
-            <ul
-              id="site-nav-menu"
-              className={
-                "site-nav__links site-nav__menu" +
-                (this.state.isMobileNavOpen ? " open" : "")
-              }
-            >
-              {this.renderLinkItem(
-                dashboardLinkItem,
-                currentPathname,
-                currentLibrary
-              )}
-              {libraryNavItems.map((item) =>
-                this.renderNavItem(item, currentPathname, currentLibrary)
-              )}
-              {libraryLinkItems.map((item) =>
-                this.renderLinkItem(item, currentPathname, currentLibrary)
-              )}
-            </ul>
+            <div className="site-nav__inner site-nav__inner--tabs">
+              <ul
+                id="site-nav-menu"
+                className={
+                  "site-nav__links site-nav__menu" +
+                  (this.state.isMobileNavOpen ? " open" : "")
+                }
+              >
+                {this.renderLinkItem(
+                  dashboardLinkItem,
+                  currentPathname,
+                  currentLibrary
+                )}
+                {libraryNavItems.map((item) =>
+                  this.renderNavItem(item, currentPathname, currentLibrary)
+                )}
+                {libraryLinkItems.map((item) =>
+                  this.renderLinkItem(item, currentPathname, currentLibrary)
+                )}
+              </ul>
+            </div>
           </nav>
         )}
       </header>
