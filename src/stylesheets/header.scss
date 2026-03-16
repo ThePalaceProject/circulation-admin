@@ -523,6 +523,62 @@
     background-color: var(--nav-link-hover-bg);
     border-color: var(--nav-link-border);
   }
+
+  // Catalog dropdown button — same pill style as the link tabs
+  > li > button {
+    height: 38px;
+    padding: 0 20px;
+    min-width: 110px;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid var(--nav-link-border);
+    background-color: var(--nav-link-bg);
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    box-shadow: none;
+
+    &:hover {
+      background-color: var(--nav-link-hover-bg);
+      border-color: var(--nav-link-border);
+    }
+  }
+
+  > li.active > button {
+    color: var(--nav-link-active-fg);
+    border-color: var(--nav-link-active-border);
+    background-color: var(--nav-link-active-bg);
+  }
+}
+
+// Override base dropdown-btn reset for tab-row pill buttons
+.site-nav__tab-btn.site-nav__dropdown-btn {
+  height: 38px;
+  padding: 0 20px;
+  min-width: 110px;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--nav-link-border);
+  background-color: var(--nav-link-bg);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:hover {
+    background-color: var(--nav-link-hover-bg);
+    border-color: var(--nav-link-border);
+  }
+
+  &:active {
+    background-color: var(--nav-link-active-bg);
+    box-shadow: none;
+  }
+}
+
+.site-nav--tabs .site-nav__links > li.active > .site-nav__tab-btn {
+  color: var(--nav-link-active-fg);
+  border-color: var(--nav-link-active-border);
+  background-color: var(--nav-link-active-bg);
 }
 
 // ─── Mobile breakpoint ────────────────────────────────────────────────────────

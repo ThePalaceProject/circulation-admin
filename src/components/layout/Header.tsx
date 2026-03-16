@@ -45,6 +45,7 @@ export interface HeaderState {
   showAccountDropdown: boolean;
   showSettingsDropdown: boolean;
   showLibraryDropdown: boolean;
+  showCatalogDropdown: boolean;
   isMobileNavOpen: boolean;
 }
 
@@ -65,6 +66,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   accountDropdownRef: React.RefObject<HTMLDivElement>;
   settingsDropdownRef: React.RefObject<HTMLLIElement>;
   libraryDropdownRef: React.RefObject<HTMLDivElement>;
+  catalogDropdownRef: React.RefObject<HTMLLIElement>;
 
   static contextTypes = {
     library: PropTypes.func,
@@ -77,15 +79,18 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       showAccountDropdown: false,
       showSettingsDropdown: false,
       showLibraryDropdown: false,
+      showCatalogDropdown: false,
       isMobileNavOpen: false,
     };
     this.accountDropdownRef = React.createRef();
     this.settingsDropdownRef = React.createRef<HTMLLIElement>();
     this.libraryDropdownRef = React.createRef();
+    this.catalogDropdownRef = React.createRef<HTMLLIElement>();
     this.changeLibrary = this.changeLibrary.bind(this);
     this.toggleAccountDropdown = this.toggleAccountDropdown.bind(this);
     this.toggleSettingsDropdown = this.toggleSettingsDropdown.bind(this);
     this.toggleLibraryDropdown = this.toggleLibraryDropdown.bind(this);
+    this.toggleCatalogDropdown = this.toggleCatalogDropdown.bind(this);
     this.toggleMobileNav = this.toggleMobileNav.bind(this);
     this.handleDocumentClick = this.handleDocumentClick.bind(this);
     this.handleDocumentKeyDown = this.handleDocumentKeyDown.bind(this);
@@ -116,15 +121,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     // Dashboard link that will be rendered in a Link router component.
     const dashboardLinkItem = { label: "Dashboard", href: "dashboard/" };
 
-    // Links that will be rendered in a NavItem Bootstrap component.
-    const libraryNavItems = [
-      { label: "Catalog", href: "%2Fgroups" },
-      { label: "Hidden Books", href: "%2Fadmin%2Fsuppressed" },
-    ];
-    // Other links that will be rendered in a Link router component and are library specific.
+    // Library-specific links rendered as router Link components.
     const libraryLinkItems = [
-      { label: "Lists", href: "lists/" },
-      { label: "Lanes", href: "lanes/", auth: isLibraryManager },
       { label: "Patrons", href: "patrons/", auth: isSystemAdmin },
     ];
     // Links that will be rendered in a Link router component and are sitewide.
@@ -325,8 +323,10 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                   currentPathname,
                   currentLibrary
                 )}
-                {libraryNavItems.map((item) =>
-                  this.renderNavItem(item, currentPathname, currentLibrary)
+                {this.renderCatalogDropdown(
+                  currentPathname,
+                  currentLibrary,
+                  isLibraryManager
                 )}
                 {libraryLinkItems.map((item) =>
                   this.renderLinkItem(item, currentPathname, currentLibrary)
@@ -370,6 +370,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       showLibraryDropdown: !prev.showLibraryDropdown,
       showAccountDropdown: false,
       showSettingsDropdown: false,
+      showCatalogDropdown: false,
     }));
   }
 
@@ -378,6 +379,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       showAccountDropdown: !prev.showAccountDropdown,
       showLibraryDropdown: false,
       showSettingsDropdown: false,
+      showCatalogDropdown: false,
     }));
   }
 
@@ -385,6 +387,16 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState((prev) => ({
       showSettingsDropdown: !prev.showSettingsDropdown,
       showAccountDropdown: false,
+      showLibraryDropdown: false,
+      showCatalogDropdown: false,
+    }));
+  }
+
+  toggleCatalogDropdown() {
+    this.setState((prev) => ({
+      showCatalogDropdown: !prev.showCatalogDropdown,
+      showAccountDropdown: false,
+      showSettingsDropdown: false,
       showLibraryDropdown: false,
     }));
   }
@@ -420,6 +432,14 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     ) {
       this.setState({ showLibraryDropdown: false });
     }
+
+    if (
+      this.state.showCatalogDropdown &&
+      this.catalogDropdownRef.current &&
+      !this.catalogDropdownRef.current.contains(target)
+    ) {
+      this.setState({ showCatalogDropdown: false });
+    }
   }
 
   handleDocumentKeyDown(event: KeyboardEvent) {
@@ -427,14 +447,120 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     if (
       this.state.showAccountDropdown ||
       this.state.showSettingsDropdown ||
-      this.state.showLibraryDropdown
+      this.state.showLibraryDropdown ||
+      this.state.showCatalogDropdown
     ) {
       this.setState({
         showAccountDropdown: false,
         showSettingsDropdown: false,
         showLibraryDropdown: false,
+        showCatalogDropdown: false,
       });
     }
+  }
+
+  /**
+   * renderCatalogDropdown
+   * Renders the Catalog nav button with a dropdown containing View Catalog,
+   * Hidden Books, Lists, and Lanes.
+   */
+  renderCatalogDropdown(
+    currentPathname: string,
+    currentLibrary: string,
+    isLibraryManager: boolean
+  ): JSX.Element {
+    const rootCatalogURL = "/admin/web/collection/";
+    const rootUrl = "/admin/web/";
+    const catalogHref = "%2Fgroups";
+    const hiddenBooksHref = "%2Fadmin%2Fsuppressed";
+    const listsHref = "lists/";
+    const lanesHref = "lanes/";
+
+    const isActive =
+      currentPathname.indexOf(catalogHref) !== -1 ||
+      currentPathname.indexOf(hiddenBooksHref) !== -1 ||
+      currentPathname.indexOf(listsHref) !== -1 ||
+      currentPathname.indexOf(lanesHref) !== -1;
+
+    return (
+      <li
+        key="catalog-dropdown"
+        className={
+          "header-link site-nav__dropdown" + (isActive ? " active" : "")
+        }
+        ref={this.catalogDropdownRef}
+      >
+        <a
+          href="#"
+          className={
+            "catalog-dropdown-toggle" + (isActive ? " active-link" : "")
+          }
+          aria-haspopup="true"
+          aria-expanded={this.state.showCatalogDropdown}
+          onClick={(e) => {
+            e.preventDefault();
+            this.toggleCatalogDropdown();
+          }}
+        >
+          Catalog
+          <span className="site-nav__user-caret" aria-hidden="true">
+            &#9662;
+          </span>
+        </a>
+        {this.state.showCatalogDropdown && (
+          <ul className="site-nav__dropdown-menu">
+            <li>
+              <a
+                href={`${rootCatalogURL}${currentLibrary}${catalogHref}`}
+                className={
+                  currentPathname.indexOf(catalogHref) !== -1
+                    ? "active-link"
+                    : ""
+                }
+              >
+                View Catalog
+              </a>
+            </li>
+            <li>
+              <a
+                href={`${rootCatalogURL}${currentLibrary}${hiddenBooksHref}`}
+                className={
+                  currentPathname.indexOf(hiddenBooksHref) !== -1
+                    ? "active-link"
+                    : ""
+                }
+              >
+                Hidden Books
+              </a>
+            </li>
+            <li>
+              <Link
+                to={`${rootUrl}${listsHref}${currentLibrary}`}
+                className={
+                  currentPathname.indexOf(listsHref) !== -1 ? "active-link" : ""
+                }
+              >
+                Lists
+              </Link>
+            </li>
+            {isLibraryManager && (
+              <li>
+                <Link
+                  to={`${rootUrl}${lanesHref}${currentLibrary}`}
+                  className={
+                    currentPathname.indexOf(lanesHref) !== -1
+                      ? "active-link"
+                      : ""
+                  }
+                >
+                  Lanes
+                </Link>
+              </li>
+            )}
+          </ul>
+        )}
+      </li>
+    );
   }
 
   /**

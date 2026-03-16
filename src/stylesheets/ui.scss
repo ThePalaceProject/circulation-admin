@@ -45,4 +45,40 @@
     padding: 10px 14px;
     border-radius: 8px;
   }
+
+  // Catalog dropdown button pill — overrides base button resets from legacy layer
+  .site-nav__tab-btn {
+    height: 38px;
+    padding: 0 20px;
+    min-width: 110px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 9999px;
+    border: 1px solid var(--nav-link-border);
+    background-color: var(--nav-link-bg);
+    color: var(--nav-link-fg);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      background-color: var(--nav-link-hover-bg);
+      border-color: var(--nav-link-border);
+    }
+
+    &:active {
+      background-color: var(--nav-link-active-bg);
+      box-shadow: none;
+    }
+  }
+
+  .site-nav--tabs .site-nav__links > li.active > .site-nav__tab-btn {
+    color: var(--nav-link-active-fg);
+    border-color: var(--nav-link-active-border);
+    background-color: var(--nav-link-active-bg);
+  }
 }
