@@ -138,7 +138,9 @@ export abstract class GenericEditableConfigList<
       <div className={this.getClassName()}>
         <div className="config-section-title">{headers["h2"]}</div>
         {canListAllData && this.links && this.links["info"] && (
-          <Alert variant="info">{this.links["info"]}</Alert>
+          <Alert variant="info" className="mb-4">
+            {this.links["info"]}
+          </Alert>
         )}
         {this.props.responseBody && this.props.editOrCreate && (
           <Alert variant="success">{this.successMessage()}</Alert>
@@ -174,7 +176,7 @@ export abstract class GenericEditableConfigList<
         )}
         {this.props.editOrCreate === "create" && (
           <div>
-            <h3>{headers["h3"]}</h3>
+            <div className="config-section-title">{headers["h3"]}</div>
             <EditForm
               ref={this.editFormRef}
               data={this.props.data}
@@ -194,10 +196,10 @@ export abstract class GenericEditableConfigList<
 
         {itemToEdit && (
           <div>
-            <h3>
+            <div className="config-section-title">
               {canEditItem ? "Edit " : ""}
               {this.label(itemToEdit)}
-            </h3>
+            </div>
             <EditForm
               item={itemToEdit}
               data={this.props.data}

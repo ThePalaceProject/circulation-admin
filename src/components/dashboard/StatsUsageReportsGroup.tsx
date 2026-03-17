@@ -41,7 +41,10 @@ const StatsUsageReportsGroup = ({
       <StatsGroup heading={heading} description={description}>
         <div className="flex flex-col gap-6">
           {!inventoryReportsEnabled && !quicksightLinkEnabled && (
-            <p className="text-sm italic text-gray-500">
+            <p
+              className="text-sm italic"
+              style={{ color: "var(--text-muted)" }}
+            >
               Usage reporting is not available.
             </p>
           )}
@@ -54,13 +57,13 @@ const StatsUsageReportsGroup = ({
                   href={usageDataHref}
                   target={usageDataTarget}
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/80 active:bg-primary/90 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
                 >
                   {usageDataLabel}
                   <i className="fa fa-external-link text-xs" aria-hidden />
                 </a>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm" style={{ color: "var(--text-muted)" }}>
                 View historical circulation and usage data for this library.
               </p>
             </div>
@@ -71,7 +74,7 @@ const StatsUsageReportsGroup = ({
             <div className="flex flex-col gap-2">
               <div>
                 <button
-                  className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/80 active:bg-primary/90 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none"
                   onClick={() => setShowReportForm(true)}
                   disabled={showReportForm}
                   title="Request an inventory report."
@@ -83,7 +86,7 @@ const StatsUsageReportsGroup = ({
                   />
                 </button>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm" style={{ color: "var(--text-muted)" }}>
                 These reports provide up-to-date data on both inventory and
                 holds for this library at the time of the request.
               </p>

@@ -133,7 +133,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       <form
         ref={internalRef}
         onSubmit={handleSubmit}
-        className={cn("p-4 rounded mx-5 w-[55vw]", className)}
+        className={cn("p-4 rounded", className)}
       >
         {title && (
           <span className="form-title block text-center w-4/5 mx-auto my-8 pb-2 border-b border-[#135772] font-bold">
@@ -170,7 +170,18 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
             type="submit"
             className={buttonClass}
             disabled={disableButton}
-            content={buttonContent}
+            content={
+              <span className="inline-flex items-center gap-1.5 [&_svg]:fill-current [&_svg]:h-5 [&_svg]:w-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
+                </svg>
+                {buttonContent}
+              </span>
+            }
             onClick={handleButtonClick}
           />
         )}

@@ -8,12 +8,12 @@
   // CirculationEventsDownload renders a bare <h2> + button; give it a
   // card-like treatment so it doesn't float disconnected on the page.
   main.body > h2 {
-    font-size: 1.125rem;
+    font-size: 0.9375rem !important;  // must beat unlayered Bootstrap h2:30px
     font-weight: 600;
-    color: #111827;
+    color: var(--text-primary);
     margin: 20px 0 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid var(--border-soft-color);
   }
 
   main.body > .btn.left-align {
