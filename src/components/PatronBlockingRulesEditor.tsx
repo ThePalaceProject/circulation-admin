@@ -37,8 +37,8 @@ export interface PatronBlockingRulesEditorProps {
   csrfToken?: string;
   serviceId?: number;
   /** Called whenever the "save should be blocked" state changes.
-   *  True while any rule is incomplete, awaiting or has failed server-side
-   *  validation, or while any two rules share the same name. */
+   *  True while any rule is incomplete (missing name or expression) or while
+   *  any two rules share the same name.  Server validation does not block save. */
   onValidationStateChange?: (isBlocking: boolean) => void;
 }
 
@@ -113,7 +113,7 @@ function RuleFormListItem({
             </p>
           )}
           {serverRuleError && (
-            <p className="patron-blocking-rule-field-error text-danger">
+            <p className="patron-blocking-rule-field-warning text-warning">
               {serverRuleError}
             </p>
           )}
@@ -177,9 +177,6 @@ const PatronBlockingRulesEditor = React.forwardRef<
     );
     const [clientErrors, setClientErrors] = React.useState<ClientErrors>({});
     const [serverErrors, setServerErrors] = React.useState<ServerErrors>({});
-    const [pendingValidationIds, setPendingValidationIds] = React.useState<
-      Set<number>
-    >(new Set());
 
     // Keep a stable ref to the latest callback so the useEffect below does not
     // need it as a dependency (avoids extra calls when a class-component parent
@@ -191,12 +188,9 @@ const PatronBlockingRulesEditor = React.forwardRef<
 
     React.useEffect(() => {
       const hasIncomplete = rules.some((r) => !r.name || !r.rule);
-      const isBlocking =
-        pendingValidationIds.size > 0 ||
-        getDuplicateNameSet(rules).size > 0 ||
-        hasIncomplete;
+      const isBlocking = getDuplicateNameSet(rules).size > 0 || hasIncomplete;
       onValidationStateChangeRef.current?.(isBlocking);
-    }, [pendingValidationIds, rules]);
+    }, [rules]);
 
     const serverErrorMessage = extractErrorMessage(error);
 
@@ -236,20 +230,11 @@ const PatronBlockingRulesEditor = React.forwardRef<
         _id: newId(),
       };
       setRules((prev) => [...prev, newEntry]);
-      // Only track pending validation when we have a saved service to validate against.
-      if (serviceId !== undefined) {
-        setPendingValidationIds((prev) => new Set(prev).add(newEntry._id));
-      }
     };
 
     const removeRule = (index: number) => {
       const removedId = rules[index]._id;
       setRules((prev) => prev.filter((_, i) => i !== index));
-      setPendingValidationIds((prev) => {
-        const next = new Set(prev);
-        next.delete(removedId);
-        return next;
-      });
       setClientErrors((prev) => {
         const next: ClientErrors = {};
         Object.entries(prev).forEach(([key, val]) => {
@@ -288,41 +273,20 @@ const PatronBlockingRulesEditor = React.forwardRef<
       }
       if (field === "rule") {
         setServerErrors((prev) => ({ ...prev, [index]: null }));
-        // Mark as needing re-validation whenever the expression changes.
-        if (serviceId !== undefined) {
-          setPendingValidationIds((prev) =>
-            new Set(prev).add(rules[index]._id)
-          );
-        }
       }
     };
 
     const handleRuleBlur = async (index: number) => {
       const rule = rules[index];
       if (!rule || !rule.rule) {
-        // Empty expression — skip server call; leave in pending so Save stays
-        // disabled until the user fills in the expression or removes the rule.
         return;
       }
-      // NOTE: There is a possible, though unlikely, race condition  when rendering multiple rules,
-      // each with their own onRuleBlur because there could potentially be multiple
-      // validatePatronBlockingRuleExpression fetches in flight. In that case,
-      // the last one to resolve will win, which might in correctly set the save button state.
-      // TODO: address the race condition if users see it occurring.
       const errorMessage = await validatePatronBlockingRuleExpression(
         serviceId,
         rule,
         csrfToken
       );
       setServerErrors((prev) => ({ ...prev, [index]: errorMessage }));
-      if (!errorMessage) {
-        // Validation passed — unblock save for this rule.
-        setPendingValidationIds((prev) => {
-          const next = new Set(prev);
-          next.delete(rule._id);
-          return next;
-        });
-      }
     };
 
     const hasIncompleteRule = rules.some((r) => !r.name || !r.rule);
@@ -341,7 +305,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
           />
         </div>
         {serverErrorMessage && (
-          <p className="patron-blocking-rule-field-error text-danger">
+          <p className="patron-blocking-rule-field-warning text-warning">
             {serverErrorMessage}
           </p>
         )}

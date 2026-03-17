@@ -37,7 +37,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     fetchMock.mockReset();
   });
 
-  it("calls onValidationStateChange(true) when a rule is added with a known serviceId", async () => {
+  it("calls onValidationStateChange(true) when a rule is added because it is incomplete", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
 
@@ -76,7 +76,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
   });
 
-  it("leaves onValidationStateChange(true) after failed validation on blur", async () => {
+  it("calls onValidationStateChange(false) after failed validation on blur (validation does not block save)", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
 
@@ -100,10 +100,9 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     await user.type(screen.getByLabelText(/Rule Expression/i), "bad_syntax");
     await user.tab();
 
-    // Wait for the error to appear; the rule stays in pending so the last
-    // call must have been true (not unblocked by the failed validation).
+    // Wait for the warning to appear; save is not blocked by failed validation.
     await screen.findByText(/Bad expression/i);
-    expect(onChange).toHaveBeenLastCalledWith(true);
+    expect(onChange).toHaveBeenLastCalledWith(false);
   });
 
   it("calls onValidationStateChange(true) when two rules have the same name", async () => {
@@ -227,7 +226,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
   });
 
-  it("keeps save blocked until every pending rule has been individually validated", async () => {
+  it("keeps save blocked until every rule has required fields (validation does not block)", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
 
@@ -240,18 +239,17 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
       />
     );
 
-    // Add and validate the first rule
+    // Add and fill the first rule
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     await user.type(screen.getByLabelText(/Rule Name/i), "Rule One");
     await user.type(screen.getByLabelText(/Rule Expression/i), "expr_one");
-    await user.tab(); // blur → 200 OK
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
 
-    // Add a second rule — save should block again
+    // Add a second rule — save should block (incomplete)
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
 
-    // Fill in and validate the second rule
+    // Fill in the second rule — no validation needed to unblock
     const nameInputs = screen.getAllByLabelText(
       /Rule Name/i
     ) as HTMLInputElement[];
@@ -260,11 +258,10 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     ) as HTMLTextAreaElement[];
     await user.type(nameInputs[1], "Rule Two");
     await user.type(ruleInputs[1], "expr_two");
-    await user.tab(); // blur → 200 OK
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
   });
 
-  it("re-enters blocking state when an existing rule's expression is edited", async () => {
+  it("does not block save when an existing rule's expression is edited (validation is advisory)", async () => {
     const user = userEvent.setup();
     const onChange = jest.fn();
     const rules: PatronBlockingRule[] = [{ name: "Rule A", rule: "expr_a" }];
@@ -278,20 +275,16 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
       />
     );
 
-    // Existing rules start as non-blocking (already saved, not pending)
     await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
 
-    // Edit the expression — should immediately re-block
+    // Edit the expression — save stays unblocked (no incomplete, no duplicate)
     const ruleTextarea = screen.getByLabelText(
       /Rule Expression/i
     ) as HTMLTextAreaElement;
     await user.clear(ruleTextarea);
     await user.type(ruleTextarea, "new_expr");
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith(true));
 
-    // Validate (blur → 200 OK) — should unblock again
-    await user.tab();
-    await waitFor(() => expect(onChange).toHaveBeenCalledWith(false));
+    expect(onChange).toHaveBeenLastCalledWith(false);
   });
 });
 
