@@ -78,9 +78,40 @@
   --button-primary-bg: #2563EB;
   --button-primary-hover-bg: #1D4ED8;
   --button-primary-fg: #EFF6FF;
+  --button-primary-disabled-bg: rgba(226, 232, 240, 0.95);
+  --button-primary-disabled-fg: #64748B;
   --button-secondary-bg: #CBD5E1;
   --button-secondary-hover-bg: #94A3B8;
   --button-secondary-fg: #0F172A;
+  --button-secondary-disabled-bg: rgba(226, 232, 240, 0.95);
+  --button-secondary-disabled-fg: #64748B;
+
+  // ── Input ──────────────────────────────────────────────────────────────────
+  --input-bg: #FFFFFF;
+  --input-fg: #0F172A;
+
+  // ── Status ─────────────────────────────────────────────────────────────────
+  --status-success-bg: rgba(16, 185, 129, 0.12);
+  --status-success-border: rgba(16, 185, 129, 0.28);
+  --status-success-fg: #166534;
+  --status-warning-bg: rgba(245, 158, 11, 0.12);
+  --status-warning-border: rgba(245, 158, 11, 0.28);
+  --status-warning-fg: #92400E;
+  --status-danger-bg: rgba(239, 68, 68, 0.12);
+  --status-danger-border: rgba(239, 68, 68, 0.28);
+  --status-danger-fg: #991B1B;
+  --status-info-bg: rgba(59, 130, 246, 0.12);
+  --status-info-border: rgba(59, 130, 246, 0.28);
+  --status-info-fg: #1D4ED8;
+
+  // ── Accent soft ────────────────────────────────────────────────────────────
+  --accent-soft-bg: rgba(37, 99, 235, 0.1);
+  --accent-soft-border: rgba(37, 99, 235, 0.24);
+  --accent-text: #1E3A8A;
+  --accent-text-emphasis: #1D4ED8;
+
+  // ── Slider ─────────────────────────────────────────────────────────────────
+  --slider-track: rgba(148, 163, 184, 0.9);
 }
 
 // Dark mode — applied when the `dark` class is on <html>.
@@ -113,6 +144,55 @@
   --border:                 0   0%  25%;
   --input:                  0   0%  25%;
   --ring:                 232  45%  59%;
+
+  // ── UI theme tokens (dark) ─────────────────────────────────────────────────
+  --app-bg: #0F172A;
+  --app-fg: #F8FAFC;
+  --surface-bg: rgba(15, 23, 42, 0.7);
+  --surface-elevated-bg: #1E293B;
+  --surface-muted-bg: rgba(15, 23, 42, 0.45);
+  --surface-hover-bg: rgba(51, 65, 85, 0.85);
+  --border-color: rgba(100, 116, 139, 0.6);
+  --border-soft-color: rgba(100, 116, 139, 0.35);
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --input-bg: #0F172A;
+  --input-fg: #E2E8F0;
+  --status-success-bg: rgba(16, 185, 129, 0.14);
+  --status-success-border: rgba(16, 185, 129, 0.35);
+  --status-success-fg: #86EFAC;
+  --status-warning-bg: rgba(245, 158, 11, 0.14);
+  --status-warning-border: rgba(245, 158, 11, 0.35);
+  --status-warning-fg: #FCD34D;
+  --status-danger-bg: rgba(239, 68, 68, 0.14);
+  --status-danger-border: rgba(239, 68, 68, 0.35);
+  --status-danger-fg: #FCA5A5;
+  --status-info-bg: rgba(59, 130, 246, 0.14);
+  --status-info-border: rgba(59, 130, 246, 0.35);
+  --status-info-fg: #93C5FD;
+  --nav-link-bg: rgba(14, 165, 233, 0.1);
+  --nav-link-hover-bg: rgba(14, 165, 233, 0.18);
+  --nav-link-border: rgba(14, 165, 233, 0.24);
+  --nav-link-fg: #BAE6FD;
+  --nav-link-active-bg: rgba(14, 165, 233, 0.22);
+  --nav-link-active-border: rgba(56, 189, 248, 0.42);
+  --nav-link-active-fg: #E0F2FE;
+  --accent-soft-bg: rgba(14, 165, 233, 0.14);
+  --accent-soft-border: rgba(56, 189, 248, 0.36);
+  --accent-text: #BAE6FD;
+  --accent-text-emphasis: #E0F2FE;
+  --button-primary-bg: #0284C7;
+  --button-primary-hover-bg: #0369A1;
+  --button-primary-fg: #F8FAFC;
+  --button-primary-disabled-bg: rgba(51, 65, 85, 0.9);
+  --button-primary-disabled-fg: #94A3B8;
+  --button-secondary-bg: #334155;
+  --button-secondary-hover-bg: #475569;
+  --button-secondary-fg: #F8FAFC;
+  --button-secondary-disabled-bg: rgba(51, 65, 85, 0.7);
+  --button-secondary-disabled-fg: #94A3B8;
+  --slider-track: rgba(100, 116, 139, 0.75);
 }
 
 // =============================================================================

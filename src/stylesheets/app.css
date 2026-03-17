@@ -15,9 +15,13 @@
  * placed in this layer are automatically overrideable by any Tailwind utility.
  *
  * Final priority order (highest → lowest):
- *   utilities > ui > components > base (Preflight) > theme > [unlayered] > legacy
+ *   utilities > ui > legacy > components > base (Preflight) > theme > [unlayered]
+ *
+ * legacy is placed ABOVE base so that explicit rules in SCSS files (e.g. padding,
+ * margin, color) win over Tailwind's preflight `* { padding: 0 }` reset, while
+ * Tailwind utilities (utilities layer) still trump everything.
  */
-@layer legacy, base, components, ui, utilities;
+@layer base, components, legacy, ui, utilities;
 
 /* Tell Tailwind v4's scanner where component/page source files live. */
 @source "../**/*.{ts,tsx}";

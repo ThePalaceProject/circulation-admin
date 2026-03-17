@@ -12,10 +12,10 @@
 .site-nav__brand .site-nav__logo {
   display: block;
   flex-shrink: 0;
-  height: 80px;
+  height: 52px;
   width: auto;
-  max-width: 520px;
-  max-height: 80px;
+  max-width: 400px;
+  max-height: 52px;
   object-fit: contain;
 }
 
@@ -37,10 +37,10 @@
   outline: none;
   box-shadow: none;
   cursor: pointer;
-  padding: 8px 14px;
+  padding: 6px 10px;
   border-radius: 8px;
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.825rem;
   font-weight: 600;
   white-space: nowrap;
   transition: background-color 0.15s ease;
@@ -142,7 +142,7 @@
 
 // Row 3 modifier — tabs row sits below controls row
 .site-nav--tabs {
-  min-height: 44px;
+  min-height: 36px;
   background-color: transparent;
 }
 
@@ -158,17 +158,17 @@
 
 .site-nav__inner--brand {
   justify-content: space-between;
-  padding: 24px 0;
+  padding: 12px 0;
 }
 
 .site-nav__inner--controls {
-  gap: 16px;
-  padding: 14px 0;
+  gap: 12px;
+  padding: 8px 0;
   justify-content: space-between;
 }
 
 .site-nav__inner--tabs {
-  padding: 12px 0;
+  padding: 6px 0;
 }
 
 // ─── Controls-end: right-aligned config area in row 2 ────────────────────────
@@ -211,16 +211,17 @@
 }
 
 .site-nav__dropdown-btn--library {
-  min-height: 44px;
-  padding: 10px 16px;
+  min-height: 36px;
+  padding: 6px 12px;
   border-radius: 999px;
-  background-color: #FFFFFF;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+  background-color: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
 }
 
 .site-nav__dropdown-btn--library:hover {
   background-color: var(--surface-hover-bg);
+  border-color: var(--border-color);
 }
 
 .site-nav__library-icon-wrap {
@@ -240,7 +241,7 @@
 }
 
 .site-nav__library-label {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
@@ -308,9 +309,9 @@
     > button {
       display: flex;
       align-items: center;
-      padding: 0 14px;
+      padding: 0 10px;
       color: var(--text-secondary);
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       font-weight: 600;
       white-space: nowrap;
       text-decoration: none;
@@ -437,8 +438,8 @@
     align-items: center;
     gap: 8px;
     width: 100%;
-    padding: 10px 14px;
-    font-size: 0.875rem;
+    padding: 7px 10px;
+    font-size: 0.8125rem;
     font-weight: 400;
     color: var(--text-secondary);
     text-decoration: none;
@@ -484,12 +485,13 @@
 
 .site-nav--controls {
   .site-nav__dropdown-btn {
-    background-color: var(--surface-muted-bg);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 1px 0 rgba(17, 24, 39, 0.04);
+    background-color: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
 
     &:hover {
       background-color: var(--surface-hover-bg);
+      border-color: var(--border-color);
     }
   }
 }
@@ -500,17 +502,18 @@
 }
 
 .site-nav--tabs .site-nav__links {
-  gap: 10px;
+  gap: 6px;
 
   > li > a {
-    height: 38px;
-    padding: 0 20px;
-    min-width: 110px;
+    height: 30px;
+    padding: 0 14px;
+    min-width: 88px;
     justify-content: center;
     border-bottom-width: 3px;
     border-radius: 9999px;
     border: 1px solid var(--nav-link-border);
     background-color: var(--nav-link-bg);
+    font-size: 0.8125rem;
   }
 
   > li > a.active-link {
@@ -526,15 +529,15 @@
 
   // Catalog dropdown button — same pill style as the link tabs
   > li > button {
-    height: 38px;
-    padding: 0 20px;
-    min-width: 110px;
+    height: 30px;
+    padding: 0 14px;
+    min-width: 88px;
     justify-content: center;
     border-radius: 9999px;
     border: 1px solid var(--nav-link-border);
     background-color: var(--nav-link-bg);
     color: inherit;
-    font-size: inherit;
+    font-size: 0.8125rem;
     font-weight: inherit;
     box-shadow: none;
 
@@ -553,15 +556,15 @@
 
 // Override base dropdown-btn reset for tab-row pill buttons
 .site-nav__tab-btn.site-nav__dropdown-btn {
-  height: 38px;
-  padding: 0 20px;
-  min-width: 110px;
+  height: 30px;
+  padding: 0 14px;
+  min-width: 88px;
   justify-content: center;
   border-radius: 9999px;
   border: 1px solid var(--nav-link-border);
   background-color: var(--nav-link-bg);
   color: var(--text-primary);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
 
   &:hover {

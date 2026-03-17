@@ -8,11 +8,11 @@
   // CirculationEventsDownload renders a bare <h2> + button; give it a
   // card-like treatment so it doesn't float disconnected on the page.
   main.body > h2 {
-    font-size: 1.375rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: #111827;
-    margin: 32px 0 12px;
-    padding-bottom: 14px;
+    margin: 20px 0 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #E5E7EB;
   }
 

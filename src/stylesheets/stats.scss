@@ -20,11 +20,11 @@
 
 .library-stats {
   > h2 {
-    font-size: 1.375rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: #111827;
-    margin: 24px 0 20px;
-    padding-bottom: 14px;
+    margin: 16px 0 12px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #E5E7EB;
   }
 }
@@ -33,7 +33,7 @@
 
 .stats {
   display: grid;
-  grid-gap: 1.25rem;
+  grid-gap: 1rem;
   grid-auto-rows: auto;
   padding: 0;
   list-style: none;
@@ -44,7 +44,7 @@
     border: 1px solid #E5E7EB;            // gray-200
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    padding: 20px 24px;
+    padding: 16px 20px;
     overflow-x: hidden;                   // no spurious scrollbars on metric cards
 
     // Grid area assignments
@@ -58,7 +58,7 @@
     // Extra breathing room for the two top summary cards
     &.stat-patrons-group,
     &.stat-usage-reports-group {
-      padding: 28px 28px;
+      padding: 20px 20px;
     }
 
     // Collections card spans full width and may contain a wide chart
@@ -84,7 +84,7 @@
 
     // ─── Card header – label + description ──────────────────────────────
     h3 {
-      font-size: 1.125rem;               // 18px — h2-level visual weight
+      font-size: 1rem;               // 16px
       font-weight: 700;
       letter-spacing: normal;
       color: #111827;                    // gray-900 — full contrast
@@ -94,10 +94,10 @@
     }
 
     .stat-group-description {
-      font-size: 0.875rem;              // 14px
+      font-size: 0.8125rem;              // 13px
       font-style: normal;
       color: #4B5563;                   // gray-600 — readable secondary text
-      margin: 0 0 16px;
+      margin: 0 0 12px;
       text-wrap: balance;
       max-width: 52ch;
     }
@@ -135,8 +135,8 @@
   .single-stat {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 12px 0;
+    gap: 10px;
+    padding: 8px 0;
     border-bottom: 1px solid #F3F4F6;   // gray-100 hairline
 
     &:first-child  { padding-top: 0; }
@@ -145,7 +145,7 @@
 
   // Big number
   .stat-value {
-    font-size: 2.25rem;                  // 36px — predictable, not relative
+    font-size: 1.875rem;                 // 30px
     font-weight: 700;
     color: #111827;                      // gray-900
     line-height: 1;

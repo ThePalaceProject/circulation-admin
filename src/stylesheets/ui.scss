@@ -8,8 +8,17 @@
   html,
   body {
     padding: 0;
+    min-height: 100vh;
+    height: auto;
     background-color: var(--app-bg);
     color: var(--app-fg);
+  }
+
+  // Undo opds-client's `html, body, body > div { height: 100% }` which caps
+  // the page to the viewport and prevents long pages from scrolling.
+  body > div {
+    height: auto;
+    min-height: 100vh;
   }
 
   body > #opds-catalog.palace {
@@ -18,39 +27,74 @@
     width: 100%;
     max-width: var(--layout-max-width);
     margin: var(--layout-top) auto 0;
-    padding: 28px var(--layout-gutter) 48px;
+    padding: 28px var(--layout-gutter) 0;
     background-color: transparent;
     border-radius: 0;
     box-shadow: none;
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 
-  // Page-level gutter (vertical rhythm only).
+  // Main content area grows to fill available space, pushing footer down
   .palace main {
+    flex: 1;
     padding: 24px 0 32px;
+  }
+
+  // Footer — never fixed, always in document flow
+  footer {
+    position: static !important;
+    bottom: auto !important;
+    z-index: auto !important;
+    margin-top: auto;
+  }
+
+  // Controls row buttons (Library Selector + Configuration) — transparent at rest
+  .site-nav--controls .site-nav__dropdown-btn {
+    background-color: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+
+    &:hover {
+      background-color: var(--surface-hover-bg);
+      border-color: var(--border-color);
+    }
+  }
+
+  // Library selector pill — transparent at rest
+  .site-nav__dropdown-btn--library {
+    background-color: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+
+    &:hover {
+      background-color: var(--surface-hover-bg);
+      border-color: var(--border-color);
+    }
   }
 
   // Dropdown spacing (library, configuration, account)
   .site-nav__dropdown-menu {
-    padding: 12px 16px;
+    padding: 8px 10px;
   }
 
   .site-nav__dropdown-menu li {
-    padding: 3px 0;
+    padding: 2px 0;
   }
 
   .site-nav__dropdown-menu li > a,
   .site-nav__dropdown-menu li > button,
   .site-nav__dropdown-menu li > .library-dropdown-toggle {
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.8125rem;
+    border-radius: 6px;
   }
 
-  // Catalog dropdown button pill — overrides base button resets from legacy layer
+  // Nav tab pills — compact size
   .site-nav__tab-btn {
-    height: 38px;
-    padding: 0 20px;
-    min-width: 110px;
+    height: 30px;
+    padding: 0 14px;
+    min-width: 88px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -59,7 +103,7 @@
     border: 1px solid var(--nav-link-border);
     background-color: var(--nav-link-bg);
     color: var(--nav-link-fg);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
@@ -81,4 +125,77 @@
     border-color: var(--nav-link-active-border);
     background-color: var(--nav-link-active-bg);
   }
+
+
+  // ─── Theme utility classes ────────────────────────────────────────────────
+  // Semantic helpers that map directly to design tokens.
+  // Use these in JSX instead of hardcoded colors for automatic dark-mode support.
+
+  .theme-surface           { background-color: var(--surface-bg); }
+  .theme-surface-elevated  { background-color: var(--surface-elevated-bg); }
+  .theme-surface-muted     { background-color: var(--surface-muted-bg); }
+  .theme-hover-surface:hover { background-color: var(--surface-hover-bg); }
+
+  .theme-border            { border-color: var(--border-color); }
+  .theme-border-soft       { border-color: var(--border-soft-color); }
+  .theme-border-hover:hover { border-color: var(--border-color); }
+  .theme-divider           { border-color: var(--border-soft-color); }
+
+  .theme-text-primary      { color: var(--text-primary); }
+  .theme-text-secondary    { color: var(--text-secondary); }
+  .theme-text-muted        { color: var(--text-muted); }
+
+  .theme-accent-text               { color: var(--accent-text); }
+  .theme-accent-text-emphasis      { color: var(--accent-text-emphasis); }
+  .theme-accent-text-hover:hover   { color: var(--accent-text); }
+  .theme-accent-text-emphasis-hover:hover { color: var(--accent-text-emphasis); }
+  .theme-accent-border     { border-color: var(--accent-soft-border); }
+  .theme-accent-surface    { background-color: var(--accent-soft-bg); border-color: var(--accent-soft-border); }
+  .theme-accent-badge      { background-color: var(--accent-soft-bg); color: var(--accent-text-emphasis); border-color: var(--accent-soft-border); }
+  .theme-inline-highlight  { background-color: var(--accent-soft-bg); color: var(--accent-text-emphasis); }
+
+  .theme-on-accent-text      { color: var(--button-primary-fg); }
+  .theme-on-accent-text-muted { color: color-mix(in srgb, var(--button-primary-fg) 82%, transparent); }
+
+  .theme-input             { background-color: var(--input-bg); color: var(--input-fg); border-color: var(--border-color); }
+  .theme-pill              { background-color: var(--surface-elevated-bg); color: var(--text-secondary); }
+  .theme-button-neutral    { background-color: var(--surface-elevated-bg); color: var(--text-primary); border-color: var(--border-color); }
+
+  .theme-button-primary    { background-color: var(--button-primary-bg); color: var(--button-primary-fg); }
+  .theme-button-primary:hover { background-color: var(--button-primary-hover-bg); }
+  .theme-button-primary:disabled { background-color: var(--button-primary-disabled-bg); color: var(--button-primary-disabled-fg); }
+
+  .theme-button-secondary  { background-color: var(--button-secondary-bg); color: var(--button-secondary-fg); }
+  .theme-button-secondary:hover { background-color: var(--button-secondary-hover-bg); }
+  .theme-button-secondary:disabled { background-color: var(--button-secondary-disabled-bg); color: var(--button-secondary-disabled-fg); }
+
+  .theme-selection-active  { background-color: var(--accent-soft-bg); border-color: var(--accent-soft-border); color: var(--accent-text-emphasis); }
+  .theme-selection-inactive { border-color: var(--border-color); }
+  .theme-selection-inactive:hover { border-color: var(--accent-soft-border); }
+
+  .theme-success { background-color: var(--status-success-bg); border-color: var(--status-success-border); color: var(--status-success-fg); }
+  .theme-warning { background-color: var(--status-warning-bg); border-color: var(--status-warning-border); color: var(--status-warning-fg); }
+  .theme-danger  { background-color: var(--status-danger-bg);  border-color: var(--status-danger-border);  color: var(--status-danger-fg); }
+  .theme-info    { background-color: var(--status-info-bg);    border-color: var(--status-info-border);    color: var(--status-info-fg); }
+
+  .theme-text-success { color: var(--status-success-fg); }
+  .theme-text-warning { color: var(--status-warning-fg); }
+  .theme-text-danger  { color: var(--status-danger-fg); }
+  .theme-text-danger-hover:hover { color: var(--status-danger-fg); }
+  .theme-text-info    { color: var(--status-info-fg); }
+
+  .theme-nav-link        { background-color: var(--nav-link-bg); border-color: transparent; color: var(--nav-link-fg); }
+  .theme-nav-link:hover  { background-color: var(--nav-link-hover-bg); border-color: var(--nav-link-border); }
+  .theme-nav-link-active { background-color: var(--nav-link-active-bg); border-color: var(--nav-link-active-border); color: var(--nav-link-active-fg); }
+
+  .theme-ring-offset  { --tw-ring-offset-color: var(--app-bg); }
+  .theme-focus-ring:focus { --tw-ring-color: var(--accent-soft-border); }
+
+  .theme-progress-track { background-color: color-mix(in srgb, var(--button-primary-bg) 18%, transparent); }
+  .theme-progress-fill  { background-color: var(--button-primary-bg); }
+
+  .theme-slider { accent-color: #38BDF8; background-color: transparent; }
+  .theme-slider::-webkit-slider-runnable-track { height: 0.5rem; border-radius: 9999px; background-color: var(--slider-track); }
+  .theme-slider::-moz-range-track { height: 0.5rem; border-radius: 9999px; background-color: var(--slider-track); }
+
 }
