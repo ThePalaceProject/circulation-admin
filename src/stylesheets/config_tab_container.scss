@@ -1,52 +1,128 @@
 $dangercolor: #D9534F;
 
 .config {
-  height: 100%;
-  padding-bottom: 60px;
-  main {
-    // Config owns its padding through .tab-content { padding: 40px 50px }.
-    // Reset the global .palace main gutter so it doesn't double-pad.
-    padding: 0;
-    height: 82%;
-  }
-  .tab-container {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    .nav-tabs {
-      float: left;
-      width: 25%;
-      border-right: 1px solid #DDD;
+  height: auto;
+  padding-bottom: 0;
 
-      li {
+  main {
+    padding: 0;
+    height: auto;
+  }
+
+  .tab-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+
+    // ─── Side nav ──────────────────────────────────────────────────────────
+    .nav-tabs {
+      // Override Bootstrap's float-based layout
+      float: none;
+      width: 220px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 16px 12px;
+      margin: 0;
+      border-bottom: none;
+      border-right: 1px solid var(--border-soft-color);
+      background-color: var(--surface-elevated-bg);
+      min-height: calc(100vh - 160px);
+
+      // Section label above items
+      &::before {
+        content: "Configuration";
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 4px 10px 8px;
+        border-bottom: 1px solid var(--border-soft-color);
+        margin-bottom: 6px;
+      }
+
+      // Reset Bootstrap float on items
+      > li {
         display: block;
         width: 100%;
-        border-top: 1px solid #DDD;
-        &.active a {
-          border-bottom: 1px solid #DDD;
-          border-top: none;
-          border-left: none;
-          border-right: none;
-        }
-        a {
-          padding-left: 15px;
+        float: none;
+        margin-bottom: 0;
+        border-top: none;
+
+        > a {
+          display: flex;
+          align-items: center;
           width: 100%;
+          padding: 7px 10px;
+          margin: 0;
+          font-size: 0.8125rem;
+          font-weight: 500;
+          color: var(--text-secondary);
+          border-radius: 6px;
+          border: 1px solid transparent;
+          background-color: transparent;
+          text-decoration: none;
+          transition: background-color 0.12s ease, color 0.12s ease;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          &:hover {
+            background-color: var(--surface-hover-bg);
+            border-color: var(--border-soft-color);
+            color: var(--text-primary);
+            text-decoration: none;
+          }
+
+          &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+          }
+        }
+
+        &.active > a,
+        &.active > a:hover,
+        &.active > a:focus {
+          background-color: var(--nav-link-active-bg);
+          border-color: var(--nav-link-active-border);
+          color: var(--nav-link-active-fg);
+          font-weight: 600;
+          cursor: default;
         }
       }
     }
 
     .tab-content {
-      float: left;
-      width: 73%;
-      padding: 40px 50px;
+      float: none;
+      flex: 1;
+      min-width: 0;
+      padding: 32px 40px;
+
+      // Section title — matches the sidebar "CONFIGURATION" label style
+      .config-section-title {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin: 0 0 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-soft-color);
+      }
 
       .list-container {
-        max-width: 600px;
+        max-width: 640px;
 
         header {
           display: flex;
-          align-items: baseline;
-          margin: 12px 0;
+          align-items: center;
+          margin: 0 0 16px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid var(--border-soft-color);
 
           div {
             flex: 1 1 auto;
@@ -55,20 +131,38 @@ $dangercolor: #D9534F;
         }
 
         > ul {
-          padding-left: 10px;
+          padding: 0;
+          list-style: none;
+
           li {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid $pagetextcolor;
+            padding: 10px 12px;
+            margin: 0;
+            border-radius: 6px;
+            border: 1px solid var(--border-soft-color);
+            background-color: var(--surface-elevated-bg);
+            margin-bottom: 8px;
+            transition: border-color 0.12s ease;
+
+            &:hover {
+              border-color: var(--border-color);
+            }
 
             h3 {
-              margin-right: 20px;
+              margin: 0 16px 0 0;
               flex-grow: 1;
-              font-size: 18px;
+              font-size: 0.875rem !important;
+              font-weight: 600;
+              color: var(--text-primary);
+            }
+
+            // Match button text to side nav scale (0.8125rem = 13px)
+            a.edit-item,
+            button.btn {
+              font-size: 0.8125rem !important;
             }
           }
         }
@@ -77,23 +171,26 @@ $dangercolor: #D9534F;
       a.danger {
         display: unset;
         margin: 0 12px 0 0;
-        color: $pagecolor;
+        color: var(--status-danger-fg);
+        border: 1px solid var(--status-danger-border);
+        border-radius: 4px;
+        padding: 3px 8px;
+        font-size: 0.8125rem;
+        background-color: var(--status-danger-bg);
+
         svg {
           height: 0.7em;
           width: 0.7em;
           margin-left: 5px;
-          fill: $pagecolor;
+          fill: currentColor;
           float: unset;
           vertical-align: unset;
         }
 
         &:hover {
-          background-color: white;
-          border-color: $dangercolor;
-          color: $dangercolor;
-          svg {
-            fill: $dangercolor;
-          }
+          background-color: var(--status-danger-border);
+          border-color: var(--status-danger-fg);
+          color: var(--status-danger-fg);
         }
       }
     }

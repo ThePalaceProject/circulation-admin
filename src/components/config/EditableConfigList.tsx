@@ -136,7 +136,7 @@ export abstract class GenericEditableConfigList<
     const canEditItem = itemToEdit && this.canEdit(itemToEdit);
     return (
       <div className={this.getClassName()}>
-        <h2>{headers["h2"]}</h2>
+        <div className="config-section-title">{headers["h2"]}</div>
         {canListAllData && this.links && this.links["info"] && (
           <Alert variant="info">{this.links["info"]}</Alert>
         )}
@@ -224,35 +224,37 @@ export abstract class GenericEditableConfigList<
 
     return (
       <li key={index}>
-        <a
-          className="edit-item inline-flex items-center justify-center px-3 py-1.5 text-sm font-bold text-primary-foreground bg-primary rounded hover:bg-primary/80 transition-colors no-underline"
-          href={this.urlBase + "edit/" + item[this.identifierKey]}
-        >
-          {this.canEdit(item) ? (
-            <span>
-              Edit <PencilIcon />
-            </span>
-          ) : (
-            <span>
-              View <VisibleIcon />
-            </span>
+        <h3 className="font-semibold flex-1 m-0">{this.label(item)}</h3>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            className="edit-item inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-foreground border border-border rounded bg-background hover:bg-muted transition-colors no-underline [&_svg]:fill-current [&_svg]:h-3 [&_svg]:w-3"
+            href={this.urlBase + "edit/" + item[this.identifierKey]}
+          >
+            {this.canEdit(item) ? (
+              <>
+                Edit <PencilIcon />
+              </>
+            ) : (
+              <>
+                View <VisibleIcon />
+              </>
+            )}
+          </a>
+
+          {this.canDelete() && (
+            <Button
+              className="danger delete-item small !m-0"
+              callback={() => this.delete(item)}
+              content={
+                <span className="inline-flex items-center gap-1.5 [&_svg]:fill-current [&_svg]:h-3 [&_svg]:w-3">
+                  Delete <TrashIcon />
+                </span>
+              }
+            />
           )}
-        </a>
+        </div>
 
-        <h3>{this.label(item)}</h3>
-
-        {this.canDelete() && (
-          <Button
-            className="danger delete-item small"
-            callback={() => this.delete(item)}
-            content={
-              <span>
-                Delete
-                <TrashIcon />
-              </span>
-            }
-          />
-        )}
         {AdditionalContent && (
           <AdditionalContent
             type={this.itemTypeName}
