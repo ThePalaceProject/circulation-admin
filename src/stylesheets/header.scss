@@ -1,3 +1,43 @@
+// Only target the Catalog dropdown in the tab row for rectangular, backgroundless style
+.site-nav--tabs .site-nav__links > li.site-nav__dropdown > button.catalog-dropdown-toggle {
+  border-radius: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--text-secondary) !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  height: 36px !important;
+  padding: 0 18px !important;
+  min-width: 88px !important;
+  border-bottom: 3px solid transparent !important;
+  transition: color 0.15s, border-color 0.15s !important;
+}
+.site-nav--tabs .site-nav__links > li.site-nav__dropdown > button.catalog-dropdown-toggle:hover,
+.site-nav--tabs .site-nav__links > li.site-nav__dropdown > button.catalog-dropdown-toggle:active,
+.site-nav--tabs .site-nav__links > li.site-nav__dropdown > button.catalog-dropdown-toggle:focus,
+.site-nav--tabs .site-nav__links > li.site-nav__dropdown > button.catalog-dropdown-toggle:focus-visible {
+  background: none !important;
+  color: var(--text-primary) !important;
+  border-bottom-color: var(--nav-link-border) !important;
+  box-shadow: none !important;
+}
+.site-nav--tabs .site-nav__links > li.site-nav__dropdown > button.catalog-dropdown-toggle.active-link {
+  color: var(--nav-link-active-fg) !important;
+  border-bottom-color: var(--nav-link-active-border) !important;
+  background: none !important;
+  box-shadow: 0 2px 0 0 var(--nav-link-active-border) !important;
+  z-index: 1 !important;
+}
+// Tab color variables (override as needed)
+:root {
+  --nav-link-active-fg: #1d4ed8;
+  --nav-link-active-border: #2563eb;
+  --nav-link-active-bg: transparent;
+  --nav-link-hover-bg: transparent;
+  --nav-link-border: #cbd5e1;
+  --nav-link-bg: transparent;
+}
 // ─── Brand bar (logo row) ─────────────────────────────────────────────────────
 
 .site-nav__brand {
@@ -38,7 +78,7 @@
   box-shadow: none;
   cursor: pointer;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: 0;
   color: var(--text-secondary);
   font-size: 0.825rem;
   font-weight: 600;
@@ -213,9 +253,9 @@
 .site-nav__dropdown-btn--library {
   min-height: 36px;
   padding: 6px 12px;
-  border-radius: 999px;
-  background-color: transparent;
-  border: 1px solid transparent;
+  border-radius: 0;
+  background: none;
+  border: none;
   box-shadow: none;
 }
 
@@ -505,83 +545,106 @@
   gap: 6px;
 
   > li > a {
-    height: 30px;
-    padding: 0 14px;
+    height: 36px;
+    padding: 0 18px;
     min-width: 88px;
     justify-content: center;
-    border-bottom-width: 3px;
-    border-radius: 9999px;
-    border: 1px solid var(--nav-link-border);
-    background-color: var(--nav-link-bg);
-    font-size: 0.8125rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    background: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: color 0.15s, border-color 0.15s;
   }
 
   > li > a.active-link {
     color: var(--nav-link-active-fg);
-    border-color: var(--nav-link-active-border);
-    background-color: var(--nav-link-active-bg);
+    border-bottom-color: var(--nav-link-active-border);
+    background: var(--nav-link-active-bg);
+    box-shadow: 0 2px 0 0 var(--nav-link-active-border);
+    z-index: 1;
   }
 
   > li > a:hover {
-    background-color: var(--nav-link-hover-bg);
-    border-color: var(--nav-link-border);
+    color: var(--text-primary);
+    border-bottom-color: var(--nav-link-border);
+    background: none;
   }
 
   // Catalog dropdown button — same pill style as the link tabs
   > li > button {
-    height: 30px;
-    padding: 0 14px;
+    height: 36px;
+    padding: 0 18px;
     min-width: 88px;
     justify-content: center;
-    border-radius: 9999px;
-    border: 1px solid var(--nav-link-border);
-    background-color: var(--nav-link-bg);
-    color: inherit;
-    font-size: 0.8125rem;
-    font-weight: inherit;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    background: none;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
     box-shadow: none;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
 
     &:hover {
-      background-color: var(--nav-link-hover-bg);
-      border-color: var(--nav-link-border);
+      color: var(--text-primary);
+      border-bottom-color: var(--nav-link-border);
+      background: var(--nav-link-hover-bg);
+    }
+    &.active-link {
+      color: var(--nav-link-active-fg);
+      border-bottom-color: var(--nav-link-active-border);
+      background: none;
+      box-shadow: 0 2px 0 0 var(--nav-link-active-border);
+      z-index: 1;
     }
   }
 
   > li.active > button {
     color: var(--nav-link-active-fg);
-    border-color: var(--nav-link-active-border);
-    background-color: var(--nav-link-active-bg);
+    border-bottom-color: var(--nav-link-active-border);
+    background: none;
   }
 }
 
 // Override base dropdown-btn reset for tab-row pill buttons
 .site-nav__tab-btn.site-nav__dropdown-btn {
-  height: 30px;
-  padding: 0 14px;
+  height: 36px;
+  padding: 0 18px;
   min-width: 88px;
   justify-content: center;
-  border-radius: 9999px;
-  border: 1px solid var(--nav-link-border);
-  background-color: var(--nav-link-bg);
-  color: var(--text-primary);
-  font-size: 0.8125rem;
-  font-weight: 500;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: none;
+  transition: color 0.15s, border-color 0.15s;
 
   &:hover {
-    background-color: var(--nav-link-hover-bg);
-    border-color: var(--nav-link-border);
+    color: var(--text-primary);
+    border-bottom-color: var(--nav-link-border);
+    background: none;
   }
 
-  &:active {
-    background-color: var(--nav-link-active-bg);
-    box-shadow: none;
+  &.active-link {
+    color: var(--nav-link-active-fg);
+    border-bottom-color: var(--nav-link-active-border);
+    background: none;
+    box-shadow: 0 2px 0 0 var(--nav-link-active-border);
+    z-index: 1;
   }
 }
 
 .site-nav--tabs .site-nav__links > li.active > .site-nav__tab-btn {
   color: var(--nav-link-active-fg);
-  border-color: var(--nav-link-active-border);
-  background-color: var(--nav-link-active-bg);
+  border-bottom-color: var(--nav-link-active-border);
+  background: none;
 }
 
 // ─── Mobile breakpoint ────────────────────────────────────────────────────────
