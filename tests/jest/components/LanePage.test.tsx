@@ -16,11 +16,11 @@ describe("LanePage", () => {
     expect(container.querySelector(".lane-page")).toBeInTheDocument();
   });
 
-  it("renders header and footer", () => {
+  it("renders header but not footer", () => {
     const { container } = renderWithProviders(
       <LanePage params={defaultParams} />
     );
     expect(container.querySelector("header")).toBeInTheDocument();
-    expect(container.querySelector("footer")).toBeInTheDocument();
+    expect(container.querySelector("footer")).not.toBeInTheDocument();
   });
 });

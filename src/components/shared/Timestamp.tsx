@@ -13,12 +13,12 @@ export default class Timestamp extends React.Component<
   render(): JSX.Element {
     const { timestamp } = this.props;
     const exception = (
-      <section className="well exception">
+      <section className="exception timestamp-exception">
         <pre>{timestamp.exception}</pre>
       </section>
     );
     const achievements = (
-      <section className="well">
+      <section className="well timestamp-achievements">
         <pre>{timestamp.achievements}</pre>
       </section>
     );

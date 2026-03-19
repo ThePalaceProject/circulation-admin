@@ -3,7 +3,6 @@ import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import Stats from "./Stats";
 import title from "../../utils/title";
 import CirculationEventsDownload from "./CirculationEventsDownload";
@@ -46,7 +45,6 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
           <Stats library={library} />
           <CirculationEventsDownload library={library} />
         </main>
-        <Footer />
       </div>
     );
   }

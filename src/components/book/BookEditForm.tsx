@@ -92,9 +92,9 @@ export default class BookEditForm extends React.Component<
           roles={this.props.roles}
           contributors={this.state.contributors}
         />
-        <div className="form-group">
+        <div className="series-field">
           <label>Series</label>
-          <div className="form-inline">
+          <div className="flex items-center">
             {this.renderTextField("series", "Name", null, false)}
             <span>&nbsp;&nbsp;</span>
             {this.renderTextField(
@@ -152,7 +152,7 @@ export default class BookEditForm extends React.Component<
           value={this.props.rating && String(Math.round(this.props.rating))}
           optionalText={false}
         />
-        <div className="editor form-group">
+        <div className="editor">
           <label className="control-label">Summary</label>
           <EditorField
             ref={this.summaryRef}

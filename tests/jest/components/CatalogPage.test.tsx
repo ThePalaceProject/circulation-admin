@@ -59,13 +59,13 @@ describe("CatalogPage", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders Footer", () => {
+  it("does not render a footer (footer removed)", () => {
     const params = {
       collectionUrl: "library/collectionurl",
       bookUrl: "library/bookurl",
       tab: "tab",
     };
     const { container } = renderWithProviders(<CatalogPage params={params} />);
-    expect(container.querySelector("footer")).toBeInTheDocument();
+    expect(container.querySelector("footer")).not.toBeInTheDocument();
   });
 });

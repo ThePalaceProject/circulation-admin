@@ -6,7 +6,6 @@ import * as PropTypes from "prop-types";
 import { ActionsProvider } from "@thepalaceproject/web-opds-client/lib/components/context/ActionsContext";
 import BookDetailsContainer from "../book/BookDetailsContainer";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import computeBreadcrumbs from "../../computeBreadcrumbs";
 import EntryPointsContainer from "../shared/EntryPointsContainer";
 import WelcomePage from "../layout/WelcomePage";
@@ -75,7 +74,6 @@ export default class CatalogPage extends React.Component<CatalogPageProps, {}> {
             fetcher={fetcher}
           />
         </ActionsProvider>
-        <Footer />
       </div>
     );
   }

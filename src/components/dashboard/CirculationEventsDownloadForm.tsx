@@ -48,7 +48,7 @@ const CirculationEventsDownloadForm = ({
 
     return (
       <fieldset>
-        <legend className="control-label visuallyHidden">Configuration</legend>
+        <legend className="visuallyHidden">Configuration</legend>
         <EditableInput
           ref={dateStartRef}
           name="dateStart"

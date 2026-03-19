@@ -1,3 +1,4 @@
+// sass-lint:disable no-important
 @layer ui {
   :root {
     --layout-max-width: 1280px;
@@ -9,19 +10,22 @@
   body {
     padding: 0;
     min-height: 100vh;
-    height: auto;
+    height: auto !important;
     background-color: var(--app-bg);
     color: var(--app-fg);
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   // Undo opds-client's `html, body, body > div { height: 100% }` which caps
   // the page to the viewport and prevents long pages from scrolling.
   body > div {
-    height: auto;
+    height: auto !important;
     min-height: 100vh;
+    overflow: visible !important;
   }
 
-  body > #opds-catalog.palace {
+  body > .palace {
     min-height: 100vh;
     box-sizing: border-box;
     width: 100%;

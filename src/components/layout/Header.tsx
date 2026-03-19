@@ -14,8 +14,8 @@ import EditableInput from "../shared/EditableInput";
 import { Link } from "react-router";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 // Button from ui intentionally removed (dropdowns use native <button> for full style control)
-import { GenericWedgeIcon } from "@nypl/dgx-svg-icons";
-import { Landmark, SlidersHorizontal, User } from "lucide-react";
+import { BarChart, Book, User, SlidersHorizontal } from "lucide-react";
+import { Landmark } from "lucide-react";
 import title from "../../utils/title";
 
 const palaceLogoUrl = require("../../images/PalaceCollectionManagerLogo.svg")
@@ -118,12 +118,21 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     let isSiteWide = !this.context.library || !currentLibrary;
     let isSomeLibraryManager = this.context.admin.isLibraryManagerOfSomeLibrary();
 
-    // Dashboard link that will be rendered in a Link router component.
-    const dashboardLinkItem = { label: "Dashboard", href: "dashboard/" };
+    // Dashboard link with bar chart icon (larger)
+    const dashboardLinkItem = {
+      label: "Dashboard",
+      href: "dashboard/",
+      icon: <BarChart size={22} style={{ marginRight: 10 }} />,
+    };
 
     // Library-specific links rendered as router Link components.
     const libraryLinkItems = [
-      { label: "Patrons", href: "patrons/", auth: isSystemAdmin },
+      {
+        label: "Patrons",
+        href: "patrons/",
+        auth: isSystemAdmin,
+        icon: <User size={22} style={{ marginRight: 10 }} />,
+      },
     ];
     // Links that will be rendered in a Link router component and are sitewide.
     // Dashboard only shows when no library is selected (otherwise it's in the left nav).
@@ -203,7 +212,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     >
                       <span className="site-nav__library-icon-wrap">
                         <Landmark
-                          size={16}
+                          size={18}
                           className="site-nav__library-icon"
                           aria-hidden="true"
                         />
@@ -490,10 +499,11 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         }
         ref={this.catalogDropdownRef}
       >
-        <a
-          href="#"
+        <button
+          type="button"
           className={
-            "catalog-dropdown-toggle" + (isActive ? " active-link" : "")
+            "site-nav__dropdown-btn catalog-dropdown-toggle" +
+            (isActive ? " active-link" : "")
           }
           aria-haspopup="true"
           aria-expanded={this.state.showCatalogDropdown}
@@ -502,11 +512,16 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             this.toggleCatalogDropdown();
           }}
         >
+          <span
+            style={{ marginRight: 10, display: "flex", alignItems: "center" }}
+          >
+            <Book size={22} />
+          </span>
           Catalog
           <span className="site-nav__user-caret" aria-hidden="true">
             &#9662;
           </span>
-        </a>
+        </button>
         {this.state.showCatalogDropdown && (
           <ul className="site-nav__dropdown-menu">
             <li>
@@ -594,23 +609,45 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
    * @param {string} currentPathname Page's current URL.
    * @param {string} currentLibrary Active library.
    */
+
   renderLinkItem(
-    item: HeaderNavItem,
+    item: HeaderNavItem & { icon?: React.ReactNode },
     currentPathname: string,
     currentLibrary: string = ""
   ) {
     const rootUrl = "/admin/web/";
-    const { label, href, auth } = item;
+    const { label, href, auth, icon } = item;
     let isActive = currentPathname.indexOf(href) !== -1;
     if (currentLibrary) {
       isActive = !!(isActive && currentLibrary);
     }
+    // Remove tab styling, match dropdown style
     const liElem = (
       <li className="header-link" key={href}>
         <Link
           to={`${rootUrl}${href}${currentLibrary}`}
-          className={isActive ? "active-link" : ""}
+          className={
+            "site-nav__dropdown-btn" + (isActive ? " active-link" : "")
+          }
+          style={{
+            display: "flex",
+            alignItems: "center",
+            fontWeight: 600,
+            fontSize: "0.95rem",
+            borderRadius: 0,
+            background: "none",
+            border: "none",
+            boxShadow: "none",
+            height: 36,
+            padding: "0 18px",
+            minWidth: 88,
+            borderBottom: "3px solid transparent",
+            color: isActive
+              ? "var(--nav-link-active-fg)"
+              : "var(--text-secondary)",
+          }}
         >
+          {icon}
           {label}
         </Link>
       </li>
@@ -622,7 +659,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       if (auth) {
         return liElem;
       } else {
-        return;
+        return null;
       }
     }
 
@@ -643,18 +680,11 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch) {
   return {
     fetchLibraries: () =>
-      dispatch(configServicesApi.endpoints.getLibraries.initiate(undefined)),
+      dispatch(configServicesApi.endpoints.getLibraries.initiate()),
   };
 }
 
-const ConnectedHeader = connect<
-  HeaderStateProps,
-  HeaderDispatchProps,
-  HeaderOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(Header);
+const ConnectedHeader = connect(mapStateToProps, mapDispatchToProps)(Header);
 
 /** HeaderWithStore is a wrapper component to pass the store as a prop to the
     ConnectedHeader, since it's not in the regular place in the context. */

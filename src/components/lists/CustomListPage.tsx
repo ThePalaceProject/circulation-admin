@@ -2,7 +2,6 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import CustomLists from "./CustomLists";
 import { RootState } from "../../store";
 
@@ -58,7 +57,6 @@ export default class CustomListPage extends React.Component<
           csrfToken={this.context.csrfToken}
           startingTitle={startingTitle}
         />
-        <Footer />
       </div>
     );
   }

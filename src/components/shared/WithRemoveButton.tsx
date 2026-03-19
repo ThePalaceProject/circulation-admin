@@ -18,15 +18,15 @@ export default class WithRemoveButton extends React.Component<
   };
   render(): JSX.Element {
     const removeContent = (
-      <span>
+      <span className="inline-flex items-center gap-1.5">
         Delete <TrashIcon />
       </span>
     );
     return (
-      <div className="with-remove-button">
+      <div className="with-remove-button flex items-center gap-2">
         <span>{this.props.children}</span>
         <Button
-          className="remove-btn danger small"
+          className="danger small !m-0 remove-btn"
           callback={this.onClick.bind(this)}
           content={removeContent}
           type="button"

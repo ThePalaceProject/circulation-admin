@@ -1,3 +1,4 @@
+// sass-lint:disable no-important
 $dangercolor: #D9534F;
 
 .config {
@@ -86,12 +87,15 @@ $dangercolor: #D9534F;
 
         &.active > a,
         &.active > a:hover,
-        &.active > a:focus {
+        &.active > a:focus,
+        &.active > a:focus-visible {
           background-color: var(--nav-link-active-bg);
           border-color: var(--nav-link-active-border);
           color: var(--nav-link-active-fg);
           font-weight: 600;
           cursor: default;
+          outline: none;
+          box-shadow: none;
         }
       }
     }

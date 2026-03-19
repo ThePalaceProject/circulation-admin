@@ -219,7 +219,7 @@ export default class ProtocolFormField extends React.Component<
     );
     const instructions = setting.instructions && (
       <div
-        className="well description"
+        className="config-instructions description"
         dangerouslySetInnerHTML={{ __html: setting.instructions }}
       ></div>
     );

@@ -1,68 +1,49 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
-import { State } from "../../reducers/index";
-import {
-  TabContainer,
-  TabContainerProps,
-  TabContainerContext,
-} from "../shared/TabContainer";
-import TroubleshootingCategoryPage from "./TroubleshootingCategoryPage";
+import { TabContainerContext } from "../shared/TabContainer";
 
-export interface TroubleshootingTabContainerProps extends TabContainerProps {
+export interface TroubleshootingTabContainerProps {
+  tab: string;
   goToTab: (tabName: string) => void;
   subtab?: string;
 }
 
-export default class TroubleshootingTabContainer extends TabContainer<
+export default class TroubleshootingTabContainer extends React.Component<
   TroubleshootingTabContainerProps
 > {
-  context: TabContainerContext;
   static contextTypes: React.ValidationMap<TabContainerContext> = {
     router: PropTypes.object.isRequired,
     pathFor: PropTypes.func.isRequired,
   };
+  context: TabContainerContext;
 
-  tabs() {
-    return {
-      diagnostics: (
-        <TroubleshootingCategoryPage
-          subtab={
-            this.props.tab === "diagnostics"
-              ? this.props.subtab
-              : "coverage_provider"
-          }
-          type="diagnostics"
-        />
-      ),
-      "self-tests": (
-        <TroubleshootingCategoryPage
-          subtab={
-            this.props.tab === "self-tests" ? this.props.subtab : "collections"
-          }
-          type="self-tests"
-        />
-      ),
-    };
+  constructor(props: TroubleshootingTabContainerProps) {
+    super(props);
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
-  UNSAFE_componentWillReceiveProps(newProps: TroubleshootingTabContainerProps) {
-    newProps.tab !== this.props.tab &&
-      this.route(newProps.tab, newProps.subtab);
-  }
-
-  handleSelect(event) {
+  handleSelect(event: React.MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
     const tab = event.currentTarget.dataset.tabkey;
-    const subtab = this.props.subtab;
-    this.props.goToTab(tab);
-    this.route(tab, subtab);
+    this.props.goToTab(tab!);
+    if (this.context.router) {
+      this.context.router.push(`/admin/web/troubleshooting/${tab}`);
+    }
   }
 
-  route(tab: string, subtab: string) {
-    if (this.context.router) {
-      this.context.router.push(
-        "/admin/web/troubleshooting/" + tab + "/" + subtab
-      );
-    }
+  render() {
+    const { tab } = this.props;
+    const tabs = ["diagnostics", "self-tests"];
+    return (
+      <ul className="nav-tabs">
+        {tabs.map((name) => (
+          <li key={name} className={tab === name ? "active" : undefined}>
+            <a href={`#${name}`} onClick={this.handleSelect} data-tabkey={name}>
+              {name.charAt(0).toUpperCase() + name.slice(1)}
+            </a>
+          </li>
+        ))}
+      </ul>
+    );
   }
 }

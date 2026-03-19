@@ -19,10 +19,10 @@ export default class WithEditButton extends React.Component<
       </span>
     );
     return (
-      <div className="with-edit-button">
+      <div className="flex items-center gap-2">
         <span>{this.props.children}</span>
         <Button
-          className="edit-btn small"
+          className="edit-btn inline-flex items-center px-2 py-1 rounded bg-blue-600 text-white text-xs hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
           callback={this.onClick.bind(this)}
           content={editContent}
           type="button"

@@ -2,7 +2,6 @@ import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import ConfigTabContainer from "./ConfigTabContainer";
 import { RootState } from "../../store";
 import title from "../../utils/title";
@@ -41,10 +40,9 @@ export default class ConfigPage extends React.Component<ConfigPageProps> {
             identifier={this.props.params.identifier}
             store={this.context.editorStore}
             csrfToken={this.context.csrfToken}
-            class="clearfix"
+            className="vertical-tabs"
           />
         </main>
-        <Footer />
       </div>
     );
   }

@@ -121,7 +121,9 @@ const Panel: React.FC<PanelProps> = ({
           onClick={toggle}
           onKeyDown={handleKeyDown}
         >
-          <span className="panel-title">{headerText}</span>
+          <span className="panel-title panel-heading-title font-semibold text-sm">
+            {headerText}
+          </span>
           <i aria-hidden="true" style={{ fontSize: "0.625rem", opacity: 0.6 }}>
             {open ? "▲" : "▼"}
           </i>
@@ -134,7 +136,9 @@ const Panel: React.FC<PanelProps> = ({
           )}
           style={defaultHeaderStyle}
         >
-          <span className="panel-title">{headerText}</span>
+          <span className="panel-title panel-heading-title font-semibold text-sm">
+            {headerText}
+          </span>
         </div>
       )}
 
@@ -142,7 +146,7 @@ const Panel: React.FC<PanelProps> = ({
            Hidden via display:none when closed (mirrors the original library behaviour). */}
       <div
         id={bodyId}
-        className="panel-body p-5"
+        className="panel-body panel-content p-5"
         style={open ? undefined : { display: "none" }}
         aria-hidden={open ? undefined : true}
       >

@@ -50,7 +50,7 @@ export default class TextWithEditMode extends React.Component<
               onChange={(e) => this.setText(e)}
             />
             <Button
-              className="inverted inline"
+              className="inverted inline text-sm font-semibold"
               callback={this.updateText}
               content={`Save ${this.props.placeholder}`}
               disabled={this.props.disableIfBlank && !this.state.text.length}
@@ -62,7 +62,7 @@ export default class TextWithEditMode extends React.Component<
             {this.state.text}
             <Button
               callback={this.startEditMode}
-              className="inverted inline"
+              className="inverted inline text-sm font-semibold"
               content={
                 <span>
                   Edit {this.props.placeholder} <PencilIcon />

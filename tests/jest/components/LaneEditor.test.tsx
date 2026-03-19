@@ -1,6 +1,5 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
-import { stub } from "sinon";
 import { LaneData } from "../../../src/interfaces";
 import LaneEditor from "../../../src/components/lanes/LaneEditor";
 
@@ -19,15 +18,15 @@ const customListsData = [
   { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
 ];
 
-const editLane = stub().returns(
+const editLane = jest.fn().mockReturnValue(
   new Promise<void>((resolve) => resolve())
 );
 
-const deleteLane = stub().returns(
+const deleteLane = jest.fn().mockReturnValue(
   new Promise<void>((resolve) => resolve())
 );
 
-const toggleLaneVisibility = stub();
+const toggleLaneVisibility = jest.fn();
 
 function createLaneData(displayName: string, isAutomated: boolean): LaneData {
   return {
@@ -65,7 +64,7 @@ describe("LaneEditor", () => {
           editOrCreate="edit"
           editLane={editLane}
           deleteLane={deleteLane}
-          findParentOfLane={stub().returns(laneData)}
+          findParentOfLane={jest.fn().mockReturnValue(laneData)}
           toggleLaneVisibility={toggleLaneVisibility}
         />
       );
@@ -100,7 +99,7 @@ describe("LaneEditor", () => {
           editOrCreate="edit"
           editLane={editLane}
           deleteLane={deleteLane}
-          findParentOfLane={stub().returns(laneData)}
+          findParentOfLane={jest.fn().mockReturnValue(laneData)}
           toggleLaneVisibility={toggleLaneVisibility}
         />
       );
@@ -138,7 +137,7 @@ describe("LaneEditor", () => {
         editOrCreate="edit"
         editLane={editLane}
         deleteLane={deleteLane}
-        findParentOfLane={stub().returns(laneData)}
+        findParentOfLane={jest.fn().mockReturnValue(laneData)}
         toggleLaneVisibility={toggleLaneVisibility}
       />
     );

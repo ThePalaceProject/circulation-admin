@@ -86,8 +86,16 @@
 
 .btn.danger {
   color: $white;
+  svg {
+    fill: $white;
+    width: 0.9em;
+    height: 0.9em;
+  }
   &:hover {
     color: $white;
+    svg {
+      fill: $white;
+    }
   }
 }
 
@@ -160,10 +168,13 @@ body > div.palace {
 // @layer legacy in app.scss now gives all Tailwind utilities automatic priority
 // over the web-opds-client border-radius: 0 resets and Bootstrap element rules.
 
-// ─── .well ───────────────────────────────────────────────────────────────────
+// ─── .well / .config-instructions / .timestamp-* ────────────────────────────
 // Lightweight content card used by Timestamp and ProtocolFormField.
 // Replaces the Bootstrap .well definition; kept for test-selector compat.
-.well {
+.well,
+.config-instructions,
+.timestamp-exception,
+.timestamp-achievements {
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;

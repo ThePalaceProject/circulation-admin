@@ -101,7 +101,7 @@ export default class LaneEditor extends React.Component<
             <span className="lane-buttons">
               {lane && this.hasCustomLists() && this.props.deleteLane && (
                 <Button
-                  className="danger delete-lane"
+                  className="danger delete-lane text-sm font-semibold"
                   callback={this.delete}
                   content={
                     <span>
@@ -112,13 +112,13 @@ export default class LaneEditor extends React.Component<
               )}
               {this.visibilityToggle()}
               <Button
-                className="save-lane"
+                className="save-lane text-sm font-semibold"
                 callback={this.save}
                 content="Save lane"
               />
               {this.hasChanges() && (
                 <Button
-                  className="cancel-changes inverted"
+                  className="cancel-changes inverted text-sm font-semibold"
                   callback={this.reset}
                   content="Cancel changes"
                 />

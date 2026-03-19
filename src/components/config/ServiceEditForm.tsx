@@ -146,8 +146,8 @@ export default class ServiceEditForm<
       this.props.data && this.protocolInstructions(protocol);
     const disabled: boolean = this.shouldDisable();
     const instructions = hasInstructions && (
-      <div className="form-group" key="instructions">
-        <label className="control-label">Instructions</label>
+      <div className="form-field" key="instructions">
+        <label className="field-label">Instructions</label>
         <Panel
           id={`form-${listDataKey}-instructions`}
           headerText={this.protocolDescription(protocol)}
@@ -346,7 +346,7 @@ export default class ServiceEditForm<
     return (
       <fieldset className="update-libraries">
         <legend className="visuallyHidden">Libraries</legend>
-        <div className="form-group">
+        <div className="field-group">
           {this.state.libraries.map((library) => (
             <div key={library.short_name}>
               <WithRemoveButton
@@ -403,7 +403,7 @@ export default class ServiceEditForm<
           ))}
         </div>
         {this.availableLibraries().length > 0 && (
-          <div className="form-group">
+          <div className="field-group">
             <EditableInput
               elementType="select"
               disabled={disabled}

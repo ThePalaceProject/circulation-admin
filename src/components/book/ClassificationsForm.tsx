@@ -120,9 +120,9 @@ export default class ClassificationsForm extends React.Component<
               </EditableInput>
 
               {this.shouldShowTargetAge() && (
-                <div className="form-group target-age">
+                <div className="target-age">
                   <p>Target Age Range</p>
-                  <div className="form-inline">
+                  <div className="flex items-center gap-2">
                     <EditableInput
                       elementType="input"
                       ref={this.targetAgeMinRef}
@@ -145,9 +145,9 @@ export default class ClassificationsForm extends React.Component<
                   </div>
                 </div>
               )}
-              <div className="form-group fiction-radio-input">
+              <div className="fiction-radio-input">
                 <p>Fiction Classification</p>
-                <div className="form-inline">
+                <div className="flex items-center gap-2">
                   {fiction === undefined && (
                     <EditableInput
                       type="radio"
@@ -185,7 +185,7 @@ export default class ClassificationsForm extends React.Component<
                   />
                 </div>
               </div>
-              <div className="form-group genre-group-form">
+              <div className="genre-group-form">
                 <p>Genres</p>
                 {genres.sort().map((category) => (
                   <WithRemoveButton

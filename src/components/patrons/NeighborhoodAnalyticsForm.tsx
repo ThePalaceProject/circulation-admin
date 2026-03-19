@@ -75,7 +75,7 @@ export default class NeighborhoodAnalyticsForm extends React.Component<
           ))}
         </EditableInput>
         {this.isEnabled() && (
-          <p className="bg-warning">
+          <p className="bg-warning notice-warning">
             This feature will work only if it is also enabled in your{" "}
             <a href={url}>{name}</a>.
           </p>

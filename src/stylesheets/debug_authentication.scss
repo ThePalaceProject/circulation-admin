@@ -8,9 +8,27 @@
   form {
     margin-bottom: 20px;
 
-    .form-group {
+    .field-group {
       margin-bottom: 15px;
     }
+  }
+
+  .notice-warning {
+    padding: 10px 14px;
+    border-radius: 4px;
+    background-color: var(--status-warning-bg);
+    border: 1px solid var(--status-warning-border);
+    color: var(--status-warning-fg);
+    margin-bottom: 15px;
+  }
+
+  .notice-info {
+    padding: 10px 14px;
+    border-radius: 4px;
+    background-color: var(--status-info-bg);
+    border: 1px solid var(--status-info-border);
+    color: var(--status-info-fg);
+    margin-bottom: 15px;
   }
 
   .debug-results {

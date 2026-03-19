@@ -47,7 +47,7 @@ export default class LanesSidebar extends React.Component<
     const linkBase = "/admin/web/lanes/" + this.props.library;
     return (
       <div className="lanes-sidebar">
-        <h2>Lane Manager</h2>
+        <div className="config-section-title">Lane Manager</div>
         <div>
           {this.renderLink("create")}
           {this.renderLink("reset")}
@@ -72,14 +72,18 @@ export default class LanesSidebar extends React.Component<
     };
     const [text, icon, className] = content[createOrReset];
     const disabled = this.props.orderChanged ? "disabled" : "";
-    const style =
-      createOrReset === "create" ? "left-align" : "right-align inverted";
+    const isCreate = createOrReset === "create";
+    const baseClass = isCreate
+      ? "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-primary-foreground bg-primary rounded hover:bg-primary/80 transition-colors no-underline"
+      : "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-primary border border-primary rounded bg-background hover:bg-muted transition-colors no-underline";
     return (
       <Link
-        className={`btn ${style} ${createOrReset}-lane ${disabled}`}
+        className={`${baseClass} ${createOrReset}-lane ${disabled} ${
+          this.props.orderChanged ? "opacity-50 pointer-events-none" : ""
+        }`}
         to={this.props.orderChanged ? null : linkBase + createOrReset}
       >
-        <span>
+        <span className="inline-flex items-center gap-1 [&_svg]:h-3.5 [&_svg]:w-3.5 [&_svg]:fill-current">
           {text} {icon}
         </span>
       </Link>

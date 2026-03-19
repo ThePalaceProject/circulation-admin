@@ -132,7 +132,7 @@ export class BookDetailsEditor extends React.Component<BookDetailsEditorProps> {
             )}
 
             {hasButtonRow && (
-              <div className="form-group form-inline">
+              <div className="flex items-center gap-2">
                 {canSuppress && (
                   <BookDetailsEditorSuppression
                     link={bookData.suppressPerLibraryLink}

@@ -93,7 +93,11 @@ export default class EditorField extends React.Component<
         callback={(e) => {
           this.changeStyle(e, style.toUpperCase());
         }}
-        className={`btn inline squared${isActive ? " active" : ""}`}
+        className={`inline-flex items-center justify-center border rounded px-2 py-1 mx-1 text-xs font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+          isActive
+            ? "bg-blue-600 text-white border-blue-600"
+            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
+        }`}
         disabled={this.props.disabled}
         type="button"
       />

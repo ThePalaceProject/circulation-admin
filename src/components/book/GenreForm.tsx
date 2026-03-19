@@ -46,12 +46,12 @@ export default class GenreForm extends React.Component<
 
     return (
       <div className="genre-form">
-        <div className="form-inline">
+        <div className="genre-form-selects">
           <select
             name="genre"
             aria-label="Select one of the following genres"
             size={this.topLevelGenres().length}
-            className="form-control"
+            className="genre-select"
             {...disabledProps}
           >
             {this.topLevelGenres().map((genre) => (
@@ -71,7 +71,7 @@ export default class GenreForm extends React.Component<
             <select
               name="subgenre"
               size={subgenres.length}
-              className="form-control subgenres"
+              className="subgenres"
               {...disabledProps}
             >
               {subgenres.map((genre) => (

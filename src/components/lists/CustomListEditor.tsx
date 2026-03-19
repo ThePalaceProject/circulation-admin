@@ -159,10 +159,11 @@ export default function CustomListEditor({
               callback={save}
               disabled={!isModified || !isValid}
               content="Save this list"
+              className="text-sm font-semibold"
             />
 
             <Button
-              className="inverted"
+              className="inverted text-sm font-semibold"
               callback={reset}
               disabled={!isModified}
               content="Cancel changes"

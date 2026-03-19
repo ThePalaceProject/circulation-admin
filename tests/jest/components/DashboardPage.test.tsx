@@ -13,9 +13,9 @@ describe("DashboardPage", () => {
     expect(container.querySelector("header")).toBeInTheDocument();
   });
 
-  it("renders a footer landmark", () => {
+  it("does not render a footer landmark (footer removed)", () => {
     const { container } = renderWithProviders(<DashboardPage params={{}} />);
-    expect(container.querySelector("footer")).toBeInTheDocument();
+    expect(container.querySelector("footer")).not.toBeInTheDocument();
   });
 
   it("renders Stats and circulation events download with a library prop when provided", () => {

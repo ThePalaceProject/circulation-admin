@@ -56,7 +56,7 @@ export class ResetAdobeId extends React.Component<
 
     return (
       <div className="patron-actions">
-        <h3>Reset Adobe ID</h3>
+        <h3 className="config-section-title">Reset Adobe ID</h3>
         {fetchError && patronExists && (
           <Alert variant="destructive">
             Error: failed to reset Adobe ID for patron{" "}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import ClassificationsTable from "../../../src/components/book/ClassificationsTable";
-import classificationsData from "../../../src/components/__tests__/classificationsData";
+import classificationsData from "../classificationsData";
 
 describe("ClassificationsTable", () => {
   describe("rendering", () => {

@@ -1,3 +1,4 @@
+// sass-lint:disable no-important
 .custom-list-drag-and-drop {
   display: flex;
   flex-direction: row;
@@ -10,13 +11,20 @@
   display: flex;
   flex: 1 1 50%;
   flex-direction: column;
-  border: 1px solid $medium-gray;
-  border-radius: 4px;
+  border: 1px solid var(--border-soft-color);
+  border-radius: 8px;
   padding: 12px 24px 24px 24px;
   margin: 15px 0;
   overflow-y: scroll;
+  background: var(--surface-elevated-bg);
   h4 {
     display: inline-block;
+    font-size: 0.8125rem !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted) !important;
+    margin: 0 0 6px;
   }
 
   .auto-update-status-desc {
@@ -52,7 +60,7 @@
   }
 
   .droppable {
-    border: 1px solid $pagecolorlight;
+    border: 1px solid var(--border-soft-color);
     padding: 10px;
     overflow-y: scroll;
     margin-bottom: 15px;
@@ -60,14 +68,14 @@
     list-style: none;
 
     &.dragging-over {
-      border-color: $pagetextcolor;
+      border-color: var(--text-muted);
     }
 
     .search-result, .custom-list-entry {
       display: flex;
       gap: 6px;
       justify-content: space-between;
-      border: 1px solid $pagecolorlight;
+      border: 1px solid var(--border-soft-color);
       padding: 10px;
 
       &[draggable] {
@@ -76,8 +84,8 @@
       }
 
       &.dragging {
-        border: 1px solid $pagetextcolor;
-        background-color: $pagecolorlight;
+        border: 1px solid var(--text-muted);
+        background-color: var(--surface-muted-bg);
       }
 
       > div {
@@ -142,7 +150,7 @@
 }
 
 .list-loading {
-  border: 1px solid $pagecolorlight;
+  border: 1px solid var(--border-soft-color);
   padding: 10px;
   text-align: center;
 }

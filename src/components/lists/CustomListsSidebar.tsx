@@ -27,9 +27,9 @@ export default class CustomListsSidebar extends React.Component<
   render(): JSX.Element {
     return (
       <div className="custom-lists-sidebar">
-        <h2>List Manager</h2>
+        <h2 className="config-section-title">List Manager</h2>
         <Link
-          className="btn create-button"
+          className="create-button inline-flex items-center justify-center px-3 py-1.5 mb-3 text-sm font-bold text-primary-foreground bg-primary rounded hover:bg-primary/80 transition-colors no-underline"
           to={"/admin/web/lists/" + this.props.library + "/create"}
         >
           Create New List

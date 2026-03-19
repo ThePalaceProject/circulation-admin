@@ -7,7 +7,8 @@
   }
 }
 
-span.input-group-addon {
+span.input-group-addon,
+span.input-addon {
   display: flex;
   flex-direction: column;
   align-items: center;

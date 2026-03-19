@@ -25,11 +25,11 @@ describe("CustomListPage", () => {
     expect(container.querySelector(".custom-list-page")).toBeInTheDocument();
   });
 
-  it("renders header and footer", () => {
+  it("renders header but not footer", () => {
     const { container } = renderWithProviders(
       <CustomListPage params={defaultParams} />
     );
     expect(container.querySelector("header")).toBeInTheDocument();
-    expect(container.querySelector("footer")).toBeInTheDocument();
+    expect(container.querySelector("footer")).not.toBeInTheDocument();
   });
 });

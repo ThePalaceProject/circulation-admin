@@ -1,4 +1,4 @@
-import { GenreTree } from "../../interfaces";
+import { GenreTree } from "../../src/interfaces";
 
 const genres: GenreTree = {
   Fiction: {

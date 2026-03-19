@@ -1,8 +1,9 @@
+// Removed absolute positioning and width/left overrides to allow flexbox containment
 .diagnostics-page, .self-tests-page {
-  width: 84%;
+  width: 100%;
   height: 100%;
-  position: absolute;
-  left: 16%;
+  position: static;
+  left: auto;
   h3  {
     margin: 0 0 20px 0;
     height: 35px;
@@ -89,7 +90,8 @@
   // Individual timestamp
   .timestamp-holder {
     // Timestamp info inside panel body
-    .panel .panel-body ul {
+    .panel .panel-body ul,
+    .panel .panel-content ul {
       padding: 0;
       li {
         border-bottom: none;

@@ -3,7 +3,6 @@ import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import title from "../../utils/title";
 import QuicksightDashboard from "./QuicksightDashboard";
 
@@ -46,7 +45,6 @@ export default class QuicksightDashboardPage extends React.Component<
         <main className="body">
           <QuicksightDashboard dashboardId="library" />
         </main>
-        <Footer />
       </div>
     );
   }

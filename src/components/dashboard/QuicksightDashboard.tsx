@@ -12,6 +12,7 @@ import {
   isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import { quicksightApi } from "../../features/quicksight/quicksightSlice";
+import { Alert, AlertDescription } from "../ui/alert";
 
 export interface QuicksightDashboardStateProps {
   isFetchingLibraries?: boolean;
@@ -94,9 +95,9 @@ class QuicksightDashboard extends React.Component<
     const { embedUrl, error } = this.state;
     if (error) {
       return (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       );
     }
     return (

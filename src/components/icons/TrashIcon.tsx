@@ -3,9 +3,10 @@ import * as React from "react";
 const TrashIcon = (): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="44"
-    height="58"
+    width="1em"
+    height="1em"
     viewBox="0 0 44 58"
+    fill="currentColor"
     aria-hidden="true"
   >
     <title>Trash Icon</title>

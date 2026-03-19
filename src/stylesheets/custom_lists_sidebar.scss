@@ -1,27 +1,55 @@
+// sass-lint:disable no-important
 .custom-lists-sidebar {
   flex: 0 0 auto;
   min-width: 16em;
-  border: 1px solid $gray;
-  padding: 15px;
-  margin: 7px 7px 15px 7px;
-  overflow-y: scroll;
+  border-right: 1px solid var(--border-soft-color);
+  background: var(--surface-elevated-bg);
+  padding: 12px;
+  margin: 0;
+  overflow-y: auto;
 
-  h2 {
-    text-align: center;
+  // Page title — rendered as div.config-section-title in TSX
+  .config-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-soft-color);
   }
 
   .sort-filter {
     display: flex;
-    gap: 5px;
+    gap: 6px;
+    margin-bottom: 10px;
 
     fieldset {
       flex: 1 1 auto;
+      min-width: 0;
     }
 
     .form-group {
       margin: 0;
 
       label {
+        width: 100%;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 3px;
+      }
+
+      select {
+        font-size: 0.8125rem;
+        color: var(--text-primary);
+        background-color: var(--surface-elevated-bg);
+        border: 1px solid var(--border-soft-color);
+        border-radius: 6px;
+        padding: 4px 8px;
         width: 100%;
       }
     }
@@ -30,17 +58,24 @@
   ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   li {
-    color: $pagetextcolor;
-    border: 1px solid $pagecolorlight;
-    border-bottom-color: $pagetextcolor;
-    padding: 10px 10px 5px 10px;
+    color: var(--text-primary);
+    background: var(--surface-bg);
+    border: 1px solid var(--border-soft-color);
+    border-radius: 6px;
+    padding: 8px 10px 6px;
+    font-size: 0.8125rem;
+    transition: border-color 0.15s;
 
     &.active {
-      background-color: darken($pagecolorlight, 5%);
-      border-color: $pagetextcolor;
+      background-color: var(--surface-muted-bg);
+      border-color: var(--text-muted);
     }
 
     svg {
@@ -52,12 +87,13 @@
 
       &:nth-child(1) {
         hyphens: auto;
+        font-weight: 600;
+        margin-bottom: 2px;
       }
 
-      &:nth-child(2) {
-        .btn {
-          width: 50%;
-        }
+      &:nth-child(2), &:nth-child(3) {
+        font-size: 0.75rem;
+        color: var(--text-muted);
       }
     }
   }
@@ -65,6 +101,11 @@
   .custom-list-buttons {
     display: flex;
     justify-content: space-between;
+    margin-top: 6px;
+
+    .btn {
+      font-size: 0.75rem !important;
+    }
 
     & > svg {
       align-self: end;

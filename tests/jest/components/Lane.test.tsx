@@ -1,6 +1,5 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
-import { stub } from "sinon";
 import { LaneData } from "../../../src/interfaces";
 import Lane from "../../../src/components/lanes/Lane";
 
@@ -19,8 +18,8 @@ jest.mock("react-router", () => ({
   ),
 }));
 
-const renderLanes = stub();
-const toggleLaneVisibility = stub();
+const renderLanes = jest.fn();
+const toggleLaneVisibility = jest.fn();
 
 function createLaneData(displayName: string, isAutomated: boolean): LaneData {
   return {

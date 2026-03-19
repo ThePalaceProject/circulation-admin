@@ -1,3 +1,25 @@
+// sass-lint:disable no-important, hex-notation
+// ─── Fix web-opds-client's fixed-viewport scroll model ───────────────────────
+// web-opds-client was designed as a height:100% / overflow-y:hidden viewport
+// where .body is position:absolute inside .main. That clips all content when
+// the parent doesn't have an explicit height. We switch it to normal document
+// flow so the catalog expands to its full content height.
+.palace .catalog {
+  height: auto;
+}
+
+.palace .catalog .main {
+  overflow-y: visible;
+  height: auto;
+  position: static;
+}
+
+.palace .catalog .main .body {
+  position: static;
+  height: auto;
+}
+// ──────────────────────────────────────────────────────────────────────────────
+
 // Match the side gutters used by .palace main so the catalog view aligns
 // with every other page. Both .breadcrumbs-or-search-wrapper and .collection
 // are rendered by web-opds-client outside <main>, so each needs its own rule.
@@ -7,8 +29,40 @@
   padding-right: 0;
 }
 
+
 .palace .breadcrumbs-or-search-wrapper {
   background-color: transparent;
+}
+
+.palace nav[aria-label="breadcrumbs"],
+.palace .breadcrumbs {
+  background: none !important;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  margin: 0 0 8px 0;
+}
+
+.palace .breadcrumbs .breadcrumb {
+  background: none !important;
+  box-shadow: none;
+  border: none;
+  padding: 0 0 0 0;
+  margin: 0;
+  font-size: 0.97rem;
+  color: #64748B; /* Tailwind gray-400 */
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  border-radius: 0;
+}
+
+.palace .breadcrumbs .breadcrumb span {
+  color: #64748B;
+  font-size: 0.97rem;
+  font-weight: 400;
+  background: none;
+  padding: 0;
+  border-radius: 0;
 }
 
 // ─── Catalog search bar ───────────────────────────────────────────────────────
@@ -18,7 +72,7 @@
 .palace .search {
   display: block;
   width: 100%;
-  padding: 20px 0 16px;
+  padding: 12px 0 8px;
   background-color: transparent;
 }
 
@@ -26,19 +80,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 6px;
   width: 100%;
-  max-width: 680px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
 .palace .search input.form-control {
   flex: 1;
-  height: 44px;
-  padding: 0 16px;
-  font-size: 1rem;
-  border: 1.5px solid #D0D0CE;
-  border-radius: 8px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 0.97rem;
+  border: 1.2px solid #D0D0CE;
+  border-radius: 6px;
   box-shadow: none;
   background-color: #FFF;
   color: #1A1A1A;
@@ -58,15 +112,15 @@
 .palace .search button.btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 44px;
-  padding: 0 20px;
-  font-size: 0.95rem;
+  gap: 4px;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 0.97rem;
   font-weight: 500;
   color: #FFF;
   background-color: #2563EB; // Tailwind blue-600
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.15s ease;
@@ -124,6 +178,897 @@
     }
   }
 }
+
+// ─── Palace Bookshelf-style lane + book card redesign ────────────────────────
+//
+// The web-opds-client uses a hover-expand positioning model:
+//   .book { height: 200px; overflow: hidden; }
+//   .compact-info { position: absolute; bottom: 0; height: 0; }  ← slides up on hover
+//
+// We replace this entirely with a static portrait card:
+//   [ cover image — rounded top        ]
+//   [ small format badge               ]
+//   [ title (2 lines max)              ]
+//   [ author (1 line, muted)           ]
+//
+// DOM (Book.js):
+//   div.book  > a[CatalogLink] > img.book-cover | div.auto-book-cover
+//                              > div.compact-info > svg (format icon)
+//                                                > div.empty  (spacer — hidden)
+//                                                > div.item-details > .title, .authors
+//            > div.expanded-info  (detail panel — hidden in lane view)
+//
+// Lane heading (Lane.js):
+//   div.lane > h2 > a.title   ← h2 becomes flex row with "See all →" via ::after
+//            > div.lane-books-container > button.scroll-button.left
+//                                      > ul.lane-books > li > div.book
+//                                                     > li:last > div.book > a.more-link (hidden)
+//                                      > button.scroll-button.right
+
+// ── Card dimensions ───────────────────────────────────────────────────────────
+$card-w:    154px;
+$cover-h:   216px;
+$card-gap:  14px;
+
+// ── Lane spacing ──────────────────────────────────────────────────────────────
+.palace .lane {
+  margin-bottom: 32px;
+}
+
+// ── Lane heading: title left, "See all →" pill right ─────────────────────────
+.palace .lane h2 {
+  display: flex;
+  align-items: center;
+  margin: 0 0 12px;
+  padding: 0;
+  border: none;
+  cursor: default;
+
+  a.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--app-fg, #111827) !important;
+    text-decoration: none;
+
+    &:visited { color: var(--app-fg, #111827) !important; }
+    &:focus, &:focus-visible { outline: none !important; box-shadow: none !important; }
+
+    &::after {
+      content: "See all \2192"; // "See all →"
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--primary, #2563eb);
+      background: color-mix(in srgb, var(--primary, #2563eb) 8%, transparent);
+      border: 1px solid color-mix(in srgb, var(--primary, #2563eb) 30%, transparent);
+      border-radius: 20px;
+      padding: 3px 10px;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    &:hover::after {
+      background: var(--primary, #2563eb);
+      color: #fff;
+      border-color: var(--primary, #2563eb);
+    }
+  }
+}
+
+// ── Hide the "More [Lane Title]" card — the header "See all" handles it ───────
+.palace .lane .lane-books li:last-child .book {
+  display: none !important;
+}
+
+// ── Lane books row: let height adapt to card content ─────────────────────────
+.palace .lane .lane-books {
+  height: auto !important;
+  padding: 4px 0 16px !important;
+}
+
+// ── Book card: static portrait layout ────────────────────────────────────────
+.palace .lane .book {
+  height: auto !important;
+  overflow: visible !important;
+  width: $card-w !important;
+  margin-right: $card-gap !important;
+
+  // CatalogLink anchor wraps cover + compact-info
+  > a:not(.more-link) {
+    display: flex !important;
+    flex-direction: column !important;
+    width: $card-w;
+    text-decoration: none !important;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    background: var(--surface-bg, #fff);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+      transform: translateY(-3px);
+    }
+  }
+
+  // Real cover image
+  img.book-cover {
+    display: block !important;
+    width: $card-w !important;
+    height: $cover-h !important;
+    object-fit: cover !important;
+    flex-shrink: 0;
+    border-radius: 0; // parent anchor handles corner radius
+  }
+
+  // Auto-generated cover (no image in feed)
+  .auto-book-cover {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    width: $card-w !important;
+    height: $cover-h !important;
+    flex-shrink: 0;
+    padding: 10px;
+
+    .title {
+      font-size: 0.65rem !important;
+      font-weight: 700;
+      text-align: center;
+      color: #fff !important;
+      line-height: 1.3;
+    }
+
+    .authors {
+      font-size: 0.6rem !important;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8) !important;
+      margin-top: 4px;
+    }
+  }
+
+  // compact-info: override position:absolute/height:0 hover-expand model
+  .compact-info {
+    position: static !important;
+    height: auto !important;
+    width: 100% !important;
+    bottom: auto !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    padding: 7px 8px 9px !important;
+    background: var(--surface-bg, #fff);
+    transition: none !important;
+
+    // Format badge — replaces the SVG icon with a colored pill
+    // svg.book-icon        → "Book"      light blue
+    // svg.audio-headphone-icon → "Audiobook" purple
+    // (Periodical has no medium SVG in the opds-client map — no badge shown)
+    > svg { display: none !important; } // direct SVG fallback — hide
+
+    .item-icon {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      width: auto !important;
+      flex: none !important;
+      display: block !important;
+      margin-bottom: 5px;
+
+      // Hide the raw SVG — badge is shown via ::after
+      svg { display: none !important; }
+
+      // Default / Book pill (light blue)
+      &::after {
+        content: "Book";
+        display: inline-block;
+        font-size: 0.58rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 20px;
+        background: #DBEAFE;  // blue-100
+        color: #1D4ED8;        // blue-700
+        line-height: 1.6;
+      }
+
+      // Audiobook pill (purple) — uses data-medium attr set by patched Book.js
+      .book[data-medium*="Audiobook"] & {
+        &::after {
+          content: "Audiobook";
+          background: #EDE9FE;  // violet-100
+          color: #6D28D9;        // violet-700
+        }
+      }
+    }
+
+    // .empty was a sizing spacer for the absolute model — hide
+    .empty { display: none !important; }
+
+    // Title + author text
+    .item-details {
+      background: transparent !important;
+      padding: 0 !important;
+      border: none !important;
+      height: auto !important;
+      width: 100% !important;
+      overflow: visible !important;
+      display: flex !important;
+      flex-direction: column;
+      gap: 2px;
+
+      .title {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: var(--app-fg, #111827) !important;
+        line-height: 1.3;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin: 0 !important;
+      }
+
+      .series {
+        font-size: 0.62rem !important;
+        color: var(--text-muted, #9ca3af) !important;
+        font-style: italic;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .authors {
+        font-size: 0.65rem !important;
+        color: var(--text-muted, #6b7280) !important;
+        line-height: 1.2;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin: 0 !important;
+
+        span { font-size: inherit !important; }
+      }
+    }
+  }
+
+  // expanded-info: hidden in lane view (shows details on book detail page)
+  .expanded-info { display: none !important; }
+}
+
+// ── Scroll buttons: minimal floating circles ──────────────────────────────────
+.palace .lane-books-container .scroll-button {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: var(--app-fg, #374151) !important;
+  border: 1px solid var(--border-soft-color, #e5e7eb) !important;
+  font-size: 0.8rem !important;
+  line-height: 32px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14) !important;
+  padding: 0 !important;
+  z-index: 2;
+
+  &:hover {
+    background: var(--primary, #2563eb) !important;
+    color: #fff !important;
+    border-color: var(--primary, #2563eb) !important;
+  }
+
+  &.left  { left:  2px !important; }
+  &.right { right: 2px !important; }
+}
+
+// ─── End Palace Bookshelf catalog style ──────────────────────────────────────
+
+// ── Collection (flat book grid / list) view ───────────────────────────────────
+
+// Outer layout: facets sidebar + content column
+.palace .collection {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 0;
+}
+
+// Facets sidebar — matches .vertical-tabs .nav-tabs styling
+.palace .facet-groups {
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 16px 12px;
+  margin: 0;
+  border-bottom: none;
+  border-right: 1px solid var(--border-soft-color);
+  background-color: var(--surface-elevated-bg);
+  min-height: calc(100vh - 160px);
+
+  .facet-group {
+    margin-bottom: 18px;
+  }
+
+  h3.facet-group-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin: 0 0 4px !important;
+    padding: 4px 10px 8px;
+    border-bottom: 1px solid var(--border-soft-color);
+    line-height: 1.2 !important;
+  }
+
+  // Sort group — data-label-type="sort" set by patched FacetGroup.js
+  .facet-group[data-label-type="sort"] h3.facet-group-label::before {
+    content: "↕";
+    font-style: normal;
+    font-size: 0.8rem;
+    line-height: 1;
+    opacity: 0.65;
+    flex-shrink: 0;
+  }
+
+  // Filter groups — data-label-type="filter"
+  .facet-group[data-label-type="filter"] h3.facet-group-label::before {
+    content: "≡";
+    font-style: normal;
+    font-size: 0.9rem;
+    line-height: 1;
+    opacity: 0.65;
+    flex-shrink: 0;
+  }
+
+  ul.subtle-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    li {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+
+      a.facetLink {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        background-color: transparent;
+        transition: background-color 0.12s ease, color 0.12s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:hover {
+          background-color: var(--nav-link-hover-bg);
+          border-color: var(--nav-link-border);
+          color: var(--text-primary);
+          text-decoration: none;
+        }
+
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+        }
+      }
+
+      &.active a.facetLink {
+        background-color: var(--nav-link-active-bg);
+        border-color: var(--nav-link-active-border);
+        color: var(--nav-link-active-fg);
+        font-weight: 600;
+        cursor: default;
+        outline: none;
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+// Content column
+.palace .collection-container {
+  flex: 1;
+  min-width: 0;
+}
+
+// View-toggle — pill segmented control
+.palace .view-toggle {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 4px;
+  background: var(--surface-muted, #f3f4f6);
+  border-radius: 999px;
+  gap: 2px;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 14px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted, #6b7280);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    white-space: nowrap;
+
+    // Hide the Font Awesome <i> — we supply our own icon via ::before
+    i { display: none; }
+
+    // Grid button label + icon
+    &[title="Select grid view"]::before {
+      content: "⊞";
+      font-size: 1rem;
+      line-height: 1;
+    }
+    &[title="Select grid view"]::after {
+      content: "Grid";
+    }
+
+    // List button label + icon
+    &[title="Select list view"]::before {
+      content: "☰";
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+    &[title="Select list view"]::after {
+      content: "List";
+    }
+
+    &:hover:not(:disabled) {
+      color: var(--app-fg, #111827);
+    }
+
+    // Active / selected segment
+    &:disabled {
+      background: var(--surface-bg, #fff);
+      color: var(--app-fg, #1e293b);
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+      cursor: default;
+    }
+  }
+}
+
+// ── GRID VIEW ─────────────────────────────────────────────────────────────────
+
+// Grid of books — flex-wrap portrait cards
+.palace .collection-main ul.books.grid-view {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: $card-gap !important;
+  align-items: flex-start;
+
+  > li {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+// Portrait card — grid view only
+.palace .collection-main .grid-view .book {
+  height: auto !important;
+  overflow: visible !important;
+  width: $card-w !important;
+  margin: 0 !important;
+
+  > a:not(.more-link) {
+    display: flex !important;
+    flex-direction: column !important;
+    width: $card-w;
+    text-decoration: none !important;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    background: var(--surface-bg, #fff);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+      transform: translateY(-3px);
+    }
+  }
+
+  img.book-cover {
+    display: block !important;
+    width: $card-w !important;
+    height: $cover-h !important;
+    object-fit: cover !important;
+    flex-shrink: 0;
+  }
+
+  .auto-book-cover {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    width: $card-w !important;
+    height: $cover-h !important;
+    flex-shrink: 0;
+    padding: 10px;
+
+    .title {
+      font-size: 0.65rem !important;
+      font-weight: 700;
+      text-align: center;
+      color: #fff !important;
+      line-height: 1.3;
+    }
+
+    .authors {
+      font-size: 0.6rem !important;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8) !important;
+      margin-top: 4px;
+    }
+  }
+
+  .compact-info {
+    position: static !important;
+    height: auto !important;
+    width: 100% !important;
+    bottom: auto !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    padding: 7px 8px 9px !important;
+    background: var(--surface-bg, #fff);
+    transition: none !important;
+
+    > svg { display: none !important; }
+
+    .item-icon {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      width: auto !important;
+      flex: none !important;
+      display: block !important;
+      margin-bottom: 5px;
+
+      svg { display: none !important; }
+
+      &::after {
+        content: "Book";
+        display: inline-block;
+        font-size: 0.58rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 20px;
+        background: #DBEAFE;
+        color: #1D4ED8;
+        line-height: 1.6;
+      }
+
+      .book[data-medium*="Audiobook"] & {
+        &::after {
+          content: "Audiobook";
+          background: #EDE9FE;
+          color: #6D28D9;
+        }
+      }
+    }
+
+    .empty { display: none !important; }
+
+    .item-details {
+      background: transparent !important;
+      padding: 0 !important;
+      border: none !important;
+      height: auto !important;
+      width: 100% !important;
+      overflow: visible !important;
+      display: flex !important;
+      flex-direction: column;
+      gap: 2px;
+
+      .title {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: var(--app-fg, #111827) !important;
+        line-height: 1.3;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin: 0 !important;
+      }
+
+      .series {
+        font-size: 0.62rem !important;
+        color: var(--text-muted, #9ca3af) !important;
+        font-style: italic;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .authors {
+        font-size: 0.65rem !important;
+        color: var(--text-muted, #6b7280) !important;
+        line-height: 1.2;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin: 0 !important;
+
+        span { font-size: inherit !important; }
+      }
+    }
+  }
+
+  .expanded-info { display: none !important; }
+}
+
+// ── LIST VIEW ─────────────────────────────────────────────────────────────────
+
+$list-cover-w: 96px;
+$list-cover-h: 136px;
+
+// List: stacked full-width rows
+.palace .collection-main ul.books.list-view {
+  display: flex !important;
+  flex-direction: column !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+
+  > li {
+    margin: 0 !important;
+    padding: 0 !important;
+    border-bottom: 1px solid var(--border-soft-color, #e5e7eb);
+
+    &:last-child { border-bottom: none; }
+  }
+}
+
+// List view book row
+.palace .collection-main .list-view .book {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+  margin: 0 !important;
+  padding: 14px 8px !important;
+  gap: 16px;
+
+  // The CatalogLink anchor wraps the cover only in list view
+  > a:not(.more-link) {
+    display: block !important;
+    flex-shrink: 0;
+    text-decoration: none !important;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    transition: box-shadow 0.15s, transform 0.15s;
+
+    &:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+      transform: translateY(-2px);
+    }
+  }
+
+  img.book-cover {
+    display: block !important;
+    width: $list-cover-w !important;
+    height: $list-cover-h !important;
+    object-fit: cover !important;
+    flex-shrink: 0;
+  }
+
+  .auto-book-cover {
+    width: $list-cover-w !important;
+    height: $list-cover-h !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    flex-shrink: 0;
+
+    .title {
+      font-size: 0.6rem !important;
+      font-weight: 700;
+      text-align: center;
+      color: #fff !important;
+    }
+    .authors {
+      font-size: 0.55rem !important;
+      text-align: center;
+      color: rgba(255,255,255,0.8) !important;
+      margin-top: 3px;
+    }
+  }
+
+  // Hide compact-info in list view
+  .compact-info { display: none !important; }
+
+  // Show expanded-info as the main content area
+  .expanded-info {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1;
+    min-width: 0;
+    gap: 6px;
+
+    .header {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+
+      > div:first-child {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .title {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        color: var(--app-fg, #111827) !important;
+        line-height: 1.3;
+        margin: 0 0 3px !important;
+        text-decoration: none;
+
+        a { color: inherit !important; text-decoration: none !important; }
+      }
+
+      .series {
+        font-size: 0.75rem !important;
+        color: var(--text-muted, #9ca3af) !important;
+        font-style: italic;
+        margin-bottom: 2px;
+      }
+
+      .authors {
+        font-size: 0.8rem !important;
+        color: var(--text-muted, #6b7280) !important;
+        margin: 0 !important;
+
+        span { font-size: inherit !important; }
+      }
+
+      .circulation-links {
+        flex-shrink: 0;
+
+        * { display: none; }
+        *:first-child { display: inline-block; }
+
+        a, button {
+          font-size: 0.75rem;
+          padding: 4px 12px;
+          border-radius: 6px;
+          border: 1px solid var(--primary, #2563eb);
+          color: var(--primary, #2563eb);
+          background: transparent;
+          text-decoration: none;
+          cursor: pointer;
+          transition: background 0.1s, color 0.1s;
+
+          &:hover {
+            background: var(--primary, #2563eb);
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    .details {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 16px;
+      font-size: 0.8rem;
+      color: var(--text-muted, #6b7280);
+
+      .fields {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 140px;
+
+        > div {
+          font-size: 0.75rem;
+          color: var(--text-muted, #6b7280);
+        }
+
+        // Format SVG — swap for badge
+        svg { display: none !important; }
+        span.item-icon {
+          display: inline-block;
+          margin-bottom: 4px;
+          svg { display: none !important; }
+
+          &::after {
+            content: "Book";
+            display: inline-block;
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: #DBEAFE;
+            color: #1D4ED8;
+            line-height: 1.6;
+          }
+
+          .book[data-medium*="Audiobook"] & {
+            &::after {
+              content: "Audiobook";
+              background: #EDE9FE;
+              color: #6D28D9;
+            }
+          }
+        }
+      }
+
+      .summary {
+        flex: 1;
+        font-size: 0.82rem !important;
+        color: var(--app-fg, #374151) !important;
+        line-height: 1.5;
+        // Show up to ~5 lines then fade
+        display: -webkit-box !important;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        position: static !important;
+        height: auto !important;
+        max-width: none !important;
+
+        // Reset the float trick used in original stylesheet
+        &::before { display: none !important; }
+        span { float: none !important; margin: 0 !important; display: block !important; }
+        a { float: none !important; display: inline !important; color: var(--primary, #2563eb); }
+      }
+    }
+  }
+}
+
+// ─── End Collection view style ───────────────────────────────────────────────
 
 // Shared color variables for visibility status indicators
 $visibility-warning-bg: #FCF8E3;

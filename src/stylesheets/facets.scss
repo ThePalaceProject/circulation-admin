@@ -1,8 +1,8 @@
 .facet-group {
   a.facetLink {
-    color: $blue-dark;
+    color: var(--text-secondary);
     &:hover {
-      color: $blue;
+      color: var(--text-primary);
     }
   }
 }

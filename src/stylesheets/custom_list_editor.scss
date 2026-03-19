@@ -1,3 +1,4 @@
+// sass-lint:disable no-important
 .custom-list-editor {
   flex: 1 1 auto;
   padding: 15px;
@@ -9,6 +10,16 @@
       flex: 1 1 auto;
 
       h3 {
+        font-size: 0.9375rem !important;
+        font-weight: 600 !important;
+        color: var(--text-primary) !important;
+        margin: 0 0 4px;
+      }
+
+      h4 {
+        font-size: 0.75rem !important;
+        font-weight: 400 !important;
+        color: var(--text-muted) !important;
         margin: 0;
       }
     }
@@ -134,10 +145,10 @@
 
   button {
     height: 32px;
-    border: 1px solid $medium-gray;
+    border: 1px solid var(--border-soft-color);
     border-radius: 5px;
-    background: white;
-    color: black;
+    background: var(--surface-elevated-bg);
+    color: var(--text-primary);
     font-size: 14px;
   }
 
@@ -149,7 +160,7 @@
         margin-right: 3px;
 
         &:disabled {
-          border-color: black;
+          border-color: var(--text-muted);
         }
       }
     }
@@ -158,10 +169,10 @@
     right: -5px;
     top: -5px;
     width: 50%;
-    border: 1px solid $medium-gray;
+    border: 1px solid var(--border-soft-color);
     border-radius: 5px;
     padding: 10px;
-    background: white;
+    background: var(--surface-elevated-bg);
   }
 
   pre, code {

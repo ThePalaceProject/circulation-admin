@@ -4,7 +4,6 @@ import * as PropTypes from "prop-types";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { RootState } from "../../store";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import title from "../../utils/title";
 
 export interface AccountPageContext {
@@ -29,7 +28,6 @@ export default class AccountPage extends React.Component<object, object> {
           store={this.context.editorStore}
           csrfToken={this.context.csrfToken}
         />
-        <Footer />
       </div>
     );
   }

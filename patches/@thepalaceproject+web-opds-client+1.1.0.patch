@@ -1,0 +1,29 @@
+diff --git a/node_modules/@thepalaceproject/web-opds-client/lib/components/Book.js b/node_modules/@thepalaceproject/web-opds-client/lib/components/Book.js
+index 20ca174..3e3785f 100644
+--- a/node_modules/@thepalaceproject/web-opds-client/lib/components/Book.js
++++ b/node_modules/@thepalaceproject/web-opds-client/lib/components/Book.js
+@@ -45,7 +45,7 @@ var Book = /** @class */ (function (_super) {
+             : "";
+         // Display contributors only if there are no authors.
+         var authors = hasAuthors ? (_a = book.authors) === null || _a === void 0 ? void 0 : _a.join(", ") : contributors;
+-        return (React.createElement("div", { className: "book ".concat(showMediaIconClass), lang: book.language },
++        return (React.createElement("div", { className: "book ".concat(showMediaIconClass), lang: book.language, "data-medium": bookMedium || "" },
+             React.createElement(CatalogLink_1.default, { collectionUrl: this.props.collectionUrl, bookUrl: book.url || book.id, title: book.title },
+                 React.createElement(BookCover_1.default, { book: book }),
+                 React.createElement("div", { className: "compact-info ".concat(showMediaIconClass) },
+diff --git a/node_modules/@thepalaceproject/web-opds-client/lib/components/FacetGroup.js b/node_modules/@thepalaceproject/web-opds-client/lib/components/FacetGroup.js
+index fe69bff..ec9507e 100644
+--- a/node_modules/@thepalaceproject/web-opds-client/lib/components/FacetGroup.js
++++ b/node_modules/@thepalaceproject/web-opds-client/lib/components/FacetGroup.js
+@@ -25,8 +25,9 @@ var FacetGroup = /** @class */ (function (_super) {
+         return _super !== null && _super.apply(this, arguments) || this;
+     }
+     FacetGroup.prototype.render = function () {
+-        return (React.createElement("div", { className: "facet-group" },
+-            React.createElement("h3", { className: "facet-group-label" }, this.props.facetGroup.label),
++        var labelType = this.props.facetGroup.label && this.props.facetGroup.label.toLowerCase().includes("sort") ? "sort" : "filter";
++        return (React.createElement("div", { className: "facet-group", "data-label-type": labelType },
++            React.createElement("h3", { className: "facet-group-label", "data-label-type": labelType }, this.props.facetGroup.label),
+             React.createElement("ul", { "aria-label": this.props.facetGroup.label + " options", className: "subtle-list" }, this.props.facetGroup.facets.map(function (facet) { return (React.createElement("li", { key: facet.label, className: facet.active ? "active" : undefined },
+                 React.createElement(CatalogLink_1.default, { className: "facetLink", collectionUrl: facet.href }, facet.label))); }))));
+     };

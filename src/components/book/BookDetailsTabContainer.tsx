@@ -53,7 +53,9 @@ export class BookDetailsTabContainer extends TabContainer<
 
   tabs() {
     const tabs = {};
-    tabs["details"] = <div>{this.props.children}</div>;
+    tabs["details"] = (
+      <div className="details-tab-content">{this.props.children}</div>
+    );
     tabs["edit"] = (
       <BookDetailsEditor
         store={this.props.store}

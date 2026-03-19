@@ -83,25 +83,31 @@ export default class EditableInput extends React.Component<
     const errorClass =
       clientError ||
       (error && error.status >= 400 && !this.state.value && required)
-        ? "field-error"
+        ? "border-red-500"
         : "";
     return (
       <div
-        className={`editable-input-group mb-4 ${errorClass} ${
+        className={`editable-input-group flex flex-col gap-2 mb-4 ${errorClass} ${
           this.props.className || ""
         }`}
       >
         {label && (
-          <label className="control-label">
+          <label className="block font-medium text-sm mb-1">
             {type !== "checkbox" && type !== "radio" && label}
-            {required && <span className="required-field">Required</span>}
+            {required && (
+              <span className="required-field text-red-600 ml-1">Required</span>
+            )}
             {this.renderElement(this.props, descriptionId)}
             {type === "checkbox" && label}
             {type === "radio" && <span>{label}</span>}
           </label>
         )}
         {(extraContent || !label) && (
-          <div className={extraContent ? "with-add-on" : ""}>
+          <div
+            className={
+              extraContent ? "with-add-on flex items-center gap-2" : ""
+            }
+          >
             {extraContent}
             {!label && this.renderElement(this.props, descriptionId)}
           </div>
@@ -135,7 +141,9 @@ export default class EditableInput extends React.Component<
       elementType || "input",
       {
         className:
-          type !== "checkbox" && type !== "radio" ? "form-control" : "",
+          type !== "checkbox" && type !== "radio"
+            ? "form-control block w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            : "",
         ref: this.elementRef,
         value: this.state.value,
         checked: this.state.checked,

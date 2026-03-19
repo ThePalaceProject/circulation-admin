@@ -24,8 +24,8 @@ describe("WelcomePage", () => {
     expect(container.querySelector("header")).toBeInTheDocument();
   });
 
-  it("renders a footer landmark", () => {
+  it("does not render a footer landmark (footer removed)", () => {
     const { container } = renderWithProviders(<WelcomePage />);
-    expect(container.querySelector("footer")).toBeInTheDocument();
+    expect(container.querySelector("footer")).not.toBeInTheDocument();
   });
 });

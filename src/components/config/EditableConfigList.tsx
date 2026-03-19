@@ -136,7 +136,7 @@ export abstract class GenericEditableConfigList<
     const canEditItem = itemToEdit && this.canEdit(itemToEdit);
     return (
       <div className={this.getClassName()}>
-        <div className="config-section-title">{headers["h2"]}</div>
+        <h2 className="config-section-title">{headers["h2"]}</h2>
         {canListAllData && this.links && this.links["info"] && (
           <Alert variant="info" className="mb-4">
             {this.links["info"]}
@@ -176,7 +176,7 @@ export abstract class GenericEditableConfigList<
         )}
         {this.props.editOrCreate === "create" && (
           <div>
-            <div className="config-section-title">{headers["h3"]}</div>
+            <h3 className="config-section-title">{headers["h3"]}</h3>
             <EditForm
               ref={this.editFormRef}
               data={this.props.data}
@@ -196,10 +196,10 @@ export abstract class GenericEditableConfigList<
 
         {itemToEdit && (
           <div>
-            <div className="config-section-title">
+            <h3 className="config-section-title">
               {canEditItem ? "Edit " : ""}
               {this.label(itemToEdit)}
-            </div>
+            </h3>
             <EditForm
               item={itemToEdit}
               data={this.props.data}
@@ -246,10 +246,10 @@ export abstract class GenericEditableConfigList<
 
           {this.canDelete() && (
             <Button
-              className="danger delete-item small !m-0"
+              className="danger small !m-0 delete-item"
               callback={() => this.delete(item)}
               content={
-                <span className="inline-flex items-center gap-1.5 [&_svg]:fill-current [&_svg]:h-3 [&_svg]:w-3">
+                <span className="inline-flex items-center gap-1.5">
                   Delete <TrashIcon />
                 </span>
               }

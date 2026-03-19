@@ -6,11 +6,20 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 export function rtkErrorToFetchError(error: unknown): FetchErrorData | null {
   if (!error) return null;
   const e = error as any;
-  return {
-    status: e.status ?? 0,
-    response: e.data?.detail ?? e.error ?? String(error),
-    url: "",
-  };
+  // RTK Query rejection payload: { status: number|string, data: any, error?: string }
+  // RTK SerializedError (action.error): { message: string } — always "Rejected", not useful
+  const isRtkPayload =
+    e.status !== undefined && (e.data !== undefined || e.error !== undefined);
+  if (!isRtkPayload && e.message === "Rejected") return null; // swallow generic RTK noise
+  const status = typeof e.status === "number" ? e.status : 0;
+  const response =
+    e.data?.detail ??
+    e.data?.description ??
+    (typeof e.data === "string" ? e.data : null) ??
+    (typeof e.error === "string" ? e.error : null) ??
+    e.message ??
+    "An unexpected error occurred";
+  return { status, response, url: "" };
 }
 
 export function isResultFetching(result: {
@@ -27,61 +36,79 @@ export const lanesApi = api.injectEndpoints({
       providesTags: ["Lanes"],
     }),
 
-    editLane: build.mutation<string, { library: string; data: FormData }>({
-      query: ({ library, data }) => ({
+    editLane: build.mutation<
+      string,
+      { library: string; data: FormData; csrfToken?: string }
+    >({
+      query: ({ library, data, csrfToken }) => ({
         url: `/${library}/admin/lanes`,
         method: "POST",
         body: data,
         responseHandler: "text",
+        headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
       }),
       invalidatesTags: ["Lanes"],
     }),
 
-    deleteLane: build.mutation<void, { library: string; identifier: string }>({
-      query: ({ library, identifier }) => ({
+    deleteLane: build.mutation<
+      void,
+      { library: string; identifier: string; csrfToken?: string }
+    >({
+      query: ({ library, identifier, csrfToken }) => ({
         url: `/${library}/admin/lane/${identifier}`,
         method: "DELETE",
         responseHandler: "text",
+        headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
       }),
       invalidatesTags: ["Lanes"],
     }),
 
-    showLane: build.mutation<void, { library: string; identifier: string }>({
-      query: ({ library, identifier }) => ({
+    showLane: build.mutation<
+      void,
+      { library: string; identifier: string; csrfToken?: string }
+    >({
+      query: ({ library, identifier, csrfToken }) => ({
         url: `/${library}/admin/lane/${identifier}/show`,
         method: "POST",
         responseHandler: "text",
+        headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
       }),
       invalidatesTags: ["Lanes"],
     }),
 
-    hideLane: build.mutation<void, { library: string; identifier: string }>({
-      query: ({ library, identifier }) => ({
+    hideLane: build.mutation<
+      void,
+      { library: string; identifier: string; csrfToken?: string }
+    >({
+      query: ({ library, identifier, csrfToken }) => ({
         url: `/${library}/admin/lane/${identifier}/hide`,
         method: "POST",
         responseHandler: "text",
+        headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
       }),
       invalidatesTags: ["Lanes"],
     }),
 
-    resetLanes: build.mutation<void, string>({
-      query: (library) => ({
+    resetLanes: build.mutation<void, { library: string; csrfToken?: string }>({
+      query: ({ library, csrfToken }) => ({
         url: `/${library}/admin/lanes/reset`,
         method: "POST",
         responseHandler: "text",
+        headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
       }),
       invalidatesTags: ["Lanes"],
     }),
 
     changeLaneOrder: build.mutation<
       void,
-      { library: string; lanes: LaneData[] }
+      { library: string; lanes: LaneData[]; csrfToken?: string }
     >({
-      query: ({ library, lanes }) => ({
+      query: ({ library, lanes, csrfToken }) => ({
         url: `/${library}/admin/lanes/change_order`,
         method: "POST",
         body: lanes,
         // RTK Query fetchBaseQuery serializes objects/arrays as JSON and sets Content-Type automatically
+        headers: csrfToken ? { "X-CSRF-Token": csrfToken } : {},
       }),
       // Caller (Lanes.tsx saveOrder) manually re-fetches via getLanes.initiate after this
     }),
@@ -132,7 +159,9 @@ export const lanesUiSlice = createSlice({
         lanesApi.endpoints.editLane.matchRejected,
         (state, action) => {
           state.isMutating = false;
-          state.formError = rtkErrorToFetchError(action.error);
+          state.formError = rtkErrorToFetchError(
+            action.payload ?? action.error
+          );
         }
       )
 
@@ -153,7 +182,9 @@ export const lanesUiSlice = createSlice({
         ),
         (state, action) => {
           state.isMutating = false;
-          state.formError = rtkErrorToFetchError(action.error);
+          state.formError = rtkErrorToFetchError(
+            action.payload ?? action.error
+          );
         }
       )
 
@@ -176,7 +207,9 @@ export const lanesUiSlice = createSlice({
         ),
         (state, action) => {
           state.isMutating = false;
-          state.fetchError = rtkErrorToFetchError(action.error);
+          state.fetchError = rtkErrorToFetchError(
+            action.payload ?? action.error
+          );
         }
       );
   },

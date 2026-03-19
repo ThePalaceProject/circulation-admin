@@ -77,7 +77,8 @@
   // Individual timestamp
   .timestamp-holder {
     // Timestamp info inside panel body
-    .panel .panel-body ul {
+    .panel .panel-body ul,
+    .panel .panel-content ul {
       padding: 0;
       li {
         border-bottom: none;

@@ -16,11 +16,11 @@ describe("ConfigPage", () => {
     expect(container.querySelector(".config")).toBeInTheDocument();
   });
 
-  it("renders header and footer", () => {
+  it("renders header but not footer", () => {
     const { container } = renderWithProviders(
       <ConfigPage params={defaultParams} />
     );
     expect(container.querySelector("header")).toBeInTheDocument();
-    expect(container.querySelector("footer")).toBeInTheDocument();
+    expect(container.querySelector("footer")).not.toBeInTheDocument();
   });
 });

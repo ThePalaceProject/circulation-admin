@@ -1,10 +1,23 @@
 .lanes-sidebar {
   min-width: 400px;
-  border: 1px solid $gray;
-  padding: 15px;
-  margin: 7px;
-  overflow-y: scroll;
-  
+  border-right: 1px solid var(--border-soft-color);
+  background: var(--surface-elevated-bg);
+  padding: 12px 15px;
+  margin: 0;
+  overflow-y: auto;
+
+  // Section title — rendered as div.config-section-title
+  .config-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-soft-color);
+  }
+
   ul {
     list-style-type: none;
     padding-left: 30px;
@@ -13,14 +26,14 @@
       display: flex;
       flex-direction: column;
       margin-bottom: 5px;
-      border-bottom: 1px solid $dark-gray;
+      border-bottom: 1px solid var(--border-soft-color);
 
       &:last-child {
         border-bottom: none;
       }
 
       .active {
-        background-color: $pagecolorlight;
+        background-color: var(--surface-muted-bg);
       }
 
       .lane-info {
@@ -38,23 +51,20 @@
       .lane-buttons {
         display: flex;
         flex-direction: row;
+        align-items: center;
         justify-content: flex-end;
-        align-self: flex-end;
+        gap: 6px;
         padding-bottom: 10px;
-
-        > a {
-          align-self: flex-end;
-        }
       }
 
       .dragging {
-        border: 1px solid $pagetextcolor;
-        background-color: $pagecolorlight;
+        border: 1px solid var(--text-muted);
+        background-color: var(--surface-muted-bg);
       }
     }
 
     &.dragging-over {
-      border: 1px solid red;
+      border: 1px solid var(--text-muted);
     }
   }
 
@@ -62,12 +72,14 @@
     clear: both;
     padding-left: 0px;
     margin-top: 10px;
-    border-top: 4px solid $gray;
+    border-top: 1px solid var(--border-soft-color);
   }
 
   & > div {
     display: flex;
     justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
     .btn {
       margin-left: 0;
     }

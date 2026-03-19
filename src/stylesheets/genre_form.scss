@@ -1,5 +1,5 @@
 .genre-form {
-  select {
+  select, .genre-select {
     width: 200px;
   }
 
@@ -13,7 +13,8 @@
     margin-left: 10px;
   }
 
-  .form-inline {
-    display: unset;
+  .genre-form-selects {
+    display: flex;
+    align-items: flex-start;
   }
 }

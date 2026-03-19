@@ -1,6 +1,5 @@
 import * as React from "react";
 import Header from "./Header";
-import Footer from "./Footer";
 
 export default class WelcomePage extends React.Component<
   Record<string, never>,
@@ -23,7 +22,6 @@ export default class WelcomePage extends React.Component<
             .
           </p>
         </div>
-        <Footer />
       </div>
     );
   }

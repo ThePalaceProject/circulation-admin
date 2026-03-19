@@ -395,6 +395,7 @@ function mapDispatchToProps(dispatch: AppDispatch, ownProps: LanesOwnProps) {
         lanesApi.endpoints.editLane.initiate({
           library: ownProps.library,
           data,
+          csrfToken: ownProps.csrfToken,
         })
       );
       if ("data" in result) return result.data;
@@ -404,6 +405,7 @@ function mapDispatchToProps(dispatch: AppDispatch, ownProps: LanesOwnProps) {
         lanesApi.endpoints.deleteLane.initiate({
           library: ownProps.library,
           identifier,
+          csrfToken: ownProps.csrfToken,
         })
       );
     },
@@ -412,6 +414,7 @@ function mapDispatchToProps(dispatch: AppDispatch, ownProps: LanesOwnProps) {
         lanesApi.endpoints.showLane.initiate({
           library: ownProps.library,
           identifier,
+          csrfToken: ownProps.csrfToken,
         })
       );
     },
@@ -420,17 +423,24 @@ function mapDispatchToProps(dispatch: AppDispatch, ownProps: LanesOwnProps) {
         lanesApi.endpoints.hideLane.initiate({
           library: ownProps.library,
           identifier,
+          csrfToken: ownProps.csrfToken,
         })
       );
     },
     resetLanes: async () => {
-      await dispatch(lanesApi.endpoints.resetLanes.initiate(ownProps.library));
+      await dispatch(
+        lanesApi.endpoints.resetLanes.initiate({
+          library: ownProps.library,
+          csrfToken: ownProps.csrfToken,
+        })
+      );
     },
     changeLaneOrder: async (lanes: LaneData[]) => {
       await dispatch(
         lanesApi.endpoints.changeLaneOrder.initiate({
           library: ownProps.library,
           lanes,
+          csrfToken: ownProps.csrfToken,
         })
       );
     },

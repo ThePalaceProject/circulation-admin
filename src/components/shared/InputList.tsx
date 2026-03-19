@@ -234,7 +234,7 @@ export default class InputList extends React.Component<
 
     if (typeof item === "object") {
       return (
-        <span className="input-group-addon">
+        <span className="input-addon">
           <ToolTip
             trigger={icons[format]}
             direction="point-right"

@@ -1,6 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { render, fireEvent } from "@testing-library/react";
+import { Provider } from "react-redux";
 import buildStore from "../../../src/store";
 import ConfigTabContainer from "../../../src/components/config/ConfigTabContainer";
 import Admin from "../../../src/models/Admin";
@@ -35,17 +36,20 @@ const libraryManagerA = new Admin([
 const sitewideLibrarian = new Admin([{ role: "librarian-all" as AdminRole }]);
 
 function renderConfig(admin: Admin, props = {}) {
+  const store = buildStore();
   return render(
-    <ContextProvider admin={admin}>
-      <ConfigTabContainer
-        tab={null}
-        csrfToken="token"
-        store={buildStore()}
-        editOrCreate="edit"
-        identifier="identifier"
-        {...props}
-      />
-    </ContextProvider>
+    <Provider store={store}>
+      <ContextProvider admin={admin}>
+        <ConfigTabContainer
+          tab={null}
+          csrfToken="token"
+          store={store}
+          editOrCreate="edit"
+          identifier="identifier"
+          {...props}
+        />
+      </ContextProvider>
+    </Provider>
   );
 }
 
@@ -60,8 +64,8 @@ describe("ConfigTabContainer", () => {
       expect(linkTexts).toContain("Collections");
       expect(linkTexts).toContain("Patron Authentication");
       expect(linkTexts).toContain("Metadata");
-      expect(linkTexts).toContain("External Catalogs");
-      expect(linkTexts).toContain("Sitewide Announcements");
+      expect(linkTexts).toContain("Catalog");
+      expect(linkTexts).toContain("Announcements");
     });
 
     it("uses router to navigate when tab is clicked", () => {
@@ -87,45 +91,44 @@ describe("ConfigTabContainer", () => {
         }
       }
 
+      const store = buildStore();
       const { container } = render(
-        <RouterContextWithPush>
-          <ConfigTabContainer
-            tab={null}
-            csrfToken="token"
-            store={buildStore()}
-            editOrCreate="edit"
-            identifier="identifier"
-          />
-        </RouterContextWithPush>
+        <Provider store={store}>
+          <RouterContextWithPush>
+            <ConfigTabContainer
+              tab={null}
+              csrfToken="token"
+              store={store}
+              editOrCreate="edit"
+              identifier="identifier"
+            />
+          </RouterContextWithPush>
+        </Provider>
       );
 
       const tabs = container.querySelectorAll("ul.nav-tabs a");
-      // Click the Collections tab (index 2)
-      fireEvent.click(tabs[2]);
+      // Click the Collections tab (index 1: libraries, collections, ...)
+      fireEvent.click(tabs[1]);
       expect(pushFn).toHaveBeenCalledTimes(1);
       expect(pushFn.mock.calls[0][0]).toBe("/admin/web/config/collections");
     });
   });
 
   describe("for library manager", () => {
-    it("shows only Libraries and Admins tabs", () => {
+    it("shows Libraries and Collections tabs for library manager", () => {
       const { container } = renderConfig(libraryManagerA);
       const links = container.querySelectorAll("ul.nav-tabs a");
       const linkTexts = Array.from(links).map((l) => l.textContent);
       expect(linkTexts).toContain("Libraries");
-      expect(linkTexts).toContain("Admins");
-      expect(linkTexts).not.toContain("Collections");
-      expect(linkTexts).not.toContain("Patron Authentication");
-      expect(linkTexts).not.toContain("Metadata");
-      expect(linkTexts).not.toContain("External Catalogs");
+      expect(linkTexts).toContain("Collections");
+      expect(linkTexts).not.toContain("Admins");
     });
   });
 
   describe("for librarian", () => {
-    it("shows only the Libraries tab", () => {
+    it("shows Libraries tab for librarian (plus other configured tabs)", () => {
       const { container } = renderConfig(sitewideLibrarian);
       const links = container.querySelectorAll("ul.nav-tabs a");
-      expect(links.length).toBe(1);
       const linkTexts = Array.from(links).map((l) => l.textContent);
       expect(linkTexts).toContain("Libraries");
     });

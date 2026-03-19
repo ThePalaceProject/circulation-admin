@@ -59,7 +59,6 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps> {
               ref={this.identifierRef}
               name="identifier"
               label="Identifier"
-              className="form-control"
               placeholder="Enter the patron's identifier"
               required={true}
               error={fetchError}

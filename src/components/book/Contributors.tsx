@@ -35,7 +35,7 @@ export default class Contributors extends React.Component<
 
   render(): JSX.Element {
     return (
-      <div className="form-group">
+      <div className="contributors-field">
         <label>Authors and Contributors</label>
         {this.existingContributors()}
         {this.newContributor()}

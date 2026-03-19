@@ -121,7 +121,7 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
 
   return (
     <div className="debug-authentication">
-      <h3>Debug Authentication</h3>
+      <div className="config-section-title">Debug Authentication</div>
       <p>
         Run diagnostic authentication checks to troubleshoot patron login
         issues. Select an authentication method and enter patron credentials to
@@ -130,14 +130,14 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
 
       {isLoadingMethods && <p>Loading authentication methods...</p>}
       {isMethodsError && (
-        <p className="text-danger">
+        <p className="text-red-600">
           Error loading authentication methods:{" "}
           {(methodsError as Error)?.message}
         </p>
       )}
 
       {!isLoadingMethods && !isMethodsError && authMethods.length === 0 && (
-        <div className="alert alert-warning">
+        <div className="notice-warning">
           This library has no patron authentication integrations configured.
         </div>
       )}
@@ -145,11 +145,11 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
       {!isLoadingMethods && !isMethodsError && authMethods.length > 0 && (
         <form className="edit-form" onSubmit={handleSubmit}>
           {authMethods.length > 1 && (
-            <div className="form-group">
+            <div className="field-group">
               <label htmlFor="debug-auth-method">Authentication Method</label>
               <select
                 id="debug-auth-method"
-                className="form-control"
+                className="w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
                 value={selectedMethodId}
                 onChange={handleMethodChange}
               >
@@ -164,7 +164,7 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
           )}
 
           {selectedMethod && !selectedMethod.supportsDebug && (
-            <div className="alert alert-info">
+            <div className="notice-info">
               Debug authentication is not supported for this authentication
               method.
             </div>
@@ -172,14 +172,14 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
 
           {selectedMethod && selectedMethod.supportsDebug && (
             <>
-              <div className="form-group">
+              <div className="field-group">
                 <label htmlFor="debug-auth-username">
                   {selectedMethod.identifierLabel}
                 </label>
                 <input
                   id="debug-auth-username"
                   type="text"
-                  className="form-control"
+                  className="w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
                   autoComplete="off"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -188,13 +188,13 @@ const DebugAuthentication: React.FC<DebugAuthenticationProps> = ({
               </div>
 
               {selectedMethod.supportsPassword && (
-                <div className="form-group">
+                <div className="field-group">
                   <label htmlFor="debug-auth-password">
                     {selectedMethod.passwordLabel}
                   </label>
                   <PasswordInput
                     id="debug-auth-password"
-                    className="form-control"
+                    className="w-full rounded border border-gray-300 px-3 py-1.5 text-sm"
                     autoComplete="off"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

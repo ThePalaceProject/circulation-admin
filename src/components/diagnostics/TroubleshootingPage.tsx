@@ -1,8 +1,8 @@
+import TroubleshootingCategoryPage from "./TroubleshootingCategoryPage";
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import { RootState } from "../../store";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 import title from "../../utils/title";
@@ -62,16 +62,20 @@ export default class TroubleshootingPage extends React.Component<
       <div className="troubleshooting-page">
         <Header />
         <div className="body">
-          <h2>Troubleshooting</h2>
-          <TroubleshootingTabContainer
-            store={this.context.editorStore}
-            csrfToken={this.context.csrfToken}
-            tab={tab}
-            goToTab={this.goToTab}
-            subtab={subtab}
-          />
+          <div className="tab-container vertical-tabs">
+            <div>
+              <TroubleshootingTabContainer
+                tab={tab}
+                goToTab={this.goToTab}
+                subtab={subtab}
+              />
+            </div>
+            <div className="vertical-tabs-content">
+              <h2>Troubleshooting</h2>
+              <TroubleshootingCategoryPage type={tab} subtab={subtab} />
+            </div>
+          </div>
         </div>
-        <Footer />
       </div>
     );
   }

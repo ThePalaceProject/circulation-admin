@@ -1,5 +1,24 @@
+.details-tab-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  align-items: stretch;
+}
+.details-tab-content > .book-details {
+  width: 100%;
+  margin: 0;
+}
 .book-details-tab-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   .nav-tabs {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
     li {
       a {
         color: $blue-dark;
@@ -9,7 +28,6 @@
           color: $blue-dark;
         }
       }
-
       &.active {
         a,
         a:hover,
@@ -22,9 +40,14 @@
   }
 
   .tab-content {
-    .form-inline {
+    .flex {
       display: flex;
     }
+
+    // Make Book Details view scrollable
+    overflow-y: visible;
+    max-height: none;
+    padding-right: 0;
 
     // First Tab
     .book-details {
@@ -81,6 +104,19 @@
           margin: unset;
         }
       }
+    }
+
+    // Fix squeezed cover image in details view
+    .book-details img.book-cover {
+      display: block;
+      width: 220px;
+      max-width: 90vw;
+      height: auto;
+      aspect-ratio: 11/16;
+      object-fit: cover;
+      margin: 0 auto 16px auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
   }
 }

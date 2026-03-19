@@ -49,18 +49,16 @@ export default class TroubleshootingCategoryPage extends React.Component<
   }
 
   render(): JSX.Element {
-    const [tabContainer, className] = [
-      this.CATEGORIES[this.props.type][1],
-      this.CATEGORIES[this.props.type][2],
-    ];
+    const tabContainer = this.CATEGORIES[this.props.type][1];
+    // Render tab navigation and content (no noContainer: true)
     return (
       <div className={`${this.props.type}-page`}>
         {React.createElement(tabContainer, {
-          class: className,
           store: this.context.editorStore,
           csrfToken: this.context.csrfToken,
           tab: this.props.subtab || this.state.tab,
           goToTab: this.goToTab,
+          className: undefined,
         })}
       </div>
     );

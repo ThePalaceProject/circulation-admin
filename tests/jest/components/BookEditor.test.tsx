@@ -7,7 +7,7 @@ import {
   PER_LIBRARY_UNSUPPRESS_REL,
 } from "../../../src/features/book/bookEditorSlice";
 import { BookDetailsEditor } from "../../../src/components/book/BookDetailsEditor";
-import { expect } from "chai";
+
 import { store } from "../../../src/store";
 import fetchMock from "fetch-mock-jest";
 
@@ -93,8 +93,8 @@ describe("BookDetails", () => {
     const hideButton = queryByRole("button", { name: "Hide" });
     const restoreButton = queryByRole("button", { name: "Restore" });
 
-    expect(hideButton).to.be.null;
-    expect(restoreButton).to.be.null;
+    expect(hideButton).toBeNull();
+    expect(restoreButton).toBeNull();
   });
 
   it("don't show restore button if not a library's admin", () => {
@@ -110,8 +110,8 @@ describe("BookDetails", () => {
     const hideButton = queryByRole("button", { name: "Hide" });
     const restoreButton = queryByRole("button", { name: "Restore" });
 
-    expect(hideButton).to.be.null;
-    expect(restoreButton).to.be.null;
+    expect(hideButton).toBeNull();
+    expect(restoreButton).toBeNull();
   });
 
   it("uses modal for suppress book confirmation", async () => {
@@ -149,8 +149,8 @@ describe("BookDetails", () => {
     await user.click(cancelButton);
     confirmButton = queryByRole("button", { name: "Suppress Availability" });
     cancelButton = queryByRole("button", { name: "Cancel" });
-    expect(confirmButton).to.be.null;
-    expect(cancelButton).to.be.null;
+    expect(confirmButton).toBeNull();
+    expect(cancelButton).toBeNull();
 
     // Clicking `Hide` again should show the modal again.
     await user.click(hideButton);
@@ -163,15 +163,15 @@ describe("BookDetails", () => {
     getByRole("button", { name: "Dismiss" });
 
     // Check that the API was invoked.
-    expect(suppressBook.mock.calls.length).to.equal(1);
-    expect(suppressBook.mock.calls[0][0]).to.equal("/suppress/href");
+    expect(suppressBook.mock.calls.length).toEqual(1);
+    expect(suppressBook.mock.calls[0][0]).toEqual("/suppress/href");
     const fetchCalls = fetchMock.calls();
-    expect(fetchCalls.length).to.equal(1);
+    expect(fetchCalls.length).toEqual(1);
     const fetchCall = fetchCalls[0];
     const fetchOptions = fetchCalls[0][1];
-    expect(fetchCall[0]).to.equal("/suppress/href");
-    expect(fetchOptions["headers"]["X-CSRF-Token"]).to.contain("token");
-    expect(fetchOptions["method"]).to.equal("POST");
+    expect(fetchCall[0]).toEqual("/suppress/href");
+    expect(fetchOptions["headers"]["X-CSRF-Token"]).toContain("token");
+    expect(fetchOptions["method"]).toEqual("POST");
   });
   it("uses modal for unsuppress book confirmation", async () => {
     // Configure standard constructors so that RTK Query works in tests with FetchMockJest
@@ -213,8 +213,8 @@ describe("BookDetails", () => {
     await user.click(cancelButton);
     confirmButton = queryByRole("button", { name: "Restore Availability" });
     cancelButton = queryByRole("button", { name: "Cancel" });
-    expect(confirmButton).to.be.null;
-    expect(cancelButton).to.be.null;
+    expect(confirmButton).toBeNull();
+    expect(cancelButton).toBeNull();
 
     // Clicking `Restore` again should show the modal again.
     await user.click(restoreButton);
@@ -227,14 +227,14 @@ describe("BookDetails", () => {
     getByRole("button", { name: "Dismiss" });
 
     // Check that the API was invoked.
-    expect(unsuppressBook.mock.calls.length).to.equal(1);
-    expect(unsuppressBook.mock.calls[0][0]).to.equal("/unsuppress/href");
+    expect(unsuppressBook.mock.calls.length).toEqual(1);
+    expect(unsuppressBook.mock.calls[0][0]).toEqual("/unsuppress/href");
     const fetchCalls = fetchMock.calls();
-    expect(fetchCalls.length).to.equal(1);
+    expect(fetchCalls.length).toEqual(1);
     const fetchCall = fetchCalls[0];
     const fetchOptions = fetchCalls[0][1];
-    expect(fetchCall[0]).to.equal("/unsuppress/href");
-    expect(fetchOptions["headers"]["X-CSRF-Token"]).to.contain("token");
-    expect(fetchOptions["method"]).to.equal("DELETE");
+    expect(fetchCall[0]).toEqual("/unsuppress/href");
+    expect(fetchOptions["headers"]["X-CSRF-Token"]).toContain("token");
+    expect(fetchOptions["method"]).toEqual("DELETE");
   });
 });

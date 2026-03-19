@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import ClassificationsForm from "../../../src/components/book/ClassificationsForm";
-import genreData from "../../../src/components/__tests__/genreData";
+import genreData from "../genreData";
 
 // --------------- Shared test data --------------- //
 

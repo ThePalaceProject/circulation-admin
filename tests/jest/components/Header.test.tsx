@@ -104,20 +104,33 @@ describe("Header", () => {
 
     it("shows Dashboard, Lists, Lanes, and System Configuration links for library manager", () => {
       const { container } = renderHeader(libraryManager, () => "nypl");
-      // Open settings dropdown so its links are present in the DOM
+      // Dashboard is always in the top nav
+      const topLinks = Array.from(
+        container.querySelectorAll("a, button")
+      ).map((el) => el.textContent.trim());
+      expect(topLinks.some((t) => t.includes("Dashboard"))).toBe(true);
+
+      // Open catalog dropdown to see Lists/Lanes
+      const catalogToggle = container.querySelector(".catalog-dropdown-toggle");
+      fireEvent.click(catalogToggle);
+      const catalogLinks = Array.from(
+        container.querySelectorAll("a, button")
+      ).map((el) => el.textContent.trim());
+      expect(catalogLinks.some((t) => t.includes("Lists"))).toBe(true);
+      expect(catalogLinks.some((t) => t.includes("Lanes"))).toBe(true);
+
+      // Close catalog dropdown first, then open settings dropdown
+      fireEvent.click(catalogToggle);
       const settingsToggle = container.querySelector(
         ".settings-dropdown-toggle"
       );
       fireEvent.click(settingsToggle);
-      const linkTexts = Array.from(
+      const settingsLinks = Array.from(
         container.querySelectorAll("a, button")
       ).map((el) => el.textContent.trim());
-      expect(linkTexts.some((t) => t.includes("Dashboard"))).toBe(true);
-      expect(linkTexts.some((t) => t.includes("Lists"))).toBe(true);
-      expect(linkTexts.some((t) => t.includes("Lanes"))).toBe(true);
-      expect(linkTexts.some((t) => t.includes("System Configuration"))).toBe(
-        true
-      );
+      expect(
+        settingsLinks.some((t) => t.includes("System Configuration"))
+      ).toBe(true);
     });
 
     it("shows Patrons and Troubleshooting links for system admin", () => {

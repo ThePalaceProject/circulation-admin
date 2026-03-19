@@ -1,3 +1,94 @@
+/* ─── Loading indicator override ────────────────────────────────────────────
+   Replace the massive 300×200px "@thepalaceproject/web-opds-client" barberpole
+   popup with a slim 3px progress bar pinned to the top of its container.     */
+@keyframes palace-loading-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.loading {
+  /* Reset the popup mixin */
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  height: 3px !important;
+  min-height: 0 !important;
+  max-height: 3px !important;
+  background: var(--surface-muted, #f3f4f6) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 0 12px !important;
+  z-index: 10;
+}
+
+.loading > h1 {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 40% !important;
+  height: 100% !important;
+  background: var(--primary, #2563eb) !important;
+  background-image: none !important;
+  animation: palace-loading-slide 1.4s ease-in-out infinite !important;
+  font-size: 0 !important; /* hide the "Loading" text */
+  border-radius: 999px !important;
+}
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/* Offset horizontal tab bar and content to prevent overlap with vertical nav */
+.vertical-tabs-content > .tab-container {
+  margin-left: 0;
+}
+.vertical-tabs-content > .tab-container > ul.flex {
+  margin-left: 0;
+  padding-left: 0;
+}
+.vertical-tabs-content > .tab-container > ul.flex,
+.vertical-tabs-content > .tab-container > div {
+  /* Ensure content fills available space and does not overlap sidebar */
+  width: 100%;
+  box-sizing: border-box;
+}
+.vertical-tabs-content > .tab-container > ul.flex {
+  /* Add left padding to match sidebar width */
+  padding-left: 220px;
+}
+.vertical-tabs-content > .tab-container > div {
+  padding-left: 220px;
+}
+.tab-container.vertical-tabs {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 600px;
+}
+.vertical-tabs-content {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 24px 32px 24px 32px;
+  background: none;
+  box-shadow: none;
+  display: block;
+}
+/* TabContainer tab panel display logic */
+.tab-panel {
+  display: none;
+}
+.tab-panel.active {
+  display: block;
+}
 /*
  * Tailwind v4 entry point (plain CSS — not SCSS).
  *
@@ -56,4 +147,70 @@
   --color-card-foreground: hsl(var(--card-foreground));
   --color-popover: hsl(var(--popover));
   --color-popover-foreground: hsl(var(--popover-foreground));
+}
+
+/* Unify vertical nav sidebar styling for config and troubleshooting */
+.vertical-tabs .nav-tabs {
+  float: none;
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 16px 12px;
+  margin: 0;
+  border-bottom: none;
+  border-right: 1px solid var(--border-soft-color);
+  background-color: var(--surface-elevated-bg);
+  min-height: calc(100vh - 160px);
+  overflow: auto;
+}
+.vertical-tabs .nav-tabs > li {
+  display: block;
+  width: 100%;
+  float: none;
+  margin-bottom: 0;
+  border-top: none;
+}
+.vertical-tabs .nav-tabs > li > a {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 7px 10px;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  text-decoration: none;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vertical-tabs .nav-tabs > li > a:hover {
+  background-color: var(--nav-link-hover-bg);
+  border-color: var(--nav-link-border);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.vertical-tabs .nav-tabs > li > a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+}
+.vertical-tabs .nav-tabs > li.active > a,
+.vertical-tabs .nav-tabs > li > a.active,
+.vertical-tabs .nav-tabs > li.active > a:hover,
+.vertical-tabs .nav-tabs > li.active > a:focus,
+.vertical-tabs .nav-tabs > li.active > a:focus-visible {
+  background-color: var(--nav-link-active-bg);
+  border-color: var(--nav-link-active-border);
+  color: var(--nav-link-active-fg);
+  font-weight: 600;
+  cursor: default;
+  outline: none;
+  box-shadow: none;
 }

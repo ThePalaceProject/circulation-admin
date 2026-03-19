@@ -37,6 +37,15 @@ export interface DiagnosticsTabContainerProps
 export class DiagnosticsTabContainer extends TabContainer<
   DiagnosticsTabContainerProps
 > {
+  // If noContainer is true, render only the active tab content (no wrapper/sidebar)
+  render() {
+    if ((this.props as any).noContainer) {
+      const activeTab = this.currentTab();
+      const tabs = this.tabs();
+      return tabs[activeTab];
+    }
+    return super.render();
+  }
   DISPLAY_NAMES = {
     coverage_provider: "Coverage Providers",
     monitor: "Monitors",

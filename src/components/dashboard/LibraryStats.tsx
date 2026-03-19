@@ -61,7 +61,7 @@ const LibraryStats = ({ stats, library }: LibraryStatsProps) => {
   }
   return (
     <div className="library-stats">
-      <div className="config-section-title">{dashboardTitle}</div>
+      <h2 className="config-section-title">{dashboardTitle}</h2>
       <ul className={`stats ${statsLayoutClass}`}>
         <li className="stat-group stat-patrons-group">
           <StatsPatronGroup

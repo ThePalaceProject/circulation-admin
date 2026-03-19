@@ -1,8 +1,8 @@
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import { Classifications } from "../../../src/components/book/Classifications";
-import genreData from "../../../src/components/__tests__/genreData";
-import classificationsData from "../../../src/components/__tests__/classificationsData";
+import genreData from "../genreData";
+import classificationsData from "../classificationsData";
 
 // Mock heavy child components
 jest.mock("../../../src/components/book/ClassificationsForm", () => {

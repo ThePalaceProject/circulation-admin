@@ -8,7 +8,7 @@ export interface TabContainerProps extends React.Props<TabContainerProps> {
   store?: Store<RootState>;
   csrfToken?: string;
   tab: string;
-  class?: string;
+  className?: string;
 }
 
 export interface TabContainerContext {
@@ -41,35 +41,84 @@ export abstract class TabContainer<
   };
 
   render(): JSX.Element {
-    const className = this.props.class
-      ? `tab-container ${this.props.class}`
-      : "tab-container";
-    return (
-      <div className={className}>
-        <ul className="nav nav-tabs">
-          {Object.keys(this.tabs()).map((name) => (
-            <li key={name} role="presentation" className={this.tabClass(name)}>
-              <a
-                href={`#${name}`}
-                onClick={(event) => {
-                  event.preventDefault();
-                  this.handleSelect(event);
-                }}
-                data-tabkey={name}
+    // If noContainer is set, render only the active tab content (no wrapper/sidebar)
+    if ((this.props as any).noContainer) {
+      const activeTab = this.currentTab();
+      const tabs = this.tabs();
+      return tabs[activeTab];
+    }
+    // Always include 'tab-container' and any additional classes
+    const className = ["tab-container", this.props.className]
+      .filter(Boolean)
+      .join(" ");
+    const isVertical =
+      this.props.className && this.props.className.includes("vertical-tabs");
+    if (isVertical) {
+      // Vertical sidebar layout: sidebar and content as flex children
+      return (
+        <div className={className}>
+          <ul className="nav-tabs">
+            {Object.keys(this.tabs()).map((name) => (
+              <li
+                key={name}
+                className={this.currentTab() === name ? "active" : undefined}
               >
-                {this.tabDisplayName(name)}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <div className="tab-content">
-          {Object.keys(this.tabs()).map((name) =>
-            this.renderTab(name, this.tabs()[name])
-          )}
+                <a
+                  href={`#${name}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    this.handleSelect(event);
+                  }}
+                  data-tabkey={name}
+                >
+                  {this.tabDisplayName(name)}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="tab-content" style={{ flex: 1 }}>
+            {Object.keys(this.tabs()).map((name) =>
+              this.renderTab(name, this.tabs()[name])
+            )}
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      // Horizontal tabs (default)
+      return (
+        <div className={className}>
+          <ul className="nav-tabs flex border-b">
+            {Object.keys(this.tabs()).map((name) => (
+              <li
+                key={name}
+                className={this.currentTab() === name ? "active" : undefined}
+              >
+                <a
+                  href={`#${name}`}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    this.handleSelect(event);
+                  }}
+                  data-tabkey={name}
+                  className={`inline-block px-4 py-2 text-sm font-medium border-b-2 transition-colors duration-150 outline-none ${
+                    this.currentTab() === name
+                      ? "border-blue-600 text-blue-700 bg-white shadow-none"
+                      : "border-transparent text-gray-500 hover:text-blue-700 hover:border-blue-300 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-1"
+                  }`}
+                >
+                  {this.tabDisplayName(name)}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="tab-content">
+            {Object.keys(this.tabs()).map((name) =>
+              this.renderTab(name, this.tabs()[name])
+            )}
+          </div>
+        </div>
+      );
+    }
   }
 
   abstract handleSelect(event);
@@ -93,9 +142,14 @@ export abstract class TabContainer<
   }
 
   renderTab(name, children) {
-    const display = this.currentTab() === name ? "block" : "none";
+    const isActive = this.currentTab() === name;
     return (
-      <div style={{ display }} key={name} id={name}>
+      <div
+        key={name}
+        id={name}
+        className={isActive ? "tab-panel active" : "tab-panel"}
+        style={{ display: isActive ? "block" : "none" }}
+      >
         {children}
       </div>
     );

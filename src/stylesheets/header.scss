@@ -1,3 +1,4 @@
+// sass-lint:disable no-important
 // Only target the Catalog dropdown in the tab row for rectangular, backgroundless style
 .site-nav--tabs .site-nav__links > li.site-nav__dropdown > button.catalog-dropdown-toggle {
   border-radius: 0 !important;
@@ -31,11 +32,11 @@
 }
 // Tab color variables (override as needed)
 :root {
-  --nav-link-active-fg: #1d4ed8;
-  --nav-link-active-border: #2563eb;
+  --nav-link-active-fg: #1D4ED8;
+  --nav-link-active-border: #2563EB;
   --nav-link-active-bg: transparent;
   --nav-link-hover-bg: transparent;
-  --nav-link-border: #cbd5e1;
+  --nav-link-border: #CBD5E1;
   --nav-link-bg: transparent;
 }
 // ─── Brand bar (logo row) ─────────────────────────────────────────────────────
@@ -379,10 +380,10 @@
         outline: none;
       }
 
-  &:focus-visible {
-    outline: none;
-    box-shadow: none;
-  }
+      &:focus-visible {
+        outline: none;
+        box-shadow: none;
+      }
     }
   }
 }

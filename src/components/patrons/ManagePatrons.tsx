@@ -5,7 +5,6 @@ import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
 import ManagePatronsForm from "./ManagePatronsForm";
 import Header from "../layout/Header";
-import Footer from "../layout/Footer";
 import ManagePatronsTabContainer from "./ManagePatronsTabContainer";
 
 export interface ManagePatronsProps extends React.Props<ManagePatronsProps> {
@@ -43,15 +42,17 @@ export class ManagePatrons extends React.Component<ManagePatronsProps> {
       <div className="manage-patrons-page config">
         <Header />
         <main className="manage-patrons">
-          <h2>Patron Manager</h2>
-          <ManagePatronsTabContainer
-            tab={this.props.params.tab}
-            store={this.context.editorStore}
-            csrfToken={this.context.csrfToken}
-            library={this.props.params.library}
-          />
+          <h1 className="page-title">Patron Manager</h1>
+          <div className="tab-container vertical-tabs">
+            <ManagePatronsTabContainer
+              tab={this.props.params.tab}
+              store={this.context.editorStore}
+              csrfToken={this.context.csrfToken}
+              library={this.props.params.library}
+              className="vertical-tabs"
+            />
+          </div>
         </main>
-        <Footer />
       </div>
     );
   }
