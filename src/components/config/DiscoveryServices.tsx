@@ -5,7 +5,6 @@ import {
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import {
   DiscoveryServicesData,
@@ -14,10 +13,13 @@ import {
   LibraryRegistrationsData,
 } from "../../interfaces";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetDiscoveryServicesQuery,
+  useGetLibrariesQuery,
+  useEditDiscoveryServiceMutation,
+  useDeleteDiscoveryServiceMutation,
+  useRegisterLibraryWithDiscoveryServiceMutation,
+  useGetDiscoveryServiceLibraryRegistrationsQuery,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 
@@ -86,21 +88,17 @@ export class DiscoveryServices extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, _ownProps) {
-  const discoveryResult = configServicesApi.endpoints.getDiscoveryServices.select()(
-    state
-  );
-  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
-    state
-  );
-  const registrationsResult = configServicesApi.endpoints.getDiscoveryServiceLibraryRegistrations.select()(
-    state
-  );
-  const lastEdit = getLastMutation(state, "editDiscoveryService");
-  const lastRegister = getLastMutation(
-    state,
-    "registerLibraryWithDiscoveryService"
-  );
+function DiscoveryServicesWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const discoveryResult = useGetDiscoveryServicesQuery();
+  const librariesResult = useGetLibrariesQuery();
+  const registrationsResult = useGetDiscoveryServiceLibraryRegistrationsQuery();
+  const [editDiscovery, editResult] = useEditDiscoveryServiceMutation();
+  const [deleteDiscovery] = useDeleteDiscoveryServiceMutation();
+  const [
+    registerLibrary,
+    registerResult,
+  ] = useRegisterLibraryWithDiscoveryServiceMutation();
   const data: DiscoveryServicesData = {
     ...discoveryResult.data,
   } as DiscoveryServicesData;
@@ -110,79 +108,36 @@ function mapStateToProps(state, _ownProps) {
   if (registrationsResult.data?.library_registrations) {
     data.libraryRegistrations = registrationsResult.data.library_registrations;
   }
-  // fetchError = an error involving loading the list of discovery services; formError = an error upon
-  // submission of the create/edit form (including upon submitting a change to a library's registration).
-  const editFormError =
-    lastEdit?.["status"] === "rejected"
-      ? rtkErrorToFetchError(lastEdit["error"])
-      : null;
-  const registerFormError =
-    lastRegister?.["status"] === "rejected"
-      ? rtkErrorToFetchError(lastRegister["error"])
-      : null;
-  return {
-    data,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: discoveryResult.error
-      ? rtkErrorToFetchError(discoveryResult.error)
-      : null,
-    formError: editFormError || registerFormError,
-    isFetching:
-      isResultFetching(discoveryResult) ||
-      lastRegister?.["status"] === "pending",
-    isFetchingLibraryRegistrations: isResultFetching(registrationsResult),
-  };
+  const editFormError = editResult.isError
+    ? rtkErrorToFetchError(editResult.error)
+    : null;
+  const registerFormError = registerResult.isError
+    ? rtkErrorToFetchError(registerResult.error)
+    : null;
+  return (
+    <DiscoveryServices
+      {...ownProps}
+      data={data}
+      fetchError={
+        discoveryResult.error
+          ? rtkErrorToFetchError(discoveryResult.error)
+          : null
+      }
+      formError={editFormError || registerFormError}
+      isFetching={discoveryResult.isFetching || registerResult.isLoading}
+      isFetchingLibraryRegistrations={registrationsResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      fetchData={() => setTimeout(() => discoveryResult.refetch(), 0) as any}
+      fetchLibraryRegistrations={() =>
+        setTimeout(() => registrationsResult.refetch(), 0) as any
+      }
+      editItem={(data) => editDiscovery({ data, csrfToken }) as any}
+      deleteItem={(identifier) =>
+        deleteDiscovery({ identifier, csrfToken }) as any
+      }
+      registerLibrary={(data) => registerLibrary({ data, csrfToken }) as any}
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getDiscoveryServices.initiate(undefined, {
-          forceRefetch: true,
-        })
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editDiscoveryService.initiate({
-          data,
-          csrfToken,
-        })
-      ),
-    deleteItem: (identifier: string | number) =>
-      dispatch(
-        configServicesApi.endpoints.deleteDiscoveryService.initiate({
-          identifier,
-          csrfToken,
-        })
-      ),
-    registerLibrary: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.registerLibraryWithDiscoveryService.initiate(
-          { data, csrfToken }
-        )
-      ),
-    fetchLibraryRegistrations: () =>
-      dispatch(
-        configServicesApi.endpoints.getDiscoveryServiceLibraryRegistrations.initiate(
-          undefined,
-          { forceRefetch: true }
-        )
-      ),
-  };
-}
-
-const ConnectedDiscoveryServices = connect<
-  DiscoveryServicesStateProps,
-  DiscoveryServicesDispatchProps,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscoveryServices);
-
-export default ConnectedDiscoveryServices;
+export default DiscoveryServicesWithData;

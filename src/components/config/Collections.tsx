@@ -5,7 +5,6 @@ import {
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import {
   CollectionsData,
@@ -15,10 +14,12 @@ import {
   LibraryRegistrationsData,
 } from "../../interfaces";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetCollectionsQuery,
+  useGetLibrariesQuery,
+  useEditCollectionMutation,
+  useDeleteCollectionMutation,
+  useImportCollectionMutation,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import CollectionImportButton from "../shared/CollectionImportButton";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
@@ -185,78 +186,44 @@ export class Collections extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, _ownProps) {
-  const collectionsResult = configServicesApi.endpoints.getCollections.select()(
-    state
-  );
-  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
-    state
-  );
-  const lastEdit = getLastMutation(state, "editCollection");
+function CollectionsWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const collectionsResult = useGetCollectionsQuery();
+  const librariesResult = useGetLibrariesQuery();
+  const [editCollection, editResult] = useEditCollectionMutation();
+  const [deleteCollection] = useDeleteCollectionMutation();
+  const [importCollection] = useImportCollectionMutation();
   const data: CollectionsData = {
     ...collectionsResult.data,
   } as CollectionsData;
   if (librariesResult.data?.libraries) {
     data.allLibraries = librariesResult.data.libraries;
   }
-  // fetchError = an error involving loading the list of collections; formError = an error upon
-  // submission of the create/edit form.
-  return {
-    data,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: collectionsResult.error
-      ? rtkErrorToFetchError(collectionsResult.error)
-      : null,
-    formError:
-      lastEdit?.["status"] === "rejected"
-        ? rtkErrorToFetchError(lastEdit["error"])
-        : null,
-    isFetching: isResultFetching(collectionsResult),
-  };
+  return (
+    <Collections
+      {...ownProps}
+      data={data}
+      fetchError={
+        collectionsResult.error
+          ? rtkErrorToFetchError(collectionsResult.error)
+          : null
+      }
+      formError={
+        editResult.isError ? rtkErrorToFetchError(editResult.error) : null
+      }
+      isFetching={collectionsResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      fetchData={() => setTimeout(() => collectionsResult.refetch(), 0) as any}
+      editItem={(data) => editCollection({ data, csrfToken }) as any}
+      deleteItem={(identifier) =>
+        deleteCollection({ identifier, csrfToken }) as any
+      }
+      importCollection={(collectionId, force) =>
+        importCollection({ collectionId, force, csrfToken }) as any
+      }
+      registerLibrary={() => Promise.resolve()}
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getCollections.initiate(undefined, {
-          forceRefetch: true,
-        })
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editCollection.initiate({ data, csrfToken })
-      ),
-    deleteItem: (identifier: string | number) =>
-      dispatch(
-        configServicesApi.endpoints.deleteCollection.initiate({
-          identifier,
-          csrfToken,
-        })
-      ),
-    importCollection: (collectionId: string | number, force: boolean) =>
-      dispatch(
-        configServicesApi.endpoints.importCollection.initiate({
-          collectionId,
-          force,
-          csrfToken,
-        })
-      ),
-  };
-}
-
-const ConnectedCollections = connect<
-  EditableConfigListStateProps<CollectionsData>,
-  EditableConfigListDispatchProps<CollectionsData> &
-    Pick<CollectionsDispatchProps, "importCollection">,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(Collections);
-
-export default ConnectedCollections;
+export default CollectionsWithData;

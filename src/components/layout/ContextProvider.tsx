@@ -5,7 +5,6 @@ import buildStore, { RootState } from "../../store";
 import { ConfigurationSettings, PathFor } from "../../interfaces";
 import Admin from "../../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
-import ActionCreator from "../../actions";
 import AppContextProvider, {
   AppContextType,
   supportContactLinkFromConfig,
@@ -55,9 +54,10 @@ export default class ContextProvider extends React.Component<
   }
 
   storeConfiguration() {
-    const actions = new ActionCreator();
-
-    this.store.dispatch(actions.setFeatureFlags(this.appConfig.featureFlags));
+    this.store.dispatch({
+      type: "SET_FEATURE_FLAGS",
+      value: this.appConfig.featureFlags,
+    });
   }
 
   prepareCollectionUrl(url: string): string {

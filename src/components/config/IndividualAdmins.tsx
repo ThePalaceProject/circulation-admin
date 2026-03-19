@@ -1,16 +1,15 @@
+import * as React from "react";
 import * as PropTypes from "prop-types";
 import EditableConfigList, {
-  EditableConfigListStateProps,
-  EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import { connect } from "react-redux";
 import { IndividualAdminsData, IndividualAdminData } from "../../interfaces";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetIndividualAdminsQuery,
+  useGetLibrariesQuery,
+  useEditIndividualAdminMutation,
+  useDeleteIndividualAdminMutation,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import Admin from "../../models/Admin";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
@@ -77,72 +76,35 @@ export class IndividualAdmins extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, _ownProps) {
-  const adminsResult = configServicesApi.endpoints.getIndividualAdmins.select()(
-    state
-  );
-  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
-    state
-  );
-  const lastEdit = getLastMutation(state, "editIndividualAdmin");
+function IndividualAdminsWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const adminsResult = useGetIndividualAdminsQuery();
+  const librariesResult = useGetLibrariesQuery();
+  const [editAdmin, editResult] = useEditIndividualAdminMutation();
+  const [deleteAdmin] = useDeleteIndividualAdminMutation();
   const data: IndividualAdminsData = {
     ...adminsResult.data,
   } as IndividualAdminsData;
   if (librariesResult.data?.libraries) {
     data.allLibraries = librariesResult.data.libraries;
   }
-  // fetchError = an error involving loading the list of individual admins; formError = an error upon submission of the
-  // create/edit form.
-  return {
-    data,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: adminsResult.error
-      ? rtkErrorToFetchError(adminsResult.error)
-      : null,
-    formError:
-      lastEdit?.["status"] === "rejected"
-        ? rtkErrorToFetchError(lastEdit["error"])
-        : null,
-    isFetching: isResultFetching(adminsResult),
-  };
+  return (
+    <IndividualAdmins
+      {...ownProps}
+      data={data}
+      fetchError={
+        adminsResult.error ? rtkErrorToFetchError(adminsResult.error) : null
+      }
+      formError={
+        editResult.isError ? rtkErrorToFetchError(editResult.error) : null
+      }
+      isFetching={adminsResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      fetchData={() => setTimeout(() => adminsResult.refetch(), 0) as any}
+      editItem={(data) => editAdmin({ data, csrfToken }) as any}
+      deleteItem={(identifier) => deleteAdmin({ identifier, csrfToken }) as any}
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getIndividualAdmins.initiate(undefined, {
-          forceRefetch: true,
-        })
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editIndividualAdmin.initiate({
-          data,
-          csrfToken,
-        })
-      ),
-    deleteItem: (identifier: string | number) =>
-      dispatch(
-        configServicesApi.endpoints.deleteIndividualAdmin.initiate({
-          identifier,
-          csrfToken,
-        })
-      ),
-  };
-}
-
-const ConnectedIndividualAdmins = connect<
-  EditableConfigListStateProps<IndividualAdminsData>,
-  EditableConfigListDispatchProps<IndividualAdminsData>,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(IndividualAdmins);
-
-export default ConnectedIndividualAdmins;
+export default IndividualAdminsWithData;

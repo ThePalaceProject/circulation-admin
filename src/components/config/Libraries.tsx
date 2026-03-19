@@ -1,18 +1,18 @@
+import * as React from "react";
 import {
   GenericEditableConfigList,
   EditableConfigListStateProps,
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import { LibrariesData, LibraryData, LanguagesData } from "../../interfaces";
-import { referenceDataApi } from "../../features/referenceData/referenceDataSlice";
+import { useGetLanguagesQuery } from "../../features/referenceData/referenceDataSlice";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetLibrariesQuery,
+  useEditLibraryMutation,
+  useDeleteLibraryMutation,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import Admin from "../../models/Admin";
 import LibraryEditForm from "./LibraryEditForm";
@@ -71,66 +71,35 @@ export class Libraries extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, _ownProps) {
-  const languagesResult = referenceDataApi.endpoints.getLanguages.select()(
-    state
+function LibrariesWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const librariesResult = useGetLibrariesQuery();
+  const languagesResult = useGetLanguagesQuery();
+  const [editLibrary, editResult] = useEditLibraryMutation();
+  const [deleteLibrary] = useDeleteLibraryMutation();
+  return (
+    <Libraries
+      {...ownProps}
+      data={librariesResult.data ?? null}
+      fetchError={
+        librariesResult.error
+          ? rtkErrorToFetchError(librariesResult.error)
+          : null
+      }
+      formError={
+        editResult.isError ? rtkErrorToFetchError(editResult.error) : null
+      }
+      isFetching={librariesResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      additionalData={languagesResult.data ?? null}
+      fetchData={() => setTimeout(() => librariesResult.refetch(), 0) as any}
+      editItem={(data) => editLibrary({ data, csrfToken }) as any}
+      deleteItem={(identifier) =>
+        deleteLibrary({ identifier, csrfToken }) as any
+      }
+      fetchLanguages={() => undefined}
+    />
   );
-  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
-    state
-  );
-  const lastEdit = getLastMutation(state, "editLibrary");
-  // fetchError = an error involving loading the list of libraries; formError = an error upon submission of the
-  // create/edit form.
-  return {
-    data: librariesResult.data ?? null,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: librariesResult.error
-      ? rtkErrorToFetchError(librariesResult.error)
-      : null,
-    formError:
-      lastEdit?.["status"] === "rejected"
-        ? rtkErrorToFetchError(lastEdit["error"])
-        : null,
-    isFetching: isResultFetching(librariesResult),
-    additionalData: languagesResult.data ?? null,
-  };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getLibraries.initiate(undefined, {
-          forceRefetch: true,
-        })
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editLibrary.initiate({ data, csrfToken })
-      ),
-    deleteItem: (identifier: string | number) =>
-      dispatch(
-        configServicesApi.endpoints.deleteLibrary.initiate({
-          identifier,
-          csrfToken,
-        })
-      ),
-    fetchLanguages: () =>
-      dispatch(referenceDataApi.endpoints.getLanguages.initiate(undefined)),
-  };
-}
-
-const ConnectedLibraries = connect<
-  EditableConfigListStateProps<LibrariesData>,
-  EditableConfigListDispatchProps<LibrariesData>,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(Libraries);
-
-export default ConnectedLibraries;
+export default LibrariesWithData;

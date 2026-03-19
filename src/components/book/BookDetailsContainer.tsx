@@ -28,7 +28,7 @@ const BookDetailsContainer = (
   return (
     <div className="book-details-container">
       <BookDetailsTabContainer
-        class="book-details-tab-container"
+        className="book-details-tab-container"
         tab={context.tab}
         bookUrl={props.bookUrl}
         collectionUrl={props.collectionUrl}

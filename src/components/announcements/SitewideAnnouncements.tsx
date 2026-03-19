@@ -1,18 +1,14 @@
 import * as React from "react";
-import { connect } from "react-redux";
 import { Alert } from "../ui/alert";
 import { Form } from "../ui";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import { SitewideAnnouncementsData, AnnouncementData } from "../../interfaces";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetSitewideAnnouncementsQuery,
+  useEditSitewideAnnouncementsMutation,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import EditableConfigList, {
-  EditableConfigListStateProps,
-  EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
   EditableConfigListProps,
 } from "../config/EditableConfigList";
@@ -98,55 +94,33 @@ export class SitewideAnnouncements extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state) {
-  const announcementsResult = configServicesApi.endpoints.getSitewideAnnouncements.select()(
-    state
+function SitewideAnnouncementsWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const announcementsResult = useGetSitewideAnnouncementsQuery();
+  const [
+    editAnnouncements,
+    editResult,
+  ] = useEditSitewideAnnouncementsMutation();
+  return (
+    <SitewideAnnouncements
+      {...ownProps}
+      data={announcementsResult.data ?? null}
+      fetchError={
+        announcementsResult.error
+          ? rtkErrorToFetchError(announcementsResult.error)
+          : null
+      }
+      formError={
+        editResult.isError ? rtkErrorToFetchError(editResult.error) : null
+      }
+      isFetching={announcementsResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      fetchData={() =>
+        setTimeout(() => announcementsResult.refetch(), 0) as any
+      }
+      editItem={(data) => editAnnouncements({ data, csrfToken }) as any}
+    />
   );
-  const lastEdit = getLastMutation(state, "editSitewideAnnouncements");
-  return {
-    data: announcementsResult.data ?? null,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: announcementsResult.error
-      ? rtkErrorToFetchError(announcementsResult.error)
-      : null,
-    formError:
-      lastEdit?.["status"] === "rejected"
-        ? rtkErrorToFetchError(lastEdit["error"])
-        : null,
-    isFetching: isResultFetching(announcementsResult),
-  };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getSitewideAnnouncements.initiate(
-          undefined,
-          { forceRefetch: true }
-        )
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editSitewideAnnouncements.initiate({
-          data,
-          csrfToken,
-        })
-      ),
-  };
-}
-
-const ConnectedSitewideAnnouncements = connect<
-  EditableConfigListStateProps<SitewideAnnouncementsData>,
-  EditableConfigListDispatchProps<SitewideAnnouncementsData>,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(SitewideAnnouncements);
-
-export default ConnectedSitewideAnnouncements;
+export default SitewideAnnouncementsWithData;

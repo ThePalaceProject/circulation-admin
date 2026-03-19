@@ -1,16 +1,14 @@
 import * as React from "react";
 import EditableConfigList, {
-  EditableConfigListStateProps,
-  EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import { connect } from "react-redux";
 import { MetadataServicesData, MetadataServiceData } from "../../interfaces";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetMetadataServicesQuery,
+  useGetLibrariesQuery,
+  useEditMetadataServiceMutation,
+  useDeleteMetadataServiceMutation,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import ServiceEditForm from "./ServiceEditForm";
 
@@ -49,72 +47,37 @@ export class MetadataServices extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, _ownProps) {
-  const metaResult = configServicesApi.endpoints.getMetadataServices.select()(
-    state
-  );
-  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
-    state
-  );
-  const lastEdit = getLastMutation(state, "editMetadataService");
+function MetadataServicesWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const metaResult = useGetMetadataServicesQuery();
+  const librariesResult = useGetLibrariesQuery();
+  const [editMetadata, editResult] = useEditMetadataServiceMutation();
+  const [deleteMetadata] = useDeleteMetadataServiceMutation();
   const data: MetadataServicesData = {
     ...metaResult.data,
   } as MetadataServicesData;
   if (librariesResult.data?.libraries) {
     data.allLibraries = librariesResult.data.libraries;
   }
-  // fetchError = an error involving loading the list of metadata services; formError = an error upon submission of the
-  // create/edit form.
-  return {
-    data,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: metaResult.error
-      ? rtkErrorToFetchError(metaResult.error)
-      : null,
-    formError:
-      lastEdit?.["status"] === "rejected"
-        ? rtkErrorToFetchError(lastEdit["error"])
-        : null,
-    isFetching: isResultFetching(metaResult),
-  };
+  return (
+    <MetadataServices
+      {...ownProps}
+      data={data}
+      fetchError={
+        metaResult.error ? rtkErrorToFetchError(metaResult.error) : null
+      }
+      formError={
+        editResult.isError ? rtkErrorToFetchError(editResult.error) : null
+      }
+      isFetching={metaResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      fetchData={() => setTimeout(() => metaResult.refetch(), 0) as any}
+      editItem={(data) => editMetadata({ data, csrfToken }) as any}
+      deleteItem={(identifier) =>
+        deleteMetadata({ identifier, csrfToken }) as any
+      }
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getMetadataServices.initiate(undefined, {
-          forceRefetch: true,
-        })
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editMetadataService.initiate({
-          data,
-          csrfToken,
-        })
-      ),
-    deleteItem: (identifier: string | number) =>
-      dispatch(
-        configServicesApi.endpoints.deleteMetadataService.initiate({
-          identifier,
-          csrfToken,
-        })
-      ),
-  };
-}
-
-const ConnectedMetadataServices = connect<
-  EditableConfigListStateProps<MetadataServicesData>,
-  EditableConfigListDispatchProps<MetadataServicesData>,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(MetadataServices);
-
-export default ConnectedMetadataServices;
+export default MetadataServicesWithData;

@@ -1,12 +1,13 @@
 import * as React from "react";
-import { bookMetadataApi } from "../../features/bookMetadata/bookMetadataSlice";
-import { connect, ConnectedProps } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useGetComplaintsQuery } from "../../features/bookMetadata/bookMetadataSlice";
 import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
 import BookCoverEditor from "./BookCoverEditor";
 import CustomListsForBook from "../lists/CustomListsForBook";
 import { TabContainer, TabContainerProps } from "../shared/TabContainer";
 import { RootState } from "../../store";
+import { BookData } from "../../interfaces";
 
 interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
@@ -26,14 +27,13 @@ interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   //   clearBook?: () => void;
 }
 
-const connectOptions = { pure: true };
-const connector = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  null,
-  connectOptions
-);
-export type BookDetailsTabContainerProps = ConnectedProps<typeof connector> &
+interface BookDetailsTabContainerConnectedProps {
+  complaintsCount?: number;
+  bookData?: BookData;
+  clearBook?: () => void;
+}
+
+export type BookDetailsTabContainerProps = BookDetailsTabContainerConnectedProps &
   BookDetailsTabContainerOwnProps;
 
 /** Wraps the book details component from OPDSWebClient with additional tabs
@@ -126,37 +126,32 @@ export class BookDetailsTabContainer extends TabContainer<
   }
 }
 
-function mapStateToProps(
-  state: RootState,
+function BookDetailsTabContainerWithData(
   ownProps: BookDetailsTabContainerOwnProps
 ) {
-  let complaintsCount: number | undefined;
+  const dispatch = useDispatch();
+  const bookData = useSelector((state: RootState) => state.bookEditor.data);
   const complaintsUrl = ownProps.bookUrl
     ? ownProps.bookUrl.replace("works", "admin/works") + "/complaints"
     : undefined;
-  const complaintsResult = complaintsUrl
-    ? bookMetadataApi.endpoints.getComplaints.select(complaintsUrl)(state)
+  const { data: complaintsData } = useGetComplaintsQuery(complaintsUrl, {
+    skip: !complaintsUrl,
+  });
+  const complaintsCount = complaintsData?.complaints
+    ? Object.values(complaintsData.complaints).reduce(
+        (sum, count) => sum + count,
+        0
+      )
     : undefined;
-  if (complaintsResult?.data?.complaints) {
-    complaintsCount = Object.values(complaintsResult.data.complaints).reduce(
-      (sum, count) => sum + count,
-      0
-    );
-  } else {
-    complaintsCount = undefined;
-  }
-
-  return {
-    complaintsCount: complaintsCount,
-    bookData: state.bookEditor.data,
-  };
+  const Inner = BookDetailsTabContainer as any;
+  return (
+    <Inner
+      {...ownProps}
+      complaintsCount={complaintsCount}
+      bookData={bookData}
+      clearBook={() => dispatch({ type: "BOOK_CLEAR" })}
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    // "BOOK_CLEAR" is the stable action type from @thepalaceproject/web-opds-client BaseActionCreator
-    clearBook: () => dispatch({ type: "BOOK_CLEAR" }),
-  };
-}
-
-export default connector(BookDetailsTabContainer);
+export default BookDetailsTabContainerWithData;

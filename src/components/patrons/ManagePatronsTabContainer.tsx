@@ -1,9 +1,7 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
-import ActionCreator from "../../actions";
 import {
   TabContainer,
   TabContainerProps,

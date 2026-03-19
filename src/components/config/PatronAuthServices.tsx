@@ -1,19 +1,17 @@
 import * as React from "react";
 import EditableConfigList, {
-  EditableConfigListStateProps,
-  EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import { connect } from "react-redux";
 import {
   PatronAuthServicesData,
   PatronAuthServiceData,
 } from "../../interfaces";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetPatronAuthServicesQuery,
+  useGetLibrariesQuery,
+  useEditPatronAuthServiceMutation,
+  useDeletePatronAuthServiceMutation,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import ServiceEditForm from "./ServiceEditForm";
 import NeighborhoodAnalyticsForm from "../patrons/NeighborhoodAnalyticsForm";
@@ -65,72 +63,37 @@ export class PatronAuthServices extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, _ownProps) {
-  const patronResult = configServicesApi.endpoints.getPatronAuthServices.select()(
-    state
-  );
-  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
-    state
-  );
-  const lastEdit = getLastMutation(state, "editPatronAuthService");
+function PatronAuthServicesWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const patronResult = useGetPatronAuthServicesQuery();
+  const librariesResult = useGetLibrariesQuery();
+  const [editPatron, editResult] = useEditPatronAuthServiceMutation();
+  const [deletePatron] = useDeletePatronAuthServiceMutation();
   const data: PatronAuthServicesData = {
     ...patronResult.data,
   } as PatronAuthServicesData;
   if (librariesResult.data?.libraries) {
     data.allLibraries = librariesResult.data.libraries;
   }
-  // fetchError = an error involving loading the list of patron auth services; formError = an error upon submission
-  // of the create/edit form.
-  return {
-    data,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: patronResult.error
-      ? rtkErrorToFetchError(patronResult.error)
-      : null,
-    formError:
-      lastEdit?.["status"] === "rejected"
-        ? rtkErrorToFetchError(lastEdit["error"])
-        : null,
-    isFetching: isResultFetching(patronResult),
-  };
+  return (
+    <PatronAuthServices
+      {...ownProps}
+      data={data}
+      fetchError={
+        patronResult.error ? rtkErrorToFetchError(patronResult.error) : null
+      }
+      formError={
+        editResult.isError ? rtkErrorToFetchError(editResult.error) : null
+      }
+      isFetching={patronResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      fetchData={() => setTimeout(() => patronResult.refetch(), 0) as any}
+      editItem={(data) => editPatron({ data, csrfToken }) as any}
+      deleteItem={(identifier) =>
+        deletePatron({ identifier, csrfToken }) as any
+      }
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getPatronAuthServices.initiate(undefined, {
-          forceRefetch: true,
-        })
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editPatronAuthService.initiate({
-          data,
-          csrfToken,
-        })
-      ),
-    deleteItem: (identifier: string | number) =>
-      dispatch(
-        configServicesApi.endpoints.deletePatronAuthService.initiate({
-          identifier,
-          csrfToken,
-        })
-      ),
-  };
-}
-
-const ConnectedPatronAuthServices = connect<
-  EditableConfigListStateProps<PatronAuthServicesData>,
-  EditableConfigListDispatchProps<PatronAuthServicesData>,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(PatronAuthServices);
-
-export default ConnectedPatronAuthServices;
+export default PatronAuthServicesWithData;

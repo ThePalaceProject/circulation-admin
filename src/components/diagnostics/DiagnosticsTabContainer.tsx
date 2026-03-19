@@ -1,13 +1,9 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
-import { connect } from "react-redux";
 import {
-  diagnosticsApi,
+  useGetDiagnosticsQuery,
   rtkErrorToFetchError,
 } from "../../features/diagnostics/diagnosticsSlice";
 import { DiagnosticsData } from "../../interfaces";
-import { RootState } from "../../store";
-import { AppDispatch } from "../../store";
 import DiagnosticsServiceType from "./DiagnosticsServiceType";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../shared/ErrorMessage";
@@ -19,7 +15,6 @@ export interface DiagnosticsTabContainerDispatchProps {
 }
 
 export interface DiagnosticsTabContainerOwnProps extends TabContainerProps {
-  store: Store<RootState>;
   goToTab: (tabName: string) => void;
 }
 
@@ -98,33 +93,20 @@ export class DiagnosticsTabContainer extends TabContainer<
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function mapStateToProps(
-  state: RootState,
-  _ownProps: DiagnosticsTabContainerOwnProps
+function DiagnosticsTabContainerWithData(
+  ownProps: DiagnosticsTabContainerOwnProps
 ) {
-  const result = diagnosticsApi.endpoints.getDiagnostics.select()(state);
-  return {
-    diagnostics: result.data,
-    isLoaded: result.isSuccess || result.isError,
-    fetchError: rtkErrorToFetchError(result.error),
-  };
+  const result = useGetDiagnosticsQuery();
+  const Inner = DiagnosticsTabContainer as any;
+  return (
+    <Inner
+      {...ownProps}
+      diagnostics={result.data}
+      isLoaded={result.isSuccess || result.isError}
+      fetchError={rtkErrorToFetchError(result.error)}
+      fetchDiagnostics={() => setTimeout(() => result.refetch(), 0)}
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch: AppDispatch) {
-  return {
-    fetchDiagnostics: () =>
-      dispatch(diagnosticsApi.endpoints.getDiagnostics.initiate(undefined)),
-  };
-}
-
-const ConnectedDiagnosticsTabContainer = connect<
-  DiagnosticsTabContainerStateProps,
-  DiagnosticsTabContainerDispatchProps,
-  DiagnosticsTabContainerOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiagnosticsTabContainer as any);
-
-export default ConnectedDiagnosticsTabContainer;
+export default DiagnosticsTabContainerWithData;

@@ -1,15 +1,14 @@
+import * as React from "react";
 import EditableConfigList, {
-  EditableConfigListStateProps,
-  EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import { connect } from "react-redux";
 import { CatalogServicesData, CatalogServiceData } from "../../interfaces";
 import {
-  configServicesApi,
-  getLastMutation,
+  useGetCatalogServicesQuery,
+  useGetLibrariesQuery,
+  useEditCatalogServiceMutation,
+  useDeleteCatalogServiceMutation,
   rtkErrorToFetchError,
-  isResultFetching,
 } from "../../features/configServices/configServicesSlice";
 import ServiceEditForm from "./ServiceEditForm";
 
@@ -37,72 +36,37 @@ export class CatalogServices extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, _ownProps) {
-  const catalogResult = configServicesApi.endpoints.getCatalogServices.select()(
-    state
-  );
-  const librariesResult = configServicesApi.endpoints.getLibraries.select()(
-    state
-  );
-  const lastEdit = getLastMutation(state, "editCatalogService");
+function CatalogServicesWithData(ownProps: EditableConfigListOwnProps) {
+  const { csrfToken } = ownProps;
+  const catalogResult = useGetCatalogServicesQuery();
+  const librariesResult = useGetLibrariesQuery();
+  const [editCatalog, editResult] = useEditCatalogServiceMutation();
+  const [deleteCatalog] = useDeleteCatalogServiceMutation();
   const data: CatalogServicesData = {
     ...catalogResult.data,
   } as CatalogServicesData;
   if (librariesResult.data?.libraries) {
     data.allLibraries = librariesResult.data.libraries;
   }
-  // fetchError = an error involving loading the list of catalog services; formError = an error upon submission
-  // of the create/edit form.
-  return {
-    data,
-    responseBody:
-      lastEdit?.["status"] === "fulfilled"
-        ? (lastEdit["data"] as string)
-        : null,
-    fetchError: catalogResult.error
-      ? rtkErrorToFetchError(catalogResult.error)
-      : null,
-    formError:
-      lastEdit?.["status"] === "rejected"
-        ? rtkErrorToFetchError(lastEdit["error"])
-        : null,
-    isFetching: isResultFetching(catalogResult),
-  };
+  return (
+    <CatalogServices
+      {...ownProps}
+      data={data}
+      fetchError={
+        catalogResult.error ? rtkErrorToFetchError(catalogResult.error) : null
+      }
+      formError={
+        editResult.isError ? rtkErrorToFetchError(editResult.error) : null
+      }
+      isFetching={catalogResult.isFetching}
+      responseBody={editResult.isSuccess ? (editResult.data as string) : null}
+      fetchData={() => setTimeout(() => catalogResult.refetch(), 0) as any}
+      editItem={(data) => editCatalog({ data, csrfToken }) as any}
+      deleteItem={(identifier) =>
+        deleteCatalog({ identifier, csrfToken }) as any
+      }
+    />
+  );
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-  const csrfToken: string = ownProps.csrfToken;
-  return {
-    fetchData: () =>
-      dispatch(
-        configServicesApi.endpoints.getCatalogServices.initiate(undefined, {
-          forceRefetch: true,
-        })
-      ),
-    editItem: (data: FormData) =>
-      dispatch(
-        configServicesApi.endpoints.editCatalogService.initiate({
-          data,
-          csrfToken,
-        })
-      ),
-    deleteItem: (identifier: string | number) =>
-      dispatch(
-        configServicesApi.endpoints.deleteCatalogService.initiate({
-          identifier,
-          csrfToken,
-        })
-      ),
-  };
-}
-
-const ConnectedCatalogServices = connect<
-  EditableConfigListStateProps<CatalogServicesData>,
-  EditableConfigListDispatchProps<CatalogServicesData>,
-  EditableConfigListOwnProps
->(
-  mapStateToProps,
-  mapDispatchToProps
-)(CatalogServices);
-
-export default ConnectedCatalogServices;
+export default CatalogServicesWithData;
