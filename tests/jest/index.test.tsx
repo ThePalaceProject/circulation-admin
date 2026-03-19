@@ -16,7 +16,7 @@ function findInTree(element: any, targetType: any): boolean {
 
 import * as ReactDOM from "react-dom";
 import SetupPage from "../../src/components/layout/SetupPage";
-import { Router } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 
 // Use jest.mock for react-dom so we can spy on render without triggering the DOM
 jest.mock("react-dom", () => ({
@@ -44,12 +44,12 @@ describe("CirculationAdmin", () => {
     expect(findInTree(component, SetupPage)).toBe(true);
   });
 
-  it("renders Router when not setting up", () => {
+  it("renders BrowserRouter when not setting up", () => {
     new CirculationAdmin({});
 
     expect(mockRender).toHaveBeenCalledTimes(1);
 
     const component = mockRender.mock.calls[0][0];
-    expect(findInTree(component, Router)).toBe(true);
+    expect(findInTree(component, BrowserRouter)).toBe(true);
   });
 });

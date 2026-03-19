@@ -11,7 +11,7 @@ import {
 } from "../../features/configServices/configServicesSlice";
 import Admin from "../../models/Admin";
 import EditableInput from "../shared/EditableInput";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 // Button from ui intentionally removed (dropdowns use native <button> for full style control)
 import { BarChart, Book, User, SlidersHorizontal } from "lucide-react";

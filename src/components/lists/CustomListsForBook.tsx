@@ -7,7 +7,7 @@ import { BookData, CustomListData, CustomListsData } from "../../interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RootState } from "../../store";
 import { AppDispatch } from "../../store";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { customListsApi } from "../../features/customLists/customListsApiSlice";
 import {
   rtkErrorToFetchError,
@@ -93,10 +93,8 @@ export class CustomListsForBook extends React.Component<
     return (
       <div key="list-creator-link">
         <Link
-          to={{
-            pathname: `/admin/web/lists/${this.props.library}/create`,
-            state: { bookTitle: this.props.book && this.props.book.title },
-          }}
+          to={`/admin/web/lists/${this.props.library}/create`}
+          state={{ bookTitle: this.props.book && this.props.book.title }}
         >
           Create a new list
         </Link>

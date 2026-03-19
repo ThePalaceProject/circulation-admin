@@ -3,7 +3,7 @@ import * as React from "react";
 import AddIcon from "../icons/AddIcon";
 import ResetIcon from "../icons/ResetIcon";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { LaneData } from "../../interfaces";
 import Lane from "./Lane";
 

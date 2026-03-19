@@ -18,6 +18,10 @@ import AppContextProvider, {
 export interface ContextProviderProps extends React.Props<ContextProvider> {
   store?: Store<RootState>;
   config: Partial<ConfigurationSettings>;
+  /** Injected by RouterContextBridge to enable v6-backed navigation via legacy context. */
+  navigate?: (path: string) => void;
+  /** Current pathname injected by RouterContextBridge; used by Header to compute active links. */
+  pathname?: string;
 }
 
 /** Provides a redux store, configuration options, and a function to create URLs
@@ -87,15 +91,33 @@ export default class ContextProvider extends React.Component<
     settingUp: PropTypes.bool.isRequired,
     admin: PropTypes.object.isRequired,
     featureFlags: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   };
 
   getChildContext() {
+    const navigate = this.props.navigate || (() => undefined);
+    const pathname = this.props.pathname || "";
+    // Provide a v3-compatible router shim backed by v6 navigate + location,
+    // so that legacy-context consumers (CatalogLink, TabContainers, Header) work unchanged.
+    const router = {
+      push: (path: string) => navigate(path),
+      replace: (path: string) => navigate(path),
+      go: () => undefined,
+      goBack: () => undefined,
+      goForward: () => undefined,
+      setRouteLeaveHook: () => undefined,
+      createHref: (loc: any) =>
+        typeof loc === "string" ? loc : loc && loc.pathname ? loc.pathname : "",
+      getCurrentLocation: () => ({ pathname }),
+      isActive: () => false,
+    };
     return {
       editorStore: this.store,
       csrfToken: this.appConfig.csrfToken,
       settingUp: this.appConfig.settingUp || false,
       admin: this.admin,
       featureFlags: this.appConfig.featureFlags,
+      router,
     };
   }
 

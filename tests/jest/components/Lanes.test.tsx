@@ -8,12 +8,12 @@ import {
 } from "@testing-library/react";
 import { Lanes } from "../../../src/components/lanes/Lanes";
 
-// ── react-router mock (Link used in Lanes renderReset) ────────────────────────
-jest.mock("react-router", () => {
+// ── react-router-dom mock (Link used in Lanes renderReset) ─────────────────────
+jest.mock("react-router-dom", () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const React = require("react");
   return {
-    ...jest.requireActual("react-router"),
+    ...jest.requireActual("react-router-dom"),
     Link: ({
       children,
       to,

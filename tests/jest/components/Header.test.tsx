@@ -1,6 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { Header } from "../../../src/components/layout/Header";
 import Admin from "../../../src/models/Admin";
 import { AdminRole } from "../../../src/interfaces";
@@ -55,9 +56,11 @@ function renderHeader(
   props: Record<string, unknown> = {}
 ) {
   return render(
-    <HeaderContextProvider admin={admin} library={library}>
-      <Header {...props} />
-    </HeaderContextProvider>
+    <MemoryRouter>
+      <HeaderContextProvider admin={admin} library={library}>
+        <Header {...props} />
+      </HeaderContextProvider>
+    </MemoryRouter>
   );
 }
 

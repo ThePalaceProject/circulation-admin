@@ -2,12 +2,12 @@ import * as React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import LanesSidebar from "../../../src/components/lanes/LanesSidebar";
 
-// ── react-router mock (LanesSidebar renders Link) ─────────────────────────────
-jest.mock("react-router", () => {
+// ── react-router-dom mock (LanesSidebar renders Link) ───────────────────────────
+jest.mock("react-router-dom", () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const React = require("react");
   return {
-    ...jest.requireActual("react-router"),
+    ...jest.requireActual("react-router-dom"),
     Link: ({
       children,
       to,

@@ -2,9 +2,9 @@ import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import CustomListsSidebar from "../../../src/components/lists/CustomListsSidebar";
 
-// react-router's Link needs a router context — mock it as a plain anchor
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+// react-router-dom's Link needs a router context — mock it as a plain anchor
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
   Link: ({
     children,
     to,

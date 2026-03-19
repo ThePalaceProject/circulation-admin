@@ -6,7 +6,7 @@ import VisibleIcon from "../icons/VisibleIcon";
 import { Button } from "../ui";
 import { CustomListData } from "../../interfaces";
 import EditableInput from "../shared/EditableInput";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 export interface CustomListsSidebarProps {
   lists: CustomListData[];

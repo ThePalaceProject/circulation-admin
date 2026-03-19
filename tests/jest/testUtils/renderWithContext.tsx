@@ -1,5 +1,6 @@
 import * as React from "react";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import ContextProvider, {
   ContextProviderProps,
 } from "../../../src/components/layout/ContextProvider";
@@ -21,13 +22,17 @@ export default function renderWithContext(
 ): RenderResult {
   const contextProviderProps = { config } as ContextProviderProps;
   const renderResult = render(
-    <ContextProvider {...contextProviderProps}>{ui}</ContextProvider>,
+    <MemoryRouter>
+      <ContextProvider {...contextProviderProps}>{ui}</ContextProvider>
+    </MemoryRouter>,
     renderOptions
   );
 
   const rerenderWithContext = (ui) => {
     return renderResult.rerender(
-      <ContextProvider {...contextProviderProps}>{ui}</ContextProvider>
+      <MemoryRouter>
+        <ContextProvider {...contextProviderProps}>{ui}</ContextProvider>
+      </MemoryRouter>
     );
   };
 

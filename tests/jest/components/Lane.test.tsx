@@ -9,8 +9,8 @@ import Lane from "../../../src/components/lanes/Lane";
 // test something. This technique is useful for testing components in isolation (unit testing),
 // instead of the integration testing that RTL focuses on.
 
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
   Link: (props) => (
     <div data-testid="Link" data-to={props.to}>
       {props.children}

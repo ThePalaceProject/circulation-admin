@@ -1,6 +1,6 @@
 import * as React from "react";
 import { LaneData } from "../../interfaces";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import GrabIcon from "../icons/GrabIcon";
 import PyramidIcon from "../icons/PyramidIcon";
 import AddIcon from "../icons/AddIcon";
