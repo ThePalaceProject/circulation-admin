@@ -70,6 +70,76 @@
       grid-area: collections;
       overflow-x: auto;
 
+      .collection-view-toggle {
+        display: inline-flex;
+        margin-left: 0.75rem;
+        vertical-align: middle;
+        border: 1px solid var(--border-soft-color);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .collection-view-toggle-button {
+        border: 0;
+        background: var(--surface-primary-bg);
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        padding: 0.3rem 0.7rem;
+      }
+
+      .collection-view-toggle-button.active {
+        background: var(--button-primary-bg);
+        color: var(--button-primary-fg);
+      }
+
+      .collections-table-wrapper {
+        margin-top: 0.25rem;
+        overflow-x: auto;
+      }
+
+      table.collections-inventory-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 64rem;
+
+        th,
+        td {
+          border-bottom: 1px solid var(--border-soft-color);
+          padding: 0.5rem;
+          font-size: 0.8125rem;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        thead th {
+          color: var(--text-muted);
+          font-size: 0.75rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          white-space: normal;
+          line-height: 1.2;
+          min-width: 6.5rem;
+          background: var(--surface-primary-bg);
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
+
+        th:first-child,
+        td:first-child {
+          text-align: left;
+          min-width: 14rem;
+        }
+
+        tbody tr:last-child th,
+        tbody tr:last-child td {
+          border-bottom: 0;
+        }
+      }
+
       .recharts-wrapper {
         // needed for Rechart ResponsiveContainer to shrink performantly with parent
         position: absolute;
