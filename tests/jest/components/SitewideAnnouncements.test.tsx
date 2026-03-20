@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { componentWithProviders } from "../testUtils/withProviders";
 import { AdminRole } from "../../../src/interfaces";
 import { SitewideAnnouncements } from "../../../src/components/announcements/SitewideAnnouncements";
+import Admin from "../../../src/models/Admin";
 
 // Mock AnnouncementsSection to avoid deep rendering
 jest.mock("../../../src/components/announcements/AnnouncementsSection", () => {
@@ -61,9 +62,11 @@ const nonAdminConfig = {
 
 const renderSitewide = (props = {}, config = systemAdminConfig) => {
   const Wrapper = componentWithProviders(config);
+  const roles = config.appConfigSettings?.roles || [];
+  const admin = new Admin(roles as any);
   return render(
     <Wrapper>
-      <SitewideAnnouncements {...baseProps} {...props} />
+      <SitewideAnnouncements {...baseProps} admin={admin} {...props} />
     </Wrapper>
   );
 };

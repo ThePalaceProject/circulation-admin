@@ -1,15 +1,19 @@
 import { createContext, useContext } from "react";
+import { Store } from "@reduxjs/toolkit";
 import {
   ConfigurationSettings,
   DashboardCollectionsBarChart,
   FeatureFlags,
 } from "../interfaces";
 import Admin from "../models/Admin";
+import { RootState } from "../store";
 
 export type AppContextType = {
   csrfToken: string;
   settingUp: boolean;
   admin: Admin;
+  /** The redux store for the admin interface. Replaces legacy editorStore context. */
+  editorStore: Store<RootState>;
   tos_link_text?: string;
   tos_link_href?: string;
   supportContact?: SupportContactLink;
@@ -43,6 +47,7 @@ export const useAppContext = (): AppContextType => {
 };
 
 export const useCsrfToken = () => useAppContext().csrfToken;
+export const useEditorStore = () => useAppContext().editorStore;
 export const useAppAdmin = () => useAppContext().admin;
 export const useAppEmail = () => useAppAdmin().email;
 export const useAppFeatureFlags = () => useAppContext().featureFlags;

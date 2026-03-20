@@ -8,7 +8,7 @@ import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
 import renderWithContext from "../testUtils/renderWithContext";
 import { renderWithProviders } from "../testUtils/withProviders";
-import QuicksightDashboardPage from "../../../src/components/dashboard/QuicksightDashboardPage";
+import { QuicksightDashboardPage } from "../../../src/components/dashboard/QuicksightDashboardPage";
 
 const libraries: LibrariesData = { libraries: [{ uuid: "my-uuid" }] };
 const dashboardId = "test";

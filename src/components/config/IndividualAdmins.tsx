@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import EditableConfigList, {
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
@@ -13,6 +12,7 @@ import {
 } from "../../features/configServices/configServicesSlice";
 import Admin from "../../models/Admin";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
+import { useAppAdmin } from "../../context/appContext";
 
 /** Right panel for individual admin configuration on the system configuration page.
     Shows a list of current individual admins and allows create a new admin or
@@ -28,24 +28,22 @@ export class IndividualAdmins extends EditableConfigList<
   identifierKey = "email";
   labelKey = "email";
 
-  context: { admin: Admin };
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
+  // HOC PATTERN: admin is injected as a prop via useAppAdmin() in the WithData
+  // wrapper function below, replacing legacy contextTypes: { admin }.
 
   canCreate() {
     return (
-      this.context.admin && this.context.admin.isLibraryManagerOfSomeLibrary()
+      this.props.admin && this.props.admin.isLibraryManagerOfSomeLibrary()
     );
   }
 
   canDelete() {
-    return this.context.admin && this.context.admin.isSystemAdmin();
+    return this.props.admin && this.props.admin.isSystemAdmin();
   }
 
   canEdit() {
     return (
-      this.context.admin && this.context.admin.isLibraryManagerOfSomeLibrary()
+      this.props.admin && this.props.admin.isLibraryManagerOfSomeLibrary()
     );
   }
 
@@ -78,6 +76,8 @@ export class IndividualAdmins extends EditableConfigList<
 
 function IndividualAdminsWithData(ownProps: EditableConfigListOwnProps) {
   const { csrfToken } = ownProps;
+  // HOC PATTERN: admin is injected from AppContext to replace legacy contextTypes: { admin }.
+  const admin = useAppAdmin();
   const adminsResult = useGetIndividualAdminsQuery();
   const librariesResult = useGetLibrariesQuery();
   const [editAdmin, editResult] = useEditIndividualAdminMutation();
@@ -91,6 +91,7 @@ function IndividualAdminsWithData(ownProps: EditableConfigListOwnProps) {
   return (
     <IndividualAdmins
       {...ownProps}
+      admin={admin}
       data={data}
       fetchError={
         adminsResult.error ? rtkErrorToFetchError(adminsResult.error) : null

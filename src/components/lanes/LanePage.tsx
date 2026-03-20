@@ -1,9 +1,13 @@
+// HOC PATTERN: This component is wrapped with withAppContext() at export
+// to inject [editorStore, csrfToken] as props, replacing legacy contextTypes.
+// The library fn is provided via LibraryContext in step 6.
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
 import Lanes from "./Lanes";
 import { RootState } from "../../store";
+import { withAppContext } from "../../utils/withAppContext";
+import { LibraryContext } from "../../context/LibraryContext";
 
 export interface LanePageProps extends React.Props<LanePageProps> {
   params: {
@@ -11,46 +15,27 @@ export interface LanePageProps extends React.Props<LanePageProps> {
     editOrCreate?: string;
     identifier?: string;
   };
+  editorStore?: Store<RootState>;
+  csrfToken?: string;
 }
 
-export interface LanePageContext {
-  editorStore: Store<RootState>;
-  csrfToken: string;
-}
-
-export default class LanePage extends React.Component<
-  LanePageProps,
-  LanePageContext
-> {
-  context: LanePageContext;
-
-  static contextTypes: React.ValidationMap<LanePageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired,
-  };
-
-  static childContextTypes: React.ValidationMap<any> = {
-    library: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      library: () => this.props.params.library,
-    };
-  }
-
+export class LanePage extends React.Component<LanePageProps> {
   render(): JSX.Element {
     return (
-      <div className="lane-page">
-        <Header />
-        <Lanes
-          library={this.props.params.library}
-          editOrCreate={this.props.params.editOrCreate}
-          identifier={this.props.params.identifier}
-          store={this.context.editorStore}
-          csrfToken={this.context.csrfToken}
-        />
-      </div>
+      <LibraryContext.Provider value={() => this.props.params.library}>
+        <div className="lane-page">
+          <Header />
+          <Lanes
+            library={this.props.params.library}
+            editOrCreate={this.props.params.editOrCreate}
+            identifier={this.props.params.identifier}
+            store={this.props.editorStore}
+            csrfToken={this.props.csrfToken}
+          />
+        </div>
+      </LibraryContext.Provider>
     );
   }
 }
+
+export default withAppContext(LanePage);

@@ -1,32 +1,27 @@
+// HOC PATTERN: This component is wrapped with withAppContext() at export
+// to inject [editorStore, csrfToken] as props, replacing legacy contextTypes.
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { RootState } from "../../store";
 import Header from "../layout/Header";
 import title from "../../utils/title";
+import { withAppContext } from "../../utils/withAppContext";
 
-export interface AccountPageContext {
-  editorStore: Store<RootState>;
-  csrfToken: string;
+export interface AccountPageProps {
+  editorStore?: Store<RootState>;
+  csrfToken?: string;
 }
 
 /** Page for configuring account settings. */
-export default class AccountPage extends React.Component<object, object> {
-  context: AccountPageContext;
-
-  static contextTypes: React.ValidationMap<AccountPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired,
-  };
-
+export class AccountPage extends React.Component<AccountPageProps, object> {
   render(): JSX.Element {
     return (
       <div className="account">
         <Header />
         <ChangePasswordForm
-          store={this.context.editorStore}
-          csrfToken={this.context.csrfToken}
+          store={this.props.editorStore}
+          csrfToken={this.props.csrfToken}
         />
       </div>
     );
@@ -36,3 +31,5 @@ export default class AccountPage extends React.Component<object, object> {
     document.title = title("Account");
   }
 }
+
+export default withAppContext(AccountPage);

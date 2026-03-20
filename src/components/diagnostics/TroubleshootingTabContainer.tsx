@@ -1,22 +1,20 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
-import { TabContainerContext } from "../shared/TabContainer";
+import {
+  RouterCompat,
+  withRoutingContext,
+} from "../../utils/withRoutingContext";
 
 export interface TroubleshootingTabContainerProps {
   tab: string;
   goToTab: (tabName: string) => void;
   subtab?: string;
+  // HOC PATTERN: injected by withRoutingContext() replacing legacy contextTypes.
+  router?: RouterCompat;
 }
 
-export default class TroubleshootingTabContainer extends React.Component<
+export class TroubleshootingTabContainer extends React.Component<
   TroubleshootingTabContainerProps
 > {
-  static contextTypes: React.ValidationMap<TabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-  };
-  context: TabContainerContext;
-
   constructor(props: TroubleshootingTabContainerProps) {
     super(props);
     this.handleSelect = this.handleSelect.bind(this);
@@ -25,9 +23,12 @@ export default class TroubleshootingTabContainer extends React.Component<
   handleSelect(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     const tab = event.currentTarget.dataset.tabkey;
-    this.props.goToTab(tab!);
-    if (this.context.router) {
-      this.context.router.push(`/admin/web/troubleshooting/${tab}`);
+    if (!tab) {
+      return;
+    }
+    this.props.goToTab(tab);
+    if (this.props.router) {
+      this.props.router.push(`/admin/web/troubleshooting/${tab}`);
     }
   }
 
@@ -47,3 +48,5 @@ export default class TroubleshootingTabContainer extends React.Component<
     );
   }
 }
+
+export default withRoutingContext(TroubleshootingTabContainer);

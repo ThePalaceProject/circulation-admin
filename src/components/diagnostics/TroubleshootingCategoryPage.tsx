@@ -1,14 +1,11 @@
+// HOC PATTERN: This component is wrapped with withAppContext() at export
+// to inject [editorStore, csrfToken] as props, replacing legacy contextTypes.
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
 import DiagnosticsTabContainer from "./DiagnosticsTabContainer";
 import SelfTestsTabContainer from "../config/SelfTestsTabContainer";
-
-export interface TroubleshootingCategoryPageContext {
-  editorStore: Store<RootState>;
-  csrfToken: string;
-}
+import { withAppContext } from "../../utils/withAppContext";
 
 export interface TroubleshootingCategoryPageState {
   tab: string;
@@ -17,21 +14,14 @@ export interface TroubleshootingCategoryPageState {
 export interface TroubleshootingCategoryPageProps {
   type: string;
   subtab?: string;
+  editorStore?: Store<RootState>;
+  csrfToken?: string;
 }
 
-export default class TroubleshootingCategoryPage extends React.Component<
+export class TroubleshootingCategoryPage extends React.Component<
   TroubleshootingCategoryPageProps,
   TroubleshootingCategoryPageState
 > {
-  context: TroubleshootingCategoryPageContext;
-
-  static contextTypes: React.ValidationMap<
-    TroubleshootingCategoryPageContext
-  > = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired,
-  };
-
   CATEGORIES = {
     diagnostics: [
       "coverage_provider",
@@ -54,8 +44,8 @@ export default class TroubleshootingCategoryPage extends React.Component<
     return (
       <div className={`${this.props.type}-page`}>
         {React.createElement(tabContainer, {
-          store: this.context.editorStore,
-          csrfToken: this.context.csrfToken,
+          store: this.props.editorStore,
+          csrfToken: this.props.csrfToken,
           tab: this.props.subtab || this.state.tab,
           goToTab: this.goToTab,
           className: undefined,
@@ -68,3 +58,5 @@ export default class TroubleshootingCategoryPage extends React.Component<
     this.setState({ tab });
   }
 }
+
+export default withAppContext(TroubleshootingCategoryPage);

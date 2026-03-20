@@ -1,16 +1,13 @@
+// HOC PATTERN: This component is wrapped with withAppContext() at export
+// to inject [editorStore, csrfToken] as props, replacing legacy contextTypes.
 import TroubleshootingCategoryPage from "./TroubleshootingCategoryPage";
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
 import { RootState } from "../../store";
 import TroubleshootingTabContainer from "./TroubleshootingTabContainer";
 import title from "../../utils/title";
-
-export interface TroubleshootingPageContext {
-  editorStore: Store<RootState>;
-  csrfToken: string;
-}
+import { withAppContext } from "../../utils/withAppContext";
 
 export interface TroubleshootingPageState {
   tab: string;
@@ -23,19 +20,14 @@ export interface TroubleshootingPageProps
     tab?: string;
     subtab?: string;
   };
+  editorStore?: Store<RootState>;
+  csrfToken?: string;
 }
 
-export default class TroubleshootingPage extends React.Component<
+export class TroubleshootingPage extends React.Component<
   TroubleshootingPageProps,
   TroubleshootingPageState
 > {
-  context: TroubleshootingPageContext;
-
-  static contextTypes: React.ValidationMap<TroubleshootingPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired,
-  };
-
   CATEGORIES = {
     diagnostics: ["coverage_provider", "script", "monitor", "other"],
     "self-tests": ["collections", "patronAuthServices", "metadataServices"],
@@ -84,3 +76,5 @@ export default class TroubleshootingPage extends React.Component<
     this.setState({ tab, subtab: this.props.params.subtab });
   }
 }
+
+export default withAppContext(TroubleshootingPage);

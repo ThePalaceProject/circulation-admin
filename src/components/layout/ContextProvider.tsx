@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import buildStore, { RootState } from "../../store";
 import { ConfigurationSettings, PathFor } from "../../interfaces";
 import Admin from "../../models/Admin";
 import PathForProvider from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
+import { NavigationContext } from "@thepalaceproject/web-opds-client/lib/components/context/NavigationContext";
 import AppContextProvider, {
   AppContextType,
   supportContactLinkFromConfig,
@@ -85,47 +85,12 @@ export default class ContextProvider extends React.Component<
     }
   }
 
-  static childContextTypes: React.ValidationMap<object> = {
-    editorStore: PropTypes.object.isRequired,
-    csrfToken: PropTypes.string.isRequired,
-    settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired,
-    featureFlags: PropTypes.object.isRequired,
-    router: PropTypes.object.isRequired,
-  };
-
-  getChildContext() {
-    const navigate = this.props.navigate || (() => undefined);
-    const pathname = this.props.pathname || "";
-    // Provide a v3-compatible router shim backed by v6 navigate + location,
-    // so that legacy-context consumers (CatalogLink, TabContainers, Header) work unchanged.
-    const router = {
-      push: (path: string) => navigate(path),
-      replace: (path: string) => navigate(path),
-      go: () => undefined,
-      goBack: () => undefined,
-      goForward: () => undefined,
-      setRouteLeaveHook: () => undefined,
-      createHref: (loc: any) =>
-        typeof loc === "string" ? loc : loc && loc.pathname ? loc.pathname : "",
-      getCurrentLocation: () => ({ pathname }),
-      isActive: () => false,
-    };
-    return {
-      editorStore: this.store,
-      csrfToken: this.appConfig.csrfToken,
-      settingUp: this.appConfig.settingUp || false,
-      admin: this.admin,
-      featureFlags: this.appConfig.featureFlags,
-      router,
-    };
-  }
-
   render() {
     const appContextValue: AppContextType = {
       admin: this.admin,
       csrfToken: this.appConfig.csrfToken,
-      settingUp: this.appConfig.settingUp,
+      settingUp: this.appConfig.settingUp || false,
+      editorStore: this.store,
       featureFlags: this.appConfig.featureFlags,
       quicksightPagePath: this.appConfig.quicksightPagePath,
       dashboardCollectionsBarChart: this.appConfig.dashboardCollectionsBarChart,
@@ -134,11 +99,13 @@ export default class ContextProvider extends React.Component<
       supportContact: supportContactLinkFromConfig(this.appConfig),
     };
     return (
-      <PathForProvider pathFor={this.pathFor}>
-        <AppContextProvider value={appContextValue}>
-          {React.Children.only(this.props.children) as JSX.Element}
-        </AppContextProvider>
-      </PathForProvider>
+      <NavigationContext.Provider value={this.props.navigate ?? (() => undefined)}>
+        <PathForProvider pathFor={this.pathFor}>
+          <AppContextProvider value={appContextValue}>
+            {React.Children.only(this.props.children) as JSX.Element}
+          </AppContextProvider>
+        </PathForProvider>
+      </NavigationContext.Provider>
     );
   }
 }

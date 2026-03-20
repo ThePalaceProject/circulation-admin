@@ -51,6 +51,21 @@ describe("CatalogPage", () => {
     );
   });
 
+  it("normalizes malformed protocol-like collection params", () => {
+    const params = {
+      collectionUrl: "http:/groups",
+      bookUrl: null,
+      tab: null,
+    };
+    const { getByTestId } = renderWithProviders(
+      <CatalogPage params={params as any} />
+    );
+    const catalog = getByTestId("opds-catalog");
+    expect(catalog.getAttribute("data-collection-url")).toBe(
+      `${document.location.origin}/groups`
+    );
+  });
+
   it("renders WelcomePage when no collectionUrl and no bookUrl", () => {
     const params = { collectionUrl: null, bookUrl: null, tab: null };
     renderWithProviders(<CatalogPage params={params} />);

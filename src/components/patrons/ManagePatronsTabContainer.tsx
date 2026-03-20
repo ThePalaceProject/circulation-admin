@@ -1,43 +1,36 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
 import {
   TabContainer,
   TabContainerProps,
-  TabContainerContext,
 } from "../shared/TabContainer";
 import Admin from "../../models/Admin";
 import DebugAuthentication from "./DebugAuthentication";
 import ResetAdobeId from "./ResetAdobeId";
+import { withAppContext } from "../../utils/withAppContext";
+import { withRoutingContext } from "../../utils/withRoutingContext";
 
 export interface ManagePatronsTabContainerProps extends TabContainerProps {
   store: Store<RootState>;
   csrfToken: string;
   library: string;
   tab: string;
-}
-
-export interface ManagePatronsTabContainerContext extends TabContainerContext {
-  admin: Admin;
+  admin?: Admin;
 }
 
 /** Body of the Patron Manager page, with a tab for each type of
     action that can be performed on a patron. */
-export default class ManagePatronsTabContainer extends TabContainer<
+export class ManagePatronsTabContainer extends TabContainer<
   ManagePatronsTabContainerProps
 > {
-  context: ManagePatronsTabContainerContext;
-  static contextTypes: React.ValidationMap<ManagePatronsTabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>,
-  };
+  // HOC PATTERN: `admin` is injected via withAppContext at export,
+  // replacing legacy contextTypes: { admin }.
 
   tabs() {
     const isLibraryManager =
       this.props.library &&
-      this.context.admin.isLibraryManager(this.props.library);
+      this.props.admin?.isLibraryManager(this.props.library);
     const tabs = {};
     if (isLibraryManager) {
       tabs["resetAdobeId"] = (
@@ -60,8 +53,8 @@ export default class ManagePatronsTabContainer extends TabContainer<
 
   handleSelect(event) {
     const tab = event.target.dataset.tabkey;
-    if (this.context.router) {
-      this.context.router.push(
+    if (this.props.router) {
+      this.props.router.push(
         `/admin/web/patrons/${this.props.library}/${tab}`
       );
     }
@@ -79,3 +72,5 @@ export default class ManagePatronsTabContainer extends TabContainer<
     return "resetAdobeId";
   }
 }
+
+export default withRoutingContext(withAppContext(ManagePatronsTabContainer));

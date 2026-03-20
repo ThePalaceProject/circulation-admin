@@ -1,14 +1,7 @@
 import * as React from "react";
 import CatalogLink from "@thepalaceproject/web-opds-client/lib/components/CatalogLink";
 import { FacetData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import * as PropTypes from "prop-types";
-import { PathFor } from "../../interfaces";
 import { AudioHeadphoneIcon, BookIcon } from "@nypl/dgx-svg-icons";
-
-export interface EntryPointsTabsContext {
-  pathFor: PathFor;
-  router: any;
-}
 export interface EntryPointsTabsProps {
   facets?: FacetData[];
 }
@@ -18,16 +11,9 @@ export class EntryPointsTabs extends React.Component<
   EntryPointsTabsProps,
   Record<string, never>
 > {
-  context: EntryPointsTabsContext;
-
   constructor(props) {
     super(props);
   }
-
-  static contextTypes: React.ValidationMap<EntryPointsTabsContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-  };
 
   render(): JSX.Element {
     const entryPoints = this.props.facets ? this.props.facets : [];

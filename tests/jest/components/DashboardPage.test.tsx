@@ -1,6 +1,6 @@
 import * as React from "react";
 import { renderWithProviders } from "../testUtils/withProviders";
-import DashboardPage from "../../../src/components/dashboard/DashboardPage";
+import { DashboardPage } from "../../../src/components/dashboard/DashboardPage";
 
 describe("DashboardPage", () => {
   it("renders the dashboard container", () => {

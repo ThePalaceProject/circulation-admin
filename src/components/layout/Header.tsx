@@ -2,7 +2,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
 import { LibraryData, LibrariesData } from "../../interfaces";
 import {
@@ -12,11 +11,13 @@ import {
 import Admin from "../../models/Admin";
 import EditableInput from "../shared/EditableInput";
 import { Link } from "react-router-dom";
-import { Router } from "@thepalaceproject/web-opds-client/lib/interfaces";
 // Button from ui intentionally removed (dropdowns use native <button> for full style control)
 import { BarChart, Book, User, SlidersHorizontal } from "lucide-react";
 import { Landmark } from "lucide-react";
 import title from "../../utils/title";
+import { withAppContext } from "../../utils/withAppContext";
+import { useLibrary, LibraryFn } from "../../context/LibraryContext";
+import { RouterCompat, withRoutingContext } from "../../utils/withRoutingContext";
 
 const palaceLogoUrl = require("../../images/PalaceCollectionManagerLogo.svg")
   .default;
@@ -33,6 +34,14 @@ export interface HeaderDispatchProps {
 export interface HeaderOwnProps {
   store?: Store<RootState>;
   logoOnly?: boolean;
+  /** Injected by withAppContext and passed to ConnectedHeader as `store`. */
+  editorStore?: Store<RootState>;
+  /** Injected by withAppContext (HOC pattern) to replace legacy admin contextTypes. */
+  admin?: Admin;
+  /** Injected by useLibrary() wrapper to replace legacy library contextTypes. */
+  library?: LibraryFn;
+  /** Injected by withRoutingContext() replacing legacy router contextTypes. */
+  router?: RouterCompat;
 }
 
 export interface HeaderProps
@@ -49,10 +58,6 @@ export interface HeaderState {
   isMobileNavOpen: boolean;
 }
 
-export interface HeaderRouter extends Router {
-  getCurrentLocation?: Function;
-}
-
 export interface HeaderNavItem {
   label: string;
   href: string;
@@ -62,17 +67,11 @@ export interface HeaderNavItem {
 /** Header of all admin interface pages, with a dropdown for selecting a library,
     library-specific links for the current library, and site-wide links. */
 export class Header extends React.Component<HeaderProps, HeaderState> {
-  context: { library: () => string; router: HeaderRouter; admin: Admin };
   accountDropdownRef: React.RefObject<HTMLDivElement>;
   settingsDropdownRef: React.RefObject<HTMLLIElement>;
   libraryDropdownRef: React.RefObject<HTMLDivElement>;
   catalogDropdownRef: React.RefObject<HTMLLIElement>;
 
-  static contextTypes = {
-    library: PropTypes.func,
-    router: PropTypes.object.isRequired,
-    admin: PropTypes.object.isRequired,
-  };
   constructor(props) {
     super(props);
     this.state = {
@@ -108,15 +107,17 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
   render(): JSX.Element {
     const currentPathname =
-      (this.context.router &&
-        this.context.router.getCurrentLocation() &&
-        this.context.router.getCurrentLocation().pathname) ||
+      (this.props.router &&
+        this.props.router.getCurrentLocation() &&
+        this.props.router.getCurrentLocation().pathname) ||
       "";
-    let currentLibrary = this.context.library && this.context.library();
-    let isLibraryManager = this.context.admin.isLibraryManager(currentLibrary);
-    let isSystemAdmin = this.context.admin.isSystemAdmin();
-    let isSiteWide = !this.context.library || !currentLibrary;
-    let isSomeLibraryManager = this.context.admin.isLibraryManagerOfSomeLibrary();
+    let currentLibrary = this.props.library && this.props.library();
+    let isLibraryManager =
+      this.props.admin?.isLibraryManager(currentLibrary) || false;
+    let isSystemAdmin = this.props.admin?.isSystemAdmin() || false;
+    let isSiteWide = !this.props.library || !currentLibrary;
+    let isSomeLibraryManager =
+      this.props.admin?.isLibraryManagerOfSomeLibrary() || false;
 
     // Dashboard link with bar chart icon (larger)
     const dashboardLinkItem = {
@@ -157,7 +158,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
         <div className="site-nav__brand">
           <div className="site-nav__inner site-nav__inner--brand">
             <img src={palaceLogoUrl} alt={title()} className="site-nav__logo" />
-            {!logoOnly && this.context.admin.email && (
+            {!logoOnly && this.props.admin?.email && (
               <div
                 className="site-nav__dropdown site-nav__brand-user"
                 ref={this.accountDropdownRef}
@@ -173,7 +174,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
                     <User className="site-nav__user-icon" aria-hidden="true" />
                   </span>
                   <span className="site-nav__user-email">
-                    {this.context.admin.email}
+                    {this.props.admin?.email}
                   </span>
                   <span className="site-nav__user-caret" aria-hidden="true">
                     &#9662;
@@ -367,7 +368,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   changeLibrary(shortName: string) {
     if (shortName) {
       this.setState({ showLibraryDropdown: false, isMobileNavOpen: false });
-      this.context.router.push(
+      this.props.router?.push(
         "/admin/web/collection/" + shortName + "%2Fgroups"
       );
       this.forceUpdate();
@@ -692,21 +693,20 @@ type HeaderWithStoreProps = {
   logoOnly?: boolean;
 };
 
-export default class HeaderWithStore extends React.Component<
-  HeaderWithStoreProps
-> {
-  context: { editorStore: Store<RootState> };
-
-  static contextTypes = {
-    editorStore: PropTypes.object.isRequired,
-  };
-
-  render(): JSX.Element {
-    return (
-      <ConnectedHeader
-        store={this.context.editorStore}
-        logoOnly={this.props.logoOnly}
-      />
-    );
-  }
+// HOC PATTERN: HeaderWithStore is wrapped with withAppContext() to inject
+// `editorStore` and `admin` as props, replacing legacy contextTypes.
+// `library` is injected via useLibrary() to replace legacy childContextTypes.
+function HeaderWithStore(props: HeaderWithStoreProps & HeaderOwnProps) {
+  const library = useLibrary();
+  return (
+    <ConnectedHeader
+      store={props.editorStore}
+      logoOnly={props.logoOnly}
+      admin={props.admin}
+      library={library}
+      router={props.router}
+    />
+  );
 }
+
+export default withRoutingContext(withAppContext(HeaderWithStore));

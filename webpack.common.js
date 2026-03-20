@@ -80,8 +80,13 @@ module.exports = {
     ],
   },
   resolve: {
+    // Prevent webpack from following npm-link symlinks to the real path.
+    // Without this, webpack resolves node_modules from the fork's directory,
+    // picking up a second React instance and causing ENOENT / duplicate context errors.
+    symlinks: false,
     alias: {
       react: path.resolve("./node_modules/react"),
+      "react-dom": path.resolve("./node_modules/react-dom"),
     },
     extensions: [".ts", ".tsx", ".js", ".scss"],
     fallback: {

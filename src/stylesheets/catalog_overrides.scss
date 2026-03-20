@@ -12,6 +12,7 @@
   overflow-y: visible;
   height: auto;
   position: static;
+  padding-bottom: 0 !important;  // base sets padding-bottom: $padding (10px)
 }
 
 .palace .catalog .main .body {
@@ -72,7 +73,7 @@
 .palace .search {
   display: block;
   width: 100%;
-  padding: 12px 0 8px;
+  padding: 2px 0 2px;
   background-color: transparent;
 }
 
@@ -206,13 +207,13 @@
 //                                      > button.scroll-button.right
 
 // ── Card dimensions ───────────────────────────────────────────────────────────
-$card-w:    154px;
-$cover-h:   216px;
+$card-w:    180px;
+$cover-h:   190px;
 $card-gap:  14px;
 
 // ── Lane spacing ──────────────────────────────────────────────────────────────
 .palace .lane {
-  margin-bottom: 32px;
+  margin-bottom: 8px;
 }
 
 // ── Lane heading: title left, "See all →" pill right ─────────────────────────
@@ -268,7 +269,7 @@ $card-gap:  14px;
 // ── Lane books row: let height adapt to card content ─────────────────────────
 .palace .lane .lane-books {
   height: auto !important;
-  padding: 4px 0 16px !important;
+  padding: 2px 0 4px !important;
 }
 
 // ── Book card: static portrait layout ────────────────────────────────────────
@@ -596,6 +597,9 @@ $card-gap:  14px;
 .palace .collection-container {
   flex: 1;
   min-width: 0;
+  // Base styles set padding: 10px and padding-bottom: 50px — zero them out
+  // so the lane-level margins control all vertical rhythm.
+  padding: 0 !important;
 }
 
 // View-toggle — pill segmented control

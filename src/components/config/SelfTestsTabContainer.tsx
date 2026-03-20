@@ -9,12 +9,11 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 import {
   TabContainer,
   TabContainerProps,
-  TabContainerContext,
 } from "../shared/TabContainer";
 import SelfTestsCategory from "./SelfTestsCategory";
-import * as PropTypes from "prop-types";
 import { configServicesApi } from "../../features/configServices/configServicesSlice";
 import { rtkErrorToFetchError } from "../../features/diagnostics/diagnosticsSlice";
+import { withRoutingContext } from "../../utils/withRoutingContext";
 
 export interface SelfTestsTabContainerDispatchProps {
   fetchItems: () => Promise<any>;
@@ -35,17 +34,10 @@ export interface SelfTestsTabContainerProps
   extends SelfTestsTabContainerDispatchProps,
     SelfTestsTabContainerStateProps,
     SelfTestsTabContainerOwnProps {}
-export type SelfTestsTabContainerContext = TabContainerContext;
 
 export class SelfTestsTabContainer extends TabContainer<
   SelfTestsTabContainerProps
 > {
-  context: SelfTestsTabContainerContext;
-  static contextTypes: React.ValidationMap<SelfTestsTabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-  };
-
   DISPLAY_NAMES = {
     collections: "Collections",
     patronAuthServices: "Patron Authentication",
@@ -59,8 +51,8 @@ export class SelfTestsTabContainer extends TabContainer<
   async handleSelect(event) {
     const tab = event.currentTarget.dataset.tabkey;
     await this.props.goToTab(tab);
-    if (this.context.router) {
-      this.context.router.push("/admin/web/troubleshooting/self-tests/" + tab);
+    if (this.props.router) {
+      this.props.router.push("/admin/web/troubleshooting/self-tests/" + tab);
     }
   }
 
@@ -164,4 +156,4 @@ const ConnectedSelfTestsTabContainer = connect<
   mapDispatchToProps as any
 )(SelfTestsTabContainer as any);
 
-export default ConnectedSelfTestsTabContainer;
+export default withRoutingContext(ConnectedSelfTestsTabContainer as any);

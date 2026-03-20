@@ -2,7 +2,6 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";
-import * as PropTypes from "prop-types";
 import { RootState } from "../../store";
 import ActionCreator from "../../actions";
 import DataFetcher from "@thepalaceproject/web-opds-client/lib/DataFetcher";
@@ -38,6 +37,7 @@ import CustomListEditor from "./CustomListEditor";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../shared/ErrorMessage";
 import CustomListsSidebar from "./CustomListsSidebar";
+import { useAppAdmin } from "../../context/appContext";
 
 export interface CustomListsStateProps {
   customListEditorAutoUpdateStatus?: string;
@@ -122,6 +122,8 @@ export interface CustomListsOwnProps {
   identifier?: string;
   csrfToken: string;
   startingTitle?: string;
+  /** Injected by CustomListsWithAppAdmin wrapper; replaces legacy contextTypes. */
+  admin?: Admin;
 }
 
 export interface CustomListsProps
@@ -141,11 +143,8 @@ export class CustomLists extends React.Component<
   CustomListsProps,
   CustomListsState
 > {
-  context: { admin: Admin };
-
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
+  // HOC PATTERN: admin is injected as a prop by CustomListsWithAppAdmin,
+  // replacing the legacy contextTypes: { admin } API.
 
   constructor(props) {
     super(props);
@@ -181,9 +180,9 @@ export class CustomLists extends React.Component<
         lists={this.filteredSortedLists()}
         library={this.props.library}
         identifier={this.props.identifier}
-        isLibraryManager={this.context.admin.isLibraryManager(
-          this.props.library
-        )}
+          isLibraryManager={
+            this.props.admin?.isLibraryManager(this.props.library) || false
+          }
         deleteCustomList={this.deleteCustomList}
         changeSort={this.changeSort}
         sortOrder={this.state.sort}
@@ -613,4 +612,11 @@ const ConnectedCustomLists = connect<
   mapDispatchToProps
 )(CustomLists as any);
 
-export default ConnectedCustomLists;
+// HOC PATTERN: wrap connected class component to inject `admin` from AppContext
+// as a prop, replacing legacy contextTypes usage.
+function CustomListsWithAppAdmin(props: CustomListsOwnProps) {
+  const admin = useAppAdmin();
+  return <ConnectedCustomLists {...props} admin={admin} />;
+}
+
+export default CustomListsWithAppAdmin;

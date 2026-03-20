@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import EditableInput from "../shared/EditableInput";
 import { clearForm } from "../../utils/sharedFunctions";
 import { IndividualAdminsData, IndividualAdminData } from "../../interfaces";
@@ -17,14 +16,11 @@ export interface IndividualAdminEditFormProps {
   listDataKey: string;
   responseBody?: string;
   error?: FetchErrorData;
+  settingUp?: boolean;
+  admin?: Admin;
 }
 
 export interface IndividualAdminEditFormState {
-  admin: Admin;
-}
-
-export interface IndividualAdminEditFormContext {
-  settingUp: boolean;
   admin: Admin;
 }
 
@@ -33,12 +29,6 @@ export default class IndividualAdminEditForm extends React.Component<
   IndividualAdminEditFormProps,
   IndividualAdminEditFormState
 > {
-  context: IndividualAdminEditFormContext;
-
-  static contextTypes: React.ValidationMap<IndividualAdminEditFormContext> = {
-    settingUp: PropTypes.bool.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>,
-  };
   private emailRef = React.createRef<EditableInput>();
   private passwordRef = React.createRef<EditableInput>();
   private systemRef = React.createRef<EditableInput>();
@@ -92,10 +82,10 @@ export default class IndividualAdminEditForm extends React.Component<
             key="info"
             content={this.renderForm()}
             openByDefault={true}
-            collapsible={!this.context.settingUp}
+            collapsible={!this.props.settingUp}
             onEnter={this.submit}
           />,
-          !this.context.settingUp && (
+          !this.props.settingUp && (
             <Panel
               id="admin-roles"
               headerText="Admin Roles"
@@ -242,20 +232,20 @@ export default class IndividualAdminEditForm extends React.Component<
   }
 
   canChangePassword() {
-    if (this.context.settingUp || !this.props.item || !this.props.item.roles) {
+    if (this.props.settingUp || !this.props.item || !this.props.item.roles) {
       return true;
     }
     if (this.props.item.roles.length === 0) {
-      return this.context.admin.isLibraryManagerOfSomeLibrary();
+      return this.props.admin?.isLibraryManagerOfSomeLibrary() || false;
     }
     const targetAdmin = new Admin(this.props.item.roles || []);
     if (targetAdmin.isSystemAdmin()) {
-      return this.context.admin.isSystemAdmin();
+      return this.props.admin?.isSystemAdmin() || false;
     } else if (targetAdmin.isSitewideLibraryManager()) {
-      return this.context.admin.isSitewideLibraryManager();
+      return this.props.admin?.isSitewideLibraryManager() || false;
     } else {
       for (const role of targetAdmin.roles) {
-        if (this.context.admin.isLibraryManager(role.library)) {
+        if (this.props.admin?.isLibraryManager(role.library)) {
           return true;
         }
       }
@@ -272,22 +262,22 @@ export default class IndividualAdminEditForm extends React.Component<
       return true;
     }
     if (role === "system" || this.isSelected("system")) {
-      return !this.context.admin.isSystemAdmin();
+      return !(this.props.admin?.isSystemAdmin() || false);
     }
     if (role === "manager-all" || role === "librarian-all") {
-      return !this.context.admin.isSitewideLibraryManager();
+      return !(this.props.admin?.isSitewideLibraryManager() || false);
     }
     if (role === "manager") {
       if (this.isSelected("manager-all")) {
-        return !this.context.admin.isSitewideLibraryManager();
+        return !(this.props.admin?.isSitewideLibraryManager() || false);
       }
-      return !this.context.admin.isLibraryManager(library);
+      return !(this.props.admin?.isLibraryManager(library) || false);
     }
     if (role === "librarian") {
       if (this.isSelected("librarian-all")) {
-        return !this.context.admin.isSitewideLibraryManager();
+        return !(this.props.admin?.isSitewideLibraryManager() || false);
       }
-      return !this.context.admin.isLibraryManager(library);
+      return !(this.props.admin?.isLibraryManager(library) || false);
     }
   }
 
@@ -423,7 +413,7 @@ export default class IndividualAdminEditForm extends React.Component<
 
   handleData(data: FormData) {
     let roles = this.state.admin.roles;
-    if (this.context && this.context.settingUp) {
+    if (this.props.settingUp) {
       // When setting up the only thing you can do is create a system admin.
       roles = [{ role: "system" }];
     }

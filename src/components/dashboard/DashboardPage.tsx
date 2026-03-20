@@ -1,11 +1,14 @@
+// HOC PATTERN: This component is wrapped with withAppContext() at export
+// to inject [editorStore] as props, replacing legacy contextTypes.
+// The library fn is provided via LibraryContext in step 6.
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
 import Stats from "./Stats";
 import title from "../../utils/title";
 import CirculationEventsDownload from "./CirculationEventsDownload";
+import { withAppContext } from "../../utils/withAppContext";
+import { LibraryContext } from "../../context/LibraryContext";
 
 export interface DashboardPageProps extends React.Props<DashboardPageProps> {
   params: {
@@ -13,39 +16,21 @@ export interface DashboardPageProps extends React.Props<DashboardPageProps> {
   };
 }
 
-export interface DashboardPageContext {
-  editorStore: Store<RootState>;
-}
-
 /** Page that shows high-level statistics about patrons and collections
     and a list of the most recent circulation events. */
-export default class DashboardPage extends React.Component<DashboardPageProps> {
-  context: DashboardPageContext;
-
-  static contextTypes: React.ValidationMap<DashboardPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-  };
-
-  static childContextTypes: React.ValidationMap<object> = {
-    library: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      library: () => this.props.params.library,
-    };
-  }
-
+export class DashboardPage extends React.Component<DashboardPageProps> {
   render(): JSX.Element {
     const { library } = this.props.params;
     return (
-      <div className="dashboard">
-        <Header />
-        <main className="body">
-          <Stats library={library} />
-          <CirculationEventsDownload library={library} />
-        </main>
-      </div>
+      <LibraryContext.Provider value={() => library}>
+        <div className="dashboard">
+          <Header />
+          <main className="body">
+            <Stats library={library} />
+            <CirculationEventsDownload library={library} />
+          </main>
+        </div>
+      </LibraryContext.Provider>
     );
   }
 
@@ -53,3 +38,5 @@ export default class DashboardPage extends React.Component<DashboardPageProps> {
     document.title = title("Dashboard");
   }
 }
+
+export default withAppContext(DashboardPage);

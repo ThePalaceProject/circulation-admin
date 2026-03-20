@@ -1,10 +1,12 @@
+// HOC PATTERN: This component is wrapped with withAppContext() at export
+// to inject [editorStore, csrfToken] as props, replacing legacy contextTypes.
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
 import ConfigTabContainer from "./ConfigTabContainer";
 import { RootState } from "../../store";
 import title from "../../utils/title";
+import { withAppContext } from "../../utils/withAppContext";
 
 export interface ConfigPageProps extends React.Props<ConfigPageProps> {
   params: {
@@ -12,23 +14,13 @@ export interface ConfigPageProps extends React.Props<ConfigPageProps> {
     editOrCreate: string;
     identifier: string;
   };
-}
-
-export interface ConfigPageContext {
-  editorStore: Store<RootState>;
-  csrfToken: string;
+  editorStore?: Store<RootState>;
+  csrfToken?: string;
 }
 
 /** System configuration page. Extracts parameters from its context
     and passes them to `ConfigTabContainer` as props. */
-export default class ConfigPage extends React.Component<ConfigPageProps> {
-  context: ConfigPageContext;
-
-  static contextTypes: React.ValidationMap<ConfigPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-    csrfToken: PropTypes.string.isRequired,
-  };
-
+export class ConfigPage extends React.Component<ConfigPageProps> {
   render(): JSX.Element {
     return (
       <div className="config">
@@ -38,8 +30,8 @@ export default class ConfigPage extends React.Component<ConfigPageProps> {
             tab={this.props.params.tab}
             editOrCreate={this.props.params.editOrCreate}
             identifier={this.props.params.identifier}
-            store={this.context.editorStore}
-            csrfToken={this.context.csrfToken}
+            store={this.props.editorStore}
+            csrfToken={this.props.csrfToken}
             className="vertical-tabs"
           />
         </main>
@@ -51,3 +43,5 @@ export default class ConfigPage extends React.Component<ConfigPageProps> {
     document.title = title("Configuration");
   }
 }
+
+export default withAppContext(ConfigPage);

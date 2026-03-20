@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { Provider, useSelector, useDispatch } from "react-redux";
 import { useGetComplaintsQuery } from "../../features/bookMetadata/bookMetadataSlice";
 import BookDetailsEditor from "./BookDetailsEditor";
 import Classifications from "./Classifications";
@@ -8,6 +8,7 @@ import CustomListsForBook from "../lists/CustomListsForBook";
 import { TabContainer, TabContainerProps } from "../shared/TabContainer";
 import { RootState } from "../../store";
 import { BookData } from "../../interfaces";
+import { withRoutingContext } from "../../utils/withRoutingContext";
 
 interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;
@@ -103,9 +104,9 @@ export class BookDetailsTabContainer extends TabContainer<
 
   handleSelect(event) {
     const tab = event.target.dataset.tabkey;
-    if (this.context.router) {
-      this.context.router.push(
-        this.context.pathFor(this.props.collectionUrl, this.props.bookUrl, tab)
+    if (this.props.router && this.props.pathFor) {
+      this.props.router.push(
+        this.props.pathFor(this.props.collectionUrl, this.props.bookUrl, tab)
       );
     }
   }
@@ -126,11 +127,11 @@ export class BookDetailsTabContainer extends TabContainer<
   }
 }
 
-function BookDetailsTabContainerWithData(
+function BookDetailsTabContainerData(
   ownProps: BookDetailsTabContainerOwnProps
 ) {
   const dispatch = useDispatch();
-  const bookData = useSelector((state: RootState) => state.bookEditor.data);
+  const bookData = useSelector((state: RootState) => state.bookEditor?.data);
   const complaintsUrl = ownProps.bookUrl
     ? ownProps.bookUrl.replace("works", "admin/works") + "/complaints"
     : undefined;
@@ -154,4 +155,19 @@ function BookDetailsTabContainerWithData(
   );
 }
 
-export default BookDetailsTabContainerWithData;
+function BookDetailsTabContainerWithData(
+  ownProps: BookDetailsTabContainerOwnProps
+) {
+  if (!ownProps.store) {
+    return <BookDetailsTabContainerData {...ownProps} />;
+  }
+
+  // Force this subtree to use the admin editor store, not OPDS's internal store.
+  return (
+    <Provider store={ownProps.store}>
+      <BookDetailsTabContainerData {...ownProps} />
+    </Provider>
+  );
+}
+
+export default withRoutingContext(BookDetailsTabContainerWithData as any);

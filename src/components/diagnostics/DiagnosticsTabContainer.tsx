@@ -9,6 +9,7 @@ import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/L
 import ErrorMessage from "../shared/ErrorMessage";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { TabContainer, TabContainerProps } from "../shared/TabContainer";
+import { withRoutingContext } from "../../utils/withRoutingContext";
 
 export interface DiagnosticsTabContainerDispatchProps {
   fetchDiagnostics: () => void;
@@ -55,8 +56,8 @@ export class DiagnosticsTabContainer extends TabContainer<
   handleSelect(event) {
     const tab = event.currentTarget.dataset.tabkey;
     this.props.goToTab(tab);
-    if (this.context.router) {
-      this.context.router.push("/admin/web/troubleshooting/diagnostics/" + tab);
+    if (this.props.router) {
+      this.props.router.push("/admin/web/troubleshooting/diagnostics/" + tab);
     }
   }
 
@@ -109,4 +110,4 @@ function DiagnosticsTabContainerWithData(
   );
 }
 
-export default DiagnosticsTabContainerWithData;
+export default withRoutingContext(DiagnosticsTabContainerWithData as any);

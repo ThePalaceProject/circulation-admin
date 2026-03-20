@@ -1,5 +1,4 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import Admin from "../../../src/models/Admin";
 import {
@@ -102,7 +101,7 @@ class ThingWithSelfTests extends ThingEditableConfigList {
   };
 }
 
-// --------------- Context provider --------------- //
+// --------------- Admin fixtures --------------- //
 
 const systemAdmin = new Admin([
   { role: "system" as AdminRole, library: "nypl" },
@@ -113,21 +112,6 @@ const libraryManager = new Admin([
 const librarian = new Admin([
   { role: "librarian" as AdminRole, library: "nypl" },
 ]);
-
-class AdminContextProvider extends React.Component<{
-  children: React.ReactNode;
-  admin: Admin;
-}> {
-  static childContextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
-  getChildContext() {
-    return { admin: this.props.admin };
-  }
-  render() {
-    return <>{this.props.children}</>;
-  }
-}
 
 // --------------- Test data --------------- //
 
@@ -154,12 +138,9 @@ function renderList({
     deleteItem: jest.fn().mockResolvedValue(undefined),
     csrfToken: "token",
     isFetching: false,
+    admin,
   };
-  return render(
-    <AdminContextProvider admin={admin}>
-      <ComponentClass {...defaultProps} {...props} />
-    </AdminContextProvider>
-  );
+  return render(<ComponentClass {...defaultProps} {...props} />);
 }
 
 // --------------- Tests --------------- //
@@ -456,48 +437,45 @@ describe("EditableConfigList", () => {
 
     it("system admin (level 3) can delete", () => {
       const { container } = render(
-        <AdminContextProvider admin={systemAdmin}>
-          <LevelTestList
-            data={thingsData}
-            fetchData={jest.fn()}
-            editItem={jest.fn().mockResolvedValue(undefined)}
-            deleteItem={jest.fn().mockResolvedValue(undefined)}
-            csrfToken="token"
-            isFetching={false}
-          />
-        </AdminContextProvider>
+        <LevelTestList
+          data={thingsData}
+          fetchData={jest.fn()}
+          editItem={jest.fn().mockResolvedValue(undefined)}
+          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          csrfToken="token"
+          isFetching={false}
+          admin={systemAdmin}
+        />
       );
       expect(container.querySelector(".delete-item")).not.toBeNull();
     });
 
     it("library manager (level 2) cannot delete", () => {
       const { container } = render(
-        <AdminContextProvider admin={libraryManager}>
-          <LevelTestList
-            data={thingsData}
-            fetchData={jest.fn()}
-            editItem={jest.fn().mockResolvedValue(undefined)}
-            deleteItem={jest.fn().mockResolvedValue(undefined)}
-            csrfToken="token"
-            isFetching={false}
-          />
-        </AdminContextProvider>
+        <LevelTestList
+          data={thingsData}
+          fetchData={jest.fn()}
+          editItem={jest.fn().mockResolvedValue(undefined)}
+          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          csrfToken="token"
+          isFetching={false}
+          admin={libraryManager}
+        />
       );
       expect(container.querySelector(".delete-item")).toBeNull();
     });
 
     it("librarian (level 1) cannot delete", () => {
       const { container } = render(
-        <AdminContextProvider admin={librarian}>
-          <LevelTestList
-            data={thingsData}
-            fetchData={jest.fn()}
-            editItem={jest.fn().mockResolvedValue(undefined)}
-            deleteItem={jest.fn().mockResolvedValue(undefined)}
-            csrfToken="token"
-            isFetching={false}
-          />
-        </AdminContextProvider>
+        <LevelTestList
+          data={thingsData}
+          fetchData={jest.fn()}
+          editItem={jest.fn().mockResolvedValue(undefined)}
+          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          csrfToken="token"
+          isFetching={false}
+          admin={librarian}
+        />
       );
       expect(container.querySelector(".delete-item")).toBeNull();
     });

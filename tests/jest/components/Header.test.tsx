@@ -1,5 +1,4 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Header } from "../../../src/components/layout/Header";
@@ -26,30 +25,6 @@ const librarian = new Admin([
 ]);
 const systemAdmin = new Admin([{ role: "system" as AdminRole }]);
 
-class HeaderContextProvider extends React.Component<{
-  children: React.ReactNode;
-  admin: Admin;
-  library?: () => string;
-}> {
-  static childContextTypes = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired,
-    library: PropTypes.func,
-  };
-  getChildContext() {
-    return {
-      router,
-      pathFor: jest.fn().mockReturnValue("url"),
-      admin: this.props.admin,
-      library: this.props.library,
-    };
-  }
-  render() {
-    return <>{this.props.children}</>;
-  }
-}
-
 function renderHeader(
   admin: Admin,
   library?: () => string,
@@ -57,9 +32,12 @@ function renderHeader(
 ) {
   return render(
     <MemoryRouter>
-      <HeaderContextProvider admin={admin} library={library}>
-        <Header {...props} />
-      </HeaderContextProvider>
+      <Header
+        {...props}
+        admin={admin}
+        library={library}
+        router={router as any}
+      />
     </MemoryRouter>
   );
 }

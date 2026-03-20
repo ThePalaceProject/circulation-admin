@@ -1,11 +1,11 @@
 import * as React from "react";
 import {
   GenericEditableConfigList,
+  EditFormProps,
   EditableConfigListStateProps,
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import * as PropTypes from "prop-types";
 import {
   DiscoveryServicesData,
   DiscoveryServiceData,
@@ -41,7 +41,9 @@ export interface DiscoveryServicesProps
 
 export class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<
   DiscoveryServicesData
-> {}
+> {
+  declare props: EditFormProps<DiscoveryServicesData, DiscoveryServiceData>;
+}
 
 /** Right panel for discovery services on the system configuration page.
     Shows a list of current discovery services and allows creating a new
@@ -58,27 +60,24 @@ export class DiscoveryServices extends GenericEditableConfigList<
   identifierKey = "id";
   labelKey = "name";
 
-  static childContextTypes: React.ValidationMap<any> = {
-    registerLibrary: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      registerLibrary: (library: LibraryData, registration_stage: string) => {
-        if (this.itemToEdit()) {
-          const data = new (window as any).FormData();
-          data.append("library_short_name", library.short_name);
-          data.append("registration_stage", registration_stage);
-          data.append("integration_id", this.itemToEdit().id);
-          this.props.registerLibrary(data).then(() => {
-            if (this.props.fetchLibraryRegistrations) {
-              this.props.fetchLibraryRegistrations();
-            }
-          });
+  // HOC PATTERN: edit-form callback is passed as a prop via EditableConfigList,
+  // replacing legacy childContextTypes.
+  registerLibraryForEditForm = (
+    library: LibraryData,
+    registration_stage: string
+  ) => {
+    if (this.itemToEdit()) {
+      const data = new (window as any).FormData();
+      data.append("library_short_name", library.short_name);
+      data.append("registration_stage", registration_stage);
+      data.append("integration_id", this.itemToEdit().id);
+      this.props.registerLibrary(data).then(() => {
+        if (this.props.fetchLibraryRegistrations) {
+          this.props.fetchLibraryRegistrations();
         }
-      },
-    };
-  }
+      });
+    }
+  };
 
   UNSAFE_componentWillMount() {
     super.UNSAFE_componentWillMount();

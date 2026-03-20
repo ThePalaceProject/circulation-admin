@@ -1,11 +1,11 @@
 import * as React from "react";
 import {
   GenericEditableConfigList,
+  EditFormProps,
   EditableConfigListStateProps,
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import * as PropTypes from "prop-types";
 import {
   CollectionsData,
   CollectionData,
@@ -48,17 +48,7 @@ export interface CollectionsProps
 export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
   CollectionsData
 > {
-  context: ServiceWithRegistrationsEditForm<CollectionsData>["context"] & {
-    importCollection: (
-      collectionId: string | number,
-      force: boolean
-    ) => Promise<void>;
-  };
-
-  static contextTypes = {
-    ...ServiceWithRegistrationsEditForm.contextTypes,
-    importCollection: PropTypes.func,
-  };
+  declare props: EditFormProps<CollectionsData, CollectionData>;
 
   /**
    * Override to display a confirmation message before removing a library
@@ -84,7 +74,7 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
         key="import"
         collection={this.props.item as CollectionData}
         protocols={this.props.data?.protocols || []}
-        importCollection={this.context.importCollection}
+        importCollection={this.props.importCollection}
         disabled={this.props.disabled}
       />,
     ];
@@ -114,28 +104,25 @@ export class Collections extends GenericEditableConfigList<
   labelKey = "name";
   links = this.renderLinks();
 
-  static childContextTypes: React.ValidationMap<any> = {
-    registerLibrary: PropTypes.func,
-    importCollection: PropTypes.func,
+  // HOC PATTERN: edit-form callbacks are passed as props via EditableConfigList
+  // (registerLibrary/importCollection), replacing legacy childContextTypes.
+  registerLibraryForEditForm = (library: LibraryData) => {
+    if (this.itemToEdit()) {
+      const data = new (window as any).FormData();
+      data.append("library_short_name", library.short_name);
+      data.append("collection_id", this.itemToEdit().id);
+      this.props.registerLibrary(data).then(() => {
+        if (this.props.fetchLibraryRegistrations) {
+          this.props.fetchLibraryRegistrations();
+        }
+      });
+    }
   };
 
-  getChildContext() {
-    return {
-      registerLibrary: (library: LibraryData) => {
-        if (this.itemToEdit()) {
-          const data = new (window as any).FormData();
-          data.append("library_short_name", library.short_name);
-          data.append("collection_id", this.itemToEdit().id);
-          this.props.registerLibrary(data).then(() => {
-            if (this.props.fetchLibraryRegistrations) {
-              this.props.fetchLibraryRegistrations();
-            }
-          });
-        }
-      },
-      importCollection: this.props.importCollection,
-    };
-  }
+  importCollectionForEditForm = (
+    collectionId: string | number,
+    force: boolean
+  ) => this.props.importCollection(collectionId, force);
 
   UNSAFE_componentWillMount() {
     super.UNSAFE_componentWillMount();

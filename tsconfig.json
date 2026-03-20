@@ -10,6 +10,11 @@
     // tsconfig.jest.json respectively, to prevent duplicate global declarations
     // between the two frameworks (TS2403: describe, it, test, beforeEach, etc.).
     "skipLibCheck": false,
+    // When resolving imports that come from npm-linked packages (symlinks),
+    // use the symlink's location for further node_modules resolution rather than
+    // following the link to the real path. This ensures all packages see a single
+    // shared copy of react / @types/react from circulation-admin's node_modules.
+    "preserveSymlinks": true,
     "esModuleInterop": true,
     "types": ["node"],
     "jsx": "react"

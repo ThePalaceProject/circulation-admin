@@ -1,10 +1,13 @@
+// HOC PATTERN: This component is wrapped with withAppContext() at export
+// to inject [editorStore] as props, replacing legacy contextTypes.
+// The library fn is provided via LibraryContext in step 6.
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import * as PropTypes from "prop-types";
 import Header from "../layout/Header";
 import title from "../../utils/title";
 import QuicksightDashboard from "./QuicksightDashboard";
+import { withAppContext } from "../../utils/withAppContext";
+import { LibraryContext } from "../../context/LibraryContext";
 
 export interface QuicksightDashboardPageProps
   extends React.Props<QuicksightDashboardPageProps> {
@@ -13,39 +16,21 @@ export interface QuicksightDashboardPageProps
   };
 }
 
-export interface QuicksightDashboardPageContext {
-  editorStore: Store<RootState>;
-}
-
 /** Page holds quicksight dashboards. */
-export default class QuicksightDashboardPage extends React.Component<
+export class QuicksightDashboardPage extends React.Component<
   QuicksightDashboardPageProps
 > {
-  context: QuicksightDashboardPageContext;
-
-  static contextTypes: React.ValidationMap<QuicksightDashboardPageContext> = {
-    editorStore: PropTypes.object.isRequired as React.Validator<Store>,
-  };
-
-  static childContextTypes: React.ValidationMap<object> = {
-    library: PropTypes.func,
-  };
-
-  getChildContext() {
-    return {
-      library: () => this.props.params.library,
-    };
-  }
-
   render(): JSX.Element {
     const { library } = this.props.params;
     return (
-      <div className="quicksight-dashboard">
-        <Header logoOnly={true} />
-        <main className="body">
-          <QuicksightDashboard dashboardId="library" />
-        </main>
-      </div>
+      <LibraryContext.Provider value={() => library}>
+        <div className="quicksight-dashboard">
+          <Header logoOnly={true} />
+          <main className="body">
+            <QuicksightDashboard dashboardId="library" />
+          </main>
+        </div>
+      </LibraryContext.Provider>
     );
   }
 
@@ -53,3 +38,5 @@ export default class QuicksightDashboardPage extends React.Component<
     document.title = title("Quicksight Dashboard");
   }
 }
+
+export default withAppContext(QuicksightDashboardPage);

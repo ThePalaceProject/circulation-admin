@@ -1,19 +1,17 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import * as PropTypes from "prop-types";
-import { Navigate, PathFor } from "../../interfaces";
+import { PathFor } from "../../interfaces";
 import { RootState } from "../../store";
+import { RouterCompat } from "../../utils/withRoutingContext";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {
   store?: Store<RootState>;
   csrfToken?: string;
   tab: string;
   className?: string;
-}
-
-export interface TabContainerContext {
-  pathFor: PathFor;
-  router: any;
+  // HOC PATTERN: injected by withRoutingContext(), replacing legacy contextTypes.
+  pathFor?: PathFor;
+  router?: RouterCompat;
 }
 
 /** Renders a list of navigation tabs and the content of the current tab.
@@ -22,8 +20,6 @@ export interface TabContainerContext {
 export abstract class TabContainer<
   T extends TabContainerProps
 > extends React.Component<T, any> {
-  context: TabContainerContext;
-
   constructor(props) {
     super(props);
     this.handleSelect = this.handleSelect.bind(this);
@@ -34,11 +30,6 @@ export abstract class TabContainer<
     this.tabDisplayName = this.tabDisplayName.bind(this);
     this.renderTab = this.renderTab.bind(this);
   }
-
-  static contextTypes: React.ValidationMap<TabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-  };
 
   render(): JSX.Element {
     // If noContainer is set, render only the active tab content (no wrapper/sidebar)

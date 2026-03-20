@@ -1,33 +1,12 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import { render, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
 import buildStore from "../../../src/store";
-import ConfigTabContainer from "../../../src/components/config/ConfigTabContainer";
+import { ConfigTabContainer } from "../../../src/components/config/ConfigTabContainer";
 import Admin from "../../../src/models/Admin";
-import { AdminRole } from "../../../src/interfaces";
-
-// ConfigTabContainer extends TabContainer which needs router + pathFor + admin context.
-class ContextProvider extends React.Component<{
-  children: React.ReactNode;
-  admin: Admin;
-}> {
-  static childContextTypes = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired,
-  };
-  getChildContext() {
-    return {
-      router: { push: jest.fn(), createHref: () => "test href" },
-      pathFor: (colUrl: string, bookUrl: string) => `${colUrl}::${bookUrl}`,
-      admin: this.props.admin,
-    };
-  }
-  render() {
-    return <>{this.props.children}</>;
-  }
-}
+import { AdminRole, PathFor } from "../../../src/interfaces";
+import AppContextProvider from "../../../src/context/appContext";
+import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 
 const systemAdmin = new Admin([{ role: "system" as AdminRole }]);
 const libraryManagerA = new Admin([
@@ -37,18 +16,33 @@ const sitewideLibrarian = new Admin([{ role: "librarian-all" as AdminRole }]);
 
 function renderConfig(admin: Admin, props = {}) {
   const store = buildStore();
+  const router = { push: jest.fn(), getCurrentLocation: () => ({ pathname: "" }) };
+  const pathFor: PathFor = (colUrl: string, bookUrl: string) =>
+    `${colUrl}::${bookUrl}`;
   return render(
     <Provider store={store}>
-      <ContextProvider admin={admin}>
+      <AppContextProvider
+        value={{
+          admin,
+          csrfToken: "token",
+          settingUp: false,
+          editorStore: store,
+          featureFlags: defaultFeatureFlags,
+          quicksightPagePath: "",
+        }}
+      >
         <ConfigTabContainer
           tab={null}
           csrfToken="token"
           store={store}
           editOrCreate="edit"
           identifier="identifier"
+          admin={admin}
+          router={router as any}
+          pathFor={pathFor}
           {...props}
         />
-      </ContextProvider>
+      </AppContextProvider>
     </Provider>
   );
 }
@@ -70,39 +64,30 @@ describe("ConfigTabContainer", () => {
 
     it("uses router to navigate when tab is clicked", () => {
       const pushFn = jest.fn();
-      // Create a custom context with our push mock
-      class RouterContextWithPush extends React.Component<{
-        children: React.ReactNode;
-      }> {
-        static childContextTypes = {
-          router: PropTypes.object.isRequired,
-          pathFor: PropTypes.func.isRequired,
-          admin: PropTypes.object.isRequired,
-        };
-        getChildContext() {
-          return {
-            router: { push: pushFn, createHref: () => "test href" },
-            pathFor: jest.fn().mockReturnValue("url"),
-            admin: systemAdmin,
-          };
-        }
-        render() {
-          return <>{this.props.children}</>;
-        }
-      }
-
       const store = buildStore();
       const { container } = render(
         <Provider store={store}>
-          <RouterContextWithPush>
+          <AppContextProvider
+            value={{
+              admin: systemAdmin,
+              csrfToken: "token",
+              settingUp: false,
+              editorStore: store,
+              featureFlags: defaultFeatureFlags,
+              quicksightPagePath: "",
+            }}
+          >
             <ConfigTabContainer
               tab={null}
               csrfToken="token"
               store={store}
               editOrCreate="edit"
               identifier="identifier"
+              admin={systemAdmin}
+              router={{ push: pushFn, getCurrentLocation: () => ({ pathname: "" }) } as any}
+              pathFor={jest.fn().mockReturnValue("url")}
             />
-          </RouterContextWithPush>
+          </AppContextProvider>
         </Provider>
       );
 

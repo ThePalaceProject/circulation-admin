@@ -1,10 +1,11 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import { render } from "@testing-library/react";
 import ContextProvider from "../../../src/components/layout/ContextProvider";
 import Admin from "../../../src/models/Admin";
 import { defaultFeatureFlags } from "../../../src/utils/featureFlags";
 import { ConfigurationSettings } from "../../../src/interfaces";
+import { useAppContext } from "../../../src/context/appContext";
+import { usePathFor } from "@thepalaceproject/web-opds-client/lib/components/context/PathForContext";
 
 const baseConfig: Partial<ConfigurationSettings> = {
   csrfToken: "token",
@@ -50,18 +51,12 @@ describe("ContextProvider rendering", () => {
       }
     }
 
-    class Child extends React.Component<object> {
-      static contextTypes = {
-        pathFor: PropTypes.func.isRequired,
-      };
-      render() {
-        const hasContext = this.context && this.context.pathFor === pathForStub;
-        return (
-          <div>
-            {hasContext ? "has access to pathFor context" : "no context"}
-          </div>
-        );
-      }
+    function Child() {
+      const pathFor = usePathFor();
+      const hasContext = pathFor === pathForStub;
+      return (
+        <div>{hasContext ? "has access to pathFor context" : "no context"}</div>
+      );
     }
 
     const { container } = render(
@@ -81,41 +76,25 @@ describe("ContextProvider rendering", () => {
     const state = instance.store.getState();
     expect(state.editor.customListEditor.isAutoUpdateEnabled).toBe(true);
   });
-});
 
-// ── child context ─────────────────────────────────────────────────────────────
+  it("provides app context values", () => {
+    function Child() {
+      const appContext = useAppContext();
+      return (
+        <div>
+          {String(appContext.admin instanceof Admin)}:{appContext.csrfToken}:
+          {String(appContext.settingUp)}
+        </div>
+      );
+    }
 
-describe("ContextProvider getChildContext", () => {
-  it("has editorStore with editor and catalog state", () => {
-    const instance = getContextProvider();
-    const ctx = instance.getChildContext();
-    expect(ctx.editorStore.getState().editor).toBeTruthy();
-    expect(ctx.editorStore.getState().catalog).toBeTruthy();
-  });
+    const { container } = render(
+      <ContextProvider config={baseConfig}>
+        <Child />
+      </ContextProvider>
+    );
 
-  it("returns csrfToken", () => {
-    const instance = getContextProvider();
-    const ctx = instance.getChildContext();
-    expect(ctx.csrfToken).toBe("token");
-  });
-
-  it("settingUp is falsy by default", () => {
-    const instance = getContextProvider();
-    const ctx = instance.getChildContext();
-    expect(ctx.settingUp).toBeFalsy();
-  });
-
-  it("admin is an Admin instance that is system admin", () => {
-    const instance = getContextProvider();
-    const ctx = instance.getChildContext();
-    expect(ctx.admin instanceof Admin).toBe(true);
-    expect(ctx.admin.isSystemAdmin()).toBe(true);
-  });
-
-  it("admin has the configured email", () => {
-    const instance = getContextProvider();
-    const ctx = instance.getChildContext();
-    expect(ctx.admin.email).toBe("email");
+    expect(container.textContent).toBe("true:token:false");
   });
 });
 

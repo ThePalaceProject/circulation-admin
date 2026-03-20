@@ -5,7 +5,6 @@ import {
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
 } from "./EditableConfigList";
-import * as PropTypes from "prop-types";
 import { LibrariesData, LibraryData, LanguagesData } from "../../interfaces";
 import { useGetLanguagesQuery } from "../../features/referenceData/referenceDataSlice";
 import {
@@ -14,8 +13,8 @@ import {
   useDeleteLibraryMutation,
   rtkErrorToFetchError,
 } from "../../features/configServices/configServicesSlice";
-import Admin from "../../models/Admin";
 import LibraryEditForm from "./LibraryEditForm";
+import { useAppAdmin } from "../../context/appContext";
 
 /** Right panel for library configuration on the system configuration page.
     Shows a list of current libraries and allows creating a new library or
@@ -48,10 +47,8 @@ export class Libraries extends GenericEditableConfigList<
   identifierKey = "uuid";
   labelKey = "name";
 
-  context: { admin: Admin };
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
+  // HOC PATTERN: admin is injected as a prop via useAppAdmin() in the WithData
+  // wrapper function below, replacing legacy contextTypes: { admin }.
 
   UNSAFE_componentWillMount() {
     super.UNSAFE_componentWillMount();
@@ -63,16 +60,18 @@ export class Libraries extends GenericEditableConfigList<
   }
 
   canCreate() {
-    return this.context.admin.isSystemAdmin();
+    return this.props.admin.isSystemAdmin();
   }
 
   canDelete() {
-    return this.context.admin.isSystemAdmin();
+    return this.props.admin.isSystemAdmin();
   }
 }
 
 function LibrariesWithData(ownProps: EditableConfigListOwnProps) {
   const { csrfToken } = ownProps;
+  // HOC PATTERN: admin is injected from AppContext to replace legacy contextTypes: { admin }.
+  const admin = useAppAdmin();
   const librariesResult = useGetLibrariesQuery();
   const languagesResult = useGetLanguagesQuery();
   const [editLibrary, editResult] = useEditLibraryMutation();
@@ -80,6 +79,7 @@ function LibrariesWithData(ownProps: EditableConfigListOwnProps) {
   return (
     <Libraries
       {...ownProps}
+      admin={admin}
       data={librariesResult.data ?? null}
       fetchError={
         librariesResult.error

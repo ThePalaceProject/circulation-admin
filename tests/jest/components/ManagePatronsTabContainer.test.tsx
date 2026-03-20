@@ -1,35 +1,10 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import buildStore from "../../../src/store";
 import Admin from "../../../src/models/Admin";
-import ManagePatronsTabContainer from "../../../src/components/patrons/ManagePatronsTabContainer";
-
-// ManagePatronsTabContainer reads `router`, `pathFor`, and `admin` via
-// React legacy contextTypes — we provide them through a parent class component.
-function createLegacyWrapper(admin: Admin, pushMock: jest.Mock) {
-  const router = { push: pushMock };
-
-  class LegacyCtxProvider extends React.Component<{
-    children?: React.ReactNode;
-  }> {
-    getChildContext() {
-      return { router, pathFor: jest.fn(), admin };
-    }
-    static childContextTypes = {
-      router: PropTypes.object,
-      pathFor: PropTypes.func,
-      admin: PropTypes.object,
-    };
-    render() {
-      return <>{this.props.children}</>;
-    }
-  }
-
-  return { LegacyCtxProvider, router };
-}
+import { ManagePatronsTabContainer } from "../../../src/components/patrons/ManagePatronsTabContainer";
 
 function renderContainer(
   admin: Admin,
@@ -39,18 +14,18 @@ function renderContainer(
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  const { LegacyCtxProvider } = createLegacyWrapper(admin, pushMock);
 
   render(
     <QueryClientProvider client={queryClient}>
-      <LegacyCtxProvider>
-        <ManagePatronsTabContainer
-          tab={tab}
-          csrfToken="token"
-          store={store}
-          library={library}
-        />
-      </LegacyCtxProvider>
+      <ManagePatronsTabContainer
+        tab={tab}
+        csrfToken="token"
+        store={store}
+        library={library}
+        admin={admin}
+        router={{ push: pushMock, getCurrentLocation: () => ({ pathname: "" }) } as any}
+        pathFor={jest.fn() as any}
+      />
     </QueryClientProvider>
   );
 

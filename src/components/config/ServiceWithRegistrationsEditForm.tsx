@@ -1,8 +1,8 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import ServiceEditForm from "./ServiceEditForm";
 import { ServicesWithRegistrationsData } from "../../interfaces";
 import LibraryRegistration from "./LibraryRegistration";
+import { EditFormProps } from "./EditableConfigList";
 
 /** Form for editing discovery services on the discovery service configuration tab.
     Includes the same form as other services but an addition section with a list
@@ -10,18 +10,14 @@ import LibraryRegistration from "./LibraryRegistration";
 export default class ServiceWithRegistrationsEditForm<
   T extends ServicesWithRegistrationsData
 > extends ServiceEditForm<T> {
-  context: { registerLibrary: (library, registration_stage) => void };
-
-  static contextTypes = {
-    registerLibrary: PropTypes.func,
-  };
+  declare props: EditFormProps<T, any>;
 
   render(): JSX.Element {
     return (
       <div>
         {super.render()}
         <LibraryRegistration
-          registerLibrary={this.context.registerLibrary}
+          registerLibrary={this.props.registerLibrary}
           protocol={this.state.protocol}
           item={this.props.item}
           data={this.props.data}

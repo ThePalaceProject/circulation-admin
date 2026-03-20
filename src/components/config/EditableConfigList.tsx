@@ -11,7 +11,6 @@ import PencilIcon from "../icons/PencilIcon";
 import TrashIcon from "../icons/TrashIcon";
 import VisibleIcon from "../icons/VisibleIcon";
 import Admin from "../../models/Admin";
-import * as PropTypes from "prop-types";
 
 export interface EditableConfigListStateProps<T> {
   data?: T;
@@ -34,6 +33,9 @@ export interface EditableConfigListOwnProps {
   editOrCreate?: string;
   identifier?: string;
   settingUp?: boolean;
+  /** Injected via useAppContext() in the function wrapper (WithData component).
+   *  Replaces legacy contextTypes: { admin } — Phase 4 legacy context removal. */
+  admin?: Admin;
 }
 
 export interface EditableConfigListProps<T>
@@ -54,6 +56,13 @@ export interface EditFormProps<T, U> {
   responseBody?: string;
   error?: FetchErrorData;
   adminLevel?: number;
+  settingUp?: boolean;
+  admin?: Admin;
+  registerLibrary?: (library: any, registrationStage?: string) => void;
+  importCollection?: (
+    collectionId: string | number,
+    force: boolean
+  ) => Promise<void>;
 }
 
 export interface AdditionalContentProps<T, U> {
@@ -81,14 +90,9 @@ export abstract class GenericEditableConfigList<
   U,
   V extends EditableConfigListProps<T>
 > extends React.Component<V> {
-  context: { admin: Admin };
-  static contextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
-  abstract EditForm: new (props: EditFormProps<T, U>) => React.Component<
-    EditFormProps<T, U>,
-    any
-  >;
+  // HOC PATTERN: admin is injected as a prop via useAppContext() in the WithData
+  // wrapper functions, replacing the legacy contextTypes: { admin } API.
+  abstract EditForm: React.ComponentType<EditFormProps<T, U>>;
   abstract listDataKey: string;
   abstract itemTypeName: string;
   abstract urlBase: string;
@@ -104,7 +108,6 @@ export abstract class GenericEditableConfigList<
     props: ExtraFormSectionProps<T, U>
   ) => React.Component<ExtraFormSectionProps<T, U>, any>;
   extraFormKey?: string;
-  private editFormRef = React.createRef<any>();
 
   constructor(props) {
     super(props);
@@ -178,7 +181,6 @@ export abstract class GenericEditableConfigList<
           <div>
             <h3 className="config-section-title">{headers["h3"]}</h3>
             <EditForm
-              ref={this.editFormRef}
               data={this.props.data}
               additionalData={this.props.additionalData}
               disabled={this.props.isFetching}
@@ -190,6 +192,16 @@ export abstract class GenericEditableConfigList<
               extraFormSection={ExtraFormSection}
               extraFormKey={this.extraFormKey}
               adminLevel={this.getAdminLevel()}
+              settingUp={this.props.settingUp}
+              admin={this.props.admin}
+              registerLibrary={
+                (this as any).registerLibraryForEditForm ||
+                (this.props as any).registerLibrary
+              }
+              importCollection={
+                (this as any).importCollectionForEditForm ||
+                (this.props as any).importCollection
+              }
             />
           </div>
         )}
@@ -213,6 +225,16 @@ export abstract class GenericEditableConfigList<
               extraFormSection={ExtraFormSection}
               extraFormKey={this.extraFormKey}
               adminLevel={this.getAdminLevel()}
+              settingUp={this.props.settingUp}
+              admin={this.props.admin}
+              registerLibrary={
+                (this as any).registerLibraryForEditForm ||
+                (this.props as any).registerLibrary
+              }
+              importCollection={
+                (this as any).importCollectionForEditForm ||
+                (this.props as any).importCollection
+              }
             />
           </div>
         )}
@@ -275,9 +297,9 @@ export abstract class GenericEditableConfigList<
 
   getAdminLevel() {
     let level;
-    if (this.context.admin?.isSystemAdmin()) {
+    if (this.props.admin?.isSystemAdmin()) {
       level = 3;
-    } else if (this.context.admin?.isLibraryManagerOfSomeLibrary()) {
+    } else if (this.props.admin?.isLibraryManagerOfSomeLibrary()) {
       level = 2;
     } else {
       level = 1;

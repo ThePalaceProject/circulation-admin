@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as PropTypes from "prop-types";
 import Libraries from "./Libraries";
 import Collections from "./Collections";
 import IndividualAdmins from "./IndividualAdmins";
@@ -11,30 +10,24 @@ import DiscoveryServices from "./DiscoveryServices";
 import {
   TabContainer,
   TabContainerProps,
-  TabContainerContext,
 } from "../shared/TabContainer";
 import Admin from "../../models/Admin";
+import { withAppContext } from "../../utils/withAppContext";
+import { withRoutingContext } from "../../utils/withRoutingContext";
 
 export interface ConfigTabContainerProps extends TabContainerProps {
   editOrCreate?: string;
   identifier?: string;
   className?: string;
-}
-
-export interface ConfigTabContainerContext extends TabContainerContext {
-  admin: Admin;
+  admin?: Admin;
 }
 
 /** Body of the system configuration page, with a tab for each type of service that can be configured. */
-export default class ConfigTabContainer extends TabContainer<
+export class ConfigTabContainer extends TabContainer<
   ConfigTabContainerProps
 > {
-  context: ConfigTabContainerContext;
-  static contextTypes: React.ValidationMap<ConfigTabContainerContext> = {
-    router: PropTypes.object.isRequired,
-    pathFor: PropTypes.func.isRequired,
-    admin: PropTypes.object.isRequired as React.Validator<Admin>,
-  };
+  // HOC PATTERN: `admin` is injected via withAppContext at export,
+  // replacing legacy contextTypes: { admin }.
 
   static defaultProps = {
     className: "vertical-tabs",
@@ -97,9 +90,9 @@ export default class ConfigTabContainer extends TabContainer<
   };
 
   tabs() {
-    if (this.context.admin.isSystemAdmin()) {
+    if (this.props.admin?.isSystemAdmin()) {
       return this.SYSTEM_ADMIN_TABS();
-    } else if (this.context.admin.isLibraryManagerOfSomeLibrary()) {
+    } else if (this.props.admin?.isLibraryManagerOfSomeLibrary()) {
       return this.LIBRARY_MANAGER_TABS();
     } else {
       return this.LIBRARIAN_TABS();
@@ -108,8 +101,8 @@ export default class ConfigTabContainer extends TabContainer<
 
   handleSelect(event) {
     const tab = event.target.dataset.tabkey;
-    if (this.context.router) {
-      this.context.router.push("/admin/web/config/" + tab);
+    if (this.props.router) {
+      this.props.router.push("/admin/web/config/" + tab);
     }
   }
 
@@ -125,3 +118,5 @@ export default class ConfigTabContainer extends TabContainer<
     return "libraries";
   }
 }
+
+export default withRoutingContext(withAppContext(ConfigTabContainer));
