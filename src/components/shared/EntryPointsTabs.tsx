@@ -1,12 +1,11 @@
 import * as React from "react";
 import CatalogLink from "@thepalaceproject/web-opds-client/lib/components/CatalogLink";
 import { FacetData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { AudioHeadphoneIcon, BookIcon } from "@nypl/dgx-svg-icons";
 export interface EntryPointsTabsProps {
   facets?: FacetData[];
 }
 
-/** This component renders a library's entrypoints as linked tabs. */
+/** This component renders a library's entrypoints as linked filters. */
 export class EntryPointsTabs extends React.Component<
   EntryPointsTabsProps,
   Record<string, never>
@@ -25,45 +24,31 @@ export class EntryPointsTabs extends React.Component<
       Ebooks: "http://schema.org/EBook",
       Audiobooks: "http://bib.schema.org/Audiobook",
     };
-    const svgMediumTypes = {
-      "http://bib.schema.org/Audiobook": (
-        <AudioHeadphoneIcon ariaHidden title="Audio Headphones Icon" />
-      ),
-      "http://schema.org/EBook": <BookIcon ariaHidden title="Book Icon" />,
-      "http://schema.org/CreativeWork": null,
-    };
     return (
-      <ul className="nav-tabs flex border-b entry-points-list">
+      <div
+        className="entry-points-filter-group"
+        role="group"
+        aria-label="Format filters"
+      >
         {entryPoints.map((entryPoint) => {
           const label = entryPoint.label;
           const value = mapEntryPointsToSchema[label];
           const url = entryPoint.href;
-          const svg = svgMediumTypes[value] ? svgMediumTypes[value] : null;
-          const noSVGClass = !svg ? "no-svg" : "";
+          const activeClass = entryPoint.active
+            ? "entry-points-filter--active"
+            : "";
           return (
-            <li
+            <CatalogLink
               key={label}
-              role="presentation"
-              className={`mr-4 ${noSVGClass} ${
-                entryPoint.active ? "active" : ""
-              }`}
+              collectionUrl={url}
+              bookUrl={null}
+              className={`entry-points-filter ${activeClass}`.trim()}
             >
-              <CatalogLink
-                collectionUrl={url}
-                bookUrl={null}
-                className={`inline-flex items-center px-3 py-2 text-sm font-medium border-b-2 transition-colors duration-150 ${
-                  entryPoint.active
-                    ? "border-blue-600 text-blue-700 bg-white"
-                    : "border-transparent text-gray-500 hover:text-blue-700 hover:border-blue-300"
-                }`}
-              >
-                {svg}
-                {label}
-              </CatalogLink>
-            </li>
+              <span>{label}</span>
+            </CatalogLink>
           );
         })}
-      </ul>
+      </div>
     );
   }
 }

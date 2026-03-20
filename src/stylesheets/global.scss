@@ -15,8 +15,16 @@
   }
 }
 
+@keyframes palace-fade-in-opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .dashboard,
-.catalog-page,
 .lane-page,
 .custom-list-page,
 .config,
@@ -26,6 +34,10 @@
 .welcome-page,
 .manage-patrons-page {
   animation: palace-fade-in 0.18s ease-out both;
+}
+
+.catalog-page {
+  animation: palace-fade-in-opacity 0.12s ease-out both;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

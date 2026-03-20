@@ -2,6 +2,7 @@ import * as React from "react";
 import EntryPointsTabs from "./EntryPointsTabs";
 import { CollectionContainerProps } from "@thepalaceproject/web-opds-client/lib/components/Root";
 import Collection from "@thepalaceproject/web-opds-client/lib/components/Collection";
+import { FacetData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 
 /** Wrapper for `EntryPointsTabs`. This component is passed into the
     OPDSCatalog from web-opds-client. */
@@ -9,6 +10,8 @@ export default class EntryPointsContainer extends React.Component<
   CollectionContainerProps,
   Record<string, never>
 > {
+  private lastFormatFacets: FacetData[] = [];
+
   render(): JSX.Element {
     const child = React.Children.only(
       this.props.children
@@ -35,6 +38,14 @@ export default class EntryPointsContainer extends React.Component<
       if (remove !== undefined) {
         facetGroups.splice(remove, 1);
       }
+    }
+
+    // Keep the filter row stable while collections refresh by reusing
+    // the last known non-empty Formats facets.
+    if (facets.length) {
+      this.lastFormatFacets = facets;
+    } else if (this.lastFormatFacets.length) {
+      facets = this.lastFormatFacets;
     }
 
     collectionCopy.facetGroups = facetGroups;

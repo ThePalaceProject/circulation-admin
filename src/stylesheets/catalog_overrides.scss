@@ -6,18 +6,76 @@
 // flow so the catalog expands to its full content height.
 .palace .catalog {
   height: auto;
+  // Reserve space for the scrollbar so its appearance/disappearance
+  // (e.g. filtering to fewer/more books) never causes a layout shift.
+  scrollbar-gutter: stable both-edges;
 }
 
 .palace .catalog .main {
   overflow-y: visible;
   height: auto;
-  position: static;
+  position: relative;
   padding-bottom: 0 !important;  // base sets padding-bottom: $padding (10px)
+  // Disable browser scroll-anchoring compensation. Without this, height
+  // changes in the book grid cause the browser to adjust scroll position,
+  // making the search bar / pill row appear to jump.
+  overflow-anchor: none;
 }
 
 .palace .catalog .main .body {
   position: static;
   height: auto;
+}
+
+// Loading indicator adds no value and causes layout shift — hide it.
+.palace .catalog .main .loading {
+  display: none !important;
+}
+
+// Keep a stable top edge across click/fetch states so the catalog container
+// doesn't jump when transient border/focus styles appear.
+.palace .catalog .collection,
+.palace .catalog .collection-container,
+.palace .catalog .collection-main,
+.palace .catalog .entry-points-tab-container {
+  box-sizing: border-box;
+  border-top: 0 !important;
+  padding-top: 1px;
+  margin-top: 0 !important;
+}
+
+.palace .catalog .entry-points-tab-container a:focus,
+.palace .catalog .entry-points-tab-container a:active,
+.palace .catalog .breadcrumbs a:focus,
+.palace .catalog .breadcrumbs a:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.palace .catalog .breadcrumbs-or-search-wrapper,
+.palace .catalog .main,
+.palace .catalog .collection,
+.palace .catalog .collection-container,
+.palace .catalog .collection-main,
+.palace .catalog .entry-points-tab-container,
+.palace .catalog .entry-points-filter-group {
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+
+.palace .catalog .breadcrumbs-or-search-wrapper:focus,
+.palace .catalog .breadcrumbs-or-search-wrapper:focus-within,
+.palace .catalog .main:focus,
+.palace .catalog .main:focus-within,
+.palace .catalog .collection-main:focus,
+.palace .catalog .collection-main:focus-within,
+.palace .catalog .entry-points-tab-container:focus,
+.palace .catalog .entry-points-tab-container:focus-within,
+.palace .catalog .entry-points-filter-group:focus,
+.palace .catalog .entry-points-filter-group:focus-within {
+  outline: none !important;
+  border-top: 0 !important;
+  box-shadow: none !important;
 }
 // ──────────────────────────────────────────────────────────────────────────────
 
@@ -73,6 +131,7 @@
 .palace .search {
   display: block;
   width: 100%;
+  min-height: 40px; // reserve space while searchData loads so the bar never collapses
   padding: 2px 0 2px;
   background-color: transparent;
 }
@@ -1073,6 +1132,15 @@ $list-cover-h: 136px;
 }
 
 // ─── End Collection view style ───────────────────────────────────────────────
+
+// Ensure audiobook badge text/colors apply whenever book medium is audiobook.
+// This is intentionally top-level to avoid nested selector expansion issues.
+.palace .book[data-medium*="Audiobook"] .compact-info .item-icon::after,
+.palace .book[data-medium*="Audiobook"] .expanded-info .fields .item-icon::after {
+  content: "Audiobook" !important;
+  background: #EDE9FE !important;
+  color: #6D28D9 !important;
+}
 
 // Shared color variables for visibility status indicators
 $visibility-warning-bg: #FCF8E3;

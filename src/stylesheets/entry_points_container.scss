@@ -1,7 +1,18 @@
 .entry-points-tab-container {
-  height: 100%;
-  margin: 10px 0 15px;
-  padding: 0 15px;
+  height: auto;
+  margin: 0 0 15px;
+  padding: 10px 15px 0;
+  border-top: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+
+  &:focus,
+  &:focus-within,
+  &:active {
+    border-top: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
   .lane {
     a.title {
       color: $blue-dark;
@@ -29,57 +40,73 @@
     }
   }
 
-  .nav-tabs {
-    border-bottom: 1px solid $dark;
+  .entry-points-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
   }
 
-  // EntryPointsTabs
-  .entry-points-list {
-    li {
-      a {
-        color: $blue-dark;
-        svg {
-          fill: $blue-dark;
-        }
-        &:hover {
-          color: $blue-dark;
-          svg {
-            fill: $blue-dark;
-          }
-        }
-      }
+  .entry-points-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid rgba($blue-dark, 0.18);
+    border-radius: 999px;
+    background: $white;
+    color: $blue-dark;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba($dark, 0.06);
+    transition:
+      background-color 0.16s ease,
+      border-color 0.16s ease,
+      color 0.16s ease;
 
-      &.no-svg {
-        a {
-          padding: 11px;
-        }
-      }
+    &, 
+    &:visited {
+      color: $blue-dark;
+    }
 
-      &.active {
-        a,
-        a:hover,
-        a:focus,
-        a:visited {
-          border: 1px solid $dark;
-          border-bottom-color: transparent;
-          color: $blue-dark;
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      color: $blue-dark;
+      border-color: rgba($blue-dark, 0.34);
+      background: rgba($blue, 0.06);
+      box-shadow: none;
+      text-decoration: none;
+      outline: none;
+    }
+  }
 
-          svg {
-            fill: $blue-dark;
-          }
-        }
-      }
+  .entry-points-filter--active {
+    border-color: $blue-dark;
+    background: $blue-dark;
+    color: $white !important;
+    box-shadow: none;
 
-      a {
-        min-width: 100px;
-        text-align: center;
-      }
+    span,
+    svg {
+      color: $white !important;
+      fill: currentColor !important;
+    }
 
-      svg {
-        height: 28px;
-        width: 28px;
-        margin: 0 3px -9px 0;
-      }
+    &:visited,
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      color: $white !important;
+      border-color: $blue-dark;
+      background: $blue-dark;
+      box-shadow: none;
     }
   }
 }
