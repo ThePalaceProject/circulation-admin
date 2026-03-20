@@ -15,10 +15,16 @@ const StatsGroup = ({
 }: Props) => (
   <>
     <div>
-      <h3>
-        <span className="stat-grouping-label">{heading}</span>
-        {headingAdditionalContent}
-      </h3>
+      <div className="stat-group-header">
+        <h3>
+          <span className="stat-grouping-label">{heading}</span>
+        </h3>
+        {headingAdditionalContent && (
+          <div className="stat-group-heading-actions">
+            {headingAdditionalContent}
+          </div>
+        )}
+      </div>
       <div className="stat-group-description">{description}</div>
     </div>
     {children}

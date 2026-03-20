@@ -156,7 +156,18 @@
       }
     }
 
-    // ─── Card header – label + description ──────────────────────────────
+    // ─── Card header – label + actions + description ───────────────────
+    .stat-group-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .stat-group-heading-actions {
+      flex: 0 0 auto;
+    }
+
     h3 {
       font-size: 0.75rem !important;   // must beat unlayered Bootstrap h3:24px
       font-weight: 700 !important;

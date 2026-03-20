@@ -38,28 +38,29 @@ const facets = [
 
 describe("EntryPointsTabs", () => {
   it("renders nothing when no facets", () => {
-    const { container } = render(
+    const { queryByRole } = render(
       <RouterContextProvider>
         <EntryPointsTabs />
       </RouterContextProvider>
     );
-    expect(container.querySelector(".nav-tabs")).not.toBeInTheDocument();
+    expect(
+      queryByRole("group", { name: "Format filters" })
+    ).not.toBeInTheDocument();
   });
 
   it("renders two tabs for two entry points", () => {
-    const { container } = render(
+    const { container, getByRole } = render(
       <RouterContextProvider>
         <EntryPointsTabs facets={facets} />
       </RouterContextProvider>
     );
-    const ul = container.querySelector("ul.nav-tabs");
-    expect(ul).toBeInTheDocument();
-    const items = ul.querySelectorAll("li");
-    expect(items).toHaveLength(2);
-    // First facet is active
-    expect(items[0].className).toContain("active");
-    // Second facet is not active
-    expect(items[1].className).not.toMatch(/\bactive\b/);
+    const filterGroup = getByRole("group", { name: "Format filters" });
+    expect(filterGroup).toBeInTheDocument();
+
+    const filters = container.querySelectorAll("a.entry-points-filter");
+    expect(filters).toHaveLength(2);
+    expect(filters[0].className).toContain("entry-points-filter--active");
+    expect(filters[1].className).not.toContain("entry-points-filter--active");
   });
 
   it("renders one tab with active class for single active facet", () => {
@@ -76,9 +77,9 @@ describe("EntryPointsTabs", () => {
         <EntryPointsTabs facets={singleFacet} />
       </RouterContextProvider>
     );
-    const items = container.querySelectorAll("ul.nav-tabs li");
-    expect(items).toHaveLength(1);
-    expect(items[0].className).toContain("active");
-    expect(items[0].textContent).toContain("Audiobooks");
+    const filter = container.querySelector("a.entry-points-filter");
+    expect(filter).toBeInTheDocument();
+    expect(filter.className).toContain("entry-points-filter--active");
+    expect(filter.textContent).toContain("Audiobooks");
   });
 });
