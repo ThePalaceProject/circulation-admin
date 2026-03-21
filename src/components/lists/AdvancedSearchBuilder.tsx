@@ -45,6 +45,7 @@ export const fields: FieldType[] = [
   { value: "audience", label: "audience" },
   { value: "author", label: "author" },
   { value: "title", label: "title" },
+  { value: "series", label: "series" },
   {
     value: "fiction",
     label: "classification",

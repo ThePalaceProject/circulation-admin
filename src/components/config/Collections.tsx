@@ -24,6 +24,7 @@ import {
 import CollectionImportButton from "../shared/CollectionImportButton";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import TrashIcon from "../icons/TrashIcon";
+import { useAppAdmin } from "../../context/appContext";
 
 export interface CollectionsStateProps
   extends EditableConfigListStateProps<CollectionsData> {
@@ -175,6 +176,8 @@ export class Collections extends GenericEditableConfigList<
 
 function CollectionsWithData(ownProps: EditableConfigListOwnProps) {
   const { csrfToken } = ownProps;
+  // HOC PATTERN: admin is injected from AppContext to replace legacy contextTypes: { admin }.
+  const admin = useAppAdmin();
   const collectionsResult = useGetCollectionsQuery();
   const librariesResult = useGetLibrariesQuery();
   const [editCollection, editResult] = useEditCollectionMutation();
@@ -189,6 +192,7 @@ function CollectionsWithData(ownProps: EditableConfigListOwnProps) {
   return (
     <Collections
       {...ownProps}
+      admin={admin}
       data={data}
       fetchError={
         collectionsResult.error

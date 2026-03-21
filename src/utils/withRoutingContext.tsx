@@ -30,7 +30,9 @@ export function withRoutingContext<P>(
     const inRouterContext = useInRouterContext();
     const navigate = inRouterContext ? useNavigate() : null;
     const location = inRouterContext ? useLocation() : null;
-    const pathForFromContext = React.useContext(PathForContext);
+    const pathForFromContext = React.useContext(PathForContext) as
+      | PathFor
+      | undefined;
     const normalizeCollectionUrl = (url: string) => {
       if (!url) {
         return url;

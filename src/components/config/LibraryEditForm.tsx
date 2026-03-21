@@ -158,6 +158,7 @@ export default class LibraryEditForm extends React.Component<
   renderAnnouncements(setting: SettingData, value) {
     return (
       <AnnouncementsSection
+        key={setting.key}
         setting={{ ...setting, ...{ format: "date-range" } }}
         value={value && JSON.parse(value)}
         ref={this.announcementsRef}
@@ -171,6 +172,7 @@ export default class LibraryEditForm extends React.Component<
     // when the iterator in renderFieldset gets to them, they'll get skipped over, not rendered a second time.
     return (
       <PairedMenus
+        key={setting.key}
         inputListSetting={setting}
         dropdownSetting={dropdownSetting}
         item={this.props.item}
