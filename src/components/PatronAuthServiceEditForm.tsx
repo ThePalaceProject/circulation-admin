@@ -27,11 +27,15 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     React.RefObject<PatronBlockingRulesEditorHandle>
   >();
 
-  // Tracks whether any rule editor is currently blocking save due to pending
-  // or failed validation, or duplicate names. Updated via onValidationStateChange.
-  // Stored as an instance variable (not React state) to avoid TypeScript state
-  // type conflicts with the parent class; forceUpdate() triggers re-render.
+  // Tracks client-side blocking (incomplete rules, duplicate names).
+  // Updated via onValidationStateChange.
   private rulesBlockingSave: { [shortName: string]: boolean } = {};
+  // Tracks server-side blocking (pending re-validation, server errors).
+  // Updated via onServerValidationStateChange.
+  // Both maps are stored as instance variables (not React state) to avoid
+  // TypeScript state type conflicts with the parent class; forceUpdate()
+  // triggers re-render after each update.
+  private serverRulesBlockingSave: { [shortName: string]: boolean } = {};
 
   private getOrCreateLibraryRef(
     shortName: string
@@ -58,12 +62,31 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
     }
   }
 
+  handleRulesServerValidationStateChange(
+    shortName: string,
+    isBlocking: boolean
+  ): void {
+    if (this.serverRulesBlockingSave[shortName] !== isBlocking) {
+      this.serverRulesBlockingSave = {
+        ...this.serverRulesBlockingSave,
+        [shortName]: isBlocking,
+      };
+      this.forceUpdate();
+    }
+  }
+
   isLibrarySaveDisabled(library: LibraryWithSettingsData): boolean {
-    return !!this.rulesBlockingSave[library.short_name];
+    return (
+      !!this.rulesBlockingSave[library.short_name] ||
+      !!this.serverRulesBlockingSave[library.short_name]
+    );
   }
 
   isAddLibraryDisabled(): boolean {
-    return !!this.rulesBlockingSave[NEW_LIBRARY_KEY];
+    return (
+      !!this.rulesBlockingSave[NEW_LIBRARY_KEY] ||
+      !!this.serverRulesBlockingSave[NEW_LIBRARY_KEY]
+    );
   }
 
   protocolHasLibrarySettings(protocol: ProtocolData): boolean {
@@ -96,6 +119,12 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
         onValidationStateChange={(isBlocking) =>
           this.handleRulesValidationStateChange(library.short_name, isBlocking)
         }
+        onServerValidationStateChange={(isBlocking) =>
+          this.handleRulesServerValidationStateChange(
+            library.short_name,
+            isBlocking
+          )
+        }
       />
     );
   }
@@ -121,6 +150,12 @@ export default class PatronAuthServiceEditForm extends ServiceEditForm<
         }
         onValidationStateChange={(isBlocking) =>
           this.handleRulesValidationStateChange(NEW_LIBRARY_KEY, isBlocking)
+        }
+        onServerValidationStateChange={(isBlocking) =>
+          this.handleRulesServerValidationStateChange(
+            NEW_LIBRARY_KEY,
+            isBlocking
+          )
         }
       />
     );
