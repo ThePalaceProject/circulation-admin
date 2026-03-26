@@ -32,7 +32,8 @@
     "dev-server": "dotenv -c -- webpack serve --progress --hot --config webpack.dev-server.config",
     "dev-test-axe": "TEST_AXE=true npm run dev",
     "prod": "webpack --progress --config webpack.prod.config",
-    "build-docs": "typedoc --tsconfig tsconfig.json src"
+    "build-docs": "typedoc --tsconfig tsconfig.json src",
+    "sync-patron-blocking-docs": "node scripts/syncPatronBlockingDocs.js"
   },
   "dependencies": {
     "@nypl/dgx-svg-icons": "0.3.4",
