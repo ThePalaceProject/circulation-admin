@@ -5,23 +5,7 @@ import { PatronBlockingRule } from "../interfaces";
 import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import { validatePatronBlockingRuleExpression } from "../api/patronBlockingRules";
-
-/** Shifts a numeric-indexed map after an entry at `removedIndex` is deleted.
- *  Entries below the removed index are kept as-is; entries above are re-keyed
- *  to index - 1; the entry at the removed index is dropped. */
-function shiftEntries<T>(
-  prev: { [k: number]: T },
-  removedIndex: number
-): { [k: number]: T } {
-  const next: { [k: number]: T } = {};
-  Object.entries(prev).forEach(([key, val]) => {
-    const k = Number(key);
-    if (k < removedIndex) next[k] = val;
-    else if (k > removedIndex) next[k - 1] = val;
-    // k === removedIndex is dropped
-  });
-  return next;
-}
+import PatronBlockingRulesHelpModal from "./PatronBlockingRulesHelpModal";
 
 /** Returns the set of non-empty rule names that appear more than once. */
 function getDuplicateNameSet(rules: RuleEntry[]): Set<string> {
@@ -55,14 +39,10 @@ export interface PatronBlockingRulesEditorProps {
   serviceId?: number;
   /** Called whenever the client-side "save should be blocked" state changes.
    *  True while any rule is incomplete (missing name or expression) or while
-   *  any two rules share the same name.  Server validation does not affect
-   *  this callback. */
+   *  any two rules share the same name. */
   onValidationStateChange?: (isBlocking: boolean) => void;
-  /** Called whenever the server-validation "save should be blocked" state
-   *  changes.  True while any rule expression has been edited but not yet
-   *  re-validated (pending), or while any rule has a server-side validation
-   *  error.  Complement of onValidationStateChange for callers that need to
-   *  block save on server validation results. */
+  /** Called whenever the server-side validation error state changes.
+   *  True while any rule has a non-null server-reported validation error. */
   onServerValidationStateChange?: (isBlocking: boolean) => void;
 }
 
@@ -74,7 +54,6 @@ export interface PatronBlockingRulesEditorHandle {
 type RuleEntry = PatronBlockingRule & { _id: number };
 type ClientErrors = { [index: number]: { name?: boolean; rule?: boolean } };
 type ServerErrors = { [index: number]: string | null };
-type PendingValidation = { [index: number]: boolean };
 
 interface RuleFormListItemProps {
   rule: RuleEntry;
@@ -203,12 +182,18 @@ const PatronBlockingRulesEditor = React.forwardRef<
     );
     const [clientErrors, setClientErrors] = React.useState<ClientErrors>({});
     const [serverErrors, setServerErrors] = React.useState<ServerErrors>({});
-    const [pendingValidation, setPendingValidation] = React.useState<
-      PendingValidation
-    >({});
 
-    // Keep a stable ref to the latest callback so the useEffect below does not
-    // need it as a dependency (avoids extra calls when a class-component parent
+    // Help modal state
+    const [showHelp, setShowHelp] = React.useState(false);
+    const [availableFields, setAvailableFields] = React.useState<Record<
+      string,
+      unknown
+    > | null>(null);
+    const [fieldsLoading, setFieldsLoading] = React.useState(false);
+    const [fieldsError, setFieldsError] = React.useState<string | null>(null);
+
+    // Keep stable refs to the latest callbacks so the useEffects below do not
+    // need them as dependencies (avoids extra calls when a class-component parent
     // creates a new arrow function on every render).
     const onValidationStateChangeRef = React.useRef(onValidationStateChange);
     React.useLayoutEffect(() => {
@@ -229,11 +214,58 @@ const PatronBlockingRulesEditor = React.forwardRef<
     }, [rules]);
 
     React.useEffect(() => {
-      const hasPendingOrError =
-        Object.values(pendingValidation).some(Boolean) ||
-        Object.values(serverErrors).some((e) => e !== null);
-      onServerValidationStateChangeRef.current?.(hasPendingOrError);
-    }, [pendingValidation, serverErrors]);
+      const hasServerError = Object.values(serverErrors).some(
+        (msg) => msg !== null && msg !== undefined
+      );
+      onServerValidationStateChangeRef.current?.(hasServerError);
+    }, [serverErrors]);
+
+    // Eagerly pre-fetch available template fields on mount (and whenever
+    // serviceId changes) by calling the validation endpoint with a trivial
+    // passing rule.  This ensures the template-variable table in the help
+    // modal is populated before the user opens it.
+    React.useEffect(() => {
+      if (serviceId === undefined) {
+        setAvailableFields(null);
+        setFieldsError(
+          "Save the service before template variables can be fetched."
+        );
+        return;
+      }
+
+      let cancelled = false;
+      setFieldsLoading(true);
+      setFieldsError(null);
+
+      const trivialRule: PatronBlockingRule = {
+        name: "__prefetch__",
+        rule: "True",
+      };
+      validatePatronBlockingRuleExpression(serviceId, trivialRule, csrfToken)
+        .then((result) => {
+          if (cancelled) return;
+          if (result.error) {
+            setFieldsError(result.error);
+          } else if (result.availableFields) {
+            setAvailableFields(result.availableFields);
+          } else {
+            setFieldsError(
+              "Available fields could not be retrieved. Check that test credentials are configured."
+            );
+          }
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setFieldsError("Failed to fetch available fields.");
+        })
+        .finally(() => {
+          if (!cancelled) setFieldsLoading(false);
+        });
+
+      return () => {
+        cancelled = true;
+      };
+    }, [serviceId, csrfToken]);
 
     const serverErrorMessage = extractErrorMessage(error);
 
@@ -277,9 +309,26 @@ const PatronBlockingRulesEditor = React.forwardRef<
 
     const removeRule = (index: number) => {
       setRules((prev) => prev.filter((_, i) => i !== index));
-      setClientErrors((prev) => shiftEntries(prev, index));
-      setServerErrors((prev) => shiftEntries(prev, index));
-      setPendingValidation((prev) => shiftEntries(prev, index));
+      setClientErrors((prev) => {
+        const next: ClientErrors = {};
+        Object.entries(prev).forEach(([key, val]) => {
+          const k = Number(key);
+          if (k < index) next[k] = val;
+          else if (k > index) next[k - 1] = val;
+          // k === index is dropped
+        });
+        return next;
+      });
+      setServerErrors((prev) => {
+        const next: ServerErrors = {};
+        Object.entries(prev).forEach(([key, val]) => {
+          const k = Number(key);
+          if (k < index) next[k] = val;
+          else if (k > index) next[k - 1] = val;
+          // k === index is dropped
+        });
+        return next;
+      });
     };
 
     const updateRule = (
@@ -298,23 +347,24 @@ const PatronBlockingRulesEditor = React.forwardRef<
       }
       if (field === "rule") {
         setServerErrors((prev) => ({ ...prev, [index]: null }));
-        setPendingValidation((prev) => ({ ...prev, [index]: true }));
       }
     };
 
     const handleRuleBlur = async (index: number) => {
-      // Always clear pending first so we don't block save if the field is empty.
-      setPendingValidation((prev) => ({ ...prev, [index]: false }));
       const rule = rules[index];
       if (!rule || !rule.rule) {
         return;
       }
-      const errorMessage = await validatePatronBlockingRuleExpression(
+      const result = await validatePatronBlockingRuleExpression(
         serviceId,
         rule,
         csrfToken
       );
-      setServerErrors((prev) => ({ ...prev, [index]: errorMessage }));
+      setServerErrors((prev) => ({ ...prev, [index]: result.error }));
+      // Keep the most-recent non-null available fields snapshot.
+      if (result.availableFields) {
+        setAvailableFields(result.availableFields);
+      }
     };
 
     const hasIncompleteRule = rules.some((r) => !r.name || !r.rule);
@@ -324,13 +374,24 @@ const PatronBlockingRulesEditor = React.forwardRef<
       <div className="patron-blocking-rules-editor">
         <div className="patron-blocking-rules-header">
           <label className="control-label">Patron Blocking Rules</label>
-          <Button
-            type="button"
-            className="add-patron-blocking-rule"
-            disabled={disabled || hasIncompleteRule}
-            callback={addRule}
-            content="Add Rule"
-          />
+          <div className="patron-blocking-rules-header-actions">
+            <Button
+              type="button"
+              className="add-patron-blocking-rule"
+              disabled={disabled || hasIncompleteRule}
+              callback={addRule}
+              content="Add Rule"
+            />
+            <button
+              type="button"
+              className="patron-blocking-rules-help-btn"
+              onClick={() => setShowHelp(true)}
+              aria-label="Patron blocking rules help"
+              title="Help: template variables, available functions, and syntax reference"
+            >
+              ?
+            </button>
+          </div>
         </div>
         {serverErrorMessage && (
           <p className="patron-blocking-rule-field-warning text-warning">
@@ -359,6 +420,13 @@ const PatronBlockingRulesEditor = React.forwardRef<
             />
           ))}
         </ul>
+        <PatronBlockingRulesHelpModal
+          show={showHelp}
+          onHide={() => setShowHelp(false)}
+          availableFields={availableFields}
+          fieldsLoading={fieldsLoading}
+          fieldsError={fieldsError}
+        />
       </div>
     );
   }

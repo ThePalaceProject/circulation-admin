@@ -10,6 +10,18 @@ import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces
 
 const VALIDATE_URL = "/admin/patron_auth_service_validate_patron_blocking_rule";
 
+/** Sample available_fields dict returned by the server on successful validation. */
+const SAMPLE_FIELDS = {
+  fines: "2.50",
+  patron_identifier: "12345",
+  patron_name: "John Doe",
+};
+
+const SUCCESS_RESPONSE = {
+  status: 200,
+  body: { available_fields: SAMPLE_FIELDS },
+};
+
 const existingRules: PatronBlockingRule[] = [
   { name: "Rule A", rule: "expr_a", message: "msg a" },
   { name: "Rule B", rule: "expr_b" },
@@ -30,7 +42,7 @@ const existingRules: PatronBlockingRule[] = [
 
 describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)", () => {
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, { status: 200 });
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
   });
 
   afterEach(() => {
@@ -290,7 +302,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
 
 describe("PatronBlockingRulesEditor — on-blur server validation", () => {
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, { status: 200 });
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
   });
 
   afterEach(() => {
@@ -480,7 +492,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
 
     // Switch mock to success, correct the rule, and blur again
     fetchMock.mockReset();
-    fetchMock.post(VALIDATE_URL, { status: 200 });
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
 
     await user.clear(screen.getByLabelText(/Rule Expression/i));
     await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
@@ -497,7 +509,7 @@ describe("PatronBlockingRulesEditor", () => {
   // incidentally trigger blur on the Rule Expression field (e.g. by typing in
   // the Message textarea) don't produce "only absolute URLs" fetch errors.
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, { status: 200 });
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
   });
 
   afterEach(() => {
@@ -588,11 +600,16 @@ describe("PatronBlockingRulesEditor", () => {
     expect(ref.current.getValue()).toEqual([]);
   });
 
-  it("disables all inputs and buttons when disabled prop is true", () => {
+  it("disables all editing inputs and buttons when disabled prop is true", () => {
     render(<PatronBlockingRulesEditor value={existingRules} disabled={true} />);
 
-    const buttons = screen.getAllByRole("button");
-    buttons.forEach((btn) => expect(btn).toBeDisabled());
+    // The Help button stays enabled even in disabled mode (read-only affordance).
+    const editingButtons = screen
+      .getAllByRole("button")
+      .filter(
+        (btn) => !btn.classList.contains("patron-blocking-rules-help-btn")
+      );
+    editingButtons.forEach((btn) => expect(btn).toBeDisabled());
 
     const inputs = screen.getAllByRole("textbox");
     inputs.forEach((input) => expect(input).toBeDisabled());
@@ -707,7 +724,7 @@ describe("PatronBlockingRulesEditor", () => {
 
 describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
   beforeEach(() => {
-    fetchMock.post(VALIDATE_URL, { status: 200 });
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
   });
 
   afterEach(() => {
@@ -829,5 +846,165 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
     });
 
     expect(result).toEqual([]);
+  });
+});
+
+describe("PatronBlockingRulesEditor — help modal and available fields prefetch", () => {
+  afterEach(() => {
+    fetchMock.mockReset();
+  });
+
+  it("renders a Help button in the header", () => {
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    render(
+      <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
+    );
+    expect(
+      screen.getByRole("button", { name: /patron blocking rules help/i })
+    ).toBeTruthy();
+  });
+
+  it("prefetches available fields on mount when serviceId is provided", async () => {
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    render(
+      <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
+    );
+    // The prefetch call is fired on mount.
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        VALIDATE_URL,
+        expect.objectContaining({ method: "POST" })
+      )
+    );
+  });
+
+  it("opens the help modal when the Help button is clicked", async () => {
+    const user = userEvent.setup();
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    render(
+      <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /patron blocking rules help/i })
+    );
+
+    expect(screen.getByText(/Patron Blocking Rules — Help/i)).toBeTruthy();
+  });
+
+  it("shows available fields in the help modal after a successful prefetch", async () => {
+    const user = userEvent.setup();
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    render(
+      <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
+    );
+
+    // Wait for the prefetch to settle
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        VALIDATE_URL,
+        expect.objectContaining({ method: "POST" })
+      )
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /patron blocking rules help/i })
+    );
+
+    // Field names and sample values should appear in the modal table
+    await waitFor(() => {
+      expect(screen.getByText("fines")).toBeTruthy();
+      expect(screen.getByText("2.50")).toBeTruthy();
+      expect(screen.getByText("patron_identifier")).toBeTruthy();
+      expect(screen.getByText("12345")).toBeTruthy();
+    });
+  });
+
+  it("shows an unavailability message when serviceId is not provided", async () => {
+    const user = userEvent.setup();
+    // No serviceId → prefetch skipped; no fetch call expected.
+    render(<PatronBlockingRulesEditor value={[]} csrfToken="tok" />);
+
+    await user.click(
+      screen.getByRole("button", { name: /patron blocking rules help/i })
+    );
+
+    expect(
+      screen.getByText(
+        /Save the service before template variables can be fetched/i
+      )
+    ).toBeTruthy();
+  });
+
+  it("shows an error message when the prefetch fails with a 400", async () => {
+    const user = userEvent.setup();
+    fetchMock.post(VALIDATE_URL, {
+      status: 400,
+      body: { detail: "Patron auth service not found." },
+    });
+
+    render(
+      <PatronBlockingRulesEditor value={[]} serviceId={99} csrfToken="tok" />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /patron blocking rules help/i })
+    );
+
+    await waitFor(() =>
+      expect(screen.getByText(/Patron auth service not found/i)).toBeTruthy()
+    );
+  });
+
+  it("updates available fields after a successful blur validation", async () => {
+    const user = userEvent.setup();
+    const updatedFields = { fines: "5.00", new_field: "hello" };
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+
+    render(
+      <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
+    );
+
+    // Add a rule and blur the expression field with the updated-fields mock
+    await user.click(screen.getByRole("button", { name: /Add Rule/i }));
+    await user.type(screen.getByLabelText(/Rule Name/i), "Test Rule");
+
+    fetchMock.mockReset();
+    fetchMock.post(VALIDATE_URL, {
+      status: 200,
+      body: { available_fields: updatedFields },
+    });
+
+    await user.type(screen.getByLabelText(/Rule Expression/i), "{{fines}} > 0");
+    await user.tab();
+
+    // Open help modal and verify updated fields are shown
+    await user.click(
+      screen.getByRole("button", { name: /patron blocking rules help/i })
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("new_field")).toBeTruthy();
+      expect(screen.getByText("hello")).toBeTruthy();
+    });
+  });
+
+  it("closes the help modal when the close button is clicked", async () => {
+    const user = userEvent.setup();
+    fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
+    render(
+      <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /patron blocking rules help/i })
+    );
+    expect(screen.getByText(/Patron Blocking Rules — Help/i)).toBeTruthy();
+
+    // Close via the modal's × button
+    await user.click(screen.getByRole("button", { name: /close/i }));
+    await waitFor(() =>
+      expect(screen.queryByText(/Patron Blocking Rules — Help/i)).toBeNull()
+    );
   });
 });

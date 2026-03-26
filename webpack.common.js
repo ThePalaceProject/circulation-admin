@@ -49,6 +49,10 @@ module.exports = {
         use: ["ts-loader"],
       },
       {
+        test: /\.md$/,
+        type: "asset/source",
+      },
+      {
         test: /\.(ttf|woff|eot|woff2)(\?[\s\S]+)?$/,
         type: "asset/resource",
       },
