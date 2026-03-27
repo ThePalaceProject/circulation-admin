@@ -79,7 +79,19 @@ describe("CollectionImportButton", () => {
       screen.getByRole("button", { name: "Queue Import" })
     ).toBeInTheDocument();
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
-    expect(screen.getByText("Force full re-import")).toBeInTheDocument();
+    expect(screen.getByLabelText("Force full re-import")).toBeInTheDocument();
+  });
+
+  it("renders usage documentation for both import options", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await expandPanel(user);
+    expect(
+      screen.getByText(/schedules a background import job/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/the import job re-processes every item/i)
+    ).toBeInTheDocument();
   });
 
   it("checkbox toggles force state", async () => {

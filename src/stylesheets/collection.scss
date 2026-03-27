@@ -11,6 +11,24 @@
 }
 
 .collection-import {
+  .collection-import-docs {
+    margin-bottom: 1em;
+
+    dt {
+      font-weight: bold;
+      margin-top: 0.75em;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    dd {
+      margin-left: 0;
+      color: #555;
+    }
+  }
+
   .collection-import-controls {
     display: flex;
     align-items: center;
