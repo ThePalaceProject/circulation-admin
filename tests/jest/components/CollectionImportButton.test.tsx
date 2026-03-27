@@ -90,11 +90,11 @@ describe("CollectionImportButton", () => {
       screen.getByText(/queue import picks up new and changed items/i)
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/schedules a background import job/i)
-    ).not.toBeInTheDocument();
+      screen.getByText(/schedules a background import job/i)
+    ).not.toBeVisible();
     expect(
-      screen.queryByText(/the import job re-processes every item/i)
-    ).not.toBeInTheDocument();
+      screen.getByText(/the import job re-processes every item/i)
+    ).not.toBeVisible();
   });
 
   it("clicking 'More details' reveals the detailed docs", async () => {
@@ -102,36 +102,33 @@ describe("CollectionImportButton", () => {
     renderButton();
     await expandPanel(user);
 
-    const toggle = screen.getByRole("button", { name: "More details" });
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    const details = screen.getByText("More details").closest("details");
+    expect(details).not.toHaveAttribute("open");
 
-    await user.click(toggle);
+    await user.click(screen.getByText("More details"));
 
+    expect(details).toHaveAttribute("open");
     expect(
       screen.getByText(/schedules a background import job/i)
-    ).toBeInTheDocument();
+    ).toBeVisible();
     expect(
       screen.getByText(/the import job re-processes every item/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Less details" })
-    ).toHaveAttribute("aria-expanded", "true");
+    ).toBeVisible();
   });
 
-  it("clicking 'Less details' hides the detailed docs again", async () => {
+  it("clicking 'More details' again hides the detailed docs", async () => {
     const user = userEvent.setup();
     renderButton();
     await expandPanel(user);
 
-    await user.click(screen.getByRole("button", { name: "More details" }));
+    await user.click(screen.getByText("More details"));
     expect(
       screen.getByText(/schedules a background import job/i)
-    ).toBeInTheDocument();
+    ).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: "Less details" }));
-    expect(
-      screen.queryByText(/schedules a background import job/i)
-    ).not.toBeInTheDocument();
+    await user.click(screen.getByText("More details"));
+    const details = screen.getByText("More details").closest("details");
+    expect(details).not.toHaveAttribute("open");
   });
 
   it("checkbox toggles force state", async () => {

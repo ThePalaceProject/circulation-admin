@@ -24,19 +24,25 @@
     }
   }
 
-  .collection-import-details-toggle {
-    background: none;
-    border: none;
-    padding: 0;
-    color: $dark-gray;
-    cursor: pointer;
-    font-size: 0.8rem;
+  details.collection-import-details {
     margin-bottom: 1em;
 
-    &:hover,
-    &:focus-visible {
-      color: $blue-dark;
+    summary {
+      list-style: none;
+      color: $dark-gray;
+      cursor: pointer;
+      font-size: 0.8rem;
       text-decoration: underline;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: $blue-dark;
+        text-decoration: underline;
+      }
     }
   }
 
