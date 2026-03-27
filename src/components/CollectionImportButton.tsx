@@ -73,13 +73,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
 
   const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
 
-  const buttonLabel = force
-    ? importing
-      ? "Queuing Full Re-import..."
-      : "Queue Full Re-import"
-    : importing
-    ? "Queuing..."
-    : "Queue Import";
+  const buttonLabel = getButtonLabel(force, importing);
 
   const buttonClass = force
     ? "btn btn-default collection-import-button force"
@@ -136,8 +130,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
             the last import. Use this to correct metadata that is out of date,
             or to resolve issues caused by a previously incomplete import. A
             forced re-import will take longer than a regular import because it
-            re-processes all items. Check this box <em>before</em> clicking
-            Queue Import.
+            re-processes all items.
           </dd>
         </dl>
       )}
@@ -148,5 +141,12 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
     <Panel id="collection-import" headerText="Import" content={panelContent} />
   );
 };
+
+function getButtonLabel(force: boolean, importing: boolean): string {
+  if (force) {
+    return importing ? "Queuing Full Re-import..." : "Queue Full Re-import";
+  }
+  return importing ? "Queuing..." : "Queue Import";
+}
 
 export default CollectionImportButton;

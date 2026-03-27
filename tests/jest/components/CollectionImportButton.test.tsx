@@ -165,22 +165,20 @@ describe("CollectionImportButton", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("button uses btn-warning class when force is checked", async () => {
+  it("button uses force class when force is checked", async () => {
     const user = userEvent.setup();
     renderButton();
     await expandPanel(user);
 
     const button = screen.getByRole("button", { name: "Queue Import" });
-    expect(button).toHaveClass("btn-default");
-    expect(button).not.toHaveClass("btn-warning");
+    expect(button).not.toHaveClass("force");
 
     await user.click(screen.getByRole("checkbox"));
 
     const forceButton = screen.getByRole("button", {
       name: "Queue Full Re-import",
     });
-    expect(forceButton).toHaveClass("btn-warning");
-    expect(forceButton).not.toHaveClass("btn-default");
+    expect(forceButton).toHaveClass("force");
   });
 
   it("button triggers import with correct args (force=false)", async () => {
