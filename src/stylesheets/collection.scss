@@ -17,7 +17,7 @@
     color: $dark-gray;
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       background: $yellow;
       border-color: darken($yellow, 25%);
       color: $dark-gray;

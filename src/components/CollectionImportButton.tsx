@@ -26,6 +26,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
   const [importing, setImporting] = React.useState(false);
   const [feedback, setFeedback] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
+
   React.useEffect(() => {
     setForce(false);
     setImporting(false);
