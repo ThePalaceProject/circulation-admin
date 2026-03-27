@@ -26,14 +26,11 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
   const [importing, setImporting] = React.useState(false);
   const [feedback, setFeedback] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
-  const [showDetails, setShowDetails] = React.useState(false);
-
   React.useEffect(() => {
     setForce(false);
     setImporting(false);
     setFeedback(null);
     setSuccess(false);
-    setShowDetails(false);
   }, [collection?.id]);
 
   const supportsImport = (): boolean => {
@@ -104,15 +101,8 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
         Queue Import picks up new and changed items. Check{" "}
         <strong>Force full re-import</strong> to re-process everything.
       </p>
-      <button
-        className="collection-import-details-toggle"
-        type="button"
-        onClick={() => setShowDetails(!showDetails)}
-        aria-expanded={showDetails}
-      >
-        {showDetails ? "Less details" : "More details"}
-      </button>
-      {showDetails && (
+      <details className="collection-import-details" key={collection?.id}>
+        <summary>More details</summary>
         <dl className="collection-import-docs">
           <dt>Queue Import</dt>
           <dd>
@@ -133,7 +123,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
             re-processes all items.
           </dd>
         </dl>
-      )}
+      </details>
     </div>
   );
 
