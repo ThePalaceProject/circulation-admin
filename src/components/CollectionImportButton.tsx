@@ -81,7 +81,9 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
     ? "Queuing..."
     : "Queue Import";
 
-  const buttonClass = force ? "btn btn-warning" : "btn btn-default";
+  const buttonClass = force
+    ? "btn btn-default collection-import-button force"
+    : "btn btn-default collection-import-button";
 
   const panelContent = (
     <div className="collection-import">

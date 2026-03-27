@@ -11,6 +11,19 @@
 }
 
 .collection-import {
+  .collection-import-button.force {
+    background: darken($yellow, 8%);
+    border-color: darken($yellow, 20%);
+    color: $dark-gray;
+
+    &:hover,
+    &:focus {
+      background: $yellow;
+      border-color: darken($yellow, 25%);
+      color: $dark-gray;
+    }
+  }
+
   .collection-import-details-toggle {
     background: none;
     border: none;
