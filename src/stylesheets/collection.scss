@@ -5,7 +5,7 @@
   }
 
   i {
-    color: #AAA;
+    color: $medium-dark-gray;
     cursor: pointer;
   }
 }
@@ -28,13 +28,13 @@
     background: none;
     border: none;
     padding: 0;
-    color: #777;
+    color: $muted-gray;
     cursor: pointer;
     font-size: 0.8rem;
     margin-bottom: 1em;
 
     &:hover {
-      color: #333;
+      color: $dark-gray;
       text-decoration: underline;
     }
   }
@@ -54,7 +54,7 @@
 
     dd {
       margin-left: 0;
-      color: #555;
+      color: $muted-gray;
     }
   }
 
