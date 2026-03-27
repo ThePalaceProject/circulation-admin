@@ -11,7 +11,23 @@
 }
 
 .collection-import {
+  .collection-import-details-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #777;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-bottom: 1em;
+
+    &:hover {
+      color: #333;
+      text-decoration: underline;
+    }
+  }
+
   .collection-import-docs {
+    font-size: 0.8rem;
     margin-bottom: 1em;
 
     dt {

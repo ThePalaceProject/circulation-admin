@@ -26,12 +26,14 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
   const [importing, setImporting] = React.useState(false);
   const [feedback, setFeedback] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
+  const [showDetails, setShowDetails] = React.useState(false);
 
   React.useEffect(() => {
     setForce(false);
     setImporting(false);
     setFeedback(null);
     setSuccess(false);
+    setShowDetails(false);
   }, [collection?.id]);
 
   const supportsImport = (): boolean => {
@@ -48,7 +50,11 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
     try {
       await importCollection(collection.id, force);
       setImporting(false);
-      setFeedback("Import task queued.");
+      setFeedback(
+        force
+          ? "Full re-import task queued. All items will be re-processed — this may take longer than a regular import. Changes will appear in the catalog once processing completes."
+          : "Import task queued. New and updated items will appear in the catalog once processing completes."
+      );
       setSuccess(true);
     } catch (e) {
       const message =
@@ -67,37 +73,25 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
 
   const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
 
+  const buttonLabel = force
+    ? importing
+      ? "Queuing Full Re-import..."
+      : "Queue Full Re-import"
+    : importing
+    ? "Queuing..."
+    : "Queue Import";
+
+  const buttonClass = force ? "btn btn-warning" : "btn btn-default";
+
   const panelContent = (
     <div className="collection-import">
-      <dl className="collection-import-docs">
-        <dt>Queue Import</dt>
-        <dd>
-          Schedules a background import job that checks for new or updated items
-          from the collection source and adds them to the catalog. Only items
-          that have changed since the last import are processed. Use this when
-          new titles have been added to a collection but do not yet appear in
-          the catalog, or when you want to pick up recent changes from the
-          source.
-        </dd>
-        <dt>Force full re-import</dt>
-        <dd>
-          When checked, the import job re-processes every item in the
-          collection, regardless of whether it appears to have changed since the
-          last import. Use this to correct metadata that is out of date, or to
-          resolve issues caused by a previously incomplete import. A forced
-          re-import will take longer than a regular import because it
-          re-processes all items. Check this box <em>before</em> clicking Queue
-          Import.
-        </dd>
-      </dl>
-      {feedback && <div className={feedbackClass}>{feedback}</div>}
       <div className="collection-import-controls">
         <button
-          className="btn btn-default"
+          className={buttonClass}
           disabled={disabled || importing}
           onClick={handleImport}
         >
-          {importing ? "Queuing..." : "Queue Import"}
+          {buttonLabel}
         </button>
         <label>
           <input
@@ -109,6 +103,42 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
           Force full re-import
         </label>
       </div>
+      {feedback && <div className={feedbackClass}>{feedback}</div>}
+      <p className="description">
+        Queue Import picks up new and changed items. Check{" "}
+        <strong>Force full re-import</strong> to re-process everything.
+      </p>
+      <button
+        className="collection-import-details-toggle"
+        type="button"
+        onClick={() => setShowDetails(!showDetails)}
+        aria-expanded={showDetails}
+      >
+        {showDetails ? "Less details" : "More details"}
+      </button>
+      {showDetails && (
+        <dl className="collection-import-docs">
+          <dt>Queue Import</dt>
+          <dd>
+            Schedules a background import job that checks for new or updated
+            items from the collection source and adds them to the catalog. Only
+            items that have changed since the last import are processed. Use
+            this when new titles have been added to a collection but do not yet
+            appear in the catalog, or when you want to pick up recent changes
+            from the source.
+          </dd>
+          <dt>Force full re-import</dt>
+          <dd>
+            When checked, the import job re-processes every item in the
+            collection, regardless of whether it appears to have changed since
+            the last import. Use this to correct metadata that is out of date,
+            or to resolve issues caused by a previously incomplete import. A
+            forced re-import will take longer than a regular import because it
+            re-processes all items. Check this box <em>before</em> clicking
+            Queue Import.
+          </dd>
+        </dl>
+      )}
     </div>
   );
 
