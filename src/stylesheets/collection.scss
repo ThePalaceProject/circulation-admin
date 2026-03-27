@@ -33,7 +33,8 @@
     font-size: 0.8rem;
     margin-bottom: 1em;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       color: $dark-gray;
       text-decoration: underline;
     }
