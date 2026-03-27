@@ -82,16 +82,56 @@ describe("CollectionImportButton", () => {
     expect(screen.getByLabelText("Force full re-import")).toBeInTheDocument();
   });
 
-  it("renders usage documentation for both import options", async () => {
+  it("shows compact summary by default; detailed docs are hidden", async () => {
     const user = userEvent.setup();
     renderButton();
     await expandPanel(user);
+    expect(
+      screen.getByText(/queue import picks up new and changed items/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/schedules a background import job/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/the import job re-processes every item/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it("clicking 'More details' reveals the detailed docs", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await expandPanel(user);
+
+    const toggle = screen.getByRole("button", { name: "More details" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+    await user.click(toggle);
+
     expect(
       screen.getByText(/schedules a background import job/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/the import job re-processes every item/i)
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Less details" })
+    ).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("clicking 'Less details' hides the detailed docs again", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await expandPanel(user);
+
+    await user.click(screen.getByRole("button", { name: "More details" }));
+    expect(
+      screen.getByText(/schedules a background import job/i)
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Less details" }));
+    expect(
+      screen.queryByText(/schedules a background import job/i)
+    ).not.toBeInTheDocument();
   });
 
   it("checkbox toggles force state", async () => {
@@ -104,6 +144,43 @@ describe("CollectionImportButton", () => {
     expect(checkbox).toBeChecked();
     await user.click(checkbox);
     expect(checkbox).not.toBeChecked();
+  });
+
+  it("button text changes to 'Queue Full Re-import' when force is checked", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await expandPanel(user);
+
+    expect(
+      screen.getByRole("button", { name: "Queue Import" })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("checkbox"));
+
+    expect(
+      screen.getByRole("button", { name: "Queue Full Re-import" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Queue Import" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("button uses btn-warning class when force is checked", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await expandPanel(user);
+
+    const button = screen.getByRole("button", { name: "Queue Import" });
+    expect(button).toHaveClass("btn-default");
+    expect(button).not.toHaveClass("btn-warning");
+
+    await user.click(screen.getByRole("checkbox"));
+
+    const forceButton = screen.getByRole("button", {
+      name: "Queue Full Re-import",
+    });
+    expect(forceButton).toHaveClass("btn-warning");
+    expect(forceButton).not.toHaveClass("btn-default");
   });
 
   it("button triggers import with correct args (force=false)", async () => {
@@ -121,18 +198,39 @@ describe("CollectionImportButton", () => {
     await expandPanel(user);
     const checkbox = screen.getByRole("checkbox");
     await user.click(checkbox);
-    const button = screen.getByRole("button", { name: "Queue Import" });
+    const button = screen.getByRole("button", {
+      name: "Queue Full Re-import",
+    });
     await user.click(button);
     expect(importCollection).toHaveBeenCalledWith(42, true);
   });
 
-  it("shows success feedback with alert-success styling after import", async () => {
+  it("shows success feedback for regular import", async () => {
     const user = userEvent.setup();
     renderButton();
     await expandPanel(user);
     await user.click(screen.getByRole("button", { name: "Queue Import" }));
     await waitFor(() => {
-      const feedback = screen.getByText("Import task queued.");
+      const feedback = screen.getByText(
+        /import task queued\. new and updated items will appear/i
+      );
+      expect(feedback).toBeInTheDocument();
+      expect(feedback).toHaveClass("alert", "alert-success");
+    });
+  });
+
+  it("shows success feedback for force re-import", async () => {
+    const user = userEvent.setup();
+    renderButton();
+    await expandPanel(user);
+    await user.click(screen.getByRole("checkbox"));
+    await user.click(
+      screen.getByRole("button", { name: "Queue Full Re-import" })
+    );
+    await waitFor(() => {
+      const feedback = screen.getByText(
+        /full re-import task queued\. all items will be re-processed/i
+      );
       expect(feedback).toBeInTheDocument();
       expect(feedback).toHaveClass("alert", "alert-success");
     });
@@ -162,9 +260,13 @@ describe("CollectionImportButton", () => {
     await user.click(checkbox);
     expect(checkbox).toBeChecked();
 
-    await user.click(screen.getByRole("button", { name: "Queue Import" }));
+    await user.click(
+      screen.getByRole("button", { name: "Queue Full Re-import" })
+    );
     await waitFor(() => {
-      expect(screen.getByText("Import task queued.")).toBeInTheDocument();
+      expect(
+        screen.getByText(/full re-import task queued/i)
+      ).toBeInTheDocument();
     });
 
     const nextCollection: CollectionData = {
@@ -183,7 +285,9 @@ describe("CollectionImportButton", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("checkbox")).not.toBeChecked();
-      expect(screen.queryByText("Import task queued.")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/full re-import task queued/i)
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -213,6 +317,33 @@ describe("CollectionImportButton", () => {
     await waitFor(() => {
       expect(
         screen.getByRole("button", { name: "Queue Import" })
+      ).toBeEnabled();
+    });
+  });
+
+  it("shows 'Queuing Full Re-import...' while importing with force", async () => {
+    const user = userEvent.setup();
+    let resolveImport: () => void;
+    const pendingImport = new Promise<void>((resolve) => {
+      resolveImport = resolve;
+    });
+    const mockImport = jest.fn().mockReturnValue(pendingImport);
+    renderButton({ importCollection: mockImport });
+    await expandPanel(user);
+
+    await user.click(screen.getByRole("checkbox"));
+    await user.click(
+      screen.getByRole("button", { name: "Queue Full Re-import" })
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Queuing Full Re-import..." })
+    ).toBeDisabled();
+
+    resolveImport();
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: "Queue Full Re-import" })
       ).toBeEnabled();
     });
   });
