@@ -2,6 +2,9 @@ import * as React from "react";
 import { Panel } from "library-simplified-reusable-components";
 import { CollectionData, ProtocolData } from "../interfaces";
 
+const IMPORT_DEFAULT_LABEL_TEXT = "Queue Import";
+const IMPORT_FORCED_FULL_LABEL_TEXT = "Force full re-import";
+
 export interface CollectionImportButtonProps {
   collection: CollectionData;
   protocols: ProtocolData[];
@@ -94,18 +97,19 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
             onChange={(e) => setForce(e.target.checked)}
             disabled={disabled || importing}
           />{" "}
-          Force full re-import
+          {IMPORT_FORCED_FULL_LABEL_TEXT}
         </label>
       </div>
       {feedback && <div className={feedbackClass}>{feedback}</div>}
       <p className="description">
-        Queue Import picks up new and changed items. Check{" "}
-        <strong>Force full re-import</strong> to re-process everything.
+        {IMPORT_DEFAULT_LABEL_TEXT} picks up new and changed items. Check{" "}
+        <strong>{IMPORT_FORCED_FULL_LABEL_TEXT}</strong> to re-process
+        everything.
       </p>
       <details className="collection-import-details" key={collection?.id}>
         <summary>More details</summary>
         <dl className="collection-import-docs">
-          <dt>Queue Import</dt>
+          <dt>{IMPORT_DEFAULT_LABEL_TEXT}</dt>
           <dd>
             Schedules a background import job that checks for new or updated
             items from the collection source and adds them to the catalog. Only
@@ -114,7 +118,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
             appear in the catalog, or when you want to pick up recent changes
             from the source.
           </dd>
-          <dt>Force full re-import</dt>
+          <dt>{IMPORT_FORCED_FULL_LABEL_TEXT}</dt>
           <dd>
             When checked, the import job re-processes every item in the
             collection, regardless of whether it appears to have changed since
