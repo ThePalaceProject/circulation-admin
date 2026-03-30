@@ -5,12 +5,66 @@
   }
 
   i {
-    color: #AAA;
+    color: $medium-dark-gray;
     cursor: pointer;
   }
 }
 
 .collection-import {
+  .collection-import-button.force {
+    background: darken($yellow, 8%);
+    border-color: darken($yellow, 20%);
+    color: $dark-gray;
+
+    &:hover,
+    &:focus-visible {
+      background: $yellow;
+      border-color: darken($yellow, 25%);
+      color: $dark-gray;
+    }
+  }
+
+  details.collection-import-details {
+    margin-bottom: 1em;
+
+    summary {
+      list-style: none;
+      color: $dark-gray;
+      cursor: pointer;
+      font-size: 0.8rem;
+      text-decoration: underline;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: $blue-dark;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .collection-import-docs {
+    font-size: 0.8rem;
+    margin-bottom: 1em;
+
+    dt {
+      font-weight: bold;
+      margin-top: 0.75em;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    dd {
+      margin-left: 0;
+      color: $dark-gray;
+    }
+  }
+
   .collection-import-controls {
     display: flex;
     align-items: center;

@@ -2,6 +2,9 @@ import * as React from "react";
 import { Panel } from "library-simplified-reusable-components";
 import { CollectionData, ProtocolData } from "../interfaces";
 
+const IMPORT_DEFAULT_LABEL_TEXT = "Queue Import";
+const IMPORT_FORCED_FULL_LABEL_TEXT = "Force full re-import";
+
 export interface CollectionImportButtonProps {
   collection: CollectionData;
   protocols: ProtocolData[];
@@ -48,7 +51,11 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
     try {
       await importCollection(collection.id, force);
       setImporting(false);
-      setFeedback("Import task queued.");
+      setFeedback(
+        force
+          ? "Full re-import task queued. All items will be re-processed — this may take longer than a regular import. Changes will appear in the catalog once processing completes."
+          : "Import task queued. New and updated items will appear in the catalog once processing completes."
+      );
       setSuccess(true);
     } catch (e) {
       const message =
@@ -67,16 +74,21 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
 
   const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
 
+  const buttonLabel = getButtonLabel(force, importing);
+
+  const buttonClass = force
+    ? "btn btn-default collection-import-button force"
+    : "btn btn-default collection-import-button";
+
   const panelContent = (
     <div className="collection-import">
-      {feedback && <div className={feedbackClass}>{feedback}</div>}
       <div className="collection-import-controls">
         <button
-          className="btn btn-default"
+          className={buttonClass}
           disabled={disabled || importing}
           onClick={handleImport}
         >
-          {importing ? "Queuing..." : "Queue Import"}
+          {buttonLabel}
         </button>
         <label>
           <input
@@ -85,9 +97,38 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
             onChange={(e) => setForce(e.target.checked)}
             disabled={disabled || importing}
           />{" "}
-          Force full re-import
+          {IMPORT_FORCED_FULL_LABEL_TEXT}
         </label>
       </div>
+      {feedback && <div className={feedbackClass}>{feedback}</div>}
+      <p className="description">
+        {IMPORT_DEFAULT_LABEL_TEXT} picks up new and changed items. Check{" "}
+        <strong>{IMPORT_FORCED_FULL_LABEL_TEXT}</strong> to re-process
+        everything.
+      </p>
+      <details className="collection-import-details" key={collection?.id}>
+        <summary>More details</summary>
+        <dl className="collection-import-docs">
+          <dt>{IMPORT_DEFAULT_LABEL_TEXT}</dt>
+          <dd>
+            Schedules a background import job that checks for new or updated
+            items from the collection source and adds them to the catalog. Only
+            items that have changed since the last import are processed. Use
+            this when new titles have been added to a collection but do not yet
+            appear in the catalog, or when you want to pick up recent changes
+            from the source.
+          </dd>
+          <dt>{IMPORT_FORCED_FULL_LABEL_TEXT}</dt>
+          <dd>
+            When checked, the import job re-processes every item in the
+            collection, regardless of whether it appears to have changed since
+            the last import. Use this to correct metadata that is out of date,
+            or to resolve issues caused by a previously incomplete import. A
+            forced re-import will take longer than a regular import because it
+            re-processes all items.
+          </dd>
+        </dl>
+      </details>
     </div>
   );
 
@@ -95,5 +136,12 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
     <Panel id="collection-import" headerText="Import" content={panelContent} />
   );
 };
+
+function getButtonLabel(force: boolean, importing: boolean): string {
+  if (force) {
+    return importing ? "Queuing Full Re-import..." : "Queue Full Re-import";
+  }
+  return importing ? "Queuing..." : "Queue Import";
+}
 
 export default CollectionImportButton;
