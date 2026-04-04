@@ -138,6 +138,48 @@ There are end-to-end tests that run on Nightwatch. This selenium-based test runn
 
 To set up credentials and run the tests, check out the [README](/tests/README.md) in `/tests/.
 
+## Patron Blocking Rules — Keeping Documentation in Sync
+
+The help modal displayed alongside the patron blocking rules editor renders
+documentation sourced from
+[`circulation/docs/FUNCTIONS.md`](../circulation/docs/FUNCTIONS.md).
+Because `circulation-admin` is a separate package, this content is
+pre-processed and committed as a generated TypeScript file:
+
+```
+src/content/patronBlockingFunctionsHtml.ts   ← auto-generated, do not edit by hand
+```
+
+### When to run the sync script
+
+Run the sync script any time `circulation/docs/FUNCTIONS.md` is updated:
+
+```bash
+npm run sync-patron-blocking-docs
+```
+
+The script (`scripts/syncPatronBlockingDocs.js`) reads the markdown from the
+sibling `circulation` repository, converts it to HTML, and overwrites
+`src/content/patronBlockingFunctionsHtml.ts`. Commit the regenerated file
+alongside any other changes.
+
+### Expected repository layout
+
+The script assumes both repositories are checked out as siblings:
+
+```
+/path/to/
+├── circulation/          ← Palace Project Circulation Manager
+│   └── docs/
+│       └── FUNCTIONS.md  ← source of truth for allowed functions
+└── circulation-admin/    ← this repository
+    └── src/content/
+        └── patronBlockingFunctionsHtml.ts  ← generated output
+```
+
+If your layout differs, update the source path at the top of
+`scripts/syncPatronBlockingDocs.js`.
+
 ## Debugging
 
 The [Redux DevTools browser extension](https://github.com/reduxjs/redux-devtools/tree/main/extension) may be used to easily inspect app states and state transitions.
