@@ -18,7 +18,10 @@ function shiftEntries<T>(
   return Object.fromEntries(
     Object.entries(map)
       .filter(([k]) => Number(k) !== removedIndex)
-      .map(([k, v]) => [Number(k) > removedIndex ? Number(k) - 1 : Number(k), v])
+      .map(([k, v]) => [
+        Number(k) > removedIndex ? Number(k) - 1 : Number(k),
+        v,
+      ])
   ) as { [k: number]: T };
 }
 
@@ -199,8 +202,12 @@ const PatronBlockingRulesEditor = React.forwardRef<
     const [serverErrors, setServerErrors] = React.useState<ServerErrors>({});
     const [showHelp, setShowHelp] = React.useState(false);
 
-    const { availableFields, fieldsLoading, fieldsError, updateFields } =
-      useAvailableFields(serviceId, csrfToken);
+    const {
+      availableFields,
+      fieldsLoading,
+      fieldsError,
+      updateFields,
+    } = useAvailableFields(serviceId, csrfToken);
 
     // Keep stable refs to the latest callbacks so the useEffects below do not
     // need them as dependencies (avoids extra calls when a class-component parent
@@ -291,7 +298,14 @@ const PatronBlockingRulesEditor = React.forwardRef<
         });
       }
       if (field === "rule") {
-        setServerErrors((prev) => ({ ...prev, [index]: null }));
+        // Use an empty-string sentinel to signal "pending re-validation":
+        // non-null so hasServerError stays true (blocks Save), but falsy so
+        // no error message is rendered in the UI. Cleared to null on success
+        // or replaced with an error string on failure by handleRuleBlur.
+        setServerErrors((prev) => ({
+          ...prev,
+          [index]: value ? "" : null,
+        }));
       }
     };
 
