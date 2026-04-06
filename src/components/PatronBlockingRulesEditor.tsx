@@ -332,15 +332,8 @@ const PatronBlockingRulesEditor = React.forwardRef<
     return (
       <div className="patron-blocking-rules-editor">
         <div className="patron-blocking-rules-header">
-          <label className="control-label">Patron Blocking Rules</label>
-          <div className="patron-blocking-rules-header-actions">
-            <Button
-              type="button"
-              className="add-patron-blocking-rule"
-              disabled={disabled || hasIncompleteRule}
-              callback={addRule}
-              content="Add Rule"
-            />
+          <div className="patron-blocking-rules-label-group">
+            <label className="control-label">Patron Blocking Rules</label>
             <button
               type="button"
               className="patron-blocking-rules-help-btn"
@@ -350,6 +343,15 @@ const PatronBlockingRulesEditor = React.forwardRef<
             >
               ?
             </button>
+          </div>
+          <div className="patron-blocking-rules-header-actions">
+            <Button
+              type="button"
+              className="add-patron-blocking-rule"
+              disabled={disabled || hasIncompleteRule}
+              callback={addRule}
+              content="Add Rule"
+            />
           </div>
         </div>
         {serverErrorMessage && (
