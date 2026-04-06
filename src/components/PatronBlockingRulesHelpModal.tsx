@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Modal } from "react-bootstrap";
+import { Button } from "library-simplified-reusable-components";
 import patronBlockingFunctionsHtml from "../content/patronBlockingFunctionsHtml";
 
 const SIMPLEEVAL_URL = "https://github.com/danthedeckie/simpleeval";
@@ -111,6 +112,14 @@ export function PatronBlockingRulesHelpModal({
           </p>
         </section>
       </Modal.Body>
+      <Modal.Footer>
+        <Button
+          className="inverted left-align small inline"
+          callback={onHide}
+          content="Close"
+          title="Close help modal"
+        />
+      </Modal.Footer>
     </Modal>
   );
 }

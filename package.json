@@ -114,6 +114,7 @@
     "jsdom": "^20.0.3",
     "json-loader": "^0.5.4",
     "lint-staged": "^10.4.0",
+    "marked": "^17.0.6",
     "mini-css-extract-plugin": "1.6.0",
     "mocha": "^10.2.0",
     "msw": "^2.7.3",

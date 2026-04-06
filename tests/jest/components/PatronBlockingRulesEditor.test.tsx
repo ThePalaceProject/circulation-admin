@@ -2,11 +2,22 @@ import * as React from "react";
 import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as fetchMock from "fetch-mock-jest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PatronBlockingRulesEditor, {
   PatronBlockingRulesEditorHandle,
 } from "../../../src/components/PatronBlockingRulesEditor";
 import { PatronBlockingRule } from "../../../src/interfaces";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
+
+/** Renders with a fresh QueryClient so useQuery hooks work in tests. */
+function renderEditor(element: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{element}</QueryClientProvider>
+  );
+}
 
 const VALIDATE_URL = "/admin/patron_auth_service_validate_patron_blocking_rule";
 
@@ -53,7 +64,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const user = userEvent.setup();
     const onChange = jest.fn();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[]}
         serviceId={42}
@@ -71,7 +82,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const user = userEvent.setup();
     const onChange = jest.fn();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[]}
         serviceId={42}
@@ -98,7 +109,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
       body: { detail: "Bad expression" },
     });
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[]}
         serviceId={42}
@@ -125,7 +136,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
       { name: "Rule B", rule: "expr_b" },
     ];
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={rules}
         serviceId={42}
@@ -155,7 +166,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
       { name: "Rule A", rule: "expr_b" }, // duplicate
     ];
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={rules}
         serviceId={42}
@@ -181,7 +192,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const user = userEvent.setup();
     const onChange = jest.fn();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[]}
         csrfToken="tok"
@@ -200,7 +211,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const user = userEvent.setup();
     const onChange = jest.fn();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[]}
         serviceId={42}
@@ -221,7 +232,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const user = userEvent.setup();
     const onChange = jest.fn();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[]}
         csrfToken="tok"
@@ -242,7 +253,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const user = userEvent.setup();
     const onChange = jest.fn();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[]}
         serviceId={42}
@@ -278,7 +289,7 @@ describe("PatronBlockingRulesEditor — save-blocking (onValidationStateChange)"
     const onChange = jest.fn();
     const rules: PatronBlockingRule[] = [{ name: "Rule A", rule: "expr_a" }];
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={rules}
         serviceId={42}
@@ -312,7 +323,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
   it("calls the validation API when the user leaves the Rule Expression field", async () => {
     const user = userEvent.setup();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -340,7 +351,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
       body: { detail: "Unknown placeholder: {x}" },
     });
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -360,7 +371,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
       body: { detail: "Bad expression" },
     });
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -382,7 +393,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
     const user = userEvent.setup();
     fetchMock.mockReset();
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -407,7 +418,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
     });
 
     // No serviceId — simulates a new service that has not yet been saved
-    render(<PatronBlockingRulesEditor value={[]} csrfToken="tok" />);
+    renderEditor(<PatronBlockingRulesEditor value={[]} csrfToken="tok" />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     await user.type(screen.getByLabelText(/Rule Name/i), "My Rule");
@@ -433,7 +444,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
       body: { detail: "Bad expression syntax" },
     });
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor
         value={[{ name: "Rule A", rule: "expr_a" }]}
         serviceId={42}
@@ -479,7 +490,7 @@ describe("PatronBlockingRulesEditor — on-blur server validation", () => {
       body: { detail: "Syntax error in rule" },
     });
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -517,13 +528,13 @@ describe("PatronBlockingRulesEditor", () => {
   });
 
   it("renders with no rules when no value provided", () => {
-    render(<PatronBlockingRulesEditor />);
+    renderEditor(<PatronBlockingRulesEditor />);
     expect(screen.getByText(/No patron blocking rules defined/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: /Add Rule/i })).toBeTruthy();
   });
 
   it("renders existing rules from value prop", () => {
-    render(<PatronBlockingRulesEditor value={existingRules} />);
+    renderEditor(<PatronBlockingRulesEditor value={existingRules} />);
     expect(screen.getAllByLabelText(/Rule Name/i)).toHaveLength(2);
     expect(screen.getAllByLabelText(/Rule Expression/i)).toHaveLength(2);
 
@@ -542,7 +553,7 @@ describe("PatronBlockingRulesEditor", () => {
 
   it("adds a new blank rule row when Add Rule is clicked", async () => {
     const user = userEvent.setup();
-    render(<PatronBlockingRulesEditor value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor value={[]} />);
 
     expect(screen.queryByLabelText(/Rule Name/i)).toBeNull();
 
@@ -555,7 +566,7 @@ describe("PatronBlockingRulesEditor", () => {
 
   it("removes a rule row when Delete is clicked", async () => {
     const user = userEvent.setup();
-    render(<PatronBlockingRulesEditor value={existingRules} />);
+    renderEditor(<PatronBlockingRulesEditor value={existingRules} />);
 
     expect(screen.getAllByLabelText(/Rule Name/i)).toHaveLength(2);
 
@@ -572,7 +583,7 @@ describe("PatronBlockingRulesEditor", () => {
   it("getValue returns current rules including edits", async () => {
     const user = userEvent.setup();
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={[]} />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
 
@@ -596,12 +607,12 @@ describe("PatronBlockingRulesEditor", () => {
 
   it("getValue returns an empty array when no rules exist", () => {
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={[]} />);
     expect(ref.current.getValue()).toEqual([]);
   });
 
   it("disables all editing inputs and buttons when disabled prop is true", () => {
-    render(<PatronBlockingRulesEditor value={existingRules} disabled={true} />);
+    renderEditor(<PatronBlockingRulesEditor value={existingRules} disabled={true} />);
 
     // The Help button stays enabled even in disabled mode (read-only affordance).
     const editingButtons = screen
@@ -616,13 +627,13 @@ describe("PatronBlockingRulesEditor", () => {
   });
 
   it("does not show 'no rules' message when rules exist", () => {
-    render(<PatronBlockingRulesEditor value={existingRules} />);
+    renderEditor(<PatronBlockingRulesEditor value={existingRules} />);
     expect(screen.queryByText(/No patron blocking rules defined/i)).toBeNull();
   });
 
   it("disables Add Rule button when an existing rule is missing required fields", async () => {
     const user = userEvent.setup();
-    render(<PatronBlockingRulesEditor value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor value={[]} />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
 
@@ -631,7 +642,7 @@ describe("PatronBlockingRulesEditor", () => {
 
   it("re-enables Add Rule button once all required fields are filled", async () => {
     const user = userEvent.setup();
-    render(<PatronBlockingRulesEditor value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor value={[]} />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     expect(screen.getByRole("button", { name: /Add Rule/i })).toBeDisabled();
@@ -654,7 +665,7 @@ describe("PatronBlockingRulesEditor", () => {
       { name: "Rule B", rule: "expr_b" },
     ];
 
-    render(<PatronBlockingRulesEditor value={rules} serviceId={42} />);
+    renderEditor(<PatronBlockingRulesEditor value={rules} serviceId={42} />);
 
     // Rename rule B to match rule A
     const nameInputs = screen.getAllByLabelText(
@@ -675,7 +686,7 @@ describe("PatronBlockingRulesEditor", () => {
       { name: "Rule A", rule: "expr_b" }, // duplicate
     ];
 
-    render(<PatronBlockingRulesEditor value={rules} serviceId={42} />);
+    renderEditor(<PatronBlockingRulesEditor value={rules} serviceId={42} />);
 
     // Both rows should start with the duplicate error
     expect(screen.getAllByText(/Rule Name must be unique/i)).toHaveLength(2);
@@ -698,13 +709,13 @@ describe("PatronBlockingRulesEditor", () => {
       response: JSON.stringify({ detail: "Internal server error" }),
       url: "",
     };
-    render(<PatronBlockingRulesEditor value={[]} error={error} />);
+    renderEditor(<PatronBlockingRulesEditor value={[]} error={error} />);
     expect(screen.getByText(/Internal server error/i)).toBeTruthy();
   });
 
   it("getValue does not include internal _id field in returned rules", () => {
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={existingRules} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={existingRules} />);
     const value = ref.current.getValue();
     value.forEach((rule) => {
       expect(rule).not.toHaveProperty("_id");
@@ -713,7 +724,7 @@ describe("PatronBlockingRulesEditor", () => {
 
   it("hides the 'no rules' message once a rule is added", async () => {
     const user = userEvent.setup();
-    render(<PatronBlockingRulesEditor value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor value={[]} />);
     expect(screen.getByText(/No patron blocking rules defined/i)).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
@@ -733,7 +744,7 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
 
   it("returns all rules (stripped of _id) when every rule has name and expression", () => {
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={existingRules} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={existingRules} />);
 
     let result: PatronBlockingRule[] | null;
     act(() => {
@@ -753,7 +764,7 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
   it("returns null and shows a name error when a rule is missing its name", async () => {
     const user = userEvent.setup();
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={[]} />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     // Leave name empty, fill only the expression
@@ -772,7 +783,7 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
   it("returns null and shows an expression error when a rule is missing its expression", async () => {
     const user = userEvent.setup();
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={[]} />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
     // Fill only the name, leave expression empty
@@ -791,7 +802,7 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
   it("returns null and shows both errors when a rule has neither name nor expression", async () => {
     const user = userEvent.setup();
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={[]} />);
 
     // Add rule but leave both fields empty
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
@@ -809,7 +820,7 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
   it("clears prior client errors on a subsequent call that succeeds", async () => {
     const user = userEvent.setup();
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={[]} />);
 
     await user.click(screen.getByRole("button", { name: /Add Rule/i }));
 
@@ -838,7 +849,7 @@ describe("PatronBlockingRulesEditor — validateAndGetValue", () => {
 
   it("returns an empty array (not null) when there are no rules at all", () => {
     const ref = React.createRef<PatronBlockingRulesEditorHandle>();
-    render(<PatronBlockingRulesEditor ref={ref} value={[]} />);
+    renderEditor(<PatronBlockingRulesEditor ref={ref} value={[]} />);
 
     let result: PatronBlockingRule[] | null;
     act(() => {
@@ -856,7 +867,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
 
   it("renders a Help button in the header", () => {
     fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
     expect(
@@ -866,7 +877,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
 
   it("prefetches available fields on mount when serviceId is provided", async () => {
     fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
     // The prefetch call is fired on mount.
@@ -881,7 +892,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
   it("opens the help modal when the Help button is clicked", async () => {
     const user = userEvent.setup();
     fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -895,7 +906,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
   it("shows available fields in the help modal after a successful prefetch", async () => {
     const user = userEvent.setup();
     fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -923,7 +934,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
   it("shows an unavailability message when serviceId is not provided", async () => {
     const user = userEvent.setup();
     // No serviceId → prefetch skipped; no fetch call expected.
-    render(<PatronBlockingRulesEditor value={[]} csrfToken="tok" />);
+    renderEditor(<PatronBlockingRulesEditor value={[]} csrfToken="tok" />);
 
     await user.click(
       screen.getByRole("button", { name: /patron blocking rules help/i })
@@ -943,7 +954,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
       body: { detail: "Patron auth service not found." },
     });
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={99} csrfToken="tok" />
     );
 
@@ -961,7 +972,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
     const updatedFields = { fines: "5.00", new_field: "hello" };
     fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
 
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -992,7 +1003,7 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
   it("closes the help modal when the close button is clicked", async () => {
     const user = userEvent.setup();
     fetchMock.post(VALIDATE_URL, SUCCESS_RESPONSE);
-    render(
+    renderEditor(
       <PatronBlockingRulesEditor value={[]} serviceId={42} csrfToken="tok" />
     );
 
@@ -1001,8 +1012,8 @@ describe("PatronBlockingRulesEditor — help modal and available fields prefetch
     );
     expect(screen.getByText(/Patron Blocking Rules — Help/i)).toBeTruthy();
 
-    // Close via the modal's × button
-    await user.click(screen.getByRole("button", { name: /close/i }));
+    // Close via the modal's × button (first close-named button; footer Close is last).
+    await user.click(screen.getAllByRole("button", { name: /close/i })[0]);
     await waitFor(() =>
       expect(screen.queryByText(/Patron Blocking Rules — Help/i)).toBeNull()
     );

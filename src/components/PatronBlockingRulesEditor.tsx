@@ -6,6 +6,21 @@ import EditableInput from "./EditableInput";
 import WithRemoveButton from "./WithRemoveButton";
 import { validatePatronBlockingRuleExpression } from "../api/patronBlockingRules";
 import PatronBlockingRulesHelpModal from "./PatronBlockingRulesHelpModal";
+import { useAvailableFields } from "../hooks/useAvailableFields";
+
+/** Shifts a numeric-indexed map after an entry at `removedIndex` is deleted.
+ *  Entries below the removed index are kept as-is; entries above are re-keyed
+ *  to index - 1; the entry at the removed index is dropped. */
+function shiftEntries<T>(
+  map: { [k: number]: T },
+  removedIndex: number
+): { [k: number]: T } {
+  return Object.fromEntries(
+    Object.entries(map)
+      .filter(([k]) => Number(k) !== removedIndex)
+      .map(([k, v]) => [Number(k) > removedIndex ? Number(k) - 1 : Number(k), v])
+  ) as { [k: number]: T };
+}
 
 /** Returns the set of non-empty rule names that appear more than once. */
 function getDuplicateNameSet(rules: RuleEntry[]): Set<string> {
@@ -182,15 +197,10 @@ const PatronBlockingRulesEditor = React.forwardRef<
     );
     const [clientErrors, setClientErrors] = React.useState<ClientErrors>({});
     const [serverErrors, setServerErrors] = React.useState<ServerErrors>({});
-
-    // Help modal state
     const [showHelp, setShowHelp] = React.useState(false);
-    const [availableFields, setAvailableFields] = React.useState<Record<
-      string,
-      unknown
-    > | null>(null);
-    const [fieldsLoading, setFieldsLoading] = React.useState(false);
-    const [fieldsError, setFieldsError] = React.useState<string | null>(null);
+
+    const { availableFields, fieldsLoading, fieldsError, updateFields } =
+      useAvailableFields(serviceId, csrfToken);
 
     // Keep stable refs to the latest callbacks so the useEffects below do not
     // need them as dependencies (avoids extra calls when a class-component parent
@@ -219,53 +229,6 @@ const PatronBlockingRulesEditor = React.forwardRef<
       );
       onServerValidationStateChangeRef.current?.(hasServerError);
     }, [serverErrors]);
-
-    // Eagerly pre-fetch available template fields on mount (and whenever
-    // serviceId changes) by calling the validation endpoint with a trivial
-    // passing rule.  This ensures the template-variable table in the help
-    // modal is populated before the user opens it.
-    React.useEffect(() => {
-      if (serviceId === undefined) {
-        setAvailableFields(null);
-        setFieldsError(
-          "Save the service before template variables can be fetched."
-        );
-        return;
-      }
-
-      let cancelled = false;
-      setFieldsLoading(true);
-      setFieldsError(null);
-
-      const trivialRule: PatronBlockingRule = {
-        name: "__prefetch__",
-        rule: "True",
-      };
-      validatePatronBlockingRuleExpression(serviceId, trivialRule, csrfToken)
-        .then((result) => {
-          if (cancelled) return;
-          if (result.error) {
-            setFieldsError(result.error);
-          } else if (result.availableFields) {
-            setAvailableFields(result.availableFields);
-          } else {
-            setFieldsError(
-              "Available fields could not be retrieved. Check that test credentials are configured."
-            );
-          }
-        })
-        .catch(() => {
-          if (cancelled) return;
-          setFieldsError("Failed to fetch available fields.");
-        })
-        .finally(() => {
-          if (!cancelled) setFieldsLoading(false);
-        });
-
-      return () => {
-        cancelled = true;
-      };
-    }, [serviceId, csrfToken]);
 
     const serverErrorMessage = extractErrorMessage(error);
 
@@ -309,26 +272,8 @@ const PatronBlockingRulesEditor = React.forwardRef<
 
     const removeRule = (index: number) => {
       setRules((prev) => prev.filter((_, i) => i !== index));
-      setClientErrors((prev) => {
-        const next: ClientErrors = {};
-        Object.entries(prev).forEach(([key, val]) => {
-          const k = Number(key);
-          if (k < index) next[k] = val;
-          else if (k > index) next[k - 1] = val;
-          // k === index is dropped
-        });
-        return next;
-      });
-      setServerErrors((prev) => {
-        const next: ServerErrors = {};
-        Object.entries(prev).forEach(([key, val]) => {
-          const k = Number(key);
-          if (k < index) next[k] = val;
-          else if (k > index) next[k - 1] = val;
-          // k === index is dropped
-        });
-        return next;
-      });
+      setClientErrors((prev) => shiftEntries(prev, index));
+      setServerErrors((prev) => shiftEntries(prev, index));
     };
 
     const updateRule = (
@@ -361,9 +306,9 @@ const PatronBlockingRulesEditor = React.forwardRef<
         csrfToken
       );
       setServerErrors((prev) => ({ ...prev, [index]: result.error }));
-      // Keep the most-recent non-null available fields snapshot.
+      // Keep the query cache up-to-date with the most-recent non-null snapshot.
       if (result.availableFields) {
-        setAvailableFields(result.availableFields);
+        updateFields(result.availableFields);
       }
     };
 

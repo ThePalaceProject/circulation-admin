@@ -1,3 +1,7 @@
+<!-- REFERENCE COPY — do not edit here.
+     The source of truth is circulation/docs/FUNCTIONS.md.
+     Run `npm run sync-patron-blocking-docs` after updating that file. -->
+
 # Patron Blocking Rules — Allowed Functions
 
 Patron blocking rule expressions are evaluated by a locked-down
