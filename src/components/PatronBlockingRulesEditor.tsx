@@ -71,7 +71,11 @@ export interface PatronBlockingRulesEditorHandle {
 
 type RuleEntry = PatronBlockingRule & { _id: number };
 type ClientErrors = { [index: number]: { name?: boolean; rule?: boolean } };
-type ServerErrors = { [index: number]: string | null };
+type ValidationState =
+  | { kind: "pending" }
+  | { kind: "valid" }
+  | { kind: "error"; message: string };
+type ServerErrors = { [index: number]: ValidationState | undefined };
 
 interface RuleFormListItemProps {
   rule: RuleEntry;
@@ -79,7 +83,7 @@ interface RuleFormListItemProps {
   disabled: boolean;
   rowErrors: { name?: boolean; rule?: boolean };
   nameDuplicateError?: boolean;
-  serverRuleError?: string | null;
+  serverValidationState?: ValidationState;
   error?: FetchErrorData;
   onRemove: () => void;
   onUpdate: (field: keyof PatronBlockingRule, value: string) => void;
@@ -92,7 +96,7 @@ function RuleFormListItem({
   disabled,
   rowErrors,
   nameDuplicateError,
-  serverRuleError,
+  serverValidationState,
   error,
   onRemove,
   onUpdate,
@@ -134,9 +138,9 @@ function RuleFormListItem({
               Rule Expression is required.
             </p>
           )}
-          {serverRuleError && (
+          {serverValidationState?.kind === "error" && (
             <p className="patron-blocking-rule-field-warning text-warning">
-              {serverRuleError}
+              {serverValidationState.message}
             </p>
           )}
           {/* This div captures the focusout event that bubbles up from the
@@ -232,7 +236,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
 
     React.useEffect(() => {
       const hasServerError = Object.values(serverErrors).some(
-        (msg) => msg !== null && msg !== undefined
+        (s) => s?.kind === "pending" || s?.kind === "error"
       );
       onServerValidationStateChangeRef.current?.(hasServerError);
     }, [serverErrors]);
@@ -298,13 +302,9 @@ const PatronBlockingRulesEditor = React.forwardRef<
         });
       }
       if (field === "rule") {
-        // Use an empty-string sentinel to signal "pending re-validation":
-        // non-null so hasServerError stays true (blocks Save), but falsy so
-        // no error message is rendered in the UI. Cleared to null on success
-        // or replaced with an error string on failure by handleRuleBlur.
         setServerErrors((prev) => ({
           ...prev,
-          [index]: value ? "" : null,
+          [index]: value ? { kind: "pending" } : undefined,
         }));
       }
     };
@@ -319,7 +319,12 @@ const PatronBlockingRulesEditor = React.forwardRef<
         rule,
         csrfToken
       );
-      setServerErrors((prev) => ({ ...prev, [index]: result.error }));
+      setServerErrors((prev) => ({
+        ...prev,
+        [index]: result.error
+          ? { kind: "error", message: result.error }
+          : { kind: "valid" },
+      }));
       // Keep the query cache up-to-date with the most-recent non-null snapshot.
       if (result.availableFields) {
         updateFields(result.availableFields);
@@ -373,7 +378,7 @@ const PatronBlockingRulesEditor = React.forwardRef<
               nameDuplicateError={
                 !!rule.name && duplicateNameSet.has(rule.name)
               }
-              serverRuleError={serverErrors[index]}
+              serverValidationState={serverErrors[index]}
               error={error}
               onRemove={() => removeRule(index)}
               onUpdate={(field, value) => updateRule(index, field, value)}
