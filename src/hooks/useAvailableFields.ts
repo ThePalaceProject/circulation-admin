@@ -31,7 +31,10 @@ export function useAvailableFields(
   csrfToken: string | undefined
 ): UseAvailableFieldsResult {
   const queryClient = useQueryClient();
-  const queryKey = ["patron-blocking-fields", serviceId] as const;
+  const queryKey = React.useMemo(
+    () => ["patron-blocking-fields", serviceId] as const,
+    [serviceId]
+  );
 
   const { data, isInitialLoading: isLoading, error } = useQuery({
     queryKey,
