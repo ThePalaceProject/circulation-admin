@@ -60,8 +60,7 @@ export function useAvailableFields(
     (fields: Record<string, unknown>) => {
       queryClient.setQueryData(queryKey, fields);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [queryClient, serviceId]
+    [queryClient, queryKey]
   );
 
   const fieldsError =
