@@ -87,7 +87,6 @@ export class IndividualAdmins extends EditableConfigList<
       });
     }
 
-    result.sort((a, b) => a.label.localeCompare(b.label));
     return result;
   }
 
@@ -102,18 +101,10 @@ export class IndividualAdmins extends EditableConfigList<
     return count === 0 ? "no roles" : count === 1 ? "1 role" : `${count} roles`;
   }
 
-  protected renderAssociatedSection(item: IndividualAdminData): JSX.Element {
-    const summary = this.getRolesSummary(item);
-    return (
-      <ul className="associated-libraries">
-        {summary.map((entry, i) => (
-          <li key={i}>
-            {entry.href ? <a href={entry.href}>{entry.label}</a> : entry.label}
-            {entry.suffix}
-          </li>
-        ))}
-      </ul>
-    );
+  protected getAssociatedEntries(
+    item: IndividualAdminData
+  ): Array<{ label: string; suffix?: string; href?: string }> {
+    return this.getRolesSummary(item);
   }
 
   canCreate() {

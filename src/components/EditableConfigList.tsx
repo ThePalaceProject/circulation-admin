@@ -242,8 +242,42 @@ export abstract class GenericEditableConfigList<
       : `${count} libraries`;
   }
 
+  protected getAssociatedEntries(
+    item: any
+  ): Array<{ label: string; suffix?: string; href?: string }> {
+    const libraries: Array<{ short_name: string }> = item?.libraries || [];
+    const allLibraries: Array<{
+      short_name: string;
+      name?: string;
+      uuid?: string;
+    }> = (this.props.data as any)?.allLibraries || [];
+    return libraries.map((lib) => {
+      const libraryData = allLibraries.find(
+        (l) => l.short_name === lib.short_name
+      );
+      return {
+        label: libraryData?.name || lib.short_name,
+        href: libraryData?.uuid
+          ? `/admin/web/config/libraries/edit/${libraryData.uuid}`
+          : undefined,
+      };
+    });
+  }
+
   protected renderAssociatedSection(item: any): JSX.Element {
-    return this.renderAssociatedLibraries(item);
+    const entries = this.getAssociatedEntries(item).sort((a, b) =>
+      a.label.localeCompare(b.label)
+    );
+    return (
+      <ul className="associated-libraries">
+        {entries.map((entry, i) => (
+          <li key={i}>
+            {entry.href ? <a href={entry.href}>{entry.label}</a> : entry.label}
+            {entry.suffix}
+          </li>
+        ))}
+      </ul>
+    );
   }
 
   renderLi(item, index): JSX.Element {
@@ -353,34 +387,6 @@ export abstract class GenericEditableConfigList<
       }
     }
     this.setState({ expandedItems: newExpandedItems });
-  }
-
-  renderAssociatedLibraries(item: any): JSX.Element {
-    const libraries: Array<{ short_name: string }> = item.libraries;
-    const allLibraries: Array<{
-      short_name: string;
-      name?: string;
-      uuid?: string;
-    }> = (this.props.data as any)?.allLibraries || [];
-
-    return (
-      <ul className="associated-libraries">
-        {libraries.map((lib) => {
-          const libraryData = allLibraries.find(
-            (l) => l.short_name === lib.short_name
-          );
-          const name = libraryData?.name || lib.short_name;
-          const href = libraryData?.uuid
-            ? `/admin/web/config/libraries/edit/${libraryData.uuid}`
-            : null;
-          return (
-            <li key={lib.short_name}>
-              {href ? <a href={href}>{name}</a> : name}
-            </li>
-          );
-        })}
-      </ul>
-    );
   }
 
   label(item): string {
