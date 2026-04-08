@@ -241,21 +241,6 @@ export abstract class GenericEditableConfigList<
     return (
       <li key={index}>
         <div className="item-header">
-          <a
-            className="btn small edit-item"
-            href={this.urlBase + "edit/" + item[this.identifierKey]}
-          >
-            {this.canEdit(item) ? (
-              <span>
-                Edit <PencilIcon />
-              </span>
-            ) : (
-              <span>
-                View <VisibleIcon />
-              </span>
-            )}
-          </a>
-
           <h3>
             {libraryCount !== null && (
               <button
@@ -287,6 +272,21 @@ export abstract class GenericEditableConfigList<
               )}
             </span>
           </h3>
+
+          <a
+            className="btn small edit-item"
+            href={this.urlBase + "edit/" + item[this.identifierKey]}
+          >
+            {this.canEdit(item) ? (
+              <span>
+                Edit <PencilIcon />
+              </span>
+            ) : (
+              <span>
+                View <VisibleIcon />
+              </span>
+            )}
+          </a>
 
           {this.canDelete() && (
             <Button
