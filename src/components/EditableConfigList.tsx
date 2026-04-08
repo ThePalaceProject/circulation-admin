@@ -230,11 +230,28 @@ export abstract class GenericEditableConfigList<
     );
   }
 
+  protected getAssociatedItems(item: any): Array<any> | undefined {
+    return item?.libraries;
+  }
+
+  protected formatAssociatedCount(count: number): string {
+    return count === 0
+      ? "no libraries"
+      : count === 1
+      ? "1 library"
+      : `${count} libraries`;
+  }
+
+  protected renderAssociatedSection(item: any): JSX.Element {
+    return this.renderAssociatedLibraries(item);
+  }
+
   renderLi(item, index): JSX.Element {
     const AdditionalContent = this.AdditionalContent || null;
-    const libraries: Array<{ short_name: string }> | undefined =
-      item?.libraries;
-    const libraryCount = Array.isArray(libraries) ? libraries.length : null;
+    const associatedItems = this.getAssociatedItems(item);
+    const libraryCount = Array.isArray(associatedItems)
+      ? associatedItems.length
+      : null;
     const itemKey = String(item[this.identifierKey]);
     const isExpanded = libraryCount > 0 && !!this.state.expandedItems[itemKey];
 
@@ -261,13 +278,7 @@ export abstract class GenericEditableConfigList<
               {libraryCount !== null && (
                 <span className="library-count">
                   {" "}
-                  (
-                  {libraryCount === 0
-                    ? "no libraries"
-                    : libraryCount === 1
-                    ? "1 library"
-                    : `${libraryCount} libraries`}
-                  )
+                  ({this.formatAssociatedCount(libraryCount)})
                 </span>
               )}
             </span>
@@ -301,7 +312,7 @@ export abstract class GenericEditableConfigList<
             />
           )}
         </div>
-        {isExpanded && this.renderAssociatedLibraries(item)}
+        {isExpanded && this.renderAssociatedSection(item)}
         {AdditionalContent && (
           <AdditionalContent
             type={this.itemTypeName}
@@ -325,18 +336,19 @@ export abstract class GenericEditableConfigList<
 
   toggleAllLibraries(): void {
     const items: any[] = (this.props.data as any)?.[this.listDataKey] || [];
-    const itemsWithLibraries = items.filter(
-      (item) => Array.isArray(item.libraries) && item.libraries.length > 0
-    );
-    if (itemsWithLibraries.length === 0) return;
+    const itemsWithAssociations = items.filter((item) => {
+      const associated = this.getAssociatedItems(item);
+      return Array.isArray(associated) && associated.length > 0;
+    });
+    if (itemsWithAssociations.length === 0) return;
 
-    const anyCollapsed = itemsWithLibraries.some(
+    const anyCollapsed = itemsWithAssociations.some(
       (item) => !this.state.expandedItems[String(item[this.identifierKey])]
     );
 
     const newExpandedItems: Record<string, boolean> = {};
     if (anyCollapsed) {
-      for (const item of itemsWithLibraries) {
+      for (const item of itemsWithAssociations) {
         newExpandedItems[String(item[this.identifierKey])] = true;
       }
     }

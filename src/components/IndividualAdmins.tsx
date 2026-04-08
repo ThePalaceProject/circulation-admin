@@ -7,7 +7,11 @@ import EditableConfigList, {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
+import {
+  IndividualAdminsData,
+  IndividualAdminData,
+  AdminRoleData,
+} from "../interfaces";
 import Admin from "../models/Admin";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
@@ -29,6 +33,88 @@ export class IndividualAdmins extends EditableConfigList<
   static contextTypes = {
     admin: PropTypes.object.isRequired,
   };
+
+  private getRolesSummary(
+    item: IndividualAdminData
+  ): Array<{ label: string; suffix?: string; href?: string }> {
+    const roles: AdminRoleData[] = item.roles || [];
+
+    if (roles.some((r) => r.role === "system")) {
+      return [{ label: "sysadmin" }];
+    }
+
+    const allLibraries: Array<{
+      short_name: string;
+      name?: string;
+      uuid?: string;
+    }> = (this.props.data as any)?.allLibraries || [];
+
+    const getLibraryName = (shortName: string) =>
+      allLibraries.find((l) => l.short_name === shortName)?.name || shortName;
+
+    const getLibraryHref = (shortName: string) => {
+      const uuid = allLibraries.find((l) => l.short_name === shortName)?.uuid;
+      return uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined;
+    };
+
+    const result: Array<{ label: string; suffix?: string; href?: string }> = [];
+
+    if (roles.some((r) => r.role === "manager-all")) {
+      result.push({ label: "All libraries", suffix: " - Manager" });
+    } else if (roles.some((r) => r.role === "librarian-all")) {
+      result.push({ label: "All libraries", suffix: " - Librarian" });
+    }
+
+    const libraryHighestRole: Record<string, "manager" | "librarian"> = {};
+    for (const r of roles) {
+      if (r.library) {
+        if (r.role === "manager") {
+          libraryHighestRole[r.library] = "manager";
+        } else if (
+          r.role === "librarian" &&
+          libraryHighestRole[r.library] !== "manager"
+        ) {
+          libraryHighestRole[r.library] = "librarian";
+        }
+      }
+    }
+
+    for (const [shortName, role] of Object.entries(libraryHighestRole)) {
+      result.push({
+        label: getLibraryName(shortName),
+        suffix: role === "manager" ? " - Manager" : " - Librarian",
+        href: getLibraryHref(shortName),
+      });
+    }
+
+    result.sort((a, b) => a.label.localeCompare(b.label));
+    return result;
+  }
+
+  protected getAssociatedItems(
+    item: IndividualAdminData
+  ): Array<any> | undefined {
+    if (!item.roles) return undefined;
+    return this.getRolesSummary(item);
+  }
+
+  protected formatAssociatedCount(count: number): string {
+    return count === 0 ? "no roles" : count === 1 ? "1 role" : `${count} roles`;
+  }
+
+  protected renderAssociatedSection(item: IndividualAdminData): JSX.Element {
+    const summary = this.getRolesSummary(item);
+    return (
+      <ul className="associated-libraries">
+        {summary.map((entry, i) => (
+          <li key={i}>
+            {entry.href ? <a href={entry.href}>{entry.label}</a> : entry.label}
+            {entry.suffix}
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   canCreate() {
     return (
