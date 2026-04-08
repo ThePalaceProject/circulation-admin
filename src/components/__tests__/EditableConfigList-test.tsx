@@ -596,4 +596,81 @@ describe("EditableConfigList", () => {
     wrapper.setContext({ admin: librarian });
     expect(wrapper.instance().getAdminLevel()).to.equal(1);
   });
+
+  describe("renderAssociatedLibraries", () => {
+    const allLibraries = [
+      { short_name: "nypl", name: "New York Public Library" },
+      { short_name: "bpl", name: "Brooklyn Public Library" },
+    ];
+
+    it("renders nothing when the item has no libraries property", () => {
+      const libraries = wrapper.find(".associated-libraries");
+      expect(libraries.length).to.equal(0);
+    });
+
+    it("renders nothing when the item has an empty libraries array", () => {
+      wrapper = mount(
+        <ThingEditableConfigList
+          data={{ things: [{ ...thingData, libraries: [] }] } as any}
+          fetchData={fetchData}
+          editItem={editItem}
+          deleteItem={deleteItem}
+          csrfToken="token"
+          isFetching={false}
+        />,
+        { context: { admin: systemAdmin }, childContextTypes }
+      );
+      const libraries = wrapper.find(".associated-libraries");
+      expect(libraries.length).to.equal(0);
+    });
+
+    it("renders library names when allLibraries is available", () => {
+      const thingWithLibraries = {
+        ...thingData,
+        libraries: [{ short_name: "nypl" }, { short_name: "bpl" }],
+      };
+      wrapper = mount(
+        <ThingEditableConfigList
+          data={{ things: [thingWithLibraries], allLibraries } as any}
+          fetchData={fetchData}
+          editItem={editItem}
+          deleteItem={deleteItem}
+          csrfToken="token"
+          isFetching={false}
+        />,
+        { context: { admin: systemAdmin }, childContextTypes }
+      );
+      wrapper.find(".library-toggle").simulate("click");
+      const libraryList = wrapper.find(".associated-libraries");
+      expect(libraryList.length).to.equal(1);
+      const items = libraryList.find("li");
+      expect(items.length).to.equal(2);
+      expect(items.at(0).text()).to.equal("New York Public Library");
+      expect(items.at(1).text()).to.equal("Brooklyn Public Library");
+    });
+
+    it("falls back to short_name when allLibraries is not available", () => {
+      const thingWithLibraries = {
+        ...thingData,
+        libraries: [{ short_name: "nypl" }],
+      };
+      wrapper = mount(
+        <ThingEditableConfigList
+          data={{ things: [thingWithLibraries] } as any}
+          fetchData={fetchData}
+          editItem={editItem}
+          deleteItem={deleteItem}
+          csrfToken="token"
+          isFetching={false}
+        />,
+        { context: { admin: systemAdmin }, childContextTypes }
+      );
+      wrapper.find(".library-toggle").simulate("click");
+      const libraryList = wrapper.find(".associated-libraries");
+      expect(libraryList.length).to.equal(1);
+      const items = libraryList.find("li");
+      expect(items.length).to.equal(1);
+      expect(items.at(0).text()).to.equal("nypl");
+    });
+  });
 });

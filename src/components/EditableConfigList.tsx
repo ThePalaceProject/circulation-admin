@@ -10,6 +10,7 @@ import ErrorMessage from "./ErrorMessage";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
 import VisibleIcon from "./icons/VisibleIcon";
+import DisclosureIcon from "./icons/DisclosureIcon";
 import Admin from "../models/Admin";
 import * as PropTypes from "prop-types";
 
@@ -76,11 +77,15 @@ export interface ExtraFormSectionProps<T, U> {
 
     GenericEditableConfigList allows subclasses to define additional props. Subclasses of
     EditableConfigList cannot change the props and do not have to specify a type for them. */
+interface EditableConfigListState {
+  expandedItems: Record<string, boolean>;
+}
+
 export abstract class GenericEditableConfigList<
   T,
   U,
   V extends EditableConfigListProps<T>
-> extends React.Component<V> {
+> extends React.Component<V, EditableConfigListState> {
   context: { admin: Admin };
   static contextTypes = {
     admin: PropTypes.object.isRequired,
@@ -106,12 +111,18 @@ export abstract class GenericEditableConfigList<
   extraFormKey?: string;
   private editFormRef = React.createRef<any>();
 
+  state: EditableConfigListState = {
+    expandedItems: {},
+  };
+
   constructor(props) {
     super(props);
     this.editItem = this.editItem.bind(this);
     this.save = this.save.bind(this);
     this.label = this.label.bind(this);
     this.renderLi = this.renderLi.bind(this);
+    this.toggleLibraries = this.toggleLibraries.bind(this);
+    this.toggleAllLibraries = this.toggleAllLibraries.bind(this);
   }
 
   UNSAFE_componentWillMount() {
@@ -221,38 +232,76 @@ export abstract class GenericEditableConfigList<
 
   renderLi(item, index): JSX.Element {
     const AdditionalContent = this.AdditionalContent || null;
+    const libraries: Array<{ short_name: string }> | undefined =
+      item?.libraries;
+    const libraryCount = Array.isArray(libraries) ? libraries.length : null;
+    const itemKey = String(item[this.identifierKey]);
+    const isExpanded = libraryCount > 0 && !!this.state.expandedItems[itemKey];
 
     return (
       <li key={index}>
-        <a
-          className="btn small edit-item"
-          href={this.urlBase + "edit/" + item[this.identifierKey]}
-        >
-          {this.canEdit(item) ? (
-            <span>
-              Edit <PencilIcon />
-            </span>
-          ) : (
-            <span>
-              View <VisibleIcon />
-            </span>
-          )}
-        </a>
-
-        <h3>{this.label(item)}</h3>
-
-        {this.canDelete() && (
-          <Button
-            className="danger delete-item small"
-            callback={() => this.delete(item)}
-            content={
+        <div className="item-header">
+          <a
+            className="btn small edit-item"
+            href={this.urlBase + "edit/" + item[this.identifierKey]}
+          >
+            {this.canEdit(item) ? (
               <span>
-                Delete
-                <TrashIcon />
+                Edit <PencilIcon />
               </span>
-            }
-          />
-        )}
+            ) : (
+              <span>
+                View <VisibleIcon />
+              </span>
+            )}
+          </a>
+
+          <h3>
+            {libraryCount !== null && (
+              <button
+                className="library-toggle"
+                onClick={(e) =>
+                  e.altKey
+                    ? this.toggleAllLibraries()
+                    : this.toggleLibraries(itemKey)
+                }
+                aria-expanded={isExpanded}
+                disabled={libraryCount === 0}
+              >
+                <DisclosureIcon expanded={isExpanded} />
+              </button>
+            )}
+            <span>
+              {this.label(item)}
+              {libraryCount !== null && (
+                <span className="library-count">
+                  {" "}
+                  (
+                  {libraryCount === 0
+                    ? "no libraries"
+                    : libraryCount === 1
+                    ? "1 library"
+                    : `${libraryCount} libraries`}
+                  )
+                </span>
+              )}
+            </span>
+          </h3>
+
+          {this.canDelete() && (
+            <Button
+              className="danger delete-item small"
+              callback={() => this.delete(item)}
+              content={
+                <span>
+                  Delete
+                  <TrashIcon />
+                </span>
+              }
+            />
+          )}
+        </div>
+        {isExpanded && this.renderAssociatedLibraries(item)}
         {AdditionalContent && (
           <AdditionalContent
             type={this.itemTypeName}
@@ -262,6 +311,63 @@ export abstract class GenericEditableConfigList<
           />
         )}
       </li>
+    );
+  }
+
+  toggleLibraries(itemKey: string): void {
+    this.setState((prev) => ({
+      expandedItems: {
+        ...prev.expandedItems,
+        [itemKey]: !prev.expandedItems[itemKey],
+      },
+    }));
+  }
+
+  toggleAllLibraries(): void {
+    const items: any[] = (this.props.data as any)?.[this.listDataKey] || [];
+    const itemsWithLibraries = items.filter(
+      (item) => Array.isArray(item.libraries) && item.libraries.length > 0
+    );
+    if (itemsWithLibraries.length === 0) return;
+
+    const anyCollapsed = itemsWithLibraries.some(
+      (item) => !this.state.expandedItems[String(item[this.identifierKey])]
+    );
+
+    const newExpandedItems: Record<string, boolean> = {};
+    if (anyCollapsed) {
+      for (const item of itemsWithLibraries) {
+        newExpandedItems[String(item[this.identifierKey])] = true;
+      }
+    }
+    this.setState({ expandedItems: newExpandedItems });
+  }
+
+  renderAssociatedLibraries(item: any): JSX.Element {
+    const libraries: Array<{ short_name: string }> = item.libraries;
+    const allLibraries: Array<{
+      short_name: string;
+      name?: string;
+      uuid?: string;
+    }> = (this.props.data as any)?.allLibraries || [];
+
+    return (
+      <ul className="associated-libraries">
+        {libraries.map((lib) => {
+          const libraryData = allLibraries.find(
+            (l) => l.short_name === lib.short_name
+          );
+          const name = libraryData?.name || lib.short_name;
+          const href = libraryData?.uuid
+            ? `/admin/web/config/libraries/edit/${libraryData.uuid}`
+            : null;
+          return (
+            <li key={lib.short_name}>
+              {href ? <a href={href}>{name}</a> : name}
+            </li>
+          );
+        })}
+      </ul>
     );
   }
 
