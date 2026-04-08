@@ -32,7 +32,8 @@
     "dev-server": "dotenv -c -- webpack serve --progress --hot --config webpack.dev-server.config",
     "dev-test-axe": "TEST_AXE=true npm run dev",
     "prod": "webpack --progress --config webpack.prod.config",
-    "build-docs": "typedoc --tsconfig tsconfig.json src"
+    "build-docs": "typedoc --tsconfig tsconfig.json src",
+    "sync-patron-blocking-docs": "node scripts/syncPatronBlockingDocs.js"
   },
   "dependencies": {
     "@nypl/dgx-svg-icons": "0.3.4",
@@ -113,6 +114,7 @@
     "jsdom": "^20.0.3",
     "json-loader": "^0.5.4",
     "lint-staged": "^10.4.0",
+    "marked": "^17.0.6",
     "mini-css-extract-plugin": "1.6.0",
     "mocha": "^10.2.0",
     "msw": "^2.7.3",

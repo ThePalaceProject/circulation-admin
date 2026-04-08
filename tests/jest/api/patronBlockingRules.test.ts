@@ -1,5 +1,8 @@
 import * as fetchMock from "fetch-mock-jest";
-import { validatePatronBlockingRuleExpression } from "../../../src/api/patronBlockingRules";
+import {
+  validatePatronBlockingRuleExpression,
+  ValidationResult,
+} from "../../../src/api/patronBlockingRules";
 import { PatronBlockingRule } from "../../../src/interfaces";
 
 const VALIDATE_URL = "/admin/patron_auth_service_validate_patron_blocking_rule";
@@ -21,7 +24,24 @@ describe("validatePatronBlockingRuleExpression", () => {
       sampleRule,
       "test-token"
     );
-    expect(result).toBeNull();
+    expect(result.error).toBeNull();
+  });
+
+  it("returns available_fields from a 200 response with a body", async () => {
+    fetchMock.post(VALIDATE_URL, {
+      status: 200,
+      body: { available_fields: { fines: 0, patron_identifier: "X123" } },
+    });
+    const result: ValidationResult = await validatePatronBlockingRuleExpression(
+      42,
+      sampleRule,
+      "test-token"
+    );
+    expect(result.error).toBeNull();
+    expect(result.availableFields).toEqual({
+      fines: 0,
+      patron_identifier: "X123",
+    });
   });
 
   it("returns the detail string from a 400 response", async () => {
@@ -34,7 +54,8 @@ describe("validatePatronBlockingRuleExpression", () => {
       sampleRule,
       "test-token"
     );
-    expect(result).toBe("Unknown placeholder: {unknown_field}");
+    expect(result.error).toBe("Unknown placeholder: {unknown_field}");
+    expect(result.availableFields).toBeNull();
   });
 
   it("returns a fallback string when a 400 response body has no detail", async () => {
@@ -44,8 +65,9 @@ describe("validatePatronBlockingRuleExpression", () => {
       sampleRule,
       "test-token"
     );
-    expect(result).not.toBeNull();
-    expect(typeof result).toBe("string");
+    expect(result.error).not.toBeNull();
+    expect(typeof result.error).toBe("string");
+    expect(result.availableFields).toBeNull();
   });
 
   it("sends the correct URL, method, and CSRF header", async () => {
@@ -73,6 +95,6 @@ describe("validatePatronBlockingRuleExpression", () => {
       expect.objectContaining({ method: "POST" })
     );
     // Server would return an error detail in a real call; here it returns 200 (mocked)
-    expect(result).toBeNull();
+    expect(result.error).toBeNull();
   });
 });

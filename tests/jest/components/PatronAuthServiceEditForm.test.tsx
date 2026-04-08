@@ -2,6 +2,7 @@ import * as React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as fetchMock from "fetch-mock-jest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PatronAuthServiceEditForm from "../../../src/components/PatronAuthServiceEditForm";
 import {
   PatronAuthServicesData,
@@ -66,6 +67,16 @@ function buildSIP2Item(rules: PatronBlockingRule[] = []) {
   };
 }
 
+/** Renders with a fresh QueryClient so useAvailableFields (useQuery) works. */
+function renderForm(element: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{element}</QueryClientProvider>
+  );
+}
+
 // Guard: any blur on the Rule Expression textarea calls validatePatronBlockingRuleExpression.
 // All describe blocks get a default 200 mock so tests that incidentally trigger blur
 // don't fail with "only absolute URLs are supported" from the fetch polyfill.
@@ -80,7 +91,9 @@ afterEach(() => {
 describe("PatronAuthServiceEditForm – capability gating", () => {
   it("shows PatronBlockingRulesEditor in expanded library settings for SIP2", async () => {
     const user = userEvent.setup();
-    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+    renderForm(
+      <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />
+    );
 
     await expandLibrariesPanel(user);
     const editButton = screen.getByRole("button", { name: /Edit/i });
@@ -99,7 +112,7 @@ describe("PatronAuthServiceEditForm – capability gating", () => {
       settings: { idp_url: "https://idp.example.com" },
       libraries: [{ short_name: LIBRARY_SHORT_NAME }],
     };
-    render(<PatronAuthServiceEditForm {...baseProps} item={item} />);
+    renderForm(<PatronAuthServiceEditForm {...baseProps} item={item} />);
     await expandLibrariesPanel(user);
 
     // For non-SIP2 with no library_settings, the Edit button should not render
@@ -119,7 +132,7 @@ describe("PatronAuthServiceEditForm – load / initial value", () => {
         message: "Card expired",
       },
     ];
-    render(
+    renderForm(
       <PatronAuthServiceEditForm
         {...baseProps}
         item={buildSIP2Item(existingRules)}
@@ -144,7 +157,7 @@ describe("PatronAuthServiceEditForm – load / initial value", () => {
 
   it("shows empty editor when library has no existing patron_blocking_rules", async () => {
     const user = userEvent.setup();
-    render(
+    renderForm(
       <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item([])} />
     );
 
@@ -160,7 +173,7 @@ describe("PatronAuthServiceEditForm – error display", () => {
   it("passes error prop down to PatronBlockingRulesEditor", async () => {
     const user = userEvent.setup();
     const error = { status: 400, response: "Validation failed", url: "" };
-    render(
+    renderForm(
       <PatronAuthServiceEditForm
         {...baseProps}
         item={buildSIP2Item([{ name: "", rule: "expr", message: null }])}
@@ -180,7 +193,9 @@ describe("PatronAuthServiceEditForm – error display", () => {
 describe("PatronAuthServiceEditForm – serialization", () => {
   it("includes patron_blocking_rules in the library state when editLibrary is called", async () => {
     const user = userEvent.setup();
-    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+    renderForm(
+      <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />
+    );
 
     await expandLibrariesPanel(user);
     const editButton = screen.getByRole("button", { name: /Edit/i });
@@ -215,7 +230,7 @@ describe("PatronAuthServiceEditForm – serialization", () => {
       settings: {},
       libraries: [],
     };
-    render(<PatronAuthServiceEditForm {...baseProps} item={item} />);
+    renderForm(<PatronAuthServiceEditForm {...baseProps} item={item} />);
 
     await expandLibrariesPanel(user);
     // Select the library from the dropdown
@@ -246,7 +261,9 @@ describe("PatronAuthServiceEditForm – serialization", () => {
 describe("PatronAuthServiceEditForm – save button gating", () => {
   it("disables the per-library Save button immediately when a new rule is added", async () => {
     const user = userEvent.setup();
-    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+    renderForm(
+      <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />
+    );
 
     await expandLibrariesPanel(user);
     await user.click(screen.getByRole("button", { name: /Edit/i }));
@@ -258,7 +275,9 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
 
   it("re-enables the per-library Save button once validation succeeds", async () => {
     const user = userEvent.setup();
-    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+    renderForm(
+      <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />
+    );
 
     await expandLibrariesPanel(user);
     await user.click(screen.getByRole("button", { name: /Edit/i }));
@@ -280,7 +299,9 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
       body: { detail: "Unknown placeholder" },
     });
 
-    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+    renderForm(
+      <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />
+    );
 
     await expandLibrariesPanel(user);
     await user.click(screen.getByRole("button", { name: /Edit/i }));
@@ -302,7 +323,7 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
       settings: {},
       libraries: [],
     };
-    render(<PatronAuthServiceEditForm {...baseProps} item={item} />);
+    renderForm(<PatronAuthServiceEditForm {...baseProps} item={item} />);
 
     await expandLibrariesPanel(user);
     const select = screen.getByRole("combobox", { name: /Add Library/i });
@@ -324,7 +345,7 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
       { name: "Rule A", rule: "expr_a" },
       { name: "Rule B", rule: "expr_b" },
     ];
-    render(
+    renderForm(
       <PatronAuthServiceEditForm
         {...baseProps}
         item={buildSIP2Item(existingRules)}
@@ -354,7 +375,7 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
       { name: "Rule A", rule: "expr_a" },
       { name: "Rule A", rule: "expr_b" }, // starts as duplicate
     ];
-    render(
+    renderForm(
       <PatronAuthServiceEditForm
         {...baseProps}
         item={buildSIP2Item(existingRules)}
@@ -380,7 +401,7 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
   it("re-blocks and then re-enables the Save button when an existing rule's expression is edited and re-validated", async () => {
     const user = userEvent.setup();
     const existingRules = [{ name: "Rule A", rule: "expr_a" }];
-    render(
+    renderForm(
       <PatronAuthServiceEditForm
         {...baseProps}
         item={buildSIP2Item(existingRules)}
@@ -411,7 +432,7 @@ describe("PatronAuthServiceEditForm – save button gating", () => {
 describe("PatronAuthServiceEditForm – csrfToken / serviceId wiring", () => {
   it("passes the csrfToken from additionalData to the validation API request", async () => {
     const user = userEvent.setup();
-    render(
+    renderForm(
       <PatronAuthServiceEditForm
         {...baseProps}
         item={buildSIP2Item()}
@@ -441,7 +462,9 @@ describe("PatronAuthServiceEditForm – csrfToken / serviceId wiring", () => {
   it("passes the item id as service_id in the validation API request body", async () => {
     const user = userEvent.setup();
     // item.id = 1 (from buildSIP2Item)
-    render(<PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />);
+    renderForm(
+      <PatronAuthServiceEditForm {...baseProps} item={buildSIP2Item()} />
+    );
 
     await expandLibrariesPanel(user);
     await user.click(screen.getByRole("button", { name: /Edit/i }));

@@ -13,12 +13,50 @@
     justify-content: space-between;
     margin-bottom: 8px;
 
+    .patron-blocking-rules-label-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .control-label {
       margin-bottom: 0;
     }
 
+    .patron-blocking-rules-header-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+    }
+
     .add-patron-blocking-rule {
       margin: 0;
+    }
+
+    .patron-blocking-rules-help-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid $medium-gray;
+      background: transparent;
+      color: $medium-dark-gray;
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+
+      &:hover,
+      &:focus {
+        border-color: $dark-gray;
+        color: $dark-gray;
+        outline: none;
+      }
     }
   }
 
@@ -45,6 +83,99 @@
     &:last-child {
       border-bottom: none;
       padding-bottom: 0;
+    }
+  }
+}
+
+.patron-blocking-rules-help-modal {
+  .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .pbr-help-section {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $gray-border;
+
+    &--last {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .pbr-help-section-title {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .pbr-help-section-description {
+    color: $medium-dark-gray;
+    margin-bottom: 12px;
+  }
+
+  .pbr-help-loading {
+    color: $medium-dark-gray;
+    font-style: italic;
+  }
+
+  .pbr-help-unavailable {
+    font-style: italic;
+  }
+
+  .pbr-help-fields-table {
+    width: 100%;
+    font-size: 13px;
+
+    th {
+      background-color: $light-gray;
+      font-weight: 600;
+    }
+
+    .pbr-help-field-value {
+      word-break: break-all;
+      max-width: 300px;
+    }
+  }
+
+  .pbr-help-functions-content {
+    h2 {
+      font-size: 16px;
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
+
+    h3 {
+      font-size: 14px;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+
+    table {
+      font-size: 13px;
+      width: auto;
+      margin-bottom: 8px;
+
+      th {
+        background-color: $light-gray;
+      }
+    }
+
+    pre {
+      font-size: 12px;
+      background-color: $light-gray;
+      padding: 8px 10px;
+      border-radius: 3px;
+    }
+
+    code {
+      font-size: 12px;
+    }
+
+    p {
+      margin-bottom: 6px;
     }
   }
 }
