@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PatronBlockingRule } from "../interfaces";
 import { validatePatronBlockingRuleExpression } from "../api/patronBlockingRules";
@@ -6,7 +6,10 @@ import { validatePatronBlockingRuleExpression } from "../api/patronBlockingRules
 // There is no dedicated endpoint for fetching available patron fields, so we
 // use the validate endpoint with a trivially-passing rule ("True") to obtain
 // the available_fields dictionary without validating any real user input.
-const PREFETCH_RULE: PatronBlockingRule = { name: "__prefetch__", rule: "True" };
+const PREFETCH_RULE: PatronBlockingRule = {
+  name: "__prefetch__",
+  rule: "True",
+};
 
 export interface UseAvailableFieldsResult {
   availableFields: Record<string, unknown> | null;
@@ -31,7 +34,7 @@ export function useAvailableFields(
   csrfToken: string | undefined
 ): UseAvailableFieldsResult {
   const queryClient = useQueryClient();
-  const queryKey = React.useMemo(
+  const queryKey = useMemo(
     () => ["patron-blocking-fields", serviceId] as const,
     [serviceId]
   );
