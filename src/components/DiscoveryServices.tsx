@@ -12,6 +12,7 @@ import {
   DiscoveryServicesData,
   DiscoveryServiceData,
   LibraryData,
+  LibraryDataWithStatus,
   LibraryRegistrationsData,
 } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
@@ -71,6 +72,45 @@ export class DiscoveryServices extends GenericEditableConfigList<
         }
       },
     };
+  }
+
+  private registeredLibraries(
+    item: DiscoveryServiceData
+  ): LibraryDataWithStatus[] | undefined {
+    const registrations = this.props.data?.libraryRegistrations;
+    if (!registrations) return undefined;
+    const serviceReg = registrations.find((r) => r.id === item.id);
+    return (serviceReg?.libraries ?? []).filter((l) => l.status === "success");
+  }
+
+  protected getAssociatedItems(
+    item: DiscoveryServiceData
+  ): Array<any> | undefined {
+    return this.registeredLibraries(item);
+  }
+
+  protected formatAssociatedCount(count: number): string {
+    return count === 0
+      ? "no registered libraries"
+      : count === 1
+      ? "1 registered library"
+      : `${count} registered libraries`;
+  }
+
+  protected getAssociatedEntries(
+    item: DiscoveryServiceData
+  ): Array<{ label: string; suffix?: string; href?: string }> {
+    const registered = this.registeredLibraries(item) ?? [];
+    const allLibraries = this.props.data?.allLibraries ?? [];
+    return registered.map((lib) => {
+      const meta = allLibraries.find((l) => l.short_name === lib.short_name);
+      const uuid = meta?.uuid ?? lib.uuid;
+      return {
+        label: meta?.name ?? lib.name ?? lib.short_name,
+        suffix: lib.stage ? ` - registered - ${lib.stage}` : " - registered",
+        href: uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined,
+      };
+    });
   }
 
   UNSAFE_componentWillMount() {
