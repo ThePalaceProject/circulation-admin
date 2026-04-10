@@ -359,7 +359,7 @@ describe("EditableConfigList", () => {
       { context: { admin: libraryManager } }
     );
     expect(wrapper.instance().canEdit(viewableThing)).to.be.false;
-    const viewLink = wrapper.find("span");
+    const viewLink = wrapper.find(".edit-item span");
     expect(viewLink.text()).to.contain("View");
     expect(viewLink.text()).not.to.contain("Edit");
   });
@@ -604,7 +604,7 @@ describe("EditableConfigList", () => {
     ];
 
     it("renders nothing when the item has no libraries property", () => {
-      const libraries = wrapper.find(".associated-libraries");
+      const libraries = wrapper.find(".associated-items");
       expect(libraries.length).to.equal(0);
     });
 
@@ -620,7 +620,7 @@ describe("EditableConfigList", () => {
         />,
         { context: { admin: systemAdmin }, childContextTypes }
       );
-      const libraries = wrapper.find(".associated-libraries");
+      const libraries = wrapper.find(".associated-items");
       expect(libraries.length).to.equal(0);
     });
 
@@ -640,13 +640,13 @@ describe("EditableConfigList", () => {
         />,
         { context: { admin: systemAdmin }, childContextTypes }
       );
-      wrapper.find(".library-toggle").simulate("click");
-      const libraryList = wrapper.find(".associated-libraries");
+      wrapper.find(".association-toggle").simulate("click");
+      const libraryList = wrapper.find(".associated-items");
       expect(libraryList.length).to.equal(1);
       const items = libraryList.find("li");
       expect(items.length).to.equal(2);
-      expect(items.at(0).text()).to.equal("New York Public Library");
-      expect(items.at(1).text()).to.equal("Brooklyn Public Library");
+      expect(items.at(0).text()).to.equal("Brooklyn Public Library");
+      expect(items.at(1).text()).to.equal("New York Public Library");
     });
 
     it("falls back to short_name when allLibraries is not available", () => {
@@ -665,8 +665,8 @@ describe("EditableConfigList", () => {
         />,
         { context: { admin: systemAdmin }, childContextTypes }
       );
-      wrapper.find(".library-toggle").simulate("click");
-      const libraryList = wrapper.find(".associated-libraries");
+      wrapper.find(".association-toggle").simulate("click");
+      const libraryList = wrapper.find(".associated-items");
       expect(libraryList.length).to.equal(1);
       const items = libraryList.find("li");
       expect(items.length).to.equal(1);

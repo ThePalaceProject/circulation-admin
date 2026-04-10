@@ -58,8 +58,37 @@ describe("DiscoveryServices - registered library disclosure", () => {
       discovery_services: [{ id: 1, protocol: "p", name: "Service A" } as any],
       // libraryRegistrations omitted → undefined
     });
-    expect(container.querySelector(".library-toggle")).toBeNull();
+    expect(container.querySelector(".association-toggle")).toBeNull();
     expect(container.querySelector(".library-count")).toBeNull();
+  });
+
+  it("shows a disabled toggle when libraryRegistrations is loaded but the service has no entry in it", () => {
+    // libraryRegistrations is present (so getAssociatedEntries returns [] not
+    // undefined), but service id=99 has no corresponding record in the array.
+    // Result: disabled toggle + "no registered libraries", not "no toggle".
+    const { container } = renderServices({
+      discovery_services: [{ id: 99, protocol: "p", name: "Service X" } as any],
+      libraryRegistrations: [
+        {
+          id: 1,
+          libraries: [
+            {
+              short_name: "alpha",
+              status: "success",
+              stage: "production",
+            } as any,
+          ],
+        },
+      ],
+    });
+    const toggle = container.querySelector<HTMLButtonElement>(
+      ".association-toggle"
+    );
+    expect(toggle).not.toBeNull();
+    expect(toggle.disabled).toBe(true);
+    expect(container.querySelector(".library-count").textContent).toBe(
+      " (no registered libraries)"
+    );
   });
 
   it("shows a disabled toggle and 'no registered libraries' when none are registered", () => {
@@ -82,7 +111,7 @@ describe("DiscoveryServices - registered library disclosure", () => {
       ],
     });
     const toggle = container.querySelector<HTMLButtonElement>(
-      ".library-toggle"
+      ".association-toggle"
     );
     expect(toggle).not.toBeNull();
     expect(toggle.disabled).toBe(true);
@@ -108,7 +137,7 @@ describe("DiscoveryServices - registered library disclosure", () => {
       ],
     });
     const toggle = container.querySelector<HTMLButtonElement>(
-      ".library-toggle"
+      ".association-toggle"
     );
     expect(toggle.disabled).toBe(false);
     expect(container.querySelector(".library-count").textContent).toBe(
@@ -159,9 +188,9 @@ describe("DiscoveryServices - registered library disclosure", () => {
         },
       ],
     });
-    fireEvent.click(container.querySelector(".library-toggle"));
+    fireEvent.click(container.querySelector(".association-toggle"));
 
-    const items = container.querySelectorAll(".associated-libraries li");
+    const items = container.querySelectorAll(".associated-items li");
     expect(items).toHaveLength(1);
     expect(items[0].textContent).toContain("Alpha Library");
   });
@@ -184,9 +213,9 @@ describe("DiscoveryServices - registered library disclosure", () => {
         },
       ],
     });
-    fireEvent.click(container.querySelector(".library-toggle"));
+    fireEvent.click(container.querySelector(".association-toggle"));
 
-    const item = container.querySelector(".associated-libraries li");
+    const item = container.querySelector(".associated-items li");
     expect(item.textContent).toBe("Alpha Library - registered - production");
   });
 
@@ -200,9 +229,9 @@ describe("DiscoveryServices - registered library disclosure", () => {
         },
       ],
     });
-    fireEvent.click(container.querySelector(".library-toggle"));
+    fireEvent.click(container.querySelector(".association-toggle"));
 
-    const item = container.querySelector(".associated-libraries li");
+    const item = container.querySelector(".associated-items li");
     expect(item.textContent).toBe("Alpha Library - registered");
   });
 
@@ -230,9 +259,9 @@ describe("DiscoveryServices - registered library disclosure", () => {
         },
       ],
     });
-    fireEvent.click(container.querySelector(".library-toggle"));
+    fireEvent.click(container.querySelector(".association-toggle"));
 
-    const items = container.querySelectorAll(".associated-libraries li");
+    const items = container.querySelectorAll(".associated-items li");
     expect(items[0].textContent).toContain("Alpha Library");
     expect(items[1].textContent).toContain("Beta Library");
     expect(items[2].textContent).toContain("Gamma Library");
@@ -256,10 +285,10 @@ describe("DiscoveryServices - registered library disclosure", () => {
         },
       ],
     });
-    fireEvent.click(container.querySelector(".library-toggle"));
+    fireEvent.click(container.querySelector(".association-toggle"));
 
     const link = container.querySelector<HTMLAnchorElement>(
-      ".associated-libraries a"
+      ".associated-items a"
     );
     expect(link).not.toBeNull();
     expect(link.textContent).toBe("Alpha Library");
@@ -280,12 +309,12 @@ describe("DiscoveryServices - registered library disclosure", () => {
         },
       ],
     });
-    fireEvent.click(container.querySelector(".library-toggle"));
+    fireEvent.click(container.querySelector(".association-toggle"));
 
-    expect(container.querySelector(".associated-libraries a")).toBeNull();
-    expect(
-      container.querySelector(".associated-libraries li").textContent
-    ).toBe("Delta Library - registered - testing");
+    expect(container.querySelector(".associated-items a")).toBeNull();
+    expect(container.querySelector(".associated-items li").textContent).toBe(
+      "Delta Library - registered - testing"
+    );
   });
 
   // ── Per-service isolation ─────────────────────────────────────────────────
@@ -326,12 +355,116 @@ describe("DiscoveryServices - registered library disclosure", () => {
     );
 
     const toggles = container.querySelectorAll<HTMLButtonElement>(
-      ".library-toggle"
+      ".association-toggle"
     );
     expect(toggles).toHaveLength(2);
     expect(
       toggles[1].closest("li").querySelector(".library-count").textContent
     ).toBe(" (2 registered libraries)");
+  });
+
+  // ── Expand all / Collapse all buttons ────────────────────────────────────
+
+  it("Expand all expands all services that have registered libraries", () => {
+    const { container } = renderServices({
+      discovery_services: [
+        { id: 1, protocol: "p", name: "Service A" } as any,
+        { id: 2, protocol: "p", name: "Service B" } as any,
+        { id: 3, protocol: "p", name: "Service C" } as any,
+      ],
+      libraryRegistrations: [
+        {
+          id: 1,
+          libraries: [
+            {
+              short_name: "alpha",
+              status: "success",
+              stage: "production",
+            } as any,
+          ],
+        },
+        {
+          id: 2,
+          libraries: [], // no registrations → disabled toggle
+        },
+        {
+          id: 3,
+          libraries: [
+            { short_name: "beta", status: "success", stage: "testing" } as any,
+          ],
+        },
+      ],
+    });
+
+    fireEvent.click(container.querySelector(".expand-all"));
+
+    // Services 1 and 3 have registered libraries; service 2 has none.
+    expect(container.querySelectorAll(".associated-items")).toHaveLength(2);
+  });
+
+  it("shows no expand/collapse controls when libraryRegistrations has not yet loaded", () => {
+    const { container } = renderServices({
+      discovery_services: [{ id: 1, protocol: "p", name: "Service A" } as any],
+      // libraryRegistrations omitted → getAssociatedEntries returns undefined
+      // for every item, so expandableItems() is empty and no controls render.
+    });
+    expect(container.querySelector(".expand-collapse-controls")).toBeNull();
+  });
+
+  it("shows no expand/collapse controls when no services have successfully registered libraries", () => {
+    const { container } = renderServices({
+      discovery_services: [
+        { id: 1, protocol: "p", name: "Service A" } as any,
+        { id: 2, protocol: "p", name: "Service B" } as any,
+      ],
+      libraryRegistrations: [
+        {
+          id: 1,
+          libraries: [{ short_name: "alpha", status: "warning" } as any],
+        },
+        {
+          id: 2,
+          libraries: [],
+        },
+      ],
+    });
+    expect(container.querySelector(".expand-collapse-controls")).toBeNull();
+  });
+
+  it("Collapse all collapses all expanded services", () => {
+    const { container } = renderServices({
+      discovery_services: [
+        { id: 1, protocol: "p", name: "Service A" } as any,
+        { id: 2, protocol: "p", name: "Service B" } as any,
+      ],
+      libraryRegistrations: [
+        {
+          id: 1,
+          libraries: [
+            {
+              short_name: "alpha",
+              status: "success",
+              stage: "production",
+            } as any,
+          ],
+        },
+        {
+          id: 2,
+          libraries: [
+            { short_name: "beta", status: "success", stage: "testing" } as any,
+          ],
+        },
+      ],
+    });
+
+    fireEvent.click(container.querySelector(".expand-all"));
+    expect(container.querySelectorAll(".associated-items")).toHaveLength(2);
+
+    fireEvent.click(container.querySelector(".collapse-all"));
+    expect(container.querySelectorAll(".associated-items")).toHaveLength(0);
+    expect(
+      container.querySelector<HTMLButtonElement>(".collapse-all").disabled
+    ).toBe(true);
   });
 
   // ── Alt+click toggle-all ──────────────────────────────────────────────────
@@ -367,10 +500,46 @@ describe("DiscoveryServices - registered library disclosure", () => {
       ],
     });
 
-    const toggles = container.querySelectorAll(".library-toggle");
+    const toggles = container.querySelectorAll(".association-toggle");
     fireEvent.click(toggles[0], { altKey: true });
 
     // Services 1 and 3 have registered libraries; service 2 has none.
-    expect(container.querySelectorAll(".associated-libraries")).toHaveLength(2);
+    expect(container.querySelectorAll(".associated-items")).toHaveLength(2);
+  });
+
+  it("alt+click collapses all when all services are already expanded", () => {
+    const { container } = renderServices({
+      discovery_services: [
+        { id: 1, protocol: "p", name: "Service A" } as any,
+        { id: 2, protocol: "p", name: "Service B" } as any,
+      ],
+      libraryRegistrations: [
+        {
+          id: 1,
+          libraries: [
+            {
+              short_name: "alpha",
+              status: "success",
+              stage: "production",
+            } as any,
+          ],
+        },
+        {
+          id: 2,
+          libraries: [
+            { short_name: "beta", status: "success", stage: "testing" } as any,
+          ],
+        },
+      ],
+    });
+    const toggles = container.querySelectorAll(".association-toggle");
+
+    // Expand all first.
+    fireEvent.click(toggles[0], { altKey: true });
+    expect(container.querySelectorAll(".associated-items")).toHaveLength(2);
+
+    // Alt+click again should collapse all.
+    fireEvent.click(toggles[0], { altKey: true });
+    expect(container.querySelectorAll(".associated-items")).toHaveLength(0);
   });
 });

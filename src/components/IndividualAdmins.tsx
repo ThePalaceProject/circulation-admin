@@ -36,18 +36,14 @@ export class IndividualAdmins extends EditableConfigList<
 
   private getRolesSummary(
     item: IndividualAdminData
-  ): Array<{ label: string; suffix?: string; href?: string }> {
+  ): Array<{
+    label: string;
+    suffix?: string;
+    href?: string;
+    pinned?: boolean;
+  }> {
     const roles: AdminRoleData[] = item.roles || [];
-
-    if (roles.some((r) => r.role === "system")) {
-      return [{ label: "sysadmin" }];
-    }
-
-    const allLibraries: Array<{
-      short_name: string;
-      name?: string;
-      uuid?: string;
-    }> = (this.props.data as any)?.allLibraries || [];
+    const allLibraries = this.getAllLibraries();
 
     const getLibraryName = (shortName: string) =>
       allLibraries.find((l) => l.short_name === shortName)?.name || shortName;
@@ -57,12 +53,25 @@ export class IndividualAdmins extends EditableConfigList<
       return uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined;
     };
 
-    const result: Array<{ label: string; suffix?: string; href?: string }> = [];
+    const result: Array<{
+      label: string;
+      suffix?: string;
+      href?: string;
+      pinned?: boolean;
+    }> = [];
 
     if (roles.some((r) => r.role === "manager-all")) {
-      result.push({ label: "All libraries", suffix: " - Manager" });
+      result.push({
+        label: "All libraries",
+        suffix: " - Manager",
+        pinned: true,
+      });
     } else if (roles.some((r) => r.role === "librarian-all")) {
-      result.push({ label: "All libraries", suffix: " - Librarian" });
+      result.push({
+        label: "All libraries",
+        suffix: " - Librarian",
+        pinned: true,
+      });
     }
 
     const libraryHighestRole: Record<string, "manager" | "librarian"> = {};
@@ -90,11 +99,8 @@ export class IndividualAdmins extends EditableConfigList<
     return result;
   }
 
-  protected getAssociatedItems(
-    item: IndividualAdminData
-  ): Array<any> | undefined {
-    if (!item.roles) return undefined;
-    return this.getRolesSummary(item);
+  protected getAllLibraries() {
+    return this.props.data?.allLibraries ?? [];
   }
 
   protected formatAssociatedCount(count: number): string {
@@ -103,7 +109,15 @@ export class IndividualAdmins extends EditableConfigList<
 
   protected getAssociatedEntries(
     item: IndividualAdminData
-  ): Array<{ label: string; suffix?: string; href?: string }> {
+  ):
+    | Array<{ label: string; suffix?: string; href?: string; pinned?: boolean }>
+    | undefined {
+    if (!item.roles) return undefined;
+    // System admins have a single implicit role that isn't library-scoped;
+    // show a synthetic "sysadmin" entry rather than the library-role summary.
+    if (item.roles.some((r) => r.role === "system")) {
+      return [{ label: "sysadmin" }];
+    }
     return this.getRolesSummary(item);
   }
 
@@ -117,7 +131,9 @@ export class IndividualAdmins extends EditableConfigList<
     return this.context.admin && this.context.admin.isSystemAdmin();
   }
 
-  canEdit() {
+  // Override: editability is determined by the current user's role, not the
+  // per-item level field used by the base class.
+  canEdit(_item?: IndividualAdminData): boolean {
     return (
       this.context.admin && this.context.admin.isLibraryManagerOfSomeLibrary()
     );
@@ -139,14 +155,18 @@ export class IndividualAdmins extends EditableConfigList<
   }
 
   save(data: FormData) {
-    this.editItem(data).then(() => {
-      // If we're setting up an admin for the first time, refresh the page
-      // to go to login.
-      if (this.props.settingUp) {
-        window.location.reload();
-        return;
-      }
-    });
+    this.editItem(data)
+      .then(() => {
+        // If we're setting up an admin for the first time, refresh the page
+        // to go to login.
+        if (this.props.settingUp) {
+          window.location.reload();
+        }
+      })
+      .catch(() => {
+        // Error already surfaced via the Redux formError prop; suppress the
+        // unhandled-rejection warning.
+      });
   }
 }
 

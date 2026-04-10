@@ -59,11 +59,12 @@ export class DiscoveryServices extends GenericEditableConfigList<
   getChildContext() {
     return {
       registerLibrary: (library: LibraryData, registration_stage: string) => {
-        if (this.itemToEdit()) {
-          const data = new (window as any).FormData();
+        const item = this.itemToEdit();
+        if (item) {
+          const data = new FormData();
           data.append("library_short_name", library.short_name);
           data.append("registration_stage", registration_stage);
-          data.append("integration_id", this.itemToEdit().id);
+          data.append("integration_id", String(item.id));
           this.props.registerLibrary(data).then(() => {
             if (this.props.fetchLibraryRegistrations) {
               this.props.fetchLibraryRegistrations();
@@ -83,12 +84,6 @@ export class DiscoveryServices extends GenericEditableConfigList<
     return (serviceReg?.libraries ?? []).filter((l) => l.status === "success");
   }
 
-  protected getAssociatedItems(
-    item: DiscoveryServiceData
-  ): Array<any> | undefined {
-    return this.registeredLibraries(item);
-  }
-
   protected formatAssociatedCount(count: number): string {
     return count === 0
       ? "no registered libraries"
@@ -99,8 +94,9 @@ export class DiscoveryServices extends GenericEditableConfigList<
 
   protected getAssociatedEntries(
     item: DiscoveryServiceData
-  ): Array<{ label: string; suffix?: string; href?: string }> {
-    const registered = this.registeredLibraries(item) ?? [];
+  ): Array<{ label: string; suffix?: string; href?: string }> | undefined {
+    const registered = this.registeredLibraries(item);
+    if (registered === undefined) return undefined;
     const allLibraries = this.props.data?.allLibraries ?? [];
     return registered.map((lib) => {
       const meta = allLibraries.find((l) => l.short_name === lib.short_name);
@@ -113,8 +109,8 @@ export class DiscoveryServices extends GenericEditableConfigList<
     });
   }
 
-  UNSAFE_componentWillMount() {
-    super.UNSAFE_componentWillMount();
+  componentDidMount() {
+    super.componentDidMount();
     if (this.props.fetchLibraryRegistrations) {
       this.props.fetchLibraryRegistrations();
     }

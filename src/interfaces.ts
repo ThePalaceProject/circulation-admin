@@ -390,7 +390,9 @@ export interface ServicesWithRegistrationsData extends ServicesData {
   libraryRegistrations?: LibraryRegistrationData[];
 }
 
-export interface CollectionData extends ServiceData {}
+export interface CollectionData extends ServiceData {
+  marked_for_deletion?: boolean;
+}
 
 export interface CollectionsData extends ServicesWithRegistrationsData {
   collections: CollectionData[];

@@ -4,6 +4,7 @@ import {
   EditableConfigListStateProps,
   EditableConfigListDispatchProps,
   EditableConfigListOwnProps,
+  AssociatedEntry,
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
@@ -117,9 +118,9 @@ export class Collections extends GenericEditableConfigList<
     return {
       registerLibrary: (library: LibraryData) => {
         if (this.itemToEdit()) {
-          const data = new (window as any).FormData();
+          const data = new FormData();
           data.append("library_short_name", library.short_name);
-          data.append("collection_id", this.itemToEdit().id);
+          data.append("collection_id", String(this.itemToEdit().id));
           this.props.registerLibrary(data).then(() => {
             if (this.props.fetchLibraryRegistrations) {
               this.props.fetchLibraryRegistrations();
@@ -131,8 +132,12 @@ export class Collections extends GenericEditableConfigList<
     };
   }
 
-  UNSAFE_componentWillMount() {
-    super.UNSAFE_componentWillMount();
+  protected getAllLibraries() {
+    return this.props.data?.allLibraries ?? [];
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
     if (this.props.fetchLibraryRegistrations) {
       this.props.fetchLibraryRegistrations();
     }
@@ -149,10 +154,16 @@ export class Collections extends GenericEditableConfigList<
     };
   }
 
-  renderLi(item, index): JSX.Element {
+  renderLi(
+    item: CollectionData,
+    precomputedEntries: AssociatedEntry[] | undefined | null = null
+  ): JSX.Element {
     if (item.marked_for_deletion) {
       return (
-        <li className="deleted-collection" key={index}>
+        <li
+          className="deleted-collection"
+          key={String(item[this.identifierKey])}
+        >
           <TrashIcon />
           <h4>{this.label(item)}</h4>
           <p>
@@ -163,7 +174,7 @@ export class Collections extends GenericEditableConfigList<
         </li>
       );
     }
-    return super.renderLi(item, index);
+    return super.renderLi(item, precomputedEntries);
   }
 
   async delete(item: CollectionData): Promise<void> {

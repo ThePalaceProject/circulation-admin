@@ -51,6 +51,44 @@ $dangercolor: #D9534F;
           }
         }
 
+        .expand-collapse-controls {
+          display: flex;
+          gap: 0.75em;
+          margin-bottom: 8px;
+
+          button {
+            background: none;
+            border: 1px solid $linkcolor;
+            color: $linkcolor;
+            font-size: 0.85em;
+            padding: 2px 8px;
+            cursor: pointer;
+            border-radius: 3px;
+
+            &:hover:not(:disabled) {
+              color: $linkhovercolor;
+              border-color: $linkhovercolor;
+            }
+
+            &:disabled {
+              opacity: 0.4;
+              cursor: default;
+            }
+
+            // Bootstrap 3 applies a focus ring on both mouse and keyboard
+            // clicks. Suppress it here and restore it only for keyboard
+            // navigation via :focus-visible below.
+            &:focus {
+              outline: none;
+            }
+
+            &:focus-visible {
+              outline: 2px solid $linkcolor;
+              outline-offset: 2px;
+            }
+          }
+        }
+
         > ul {
           padding-left: 10px;
           li {
@@ -66,21 +104,25 @@ $dangercolor: #D9534F;
               justify-content: space-between;
               align-items: center;
 
-              h3 {
+              .item-label {
                 display: flex;
                 align-items: center;
                 gap: 0.5em;
                 margin: 0 20px 0 0;
                 flex-grow: 1;
-                font-size: 18px;
 
-                .library-count {
-                  font-size: 0.85em;
-                  font-weight: normal;
-                  color: $pagetextcolorlight;
+                h3 {
+                  font-size: 18px;
+                  margin: 0;
+
+                  .library-count {
+                    font-size: 0.85em;
+                    font-weight: normal;
+                    color: $pagetextcolorlight;
+                  }
                 }
 
-                .library-toggle {
+                .association-toggle {
                   background: none;
                   border: none;
                   cursor: pointer;
@@ -89,6 +131,20 @@ $dangercolor: #D9534F;
                   flex-shrink: 0;
                   width: 1.1em;
                   height: 1.1em;
+
+                  // Bootstrap 3 applies a focus ring on both mouse and
+                  // keyboard clicks. Suppress it here and restore it only
+                  // for keyboard navigation via :focus-visible below.
+                  &:focus {
+                    outline: none;
+                    box-shadow: none;
+                  }
+
+                  &:focus-visible {
+                    outline: 2px solid $linkcolor;
+                    outline-offset: 2px;
+                    border-radius: 2px;
+                  }
 
                   &:hover:not(:disabled) {
                     color: $linkhovercolor;
@@ -114,7 +170,7 @@ $dangercolor: #D9534F;
               }
             }
 
-            .associated-libraries {
+            .associated-items {
               list-style: disc;
               margin: 4px 0 6px 0;
               padding-left: 3em;

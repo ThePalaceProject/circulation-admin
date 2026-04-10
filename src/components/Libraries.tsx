@@ -48,9 +48,15 @@ export class Libraries extends GenericEditableConfigList<
     admin: PropTypes.object.isRequired,
   };
 
-  UNSAFE_componentWillMount() {
-    super.UNSAFE_componentWillMount();
+  componentDidMount() {
+    super.componentDidMount();
     this.props.fetchLanguages();
+  }
+
+  /** Libraries are top-level items, not associated with other libraries.
+   *  Returning undefined suppresses the disclosure toggle for every row. */
+  protected getAssociatedEntries(_item: LibraryData): undefined {
+    return undefined;
   }
 
   label(item): string {
