@@ -259,7 +259,7 @@ export abstract class GenericEditableConfigList<
 
   /**
    * Returns the raw list of items from the current data, or `[]` when data
-   * has not yet loaded.  Centralises the `any` cast required because `T` is
+   * has not yet loaded.  Centralizes the `any` cast required because `T` is
    * not constrained to include `listDataKey`.
    */
   protected getItems(): U[] {
@@ -375,6 +375,16 @@ export abstract class GenericEditableConfigList<
       libraryCount > 0 &&
       !!this.state.expandedItems[itemKey];
 
+    const itemLabel = this.label(item);
+    const expandVerb = isExpanded ? "Collapse" : "Expand";
+    const expandAction = isExpanded ? "collapse" : "expand";
+    const toggleButtonLabel = `${expandVerb} associations for ${itemLabel} (Alt+Click to ${expandAction} all)`;
+    const ariaExpandedProp =
+      libraryCount > 0 ? { "aria-expanded": isExpanded } : {};
+    const editHref = this.urlBase + "edit/" + item[this.identifierKey];
+    const canEdit = this.canEdit(item);
+    const canDelete = this.canDelete();
+
     return (
       <li key={itemKey}>
         <div className="item-header">
@@ -387,24 +397,16 @@ export abstract class GenericEditableConfigList<
                     ? this.toggleAllAssociations()
                     : this.toggleAssociations(itemKey)
                 }
-                {...(libraryCount > 0 ? { "aria-expanded": isExpanded } : {})}
-                aria-label={`${
-                  isExpanded ? "Collapse" : "Expand"
-                } associations for ${this.label(item)} (Alt+Click to ${
-                  isExpanded ? "collapse" : "expand"
-                } all)`}
-                title={`${
-                  isExpanded ? "Collapse" : "Expand"
-                } associations for ${this.label(item)} (Alt+Click to ${
-                  isExpanded ? "collapse" : "expand"
-                } all)`}
+                {...ariaExpandedProp}
+                aria-label={toggleButtonLabel}
+                title={toggleButtonLabel}
                 disabled={libraryCount === 0}
               >
                 <DisclosureIcon expanded={isExpanded} />
               </button>
             )}
             <h3>
-              {this.label(item)}
+              {itemLabel}
               {libraryCount !== null && (
                 <span className="library-count">
                   {" "}
@@ -414,11 +416,8 @@ export abstract class GenericEditableConfigList<
             </h3>
           </div>
 
-          <a
-            className="btn small edit-item"
-            href={this.urlBase + "edit/" + item[this.identifierKey]}
-          >
-            {this.canEdit(item) ? (
+          <a className="btn small edit-item" href={editHref}>
+            {canEdit ? (
               <span>
                 Edit <PencilIcon />
               </span>
@@ -429,7 +428,7 @@ export abstract class GenericEditableConfigList<
             )}
           </a>
 
-          {this.canDelete() && (
+          {canDelete && (
             <Button
               className="danger delete-item small"
               callback={() => this.delete(item)}
