@@ -202,11 +202,10 @@ export abstract class GenericEditableConfigList<
                 this.renderLi(item, entries)
               )}
             </ul>
-            {/* aria-hidden: the bottom controls are a visual convenience
-                duplicate of the controls above the list. Screen readers and
-                keyboard users should interact with the first set only. */}
+            {/* Extra expand / collapse buttons as a convenience for sighted
+                users. Hide from accessibility tree & remove from tab order. */}
             <div aria-hidden="true">
-              {this.renderExpandCollapseControls(expandable)}
+              {this.renderExpandCollapseControls(expandable, true)}
             </div>
           </div>
         )}
@@ -500,7 +499,10 @@ export abstract class GenericEditableConfigList<
     });
   }
 
-  private renderExpandCollapseControls(expandable: U[]): JSX.Element | null {
+  private renderExpandCollapseControls(
+    expandable: U[],
+    visualOnly = false
+  ): JSX.Element | null {
     if (expandable.length === 0) return null;
     const allExpanded = expandable.every(
       (item) => !!this.state.expandedItems[String(item[this.identifierKey])]
@@ -508,12 +510,14 @@ export abstract class GenericEditableConfigList<
     const noneExpanded = expandable.every(
       (item) => !this.state.expandedItems[String(item[this.identifierKey])]
     );
+    const tabIndex = visualOnly ? -1 : undefined;
     return (
       <div className="expand-collapse-controls">
         <button
           className="expand-all"
           onClick={this.expandAll}
           disabled={allExpanded}
+          tabIndex={tabIndex}
         >
           Expand all
         </button>
@@ -521,6 +525,7 @@ export abstract class GenericEditableConfigList<
           className="collapse-all"
           onClick={this.collapseAll}
           disabled={noneExpanded}
+          tabIndex={tabIndex}
         >
           Collapse all
         </button>

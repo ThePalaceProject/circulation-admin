@@ -176,13 +176,30 @@ describe("EditableConfigList - library association disclosure", () => {
     const { container } = renderList([
       { id: 1, name: "A", libraries: [{ short_name: "alpha" }] },
     ]);
-    expect(container.querySelector(".expand-collapse-controls")).not.toBeNull();
+    const controlSets = container.querySelectorAll(".expand-collapse-controls");
+    // One set above the list and one below (visual duplicate).
+    expect(controlSets).toHaveLength(2);
+    // Top set: functional, in tab order, not hidden from accessibility tree.
+    const topSet = controlSets[0];
+    expect(topSet.closest("[aria-hidden]")).toBeNull();
     expect(
-      container.querySelector<HTMLButtonElement>(".expand-all").disabled
+      topSet.querySelector<HTMLButtonElement>(".expand-all").tabIndex
+    ).not.toBe(-1);
+    expect(
+      topSet.querySelector<HTMLButtonElement>(".expand-all").disabled
     ).toBe(false);
     expect(
-      container.querySelector<HTMLButtonElement>(".collapse-all").disabled
+      topSet.querySelector<HTMLButtonElement>(".collapse-all").disabled
     ).toBe(true);
+    // Bottom set: hidden from accessibility tree and removed from tab order.
+    const bottomSet = controlSets[1];
+    expect(bottomSet.closest("[aria-hidden='true']")).not.toBeNull();
+    expect(
+      bottomSet.querySelector<HTMLButtonElement>(".expand-all").tabIndex
+    ).toBe(-1);
+    expect(
+      bottomSet.querySelector<HTMLButtonElement>(".collapse-all").tabIndex
+    ).toBe(-1);
   });
 
   it("Expand all expands all items that have libraries", () => {
