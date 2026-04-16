@@ -352,4 +352,48 @@ describe("EditableConfigList - library association disclosure", () => {
     expect(items[0].textContent).toBe("dup-a");
     expect(items[1].textContent).toBe("dup-b");
   });
+
+  describe("renderAssociatedLibraries", () => {
+    it("renders no associated-items panel when the item has no libraries property", () => {
+      const { container } = renderList([{ id: 1, name: "A" }]);
+      expect(container.querySelector(".associated-items")).toBeNull();
+    });
+
+    it("renders no associated-items panel when the item has an empty libraries array", () => {
+      const { container } = renderList([{ id: 1, name: "A", libraries: [] }]);
+      expect(container.querySelector(".associated-items")).toBeNull();
+    });
+
+    it("renders library names resolved from allLibraries on expand", () => {
+      const { container } = renderList([
+        {
+          id: 1,
+          name: "Service A",
+          libraries: [{ short_name: "alpha" }, { short_name: "beta" }],
+        },
+      ]);
+      fireEvent.click(container.querySelector(".association-toggle"));
+      const items = container.querySelectorAll(".associated-items li");
+      expect(items).toHaveLength(2);
+      // Sorted alphabetically by resolved display name.
+      expect(items[0].textContent).toBe("Alpha Library");
+      expect(items[1].textContent).toBe("Beta Library");
+    });
+
+    it("falls back to short_name when allLibraries is absent from the data", () => {
+      const { container } = renderWithContext(
+        <TestServiceList
+          data={{ services: [{ id: 1, name: "Service A", libraries: [{ short_name: "nypl" }] }] }}
+          fetchData={jest.fn()}
+          editItem={jest.fn().mockResolvedValue(undefined)}
+          deleteItem={jest.fn().mockResolvedValue(undefined)}
+          csrfToken="token"
+          isFetching={false}
+        />,
+        config
+      );
+      fireEvent.click(container.querySelector(".association-toggle"));
+      expect(container.querySelector(".associated-items li").textContent).toBe("nypl");
+    });
+  });
 });
