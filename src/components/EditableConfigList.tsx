@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
-import { SettingData } from "../interfaces";
+import { LibraryData, SettingData } from "../interfaces";
 import { Alert } from "react-bootstrap";
 import { RootState } from "../store";
 import { Button } from "library-simplified-reusable-components";
@@ -10,6 +10,7 @@ import ErrorMessage from "./ErrorMessage";
 import PencilIcon from "./icons/PencilIcon";
 import TrashIcon from "./icons/TrashIcon";
 import VisibleIcon from "./icons/VisibleIcon";
+import DisclosureIcon from "./icons/DisclosureIcon";
 import Admin from "../models/Admin";
 import * as PropTypes from "prop-types";
 
@@ -70,17 +71,29 @@ export interface ExtraFormSectionProps<T, U> {
   currentValue?: string;
 }
 
+/** A single entry in the associated-items disclosure panel. */
+export interface AssociatedEntry {
+  label: string;
+  suffix?: string;
+  href?: string;
+  pinned?: boolean;
+}
+
 /** Shows a list of configuration services of a particular type and allows creating a new
     service or editing or deleting an existing services. Used for many of the tabs on the
     system configuration page.
 
     GenericEditableConfigList allows subclasses to define additional props. Subclasses of
     EditableConfigList cannot change the props and do not have to specify a type for them. */
+interface EditableConfigListState {
+  expandedItems: Record<string, boolean>;
+}
+
 export abstract class GenericEditableConfigList<
   T,
   U,
   V extends EditableConfigListProps<T>
-> extends React.Component<V> {
+> extends React.Component<V, EditableConfigListState> {
   context: { admin: Admin };
   static contextTypes = {
     admin: PropTypes.object.isRequired,
@@ -106,15 +119,23 @@ export abstract class GenericEditableConfigList<
   extraFormKey?: string;
   private editFormRef = React.createRef<any>();
 
+  state: EditableConfigListState = {
+    expandedItems: {},
+  };
+
   constructor(props) {
     super(props);
     this.editItem = this.editItem.bind(this);
     this.save = this.save.bind(this);
     this.label = this.label.bind(this);
     this.renderLi = this.renderLi.bind(this);
+    this.toggleAssociations = this.toggleAssociations.bind(this);
+    this.toggleAllAssociations = this.toggleAllAssociations.bind(this);
+    this.expandAll = this.expandAll.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const { fetchData, isFetching } = this.props;
 
     if (fetchData && !isFetching) {
@@ -134,6 +155,16 @@ export abstract class GenericEditableConfigList<
     const ExtraFormSection = this.ExtraFormSection;
     const itemToEdit = this.itemToEdit();
     const canEditItem = itemToEdit && this.canEdit(itemToEdit);
+    const itemsWithEntries: Array<[
+      U,
+      AssociatedEntry[] | undefined
+    ]> = this.getItems().map((item) => [item, this.getAssociatedEntries(item)]);
+    const expandable: U[] = itemsWithEntries
+      .filter((pair): pair is [U, AssociatedEntry[]] => {
+        const [, e] = pair;
+        return e != null && e.length > 0;
+      })
+      .map(([item]) => item);
     return (
       <div className={this.getClassName()}>
         <h2>{headers["h2"]}</h2>
@@ -165,11 +196,17 @@ export abstract class GenericEditableConfigList<
                 )}
               <div>{this.props.data[this.listDataKey].length} configured</div>
             </header>
+            {this.renderExpandCollapseControls(expandable)}
             <ul>
-              {this.props.data[this.listDataKey].map((item, index) =>
-                this.renderLi(item, index)
+              {itemsWithEntries.map(([item, entries]) =>
+                this.renderLi(item, entries)
               )}
             </ul>
+            {/* Extra expand / collapse buttons as a convenience for sighted
+                users. Hide from accessibility tree & remove from tab order. */}
+            <div aria-hidden="true">
+              {this.renderExpandCollapseControls(expandable, true)}
+            </div>
           </div>
         )}
         {this.props.editOrCreate === "create" && (
@@ -219,40 +256,191 @@ export abstract class GenericEditableConfigList<
     );
   }
 
-  renderLi(item, index): JSX.Element {
+  /**
+   * Returns the raw list of items from the current data, or `[]` when data
+   * has not yet loaded.  Centralizes the `any` cast required because `T` is
+   * not constrained to include `listDataKey`.
+   */
+  protected getItems(): U[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this.props.data as any)?.[this.listDataKey] ?? [];
+  }
+
+  /**
+   * Returns the full list of libraries known to the server, used to resolve
+   * short names to display names and UUIDs for the associated-items panel.
+   *
+   * The base implementation accesses `data.allLibraries` via an `any` cast
+   * because the generic `T` is not constrained to include that field (e.g.
+   * `LibrariesData` does not have it). Subclasses whose data type declares
+   * `allLibraries` (e.g. `Collections`, `IndividualAdmins`) should override
+   * this method with a type-safe accessor to avoid the cast.
+   */
+  protected getAllLibraries(): LibraryData[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this.props.data as any)?.allLibraries ?? [];
+  }
+
+  /**
+   * Returns a human-readable summary of the association count shown next to
+   * the item label (e.g. "3 libraries", "no libraries").  Override in
+   * subclasses that use different terminology (e.g. "registered libraries",
+   * "roles").
+   */
+  protected formatAssociatedCount(count: number): string {
+    return count === 0
+      ? "no libraries"
+      : count === 1
+      ? "1 library"
+      : `${count} libraries`;
+  }
+
+  /**
+   * Returns the list of display entries to show in the associated-items panel
+   * for a given item, or `undefined` if the panel does not apply to this item.
+   *
+   * Return semantics (used by `renderLi` to drive toggle visibility):
+   * - `undefined`  → the feature does not apply; no toggle is rendered.
+   * - `[]`         → the feature applies but there are no associations;
+   *                  a disabled toggle is rendered.
+   * - `[…entries]` → associations exist; an enabled toggle is rendered.
+   *
+   * The base implementation reads the item's `libraries` field (an array of
+   * `{ short_name }` objects) and resolves each entry against `getAllLibraries`.
+   * Subclasses may override to supply different data sources or terminology
+   * (see `DiscoveryServices.getAssociatedEntries`,
+   * `IndividualAdmins.getAssociatedEntries`).
+   *
+   * Subclasses that do not support the feature should *not* override this
+   * method; simply ensure that the item type has no `libraries` field so the
+   * base implementation returns `undefined` for every item (see `Libraries`).
+   */
+  protected getAssociatedEntries(item: U): AssociatedEntry[] | undefined {
+    const libraries: Array<{ short_name: string }> | undefined =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (item as any)?.libraries;
+    if (libraries === undefined) return undefined;
+    const allLibraries = this.getAllLibraries();
+    return libraries.map((lib) => {
+      const libraryData = allLibraries.find(
+        (l) => l.short_name === lib.short_name
+      );
+      return {
+        label: libraryData?.name || lib.short_name,
+        href: libraryData?.uuid
+          ? `/admin/web/config/libraries/edit/${libraryData.uuid}`
+          : undefined,
+      };
+    });
+  }
+
+  /**
+   * Renders the expanded associated-items `<ul>`.  Pinned entries (e.g.
+   * sitewide roles) are sorted before per-item entries; within each group
+   * entries are sorted alphabetically by label.
+   */
+  protected renderAssociatedSection(entries: AssociatedEntry[]): JSX.Element {
+    const sorted = [...entries].sort((a, b) => {
+      // Pinned entries (e.g. sitewide roles) always appear before per-item entries.
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      return a.label.localeCompare(b.label);
+    });
+    return (
+      <ul className="associated-items">
+        {sorted.map((entry, i) => (
+          <li key={entry.href ?? `${entry.label}-${i}`}>
+            {entry.href ? <a href={entry.href}>{entry.label}</a> : entry.label}
+            {entry.suffix}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  renderLi(
+    item: U,
+    precomputedEntries: AssociatedEntry[] | undefined | null = null
+  ): JSX.Element {
     const AdditionalContent = this.AdditionalContent || null;
+    const associatedEntries =
+      precomputedEntries !== null
+        ? precomputedEntries
+        : this.getAssociatedEntries(item);
+    const libraryCount =
+      associatedEntries != null ? associatedEntries.length : null;
+    const itemKey = String(item[this.identifierKey]);
+    const isExpanded =
+      libraryCount !== null &&
+      libraryCount > 0 &&
+      !!this.state.expandedItems[itemKey];
+
+    const itemLabel = this.label(item);
+    const expandVerb = isExpanded ? "Collapse" : "Expand";
+    const expandAction = isExpanded ? "collapse" : "expand";
+    const toggleButtonLabel = `${expandVerb} associations for ${itemLabel} (Alt+Click to ${expandAction} all)`;
+    const ariaExpandedProp =
+      libraryCount > 0 ? { "aria-expanded": isExpanded } : {};
+    const editHref = this.urlBase + "edit/" + item[this.identifierKey];
+    const canEdit = this.canEdit(item);
+    const canDelete = this.canDelete();
 
     return (
-      <li key={index}>
-        <a
-          className="btn small edit-item"
-          href={this.urlBase + "edit/" + item[this.identifierKey]}
-        >
-          {this.canEdit(item) ? (
-            <span>
-              Edit <PencilIcon />
-            </span>
-          ) : (
-            <span>
-              View <VisibleIcon />
-            </span>
-          )}
-        </a>
+      <li key={itemKey}>
+        <div className="item-header">
+          <div className="item-label">
+            {libraryCount !== null && (
+              <button
+                className="association-toggle"
+                onClick={(e) =>
+                  e.altKey
+                    ? this.toggleAllAssociations()
+                    : this.toggleAssociations(itemKey)
+                }
+                {...ariaExpandedProp}
+                aria-label={toggleButtonLabel}
+                title={toggleButtonLabel}
+                disabled={libraryCount === 0}
+              >
+                <DisclosureIcon expanded={isExpanded} />
+              </button>
+            )}
+            <h3>
+              {itemLabel}
+              {libraryCount !== null && (
+                <span className="library-count">
+                  {" "}
+                  ({this.formatAssociatedCount(libraryCount)})
+                </span>
+              )}
+            </h3>
+          </div>
 
-        <h3>{this.label(item)}</h3>
-
-        {this.canDelete() && (
-          <Button
-            className="danger delete-item small"
-            callback={() => this.delete(item)}
-            content={
+          <a className="btn small edit-item" href={editHref}>
+            {canEdit ? (
               <span>
-                Delete
-                <TrashIcon />
+                Edit <PencilIcon />
               </span>
-            }
-          />
-        )}
+            ) : (
+              <span>
+                View <VisibleIcon />
+              </span>
+            )}
+          </a>
+
+          {canDelete && (
+            <Button
+              className="danger delete-item small"
+              callback={() => this.delete(item)}
+              content={
+                <span>
+                  Delete
+                  <TrashIcon />
+                </span>
+              }
+            />
+          )}
+        </div>
+        {isExpanded && this.renderAssociatedSection(associatedEntries)}
         {AdditionalContent && (
           <AdditionalContent
             type={this.itemTypeName}
@@ -262,6 +450,86 @@ export abstract class GenericEditableConfigList<
           />
         )}
       </li>
+    );
+  }
+
+  toggleAssociations(itemKey: string): void {
+    this.setState((prev) => ({
+      expandedItems: {
+        ...prev.expandedItems,
+        [itemKey]: !prev.expandedItems[itemKey],
+      },
+    }));
+  }
+
+  expandAll(): void {
+    const newExpandedItems: Record<string, boolean> = {};
+    for (const item of this.getExpandableItems()) {
+      newExpandedItems[String(item[this.identifierKey])] = true;
+    }
+    this.setState({ expandedItems: newExpandedItems });
+  }
+
+  collapseAll(): void {
+    this.setState({ expandedItems: {} });
+  }
+
+  toggleAllAssociations(): void {
+    const expandable = this.getExpandableItems();
+    if (expandable.length === 0) return;
+    const anyCollapsed = expandable.some(
+      (item) => !this.state.expandedItems[String(item[this.identifierKey])]
+    );
+    if (anyCollapsed) {
+      const expandedItems: Record<string, boolean> = {};
+      for (const item of expandable) {
+        expandedItems[String(item[this.identifierKey])] = true;
+      }
+      this.setState({ expandedItems });
+    } else {
+      this.collapseAll();
+    }
+  }
+
+  /** Returns items that have at least one associated entry (i.e. are expandable). */
+  private getExpandableItems(): U[] {
+    return this.getItems().filter((item) => {
+      const entries = this.getAssociatedEntries(item);
+      return entries != null && entries.length > 0;
+    });
+  }
+
+  private renderExpandCollapseControls(
+    expandable: U[],
+    visualOnly = false
+  ): JSX.Element | null {
+    if (expandable.length === 0) return null;
+    const allExpanded = expandable.every(
+      (item) => !!this.state.expandedItems[String(item[this.identifierKey])]
+    );
+    const noneExpanded = expandable.every(
+      (item) => !this.state.expandedItems[String(item[this.identifierKey])]
+    );
+    const tabIndex = visualOnly ? -1 : undefined;
+    return (
+      <div className="expand-collapse-controls">
+        <button
+          className="expand-all"
+          onClick={this.expandAll}
+          disabled={allExpanded}
+          tabIndex={tabIndex}
+        >
+          Expand all
+        </button>
+        <button
+          className="collapse-all"
+          onClick={this.collapseAll}
+          disabled={noneExpanded}
+          tabIndex={tabIndex}
+        >
+          Collapse all
+        </button>
+      </div>
     );
   }
 
@@ -361,15 +629,20 @@ export abstract class GenericEditableConfigList<
   }
 
   save(data: FormData) {
-    this.editItem(data).then(() => {
-      if (this.limitOne && this.props.editOrCreate === "create") {
-        // Wait for two seconds so that the user can see the success message,
-        // then go to the edit page
-        setTimeout(() => {
-          window.location.href = `${this.urlBase}edit/${this.props.responseBody}`;
-        }, 2000);
-      }
-    });
+    this.editItem(data)
+      .then(() => {
+        if (this.limitOne && this.props.editOrCreate === "create") {
+          // Wait for two seconds so that the user can see the success message,
+          // then go to the edit page
+          setTimeout(() => {
+            window.location.href = `${this.urlBase}edit/${this.props.responseBody}`;
+          }, 2000);
+        }
+      })
+      .catch(() => {
+        // Error already surfaced via the Redux formError prop; suppress the
+        // unhandled-rejection warning.
+      });
   }
 
   async editItem(data: FormData): Promise<void> {

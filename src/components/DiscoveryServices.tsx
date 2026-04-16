@@ -12,6 +12,7 @@ import {
   DiscoveryServicesData,
   DiscoveryServiceData,
   LibraryData,
+  LibraryDataWithStatus,
   LibraryRegistrationsData,
 } from "../interfaces";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
@@ -58,11 +59,12 @@ export class DiscoveryServices extends GenericEditableConfigList<
   getChildContext() {
     return {
       registerLibrary: (library: LibraryData, registration_stage: string) => {
-        if (this.itemToEdit()) {
-          const data = new (window as any).FormData();
+        const item = this.itemToEdit();
+        if (item) {
+          const data = new FormData();
           data.append("library_short_name", library.short_name);
           data.append("registration_stage", registration_stage);
-          data.append("integration_id", this.itemToEdit().id);
+          data.append("integration_id", String(item.id));
           this.props.registerLibrary(data).then(() => {
             if (this.props.fetchLibraryRegistrations) {
               this.props.fetchLibraryRegistrations();
@@ -73,8 +75,42 @@ export class DiscoveryServices extends GenericEditableConfigList<
     };
   }
 
-  UNSAFE_componentWillMount() {
-    super.UNSAFE_componentWillMount();
+  private registeredLibraries(
+    item: DiscoveryServiceData
+  ): LibraryDataWithStatus[] | undefined {
+    const registrations = this.props.data?.libraryRegistrations;
+    if (!registrations) return undefined;
+    const serviceReg = registrations.find((r) => r.id === item.id);
+    return (serviceReg?.libraries ?? []).filter((l) => l.status === "success");
+  }
+
+  protected formatAssociatedCount(count: number): string {
+    return count === 0
+      ? "no registered libraries"
+      : count === 1
+      ? "1 registered library"
+      : `${count} registered libraries`;
+  }
+
+  protected getAssociatedEntries(
+    item: DiscoveryServiceData
+  ): Array<{ label: string; suffix?: string; href?: string }> | undefined {
+    const registered = this.registeredLibraries(item);
+    if (registered === undefined) return undefined;
+    const allLibraries = this.props.data?.allLibraries ?? [];
+    return registered.map((lib) => {
+      const meta = allLibraries.find((l) => l.short_name === lib.short_name);
+      const uuid = meta?.uuid ?? lib.uuid;
+      return {
+        label: meta?.name ?? lib.name ?? lib.short_name,
+        suffix: lib.stage ? ` - registered - ${lib.stage}` : " - registered",
+        href: uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined,
+      };
+    });
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
     if (this.props.fetchLibraryRegistrations) {
       this.props.fetchLibraryRegistrations();
     }

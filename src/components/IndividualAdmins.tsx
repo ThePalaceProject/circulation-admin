@@ -7,7 +7,11 @@ import EditableConfigList, {
 } from "./EditableConfigList";
 import { connect } from "react-redux";
 import ActionCreator from "../actions";
-import { IndividualAdminsData, IndividualAdminData } from "../interfaces";
+import {
+  IndividualAdminsData,
+  IndividualAdminData,
+  AdminRoleData,
+} from "../interfaces";
 import Admin from "../models/Admin";
 import IndividualAdminEditForm from "./IndividualAdminEditForm";
 
@@ -30,6 +34,93 @@ export class IndividualAdmins extends EditableConfigList<
     admin: PropTypes.object.isRequired,
   };
 
+  private getRolesSummary(
+    item: IndividualAdminData
+  ): Array<{
+    label: string;
+    suffix?: string;
+    href?: string;
+    pinned?: boolean;
+  }> {
+    const roles: AdminRoleData[] = item.roles || [];
+    const allLibraries = this.getAllLibraries();
+
+    const getLibraryName = (shortName: string) =>
+      allLibraries.find((l) => l.short_name === shortName)?.name || shortName;
+
+    const getLibraryHref = (shortName: string) => {
+      const uuid = allLibraries.find((l) => l.short_name === shortName)?.uuid;
+      return uuid ? `/admin/web/config/libraries/edit/${uuid}` : undefined;
+    };
+
+    const result: Array<{
+      label: string;
+      suffix?: string;
+      href?: string;
+      pinned?: boolean;
+    }> = [];
+
+    if (roles.some((r) => r.role === "manager-all")) {
+      result.push({
+        label: "All libraries",
+        suffix: " - Manager",
+        pinned: true,
+      });
+    } else if (roles.some((r) => r.role === "librarian-all")) {
+      result.push({
+        label: "All libraries",
+        suffix: " - Librarian",
+        pinned: true,
+      });
+    }
+
+    const libraryHighestRole: Record<string, "manager" | "librarian"> = {};
+    for (const r of roles) {
+      if (r.library) {
+        if (r.role === "manager") {
+          libraryHighestRole[r.library] = "manager";
+        } else if (
+          r.role === "librarian" &&
+          libraryHighestRole[r.library] !== "manager"
+        ) {
+          libraryHighestRole[r.library] = "librarian";
+        }
+      }
+    }
+
+    for (const [shortName, role] of Object.entries(libraryHighestRole)) {
+      result.push({
+        label: getLibraryName(shortName),
+        suffix: role === "manager" ? " - Manager" : " - Librarian",
+        href: getLibraryHref(shortName),
+      });
+    }
+
+    return result;
+  }
+
+  protected getAllLibraries() {
+    return this.props.data?.allLibraries ?? [];
+  }
+
+  protected formatAssociatedCount(count: number): string {
+    return count === 0 ? "no roles" : count === 1 ? "1 role" : `${count} roles`;
+  }
+
+  protected getAssociatedEntries(
+    item: IndividualAdminData
+  ):
+    | Array<{ label: string; suffix?: string; href?: string; pinned?: boolean }>
+    | undefined {
+    if (!item.roles) return undefined;
+    // System admins have a single implicit role that isn't library-scoped;
+    // show a synthetic "sysadmin" entry rather than the library-role summary.
+    if (item.roles.some((r) => r.role === "system")) {
+      return [{ label: "sysadmin" }];
+    }
+    return this.getRolesSummary(item);
+  }
+
   canCreate() {
     return (
       this.context.admin && this.context.admin.isLibraryManagerOfSomeLibrary()
@@ -40,7 +131,9 @@ export class IndividualAdmins extends EditableConfigList<
     return this.context.admin && this.context.admin.isSystemAdmin();
   }
 
-  canEdit() {
+  // Override: editability is determined by the current user's role, not the
+  // per-item level field used by the base class.
+  canEdit(_item?: IndividualAdminData): boolean {
     return (
       this.context.admin && this.context.admin.isLibraryManagerOfSomeLibrary()
     );
@@ -62,14 +155,18 @@ export class IndividualAdmins extends EditableConfigList<
   }
 
   save(data: FormData) {
-    this.editItem(data).then(() => {
-      // If we're setting up an admin for the first time, refresh the page
-      // to go to login.
-      if (this.props.settingUp) {
-        window.location.reload();
-        return;
-      }
-    });
+    this.editItem(data)
+      .then(() => {
+        // If we're setting up an admin for the first time, refresh the page
+        // to go to login.
+        if (this.props.settingUp) {
+          window.location.reload();
+        }
+      })
+      .catch(() => {
+        // Error already surfaced via the Redux formError prop; suppress the
+        // unhandled-rejection warning.
+      });
   }
 }
 
