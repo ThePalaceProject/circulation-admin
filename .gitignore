@@ -12,3 +12,8 @@ docs
 .eslintcache
 .env.local
 .env
+
+# Claude
+.claude/
+!.claude/settings.json
+CLAUDE.local.md
