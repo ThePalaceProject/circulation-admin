@@ -5,6 +5,7 @@ import Collections from "./Collections";
 import IndividualAdmins from "./IndividualAdmins";
 import PatronAuthServices from "./PatronAuthServices";
 import SitewideAnnouncements from "./SitewideAnnouncements";
+import GlobalSettings from "./GlobalSettings";
 import MetadataServices from "./MetadataServices";
 import CatalogServices from "./CatalogServices";
 import DiscoveryServices from "./DiscoveryServices";
@@ -46,6 +47,7 @@ export default class ConfigTabContainer extends TabContainer<
     catalogServices: CatalogServices,
     discovery: DiscoveryServices,
     sitewideAnnouncements: SitewideAnnouncements,
+    globalSettings: GlobalSettings,
   };
 
   LIBRARIAN_TABS = ["libraries"];
@@ -56,6 +58,7 @@ export default class ConfigTabContainer extends TabContainer<
     individualAdmins: "Admins",
     patronAuth: "Patron Authentication",
     sitewideAnnouncements: "Sitewide Announcements",
+    globalSettings: "Global Settings",
     catalogServices: "External Catalogs",
   };
 

@@ -531,6 +531,13 @@ export interface SitewideAnnouncementsData {
   settings: SettingData[];
 }
 
+export interface GlobalSettingsData {
+  /** Current setting values keyed by field name. */
+  settings: { [key: string]: string };
+  /** Form schema returned by the backend, one entry per configurable field. */
+  schema: SettingData[];
+}
+
 export interface AdvancedSearchQuery {
   id?: string;
   key?: string;

@@ -22,6 +22,7 @@ import {
   DiagnosticsData,
   FeatureFlags,
   SitewideAnnouncementsData,
+  GlobalSettingsData,
   StatisticsData,
   QuickSightEmbeddedURLData,
 } from "./interfaces";
@@ -75,6 +76,8 @@ export default class ActionCreator extends BaseActionCreator {
   static readonly DELETE_PATRON_AUTH_SERVICE = "DELETE_PATRON_AUTH_SERVICE";
   static readonly SITEWIDE_ANNOUNCEMENTS = "SITEWIDE_ANNOUNCEMENTS";
   static readonly EDIT_SITEWIDE_ANNOUNCEMENTS = "EDIT_SITEWIDE_ANNOUNCEMENTS";
+  static readonly GLOBAL_SETTINGS = "GLOBAL_SETTINGS";
+  static readonly EDIT_GLOBAL_SETTINGS = "EDIT_GLOBAL_SETTINGS";
   static readonly METADATA_SERVICES = "METADATA_SERVICES";
   static readonly EDIT_METADATA_SERVICE = "EDIT_METADATA_SERVICE";
   static readonly DELETE_METADATA_SERVICE = "DELETE_METADATA_SERVICE";
@@ -992,6 +995,21 @@ export default class ActionCreator extends BaseActionCreator {
       url,
       data
     ).bind(this);
+  }
+
+  fetchGlobalSettings() {
+    const url = "/admin/global_settings";
+    return this.fetchJSON<GlobalSettingsData>(
+      ActionCreator.GLOBAL_SETTINGS,
+      url
+    ).bind(this);
+  }
+
+  editGlobalSettings(data: FormData) {
+    const url = "/admin/global_settings";
+    return this.postForm(ActionCreator.EDIT_GLOBAL_SETTINGS, url, data).bind(
+      this
+    );
   }
 
   setFeatureFlags(featureFlags: FeatureFlags) {

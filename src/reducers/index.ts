@@ -10,6 +10,7 @@ import collections from "./collections";
 import individualAdmins from "./individualAdmins";
 import patronAuthServices from "./patronAuthServices";
 import sitewideAnnouncements from "./sitewideAnnouncements";
+import globalSettings from "./globalSettings";
 import metadataServices from "./metadataServices";
 import catalogServices from "./catalogServices";
 import discoveryServices from "./discoveryServices";
@@ -43,6 +44,7 @@ import {
   IndividualAdminsData,
   PatronAuthServicesData,
   SitewideAnnouncementsData,
+  GlobalSettingsData,
   MetadataServicesData,
   CatalogServicesData,
   DiscoveryServicesData,
@@ -70,6 +72,7 @@ export interface State {
   individualAdmins: FetchEditState<IndividualAdminsData>;
   patronAuthServices: FetchEditState<PatronAuthServicesData>;
   sitewideAnnouncements: FetchEditState<SitewideAnnouncementsData>;
+  globalSettings: FetchEditState<GlobalSettingsData>;
   metadataServices: FetchEditState<MetadataServicesData>;
   catalogServices: FetchEditState<CatalogServicesData>;
   discoveryServices: FetchEditState<DiscoveryServicesData>;
@@ -106,6 +109,7 @@ export default combineReducers<State>({
   individualAdmins,
   patronAuthServices,
   sitewideAnnouncements,
+  globalSettings,
   metadataServices,
   catalogServices,
   discoveryServices,
