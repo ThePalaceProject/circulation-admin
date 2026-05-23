@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ColorPicker from "./ColorPicker";
+import JsonField from "./JsonField";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
 import { SettingData, CustomListsSetting } from "../interfaces";
@@ -13,6 +14,8 @@ export interface ProtocolFormFieldProps {
     | string
     | string[]
     | object[]
+    | object
+    | null
     | Array<string | object | JSX.Element>
     | JSX.Element;
   altValue?: string;
@@ -43,6 +46,7 @@ export default class ProtocolFormField extends React.Component<
   private inputListRef = React.createRef<InputList>();
   private colorPickerRef = React.createRef<ColorPicker>();
   private elementRef = React.createRef<EditableInput>();
+  private jsonFieldRef = React.createRef<JsonField>();
   static defaultProps = {
     readOnly: false,
   };
@@ -63,6 +67,8 @@ export default class ProtocolFormField extends React.Component<
         ? this.renderListSetting(setting)
         : setting.type === "color-picker"
         ? this.renderColorPickerSetting(setting)
+        : setting.type === "json"
+        ? this.renderJsonSetting(setting)
         : this.renderSetting(setting);
     // Special handling for hidden settings.
     return setting.hidden ? this.renderHiddenElement(element) : element;
@@ -208,6 +214,19 @@ export default class ProtocolFormField extends React.Component<
     );
   }
 
+  renderJsonSetting(setting: SettingData): JSX.Element {
+    return (
+      <JsonField
+        ref={this.jsonFieldRef}
+        setting={setting}
+        value={this.props.value}
+        disabled={this.props.disabled}
+        readOnly={this.props.readOnly}
+        onChange={this.props.onChange}
+      />
+    );
+  }
+
   labelAndDescription(setting: SettingData): JSX.Element[] {
     const label = <label key={setting.label}>{setting.label}</label>;
     const description = setting.description && (
@@ -252,7 +271,8 @@ export default class ProtocolFormField extends React.Component<
   findRef() {
     return (this.inputListRef?.current ||
       this.elementRef?.current ||
-      this.colorPickerRef?.current) as any;
+      this.colorPickerRef?.current ||
+      this.jsonFieldRef?.current) as any;
   }
 
   clear() {
