@@ -102,6 +102,65 @@ describe("JsonField", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
+  describe("error message visibility", () => {
+    it("is absent before the field is focused and there is no error", () => {
+      render(<JsonField setting={setting} />);
+      expect(
+        document.querySelector(".json-field-error-msg")
+      ).not.toBeInTheDocument();
+    });
+
+    it("appears (empty) when the field is focused with no error", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      fireEvent.focus(ta);
+      const el = document.querySelector(".json-field-error-msg");
+      expect(el).toBeInTheDocument();
+      expect(el!.textContent).toBe("");
+    });
+
+    it("disappears on blur when there is no error", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      fireEvent.focus(ta);
+      fireEvent.blur(ta);
+      expect(
+        document.querySelector(".json-field-error-msg")
+      ).not.toBeInTheDocument();
+    });
+
+    it("stays visible after blur when there is an error", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      fireEvent.focus(ta);
+      fireEvent.change(ta, { target: { value: "bad json" } });
+      fireEvent.blur(ta);
+      expect(
+        screen.getByText(/unexpected token|expected/i)
+      ).toBeInTheDocument();
+    });
+
+    it("sets aria-invalid on the textarea when JSON is invalid", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      expect(ta).not.toHaveAttribute("aria-invalid", "true");
+      fireEvent.change(ta, { target: { value: "bad json" } });
+      expect(ta).toHaveAttribute("aria-invalid", "true");
+      fireEvent.change(ta, { target: { value: '{"x":1}' } });
+      expect(ta).not.toHaveAttribute("aria-invalid", "true");
+    });
+
+    it("adds the error element id to aria-describedby when invalid", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      expect(ta.getAttribute("aria-describedby") ?? "").not.toContain(
+        "json-error-"
+      );
+      fireEvent.change(ta, { target: { value: "bad" } });
+      expect(ta.getAttribute("aria-describedby")).toContain("json-error-");
+    });
+  });
+
   describe("getValue()", () => {
     it("returns null for empty textarea", () => {
       const ref = React.createRef<JsonField>();

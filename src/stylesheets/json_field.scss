@@ -1,3 +1,19 @@
+.json-field-group {
+  // The global .field-error .description rule would color the setting
+  // description red; only the dedicated error element should be red.
+  &.field-error .description {
+    color: inherit;
+  }
+
+  .json-field-error-msg {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: $red;
+    margin-top: 5px;
+    min-height: 1.5em;
+  }
+}
+
 .json-field-textarea-wrap {
   position: relative;
 

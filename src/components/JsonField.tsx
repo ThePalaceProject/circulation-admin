@@ -17,6 +17,7 @@ export interface JsonFieldState {
   copied: boolean;
   previousText: string | null;
   clearFeedback: boolean;
+  focused: boolean;
 }
 
 function valueToText(value: any): string {
@@ -40,9 +41,12 @@ export default class JsonField extends React.Component<
       copied: false,
       previousText: null,
       clearFeedback: false,
+      focused: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
     this.handleCopy = this.handleCopy.bind(this);
     this.handleClearClick = this.handleClearClick.bind(this);
     this.preventButtonBlur = this.preventButtonBlur.bind(this);
@@ -116,6 +120,14 @@ export default class JsonField extends React.Component<
     }
   }
 
+  handleFocus() {
+    this.setState({ focused: true });
+  }
+
+  handleBlur() {
+    this.setState({ focused: false });
+  }
+
   getValue(): any {
     const { text } = this.state;
     if (!text.trim()) return null;
@@ -182,13 +194,22 @@ export default class JsonField extends React.Component<
 
   render(): JSX.Element {
     const { setting, disabled, readOnly } = this.props;
-    const { text, jsonError, copied, clearFeedback } = this.state;
+    const { text, jsonError, copied, clearFeedback, focused } = this.state;
     const textareaId = `json-field-${setting.key}`;
     const descId = setting.description ? `json-desc-${setting.key}` : undefined;
+    const errorId = `json-error-${setting.key}`;
+    const showErrorMsg = focused || !!jsonError;
+    const describedBy =
+      [descId, jsonError ? errorId : undefined].filter(Boolean).join(" ") ||
+      undefined;
     const isEmpty = !text;
 
     return (
-      <div className={`form-group${jsonError ? " field-error" : ""}`}>
+      <div
+        className={`form-group json-field-group${
+          jsonError ? " field-error" : ""
+        }`}
+      >
         <label className="control-label" htmlFor={textareaId}>
           {setting.label}
           {setting.required && <span className="required-field">Required</span>}
@@ -201,9 +222,12 @@ export default class JsonField extends React.Component<
             value={text}
             onChange={this.handleChange}
             onKeyDown={this.handleKeyDown}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
             disabled={disabled}
             readOnly={readOnly}
-            aria-describedby={descId}
+            aria-invalid={!!jsonError}
+            aria-describedby={describedBy}
           />
           <div className="json-field-actions">
             <span className="json-field-copied-feedback" aria-live="polite">
@@ -239,7 +263,11 @@ export default class JsonField extends React.Component<
             dangerouslySetInnerHTML={{ __html: setting.description }}
           />
         )}
-        {jsonError && <p className="description">{jsonError}</p>}
+        {showErrorMsg && (
+          <p id={errorId} className="json-field-error-msg">
+            {jsonError ?? ""}
+          </p>
+        )}
       </div>
     );
   }
