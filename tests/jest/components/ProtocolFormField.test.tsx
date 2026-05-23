@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ProtocolFormField from "../../../src/components/ProtocolFormField";
 
@@ -43,6 +43,24 @@ describe("ProtocolFormField — json type", () => {
     const ta = screen.getByLabelText("Config JSON");
     fireEvent.change(ta, { target: { value: '{"x":42}' } });
     expect(ref.current!.getValue()).toEqual({ x: 42 });
+  });
+
+  it("clear() resets the textarea", () => {
+    const ref = React.createRef<ProtocolFormField>();
+    render(
+      <ProtocolFormField
+        setting={jsonSetting}
+        disabled={false}
+        ref={ref}
+        value={{ x: 42 }}
+      />
+    );
+    const ta = screen.getByLabelText("Config JSON") as HTMLTextAreaElement;
+    expect(ta.value).not.toBe("");
+    act(() => {
+      ref.current!.clear();
+    });
+    expect(ta.value).toBe("");
   });
 });
 

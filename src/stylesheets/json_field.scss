@@ -33,11 +33,20 @@
     transition: opacity 0.1s ease;
 
     .json-field-copied-feedback,
+    .json-field-copy-failed-feedback,
     .json-field-cleared-feedback {
       font-size: 0.75em;
-      color: $blue-dark;
       white-space: nowrap;
       padding-right: 2px;
+    }
+
+    .json-field-copied-feedback,
+    .json-field-cleared-feedback {
+      color: $blue-dark;
+    }
+
+    .json-field-copy-failed-feedback {
+      color: $red;
     }
 
     button {
@@ -72,8 +81,11 @@
     }
   }
 
-  &:focus-within .json-field-actions {
-    opacity: 1;
-    pointer-events: auto;
+  &:focus-within,
+  &:hover {
+    .json-field-actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 }

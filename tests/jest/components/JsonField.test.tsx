@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import JsonField from "../../../src/components/JsonField";
+import JsonField, { JsonFieldHandle } from "../../../src/components/JsonField";
 
 const setting = {
   key: "my_json",
@@ -46,6 +46,17 @@ describe("JsonField", () => {
     expect(ta.value).toBe(JSON.stringify(arr, null, 2));
   });
 
+  it("resets textarea when value prop changes externally", () => {
+    const { rerender } = render(
+      <JsonField setting={setting} value={{ a: 1 }} />
+    );
+    const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
+    expect(ta.value).toBe(JSON.stringify({ a: 1 }, null, 2));
+
+    rerender(<JsonField setting={setting} value={{ b: 2 }} />);
+    expect(ta.value).toBe(JSON.stringify({ b: 2 }, null, 2));
+  });
+
   it("shows inline error for invalid JSON input", () => {
     render(<JsonField setting={setting} />);
     const ta = screen.getByLabelText("JSON Setting");
@@ -82,6 +93,11 @@ describe("JsonField", () => {
   it("shows the Required badge for required settings", () => {
     render(<JsonField setting={requiredSetting} />);
     expect(screen.getByText("Required")).toBeInTheDocument();
+  });
+
+  it("disables the textarea when disabled prop is true", () => {
+    render(<JsonField setting={setting} disabled={true} />);
+    expect(screen.getByLabelText("JSON Setting")).toBeDisabled();
   });
 
   it("calls onChange with parsed value on valid input", () => {
@@ -159,17 +175,23 @@ describe("JsonField", () => {
       fireEvent.change(ta, { target: { value: "bad" } });
       expect(ta.getAttribute("aria-describedby")).toContain("json-error-");
     });
+
+    it("includes the description element id in aria-describedby when description is present", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      expect(ta.getAttribute("aria-describedby")).toContain("json-desc-");
+    });
   });
 
   describe("getValue()", () => {
     it("returns null for empty textarea", () => {
-      const ref = React.createRef<JsonField>();
+      const ref = React.createRef<JsonFieldHandle>();
       render(<JsonField setting={setting} ref={ref} />);
       expect(ref.current!.getValue()).toBeNull();
     });
 
     it("returns parsed object for valid JSON", () => {
-      const ref = React.createRef<JsonField>();
+      const ref = React.createRef<JsonFieldHandle>();
       render(<JsonField setting={setting} ref={ref} />);
       const ta = screen.getByLabelText("JSON Setting");
 
@@ -178,7 +200,7 @@ describe("JsonField", () => {
     });
 
     it("returns undefined for invalid JSON", () => {
-      const ref = React.createRef<JsonField>();
+      const ref = React.createRef<JsonFieldHandle>();
       render(<JsonField setting={setting} ref={ref} />);
       const ta = screen.getByLabelText("JSON Setting");
 
@@ -192,6 +214,7 @@ describe("JsonField", () => {
       Object.defineProperty(navigator, "clipboard", {
         value: { writeText: jest.fn().mockResolvedValue(undefined) },
         writable: true,
+        configurable: true,
       });
     });
 
@@ -220,17 +243,39 @@ describe("JsonField", () => {
       );
     });
 
-    it("shows Copied! text briefly after click then hides it", () => {
+    it("shows Copied! text briefly after click then hides it", async () => {
       jest.useFakeTimers();
       render(<JsonField setting={setting} value={{ a: 1 }} />);
       expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
-      fireEvent.click(
-        screen.getByRole("button", { name: "Copy to clipboard" })
-      );
+      await act(async () => {
+        fireEvent.click(
+          screen.getByRole("button", { name: "Copy to clipboard" })
+        );
+      });
       expect(screen.getByText("Copied!")).toBeInTheDocument();
       act(() => jest.advanceTimersByTime(2000));
       expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
       jest.useRealTimers();
+    });
+
+    it("shows 'Copy failed.' when clipboard write fails", async () => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: {
+          writeText: jest.fn().mockRejectedValue(new Error("denied")),
+        },
+        writable: true,
+        configurable: true,
+      });
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      await act(async () => {
+        fireEvent.click(
+          screen.getByRole("button", { name: "Copy to clipboard" })
+        );
+      });
+      const msg = screen.getByText("Copy failed.");
+      expect(msg).toBeInTheDocument();
+      expect(msg).toHaveAttribute("role", "alert");
+      expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
     });
   });
 
@@ -416,7 +461,7 @@ describe("JsonField", () => {
 
   describe("clear()", () => {
     it("resets text and clears parse error", () => {
-      const ref = React.createRef<JsonField>();
+      const ref = React.createRef<JsonFieldHandle>();
       render(<JsonField setting={setting} ref={ref} value={{ a: 1 }} />);
       const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
 
@@ -439,7 +484,7 @@ describe("JsonField", () => {
 
     it("calls onChange with null when cleared programmatically", () => {
       const onChange = jest.fn();
-      const ref = React.createRef<JsonField>();
+      const ref = React.createRef<JsonFieldHandle>();
       render(
         <JsonField
           setting={setting}

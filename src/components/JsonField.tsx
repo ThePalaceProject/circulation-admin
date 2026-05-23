@@ -1,4 +1,11 @@
 import * as React from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import CopyIcon from "./icons/CopyIcon";
 import XCloseIcon from "./icons/XCloseIcon";
 import { SettingData } from "../interfaces";
@@ -11,13 +18,9 @@ export interface JsonFieldProps {
   onChange?: (value: any) => void;
 }
 
-export interface JsonFieldState {
-  text: string;
-  jsonError: string | null;
-  copied: boolean;
-  previousText: string | null;
-  clearFeedback: boolean;
-  focused: boolean;
+export interface JsonFieldHandle {
+  getValue(): any;
+  clear(): void;
 }
 
 function valueToText(value: any): string {
@@ -25,176 +28,151 @@ function valueToText(value: any): string {
   return JSON.stringify(value, null, 2);
 }
 
-export default class JsonField extends React.Component<
-  JsonFieldProps,
-  JsonFieldState
-> {
-  static displayName = "JsonField";
-  private copyTimeoutId: ReturnType<typeof setTimeout> | null = null;
-  private clearFeedbackTimeoutId: ReturnType<typeof setTimeout> | null = null;
-
-  constructor(props: JsonFieldProps) {
-    super(props);
-    this.state = {
-      text: valueToText(props.value),
-      jsonError: null,
-      copied: false,
-      previousText: null,
-      clearFeedback: false,
-      focused: false,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleCopy = this.handleCopy.bind(this);
-    this.handleClearClick = this.handleClearClick.bind(this);
-    this.preventButtonBlur = this.preventButtonBlur.bind(this);
+function parseJson(s: string): { parsed: any; error: string | null } {
+  if (!s.trim()) return { parsed: null, error: null };
+  try {
+    return { parsed: JSON.parse(s), error: null };
+  } catch (err) {
+    return { parsed: null, error: (err as Error).message };
   }
+}
 
-  componentWillUnmount() {
-    if (this.copyTimeoutId) clearTimeout(this.copyTimeoutId);
-    if (this.clearFeedbackTimeoutId) clearTimeout(this.clearFeedbackTimeoutId);
-  }
+const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
+  function JsonField({ setting, value, disabled, readOnly, onChange }, ref) {
+    const [text, setText] = useState(() => valueToText(value));
+    const [jsonError, setJsonError] = useState<string | null>(null);
+    const [copied, setCopied] = useState(false);
+    const [copyFailed, setCopyFailed] = useState(false);
+    const [previousText, setPreviousText] = useState<string | null>(null);
+    const [clearFeedback, setClearFeedback] = useState(false);
+    const [focused, setFocused] = useState(false);
 
-  UNSAFE_componentWillReceiveProps(nextProps: JsonFieldProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setState({
-        text: valueToText(nextProps.value),
-        jsonError: null,
-        previousText: null,
-        clearFeedback: false,
-      });
+    const copyTimeoutId = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const clearFeedbackTimeoutId = useRef<ReturnType<typeof setTimeout> | null>(
+      null
+    );
+
+    // Sync external value changes to internal text (replaces UNSAFE_componentWillReceiveProps).
+    const [prevValue, setPrevValue] = useState(value);
+    if (prevValue !== value) {
+      setPrevValue(value);
+      setText(valueToText(value));
+      setJsonError(null);
+      setPreviousText(null);
+      setClearFeedback(false);
     }
-  }
 
-  handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const text = e.target.value;
-    let jsonError: string | null = null;
-    let parsed: any = null;
-    if (text.trim()) {
-      try {
-        parsed = JSON.parse(text);
-      } catch (err) {
-        jsonError = err.message;
-      }
-    }
-    // Typing discards undo state and dismisses the cleared message.
-    this.setState({
-      text,
-      jsonError,
-      previousText: null,
-      clearFeedback: false,
-    });
-    if (!jsonError && this.props.onChange) {
-      this.props.onChange(text.trim() ? parsed : null);
-    }
-  }
+    useEffect(() => {
+      return () => {
+        if (copyTimeoutId.current) clearTimeout(copyTimeoutId.current);
+        if (clearFeedbackTimeoutId.current)
+          clearTimeout(clearFeedbackTimeoutId.current);
+      };
+    }, []);
 
-  handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if ((e.ctrlKey || e.metaKey) && e.key === "z") {
-      const { previousText } = this.state;
-      if (previousText !== null) {
-        e.preventDefault();
-        if (this.clearFeedbackTimeoutId)
-          clearTimeout(this.clearFeedbackTimeoutId);
-        let jsonError: string | null = null;
-        let parsed: any = null;
-        if (previousText.trim()) {
-          try {
-            parsed = JSON.parse(previousText);
-          } catch (err) {
-            jsonError = err.message;
+    useImperativeHandle(
+      ref,
+      () => ({
+        getValue() {
+          const { parsed, error } = parseJson(text);
+          return error ? undefined : parsed;
+        },
+        clear() {
+          if (clearFeedbackTimeoutId.current) {
+            clearTimeout(clearFeedbackTimeoutId.current);
+            clearFeedbackTimeoutId.current = null;
           }
-        }
-        this.setState({
-          text: previousText,
-          jsonError,
-          previousText: null,
-          clearFeedback: false,
-        });
-        if (!jsonError && this.props.onChange) {
-          this.props.onChange(previousText.trim() ? parsed : null);
+          if (copyTimeoutId.current) {
+            clearTimeout(copyTimeoutId.current);
+            copyTimeoutId.current = null;
+          }
+          setText("");
+          setJsonError(null);
+          setCopied(false);
+          setCopyFailed(false);
+          setPreviousText(null);
+          setClearFeedback(false);
+          if (onChange) onChange(null);
+        },
+      }),
+      [text, onChange]
+    );
+
+    function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+      const newText = e.target.value;
+      const { parsed, error } = parseJson(newText);
+      if (clearFeedbackTimeoutId.current) {
+        clearTimeout(clearFeedbackTimeoutId.current);
+        clearFeedbackTimeoutId.current = null;
+      }
+      setText(newText);
+      setJsonError(error);
+      setPreviousText(null);
+      setClearFeedback(false);
+      if (!error && onChange) {
+        onChange(newText.trim() ? parsed : null);
+      }
+    }
+
+    function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "z" && previousText !== null) {
+        e.preventDefault();
+        if (clearFeedbackTimeoutId.current)
+          clearTimeout(clearFeedbackTimeoutId.current);
+        const { parsed, error } = parseJson(previousText);
+        setText(previousText);
+        setJsonError(error);
+        setPreviousText(null);
+        setClearFeedback(false);
+        if (!error && onChange) {
+          onChange(previousText.trim() ? parsed : null);
         }
       }
     }
-  }
 
-  handleFocus() {
-    this.setState({ focused: true });
-  }
-
-  handleBlur() {
-    this.setState({ focused: false });
-  }
-
-  getValue(): any {
-    const { text } = this.state;
-    if (!text.trim()) return null;
-    try {
-      return JSON.parse(text);
-    } catch {
-      return undefined;
+    function handleCopy() {
+      if (copyTimeoutId.current) clearTimeout(copyTimeoutId.current);
+      navigator.clipboard.writeText(text).then(
+        () => {
+          setCopied(true);
+          setCopyFailed(false);
+          copyTimeoutId.current = setTimeout(() => {
+            setCopied(false);
+            copyTimeoutId.current = null;
+          }, 2000);
+        },
+        () => {
+          setCopyFailed(true);
+          setCopied(false);
+          copyTimeoutId.current = setTimeout(() => {
+            setCopyFailed(false);
+            copyTimeoutId.current = null;
+          }, 2000);
+        }
+      );
     }
-  }
 
-  handleCopy() {
-    if (this.copyTimeoutId) clearTimeout(this.copyTimeoutId);
-    this.setState({ copied: true });
-    this.copyTimeoutId = setTimeout(() => {
-      this.setState({ copied: false });
-      this.copyTimeoutId = null;
-    }, 2000);
-    navigator.clipboard.writeText(this.state.text).catch(() => {
-      if (this.copyTimeoutId) {
-        clearTimeout(this.copyTimeoutId);
-        this.copyTimeoutId = null;
-      }
-      this.setState({ copied: false });
-    });
-  }
-
-  handleClearClick() {
-    const previousText = this.state.text;
-    if (this.clearFeedbackTimeoutId) clearTimeout(this.clearFeedbackTimeoutId);
-    this.setState({
-      text: "",
-      jsonError: null,
-      copied: false,
-      previousText,
-      clearFeedback: true,
-    });
-    this.clearFeedbackTimeoutId = setTimeout(() => {
-      this.setState({ clearFeedback: false });
-      this.clearFeedbackTimeoutId = null;
-    }, 5000);
-    if (this.props.onChange) {
-      this.props.onChange(null);
+    function handleClearClick() {
+      if (clearFeedbackTimeoutId.current)
+        clearTimeout(clearFeedbackTimeoutId.current);
+      setClearFeedback(true);
+      clearFeedbackTimeoutId.current = setTimeout(() => {
+        setClearFeedback(false);
+        clearFeedbackTimeoutId.current = null;
+      }, 5000);
+      setText("");
+      setJsonError(null);
+      setCopied(false);
+      setCopyFailed(false);
+      setPreviousText(text);
+      if (onChange) onChange(null);
     }
-  }
 
-  // Prevents buttons from stealing focus from the textarea.
-  preventButtonBlur(e: React.MouseEvent) {
-    e.preventDefault();
-  }
-
-  clear() {
-    if (this.clearFeedbackTimeoutId) clearTimeout(this.clearFeedbackTimeoutId);
-    this.setState({
-      text: "",
-      jsonError: null,
-      copied: false,
-      previousText: null,
-      clearFeedback: false,
-    });
-    if (this.props.onChange) {
-      this.props.onChange(null);
+    // Prevents buttons from stealing focus from the textarea.
+    function preventButtonBlur(e: React.MouseEvent) {
+      e.preventDefault();
     }
-  }
 
-  render(): JSX.Element {
-    const { setting, disabled, readOnly } = this.props;
-    const { text, jsonError, copied, clearFeedback, focused } = this.state;
     const textareaId = `json-field-${setting.key}`;
     const descId = setting.description ? `json-desc-${setting.key}` : undefined;
     const errorId = `json-error-${setting.key}`;
@@ -220,18 +198,21 @@ export default class JsonField extends React.Component<
             className="form-control"
             name={setting.key}
             value={text}
-            onChange={this.handleChange}
-            onKeyDown={this.handleKeyDown}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
             disabled={disabled}
             readOnly={readOnly}
-            aria-invalid={!!jsonError}
+            aria-invalid={jsonError ? true : undefined}
             aria-describedby={describedBy}
           />
           <div className="json-field-actions">
             <span className="json-field-copied-feedback" aria-live="polite">
               {copied ? "Copied!" : ""}
+            </span>
+            <span className="json-field-copy-failed-feedback" role="alert">
+              {copyFailed ? "Copy failed." : ""}
             </span>
             <span className="json-field-cleared-feedback" aria-live="polite">
               {clearFeedback ? "Cleared! Ctrl-Z / Cmd-Z to recover." : ""}
@@ -239,8 +220,8 @@ export default class JsonField extends React.Component<
             <button
               type="button"
               aria-label="Copy to clipboard"
-              onClick={this.handleCopy}
-              onMouseDown={this.preventButtonBlur}
+              onClick={handleCopy}
+              onMouseDown={preventButtonBlur}
               disabled={isEmpty}
             >
               <CopyIcon />
@@ -248,8 +229,8 @@ export default class JsonField extends React.Component<
             <button
               type="button"
               aria-label="Clear field"
-              onClick={this.handleClearClick}
-              onMouseDown={this.preventButtonBlur}
+              onClick={handleClearClick}
+              onMouseDown={preventButtonBlur}
               disabled={disabled || readOnly || isEmpty}
             >
               <XCloseIcon />
@@ -271,4 +252,8 @@ export default class JsonField extends React.Component<
       </div>
     );
   }
-}
+);
+
+JsonField.displayName = "JsonField";
+
+export default JsonField;
