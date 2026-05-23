@@ -128,6 +128,233 @@ describe("JsonField", () => {
     });
   });
 
+  describe("Copy button", () => {
+    beforeEach(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: jest.fn().mockResolvedValue(undefined) },
+        writable: true,
+      });
+    });
+
+    it("is disabled when textarea is empty", () => {
+      render(<JsonField setting={setting} />);
+      expect(
+        screen.getByRole("button", { name: "Copy to clipboard" })
+      ).toBeDisabled();
+    });
+
+    it("is enabled when textarea has content", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      expect(
+        screen.getByRole("button", { name: "Copy to clipboard" })
+      ).not.toBeDisabled();
+    });
+
+    it("copies textarea text to clipboard", () => {
+      const obj = { a: 1 };
+      render(<JsonField setting={setting} value={obj} />);
+      fireEvent.click(
+        screen.getByRole("button", { name: "Copy to clipboard" })
+      );
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+        JSON.stringify(obj, null, 2)
+      );
+    });
+
+    it("shows Copied! text briefly after click then hides it", () => {
+      jest.useFakeTimers();
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
+      fireEvent.click(
+        screen.getByRole("button", { name: "Copy to clipboard" })
+      );
+      expect(screen.getByText("Copied!")).toBeInTheDocument();
+      act(() => jest.advanceTimersByTime(2000));
+      expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
+      jest.useRealTimers();
+    });
+  });
+
+  describe("Clear button", () => {
+    it("is disabled when textarea is empty", () => {
+      render(<JsonField setting={setting} />);
+      expect(
+        screen.getByRole("button", { name: "Clear field" })
+      ).toBeDisabled();
+    });
+
+    it("is disabled when field is disabled", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} disabled={true} />);
+      expect(
+        screen.getByRole("button", { name: "Clear field" })
+      ).toBeDisabled();
+    });
+
+    it("is disabled when field is readOnly", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} readOnly={true} />);
+      expect(
+        screen.getByRole("button", { name: "Clear field" })
+      ).toBeDisabled();
+    });
+
+    it("clears the textarea when clicked", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
+      expect(ta.value).not.toBe("");
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(ta.value).toBe("");
+    });
+
+    it("calls onChange with null when clicked", () => {
+      const onChange = jest.fn();
+      render(
+        <JsonField setting={setting} value={{ a: 1 }} onChange={onChange} />
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(onChange).toHaveBeenCalledWith(null);
+    });
+
+    it("clears inline JSON error when clicked", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      fireEvent.change(ta, { target: { value: "bad json" } });
+      expect(
+        screen.queryByText(/unexpected token|expected/i)
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(
+        screen.queryByText(/unexpected token|expected/i)
+      ).not.toBeInTheDocument();
+    });
+
+    it("shows 'Cleared! Ctrl-Z / Cmd-Z to recover.' message after clicking", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      expect(screen.queryByText(/Cleared!/i)).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(
+        screen.getByText("Cleared! Ctrl-Z / Cmd-Z to recover.")
+      ).toBeInTheDocument();
+    });
+
+    it("hides 'Cleared!' message after timeout", () => {
+      jest.useFakeTimers();
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(
+        screen.getByText("Cleared! Ctrl-Z / Cmd-Z to recover.")
+      ).toBeInTheDocument();
+      act(() => jest.advanceTimersByTime(5000));
+      expect(screen.queryByText(/Cleared!/i)).not.toBeInTheDocument();
+      jest.useRealTimers();
+    });
+
+    it("hides 'Cleared!' message when user starts typing", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(
+        screen.getByText("Cleared! Ctrl-Z / Cmd-Z to recover.")
+      ).toBeInTheDocument();
+      fireEvent.change(ta, { target: { value: "42" } });
+      expect(screen.queryByText(/Cleared!/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe("undo after clear (Ctrl+Z)", () => {
+    it("restores content after clicking Clear then pressing Ctrl+Z", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
+      const original = ta.value;
+
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(ta.value).toBe("");
+
+      fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
+      expect(ta.value).toBe(original);
+    });
+
+    it("hides 'Cleared!' message on undo", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      const ta = screen.getByLabelText("JSON Setting");
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(
+        screen.getByText("Cleared! Ctrl-Z / Cmd-Z to recover.")
+      ).toBeInTheDocument();
+      fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
+      expect(screen.queryByText(/Cleared!/i)).not.toBeInTheDocument();
+    });
+
+    it("restores content using Cmd+Z (macOS)", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
+      const original = ta.value;
+
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      fireEvent.keyDown(ta, { key: "z", metaKey: true });
+      expect(ta.value).toBe(original);
+    });
+
+    it("calls onChange with restored value on undo", () => {
+      const onChange = jest.fn();
+      const obj = { a: 1 };
+      render(<JsonField setting={setting} value={obj} onChange={onChange} />);
+      const ta = screen.getByLabelText("JSON Setting");
+
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      onChange.mockClear();
+      fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
+      expect(onChange).toHaveBeenCalledWith(obj);
+    });
+
+    it("does not undo when no clear has occurred", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
+      const original = ta.value;
+
+      fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
+      expect(ta.value).toBe(original);
+    });
+
+    it("discards undo state once the user starts typing after a clear", () => {
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
+
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      fireEvent.change(ta, { target: { value: "42" } });
+      fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
+      // Should stay at "42", not jump back to original
+      expect(ta.value).toBe("42");
+    });
+
+    it("restores partial/invalid JSON text on undo without throwing", () => {
+      render(<JsonField setting={setting} />);
+      const ta = screen.getByLabelText("JSON Setting") as HTMLTextAreaElement;
+
+      fireEvent.change(ta, { target: { value: '{"partial":' } });
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      expect(ta.value).toBe("");
+
+      fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
+      expect(ta.value).toBe('{"partial":');
+      expect(
+        screen.queryByText(/unexpected token|expected/i)
+      ).toBeInTheDocument();
+    });
+
+    it("does not call onChange when restored text is invalid JSON", () => {
+      const onChange = jest.fn();
+      render(<JsonField setting={setting} onChange={onChange} />);
+      const ta = screen.getByLabelText("JSON Setting");
+
+      fireEvent.change(ta, { target: { value: '{"partial":' } });
+      fireEvent.click(screen.getByRole("button", { name: "Clear field" }));
+      onChange.mockClear();
+
+      fireEvent.keyDown(ta, { key: "z", ctrlKey: true });
+      expect(onChange).not.toHaveBeenCalled();
+    });
+  });
+
   describe("clear()", () => {
     it("resets text and clears parse error", () => {
       const ref = React.createRef<JsonField>();
@@ -149,6 +376,25 @@ describe("JsonField", () => {
       expect(
         screen.queryByText(/unexpected token|expected/i)
       ).not.toBeInTheDocument();
+    });
+
+    it("calls onChange with null when cleared programmatically", () => {
+      const onChange = jest.fn();
+      const ref = React.createRef<JsonField>();
+      render(
+        <JsonField
+          setting={setting}
+          ref={ref}
+          value={{ a: 1 }}
+          onChange={onChange}
+        />
+      );
+
+      act(() => {
+        ref.current!.clear();
+      });
+
+      expect(onChange).toHaveBeenCalledWith(null);
     });
   });
 });
