@@ -132,23 +132,24 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
 
     function handleCopy() {
       if (copyTimeoutId.current) clearTimeout(copyTimeoutId.current);
-      navigator.clipboard.writeText(text).then(
-        () => {
-          setCopied(true);
-          setCopyFailed(false);
-          copyTimeoutId.current = setTimeout(() => {
-            setCopied(false);
-            copyTimeoutId.current = null;
-          }, 2000);
-        },
-        () => {
-          setCopyFailed(true);
+
+      function applyCopyResult(success: boolean) {
+        setCopied(success);
+        setCopyFailed(!success);
+        copyTimeoutId.current = setTimeout(() => {
           setCopied(false);
-          copyTimeoutId.current = setTimeout(() => {
-            setCopyFailed(false);
-            copyTimeoutId.current = null;
-          }, 2000);
-        }
+          setCopyFailed(false);
+          copyTimeoutId.current = null;
+        }, 2000);
+      }
+
+      if (!navigator.clipboard) {
+        applyCopyResult(false);
+        return;
+      }
+      navigator.clipboard.writeText(text).then(
+        () => applyCopyResult(true),
+        () => applyCopyResult(false)
       );
     }
 
