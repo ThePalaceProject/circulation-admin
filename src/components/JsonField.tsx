@@ -23,20 +23,6 @@ export interface JsonFieldHandle {
   clear(): void;
 }
 
-function valueToText(value: any): string {
-  if (value === null || value === undefined) return "";
-  return JSON.stringify(value, null, 2);
-}
-
-function parseJson(s: string): { parsed: any; error: string | null } {
-  if (!s.trim()) return { parsed: null, error: null };
-  try {
-    return { parsed: JSON.parse(s), error: null };
-  } catch (err) {
-    return { parsed: null, error: (err as Error).message };
-  }
-}
-
 const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
   function JsonField({ setting, value, disabled, readOnly, onChange }, ref) {
     const [text, setText] = useState(() => valueToText(value));
@@ -117,8 +103,10 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
       if ((e.ctrlKey || e.metaKey) && e.key === "z" && previousText !== null) {
         e.preventDefault();
-        if (clearFeedbackTimeoutId.current)
+        if (clearFeedbackTimeoutId.current) {
           clearTimeout(clearFeedbackTimeoutId.current);
+          clearFeedbackTimeoutId.current = null;
+        }
         const { parsed, error } = parseJson(previousText);
         setText(previousText);
         setJsonError(error);
@@ -259,5 +247,19 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
 );
 
 JsonField.displayName = "JsonField";
+
+function valueToText(value: any): string {
+  if (value === null || value === undefined) return "";
+  return JSON.stringify(value, null, 2);
+}
+
+function parseJson(s: string): { parsed: any; error: string | null } {
+  if (!s.trim()) return { parsed: null, error: null };
+  try {
+    return { parsed: JSON.parse(s), error: null };
+  } catch (err) {
+    return { parsed: null, error: (err as Error).message };
+  }
+}
 
 export default JsonField;
