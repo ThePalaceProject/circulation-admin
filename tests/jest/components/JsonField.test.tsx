@@ -274,7 +274,7 @@ describe("JsonField", () => {
       });
       const msg = screen.getByText("Copy failed.");
       expect(msg).toBeInTheDocument();
-      expect(msg).toHaveAttribute("role", "alert");
+      expect(msg).toHaveAttribute("aria-live", "assertive");
       expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
     });
   });

@@ -211,7 +211,10 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
             <span className="json-field-copied-feedback" aria-live="polite">
               {copied ? "Copied!" : ""}
             </span>
-            <span className="json-field-copy-failed-feedback" role="alert">
+            <span
+              className="json-field-copy-failed-feedback"
+              aria-live="assertive"
+            >
               {copyFailed ? "Copy failed." : ""}
             </span>
             <span className="json-field-cleared-feedback" aria-live="polite">
