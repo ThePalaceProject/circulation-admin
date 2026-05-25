@@ -39,6 +39,9 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
     );
 
     // Sync external value changes to internal text (replaces UNSAFE_componentWillReceiveProps).
+    // Uses reference equality: callers must not pass a new object literal on every render
+    // (e.g. value={{ key: "val" }}), or in-progress edits will be wiped. Values sourced
+    // from Redux state are stable references and satisfy this requirement.
     const [prevValue, setPrevValue] = useState(value);
     if (prevValue !== value) {
       setPrevValue(value);

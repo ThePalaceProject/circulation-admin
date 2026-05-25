@@ -219,7 +219,7 @@ export default class ProtocolFormField extends React.Component<
       <JsonField
         ref={this.jsonFieldRef}
         setting={setting}
-        value={this.props.value}
+        value={defaultValueIfMissing(this.props.value, setting.default)}
         disabled={this.props.disabled}
         readOnly={this.props.readOnly}
         onChange={this.props.onChange}
