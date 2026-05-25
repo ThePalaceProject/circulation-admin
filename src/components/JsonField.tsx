@@ -48,21 +48,14 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
       setClearFeedback(false);
       setCopied(false);
       setCopyFailed(false);
-      if (clearFeedbackTimeoutId.current) {
-        clearTimeout(clearFeedbackTimeoutId.current);
-        clearFeedbackTimeoutId.current = null;
-      }
-      if (copyTimeoutId.current) {
-        clearTimeout(copyTimeoutId.current);
-        copyTimeoutId.current = null;
-      }
+      cancelTimer(clearFeedbackTimeoutId);
+      cancelTimer(copyTimeoutId);
     }
 
     useEffect(() => {
       return () => {
-        if (copyTimeoutId.current) clearTimeout(copyTimeoutId.current);
-        if (clearFeedbackTimeoutId.current)
-          clearTimeout(clearFeedbackTimeoutId.current);
+        cancelTimer(copyTimeoutId);
+        cancelTimer(clearFeedbackTimeoutId);
       };
     }, []);
 
@@ -74,14 +67,8 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
           return error ? undefined : parsed;
         },
         clear() {
-          if (clearFeedbackTimeoutId.current) {
-            clearTimeout(clearFeedbackTimeoutId.current);
-            clearFeedbackTimeoutId.current = null;
-          }
-          if (copyTimeoutId.current) {
-            clearTimeout(copyTimeoutId.current);
-            copyTimeoutId.current = null;
-          }
+          cancelTimer(clearFeedbackTimeoutId);
+          cancelTimer(copyTimeoutId);
           setText("");
           setJsonError(null);
           setCopied(false);
@@ -97,14 +84,8 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
     function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
       const newText = e.target.value;
       const { parsed, error } = parseJson(newText);
-      if (clearFeedbackTimeoutId.current) {
-        clearTimeout(clearFeedbackTimeoutId.current);
-        clearFeedbackTimeoutId.current = null;
-      }
-      if (copyTimeoutId.current) {
-        clearTimeout(copyTimeoutId.current);
-        copyTimeoutId.current = null;
-      }
+      cancelTimer(clearFeedbackTimeoutId);
+      cancelTimer(copyTimeoutId);
       setText(newText);
       setJsonError(error);
       setPreviousText(null);
@@ -119,10 +100,7 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
       if ((e.ctrlKey || e.metaKey) && e.key === "z" && previousText !== null) {
         e.preventDefault();
-        if (clearFeedbackTimeoutId.current) {
-          clearTimeout(clearFeedbackTimeoutId.current);
-          clearFeedbackTimeoutId.current = null;
-        }
+        cancelTimer(clearFeedbackTimeoutId);
         const { parsed, error } = parseJson(previousText);
         setText(previousText);
         setJsonError(error);
@@ -135,7 +113,7 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
     }
 
     function handleCopy() {
-      if (copyTimeoutId.current) clearTimeout(copyTimeoutId.current);
+      cancelTimer(copyTimeoutId);
 
       function applyCopyResult(success: boolean) {
         setCopied(success);
@@ -158,12 +136,8 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
     }
 
     function handleClearClick() {
-      if (clearFeedbackTimeoutId.current)
-        clearTimeout(clearFeedbackTimeoutId.current);
-      if (copyTimeoutId.current) {
-        clearTimeout(copyTimeoutId.current);
-        copyTimeoutId.current = null;
-      }
+      cancelTimer(clearFeedbackTimeoutId);
+      cancelTimer(copyTimeoutId);
       setClearFeedback(true);
       clearFeedbackTimeoutId.current = setTimeout(() => {
         setClearFeedback(false);
@@ -267,6 +241,15 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
 );
 
 JsonField.displayName = "JsonField";
+
+function cancelTimer(
+  ref: React.MutableRefObject<ReturnType<typeof setTimeout> | null>
+) {
+  if (ref.current) {
+    clearTimeout(ref.current);
+    ref.current = null;
+  }
+}
 
 function valueToText(value: any): string {
   if (value === null || value === undefined) return "";
