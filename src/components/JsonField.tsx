@@ -48,16 +48,12 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
       setClearFeedback(false);
       setCopied(false);
       setCopyFailed(false);
-      cancelTimer(clearFeedbackTimeoutId);
-      cancelTimer(copyTimeoutId);
     }
 
-    useEffect(() => {
-      return () => {
-        cancelTimer(copyTimeoutId);
-        cancelTimer(clearFeedbackTimeoutId);
-      };
-    }, []);
+    useTimeoutCleanup({
+      refs: [copyTimeoutId, clearFeedbackTimeoutId],
+      deps: [value],
+    });
 
     useImperativeHandle(
       ref,
@@ -241,6 +237,25 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
 );
 
 JsonField.displayName = "JsonField";
+
+/**
+ * Hook to set up timer cleanup when the specified dependency array changes.
+ *
+ * Note that there's no body in the contained `useEffect`. It just returns a
+ * cleanup function that will be invoked before the next run or unmount.
+ *
+ * @param refs - Refs holding active timeout IDs to cancel on cleanup.
+ * @param deps - Dependency array that triggers the cleanup; defaults to `[]` (unmount only).
+ */
+function useTimeoutCleanup({
+  refs,
+  deps = [],
+}: {
+  refs: React.MutableRefObject<ReturnType<typeof setTimeout> | null>[];
+  deps?: React.DependencyList;
+}) {
+  useEffect(() => () => refs.forEach(cancelTimer), deps);
+}
 
 function cancelTimer(
   ref: React.MutableRefObject<ReturnType<typeof setTimeout> | null>
