@@ -46,6 +46,12 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
       setJsonError(null);
       setPreviousText(null);
       setClearFeedback(false);
+      setCopied(false);
+      setCopyFailed(false);
+      if (copyTimeoutId.current) {
+        clearTimeout(copyTimeoutId.current);
+        copyTimeoutId.current = null;
+      }
     }
 
     useEffect(() => {
