@@ -258,6 +258,20 @@ describe("JsonField", () => {
       jest.useRealTimers();
     });
 
+    it("shows 'Copy failed.' when navigator.clipboard is unavailable", () => {
+      Object.defineProperty(navigator, "clipboard", {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+      render(<JsonField setting={setting} value={{ a: 1 }} />);
+      fireEvent.click(
+        screen.getByRole("button", { name: "Copy to clipboard" })
+      );
+      expect(screen.getByText("Copy failed.")).toBeInTheDocument();
+      expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
+    });
+
     it("shows 'Copy failed.' when clipboard write fails", async () => {
       Object.defineProperty(navigator, "clipboard", {
         value: {
