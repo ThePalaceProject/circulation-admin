@@ -48,6 +48,10 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
       setClearFeedback(false);
       setCopied(false);
       setCopyFailed(false);
+      if (clearFeedbackTimeoutId.current) {
+        clearTimeout(clearFeedbackTimeoutId.current);
+        clearFeedbackTimeoutId.current = null;
+      }
       if (copyTimeoutId.current) {
         clearTimeout(copyTimeoutId.current);
         copyTimeoutId.current = null;
