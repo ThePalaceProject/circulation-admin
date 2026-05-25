@@ -91,10 +91,16 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
         clearTimeout(clearFeedbackTimeoutId.current);
         clearFeedbackTimeoutId.current = null;
       }
+      if (copyTimeoutId.current) {
+        clearTimeout(copyTimeoutId.current);
+        copyTimeoutId.current = null;
+      }
       setText(newText);
       setJsonError(error);
       setPreviousText(null);
       setClearFeedback(false);
+      setCopied(false);
+      setCopyFailed(false);
       if (!error && onChange) {
         onChange(newText.trim() ? parsed : null);
       }
@@ -144,6 +150,10 @@ const JsonField = forwardRef<JsonFieldHandle, JsonFieldProps>(
     function handleClearClick() {
       if (clearFeedbackTimeoutId.current)
         clearTimeout(clearFeedbackTimeoutId.current);
+      if (copyTimeoutId.current) {
+        clearTimeout(copyTimeoutId.current);
+        copyTimeoutId.current = null;
+      }
       setClearFeedback(true);
       clearFeedbackTimeoutId.current = setTimeout(() => {
         setClearFeedback(false);
