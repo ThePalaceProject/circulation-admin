@@ -299,6 +299,7 @@ export type SpecificSettingType =
   | "date"
   | "date-picker"
   | "image"
+  | "json"
   | "list"
   | "menu"
   | "select"
