@@ -1,0 +1,91 @@
+.json-field-group {
+  // The global .field-error .description rule would color the setting
+  // description red; only the dedicated error element should be red.
+  &.field-error .description {
+    color: inherit;
+  }
+
+  .json-field-error-msg {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: $red;
+    margin-top: 5px;
+    min-height: 1.5em;
+  }
+}
+
+.json-field-textarea-wrap {
+  position: relative;
+
+  textarea {
+    padding-right: 3.5em;
+  }
+
+  .json-field-actions {
+    display: flex;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    align-items: center;
+    gap: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+
+    .json-field-copied-feedback,
+    .json-field-copy-failed-feedback,
+    .json-field-cleared-feedback {
+      font-size: 0.75em;
+      white-space: nowrap;
+      padding-right: 2px;
+    }
+
+    .json-field-copied-feedback,
+    .json-field-cleared-feedback {
+      color: $blue-dark;
+    }
+
+    .json-field-copy-failed-feedback {
+      color: $red;
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      padding: 3px;
+      cursor: pointer;
+      color: $gray-accessible;
+      line-height: 1;
+
+      svg {
+        display: block;
+        height: 1em;
+        width: 1em;
+        fill: currentColor;
+      }
+
+      &:hover:not(:disabled) {
+        color: $dark-gray;
+      }
+
+      &:focus-visible {
+        outline: 2px solid $blue-dark;
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        color: $medium-dark-gray;
+      }
+    }
+  }
+
+  &:focus-within,
+  &:hover {
+    .json-field-actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}

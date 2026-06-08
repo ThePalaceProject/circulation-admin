@@ -5,6 +5,13 @@
 # We need to handle both of these cases from a single workflow because we want to
 # use NPM's OIDC Trusted Publisher support for publishing. That feature supports
 # only a single workflow filename and, thus, a single workflow.
+#
+# The nightly schedule runs the same "next" publish path as a push. It exists
+# because merges performed by the Dependabot auto-merge workflow use GITHUB_TOKEN,
+# and GitHub deliberately does not trigger downstream workflows for GITHUB_TOKEN
+# pushes. Without the schedule, Dependabot bumps would never produce a "next"
+# build. The scheduled run skips publishing when the computed version is already
+# on npm (i.e. no new commits landed since the last next build).
 
 name: Test & Publish
 
@@ -14,6 +21,10 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # Daily at 06:00 UTC — catches commits merged by GITHUB_TOKEN (e.g. Dependabot
+    # auto-merge) that did not trigger the push-based next publish.
+    - cron: "0 6 * * *"
 
 permissions:
   id-token: write
@@ -32,13 +43,13 @@ jobs:
     # For push events, we need full git history (fetch-depth: 0) so dunamai can
     # generate a version from git tags. For release events, we only need the
     # current commit (fetch-depth: 1) since the version comes from the release tag.
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
       with:
         persist-credentials: false
         fetch-depth: ${{ github.event_name == 'release' && 1 || 0 }}
 
     - name: Install Node.js 💻
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: 20
         registry-url: https://registry.npmjs.org/
@@ -69,22 +80,39 @@ jobs:
       if: github.event_name == 'release'
       run: npm publish --access public
 
-    # For push events, version using dunamai and publish to "next" npm tag.
-    # dunamai requires Python.
+    # For push and scheduled events, version using dunamai and publish to the
+    # "next" npm tag. dunamai requires Python.
     - name: Set up Python 🐍
-      if: github.event_name == 'push'
-      uses: actions/setup-python@v5
+      if: github.event_name == 'push' || github.event_name == 'schedule'
+      uses: actions/setup-python@v6
       with:
         python-version: "3.10"
 
     - name: Set up Dunamai 🪄
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       run: pip install -r requirements-ci.txt
 
     - name: Version (Next) ✅
-      if: github.event_name == 'push'
-      run: npm version --no-git-tag-version $(dunamai from git --style semver)
+      if: github.event_name == 'push' || github.event_name == 'schedule'
+      id: version-next
+      run: |
+        VERSION=$(dunamai from git --style semver)
+        npm version --no-git-tag-version "$VERSION"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+    # On the schedule, the most recent commit may already have a published next
+    # build (no new commits since the last run). Detect that so we can skip the
+    # publish instead of failing on a duplicate-version error.
+    - name: Check existing next version 🔍
+      if: github.event_name == 'schedule'
+      id: existing-next
+      run: |
+        if npm view "@thepalaceproject/circulation-admin@${{ steps.version-next.outputs.version }}" version > /dev/null 2>&1; then
+          echo "exists=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+        fi
 
     - name: Publish (Next) 📚
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || (github.event_name == 'schedule' && steps.existing-next.outputs.exists == 'false')
       run: npm publish --tag next --access public

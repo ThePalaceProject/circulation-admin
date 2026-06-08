@@ -47,7 +47,13 @@ export default tseslint.config(
       },
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      // Enable the two classic react-hooks rules explicitly rather than
+      // spreading `reactHooks.configs.recommended.rules`. eslint-plugin-react-hooks
+      // v7's recommended preset also turns on newer React Compiler rules
+      // (set-state-in-effect, refs, etc.); adopting those is deliberately left to
+      // a follow-up so this migration stays behavior-stable across plugin bumps.
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "react/jsx-filename-extension": [
         1,
         { extensions: [".js", ".jsx", ".ts", ".tsx"] },

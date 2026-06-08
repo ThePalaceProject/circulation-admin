@@ -1,6 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import ColorPicker from "./ColorPicker";
+import JsonField, { JsonFieldHandle } from "./JsonField";
 import { Button } from "library-simplified-reusable-components";
 import InputList from "./InputList";
 import { SettingData, CustomListsSetting } from "../interfaces";
@@ -13,6 +14,8 @@ export interface ProtocolFormFieldProps {
     | string
     | string[]
     | object[]
+    | object
+    | null
     | Array<string | object | JSX.Element>
     | JSX.Element;
   altValue?: string;
@@ -43,6 +46,7 @@ export default class ProtocolFormField extends React.Component<
   private inputListRef = React.createRef<InputList>();
   private colorPickerRef = React.createRef<ColorPicker>();
   private elementRef = React.createRef<EditableInput>();
+  private jsonFieldRef = React.createRef<JsonFieldHandle>();
   static defaultProps = {
     readOnly: false,
   };
@@ -63,6 +67,8 @@ export default class ProtocolFormField extends React.Component<
         ? this.renderListSetting(setting)
         : setting.type === "color-picker"
         ? this.renderColorPickerSetting(setting)
+        : setting.type === "json"
+        ? this.renderJsonSetting(setting)
         : this.renderSetting(setting);
     // Special handling for hidden settings.
     return setting.hidden ? this.renderHiddenElement(element) : element;
@@ -208,6 +214,19 @@ export default class ProtocolFormField extends React.Component<
     );
   }
 
+  renderJsonSetting(setting: SettingData): JSX.Element {
+    return (
+      <JsonField
+        ref={this.jsonFieldRef}
+        setting={setting}
+        value={defaultValueIfMissing(this.props.value, setting.default)}
+        disabled={this.props.disabled}
+        readOnly={this.props.readOnly}
+        onChange={this.props.onChange}
+      />
+    );
+  }
+
   labelAndDescription(setting: SettingData): JSX.Element[] {
     const label = <label key={setting.label}>{setting.label}</label>;
     const description = setting.description && (
@@ -236,6 +255,9 @@ export default class ProtocolFormField extends React.Component<
   }
 
   getValue() {
+    if (this.jsonFieldRef.current) {
+      return this.jsonFieldRef.current.getValue();
+    }
     return this.findRef().getValue();
   }
 
@@ -249,6 +271,7 @@ export default class ProtocolFormField extends React.Component<
     element?.setState({ value: random });
   }
 
+  // Excludes jsonFieldRef: JsonFieldHandle lacks setState, which randomize() calls.
   findRef() {
     return (this.inputListRef?.current ||
       this.elementRef?.current ||
@@ -256,6 +279,10 @@ export default class ProtocolFormField extends React.Component<
   }
 
   clear() {
+    if (this.jsonFieldRef.current) {
+      this.jsonFieldRef.current.clear();
+      return;
+    }
     const element = this.findRef();
     if (element && element.clear) {
       element.clear();
