@@ -79,6 +79,15 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
+      // Ported from the now-removed tslint config. These are the only tslint
+      // rules not already covered by Prettier or the presets above:
+      //   - no-var-keyword  -> no-var
+      //   - no-eval         -> no-eval
+      //   - triple-equals (allow-null-check) -> eqeqeq "smart" (permits == null)
+      // The tree has zero violations of these today.
+      "no-var": "error",
+      "no-eval": "error",
+      eqeqeq: ["error", "smart"],
     },
   },
   // Disable ESLint formatting rules that conflict with Prettier.

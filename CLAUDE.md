@@ -14,7 +14,7 @@ Built on `@thepalaceproject/web-opds-client` which provides the base OPDS catalo
 npm run dev                    # Watch build (for use with local Circulation Manager)
 npm run dev-server -- --env=backend=https://your-cm-url  # Dev server against remote backend
 npm run prod                   # Production build
-npm run lint                   # Run tslint + sass-lint
+npm run lint                   # Run sass-lint
 npm run lint:js                # Run ESLint over the whole tree (eslint . --max-warnings 0)
 npm test                       # Full test suite (mocha legacy + jest)
 npm run test-jest              # Jest tests only
@@ -71,7 +71,7 @@ The dev server can also read the backend URL from `.env` or `.env.local` with `B
 ## Code Style
 
 - Prettier: double quotes, semicolons, trailing commas (es5), 80 char width
-- ESLint (flat config, `eslint.config.mjs`) with `jsx-a11y/strict` — runs on the whole tree in CI via `npm run lint:js` (`eslint . --max-warnings 0`, so warnings fail the build) and on staged files via the husky pre-commit hook. Separate from `npm run lint`, which runs tslint + sass-lint.
+- ESLint (flat config, `eslint.config.mjs`) with `jsx-a11y/strict` — runs on the whole tree in CI via `npm run lint:js` (`eslint . --max-warnings 0`, so warnings fail the build) and on staged files via the husky pre-commit hook. `npm run lint` runs sass-lint (SCSS only).
 - `@typescript-eslint/no-explicit-any` is disabled (any is allowed)
 - Prefer template literals over string concatenation for building strings with variables
 - When an arrow function only passes its arguments through to another function with the same signature, pass the function directly instead of wrapping it (e.g., `onClick: this.handleClick` not `onClick: (e) => this.handleClick(e)`)

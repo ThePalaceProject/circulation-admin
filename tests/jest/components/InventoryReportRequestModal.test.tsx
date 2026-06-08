@@ -88,7 +88,7 @@ describe("InventoryReportRequestModal", () => {
           () => useReportInfo(show, API_ENDPOINT_PARAMS),
           { wrapper }
         );
-        await waitFor(() => result.current.fetchStatus == "idle");
+        await waitFor(() => result.current.fetchStatus === "idle");
         const { isSuccess, isError, error, collections } = result.current;
 
         expect(mock_info_api).toHaveBeenCalledWith(API_ENDPOINT_PARAMS);
@@ -107,7 +107,7 @@ describe("InventoryReportRequestModal", () => {
           () => useReportInfo(show, API_ENDPOINT_PARAMS),
           { wrapper }
         );
-        await waitFor(() => result.current.fetchStatus == "idle");
+        await waitFor(() => result.current.fetchStatus === "idle");
         const { isSuccess, isError, error, collections } = result.current;
 
         expect(mock_info_api).not.toHaveBeenCalled();
@@ -127,7 +127,7 @@ describe("InventoryReportRequestModal", () => {
           () => useReportInfo(show, API_ENDPOINT_PARAMS),
           { wrapper }
         );
-        await waitFor(() => result.current.fetchStatus == "idle");
+        await waitFor(() => result.current.fetchStatus === "idle");
         const { isSuccess, isError, error, collections } = result.current;
 
         expect(mock_info_api).toHaveBeenCalledWith(API_ENDPOINT_PARAMS);
