@@ -33,10 +33,6 @@ export default function AdvancedSearchBooleanFilter({
 }: AdvancedSearchBooleanFilterProps) {
   const children = query && (query.and || query.or);
 
-  if (!children) {
-    return null;
-  }
-
   const handleBooleanChange = (
     event: React.SyntheticEvent<HTMLSelectElement>
   ) => {
@@ -93,6 +89,11 @@ export default function AdvancedSearchBooleanFilter({
     },
     [query.id, onMove]
   );
+
+  // Hooks must run unconditionally, so this guard comes after useDrop above.
+  if (!children) {
+    return null;
+  }
 
   const isSelected = !readOnly && selectedQueryId === query.id;
 

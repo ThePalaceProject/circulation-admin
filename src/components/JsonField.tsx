@@ -257,6 +257,9 @@ function useTimeoutCleanup({
   refs: React.MutableRefObject<ReturnType<typeof setTimeout> | null>[];
   deps?: React.DependencyList;
 }) {
+  // `deps` is supplied by callers and `refs` is intentionally stable for the
+  // lifetime of the hook; both are excluded from static dependency checking.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => () => refs.forEach(cancelTimer), deps);
 }
 
