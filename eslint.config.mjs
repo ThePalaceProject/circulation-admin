@@ -41,8 +41,8 @@ export default tseslint.config(
       // Enable the two classic react-hooks rules explicitly rather than
       // spreading `reactHooks.configs.recommended.rules`. eslint-plugin-react-hooks
       // v7's recommended preset also turns on newer React Compiler rules
-      // (set-state-in-effect, refs, etc.); adopting those is deliberately left to
-      // a follow-up so this migration stays behavior-stable across plugin bumps.
+      // (set-state-in-effect, refs, etc.).
+      // TODO: Adopt these new rules.
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       "react/jsx-filename-extension": [
@@ -61,14 +61,15 @@ export default tseslint.config(
       "@typescript-eslint/no-inferrable-types": 0,
       // The following three rules are newly enabled by typescript-eslint v8's
       // `recommended` preset but were not active under the previous v5 config.
-      // They conflict with long-standing idioms throughout this codebase, so we
-      // keep them off to preserve prior linting behavior (parity migration):
+      // They conflict with idioms throughout this codebase, so we
+      // keep them off to preserve prior linting behavior:
       //   - short-circuit side effects, e.g. `cond && doThing()`, and chai
       //     assertions like `expect(x).to.be.true` (no-unused-expressions)
       //   - empty props/state types, e.g. `React.Component<{}, {}>`
       //     (no-empty-object-type)
       //   - `import x = require("x")` and CommonJS webpack configs
       //     (no-require-imports)
+      // TODO: Evaluate these rules to see if we want to apply them.
       "@typescript-eslint/no-unused-expressions": 0,
       "@typescript-eslint/no-empty-object-type": 0,
       "@typescript-eslint/no-require-imports": 0,
@@ -82,10 +83,11 @@ export default tseslint.config(
       ],
     },
   },
-  // Must come last: disables ESLint formatting rules that conflict with Prettier.
+  // Disable ESLint formatting rules that conflict with Prettier.
+  // This should be nearly the last option so it overrides previous rules.
   prettier,
   {
-    // Keep this last. ESLint merges `linterOptions` with last-writer-wins
+    // ESLint merges `linterOptions` with last-writer-wins
     // semantics, so placing it after every preset spread keeps a future plugin
     // config from silently re-enabling it. Flat config reports unused
     // eslint-disable directives by default; the previous .eslintrc setup did
