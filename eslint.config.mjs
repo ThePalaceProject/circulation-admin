@@ -20,12 +20,8 @@ export default tseslint.config(
       "react-hooks": reactHooks,
     },
     languageOptions: {
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-        sourceType: "module",
-      },
+      // JSX is enabled by react.configs.flat.recommended and sourceType
+      // defaults to "module" in flat config, so neither needs to be set here.
       globals: {
         ...globals.browser,
         ...globals.node,
