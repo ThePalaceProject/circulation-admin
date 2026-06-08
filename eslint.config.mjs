@@ -82,6 +82,6 @@ export default tseslint.config(
     },
   },
   // Disable ESLint formatting rules that conflict with Prettier.
-  // This should be nearly the last option so it overrides previous rules.
+  // This should be the last option so it overrides previous rules.
   prettier
 );
