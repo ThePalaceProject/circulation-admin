@@ -10,15 +10,6 @@ export default tseslint.config(
   {
     ignores: ["dist/", "lib/", "docs/", "typings/", "node_modules/"],
   },
-  {
-    // Flat config reports unused eslint-disable directives by default; the
-    // previous .eslintrc setup did not. Keep it off to preserve prior behavior
-    // and avoid the pre-commit hook auto-stripping existing directives. Cleaning
-    // up stale directives can be done as a separate, focused change.
-    linterOptions: {
-      reportUnusedDisableDirectives: "off",
-    },
-  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
@@ -92,5 +83,17 @@ export default tseslint.config(
     },
   },
   // Must come last: disables ESLint formatting rules that conflict with Prettier.
-  prettier
+  prettier,
+  {
+    // Keep this last. ESLint merges `linterOptions` with last-writer-wins
+    // semantics, so placing it after every preset spread keeps a future plugin
+    // config from silently re-enabling it. Flat config reports unused
+    // eslint-disable directives by default; the previous .eslintrc setup did
+    // not. Keep it off to preserve prior behavior and avoid the pre-commit hook
+    // auto-stripping existing directives. Cleaning up stale directives can be
+    // done as a separate, focused change.
+    linterOptions: {
+      reportUnusedDisableDirectives: "off",
+    },
+  }
 );
