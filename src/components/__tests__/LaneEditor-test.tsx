@@ -8,6 +8,10 @@ import LaneEditor from "../LaneEditor";
 import TextWithEditMode from "../TextWithEditMode";
 import EditableInput from "../EditableInput";
 import LaneCustomListsEditor from "../LaneCustomListsEditor";
+import {
+  installWriteableLocation,
+  WriteableLocationHandle,
+} from "./withWriteableLocation";
 
 describe("LaneEditor", () => {
   let wrapper;
@@ -16,7 +20,7 @@ describe("LaneEditor", () => {
   let hideLane;
   let findParentOfLane;
   let toggleLaneVisibility;
-  let savedLocation;
+  let location: WriteableLocationHandle;
 
   const customListsData = [
     { id: 1, name: "list 1", entries: [], is_owner: true, is_shared: false },
@@ -66,22 +70,12 @@ describe("LaneEditor", () => {
       />
     );
 
-    // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-    // This is a terrible hack. See https://github.com/facebook/jest/issues/890
-
-    savedLocation = window.location;
-
-    const writeableLocation = Object.assign({}, savedLocation, {
-      href: `${savedLocation.href}`,
-    });
-
-    delete window.location;
-
-    window.location = writeableLocation;
+    // Make window.location.href writable; jsdom doesn't allow changing it but browsers do.
+    location = installWriteableLocation();
   });
 
   afterEach(() => {
-    window.location = savedLocation;
+    location.restore();
   });
 
   it("shows lane name", () => {

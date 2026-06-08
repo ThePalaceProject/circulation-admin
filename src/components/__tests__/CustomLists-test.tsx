@@ -11,6 +11,10 @@ import CustomListEditor from "../CustomListEditor";
 import Admin from "../../models/Admin";
 import { LaneData } from "../../interfaces";
 import CustomListsSidebar from "../CustomListsSidebar";
+import {
+  installWriteableLocation,
+  WriteableLocationHandle,
+} from "./withWriteableLocation";
 
 describe("CustomLists", () => {
   let wrapper;
@@ -168,7 +172,7 @@ describe("CustomLists", () => {
   const librarian = new Admin([{ role: "librarian", library: "library" }]);
 
   describe("on mount", () => {
-    let savedLocation;
+    let location: WriteableLocationHandle;
 
     beforeEach(() => {
       fetchCustomLists = stub();
@@ -216,22 +220,12 @@ describe("CustomLists", () => {
         { context: { admin: libraryManager } }
       );
 
-      // Set window.location.href to be writable, jsdom doesn't normally allow changing it but browsers do.
-      // This is a terrible hack. See https://github.com/facebook/jest/issues/890
-
-      savedLocation = window.location;
-
-      const writeableLocation = Object.assign({}, savedLocation, {
-        href: `${savedLocation.href}`,
-      });
-
-      delete window.location;
-
-      window.location = writeableLocation;
+      // Make window.location.href writable; jsdom doesn't allow changing it but browsers do.
+      location = installWriteableLocation();
     });
 
     afterEach(() => {
-      window.location = savedLocation;
+      location.restore();
     });
 
     it("fetches libraries and languages", () => {
