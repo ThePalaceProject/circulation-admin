@@ -43,7 +43,7 @@ const AdvancedSearchValueFilter = ({
     event.stopPropagation();
     event.preventDefault();
 
-    onSelect?.(query.id);
+    onSelect?.(query?.id);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -51,7 +51,7 @@ const AdvancedSearchValueFilter = ({
     event.preventDefault();
 
     if (event.key === " ") {
-      onSelect?.(query.id);
+      onSelect?.(query?.id);
     }
   };
 
@@ -59,7 +59,7 @@ const AdvancedSearchValueFilter = ({
     event.stopPropagation();
     event.preventDefault();
 
-    onRemove?.(query.id);
+    onRemove?.(query?.id);
   };
 
   const [, drag]: [{}, ConnectDragSource, ConnectDragPreview] = useDrag(
