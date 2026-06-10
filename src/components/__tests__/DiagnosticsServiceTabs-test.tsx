@@ -6,8 +6,6 @@ import { stub, spy } from "sinon";
 
 import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
 import { Panel } from "library-simplified-reusable-components";
-import Timestamp from "../Timestamp";
-import ToolTip from "../ToolTip";
 
 describe("DiagnosticsServiceTabs", () => {
   let wrapper;

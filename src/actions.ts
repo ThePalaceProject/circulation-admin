@@ -22,7 +22,6 @@ import {
   DiagnosticsData,
   FeatureFlags,
   SitewideAnnouncementsData,
-  StatisticsData,
   QuickSightEmbeddedURLData,
 } from "./interfaces";
 import { CollectionData } from "@thepalaceproject/web-opds-client/lib/interfaces";
@@ -231,7 +230,7 @@ export default class ActionCreator extends BaseActionCreator {
                   dispatch(this.failure(type, err));
                   reject(err);
                 })
-                .catch((parseError) => {
+                .catch(() => {
                   err = {
                     status: response.status,
                     response: defaultErrorMessage || "Failed to save changes",
@@ -289,7 +288,7 @@ export default class ActionCreator extends BaseActionCreator {
                   dispatch(this.failure(type, err));
                   reject(err);
                 })
-                .catch((parseError) => {
+                .catch(() => {
                   err = {
                     status: response.status,
                     response: "Request failed",

@@ -113,9 +113,9 @@ describe("Classifications", () => {
     it("refreshes book, classifications, and Catalog after editing classifications", (done) => {
       const formData = new (window as any).FormData();
       editClassifications.returns(
-        new Promise<void>((resolve, reject) => resolve())
+        new Promise<void>((resolve, _reject) => resolve())
       );
-      instance.editClassifications(formData).then((response) => {
+      instance.editClassifications(formData).then(() => {
         expect(editClassifications.callCount).to.equal(1);
         expect(editClassifications.args[0][0]).to.equal(
           instance.editClassificationsUrl()

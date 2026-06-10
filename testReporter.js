@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 const mocha = require("mocha");
 const sinon = require("sinon");
 const color = require("colors-cli/safe");

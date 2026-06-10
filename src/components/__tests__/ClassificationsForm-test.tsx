@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import ClassificationsForm from "../ClassificationsForm";
 import EditableInput from "../EditableInput";
@@ -19,11 +19,6 @@ describe("ClassificationsForm", () => {
   const editableInputByName = (name) => {
     const inputs = wrapper.find(EditableInput);
     return inputs.filterWhere((input) => input.props().name === name);
-  };
-
-  const editableInputByValue = (value) => {
-    const inputs = wrapper.find(EditableInput);
-    return inputs.filterWhere((input) => input.props().value === value);
   };
 
   describe("rendering without classification values", () => {

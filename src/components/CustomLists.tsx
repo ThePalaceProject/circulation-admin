@@ -1,4 +1,3 @@
-/* eslint-disable react/no-deprecated */
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import { connect } from "react-redux";

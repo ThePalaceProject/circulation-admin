@@ -2,12 +2,11 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import buildStore from "../../store";
 
 import { ResetAdobeId } from "../ResetAdobeId";
-import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
 import { Button } from "library-simplified-reusable-components";
 
@@ -165,7 +164,6 @@ describe("ResetAdobeId", () => {
     });
 
     it("should show a success alert message if the reset is successful", () => {
-      const button = wrapper.find("button");
       let alert = wrapper.find(Alert);
 
       expect(wrapper.props().responseBody).to.equal(undefined);
@@ -214,7 +212,6 @@ describe("ResetAdobeId", () => {
         />
       );
 
-      const button = wrapper.find("button");
       let alert = wrapper.find(Alert);
 
       expect(wrapper.props().fetchError).to.eql(undefined);

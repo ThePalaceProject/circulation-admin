@@ -3,8 +3,6 @@ import * as sinon from "sinon";
 import { stub } from "sinon";
 import * as React from "react";
 import { ReactWrapper, mount } from "enzyme";
-import * as PropTypes from "prop-types";
-import { ProtocolData } from "../../interfaces";
 import Admin from "../../models/Admin";
 import { Collections, CollectionEditForm } from "../Collections";
 import buildStore from "../../store";
@@ -29,16 +27,12 @@ const collections = [
     name: "RBDigital",
   },
 ];
-const protocols: ProtocolData[] = [{ name: "test protocol", settings: [] }];
 
 describe("Collections", () => {
   let wrapper;
   let registerLibrary;
   let fetchLibraryRegistrations;
   const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
-  const childContextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
 
   describe("In Edit mode", () => {
     beforeEach(() => {

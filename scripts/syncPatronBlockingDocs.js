@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * Reads ../circulation/docs/FUNCTIONS.md, converts it to HTML, and writes
  * src/content/patronBlockingFunctionsHtml.ts — a TypeScript module that

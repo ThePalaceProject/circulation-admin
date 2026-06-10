@@ -1,4 +1,3 @@
-const breadcrumbSelector = "ol.breadcrumb";
 let loadingSelector;
 let catalogPage;
 let bookPage;
@@ -21,68 +20,62 @@ module.exports = {
       });
   },
 
-  "navigate to the first lane and back": function(browser) {
+  "navigate to the first lane and back": function (browser) {
     const { laneSelector } = catalogPage.elements;
     const { nthBreadcrumbSelector } = catalogPage;
 
-    browser
-      .goHome()
-      .url(function(result) {
-        let catalogUrl = result.value;
-        this.getAttribute(laneSelector, "href", function(result) {
-          let laneUrl = result.value;
-          this.getText(laneSelector, function(laneText) {
-            let laneTitle = laneText.value;
+    browser.goHome().url(function (result) {
+      let catalogUrl = result.value;
+      this.getAttribute(laneSelector, "href", function (result) {
+        let laneUrl = result.value;
+        this.getText(laneSelector, function (laneText) {
+          let laneTitle = laneText.value;
 
-            this.click(laneSelector)
-              .waitForElementNotPresent(loadingSelector, 5000)
-              .verify.noError()
-              .verify.urlEquals(laneUrl)
-              .verify.titleContains(laneTitle)
-              // when a lane selector is clicked, we go into another
-              // navigation level
-              .verify.elementPresent(nthBreadcrumbSelector(3))
-              .back()
-              .waitForElementNotPresent(loadingSelector, 5000)
-              .verify.urlEquals(catalogUrl)
-              .verify.elementNotPresent(nthBreadcrumbSelector(3));
-          });
+          this.click(laneSelector)
+            .waitForElementNotPresent(loadingSelector, 5000)
+            .verify.noError()
+            .verify.urlEquals(laneUrl)
+            .verify.titleContains(laneTitle)
+            // when a lane selector is clicked, we go into another
+            // navigation level
+            .verify.elementPresent(nthBreadcrumbSelector(3))
+            .back()
+            .waitForElementNotPresent(loadingSelector, 5000)
+            .verify.urlEquals(catalogUrl)
+            .verify.elementNotPresent(nthBreadcrumbSelector(3));
         });
       });
+    });
   },
 
-  "navigate to the first book in the first lane and back": function(browser) {
-    const {
-      bookSelector,
-      bookLinkTitleSelector
-    } = catalogPage.elements;
+  "navigate to the first book in the first lane and back": function (browser) {
+    const { bookSelector, bookLinkTitleSelector } = catalogPage.elements;
     const { bookTitleSelector } = bookPage.elements;
 
-    browser
-      .goHome()
-      .url(function(result) {
-        let catalogUrl = result.value;
-        this.getAttribute(bookSelector, "href", function(result) {
-          let bookUrl = result.value;
-          this.getText(bookLinkTitleSelector, function(result) {
-            let bookTitle = result.value;
-            this
-              .click(bookSelector)
-              .waitForElementPresent(bookTitleSelector, 5000)
-              .verify.noError()
-              .verify.urlEquals(bookUrl)
-              .verify.titleContains(bookTitle)
-              .verify.containsText(bookTitleSelector, bookTitle)
-              .back()
-              .waitForElementNotPresent(loadingSelector, 5000)
-              .verify.urlEquals(catalogUrl)
-              .verify.elementNotPresent(bookTitleSelector);
-          });
+    browser.goHome().url(function (result) {
+      let catalogUrl = result.value;
+      this.getAttribute(bookSelector, "href", function (result) {
+        let bookUrl = result.value;
+        this.getText(bookLinkTitleSelector, function (result) {
+          let bookTitle = result.value;
+          this.click(bookSelector)
+            .waitForElementPresent(bookTitleSelector, 5000)
+            .verify.noError()
+            .verify.urlEquals(bookUrl)
+            .verify.titleContains(bookTitle)
+            .verify.containsText(bookTitleSelector, bookTitle)
+            .back()
+            .waitForElementNotPresent(loadingSelector, 5000)
+            .verify.urlEquals(catalogUrl)
+            .verify.elementNotPresent(bookTitleSelector);
         });
       });
+    });
   },
 
-  "navigate to the first book, click through tabs, refresh page, go back": function(browser) {
+  "navigate to the first book, click through tabs, refresh page, go back": function (
+    browser
+  ) {
     const { bookSelector } = catalogPage.elements;
     const {
       bookTitleSelector,
@@ -95,87 +88,84 @@ module.exports = {
       classificationsTabSelector,
       coverTabSelector,
       complaintsTabSelector,
-      listsTabSelector
+      listsTabSelector,
     } = bookPage.elements;
 
-    browser
-      .goHome()
-      .getAttribute(bookSelector, "href", function(result) {
-        let bookUrl = result.value;
-        this.getAttribute(bookSelector, "title", function(result) {
-          let bookTitle = result.value;
-          this
-            .click(bookSelector)
-            .waitForElementPresent(bookTitleSelector, 5000)
-            .verify.noError()
-            .verify.urlEquals(bookUrl)
-            .verify.containsText(bookTitleSelector, bookTitle)
+    browser.goHome().getAttribute(bookSelector, "href", function (result) {
+      let bookUrl = result.value;
+      this.getAttribute(bookSelector, "title", function (result) {
+        let bookTitle = result.value;
+        this.click(bookSelector)
+          .waitForElementPresent(bookTitleSelector, 5000)
+          .verify.noError()
+          .verify.urlEquals(bookUrl)
+          .verify.containsText(bookTitleSelector, bookTitle)
 
-            // go to the edit tab
-            .click(editTabSelector)
-            .waitForElementPresent(titleInputSelector, 5000)
-            .verify.urlContains("tab/edit")
-            .verify.value(titleInputSelector, bookTitle)
+          // go to the edit tab
+          .click(editTabSelector)
+          .waitForElementPresent(titleInputSelector, 5000)
+          .verify.urlContains("tab/edit")
+          .verify.value(titleInputSelector, bookTitle)
 
-            // go to the classifications tab
-            .click(classificationsTabSelector)
-            .waitForElementPresent(genreInputSelector, 5000)
-            .verify.urlContains("tab/classifications")
+          // go to the classifications tab
+          .click(classificationsTabSelector)
+          .waitForElementPresent(genreInputSelector, 5000)
+          .verify.urlContains("tab/classifications")
 
-            // go to the image cover tab
-            .click(coverTabSelector)
-            .waitForElementPresent(coverInputSelector, 5000)
-            .verify.urlContains("tab/cover")
+          // go to the image cover tab
+          .click(coverTabSelector)
+          .waitForElementPresent(coverInputSelector, 5000)
+          .verify.urlContains("tab/cover")
 
-            // go to the complaints tab
-            .click(complaintsTabSelector)
-            .waitForElementPresent(complaintInputSelector, 5000)
-            .verify.urlContains("tab/complaints")
-            .refresh()
-            .waitForElementPresent(complaintInputSelector, 5000)
-            .verify.urlContains("tab/complaints")
-            .verify.titleContains(bookTitle)
+          // go to the complaints tab
+          .click(complaintsTabSelector)
+          .waitForElementPresent(complaintInputSelector, 5000)
+          .verify.urlContains("tab/complaints")
+          .refresh()
+          .waitForElementPresent(complaintInputSelector, 5000)
+          .verify.urlContains("tab/complaints")
+          .verify.titleContains(bookTitle)
 
-            // go to the list tab
-            .click(listsTabSelector)
-            .waitForElementPresent(listInputSelector, 5000)
-            .verify.urlContains("tab/list")
+          // go to the list tab
+          .click(listsTabSelector)
+          .waitForElementPresent(listInputSelector, 5000)
+          .verify.urlContains("tab/list")
 
-            // go back to the complaints tab
-            .back()
-            // go back to the cover tab
-            .back()
-            // go back to the classifications tab
-            .back()
-            // go back to the edit tab
-            .back()
-            // go back to the main details tab
-            .back()
-            .waitForElementPresent(bookTitleSelector, 5000)
-            .verify.urlEquals(bookUrl);
-        });
+          // go back to the complaints tab
+          .back()
+          // go back to the cover tab
+          .back()
+          // go back to the classifications tab
+          .back()
+          // go back to the edit tab
+          .back()
+          // go back to the main details tab
+          .back()
+          .waitForElementPresent(bookTitleSelector, 5000)
+          .verify.urlEquals(bookUrl);
       });
+    });
   },
 
-  "navigate to top-level feeds": function(browser) {
+  "navigate to top-level feeds": function (browser) {
     const {
       laneSelector,
       complaintsSelector,
-      hiddenSelector
+      hiddenSelector,
     } = catalogPage.elements;
     const { nthBreadcrumbSelector } = catalogPage;
 
     browser
       .goHome()
-      .getAttribute(complaintsSelector, "href", function(result) {
+      .getAttribute(complaintsSelector, "href", function (result) {
         let complaintsUrl = result.value;
-        this.getText(complaintsSelector, function(result) {
+        this.getText(complaintsSelector, function (result) {
           let complaintsTitle = result.value;
-          this.getAttribute(hiddenSelector, "href", function(result) {
-            let hiddenUrl = result.value
-            this.getText(hiddenSelector, function(result) {
+          this.getAttribute(hiddenSelector, "href", function (result) {
+            let hiddenUrl = result.value;
+            this.getText(hiddenSelector, function (result) {
               let hiddenTitle = result.value;
-              this.getText(laneSelector, function(result) {
+              this.getText(laneSelector, function (result) {
                 let laneTitle = result.value;
                 this
                   // go to the first lane
@@ -192,7 +182,10 @@ module.exports = {
                   .waitForElementNotPresent(loadingSelector, 5000)
                   .assert.noError()
                   .assert.containsText(nthBreadcrumbSelector(1), "All Books")
-                  .assert.containsText(nthBreadcrumbSelector(2), complaintsTitle)
+                  .assert.containsText(
+                    nthBreadcrumbSelector(2),
+                    complaintsTitle
+                  )
                   .verify.urlEquals(complaintsUrl)
 
                   // go to the hidden books page
@@ -209,7 +202,7 @@ module.exports = {
       });
   },
 
-  "navigate to dashboard and back to catalog": function(browser) {
+  "navigate to dashboard and back to catalog": function (browser) {
     const {
       catalogSelector,
       dashboardSelector,
@@ -220,12 +213,11 @@ module.exports = {
 
     browser
       .goHome()
-      .getAttribute(nthBreadcrumbSelector(1), "title", function(result) {
+      .getAttribute(nthBreadcrumbSelector(1), "title", function (result) {
         let libraryName = result.value;
-        this.getAttribute(catalogSelector, "href", function(result) {
+        this.getAttribute(catalogSelector, "href", function (result) {
           let catalogUrl = result.value;
-            this.getAttribute(dashboardSelector, "href", function(result) {
-            let dashboardUrl = result.value
+          this.getAttribute(dashboardSelector, "href", function () {
             this
               // go to the dashboard
               .click(dashboardSelector)
@@ -241,18 +233,16 @@ module.exports = {
               .assert.noError()
               .verify.elementPresent(nthBreadcrumbSelector(1))
               .verify.urlEquals(catalogUrl)
-              .verify.titleContains(`Palace Collection Manager - ${libraryName}`);
+              .verify.titleContains(
+                `Palace Collection Manager - ${libraryName}`
+              );
           });
         });
       });
   },
 
-  "navigate to two different book detail pages": function(browser) {
-    const {
-      laneSelector,
-      firstBookSelector,
-      secondBookSelector
-    } = catalogPage.elements;
+  "navigate to two different book detail pages": function (browser) {
+    const { firstBookSelector, secondBookSelector } = catalogPage.elements;
     const { bookTitleSelector } = bookPage.elements;
     const { nthBreadcrumbSelector } = catalogPage;
 
@@ -263,7 +253,7 @@ module.exports = {
       .click(firstBookSelector)
       .waitForElementNotPresent(loadingSelector, 5000)
       .waitForElementPresent(bookTitleSelector, 5000)
-      .getText(bookTitleSelector, function(result) {
+      .getText(bookTitleSelector, function (result) {
         let firstTitle = result.value;
 
         this
@@ -278,7 +268,7 @@ module.exports = {
           .waitForElementPresent(bookTitleSelector, 50000)
 
           // making sure that we are on a new book
-          .getText(bookTitleSelector, function(result) {
+          .getText(bookTitleSelector, function (result) {
             let secondTitle = result.value;
             this.assert.notEqual(firstTitle, secondTitle);
           });
@@ -290,5 +280,5 @@ module.exports = {
    */
   after: (browser) => {
     browser.end();
-  }
+  },
 };

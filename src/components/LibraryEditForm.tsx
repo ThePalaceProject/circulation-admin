@@ -75,7 +75,6 @@ export default class LibraryEditForm extends React.Component<
     }
 
     const categories = this.separateCategories(otherFields);
-    const requiresSystemAdmin = 3;
     const ref = (setting) => {
       if (setting.key === "name") {
         return this.nameRef;

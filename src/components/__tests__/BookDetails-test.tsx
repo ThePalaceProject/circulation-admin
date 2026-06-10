@@ -87,7 +87,7 @@ const book: BookData = {
 describe("BookDetails", () => {
   let wrapper;
   const noop = stub().returns(
-    new Promise<void>((resolve, reject) => resolve())
+    new Promise<void>((resolve, _reject) => resolve())
   );
 
   beforeEach(() => {

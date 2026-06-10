@@ -180,7 +180,7 @@ export default class BookEditForm extends React.Component<
     if (summary !== this.defaultContent) {
       data.append("summary", summary);
     }
-    this.props.editBook(this.props.editLink.href, data).then((response) => {
+    this.props.editBook(this.props.editLink.href, data).then(() => {
       this.props.refresh();
     });
   }

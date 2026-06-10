@@ -12,7 +12,6 @@ import ErrorMessage from "../ErrorMessage";
 
 describe("DiagnosticsTabContainer", () => {
   let wrapper;
-  let store;
   let goToTab;
 
   const ts1 = {

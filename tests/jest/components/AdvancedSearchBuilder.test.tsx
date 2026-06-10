@@ -5,7 +5,7 @@ import AdvancedSearchBuilder from "../../../src/components/AdvancedSearchBuilder
 
 describe("AdvancedSearchBuilder", () => {
   it("renders a placeholder and help text when the publication date filter is selected", async () => {
-    const user = userEvent.setup();
+    userEvent.setup();
 
     const query = {
       id: "0",

@@ -30,7 +30,7 @@ type BookDetailsEditorPerLibraryVisibilityProps = {
 const BookDetailsEditorSuppression = ({
   link,
   onConfirm,
-  onComplete = () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+  onComplete = () => {},
   buttonContent,
   buttonTitle = buttonContent,
   className = "",

@@ -1,8 +1,6 @@
 import * as React from "react";
 import { SettingData, LibraryData } from "../interfaces";
 import ProtocolFormField from "./ProtocolFormField";
-import InputList from "./InputList";
-import EditableInput from "./EditableInput";
 import { findDefault } from "../utils/sharedFunctions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 

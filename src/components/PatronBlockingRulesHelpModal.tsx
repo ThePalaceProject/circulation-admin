@@ -85,7 +85,6 @@ export function PatronBlockingRulesHelpModal({
           <h4 className="pbr-help-section-title">Available Functions</h4>
           {/* Content is generated at build time from the trusted
               circulation/docs/FUNCTIONS.md source by the sync script. */}
-          {/* eslint-disable-next-line react/no-danger */}
           <div
             className="pbr-help-functions-content"
             dangerouslySetInnerHTML={{ __html: patronBlockingFunctionsHtml }}

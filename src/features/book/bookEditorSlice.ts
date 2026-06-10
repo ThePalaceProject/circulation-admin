@@ -38,13 +38,6 @@ export const initialState: BookState = {
   editError: null,
 };
 
-interface InitialState {
-  url: string;
-  data: BookData;
-  isFetching: boolean;
-  fetchError: RequestError;
-}
-
 const bookEditorSlice = createSlice({
   name: "bookEditor",
   initialState,

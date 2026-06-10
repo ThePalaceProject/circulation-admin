@@ -1,7 +1,5 @@
 import * as React from "react";
-import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
-import { State } from "../reducers/index";
 import {
   TabContainer,
   TabContainerProps,

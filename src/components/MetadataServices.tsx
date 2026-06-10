@@ -44,7 +44,7 @@ export class MetadataServices extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const data = Object.assign(
     {},
     (state.editor.metadataServices && state.editor.metadataServices.data) || {}

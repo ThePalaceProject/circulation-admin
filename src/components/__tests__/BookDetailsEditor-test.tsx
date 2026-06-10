@@ -45,7 +45,7 @@ describe("BookDetailsEditor", () => {
 
   it("loads admin book url, roles, languages, and media on mount", () => {
     const permalink = "works/1234";
-    const wrapper = shallow(
+    shallow(
       <BookDetailsEditor
         bookUrl={permalink}
         {...dispatchProps}
@@ -64,7 +64,6 @@ describe("BookDetailsEditor", () => {
   it("loads admin book url when given a new book url", () => {
     const permalink = "works/1234";
     const newPermalink = "works/5555";
-    const element = document.createElement("div");
     const wrapper = shallow(
       <BookDetailsEditor
         bookUrl={permalink}

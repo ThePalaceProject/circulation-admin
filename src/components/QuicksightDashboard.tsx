@@ -81,7 +81,7 @@ class QuicksightDashboard extends React.Component<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     isFetchingLibraries: state.editor.libraries?.isFetching,
     libraries: state.editor.libraries?.data?.libraries,

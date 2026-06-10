@@ -4,7 +4,7 @@ import createFetchEditReducer, {
   FetchEditState,
 } from "./createFetchEditReducer";
 
-const loadRequest = (state, action) => {
+const loadRequest = (state, _action) => {
   return Object.assign({}, state, {
     isLoaded: false,
     isFetchingMoreEntries: true,

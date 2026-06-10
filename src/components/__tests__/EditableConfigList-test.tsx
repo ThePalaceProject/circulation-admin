@@ -3,7 +3,6 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import * as PropTypes from "prop-types";
 
 import Admin from "../../models/Admin";
 import {
@@ -12,7 +11,6 @@ import {
   AdditionalContentProps,
 } from "../EditableConfigList";
 import ErrorMessage from "../ErrorMessage";
-import EditableInput from "../EditableInput";
 import { Alert } from "react-bootstrap";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 
@@ -32,24 +30,6 @@ describe("EditableConfigList", () => {
   > {
     render(): JSX.Element {
       return <div>Test</div>;
-    }
-  }
-
-  class ThingEditFormWithInputs extends React.Component<
-    EditFormProps<Things, Thing>,
-    {}
-  > {
-    render(): JSX.Element {
-      return (
-        <div>
-          <EditableInput
-            elementType="input"
-            type="text"
-            ref="textInput"
-            value="VALUE"
-          />
-        </div>
-      );
     }
   }
 
@@ -135,9 +115,6 @@ describe("EditableConfigList", () => {
 
   const systemAdmin = new Admin([{ role: "system", library: "nypl" }]);
   const libraryManager = new Admin([{ role: "manager", library: "nypl" }]);
-  const childContextTypes = {
-    admin: PropTypes.object.isRequired,
-  };
 
   beforeEach(() => {
     fetchData = stub();

@@ -37,10 +37,6 @@ describe("MetadataServices", () => {
     ],
   };
 
-  const pause = () => {
-    return new Promise<void>((resolve) => setTimeout(resolve, 0));
-  };
-
   beforeEach(() => {
     fetchData = stub();
     editItem = stub().returns(

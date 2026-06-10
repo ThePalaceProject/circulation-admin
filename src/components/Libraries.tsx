@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   GenericEditableConfigList,
   EditableConfigListStateProps,
@@ -72,7 +71,7 @@ export class Libraries extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   // fetchError = an error involving loading the list of libraries; formError = an error upon submission of the
   // create/edit form.
   return {

@@ -191,7 +191,7 @@ export class CustomListsForBook extends React.Component<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     allCustomLists:
       state.editor.customLists.data &&

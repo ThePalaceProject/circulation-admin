@@ -2,12 +2,10 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 
-import buildStore from "../../store";
 import EntryPointsContainer from "../EntryPointsContainer";
 import EntryPointsTabs from "../EntryPointsTabs";
-import { LinkData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { mockRouterContext } from "./routing";
 
 class DefaultCollection extends React.Component<any, any> {

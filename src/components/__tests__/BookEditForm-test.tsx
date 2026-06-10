@@ -65,10 +65,6 @@ describe("BookEditForm", () => {
     const inputs = wrapper.find(EditableInput);
     return inputs.filterWhere((input) => input.props().name === name);
   };
-  const editableInputByValue = (value) => {
-    const inputs = wrapper.find(EditableInput);
-    return inputs.filterWhere((input) => input.props().value === value);
-  };
 
   describe("rendering", () => {
     beforeEach(() => {
@@ -277,7 +273,7 @@ describe("BookEditForm", () => {
 
   it("calls editBook on submit", () => {
     const editBook = stub().returns(
-      new Promise<void>((resolve, reject) => {
+      new Promise<void>((resolve, _reject) => {
         resolve();
       })
     );
@@ -332,12 +328,12 @@ describe("BookEditForm", () => {
 
   it("refreshes book after editing", async () => {
     const editBook = stub().returns(
-      new Promise<void>((resolve, reject) => {
+      new Promise<void>((resolve, _reject) => {
         resolve();
       })
     );
     const refreshStub = stub().returns(
-      new Promise<void>((resolve, reject) => {
+      new Promise<void>((resolve, _reject) => {
         resolve();
       })
     );
@@ -362,12 +358,12 @@ describe("BookEditForm", () => {
 
   it("only adds updated summary content if it's not empty", async () => {
     const editBook = stub().returns(
-      new Promise<void>((resolve, reject) => {
+      new Promise<void>((resolve, _reject) => {
         resolve();
       })
     );
     const refreshStub = stub().returns(
-      new Promise<void>((resolve, reject) => {
+      new Promise<void>((resolve, _reject) => {
         resolve();
       })
     );

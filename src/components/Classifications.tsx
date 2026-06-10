@@ -7,7 +7,7 @@ import ActionCreator from "../actions";
 import ErrorMessage from "./ErrorMessage";
 import ClassificationsForm from "./ClassificationsForm";
 import ClassificationsTable from "./ClassificationsTable";
-import { BookData, GenreTree, ClassificationData } from "../interfaces";
+import { BookData } from "../interfaces";
 import { AppDispatch, RootState } from "../store";
 import UpdatingLoader from "./UpdatingLoader";
 import { getBookData } from "../features/book/bookEditorSlice";
@@ -96,13 +96,13 @@ export class Classifications extends React.Component<ClassificationsProps> {
   editClassifications(data: FormData) {
     return this.props
       .editClassifications(this.editClassificationsUrl(), data)
-      .then((response) => {
+      .then(() => {
         this.refresh();
       });
   }
 }
 
-function mapStateToProps(state: RootState, ownProps: ClassificationsOwnProps) {
+function mapStateToProps(state: RootState) {
   return {
     bookAdminUrl: state.bookEditor.url,
     genreTree: state.editor.classifications.genreTree,

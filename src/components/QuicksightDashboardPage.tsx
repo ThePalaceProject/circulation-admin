@@ -39,7 +39,6 @@ export default class QuicksightDashboardPage extends React.Component<
   }
 
   render(): JSX.Element {
-    const { library } = this.props.params;
     return (
       <div className="quicksight-dashboard">
         <Header logoOnly={true} />

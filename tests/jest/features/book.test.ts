@@ -1,15 +1,12 @@
 import reducer, {
   initialState,
   getBookData,
-  GetBookDataArgs,
   submitBookData,
 } from "../../../src/features/book/bookEditorSlice";
 import { expect } from "chai";
 import * as fetchMock from "fetch-mock-jest";
-import { store } from "../../../src/store";
 import { BookData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
-import { AsyncThunkAction, Dispatch } from "@reduxjs/toolkit";
 import ActionCreator from "@thepalaceproject/web-opds-client/lib/actions";
 
 const SAMPLE_BOOK_ADMIN_DETAIL = `
@@ -274,8 +271,6 @@ describe("Redux bookEditorSlice...", () => {
     describe("submitBookData...", () => {
       const goodBookUrl = "https://example.com/book";
       const editBookUrl = `${goodBookUrl}/edit`;
-      const brokenBookUrl = "https://example.com/broken-book";
-      const errorBookUrl = "https://example.com/error-book";
       const csrfTokenHeader = "X-CSRF-Token";
       const validCsrfToken = "valid-csrf-token";
 
@@ -328,7 +323,7 @@ describe("Redux bookEditorSlice...", () => {
           csrfToken,
         });
 
-        const result = await action(dispatch, getState, undefined);
+        await action(dispatch, getState, undefined);
         const dispatchCalls = dispatch.mock.calls;
         const fetchCalls = fetchMock.calls();
 
@@ -366,7 +361,7 @@ describe("Redux bookEditorSlice...", () => {
           csrfToken,
         });
 
-        const result = await action(dispatch, getState, undefined);
+        await action(dispatch, getState, undefined);
         const dispatchCalls = dispatch.mock.calls;
         const fetchCalls = fetchMock.calls();
 

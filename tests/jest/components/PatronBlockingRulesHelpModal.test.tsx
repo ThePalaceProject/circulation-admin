@@ -1,5 +1,5 @@
 import * as React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PatronBlockingRulesHelpModal } from "../../../src/components/PatronBlockingRulesHelpModal";
 
@@ -29,9 +29,7 @@ describe("PatronBlockingRulesHelpModal", () => {
 
   it("does not render when show is false", () => {
     render(<PatronBlockingRulesHelpModal {...baseProps} show={false} />);
-    expect(
-      screen.queryByText(/Patron Blocking Rules — Help/i)
-    ).toBeNull();
+    expect(screen.queryByText(/Patron Blocking Rules — Help/i)).toBeNull();
   });
 
   it("shows a loading indicator when fieldsLoading is true", () => {
@@ -84,7 +82,9 @@ describe("PatronBlockingRulesHelpModal", () => {
       />
     );
     expect(
-      screen.getByText(/Save the service before template variables can be fetched/i)
+      screen.getByText(
+        /Save the service before template variables can be fetched/i
+      )
     ).toBeTruthy();
     expect(screen.queryByText("fines")).toBeNull();
   });
@@ -97,9 +97,7 @@ describe("PatronBlockingRulesHelpModal", () => {
         fieldsError={null}
       />
     );
-    expect(
-      screen.getByText(/No field data available/i)
-    ).toBeTruthy();
+    expect(screen.getByText(/No field data available/i)).toBeTruthy();
   });
 
   it("renders null values as italic 'null'", () => {

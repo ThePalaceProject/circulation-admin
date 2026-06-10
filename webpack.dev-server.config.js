@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 /**
  * This webpack config establishes a proxy server to enable a local build of circulation-admin to
  * connect to a remote Circulation Manager back-end. Requests for webpack assets are served from

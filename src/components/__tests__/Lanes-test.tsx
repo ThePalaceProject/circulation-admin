@@ -3,16 +3,13 @@ import { stub } from "sinon";
 
 import * as React from "react";
 import { shallow, mount } from "enzyme";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 
 import { Lanes } from "../Lanes";
-import { Link } from "react-router";
 import ErrorMessage from "../ErrorMessage";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import LaneEditor from "../LaneEditor";
-import Lane from "../Lane";
 import EditableInput from "../EditableInput";
-import { Button } from "library-simplified-reusable-components";
 import { LaneData } from "../../interfaces";
 
 describe("Lanes", () => {

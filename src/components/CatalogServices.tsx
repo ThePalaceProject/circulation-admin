@@ -32,7 +32,7 @@ export class CatalogServices extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const data = Object.assign(
     {},
     (state.editor.catalogServices && state.editor.catalogServices.data) || {}

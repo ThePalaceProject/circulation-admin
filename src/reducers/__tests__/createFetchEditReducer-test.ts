@@ -37,7 +37,7 @@ describe("fetch-edit reducer", () => {
     successMessage: null,
   };
 
-  const manipulateData = (state, action) => {
+  const manipulateData = (state) => {
     const data = 10;
     return Object.assign({}, state, {
       data: data,
@@ -46,7 +46,7 @@ describe("fetch-edit reducer", () => {
   };
 
   const extraActions = {
-    EXTRA_ACTION_REQUEST: (state, action) => state,
+    EXTRA_ACTION_REQUEST: (state) => state,
     EXTRA_ACTION_LOAD: manipulateData,
   };
 

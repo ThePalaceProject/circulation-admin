@@ -2,12 +2,11 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import { DiscoveryServicesData } from "../../interfaces";
 import ServiceWithRegistrationsEditForm from "../ServiceWithRegistrationsEditForm";
 import LibraryRegistration from "../LibraryRegistration";
-import EditableInput from "../EditableInput";
 
 describe("ServiceWithRegistrationsEditForm", () => {
   class DiscoveryServiceEditForm extends ServiceWithRegistrationsEditForm<

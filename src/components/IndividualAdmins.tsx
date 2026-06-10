@@ -1,4 +1,3 @@
-import * as React from "react";
 import * as PropTypes from "prop-types";
 import EditableConfigList, {
   EditableConfigListStateProps,
@@ -170,7 +169,7 @@ export class IndividualAdmins extends EditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const data = Object.assign(
     {},
     (state.editor.individualAdmins && state.editor.individualAdmins.data) || {}

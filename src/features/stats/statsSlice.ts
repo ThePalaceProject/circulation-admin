@@ -8,7 +8,7 @@ export const STATS_API_ENDPOINT = "/admin/stats";
 export const statsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getStats: builder.query<StatisticsData, void>({
-      query: (arg: void) => STATS_API_ENDPOINT,
+      query: (_arg: void) => STATS_API_ENDPOINT,
       transformResponse: (responseBody: StatisticsData) =>
         normalizeStatistics(responseBody),
       transformErrorResponse: (

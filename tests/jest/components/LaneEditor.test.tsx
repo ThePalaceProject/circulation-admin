@@ -12,7 +12,7 @@ import LaneEditor from "../../../src/components/LaneEditor";
 
 jest.mock("../../../src/components/LaneCustomListsEditor", () => ({
   __esModule: true,
-  default: (props) => <div data-testid="LaneCustomListsEditor" />,
+  default: () => <div data-testid="LaneCustomListsEditor" />,
 }));
 
 const customListsData = [

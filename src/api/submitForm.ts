@@ -28,11 +28,11 @@ export const submitForm = (
       .then((response) => {
         if (response.status === 200 || response.status === 201) {
           if (response.json && returnType === "JSON") {
-            response.json().then((data) => {
+            response.json().then(() => {
               resolve(response);
             });
           } else if (response.text) {
-            response.text().then((text) => {
+            response.text().then(() => {
               resolve(response);
             });
           } else {
@@ -49,7 +49,7 @@ export const submitForm = (
               };
               reject(err);
             })
-            .catch((parseError) => {
+            .catch(() => {
               err = {
                 status: response.status,
                 response: defaultErrorMessage,

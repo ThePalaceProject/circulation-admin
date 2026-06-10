@@ -11,7 +11,6 @@ import { ConfigurationSettings } from "../../../src/interfaces";
 describe("CustomLists", () => {
   // Stub scrollTo, since a component in the render tree will try to call it, and it is not
   // provided by JSDOM.
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   Element.prototype.scrollTo = () => {};
 
   const server = setupServer(

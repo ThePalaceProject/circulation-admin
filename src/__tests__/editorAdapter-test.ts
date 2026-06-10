@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { stub } from "sinon";
 
 import adapter from "../editorAdapter";
 import {
