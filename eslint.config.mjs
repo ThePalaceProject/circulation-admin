@@ -55,9 +55,7 @@ export default tseslint.config(
       "react/no-find-dom-node": 0,
       "react/no-unescaped-entities": 0,
       "@typescript-eslint/no-inferrable-types": 0,
-      // The following three rules are newly enabled by typescript-eslint v8's
-      // `recommended` preset but were not active under the previous v5 config.
-      // They conflict with idioms throughout this codebase, so we
+      // These rules conflict with idioms throughout this codebase, so we
       // keep them off to preserve prior linting behavior:
       //   - short-circuit side effects, e.g. `cond && doThing()`, and chai
       //     assertions like `expect(x).to.be.true` (no-unused-expressions)
