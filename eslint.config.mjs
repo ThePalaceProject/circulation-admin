@@ -79,6 +79,9 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
+      "no-var": "error",
+      "no-eval": "error",
+      eqeqeq: ["error", "smart"],
     },
   },
   // Disable ESLint formatting rules that conflict with Prettier.

@@ -85,7 +85,7 @@ module.exports = (env) => {
     if (redirectParam) {
       const redirectUrl = new URL(redirectParam);
 
-      if (redirectUrl.host == backendUrl.host) {
+      if (redirectUrl.host === backendUrl.host) {
         redirectUrl.protocol = "http";
         redirectUrl.host = requestHost;
 
