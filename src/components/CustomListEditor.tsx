@@ -113,10 +113,11 @@ export default function CustomListEditor({
   const { name } = properties;
 
   // Automatically execute the search when the list being edited changes, or finishes loading
-  // (which means a stored query may have been loaded).
-
+  // (which means a stored query may have been loaded). Intentionally keyed only on
+  // listId/isLoaded; `search` is a stable callback we don't want to re-trigger the effect.
   React.useEffect(() => {
     search?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listId, isLoaded]);
 
   const readOnly = !isOwner;

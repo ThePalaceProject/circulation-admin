@@ -60,6 +60,7 @@ const CustomListSearch = ({
   removeAdvSearchQuery,
   selectAdvSearchQuery,
 }: CustomListSearchProps) => {
+  // Seed the advanced-search query from startingTitle once, on mount only.
   React.useEffect(() => {
     if (startingTitle) {
       addAdvSearchQuery?.("include", {
@@ -70,6 +71,7 @@ const CustomListSearch = ({
 
       search?.();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const readOnly = !isOwner;

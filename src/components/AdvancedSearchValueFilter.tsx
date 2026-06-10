@@ -31,7 +31,7 @@ function getOpSymbol(value) {
   return op?.symbol || value;
 }
 
-export default ({
+const AdvancedSearchValueFilter = ({
   query,
   readOnly,
   selected,
@@ -39,15 +39,11 @@ export default ({
   onRemove,
   onSelect,
 }: AdvancedSearchValueFilterProps) => {
-  if (!query) {
-    return null;
-  }
-
   const handleClick = (event: React.SyntheticEvent) => {
     event.stopPropagation();
     event.preventDefault();
 
-    onSelect?.(query.id);
+    onSelect?.(query?.id);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -55,7 +51,7 @@ export default ({
     event.preventDefault();
 
     if (event.key === " ") {
-      onSelect?.(query.id);
+      onSelect?.(query?.id);
     }
   };
 
@@ -63,17 +59,17 @@ export default ({
     event.stopPropagation();
     event.preventDefault();
 
-    onRemove?.(query.id);
+    onRemove?.(query?.id);
   };
 
   const [, drag]: [{}, ConnectDragSource, ConnectDragPreview] = useDrag(
     {
       type: "filter",
       item: {
-        id: query.id,
+        id: query?.id,
       },
     },
-    [query.id]
+    [query?.id]
   );
 
   const [dropProps, drop]: [
@@ -82,13 +78,13 @@ export default ({
   ] = useDrop(
     {
       accept: "filter",
-      canDrop: (item: any) => item.id !== query.id,
+      canDrop: (item: any) => item.id !== query?.id,
       drop: (item: any, monitor) => {
         if (!monitor.didDrop()) {
-          onMove?.(item.id, query.id);
+          onMove?.(item.id, query?.id);
 
           return {
-            id: query.id,
+            id: query?.id,
           };
         }
       },
@@ -97,8 +93,13 @@ export default ({
         isOver: !!monitor.isOver(),
       }),
     },
-    [query.id, onMove]
+    [query?.id, onMove]
   );
+
+  // Hooks must run unconditionally, so this guard comes after the hooks above.
+  if (!query) {
+    return null;
+  }
 
   const isSelected = !readOnly && selected;
   const { key, op, value } = query;
@@ -127,3 +128,5 @@ export default ({
     </div>
   );
 };
+
+export default AdvancedSearchValueFilter;
