@@ -117,7 +117,7 @@ export class DiscoveryServices extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const data = Object.assign(
     {},
     (state.editor.discoveryServices && state.editor.discoveryServices.data) ||

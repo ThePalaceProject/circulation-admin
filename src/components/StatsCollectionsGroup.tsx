@@ -1,6 +1,5 @@
 import React = require("react");
 import StatsGroup from "./StatsGroup";
-import SingleStatListItem from "./SingleStatListItem";
 import { CollectionInventory } from "../interfaces";
 import StatsCollectionsBarChart from "./StatsCollectionsBarChart";
 import StatsCollectionsList from "./StatsCollectionsList";

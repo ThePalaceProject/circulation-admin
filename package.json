@@ -15,6 +15,7 @@
   "scripts": {
     "prepublish": "npm run prod",
     "lint": "tslint -c tslint.json src/*.ts src/*.tsx src/**/*.ts src/**/*.tsx src/**/**/*.ts src/**/**/*.tsx && sass-lint -c .sass-lint.yml -v -q",
+    "lint:js": "eslint . --max-warnings 0",
     "test-js": "npm run lint && tsc && cp -r src/stylesheets lib && cp -r src/images lib && mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js",
     "test-js-file": "npm run lint && tsc && cp -r src/stylesheets lib && cp -r src/images lib && mocha --require lib/testHelper.js",
     "test-js-list": "mocha --require lib/testHelper.js lib/__tests__/*.js lib/**/__tests__/*.js lib/**/**/__tests__/*.js --reporter ./testReporter.js",

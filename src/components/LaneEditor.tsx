@@ -5,7 +5,6 @@ import TextWithEditMode from "./TextWithEditMode";
 import EditableInput from "./EditableInput";
 import LaneCustomListsEditor from "./LaneCustomListsEditor";
 import TrashIcon from "./icons/TrashIcon";
-import XCloseIcon from "./icons/XCloseIcon";
 import VisibleIcon from "./icons/VisibleIcon";
 import HiddenIcon from "./icons/HiddenIcon";
 

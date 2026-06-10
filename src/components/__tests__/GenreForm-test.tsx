@@ -15,11 +15,10 @@ describe("GenreForm", () => {
   );
   const bookGenres = ["Adventure", "Epic Fantasy"];
   let addGenre;
-  let refresh;
 
   beforeEach(() => {
     addGenre = stub().returns(
-      new Promise<void>((resolve, reject) => resolve())
+      new Promise<void>((resolve, _reject) => resolve())
     );
     wrapper = shallow(
       <GenreForm

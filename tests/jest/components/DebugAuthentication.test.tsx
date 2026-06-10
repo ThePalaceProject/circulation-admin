@@ -56,7 +56,6 @@ const MOCK_DEBUG_RESULTS: PatronDebugResponse = {
 };
 
 describe("DebugAuthentication", () => {
-  /* eslint-disable @typescript-eslint/no-empty-function */
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -69,7 +68,6 @@ describe("DebugAuthentication", () => {
       error: process.env.NODE_ENV === "test" ? () => {} : console.error,
     },
   });
-  /* eslint-enable @typescript-eslint/no-empty-function */
 
   const server = setupServer(
     http.get(AUTH_METHODS_PATH, () =>

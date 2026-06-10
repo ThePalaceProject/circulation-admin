@@ -1,9 +1,7 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
-import { connect } from "react-redux";
 import * as PropTypes from "prop-types";
 import { RootState } from "../store";
-import ManagePatronsForm from "./ManagePatronsForm";
 import Header from "./Header";
 import Footer from "./Footer";
 import ManagePatronsTabContainer from "./ManagePatronsTabContainer";

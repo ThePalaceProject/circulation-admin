@@ -57,14 +57,14 @@ export interface EditFormProps<T, U> {
   adminLevel?: number;
 }
 
-export interface AdditionalContentProps<T, U> {
+export interface AdditionalContentProps<_T, U> {
   store?: Store<RootState>;
   csrfToken?: string;
   item?: U;
   type?: string;
 }
 
-export interface ExtraFormSectionProps<T, U> {
+export interface ExtraFormSectionProps<_T, _U> {
   setting: SettingData;
   disabled?: boolean;
   error?: FetchErrorData;
@@ -262,7 +262,6 @@ export abstract class GenericEditableConfigList<
    * not constrained to include `listDataKey`.
    */
   protected getItems(): U[] {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (this.props.data as any)?.[this.listDataKey] ?? [];
   }
 
@@ -277,7 +276,6 @@ export abstract class GenericEditableConfigList<
    * this method with a type-safe accessor to avoid the cast.
    */
   protected getAllLibraries(): LibraryData[] {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (this.props.data as any)?.allLibraries ?? [];
   }
 
@@ -316,9 +314,8 @@ export abstract class GenericEditableConfigList<
    * base implementation returns `undefined` for every item (see `Libraries`).
    */
   protected getAssociatedEntries(item: U): AssociatedEntry[] | undefined {
-    const libraries: Array<{ short_name: string }> | undefined =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (item as any)?.libraries;
+    const libraries: Array<{ short_name: string }> | undefined = (item as any)
+      ?.libraries;
     if (libraries === undefined) return undefined;
     const allLibraries = this.getAllLibraries();
     return libraries.map((lib) => {

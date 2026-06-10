@@ -41,7 +41,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps> {
       let response;
       try {
         response = JSON.parse(this.props.error.response).detail;
-      } catch (e) {
+      } catch {
         response = this.props.error.response;
         // The response might be a problem detail document encoded as a string rather than as JSON;
         // if so, we need to parse it and display the relevant information from it

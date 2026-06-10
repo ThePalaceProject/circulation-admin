@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 import { LaneData } from "../../interfaces";
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import Lane from "../Lane";
 import { Link } from "react-router";
 

@@ -9,7 +9,6 @@ import BookCoverEditor from "./BookCoverEditor";
 import CustomListsForBook from "./CustomListsForBook";
 import { TabContainer, TabContainerProps } from "./TabContainer";
 import { RootState } from "../store";
-import Admin from "../models/Admin";
 
 interface BookDetailsTabContainerOwnProps extends TabContainerProps {
   bookUrl: string;

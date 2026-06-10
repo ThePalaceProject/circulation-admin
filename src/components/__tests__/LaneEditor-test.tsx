@@ -17,7 +17,6 @@ describe("LaneEditor", () => {
   let wrapper;
   let editLane;
   let deleteLane;
-  let hideLane;
   let findParentOfLane;
   let toggleLaneVisibility;
   let location: WriteableLocationHandle;
@@ -53,7 +52,7 @@ describe("LaneEditor", () => {
     deleteLane = stub().returns(
       new Promise<void>((resolve) => resolve())
     );
-    hideLane = stub().returns(
+    stub().returns(
       new Promise<void>((resolve) => resolve())
     );
     findParentOfLane = stub().returns(laneData);

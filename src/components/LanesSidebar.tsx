@@ -44,7 +44,6 @@ export default class LanesSidebar extends React.Component<
   }
 
   render(): JSX.Element {
-    const linkBase = "/admin/web/lanes/" + this.props.library;
     return (
       <div className="lanes-sidebar">
         <h2>Lane Manager</h2>
@@ -70,7 +69,7 @@ export default class LanesSidebar extends React.Component<
       create: ["Create Top-Level Lane", <AddIcon />, ""],
       reset: ["Reset All Lanes", <ResetIcon />, "inverted"],
     };
-    const [text, icon, className] = content[createOrReset];
+    const [text, icon] = content[createOrReset];
     const disabled = this.props.orderChanged ? "disabled" : "";
     const style =
       createOrReset === "create" ? "left-align" : "right-align inverted";

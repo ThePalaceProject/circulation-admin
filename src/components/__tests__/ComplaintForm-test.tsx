@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import { Button, Form } from "library-simplified-reusable-components";
 
 import ComplaintForm from "../ComplaintForm";
@@ -91,7 +91,7 @@ describe("ComplaintForm", () => {
 
     beforeEach(() => {
       postComplaint = stub().returns(
-        new Promise<void>((resolve, reject) => {
+        new Promise<void>((resolve, _reject) => {
           resolve();
         })
       );

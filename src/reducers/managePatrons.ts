@@ -5,7 +5,7 @@ import { PatronData } from "../interfaces";
 // This is to "reset" the store's state of the current error or patron data,
 // so that if an admin switches libraries or goes to a different page and
 // returns, the previous error or patron information state won't be stored.
-const loadCB = (state, action) => {
+const loadCB = (state) => {
   return Object.assign({}, state, {
     data: null,
     fetchError: null,

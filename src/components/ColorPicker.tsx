@@ -39,7 +39,7 @@ export default class ColorPicker extends React.Component<
     );
   }
 
-  handleChange(color, event) {
+  handleChange(color) {
     this.setState({ value: color.hex });
   }
 

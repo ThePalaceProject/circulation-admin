@@ -1,8 +1,6 @@
 import { expect } from "chai";
-import { stub, spy } from "sinon";
-
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import EditableInput from "../EditableInput";
 import NeighborhoodAnalyticsForm from "../NeighborhoodAnalyticsForm";

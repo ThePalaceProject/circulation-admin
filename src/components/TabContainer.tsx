@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Store } from "@reduxjs/toolkit";
 import * as PropTypes from "prop-types";
-import { Navigate, PathFor } from "../interfaces";
+import { PathFor } from "../interfaces";
 import { RootState } from "../store";
 
 export interface TabContainerProps extends React.Props<TabContainerProps> {

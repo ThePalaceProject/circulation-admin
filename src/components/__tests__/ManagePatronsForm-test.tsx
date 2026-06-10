@@ -2,16 +2,14 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import buildStore from "../../store";
 
-import { mapDispatchToProps, ManagePatronsForm } from "../ManagePatronsForm";
+import { ManagePatronsForm } from "../ManagePatronsForm";
 import EditableInput from "../EditableInput";
 import ErrorMessage from "../ErrorMessage";
 import { Alert } from "react-bootstrap";
-
-import ActionCreator from "../../actions";
 
 const patron = {
   authorization_expires: "",

@@ -155,7 +155,7 @@ export class Complaints extends React.Component<ComplaintsProps> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     complaints: state.editor.complaints.data,
     isFetching: state.editor.complaints.isFetching,

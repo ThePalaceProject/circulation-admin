@@ -792,7 +792,6 @@ describe("CustomLists", () => {
 
       await deleteCustomListFn(listDataSort[0]);
       // prettier-ignore
-      /* eslint-disable */
       expect(confirmStub.args[0][0]).to.equal("Delete list \"a list\"? ");
 
       // Continuining from the previous test, this second list corresponds

@@ -6,7 +6,6 @@ import { stub } from "sinon";
 import buildStore from "../../store";
 
 import { SelfTestsTabContainer } from "../SelfTestsTabContainer";
-import SelfTestsCategory from "../SelfTestsCategory";
 import LoadingIndicator from "@thepalaceproject/web-opds-client/lib/components/LoadingIndicator";
 import ErrorMessage from "../ErrorMessage";
 

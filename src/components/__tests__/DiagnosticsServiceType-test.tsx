@@ -4,7 +4,6 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import DiagnosticsServiceType from "../DiagnosticsServiceType";
-import DiagnosticsServiceTabs from "../DiagnosticsServiceTabs";
 
 describe("DiagnosticsServiceType", () => {
   let wrapper;

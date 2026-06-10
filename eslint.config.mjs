@@ -15,6 +15,15 @@ export default tseslint.config(
   react.configs.flat.recommended,
   jsxA11y.flatConfigs.strict,
   {
+    // Global so react rules can detect the version everywhere they run,
+    // including config files outside the files filter below.
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
+  {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
       "react-hooks": reactHooks,
@@ -26,11 +35,6 @@ export default tseslint.config(
         ...globals.browser,
         ...globals.node,
         ...globals.jest,
-      },
-    },
-    settings: {
-      react: {
-        version: "detect",
       },
     },
     rules: {
@@ -78,18 +82,6 @@ export default tseslint.config(
     },
   },
   // Disable ESLint formatting rules that conflict with Prettier.
-  // This should be nearly the last option so it overrides previous rules.
-  prettier,
-  {
-    // ESLint merges `linterOptions` with last-writer-wins
-    // semantics, so placing it after every preset spread keeps a future plugin
-    // config from silently re-enabling it. Flat config reports unused
-    // eslint-disable directives by default; the previous .eslintrc setup did
-    // not. Keep it off to preserve prior behavior and avoid the pre-commit hook
-    // auto-stripping existing directives. Cleaning up stale directives can be
-    // done as a separate, focused change.
-    linterOptions: {
-      reportUnusedDisableDirectives: "off",
-    },
-  }
+  // This should be the last option so it overrides previous rules.
+  prettier
 );

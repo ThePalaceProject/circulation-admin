@@ -191,7 +191,7 @@ export class Collections extends GenericEditableConfigList<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const data = Object.assign(
     {},
     (state.editor.collections && state.editor.collections.data) || {}

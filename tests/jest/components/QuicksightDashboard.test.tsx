@@ -6,7 +6,6 @@ import { LibrariesData } from "../../../src/interfaces";
 import buildStore from "../../../src/store";
 import { setupServer } from "msw/node";
 import { http, HttpResponse } from "msw";
-import renderWithContext from "../testUtils/renderWithContext";
 import { renderWithProviders } from "../testUtils/withProviders";
 import QuicksightDashboardPage from "../../../src/components/QuicksightDashboardPage";
 

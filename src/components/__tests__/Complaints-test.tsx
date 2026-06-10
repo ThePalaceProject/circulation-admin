@@ -124,7 +124,7 @@ describe("Complaints", () => {
       refreshCatalog = stub();
       fetchComplaints = stub();
       resolveComplaints = stub().returns(
-        new Promise<void>((resolve, reject) => {
+        new Promise<void>((resolve, _reject) => {
           resolve();
         })
       );
@@ -155,7 +155,7 @@ describe("Complaints", () => {
     it("should call resolve()", () => {
       instance.resolve = stub();
 
-      const resolveUrl = (wrapper.instance() as any).resolveComplaintsUrl();
+      (wrapper.instance() as any).resolveComplaintsUrl();
       const input = wrapper.find(Button);
       input.simulate("click");
 

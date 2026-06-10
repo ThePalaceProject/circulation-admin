@@ -22,7 +22,6 @@ Object.keys(window).forEach((key) => {
 });
 
 // Ignore imported stylesheets and images.
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 require.extensions[".scss"] = noop;
 require.extensions[".svg"] = noop;

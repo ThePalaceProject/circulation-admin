@@ -1,4 +1,3 @@
-/* eslint-disable react/no-deprecated */
 import * as React from "react";
 import { Link } from "react-router";
 import { Store } from "@reduxjs/toolkit";

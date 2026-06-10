@@ -94,14 +94,14 @@ export default function adapter(data: OPDSEntry): BookData {
   let medium;
   try {
     medium = data.unparsed["$"]["schema:additionalType"]["value"];
-  } catch (e) {
+  } catch {
     medium = null;
   }
 
   let imprint;
   try {
     imprint = data.unparsed["bib:publisherImprint"][0]["_"];
-  } catch (e) {
+  } catch {
     imprint = null;
   }
 
@@ -127,7 +127,7 @@ export default function adapter(data: OPDSEntry): BookData {
         break;
       }
     }
-  } catch (e) {
+  } catch {
     rating = null;
   }
 

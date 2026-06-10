@@ -105,7 +105,7 @@ export class ChangePasswordForm extends React.Component<
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     fetchError:
       state.editor.changePassword && state.editor.changePassword.fetchError,

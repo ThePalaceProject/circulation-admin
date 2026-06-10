@@ -2,13 +2,13 @@ import { expect } from "chai";
 import { stub, spy } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import IndividualAdminEditForm from "../IndividualAdminEditForm";
 import EditableInput from "../EditableInput";
 import Admin from "../../models/Admin";
-import { Button, Form, Panel } from "library-simplified-reusable-components";
-import { AdminRoleData, AdminRole } from "../../interfaces";
+import { Button, Form } from "library-simplified-reusable-components";
+import { AdminRoleData } from "../../interfaces";
 
 describe("IndividualAdminEditForm", () => {
   let wrapper;

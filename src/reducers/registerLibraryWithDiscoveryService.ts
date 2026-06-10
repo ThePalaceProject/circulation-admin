@@ -1,4 +1,3 @@
-import { RequestError } from "@thepalaceproject/web-opds-client/lib/DataFetcher";
 import ActionCreator from "../actions";
 import createRegisterLibraryReducer from "./createRegisterLibraryReducer";
 

@@ -21,11 +21,7 @@ import { renderHook } from "@testing-library/react-hooks";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { store } from "../../../src/store";
 import { api } from "../../../src/features/api/apiSlice";
-import {
-  AdminRoleData,
-  ConfigurationSettings,
-  RolesData,
-} from "../../../src/interfaces";
+import { AdminRoleData, ConfigurationSettings } from "../../../src/interfaces";
 
 const normalizedData = normalizeStatistics(statisticsApiResponseData);
 
@@ -442,14 +438,12 @@ describe("Dashboard Statistics", () => {
             roles,
             quicksightPagePath: fakeQuickSightHref,
           };
-          const {
-            container,
-            getByRole,
-            queryByRole,
-            queryByText,
-          } = renderWithProviders(<Stats library={sampleLibraryKey} />, {
-            appConfigSettings,
-          });
+          const { container, getByRole, queryByRole } = renderWithProviders(
+            <Stats library={sampleLibraryKey} />,
+            {
+              appConfigSettings,
+            }
+          );
 
           // We should always render a Usage reports group when a library is specified.
           getByRole("heading", {

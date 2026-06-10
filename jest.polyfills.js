@@ -2,7 +2,6 @@
 
 const globalThis = window;
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { fetch, Headers, Request, Response } = require("fetch-ponyfill")();
 Object.defineProperties(globalThis, {
   fetch: { value: fetch, writable: true },

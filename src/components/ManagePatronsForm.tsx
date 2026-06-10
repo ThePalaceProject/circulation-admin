@@ -5,7 +5,7 @@ import { RootState } from "../store";
 import ActionCreator from "../actions";
 import { FetchErrorData } from "@thepalaceproject/web-opds-client/lib/interfaces";
 import { PatronData } from "../interfaces";
-import { Button, Form } from "library-simplified-reusable-components";
+import { Form } from "library-simplified-reusable-components";
 import EditableInput from "./EditableInput";
 import ErrorMessage from "./ErrorMessage";
 import PatronInfo from "./PatronInfo";
@@ -83,7 +83,7 @@ export class ManagePatronsForm extends React.Component<ManagePatronsFormProps> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const patronManager =
     state.editor.patronManager && state.editor.patronManager;
   return {

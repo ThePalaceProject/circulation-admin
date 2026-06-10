@@ -1,10 +1,8 @@
 import { expect } from "chai";
 import { stub } from "sinon";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fetchMock = require("fetch-mock");
 
 import ActionCreator from "../actions";
-import { getBookData } from "../features/book/bookEditorSlice";
 
 class MockDataFetcher {
   resolve: boolean = true;
@@ -24,7 +22,7 @@ class MockDataFetcher {
     });
   }
 
-  fetch(url, options = {}) {
+  fetch(url, _options = {}) {
     return new Promise((resolve, reject) => {
       if (this.resolve) {
         resolve(this.testData);
@@ -304,7 +302,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(complaintsData);
           }),
       };
@@ -386,7 +384,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(genresData);
           }),
       };
@@ -448,7 +446,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(classificationsData);
           }),
       };
@@ -479,7 +477,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(diagnosticsData);
           }),
       };
@@ -509,7 +507,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(librariesData);
           }),
       };
@@ -564,7 +562,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(collectionsData);
           }),
       };
@@ -646,7 +644,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(individualAdminsData);
           }),
       };
@@ -702,7 +700,7 @@ describe("actions", () => {
         ok: true,
         status: 200,
         json: () =>
-          new Promise<any>((resolve, reject) => {
+          new Promise<any>((resolve, _reject) => {
             resolve(selfTestData);
           }),
       };
@@ -759,7 +757,7 @@ describe("actions", () => {
 
       fetchMock.mock("/nypl/admin/manage_patrons", response);
 
-      const data = await actions.patronLookup(formData, "nypl")(dispatch);
+      await actions.patronLookup(formData, "nypl")(dispatch);
       const fetchArgs = fetchMock.calls();
 
       expect(dispatch.callCount).to.equal(3);

@@ -1,10 +1,5 @@
 import { expect } from "chai";
-import {
-  findDefault,
-  clearForm,
-  formatString,
-  isEqual,
-} from "../utils/sharedFunctions";
+import { findDefault, formatString, isEqual } from "../utils/sharedFunctions";
 
 describe("findDefault", () => {
   const settingWithoutDefaults = {

@@ -2,11 +2,9 @@ import { expect } from "chai";
 import { stub } from "sinon";
 import { LaneData } from "../../interfaces";
 import * as React from "react";
-import { shallow, mount } from "enzyme";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { mount } from "enzyme";
 
 import LanesSidebar from "../LanesSidebar";
-import Lane from "../Lane";
 import { Link } from "react-router";
 
 describe("LanesSidebar", () => {
@@ -146,7 +144,6 @@ describe("LanesSidebar", () => {
   });
 
   it("drags and drops a top-level lane", () => {
-    const topLevelLanes = getTopLevelLanes();
     const dragTopLane2 = {
       draggableId: "4",
       source: { index: 1, droppableId: "top" },

@@ -10,7 +10,7 @@ export interface RegisterLibraryReducer {
   (state: RegisterLibraryState, action): RegisterLibraryState;
 }
 
-export default <T>(registerPrefix: string): RegisterLibraryReducer => {
+export default (registerPrefix: string): RegisterLibraryReducer => {
   const initialState: RegisterLibraryState = {
     isFetching: false,
     fetchError: null,

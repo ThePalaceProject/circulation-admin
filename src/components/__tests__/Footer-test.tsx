@@ -69,10 +69,6 @@ describe("Footer", () => {
       expect(supportContactLink.text()).to.equal(expectedSupportContactText);
     });
     it("omits contact link, when no support URL provided", () => {
-      const appConfigSettings = {
-        supportContactUrl: "mailto:custom@example.com",
-        supportContactText: "Email Us Now",
-      };
       const wrapper = mount(<Footer />, {
         wrappingComponent: getFooterProviders({ hasSupportContactUrl: false }),
       });

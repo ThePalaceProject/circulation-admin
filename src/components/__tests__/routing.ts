@@ -1,11 +1,9 @@
 import { stub } from "sinon";
 
-import * as React from "react";
-
 export const mockRouter = (push) => {
   return {
     push,
-    createHref: (location) => "test href",
+    createHref: () => "test href",
   };
 };
 

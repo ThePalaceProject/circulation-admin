@@ -1,4 +1,4 @@
-import { expect, assert } from "chai";
+import { expect } from "chai";
 import { spy } from "sinon";
 
 import * as React from "react";

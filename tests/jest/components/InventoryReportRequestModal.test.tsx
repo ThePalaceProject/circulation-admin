@@ -55,7 +55,6 @@ const setupMockServer = () => {
 };
 
 describe("InventoryReportRequestModal", () => {
-  /* eslint-disable @typescript-eslint/no-empty-function */
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -68,7 +67,6 @@ describe("InventoryReportRequestModal", () => {
       error: process.env.NODE_ENV === "test" ? () => {} : console.error,
     },
   });
-  /* eslint-enable @typescript-eslint/no-empty-function */
 
   describe("query hooks call correct api methods", () => {
     const wrapper = componentWithProviders({ queryClient });

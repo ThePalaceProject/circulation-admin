@@ -5,7 +5,6 @@ import * as React from "react";
 import { mount } from "enzyme";
 
 import LoadButton from "../LoadButton";
-import MoreDotsIcon from "../icons/MoreDotsIcon";
 
 describe("LoadButton", () => {
   let wrapper;

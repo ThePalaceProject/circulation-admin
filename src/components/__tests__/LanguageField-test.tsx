@@ -3,7 +3,6 @@ import Autocomplete from "../Autocomplete";
 import * as React from "react";
 import { expect } from "chai";
 import { mount } from "enzyme";
-import { spy, stub } from "sinon";
 
 describe("LanguageField", () => {
   let wrapper;

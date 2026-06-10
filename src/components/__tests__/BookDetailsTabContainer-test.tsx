@@ -8,7 +8,6 @@ import buildStore from "../../store";
 import { BookDetailsTabContainer } from "../BookDetailsTabContainer";
 import BookDetailsEditor from "../BookDetailsEditor";
 import Classifications from "../Classifications";
-import Complaints from "../Complaints";
 import CustomListsForBook from "../CustomListsForBook";
 import { mockRouterContext } from "./routing";
 
@@ -32,7 +31,7 @@ describe("BookDetailsTabContainer", () => {
         csrfToken="token"
         refreshCatalog={stub()}
         store={store}
-        library={(a, b) => "library"}
+        library={(_a, _b) => "library"}
         canSuppress={true}
         // from store
         complaintsCount={0}

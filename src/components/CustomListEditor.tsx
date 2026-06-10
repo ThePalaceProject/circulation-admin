@@ -12,7 +12,6 @@ import {
 
 import CustomListEntriesEditor from "./CustomListEntriesEditor";
 import CustomListSearch from "./CustomListSearch";
-import EditableInput from "./EditableInput";
 import ShareButton from "./ShareButton";
 import TextWithEditMode from "./TextWithEditMode";
 import ShareIcon from "./icons/ShareIcon";

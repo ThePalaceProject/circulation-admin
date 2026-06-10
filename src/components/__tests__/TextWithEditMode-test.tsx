@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { spy, stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import { Button } from "library-simplified-reusable-components";
 
 import TextWithEditMode from "../TextWithEditMode";

@@ -2,14 +2,13 @@ import { expect } from "chai";
 import { stub } from "sinon";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import LaneCustomListsEditor from "../LaneCustomListsEditor";
 import ShareIcon from "../icons/ShareIcon";
 
 describe("LaneCustomListsEditor", () => {
-  let wrapper;
   let onUpdate;
 
   const allCustomListsData = [

@@ -1,44 +1,30 @@
-const http = require('follow-redirects').http
+const http = require("follow-redirects").http;
 
-const fetchGroupPage = (browser) => {
+const fetchGroupPage = () => {
   return new Promise((resolve, reject) => {
-    http.get({
-      host: "localhost",
-      port: 6500,
-      path: "/groups/"
-    }, (response) => {
-      let body = "";
+    http.get(
+      {
+        host: "localhost",
+        port: 6500,
+        path: "/groups/",
+      },
+      (response) => {
+        let body = "";
 
-      response.on("data", (chunk) => {
-        body += chunk;
-      });
+        response.on("data", (chunk) => {
+          body += chunk;
+        });
 
-      response.on("error", (err) => {
-        reject(err);
-      });
+        response.on("error", (err) => {
+          reject(err);
+        });
 
-      response.on("end", () => {
-        resolve(body);
-      });
-    });
-  });
-}
-const getAdminBookUrlAndTitle = (body, browser) => {
-  const bookTitle = body.match(/<entry [\s\S]+?<title>([^<]+)<\/title>/i)[1];
-  const link = body.match(/<link [^>]*rel="alternate[^>]+\/>/i)[0];
-  const id = body.match(/<id>[\s\S]+?<\/id>/i)[0];
-  const lib = id.match(/\/[\w]+/i)[0]; // includes forward slash
-  const bookUrl = link.match(/href="([^"]+)"/)[1];
-  const entryBaseUrl = browser.globals.homeUrl.replace("/admin/web/", lib + "/works");
-
-  // transform the book url into an admin book url
-  const adminBookUrl =
-    browser.globals.homeUrl + "collection" + lib + "/book" + lib +
-    encodeURIComponent(
-      bookUrl.replace(entryBaseUrl, "")
+        response.on("end", () => {
+          resolve(body);
+        });
+      }
     );
-
-  return { adminBookUrl, bookTitle };
+  });
 };
 const getAdminListUrl = (body, browser) => {
   const listBaseUrl = `${browser.globals.homeUrl}lists`;
@@ -56,11 +42,10 @@ module.exports = {
     loginPage = browser.page.login();
     loadingSelector = browser.page.catalog().elements.loadingSelector;
 
-    fetchGroupPage(browser)
-      .then(data => {
-        body = data
-        done();
-      });
+    fetchGroupPage(browser).then((data) => {
+      body = data;
+      done();
+    });
   },
 
   "attempt to view the admin list page before signing in": (browser) => {
@@ -100,5 +85,5 @@ module.exports = {
 
   afterEach: (browser) => {
     browser.end();
-  }
+  },
 };

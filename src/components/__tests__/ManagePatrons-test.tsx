@@ -4,7 +4,6 @@ import * as React from "react";
 import { shallow } from "enzyme";
 
 import ManagePatrons from "../ManagePatrons";
-import ManagePatronsForm from "../ManagePatronsForm";
 import ManagePatronsTabContainer from "../ManagePatronsTabContainer";
 import Header from "../Header";
 import Footer from "../Footer";

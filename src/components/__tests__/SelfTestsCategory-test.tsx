@@ -1,8 +1,7 @@
 import { expect } from "chai";
 
 import * as React from "react";
-import { shallow, mount } from "enzyme";
-import { stub, spy } from "sinon";
+import { mount } from "enzyme";
 import buildStore from "../../store";
 
 import SelfTestsCategory from "../SelfTestsCategory";

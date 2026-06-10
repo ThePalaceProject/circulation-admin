@@ -1,7 +1,7 @@
 import * as React from "react";
 import EditableInput from "./EditableInput";
 import { PostComplaint } from "../interfaces";
-import { Button, Form } from "library-simplified-reusable-components";
+import { Form } from "library-simplified-reusable-components";
 import { formatString } from "../utils/sharedFunctions";
 
 export interface ComplaintFormProps {
@@ -93,11 +93,11 @@ export default class ComplaintForm extends React.Component<
 
     this.props
       .postComplaint(this.props.complaintUrl, data)
-      .then((response) => {
+      .then(() => {
         this.props.refreshComplaints();
         this.clear();
       })
-      .catch((err) => {
+      .catch(() => {
         this.showPostError();
       });
   }
