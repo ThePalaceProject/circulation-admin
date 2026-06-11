@@ -337,6 +337,7 @@ export interface ProtocolData {
   supports_registration?: boolean;
   supports_staging?: boolean;
   supports_import?: boolean;
+  supports_reap?: boolean;
   settings: SettingData[];
   child_settings?: SettingData[];
   library_settings?: SettingData[];
