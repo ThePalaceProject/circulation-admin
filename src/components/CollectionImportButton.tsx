@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Panel } from "library-simplified-reusable-components";
 import { CollectionData, ProtocolData } from "../interfaces";
 import { protocolSupports, useCollectionTask } from "./collectionTask";
+import CollectionTaskPanel from "./CollectionTaskPanel";
 
 const IMPORT_DEFAULT_LABEL_TEXT = "Queue Import";
 const IMPORT_FORCED_FULL_LABEL_TEXT = "Force full re-import";
@@ -46,43 +46,48 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
     return null;
   }
 
-  const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
-
   const buttonLabel = getButtonLabel(force, busy);
 
   const buttonClass = force
     ? "btn btn-default collection-import-button force"
     : "btn btn-default collection-import-button";
 
-  const panelContent = (
-    <div className="collection-import">
-      <div className="collection-import-controls">
-        <button
-          className={buttonClass}
-          disabled={disabled || busy}
-          onClick={handleImport}
-        >
-          {buttonLabel}
-        </button>
-        <label>
-          <input
-            type="checkbox"
-            checked={force}
-            onChange={(e) => setForce(e.target.checked)}
+  return (
+    <CollectionTaskPanel
+      id="collection-import"
+      headerText="Import"
+      collectionId={collection?.id}
+      feedback={feedback}
+      success={success}
+      controls={
+        <div className="collection-import-controls">
+          <button
+            className={buttonClass}
             disabled={disabled || busy}
-          />{" "}
-          {IMPORT_FORCED_FULL_LABEL_TEXT}
-        </label>
-      </div>
-      {feedback && <div className={feedbackClass}>{feedback}</div>}
-      <p className="description">
-        {IMPORT_DEFAULT_LABEL_TEXT} picks up new and changed items. Check{" "}
-        <strong>{IMPORT_FORCED_FULL_LABEL_TEXT}</strong> to re-process
-        everything.
-      </p>
-      <details className="collection-import-details" key={collection?.id}>
-        <summary>More details</summary>
-        <dl className="collection-import-docs">
+            onClick={handleImport}
+          >
+            {buttonLabel}
+          </button>
+          <label>
+            <input
+              type="checkbox"
+              checked={force}
+              onChange={(e) => setForce(e.target.checked)}
+              disabled={disabled || busy}
+            />{" "}
+            {IMPORT_FORCED_FULL_LABEL_TEXT}
+          </label>
+        </div>
+      }
+      description={
+        <>
+          {IMPORT_DEFAULT_LABEL_TEXT} picks up new and changed items. Check{" "}
+          <strong>{IMPORT_FORCED_FULL_LABEL_TEXT}</strong> to re-process
+          everything.
+        </>
+      }
+      docs={
+        <>
           <dt>{IMPORT_DEFAULT_LABEL_TEXT}</dt>
           <dd>
             Schedules a background import job that checks for new or updated
@@ -101,13 +106,9 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
             forced re-import will take longer than a regular import because it
             re-processes all items.
           </dd>
-        </dl>
-      </details>
-    </div>
-  );
-
-  return (
-    <Panel id="collection-import" headerText="Import" content={panelContent} />
+        </>
+      }
+    />
   );
 };
 
