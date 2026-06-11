@@ -49,7 +49,7 @@ const CollectionImportButton: React.FC<CollectionImportButtonProps> = ({
   const buttonLabel = getButtonLabel(force, busy);
 
   const buttonClass = force
-    ? "btn btn-default collection-import-button force"
+    ? "btn btn-default collection-import-button force collection-task-caution"
     : "btn btn-default collection-import-button";
 
   return (
