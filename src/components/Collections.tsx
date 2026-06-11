@@ -17,6 +17,7 @@ import {
   LibraryRegistrationsData,
 } from "../interfaces";
 import CollectionImportButton from "./CollectionImportButton";
+import CollectionReapButton from "./CollectionReapButton";
 import ServiceWithRegistrationsEditForm from "./ServiceWithRegistrationsEditForm";
 import TrashIcon from "./icons/TrashIcon";
 
@@ -33,6 +34,7 @@ export interface CollectionsDispatchProps
     collectionId: string | number,
     force: boolean
   ) => Promise<void>;
+  reapCollection: (collectionId: string | number) => Promise<void>;
 }
 
 export interface CollectionsProps
@@ -48,11 +50,13 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
       collectionId: string | number,
       force: boolean
     ) => Promise<void>;
+    reapCollection: (collectionId: string | number) => Promise<void>;
   };
 
   static contextTypes = {
     ...ServiceWithRegistrationsEditForm.contextTypes,
     importCollection: PropTypes.func,
+    reapCollection: PropTypes.func,
   };
 
   /**
@@ -80,6 +84,13 @@ export class CollectionEditForm extends ServiceWithRegistrationsEditForm<
         collection={this.props.item as CollectionData}
         protocols={this.props.data?.protocols || []}
         importCollection={this.context.importCollection}
+        disabled={this.props.disabled}
+      />,
+      <CollectionReapButton
+        key="reap"
+        collection={this.props.item as CollectionData}
+        protocols={this.props.data?.protocols || []}
+        reapCollection={this.context.reapCollection}
         disabled={this.props.disabled}
       />,
     ];
@@ -112,6 +123,7 @@ export class Collections extends GenericEditableConfigList<
   static childContextTypes: React.ValidationMap<any> = {
     registerLibrary: PropTypes.func,
     importCollection: PropTypes.func,
+    reapCollection: PropTypes.func,
   };
 
   getChildContext() {
@@ -129,6 +141,7 @@ export class Collections extends GenericEditableConfigList<
         }
       },
       importCollection: this.props.importCollection,
+      reapCollection: this.props.reapCollection,
     };
   }
 
@@ -221,13 +234,15 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(actions.deleteCollection(identifier)),
     importCollection: (collectionId: string | number, force: boolean) =>
       dispatch(actions.importCollection(collectionId, force)),
+    reapCollection: (collectionId: string | number) =>
+      dispatch(actions.reapCollection(collectionId)),
   };
 }
 
 const ConnectedCollections = connect<
   EditableConfigListStateProps<CollectionsData>,
   EditableConfigListDispatchProps<CollectionsData> &
-    Pick<CollectionsDispatchProps, "importCollection">,
+    Pick<CollectionsDispatchProps, "importCollection" | "reapCollection">,
   EditableConfigListOwnProps
 >(
   mapStateToProps,

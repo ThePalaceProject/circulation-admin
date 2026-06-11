@@ -46,6 +46,7 @@ describe("Collections - associated library disclosure", () => {
         deleteItem={jest.fn().mockResolvedValue(undefined)}
         registerLibrary={jest.fn().mockResolvedValue(undefined)}
         importCollection={jest.fn().mockResolvedValue(undefined)}
+        reapCollection={jest.fn().mockResolvedValue(undefined)}
         csrfToken="token"
         isFetching={false}
       />,
