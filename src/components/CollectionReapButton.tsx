@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Panel } from "library-simplified-reusable-components";
 import { CollectionData, ProtocolData } from "../interfaces";
 import { protocolSupports, useCollectionTask } from "./collectionTask";
+import CollectionTaskPanel from "./CollectionTaskPanel";
 
 const REAP_LABEL_TEXT = "Queue Reap";
 
@@ -36,25 +36,30 @@ const CollectionReapButton: React.FC<CollectionReapButtonProps> = ({
       "Failed to queue reap task."
     );
 
-  const feedbackClass = success ? "alert alert-success" : "alert alert-danger";
-
-  const panelContent = (
-    <div className="collection-reap">
-      <button
-        className="btn btn-default collection-reap-button"
-        disabled={disabled || busy}
-        onClick={handleReap}
-      >
-        {busy ? "Queuing..." : REAP_LABEL_TEXT}
-      </button>
-      {feedback && <div className={feedbackClass}>{feedback}</div>}
-      <p className="description">
-        {REAP_LABEL_TEXT} removes titles that are no longer in the collection's
-        feed from the catalog.
-      </p>
-      <details className="collection-reap-details" key={collection?.id}>
-        <summary>More details</summary>
-        <dl className="collection-reap-docs">
+  return (
+    <CollectionTaskPanel
+      id="collection-reap"
+      headerText="Reap"
+      collectionId={collection?.id}
+      feedback={feedback}
+      success={success}
+      controls={
+        <button
+          className="btn btn-default collection-reap-button"
+          disabled={disabled || busy}
+          onClick={handleReap}
+        >
+          {busy ? "Queuing..." : REAP_LABEL_TEXT}
+        </button>
+      }
+      description={
+        <>
+          {REAP_LABEL_TEXT} removes titles that are no longer in the
+          collection's feed from the catalog.
+        </>
+      }
+      docs={
+        <>
           <dt>{REAP_LABEL_TEXT}</dt>
           <dd>
             Schedules a background job that re-reads the collection's feed and
@@ -63,13 +68,9 @@ const CollectionReapButton: React.FC<CollectionReapButtonProps> = ({
             accidentally added to the catalog and need to be removed without
             waiting for the collection's scheduled reap.
           </dd>
-        </dl>
-      </details>
-    </div>
-  );
-
-  return (
-    <Panel id="collection-reap" headerText="Reap" content={panelContent} />
+        </>
+      }
+    />
   );
 };
 
